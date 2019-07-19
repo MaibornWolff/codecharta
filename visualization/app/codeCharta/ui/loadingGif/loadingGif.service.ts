@@ -1,9 +1,9 @@
 import { IRootScopeService } from "angular"
 
 export interface LoadingGifComponentSubscriber {
-	onLoadingFileStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent)
+	onLoadingFileStatusChanged(isLoadingFile: boolean)
 
-	onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent)
+	onLoadingMapStatusChanged(isLoadingMap: boolean)
 }
 
 export class LoadingGifService {

@@ -8,7 +8,7 @@ import { Vector3 } from "three"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface SettingsServiceSubscriber {
-	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent)
+	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>)
 }
 
 export class SettingsService implements FileStateServiceSubscriber {
@@ -25,11 +25,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetDynamicAndFileSettings(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public getSettings(): Settings {
 		return this.settings

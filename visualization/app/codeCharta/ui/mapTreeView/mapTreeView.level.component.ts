@@ -38,7 +38,7 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 		return markingColor ? markingColor : defaultColor
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent) {
+	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		if (data.to && data.to.node && this.node && this.node.path && data.to.node.path === this.node.path) {
 			this._viewModel.isHoveredInCodeMap = true
 		} else {

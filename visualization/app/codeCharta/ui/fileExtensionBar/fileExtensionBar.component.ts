@@ -19,7 +19,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
-	public onRenderMapChanged(map: CodeMapNode, event: angular.IAngularEvent) {
+	public onRenderMapChanged(map: CodeMapNode) {
 		this.setNewDistribution(map)
 		this.setColorForEachExtension()
 		this.potentiallyAddNoneExtension()

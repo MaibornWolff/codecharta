@@ -24,17 +24,17 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.amountOfTopLabels = settings.appSettings.amountOfTopLabels
 		this._viewModel.scalingY = settings.appSettings.scaling.y
 		this._viewModel.invertHeight = settings.appSettings.invertHeight
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public applySettingsAmountOfTopLabels() {
 		this.settingsService.updateSettings({

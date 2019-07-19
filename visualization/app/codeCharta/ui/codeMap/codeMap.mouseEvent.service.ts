@@ -21,15 +21,15 @@ export interface CodeMapBuildingTransition {
 }
 
 export interface BuildingHoveredEventSubscriber {
-	onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent)
+	onBuildingHovered(data: CodeMapBuildingTransition)
 }
 
 export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent)
+	onBuildingSelected(data: CodeMapBuildingTransition)
 }
 
 export interface BuildingRightClickedEventSubscriber {
-	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent)
+	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
 
 export class CodeMapMouseEventService
@@ -82,12 +82,12 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.hovered = null
 		this.selected = null
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public update() {
 		this.threeCameraService.camera.updateMatrixWorld(false)

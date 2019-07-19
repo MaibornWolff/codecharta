@@ -6,7 +6,7 @@ import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service
 import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
 
 export interface NodeSearchSubscriber {
-	onNodeSearchComplete(searchedNodes: CodeMapNode[], event: IAngularEvent)
+	onNodeSearchComplete(searchedNodes: CodeMapNode[])
 }
 
 export class NodeSearchService implements SettingsServiceSubscriber {
@@ -23,7 +23,7 @@ export class NodeSearchService implements SettingsServiceSubscriber {
 		SettingsService.subscribe($rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (this.isSearchPatternUpdated(update)) {
 			this.searchedNodes = this.findSearchedNodes(update.dynamicSettings.searchPattern)
 			this.notifyNodeSearchComplete()

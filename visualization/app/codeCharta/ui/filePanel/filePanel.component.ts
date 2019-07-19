@@ -44,7 +44,7 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this._viewModel.isSingleState = FileStateHelper.isSingleState(fileStates)
 		this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
@@ -76,7 +76,7 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		}
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onImportedFilesChanged(fileStates: FileState[]) {
 		this._viewModel.fileStates = fileStates
 	}
 

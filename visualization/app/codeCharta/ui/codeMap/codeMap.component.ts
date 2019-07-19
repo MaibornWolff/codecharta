@@ -33,7 +33,7 @@ export class CodeMapController implements BuildingRightClickedEventSubscriber, L
 		this.codeMapMouseEventService.start()
 	}
 
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 		if (building) {
 			const nodeType = building.node.isLeaf ? "File" : "Folder"
@@ -41,12 +41,12 @@ export class CodeMapController implements BuildingRightClickedEventSubscriber, L
 		}
 	}
 
-	public onLoadingFileStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
+	public onLoadingFileStatusChanged(isLoadingFile: boolean) {
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
 	}
 
-	public onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent) {}
+	public onLoadingMapStatusChanged(isLoadingMap: boolean) {}
 
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})

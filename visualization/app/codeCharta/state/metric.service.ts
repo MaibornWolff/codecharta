@@ -19,8 +19,8 @@ import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
 
 export interface MetricServiceSubscriber {
-	onMetricDataAdded(metricData: MetricData[], event: IAngularEvent)
-	onMetricDataRemoved(event: IAngularEvent)
+	onMetricDataAdded(metricData: MetricData[])
+	onMetricDataRemoved()
 }
 
 interface MaxMetricValuePair {
@@ -40,17 +40,17 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
 		this.notifyMetricDataAdded()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onImportedFilesChanged(fileStates: FileState[]) {
 		this.metricData = null
 		this.notifyMetricDataRemoved()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (update.fileSettings && update.fileSettings.blacklist) {
 			const fileStates: FileState[] = this.fileStateService.getFileStates()
 			this.metricData = this.calculateMetrics(

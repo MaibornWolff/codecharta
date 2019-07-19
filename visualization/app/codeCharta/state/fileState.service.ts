@@ -3,9 +3,9 @@ import { IAngularEvent, IRootScopeService } from "angular"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface FileStateServiceSubscriber {
-	onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
+	onFileSelectionStatesChanged(fileStates: FileState[])
 
-	onImportedFilesChanged(fileStates: FileState[], event: IAngularEvent)
+	onImportedFilesChanged(fileStates: FileState[])
 }
 
 export class FileStateService {
