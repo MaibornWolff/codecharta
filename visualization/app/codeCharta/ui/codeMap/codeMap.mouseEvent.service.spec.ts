@@ -152,6 +152,18 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
+	describe("onFileSelectionStateChanged", () => {
+		it("should reset selected and hovered", () => {
+			codeMapMouseEventService["hovered"] = CODE_MAP_BUILDING
+			codeMapMouseEventService["selected"] = CODE_MAP_BUILDING
+
+			codeMapMouseEventService.onFileSelectionStatesChanged(undefined, undefined)
+
+			expect(codeMapMouseEventService["hovered"]).toBeNull()
+			expect(codeMapMouseEventService["selected"]).toBeNull()
+		})
+	})
+
 	describe("start", () => {
 		it("should setup four event listeners", () => {
 			codeMapMouseEventService.start()
@@ -266,12 +278,12 @@ describe("codeMapMouseEventService", () => {
 			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, codeMapBuilding)
 		})
 
-		it("should call onBuildingSelected", () => {
+		it("should call onBuildingSelected and deselect building", () => {
 			codeMapMouseEventService["selected"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
-			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(codeMapBuilding, null)
+			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, null)
 		})
 	})
 

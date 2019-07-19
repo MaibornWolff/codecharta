@@ -4,10 +4,11 @@ import { IAngularEvent, IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode, FileState } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 
 interface Coordinates {
 	x: number
@@ -31,7 +32,7 @@ export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent)
 }
 
-export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber {
+export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber {
 	private static BUILDING_HOVERED_EVENT = "building-hovered"
 	private static BUILDING_SELECTED_EVENT = "building-selected"
 	private static BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -52,6 +53,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	) {
 		this.threeUpdateCycleService.register(this.update.bind(this))
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
+		FileStateService.subscribe($rootScope, this)
 	}
 
 	public start() {
@@ -77,6 +79,14 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 				this.onDocumentDoubleClick(event)
 				break
 		}
+	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+		this.hovered = null;
+		this.selected = null;
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 	}
 
 	public update() {
@@ -112,7 +122,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 	public onDocumentMouseUp() {
 		if (this.dragOrClickFlag === 0) {
-			if (this.hovered) {
+					if (this.hovered) {
 				this.onBuildingSelected(null, this.hovered)
 			}
 
