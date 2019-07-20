@@ -59,6 +59,7 @@ class SCMLogParser: Callable<Void> {
     private val metricsFactory: MetricsFactory
         get() {
             val nonChurnMetrics = Arrays.asList(
+                    "age_in_weeks",
                     "number_of_authors",
                     "number_of_commits",
                     "range_of_weeks_with_commits",
