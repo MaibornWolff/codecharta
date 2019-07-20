@@ -40,7 +40,8 @@ class MetricsFactory {
                 HighlyCoupledFiles(),
                 MedianCoupledFiles(),
                 AbsoluteCoupledChurn(),
-                AverageCodeChurnPerCommit()
+                AverageCodeChurnPerCommit(),
+                NumberOfRenames()
         )
     }
 
