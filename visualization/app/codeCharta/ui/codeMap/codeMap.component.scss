@@ -1,2 +1,20 @@
 code-map-component {
+	view-cube-component {
+		position: absolute;
+		z-index: 11;
+		right: 0px;
+		top: 10px;
+	}
+
+	#centerMap {
+		position: absolute;
+		top: 10px;
+		right: 15px;
+		float: right;
+
+		.md-fab {
+			width: 36px;
+			height: 36px;
+		}
+	}
 }

@@ -1,18 +1,18 @@
 "use strict"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
-import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 
 export class NodeDecorator {
-	public static decorateFile(file: CCFile, blacklist: BlacklistItem[], metricData: MetricData[]): CCFile {
-		let decoratedFile: CCFile = _.cloneDeep(file)
-		this.decorateMapWithMissingObjects(decoratedFile)
-		this.decorateMapWithCompactMiddlePackages(decoratedFile)
-		this.decorateLeavesWithMissingMetrics(decoratedFile, metricData)
-		this.decorateParentNodesWithSumAttributesOfChildren(decoratedFile, blacklist, metricData)
-		return decoratedFile
+	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, blacklist: BlacklistItem[], metricData: MetricData[]): CodeMapNode {
+		let decoratedMap: CodeMapNode = _.cloneDeep(map)
+		this.decorateMapWithMissingObjects(decoratedMap, fileMeta)
+		this.decorateMapWithCompactMiddlePackages(decoratedMap)
+		this.decorateLeavesWithMissingMetrics(decoratedMap, metricData)
+		this.decorateParentNodesWithSumAttributesOfChildren(decoratedMap, blacklist, metricData)
+		return decoratedMap
 	}
 
 	public static preDecorateFile(file: CCFile): CCFile {
@@ -22,7 +22,7 @@ export class NodeDecorator {
 		return decoratedFile
 	}
 
-	private static decorateMapWithCompactMiddlePackages(file: CCFile) {
+	private static decorateMapWithCompactMiddlePackages(map: CodeMapNode) {
 		const isEmptyMiddlePackage = current => {
 			return (
 				current &&
@@ -52,8 +52,8 @@ export class NodeDecorator {
 			}
 		}
 
-		if (file && file.map) {
-			rec(file.map)
+		if (map) {
+			rec(map)
 		}
 	}
 
@@ -72,21 +72,21 @@ export class NodeDecorator {
 		return file
 	}
 
-	private static decorateMapWithMissingObjects(file: CCFile) {
-		if (file && file.map) {
-			let root = d3.hierarchy<CodeMapNode>(file.map)
+	private static decorateMapWithMissingObjects(map: CodeMapNode, fileMeta: FileMeta) {
+		if (map) {
+			let root = d3.hierarchy<CodeMapNode>(map)
 			root.each(node => {
 				node.data.visible = true
-				node.data.origin = file.fileMeta.fileName
+				node.data.origin = fileMeta.fileName
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				Object.assign(node.data.attributes, { unary: 1 })
 			})
 		}
 	}
 
-	private static decorateLeavesWithMissingMetrics(file: CCFile, metricData: MetricData[]) {
-		if (file && file.map && metricData) {
-			let root = d3.hierarchy<CodeMapNode>(file.map)
+	private static decorateLeavesWithMissingMetrics(map: CodeMapNode, metricData: MetricData[]) {
+		if (map && metricData) {
+			let root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				metricData.forEach(metric => {
 					if (!node.data.attributes.hasOwnProperty(metric.name)) {
@@ -97,9 +97,9 @@ export class NodeDecorator {
 		}
 	}
 
-	private static decorateParentNodesWithSumAttributesOfChildren(file: CCFile, blacklist: BlacklistItem[], metricData: MetricData[]) {
-		if (file && file.map) {
-			let root = d3.hierarchy<CodeMapNode>(file.map)
+	private static decorateParentNodesWithSumAttributesOfChildren(map: CodeMapNode, blacklist: BlacklistItem[], metricData: MetricData[]) {
+		if (map) {
+			let root = d3.hierarchy<CodeMapNode>(map)
 			root.each((node: HierarchyNode<CodeMapNode>) => {
 				this.decorateNodeWithChildrenSumMetrics(node, blacklist, metricData)
 			})

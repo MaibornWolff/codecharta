@@ -1,22 +1,33 @@
-import {CC_URL, puppeteer} from "../../../puppeteer.helper"
+import { goto, puppeteer } from "../../../puppeteer.helper"
+import { Browser, Page } from "puppeteer"
+import { {{properCase name}}PageObject } from "./{{camelCase name}}.po"
+
 
 jest.setTimeout(10000)
 
 describe("{{properCase name}}", () => {
 
-    let browser, page
+    let browser: Browser
+    let page: Page
+    let {{camelCase name}} : {{properCase name}}PageObject
 
     beforeAll(async () => {
-        browser = await puppeteer.launch()
-        page = await browser.newPage()
+        browser = await puppeteer.launch({ headless: true })
     })
 
     afterAll(async () => {
         await browser.close()
     });
 
+    beforeEach(async () => {
+    	page = await browser.newPage()
+    	{{camelCase name}} = new {{properCase name}}PageObject(page)
+
+    	await goto(page)
+    })
+
     it("should do something", async () => {
-        await page.goto(CC_URL)
+        expect(await {{camelCase name}}.doSomething()).toContain("SOME_RESULT")
     });
 
 });

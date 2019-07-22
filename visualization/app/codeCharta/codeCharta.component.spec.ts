@@ -12,16 +12,17 @@ import { SETTINGS } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
+import { NodeSearchService } from "./state/nodeSearch.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let $rootScope: IRootScopeService
 	let dialogService: DialogService
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
+	let nodeSearchService: NodeSearchService
 	let $location: ILocationService
 	let $http: IHttpService
 	let loadingGifService: LoadingGifService
@@ -31,7 +32,6 @@ describe("codeChartaController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedThreeOrbitControlsService()
 		withMockedCodeMapActionsService()
 		withMockedUrlUtils()
 		withMockedSettingsService()
@@ -44,13 +44,13 @@ describe("codeChartaController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		settingsService = getService<SettingsService>("settingsService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileStateService = getService<FileStateService>("fileStateService")
+		nodeSearchService = getService<NodeSearchService>("nodeSearchService")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
 		loadingGifService = getService<LoadingGifService>("loadingGifService")
@@ -60,13 +60,13 @@ describe("codeChartaController", () => {
 
 	function rebuildController() {
 		codeChartaController = new CodeChartaController(
-			threeOrbitControlsService,
 			$rootScope,
 			dialogService,
 			codeMapActionsService,
 			settingsService,
 			codeChartaService,
 			fileStateService,
+			nodeSearchService,
 			$location,
 			$http,
 			loadingGifService
@@ -76,12 +76,6 @@ describe("codeChartaController", () => {
 	afterEach(() => {
 		jest.resetAllMocks()
 	})
-
-	function withMockedThreeOrbitControlsService() {
-		threeOrbitControlsService = codeChartaController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
-			autoFitTo: jest.fn()
-		})()
-	}
 
 	function withMockedCodeMapActionsService() {
 		codeMapActionsService = codeChartaController["codeMapActionsService"] = jest.fn().mockReturnValue({
@@ -153,14 +147,6 @@ describe("codeChartaController", () => {
 			codeChartaController.onSettingsChanged(settings, undefined, undefined)
 
 			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
-		})
-	})
-
-	describe("fitMapToView", () => {
-		it("should call autoFitTo", () => {
-			codeChartaController.fitMapToView()
-
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 		})
 	})
 

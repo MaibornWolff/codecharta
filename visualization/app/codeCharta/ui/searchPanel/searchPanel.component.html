@@ -1,0 +1,17 @@
+<md-card ng-class="{expanded: $ctrl._viewModel.searchPanelMode != 'minimized'}">
+	<div class="section">
+		<div class="section-header">
+			<search-bar-component></search-bar-component>
+			<search-panel-mode-selector-component></search-panel-mode-selector-component>
+		</div>
+		<span class="section-title" ng-click="$ctrl.toggle()">
+			Search
+		</span>
+		<div class="section-body">
+			<blacklist-panel-component ng-show="$ctrl._viewModel.searchPanelMode == 'hide'"></blacklist-panel-component>
+			<blacklist-panel-component ng-show="$ctrl._viewModel.searchPanelMode == 'exclude'"></blacklist-panel-component>
+			<matching-files-counter-component ng-show="$ctrl._viewModel.searchPanelMode == 'treeView'"></matching-files-counter-component>
+			<map-tree-view-component ng-show="$ctrl._viewModel.searchPanelMode == 'treeView'"></map-tree-view-component>
+		</div>
+	</div>
+</md-card>

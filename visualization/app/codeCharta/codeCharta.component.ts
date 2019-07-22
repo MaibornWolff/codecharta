@@ -5,11 +5,11 @@ import { CodeChartaService } from "./codeCharta.service"
 import { SettingsService, SettingsServiceSubscriber } from "./state/settings.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
+import { NodeSearchService } from "./state/nodeSearch.service"
 
 export class CodeChartaController implements SettingsServiceSubscriber {
 	private _viewModel: {
@@ -28,13 +28,14 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 	/* @ngInject */
 	constructor(
-		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private $rootScope: IRootScopeService,
 		private dialogService: DialogService,
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
 		private codeChartaService: CodeChartaService,
 		private fileStateService: FileStateService,
+		// tslint:disable-next-line
+		private nodeSearchService: NodeSearchService, // We have to inject it somewhere
 		private $location: ILocationService,
 		private $http: IHttpService,
 		private loadingGifService: LoadingGifService
@@ -48,10 +49,6 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
-	}
-
-	public fitMapToView() {
-		this.threeOrbitControlsService.autoFitTo()
 	}
 
 	public removeFocusedNode() {

@@ -6,17 +6,51 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
+
+- New Search Bar #526
 
 ### Changed
 
+- ToolBar now shows partially cut-off controls if the window is too small #582
+- Position of the legendPanel was moved to the bottom-right corner #633
+- RibbonBar only opens the three metric section
+- Moved Scenario-select to the right in order to use less space
+- Moved loading-gif from ribbonBar to toolBar
+
 ### Removed
+
+- Removed RibbonBar toggle button
 
 ### Fixed
 
 ### Chore
 
+- [Security] Bump lodash.mergewith from 4.6.1 to 4.6.2 in /visualization
+- [Security] Bump lodash from 4.17.11 to 4.17.13 in /visualization
+
+## [1.29.0] - 2019-07-12
+
+### Added
+
+### Changed
+
+- Moved Button to reset the map to the center next to the view-cube #606
+- Moved FileExtensionBar #527
+
+### Removed
+
+- Burger Menu / SideNav #526
+
+### Fixed
+
+- Colors in File-Extension-Bar will be displayed in MS Edge and Standlone now #584
+
+### Chore
+
 ## [1.28.0] - 2019-06-28
+
 ### Added
 
 - Releasing will now remind the developer to manually add the release notes #533
@@ -34,10 +68,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Margin will now be set correctly depending on whether dynamicMargin is enabled or not #602
 
-
 ### Chore
 
 ## [1.27.0] - 2019-06-25
+
 ### Added
 
 - Automatically generates release notes from changelog and appends it to release #533
@@ -57,7 +91,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
--  Unary Metric will no longer be auto-selected when a new map is loaded #579
+- Unary Metric will no longer be auto-selected when a new map is loaded #579
 
 ### Chore
 
