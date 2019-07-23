@@ -1,5 +1,3 @@
-#define MAX_NUM_HIGHLIGHTS_SELECTIONS 10
-
 varying vec3 vColor;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
@@ -46,43 +44,6 @@ bool uvCoordInRectangle(const in vec2 uv, const in Rect r)
     return uv.x >= r.min.x && uv.x < r.max.x && uv.y >= r.min.y && uv.y < r.max.y;
 }
 
-bool pixelInProceduralMinusArea(const in vec2 uv)
-{
-    float height = 0.1;
-    float width = 0.35;
-
-    float hh = height * 0.5;
-    float hw = width * 0.5;
-
-    float xMin = (1.0 - width) * 0.5;
-    float xMax = xMin + width;
-
-    float yMin = (1.0 - height) * 0.5;
-    float yMax = yMin + height;
-
-    return uvCoordInRectangle(vUV, Rect(vec2(xMin, yMin), vec2(xMax, yMax)));
-}
-
-bool pixelInProceduralPlusArea(const in vec2 uv)
-{
-float height = 0.1;
-    float width = 0.35;
-
-    float hh = height * 0.5;
-    float hw = width * 0.5;
-
-    float xMin = (1.0 - width) * 0.5;
-    float xMax = xMin + width;
-
-    float yMin = (1.0 - height) * 0.5;
-    float yMax = yMin + height;
-
-    Rect r1 = Rect(vec2(xMin, yMin), vec2(xMax, yMax));
-    Rect r2 = Rect(vec2(yMin, xMin), vec2(yMax, xMax));
-
-    return uvCoordInRectangle(uv, r1) || uvCoordInRectangle(uv, r2);
-}
-
 void main() {
     vec4 diffuseColor = vec4(vColor, 1.0);
 
@@ -101,7 +62,7 @@ void main() {
         {
             diffuseColor.xyz = deltaColorNegative;
         }
-      }
+    }
 
     ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));
     reflectedLight.indirectDiffuse = getAmbientLightIrradiance(ambientLightColor);
