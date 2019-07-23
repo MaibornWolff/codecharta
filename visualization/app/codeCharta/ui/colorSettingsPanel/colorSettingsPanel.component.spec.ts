@@ -8,7 +8,7 @@ import { MetricService } from "../../state/metric.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { SETTINGS } from "../../util/dataMocks"
 import { Settings, FileSelectionState, FileState } from "../../codeCharta.model"
-import { color } from "d3-color"
+import set = Reflect.set
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
@@ -190,19 +190,47 @@ describe("ColorSettingsPanelController", () => {
 		})
 	})
 
-	describe("applySettings", () => {
+	describe("invertColorRange", () => {
 		it("should call update settings correctly", () => {
 			colorSettingsPanelController["_viewModel"].invertColorRange = false
-			colorSettingsPanelController["_viewModel"].invertDeltaColors = true
-			colorSettingsPanelController["_viewModel"].whiteColorBuildings = true
 
-			colorSettingsPanelController.applySettings()
+			colorSettingsPanelController.invertColorRange()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				appSettings: {
-					invertColorRange: false,
-					invertDeltaColors: true,
-					whiteColorBuildings: true
+					invertColorRange: this._viewModel.invertColorRange
+				}
+			})
+		})
+	})
+
+	describe("invertDeltaColors", () => {
+		it("should call update settings correctly", () => {
+			colorSettingsPanelController["_viewModel"].invertDeltaColors = false
+
+			colorSettingsPanelController.invertDeltaColors()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				appSettings: {
+					invertColorRange: this._viewModel.invertColorRange,
+					mapColors: {
+						positiveDelta: settingsService.getSettings().appSettings.mapColors.negativeDelta,
+						negativeDelta: settingsService.getSettings().appSettings.mapColors.positiveDelta
+					}
+				}
+			})
+		})
+	})
+
+	describe("applyWhiteColorBuildings", () => {
+		it("should call update settings correctly", () => {
+			colorSettingsPanelController["_viewModel"].whiteColorBuildings = false
+
+			colorSettingsPanelController.applyWhiteColorBuildings()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				appSettings: {
+					whiteColorBuildings: this._viewModel.invertColorRange
 				}
 			})
 		})
