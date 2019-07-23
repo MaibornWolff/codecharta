@@ -283,4 +283,104 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController.hoveredDeltaColor).toBe("red")
 		})
 	})
+	describe("filterMetricData()", () => {
+		it("should return the default MetricData list", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
+			]
+
+			metricChooserController["_viewModel"].searchTerm = ""
+
+			metricChooserController.onMetricDataAdded(metricData, null)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
+		})
+		it("should return only metric mcc from MetricData list, when its the searchTerm", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
+			]
+
+			metricChooserController["_viewModel"].searchTerm = "mcc"
+
+			metricChooserController.onMetricDataAdded(metricData, null)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }])
+		})
+
+		it("should return rloc metric when searchTerm is only 'rl'", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
+			]
+
+			metricChooserController["_viewModel"].searchTerm = "rl"
+
+			metricChooserController.onMetricDataAdded(metricData, null)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "rloc", maxValue: 1, availableInVisibleMaps: true }])
+		})
+
+		it("should return the metrics which contains the metrics with 'c' in it", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "avg", maxValue: 3, availableInVisibleMaps: false }
+			]
+
+			metricChooserController["_viewModel"].searchTerm = "c"
+
+			metricChooserController.onMetricDataAdded(metricData, null)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
+			])
+		})
+
+		it("should return the metrics which contains substrings with 'mc' as prefix", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
+				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+			]
+
+			metricChooserController["_viewModel"].searchTerm = "mc"
+
+			metricChooserController.onMetricDataAdded(metricData, null)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+			])
+		})
+		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
+				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+			]
+
+			metricChooserController["_viewModel"].searchTerm = "rla"
+
+			metricChooserController.onMetricDataAdded(metricData, null)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([])
+		})
+	})
 })
