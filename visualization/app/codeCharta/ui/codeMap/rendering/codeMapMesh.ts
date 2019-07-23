@@ -12,9 +12,6 @@ interface ThreeUniform {
 }
 
 interface CodeMapLightingParams {
-	numSelections: ThreeUniform
-	selectedColor: ThreeUniform
-	selectedIndices: ThreeUniform
 	deltaColorPositive: ThreeUniform
 	deltaColorNegative: ThreeUniform
 }
@@ -133,11 +130,11 @@ export class CodeMapMesh {
 	}
 
 	private setVertexColor(id: number, newColorVector: Vector3) {
+		const numberOfColorFieldsPerBuilding = CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES
+		const positionOfFirstColorEntry = id * numberOfColorFieldsPerBuilding
 		for (
-			let j = id * CodeMapMesh.NUM_OF_VERTICES * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS;
-			j <
-			id * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES +
-				CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES;
+			let j = positionOfFirstColorEntry;
+			j < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding;
 			j += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
 		) {
 			this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
@@ -152,10 +149,6 @@ export class CodeMapMesh {
 
 	private initLightingParams(settings: Settings) {
 		this.lightingParams = {
-			numSelections: { type: "f", value: 0.0 },
-			selectedColor: { type: "f", value: ColorConverter.colorToVector3(settings.appSettings.mapColors.selected) },
-			selectedIndices: { type: "fv1", value: [] },
-
 			deltaColorPositive: {
 				type: "v3",
 				value: ColorConverter.colorToVector3(settings.appSettings.mapColors.positiveDelta)
