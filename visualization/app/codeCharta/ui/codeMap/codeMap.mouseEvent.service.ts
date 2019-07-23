@@ -93,21 +93,19 @@ export class CodeMapMouseEventService
 	public update() {
 		this.threeCameraService.camera.updateMatrixWorld(false)
 
-		if (this.threeSceneService.getMapMesh() != null) {
+		if (this.threeSceneService.getMapMesh()) {
 			const intersectionResult = this.threeSceneService
 				.getMapMesh()
 				.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
-			const from = this.hovered
-			let to = null
-
 			if (intersectionResult.intersectionFound) {
-				to = intersectionResult.building
-			}
+				const to = intersectionResult.building
 
-			if (from !== to && !this.hoveredInTreeView) {
-				this.onBuildingHovered(from, to)
-				this.hovered = to
+				if (this.hovered !== to) {
+					this.onBuildingHovered(this.hovered, to)
+				}
+			} else if (this.hovered && !this.hoveredInTreeView) {
+				this.onBuildingHovered(this.hovered, null)
 			}
 		}
 	}
@@ -177,21 +175,18 @@ export class CodeMapMouseEventService
 			}
 		}
 
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
-
-		if (to !== null) {
+		if (to) {
 			this.threeSceneService.highlightBuilding(to)
 			this.hovered = to
 		} else {
 			this.threeSceneService.clearHighlight()
 			this.hovered = null
 		}
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
 	}
 
 	public onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, { to: to, from: from })
-
-		if (to !== null) {
+		if (to) {
 			if (this.selected) {
 				this.threeSceneService.clearSelection()
 			}
@@ -199,7 +194,9 @@ export class CodeMapMouseEventService
 			this.selected = to
 		} else {
 			this.threeSceneService.clearSelection()
+			this.selected = null
 		}
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, { to: to, from: from })
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {

@@ -39,6 +39,7 @@ describe("codeMapMouseEventService", () => {
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedCodeMapRenderService()
+		withMockedEventMethods()
 	})
 
 	afterEach(() => {
@@ -214,15 +215,12 @@ describe("codeMapMouseEventService", () => {
 
 	describe("update", () => {
 		beforeEach(() => {
-			codeMapMouseEventService.onBuildingHovered = jest.fn()
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue({
 					intersectionFound: false,
-					building: 1
+					building: CODE_MAP_BUILDING
 				})
 			})
-
-			codeMapMouseEventService["hovered"] = CODE_MAP_BUILDING
 		})
 
 		it("should call updateMatrixWorld", () => {
@@ -231,37 +229,43 @@ describe("codeMapMouseEventService", () => {
 			expect(threeCameraService.camera.updateMatrixWorld).toHaveBeenCalledWith(false)
 		})
 
-		it("should call onBuildingHovered with CODE_MAP_BUILDING and null", () => {
+		it("should unhover the building, when no intersection was found, a building is hovered and nothing is hovered in the treeView", () => {
+			codeMapMouseEventService["hovered"] = CODE_MAP_BUILDING
+			codeMapMouseEventService["hoveredInTreeView"] = null
+
 			codeMapMouseEventService.update()
 
-			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(codeMapBuilding, null)
+			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
 
-		it("should not call onBuildingHovered", () => {
+		it("should hover a node when no node is hovered and an intersection was found", () => {
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue({
+					intersectionFound: true,
+					building: CODE_MAP_BUILDING
+				})
+			})
+
 			codeMapMouseEventService["hovered"] = null
 
 			codeMapMouseEventService.update()
 
-			expect(codeMapMouseEventService.onBuildingHovered).not.toHaveBeenCalled()
+			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(CODE_MAP_BUILDING)
 		})
 
-		it("should call onBuildingHovered with 2 and 1", () => {
+		it("should not hover a node again when the intersection building is the same as the hovered building", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue({
 					intersectionFound: true,
-					building: 1
+					building: CODE_MAP_BUILDING
 				})
 			})
 
+			codeMapMouseEventService["hovered"] = CODE_MAP_BUILDING
+
 			codeMapMouseEventService.update()
 
-			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(codeMapBuilding, 1)
-		})
-
-		it("should set hovered to null", () => {
-			codeMapMouseEventService.update()
-
-			expect(codeMapMouseEventService["hovered"]).toBeNull()
+			expect(threeSceneService.highlightBuilding).not.toHaveBeenCalled()
 		})
 	})
 
@@ -312,8 +316,6 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onRightClick", () => {
 		it("should $broadcast a building-right-clicked event with data", () => {
-			withMockedEventMethods()
-
 			const event = { clientX: 0, clientY: 1 }
 
 			codeMapMouseEventService.onRightClick(event)
@@ -362,19 +364,19 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onBuildingHovered", () => {
-		it("should broadcast a building-hovered event and clear mesh highlight", () => {
-			withMockedEventMethods()
-
+		it("should clear the highlight when to is null", () => {
 			codeMapMouseEventService.onBuildingHovered(null, null)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-hovered", { to: null, from: null })
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
+			expect(codeMapMouseEventService["hovered"]).toBeNull()
 		})
 
-		it("should broadcast a building-hovered event and set mesh highlight", () => {
+		it("should set the highlight when to is not null", () => {
 			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
 
 			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			expect(codeMapMouseEventService["hovered"]).not.toBeNull()
 		})
 
 		it("should add property node", () => {
@@ -398,27 +400,40 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onBuildingSelected", () => {
-		it("should broadcast a building-selected event", () => {
-			withMockedEventMethods()
-
+		it("should select a building", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, codeMapBuilding)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", {
 				to: codeMapBuilding,
 				from: codeMapBuilding
 			})
+			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			expect(codeMapMouseEventService["selected"]).not.toBeNull()
 		})
 
-		it("should clear selection on mesh", () => {
+		it("should clear selection", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, null)
 
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", {
+				to: null,
+				from: codeMapBuilding
+			})
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
+			expect(codeMapMouseEventService["selected"]).toBeNull()
 		})
 
-		it("should clear selection on mesh", () => {
-			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, codeMapBuilding)
+		it("should clear the currently selected building and then select the new one", () => {
+			codeMapMouseEventService["selected"] = codeMapBuilding
 
+			codeMapMouseEventService.onBuildingSelected(null, codeMapBuilding)
+
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", {
+				to: codeMapBuilding,
+				from: null
+			})
+			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			expect(codeMapMouseEventService["selected"]).not.toBeNull()
 		})
 	})
 
