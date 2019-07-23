@@ -45,6 +45,15 @@ describe("CodeMapBuilding", () => {
 
 			expect(building.color).toEqual("#002633")
 		})
+
+		it("should set deltaColor correctly when delta is enabled", () => {
+			building["_node"].deltas = {}
+			building["_defaultDeltaColor"] = "#ABCDEF"
+
+			building.decreaseLightness(100)
+
+			expect(building.deltaColor).toEqual("#08192B")
+		})
 	})
 
 	describe("getColorVector", () => {
@@ -71,11 +80,14 @@ describe("CodeMapBuilding", () => {
 	})
 
 	describe("resetColor", () => {
-		it("should reset the color back to defaultColor", () => {
+		it("should reset the colors back to their defaultColors", () => {
 			building.setColor("#ABCDEF")
+			building["_defaultDeltaColor"] = "#ABCDEF"
+
 			building.resetColor()
 
 			expect(building.color).toEqual("#00BFFF")
+			expect(building.deltaColor).toEqual("#ABCDEF")
 		})
 	})
 
