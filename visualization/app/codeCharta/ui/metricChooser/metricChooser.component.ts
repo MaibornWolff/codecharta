@@ -47,10 +47,15 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		this.updateViewModel(settings)
 	}
 
-	public filterSearch() {
+	public filterMetricData() {
 		this._viewModel.metricData = this.defaultMetrics.filter(metric =>
 			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLocaleLowerCase())
 		)
+	}
+
+	public clearSearchTerm() {
+		this._viewModel.searchTerm = ""
+		this._viewModel.metricData = this.defaultMetrics
 	}
 
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {

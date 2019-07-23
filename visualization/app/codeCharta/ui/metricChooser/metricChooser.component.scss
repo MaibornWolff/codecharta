@@ -44,11 +44,20 @@ distribution-metric-chooser-component {
 		display: none;
 	}
 }
+
 .user-search {
+	width: auto;
 	border: none;
-	border-bottom-width: 1px;
+	outline: none;
+	border-bottom-width: 2px;
 	border-bottom-style: solid;
+	border-bottom-color: rgba(0, 0, 0, 0.12);
 	padding: 10px;
+}
+
+.user-search:focus {
+	border-bottom-color: rgb(0, 150, 136);
+	color: rgb(0, 150, 136);
 }
 
 .metric-max-value {
