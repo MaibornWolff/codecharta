@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Fixed fileExtensionBar height to not show a bottom-margin in Chrome
+
 ### Chore
 
 - [Security] Bump lodash.mergewith from 4.6.1 to 4.6.2 in /visualization
