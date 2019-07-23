@@ -50,6 +50,18 @@ export class CodeMapMesh {
 		this.threeMesh = buildRes.mesh
 		this.mapGeomDesc = buildRes.desc
 		this.settings = settings
+
+		this.initDeltaColorsOnMesh(settings)
+	}
+
+	private initDeltaColorsOnMesh(settings: Settings) {
+		if (this.mapGeomDesc.buildings[0].node.deltas) {
+			this.mapGeomDesc.buildings.forEach(building => {
+				this.setNewDeltaColor(building, settings)
+				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
+			})
+			this.updateVertices()
+		}
 	}
 
 	public getThreeMesh(): Mesh {

@@ -105,5 +105,6 @@ export class CodeMapBuilding {
 
 	public setDeltaColor(color: string) {
 		this._defaultDeltaColor = color
+		this._deltaColor = color
 	}
 }
