@@ -1,7 +1,18 @@
 <md-input-container>
 	<i class="fa fa-pie-chart"></i>
+
+	<label></label>
 	<md-select ng-model="$ctrl._viewModel.distributionMetric" ng-change="$ctrl.applySettingsDistributionMetric()">
-		<span class="option-pattern">metric (highest value)</span>
+		<md-select-header>
+			<input
+				class="user-search"
+				ng-model="$ctrl._viewModel.searchTerm"
+				type="text"
+				placeholder="Metric (highest value)"
+				ng-keydown="$event.stopPropagation()"
+				ng-change="$ctrl.filterSearch()"
+			/>
+		</md-select-header>
 		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
 			{{::metric.name}}
 			<span class="metric-max-value">({{::metric.maxValue}})</span>
