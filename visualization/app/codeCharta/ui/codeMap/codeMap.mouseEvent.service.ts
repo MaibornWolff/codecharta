@@ -34,9 +34,9 @@ export interface BuildingRightClickedEventSubscriber {
 
 export class CodeMapMouseEventService
 	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber {
-	private static BUILDING_HOVERED_EVENT = "building-hovered"
-	private static BUILDING_SELECTED_EVENT = "building-selected"
-	private static BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
+	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
+	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
+	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
 	private hoveredInCodeMap: CodeMapBuilding = null
 	private hoveredInTreeView: CodeMapBuilding = null
