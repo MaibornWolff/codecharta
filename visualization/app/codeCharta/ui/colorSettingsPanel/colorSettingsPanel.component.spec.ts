@@ -8,7 +8,6 @@ import { MetricService } from "../../state/metric.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { SETTINGS } from "../../util/dataMocks"
 import { Settings, FileSelectionState, FileState } from "../../codeCharta.model"
-import set = Reflect.set
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
@@ -83,7 +82,7 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should set invertDeltaColors flag", () => {
-			let settings = { appSettings: { invertDeltaColors: true }, dynamicSettings: {} } as Settings
+			const settings = { appSettings: { invertDeltaColors: true }, dynamicSettings: {} } as Settings
 
 			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
@@ -91,7 +90,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should set white color buildings", () => {
-			let settings = { appSettings: { whiteColorBuildings: true }, dynamicSettings: {} } as Settings
+			const settings = { appSettings: { whiteColorBuildings: true }, dynamicSettings: {} } as Settings
 
 			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
@@ -99,7 +98,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should set invertColorRange", () => {
-			let settings = {
+			const settings = {
 				dynamicSettings: { colorMetric: "foo" },
 				appSettings: {
 					invertColorRange: true
@@ -113,7 +112,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should only adapt color range if color metric is not the same ", () => {
-			let settings = { dynamicSettings: { colorMetric: "foo" }, appSettings: {} } as Settings
+			const settings = { dynamicSettings: { colorMetric: "foo" }, appSettings: {} } as Settings
 
 			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
@@ -121,7 +120,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should set correct metric max is retrieved for range calculation ", () => {
-			let settings = { dynamicSettings: { colorMetric: "rloc" }, appSettings: {} } as Settings
+			const settings = { dynamicSettings: { colorMetric: "rloc" }, appSettings: {} } as Settings
 
 			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
 
@@ -139,7 +138,7 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onFileSelectionStatesChanged", () => {
 		it("should detect delta mode selection", () => {
-			let fileStates = [
+			const fileStates = [
 				{ file: {}, selectedAs: FileSelectionState.Comparison },
 				{ file: {}, selectedAs: FileSelectionState.Reference }
 			] as FileState[]
@@ -150,7 +149,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 
 		it("should detect not delta mode selection", () => {
-			let fileStates = [
+			const fileStates = [
 				{ file: {}, selectedAs: FileSelectionState.None },
 				{ file: {}, selectedAs: FileSelectionState.Partial }
 			] as FileState[]
@@ -198,7 +197,7 @@ describe("ColorSettingsPanelController", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				appSettings: {
-					invertColorRange: this._viewModel.invertColorRange
+					invertColorRange: false
 				}
 			})
 		})
@@ -212,7 +211,7 @@ describe("ColorSettingsPanelController", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				appSettings: {
-					invertColorRange: this._viewModel.invertColorRange,
+					invertDeltaColors: false,
 					mapColors: {
 						positiveDelta: settingsService.getSettings().appSettings.mapColors.negativeDelta,
 						negativeDelta: settingsService.getSettings().appSettings.mapColors.positiveDelta
@@ -230,7 +229,7 @@ describe("ColorSettingsPanelController", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				appSettings: {
-					whiteColorBuildings: this._viewModel.invertColorRange
+					whiteColorBuildings: false
 				}
 			})
 		})
