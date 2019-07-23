@@ -2,7 +2,7 @@
 	<i class="fa fa-arrows-alt"></i>
 
 	<label></label>
-	<md-select ng-model="$ctrl._viewModel.areaMetric" ng-change="$ctrl.applySettingsAreaMetric()">
+	<md-select ng-model="$ctrl._viewModel.areaMetric" ng-change="$ctrl.applySettingsAreaMetric()" md-on-close="$ctrl.clearSearchTerm()">
 		<md-select-header>
 			<input
 				class="user-search"
@@ -10,7 +10,7 @@
 				type="text"
 				placeholder="Metric (highest value)"
 				ng-keydown="$event.stopPropagation()"
-				ng-change="$ctrl.filterSearch()"
+				ng-change="$ctrl.filterMetricData()"
 			/>
 		</md-select-header>
 		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
