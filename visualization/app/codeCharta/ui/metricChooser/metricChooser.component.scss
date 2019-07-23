@@ -44,23 +44,16 @@ distribution-metric-chooser-component {
 		display: none;
 	}
 }
+.user-search {
+	border: none;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	padding: 10px;
+}
 
 .metric-max-value {
 	color: #ccc !important;
 	margin-left: 5px !important;
-}
-.option-pattern {
-	color: #ccc;
-	display: flex;
-	align-items: center;
-	width: auto;
-	transition: background 0.15s linear;
-	padding: 0 16px 0 16px;
-	height: 48px;
-	border-bottom: 3px solid #ccc;
-}
-.max::last-word {
-	color: black;
 }
 
 distribution-metric-chooser-component {
