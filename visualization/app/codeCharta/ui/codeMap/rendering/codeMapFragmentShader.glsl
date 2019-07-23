@@ -1,4 +1,5 @@
 varying vec3 vColor;
+varying vec3 vDeltaColor;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
 varying highp float vDelta;
@@ -19,7 +20,7 @@ struct ReflectedLight {
     vec3 indirectSpecular;
 };
 
-vec3 getAmbientLightIrradiance( const in vec3 ambientLightColor ) {
+vec3 getAmbientLightIrradiance(const in vec3 ambientLightColor) {
     vec3 irradiance = ambientLightColor;
     irradiance *= PI;
     return irradiance;
@@ -54,14 +55,7 @@ void main() {
 
     if (abs(vDelta) > minDelta && (vUV.y > 1.0 - abs(vDelta) || isTop))
     {
-        if (vDelta > 0.0)
-        {
-            diffuseColor.xyz = deltaColorPositive;
-        }
-        else
-        {
-            diffuseColor.xyz = deltaColorNegative;
-        }
+        diffuseColor.xyz = vDeltaColor;
     }
 
     ReflectedLight reflectedLight = ReflectedLight(vec3(0.0), vec3(0.0), vec3(0.0), vec3(0.0));

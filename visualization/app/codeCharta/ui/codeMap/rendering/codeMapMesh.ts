@@ -58,14 +58,14 @@ export class CodeMapMesh {
 
 	public selectBuilding(building: CodeMapBuilding, color: string) {
 		building.setColor(color)
-		this.setVertexColor(building.id, building.getColorVector())
+		this.setVertexColor(building.id, building.getColorVector(), building.getDefaultDeltaColorVector())
 		this.updateVertices()
 		this.selected = building
 	}
 
 	public clearSelection() {
 		this.selected.resetColor()
-		this.setVertexColor(this.selected.id, this.selected.getDefaultColorVector())
+		this.setVertexColor(this.selected.id, this.selected.getDefaultColorVector(), this.selected.getDefaultDeltaColorVector())
 		this.updateVertices()
 		this.selected = null
 	}
@@ -75,7 +75,7 @@ export class CodeMapMesh {
 	}
 
 	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera): IntersectionResult {
-		let ray: Ray = this.calculatePickingRay(mouse, camera)
+		const ray: Ray = this.calculatePickingRay(mouse, camera)
 		return this.getMeshDescription().intersect(ray)
 	}
 
@@ -83,14 +83,17 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	public highlightBuilding(highlightedBuilding: CodeMapBuilding, isPresentationMode: boolean, mapSize: number) {
+	public highlightBuilding(highlightedBuilding: CodeMapBuilding, settings: Settings) {
+		const mapSize = settings.treeMapSettings.mapSize
+
 		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
 			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
+			this.setNewDeltaColor(currentBuilding, settings)
 			const distance = highlightedBuilding.getCenterPoint(mapSize).distanceTo(currentBuilding.getCenterPoint(mapSize))
 
 			if (!this.isBuildingSelected(currentBuilding)) {
 				if (!currentBuilding.equals(highlightedBuilding)) {
-					if (isPresentationMode) {
+					if (settings.appSettings.isPresentationMode) {
 						this.decreaseLightnessByDistance(currentBuilding, distance)
 					} else {
 						currentBuilding.decreaseLightness(20)
@@ -99,7 +102,7 @@ export class CodeMapMesh {
 					currentBuilding.decreaseLightness(-10)
 				}
 			}
-			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector())
+			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector(), currentBuilding.getDeltaColorVector())
 		}
 		this.updateVertices()
 	}
@@ -108,10 +111,28 @@ export class CodeMapMesh {
 		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
 			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
 			if (!this.isBuildingSelected(currentBuilding)) {
-				this.setVertexColor(currentBuilding.id, currentBuilding.getDefaultColorVector())
+				this.setVertexColor(
+					currentBuilding.id,
+					currentBuilding.getDefaultColorVector(),
+					currentBuilding.getDefaultDeltaColorVector()
+				)
 			}
 		}
 		this.updateVertices()
+	}
+
+	private setNewDeltaColor(building: CodeMapBuilding, settings: Settings) {
+		if (building.node.deltas) {
+			const deltaValue = building.node.deltas[settings.dynamicSettings.heightMetric]
+
+			if (deltaValue > 0) {
+				building.setDeltaColor(settings.appSettings.mapColors.positiveDelta)
+			}
+
+			if (deltaValue < 0) {
+				building.setDeltaColor(settings.appSettings.mapColors.negativeDelta)
+			}
+		}
 	}
 
 	private isBuildingSelected(building: CodeMapBuilding) {
@@ -132,7 +153,7 @@ export class CodeMapMesh {
 		}
 	}
 
-	private setVertexColor(id: number, newColorVector: Vector3) {
+	private setVertexColor(id: number, newColorVector: Vector3, newDeltaColorVector) {
 		for (
 			let j = id * CodeMapMesh.NUM_OF_VERTICES * CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS;
 			j <
@@ -143,11 +164,16 @@ export class CodeMapMesh {
 			this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
 			this.threeMesh.geometry["attributes"].color.array[j + 1] = newColorVector.y
 			this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
+
+			this.threeMesh.geometry["attributes"].deltaColor.array[j] = newDeltaColorVector.x
+			this.threeMesh.geometry["attributes"].deltaColor.array[j + 1] = newDeltaColorVector.y
+			this.threeMesh.geometry["attributes"].deltaColor.array[j + 2] = newDeltaColorVector.z
 		}
 	}
 
 	private updateVertices() {
 		this.threeMesh.geometry["attributes"].color.needsUpdate = true
+		this.threeMesh.geometry["attributes"].deltaColor.needsUpdate = true
 	}
 
 	private initLightingParams(settings: Settings) {
@@ -174,9 +200,9 @@ export class CodeMapMesh {
 			this.setDefaultDeltaColors(settings)
 		}
 
-		let uniforms = UniformsUtils.merge([UniformsLib["lights"], this.lightingParams])
+		const uniforms = UniformsUtils.merge([UniformsLib["lights"], this.lightingParams])
 
-		let shaderCode: CodeMapShaderStrings = new CodeMapShaderStrings()
+		const shaderCode: CodeMapShaderStrings = new CodeMapShaderStrings()
 
 		this.material = new ShaderMaterial({
 			vertexShader: shaderCode.vertexShaderCode,
@@ -209,7 +235,7 @@ export class CodeMapMesh {
 	}
 
 	private calculatePickingRay(mouse: MousePos, camera: Camera): Ray {
-		let ray: Ray = new Ray()
+		const ray: Ray = new Ray()
 		ray.origin.setFromMatrixPosition(camera.matrixWorld)
 		ray.direction
 			.set(mouse.x, mouse.y, 0.5)
