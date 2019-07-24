@@ -88,7 +88,7 @@ class SCMLogParser: Callable<Void> {
                 projectName,
                 addAuthor,
                 silent)
-        if (!outputFile.isEmpty()) {
+        if (outputFile.isNotEmpty()) {
             ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
         } else {
             ProjectSerializer.serializeProject(project, OutputStreamWriter(System.out))
