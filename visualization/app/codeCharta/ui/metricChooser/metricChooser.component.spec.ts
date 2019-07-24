@@ -289,9 +289,7 @@ describe("MetricChooserController", () => {
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
-
 			metricChooserController["_viewModel"].searchTerm = ""
-
 			metricChooserController.onMetricDataAdded(metricData, null)
 
 			metricChooserController.filterMetricData()
@@ -303,9 +301,7 @@ describe("MetricChooserController", () => {
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
-
 			metricChooserController["_viewModel"].searchTerm = "mcc"
-
 			metricChooserController.onMetricDataAdded(metricData, null)
 
 			metricChooserController.filterMetricData()
@@ -318,9 +314,7 @@ describe("MetricChooserController", () => {
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
-
 			metricChooserController["_viewModel"].searchTerm = "rl"
-
 			metricChooserController.onMetricDataAdded(metricData, null)
 
 			metricChooserController.filterMetricData()
@@ -334,9 +328,7 @@ describe("MetricChooserController", () => {
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false }
 			]
-
 			metricChooserController["_viewModel"].searchTerm = "c"
-
 			metricChooserController.onMetricDataAdded(metricData, null)
 
 			metricChooserController.filterMetricData()
@@ -354,9 +346,7 @@ describe("MetricChooserController", () => {
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
 				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
 			]
-
 			metricChooserController["_viewModel"].searchTerm = "mc"
-
 			metricChooserController.onMetricDataAdded(metricData, null)
 
 			metricChooserController.filterMetricData()
@@ -373,14 +363,36 @@ describe("MetricChooserController", () => {
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
 				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
 			]
-
 			metricChooserController["_viewModel"].searchTerm = "rla"
-
 			metricChooserController.onMetricDataAdded(metricData, null)
 
 			metricChooserController.filterMetricData()
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual([])
+		})
+	})
+	describe("clearSearchTerm()", () => {
+		it("should return an empty string, when function is called", () => {
+			metricChooserController["_viewModel"].searchTerm = "someString"
+
+			metricChooserController.clearSearchTerm()
+
+			expect(metricChooserController["_viewModel"].searchTerm).toEqual("")
+		})
+
+		it("should return the the metricData Array with all Elements, when function is called", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
+				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+			]
+			metricChooserController["_viewModel"].searchTerm = "rlo"
+			metricChooserController.onMetricDataAdded(metricData, null)
+
+			metricChooserController.clearSearchTerm()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})
 	})
 })
