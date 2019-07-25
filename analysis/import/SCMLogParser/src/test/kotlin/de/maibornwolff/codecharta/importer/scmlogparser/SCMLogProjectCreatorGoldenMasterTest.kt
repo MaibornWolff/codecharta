@@ -55,8 +55,8 @@ class SCMLogProjectCreatorGoldenMasterTest(
         // given
         val projectConverter = ProjectConverter(containsAuthors, PROJECT_NAME)
 
-        val svnSCMLogProjectCreator = SCMLogProjectCreator(strategy, metricsFactory, projectConverter)
-        val ccjsonReader = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(expectedProjectFilename))
+        val svnSCMLogProjectCreator = SCMLogProjectCreator(strategy, metricsFactory, projectConverter, silent = true)
+        val ccjsonReader = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(expectedProjectFilename)!!)
         val expectedProject = ProjectDeserializer.deserializeProject(ccjsonReader)
         val resource = this.javaClass.classLoader.getResource(logFilename)
         val logStream = Files.lines(Paths.get(resource!!.toURI()))

@@ -45,7 +45,8 @@ class SCMLogProjectCreatorTest(
         val gitSCMLogProjectCreator = SCMLogProjectCreator(
                 strategy,
                 metricsFactory,
-                projectConverter
+                projectConverter,
+                silent = true
         )
         val logStream = Files.lines(Paths.get(this.javaClass.classLoader.getResource(logFilename)!!.toURI()))
 
