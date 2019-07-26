@@ -51,7 +51,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
-		this.threeUpdateCycleService.register(this.update.bind(this))
+		this.threeUpdateCycleService.register(this.updateHovering.bind(this))
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
 	}
 
@@ -80,19 +80,19 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		}
 	}
 
-	public update() {
+	public updateHovering() {
 		if (this.hasMouseMoved()) {
 			this.oldMouse.x = this.mouse.x
 			this.oldMouse.y = this.mouse.y
 
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
-			if (this.threeSceneService.getMapMesh() != null) {
+			if (this.threeSceneService.getMapMesh()) {
 				let intersectionResult = this.threeSceneService
 					.getMapMesh()
 					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
-				let from = this.threeSceneService.getHighlightedBuilding()
+				const from = this.threeSceneService.getHighlightedBuilding()
 				let to = null
 
 				if (intersectionResult.intersectionFound) {
