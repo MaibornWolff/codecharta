@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.30.0] - 2019-07-26
+
+### Added
+
 - New Search Bar #526
 - Number of Renames Metric to SCMLogParser #621
 - Age In Weeks Metric for SCMLogParser #620
