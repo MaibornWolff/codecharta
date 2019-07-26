@@ -62,7 +62,7 @@ describe("MetricChooserController", () => {
 	})
 
 	describe("onSettingsChanged", () => {
-		it("should updateHovering height/area/color metric on settings changed", () => {
+		it("should update height/area/color metric on settings changed", () => {
 			let settings = {
 				dynamicSettings: {
 					areaMetric: "foo",
@@ -130,7 +130,7 @@ describe("MetricChooserController", () => {
 			expect(settingsService.updateSettings).not.toBeCalled()
 		})
 
-		it("no metrics available, should not updateHovering settings", () => {
+		it("no metrics available, should not update settings", () => {
 			let metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
 
 			metricChooserController.onMetricDataAdded(metricData, null)
@@ -175,7 +175,7 @@ describe("MetricChooserController", () => {
 	})
 
 	describe("applySettingsColorMetric", () => {
-		it("should updateHovering color metric settings", () => {
+		it("should update color metric settings", () => {
 			metricChooserController["_viewModel"].colorMetric = "c"
 
 			metricChooserController.applySettingsColorMetric()
@@ -187,7 +187,7 @@ describe("MetricChooserController", () => {
 	})
 
 	describe("applySettingsHeightMetric", () => {
-		it("should updateHovering height metric settings", () => {
+		it("should update height metric settings", () => {
 			metricChooserController["_viewModel"].heightMetric = "b"
 
 			metricChooserController.applySettingsHeightMetric()

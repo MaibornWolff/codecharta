@@ -1,5 +1,5 @@
 /**
- * This service allows other parts of the application to hook into the updateHovering cycle and get called on each cycle.
+ * This service allows other parts of the application to hook into the update cycle and get called on each cycle.
  */
 export class ThreeUpdateCycleService {
 	private updatables: Function[] = []

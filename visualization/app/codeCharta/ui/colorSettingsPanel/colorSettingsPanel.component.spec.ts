@@ -190,7 +190,7 @@ describe("ColorSettingsPanelController", () => {
 	})
 
 	describe("invertColorRange", () => {
-		it("should call updateHovering settings correctly", () => {
+		it("should call update settings correctly", () => {
 			colorSettingsPanelController["_viewModel"].invertColorRange = false
 
 			colorSettingsPanelController.invertColorRange()
@@ -204,7 +204,7 @@ describe("ColorSettingsPanelController", () => {
 	})
 
 	describe("invertDeltaColors", () => {
-		it("should call updateHovering settings correctly", () => {
+		it("should call update settings correctly", () => {
 			colorSettingsPanelController["_viewModel"].invertDeltaColors = false
 
 			colorSettingsPanelController.invertDeltaColors()
@@ -222,7 +222,7 @@ describe("ColorSettingsPanelController", () => {
 	})
 
 	describe("applyWhiteColorBuildings", () => {
-		it("should call updateHovering settings correctly", () => {
+		it("should call update settings correctly", () => {
 			colorSettingsPanelController["_viewModel"].whiteColorBuildings = false
 
 			colorSettingsPanelController.applyWhiteColorBuildings()

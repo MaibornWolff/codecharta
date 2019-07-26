@@ -164,7 +164,7 @@ describe("AreaSettingsPanelController", () => {
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
 		})
 
-		it("should updateHovering margin and dynamicMargin in settingsService", () => {
+		it("should update margin and dynamicMargin in settingsService", () => {
 			areaSettingsPanelController.onFileSelectionStatesChanged(undefined, undefined)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({

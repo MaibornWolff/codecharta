@@ -91,7 +91,7 @@ describe("MetricService", () => {
 			metricService["calculateMetrics"] = jest.fn().mockReturnValue(metricData)
 		})
 
-		it("should not call getFileStates when updateHovering object is not a blacklist", () => {
+		it("should not call getFileStates when update object is not a blacklist", () => {
 			metricService.onSettingsChanged(null, { fileSettings: { blacklist: null } }, null)
 
 			expect(fileStateService.getFileStates).not.toHaveBeenCalled()

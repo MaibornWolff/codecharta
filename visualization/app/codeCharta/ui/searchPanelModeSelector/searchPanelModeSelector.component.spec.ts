@@ -35,7 +35,7 @@ describe("SearchPanelModeSelectorController", () => {
 	}
 
 	describe("onSearchPanelModeChanged", () => {
-		it("should updateHovering searchPanelMode", () => {
+		it("should update searchPanelMode", () => {
 			let searchPanelMode = SearchPanelMode.hide
 
 			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode, null)
@@ -45,7 +45,7 @@ describe("SearchPanelModeSelectorController", () => {
 	})
 
 	describe("onSettingsChanged", () => {
-		it("should updateHovering counters", () => {
+		it("should update counters", () => {
 			let blacklistItem1 = { path: "/root", type: BlacklistType.hide }
 			let blacklistItem2 = { path: "/root/foo", type: BlacklistType.exclude }
 			let blacklistItem3 = { path: "/root/bar", type: BlacklistType.exclude }

@@ -85,7 +85,7 @@ describe("resetSettingsButtonController", () => {
 			expect(settingsService.updateSettings).not.toHaveBeenCalled()
 		})
 
-		it("should updateHovering nested settings in service", () => {
+		it("should update nested settings in service", () => {
 			const newSettings: RecursivePartial<Settings> = {
 				appSettings: { scaling: { x: 42, y: 42, z: 42 } }
 			}

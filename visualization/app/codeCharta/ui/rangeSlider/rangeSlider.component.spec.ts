@@ -67,7 +67,7 @@ describe("RangeSliderController", () => {
 			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
 		})
 
-		it("should call initSliderOptions and updateHovering the viewModel, set colored range colors and inputfield width", () => {
+		it("should call initSliderOptions and update the viewModel, set colored range colors and inputfield width", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 
 			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
@@ -77,7 +77,7 @@ describe("RangeSliderController", () => {
 			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.colorRange.to)
 		})
 
-		it("should call initSliderOptions and updateHovering the viewModel, set grey range colors and inputfield width", () => {
+		it("should call initSliderOptions and update the viewModel, set grey range colors and inputfield width", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 
 			rangeSliderController["_viewModel"].sliderOptions.disabled = true

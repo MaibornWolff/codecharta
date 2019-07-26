@@ -24,10 +24,10 @@ describe("app.codeCharta.ui.codeMap.threeViewer.threeUpdateCycleService", () => 
 
 	//noinspection TypeScriptUnresolvedVariable
 	/**
-	 * @test {ThreeUpdateCycleService#updateHovering}
+	 * @test {ThreeUpdateCycleService#update}
 	 */
 	it(
-		"added updatable references should be updated on updateHovering call",
+		"added updatable references should be updated on update call",
 		NG.mock.inject(threeUpdateCycleService => {
 			let ref1 = sinon.spy()
 			let ref2 = sinon.spy()

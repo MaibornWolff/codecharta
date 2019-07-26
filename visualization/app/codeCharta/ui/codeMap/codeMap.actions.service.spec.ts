@@ -278,7 +278,7 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("pushItemToBlacklist", () => {
-		it("should not updateHovering settings if item is already blacklisted", () => {
+		it("should not update settings if item is already blacklisted", () => {
 			const blacklistItem = { path: nodeA.path, type: BlacklistType.exclude }
 			settings.fileSettings.blacklist.push(blacklistItem)
 
@@ -287,7 +287,7 @@ describe("CodeMapActionService", () => {
 			expect(settingsService.updateSettings).not.toHaveBeenCalled()
 		})
 
-		it("should updateHovering settings if item is not blacklisted", () => {
+		it("should update settings if item is not blacklisted", () => {
 			const blacklistItem = { path: nodeA.path, type: BlacklistType.exclude }
 
 			codeMapActionsService.pushItemToBlacklist(blacklistItem)

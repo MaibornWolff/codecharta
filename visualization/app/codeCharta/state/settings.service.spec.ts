@@ -204,7 +204,7 @@ describe("settingService", () => {
 			expect(settingsService["update"]).toEqual(expected)
 		})
 
-		it("should reset updateHovering after 400ms", done => {
+		it("should reset update after 400ms", done => {
 			settingsService["update"] = { fileSettings: { blacklist: ["entry"] } }
 			const update: RecursivePartial<Settings> = { fileSettings: { blacklist: [] } }
 
