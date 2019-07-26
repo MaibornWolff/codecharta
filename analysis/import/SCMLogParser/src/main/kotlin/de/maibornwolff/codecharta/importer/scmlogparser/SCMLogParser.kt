@@ -62,6 +62,7 @@ class SCMLogParser: Callable<Void> {
                     "age_in_weeks",
                     "number_of_authors",
                     "number_of_commits",
+                    "number_of_renames",
                     "range_of_weeks_with_commits",
                     "successive_weeks_of_commits",
                     "weeks_with_commits"

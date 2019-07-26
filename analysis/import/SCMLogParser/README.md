@@ -6,6 +6,7 @@ Generates visualisation data from repository (Git or SVN) logs. It supports the 
 | -------------------- | ----------------------------------------------------------- |
 | `age_in_weeks`       | age of the file in weeks                                    |
 | `number_of_commits`  | total number of commits                                     |
+| `number_of_renames`  | total number of renames                                     |
 | `weeks_with_commits` | weeks with commits                                          |
 | `number_of_authors`  | number of authors with commits                              |
 | `code_churn`         | code churn, i.e. number of additions plus deletions to file |

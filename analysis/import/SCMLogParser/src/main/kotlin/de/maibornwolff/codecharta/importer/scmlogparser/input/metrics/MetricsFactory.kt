@@ -41,6 +41,7 @@ class MetricsFactory {
                 MedianCoupledFiles(),
                 AbsoluteCoupledChurn(),
                 AverageCodeChurnPerCommit(),
+                NumberOfRenames(),
                 AgeInWeeks()
         )
     }
