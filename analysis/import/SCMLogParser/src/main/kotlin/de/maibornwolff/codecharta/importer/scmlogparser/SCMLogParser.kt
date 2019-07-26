@@ -47,6 +47,9 @@ class SCMLogParser: Callable<Void> {
             description = ["analysis of svn log, equivalent --input-format SVN_LOG"])
     private var svnLog = false
 
+    @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
+    private var silent = false
+
     @CommandLine.Option(names = ["--input-format"], description = ["input format for parsing"])
     private var inputFormatNames: InputFormatNames = GIT_LOG
 
@@ -85,8 +88,9 @@ class SCMLogParser: Callable<Void> {
                 logParserStrategy,
                 metricsFactory,
                 projectName,
-                addAuthor)
-        if (!outputFile.isEmpty()) {
+                addAuthor,
+                silent)
+        if (outputFile.isNotEmpty()) {
             ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
         } else {
             ProjectSerializer.serializeProject(project, OutputStreamWriter(System.out))
@@ -162,12 +166,13 @@ class SCMLogParser: Callable<Void> {
                 parserStrategy: LogParserStrategy,
                 metricsFactory: MetricsFactory,
                 projectName: String,
-                containsAuthors: Boolean
+                containsAuthors: Boolean,
+                silent: Boolean = false
         ): Project {
 
             val lines = pathToLog.readLines().stream()
             val projectConverter = ProjectConverter(containsAuthors, projectName)
-            return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter).parse(lines)
+            return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
         }
     }
 }

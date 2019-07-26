@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Reduced memory usage of SCMLogParser to avoid OutOfMemory Exception #631
 - Fixed fileExtensionBar height to not show a bottom-margin in Chrome
 
 ### Chore
