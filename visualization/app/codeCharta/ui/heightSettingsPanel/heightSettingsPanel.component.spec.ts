@@ -97,22 +97,48 @@ describe("HeightSettingsPanelController", () => {
 		})
 	})
 
-	describe("applySettings", () => {
+	describe("applySettingsAmountOfTopLabels", () => {
 		it("should call updateSettings", () => {
 			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 31
+			const expected = {
+				appSettings: {
+					amountOfTopLabels: 31
+				}
+			}
+
+			heightSettingsPanelController.applySettingsAmountOfTopLabels()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+		})
+	})
+
+	describe("applySettingsInvertHeight", () => {
+		it("should call updateSettings", () => {
 			heightSettingsPanelController["_viewModel"].invertHeight = true
+			const expected = {
+				appSettings: {
+					invertHeight: true
+				}
+			}
+
+			heightSettingsPanelController.applySettingsInvertHeight()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+		})
+	})
+
+	describe("applySettingsScaling", () => {
+		it("should call updateSettings", () => {
 			heightSettingsPanelController["_viewModel"].scalingY = 1.8
 			const expected = {
 				appSettings: {
-					amountOfTopLabels: 31,
-					invertHeight: true,
 					scaling: {
 						y: 1.8
 					}
 				}
 			}
 
-			heightSettingsPanelController.applySettings()
+			heightSettingsPanelController.applySettingsScaling()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 		})

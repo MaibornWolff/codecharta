@@ -134,7 +134,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 			let target = -500
 			let visible = false
 			$("legend-panel-component .panel-button").click(() => {
-				$("legend-panel-component .block-wrapper").animate({ left: visible ? target + "px" : start + "px" }, "fast")
+				$("legend-panel-component .block-wrapper").animate({ right: visible ? target + "px" : start + "px" }, "fast")
 				visible = !visible
 			})
 		})
