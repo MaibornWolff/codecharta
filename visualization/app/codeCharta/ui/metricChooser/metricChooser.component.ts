@@ -18,7 +18,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 	public hoveredAreaDelta: number
 	public hoveredColorDelta: number
 	public hoveredDeltaColor: string
-	private defaultMetrics: MetricData[]
+	private metricData: MetricData[]
 
 	private _viewModel: {
 		metricData: MetricData[]
@@ -48,19 +48,19 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 	}
 
 	public filterMetricData() {
-		this._viewModel.metricData = this.defaultMetrics.filter(metric =>
+		this._viewModel.metricData = this.metricData.filter(metric =>
 			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLocaleLowerCase())
 		)
 	}
 
 	public clearSearchTerm() {
 		this._viewModel.searchTerm = ""
-		this._viewModel.metricData = this.defaultMetrics
+		this._viewModel.metricData = this.metricData
 	}
 
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
 		this._viewModel.metricData = metricData
-		this.defaultMetrics = metricData
+		this.metricData = metricData
 		this.potentiallyUpdateChosenMetrics(metricData)
 	}
 
