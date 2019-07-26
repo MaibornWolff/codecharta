@@ -7,9 +7,6 @@ varying vec2 vUV;
 
 uniform vec3 ambientLightColor;
 
-uniform vec3 deltaColorPositive;
-uniform vec3 deltaColorNegative;
-
 #define RECIPROCAL_PI 0.31830988618
 #define PI 3.14159265359
 

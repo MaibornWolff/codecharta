@@ -6,16 +6,6 @@ import { Node, Settings } from "../../../codeCharta.model"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 import { ColorConverter } from "../../../util/color/colorConverter"
 
-interface ThreeUniform {
-	type: string
-	value: any
-}
-
-interface CodeMapLightingParams {
-	deltaColorPositive: ThreeUniform
-	deltaColorNegative: ThreeUniform
-}
-
 export interface MousePos {
 	x: number
 	y: number
@@ -25,27 +15,19 @@ export class CodeMapMesh {
 	public static readonly NUM_OF_COLOR_VECTOR_FIELDS = 3
 	public static readonly NUM_OF_VERTICES = 24
 
-	public settings: Settings
 	private threeMesh: Mesh
 	private material: ShaderMaterial
 	private geomGen: GeometryGenerator
 	private mapGeomDesc: CodeMapGeometricDescription
 
-	private nodes: Node[]
-
-	private lightingParams: CodeMapLightingParams = null
-
 	constructor(nodes: Node[], settings: Settings, isDeltaState: boolean) {
-		this.nodes = nodes
-		this.initLightingParams(settings)
-		this.initMaterial(settings)
+		this.initMaterial()
 
 		this.geomGen = new GeometryGenerator()
-		const buildRes: BuildResult = this.geomGen.build(this.nodes, this.material, settings, isDeltaState)
+		const buildRes: BuildResult = this.geomGen.build(nodes, this.material, settings, isDeltaState)
 
 		this.threeMesh = buildRes.mesh
 		this.mapGeomDesc = buildRes.desc
-		this.settings = settings
 
 		this.initDeltaColorsOnMesh(settings)
 	}
@@ -182,27 +164,8 @@ export class CodeMapMesh {
 		this.threeMesh.geometry["attributes"].deltaColor.needsUpdate = true
 	}
 
-	private initLightingParams(settings: Settings) {
-		this.lightingParams = {
-			deltaColorPositive: {
-				type: "v3",
-				value: ColorConverter.colorToVector3(settings.appSettings.mapColors.positiveDelta)
-			},
-			deltaColorNegative: {
-				type: "v3",
-				value: ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)
-			}
-		}
-	}
-
-	private initMaterial(settings: Settings): void {
-		if (settings.appSettings.invertDeltaColors) {
-			this.setInvertedDeltaColors(settings)
-		} else {
-			this.setDefaultDeltaColors(settings)
-		}
-
-		const uniforms = UniformsUtils.merge([UniformsLib["lights"], this.lightingParams])
+	private initMaterial(): void {
+		const uniforms = UniformsUtils.merge([UniformsLib["lights"]])
 
 		const shaderCode: CodeMapShaderStrings = new CodeMapShaderStrings()
 
@@ -212,28 +175,6 @@ export class CodeMapMesh {
 			lights: true,
 			uniforms: uniforms
 		})
-	}
-
-	private setInvertedDeltaColors(settings: Settings) {
-		this.lightingParams.deltaColorPositive = {
-			type: "v3",
-			value: ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)
-		}
-		this.lightingParams.deltaColorNegative = {
-			type: "v3",
-			value: ColorConverter.colorToVector3(settings.appSettings.mapColors.positiveDelta)
-		}
-	}
-
-	private setDefaultDeltaColors(settings: Settings) {
-		this.lightingParams.deltaColorPositive = {
-			type: "v3",
-			value: ColorConverter.colorToVector3(settings.appSettings.mapColors.positiveDelta)
-		}
-		this.lightingParams.deltaColorNegative = {
-			type: "v3",
-			value: ColorConverter.colorToVector3(settings.appSettings.mapColors.negativeDelta)
-		}
 	}
 
 	private calculatePickingRay(mouse: MousePos, camera: Camera): Ray {
