@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { PerspectiveCamera, Sprite, Vector3 } from "three"
+import { PerspectiveCamera, Sprite } from "three"
 import { Node, Settings } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -57,17 +57,17 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	public scale(scale: Vector3) {
+	public scale(x: number, y: number, z: number) {
 		for (let label of this.labels) {
-			label.sprite.position.x *= scale.x
-			label.sprite.position.y *= scale.y
-			label.sprite.position.z *= scale.z
+			label.sprite.position.x *= x
+			label.sprite.position.y *= y
+			label.sprite.position.z *= z
 
 			//cast is a workaround for the compiler. Attribute vertices does exist on geometry
 			//but it is missing in the mapping file for TypeScript.
-			;(<any>label.line!.geometry).vertices[0].x *= scale.x
-			;(<any>label.line!.geometry).vertices[0].y *= scale.y
-			;(<any>label.line!.geometry).vertices[0].z *= scale.z
+			;(<any>label.line!.geometry).vertices[0].x *= x
+			;(<any>label.line!.geometry).vertices[0].y *= y
+			;(<any>label.line!.geometry).vertices[0].z *= z
 			;(<any>label.line!.geometry).vertices[1].x = label.sprite.position.x
 			;(<any>label.line!.geometry).vertices[1].y = label.sprite.position.y
 			;(<any>label.line!.geometry).vertices[1].z = label.sprite.position.z

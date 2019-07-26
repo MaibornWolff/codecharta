@@ -1,17 +1,17 @@
-import { Settings, MetricData } from "../codeCharta.model"
+import { CCFile, Settings, MetricData } from "../codeCharta.model"
 import { CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { SETTINGS, METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES } from "./dataMocks"
 
 describe("treeMapGenerator", () => {
-	let map: CodeMapNode, settings: Settings, metricData: MetricData[], codemapNode: CodeMapNode
+	let renderFile: CCFile, settings: Settings, metricData: MetricData[], codemapNode: CodeMapNode
 
 	beforeEach(() => {
 		restartSystem()
 	})
 
 	function restartSystem() {
-		map = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS.map))
+		renderFile = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS))
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 		codemapNode = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
 		metricData = METRIC_DATA
@@ -19,40 +19,41 @@ describe("treeMapGenerator", () => {
 
 	describe("create Treemap nodes", () => {
 		it("only root node", () => {
-			map.children = []
+			renderFile.map.children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-			expect(nodes).toMatchSnapshot()
+			expect(node).toMatchSnapshot()
 		})
 
 		it("root node with two direct children", () => {
-			map.children[1].children = []
+			renderFile.map.children[1].children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-			expect(nodes).toMatchSnapshot()
+			expect(node).toMatchSnapshot()
 		})
 
 		it("root node with two direct children and some grand children", () => {
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-			expect(nodes).toMatchSnapshot()
+			expect(node).toMatchSnapshot()
 		})
 	})
 
 	describe("CodeMap value calculation", () => {
 		it("if a node was deleted from previous file it should still be visible and have positive width/length", () => {
 			// given map with one node deleted in comparison to previous file
-			map.attributes = { myArea: 22, myHeight: 12 }
-			map.deltas = {}
-			map.children[0].attributes = { myArea: 44, myHeight: 63 }
-			map.children[0].deltas = { myArea: 20, myHeight: 0 }
-			map.children[0].origin = "file.json"
-			map.children[1].attributes = { myArea: 0, myHeight: 0 }
-			map.children[1].deltas = { myArea: -40, myHeight: -80 }
-			map.children[1].origin = "notfile.json"
+			renderFile.map.attributes = { myArea: 22, myHeight: 12 }
+			renderFile.map.deltas = {}
+			renderFile.map.children[0].attributes = { myArea: 44, myHeight: 63 }
+			renderFile.map.children[0].deltas = { myArea: 20, myHeight: 0 }
+			renderFile.map.children[0].origin = "file.json"
+			renderFile.map.children[1].attributes = { myArea: 0, myHeight: 0 }
+			renderFile.map.children[1].deltas = { myArea: -40, myHeight: -80 }
+			renderFile.map.children[1].origin = "notfile.json"
 
+			renderFile.fileMeta.fileName = "file.json"
 			settings.dynamicSettings.areaMetric = "myArea"
 			settings.dynamicSettings.heightMetric = "myHeight"
 			settings.treeMapSettings.mapSize = 1000
@@ -61,28 +62,28 @@ describe("treeMapGenerator", () => {
 				{ name: "myHeight", maxValue: 99, availableInVisibleMaps: true }
 			]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-			expect(nodes[2].name).toBe("Parent Leaf")
-			expect(nodes[2].width).toBeGreaterThan(0)
-			expect(nodes[2].length).toBeGreaterThan(0)
+			expect(node.children[1].name).toBe("Parent Leaf")
+			expect(node.children[1].width).toBeGreaterThan(0)
+			expect(node.children[1].length).toBeGreaterThan(0)
 		})
 
 		it("attribute exists, no children", () => {
-			map.children = []
-			map.attributes = { a: 100 }
+			renderFile.map.children = []
+			renderFile.map.attributes = { a: 100 }
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-			expect(nodes[0].attributes["a"]).toBe(100)
+			expect(node.attributes["a"]).toBe(100)
 		})
 
 		it("attribute do not exists, no children", () => {
-			map.children = []
+			renderFile.map.children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-			expect(nodes[0].attributes["b"]).toBe(undefined)
+			expect(node.attributes["b"]).toBe(undefined)
 		})
 
 		it("attribute do not exists, multiple children with non existant attributes", () => {
@@ -93,9 +94,9 @@ describe("treeMapGenerator", () => {
 				{ name: "b", maxValue: 99, availableInVisibleMaps: true }
 			]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-			expect(nodes[0].attributes["b"]).toBe(undefined)
+			expect(node.attributes["b"]).toBe(undefined)
 		})
 
 		it("area should be zero if metric does not exist", () => {
@@ -104,9 +105,9 @@ describe("treeMapGenerator", () => {
 			settings.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "unknown", maxValue: 100, availableInVisibleMaps: true }]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let node: Node = TreeMapGenerator.createTreemapNodes(renderFile, settings, metricData)
 
-			expect(nodes[2].width * nodes[2].length).toEqual(0)
+			expect(node.children[1].width * node.children[1].length).toEqual(0)
 		})
 	})
 

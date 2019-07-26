@@ -2,7 +2,6 @@ import * as THREE from "three"
 import { Node } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Edge, Settings } from "../../codeCharta.model"
-import { Vector3 } from "three"
 
 export class CodeMapArrowService {
 	private arrows: THREE.Object3D[]
@@ -18,14 +17,19 @@ export class CodeMapArrowService {
 		}
 	}
 
-	public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], edges: Edge[], settings: Settings) {
-		let originPath = origin.path
-		let resEdges: Edge[] = edges.filter(x => x.fromNodeName === originPath)
+	public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], deps: Edge[], settings: Settings) {
+		let resEdges: Edge[] = []
+		let originPath = this.getPathFromNode(origin)
+		for (let dep of deps) {
+			if (dep.fromNodeName === originPath) {
+				resEdges.push(dep)
+			}
+		}
 		this.addEdgeArrows(nodes, resEdges, settings)
 	}
 
 	public addEdgeArrows(nodes: Node[], edges: Edge[], settings: Settings) {
-		let map = this.getNodesAsMap(nodes)
+		let map = this.getNodepathMap(nodes)
 
 		for (let edge of edges) {
 			let originNode: Node = map.get(edge.fromNodeName)
@@ -82,18 +86,32 @@ export class CodeMapArrowService {
 		}
 	}
 
-	public scale(scale: Vector3) {
+	public scale(x: number, y: number, z: number) {
 		for (let arrow of this.arrows) {
-			arrow.scale.x = scale.x
-			arrow.scale.y = scale.y
-			arrow.scale.z = scale.z
+			arrow.scale.x = x
+			arrow.scale.y = y
+			arrow.scale.z = z
 		}
 	}
 
-	private getNodesAsMap(nodes: Node[]): Map<string, Node> {
+	private getNodepathMap(nodes: Node[]): Map<string, Node> {
 		let map = new Map<string, Node>()
-		nodes.forEach(node => map.set(node.path, node))
+
+		for (let node of nodes) {
+			map.set(this.getPathFromNode(node), node)
+		}
+
 		return map
+	}
+
+	private getPathFromNode(node: Node): string {
+		let current: Node = node
+		let path = ""
+		while (current) {
+			path = "/" + current.name + path
+			current = current.parent
+		}
+		return path
 	}
 
 	private makeArrowFromBezier(

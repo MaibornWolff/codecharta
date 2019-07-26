@@ -24,8 +24,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 
 export interface RenderData {
-	map: CodeMapNode
-	fileMeta: FileMeta
+	renderFile: CCFile
 	fileStates: FileState[]
 	settings: Settings
 	metricData: MetricData[]
@@ -36,13 +35,12 @@ export interface CodeMapPreRenderServiceSubscriber {
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
-	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
+	private static RENDER_FILE_CHANGED_EVENT = "render-file-changed"
 
 	private newFileLoaded: boolean = false
 
 	private lastRender: RenderData = {
-		map: null,
-		fileMeta: null,
+		renderFile: null,
 		fileStates: null,
 		settings: null,
 		metricData: null
@@ -60,34 +58,28 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	public getRenderMap(): CodeMapNode {
-		return this.lastRender.map
+		return this.lastRender.renderFile ? this.lastRender.renderFile.map : null
 	}
 
 	public getRenderFileMeta(): FileMeta {
-		return this.lastRender.fileMeta
+		return this.lastRender.renderFile.fileMeta
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this.lastRender.settings = settings
 
 		if (this.lastRender.fileStates && update.fileSettings && (update.fileSettings.blacklist || update.fileSettings.markedPackages)) {
-			this.updateRenderMapAndFileMeta()
+			this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
+			this.lastRender.renderFile.settings.fileSettings = settings.fileSettings
 			this.decorateIfPossible()
 		}
-
-		if (this.allNecessaryRenderDataAvailable()) {
-			if (this.settingsOnlyContainNewScaling(update)) {
-				this.scaleMapAndNotify()
-			} else {
-				this.renderAndNotify()
-			}
-		}
+		this.renderIfRenderObjectIsComplete()
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
 		this.lastRender.fileStates = fileStates
 		this.newFileLoaded = true
-		this.updateRenderMapAndFileMeta()
+		this.lastRender.renderFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
@@ -95,33 +87,23 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
 		this.lastRender.metricData = metricData
 		this.decorateIfPossible()
-		if (this.allNecessaryRenderDataAvailable()) {
-			this.renderAndNotify()
-		}
+		this.renderIfRenderObjectIsComplete()
 	}
 
 	public onMetricDataRemoved(event: angular.IAngularEvent) {
 		this.lastRender.metricData = null
 	}
 
-	private updateRenderMapAndFileMeta() {
-		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
-		this.lastRender.map = unifiedFile.map
-		this.lastRender.fileMeta = unifiedFile.fileMeta
-	}
-
 	private decorateIfPossible() {
 		if (
-			this.lastRender.map &&
-			this.lastRender.fileMeta &&
+			this.lastRender.renderFile &&
 			this.lastRender.settings &&
 			this.lastRender.settings.fileSettings &&
 			this.lastRender.settings.fileSettings.blacklist &&
 			this.lastRender.metricData
 		) {
-			this.lastRender.map = NodeDecorator.decorateMap(
-				this.lastRender.map,
-				this.lastRender.fileMeta,
+			this.lastRender.renderFile = NodeDecorator.decorateFile(
+				this.lastRender.renderFile,
 				this.lastRender.settings.fileSettings.blacklist,
 				this.lastRender.metricData
 			)
@@ -155,26 +137,18 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
-	private settingsOnlyContainNewScaling(update: RecursivePartial<Settings>): boolean {
-		return _.keys(update).length == 1 && update.appSettings && _.keys(update.appSettings).length == 1 && !!update.appSettings.scaling
-	}
+	private renderIfRenderObjectIsComplete() {
+		if (this.allNecessaryRenderDataAvailable()) {
+			this.codeMapRenderService.render(this.lastRender)
 
-	private renderAndNotify() {
-		this.codeMapRenderService.render(this.lastRender)
-
-		this.notifyLoadingMapStatus()
-		this.notifyMapChanged()
-		if (this.newFileLoaded) {
-			this.notifyLoadingFileStatus()
-			this.threeOrbitControlsService.autoFitTo()
-			this.newFileLoaded = false
+			this.notifyLoadingMapStatus()
+			this.notifyFileChanged()
+			if (this.newFileLoaded) {
+				this.notifyLoadingFileStatus()
+				this.threeOrbitControlsService.autoFitTo()
+				this.newFileLoaded = false
+			}
 		}
-	}
-
-	private scaleMapAndNotify() {
-		const s: Settings = this.lastRender.settings
-		this.codeMapRenderService.scaleMap(s.appSettings.scaling, s.treeMapSettings.mapSize)
-		this.notifyLoadingMapStatus()
 	}
 
 	private allNecessaryRenderDataAvailable(): boolean {
@@ -196,12 +170,12 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.loadingGifService.updateLoadingMapFlag(false)
 	}
 
-	private notifyMapChanged() {
-		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.lastRender.map)
+	private notifyFileChanged() {
+		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, this.lastRender.renderFile.map)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
-		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(CodeMapPreRenderService.RENDER_FILE_CHANGED_EVENT, (event, data) => {
 			subscriber.onRenderMapChanged(data, event)
 		})
 	}

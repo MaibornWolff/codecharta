@@ -172,7 +172,7 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService["labels"][1].sprite.position.z
 		)
 
-		codeMapLabelService.scale(new Vector3(SX, SY, SZ))
+		codeMapLabelService.scale(SX, SY, SZ)
 
 		const scaleAfterA: Vector3 = codeMapLabelService["labels"][0].sprite.position
 		const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position

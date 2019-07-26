@@ -1,5 +1,3 @@
-// Usage: <layout-switcher-component layouts="CodeCharta, TestVille"></layout-switcher-component>
-
 export class LayoutSwitcherController {
 	private static TIMEOUT_IN_MS = 200
 

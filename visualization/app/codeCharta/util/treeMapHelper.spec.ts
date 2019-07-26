@@ -10,6 +10,8 @@ describe("treeMapHelper", () => {
 		let settings
 
 		let heightScale = 1
+		let depth = 0
+		let parent = null
 		let maxHeight = 2000
 
 		beforeEach(() => {
@@ -37,7 +39,7 @@ describe("treeMapHelper", () => {
 		})
 
 		function buildNode() {
-			return TreeMapHelper.buildNodeFrom(squaredNode, heightScale, maxHeight, settings)
+			return TreeMapHelper.buildNodeFrom(squaredNode, heightScale, maxHeight, depth, parent, settings)
 		}
 
 		it("minimal", () => {

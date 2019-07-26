@@ -7,7 +7,7 @@
 		max="200"
 		ng-model="$ctrl._viewModel.amountOfTopLabels"
 		id="labels-slider"
-		ng-change="$ctrl.applySettingsAmountOfTopLabels()"
+		ng-change="$ctrl.applySettings()"
 		class="md-primary"
 	>
 	</md-slider>
@@ -19,7 +19,7 @@
 			max="200"
 			type="number"
 			ng-model="$ctrl._viewModel.amountOfTopLabels"
-			ng-change="$ctrl.applySettingsAmountOfTopLabels()"
+			ng-change="$ctrl.applySettings()"
 			aria-controls="labels-slider"
 		/>
 	</md-input-container>
@@ -34,7 +34,7 @@
 		max="5"
 		ng-model="$ctrl._viewModel.scalingY"
 		id="y-scale-slider"
-		ng-change="$ctrl.applySettingsScaling()"
+		ng-change="$ctrl.applySettings()"
 		class="md-primary"
 	>
 	</md-slider>
@@ -46,14 +46,14 @@
 			max="5"
 			type="number"
 			ng-model="$ctrl._viewModel.scalingY"
-			ng-change="$ctrl.applySettingsScaling()"
+			ng-change="$ctrl.applySettings()"
 			aria-controls="y-scale-slider"
 		/>
 	</md-input-container>
 </md-slider-container>
 
 <md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
-	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertHeight" ng-change="$ctrl.applySettingsInvertHeight()">
+	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertHeight" ng-change="$ctrl.applySettings()">
 		Invert Height
 	</md-checkbox>
 </md-input-container>

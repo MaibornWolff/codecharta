@@ -5,6 +5,7 @@ import { CodeMapMouseEventService, CodeMapMouseEventServiceSubscriber } from "./
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
+import { CodeMapRenderService } from "./codeMap.render.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
@@ -22,6 +23,7 @@ describe("codeMapMouseEventService", () => {
 	let threeRendererService: ThreeRendererService
 	let threeSceneService: ThreeSceneService
 	let threeUpdateCycleService: ThreeUpdateCycleService
+	let codeMapRenderService: CodeMapRenderService
 
 	let codeMapBuilding: CodeMapBuilding
 
@@ -35,6 +37,7 @@ describe("codeMapMouseEventService", () => {
 		withMockedViewCubeMouseEventsService()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
+		withMockedCodeMapRenderService()
 	})
 
 	afterEach(() => {
@@ -50,6 +53,7 @@ describe("codeMapMouseEventService", () => {
 		threeRendererService = getService<ThreeRendererService>("threeRendererService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
+		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 
 		codeMapBuilding = new CodeMapBuilding(1, new THREE.Box3(), TEST_NODE_ROOT)
 	}
@@ -61,7 +65,8 @@ describe("codeMapMouseEventService", () => {
 			threeCameraService,
 			threeRendererService,
 			threeSceneService,
-			threeUpdateCycleService
+			threeUpdateCycleService,
+			codeMapRenderService
 		)
 	}
 
@@ -108,11 +113,17 @@ describe("codeMapMouseEventService", () => {
 
 	function withMockedThreeSceneService() {
 		threeSceneService = codeMapMouseEventService["threeSceneService"] = jest.fn().mockReturnValue({
-			getMapMesh: jest.fn().mockReturnValue({
+			getMapMesh: jest.fn()
+		})()
+	}
+
+	function withMockedCodeMapRenderService() {
+		codeMapRenderService = codeMapMouseEventService["codeMapRenderService"] = jest.fn().mockReturnValue({
+			mapMesh: {
 				getMeshDescription: jest.fn().mockReturnValue({
 					buildings: [codeMapBuilding]
 				})
-			})
+			}
 		})()
 	}
 
@@ -403,10 +414,10 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBuildingHovered = jest.fn()
 		})
 
-		it("should call threeSceneService.getMapDescription", () => {
+		it("should call codeMapRenderService.getMapDescription", () => {
 			codeMapMouseEventService.onShouldHoverNode(TEST_FILE_WITH_PATHS.map)
 
-			expect(threeSceneService.getMapMesh().getMeshDescription).toHaveBeenCalled()
+			expect(codeMapRenderService.mapMesh.getMeshDescription).toHaveBeenCalled()
 		})
 
 		it("should call onBuildingHovered", () => {

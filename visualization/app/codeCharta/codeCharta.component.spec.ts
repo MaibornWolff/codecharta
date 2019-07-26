@@ -12,7 +12,6 @@ import { SETTINGS } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
-import { NodeSearchService } from "./state/nodeSearch.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -22,7 +21,6 @@ describe("codeChartaController", () => {
 	let settingsService: SettingsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
-	let nodeSearchService: NodeSearchService
 	let $location: ILocationService
 	let $http: IHttpService
 	let loadingGifService: LoadingGifService
@@ -50,7 +48,6 @@ describe("codeChartaController", () => {
 		settingsService = getService<SettingsService>("settingsService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileStateService = getService<FileStateService>("fileStateService")
-		nodeSearchService = getService<NodeSearchService>("nodeSearchService")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
 		loadingGifService = getService<LoadingGifService>("loadingGifService")
@@ -66,7 +63,6 @@ describe("codeChartaController", () => {
 			settingsService,
 			codeChartaService,
 			fileStateService,
-			nodeSearchService,
 			$location,
 			$http,
 			loadingGifService
@@ -149,6 +145,7 @@ describe("codeChartaController", () => {
 			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
 		})
 	})
+
 
 	describe("removeFocusedNode", () => {
 		it("should call removeFocusedNode", () => {

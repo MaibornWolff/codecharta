@@ -1,40 +1,32 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { Settings, BlacklistItem, BlacklistType, RecursivePartial, SearchPanelMode } from "../../codeCharta.model"
-import { IRootScopeService, IAngularEvent } from "angular"
-import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
+import { Settings, BlacklistItem, BlacklistType, RecursivePartial } from "../../codeCharta.model"
+import { IRootScopeService } from "angular"
 
-export class BlacklistPanelController implements SettingsServiceSubscriber, SearchPanelServiceSubscriber {
+export class BlacklistPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
-		hide: Array<BlacklistItem>
-		exclude: Array<BlacklistItem>
-		searchPanelMode: SearchPanelMode
+		blacklist: Array<BlacklistItem>
 	} = {
-		hide: null,
-		exclude: null,
-		searchPanelMode: null
+		blacklist: []
 	}
 
 	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
 		SettingsService.subscribe($rootScope, this)
-		SearchPanelService.subscribe($rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		if (update.fileSettings && update.fileSettings.blacklist) {
-			let blacklist = update.fileSettings.blacklist as [BlacklistItem]
-			this._viewModel.hide = blacklist.filter(x => x.type === BlacklistType.hide)
-			this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
+	public onSettingsChanged(settings: Settings, supdate: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+		if (settings.fileSettings.blacklist) {
+			this._viewModel.blacklist = settings.fileSettings.blacklist
 		}
-	}
-
-	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode, event: IAngularEvent) {
-		this._viewModel.searchPanelMode = searchPanelMode
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
 		this.codeMapActionsService.removeBlacklistEntry(entry)
+	}
+
+	public sortByExcludes(item: BlacklistItem) {
+		return item && item.type == BlacklistType.exclude ? 0 : 1
 	}
 }
 
