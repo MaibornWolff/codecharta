@@ -107,7 +107,7 @@ describe("ThreeOrbitControlsService", () => {
 		threeOrbitControlsService.controls = {
 			target: new THREE.Vector3(1, 1, 1)
 		} as OrbitControls
-		threeOrbitControlsService.controls.update = jest.fn()
+		threeOrbitControlsService.controls.updateHovering = jest.fn()
 
 		threeOrbitControlsService.autoFitTo(new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)))
 

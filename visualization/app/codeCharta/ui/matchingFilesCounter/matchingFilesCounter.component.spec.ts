@@ -33,7 +33,7 @@ describe("MatchingFilesCounterController", () => {
 	}
 
 	describe("onSettingsChanged", () => {
-		it("should update search pattern", () => {
+		it("should updateHovering search pattern", () => {
 			const blacklist: BlacklistItem[] = [{ path: "/root/node/path", type: BlacklistType.exclude }]
 			SETTINGS.fileSettings.blacklist = blacklist
 			let update = { fileSettings: { blacklist: blacklist } }
@@ -48,7 +48,7 @@ describe("MatchingFilesCounterController", () => {
 		let searchedNodeLeaves: CodeMapNode[]
 		let rootNode = VALID_NODE_WITH_PATH
 
-		it("should update ViewModel count Attributes when pattern hidden and excluded", () => {
+		it("should updateHovering ViewModel count Attributes when pattern hidden and excluded", () => {
 			matchingFilesCounterController["_viewModel"].searchPattern = "/root/node/path"
 
 			searchedNodeLeaves = [rootNode, rootNode]

@@ -69,7 +69,7 @@ describe("NodeSearchService", () => {
 			expect(nodeSearchService["searchedNodes"]).toEqual([])
 		})
 
-		it("should update searched paths", () => {
+		it("should updateHovering searched paths", () => {
 			nodeSearchService.onSettingsChanged(null, { dynamicSettings: { searchPattern: "small leaf" } }, null)
 
 			expect(settingsService.updateSettings).toBeCalledWith({

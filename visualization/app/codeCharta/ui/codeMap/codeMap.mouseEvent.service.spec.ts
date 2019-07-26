@@ -214,7 +214,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call updateMatrixWorld", () => {
-			codeMapMouseEventService.update()
+			codeMapMouseEventService.updateHovering()
 
 			expect(threeCameraService.camera.updateMatrixWorld).toHaveBeenCalledWith(false)
 		})
@@ -222,7 +222,7 @@ describe("codeMapMouseEventService", () => {
 		it("should unhover the building, when no intersection was found, a building is hovered and nothing is hovered in the treeView", () => {
 			codeMapMouseEventService["highlightedInTreeView"] = null
 
-			codeMapMouseEventService.update()
+			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
@@ -236,7 +236,7 @@ describe("codeMapMouseEventService", () => {
 			})
 			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
-			codeMapMouseEventService.update()
+			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(CODE_MAP_BUILDING)
 		})
@@ -249,7 +249,7 @@ describe("codeMapMouseEventService", () => {
 				})
 			})
 
-			codeMapMouseEventService.update()
+			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.highlightBuilding).not.toHaveBeenCalled()
 		})

@@ -46,7 +46,7 @@ describe("PresentationModeButtonController", () => {
 			expect(presentationModeButtonController["_viewModel"].isEnabled).toBeTruthy()
 		})
 
-		it("should update isPresentationMode in SettingsService", () => {
+		it("should updateHovering isPresentationMode in SettingsService", () => {
 			presentationModeButtonController["_viewModel"].isEnabled = false
 
 			presentationModeButtonController.toggleMode()

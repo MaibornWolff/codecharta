@@ -201,13 +201,13 @@ describe("codeChartaController", () => {
 			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected)
 		})
 
-		it("should update settings with default settings", () => {
+		it("should updateHovering settings with default settings", () => {
 			codeChartaController.tryLoadingSampleFiles()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
 		})
 
-		it("should update settings from default scenario", () => {
+		it("should updateHovering settings from default scenario", () => {
 			codeChartaController.tryLoadingSampleFiles()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)

@@ -38,6 +38,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 	private highlightedInTreeView: CodeMapBuilding = null
 
+	private oldMouse: Coordinates = { x: 0, y: 0 }
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private dragOrClickFlag = 0
 
@@ -50,7 +51,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
-		this.threeUpdateCycleService.register(this.update.bind(this))
+		this.threeUpdateCycleService.register(this.updateHovering.bind(this))
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
 	}
 
@@ -79,31 +80,41 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		}
 	}
 
-	public update() {
-		this.threeCameraService.camera.updateMatrixWorld(false)
+	public updateHovering() {
+		if (this.hasMouseMoved()) {
+			this.oldMouse.x = this.mouse.x
+			this.oldMouse.y = this.mouse.y
 
-		if (this.threeSceneService.getMapMesh() != null) {
-			let intersectionResult = this.threeSceneService
-				.getMapMesh()
-				.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
+			this.threeCameraService.camera.updateMatrixWorld(false)
 
-			let from = this.threeSceneService.getHighlightedBuilding()
-			let to = null
+			if (this.threeSceneService.getMapMesh()) {
+				const intersectionResult = this.threeSceneService
+					.getMapMesh()
+					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
-			if (intersectionResult.intersectionFound) {
-				to = intersectionResult.building
-			} else {
-				to = this.highlightedInTreeView
-			}
+				const from = this.threeSceneService.getHighlightedBuilding()
+				let to = null
 
-			if (from !== to) {
-				this.onBuildingHovered(from, to)
+				if (intersectionResult.intersectionFound) {
+					to = intersectionResult.building
+				} else {
+					to = this.highlightedInTreeView
+				}
+
+				if (from !== to) {
+					this.onBuildingHovered(from, to)
+				}
 			}
 		}
 	}
 
+	private hasMouseMoved() {
+		return this.oldMouse.x !== this.mouse.x || this.oldMouse.y !== this.mouse.y
+	}
+
 	public onDocumentMouseMove(event) {
 		const topOffset = $(this.threeRendererService.renderer.domElement).offset().top - $(window).scrollTop()
+
 		this.mouse.x = (event.clientX / this.threeRendererService.renderer.domElement.width) * 2 - 1
 		this.mouse.y = -((event.clientY - topOffset) / this.threeRendererService.renderer.domElement.height) * 2 + 1
 		this.dragOrClickFlag = 1

@@ -101,7 +101,7 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("onSettingsChanged", () => {
-		it("should update lastRender.settings", () => {
+		it("should updateHovering lastRender.settings", () => {
 			codeMapPreRenderService.onSettingsChanged(settings, undefined, undefined)
 
 			expect(codeMapPreRenderService["lastRender"].settings).toEqual(settings)

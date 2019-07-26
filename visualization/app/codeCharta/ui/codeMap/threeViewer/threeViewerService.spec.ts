@@ -66,7 +66,7 @@ describe("ThreeViewerService", () => {
 		threeRendererService.renderer.setSize = jest.fn()
 		threeRendererService.renderer.render = jest.fn()
 		threeOrbitControlsService.controls = { enableKeys: null } as OrbitControls
-		threeOrbitControlsService.controls.update = jest.fn()
+		threeOrbitControlsService.controls.updateHovering = jest.fn()
 		threeUpdateCycleService.update = jest.fn()
 		threeSceneService.scene = { position: new THREE.Vector3(1, 2, 3) } as Scene
 		threeSceneService.scene.add = jest.fn()
@@ -239,7 +239,7 @@ describe("ThreeViewerService", () => {
 			expect(threeOrbitControlsService.controls.update).toHaveBeenCalled()
 		})
 
-		it("should call update", () => {
+		it("should call updateHovering", () => {
 			threeViewerService.animate()
 
 			expect(threeUpdateCycleService.update).toHaveBeenCalled()

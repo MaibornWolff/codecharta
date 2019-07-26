@@ -85,7 +85,7 @@ describe("filePanelController", () => {
 			expect(filePanelController["lastRenderState"]).toEqual(filePanelController["_viewModel"].renderState)
 		})
 
-		it("should update selected filenames in viewmodel correctly if single mode is active", () => {
+		it("should updateHovering selected filenames in viewmodel correctly if single mode is active", () => {
 			filePanelController.onFileSelectionStatesChanged(fileStates, undefined)
 
 			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
@@ -93,7 +93,7 @@ describe("filePanelController", () => {
 			expect(filePanelController["_viewModel"].selectedFileNames.single).toEqual(fileStates[0].file.fileMeta.fileName)
 		})
 
-		it("should update selected filenames in viewmodel correctly if partial mode is active", () => {
+		it("should updateHovering selected filenames in viewmodel correctly if partial mode is active", () => {
 			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
 
 			filePanelController.onFileSelectionStatesChanged(fileStates, undefined)
@@ -106,7 +106,7 @@ describe("filePanelController", () => {
 			])
 		})
 
-		it("should update selected filenames in viewmodel correctly if delta mode is active with two files", () => {
+		it("should updateHovering selected filenames in viewmodel correctly if delta mode is active with two files", () => {
 			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
 			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
 
@@ -118,7 +118,7 @@ describe("filePanelController", () => {
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(fileStates[1].file.fileMeta.fileName)
 		})
 
-		it("should update selected filenames in viewmodel correctly if delta mode is active with only one file", () => {
+		it("should updateHovering selected filenames in viewmodel correctly if delta mode is active with only one file", () => {
 			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
 			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
 
@@ -149,7 +149,7 @@ describe("filePanelController", () => {
 	})
 
 	describe("onImportedFileChange", () => {
-		it("should update viewmodel with new filestates", () => {
+		it("should updateHovering viewmodel with new filestates", () => {
 			filePanelController.onImportedFilesChanged(fileStates, undefined)
 
 			expect(filePanelController["_viewModel"].fileStates).toEqual(fileStates)
@@ -219,7 +219,7 @@ describe("filePanelController", () => {
 	})
 
 	describe("onRenderStateChange", () => {
-		it("should update the viewmodel with the last visible filename and call onSingleFileChange if single mode is active", () => {
+		it("should updateHovering the viewmodel with the last visible filename and call onSingleFileChange if single mode is active", () => {
 			filePanelController.onSingleFileChange = jest.fn()
 
 			filePanelController["lastRenderState"] = FileSelectionState.Single
@@ -231,7 +231,7 @@ describe("filePanelController", () => {
 			expect(filePanelController.onSingleFileChange).toHaveBeenCalledWith("fileA")
 		})
 
-		it("should update the viewmodel with the last visible filename and call selectAllPartialFiles if partial mode is active", () => {
+		it("should updateHovering the viewmodel with the last visible filename and call selectAllPartialFiles if partial mode is active", () => {
 			filePanelController.selectAllPartialFiles = jest.fn()
 
 			filePanelController.onPartialStateSelected()
@@ -239,7 +239,7 @@ describe("filePanelController", () => {
 			expect(filePanelController.selectAllPartialFiles).toHaveBeenCalled()
 		})
 
-		it("should update the viewmodel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
+		it("should updateHovering the viewmodel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
 			filePanelController.onDeltaComparisonFileChange = jest.fn()
 
 			filePanelController["lastRenderState"] = FileSelectionState.Comparison

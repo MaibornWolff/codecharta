@@ -71,7 +71,7 @@ describe("SearchBarController", () => {
 			searchBarController["_viewModel"].searchPattern = "/root/node/path"
 		})
 
-		it("should update ViewModel when pattern not blacklisted", () => {
+		it("should updateHovering ViewModel when pattern not blacklisted", () => {
 			const blacklist: BlacklistItem[] = []
 			searchBarController["updateViewModel"](blacklist)
 
@@ -79,7 +79,7 @@ describe("SearchBarController", () => {
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeFalsy()
 		})
 
-		it("should update ViewModel when pattern excluded", () => {
+		it("should updateHovering ViewModel when pattern excluded", () => {
 			const blacklist: BlacklistItem[] = [
 				{ path: "/root/node/path", type: BlacklistType.exclude },
 				{ path: "/root/another/node/path", type: BlacklistType.exclude }
@@ -90,7 +90,7 @@ describe("SearchBarController", () => {
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
 		})
 
-		it("should update ViewModel when pattern hidden and excluded", () => {
+		it("should updateHovering ViewModel when pattern hidden and excluded", () => {
 			const blacklist: BlacklistItem[] = [
 				{ path: "/root/node/path", type: BlacklistType.exclude },
 				{ path: "/root/node/path", type: BlacklistType.hide }

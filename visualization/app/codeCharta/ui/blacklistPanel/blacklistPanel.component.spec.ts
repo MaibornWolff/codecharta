@@ -59,7 +59,7 @@ describe("blacklistController", () => {
 		expect(services.codeMapActionsService.removeBlacklistEntry).toHaveBeenCalledWith({ path: "/root", type: "exclude" })
 	})
 
-	it("update local blacklist with settingsService onSettingsChanged", () => {
+	it("updateHovering local blacklist with settingsService onSettingsChanged", () => {
 		let update: RecursivePartial<Settings> = { fileSettings: { blacklist: [blacklistItem] } }
 
 		blacklistPanelController.onSettingsChanged(null, update, null)
@@ -68,7 +68,7 @@ describe("blacklistController", () => {
 		expect(blacklistPanelController["_viewModel"].hide).toEqual([])
 	})
 
-	it("update local searchPanelMode onSearchPanelModeChanged", () => {
+	it("updateHovering local searchPanelMode onSearchPanelModeChanged", () => {
 		let searchPanelMode = SearchPanelMode.hide
 
 		blacklistPanelController.onSearchPanelModeChanged(searchPanelMode, null)
