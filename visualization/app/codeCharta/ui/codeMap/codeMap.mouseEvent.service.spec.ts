@@ -125,7 +125,9 @@ describe("codeMapMouseEventService", () => {
 			clearHighlight: jest.fn(),
 			highlightBuilding: jest.fn(),
 			clearSelection: jest.fn(),
-			selectBuilding: jest.fn()
+			selectBuilding: jest.fn(),
+			getSelectedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
+			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 		})()
 	}
 
@@ -150,18 +152,6 @@ describe("codeMapMouseEventService", () => {
 			rebuildService()
 
 			expect(threeUpdateCycleService.register).toHaveBeenCalled()
-		})
-	})
-
-	describe("onFileSelectionStateChanged", () => {
-		it("should reset selected and hovered", () => {
-			codeMapMouseEventService["hoveredInCodeMap"] = CODE_MAP_BUILDING
-			codeMapMouseEventService["selected"] = CODE_MAP_BUILDING
-
-			codeMapMouseEventService.onFileSelectionStatesChanged(undefined, undefined)
-
-			expect(codeMapMouseEventService["hoveredInCodeMap"]).toBeNull()
-			expect(codeMapMouseEventService["selected"]).toBeNull()
 		})
 	})
 
@@ -230,8 +220,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should unhover the building, when no intersection was found, a building is hovered and nothing is hovered in the treeView", () => {
-			codeMapMouseEventService["hoveredInCodeMap"] = CODE_MAP_BUILDING
-			codeMapMouseEventService["hoveredInTreeView"] = null
+			codeMapMouseEventService["highlightedInTreeView"] = null
 
 			codeMapMouseEventService.update()
 
@@ -245,8 +234,7 @@ describe("codeMapMouseEventService", () => {
 					building: CODE_MAP_BUILDING
 				})
 			})
-
-			codeMapMouseEventService["hoveredInCodeMap"] = null
+			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
 			codeMapMouseEventService.update()
 
@@ -261,8 +249,6 @@ describe("codeMapMouseEventService", () => {
 				})
 			})
 
-			codeMapMouseEventService["hoveredInCodeMap"] = CODE_MAP_BUILDING
-
 			codeMapMouseEventService.update()
 
 			expect(threeSceneService.highlightBuilding).not.toHaveBeenCalled()
@@ -275,15 +261,13 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call onBuildingSelected", () => {
-			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
-
 			codeMapMouseEventService.onDocumentMouseUp()
 
 			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, codeMapBuilding)
 		})
 
 		it("should call onBuildingSelected and deselect building", () => {
-			codeMapMouseEventService["selected"] = codeMapBuilding
+			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
@@ -321,7 +305,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onRightClick(event)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-right-clicked", {
-				building: null,
+				building: codeMapBuilding,
 				x: 0,
 				y: 1,
 				event
@@ -339,12 +323,16 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onDocumentDoubleClick", () => {
 		it("should return if hovered is null", () => {
+			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+
 			codeMapMouseEventService.onDocumentDoubleClick(undefined)
 
 			expect($window.open).not.toHaveBeenCalled()
 		})
 
 		it("should not do anything if hovered.node.link is null", () => {
+			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+
 			codeMapBuilding.setNode({ link: null } as Node)
 
 			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
@@ -369,14 +357,12 @@ describe("codeMapMouseEventService", () => {
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-hovered", { to: null, from: null })
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
-			expect(codeMapMouseEventService["hoveredInCodeMap"]).toBeNull()
 		})
 
 		it("should set the highlight when to is not null", () => {
 			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
 
 			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(codeMapBuilding)
-			expect(codeMapMouseEventService["hoveredInCodeMap"]).not.toBeNull()
 		})
 
 		it("should add property node", () => {
@@ -408,7 +394,6 @@ describe("codeMapMouseEventService", () => {
 				from: codeMapBuilding
 			})
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
-			expect(codeMapMouseEventService["selected"]).not.toBeNull()
 		})
 
 		it("should clear selection", () => {
@@ -419,12 +404,9 @@ describe("codeMapMouseEventService", () => {
 				from: codeMapBuilding
 			})
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
-			expect(codeMapMouseEventService["selected"]).toBeNull()
 		})
 
 		it("should clear the currently selected building and then select the new one", () => {
-			codeMapMouseEventService["selected"] = codeMapBuilding
-
 			codeMapMouseEventService.onBuildingSelected(null, codeMapBuilding)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", {
@@ -433,7 +415,6 @@ describe("codeMapMouseEventService", () => {
 			})
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
-			expect(codeMapMouseEventService["selected"]).not.toBeNull()
 		})
 	})
 
@@ -450,6 +431,7 @@ describe("codeMapMouseEventService", () => {
 
 		it("should call onBuildingHovered", () => {
 			codeMapBuilding.node.path = TEST_FILE_WITH_PATHS.map.path
+			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
 			codeMapMouseEventService.onShouldHoverNode(TEST_FILE_WITH_PATHS.map)
 
@@ -460,8 +442,7 @@ describe("codeMapMouseEventService", () => {
 	describe("onShouldUnhoverNode", () => {
 		it("should call onBuildingHovered", () => {
 			codeMapMouseEventService.onBuildingHovered = jest.fn()
-
-			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
+			codeMapMouseEventService["highlightedInTreeView"] = codeMapBuilding
 
 			codeMapMouseEventService.onShouldUnhoverNode(null)
 

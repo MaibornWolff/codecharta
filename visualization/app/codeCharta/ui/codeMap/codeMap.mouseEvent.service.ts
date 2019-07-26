@@ -8,7 +8,6 @@ import { CodeMapNode, FileState } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 
 interface Coordinates {
 	x: number
@@ -32,15 +31,13 @@ export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent)
 }
 
-export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber {
+export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
-	private hoveredInCodeMap: CodeMapBuilding = null
-	private hoveredInTreeView: CodeMapBuilding = null
-	private selected: CodeMapBuilding = null
+	private highlightedInTreeView: CodeMapBuilding = null
+
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private dragOrClickFlag = 0
 
@@ -55,7 +52,6 @@ export class CodeMapMouseEventService
 	) {
 		this.threeUpdateCycleService.register(this.update.bind(this))
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
-		FileStateService.subscribe($rootScope, this)
 	}
 
 	public start() {
@@ -83,13 +79,6 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
-		this.hoveredInCodeMap = null
-		this.selected = null
-	}
-
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
-
 	public update() {
 		this.threeCameraService.camera.updateMatrixWorld(false)
 
@@ -98,14 +87,16 @@ export class CodeMapMouseEventService
 				.getMapMesh()
 				.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
+			const highlightedInCodeMap = this.threeSceneService.getHighlightedBuilding()
+
 			if (intersectionResult.intersectionFound) {
 				const to = intersectionResult.building
 
-				if (this.hoveredInCodeMap !== to) {
-					this.onBuildingHovered(this.hoveredInCodeMap, to)
+				if (highlightedInCodeMap !== to) {
+					this.onBuildingHovered(highlightedInCodeMap, to)
 				}
-			} else if (this.hoveredInCodeMap && !this.hoveredInTreeView) {
-				this.onBuildingHovered(this.hoveredInCodeMap, null)
+			} else if (highlightedInCodeMap && !this.highlightedInTreeView) {
+				this.onBuildingHovered(highlightedInCodeMap, null)
 			}
 		}
 	}
@@ -118,13 +109,14 @@ export class CodeMapMouseEventService
 	}
 
 	public onDocumentMouseUp() {
+		const highlightedInCodeMap = this.threeSceneService.getHighlightedBuilding()
+
 		if (this.dragOrClickFlag === 0) {
-			if (this.hoveredInCodeMap) {
-				this.onBuildingSelected(null, this.hoveredInCodeMap)
+			if (highlightedInCodeMap) {
+				this.onBuildingSelected(null, highlightedInCodeMap)
 			}
 
-			if (!this.hoveredInCodeMap && this.selected) {
-				this.selected = null
+			if (!highlightedInCodeMap && this.threeSceneService.getSelectedBuilding()) {
 				this.onBuildingSelected(null, null)
 			}
 		}
@@ -140,7 +132,7 @@ export class CodeMapMouseEventService
 
 	public onRightClick(event) {
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
-			building: this.hoveredInCodeMap,
+			building: this.threeSceneService.getHighlightedBuilding(),
 			x: event.clientX,
 			y: event.clientY,
 			event: event
@@ -152,13 +144,12 @@ export class CodeMapMouseEventService
 	}
 
 	public onDocumentDoubleClick(event) {
-		if (!this.hoveredInCodeMap) {
-			return
-		}
-		let fileSourceLink = this.hoveredInCodeMap.node.link
+		if (this.threeSceneService.getHighlightedBuilding()) {
+			let fileSourceLink = this.threeSceneService.getHighlightedBuilding().node.link
 
-		if (fileSourceLink) {
-			this.$window.open(fileSourceLink, "_blank")
+			if (fileSourceLink) {
+				this.$window.open(fileSourceLink, "_blank")
+			}
 		}
 	}
 
@@ -177,24 +168,21 @@ export class CodeMapMouseEventService
 
 		if (to) {
 			this.threeSceneService.highlightBuilding(to)
-			this.hoveredInCodeMap = to
 		} else {
 			this.threeSceneService.clearHighlight()
-			this.hoveredInCodeMap = null
 		}
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
 	}
 
 	public onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
+		const selected = this.threeSceneService.getSelectedBuilding()
 		if (to) {
-			if (this.selected) {
+			if (selected) {
 				this.threeSceneService.clearSelection()
 			}
 			this.threeSceneService.selectBuilding(to)
-			this.selected = to
 		} else {
 			this.threeSceneService.clearSelection()
-			this.selected = null
 		}
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, { to: to, from: from })
 	}
@@ -203,15 +191,15 @@ export class CodeMapMouseEventService
 		const buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
-				this.onBuildingHovered(this.hoveredInCodeMap, building)
-				this.hoveredInTreeView = building
+				this.onBuildingHovered(this.threeSceneService.getHighlightedBuilding(), building)
+				this.highlightedInTreeView = building
 			}
 		})
 	}
 
 	public onShouldUnhoverNode(node: CodeMapNode) {
-		this.onBuildingHovered(this.hoveredInCodeMap, null)
-		this.hoveredInTreeView = null
+		this.onBuildingHovered(this.highlightedInTreeView, null)
+		this.highlightedInTreeView = null
 	}
 
 	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {

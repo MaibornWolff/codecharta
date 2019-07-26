@@ -16,6 +16,9 @@ export class ThreeSceneService {
 	private lights: Group
 	private mapMesh: CodeMapMesh
 
+	private selected: CodeMapBuilding = null
+	private highlighted: CodeMapBuilding = null
+
 	constructor(private settingsService: SettingsService) {
 		this.scene = new THREE.Scene()
 
@@ -32,22 +35,26 @@ export class ThreeSceneService {
 		this.scene.add(this.lights)
 	}
 
-	public highlightBuilding(highlightedBuilding: CodeMapBuilding) {
+	public highlightBuilding(building: CodeMapBuilding) {
 		const settings = this.settingsService.getSettings()
-		this.getMapMesh().highlightBuilding(highlightedBuilding, settings)
+		this.getMapMesh().highlightBuilding(building, this.selected, settings)
+		this.highlighted = building
 	}
 
 	public clearHighlight() {
-		this.getMapMesh().clearHighlight()
+		this.getMapMesh().clearHighlight(this.selected)
+		this.highlighted = null
 	}
 
 	public selectBuilding(building: CodeMapBuilding) {
 		const color = this.settingsService.getSettings().appSettings.mapColors.selected
-		this.getMapMesh().selectBuilding(building, color)
+		this.getMapMesh().selectBuilding(building, this.selected, color)
+		this.selected = building
 	}
 
 	public clearSelection() {
-		this.getMapMesh().clearSelection()
+		this.getMapMesh().clearSelection(this.selected)
+		this.selected = null
 	}
 
 	public initLights() {
@@ -99,5 +106,13 @@ export class ThreeSceneService {
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
 		this.mapGeometry.position.set((-mapSize / 2.0) * scale.x, 0.0, (-mapSize / 2.0) * scale.z)
 		this.mapMesh.setScale(scale)
+	}
+
+	public getSelectedBuilding(): CodeMapBuilding {
+		return this.selected
+	}
+
+	public getHighlightedBuilding(): CodeMapBuilding {
+		return this.highlighted
 	}
 }
