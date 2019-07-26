@@ -12,13 +12,16 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawPars
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import org.apache.any23.encoding.TikaEncodingDetector
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
+import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
+
 
 @CommandLine.Command(
         name = "scmlogparser",
@@ -162,8 +165,11 @@ class SCMLogParser: Callable<Void> {
                 projectName: String,
                 containsAuthors: Boolean
         ): Project {
-
-            val lines = pathToLog.readLines().stream()
+            val inputStream = pathToLog.inputStream()
+            val encoding = TikaEncodingDetector().guessEncoding(inputStream)
+            val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
+            println(encoding)
+            println(Charset.forName(encoding))
             val projectConverter = ProjectConverter(containsAuthors, projectName)
             return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter).parse(lines)
         }

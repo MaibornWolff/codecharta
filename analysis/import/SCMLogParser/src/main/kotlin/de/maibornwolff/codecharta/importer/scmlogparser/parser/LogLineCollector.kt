@@ -22,7 +22,7 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
 
     private fun assertOneCommitIsPresent(commits: List<List<String>>) {
         if (commits.isEmpty()) {
-            throw IllegalArgumentException("no commit present or parallel stream of log lines, which is not supported")
+            throw IllegalArgumentException("no commit present, unsupported file encoding, or parallel stream of log lines")
         }
     }
 
