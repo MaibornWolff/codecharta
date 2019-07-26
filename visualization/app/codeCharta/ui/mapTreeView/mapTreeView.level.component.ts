@@ -8,6 +8,7 @@ import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
+
 	onShouldUnhoverNode(node: CodeMapNode)
 }
 
@@ -42,11 +43,7 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent) {
-		if (data.to && data.to.node && this.node && this.node.path && data.to.node.path === this.node.path) {
-			this._viewModel.isHoveredInCodeMap = true
-		} else {
-			this._viewModel.isHoveredInCodeMap = false
-		}
+		this._viewModel.isHoveredInCodeMap = data.to && data.to.node && this.node && this.node.path && data.to.node.path === this.node.path
 	}
 
 	public onMouseEnter() {

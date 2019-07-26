@@ -26,6 +26,7 @@ ribbon-bar-component {
 	}
 
 	md-card {
+		pointer-events: all;
 		margin: 0;
 		padding: 0;
 		height: ($heightCollapsed + 8) + px;
@@ -40,7 +41,6 @@ ribbon-bar-component {
 
 		.section {
 			display: inline-block;
-			pointer-events: all;
 			height: 100%;
 			width: auto;
 			padding-top: $padding + px;

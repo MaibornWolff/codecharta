@@ -82,21 +82,22 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	public update() {
 		this.threeCameraService.camera.updateMatrixWorld(false)
 
-		if (this.threeSceneService.getMapMesh()) {
-			const intersectionResult = this.threeSceneService
+		if (this.threeSceneService.getMapMesh() != null) {
+			let intersectionResult = this.threeSceneService
 				.getMapMesh()
 				.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
-			const highlightedInCodeMap = this.threeSceneService.getHighlightedBuilding()
+			let from = this.threeSceneService.getHighlightedBuilding()
+			let to = null
 
 			if (intersectionResult.intersectionFound) {
-				const to = intersectionResult.building
+				to = intersectionResult.building
+			} else {
+				to = this.highlightedInTreeView
+			}
 
-				if (highlightedInCodeMap !== to) {
-					this.onBuildingHovered(highlightedInCodeMap, to)
-				}
-			} else if (highlightedInCodeMap && !this.highlightedInTreeView) {
-				this.onBuildingHovered(highlightedInCodeMap, null)
+			if (from !== to) {
+				this.onBuildingHovered(from, to)
 			}
 		}
 	}
