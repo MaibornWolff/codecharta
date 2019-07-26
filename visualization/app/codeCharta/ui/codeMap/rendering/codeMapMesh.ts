@@ -4,7 +4,6 @@ import { CodeMapGeometricDescription, IntersectionResult } from "./codeMapGeomet
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, Settings } from "../../../codeCharta.model"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
-import { ColorConverter } from "../../../util/color/colorConverter"
 
 export interface MousePos {
 	x: number
