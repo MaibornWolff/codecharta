@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - New Search Bar #526
 - Button to enable PresentationMode that uses Flashlight-Hovering #576
+- Number of Renames Metric to SCMLogParser #621
+- Age In Weeks Metric for SCMLogParser #620
 
 ### Changed
 
@@ -22,11 +24,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed
 
-- Removed RibbonBar toggle button
+- RibbonBar toggle button
 
 ### Fixed
 
-- Fixed fileExtensionBar height to not show a bottom-margin in Chrome
+- FileExtensionBar height to not show a bottom-margin in Chrome
+- PointerEvents not being propagated when RibbonBar was extended
+- Reduced memory usage of SCMLogParser to avoid OutOfMemory Exception #631
 
 ### Chore
 
