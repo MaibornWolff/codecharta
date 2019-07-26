@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - New Search Bar #526
+- Number of Renames Metric to SCMLogParser #621
+- Age In Weeks Metric for SCMLogParser #620
 
 ### Changed
 
