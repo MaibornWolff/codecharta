@@ -39,6 +39,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	private highlightedInTreeView: CodeMapBuilding = null
 
 	private mouse: Coordinates = { x: 0, y: 0 }
+	private oldMouse: Coordinates = { x: 0, y: 0 }
 	private dragOrClickFlag = 0
 
 	/* @ngInject */
@@ -80,26 +81,35 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	}
 
 	public update() {
-		this.threeCameraService.camera.updateMatrixWorld(false)
+		if (this.hasMouseMoved()) {
+			this.oldMouse.x = this.mouse.x
+			this.oldMouse.y = this.mouse.y
 
-		if (this.threeSceneService.getMapMesh() != null) {
-			let intersectionResult = this.threeSceneService
-				.getMapMesh()
-				.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
+			this.threeCameraService.camera.updateMatrixWorld(false)
 
-			let from = this.threeSceneService.getHighlightedBuilding()
-			let to = null
+			if (this.threeSceneService.getMapMesh() != null) {
+				let intersectionResult = this.threeSceneService
+					.getMapMesh()
+					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
-			if (intersectionResult.intersectionFound) {
-				to = intersectionResult.building
-			} else {
-				to = this.highlightedInTreeView
-			}
+				let from = this.threeSceneService.getHighlightedBuilding()
+				let to = null
 
-			if (from !== to) {
-				this.onBuildingHovered(from, to)
+				if (intersectionResult.intersectionFound) {
+					to = intersectionResult.building
+				} else {
+					to = this.highlightedInTreeView
+				}
+
+				if (from !== to) {
+					this.onBuildingHovered(from, to)
+				}
 			}
 		}
+	}
+
+	private hasMouseMoved(): boolean {
+		return this.mouse.x !== this.oldMouse.x || this.mouse.y !== this.oldMouse.y
 	}
 
 	public onDocumentMouseMove(event) {

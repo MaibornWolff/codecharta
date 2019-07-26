@@ -43,7 +43,13 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent) {
-		this._viewModel.isHoveredInCodeMap = data.to && data.to.node && this.node && this.node.path && data.to.node.path === this.node.path
+		this._viewModel.isHoveredInCodeMap = !!(
+			data.to &&
+			data.to.node &&
+			this.node &&
+			this.node.path &&
+			data.to.node.path === this.node.path
+		)
 	}
 
 	public onMouseEnter() {
