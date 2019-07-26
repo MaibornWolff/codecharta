@@ -29,6 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - FileExtensionBar height to not show a bottom-margin in Chrome
 - PointerEvents not being propagated when RibbonBar was extended
+- Reduced memory usage of SCMLogParser to avoid OutOfMemory Exception #631
 
 ### Chore
 
