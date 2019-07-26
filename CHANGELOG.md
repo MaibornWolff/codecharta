@@ -23,11 +23,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed
 
-- Removed RibbonBar toggle button
+- RibbonBar toggle button
 
 ### Fixed
 
-- Fixed fileExtensionBar height to not show a bottom-margin in Chrome
+- FileExtensionBar height to not show a bottom-margin in Chrome
+- PointerEvents not being propagated when RibbonBar was extended
 
 ### Chore
 
