@@ -5,8 +5,9 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
 class HighlyCoupledFiles: Metric {
 
-    private val simultaneouslyCommitedFiles = mutableMapOf<String, Long>()
+    private var fileName: String = ""
     private var numberOfCommits: Long = 0
+    private var commits = mutableListOf<Commit>()
 
     override fun description(): String {
         return "Highly Coupled Files: Number of highly coupled files (35% times modified the same time) with this file."
@@ -17,13 +18,20 @@ class HighlyCoupledFiles: Metric {
     }
 
     override fun value(): Number {
-        return simultaneouslyCommitedFiles.values
+        val simultaneouslyCommittedFiles = mutableMapOf<String, Int>()
+        commits.forEach { commit ->
+            commit.modifications
+                    .filter { it.filename != fileName }
+                    .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
+        }
+
+        return simultaneouslyCommittedFiles.values
                 .filter { this.isHighlyCoupled(it) }
                 .count()
                 .toLong()
     }
 
-    private fun isHighlyCoupled(`val`: Long): Boolean {
+    private fun isHighlyCoupled(`val`: Int): Boolean {
         return if (numberOfCommits >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
             `val`.toDouble() / numberOfCommits.toDouble() > HIGH_COUPLING_VALUE
         } else false
@@ -31,13 +39,11 @@ class HighlyCoupledFiles: Metric {
 
     override fun registerCommit(commit: Commit) {
         numberOfCommits++
-        commit.modifications
-                .forEach { simultaneouslyCommitedFiles.merge(it.filename, 1L) { x, y -> x + y } }
+        commits.add(commit)
     }
 
     override fun registerModification(modification: Modification) {
-        // delete this file
-        simultaneouslyCommitedFiles.remove(modification.filename)
+        fileName = modification.filename
     }
 
     companion object {
