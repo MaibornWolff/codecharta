@@ -7,7 +7,7 @@ export class SearchPanelPageObject {
 		await this.page.click("#tree-view")
 	}
 
-	public async rightClickRootNodeInTreeViewSearchPanel() {
+	public async hoverRootNodeInTreeViewSearchPanel() {
 		await this.page.hover("map-tree-view-level-component > .tree-root > .tree-element-label-0")
 	}
 }
