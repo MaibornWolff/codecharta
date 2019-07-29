@@ -173,7 +173,7 @@ class SCMLogParser: Callable<Void> {
                 silent: Boolean = false
         ): Project {
             val encoding = guessEncoding(pathToLog) ?: "UTF-8"
-            System.err.println("Assumed encoding $encoding")
+            if (!silent) System.err.println("Assumed encoding $encoding")
             val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
 
             val projectConverter = ProjectConverter(containsAuthors, projectName)
