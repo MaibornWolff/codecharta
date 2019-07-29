@@ -12,7 +12,7 @@ ribbon-bar-component {
 	$bodySize: 0.9em;
 	$toggleButtonSize: 35;
 
-	pointer-events: all;
+	pointer-events: none;
 	display: flex;
 
 	search-panel-component #search-panel.expanded {
@@ -26,6 +26,7 @@ ribbon-bar-component {
 	}
 
 	md-card {
+		pointer-events: all;
 		margin: 0;
 		padding: 0;
 		height: ($heightCollapsed + 8) + px;

@@ -50,6 +50,9 @@ class SCMLogParser: Callable<Void> {
             description = ["analysis of svn log, equivalent --input-format SVN_LOG"])
     private var svnLog = false
 
+    @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
+    private var silent = false
+
     @CommandLine.Option(names = ["--input-format"], description = ["input format for parsing"])
     private var inputFormatNames: InputFormatNames = GIT_LOG
 
@@ -62,8 +65,10 @@ class SCMLogParser: Callable<Void> {
     private val metricsFactory: MetricsFactory
         get() {
             val nonChurnMetrics = Arrays.asList(
+                    "age_in_weeks",
                     "number_of_authors",
                     "number_of_commits",
+                    "number_of_renames",
                     "range_of_weeks_with_commits",
                     "successive_weeks_of_commits",
                     "weeks_with_commits"
@@ -86,8 +91,9 @@ class SCMLogParser: Callable<Void> {
                 logParserStrategy,
                 metricsFactory,
                 projectName,
-                addAuthor)
-        if (!outputFile.isEmpty()) {
+                addAuthor,
+                silent)
+        if (outputFile.isNotEmpty()) {
             ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
         } else {
             ProjectSerializer.serializeProject(project, OutputStreamWriter(System.out))
@@ -163,7 +169,8 @@ class SCMLogParser: Callable<Void> {
                 parserStrategy: LogParserStrategy,
                 metricsFactory: MetricsFactory,
                 projectName: String,
-                containsAuthors: Boolean
+                containsAuthors: Boolean,
+                silent: Boolean = false
         ): Project {
             val inputStream = pathToLog.inputStream()
             val encoding = TikaEncodingDetector().guessEncoding(inputStream)
@@ -171,7 +178,7 @@ class SCMLogParser: Callable<Void> {
             println(encoding)
             println(Charset.forName(encoding))
             val projectConverter = ProjectConverter(containsAuthors, projectName)
-            return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter).parse(lines)
+            return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
         }
     }
 }
