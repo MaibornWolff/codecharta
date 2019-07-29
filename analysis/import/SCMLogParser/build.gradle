@@ -6,8 +6,8 @@ dependencies {
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
-    compile group: 'org.apache.any23', name: 'apache-any23-encoding', version: '1.1'
-    
+    compile group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
+
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.12.2'
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
