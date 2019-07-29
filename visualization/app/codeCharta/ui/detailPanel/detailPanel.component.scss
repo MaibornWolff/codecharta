@@ -5,10 +5,10 @@ detail-panel-component {
 		max-height: 50%;
 		overflow-y: auto;
 
-		position: fixed;
+		position: absolute;
 		z-index: 40;
-		bottom: 0.5em;
-		left: 0.5em;
+		right: 0.5em;
+		top: 110px;
 		color: #5a585a;
 		font-size: 0.8em;
 
