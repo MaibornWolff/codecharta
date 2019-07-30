@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Moved DetailPanel to the top-right and the ViewCube to bottom-right #640
+
 ### Removed
 
 ### Fixed
