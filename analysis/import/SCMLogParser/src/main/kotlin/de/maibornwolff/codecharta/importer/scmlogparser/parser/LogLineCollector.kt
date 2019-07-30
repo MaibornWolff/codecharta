@@ -7,13 +7,21 @@ import java.util.stream.Stream
 
 class LogLineCollector private constructor(private val isCommitSeparator: Predicate<String>) {
 
+    private val BOM = "\uFEFF"
+
     private fun collectLogLine(commits: MutableList<MutableList<String>>, logLine: String) {
-        if (isCommitSeparator.test(logLine)) {
+        val sanitizedLogLine = sanitizeLogLine(logLine)
+        if (isCommitSeparator.test(sanitizedLogLine)) {
             startNewCommit(commits)
         } else {
             assertOneCommitIsPresent(commits)
-            addToLastCommit(commits, logLine)
+            addToLastCommit(commits, sanitizedLogLine)
         }
+    }
+
+    private fun sanitizeLogLine(logLine: String): String {
+        if (logLine.startsWith(BOM)) return logLine.substring(1)
+        return logLine
     }
 
     private fun startNewCommit(commits: MutableList<MutableList<String>>) {
