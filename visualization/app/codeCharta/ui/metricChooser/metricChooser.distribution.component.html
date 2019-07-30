@@ -17,11 +17,11 @@
 				ng-change="$ctrl.filterMetricData()"
 			/>
 		</md-select-header>
-		<div class="option-group">
+		<md-content class="option-group">
 			<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
 				{{::metric.name}}
 				<span class="metric-max-value">({{::metric.maxValue}})</span>
 			</md-option>
-		</div>
+		</md-content>
 	</md-select>
 </md-input-container>
