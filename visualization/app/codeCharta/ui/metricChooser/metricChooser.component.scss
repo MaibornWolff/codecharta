@@ -72,19 +72,21 @@ distribution-metric-chooser-component {
 	}
 }
 
+#select_container_24,
+#select_container_28,
+#select_container_33 {
+	top: 10% !important;
+}
+
 #select_container_19 {
 	top: 5.5% !important;
 }
 
-.md-select-menu-container.md-active {
-	top: 10% !important;
+md-content.option-group {
+	top: $optionHeight + px !important;
 }
 
-._md {
-	top: $optionHeight + px;
-}
-
-._md.md-overflow {
+.md-overflow {
 	display: initial;
 }
 
@@ -96,7 +98,7 @@ distribution-metric-chooser-component {
 	border-color: rgba(0, 0, 0, 0.12);
 	padding: 10px;
 	position: fixed;
-	top: 10px;
+	top: 8px;
 
 	&:focus {
 		border-bottom-color: rgb(0, 150, 136);
