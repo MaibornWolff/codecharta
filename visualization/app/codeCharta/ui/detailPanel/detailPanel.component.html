@@ -4,10 +4,10 @@
 	<table class="minimized" ng-hide="$ctrl._viewModel.maximizeDetailPanel">
 		<thead>
 			<tr>
-				<th ng-click="$ctrl.toggleDetailPanel()">
-					<i class="fa fa-arrow-up"></i>
-				</th>
 				<th ng-hide="!$ctrl.isHovered()">{{ $ctrl._viewModel.details.hovered.path }}</th>
+				<th ng-click="$ctrl.toggleDetailPanel()">
+					<i class="fa fa-arrow-down"></i>
+				</th>
 			</tr>
 		</thead>
 	</table>
@@ -16,7 +16,7 @@
 		<thead>
 			<tr>
 				<th ng-click="$ctrl.toggleDetailPanel()">
-					<i class="fa fa-arrow-down"></i>
+					<i class="fa fa-arrow-up"></i>
 				</th>
 				<th>Property</th>
 				<th ng-hide="!$ctrl.isSelected()" class="selectedHeader">Selected</th>
