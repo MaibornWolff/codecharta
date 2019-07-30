@@ -72,9 +72,14 @@ distribution-metric-chooser-component {
 	}
 }
 
-div.md-select-menu-container.md-active {
-	top: 0% !important;
+#select_container_19 {
+	top: 5.5% !important;
 }
+
+.md-select-menu-container.md-active {
+	top: 10% !important;
+}
+
 ._md {
 	top: $optionHeight + px;
 }
@@ -92,11 +97,11 @@ div.md-select-menu-container.md-active {
 	padding: 10px;
 	position: fixed;
 	top: 10px;
-}
 
-.user-search:focus {
-	border-bottom-color: rgb(0, 150, 136);
-	color: rgb(0, 150, 136);
+	&:focus {
+		border-bottom-color: rgb(0, 150, 136);
+		color: rgb(0, 150, 136);
+	}
 }
 
 .metric-max-value {
