@@ -72,6 +72,9 @@ distribution-metric-chooser-component {
 	}
 }
 
+div.md-select-menu-container.md-active {
+	top: 0% !important;
+}
 ._md {
 	top: $optionHeight + px;
 }
