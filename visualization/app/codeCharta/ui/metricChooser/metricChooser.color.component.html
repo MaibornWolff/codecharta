@@ -1,4 +1,4 @@
-<md-input-container class="md-block">
+<md-input-container>
 	<i class="fa fa-paint-brush"></i>
 
 	<label></label>
@@ -13,10 +13,12 @@
 				ng-change="$ctrl.filterMetricData()"
 			/>
 		</md-select-header>
-		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
-			{{::metric.name}}
-			<span class="metric-max-value">({{::metric.maxValue}})</span>
-		</md-option>
+		<div class="option-group">
+			<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
+				{{::metric.name}}
+				<span class="metric-max-value">({{::metric.maxValue}})</span>
+			</md-option>
+		</div>
 	</md-select>
 
 	<div>
