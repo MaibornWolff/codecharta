@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
--   Added indicator for highest value for metric chooser dropdown. #575
+-   Added searchoption to the metric dropdown and an indicator for the highest value #575
 -   New Search Bar #526
 
 ### Changed
