@@ -62,6 +62,25 @@ file-panel-component {
 		}
 	}
 
+	.pictogram {
+		display: block;
+		float: left;
+		width: 10px;
+		margin-right: 5px;
+		margin-top: 5px;
+		padding-left: 5px;
+		min-height: 22px;
+		border-radius: 5px;
+	}
+
+	.first {
+		background: grey;
+	}
+
+	.second {
+		background: grey;
+	}
+
 	md-input-container {
 		display: block;
 		text-align: left;

@@ -41,6 +41,7 @@
 </md-input-container>
 
 <div class="delta-chooser" ng-show="$ctrl._viewModel.isDeltaState">
+	<div class="pictogram first"></div>
 	<md-input-container class="delta-select">
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
@@ -52,6 +53,7 @@
 		</md-select>
 	</md-input-container>
 
+	<div class="pictogram second"></div>
 	<md-input-container class="delta-select">
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
