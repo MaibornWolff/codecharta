@@ -41,7 +41,7 @@
 </md-input-container>
 
 <div class="delta-chooser" ng-show="$ctrl._viewModel.isDeltaState">
-	<div class="pictogram first"></div>
+	<div class="pictogram" ng-style="{'background': $ctrl._viewModel.pictogramFirstFileColor}"></div>
 	<md-input-container class="delta-select">
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
@@ -53,7 +53,10 @@
 		</md-select>
 	</md-input-container>
 
-	<div class="pictogram second"></div>
+	<div
+		class="pictogram"
+		ng-style="{'background': 'linear-gradient('+$ctrl._viewModel.pictogramUpperColor+' 50%, '+$ctrl._viewModel.pictogramLowerColor+' 50%)'}"
+	></div>
 	<md-input-container class="delta-select">
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
