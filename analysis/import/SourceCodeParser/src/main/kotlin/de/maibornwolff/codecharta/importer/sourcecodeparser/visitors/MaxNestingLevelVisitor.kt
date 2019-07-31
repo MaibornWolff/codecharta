@@ -13,7 +13,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
         return maxNestingLevel
     }
 
-    private fun checkForChildrenAndUpdateMax() {
+    private fun potentiallyUpdateMaxNestingLevel() {
         if (maxNestingLevel < forwardNesting) {
             maxNestingLevel = forwardNesting
         }
@@ -27,7 +27,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitIfStatement(tree: IfStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitIfStatement(tree)
 
@@ -37,7 +37,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitDoWhileStatement(tree: DoWhileStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitDoWhileStatement(tree)
 
@@ -47,7 +47,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitLambdaExpression(lambdaExpressionTree: LambdaExpressionTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitLambdaExpression(lambdaExpressionTree)
 
@@ -57,7 +57,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitConditionalExpression(tree: ConditionalExpressionTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitConditionalExpression(tree)
 
@@ -67,7 +67,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitForEachStatement(tree: ForEachStatement) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitForEachStatement(tree)
 
@@ -77,7 +77,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitForStatement(tree: ForStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitForStatement(tree)
 
@@ -87,7 +87,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitWhileStatement(tree: WhileStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitWhileStatement(tree)
 
@@ -97,7 +97,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitSwitchExpression(tree: SwitchExpressionTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitSwitchExpression(tree)
 
@@ -107,7 +107,7 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitTryStatement(tree: TryStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax()
+        potentiallyUpdateMaxNestingLevel()
 
         super.visitTryStatement(tree)
 
