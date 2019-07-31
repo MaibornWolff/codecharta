@@ -5,7 +5,7 @@ import org.sonar.plugins.java.api.tree.*
 
 class MaxNestingLevelVisitor: ComplexityVisitor() {
     private var maxNestingLevel = 0
-    private var forwardNesting = 0
+    private var currentNestingLevel = 0
 
     fun getMaxNestingLevel(tree: Tree): Int {
         super.getNodes(tree)
@@ -14,103 +14,103 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     }
 
     private fun potentiallyUpdateMaxNestingLevel() {
-        if (maxNestingLevel < forwardNesting) {
-            maxNestingLevel = forwardNesting
+        if (maxNestingLevel < currentNestingLevel) {
+            maxNestingLevel = currentNestingLevel
         }
     }
 
     override fun visitMethod(tree: MethodTree) {
-        forwardNesting = 0
+        currentNestingLevel = 0
         super.visitMethod(tree)
     }
 
     override fun visitIfStatement(tree: IfStatementTree) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitIfStatement(tree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 
     override fun visitDoWhileStatement(tree: DoWhileStatementTree) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitDoWhileStatement(tree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 
     override fun visitLambdaExpression(lambdaExpressionTree: LambdaExpressionTree) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitLambdaExpression(lambdaExpressionTree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 
     override fun visitConditionalExpression(tree: ConditionalExpressionTree) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitConditionalExpression(tree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 
     override fun visitForEachStatement(tree: ForEachStatement) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitForEachStatement(tree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 
     override fun visitForStatement(tree: ForStatementTree) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitForStatement(tree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 
     override fun visitWhileStatement(tree: WhileStatementTree) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitWhileStatement(tree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 
     override fun visitSwitchExpression(tree: SwitchExpressionTree) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitSwitchExpression(tree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 
     override fun visitTryStatement(tree: TryStatementTree) {
-        forwardNesting++
+        currentNestingLevel++
 
         potentiallyUpdateMaxNestingLevel()
 
         super.visitTryStatement(tree)
 
-        forwardNesting--
+        currentNestingLevel--
     }
 }
