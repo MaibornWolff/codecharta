@@ -50,9 +50,16 @@ class MaxNestingLevelVisitorTest {
     }
 
     @Test
-    fun getMaxNestingLevelGoldenTest() {
+    fun getMaxNestingLevelOfGoldenTest() {
         val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("golden_test.java"))
 
         assertEquals(7, maxNestingLevel)
+    }
+
+    @Test
+    fun getMaxNestingLevelOfLambdaFunctions() {
+        val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("lambda_function.java"))
+
+        assertEquals(2, maxNestingLevel)
     }
 }

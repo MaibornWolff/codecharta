@@ -34,13 +34,22 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
         forwardNesting--
     }
 
-
     override fun visitDoWhileStatement(tree: DoWhileStatementTree) {
         forwardNesting++
 
         checkForChildrenAndUpdateMax()
 
         super.visitDoWhileStatement(tree)
+
+        forwardNesting--
+    }
+
+    override fun visitLambdaExpression(lambdaExpressionTree: LambdaExpressionTree) {
+        forwardNesting++
+
+        checkForChildrenAndUpdateMax()
+
+        super.visitLambdaExpression(lambdaExpressionTree)
 
         forwardNesting--
     }
