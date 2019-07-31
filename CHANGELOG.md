@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- Label hight adjustment now matches scaling of map #594
 
 ### Chore
 
