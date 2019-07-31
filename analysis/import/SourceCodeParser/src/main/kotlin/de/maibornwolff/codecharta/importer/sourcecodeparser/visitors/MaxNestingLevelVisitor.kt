@@ -7,19 +7,15 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     private var maxNestingLevel = 0
     private var forwardNesting = 0
 
-
     fun getMaxNestingLevel(tree: Tree): Int {
         super.getNodes(tree)
 
         return maxNestingLevel
     }
 
-    private fun checkForChildrenAndUpdateMax(tree: Tree) {
-        if(super.getNodes(tree).isEmpty()) {
-            if(maxNestingLevel < forwardNesting) {
-                maxNestingLevel = forwardNesting
-            }
-            forwardNesting = 0
+    private fun checkForChildrenAndUpdateMax() {
+        if (maxNestingLevel < forwardNesting) {
+            maxNestingLevel = forwardNesting
         }
     }
 
@@ -31,64 +27,81 @@ class MaxNestingLevelVisitor: ComplexityVisitor() {
     override fun visitIfStatement(tree: IfStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax(tree)
+        checkForChildrenAndUpdateMax()
 
         super.visitIfStatement(tree)
+
+        forwardNesting--
     }
+
 
     override fun visitDoWhileStatement(tree: DoWhileStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax(tree)
+        checkForChildrenAndUpdateMax()
 
         super.visitDoWhileStatement(tree)
+
+        forwardNesting--
     }
 
     override fun visitConditionalExpression(tree: ConditionalExpressionTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax(tree)
+        checkForChildrenAndUpdateMax()
 
         super.visitConditionalExpression(tree)
+
+        forwardNesting--
     }
 
     override fun visitForEachStatement(tree: ForEachStatement) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax(tree)
+        checkForChildrenAndUpdateMax()
 
         super.visitForEachStatement(tree)
+
+        forwardNesting--
     }
 
     override fun visitForStatement(tree: ForStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax(tree)
+        checkForChildrenAndUpdateMax()
 
         super.visitForStatement(tree)
+
+        forwardNesting--
     }
 
     override fun visitWhileStatement(tree: WhileStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax(tree)
+        checkForChildrenAndUpdateMax()
 
         super.visitWhileStatement(tree)
+
+        forwardNesting--
     }
 
     override fun visitSwitchExpression(tree: SwitchExpressionTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax(tree)
+        checkForChildrenAndUpdateMax()
 
         super.visitSwitchExpression(tree)
+
+        forwardNesting--
     }
 
     override fun visitTryStatement(tree: TryStatementTree) {
         forwardNesting++
 
-        checkForChildrenAndUpdateMax(tree)
+        checkForChildrenAndUpdateMax()
 
         super.visitTryStatement(tree)
+
+        forwardNesting--
     }
 }

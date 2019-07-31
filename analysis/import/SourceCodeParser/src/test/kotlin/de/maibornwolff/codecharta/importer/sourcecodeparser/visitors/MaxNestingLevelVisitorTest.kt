@@ -10,30 +10,49 @@ import org.sonar.java.model.DefaultJavaFileScannerContext
 import org.sonar.java.model.JavaVersionImpl
 import org.sonar.plugins.java.Java
 import org.sonar.plugins.java.api.tree.CompilationUnitTree
+import org.sonar.plugins.java.api.tree.Tree
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
 internal class MaxNestingLevelVisitorTest {
-    private val baseDir = File("src/test/resources/sampleproject").absoluteFile
+    private val baseDir = File("src/test/resources/max-nesting-level").absoluteFile
 
-    @Test
-    fun getMaxNestingLevel() {
-        val file = File("src/test/resources/sampleproject/foo.java")
-        val inputFile: InputFile = TestInputFileBuilder.create("moduleKey", "foo.java")
+    private fun getTree(fileName: String) : Tree {
+        val file = File("$baseDir/$fileName")
+        val inputFile: InputFile = TestInputFileBuilder.create("moduleKey", fileName)
                 .setModuleBaseDir(baseDir.toPath())
                 .setCharset(StandardCharsets.UTF_8)
                 .setType(InputFile.Type.MAIN)
                 .setLanguage(Java.KEY)
-                .initMetadata(String(Files.readAllBytes(File("$baseDir/foo.java").toPath()), StandardCharsets.UTF_8))
+                .initMetadata(String(Files.readAllBytes(File("$baseDir/$fileName").toPath()), StandardCharsets.UTF_8))
                 .build()
 
         val compilationUnitTree = JavaParser.createParser().parse(file) as CompilationUnitTree
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
                 compilationUnitTree, inputFile, null, null, JavaVersionImpl(), true)
 
-        val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(defaultJavaFileScannerContext.tree)
+        return defaultJavaFileScannerContext.tree
+    }
 
-        assertEquals(maxNestingLevel, 1)
+    @Test
+    fun getMaxNestingLevelOfNestedIfs() {
+        val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("nested_ifs.java"))
+
+        assertEquals(2, maxNestingLevel)
+    }
+
+    @Test
+    fun getMaxNestingLevelOfIfElse() {
+        val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("if_else.java"))
+
+        assertEquals(1, maxNestingLevel)
+    }
+
+    @Test
+    fun getMaxNestingLevelGoldenTest() {
+        val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("golden_test.java"))
+
+        assertEquals(7, maxNestingLevel)
     }
 }
