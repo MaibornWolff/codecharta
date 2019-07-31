@@ -19,6 +19,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_WIDTH_DIVISOR: number = 2600 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR: number = 50 // empirically gathered
 
+	private currentHeightScale: number = 1
+	private resetScale: boolean = false
+
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
@@ -48,6 +51,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			this.labels.push(label)
 		}
+		this.resetScale = true
 	}
 
 	public clearLabels() {
@@ -58,20 +62,21 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	public scale(scale: Vector3) {
+		if (this.resetScale) {
+			this.resetScale = false
+			this.currentHeightScale = 1
+		}
+
 		for (let label of this.labels) {
-			label.sprite.position.x *= scale.x
-			label.sprite.position.y *= scale.y
-			label.sprite.position.z *= scale.z
+			label.sprite.position.y = ((label.sprite.position.y - 60) / this.currentHeightScale) * scale.y + 60
 
 			//cast is a workaround for the compiler. Attribute vertices does exist on geometry
 			//but it is missing in the mapping file for TypeScript.
-			;(<any>label.line!.geometry).vertices[0].x *= scale.x
-			;(<any>label.line!.geometry).vertices[0].y *= scale.y
-			;(<any>label.line!.geometry).vertices[0].z *= scale.z
-			;(<any>label.line!.geometry).vertices[1].x = label.sprite.position.x
+			;(<any>label.line!.geometry).vertices[0].y = ((<any>label.line!.geometry).vertices[0].y / this.currentHeightScale) * scale.y
 			;(<any>label.line!.geometry).vertices[1].y = label.sprite.position.y
-			;(<any>label.line!.geometry).vertices[1].z = label.sprite.position.z
+			label.line.geometry.translate(0, 0, 0)
 		}
+		this.currentHeightScale = scale.y
 	}
 
 	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
