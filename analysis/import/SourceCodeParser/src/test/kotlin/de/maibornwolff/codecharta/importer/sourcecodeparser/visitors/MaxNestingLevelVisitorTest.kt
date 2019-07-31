@@ -15,7 +15,7 @@ import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
-internal class MaxNestingLevelVisitorTest {
+class MaxNestingLevelVisitorTest {
     private val baseDir = File("src/test/resources/max-nesting-level").absoluteFile
 
     private fun getTree(fileName: String) : Tree {

@@ -61,6 +61,7 @@ class JavaSonarAnalyzerTest {
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("classes")).isEqualTo(1)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("mcc")).isEqualTo(6)
         assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("comment_lines")).isEqualTo(3)
+        assertThat(metrics.getFileMetricMap("foo.java")?.getMetricValue("max_nesting_level")).isEqualTo(2)
     }
 
     @Test
