@@ -19,7 +19,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_WIDTH_DIVISOR: number = 2600 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR: number = 50 // empirically gathered
 
-	private currentHeightScale: number = 1
+	private currentScale: Vector3 = new THREE.Vector3(1, 1, 1)
 	private resetScale: boolean = false
 
 	constructor(
@@ -64,19 +64,26 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	public scale(scale: Vector3) {
 		if (this.resetScale) {
 			this.resetScale = false
-			this.currentHeightScale = 1
+			this.currentScale = new THREE.Vector3(1, 1, 1)
 		}
 
 		for (let label of this.labels) {
-			label.sprite.position.y = ((label.sprite.position.y - 60) / this.currentHeightScale) * scale.y + 60
+			label.sprite.position.x = (label.sprite.position.x / this.currentScale.x) * scale.x
+			label.sprite.position.y = ((label.sprite.position.y - 60) / this.currentScale.y) * scale.y + 60
+			label.sprite.position.z = (label.sprite.position.z / this.currentScale.z) * scale.z
 
 			//cast is a workaround for the compiler. Attribute vertices does exist on geometry
 			//but it is missing in the mapping file for TypeScript.
-			;(<any>label.line!.geometry).vertices[0].y = ((<any>label.line!.geometry).vertices[0].y / this.currentHeightScale) * scale.y
+			;(<any>label.line!.geometry).vertices[0].x = ((<any>label.line!.geometry).vertices[0].x / this.currentScale.x) * scale.x
+			;(<any>label.line!.geometry).vertices[0].y = ((<any>label.line!.geometry).vertices[0].y / this.currentScale.y) * scale.y
+			;(<any>label.line!.geometry).vertices[0].z = ((<any>label.line!.geometry).vertices[0].z / this.currentScale.z) * scale.z
+			;(<any>label.line!.geometry).vertices[1].x = label.sprite.position.x
 			;(<any>label.line!.geometry).vertices[1].y = label.sprite.position.y
+			;(<any>label.line!.geometry).vertices[1].z = label.sprite.position.z
+
 			label.line.geometry.translate(0, 0, 0)
 		}
-		this.currentHeightScale = scale.y
+		this.currentScale.copy(scale)
 	}
 
 	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
