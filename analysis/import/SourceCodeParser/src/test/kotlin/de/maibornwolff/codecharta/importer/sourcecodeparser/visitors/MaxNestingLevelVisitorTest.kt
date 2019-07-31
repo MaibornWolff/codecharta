@@ -20,7 +20,7 @@ internal class MaxNestingLevelVisitorTest {
     @Test
     fun getMaxNestingLevel() {
         val file = File("src/test/resources/sampleproject/foo.java")
-        val inputFile = TestInputFileBuilder.create("moduleKey", "foo.java")
+        val inputFile: InputFile = TestInputFileBuilder.create("moduleKey", "foo.java")
                 .setModuleBaseDir(baseDir.toPath())
                 .setCharset(StandardCharsets.UTF_8)
                 .setType(InputFile.Type.MAIN)

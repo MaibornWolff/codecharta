@@ -8,27 +8,29 @@ class MaxNestingLevelVisitor : ComplexityVisitor() {
     private var currentMaxNestingLevel = 0
 
     fun getMaxNestingLevel(tree: Tree): Int {
-        scan(tree)
+        super.getNodes(tree)
         return maxNestingLevel
     }
 
     override fun visitMethod(tree: MethodTree) {
         println("visit method")
-        if(maxNestingLevel < currentMaxNestingLevel) {
-            maxNestingLevel = currentMaxNestingLevel
-        }
         currentMaxNestingLevel = 0
         super.visitMethod(tree)
+        if (maxNestingLevel < currentMaxNestingLevel) {
+            println(currentMaxNestingLevel)
+            maxNestingLevel = currentMaxNestingLevel
+        }
     }
 
     override fun visitBlock(tree: BlockTree) {
-        currentMaxNestingLevel = 0
+        //currentMaxNestingLevel = 0
         println("this is a new block")
         super.visitBlock(tree)
     }
 
     override fun visitIfStatement(tree: IfStatementTree) {
         currentMaxNestingLevel++
+        println("if_statement")
         super.visitIfStatement(tree)
     }
 
