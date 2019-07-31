@@ -3,6 +3,7 @@ import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { color } from "d3"
 
 interface SelectedFileNames {
 	single: string
@@ -23,6 +24,9 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		fileStates: FileState[]
 		renderState: FileSelectionState
 		selectedFileNames: SelectedFileNames
+		pictogramFirstFileColor: string
+		pictogramUpperColor: string
+		pictogramLowerColor: string
 	} = {
 		isSingleState: null,
 		isPartialState: null,
@@ -36,7 +40,10 @@ export class FilePanelController implements FileStateServiceSubscriber {
 				comparison: null
 			},
 			partial: null
-		}
+		},
+		pictogramFirstFileColor: null,
+		pictogramUpperColor: null,
+		pictogramLowerColor: null
 	}
 
 	/* @ngInject */
@@ -48,8 +55,18 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		this._viewModel.isSingleState = FileStateHelper.isSingleState(fileStates)
 		this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+		this.setPictogramColor()
 		this.updateSelectedFileNamesInViewModel(fileStates)
 		this.lastRenderState = this._viewModel.renderState
+	}
+
+	private setPictogramColor() {
+		const colorZero = "#808080"
+		const colorOne = "#00ff00"
+		const colorTwo = "#ff0000"
+		this._viewModel.pictogramFirstFileColor = colorZero
+		this._viewModel.pictogramUpperColor = colorOne
+		this._viewModel.pictogramLowerColor = colorTwo
 	}
 
 	private updateSelectedFileNamesInViewModel(fileStates: FileState[]) {
