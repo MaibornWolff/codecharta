@@ -185,11 +185,10 @@ class SCMLogParser: Callable<Void> {
             val buffer = ByteArray(4096)
             val detector = UniversalDetector(null)
 
-            var sizeRead: Int
-            while (true) {
-                sizeRead = inputStream.read(buffer)
-                if (sizeRead <= 0 || detector.isDone) break
+            var sizeRead = inputStream.read(buffer)
+            while (sizeRead > 0 && !detector.isDone) {
                 detector.handleData(buffer, 0, sizeRead)
+                sizeRead = inputStream.read(buffer)
             }
             detector.dataEnd()
 
