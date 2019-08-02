@@ -49,7 +49,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 
 	public filterMetricData() {
 		this._viewModel.metricData = this.metricData.filter(metric =>
-			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLocaleLowerCase())
+			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
 		)
 	}
 
