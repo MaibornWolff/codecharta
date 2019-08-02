@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Replaced Scenario dropdown with button on the left of the metric sections #628
+
 ### Removed
 
 ### Fixed
