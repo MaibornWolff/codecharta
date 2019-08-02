@@ -64,7 +64,9 @@ export class ThreeSceneService implements SettingsServiceSubscriber {
 
 	public clearSelection() {
 		this.getMapMesh().clearSelection(this.selected)
-		this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
+		if (this.highlighted) {
+			this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
+		}
 		this.selected = null
 	}
 
