@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.31.0] - 2019-08-02
+
+### Added
+
 - New Metric in SourceCodeParser: Maximum-Nesting-Level #659
 
 ### Changed
@@ -16,6 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+
 - Label hight adjustment now matches scaling of map #594
 
 - SCMLogParser now guesses the input file encoding #614
