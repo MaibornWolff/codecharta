@@ -121,13 +121,14 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 	public onDocumentMouseUp() {
 		const highlightedInCodeMap = this.threeSceneService.getHighlightedBuilding()
+		const selected = this.threeSceneService.getSelectedBuilding()
 
 		if (this.dragOrClickFlag === 0) {
-			if (highlightedInCodeMap) {
+			if (highlightedInCodeMap && (!selected || (selected && selected.id !== highlightedInCodeMap.id))) {
 				this.onBuildingSelected(null, highlightedInCodeMap)
 			}
 
-			if (!highlightedInCodeMap && this.threeSceneService.getSelectedBuilding()) {
+			if (!highlightedInCodeMap && selected) {
 				this.onBuildingSelected(null, null)
 			}
 		}
@@ -148,6 +149,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 			y: event.clientY,
 			event: event
 		})
+		this.dragOrClickFlag = 0
 	}
 
 	public onLeftClick(event) {

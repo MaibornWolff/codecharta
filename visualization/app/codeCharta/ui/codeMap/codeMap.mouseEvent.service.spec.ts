@@ -263,13 +263,32 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBuildingSelected = jest.fn()
 		})
 
-		it("should call onBuildingSelected", () => {
+		it("should not do anything when no building is hovered and nothing is selected", () => {
+			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
+
+			codeMapMouseEventService.onDocumentMouseUp()
+
+			expect(codeMapMouseEventService.onBuildingSelected).not.toHaveBeenCalled()
+		})
+
+		it("should call onBuildingSelected when no building is selected", () => {
+			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
+
 			codeMapMouseEventService.onDocumentMouseUp()
 
 			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, codeMapBuilding)
 		})
 
-		it("should call onBuildingSelected and deselect building", () => {
+		it("should call onBuildingSelected when a new building is selected", () => {
+			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, null, null))
+
+			codeMapMouseEventService.onDocumentMouseUp()
+
+			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, codeMapBuilding)
+		})
+
+		it("should deselect building, when nothing is highlighted and something is selected", () => {
 			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
 			codeMapMouseEventService.onDocumentMouseUp()
@@ -304,6 +323,7 @@ describe("codeMapMouseEventService", () => {
 	describe("onRightClick", () => {
 		it("should $broadcast a building-right-clicked event with data", () => {
 			const event = { clientX: 0, clientY: 1 }
+			codeMapMouseEventService["dragOrClickFlag"] = 1
 
 			codeMapMouseEventService.onRightClick(event)
 
@@ -313,6 +333,7 @@ describe("codeMapMouseEventService", () => {
 				y: 1,
 				event
 			})
+			expect(codeMapMouseEventService["dragOrClickFlag"]).toBe(0)
 		})
 	})
 
