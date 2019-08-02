@@ -5,6 +5,7 @@ import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { SettingsService, SettingsServiceSubscriber } from "../../../state/settings.service"
 import { RecursivePartial, Settings } from "../../../codeCharta.model"
+import { IRootScopeService } from "angular"
 
 /**
  * A service which manages the Three.js scene in an angular way.
@@ -20,7 +21,8 @@ export class ThreeSceneService implements SettingsServiceSubscriber {
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding = null
 
-	constructor(private settingsService: SettingsService) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+		SettingsService.subscribe($rootScope, this)
 		this.scene = new THREE.Scene()
 
 		this.mapGeometry = new THREE.Group()
