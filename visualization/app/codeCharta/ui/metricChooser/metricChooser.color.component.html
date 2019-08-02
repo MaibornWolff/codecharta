@@ -2,7 +2,12 @@
 	<i class="fa fa-paint-brush"></i>
 
 	<label></label>
-	<md-select ng-model="$ctrl._viewModel.colorMetric" ng-change="$ctrl.applySettingsColorMetric()" md-on-close="$ctrl.clearSearchTerm()">
+	<md-select
+		ng-model="$ctrl._viewModel.colorMetric"
+		ng-change="$ctrl.applySettingsColorMetric()"
+		md-on-close="$ctrl.clearSearchTerm()"
+		md-container-class="ribbonBarDropdown"
+	>
 		<md-select-header>
 			<input
 				class="user-search"

@@ -2,7 +2,12 @@
 	<i class="fa fa-arrows-v"></i>
 
 	<label></label>
-	<md-select ng-model="$ctrl._viewModel.heightMetric" ng-change="$ctrl.applySettingsHeightMetric()" md-on-close="$ctrl.clearSearchTerm()">
+	<md-select
+		ng-model="$ctrl._viewModel.heightMetric"
+		ng-change="$ctrl.applySettingsHeightMetric()"
+		md-on-close="$ctrl.clearSearchTerm()"
+		md-container-class="ribbonBarDropdown"
+	>
 		<md-select-header>
 			<input
 				class="user-search"

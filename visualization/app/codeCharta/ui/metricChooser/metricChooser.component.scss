@@ -72,14 +72,14 @@ distribution-metric-chooser-component {
 	}
 }
 
-#select_container_24,
-#select_container_28,
-#select_container_33 {
-	top: 10% !important;
-}
+.md-select-menu-container {
+	&.ribbonBarDropdown {
+		top: 10% !important;
+	}
 
-#select_container_19 {
-	top: 5.5% !important;
+	&.distributionBarDropdown {
+		top: 5.5% !important;
+	}
 }
 
 md-content.option-group {

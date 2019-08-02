@@ -1,7 +1,12 @@
 <md-input-container>
 	<i class="fa fa-arrows-alt"></i>
 	<label></label>
-	<md-select ng-model="$ctrl._viewModel.areaMetric" ng-change="$ctrl.applySettingsAreaMetric()" md-on-close="$ctrl.clearSearchTerm()">
+	<md-select
+		ng-model="$ctrl._viewModel.areaMetric"
+		ng-change="$ctrl.applySettingsAreaMetric()"
+		md-on-close="$ctrl.clearSearchTerm()"
+		md-container-class="ribbonBarDropdown"
+	>
 		<md-select-header>
 			<input
 				class="user-search"
