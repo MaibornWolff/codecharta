@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - Search for metrics and an indicator for the highest value in dropdown #575
+- New Metric in SourceCodeParser: Maximum-Nesting-Level #659
 
 ### Changed
 
