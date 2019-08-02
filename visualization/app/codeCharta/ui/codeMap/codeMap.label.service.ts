@@ -68,19 +68,17 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 
 		for (let label of this.labels) {
-			label.sprite.position.x = (label.sprite.position.x / this.currentScale.x) * scale.x
-			label.sprite.position.y = ((label.sprite.position.y - 60) / this.currentScale.y) * scale.y + 60
-			label.sprite.position.z = (label.sprite.position.z / this.currentScale.z) * scale.z
+			const labelHeightDifference = new Vector3(0, 60, 0)
+			label.sprite.position
+				.sub(labelHeightDifference.clone())
+				.divide(this.currentScale.clone())
+				.multiply(scale.clone())
+				.add(labelHeightDifference.clone())
 
 			//cast is a workaround for the compiler. Attribute vertices does exist on geometry
 			//but it is missing in the mapping file for TypeScript.
-			;(<any>label.line!.geometry).vertices[0].x = ((<any>label.line!.geometry).vertices[0].x / this.currentScale.x) * scale.x
-			;(<any>label.line!.geometry).vertices[0].y = ((<any>label.line!.geometry).vertices[0].y / this.currentScale.y) * scale.y
-			;(<any>label.line!.geometry).vertices[0].z = ((<any>label.line!.geometry).vertices[0].z / this.currentScale.z) * scale.z
-			;(<any>label.line!.geometry).vertices[1].x = label.sprite.position.x
-			;(<any>label.line!.geometry).vertices[1].y = label.sprite.position.y
-			;(<any>label.line!.geometry).vertices[1].z = label.sprite.position.z
-
+			;(<any>label.line.geometry).vertices[0].divide(this.currentScale.clone()).multiply(scale.clone())
+			;(<any>label.line.geometry).vertices[1].copy(label.sprite.position)
 			label.line.geometry.translate(0, 0, 0)
 		}
 		this.currentScale.copy(scale)
