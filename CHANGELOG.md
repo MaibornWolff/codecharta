@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 - Label hight adjustment now matches scaling of map #594
 
+- SCMLogParser now guesses the input file encoding #614
+
 ### Chore
 
 ## [1.30.0] - 2019-07-26
