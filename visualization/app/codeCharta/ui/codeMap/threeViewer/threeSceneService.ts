@@ -22,7 +22,7 @@ export class ThreeSceneService implements SettingsServiceSubscriber {
 	private highlighted: CodeMapBuilding = null
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
-		SettingsService.subscribe($rootScope, this)
+		SettingsService.subscribe(this.$rootScope, this)
 		this.scene = new THREE.Scene()
 
 		this.mapGeometry = new THREE.Group()
