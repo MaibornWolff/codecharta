@@ -119,8 +119,8 @@ export class DetailPanelController
 		this._viewModel.maximizeDetailPanel = settings.appSettings.maximizeDetailPanel
 
 		if (update && update.fileSettings && update.fileSettings.blacklist) {
-			this.setSelectedDetails(null)
-			this.setHoveredDetails(null)
+			this.clearSelectedDetails()
+			this.clearHoveredDetails()
 		}
 	}
 
