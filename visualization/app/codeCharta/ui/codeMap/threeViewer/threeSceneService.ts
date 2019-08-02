@@ -3,12 +3,13 @@ import { Scene, Vector3 } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { SettingsService } from "../../../state/settings.service"
+import { SettingsService, SettingsServiceSubscriber } from "../../../state/settings.service"
+import { RecursivePartial, Settings } from "../../../codeCharta.model"
 
 /**
  * A service which manages the Three.js scene in an angular way.
  */
-export class ThreeSceneService {
+export class ThreeSceneService implements SettingsServiceSubscriber {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -33,6 +34,13 @@ export class ThreeSceneService {
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+	}
+
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+		if (update && update.fileSettings && update.fileSettings.blacklist) {
+			this.clearSelection()
+			this.clearHighlight()
+		}
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {
