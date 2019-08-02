@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- New Metric in SourceCodeParser: Maximum-Nesting-Level #659
+
 ### Changed
 
 ### Removed
