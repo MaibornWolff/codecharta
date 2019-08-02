@@ -117,6 +117,11 @@ export class DetailPanelController
 		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
 		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
 		this._viewModel.maximizeDetailPanel = settings.appSettings.maximizeDetailPanel
+
+		if (update && update.fileSettings && update.fileSettings.blacklist) {
+			this.setSelectedDetails(null)
+			this.setHoveredDetails(null)
+		}
 	}
 
 	public onSelect(data: CodeMapBuildingTransition) {
