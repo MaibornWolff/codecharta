@@ -85,6 +85,7 @@ distribution-metric-chooser-component {
 md-content.option-group {
 	top: $optionHeight + px !important;
 	min-height: auto;
+	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
 }
 
 .md-overflow {
@@ -93,18 +94,21 @@ md-content.option-group {
 
 .user-search {
 	display: block;
-	height: $optionHeight - 8 + px;
-	width: 100%;
-	outline: none;
-	border-color: rgba(0, 0, 0, 0.12);
-	padding: 10px;
 	position: fixed;
 	top: 8px;
+	width: 100%;
+	padding: 10px;
+	height: $optionHeight - 8 + px;
+	outline: none;
+	border: none;
+	background-color: #f5f5f5;
 	font-family: Arial, FontAwesome;
 	font-size: 11pt;
+	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
 
 	&:focus {
-		border-bottom-color: rgb(0, 150, 136);
+		border-bottom: solid 2px;
+		border-color: rgb(0, 150, 136);
 		color: rgb(0, 150, 136);
 	}
 }
