@@ -38,8 +38,8 @@ export class ThreeSceneService implements SettingsServiceSubscriber {
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		if (update && update.fileSettings && update.fileSettings.blacklist) {
-			this.clearSelection()
-			this.clearHighlight()
+			this.selected = null
+			this.highlighted = null
 		}
 	}
 
@@ -62,6 +62,7 @@ export class ThreeSceneService implements SettingsServiceSubscriber {
 
 	public clearSelection() {
 		this.getMapMesh().clearSelection(this.selected)
+		this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
 		this.selected = null
 	}
 
