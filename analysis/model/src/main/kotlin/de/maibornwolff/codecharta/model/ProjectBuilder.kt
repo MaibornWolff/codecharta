@@ -100,6 +100,7 @@ open class ProjectBuilder(
                 blacklist = blacklist.toList()
         )
 
+        System.err.println()
         logger.info { "Created Project with ${project.size} leaves." }
 
         return project
