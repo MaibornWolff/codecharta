@@ -8,5 +8,5 @@ dependencies {
     testImplementation project(path: ':model', configuration: 'testOutput')
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.12.2'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.13.2'
 }
