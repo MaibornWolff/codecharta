@@ -40,6 +40,10 @@ export interface DistributionMetricSubscriber {
 	onDistributionMetricChanged(distributionMetric: string)
 }
 
+export interface SearchPatternSubscriber {
+	onSearchPatternChanged(searchPattern: string)
+}
+
 export class SettingsService implements FileStateServiceSubscriber {
 	private static readonly SETTINGS_CHANGED_EVENT = "settings-changed"
 	private static readonly BLACKLIST_CHANGED_EVENT = "blacklist-changed"
@@ -47,6 +51,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 	private static readonly HEIGHT_METRIC_CHANGED_EVENT = "height-metric-changed"
 	private static readonly COLOR_METRIC_CHANGED_EVENT = "color-metric-changed"
 	private static readonly DISTRIBUTION_METRIC_CHANGED_EVENT = "distribution-metric-changed"
+	private static readonly SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
 
 	private static DEBOUNCE_TIME = 400
 
@@ -95,6 +100,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 				if (update.dynamicSettings.distributionMetric) {
 					this.notifyDistributionMetricSubscribers()
+				}
+
+				if (update.dynamicSettings.searchPattern) {
+					this.notifySearchPatternSubscribers()
 				}
 			}
 			this.notifySubscribers()
@@ -280,6 +289,15 @@ export class SettingsService implements FileStateServiceSubscriber {
 		debounceBroadcast()
 	}
 
+	private notifySearchPatternSubscribers() {
+		const debounceBroadcast = _.debounce(() => {
+			this.$rootScope.$broadcast(SettingsService.SEARCH_PATTERN_CHANGED_EVENT, {
+				searchPattern: this.settings.dynamicSettings.searchPattern
+			})
+		}, SettingsService.DEBOUNCE_TIME)
+		debounceBroadcast()
+	}
+
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})
 	}
@@ -317,6 +335,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribeToDistributionMetric($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
 		$rootScope.$on(SettingsService.DISTRIBUTION_METRIC_CHANGED_EVENT, (event, data) => {
 			subscriber.onDistributionMetricChanged(data.distributionMetric)
+		})
+	}
+
+	public static subscribeToSearchPattern($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
+		$rootScope.$on(SettingsService.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
+			subscriber.onSearchPatternChanged(data.searchPattern)
 		})
 	}
 }

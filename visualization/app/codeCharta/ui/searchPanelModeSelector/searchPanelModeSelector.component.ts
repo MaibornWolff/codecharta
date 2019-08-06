@@ -1,10 +1,10 @@
 import "./searchPanelModeSelector.component.scss"
-import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service"
-import { Settings, RecursivePartial, SearchPanelMode, BlacklistType } from "../../codeCharta.model"
+import { SettingsServiceSubscriber, SettingsService, BlacklistSubscriber, SearchPatternSubscriber } from "../../state/settings.service"
+import { Settings, RecursivePartial, SearchPanelMode, BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 
-export class SearchPanelModeSelectorController implements SettingsServiceSubscriber, SearchPanelServiceSubscriber {
+export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
 		hideListLength: number
@@ -19,14 +19,18 @@ export class SearchPanelModeSelectorController implements SettingsServiceSubscri
 
 	/* @ngInject */
 	constructor(private searchPanelService: SearchPanelService, private $rootScope: IRootScopeService) {
-		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToSearchPattern(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this._viewModel.hideListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.hide).length
-		this._viewModel.excludeListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.exclude).length
-		this._viewModel.searchFieldIsEmpty = settings.dynamicSettings.searchPattern === ""
+	public onSearchPatternChanged(searchPattern: string) {
+		this._viewModel.searchFieldIsEmpty = searchPattern === ""
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this._viewModel.hideListLength = blacklist.filter(x => x.type === BlacklistType.hide).length
+		this._viewModel.excludeListLength = blacklist.filter(x => x.type === BlacklistType.exclude).length
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
