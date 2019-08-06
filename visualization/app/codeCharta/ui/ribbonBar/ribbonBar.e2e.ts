@@ -31,7 +31,7 @@ describe("RibbonBar", () => {
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
 		await settingsPanel.toggleTreeViewMode()
-		await settingsPanel.rightClickRootNodeInTreeViewSearchPanel()
+		await settingsPanel.hoverRootNodeInTreeViewSearchPanel()
 
 		const actual = await ribbonBar.getAreaMetricValue()
 		expect(actual).toBe("600")

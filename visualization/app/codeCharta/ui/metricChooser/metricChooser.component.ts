@@ -1,16 +1,11 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import "./metricChooser.component.scss"
-import {
-	CodeMapBuildingTransition,
-	CodeMapMouseEventService,
-	CodeMapMouseEventServiceSubscriber
-} from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MetricData, Settings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 
-export class MetricChooserController implements MetricServiceSubscriber, CodeMapMouseEventServiceSubscriber, SettingsServiceSubscriber {
+export class MetricChooserController implements MetricServiceSubscriber, BuildingHoveredEventSubscriber, SettingsServiceSubscriber {
 	public hoveredAreaValue: number
 	public hoveredHeightValue: number
 	public hoveredColorValue: number
@@ -39,7 +34,7 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 	/* @ngInject */
 	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {
 		SettingsService.subscribe(this.$rootScope, this)
-		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
@@ -141,8 +136,6 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 		})
 	}
 
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent) {}
-
 	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
 		if (data && data.to && data.to.node && data.to.node.attributes) {
 			this.hoveredAreaValue = data.to.node.attributes[this._viewModel.areaMetric]
@@ -170,8 +163,6 @@ export class MetricChooserController implements MetricServiceSubscriber, CodeMap
 			this.hoveredColorDelta = null
 		}
 	}
-
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
 
 	private getHoveredDeltaColor() {
 		let colors = {
