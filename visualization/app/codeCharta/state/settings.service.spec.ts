@@ -81,25 +81,25 @@ describe("settingService", () => {
 
 		describe("onFileSelectionStateChanged", () => {
 			it("should call updateSettings with newFileSettings", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+				settingsService.onFileSelectionStatesChanged(fileStates)
 
 				expect(settingsService.updateSettings).toHaveBeenCalledWith({ fileSettings: DEFAULT_SETTINGS })
 			})
 
 			it("should call isPartialState with fileStates", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+				settingsService.onFileSelectionStatesChanged(fileStates)
 
 				expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
 			})
 
 			it("should call getVisibleFileStates with fileStates", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+				settingsService.onFileSelectionStatesChanged(fileStates)
 
 				expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			})
 
 			it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+				settingsService.onFileSelectionStatesChanged(fileStates)
 				const visibleFiles = [fileStates[0].file, fileStates[1].file]
 
 				expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)

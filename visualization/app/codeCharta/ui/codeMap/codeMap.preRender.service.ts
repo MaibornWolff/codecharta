@@ -11,7 +11,7 @@ import {
 	FileMeta
 } from "../../codeCharta.model"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import _ from "lodash"
 import { NodeDecorator } from "../../util/nodeDecorator"
@@ -32,7 +32,7 @@ export interface RenderData {
 }
 
 export interface CodeMapPreRenderServiceSubscriber {
-	onRenderMapChanged(map: CodeMapNode, event: IAngularEvent)
+	onRenderMapChanged(map: CodeMapNode)
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
@@ -67,7 +67,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		return this.lastRender.fileMeta
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.lastRender.settings = settings
 
 		if (this.lastRender.fileStates && update.fileSettings && (update.fileSettings.blacklist || update.fileSettings.markedPackages)) {
@@ -84,15 +84,15 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.lastRender.fileStates = fileStates
 		this.newFileLoaded = true
 		this.updateRenderMapAndFileMeta()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
-	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[]) {
 		this.lastRender.metricData = metricData
 		this.decorateIfPossible()
 		if (this.allNecessaryRenderDataAvailable()) {
@@ -100,7 +100,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {
+	public onMetricDataRemoved() {
 		this.lastRender.metricData = null
 	}
 
@@ -202,7 +202,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
 		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (event, data) => {
-			subscriber.onRenderMapChanged(data, event)
+			subscriber.onRenderMapChanged(data)
 		})
 	}
 }

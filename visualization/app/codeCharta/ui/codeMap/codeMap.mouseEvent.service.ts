@@ -1,6 +1,6 @@
 import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
-import { IAngularEvent, IRootScopeService, IWindowService } from "angular"
+import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
@@ -20,15 +20,15 @@ export interface CodeMapBuildingTransition {
 }
 
 export interface BuildingHoveredEventSubscriber {
-	onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent)
+	onBuildingHovered(data: CodeMapBuildingTransition)
 }
 
 export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent)
+	onBuildingSelected(data: CodeMapBuildingTransition)
 }
 
 export interface BuildingRightClickedEventSubscriber {
-	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent)
+	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
 
 export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber {
@@ -216,19 +216,19 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {
 		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data: CodeMapBuildingTransition) => {
-			subscriber.onBuildingHovered(data, e)
+			subscriber.onBuildingHovered(data)
 		})
 	}
 
 	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, data: CodeMapBuildingTransition) => {
-			subscriber.onBuildingSelected(data, e)
+			subscriber.onBuildingSelected(data)
 		})
 	}
 
 	public static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (e, data) => {
-			subscriber.onBuildingRightClicked(data.building, data.x, data.y, e)
+			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
 		})
 	}
 }

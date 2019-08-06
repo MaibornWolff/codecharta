@@ -84,7 +84,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.currentScale.copy(scale)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+	public onCameraChanged(camera: PerspectiveCamera) {
 		for (let label of this.labels) {
 			this.setLabelSize(label.sprite)
 		}

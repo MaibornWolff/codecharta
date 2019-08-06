@@ -25,11 +25,11 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[]) {
 		this.setScenarios(metricData)
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {}
+	public onMetricDataRemoved() {}
 
 	private setScenarios(metricData: MetricData[]) {
 		this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData)

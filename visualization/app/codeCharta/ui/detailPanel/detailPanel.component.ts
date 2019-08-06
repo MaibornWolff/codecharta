@@ -98,21 +98,21 @@ export class DetailPanelController
 		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 	}
 
-	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.metrics = metricData.map(x => x.name)
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {}
+	public onMetricDataRemoved() {}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		this.onHover(data)
 	}
 
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+	public onBuildingSelected(data: CodeMapBuildingTransition) {
 		this.onSelect(data)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
 		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
 		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric

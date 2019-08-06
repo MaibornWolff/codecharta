@@ -47,7 +47,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		this.loadFileOrSample()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
 	}
 

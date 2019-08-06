@@ -35,16 +35,16 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.updateViewModel(settings)
 	}
 
-	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.metricData = metricData
 		this.potentiallyUpdateChosenMetrics(metricData)
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {}
+	public onMetricDataRemoved() {}
 
 	private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {
 		const metricKeys: Partial<DynamicSettings> = {
@@ -121,7 +121,7 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 		})
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		if (data && data.to && data.to.node && data.to.node.attributes) {
 			this.hoveredAreaValue = data.to.node.attributes[this._viewModel.areaMetric]
 			this.hoveredColorValue = data.to.node.attributes[this._viewModel.colorMetric]

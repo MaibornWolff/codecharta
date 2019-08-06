@@ -5,7 +5,6 @@ import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
-import { CodeMapRenderService } from "./codeMap.render.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
@@ -24,7 +23,6 @@ describe("codeMapMouseEventService", () => {
 	let threeRendererService: ThreeRendererService
 	let threeSceneService: ThreeSceneService
 	let threeUpdateCycleService: ThreeUpdateCycleService
-	let codeMapRenderService: CodeMapRenderService
 
 	let codeMapBuilding: CodeMapBuilding
 
@@ -38,7 +36,6 @@ describe("codeMapMouseEventService", () => {
 		withMockedViewCubeMouseEventsService()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
-		withMockedCodeMapRenderService()
 		withMockedEventMethods()
 	})
 
@@ -131,16 +128,6 @@ describe("codeMapMouseEventService", () => {
 			selectBuilding: jest.fn(),
 			getSelectedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
 			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
-		})()
-	}
-
-	function withMockedCodeMapRenderService() {
-		codeMapRenderService = codeMapMouseEventService["codeMapRenderService"] = jest.fn().mockReturnValue({
-			mapMesh: {
-				getMeshDescription: jest.fn().mockReturnValue({
-					buildings: [codeMapBuilding]
-				})
-			}
 		})()
 	}
 

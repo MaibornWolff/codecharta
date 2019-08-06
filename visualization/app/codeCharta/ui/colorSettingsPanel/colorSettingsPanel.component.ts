@@ -30,7 +30,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.invertDeltaColors = settings.appSettings.invertDeltaColors
 		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
 		this._viewModel.invertColorRange = settings.appSettings.invertColorRange
@@ -45,13 +45,13 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
-	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[]) {
 		const newMaxColorMetricValue: number = this.metricService.getMaxMetricByMetricName(
 			this.settingsService.getSettings().dynamicSettings.colorMetric
 		)
@@ -61,7 +61,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 		}
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {}
+	public onMetricDataRemoved() {}
 
 	public invertColorRange() {
 		this.settingsService.updateSettings({

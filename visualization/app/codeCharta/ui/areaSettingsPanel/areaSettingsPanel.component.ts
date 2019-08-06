@@ -31,22 +31,22 @@ export class AreaSettingsPanelController
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
 		this._viewModel.margin = settings.dynamicSettings.margin
 		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), settings)
 	}
 
-	public onRenderMapChanged(map: CodeMapNode, event: angular.IAngularEvent) {
+	public onRenderMapChanged(map: CodeMapNode) {
 		this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
 		this.potentiallyUpdateMargin(map, this.settingsService.getSettings())
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetDynamicMargin()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	private resetDynamicMargin() {
 		this._viewModel.dynamicMargin = true

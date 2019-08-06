@@ -61,19 +61,19 @@ describe("HeightSettingsPanelController", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should set amountOfTopTables in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].amountOfTopLabels).toBe(31)
 		})
 
 		it("should set scalingY in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].scalingY).toBe(1.8)
 		})
 
 		it("should set invertHeight in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].invertHeight).toBeTruthy()
 		})
@@ -85,13 +85,13 @@ describe("HeightSettingsPanelController", () => {
 		})
 
 		it("should set isDeltaState in viewModel", () => {
-			heightSettingsPanelController.onFileSelectionStatesChanged([], undefined)
+			heightSettingsPanelController.onFileSelectionStatesChanged([])
 
 			expect(heightSettingsPanelController["_viewModel"].isDeltaState).toBe(true)
 		})
 
 		it("should call isDeltaState with empty array", () => {
-			heightSettingsPanelController.onFileSelectionStatesChanged([], undefined)
+			heightSettingsPanelController.onFileSelectionStatesChanged([])
 
 			expect(FileStateHelper.isDeltaState).toHaveBeenCalledWith([])
 		})
