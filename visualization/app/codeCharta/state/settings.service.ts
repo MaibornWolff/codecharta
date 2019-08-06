@@ -315,7 +315,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public static subscribeToDistributionMetric($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
-		$rootScope.$on(SettingsService.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsService.DISTRIBUTION_METRIC_CHANGED_EVENT, (event, data) => {
 			subscriber.onDistributionMetricChanged(data.distributionMetric)
 		})
 	}
