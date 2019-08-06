@@ -5,6 +5,7 @@ import angular from "angular"
 // Plop: Append module import here
 import "./edgePanel/edgePanel.module"
 import "./edgeChooser/edgeChooser.module"
+import "./presentationModeButton/presentationModeButton.module"
 import "./centerMapButton/centerMapButton.module"
 import "./matchingFilesCounter/matchingFilesCounter.module"
 import "./searchPanel/searchPanel.module"
@@ -38,7 +39,7 @@ angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
 	"app.codeCharta.ui.edgePanel",
 	"app.codeCharta.ui.edgeChooser",
-
+	"app.codeCharta.ui.presentationModeButton",
 	"app.codeCharta.ui.centerMapButton",
 	"app.codeCharta.ui.matchingFilesCounter",
 	"app.codeCharta.ui.searchPanel",

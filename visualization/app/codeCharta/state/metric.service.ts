@@ -13,14 +13,14 @@ import {
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
 
 export interface MetricServiceSubscriber {
-	onMetricDataAdded(metricData: MetricData[], event: IAngularEvent)
-	onMetricDataRemoved(event: IAngularEvent)
+	onMetricDataAdded(metricData: MetricData[])
+	onMetricDataRemoved()
 }
 
 interface MaxMetricValuePair {
@@ -40,17 +40,17 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
 		this.notifyMetricDataAdded()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onImportedFilesChanged(fileStates: FileState[]) {
 		this.metricData = null
 		this.notifyMetricDataRemoved()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (update.fileSettings && update.fileSettings.blacklist) {
 			const fileStates: FileState[] = this.fileStateService.getFileStates()
 			this.metricData = this.calculateMetrics(
@@ -204,11 +204,11 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
 		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (event, data) => {
-			subscriber.onMetricDataAdded(data, event)
+			subscriber.onMetricDataAdded(data)
 		})
 
 		$rootScope.$on(MetricService.METRIC_DATA_REMOVED_EVENT, (event, data) => {
-			subscriber.onMetricDataRemoved(event)
+			subscriber.onMetricDataRemoved()
 		})
 	}
 }

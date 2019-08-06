@@ -1,7 +1,7 @@
 import "./searchPanelModeSelector.component.scss"
 import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service"
 import { Settings, RecursivePartial, SearchPanelMode, BlacklistType } from "../../codeCharta.model"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 
 export class SearchPanelModeSelectorController implements SettingsServiceSubscriber, SearchPanelServiceSubscriber {
@@ -23,13 +23,13 @@ export class SearchPanelModeSelectorController implements SettingsServiceSubscri
 		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.hideListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.hide).length
 		this._viewModel.excludeListLength = settings.fileSettings.blacklist.filter(x => x.type === BlacklistType.exclude).length
 		this._viewModel.searchFieldIsEmpty = settings.dynamicSettings.searchPattern === ""
 	}
 
-	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode, event: IAngularEvent) {
+	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
 		this._viewModel.searchPanelMode = searchPanelMode
 	}
 

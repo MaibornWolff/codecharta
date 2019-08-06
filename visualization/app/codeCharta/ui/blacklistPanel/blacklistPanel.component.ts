@@ -2,7 +2,7 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { Settings, BlacklistItem, BlacklistType, RecursivePartial, SearchPanelMode } from "../../codeCharta.model"
-import { IRootScopeService, IAngularEvent } from "angular"
+import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 
 export class BlacklistPanelController implements SettingsServiceSubscriber, SearchPanelServiceSubscriber {
@@ -21,7 +21,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber, Sear
 		SearchPanelService.subscribe($rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (update.fileSettings && update.fileSettings.blacklist) {
 			let blacklist = update.fileSettings.blacklist as [BlacklistItem]
 			this._viewModel.hide = blacklist.filter(x => x.type === BlacklistType.hide)
@@ -29,7 +29,7 @@ export class BlacklistPanelController implements SettingsServiceSubscriber, Sear
 		}
 	}
 
-	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode, event: IAngularEvent) {
+	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
 		this._viewModel.searchPanelMode = searchPanelMode
 	}
 

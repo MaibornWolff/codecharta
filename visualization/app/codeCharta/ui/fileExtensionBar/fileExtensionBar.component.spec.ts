@@ -41,19 +41,19 @@ describe("FileExtensionBarController", () => {
 			FileExtensionCalculator.getMetricDistribution = jest.fn().mockReturnValue(distribution)
 		})
 		it("should set viewModel.distribution for given metric", () => {
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
 			expect(fileExtensionBarController["_viewModel"].distribution).toEqual(distribution)
 		})
 
 		it("should call getMetricDistribution with mcc", () => {
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
 			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(TEST_FILE_WITH_PATHS.map, "mcc")
 		})
 
 		it("should set the color of given extension attribute", () => {
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
 			expect(distribution[0].color).toEqual("hsl(58, 40%, 50%)")
 		})
@@ -61,7 +61,7 @@ describe("FileExtensionBarController", () => {
 		it("should remain the color property of the extension, if it already has one", () => {
 			distribution[0].color = "#4286f4"
 
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
 			expect(distribution[0].color).toEqual("#4286f4")
 		})
@@ -69,7 +69,7 @@ describe("FileExtensionBarController", () => {
 		it("should set viewModel.distribution with just the none Object, if no extension was found for the metric", () => {
 			FileExtensionCalculator.getMetricDistribution = jest.fn().mockReturnValue([])
 
-			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map, undefined)
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
 			expect(fileExtensionBarController["_viewModel"].distribution).toEqual(NONE_METRIC_DISTRIBUTION)
 		})

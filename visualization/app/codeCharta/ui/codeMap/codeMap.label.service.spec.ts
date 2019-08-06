@@ -166,23 +166,17 @@ describe("CodeMapLabelService", () => {
 			codeMapLabelService["labels"][0].sprite.position.z
 		)
 
-		const scaleBeforeB: Vector3 = new Vector3(
-			codeMapLabelService["labels"][1].sprite.position.x,
-			codeMapLabelService["labels"][1].sprite.position.y,
-			codeMapLabelService["labels"][1].sprite.position.z
-		)
-
 		codeMapLabelService.scale(new Vector3(SX, SY, SZ))
 
 		const scaleAfterA: Vector3 = codeMapLabelService["labels"][0].sprite.position
 		const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position
 
 		expect(scaleAfterA.x).toBe(scaleBeforeA.x * SX)
-		expect(scaleAfterA.y).toBe(scaleBeforeA.y * SY)
+		expect(scaleAfterA.y).toBe((scaleBeforeA.y - 60) * SY + 60)
 		expect(scaleAfterA.z).toBe(scaleBeforeA.z * SZ)
 
-		expect(scaleAfterB.x).toBe(scaleBeforeB.x * SX)
-		expect(scaleAfterB.y).toBe(scaleBeforeB.y * SY)
-		expect(scaleAfterB.z).toBe(scaleBeforeB.z * SZ)
+		expect(scaleAfterB.x).toBe(scaleBeforeA.x * SX)
+		expect(scaleAfterB.y).toBe((scaleBeforeA.y - 60) * SY + 60)
+		expect(scaleAfterB.z).toBe(scaleBeforeA.z * SZ)
 	})
 })

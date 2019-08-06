@@ -9,11 +9,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Search for metrics and an indicator for the highest value in dropdown #575
+- Button to enable PresentationMode that uses Flashlight-Hovering #576
+
+### Changed
+
+- Replaced Scenario dropdown with button on the left of the metric sections #628
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.31.0] - 2019-08-02
+
+### Added
+
+- New Metric in SourceCodeParser: Maximum-Nesting-Level #659
+
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+- Label hight adjustment now matches scaling of map #594
+- SCMLogParser now guesses the input file encoding #614
 
 ### Chore
 

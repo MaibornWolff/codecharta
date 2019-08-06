@@ -57,7 +57,7 @@ describe("CenterMapButtonController", () => {
 			const camera = new PerspectiveCamera()
 			camera.position.set(1, 2, 3)
 
-			centerMapButtonController.onCameraChanged(camera, undefined)
+			centerMapButtonController.onCameraChanged(camera)
 
 			expect(centerMapButtonController["_viewModel"].isMapCentered).toBeTruthy()
 		})
@@ -67,7 +67,7 @@ describe("CenterMapButtonController", () => {
 			const camera = new PerspectiveCamera()
 			camera.position.set(1, 2, 4)
 
-			centerMapButtonController.onCameraChanged(camera, undefined)
+			centerMapButtonController.onCameraChanged(camera)
 
 			expect(centerMapButtonController["_viewModel"].isMapCentered).toBeFalsy()
 		})

@@ -12,13 +12,16 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawPars
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
+import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
+
 
 @CommandLine.Command(
         name = "scmlogparser",
@@ -169,10 +172,27 @@ class SCMLogParser: Callable<Void> {
                 containsAuthors: Boolean,
                 silent: Boolean = false
         ): Project {
+            val encoding = guessEncoding(pathToLog) ?: "UTF-8"
+            if (!silent) System.err.println("Assumed encoding $encoding")
+            val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
 
-            val lines = pathToLog.readLines().stream()
             val projectConverter = ProjectConverter(containsAuthors, projectName)
             return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
+        }
+
+        private fun guessEncoding(pathToLog: File): String? {
+            val inputStream = pathToLog.inputStream()
+            val buffer = ByteArray(4096)
+            val detector = UniversalDetector(null)
+
+            var sizeRead = inputStream.read(buffer)
+            while (sizeRead > 0 && !detector.isDone) {
+                detector.handleData(buffer, 0, sizeRead)
+                sizeRead = inputStream.read(buffer)
+            }
+            detector.dataEnd()
+
+            return detector.detectedCharset
         }
     }
 }

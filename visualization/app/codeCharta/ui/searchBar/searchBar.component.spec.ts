@@ -1,44 +1,39 @@
 import "./searchBar.module"
 import { SearchBarController } from "./searchBar.component"
-import {instantiateModule, getService} from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular";
-import { SettingsService } from "../../state/settings.service";
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service";
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service";
-import { BlacklistType, CodeMapNode, BlacklistItem } from "../../codeCharta.model";
-import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { IRootScopeService } from "angular"
+import { SettingsService } from "../../state/settings.service"
+import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
+import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
 
 describe("SearchBarController", () => {
+	let searchBarController: SearchBarController
 
-    let searchBarController: SearchBarController
+	let $rootScope: IRootScopeService
+	let settingsService: SettingsService
+	let codeMapActionsService: CodeMapActionsService
 
-    let $rootScope: IRootScopeService
-    let settingsService: SettingsService
-    let codeMapActionsService: CodeMapActionsService
-    let codeMapPreRenderService: CodeMapPreRenderService
+	beforeEach(() => {
+		restartSystem()
+		rebuildController()
+	})
 
-    beforeEach(() => {
-        restartSystem()
-        rebuildController()
-    })
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.searchBar")
 
-    function restartSystem() {
-        instantiateModule("app.codeCharta.ui.searchBar")
-
-        $rootScope = getService<IRootScopeService>("$rootScope")
-        settingsService = getService<SettingsService>("settingsService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		settingsService = getService<SettingsService>("settingsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-    }
+	}
 
-    function rebuildController() {
-        searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService)
-    }
+	function rebuildController() {
+		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService)
+	}
 
-    describe("onFileSelectionStatesChanged", () => {
+	describe("onFileSelectionStatesChanged", () => {
 		it("should set empty searchPattern", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
-			searchBarController.onFileSelectionStatesChanged(null, null)
+			searchBarController.onFileSelectionStatesChanged(null)
 
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe("")
@@ -49,9 +44,7 @@ describe("SearchBarController", () => {
 		it("should set searchPattern in settings", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
 			searchBarController.applySettingsSearchPattern()
-			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(
-				searchBarController["_viewModel"].searchPattern
-			)
+			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(searchBarController["_viewModel"].searchPattern)
 		})
 	})
 
@@ -68,8 +61,6 @@ describe("SearchBarController", () => {
 	})
 
 	describe("updateViewModel", () => {
-		let searchedNodeLeaves: CodeMapNode[]
-		let rootNode = VALID_NODE_WITH_PATH
 		beforeEach(() => {
 			searchBarController["_viewModel"].searchPattern = "/root/node/path"
 		})
@@ -104,5 +95,4 @@ describe("SearchBarController", () => {
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
 		})
 	})
-
-});
+})
