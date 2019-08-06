@@ -24,9 +24,24 @@ export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
 }
 
+export interface AreaMetricSubscriber {
+	onAreaMetricChanged(areaMetric: string)
+}
+
+export interface HeightMetricSubscriber {
+	onHeightMetricChanged(heightMetric: string)
+}
+
+export interface ColorMetricSubscriber {
+	onColorMetricChanged(colorMetric: string)
+}
+
 export class SettingsService implements FileStateServiceSubscriber {
-	private static SETTINGS_CHANGED_EVENT = "settings-changed"
-	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
+	private static readonly SETTINGS_CHANGED_EVENT = "settings-changed"
+	private static readonly BLACKLIST_CHANGED_EVENT = "blacklist-changed"
+	private static readonly AREA_METRIC_CHANGED_EVENT = "area-metric-changed"
+	private static readonly HEIGHT_METRIC_CHANGED_EVENT = "height-metric-changed"
+	private static readonly COLOR_METRIC_CHANGED_EVENT = "color-metric-changed"
 
 	private static DEBOUNCE_TIME = 400
 
@@ -58,6 +73,20 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 			if (update.fileSettings && update.fileSettings.blacklist) {
 				this.notifyBlacklistSubscribers()
+			}
+
+			if (update.dynamicSettings) {
+				if (update.dynamicSettings.areaMetric) {
+					this.notifyAreaMetricSubscribers()
+				}
+
+				if (update.dynamicSettings.areaMetric) {
+					this.notifyHeightMetricSubscribers()
+				}
+
+				if (update.dynamicSettings.areaMetric) {
+					this.notifyColorMetricSubscribers()
+				}
 			} else {
 				this.debounceBroadcast()
 			}
@@ -192,12 +221,29 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	private notifySubscribers() {
-		this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: this.update })
+		this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, {
+			settings: this.settings,
+			update: this.update
+		})
 		this.update = {}
 	}
 
 	private notifyBlacklistSubscribers() {
 		this.$rootScope.$broadcast(SettingsService.BLACKLIST_CHANGED_EVENT, { blacklist: this.settings.fileSettings.blacklist })
+	}
+
+	private notifyAreaMetricSubscribers() {
+		this.$rootScope.$broadcast(SettingsService.AREA_METRIC_CHANGED_EVENT, { areaMetric: this.settings.dynamicSettings.areaMetric })
+	}
+
+	private notifyHeightMetricSubscribers() {
+		this.$rootScope.$broadcast(SettingsService.HEIGHT_METRIC_CHANGED_EVENT, {
+			heightMetric: this.settings.dynamicSettings.heightMetric
+		})
+	}
+
+	private notifyColorMetricSubscribers() {
+		this.$rootScope.$broadcast(SettingsService.COLOR_METRIC_CHANGED_EVENT, { colorMetric: this.settings.dynamicSettings.colorMetric })
 	}
 
 	private synchronizeAngularTwoWayBinding() {
@@ -213,6 +259,24 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribeToBlacklist($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
 		$rootScope.$on(SettingsService.BLACKLIST_CHANGED_EVENT, (event, data) => {
 			subscriber.onBlacklistChanged(data.blacklist)
+		})
+	}
+
+	public static subscribeToAreaMetric($rootScope: IRootScopeService, subscriber: AreaMetricSubscriber) {
+		$rootScope.$on(SettingsService.AREA_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onAreaMetricChanged(data.areaMetric)
+		})
+	}
+
+	public static subscribeToHeightMetric($rootScope: IRootScopeService, subscriber: HeightMetricSubscriber) {
+		$rootScope.$on(SettingsService.HEIGHT_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onHeightMetricChanged(data.heightMetric)
+		})
+	}
+
+	public static subscribeToColorMetric($rootScope: IRootScopeService, subscriber: ColorMetricSubscriber) {
+		$rootScope.$on(SettingsService.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onColorMetricChanged(data.colorMetric)
 		})
 	}
 }
