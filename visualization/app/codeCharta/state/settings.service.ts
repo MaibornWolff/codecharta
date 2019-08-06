@@ -96,9 +96,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 				if (update.dynamicSettings.distributionMetric) {
 					this.notifyDistributionMetricSubscribers()
 				}
-			} else {
-				this.debounceBroadcast()
 			}
+			this.debounceBroadcast()
 		}
 		this.synchronizeAngularTwoWayBinding()
 	}
