@@ -143,7 +143,7 @@ describe("codeChartaController", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should set focusedNodePath in viewModel", () => {
-			codeChartaController.onSettingsChanged(settings, undefined, undefined)
+			codeChartaController.onSettingsChanged(settings, undefined)
 
 			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
 		})
