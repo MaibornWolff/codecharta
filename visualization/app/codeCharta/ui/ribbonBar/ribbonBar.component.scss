@@ -110,6 +110,10 @@ ribbon-bar-component {
 				&:focus {
 					outline: none;
 				}
+
+				&.no-hover {
+					pointer-events: none;
+				}
 			}
 
 			.section-body {
