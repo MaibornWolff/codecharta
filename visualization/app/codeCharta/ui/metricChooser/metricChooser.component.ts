@@ -13,6 +13,7 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 	public hoveredAreaDelta: number
 	public hoveredColorDelta: number
 	public hoveredDeltaColor: string
+	private originalMetricData: MetricData[]
 
 	private _viewModel: {
 		metricData: MetricData[]
@@ -20,12 +21,14 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 		colorMetric: string
 		heightMetric: string
 		distributionMetric: string
+		searchTerm: string
 	} = {
 		metricData: [],
 		areaMetric: null,
 		colorMetric: null,
 		heightMetric: null,
-		distributionMetric: null
+		distributionMetric: null,
+		searchTerm: ""
 	}
 
 	/* @ngInject */
@@ -39,8 +42,20 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 		this.updateViewModel(settings)
 	}
 
+	public filterMetricData() {
+		this._viewModel.metricData = this.originalMetricData.filter(metric =>
+			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
+		)
+	}
+
+	public clearSearchTerm() {
+		this._viewModel.searchTerm = ""
+		this._viewModel.metricData = this.originalMetricData
+	}
+
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.metricData = metricData
+		this.originalMetricData = metricData
 		this.potentiallyUpdateChosenMetrics(metricData)
 	}
 

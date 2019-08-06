@@ -1,3 +1,5 @@
+$optionHeight: 48;
+
 area-metric-chooser-component,
 height-metric-chooser-component,
 color-metric-chooser-component,
@@ -45,11 +47,6 @@ distribution-metric-chooser-component {
 	}
 }
 
-.metric-max-value {
-	color: #ccc !important;
-	font-size: smaller !important;
-}
-
 distribution-metric-chooser-component {
 	md-input-container {
 		top: 0;
@@ -73,4 +70,51 @@ distribution-metric-chooser-component {
 			margin-right: 5px;
 		}
 	}
+}
+
+.md-select-menu-container {
+	&.ribbonBarDropdown {
+		top: 75px !important;
+	}
+
+	&.distributionBarDropdown {
+		top: 45px !important;
+	}
+}
+
+md-content.option-group {
+	top: $optionHeight + px !important;
+	min-height: auto;
+	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+}
+
+.md-overflow {
+	display: initial;
+}
+
+.metric-search {
+	display: block;
+	position: fixed;
+	top: 8px;
+	width: 100%;
+	padding: 10px;
+	height: $optionHeight - 8 + px;
+	outline: none;
+	border: none;
+	border-bottom: solid 2px;
+	border-color: rgba(0, 0, 0, 0.12);
+	background-color: #f5f5f5;
+	font-family: Arial, FontAwesome;
+	font-size: 11pt;
+	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+
+	&:focus {
+		border-color: rgb(0, 150, 136);
+		color: rgb(0, 150, 136);
+	}
+}
+
+.metric-max-value {
+	color: #ccc !important;
+	margin-left: 5px !important;
 }
