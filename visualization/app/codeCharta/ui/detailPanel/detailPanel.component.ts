@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { BlacklistSubscriber, SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import "./detailPanel.component.scss"
 import {
 	BuildingHoveredEventSubscriber,
@@ -6,7 +6,7 @@ import {
 	CodeMapBuildingTransition,
 	CodeMapMouseEventService
 } from "../codeMap/codeMap.mouseEvent.service"
-import { Settings, KeyValuePair, MetricData, RecursivePartial } from "../../codeCharta.model"
+import { Settings, KeyValuePair, MetricData, RecursivePartial, BlacklistItem } from "../../codeCharta.model"
 import { Node } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
@@ -40,7 +40,12 @@ interface Details {
 }
 
 export class DetailPanelController
-	implements SettingsServiceSubscriber, BuildingHoveredEventSubscriber, BuildingSelectedEventSubscriber, MetricServiceSubscriber {
+	implements
+		SettingsServiceSubscriber,
+		BuildingHoveredEventSubscriber,
+		BuildingSelectedEventSubscriber,
+		MetricServiceSubscriber,
+		BlacklistSubscriber {
 	private _viewModel: {
 		maximizeDetailPanel: boolean
 		metrics: string[]
@@ -94,6 +99,7 @@ export class DetailPanelController
 	) {
 		MetricService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 	}
@@ -117,11 +123,11 @@ export class DetailPanelController
 		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
 		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
 		this._viewModel.maximizeDetailPanel = settings.appSettings.maximizeDetailPanel
+	}
 
-		if (update && update.fileSettings && update.fileSettings.blacklist) {
-			this.clearSelectedDetails()
-			this.clearHoveredDetails()
-		}
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.clearSelectedDetails()
+		this.clearHoveredDetails()
 	}
 
 	public onSelect(data: CodeMapBuildingTransition) {
