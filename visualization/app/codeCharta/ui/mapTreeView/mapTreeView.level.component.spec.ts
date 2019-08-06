@@ -9,18 +9,14 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
 import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
-import { FileStateService } from "../../state/fileState.service"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
 	let $rootScope: IRootScopeService
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
-	let fileStateService: FileStateService
 	let $event
 
 	beforeEach(() => {
@@ -33,10 +29,8 @@ describe("MapTreeViewLevelController", () => {
 		instantiateModule("app.codeCharta.ui.mapTreeView")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		settingsService = getService<SettingsService>("settingsService")
-		fileStateService = getService<FileStateService>("fileStateService")
 
 		$event = {
 			clientX: jest.fn(),

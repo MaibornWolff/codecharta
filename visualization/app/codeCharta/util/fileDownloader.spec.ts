@@ -1,6 +1,6 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
-import { FileMeta, CodeMapNode, FileSettings, ExportCCFile } from "../codeCharta.model"
+import { FileMeta, CodeMapNode, FileSettings } from "../codeCharta.model"
 import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED } from "./dataMocks"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 
@@ -26,7 +26,7 @@ describe("fileDownloader", () => {
 
 	describe("downloadCurrentMap", () => {
 		it("should call downloadData with correct parameter data", () => {
-			const downloadedMap = FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettingsNames, fileName)
+			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettingsNames, fileName)
 
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, fileNameWithExtension)

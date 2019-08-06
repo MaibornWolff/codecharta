@@ -14,14 +14,12 @@ describe("MetricTypeController", () => {
 	let metricTypeController: MetricTypeController
 	let $rootScope: IRootScopeService
 	let metricService: MetricService
-	let settingsService: SettingsService
 
 	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
 	})
 
 	function restartSystem() {
@@ -35,12 +33,6 @@ describe("MetricTypeController", () => {
 
 	function rebuildController() {
 		metricTypeController = new MetricTypeController($rootScope, metricService)
-	}
-
-	function withMockedSettingsService() {
-		settingsService = metricTypeController["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(settings)
-		})()
 	}
 
 	describe("constructor", () => {

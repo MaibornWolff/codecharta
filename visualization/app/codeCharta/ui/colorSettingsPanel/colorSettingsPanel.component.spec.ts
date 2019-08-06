@@ -13,7 +13,6 @@ describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
-	let fileStateService: FileStateService
 	let metricService: MetricService
 
 	beforeEach(() => {
@@ -28,7 +27,6 @@ describe("ColorSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
-		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
 	}
 

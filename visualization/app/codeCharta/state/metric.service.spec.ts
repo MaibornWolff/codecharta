@@ -1,7 +1,7 @@
 import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CCFile, FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
+import { FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
@@ -14,7 +14,6 @@ describe("MetricService", () => {
 	let fileStateService: FileStateService
 
 	let fileStates: FileState[]
-	let files: CCFile[]
 	let metricData: MetricData[]
 	let settings: Settings
 
@@ -30,7 +29,6 @@ describe("MetricService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		fileStateService = getService<FileStateService>("fileStateService")
 
-		files = [TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]
 		fileStates = [
 			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A), selectedAs: FileSelectionState.None },
 			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_B), selectedAs: FileSelectionState.None }

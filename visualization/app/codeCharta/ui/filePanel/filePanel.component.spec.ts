@@ -42,11 +42,6 @@ describe("filePanelController", () => {
 		})()
 	}
 
-	function withMockedEventMethods() {
-		$rootScope.$on = jest.fn()
-		$rootScope.$broadcast = jest.fn()
-	}
-
 	beforeEach(() => {
 		restartSystem()
 		buildController()

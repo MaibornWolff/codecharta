@@ -2,7 +2,6 @@ import "./rangeSlider.module"
 
 import { RangeSliderController } from "./rangeSlider.component"
 import { SettingsService } from "../../state/settings.service"
-import { CodeChartaService } from "../../codeCharta.service"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
@@ -14,7 +13,6 @@ import { FileStateHelper } from "../../util/fileStateHelper"
 describe("RangeSliderController", () => {
 	let settingsService: SettingsService
 	let fileStateService: FileStateService
-	let codeChartaService: CodeChartaService
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
 	let rangeSliderController: RangeSliderController
@@ -28,7 +26,6 @@ describe("RangeSliderController", () => {
 
 		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
-		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		metricService = getService<MetricService>("metricService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 	}

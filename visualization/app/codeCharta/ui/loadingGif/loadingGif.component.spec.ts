@@ -8,12 +8,10 @@ describe("LoadingGifController", () => {
 	let loadingGifController: LoadingGifController
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
-	let loadingGifService: LoadingGifService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedLoadingGifService()
 	})
 
 	function restartSystem() {
@@ -21,18 +19,10 @@ describe("LoadingGifController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
-		loadingGifService = getService<LoadingGifService>("loadingGifService")
 	}
 
 	function rebuildController() {
 		loadingGifController = new LoadingGifController($rootScope, $timeout)
-	}
-
-	function withMockedLoadingGifService() {
-		loadingGifService = loadingGifController["loadingGifService"] = jest.fn().mockReturnValue({
-			updateLoadingFileFlag: jest.fn(),
-			updateLoadingMapFlag: jest.fn()
-		})()
 	}
 
 	describe("constructor", () => {
