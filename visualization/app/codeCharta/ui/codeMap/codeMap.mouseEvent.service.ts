@@ -1,14 +1,13 @@
 import { MapTreeViewHoverEventSubscriber, MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
-import { IRootScopeService, IWindowService } from "angular"
+import { IAngularEvent, IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode, FileState } from "../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 
 interface Coordinates {
 	x: number
@@ -21,26 +20,26 @@ export interface CodeMapBuildingTransition {
 }
 
 export interface BuildingHoveredEventSubscriber {
-	onBuildingHovered(data: CodeMapBuildingTransition)
+	onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent)
 }
 
 export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(data: CodeMapBuildingTransition)
+	onBuildingSelected(data: CodeMapBuildingTransition, event: IAngularEvent)
 }
 
 export interface BuildingRightClickedEventSubscriber {
-	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
+	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: IAngularEvent)
 }
 
-export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber {
-	private static BUILDING_HOVERED_EVENT = "building-hovered"
-	private static BUILDING_SELECTED_EVENT = "building-selected"
-	private static BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
+export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber {
+	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
+	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
+	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
-	private hovered: CodeMapBuilding = null
-	private selected: CodeMapBuilding = null
+	private highlightedInTreeView: CodeMapBuilding = null
+
 	private mouse: Coordinates = { x: 0, y: 0 }
+	private oldMouse: Coordinates = { x: 0, y: 0 }
 	private dragOrClickFlag = 0
 
 	/* @ngInject */
@@ -52,9 +51,8 @@ export class CodeMapMouseEventService
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
-		this.threeUpdateCycleService.register(this.update.bind(this))
+		this.threeUpdateCycleService.register(this.updateHovering.bind(this))
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
-		FileStateService.subscribe($rootScope, this)
 	}
 
 	public start() {
@@ -82,35 +80,36 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.hovered = null
-		this.selected = null
-	}
+	public updateHovering() {
+		if (this.hasMouseMoved()) {
+			this.oldMouse.x = this.mouse.x
+			this.oldMouse.y = this.mouse.y
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
+			this.threeCameraService.camera.updateMatrixWorld(false)
 
-	public update() {
-		this.threeCameraService.camera.updateMatrixWorld(false)
+			if (this.threeSceneService.getMapMesh()) {
+				let intersectionResult = this.threeSceneService
+					.getMapMesh()
+					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
-		if (this.threeSceneService.getMapMesh() != null) {
-			let intersectionResult = this.threeSceneService
-				.getMapMesh()
-				.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
+				const from = this.threeSceneService.getHighlightedBuilding()
+				let to = null
 
-			let from = this.hovered
-			let to = null
+				if (intersectionResult.intersectionFound) {
+					to = intersectionResult.building
+				} else {
+					to = this.highlightedInTreeView
+				}
 
-			if (intersectionResult.intersectionFound) {
-				to = intersectionResult.building
-			} else {
-				to = null
-			}
-
-			if (from !== to) {
-				this.onBuildingHovered(from, to)
-				this.hovered = to
+				if (from !== to) {
+					this.onBuildingHovered(from, to)
+				}
 			}
 		}
+	}
+
+	private hasMouseMoved(): boolean {
+		return this.mouse.x !== this.oldMouse.x || this.mouse.y !== this.oldMouse.y
 	}
 
 	public onDocumentMouseMove(event) {
@@ -121,13 +120,15 @@ export class CodeMapMouseEventService
 	}
 
 	public onDocumentMouseUp() {
+		const highlightedInCodeMap = this.threeSceneService.getHighlightedBuilding()
+		const selected = this.threeSceneService.getSelectedBuilding()
+
 		if (this.dragOrClickFlag === 0) {
-			if (this.hovered) {
-				this.onBuildingSelected(null, this.hovered)
+			if (highlightedInCodeMap && (!selected || (selected && selected.id !== highlightedInCodeMap.id))) {
+				this.onBuildingSelected(null, highlightedInCodeMap)
 			}
 
-			if (!this.hovered && this.selected) {
-				this.selected = null
+			if (!highlightedInCodeMap && selected) {
 				this.onBuildingSelected(null, null)
 			}
 		}
@@ -143,7 +144,7 @@ export class CodeMapMouseEventService
 
 	public onRightClick(event) {
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
-			building: this.hovered,
+			building: this.threeSceneService.getHighlightedBuilding(),
 			x: event.clientX,
 			y: event.clientY,
 			event: event
@@ -155,13 +156,12 @@ export class CodeMapMouseEventService
 	}
 
 	public onDocumentDoubleClick(event) {
-		if (!this.hovered) {
-			return
-		}
-		let fileSourceLink = this.hovered.node.link
+		if (this.threeSceneService.getHighlightedBuilding()) {
+			let fileSourceLink = this.threeSceneService.getHighlightedBuilding().node.link
 
-		if (fileSourceLink) {
-			this.$window.open(fileSourceLink, "_blank")
+			if (fileSourceLink) {
+				this.$window.open(fileSourceLink, "_blank")
+			}
 		}
 	}
 
@@ -178,42 +178,40 @@ export class CodeMapMouseEventService
 			}
 		}
 
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
-
-		if (to !== null) {
+		if (to) {
 			this.threeSceneService.highlightBuilding(to)
-			this.hovered = to
 		} else {
 			this.threeSceneService.clearHighlight()
-			this.hovered = null
 		}
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
 	}
 
 	public onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, { to: to, from: from })
-
-		if (to !== null) {
-			if (this.selected) {
+		const selected = this.threeSceneService.getSelectedBuilding()
+		if (to) {
+			if (selected) {
 				this.threeSceneService.clearSelection()
 			}
 			this.threeSceneService.selectBuilding(to)
-			this.selected = to
 		} else {
 			this.threeSceneService.clearSelection()
 		}
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, { to: to, from: from })
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
-		let buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
+		const buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
-				this.onBuildingHovered(this.hovered, building)
+				this.onBuildingHovered(this.threeSceneService.getHighlightedBuilding(), building)
+				this.highlightedInTreeView = building
 			}
 		})
 	}
 
 	public onShouldUnhoverNode(node: CodeMapNode) {
-		this.onBuildingHovered(this.hovered, null)
+		this.onBuildingHovered(this.highlightedInTreeView, null)
+		this.highlightedInTreeView = null
 	}
 
 	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {

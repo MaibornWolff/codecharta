@@ -7,6 +7,8 @@ export class CodeMapBuilding {
 	private _boundingBox: Box3
 	private _color: string
 	private _defaultColor: string
+	private _deltaColor: string
+	private _defaultDeltaColor: string
 	private _node: Node
 	public parent: CodeMapBuilding
 
@@ -15,6 +17,8 @@ export class CodeMapBuilding {
 		this._boundingBox = box
 		this._color = color
 		this._defaultColor = color
+		this._deltaColor = "#000000"
+		this._defaultDeltaColor = "#000000"
 		this._node = node
 	}
 
@@ -27,11 +31,19 @@ export class CodeMapBuilding {
 	}
 
 	public decreaseLightness(value: number) {
-		const hsl = ColorConverter.hexToHSL(this._defaultColor)
-		hsl.decreaseLightness(value)
-		hsl.getLightness() < 10 ? hsl.setLightness(10) : hsl.setLightness(hsl.getLightness())
+		const defaultColorHSL = ColorConverter.hexToHSL(this._defaultColor)
+		defaultColorHSL.decreaseLightness(value)
+		defaultColorHSL.getLightness() < 10
+			? defaultColorHSL.setLightness(10)
+			: defaultColorHSL.setLightness(defaultColorHSL.getLightness())
+		this._color = defaultColorHSL.toHex()
 
-		this._color = hsl.toHex()
+		if (this._node.deltas) {
+			const deltaColorHSL = ColorConverter.hexToHSL(this._defaultDeltaColor)
+			deltaColorHSL.decreaseLightness(value)
+			deltaColorHSL.getLightness() < 10 ? deltaColorHSL.setLightness(10) : deltaColorHSL.setLightness(deltaColorHSL.getLightness())
+			this._deltaColor = deltaColorHSL.toHex()
+		}
 	}
 
 	public getColorVector(): Vector3 {
@@ -42,8 +54,17 @@ export class CodeMapBuilding {
 		return ColorConverter.colorToVector3(this._defaultColor)
 	}
 
+	public getDeltaColorVector(): Vector3 {
+		return ColorConverter.colorToVector3(this._deltaColor)
+	}
+
+	public getDefaultDeltaColorVector(): Vector3 {
+		return ColorConverter.colorToVector3(this._defaultDeltaColor)
+	}
+
 	public resetColor() {
 		this._color = this._defaultColor
+		this._deltaColor = this._defaultDeltaColor
 	}
 
 	public equals(building: CodeMapBuilding) {
@@ -66,11 +87,24 @@ export class CodeMapBuilding {
 		return this._node
 	}
 
+	public get deltaColor(): string {
+		return this._deltaColor
+	}
+
+	public get defaultDeltaColor(): string {
+		return this._defaultDeltaColor
+	}
+
 	public setColor(color: string) {
 		this._color = color
 	}
 
 	public setNode(node: Node) {
 		this._node = node
+	}
+
+	public setDeltaColor(color: string) {
+		this._defaultDeltaColor = color
+		this._deltaColor = color
 	}
 }

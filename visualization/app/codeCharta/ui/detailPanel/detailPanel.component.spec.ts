@@ -82,6 +82,14 @@ describe("detailPanelController", () => {
 		expect(detailPanelController["_viewModel"].maximizeDetailPanel).toBe(false)
 	})
 
+	it("should reset hovered and selected when map rebuilds", () => {
+		const expected = detailPanelController["_viewModel"].details
+		detailPanelController.onSettingsChanged(settings, { fileSettings: { blacklist: [] } }, undefined)
+
+		expect(detailPanelController["_viewModel"].details.hovered).toEqual(expected.hovered)
+		expect(detailPanelController["_viewModel"].details.selected).toEqual(expected.selected)
+	})
+
 	it("should setSelectedDetails when valid node is selected", () => {
 		const data = {
 			from: null,

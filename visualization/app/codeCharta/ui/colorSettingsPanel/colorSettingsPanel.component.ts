@@ -63,12 +63,33 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 
 	public onMetricDataRemoved() {}
 
-	public applySettings() {
+	public invertColorRange() {
+		this.settingsService.updateSettings({
+			appSettings: {
+				invertColorRange: this._viewModel.invertColorRange
+			}
+		})
+	}
+
+	public invertDeltaColors() {
+		const positiveDelta = this.settingsService.getSettings().appSettings.mapColors.positiveDelta
+		const negativeDelta = this.settingsService.getSettings().appSettings.mapColors.negativeDelta
+
 		this.settingsService.updateSettings({
 			appSettings: {
 				invertDeltaColors: this._viewModel.invertDeltaColors,
-				whiteColorBuildings: this._viewModel.whiteColorBuildings,
-				invertColorRange: this._viewModel.invertColorRange
+				mapColors: {
+					negativeDelta: positiveDelta,
+					positiveDelta: negativeDelta
+				}
+			}
+		})
+	}
+
+	public applyWhiteColorBuildings() {
+		this.settingsService.updateSettings({
+			appSettings: {
+				whiteColorBuildings: this._viewModel.whiteColorBuildings
 			}
 		})
 	}

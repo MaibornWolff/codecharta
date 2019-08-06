@@ -3,10 +3,12 @@
 
 attribute vec3 color;
 attribute vec3 defaultColor;
+attribute vec3 deltaColor;
 attribute highp float subGeomIdx;
 attribute highp float delta;
 
 varying vec3 vColor;
+varying vec3 vDeltaColor;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
 varying highp float vDelta;
@@ -62,6 +64,7 @@ void main()
     vLightFront = vec3(0.0);
     vUV = uv;
     vColor = color;
+    vDeltaColor = deltaColor;
     vDelta = delta;
 
     for (int i=0; i < 2; ++i)

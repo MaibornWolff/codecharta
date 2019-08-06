@@ -12,13 +12,16 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawPars
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
 import java.io.File
 import java.io.IOException
 import java.io.OutputStreamWriter
+import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
+
 
 @CommandLine.Command(
         name = "scmlogparser",
@@ -47,6 +50,9 @@ class SCMLogParser: Callable<Void> {
             description = ["analysis of svn log, equivalent --input-format SVN_LOG"])
     private var svnLog = false
 
+    @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
+    private var silent = false
+
     @CommandLine.Option(names = ["--input-format"], description = ["input format for parsing"])
     private var inputFormatNames: InputFormatNames = GIT_LOG
 
@@ -59,8 +65,10 @@ class SCMLogParser: Callable<Void> {
     private val metricsFactory: MetricsFactory
         get() {
             val nonChurnMetrics = Arrays.asList(
+                    "age_in_weeks",
                     "number_of_authors",
                     "number_of_commits",
+                    "number_of_renames",
                     "range_of_weeks_with_commits",
                     "successive_weeks_of_commits",
                     "weeks_with_commits"
@@ -83,8 +91,9 @@ class SCMLogParser: Callable<Void> {
                 logParserStrategy,
                 metricsFactory,
                 projectName,
-                addAuthor)
-        if (!outputFile.isEmpty()) {
+                addAuthor,
+                silent)
+        if (outputFile.isNotEmpty()) {
             ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
         } else {
             ProjectSerializer.serializeProject(project, OutputStreamWriter(System.out))
@@ -160,12 +169,30 @@ class SCMLogParser: Callable<Void> {
                 parserStrategy: LogParserStrategy,
                 metricsFactory: MetricsFactory,
                 projectName: String,
-                containsAuthors: Boolean
+                containsAuthors: Boolean,
+                silent: Boolean = false
         ): Project {
+            val encoding = guessEncoding(pathToLog) ?: "UTF-8"
+            if (!silent) System.err.println("Assumed encoding $encoding")
+            val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
 
-            val lines = pathToLog.readLines().stream()
             val projectConverter = ProjectConverter(containsAuthors, projectName)
-            return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter).parse(lines)
+            return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
+        }
+
+        private fun guessEncoding(pathToLog: File): String? {
+            val inputStream = pathToLog.inputStream()
+            val buffer = ByteArray(4096)
+            val detector = UniversalDetector(null)
+
+            var sizeRead = inputStream.read(buffer)
+            while (sizeRead > 0 && !detector.isDone) {
+                detector.handleData(buffer, 0, sizeRead)
+                sizeRead = inputStream.read(buffer)
+            }
+            detector.dataEnd()
+
+            return detector.detectedCharset
         }
     }
 }

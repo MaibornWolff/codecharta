@@ -19,6 +19,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_WIDTH_DIVISOR: number = 2600 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR: number = 50 // empirically gathered
 
+	private currentScale: Vector3 = new THREE.Vector3(1, 1, 1)
+	private resetScale: boolean = false
+
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
@@ -48,6 +51,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			this.labels.push(label)
 		}
+		this.resetScale = true
 	}
 
 	public clearLabels() {
@@ -58,20 +62,26 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	public scale(scale: Vector3) {
+		if (this.resetScale) {
+			this.resetScale = false
+			this.currentScale = new THREE.Vector3(1, 1, 1)
+		}
+
 		for (let label of this.labels) {
-			label.sprite.position.x *= scale.x
-			label.sprite.position.y *= scale.y
-			label.sprite.position.z *= scale.z
+			const labelHeightDifference = new Vector3(0, 60, 0)
+			label.sprite.position
+				.sub(labelHeightDifference.clone())
+				.divide(this.currentScale.clone())
+				.multiply(scale.clone())
+				.add(labelHeightDifference.clone())
 
 			//cast is a workaround for the compiler. Attribute vertices does exist on geometry
 			//but it is missing in the mapping file for TypeScript.
-			;(<any>label.line!.geometry).vertices[0].x *= scale.x
-			;(<any>label.line!.geometry).vertices[0].y *= scale.y
-			;(<any>label.line!.geometry).vertices[0].z *= scale.z
-			;(<any>label.line!.geometry).vertices[1].x = label.sprite.position.x
-			;(<any>label.line!.geometry).vertices[1].y = label.sprite.position.y
-			;(<any>label.line!.geometry).vertices[1].z = label.sprite.position.z
+			;(<any>label.line.geometry).vertices[0].divide(this.currentScale.clone()).multiply(scale.clone())
+			;(<any>label.line.geometry).vertices[1].copy(label.sprite.position)
+			label.line.geometry.translate(0, 0, 0)
 		}
+		this.currentScale.copy(scale)
 	}
 
 	public onCameraChanged(camera: PerspectiveCamera) {

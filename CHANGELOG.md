@@ -9,8 +9,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-- New Search Bar #526
 - Button to enable PresentationMode that uses Flashlight-Hovering #576
+
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.31.0] - 2019-08-02
+
+### Added
+
+- New Metric in SourceCodeParser: Maximum-Nesting-Level #659
+
+### Changed
+
+### Removed
+
+### Fixed
+
+- Label hight adjustment now matches scaling of map #594
+- SCMLogParser now guesses the input file encoding #614
+
+### Chore
+
+## [1.30.0] - 2019-07-26
+
+### Added
+
+- New Search Bar #526
+- Number of Renames Metric to SCMLogParser #621
+- Age In Weeks Metric for SCMLogParser #620
 
 ### Changed
 
@@ -22,14 +54,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed
 
-- Removed RibbonBar toggle button
+- RibbonBar toggle button
 
 ### Fixed
+
+- FileExtensionBar height to not show a bottom-margin in Chrome
+- PointerEvents not being propagated when RibbonBar was extended
+- Reduced memory usage of SCMLogParser to avoid OutOfMemory Exception #631
 
 ### Chore
 
 - [Security] Bump lodash.mergewith from 4.6.1 to 4.6.2 in /visualization
 - [Security] Bump lodash from 4.17.11 to 4.17.13 in /visualization
+- [Security] Bump fstream from 1.0.11 to 1.0.12 in /visualization
 
 ## [1.29.0] - 2019-07-12
 
