@@ -1,9 +1,6 @@
 import "./edgeChooser.component.scss"
 
-export class EdgeChooserController {
-	/* @ngInject */
-	constructor() {}
-}
+export class EdgeChooserController {}
 
 export const edgeChooserComponent = {
 	selector: "edgeChooserComponent",
