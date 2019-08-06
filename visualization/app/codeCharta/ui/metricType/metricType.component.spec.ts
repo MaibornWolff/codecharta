@@ -14,14 +14,12 @@ describe("MetricTypeController", () => {
 	let metricTypeController: MetricTypeController
 	let $rootScope: IRootScopeService
 	let metricService: MetricService
-	let settingsService: SettingsService
 
 	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
 	})
 
 	function restartSystem() {
@@ -37,16 +35,10 @@ describe("MetricTypeController", () => {
 		metricTypeController = new MetricTypeController($rootScope, metricService)
 	}
 
-	function withMockedSettingsService() {
-		settingsService = metricTypeController["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(settings)
-		})()
-	}
-
 	describe("constructor", () => {
 		beforeEach(() => {
 			SettingsService.subscribe = jest.fn()
-			CodeMapMouseEventService.subscribe = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
 			FileStateService.subscribe = jest.fn()
 		})
 
@@ -59,25 +51,25 @@ describe("MetricTypeController", () => {
 		it("should subscribe to CodeMapMouseEventService", () => {
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 	})
 
 	describe("onSettingsChanged", () => {
 		it("should set the areaMetricType to absolute", () => {
-			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { areaMetric: "rloc" } }, undefined)
+			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { areaMetric: "rloc" } })
 
 			expect(metricTypeController["_viewModel"].areaMetricType).toBe(AttributeTypeValue.absolute)
 		})
 
 		it("should set the heightMetricType to absolute", () => {
-			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { heightMetric: "mcc" } }, undefined)
+			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { heightMetric: "mcc" } })
 
 			expect(metricTypeController["_viewModel"].heightMetricType).toBe(AttributeTypeValue.absolute)
 		})
 
 		it("should set the colorMetricType to relative", () => {
-			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { colorMetric: "coverage" } }, undefined)
+			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { colorMetric: "coverage" } })
 
 			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeTypeValue.relative)
 		})
@@ -163,43 +155,34 @@ describe("MetricTypeController", () => {
 
 	describe("onBuildingHovered", () => {
 		it("should set isBuildingHovered to false", () => {
-			metricTypeController.onBuildingHovered({ from: {} as CodeMapBuilding, to: undefined }, undefined)
+			metricTypeController.onBuildingHovered({ from: {} as CodeMapBuilding, to: undefined })
 
 			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
 		})
 
 		it("should set isBuildingHovered to true", () => {
-			metricTypeController.onBuildingHovered(
-				{
-					from: undefined,
-					to: { node: { isLeaf: false } } as CodeMapBuilding
-				},
-				undefined
-			)
+			metricTypeController.onBuildingHovered({
+				from: undefined,
+				to: { node: { isLeaf: false } } as CodeMapBuilding
+			})
 
 			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeTruthy()
 		})
 
 		it("should not set isBuildingHovered to true if building is a leaf", () => {
-			metricTypeController.onBuildingHovered(
-				{
-					from: undefined,
-					to: { node: { isLeaf: true } } as CodeMapBuilding
-				},
-				undefined
-			)
+			metricTypeController.onBuildingHovered({
+				from: undefined,
+				to: { node: { isLeaf: true } } as CodeMapBuilding
+			})
 
 			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
 		})
 
 		it("should set isBuildingHovered to true when going from a folder to another folder", () => {
-			metricTypeController.onBuildingHovered(
-				{
-					from: { node: { isLeaf: false } } as CodeMapBuilding,
-					to: { node: { isLeaf: false } } as CodeMapBuilding
-				},
-				undefined
-			)
+			metricTypeController.onBuildingHovered({
+				from: { node: { isLeaf: false } } as CodeMapBuilding,
+				to: { node: { isLeaf: false } } as CodeMapBuilding
+			})
 
 			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeTruthy()
 		})

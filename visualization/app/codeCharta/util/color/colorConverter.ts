@@ -1,4 +1,6 @@
 import { Color, Vector3 } from "three"
+import convert from "color-convert"
+import { HSL } from "./hsl"
 
 export class ColorConverter {
 	public static convertHexToNumber(hex: string): number {
@@ -32,9 +34,22 @@ export class ColorConverter {
 		)
 	}
 
+	public static hexToHSL(hex: string): HSL {
+		const hsl = convert.hex.hsl(hex)
+		return new HSL(hsl[0], hsl[1], hsl[2])
+	}
+
 	public static colorToVector3(color: string): Vector3 {
 		const convertedColor = ColorConverter.convertHexToNumber(color)
 		return new Vector3(((convertedColor >> 16) & 0xff) / 255.0, ((convertedColor >> 8) & 0xff) / 255.0, (convertedColor & 0xff) / 255.0)
+	}
+
+	public static vector3ToRGB(vector: Vector3): Color {
+		const r = Math.floor(vector.x * 255)
+		const g = Math.floor(vector.y * 255)
+		const b = Math.floor(vector.z * 255)
+
+		return new Color(r, g, b)
 	}
 
 	public static gradient(startColor: string, endColor: string, steps: number): string[] {

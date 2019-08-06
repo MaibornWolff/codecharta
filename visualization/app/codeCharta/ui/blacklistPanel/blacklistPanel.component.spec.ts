@@ -62,7 +62,7 @@ describe("blacklistController", () => {
 	it("update local blacklist with settingsService onSettingsChanged", () => {
 		let update: RecursivePartial<Settings> = { fileSettings: { blacklist: [blacklistItem] } }
 
-		blacklistPanelController.onSettingsChanged(null, update, null)
+		blacklistPanelController.onSettingsChanged(null, update)
 
 		expect(blacklistPanelController["_viewModel"].exclude).toEqual([blacklistItem])
 		expect(blacklistPanelController["_viewModel"].hide).toEqual([])
@@ -71,7 +71,7 @@ describe("blacklistController", () => {
 	it("update local searchPanelMode onSearchPanelModeChanged", () => {
 		let searchPanelMode = SearchPanelMode.hide
 
-		blacklistPanelController.onSearchPanelModeChanged(searchPanelMode, null)
+		blacklistPanelController.onSearchPanelModeChanged(searchPanelMode)
 
 		expect(blacklistPanelController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.hide)
 	})

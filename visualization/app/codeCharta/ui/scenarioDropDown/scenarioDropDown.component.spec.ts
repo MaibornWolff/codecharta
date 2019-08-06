@@ -75,7 +75,7 @@ describe("ScenarioDropDownController", () => {
 		it("should call getScenarios and set the scenarios in viewmodel correctly", () => {
 			ScenarioHelper.getScenarios = jest.fn().mockReturnValue([{ name: "scenario", settings: {} }])
 
-			scenarioButtonsController.onMetricDataAdded(metricData, undefined)
+			scenarioButtonsController.onMetricDataAdded(metricData)
 
 			expect(ScenarioHelper.getScenarios).toHaveBeenCalledWith(metricData)
 			expect(scenarioButtonsController["_viewModel"].scenarios).toEqual([{ name: "scenario", settings: {} }])
@@ -86,9 +86,8 @@ describe("ScenarioDropDownController", () => {
 		it("should call getScenarioSettingsByName and set call updateSettings with scenarioSettings", () => {
 			const mockScenarioSettings = {}
 			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(mockScenarioSettings)
-			scenarioButtonsController["_viewModel"].selectedName = "scenario"
 
-			scenarioButtonsController.applyScenario()
+			scenarioButtonsController.applyScenario("scenario")
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(mockScenarioSettings)
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()

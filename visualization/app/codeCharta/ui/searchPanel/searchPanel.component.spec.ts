@@ -39,7 +39,7 @@ describe("SearchPanelController", () => {
 		it("should set searchPanelMode correctly", () => {
 			let searchPanelMode = SearchPanelMode.treeView
 
-			searchPanelModeController.onSearchPanelModeChanged(searchPanelMode, null)
+			searchPanelModeController.onSearchPanelModeChanged(searchPanelMode)
 
 			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.treeView)
 		})
@@ -47,7 +47,7 @@ describe("SearchPanelController", () => {
 		it("should set searchPanelMode to minimized", () => {
 			let searchPanelMode = SearchPanelMode.minimized
 
-			searchPanelModeController.onSearchPanelModeChanged(searchPanelMode, null)
+			searchPanelModeController.onSearchPanelModeChanged(searchPanelMode)
 
 			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.minimized)
 		})

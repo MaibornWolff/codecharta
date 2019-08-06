@@ -15,7 +15,7 @@ export class CenterMapButtonController implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+	public onCameraChanged(camera: PerspectiveCamera) {
 		this._viewModel.isMapCentered = this.isMapCentered(camera)
 	}
 

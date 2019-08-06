@@ -57,20 +57,20 @@ describe("NodeSearchService", () => {
 		})
 
 		it("node should be retrieved based on query", () => {
-			nodeSearchService.onSettingsChanged(null, { dynamicSettings: { searchPattern: "small leaf" } }, null)
+			nodeSearchService.onSettingsChanged(null, { dynamicSettings: { searchPattern: "small leaf" } })
 
 			expect(nodeSearchService["searchedNodes"].length).toEqual(1)
 			expect(nodeSearchService["searchedNodes"][0].name).toEqual("small leaf")
 		})
 
 		it("no node should be found for empty query", () => {
-			nodeSearchService.onSettingsChanged(null, { dynamicSettings: { searchPattern: "" } }, null)
+			nodeSearchService.onSettingsChanged(null, { dynamicSettings: { searchPattern: "" } })
 
 			expect(nodeSearchService["searchedNodes"]).toEqual([])
 		})
 
 		it("should update searched paths", () => {
-			nodeSearchService.onSettingsChanged(null, { dynamicSettings: { searchPattern: "small leaf" } }, null)
+			nodeSearchService.onSettingsChanged(null, { dynamicSettings: { searchPattern: "small leaf" } })
 
 			expect(settingsService.updateSettings).toBeCalledWith({
 				dynamicSettings: { searchedNodePaths: ["/root/Parent Leaf/small leaf"] }

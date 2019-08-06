@@ -1,35 +1,27 @@
 import "./matchingFilesCounter.module"
 import { MatchingFilesCounterController } from "./matchingFilesCounter.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { VALID_NODE_WITH_PATH, SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
-import { CodeMapNode, BlacklistItem, BlacklistType, RecursivePartial, Settings } from "../../codeCharta.model"
+import { VALID_NODE_WITH_PATH, SETTINGS } from "../../util/dataMocks"
+import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 
 describe("MatchingFilesCounterController", () => {
 	let matchingFilesCounterController: MatchingFilesCounterController
-	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedCodeMapPreRenderService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.matchingFilesCounter")
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 	}
 
 	function rebuildController() {
 		matchingFilesCounterController = new MatchingFilesCounterController($rootScope)
-	}
-
-	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService["lastRender"].renderFile = TEST_FILE_WITH_PATHS
 	}
 
 	describe("onSettingsChanged", () => {
@@ -38,7 +30,7 @@ describe("MatchingFilesCounterController", () => {
 			SETTINGS.fileSettings.blacklist = blacklist
 			let update = { fileSettings: { blacklist: blacklist } }
 
-			matchingFilesCounterController.onSettingsChanged(SETTINGS, update, null)
+			matchingFilesCounterController.onSettingsChanged(SETTINGS, update)
 
 			expect(matchingFilesCounterController["_viewModel"].blacklist).toBe(blacklist)
 		})

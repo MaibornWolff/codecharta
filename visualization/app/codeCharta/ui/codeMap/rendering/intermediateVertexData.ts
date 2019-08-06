@@ -1,9 +1,9 @@
-import * as THREE from "three"
+import { Vector2, Vector3 } from "three"
 
 export class IntermediateVertexData {
-	public positions: THREE.Vector3[]
-	public normals: THREE.Vector3[]
-	public uvs: THREE.Vector2[]
+	public positions: Vector3[]
+	public normals: Vector3[]
+	public uvs: Vector2[]
 	public colors: string[]
 	public subGeometryIdx: number[]
 	public deltas: number[]
@@ -11,9 +11,9 @@ export class IntermediateVertexData {
 	public indices: number[]
 
 	constructor() {
-		this.positions = new Array<THREE.Vector3>()
-		this.normals = new Array<THREE.Vector3>()
-		this.uvs = new Array<THREE.Vector2>()
+		this.positions = new Array<Vector3>()
+		this.normals = new Array<Vector3>()
+		this.uvs = new Array<Vector2>()
 		this.colors = new Array<string>()
 		this.subGeometryIdx = new Array<number>()
 		this.deltas = new Array<number>()
@@ -21,14 +21,7 @@ export class IntermediateVertexData {
 		this.indices = new Array<number>()
 	}
 
-	public addVertex(
-		pos: THREE.Vector3,
-		normal: THREE.Vector3,
-		uv: THREE.Vector2,
-		color: string,
-		subGeomIdx: number,
-		delta: number
-	): number {
+	public addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIdx: number, delta: number): number {
 		this.positions.push(pos)
 		this.normals.push(normal)
 		this.uvs.push(uv)
