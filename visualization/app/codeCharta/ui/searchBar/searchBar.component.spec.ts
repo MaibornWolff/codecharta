@@ -4,9 +4,7 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { BlacklistType, CodeMapNode, BlacklistItem } from "../../codeCharta.model"
-import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
@@ -14,7 +12,6 @@ describe("SearchBarController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let codeMapActionsService: CodeMapActionsService
-	let codeMapPreRenderService: CodeMapPreRenderService
 
 	beforeEach(() => {
 		restartSystem()
@@ -27,7 +24,6 @@ describe("SearchBarController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 	}
 
 	function rebuildController() {
@@ -37,7 +33,7 @@ describe("SearchBarController", () => {
 	describe("onFileSelectionStatesChanged", () => {
 		it("should set empty searchPattern", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
-			searchBarController.onFileSelectionStatesChanged(null, null)
+			searchBarController.onFileSelectionStatesChanged(null)
 
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe("")
@@ -65,8 +61,6 @@ describe("SearchBarController", () => {
 	})
 
 	describe("updateViewModel", () => {
-		let searchedNodeLeaves: CodeMapNode[]
-		let rootNode = VALID_NODE_WITH_PATH
 		beforeEach(() => {
 			searchBarController["_viewModel"].searchPattern = "/root/node/path"
 		})

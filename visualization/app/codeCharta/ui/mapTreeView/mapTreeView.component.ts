@@ -14,7 +14,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber 
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
-	public onRenderMapChanged(map: CodeMapNode, event: angular.IAngularEvent) {
+	public onRenderMapChanged(map: CodeMapNode) {
 		this._viewModel.rootNode = map
 	}
 }

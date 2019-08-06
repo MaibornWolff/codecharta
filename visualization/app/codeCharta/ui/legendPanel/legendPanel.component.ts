@@ -32,7 +32,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		this.initAnimations()
 	}
 
-	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.colorRange = s.dynamicSettings.colorRange
 		this._viewModel.invertColorRange = s.appSettings.invertColorRange
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())

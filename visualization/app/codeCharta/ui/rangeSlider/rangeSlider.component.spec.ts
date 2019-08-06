@@ -2,7 +2,6 @@ import "./rangeSlider.module"
 
 import { RangeSliderController } from "./rangeSlider.component"
 import { SettingsService } from "../../state/settings.service"
-import { CodeChartaService } from "../../codeCharta.service"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
@@ -14,7 +13,6 @@ import { FileStateHelper } from "../../util/fileStateHelper"
 describe("RangeSliderController", () => {
 	let settingsService: SettingsService
 	let fileStateService: FileStateService
-	let codeChartaService: CodeChartaService
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
 	let rangeSliderController: RangeSliderController
@@ -28,7 +26,6 @@ describe("RangeSliderController", () => {
 
 		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
-		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		metricService = getService<MetricService>("metricService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 	}
@@ -49,7 +46,7 @@ describe("RangeSliderController", () => {
 
 			const settings = { dynamicSettings: { colorRange: { from: null, to: null } } } as Settings
 
-			rangeSliderController.onSettingsChanged(settings, undefined, undefined)
+			rangeSliderController.onSettingsChanged(settings, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(settings)
 			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
@@ -61,7 +58,7 @@ describe("RangeSliderController", () => {
 
 			const settings = { dynamicSettings: { colorRange: { from: null, to: null } } } as Settings
 
-			rangeSliderController.onSettingsChanged(settings, undefined, undefined)
+			rangeSliderController.onSettingsChanged(settings, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(settings)
 			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
@@ -70,7 +67,7 @@ describe("RangeSliderController", () => {
 		it("should call initSliderOptions and update the viewModel, set colored range colors and inputfield width", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
 			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.colorRange.from)
@@ -81,7 +78,7 @@ describe("RangeSliderController", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 
 			rangeSliderController["_viewModel"].sliderOptions.disabled = true
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
 			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.colorRange.from)
@@ -109,7 +106,7 @@ describe("RangeSliderController", () => {
 			settingsService.updateSettings = jest.fn()
 			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
 			rangeSliderController["_viewModel"].sliderOptions.onFromChange()
 
@@ -124,7 +121,7 @@ describe("RangeSliderController", () => {
 			settingsService.updateSettings = jest.fn()
 			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
 			rangeSliderController["_viewModel"].sliderOptions.onToChange()
 
