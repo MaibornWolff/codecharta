@@ -1,7 +1,7 @@
-import { BlacklistSubscriber, SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { BlacklistSubscriber, SettingsService } from "../../state/settings.service"
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { Settings, BlacklistItem, BlacklistType, RecursivePartial, SearchPanelMode } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 

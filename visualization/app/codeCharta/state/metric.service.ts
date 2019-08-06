@@ -5,7 +5,6 @@ import {
 	CodeMapNode,
 	FileState,
 	MetricData,
-	RecursivePartial,
 	Settings,
 	AttributeType,
 	AttributeTypeValue
@@ -14,11 +13,9 @@ import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { IRootScopeService } from "angular"
-import { BlacklistSubscriber, SettingsService, SettingsServiceSubscriber } from "./settings.service"
+import { BlacklistSubscriber, SettingsService } from "./settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
-import { ColorKeywords } from "three"
-import black = ColorKeywords.black
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])

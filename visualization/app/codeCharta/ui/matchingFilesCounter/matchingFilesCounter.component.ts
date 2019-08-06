@@ -1,6 +1,6 @@
 import "./matchingFilesCounter.component.scss"
-import { BlacklistType, BlacklistItem, CodeMapNode, Settings, RecursivePartial } from "../../codeCharta.model"
-import { SettingsServiceSubscriber, SettingsService, BlacklistSubscriber } from "../../state/settings.service"
+import { BlacklistType, BlacklistItem, CodeMapNode } from "../../codeCharta.model"
+import { SettingsService, BlacklistSubscriber } from "../../state/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"

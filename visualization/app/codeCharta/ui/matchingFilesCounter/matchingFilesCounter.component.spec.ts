@@ -1,7 +1,7 @@
 import "./matchingFilesCounter.module"
 import { MatchingFilesCounterController } from "./matchingFilesCounter.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { VALID_NODE_WITH_PATH, SETTINGS } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"

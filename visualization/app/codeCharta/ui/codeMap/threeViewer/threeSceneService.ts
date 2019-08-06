@@ -3,8 +3,8 @@ import { Scene, Vector3 } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { BlacklistSubscriber, SettingsService, SettingsServiceSubscriber } from "../../../state/settings.service"
-import { BlacklistItem, RecursivePartial, Settings } from "../../../codeCharta.model"
+import { BlacklistSubscriber, SettingsService } from "../../../state/settings.service"
+import { BlacklistItem } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
 
 /**
