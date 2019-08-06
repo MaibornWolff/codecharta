@@ -1,6 +1,6 @@
 import "./searchBar.component.scss"
-import { BlacklistSubscriber, SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState } from "../../codeCharta.model"
+import { BlacklistSubscriber, SettingsService } from "../../state/settings.service"
+import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
 

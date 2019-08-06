@@ -1,7 +1,7 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { DynamicMarginSubscriber, MarginSubscriber, SettingsService } from "../../state/settings.service"
-import { CodeMapNode, FileState, Settings } from "../../codeCharta.model"
+import { CodeMapNode, FileState } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
