@@ -6,9 +6,11 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { FileState, FileSelectionState } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsService } from "../../state/settings.service"
 
 describe("filePanelController", () => {
 	let fileStateService: FileStateService
+	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let filePanelController: FilePanelController
 	let fileStates: FileState[]
@@ -17,6 +19,7 @@ describe("filePanelController", () => {
 		instantiateModule("app.codeCharta.ui.filePanel")
 		fileStateService = getService<FileStateService>("fileStateService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		settingsService = getService<SettingsService>("settingsService")
 		fileStates = [
 			{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Reference },
 			{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Comparison }
@@ -24,7 +27,7 @@ describe("filePanelController", () => {
 	}
 
 	function buildController() {
-		filePanelController = new FilePanelController(fileStateService, $rootScope)
+		filePanelController = new FilePanelController($rootScope, settingsService, fileStateService)
 	}
 
 	function withMockedFileStateService() {
