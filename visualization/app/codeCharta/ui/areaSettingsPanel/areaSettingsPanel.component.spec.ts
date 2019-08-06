@@ -56,15 +56,17 @@ describe("AreaSettingsPanelController", () => {
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			SettingsService.subscribe = jest.fn()
+			SettingsService.subscribeToMargin = jest.fn()
+			SettingsService.subscribeToDynamicMargin = jest.fn()
 			CodeMapPreRenderService.subscribe = jest.fn()
 			FileStateService.subscribe = jest.fn()
 		})
 
-		it("should subscribe to SettingsService", () => {
+		it("should subscribe to Margin-Events", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(SettingsService.subscribeToMargin).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(SettingsService.subscribeToDynamicMargin).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
 		it("should subscribe to CodeMapPreRenderService", () => {
@@ -80,49 +82,58 @@ describe("AreaSettingsPanelController", () => {
 		})
 	})
 
-	describe("onSettingsChanged", () => {
+	describe("onDynamicMarginChanged", () => {
 		beforeEach(() => {
 			areaSettingsPanelController.applySettings = jest.fn()
 		})
 
 		it("should set the dynamicMargin in viewModel", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+			areaSettingsPanelController["_viewModel"].dynamicMargin = true
 
-			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
-		})
+			areaSettingsPanelController.onDynamicMarginChanged(false)
 
-		it("should set margin from settings if dynamicMargin is false", () => {
-			settings.appSettings.dynamicMargin = false
-
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(areaSettingsPanelController["_viewModel"].margin).toBe(48)
+			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeFalsy()
 		})
 
 		it("should set new calculated margin correctly", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+			areaSettingsPanelController.onDynamicMarginChanged(true)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
 		})
 
-		it("should call applySettings after setting new margin", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+		it("should not calculate new margin when dynamicMargin is false", () => {
+			areaSettingsPanelController["_viewModel"].margin = 10
 
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
+			areaSettingsPanelController.onDynamicMarginChanged(false)
+
+			expect(areaSettingsPanelController["_viewModel"].margin).toBe(10)
+		})
+	})
+
+	describe("onMarginChanged", () => {
+		beforeEach(() => {
+			areaSettingsPanelController.applyMargin = jest.fn()
 		})
 
-		it("should not call applySettings if margin and new calculated margin are the same", () => {
-			settings.dynamicSettings.margin = 28
+		it("should call applySettings after setting new margin", () => {
+			areaSettingsPanelController.onMarginChanged(24)
 
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+			expect(areaSettingsPanelController["_viewModel"].margin).toBe(24)
+			expect(areaSettingsPanelController.applyMargin).toHaveBeenCalled()
+		})
 
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
+		it("should not call applySettings if margin hasn't changed", () => {
+			areaSettingsPanelController["_viewModel"].margin = 28
+
+			areaSettingsPanelController.onMarginChanged(28)
+
+			expect(areaSettingsPanelController.applyMargin).not.toHaveBeenCalled()
 		})
 	})
 
 	describe("onRenderFileChange", () => {
 		beforeEach(() => {
-			areaSettingsPanelController.applySettings = jest.fn()
+			areaSettingsPanelController.applyMargin = jest.fn()
 
 			areaSettingsPanelController["makeAutoFit"] = true
 			settings.appSettings.dynamicMargin = true
@@ -133,7 +144,7 @@ describe("AreaSettingsPanelController", () => {
 
 			areaSettingsPanelController.onRenderMapChanged(map)
 
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
+			expect(areaSettingsPanelController.applyMargin).not.toHaveBeenCalled()
 		})
 
 		it("should set new calculated margin correctly", () => {
@@ -145,7 +156,7 @@ describe("AreaSettingsPanelController", () => {
 		it("should call applySettings after setting new margin", () => {
 			areaSettingsPanelController.onRenderMapChanged(map)
 
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
+			expect(areaSettingsPanelController.applyMargin).toHaveBeenCalled()
 		})
 
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
@@ -153,7 +164,7 @@ describe("AreaSettingsPanelController", () => {
 
 			areaSettingsPanelController.onRenderMapChanged(map)
 
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
+			expect(areaSettingsPanelController.applyMargin).not.toHaveBeenCalled()
 		})
 	})
 

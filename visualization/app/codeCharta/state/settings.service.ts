@@ -44,6 +44,14 @@ export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)
 }
 
+export interface MarginSubscriber {
+	onMarginChanged(margin: number)
+}
+
+export interface DynamicMarginSubscriber {
+	onDynamicMarginChanged(dynamicMargin: boolean)
+}
+
 export class SettingsService implements FileStateServiceSubscriber {
 	private static readonly SETTINGS_CHANGED_EVENT = "settings-changed"
 	private static readonly BLACKLIST_CHANGED_EVENT = "blacklist-changed"
@@ -52,6 +60,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 	private static readonly COLOR_METRIC_CHANGED_EVENT = "color-metric-changed"
 	private static readonly DISTRIBUTION_METRIC_CHANGED_EVENT = "distribution-metric-changed"
 	private static readonly SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
+	private static readonly MARGIN_CHANGED_EVENT = "margin-changed"
+	private static readonly DYNAMIC_MARGIN_CHANGED_EVENT = "dynamic-margin-changed"
 
 	private static DEBOUNCE_TIME = 400
 
@@ -85,6 +95,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 				this.notifyBlacklistSubscribers()
 			}
 
+			if (update.appSettings && update.appSettings.dynamicMargin) {
+				this.notifyDynamicMarginSubscribers()
+			}
+
 			if (update.dynamicSettings) {
 				if (update.dynamicSettings.areaMetric) {
 					this.notifyAreaMetricSubscribers()
@@ -104,6 +118,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 				if (update.dynamicSettings.searchPattern) {
 					this.notifySearchPatternSubscribers()
+				}
+
+				if (update.dynamicSettings.margin) {
+					this.notifyMarginSubscribers()
 				}
 			}
 			this.notifySubscribers()
@@ -298,6 +316,24 @@ export class SettingsService implements FileStateServiceSubscriber {
 		debounceBroadcast()
 	}
 
+	private notifyMarginSubscribers() {
+		const debounceBroadcast = _.debounce(() => {
+			this.$rootScope.$broadcast(SettingsService.MARGIN_CHANGED_EVENT, {
+				margin: this.settings.dynamicSettings.margin
+			})
+		}, SettingsService.DEBOUNCE_TIME)
+		debounceBroadcast()
+	}
+
+	private notifyDynamicMarginSubscribers() {
+		const debounceBroadcast = _.debounce(() => {
+			this.$rootScope.$broadcast(SettingsService.DYNAMIC_MARGIN_CHANGED_EVENT, {
+				dynamicMargin: this.settings.appSettings.dynamicMargin
+			})
+		}, SettingsService.DEBOUNCE_TIME)
+		debounceBroadcast()
+	}
+
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})
 	}
@@ -341,6 +377,18 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribeToSearchPattern($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
 		$rootScope.$on(SettingsService.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
 			subscriber.onSearchPatternChanged(data.searchPattern)
+		})
+	}
+
+	public static subscribeToDynamicMargin($rootScope: IRootScopeService, subscriber: DynamicMarginSubscriber) {
+		$rootScope.$on(SettingsService.DYNAMIC_MARGIN_CHANGED_EVENT, (event, data) => {
+			subscriber.onDynamicMarginChanged(data.dynamicMargin)
+		})
+	}
+
+	public static subscribeToMargin($rootScope: IRootScopeService, subscriber: MarginSubscriber) {
+		$rootScope.$on(SettingsService.MARGIN_CHANGED_EVENT, (event, data) => {
+			subscriber.onMarginChanged(data.margin)
 		})
 	}
 }
