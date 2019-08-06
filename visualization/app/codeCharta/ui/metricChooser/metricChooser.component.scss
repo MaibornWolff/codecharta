@@ -85,6 +85,7 @@ distribution-metric-chooser-component {
 md-content.option-group {
 	top: $optionHeight + px !important;
 	min-height: auto;
+	overflow-y: scroll;
 	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
 }
 
