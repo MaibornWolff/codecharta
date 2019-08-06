@@ -3,14 +3,14 @@ import { Scene, Vector3 } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { SettingsService, SettingsServiceSubscriber } from "../../../state/settings.service"
-import { RecursivePartial, Settings } from "../../../codeCharta.model"
+import { BlacklistSubscriber, SettingsService, SettingsServiceSubscriber } from "../../../state/settings.service"
+import { BlacklistItem, RecursivePartial, Settings } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
 
 /**
  * A service which manages the Three.js scene in an angular way.
  */
-export class ThreeSceneService implements SettingsServiceSubscriber {
+export class ThreeSceneService implements BlacklistSubscriber {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -22,7 +22,7 @@ export class ThreeSceneService implements SettingsServiceSubscriber {
 	private highlighted: CodeMapBuilding = null
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
-		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 		this.scene = new THREE.Scene()
 
 		this.mapGeometry = new THREE.Group()
@@ -38,11 +38,9 @@ export class ThreeSceneService implements SettingsServiceSubscriber {
 		this.scene.add(this.lights)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		if (update && update.fileSettings && update.fileSettings.blacklist) {
-			this.selected = null
-			this.highlighted = null
-		}
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.selected = null
+		this.highlighted = null
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {

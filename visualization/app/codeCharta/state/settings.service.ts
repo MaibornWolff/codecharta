@@ -27,6 +27,7 @@ export interface BlacklistSubscriber {
 export class SettingsService implements FileStateServiceSubscriber {
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
+
 	private static DEBOUNCE_TIME = 400
 
 	private settings: Settings
@@ -55,7 +56,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 			this.loadingGifService.updateLoadingMapFlag(true)
 			this.update = this.mergePartialSettings(this.update, update, this.settings)
 
-			if (update && update.fileSettings && update.fileSettings.blacklist) {
+			if (update.fileSettings && update.fileSettings.blacklist) {
 				this.notifyBlacklistSubscribers()
 			} else {
 				this.debounceBroadcast()
