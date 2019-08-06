@@ -30,6 +30,14 @@ describe("SearchBarController", () => {
 		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService)
 	}
 
+	describe("constructor", () => {
+		SettingsService.subscribeToBlacklist = jest.fn()
+
+		rebuildController()
+
+		expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchBarController)
+	})
+
 	describe("onFileSelectionStatesChanged", () => {
 		it("should set empty searchPattern", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
@@ -60,14 +68,15 @@ describe("SearchBarController", () => {
 		})
 	})
 
-	describe("updateViewModel", () => {
+	describe("onBlacklistChanged", () => {
 		beforeEach(() => {
 			searchBarController["_viewModel"].searchPattern = "/root/node/path"
 		})
 
 		it("should update ViewModel when pattern not blacklisted", () => {
 			const blacklist: BlacklistItem[] = []
-			searchBarController["updateViewModel"](blacklist)
+
+			searchBarController.onBlacklistChanged(blacklist)
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeFalsy()
@@ -78,7 +87,8 @@ describe("SearchBarController", () => {
 				{ path: "/root/node/path", type: BlacklistType.exclude },
 				{ path: "/root/another/node/path", type: BlacklistType.exclude }
 			]
-			searchBarController["updateViewModel"](blacklist)
+
+			searchBarController.onBlacklistChanged(blacklist)
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
@@ -89,7 +99,8 @@ describe("SearchBarController", () => {
 				{ path: "/root/node/path", type: BlacklistType.exclude },
 				{ path: "/root/node/path", type: BlacklistType.hide }
 			]
-			searchBarController["updateViewModel"](blacklist)
+
+			searchBarController.onBlacklistChanged(blacklist)
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeTruthy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
