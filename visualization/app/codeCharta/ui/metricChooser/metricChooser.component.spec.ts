@@ -71,7 +71,7 @@ describe("MetricChooserController", () => {
 				}
 			} as Settings
 
-			metricChooserController.onSettingsChanged(settings, undefined, null)
+			metricChooserController.onSettingsChanged(settings, undefined)
 
 			expect(metricChooserController["_viewModel"].areaMetric).toEqual("foo")
 			expect(metricChooserController["_viewModel"].heightMetric).toEqual("bar")
@@ -86,7 +86,7 @@ describe("MetricChooserController", () => {
 				{ name: "b", maxValue: 2, availableInVisibleMaps: false }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})
@@ -99,7 +99,7 @@ describe("MetricChooserController", () => {
 				{ name: "d", maxValue: 2, availableInVisibleMaps: true }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "d" }
@@ -112,7 +112,7 @@ describe("MetricChooserController", () => {
 				{ name: "b", maxValue: 1, availableInVisibleMaps: false }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { areaMetric: "a", colorMetric: "a", heightMetric: "a", distributionMetric: "a" }
@@ -125,7 +125,7 @@ describe("MetricChooserController", () => {
 				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).not.toBeCalled()
 		})
@@ -133,7 +133,7 @@ describe("MetricChooserController", () => {
 		it("no metrics available, should not update settings", () => {
 			let metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).not.toBeCalled()
 		})
@@ -200,7 +200,7 @@ describe("MetricChooserController", () => {
 		it("should set values and deltas to null if data incomplete", () => {
 			let data = { from: {}, to: {} } as CodeMapBuildingTransition
 
-			metricChooserController.onBuildingHovered(data, null)
+			metricChooserController.onBuildingHovered(data)
 
 			expect(metricChooserController.hoveredAreaDelta).toBe(null)
 			expect(metricChooserController.hoveredAreaValue).toBe(null)
@@ -216,7 +216,7 @@ describe("MetricChooserController", () => {
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"].colorMetric = "color"
 
-			metricChooserController.onBuildingHovered(dataNotDelta, null)
+			metricChooserController.onBuildingHovered(dataNotDelta)
 
 			expect(metricChooserController.hoveredAreaDelta).toBe(null)
 			expect(metricChooserController.hoveredAreaValue).toBe(10)
@@ -232,7 +232,7 @@ describe("MetricChooserController", () => {
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"].colorMetric = "color"
 
-			metricChooserController.onBuildingHovered(dataDelta, null)
+			metricChooserController.onBuildingHovered(dataDelta)
 
 			expect(metricChooserController.hoveredAreaDelta).toBe(40)
 			expect(metricChooserController.hoveredAreaValue).toBe(10)
@@ -246,7 +246,7 @@ describe("MetricChooserController", () => {
 			withMockedBuildingTransitions()
 			metricChooserController.hoveredDeltaColor = "foo"
 
-			metricChooserController.onBuildingHovered(dataNotDelta, null)
+			metricChooserController.onBuildingHovered(dataNotDelta)
 
 			expect(metricChooserController.hoveredDeltaColor).toBe(null)
 		})
@@ -255,7 +255,7 @@ describe("MetricChooserController", () => {
 			withMockedBuildingTransitions()
 			metricChooserController.hoveredHeightDelta = 0
 
-			metricChooserController.onBuildingHovered(dataDelta, null)
+			metricChooserController.onBuildingHovered(dataDelta)
 
 			expect(metricChooserController.hoveredDeltaColor).toBe("inherit")
 		})
@@ -265,7 +265,7 @@ describe("MetricChooserController", () => {
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController.hoveredHeightDelta = 2
 
-			metricChooserController.onBuildingHovered(dataDelta, null)
+			metricChooserController.onBuildingHovered(dataDelta)
 
 			expect(metricChooserController.hoveredDeltaColor).toBe("green")
 		})
@@ -278,7 +278,7 @@ describe("MetricChooserController", () => {
 				return { appSettings: { invertDeltaColors: true } }
 			})
 
-			metricChooserController.onBuildingHovered(dataDelta, null)
+			metricChooserController.onBuildingHovered(dataDelta)
 
 			expect(metricChooserController.hoveredDeltaColor).toBe("red")
 		})

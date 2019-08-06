@@ -21,7 +21,7 @@ export class DialogGlobalSettingsController implements SettingsServiceSubscriber
 		this.updateSettingsFields()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.updateSettingsFields(settings)
 	}
 

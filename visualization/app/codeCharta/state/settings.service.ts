@@ -1,6 +1,6 @@
 import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../codeCharta.model"
 import _ from "lodash"
-import { IAngularEvent, IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
@@ -8,7 +8,7 @@ import { Vector3 } from "three"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface SettingsServiceSubscriber {
-	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent)
+	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>)
 }
 
 export class SettingsService implements FileStateServiceSubscriber {
@@ -25,11 +25,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetDynamicAndFileSettings(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public getSettings(): Settings {
 		return this.settings
@@ -182,7 +182,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {
 		$rootScope.$on(SettingsService.SETTINGS_CHANGED_EVENT, (event, data) => {
-			subscriber.onSettingsChanged(data.settings, data.update, event)
+			subscriber.onSettingsChanged(data.settings, data.update)
 		})
 	}
 }

@@ -38,7 +38,7 @@ export class ThreeSceneService implements SettingsServiceSubscriber {
 		this.scene.add(this.lights)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (update && update.fileSettings && update.fileSettings.blacklist) {
 			this.selected = null
 			this.highlighted = null

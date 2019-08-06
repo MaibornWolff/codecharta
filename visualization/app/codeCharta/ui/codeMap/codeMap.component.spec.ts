@@ -75,13 +75,13 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onLoadingFileStatusChanged", () => {
 		it("should set isLoadingFile in viewModel to true", () => {
-			codeMapController.onLoadingFileStatusChanged(true, undefined)
+			codeMapController.onLoadingFileStatusChanged(true)
 
 			expect(codeMapController["_viewModel"].isLoadingFile).toBe(true)
 		})
 
 		it("should set isLoadingFile in viewModel to false", () => {
-			codeMapController.onLoadingFileStatusChanged(false, undefined)
+			codeMapController.onLoadingFileStatusChanged(false)
 
 			expect(codeMapController["_viewModel"].isLoadingFile).toBe(false)
 		})

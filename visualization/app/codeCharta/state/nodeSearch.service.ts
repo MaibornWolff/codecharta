@@ -1,12 +1,12 @@
 import { CodeMapNode, Settings, RecursivePartial } from "../codeCharta.model"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import * as d3 from "d3"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
 
 export interface NodeSearchSubscriber {
-	onNodeSearchComplete(searchedNodes: CodeMapNode[], event: IAngularEvent)
+	onNodeSearchComplete(searchedNodes: CodeMapNode[])
 }
 
 export class NodeSearchService implements SettingsServiceSubscriber {
@@ -23,7 +23,7 @@ export class NodeSearchService implements SettingsServiceSubscriber {
 		SettingsService.subscribe($rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (this.isSearchPatternUpdated(update)) {
 			this.searchedNodes = this.findSearchedNodes(update.dynamicSettings.searchPattern)
 			this.notifyNodeSearchComplete()
@@ -61,7 +61,7 @@ export class NodeSearchService implements SettingsServiceSubscriber {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: NodeSearchSubscriber) {
 		$rootScope.$on(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, (event, data) => {
-			subscriber.onNodeSearchComplete(data, event)
+			subscriber.onNodeSearchComplete(data)
 		})
 	}
 }

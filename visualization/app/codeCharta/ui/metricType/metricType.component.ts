@@ -24,7 +24,7 @@ export class MetricTypeController implements SettingsServiceSubscriber, Building
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (update.dynamicSettings) {
 			if (update.dynamicSettings.areaMetric) {
 				this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(update.dynamicSettings.areaMetric, settings)
@@ -41,7 +41,7 @@ export class MetricTypeController implements SettingsServiceSubscriber, Building
 		}
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		if (data.from) {
 			this._viewModel.isBuildingHovered = false
 		}

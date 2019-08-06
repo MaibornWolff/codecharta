@@ -38,7 +38,7 @@ describe("SearchPanelModeSelectorController", () => {
 		it("should update searchPanelMode", () => {
 			let searchPanelMode = SearchPanelMode.hide
 
-			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode, null)
+			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode)
 
 			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.hide)
 		})
@@ -52,7 +52,7 @@ describe("SearchPanelModeSelectorController", () => {
 			let blacklist = [blacklistItem1, blacklistItem2, blacklistItem3]
 			SETTINGS.fileSettings.blacklist = blacklist
 
-			searchPanelModeSelectorController.onSettingsChanged(SETTINGS, null, null)
+			searchPanelModeSelectorController.onSettingsChanged(SETTINGS, null)
 
 			expect(searchPanelModeSelectorController["_viewModel"].hideListLength).toEqual(1)
 			expect(searchPanelModeSelectorController["_viewModel"].excludeListLength).toEqual(2)
