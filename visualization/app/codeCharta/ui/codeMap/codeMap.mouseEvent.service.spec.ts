@@ -333,7 +333,6 @@ describe("codeMapMouseEventService", () => {
 				y: 1,
 				event
 			})
-			expect(codeMapMouseEventService["dragOrClickFlag"]).toBe(0)
 		})
 	})
 

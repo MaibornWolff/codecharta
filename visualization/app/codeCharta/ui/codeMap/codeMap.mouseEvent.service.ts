@@ -149,7 +149,6 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 			y: event.clientY,
 			event: event
 		})
-		this.dragOrClickFlag = 0
 	}
 
 	public onLeftClick(event) {
