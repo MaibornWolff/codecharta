@@ -58,6 +58,7 @@ jar {
                 'Implementation-Title': 'CodeCharta ccsh',
                 'Implementation-Version': version
     }
+    zip64 true
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

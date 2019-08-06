@@ -1,6 +1,6 @@
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
-import { CodeMapBuildingTransition, CodeMapMouseEventService, CodeMapMouseEventServiceSubscriber } from "./codeMap.mouseEvent.service"
+import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 import "./codeMap.component.scss"
 
@@ -8,7 +8,7 @@ import angular, { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
 
-export class CodeMapController implements CodeMapMouseEventServiceSubscriber, LoadingGifComponentSubscriber {
+export class CodeMapController implements BuildingRightClickedEventSubscriber, LoadingGifComponentSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 	} = {
@@ -23,7 +23,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber, Lo
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
-		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		LoadingGifService.subscribe(this.$rootScope, this)
 	}
 
@@ -40,10 +40,6 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber, Lo
 			NodeContextMenuController.broadcastShowEvent(this.$rootScope, building.node.path, nodeType, x, y)
 		}
 	}
-
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
-
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
 
 	public onLoadingFileStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
 		this._viewModel.isLoadingFile = isLoadingFile

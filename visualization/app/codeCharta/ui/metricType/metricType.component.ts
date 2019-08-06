@@ -3,14 +3,9 @@ import { MetricService } from "../../state/metric.service"
 import { AttributeTypeValue, RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import {
-	CodeMapBuildingTransition,
-	CodeMapMouseEventService,
-	CodeMapMouseEventServiceSubscriber
-} from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 
-export class MetricTypeController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
+export class MetricTypeController implements SettingsServiceSubscriber, BuildingHoveredEventSubscriber {
 	private _viewModel: {
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
@@ -26,7 +21,7 @@ export class MetricTypeController implements SettingsServiceSubscriber, CodeMapM
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private metricService: MetricService) {
 		SettingsService.subscribe(this.$rootScope, this)
-		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
@@ -54,10 +49,6 @@ export class MetricTypeController implements SettingsServiceSubscriber, CodeMapM
 			this._viewModel.isBuildingHovered = true
 		}
 	}
-
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {}
-
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
 
 	public isAreaMetricAbsolute(): boolean {
 		return this._viewModel.areaMetricType === AttributeTypeValue.absolute || !this._viewModel.areaMetricType

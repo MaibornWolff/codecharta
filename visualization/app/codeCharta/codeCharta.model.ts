@@ -103,6 +103,7 @@ export interface AppSettings {
 	isWhiteBackground: boolean
 	mapColors: MapColors
 	whiteColorBuildings: boolean
+	isPresentationMode: boolean
 }
 
 export interface TreeMapSettings {
