@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Button to enable PresentationMode that uses Flashlight-Hovering #576
+
 ### Changed
 
 ### Removed
@@ -30,7 +32,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 - Label hight adjustment now matches scaling of map #594
-
 - SCMLogParser now guesses the input file encoding #614
 
 ### Chore
@@ -40,7 +41,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - New Search Bar #526
-- Button to enable PresentationMode that uses Flashlight-Hovering #576
 - Number of Renames Metric to SCMLogParser #621
 - Age In Weeks Metric for SCMLogParser #620
 
