@@ -1,7 +1,7 @@
 import "./toolBar.module"
 import { ToolBarController } from "./toolBar.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { DialogService } from "../dialogService/dialogService"
+import { DialogService } from "../dialog/dialog.service"
 
 describe("ToolBarController", () => {
 	let toolBarController: ToolBarController

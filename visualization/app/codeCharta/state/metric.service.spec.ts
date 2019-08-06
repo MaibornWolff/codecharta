@@ -78,7 +78,7 @@ describe("MetricService", () => {
 		})
 
 		it("should trigger METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onFileSelectionStatesChanged(fileStates, undefined)
+			metricService.onFileSelectionStatesChanged(fileStates)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledTimes(1)
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_ADDED_EVENT"], metricData)
@@ -92,31 +92,31 @@ describe("MetricService", () => {
 		})
 
 		it("should not call getFileStates when update object is not a blacklist", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: null } }, null)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: null } })
 
 			expect(fileStateService.getFileStates).not.toHaveBeenCalled()
 		})
 
 		it("should call calculateMetrics", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } })
 
 			expect(metricService["calculateMetrics"]).toHaveBeenCalledWith(fileStates, [], [])
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } })
 
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
 		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } })
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, undefined)
+			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } })
 
 			expect(metricService.getMetricData().filter(x => x.name === "unary").length).toBeGreaterThan(0)
 		})

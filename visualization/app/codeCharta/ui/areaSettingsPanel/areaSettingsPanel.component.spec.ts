@@ -86,7 +86,7 @@ describe("AreaSettingsPanelController", () => {
 		})
 
 		it("should set the dynamicMargin in viewModel", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
 		})
@@ -94,19 +94,19 @@ describe("AreaSettingsPanelController", () => {
 		it("should set margin from settings if dynamicMargin is false", () => {
 			settings.appSettings.dynamicMargin = false
 
-			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(48)
 		})
 
 		it("should set new calculated margin correctly", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
 		})
 
 		it("should call applySettings after setting new margin", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
 		})
@@ -114,7 +114,7 @@ describe("AreaSettingsPanelController", () => {
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
 			settings.dynamicSettings.margin = 28
 
-			areaSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			areaSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
 		})
@@ -131,19 +131,19 @@ describe("AreaSettingsPanelController", () => {
 		it("should not call applySettings if dynamicMargin is false", () => {
 			settings.appSettings.dynamicMargin = false
 
-			areaSettingsPanelController.onRenderMapChanged(map, undefined)
+			areaSettingsPanelController.onRenderMapChanged(map)
 
 			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
 		})
 
 		it("should set new calculated margin correctly", () => {
-			areaSettingsPanelController.onRenderMapChanged(map, undefined)
+			areaSettingsPanelController.onRenderMapChanged(map)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
 		})
 
 		it("should call applySettings after setting new margin", () => {
-			areaSettingsPanelController.onRenderMapChanged(map, undefined)
+			areaSettingsPanelController.onRenderMapChanged(map)
 
 			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
 		})
@@ -151,7 +151,7 @@ describe("AreaSettingsPanelController", () => {
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
 			areaSettingsPanelController["_viewModel"].margin = 28
 
-			areaSettingsPanelController.onRenderMapChanged(map, undefined)
+			areaSettingsPanelController.onRenderMapChanged(map)
 
 			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
 		})
@@ -159,13 +159,13 @@ describe("AreaSettingsPanelController", () => {
 
 	describe("onFileSelectionStatesChanged", () => {
 		it("should set dynamicMargin in viewModel to true", () => {
-			areaSettingsPanelController.onFileSelectionStatesChanged(undefined, undefined)
+			areaSettingsPanelController.onFileSelectionStatesChanged(undefined)
 
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
 		})
 
 		it("should update margin and dynamicMargin in settingsService", () => {
-			areaSettingsPanelController.onFileSelectionStatesChanged(undefined, undefined)
+			areaSettingsPanelController.onFileSelectionStatesChanged(undefined)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				appSettings: { dynamicMargin: true }

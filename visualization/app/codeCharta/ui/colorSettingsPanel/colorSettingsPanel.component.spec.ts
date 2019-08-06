@@ -84,7 +84,7 @@ describe("ColorSettingsPanelController", () => {
 		it("should set invertDeltaColors flag", () => {
 			const settings = { appSettings: { invertDeltaColors: true }, dynamicSettings: {} } as Settings
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+			colorSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBe(true)
 		})
@@ -92,7 +92,7 @@ describe("ColorSettingsPanelController", () => {
 		it("should set white color buildings", () => {
 			const settings = { appSettings: { whiteColorBuildings: true }, dynamicSettings: {} } as Settings
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+			colorSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
 		})
@@ -106,7 +106,7 @@ describe("ColorSettingsPanelController", () => {
 			} as Settings
 			colorSettingsPanelController["lastColorMetric"] = "foo"
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+			colorSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeTruthy()
 		})
@@ -114,7 +114,7 @@ describe("ColorSettingsPanelController", () => {
 		it("should only adapt color range if color metric is not the same ", () => {
 			const settings = { dynamicSettings: { colorMetric: "foo" }, appSettings: {} } as Settings
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+			colorSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
 		})
@@ -122,13 +122,13 @@ describe("ColorSettingsPanelController", () => {
 		it("should set correct metric max is retrieved for range calculation ", () => {
 			const settings = { dynamicSettings: { colorMetric: "rloc" }, appSettings: {} } as Settings
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined, null)
+			colorSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(metricService.getMaxMetricByMetricName).toHaveBeenCalledWith("rloc")
 		})
 
 		it("should set adapted ColorRange in thirds for given metricValues", () => {
-			colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined, null)
+			colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
@@ -143,7 +143,7 @@ describe("ColorSettingsPanelController", () => {
 				{ file: {}, selectedAs: FileSelectionState.Reference }
 			] as FileState[]
 
-			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates, null)
+			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeTruthy()
 		})
@@ -154,7 +154,7 @@ describe("ColorSettingsPanelController", () => {
 				{ file: {}, selectedAs: FileSelectionState.Partial }
 			] as FileState[]
 
-			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates, null)
+			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
 		})
@@ -162,13 +162,13 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("should set lastMaxColorMetricValue if newMaxColorMetricValue is different", () => {
-			colorSettingsPanelController.onMetricDataAdded([], undefined)
+			colorSettingsPanelController.onMetricDataAdded([])
 
 			expect(colorSettingsPanelController["lastMaxColorMetricValue"]).toBe(100)
 		})
 
 		it("should adaptColorRange if newMaxColorMetricValue is different", () => {
-			colorSettingsPanelController.onMetricDataAdded([], undefined)
+			colorSettingsPanelController.onMetricDataAdded([])
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: {
@@ -183,7 +183,7 @@ describe("ColorSettingsPanelController", () => {
 		it("should not set lastMaxColorMetricValue if newMaxColorMetricValue is the same", () => {
 			colorSettingsPanelController["lastMaxColorMetricValue"] = 100
 
-			colorSettingsPanelController.onMetricDataAdded([], undefined)
+			colorSettingsPanelController.onMetricDataAdded([])
 
 			expect(colorSettingsPanelController["lastMaxColorMetricValue"]).toBe(100)
 		})

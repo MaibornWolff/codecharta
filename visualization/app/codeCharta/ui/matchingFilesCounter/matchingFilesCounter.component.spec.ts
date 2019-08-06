@@ -15,7 +15,6 @@ describe("MatchingFilesCounterController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedCodeMapPreRenderService()
 	})
 
 	function restartSystem() {
@@ -28,17 +27,13 @@ describe("MatchingFilesCounterController", () => {
 		matchingFilesCounterController = new MatchingFilesCounterController($rootScope)
 	}
 
-	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService["lastRender"].renderFile = TEST_FILE_WITH_PATHS
-	}
-
 	describe("onSettingsChanged", () => {
 		it("should update search pattern", () => {
 			const blacklist: BlacklistItem[] = [{ path: "/root/node/path", type: BlacklistType.exclude }]
 			SETTINGS.fileSettings.blacklist = blacklist
 			let update = { fileSettings: { blacklist: blacklist } }
 
-			matchingFilesCounterController.onSettingsChanged(SETTINGS, update, null)
+			matchingFilesCounterController.onSettingsChanged(SETTINGS, update)
 
 			expect(matchingFilesCounterController["_viewModel"].blacklist).toBe(blacklist)
 		})

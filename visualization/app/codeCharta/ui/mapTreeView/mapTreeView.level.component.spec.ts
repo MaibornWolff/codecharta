@@ -68,7 +68,7 @@ describe("MapTreeViewLevelController", () => {
 			const controllerNode: CodeMapNode = buildNodeAt("somePath")
 			const transition: CodeMapBuildingTransition = buildTransitionTo("somePath")
 			mapTreeViewLevelController["node"] = controllerNode
-			mapTreeViewLevelController.onBuildingHovered(transition, null)
+			mapTreeViewLevelController.onBuildingHovered(transition)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(true)
 		})
 
@@ -76,13 +76,13 @@ describe("MapTreeViewLevelController", () => {
 			const controllerNode: CodeMapNode = buildNodeAt("somePath")
 			const transition: CodeMapBuildingTransition = buildTransitionTo("someOtherPath")
 			mapTreeViewLevelController["node"] = controllerNode
-			mapTreeViewLevelController.onBuildingHovered(transition, null)
+			mapTreeViewLevelController.onBuildingHovered(transition)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
 		it("should set _isHoveredInCodeMap to false if hovered node is null", () => {
 			const transition: CodeMapBuildingTransition = { from: null, to: null }
-			mapTreeViewLevelController.onBuildingHovered(transition, null)
+			mapTreeViewLevelController.onBuildingHovered(transition)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 

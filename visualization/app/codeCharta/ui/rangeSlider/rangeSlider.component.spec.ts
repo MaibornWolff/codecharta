@@ -49,7 +49,7 @@ describe("RangeSliderController", () => {
 
 			const settings = { dynamicSettings: { colorRange: { from: null, to: null } } } as Settings
 
-			rangeSliderController.onSettingsChanged(settings, undefined, undefined)
+			rangeSliderController.onSettingsChanged(settings, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(settings)
 			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
@@ -61,7 +61,7 @@ describe("RangeSliderController", () => {
 
 			const settings = { dynamicSettings: { colorRange: { from: null, to: null } } } as Settings
 
-			rangeSliderController.onSettingsChanged(settings, undefined, undefined)
+			rangeSliderController.onSettingsChanged(settings, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(settings)
 			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
@@ -70,7 +70,7 @@ describe("RangeSliderController", () => {
 		it("should call initSliderOptions and update the viewModel, set colored range colors and inputfield width", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
 			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.colorRange.from)
@@ -81,7 +81,7 @@ describe("RangeSliderController", () => {
 			rangeSliderController.initSliderOptions = jest.fn()
 
 			rangeSliderController["_viewModel"].sliderOptions.disabled = true
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
 			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
 			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.colorRange.from)
@@ -109,7 +109,7 @@ describe("RangeSliderController", () => {
 			settingsService.updateSettings = jest.fn()
 			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
 			rangeSliderController["_viewModel"].sliderOptions.onFromChange()
 
@@ -124,7 +124,7 @@ describe("RangeSliderController", () => {
 			settingsService.updateSettings = jest.fn()
 			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined, undefined)
+			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
 
 			rangeSliderController["_viewModel"].sliderOptions.onToChange()
 

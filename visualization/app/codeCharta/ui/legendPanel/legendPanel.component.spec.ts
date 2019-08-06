@@ -47,7 +47,7 @@ describe("LegendPanelController", () => {
 				}
 			]
 
-			legendPanelController.onSettingsChanged(settings, undefined, null)
+			legendPanelController.onSettingsChanged(settings, undefined)
 
 			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
 		})
@@ -56,7 +56,7 @@ describe("LegendPanelController", () => {
 			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }]
 			const shortenedPathname = "longNameToBe...enedInLegend"
 
-			legendPanelController.onSettingsChanged(settings, undefined, null)
+			legendPanelController.onSettingsChanged(settings, undefined)
 			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
 		})
 
@@ -64,7 +64,7 @@ describe("LegendPanelController", () => {
 			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {} }]
 			const shortenedPathname = ".../andAnotherLongNameToShorten"
 
-			legendPanelController.onSettingsChanged(settings, undefined, null)
+			legendPanelController.onSettingsChanged(settings, undefined)
 			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
 		})
 	})
