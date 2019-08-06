@@ -12,6 +12,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { Settings } from "../../codeCharta.model"
 import { CODE_MAP_BUILDING, SETTINGS } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import _ from "lodash"
 
 describe("detailPanelController", () => {
 	let services, detailPanelController: DetailPanelController
@@ -35,8 +36,8 @@ describe("detailPanelController", () => {
 			fileStateService: getService<FileStateService>("fileStateService")
 		}
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		codeMapBuilding = JSON.parse(JSON.stringify(CODE_MAP_BUILDING))
+		settings = _.cloneDeep(SETTINGS)
+		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 	}
 
 	function rebuildController() {
@@ -79,6 +80,14 @@ describe("detailPanelController", () => {
 		expect(detailPanelController["_viewModel"].details.common.colorAttributeName).toBe("mcc")
 		expect(detailPanelController["_viewModel"].details.common.heightAttributeName).toBe("mcc")
 		expect(detailPanelController["_viewModel"].maximizeDetailPanel).toBe(false)
+	})
+
+	it("should reset hovered and selected when map rebuilds", () => {
+		const expected = detailPanelController["_viewModel"].details
+		detailPanelController.onSettingsChanged(settings, { fileSettings: { blacklist: [] } }, undefined)
+
+		expect(detailPanelController["_viewModel"].details.hovered).toEqual(expected.hovered)
+		expect(detailPanelController["_viewModel"].details.selected).toEqual(expected.selected)
 	})
 
 	it("should setSelectedDetails when valid node is selected", () => {

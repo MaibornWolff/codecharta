@@ -1,10 +1,10 @@
 import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import "./detailPanel.component.scss"
 import {
+	BuildingHoveredEventSubscriber,
+	BuildingSelectedEventSubscriber,
 	CodeMapBuildingTransition,
-	CodeMapMouseEventService,
-	CodeMapMouseEventServiceSubscriber
+	CodeMapMouseEventService
 } from "../codeMap/codeMap.mouseEvent.service"
 import { Settings, KeyValuePair, MetricData, RecursivePartial } from "../../codeCharta.model"
 import { Node } from "../../codeCharta.model"
@@ -39,7 +39,8 @@ interface Details {
 	selected: SpecificDetails
 }
 
-export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber, MetricServiceSubscriber {
+export class DetailPanelController
+	implements SettingsServiceSubscriber, BuildingHoveredEventSubscriber, BuildingSelectedEventSubscriber, MetricServiceSubscriber {
 	private _viewModel: {
 		maximizeDetailPanel: boolean
 		metrics: string[]
@@ -93,7 +94,8 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 	) {
 		MetricService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
-		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 	}
 
 	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
@@ -110,13 +112,16 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 		this.onSelect(data)
 	}
 
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {}
-
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
 		this._viewModel.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
 		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
 		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
 		this._viewModel.maximizeDetailPanel = settings.appSettings.maximizeDetailPanel
+
+		if (update && update.fileSettings && update.fileSettings.blacklist) {
+			this.clearSelectedDetails()
+			this.clearHoveredDetails()
+		}
 	}
 
 	public onSelect(data: CodeMapBuildingTransition) {

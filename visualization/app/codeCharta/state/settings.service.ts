@@ -96,7 +96,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 				dynamicMargin: true,
 				isWhiteBackground: false,
 				whiteColorBuildings: false,
-				mapColors: mapColors
+				mapColors: mapColors,
+				isPresentationMode: false
 			},
 			treeMapSettings: {
 				mapSize: 500

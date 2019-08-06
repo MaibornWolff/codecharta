@@ -4,9 +4,9 @@ import { Node, Settings } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ColorConverter } from "../../util/colorConverter"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settings.service"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 interface InternalLabel {
 	sprite: THREE.Sprite

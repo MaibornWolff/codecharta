@@ -17,7 +17,7 @@ tool-bar-component {
 	}
 
 	.right-aligned {
-		right: 20px;
+		right: 10px;
 		position: fixed;
 
 		> * {
@@ -26,6 +26,13 @@ tool-bar-component {
 	}
 
 	loading-gif-map-component {
+		margin-top: 5px;
+		margin-right: 10px;
+		margin-left: 10px;
+	}
+
+	.presentation-mode-button {
+		float: right;
 		margin-top: 5px;
 	}
 }
