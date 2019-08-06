@@ -1,5 +1,5 @@
 import { SettingsService } from "../../state/settings.service"
-import { IRootScopeService, IAngularEvent } from "angular"
+import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
@@ -42,7 +42,7 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 		return markingColor ? markingColor : defaultColor
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: IAngularEvent) {
+	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		this._viewModel.isHoveredInCodeMap = !!(
 			data.to &&
 			data.to.node &&
