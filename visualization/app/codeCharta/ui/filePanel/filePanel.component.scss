@@ -1,5 +1,5 @@
 file-panel-component {
-	width: calc(100% - 100px);
+	width: calc(100% - 150px);
 	min-width: 400px;
 	display: block;
 
@@ -67,7 +67,7 @@ file-panel-component {
 		float: left;
 		width: 10px;
 		margin-right: 5px;
-		margin-top: 5px;
+		margin-top: 6px;
 		padding-left: 5px;
 		min-height: 22px;
 		border-radius: 2px;
@@ -84,7 +84,7 @@ file-panel-component {
 		min-width: 150px;
 
 		&.delta-select {
-			width: calc((100% - 250px) / 2);
+			width: calc((100% - 300px) / 2);
 		}
 
 		md-select {
