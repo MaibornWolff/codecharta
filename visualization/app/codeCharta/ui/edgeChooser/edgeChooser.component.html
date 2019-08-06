@@ -1,1 +1,18 @@
-<h1>Hello EdgeChooserComponent!</h1>
+<md-input-container style="width:300px">
+	<i class="fa fa-arrows-alt"></i>
+
+	<md-select ng-model="$ctrl._viewModel.edgeMetric" ng-change="$ctrl.applySettingsEdgeMetric()">
+		<md-option ng-repeat="metric in $ctrl._viewModel.edgeMetricData" value="{{::metric.name}}">
+			{{::metric.name}}
+			<span class="metric-max-value">({{::metric.maxValue}})</span>
+		</md-option>
+	</md-select>
+
+	<div>
+		Placeholder metric type component
+		<span class="metric-value"
+			>{{ ($ctrl.hoveredEdgeValue | number) || "-" }}
+			<span ng-hide="!$ctrl.hoveredEdgeDelta">(&Delta;{{ $ctrl.hoveredEdgeDelta | number }})</span>
+		</span>
+	</div>
+</md-input-container>
