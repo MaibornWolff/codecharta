@@ -36,12 +36,17 @@ export interface ColorMetricSubscriber {
 	onColorMetricChanged(colorMetric: string)
 }
 
+export interface DistributionMetricSubscriber {
+	onDistributionMetricChanged(distributionMetric: string)
+}
+
 export class SettingsService implements FileStateServiceSubscriber {
 	private static readonly SETTINGS_CHANGED_EVENT = "settings-changed"
 	private static readonly BLACKLIST_CHANGED_EVENT = "blacklist-changed"
 	private static readonly AREA_METRIC_CHANGED_EVENT = "area-metric-changed"
 	private static readonly HEIGHT_METRIC_CHANGED_EVENT = "height-metric-changed"
 	private static readonly COLOR_METRIC_CHANGED_EVENT = "color-metric-changed"
+	private static readonly DISTRIBUTION_METRIC_CHANGED_EVENT = "distribution-metric-changed"
 
 	private static DEBOUNCE_TIME = 400
 
@@ -86,6 +91,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 				if (update.dynamicSettings.areaMetric) {
 					this.notifyColorMetricSubscribers()
+				}
+
+				if (update.dynamicSettings.distributionMetric) {
+					this.notifyDistributionMetricSubscribers()
 				}
 			} else {
 				this.debounceBroadcast()
@@ -246,6 +255,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.$rootScope.$broadcast(SettingsService.COLOR_METRIC_CHANGED_EVENT, { colorMetric: this.settings.dynamicSettings.colorMetric })
 	}
 
+	private notifyDistributionMetricSubscribers() {
+		this.$rootScope.$broadcast(SettingsService.DISTRIBUTION_METRIC_CHANGED_EVENT, {
+			distributionMetric: this.settings.dynamicSettings.distributionMetric
+		})
+	}
+
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})
 	}
@@ -277,6 +292,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribeToColorMetric($rootScope: IRootScopeService, subscriber: ColorMetricSubscriber) {
 		$rootScope.$on(SettingsService.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
 			subscriber.onColorMetricChanged(data.colorMetric)
+		})
+	}
+
+	public static subscribeToDistributionMetric($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
+		$rootScope.$on(SettingsService.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onDistributionMetricChanged(data.distributionMetric)
 		})
 	}
 }
