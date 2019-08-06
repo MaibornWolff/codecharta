@@ -290,7 +290,7 @@ describe("MetricChooserController", () => {
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
 			metricChooserController["_viewModel"].searchTerm = ""
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -302,7 +302,7 @@ describe("MetricChooserController", () => {
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
 			metricChooserController["_viewModel"].searchTerm = "mcc"
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -315,7 +315,7 @@ describe("MetricChooserController", () => {
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
 			metricChooserController["_viewModel"].searchTerm = "rl"
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -329,7 +329,7 @@ describe("MetricChooserController", () => {
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false }
 			]
 			metricChooserController["_viewModel"].searchTerm = "c"
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -347,7 +347,7 @@ describe("MetricChooserController", () => {
 				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
 			]
 			metricChooserController["_viewModel"].searchTerm = "mc"
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -364,7 +364,7 @@ describe("MetricChooserController", () => {
 				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
 			]
 			metricChooserController["_viewModel"].searchTerm = "rla"
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -388,7 +388,7 @@ describe("MetricChooserController", () => {
 				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
 			]
 			metricChooserController["_viewModel"].searchTerm = "rlo"
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.clearSearchTerm()
 
