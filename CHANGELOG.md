@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Search for metrics and an indicator for the highest value in dropdown #575
 - Button to enable PresentationMode that uses Flashlight-Hovering #576
 
 ### Changed
