@@ -1,4 +1,11 @@
-import { BlacklistSubscriber, SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import {
+	AreaMetricSubscriber,
+	BlacklistSubscriber,
+	ColorMetricSubscriber,
+	HeightMetricSubscriber,
+	SettingsService,
+	SettingsServiceSubscriber
+} from "../../state/settings.service"
 import "./detailPanel.component.scss"
 import {
 	BuildingHoveredEventSubscriber,
@@ -45,7 +52,10 @@ export class DetailPanelController
 		BuildingHoveredEventSubscriber,
 		BuildingSelectedEventSubscriber,
 		MetricServiceSubscriber,
-		BlacklistSubscriber {
+		BlacklistSubscriber,
+		AreaMetricSubscriber,
+		HeightMetricSubscriber,
+		ColorMetricSubscriber {
 	private _viewModel: {
 		maximizeDetailPanel: boolean
 		metrics: string[]
@@ -100,6 +110,10 @@ export class DetailPanelController
 		MetricService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
 		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
+		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
+		SettingsService.subscribeToColorMetric(this.$rootScope, this)
+
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 	}
@@ -119,10 +133,19 @@ export class DetailPanelController
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this._viewModel.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
-		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
-		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
 		this._viewModel.maximizeDetailPanel = settings.appSettings.maximizeDetailPanel
+	}
+
+	public onAreaMetricChanged(areaMetric: string) {
+		this._viewModel.details.common.areaAttributeName = areaMetric
+	}
+
+	public onHeightMetricChanged(heightMetric: string) {
+		this._viewModel.details.common.heightAttributeName = heightMetric
+	}
+
+	public onColorMetricChanged(colorMetric: string) {
+		this._viewModel.details.common.colorAttributeName = colorMetric
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {

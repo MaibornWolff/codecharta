@@ -38,6 +38,7 @@ describe("SearchPanelModeSelectorController", () => {
 		beforeEach(() => {
 			SettingsService.subscribeToSearchPattern = jest.fn()
 			SettingsService.subscribeToBlacklist = jest.fn()
+
 			SearchPanelService.subscribe = jest.fn()
 		})
 

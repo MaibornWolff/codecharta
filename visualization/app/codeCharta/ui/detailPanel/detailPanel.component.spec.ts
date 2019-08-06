@@ -62,6 +62,9 @@ describe("detailPanelController", () => {
 			MetricService.subscribe = jest.fn()
 			SettingsService.subscribe = jest.fn()
 			SettingsService.subscribeToBlacklist = jest.fn()
+			SettingsService.subscribeToAreaMetric = jest.fn()
+			SettingsService.subscribeToHeightMetric = jest.fn()
+			SettingsService.subscribeToColorMetric = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingSelectedEvents = jest.fn()
 		})
@@ -82,6 +85,14 @@ describe("detailPanelController", () => {
 			rebuildController()
 
 			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, detailPanelController)
+		})
+
+		it("should subscribe to Metric-Events", () => {
+			rebuildController()
+
+			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, detailPanelController)
+			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, detailPanelController)
+			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, detailPanelController)
 		})
 
 		it("should subscribe to Building-Hovered-Event", () => {
@@ -113,13 +124,36 @@ describe("detailPanelController", () => {
 		})
 	})
 
-	it("should set common attributes onSettingsChanged", () => {
-		detailPanelController.onSettingsChanged(settings, undefined)
+	describe("onSettingsChanged", () => {
+		it("should set maximizeDetailPanel", () => {
+			detailPanelController.onSettingsChanged(settings, settings)
 
-		expect(detailPanelController["_viewModel"].details.common.areaAttributeName).toBe("rloc")
-		expect(detailPanelController["_viewModel"].details.common.colorAttributeName).toBe("mcc")
-		expect(detailPanelController["_viewModel"].details.common.heightAttributeName).toBe("mcc")
-		expect(detailPanelController["_viewModel"].maximizeDetailPanel).toBe(false)
+			expect(detailPanelController["_viewModel"].maximizeDetailPanel).toBe(false)
+		})
+	})
+
+	describe("onAreaMetricChanged", () => {
+		it("should set common details of areaMetric", () => {
+			detailPanelController.onAreaMetricChanged("rloc")
+
+			expect(detailPanelController["_viewModel"].details.common.areaAttributeName).toBe("rloc")
+		})
+	})
+
+	describe("onHeightMetricChanged", () => {
+		it("should set common details of heightMetric", () => {
+			detailPanelController.onHeightMetricChanged("mcc")
+
+			expect(detailPanelController["_viewModel"].details.common.heightAttributeName).toBe("mcc")
+		})
+	})
+
+	describe("onColorMetricChanged", () => {
+		it("should set common details of colorMetric", () => {
+			detailPanelController.onColorMetricChanged("mcc")
+
+			expect(detailPanelController["_viewModel"].details.common.colorAttributeName).toBe("mcc")
+		})
 	})
 
 	describe("onBlacklistChanged", () => {
