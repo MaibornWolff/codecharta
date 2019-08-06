@@ -1,4 +1,13 @@
-import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../codeCharta.model"
+import {
+	BlacklistItem,
+	ColorRange,
+	DynamicSettings,
+	FileSettings,
+	FileState,
+	MapColors,
+	RecursivePartial,
+	Settings
+} from "../codeCharta.model"
 import _ from "lodash"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
@@ -11,8 +20,13 @@ export interface SettingsServiceSubscriber {
 	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>)
 }
 
+export interface BlacklistSubscriber {
+	onBlacklistChanged(blacklist: BlacklistItem[])
+}
+
 export class SettingsService implements FileStateServiceSubscriber {
 	private static SETTINGS_CHANGED_EVENT = "settings-changed"
+	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
 	private static DEBOUNCE_TIME = 400
 
 	private settings: Settings
@@ -40,7 +54,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 		if (!isSilent) {
 			this.loadingGifService.updateLoadingMapFlag(true)
 			this.update = this.mergePartialSettings(this.update, update, this.settings)
-			this.debounceBroadcast()
+
+			if (update && update.fileSettings && update.fileSettings.blacklist) {
+				this.notifyBlacklistSubscribers()
+			} else {
+				this.debounceBroadcast()
+			}
 		}
 		this.synchronizeAngularTwoWayBinding()
 	}
@@ -176,6 +195,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.update = {}
 	}
 
+	private notifyBlacklistSubscribers() {
+		this.$rootScope.$broadcast(SettingsService.BLACKLIST_CHANGED_EVENT, { blacklist: this.settings.fileSettings.blacklist })
+	}
+
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})
 	}
@@ -183,6 +206,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {
 		$rootScope.$on(SettingsService.SETTINGS_CHANGED_EVENT, (event, data) => {
 			subscriber.onSettingsChanged(data.settings, data.update)
+		})
+	}
+
+	public static subscribeToBlacklist($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
+		$rootScope.$on(SettingsService.BLACKLIST_CHANGED_EVENT, (event, data) => {
+			subscriber.onBlacklistChanged(data.blacklist)
 		})
 	}
 }
