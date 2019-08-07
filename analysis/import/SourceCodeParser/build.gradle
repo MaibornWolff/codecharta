@@ -3,7 +3,7 @@ dependencies {
     
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'org.sonarsource.java', name: 'sonar-java-plugin', version: '5.12.1.17771'
-    implementation group: 'org.json', name: 'json', version: '20180813'
+    implementation group: 'org.json', name: 'json', version: '20190722'
     compile "org.jetbrains.kotlin:kotlin-reflect:1.3.41"
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 
