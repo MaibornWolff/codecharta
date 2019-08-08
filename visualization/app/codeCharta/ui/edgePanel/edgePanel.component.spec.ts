@@ -19,6 +19,8 @@ describe("EdgePanelController", () => {
 	}
 
 	describe("someMethodName", () => {
-		it("should do something", () => {})
+		it("should do something", () => {
+			edgePanelController
+		})
 	})
 })
