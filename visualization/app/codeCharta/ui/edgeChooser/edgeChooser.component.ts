@@ -2,6 +2,7 @@ import "./edgeChooser.component.scss"
 import { MetricData } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
+import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 
 export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	private noMetricsAvailable: string = "No Edge Metrics available"
@@ -14,12 +15,17 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		edgeMetric: "No Edge Metrics available"
 	}
 
-	constructor($rootScope: IRootScopeService, private edgeMetricService: EdgeMetricService) {
+	constructor(
+		$rootScope: IRootScopeService,
+		private edgeMetricService: EdgeMetricService,
+		private codeMapActionsService: CodeMapActionsService
+	) {
 		EdgeMetricService.subscribe($rootScope, this)
 	}
 
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
 		this._viewModel.edgeMetricData = edgeMetrics
+		this._viewModel.edgeMetricData.push({ name: "None", maxValue: 0, availableInVisibleMaps: false })
 
 		let edgeMetricNames = this.edgeMetricService.getMetricNames()
 
@@ -30,6 +36,10 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 				this._viewModel.edgeMetric = this.noMetricsAvailable
 			}
 		}
+	}
+
+	public onEdgeMetricSelected() {
+		this.codeMapActionsService.showEdgesForMetric(this._viewModel.edgeMetric)
 	}
 }
 

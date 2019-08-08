@@ -1,7 +1,7 @@
 <md-input-container style="width:300px">
 	<i class="fa fa-exchange"></i>
 
-	<md-select ng-model="$ctrl._viewModel.edgeMetric" ng-change="$ctrl.applySettingsEdgeMetric()">
+	<md-select ng-model="$ctrl._viewModel.edgeMetric" ng-change="$ctrl.onEdgeMetricSelected('pairingRate')">
 		<md-option ng-repeat="metric in $ctrl._viewModel.edgeMetricData" value="{{::metric.name}}">
 			{{::metric.name}}
 			<span class="metric-max-value">({{::metric.maxValue}})</span>

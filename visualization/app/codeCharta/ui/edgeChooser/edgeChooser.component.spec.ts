@@ -22,7 +22,7 @@ describe("EdgeChooserController", () => {
 	}
 
 	function rebuildController() {
-		edgeChooserController = new EdgeChooserController($rootScope, edgeMetricService)
+		edgeChooserController = new EdgeChooserController($rootScope, edgeMetricService, null)
 	}
 
 	// TODO: Write some tests

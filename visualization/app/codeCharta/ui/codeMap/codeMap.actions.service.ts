@@ -123,6 +123,18 @@ export class CodeMapActionsService {
 		this.changeEdgesVisibility(false)
 	}
 
+	public showEdgesForMetric(edgeMetric: string) {
+		let edges = this.settingsService.getSettings().fileSettings.edges
+		edges.forEach(edge => {
+			edge.visible = Object.keys(edge.attributes).includes(edgeMetric)
+		})
+		this.settingsService.updateSettings({
+			fileSettings: {
+				edges: edges
+			}
+		})
+	}
+
 	public amountOfDependentEdges(node: CodeMapNode) {
 		return this.settingsService.getSettings().fileSettings.edges.filter(edge => this.edgeContainsNode(edge, node)).length
 	}
