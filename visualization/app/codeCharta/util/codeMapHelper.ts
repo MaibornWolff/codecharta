@@ -50,12 +50,16 @@ export class CodeMapHelper {
 	}
 
 	public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
+		return CodeMapHelper.isPathBlacklisted(node.path, blacklist, type)
+	}
+
+	public static isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
 		if (blacklist.length === 0) {
 			return false
 		}
 
 		const ig = ignore().add(blacklist.filter(b => b.type === type).map(ex => CodeMapHelper.transformPath(ex.path)))
-		return ig.ignores(CodeMapHelper.transformPath(node.path))
+		return ig.ignores(CodeMapHelper.transformPath(path))
 	}
 
 	public static getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {
