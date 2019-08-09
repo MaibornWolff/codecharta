@@ -3,7 +3,7 @@ import "./blacklistPanel.module"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { BlacklistPanelController } from "./blacklistPanel.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { BlacklistType, BlacklistItem, RecursivePartial, Settings, SearchPanelMode } from "../../codeCharta.model"
+import { BlacklistType, BlacklistItem, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 
