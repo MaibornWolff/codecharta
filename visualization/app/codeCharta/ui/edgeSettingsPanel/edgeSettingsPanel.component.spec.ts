@@ -15,10 +15,12 @@ describe("EdgeSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		edgeSettingsPanelController = new EdgeSettingsPanelController()
+		edgeSettingsPanelController = new EdgeSettingsPanelController(null, null, null)
 	}
 
 	describe("someMethodName", () => {
-		it("should do something", () => {})
+		it("should do something", () => {
+			edgeSettingsPanelController
+		})
 	})
 })

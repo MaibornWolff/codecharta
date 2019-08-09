@@ -82,6 +82,7 @@ export interface DynamicSettings {
 	heightMetric: string
 	colorMetric: string
 	distributionMetric: string
+	edgeMetric: string
 	focusedNodePath: string
 	searchedNodePaths: Array<string>
 	searchPattern: string
@@ -91,6 +92,7 @@ export interface DynamicSettings {
 
 export interface AppSettings {
 	amountOfTopLabels: number
+	amountOfEdgePreviews: number
 	scaling: Vector3
 	camera: Vector3
 	enableEdgeArrows: boolean

@@ -479,6 +479,7 @@ export const SETTINGS: Settings = {
 		heightMetric: "mcc",
 		colorMetric: "mcc",
 		distributionMetric: "mcc",
+		edgeMetric: "pairingRate",
 		focusedNodePath: "/root",
 		searchedNodePaths: [],
 		searchPattern: "",
@@ -490,6 +491,7 @@ export const SETTINGS: Settings = {
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
+		amountOfEdgePreviews: 5,
 		scaling: new THREE.Vector3(1, 1.8, 1),
 		camera: new THREE.Vector3(0, 300, 1000),
 		invertDeltaColors: false,
@@ -525,6 +527,7 @@ export const SETTINGS: Settings = {
 export const DEFAULT_SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 1,
+		amountOfEdgePreviews: 1,
 		camera: new THREE.Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		dynamicMargin: true,
@@ -558,6 +561,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		focusedNodePath: "",
 		heightMetric: null,
 		distributionMetric: null,
+		edgeMetric: "",
 		margin: null,
 		colorRange: {
 			from: null,

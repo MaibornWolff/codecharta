@@ -4,7 +4,7 @@
 		flex
 		step="1"
 		min="0"
-		max="50"
+		max="{{ $ctrl._viewModel.totalAffectedBuildings }}"
 		ng-model="$ctrl._viewModel.amountOfEdgePreviews"
 		id="labels-slider"
 		ng-change="$ctrl.applySettingsAmountOfEdgePreviews()"
@@ -16,7 +16,7 @@
 			flex
 			step="1"
 			min="0"
-			max="50"
+			max="{{ $ctrl._viewModel.totalAffectedBuildings }}"
 			type="number"
 			ng-model="$ctrl._viewModel.amountOfEdgePreviews"
 			ng-change="$ctrl.applySettingsAmountOfEdgePreviews()"

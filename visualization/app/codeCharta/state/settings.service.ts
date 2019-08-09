@@ -77,6 +77,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				heightMetric: null,
 				colorMetric: null,
 				distributionMetric: null,
+				edgeMetric: "",
 				focusedNodePath: "",
 				searchedNodePaths: [],
 				searchPattern: "",
@@ -85,6 +86,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 			},
 			appSettings: {
 				amountOfTopLabels: 1,
+				amountOfEdgePreviews: 1,
 				scaling: scaling,
 				camera: camera,
 				enableEdgeArrows: true,

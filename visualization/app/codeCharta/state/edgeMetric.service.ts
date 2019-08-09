@@ -47,6 +47,10 @@ export class EdgeMetricService implements FileStateServiceSubscriber, SettingsSe
 		return this.edgeMetricData.map(x => x.name)
 	}
 
+	public getAmountOfAffectedBuildings(metricName: string): number {
+		return this.edgeMetricHashMap.get(metricName).size
+	}
+
 	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: RecursivePartial<BlacklistItem>[]) {
 		if (fileStates.length <= 0) {
 			return []
