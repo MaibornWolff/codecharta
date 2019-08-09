@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Search for metrics and an indicator for the highest value in dropdown #575
 - Button to enable PresentationMode that uses Flashlight-Hovering #576
+- Clarifying information which file is which in the file bar when in delta mode #615
 
 ### Changed
 
