@@ -1,7 +1,7 @@
 import "./heightSettingsPanel.module"
 import { HeightSettingsPanelController } from "./heightSettingsPanel.component"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { Settings } from "../../codeCharta.model"

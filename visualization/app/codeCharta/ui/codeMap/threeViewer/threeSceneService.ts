@@ -3,9 +3,10 @@ import { Scene, Vector3 } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { BlacklistSubscriber, SettingsService } from "../../../state/settings.service"
+import { SettingsService } from "../../../state/settingsService/settings.service"
 import { BlacklistItem } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { BlacklistSubscriber } from "../../../state/settingsService/settings.service.events"
 
 /**
  * A service which manages the Three.js scene in an angular way.

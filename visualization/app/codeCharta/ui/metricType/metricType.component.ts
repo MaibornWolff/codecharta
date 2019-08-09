@@ -2,8 +2,9 @@ import "./metricType.component.scss"
 import { MetricService } from "../../state/metric.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { AreaMetricSubscriber, ColorMetricSubscriber, HeightMetricSubscriber, SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { AreaMetricSubscriber, ColorMetricSubscriber, HeightMetricSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class MetricTypeController
 	implements AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, BuildingHoveredEventSubscriber {

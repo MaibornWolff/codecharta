@@ -2,7 +2,7 @@ import "./searchBar.module"
 import { SearchBarController } from "./searchBar.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
 

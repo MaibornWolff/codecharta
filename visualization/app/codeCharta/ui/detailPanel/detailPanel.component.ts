@@ -1,11 +1,4 @@
-import {
-	AreaMetricSubscriber,
-	BlacklistSubscriber,
-	ColorMetricSubscriber,
-	HeightMetricSubscriber,
-	SettingsService,
-	SettingsServiceSubscriber
-} from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import "./detailPanel.component.scss"
 import {
 	BuildingHoveredEventSubscriber,
@@ -18,6 +11,13 @@ import { Node } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import {
+	AreaMetricSubscriber,
+	BlacklistSubscriber,
+	ColorMetricSubscriber,
+	HeightMetricSubscriber,
+	SettingsServiceSubscriber
+} from "../../state/settingsService/settings.service.events"
 
 interface CommonDetails {
 	areaAttributeName: string

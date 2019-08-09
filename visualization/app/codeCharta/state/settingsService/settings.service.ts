@@ -1,68 +1,25 @@
-import {
-	BlacklistItem,
-	ColorRange,
-	DynamicSettings,
-	FileSettings,
-	FileState,
-	MapColors,
-	RecursivePartial,
-	Settings
-} from "../codeCharta.model"
+import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../../codeCharta.model"
 import _ from "lodash"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
-import { FileStateHelper } from "../util/fileStateHelper"
-import { SettingsMerger } from "../util/settingsMerger"
+import { FileStateService, FileStateServiceSubscriber } from "../fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsMerger } from "../../util/settingsMerger"
 import { Vector3 } from "three"
-import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
-
-export interface SettingsServiceSubscriber {
-	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>)
-}
-
-export interface BlacklistSubscriber {
-	onBlacklistChanged(blacklist: BlacklistItem[])
-}
-
-export interface AreaMetricSubscriber {
-	onAreaMetricChanged(areaMetric: string)
-}
-
-export interface HeightMetricSubscriber {
-	onHeightMetricChanged(heightMetric: string)
-}
-
-export interface ColorMetricSubscriber {
-	onColorMetricChanged(colorMetric: string)
-}
-
-export interface DistributionMetricSubscriber {
-	onDistributionMetricChanged(distributionMetric: string)
-}
-
-export interface SearchPatternSubscriber {
-	onSearchPatternChanged(searchPattern: string)
-}
-
-export interface MarginSubscriber {
-	onMarginChanged(margin: number)
-}
-
-export interface DynamicMarginSubscriber {
-	onDynamicMarginChanged(dynamicMargin: boolean)
-}
+import { LoadingGifService } from "../../ui/loadingGif/loadingGif.service"
+import {
+	AreaMetricSubscriber,
+	BlacklistSubscriber,
+	ColorMetricSubscriber,
+	DistributionMetricSubscriber,
+	DynamicMarginSubscriber,
+	HeightMetricSubscriber,
+	MarginSubscriber,
+	SearchPatternSubscriber,
+	SettingsEvents,
+	SettingsServiceSubscriber
+} from "./settings.service.events"
 
 export class SettingsService implements FileStateServiceSubscriber {
-	private static readonly SETTINGS_CHANGED_EVENT = "settings-changed"
-	private static readonly BLACKLIST_CHANGED_EVENT = "blacklist-changed"
-	private static readonly AREA_METRIC_CHANGED_EVENT = "area-metric-changed"
-	private static readonly HEIGHT_METRIC_CHANGED_EVENT = "height-metric-changed"
-	private static readonly COLOR_METRIC_CHANGED_EVENT = "color-metric-changed"
-	private static readonly DISTRIBUTION_METRIC_CHANGED_EVENT = "distribution-metric-changed"
-	private static readonly SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
-	private static readonly MARGIN_CHANGED_EVENT = "margin-changed"
-	private static readonly DYNAMIC_MARGIN_CHANGED_EVENT = "dynamic-margin-changed"
-
 	private static DEBOUNCE_TIME = 400
 
 	private settings: Settings
@@ -257,7 +214,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private notifySubscribers() {
 		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, {
+			this.$rootScope.$broadcast(SettingsEvents.SETTINGS_CHANGED_EVENT, {
 				settings: this.settings,
 				update: this.update
 			})
@@ -268,21 +225,21 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private notifyBlacklistSubscribers() {
 		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.BLACKLIST_CHANGED_EVENT, { blacklist: this.settings.fileSettings.blacklist })
+			this.$rootScope.$broadcast(SettingsEvents.BLACKLIST_CHANGED_EVENT, { blacklist: this.settings.fileSettings.blacklist })
 		}, SettingsService.DEBOUNCE_TIME)
 		debounceBroadcast()
 	}
 
 	private notifyAreaMetricSubscribers() {
 		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.AREA_METRIC_CHANGED_EVENT, { areaMetric: this.settings.dynamicSettings.areaMetric })
+			this.$rootScope.$broadcast(SettingsEvents.AREA_METRIC_CHANGED_EVENT, { areaMetric: this.settings.dynamicSettings.areaMetric })
 		}, SettingsService.DEBOUNCE_TIME)
 		debounceBroadcast()
 	}
 
 	private notifyHeightMetricSubscribers() {
 		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.HEIGHT_METRIC_CHANGED_EVENT, {
+			this.$rootScope.$broadcast(SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT, {
 				heightMetric: this.settings.dynamicSettings.heightMetric
 			})
 		}, SettingsService.DEBOUNCE_TIME)
@@ -291,7 +248,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private notifyColorMetricSubscribers() {
 		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.COLOR_METRIC_CHANGED_EVENT, {
+			this.$rootScope.$broadcast(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, {
 				colorMetric: this.settings.dynamicSettings.colorMetric
 			})
 		}, SettingsService.DEBOUNCE_TIME)
@@ -300,7 +257,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private notifyDistributionMetricSubscribers() {
 		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.DISTRIBUTION_METRIC_CHANGED_EVENT, {
+			this.$rootScope.$broadcast(SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT, {
 				distributionMetric: this.settings.dynamicSettings.distributionMetric
 			})
 		}, SettingsService.DEBOUNCE_TIME)
@@ -309,7 +266,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private notifySearchPatternSubscribers() {
 		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.SEARCH_PATTERN_CHANGED_EVENT, {
+			this.$rootScope.$broadcast(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, {
 				searchPattern: this.settings.dynamicSettings.searchPattern
 			})
 		}, SettingsService.DEBOUNCE_TIME)
@@ -318,7 +275,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private notifyMarginSubscribers() {
 		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.MARGIN_CHANGED_EVENT, {
+			this.$rootScope.$broadcast(SettingsEvents.MARGIN_CHANGED_EVENT, {
 				margin: this.settings.dynamicSettings.margin
 			})
 		}, SettingsService.DEBOUNCE_TIME)
@@ -327,7 +284,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private notifyDynamicMarginSubscribers() {
 		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsService.DYNAMIC_MARGIN_CHANGED_EVENT, {
+			this.$rootScope.$broadcast(SettingsEvents.DYNAMIC_MARGIN_CHANGED_EVENT, {
 				dynamicMargin: this.settings.appSettings.dynamicMargin
 			})
 		}, SettingsService.DEBOUNCE_TIME)
@@ -339,55 +296,55 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {
-		$rootScope.$on(SettingsService.SETTINGS_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.SETTINGS_CHANGED_EVENT, (event, data) => {
 			subscriber.onSettingsChanged(data.settings, data.update)
 		})
 	}
 
 	public static subscribeToBlacklist($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
-		$rootScope.$on(SettingsService.BLACKLIST_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.BLACKLIST_CHANGED_EVENT, (event, data) => {
 			subscriber.onBlacklistChanged(data.blacklist)
 		})
 	}
 
 	public static subscribeToAreaMetric($rootScope: IRootScopeService, subscriber: AreaMetricSubscriber) {
-		$rootScope.$on(SettingsService.AREA_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.AREA_METRIC_CHANGED_EVENT, (event, data) => {
 			subscriber.onAreaMetricChanged(data.areaMetric)
 		})
 	}
 
 	public static subscribeToHeightMetric($rootScope: IRootScopeService, subscriber: HeightMetricSubscriber) {
-		$rootScope.$on(SettingsService.HEIGHT_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT, (event, data) => {
 			subscriber.onHeightMetricChanged(data.heightMetric)
 		})
 	}
 
 	public static subscribeToColorMetric($rootScope: IRootScopeService, subscriber: ColorMetricSubscriber) {
-		$rootScope.$on(SettingsService.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
 			subscriber.onColorMetricChanged(data.colorMetric)
 		})
 	}
 
 	public static subscribeToDistributionMetric($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
-		$rootScope.$on(SettingsService.DISTRIBUTION_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT, (event, data) => {
 			subscriber.onDistributionMetricChanged(data.distributionMetric)
 		})
 	}
 
 	public static subscribeToSearchPattern($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
-		$rootScope.$on(SettingsService.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
 			subscriber.onSearchPatternChanged(data.searchPattern)
 		})
 	}
 
 	public static subscribeToDynamicMargin($rootScope: IRootScopeService, subscriber: DynamicMarginSubscriber) {
-		$rootScope.$on(SettingsService.DYNAMIC_MARGIN_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.DYNAMIC_MARGIN_CHANGED_EVENT, (event, data) => {
 			subscriber.onDynamicMarginChanged(data.dynamicMargin)
 		})
 	}
 
 	public static subscribeToMargin($rootScope: IRootScopeService, subscriber: MarginSubscriber) {
-		$rootScope.$on(SettingsService.MARGIN_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.MARGIN_CHANGED_EVENT, (event, data) => {
 			subscriber.onMarginChanged(data.margin)
 		})
 	}

@@ -6,7 +6,7 @@ import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.mode
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService } from "../../state/nodeSearch.service"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("MatchingFilesCounterController", () => {
 	let matchingFilesCounterController: MatchingFilesCounterController

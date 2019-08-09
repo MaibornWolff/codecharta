@@ -1,7 +1,7 @@
 import "./rangeSlider.module"
 
 import { RangeSliderController } from "./rangeSlider.component"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"

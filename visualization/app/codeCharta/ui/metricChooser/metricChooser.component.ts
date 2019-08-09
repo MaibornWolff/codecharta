@@ -1,15 +1,15 @@
-import {
-	AreaMetricSubscriber,
-	ColorMetricSubscriber,
-	DistributionMetricSubscriber,
-	HeightMetricSubscriber,
-	SettingsService
-} from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService } from "angular"
 import "./metricChooser.component.scss"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MetricData, Settings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import {
+	AreaMetricSubscriber,
+	ColorMetricSubscriber,
+	DistributionMetricSubscriber,
+	HeightMetricSubscriber
+} from "../../state/settingsService/settings.service.events"
 
 export class MetricChooserController
 	implements

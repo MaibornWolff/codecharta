@@ -10,7 +10,7 @@ import {
 	CodeMapNode,
 	FileMeta
 } from "../../codeCharta.model"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import _ from "lodash"
@@ -22,6 +22,7 @@ import { DeltaGenerator } from "../../util/deltaGenerator"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export interface RenderData {
 	map: CodeMapNode

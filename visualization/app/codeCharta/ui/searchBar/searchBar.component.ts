@@ -1,8 +1,9 @@
 import "./searchBar.component.scss"
-import { BlacklistSubscriber, SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
+import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class SearchBarController implements BlacklistSubscriber {
 	private _viewModel: {

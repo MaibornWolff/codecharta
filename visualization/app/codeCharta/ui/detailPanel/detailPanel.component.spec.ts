@@ -3,7 +3,7 @@ import "../codeMap/codeMap.module"
 import "../../state/state.module"
 import "../../codeCharta.module"
 
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { DetailPanelController } from "./detailPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"

@@ -6,7 +6,7 @@ import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
 import { NodeDecorator } from "../util/nodeDecorator"
-import { SettingsService } from "./settings.service"
+import { SettingsService } from "./settingsService/settings.service"
 
 describe("MetricService", () => {
 	let metricService: MetricService

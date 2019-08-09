@@ -4,7 +4,7 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
 import { SearchPanelService } from "../../state/searchPanel.service"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("SearchPanelModeSelectorController", () => {
 	let searchPanelModeSelectorController: SearchPanelModeSelectorController

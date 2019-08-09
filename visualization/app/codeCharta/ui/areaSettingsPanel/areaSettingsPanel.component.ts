@@ -1,10 +1,11 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
-import { DynamicMarginSubscriber, MarginSubscriber, SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapNode, FileState } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { DynamicMarginSubscriber, MarginSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class AreaSettingsPanelController
 	implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber, MarginSubscriber, DynamicMarginSubscriber {
