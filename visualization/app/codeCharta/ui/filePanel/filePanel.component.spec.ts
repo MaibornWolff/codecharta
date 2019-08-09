@@ -144,6 +144,14 @@ describe("filePanelController", () => {
 			expect(filePanelController["_viewModel"].selectedFileNames.partial).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.single).toBeNull()
 		})
+
+		it("should set the pictogram colors in view model", () => {
+			filePanelController.onFileSelectionStatesChanged(fileStates)
+
+			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
+			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe("#ff0E0E")
+			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe("#69FF40")
+		})
 	})
 
 	describe("onImportedFileChange", () => {
