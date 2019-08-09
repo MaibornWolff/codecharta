@@ -11,10 +11,8 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 export class ScenarioDropDownController implements MetricServiceSubscriber {
 	private _viewModel: {
 		scenarios: Scenario[]
-		selectedName: string
 	} = {
-		scenarios: null,
-		selectedName: null
+		scenarios: null
 	}
 
 	constructor(
@@ -26,18 +24,13 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
-		this.setScenarios(metricData)
+		this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData)
 	}
 
 	public onMetricDataRemoved() {}
 
-	private setScenarios(metricData: MetricData[]) {
-		this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData)
-	}
-
-	public applySettings() {
-		this.settingsService.updateSettings(ScenarioHelper.getScenarioSettingsByName(this._viewModel.selectedName))
-		this._viewModel.selectedName = null
+	public applyScenario(scenarioName: string) {
+		this.settingsService.updateSettings(ScenarioHelper.getScenarioSettingsByName(scenarioName))
 		this.threeOrbitControlsService.autoFitTo()
 	}
 }

@@ -1,19 +1,5 @@
 scenario-drop-down-component {
-	md-input-container {
-		display: block;
-		top: -5px;
-		margin: 0;
-		text-align: left;
-
-		md-select {
-			width: 200 px;
-		}
-
-		> * {
-			display: inline-block;
-			margin: 0;
-			padding: 0;
-			vertical-align: middle;
-		}
+	.state-selector-button {
+		min-width: 45px !important;
 	}
 }
