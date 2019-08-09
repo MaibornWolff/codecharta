@@ -3,7 +3,7 @@ import { FilePanelController } from "./filePanel.component"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { FileState, FileSelectionState } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { SettingsService } from "../../state/settings.service"
@@ -149,8 +149,8 @@ describe("filePanelController", () => {
 			filePanelController.onFileSelectionStatesChanged(fileStates)
 
 			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
-			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe("#ff0E0E")
-			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe("#69FF40")
+			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(SETTINGS.appSettings.mapColors.negativeDelta)
+			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(SETTINGS.appSettings.mapColors.positiveDelta)
 		})
 	})
 
