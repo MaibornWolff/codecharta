@@ -78,7 +78,7 @@ ribbon-bar-component {
 				}
 
 				&.space {
-					width: 1000px;
+					width: 2000px;
 				}
 			}
 
@@ -109,6 +109,10 @@ ribbon-bar-component {
 
 				&:focus {
 					outline: none;
+				}
+
+				&.no-hover {
+					pointer-events: none;
 				}
 			}
 

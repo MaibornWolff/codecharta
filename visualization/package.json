@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.30.0",
+	"version": "1.32.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -140,6 +140,7 @@
 	"devDependencies": {
 		"@types/angular": "^1.6.43",
 		"@types/angular-mocks": "^1.5.11",
+		"@types/color-convert": "^1.9.0",
 		"@types/d3": "^5.7.1",
 		"@types/d3-hierarchy": "^1.1.0",
 		"@types/jest": "^21.1.10",
@@ -168,6 +169,7 @@
 		"browser-sync": "^2.26.3",
 		"browser-sync-webpack-plugin": "^2.2.2",
 		"clean-webpack-plugin": "^0.1.19",
+		"color-convert": "^2.0.0",
 		"css-loader": "^0.28.10",
 		"d3": "^5.9.2",
 		"deepcopy": "^0.6.3",

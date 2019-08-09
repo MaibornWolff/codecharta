@@ -1,9 +1,28 @@
 <md-input-container>
 	<i class="fa fa-pie-chart"></i>
-	<md-select ng-model="$ctrl._viewModel.distributionMetric" ng-change="$ctrl.applySettingsDistributionMetric()">
-		<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
-			{{::metric.name}}
-			<span class="metric-max-value">({{::metric.maxValue}})</span>
-		</md-option>
+
+	<label></label>
+	<md-select
+		ng-model="$ctrl._viewModel.distributionMetric"
+		ng-change="$ctrl.applySettingsDistributionMetric()"
+		md-on-close="$ctrl.clearSearchTerm()"
+		md-container-class="distributionBarDropdown"
+	>
+		<md-select-header>
+			<input
+				class="metric-search"
+				ng-model="$ctrl._viewModel.searchTerm"
+				type="text"
+				placeholder="&#xF002; Metric (highest value)"
+				ng-keydown="$event.stopPropagation()"
+				ng-change="$ctrl.filterMetricData()"
+			/>
+		</md-select-header>
+		<md-content class="option-group">
+			<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
+				{{::metric.name}}
+				<span class="metric-max-value">({{::metric.maxValue}})</span>
+			</md-option>
+		</md-content>
 	</md-select>
 </md-input-container>

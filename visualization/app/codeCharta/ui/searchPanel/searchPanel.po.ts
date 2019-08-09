@@ -1,5 +1,5 @@
-import { delay } from "../../../puppeteer.helper"
 import { Page } from "puppeteer"
+import { delay } from "../../../puppeteer.helper"
 
 export class SearchPanelPageObject {
 	constructor(private page: Page) {}
@@ -10,7 +10,10 @@ export class SearchPanelPageObject {
 	}
 
 	public async rightClickRootNodeInTreeViewSearchPanel() {
-		await this.page.click("map-tree-view-level-component > div > div.tree-element-label-0", { button: "right" })
-		await delay(500)
+		await this.page.click("map-tree-view-level-component > .tree-root > .tree-element-label-0", { button: "right" })
+	}
+
+	public async hoverRootNodeInTreeViewSearchPanel() {
+		await this.page.hover("map-tree-view-level-component > .tree-root > .tree-element-label-0")
 	}
 }

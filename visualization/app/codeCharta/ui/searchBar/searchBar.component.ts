@@ -32,11 +32,11 @@ export class SearchBarController implements SettingsServiceSubscriber {
 		})
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetSearchPattern()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.updateViewModel(settings.fileSettings.blacklist)
 	}
 

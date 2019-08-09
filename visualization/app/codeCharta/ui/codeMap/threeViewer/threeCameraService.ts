@@ -25,14 +25,14 @@ export class ThreeCameraService implements SettingsServiceSubscriber, CameraChan
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (JSON.stringify(settings.appSettings.camera) !== JSON.stringify(this.lastCameraVector)) {
 			this.lastCameraVector = settings.appSettings.camera
 			this.setPosition(this.lastCameraVector.x, this.lastCameraVector.y, this.lastCameraVector.z)
 		}
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+	public onCameraChanged(camera: PerspectiveCamera) {
 		this.throttledCameraChange()
 	}
 

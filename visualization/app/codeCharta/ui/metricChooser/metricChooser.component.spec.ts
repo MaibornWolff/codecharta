@@ -71,7 +71,7 @@ describe("MetricChooserController", () => {
 				}
 			} as Settings
 
-			metricChooserController.onSettingsChanged(settings, undefined, null)
+			metricChooserController.onSettingsChanged(settings, undefined)
 
 			expect(metricChooserController["_viewModel"].areaMetric).toEqual("foo")
 			expect(metricChooserController["_viewModel"].heightMetric).toEqual("bar")
@@ -86,7 +86,7 @@ describe("MetricChooserController", () => {
 				{ name: "b", maxValue: 2, availableInVisibleMaps: false }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})
@@ -99,7 +99,7 @@ describe("MetricChooserController", () => {
 				{ name: "d", maxValue: 2, availableInVisibleMaps: true }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "d" }
@@ -112,7 +112,7 @@ describe("MetricChooserController", () => {
 				{ name: "b", maxValue: 1, availableInVisibleMaps: false }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { areaMetric: "a", colorMetric: "a", heightMetric: "a", distributionMetric: "a" }
@@ -125,7 +125,7 @@ describe("MetricChooserController", () => {
 				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).not.toBeCalled()
 		})
@@ -133,7 +133,7 @@ describe("MetricChooserController", () => {
 		it("no metrics available, should not update settings", () => {
 			let metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
 
-			metricChooserController.onMetricDataAdded(metricData, null)
+			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).not.toBeCalled()
 		})
@@ -200,7 +200,7 @@ describe("MetricChooserController", () => {
 		it("should set values and deltas to null if data incomplete", () => {
 			let data = { from: {}, to: {} } as CodeMapBuildingTransition
 
-			metricChooserController.onBuildingHovered(data, null)
+			metricChooserController.onBuildingHovered(data)
 
 			expect(metricChooserController.hoveredAreaDelta).toBe(null)
 			expect(metricChooserController.hoveredAreaValue).toBe(null)
@@ -216,7 +216,7 @@ describe("MetricChooserController", () => {
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"].colorMetric = "color"
 
-			metricChooserController.onBuildingHovered(dataNotDelta, null)
+			metricChooserController.onBuildingHovered(dataNotDelta)
 
 			expect(metricChooserController.hoveredAreaDelta).toBe(null)
 			expect(metricChooserController.hoveredAreaValue).toBe(10)
@@ -232,7 +232,7 @@ describe("MetricChooserController", () => {
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"].colorMetric = "color"
 
-			metricChooserController.onBuildingHovered(dataDelta, null)
+			metricChooserController.onBuildingHovered(dataDelta)
 
 			expect(metricChooserController.hoveredAreaDelta).toBe(40)
 			expect(metricChooserController.hoveredAreaValue).toBe(10)
@@ -246,7 +246,7 @@ describe("MetricChooserController", () => {
 			withMockedBuildingTransitions()
 			metricChooserController.hoveredDeltaColor = "foo"
 
-			metricChooserController.onBuildingHovered(dataNotDelta, null)
+			metricChooserController.onBuildingHovered(dataNotDelta)
 
 			expect(metricChooserController.hoveredDeltaColor).toBe(null)
 		})
@@ -255,7 +255,7 @@ describe("MetricChooserController", () => {
 			withMockedBuildingTransitions()
 			metricChooserController.hoveredHeightDelta = 0
 
-			metricChooserController.onBuildingHovered(dataDelta, null)
+			metricChooserController.onBuildingHovered(dataDelta)
 
 			expect(metricChooserController.hoveredDeltaColor).toBe("inherit")
 		})
@@ -265,7 +265,7 @@ describe("MetricChooserController", () => {
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController.hoveredHeightDelta = 2
 
-			metricChooserController.onBuildingHovered(dataDelta, null)
+			metricChooserController.onBuildingHovered(dataDelta)
 
 			expect(metricChooserController.hoveredDeltaColor).toBe("green")
 		})
@@ -278,9 +278,121 @@ describe("MetricChooserController", () => {
 				return { appSettings: { invertDeltaColors: true } }
 			})
 
-			metricChooserController.onBuildingHovered(dataDelta, null)
+			metricChooserController.onBuildingHovered(dataDelta)
 
 			expect(metricChooserController.hoveredDeltaColor).toBe("red")
+		})
+	})
+	describe("filterMetricData()", () => {
+		it("should return the default MetricData list", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
+			]
+			metricChooserController["_viewModel"].searchTerm = ""
+			metricChooserController.onMetricDataAdded(metricData)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
+		})
+		it("should return only metric mcc from MetricData list, when its the searchTerm", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
+			]
+			metricChooserController["_viewModel"].searchTerm = "mcc"
+			metricChooserController.onMetricDataAdded(metricData)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }])
+		})
+
+		it("should return rloc metric when searchTerm is only 'rl'", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
+			]
+			metricChooserController["_viewModel"].searchTerm = "rl"
+			metricChooserController.onMetricDataAdded(metricData)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "rloc", maxValue: 1, availableInVisibleMaps: true }])
+		})
+
+		it("should return the metrics which contains the metrics with 'c' in it", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "avg", maxValue: 3, availableInVisibleMaps: false }
+			]
+			metricChooserController["_viewModel"].searchTerm = "c"
+			metricChooserController.onMetricDataAdded(metricData)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
+			])
+		})
+
+		it("should return the metrics which contains substrings with 'mc' as prefix", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
+				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+			]
+			metricChooserController["_viewModel"].searchTerm = "mc"
+			metricChooserController.onMetricDataAdded(metricData)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+			])
+		})
+		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
+				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+			]
+			metricChooserController["_viewModel"].searchTerm = "rla"
+			metricChooserController.onMetricDataAdded(metricData)
+
+			metricChooserController.filterMetricData()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual([])
+		})
+	})
+	describe("clearSearchTerm()", () => {
+		it("should return an empty string, when function is called", () => {
+			metricChooserController["_viewModel"].searchTerm = "someString"
+
+			metricChooserController.clearSearchTerm()
+
+			expect(metricChooserController["_viewModel"].searchTerm).toEqual("")
+		})
+
+		it("should return the the metricData Array with all Elements, when function is called", () => {
+			let metricData = [
+				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
+				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
+				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+			]
+			metricChooserController["_viewModel"].searchTerm = "rlo"
+			metricChooserController.onMetricDataAdded(metricData)
+
+			metricChooserController.clearSearchTerm()
+
+			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})
 	})
 })
