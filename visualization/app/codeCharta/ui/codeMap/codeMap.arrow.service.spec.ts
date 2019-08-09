@@ -7,20 +7,24 @@ import { Object3D, Vector3 } from "three"
 import { Edge, Settings } from "../../codeCharta.model"
 import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
 import { Node } from "../../codeCharta.model"
+import { SettingsService } from "../../state/settings.service"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
 	let threeSceneService: ThreeSceneService
-	let testRoot: Node
-	let testLeaf: Node
-	let testNodes: Node[]
-	let testEdges: Edge[]
-	let testSettings: Settings
+	let settingsService: SettingsService
+
+	let root: Node
+	let leaf: Node
+	let nodes: Node[]
+	let edges: Edge[]
+	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		withMockedThreeSceneService()
+		withMockedSettingsService()
 	})
 
 	afterEach(() => {
@@ -31,26 +35,31 @@ describe("CodeMapArrowService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
+		settingsService = getService<SettingsService>("settingsService")
 
-		testRoot = JSON.parse(JSON.stringify(TEST_NODE_ROOT))
-		testLeaf = JSON.parse(JSON.stringify(TEST_NODE_LEAF))
-		testNodes = JSON.parse(JSON.stringify([TEST_NODE_ROOT, TEST_NODE_LEAF]))
-		testEdges = JSON.parse(JSON.stringify(VALID_EDGES))
-		testSettings = JSON.parse(JSON.stringify(SETTINGS))
+		root = JSON.parse(JSON.stringify(TEST_NODE_ROOT))
+		leaf = JSON.parse(JSON.stringify(TEST_NODE_LEAF))
+		nodes = JSON.parse(JSON.stringify([TEST_NODE_ROOT, TEST_NODE_LEAF]))
+		edges = JSON.parse(JSON.stringify(VALID_EDGES))
+		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
 
 	function rebuildService() {
-		codeMapArrowService = new CodeMapArrowService(threeSceneService)
+		codeMapArrowService = new CodeMapArrowService(threeSceneService, settingsService)
 	}
 
 	function withMockedThreeSceneService() {
-		threeSceneService = codeMapArrowService["threeSceneService"] = jest.fn(() => {
-			return {
-				edgeArrows: {
-					children: [],
-					add: jest.fn()
-				}
+		threeSceneService = codeMapArrowService["threeSceneService"] = jest.fn().mockReturnValue({
+			edgeArrows: {
+				children: [],
+				add: jest.fn()
 			}
+		})()
+	}
+
+	function withMockedSettingsService() {
+		settingsService = codeMapArrowService["settingsService"] = jest.fn().mockReturnValue({
+			getSettings: jest.fn().mockReturnValue(settings)
 		})()
 	}
 
@@ -94,15 +103,15 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should call addEdgesArrows with empty resEdges array", () => {
-			codeMapArrowService.addEdgeArrowsFromOrigin(testRoot, testNodes, testEdges, testSettings)
+			codeMapArrowService.addEdgeArrowsFromOrigin(root, nodes, edges)
 
-			expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(testNodes, [], testSettings)
+			expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(nodes, [])
 		})
 
 		it("should call addEdgesArrows with testLeaf in array", () => {
-			codeMapArrowService.addEdgeArrowsFromOrigin(testLeaf, testNodes, testEdges, testSettings)
+			codeMapArrowService.addEdgeArrowsFromOrigin(leaf, nodes, edges)
 
-			expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(testNodes, [testEdges[0]], testSettings)
+			expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(nodes, [edges[0]])
 		})
 	})
 
@@ -112,28 +121,32 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should call addArrow with origin and target node", () => {
-			testEdges[0].toNodeName = "/root"
+			edges[0].toNodeName = "/root"
 
-			codeMapArrowService.addEdgeArrows(testNodes, testEdges, testSettings)
+			codeMapArrowService.addEdgeArrows(nodes, edges)
 
-			expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(testNodes[0], testNodes[1], testSettings)
+			expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(nodes[0], nodes[1])
 		})
 	})
 
 	describe("addArrow", () => {
-		it("addArrow should add arrow if node has a height attribute mentioned in renderSettings", () => {
-			testSettings.dynamicSettings.heightMetric = "a"
+		it("should add arrow if node has a height attribute mentioned in renderSettings", () => {
+			settings.dynamicSettings.heightMetric = "a"
 
-			codeMapArrowService.addArrow(testNodes[0], testNodes[0], testSettings)
+			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+
+			codeMapArrowService.addArrow(nodes[0], nodes[0])
 
 			expect(codeMapArrowService["arrows"].length).toBe(1)
 		})
 
-		it("addArrow should not add arrow if node has not a height attribute mentioned in renderSettings", () => {
-			testNodes[0].attributes = { notsome: 0 }
-			testSettings.dynamicSettings.heightMetric = "some"
+		it("should not add arrow if node has not a height attribute mentioned in renderSettings", () => {
+			nodes[0].attributes = { notsome: 0 }
+			settings.dynamicSettings.heightMetric = "some"
 
-			codeMapArrowService.addArrow(testNodes[0], testNodes[0], testSettings)
+			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+
+			codeMapArrowService.addArrow(nodes[0], nodes[0])
 
 			expect(codeMapArrowService["arrows"].length).toBe(0)
 		})
