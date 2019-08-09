@@ -1,0 +1,26 @@
+<md-slider-container class="md-block">
+	<span>Previews</span>
+	<md-slider
+		flex
+		step="1"
+		min="0"
+		max="50"
+		ng-model="$ctrl._viewModel.amountOfEdgePreviews"
+		id="labels-slider"
+		ng-change="$ctrl.applySettingsAmountOfEdgePreviews()"
+		class="md-primary"
+	>
+	</md-slider>
+	<md-input-container>
+		<input
+			flex
+			step="1"
+			min="0"
+			max="50"
+			type="number"
+			ng-model="$ctrl._viewModel.amountOfEdgePreviews"
+			ng-change="$ctrl.applySettingsAmountOfEdgePreviews()"
+			aria-controls="labels-slider"
+		/>
+	</md-input-container>
+</md-slider-container>
