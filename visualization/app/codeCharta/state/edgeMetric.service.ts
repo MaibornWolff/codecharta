@@ -89,7 +89,8 @@ export class EdgeMetricService implements FileStateServiceSubscriber, SettingsSe
 				// TODO: Check if this actually works
 				if (
 					!CodeMapHelper.isPathBlacklisted(edge.fromNodeName, blacklist as BlacklistItem[], BlacklistType.exclude) &&
-					!CodeMapHelper.isPathBlacklisted(edge.toNodeName, blacklist as BlacklistItem[], BlacklistType.exclude)
+					!CodeMapHelper.isPathBlacklisted(edge.toNodeName, blacklist as BlacklistItem[], BlacklistType.exclude) &&
+					this.nodeExistsInFileStates(edge, fileStates)
 				) {
 					this.addEdgeToCalculationMap(edge)
 				}
@@ -120,6 +121,20 @@ export class EdgeMetricService implements FileStateServiceSubscriber, SettingsSe
 			this.nodeEdgeMetricsMap.set(edgeMetricName, new Map())
 		}
 		return this.nodeEdgeMetricsMap.get(edgeMetricName)
+	}
+
+	// Should both nodes be visible or is one sufficient?
+	private nodeExistsInFileStates(edge: Edge, fileStates: FileState[]): boolean {
+		let exists: boolean = false
+		fileStates.forEach(fileState => {
+			if (
+				CodeMapHelper.getCodeMapNodeFromPath(edge.fromNodeName, "File", fileState.file.map) ||
+				CodeMapHelper.getCodeMapNodeFromPath(edge.toNodeName, "File", fileState.file.map)
+			) {
+				exists = true
+			}
+		})
+		return exists
 	}
 
 	private getMetricDataFromMap(hashMap: Map<string, Map<string, number>>) {
