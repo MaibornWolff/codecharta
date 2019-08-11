@@ -4,7 +4,6 @@ import { IRootScopeService } from "angular"
 import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settings.service"
-import { MetricChooserController } from "../metricChooser/metricChooser.component"
 
 export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	private noMetricsAvailable: string = "No Edge Metrics available"

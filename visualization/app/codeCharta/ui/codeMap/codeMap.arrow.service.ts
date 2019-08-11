@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { Node } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { Edge, Settings } from "../../codeCharta.model"
+import { Edge } from "../../codeCharta.model"
 import { Vector3 } from "three"
 import { SettingsService } from "../../state/settings.service"
 
