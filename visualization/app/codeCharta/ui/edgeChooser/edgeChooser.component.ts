@@ -42,8 +42,8 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	}
 
 	public onEdgeMetricSelected() {
-		this.codeMapActionsService.showEdgesForMetric(this._viewModel.edgeMetric)
 		this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: this._viewModel.edgeMetric } })
+		this.codeMapActionsService.updateEdgePreviews()
 	}
 }
 

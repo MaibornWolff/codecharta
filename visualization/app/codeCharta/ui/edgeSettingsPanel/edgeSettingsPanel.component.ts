@@ -3,6 +3,7 @@ import { SettingsService, SettingsServiceSubscriber } from "../../state/settings
 import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 
 export class EdgeSettingsPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {
@@ -14,7 +15,12 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor($rootScope: IRootScopeService, private settingsService: SettingsService, private edgeMetricService: EdgeMetricService) {
+	constructor(
+		$rootScope: IRootScopeService,
+		private settingsService: SettingsService,
+		private edgeMetricService: EdgeMetricService,
+		private codeMapActionsService: CodeMapActionsService
+	) {
 		SettingsService.subscribe($rootScope, this)
 	}
 
@@ -29,6 +35,7 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber {
 
 	public applySettingsAmountOfEdgePreviews() {
 		this.settingsService.updateSettings({ appSettings: { amountOfEdgePreviews: this._viewModel.amountOfEdgePreviews } })
+		this.codeMapActionsService.updateEdgePreviews()
 	}
 }
 

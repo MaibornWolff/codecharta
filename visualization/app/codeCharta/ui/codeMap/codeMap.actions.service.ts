@@ -4,9 +4,14 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
+import { EdgeMetricService } from "../../state/edgeMetric.service"
 
 export class CodeMapActionsService {
-	constructor(private settingsService: SettingsService, private threeOrbitControlsService: ThreeOrbitControlsService) {}
+	constructor(
+		private settingsService: SettingsService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private edgeMetricService: EdgeMetricService
+	) {}
 
 	public toggleNodeVisibility(node: CodeMapNode) {
 		if (node.visible) {
@@ -123,11 +128,21 @@ export class CodeMapActionsService {
 		this.changeEdgesVisibility(false)
 	}
 
-	public showEdgesForMetric(edgeMetric: string) {
-		let edges = this.settingsService.getSettings().fileSettings.edges
+	public updateEdgePreviews() {
+		const settings = this.settingsService.getSettings()
+		const edges = settings.fileSettings.edges
+		const edgeMetric = settings.dynamicSettings.edgeMetric
+		const numberOfEdgesToDisplay = settings.appSettings.amountOfEdgePreviews
+		const edgePreviewNodes = this.edgeMetricService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
+
 		edges.forEach(edge => {
-			edge.visible = Object.keys(edge.attributes).includes(edgeMetric)
+			if (edgePreviewNodes.includes(edge.fromNodeName) || edgePreviewNodes.includes(edge.toNodeName)) {
+				edge.visible = Object.keys(edge.attributes).includes(edgeMetric)
+			} else {
+				edge.visible = false
+			}
 		})
+
 		this.settingsService.updateSettings({
 			fileSettings: {
 				edges: edges
