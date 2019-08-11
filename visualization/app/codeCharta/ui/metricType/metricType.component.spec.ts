@@ -73,6 +73,12 @@ describe("MetricTypeController", () => {
 
 			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeTypeValue.relative)
 		})
+
+		it("should set the edgeMetricType to absolute", () => {
+			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { edgeMetric: "pairing_rate" } })
+
+			expect(metricTypeController["_viewModel"].edgeMetricType).toBe(AttributeTypeValue.absolute)
+		})
 	})
 
 	describe("isAreaMetricAbsolute", () => {
@@ -148,6 +154,32 @@ describe("MetricTypeController", () => {
 			metricTypeController["_viewModel"].colorMetricType = AttributeTypeValue.relative
 
 			const actual = metricTypeController.isColorMetricAbsolute()
+
+			expect(actual).toBeFalsy()
+		})
+	})
+
+	describe("isEdgeMetricAbsolute", () => {
+		it("should return true if edgeMetric is absolute", () => {
+			metricTypeController["_viewModel"].edgeMetricType = AttributeTypeValue.absolute
+
+			const actual = metricTypeController.isEdgeMetricAbsolute()
+
+			expect(actual).toBeTruthy()
+		})
+
+		it("should return true if edgeMetric is null", () => {
+			metricTypeController["_viewModel"].edgeMetricType = null
+
+			const actual = metricTypeController.isEdgeMetricAbsolute()
+
+			expect(actual).toBeTruthy()
+		})
+
+		it("should return false if edgeMetric is relative", () => {
+			metricTypeController["_viewModel"].edgeMetricType = AttributeTypeValue.relative
+
+			const actual = metricTypeController.isEdgeMetricAbsolute()
 
 			expect(actual).toBeFalsy()
 		})

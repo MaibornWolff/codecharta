@@ -10,11 +10,13 @@ export class MetricTypeController implements SettingsServiceSubscriber, Building
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
 		colorMetricType: AttributeTypeValue
+		edgeMetricType: AttributeTypeValue
 		isBuildingHovered: boolean
 	} = {
 		areaMetricType: null,
 		heightMetricType: null,
 		colorMetricType: null,
+		edgeMetricType: null,
 		isBuildingHovered: false
 	}
 
@@ -37,6 +39,9 @@ export class MetricTypeController implements SettingsServiceSubscriber, Building
 			}
 			if (update.dynamicSettings.colorMetric) {
 				this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(update.dynamicSettings.colorMetric, settings)
+			}
+			if (update.dynamicSettings.edgeMetric) {
+				this._viewModel.edgeMetricType = this.metricService.getAttributeTypeByMetric(update.dynamicSettings.edgeMetric, settings)
 			}
 		}
 	}
@@ -61,6 +66,10 @@ export class MetricTypeController implements SettingsServiceSubscriber, Building
 	public isColorMetricAbsolute(): boolean {
 		return this._viewModel.colorMetricType === AttributeTypeValue.absolute || !this._viewModel.colorMetricType
 	}
+
+	public isEdgeMetricAbsolute(): boolean {
+		return this._viewModel.edgeMetricType === AttributeTypeValue.absolute || !this._viewModel.edgeMetricType
+	}
 }
 
 export const areaMetricTypeComponent = {
@@ -78,5 +87,11 @@ export const heightMetricTypeComponent = {
 export const colorMetricTypeComponent = {
 	selector: "colorMetricTypeComponent",
 	template: require("./colorMetricType.component.html"),
+	controller: MetricTypeController
+}
+
+export const edgeMetricTypeComponent = {
+	selector: "edgeMetricTypeComponent",
+	template: require("./edgeMetricType.component.html"),
 	controller: MetricTypeController
 }

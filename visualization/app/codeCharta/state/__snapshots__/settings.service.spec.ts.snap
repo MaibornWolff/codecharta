@@ -3,6 +3,7 @@
 exports[`settingService getDefaultSettings should match snapshot 1`] = `
 Object {
   "appSettings": Object {
+    "amountOfEdgePreviews": 1,
     "amountOfTopLabels": 1,
     "camera": Vector3 {
       "x": 0,
@@ -54,6 +55,7 @@ Object {
       "to": null,
     },
     "distributionMetric": null,
+    "edgeMetric": "",
     "focusedNodePath": "",
     "heightMetric": null,
     "margin": null,

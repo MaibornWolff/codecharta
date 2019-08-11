@@ -466,6 +466,9 @@ export const SETTINGS: Settings = {
 				},
 				{
 					coverage: AttributeTypeValue.relative
+				},
+				{
+					pairing_rate: AttributeTypeValue.absolute
 				}
 			],
 			edges: []
