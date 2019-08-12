@@ -1,4 +1,4 @@
-import { MetricData, Settings, RecursivePartial, FileState, BlacklistItem, Edge, BlacklistType } from "../codeCharta.model"
+import { MetricData, Settings, RecursivePartial, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode } from "../codeCharta.model"
 import { FileStateServiceSubscriber, FileStateService } from "./fileState.service"
 import { SettingsServiceSubscriber, SettingsService } from "./settings.service"
 import { IRootScopeService } from "angular"
@@ -23,18 +23,14 @@ export class EdgeMetricService implements FileStateServiceSubscriber, SettingsSe
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (update.fileSettings && update.fileSettings.blacklist) {
 			const fileStates: FileState[] = this.fileStateService.getFileStates()
-			this.edgeMetricData = this.calculateMetrics(
-				fileStates,
-				FileStateHelper.getVisibleFileStates(fileStates),
-				update.fileSettings.blacklist
-			)
+			this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), update.fileSettings.blacklist)
 			this.sortNodeEdgeMetricsMap()
 			this.notifyEdgeMetricDataUpdated()
 		}
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.edgeMetricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
+		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), [])
 		this.sortNodeEdgeMetricsMap()
 		this.notifyEdgeMetricDataUpdated()
 	}
@@ -70,11 +66,11 @@ export class EdgeMetricService implements FileStateServiceSubscriber, SettingsSe
 		return highestEdgeCountBuildings
 	}
 
-	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: RecursivePartial<BlacklistItem>[]) {
-		if (fileStates.length <= 0) {
+	private calculateMetrics(visibleFileStates: FileState[], blacklist: RecursivePartial<BlacklistItem>[]) {
+		if (visibleFileStates.length <= 0) {
 			return []
 		} else {
-			const hashMap = this.calculateEdgeMetricData(fileStates, blacklist)
+			const hashMap = this.calculateEdgeMetricData(visibleFileStates, blacklist)
 			return this.getMetricDataFromMap(hashMap)
 		}
 	}
@@ -86,12 +82,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, SettingsSe
 		this.nodeEdgeMetricsMap = new Map()
 		fileStates.forEach(fileState => {
 			fileState.file.settings.fileSettings.edges.forEach(edge => {
-				// TODO: Check if this actually works
-				if (
-					!CodeMapHelper.isPathBlacklisted(edge.fromNodeName, blacklist as BlacklistItem[], BlacklistType.exclude) &&
-					!CodeMapHelper.isPathBlacklisted(edge.toNodeName, blacklist as BlacklistItem[], BlacklistType.exclude) &&
-					this.nodeExistsInFileStates(edge, fileStates)
-				) {
+				if (this.bothNodesAssociatedAreVisible(edge, blacklist, fileStates)) {
 					this.addEdgeToCalculationMap(edge)
 				}
 			})
@@ -123,18 +114,25 @@ export class EdgeMetricService implements FileStateServiceSubscriber, SettingsSe
 		return this.nodeEdgeMetricsMap.get(edgeMetricName)
 	}
 
-	// Should both nodes be visible or is one sufficient?
-	private nodeExistsInFileStates(edge: Edge, fileStates: FileState[]): boolean {
-		let exists: boolean = false
+	private bothNodesAssociatedAreVisible(edge: Edge, blacklist, fileStates: FileState[]): boolean {
+		const fromNode = this.getMapNodeFromPath(edge.fromNodeName, fileStates)
+		const toNode = this.getMapNodeFromPath(edge.toNodeName, fileStates)
+		return fromNode && toNode && this.isNotBlacklisted(fromNode, blacklist) && this.isNotBlacklisted(toNode, blacklist)
+	}
+
+	private getMapNodeFromPath(path: string, fileStates: FileState[]) {
+		let mapNode = undefined
 		fileStates.forEach(fileState => {
-			if (
-				CodeMapHelper.getCodeMapNodeFromPath(edge.fromNodeName, "File", fileState.file.map) ||
-				CodeMapHelper.getCodeMapNodeFromPath(edge.toNodeName, "File", fileState.file.map)
-			) {
-				exists = true
+			const nodeFound = CodeMapHelper.getCodeMapNodeFromPath(path, "File", fileState.file.map)
+			if (nodeFound) {
+				mapNode = nodeFound
 			}
 		})
-		return exists
+		return mapNode
+	}
+
+	private isNotBlacklisted(node: CodeMapNode, blacklist: BlacklistItem[]): boolean {
+		return !CodeMapHelper.isBlacklisted(node, blacklist as BlacklistItem[], BlacklistType.exclude)
 	}
 
 	private getMetricDataFromMap(hashMap: Map<string, Map<string, number>>) {
