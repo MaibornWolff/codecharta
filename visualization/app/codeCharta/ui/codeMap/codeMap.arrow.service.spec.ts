@@ -8,10 +8,13 @@ import { Edge, Settings } from "../../codeCharta.model"
 import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
 import { Node } from "../../codeCharta.model"
 import { SettingsService } from "../../state/settings.service"
+import {IRootScopeService} from "angular"
+import {CodeMapMouseEventService} from "./codeMap.mouseEvent.service"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
 	let threeSceneService: ThreeSceneService
+	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 
 	let root: Node
@@ -36,6 +39,7 @@ describe("CodeMapArrowService", () => {
 
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		settingsService = getService<SettingsService>("settingsService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 
 		root = JSON.parse(JSON.stringify(TEST_NODE_ROOT))
 		leaf = JSON.parse(JSON.stringify(TEST_NODE_LEAF))
@@ -45,7 +49,7 @@ describe("CodeMapArrowService", () => {
 	}
 
 	function rebuildService() {
-		codeMapArrowService = new CodeMapArrowService(threeSceneService, settingsService)
+		codeMapArrowService = new CodeMapArrowService($rootScope, threeSceneService, settingsService)
 	}
 
 	function withMockedThreeSceneService() {
@@ -76,6 +80,14 @@ describe("CodeMapArrowService", () => {
 	describe("constructor", () => {
 		it("should assign arrows an empty array", () => {
 			expect(codeMapArrowService["arrows"].length).toBe(0)
+		})
+
+		it("should subscribe to Building-Hovered-Events", () => {
+			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
+
+			rebuildService()
+
+			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, codeMapArrowService)
 		})
 	})
 
@@ -130,17 +142,17 @@ describe("CodeMapArrowService", () => {
 	})
 
 	describe("addArrow", () => {
-		it("should add arrow if node has a height attribute mentioned in renderSettings", () => {
+		it("should add outgoing and incoming arrow if node has a height attribute mentioned in renderSettings", () => {
 			settings.dynamicSettings.heightMetric = "a"
 
 			settingsService.getSettings = jest.fn().mockReturnValue(settings)
 
 			codeMapArrowService.addArrow(nodes[0], nodes[0])
 
-			expect(codeMapArrowService["arrows"].length).toBe(1)
+			expect(codeMapArrowService["arrows"].length).toBe(2)
 		})
 
-		it("should not add arrow if node has not a height attribute mentioned in renderSettings", () => {
+		it("should not add arrows if node has not a height attribute mentioned in renderSettings", () => {
 			nodes[0].attributes = { notsome: 0 }
 			settings.dynamicSettings.heightMetric = "some"
 
