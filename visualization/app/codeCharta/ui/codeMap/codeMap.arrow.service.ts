@@ -11,14 +11,24 @@ import {
     Vector3
 } from "three"
 import {SettingsService} from "../../state/settings.service"
+import {
+    BuildingHoveredEventSubscriber,
+    CodeMapBuildingTransition,
+    CodeMapMouseEventService
+} from "./codeMap.mouseEvent.service"
+import {IRootScopeService} from "angular"
 
-export class CodeMapArrowService {
+export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
     private VERTICES_PER_LINE = 5
 
     private arrows: Object3D[]
 
-    constructor(private threeSceneService: ThreeSceneService, private settingsService: SettingsService) {
+    constructor(private $rootScope : IRootScopeService, private threeSceneService: ThreeSceneService, private settingsService: SettingsService) {
         this.arrows = new Array<Object3D>()
+        CodeMapMouseEventService.subscribeToBuildingHoveredEvents($rootScope, this)
+    }
+
+    public onBuildingHovered(data: CodeMapBuildingTransition) {
     }
 
     public clearArrows() {
