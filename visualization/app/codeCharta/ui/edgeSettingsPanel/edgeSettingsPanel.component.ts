@@ -16,12 +16,12 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber {
 
 	/* @ngInject */
 	constructor(
-		$rootScope: IRootScopeService,
+		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
 		private edgeMetricService: EdgeMetricService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
-		SettingsService.subscribe($rootScope, this)
+		SettingsService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {

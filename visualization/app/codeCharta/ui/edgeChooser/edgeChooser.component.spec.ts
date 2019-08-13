@@ -1,34 +1,39 @@
 import "./edgeChooser.module"
-import { EdgeChooserController } from "./edgeChooser.component"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
-import { IRootScopeService } from "angular"
+import {EdgeChooserController} from "./edgeChooser.component"
+import {instantiateModule, getService} from "../../../../mocks/ng.mockhelper"
+import {EdgeMetricService} from "../../state/edgeMetric.service"
+import {IRootScopeService} from "angular"
+import {SettingsService} from "../../state/settings.service"
+import {settings} from "cluster"
 
 describe("EdgeChooserController", () => {
-	let edgeChooserController: EdgeChooserController
-	let $rootScope: IRootScopeService
-	let edgeMetricService: EdgeMetricService
+    let edgeChooserController: EdgeChooserController
+    let $rootScope: IRootScopeService
+    let edgeMetricService: EdgeMetricService
+    let settingsService: SettingsService
 
-	beforeEach(() => {
-		restartSystem()
-		rebuildController()
-	})
 
-	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.edgeChooser")
+    beforeEach(() => {
+        restartSystem()
+        rebuildController()
+    })
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
-	}
+    function restartSystem() {
+        instantiateModule("app.codeCharta.ui.edgeChooser")
 
-	function rebuildController() {
-		edgeChooserController = new EdgeChooserController($rootScope, edgeMetricService, null)
-	}
+        $rootScope = getService<IRootScopeService>("$rootScope")
+        edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+        settingsService = getService<SettingsService>("settingsService")
+    }
 
-	// TODO: Write some tests
-	describe("someMethodName", () => {
-		it("should do something", () => {
-			edgeChooserController.onEdgeMetricDataUpdated(null)
-		})
-	})
+    function rebuildController() {
+        edgeChooserController = new EdgeChooserController($rootScope, edgeMetricService, null, settingsService)
+    }
+
+    // TODO: Write some tests
+    describe("someMethodName", () => {
+        it("should do something", () => {
+            edgeChooserController.onEdgeMetricDataUpdated(null)
+        })
+    })
 })

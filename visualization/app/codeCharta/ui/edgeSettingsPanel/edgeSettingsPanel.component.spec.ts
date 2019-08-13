@@ -15,7 +15,7 @@ describe("EdgeSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		edgeSettingsPanelController = new EdgeSettingsPanelController(null, null, null)
+		edgeSettingsPanelController = new EdgeSettingsPanelController(null, null, null, null)
 	}
 
 	describe("someMethodName", () => {

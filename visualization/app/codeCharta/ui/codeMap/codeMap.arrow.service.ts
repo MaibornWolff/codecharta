@@ -135,7 +135,7 @@ export class CodeMapArrowService {
     }
 
     private buildOutgoingEdge(points: Vector3[]): Object3D {
-         const curveObject = this.buildLine(points)
+        const curveObject = this.buildLine(points)
         curveObject.add(this.buildArrow(points))
 
         return curveObject
