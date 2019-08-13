@@ -68,11 +68,11 @@ export class CodeMapArrowService {
             const zOrigin: number = arrowOriginNode.y0 - mapSize * 0.5
 
             const wOrigin: number = arrowOriginNode.width
-            const hOrigin: number = arrowOriginNode.height
+            const hOrigin: number = 1
             const lOrigin: number = arrowOriginNode.length
 
             const curve = new CubicBezierCurve3(
-                new Vector3(xOrigin + wOrigin / 2, yOrigin + hOrigin, zOrigin + lOrigin / 2),
+                new Vector3(xOrigin + wOrigin / 2, 1, zOrigin + lOrigin / 2),
                 new Vector3(
                     xOrigin + wOrigin / 2,
                     (Math.max(yOrigin + hOrigin, yTarget + hTarget) + mapSize) / 2,
@@ -126,48 +126,38 @@ export class CodeMapArrowService {
         return this.buildOutgoingEdge(pointsOutgoing)
     }
 
-    private buildIncomingEdge(points: Vector3[],
-                              headLength: number = 10,
-                              headWidth: number = 10): Object3D {
+    private buildIncomingEdge(points: Vector3[]): Object3D {
         const ARROW_COLOR = 0x0000FF
         const EDGE_COLOR = 0xFF0000
 
-        const curveObject = this.buildLine(points, EDGE_COLOR)
-
-        const dir = points[points.length - 1].clone().sub(points[points.length - 2].clone()).normalize()
-
-        const origin = points[points.length - 1].clone()
-        const arrowHelper = new ArrowHelper(dir, origin, 0, ARROW_COLOR, headLength, headWidth)
-
-        curveObject.add(arrowHelper)
+        const curveObject = this.buildLine(points)
+        curveObject.add(this.buildArrow(points))
 
         return curveObject
     }
 
-    private buildOutgoingEdge(points: Vector3[],
-                              headLength: number = 10,
-                              headWidth: number = 10): Object3D {
+    private buildOutgoingEdge(points: Vector3[]): Object3D {
         const ARROW_COLOR = 0xFF0000
         const EDGE_COLOR = 0x0000FF
 
-        const curveObject = this.buildLine(points, EDGE_COLOR)
-
-        const dir = points[1].clone().sub(points[0].clone()).normalize()
-
-        const origin = points[1].clone()
-        const arrowHelper = new ArrowHelper(dir, origin, 0, ARROW_COLOR, headLength, headWidth)
-
-        curveObject.add(arrowHelper)
+        const curveObject = this.buildLine(points)
+        curveObject.add(this.buildArrow(points))
 
         return curveObject
     }
 
-    private buildLine(points: Vector3[], color: number) {
+    private buildLine(points: Vector3[], color: number = 0) {
         const geometry = new BufferGeometry()
         geometry.setFromPoints(points)
 
         const material = new LineBasicMaterial({color, linewidth: 1})
-        const curveObject = new Line(geometry, material)
-        return curveObject
+        return new Line(geometry, material)
+    }
+
+    private buildArrow(points: Vector3[], ARROW_COLOR: number = 0, headLength: number = 10, headWidth: number = 10) {
+        const dir = points[points.length - 1].clone().sub(points[points.length - 2].clone()).normalize()
+
+        const origin = points[points.length - 1].clone()
+        return new ArrowHelper(dir, origin, 0, ARROW_COLOR, headLength, headWidth)
     }
 }
