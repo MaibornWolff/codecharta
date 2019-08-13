@@ -83,7 +83,7 @@ export class CodeMapArrowService {
             )
 
             const incomingArrow: Object3D = this.makeIncomingArrowFromBezier(curve)
-            const outgoingArrow: Object3D = this.makeOutgoingArrowFromBezier(curve)
+            const outgoingArrow: Object3D = this.makeOutgoingArrowFromBezier(curve, arrowOriginNode.height)
 
             this.threeSceneService.edgeArrows.add(incomingArrow)
             this.threeSceneService.edgeArrows.add(outgoingArrow)
@@ -118,10 +118,12 @@ export class CodeMapArrowService {
 
     private makeOutgoingArrowFromBezier(
         bezier: CubicBezierCurve3,
+        height: number,
         bezierPoints: number = 50
     ): Object3D {
         const points = bezier.getPoints(bezierPoints)
-        const pointsOutgoing = points.slice(0, this.VERTICES_PER_LINE + 1)
+        const pointsOutgoing = this.getPointsToSurpassBuildingHeight(points, height)
+        //const pointsOutgoing = points.slice(0, this.VERTICES_PER_LINE + 1)
 
         return this.buildOutgoingEdge(pointsOutgoing)
     }
@@ -159,5 +161,20 @@ export class CodeMapArrowService {
 
         const origin = points[points.length - 1].clone()
         return new ArrowHelper(dir, origin, 0, ARROW_COLOR, headLength, headWidth)
+    }
+
+    private getPointsToSurpassBuildingHeight(points: Vector3[], height: number) : Vector3[] {
+        const THRESHHOLD = 100
+        const result = []
+        let length = 0
+        let i = 0
+
+        while(length < height + THRESHHOLD && i < points.length - 1) {
+            length += points[i].distanceTo(points[i + 1])
+            result.push(points[i])
+            i++
+        }
+
+        return result
     }
 }
