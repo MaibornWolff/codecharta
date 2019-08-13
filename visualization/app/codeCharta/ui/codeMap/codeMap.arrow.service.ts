@@ -75,7 +75,7 @@ export class CodeMapArrowService {
                 new Vector3(xOrigin + wOrigin / 2, 1, zOrigin + lOrigin / 2),
                 new Vector3(
                     xOrigin + wOrigin / 2,
-                    (Math.max(yOrigin + hOrigin, yTarget + hTarget) + mapSize) / 2,
+                    (Math.max(yOrigin + hOrigin, yTarget + hTarget) + mapSize * 2),
                     zOrigin + lOrigin / 2
                 ),
                 new Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + mapSize, zTarget + lTarget / 2),
@@ -123,15 +123,11 @@ export class CodeMapArrowService {
     ): Object3D {
         const points = bezier.getPoints(bezierPoints)
         const pointsOutgoing = this.getPointsToSurpassBuildingHeight(points, height)
-        //const pointsOutgoing = points.slice(0, this.VERTICES_PER_LINE + 1)
 
         return this.buildOutgoingEdge(pointsOutgoing)
     }
 
     private buildIncomingEdge(points: Vector3[]): Object3D {
-        const ARROW_COLOR = 0x0000FF
-        const EDGE_COLOR = 0xFF0000
-
         const curveObject = this.buildLine(points)
         curveObject.add(this.buildArrow(points))
 
@@ -139,10 +135,7 @@ export class CodeMapArrowService {
     }
 
     private buildOutgoingEdge(points: Vector3[]): Object3D {
-        const ARROW_COLOR = 0xFF0000
-        const EDGE_COLOR = 0x0000FF
-
-        const curveObject = this.buildLine(points)
+         const curveObject = this.buildLine(points)
         curveObject.add(this.buildArrow(points))
 
         return curveObject
@@ -163,13 +156,13 @@ export class CodeMapArrowService {
         return new ArrowHelper(dir, origin, 0, ARROW_COLOR, headLength, headWidth)
     }
 
-    private getPointsToSurpassBuildingHeight(points: Vector3[], height: number) : Vector3[] {
+    private getPointsToSurpassBuildingHeight(points: Vector3[], height: number): Vector3[] {
         const THRESHHOLD = 100
         const result = []
         let length = 0
         let i = 0
 
-        while(length < height + THRESHHOLD && i < points.length - 1) {
+        while (length < height + THRESHHOLD && i < points.length - 1) {
             length += points[i].distanceTo(points[i + 1])
             result.push(points[i])
             i++
