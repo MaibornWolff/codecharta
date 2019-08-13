@@ -4,7 +4,6 @@ import {instantiateModule, getService} from "../../../../mocks/ng.mockhelper"
 import {EdgeMetricService} from "../../state/edgeMetric.service"
 import {IRootScopeService} from "angular"
 import {SettingsService} from "../../state/settings.service"
-import {settings} from "cluster"
 
 describe("EdgeChooserController", () => {
     let edgeChooserController: EdgeChooserController

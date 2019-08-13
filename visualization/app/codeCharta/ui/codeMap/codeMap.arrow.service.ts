@@ -25,7 +25,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 
     constructor(private $rootScope : IRootScopeService, private threeSceneService: ThreeSceneService, private settingsService: SettingsService) {
         this.arrows = new Array<Object3D>()
-        CodeMapMouseEventService.subscribeToBuildingHoveredEvents($rootScope, this)
+        CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
     }
 
     public onBuildingHovered(data: CodeMapBuildingTransition) {
