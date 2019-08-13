@@ -7,7 +7,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import {EdgeMetricService} from "../../state/edgeMetric.service"
+import { EdgeMetricService } from "../../state/edgeMetric.service"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
@@ -25,7 +25,6 @@ describe("CodeMapActionService", () => {
 		settingsService = getService<SettingsService>("settingsService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
-
 
 		nodeA = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
 		settings = JSON.parse(JSON.stringify(SETTINGS))

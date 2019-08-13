@@ -8,8 +8,8 @@ import { Edge, Settings } from "../../codeCharta.model"
 import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
 import { Node } from "../../codeCharta.model"
 import { SettingsService } from "../../state/settings.service"
-import {IRootScopeService} from "angular"
-import {CodeMapMouseEventService} from "./codeMap.mouseEvent.service"
+import { IRootScopeService } from "angular"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
