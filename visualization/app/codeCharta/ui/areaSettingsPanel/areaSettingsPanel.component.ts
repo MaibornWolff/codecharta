@@ -1,14 +1,12 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapNode, FileState } from "../../codeCharta.model"
+import { CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
-import { DynamicMarginSubscriber, MarginSubscriber } from "../../state/settingsService/settings.service.events"
 
-export class AreaSettingsPanelController
-	implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber, MarginSubscriber, DynamicMarginSubscriber {
+export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
 	private static MIN_MARGIN = 15
 	private static MAX_MARGIN = 100
 	private static MARGIN_FACTOR = 4
@@ -27,30 +25,20 @@ export class AreaSettingsPanelController
 		private settingsService: SettingsService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
-		SettingsService.subscribeToMargin(this.$rootScope, this)
-		SettingsService.subscribeToDynamicMargin(this.$rootScope, this)
+		SettingsService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onMarginChanged(margin: number) {
-		if (this._viewModel.margin !== margin) {
-			this._viewModel.margin = margin
-			this.applyMargin()
-		}
-	}
-
-	public onDynamicMarginChanged(dynamicMargin: boolean) {
-		this._viewModel.dynamicMargin = dynamicMargin
-		this.potentiallyUpdateMargin(
-			this.codeMapPreRenderService.getRenderMap(),
-			this.settingsService.getSettings().dynamicSettings.areaMetric
-		)
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
+		this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
+		this._viewModel.margin = settings.dynamicSettings.margin
+		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), settings)
 	}
 
 	public onRenderMapChanged(map: CodeMapNode) {
 		this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
-		this.potentiallyUpdateMargin(map, this.settingsService.getSettings().dynamicSettings.areaMetric)
+		this.potentiallyUpdateMargin(map, this.settingsService.getSettings())
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
@@ -77,14 +65,6 @@ export class AreaSettingsPanelController
 		})
 	}
 
-	public applyMargin() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				margin: this._viewModel.margin
-			}
-		})
-	}
-
 	public applySettings() {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
@@ -96,10 +76,13 @@ export class AreaSettingsPanelController
 		})
 	}
 
-	private potentiallyUpdateMargin(map: CodeMapNode, areaMetric: string) {
-		if (this._viewModel.dynamicMargin && areaMetric && map) {
-			const newMargin = this.computeMargin(areaMetric, map)
-			this.onMarginChanged(newMargin)
+	private potentiallyUpdateMargin(map: CodeMapNode, settings: Settings) {
+		if (settings.appSettings.dynamicMargin && settings.dynamicSettings.areaMetric && map) {
+			const newMargin = this.computeMargin(settings.dynamicSettings.areaMetric, map)
+			if (this._viewModel.margin !== newMargin) {
+				this._viewModel.margin = newMargin
+				this.applySettings()
+			}
 		}
 	}
 

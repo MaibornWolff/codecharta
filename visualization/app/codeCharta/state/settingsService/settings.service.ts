@@ -11,9 +11,7 @@ import {
 	BlacklistSubscriber,
 	ColorMetricSubscriber,
 	DistributionMetricSubscriber,
-	DynamicMarginSubscriber,
 	HeightMetricSubscriber,
-	MarginSubscriber,
 	SearchPatternSubscriber,
 	SettingsEvents,
 	SettingsServiceSubscriber
@@ -52,10 +50,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 				this.notifyBlacklistSubscribers()
 			}
 
-			if (update.appSettings && update.appSettings.dynamicMargin) {
-				this.notifyDynamicMarginSubscribers()
-			}
-
 			if (update.dynamicSettings) {
 				if (update.dynamicSettings.areaMetric) {
 					this.notifyAreaMetricSubscribers()
@@ -75,10 +69,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 				if (update.dynamicSettings.searchPattern) {
 					this.notifySearchPatternSubscribers()
-				}
-
-				if (update.dynamicSettings.margin) {
-					this.notifyMarginSubscribers()
 				}
 			}
 			this.notifySubscribers()
@@ -273,24 +263,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 		debounceBroadcast()
 	}
 
-	private notifyMarginSubscribers() {
-		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.MARGIN_CHANGED_EVENT, {
-				margin: this.settings.dynamicSettings.margin
-			})
-		}, SettingsService.DEBOUNCE_TIME)
-		debounceBroadcast()
-	}
-
-	private notifyDynamicMarginSubscribers() {
-		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.DYNAMIC_MARGIN_CHANGED_EVENT, {
-				dynamicMargin: this.settings.appSettings.dynamicMargin
-			})
-		}, SettingsService.DEBOUNCE_TIME)
-		debounceBroadcast()
-	}
-
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})
 	}
@@ -334,18 +306,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribeToSearchPattern($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
 		$rootScope.$on(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
 			subscriber.onSearchPatternChanged(data.searchPattern)
-		})
-	}
-
-	public static subscribeToDynamicMargin($rootScope: IRootScopeService, subscriber: DynamicMarginSubscriber) {
-		$rootScope.$on(SettingsEvents.DYNAMIC_MARGIN_CHANGED_EVENT, (event, data) => {
-			subscriber.onDynamicMarginChanged(data.dynamicMargin)
-		})
-	}
-
-	public static subscribeToMargin($rootScope: IRootScopeService, subscriber: MarginSubscriber) {
-		$rootScope.$on(SettingsEvents.MARGIN_CHANGED_EVENT, (event, data) => {
-			subscriber.onMarginChanged(data.margin)
 		})
 	}
 }
