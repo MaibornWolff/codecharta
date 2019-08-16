@@ -110,9 +110,8 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		const points = bezier.getPoints(bezierPoints)
 		const curveObject = this.buildLine(points)
 		curveObject.add(this.buildArrow(points))
-		const arrow: Object3D = curveObject
 
-		this.threeSceneService.edgeArrows.add(arrow)
+		this.threeSceneService.edgeArrows.add(curveObject)
 	}
 
 	private previewMode(curve, arrowOriginNode: Node) {
