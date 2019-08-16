@@ -1,10 +1,12 @@
 import { Page } from "puppeteer"
+import { delay } from "../../../puppeteer.helper"
 
 export class SearchPanelPageObject {
 	constructor(private page: Page) {}
 
 	public async toggleTreeViewMode() {
 		await this.page.click("#tree-view")
+		await delay(500)
 	}
 
 	public async rightClickRootNodeInTreeViewSearchPanel() {

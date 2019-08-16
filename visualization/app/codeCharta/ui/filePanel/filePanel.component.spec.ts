@@ -3,12 +3,14 @@ import { FilePanelController } from "./filePanel.component"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { FileState, FileSelectionState } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsService } from "../../state/settings.service"
 
 describe("filePanelController", () => {
 	let fileStateService: FileStateService
+	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let filePanelController: FilePanelController
 	let fileStates: FileState[]
@@ -17,6 +19,7 @@ describe("filePanelController", () => {
 		instantiateModule("app.codeCharta.ui.filePanel")
 		fileStateService = getService<FileStateService>("fileStateService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		settingsService = getService<SettingsService>("settingsService")
 		fileStates = [
 			{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Reference },
 			{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Comparison }
@@ -24,7 +27,7 @@ describe("filePanelController", () => {
 	}
 
 	function buildController() {
-		filePanelController = new FilePanelController(fileStateService, $rootScope)
+		filePanelController = new FilePanelController($rootScope, settingsService, fileStateService)
 	}
 
 	function withMockedFileStateService() {
@@ -140,6 +143,14 @@ describe("filePanelController", () => {
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.partial).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.single).toBeNull()
+		})
+
+		it("should set the pictogram colors in view model", () => {
+			filePanelController.onFileSelectionStatesChanged(fileStates)
+
+			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
+			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(SETTINGS.appSettings.mapColors.negativeDelta)
+			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(SETTINGS.appSettings.mapColors.positiveDelta)
 		})
 	})
 

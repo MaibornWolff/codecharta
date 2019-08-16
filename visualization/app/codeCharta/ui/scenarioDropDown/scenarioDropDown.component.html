@@ -1,7 +1,16 @@
-<md-input-container>
-	<md-select placeholder="Metric Scenario" ng-model="$ctrl._viewModel.selectedName" ng-change="::$ctrl.applySettings()">
-		<md-option ng-repeat="scenario in $ctrl._viewModel.scenarios" value="{{::scenario.name}}">
-			{{::scenario.name}}
-		</md-option>
-	</md-select>
-</md-input-container>
+<md-menu>
+	<md-button class="state-selector-button" ng-click="$mdMenu.open($event)">
+		<i class="fa fa-star"></i>
+	</md-button>
+	<md-menu-content width="2">
+		<md-menu-item style="min-height: 20px; height: 20px;">
+			<md-button style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; text-align: center;" ng-disabled="true"
+				>Metric Scenario</md-button
+			>
+		</md-menu-item>
+		<md-divider></md-divider>
+		<md-menu-item ng-repeat="scenario in $ctrl._viewModel.scenarios">
+			<md-button ng-click="$ctrl.applyScenario(scenario.name)">{{::scenario.name}}</md-button>
+		</md-menu-item>
+	</md-menu-content>
+</md-menu>
