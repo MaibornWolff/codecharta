@@ -11,7 +11,7 @@
 	<div>
 		<edge-metric-type-component></edge-metric-type-component>
 		<span class="metric-value"
-			>{{ ($ctrl.hoveredEdgeValue | number) || "-" }}
+			>{{ ($ctrl._viewModel.hoveredEdgeValue | number) || "-" }}
 			<span ng-hide="!$ctrl.hoveredEdgeDelta">(&Delta;{{ $ctrl.hoveredEdgeDelta | number }})</span>
 		</span>
 	</div>

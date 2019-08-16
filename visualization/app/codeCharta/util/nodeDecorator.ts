@@ -4,13 +4,21 @@ import { HierarchyNode } from "d3"
 import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
+import { EdgeMetricService } from "../state/edgeMetric.service"
 
 export class NodeDecorator {
-	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, blacklist: BlacklistItem[], metricData: MetricData[]): CodeMapNode {
+	public static decorateMap(
+		map: CodeMapNode,
+		fileMeta: FileMeta,
+		blacklist: BlacklistItem[],
+		metricData: MetricData[],
+		edgeMetricService: EdgeMetricService
+	): CodeMapNode {
 		let decoratedMap: CodeMapNode = _.cloneDeep(map)
 		this.decorateMapWithMissingObjects(decoratedMap, fileMeta)
 		this.decorateMapWithCompactMiddlePackages(decoratedMap)
 		this.decorateLeavesWithMissingMetrics(decoratedMap, metricData)
+		this.decorateLeavesWithEdgeMetrics(decoratedMap, edgeMetricService, metricData)
 		this.decorateParentNodesWithSumAttributesOfChildren(decoratedMap, blacklist, metricData)
 		return decoratedMap
 	}
@@ -97,6 +105,22 @@ export class NodeDecorator {
 		}
 	}
 
+	private static decorateLeavesWithEdgeMetrics(map: CodeMapNode, edgeMetricService: EdgeMetricService, metricData: MetricData[]) {
+		if (map && edgeMetricService.getMetricNames()) {
+			edgeMetricService.getMetricData().forEach(metric => {
+				metricData.push(metric)
+			})
+			let root = d3.hierarchy<CodeMapNode>(map)
+			root.leaves().forEach(node => {
+				const edgeMetrics = edgeMetricService.getMetricValuesForNode(node)
+				for (let edgeMetric of edgeMetrics.keys()) {
+					// TODO: assign to edgeAttributes or something to avoid name clashing
+					Object.assign(node.data.attributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
+				}
+			})
+		}
+	}
+
 	private static decorateParentNodesWithSumAttributesOfChildren(map: CodeMapNode, blacklist: BlacklistItem[], metricData: MetricData[]) {
 		if (map) {
 			let root = d3.hierarchy<CodeMapNode>(map)
@@ -121,7 +145,7 @@ export class NodeDecorator {
 	}
 
 	private static getMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metric: string): number {
-		const metricValues = leaves.map(x => x.data.attributes[metric])
+		const metricValues = leaves.map(x => x.data.attributes[metric]).filter(x => !!x)
 
 		if (metricValues.length > 0) {
 			return metricValues.reduce((partialSum, a) => partialSum + a)

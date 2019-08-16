@@ -1,10 +1,11 @@
-import { MetricData, RecursivePartial, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode } from "../codeCharta.model"
+import { MetricData, RecursivePartial, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode, Node } from "../codeCharta.model"
 import { FileStateServiceSubscriber, FileStateService } from "./fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { BlacklistSubscriber } from "./settingsService/settings.service.events"
 import { SettingsService } from "./settingsService/settings.service"
+import { HierarchyNode } from "d3"
 
 export interface EdgeMetricServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
@@ -16,7 +17,11 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 	private edgeMetricData: MetricData[] = []
 	private nodeEdgeMetricsMap: Map<string, Map<string, number>>
 
-	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private fileStateService: FileStateService,
+		private settingsService: SettingsService
+	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
@@ -63,6 +68,29 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		}
 
 		return highestEdgeCountBuildings
+	}
+
+	// TODO: Probably not needed, remove
+	public getMetricValueForNode(node: Node) {
+		const currentEdgeMetric = this.settingsService.getSettings().dynamicSettings.edgeMetric
+		if (!this.nodeEdgeMetricsMap.get(currentEdgeMetric)) {
+			return 0
+		}
+		return this.nodeEdgeMetricsMap.get(currentEdgeMetric).get(node.path) || 0
+	}
+
+	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>) {
+		const metricNames = this.getMetricNames().filter(it => !!this.nodeEdgeMetricsMap.get(it))
+		let nodeEdgeMetrics = new Map()
+
+		metricNames.forEach(metric => {
+			nodeEdgeMetrics.set(metric, this.nodeEdgeMetricsMap.get(metric).get(node.data.path))
+		})
+		return nodeEdgeMetrics
+	}
+
+	public getMetricData() {
+		return this.edgeMetricData
 	}
 
 	private calculateMetrics(visibleFileStates: FileState[], blacklist: RecursivePartial<BlacklistItem>[]) {

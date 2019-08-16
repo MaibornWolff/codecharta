@@ -4,6 +4,7 @@ import { IRootScopeService } from "angular"
 import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 
 export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	private noMetricsAvailable: string = "No Edge Metrics available"
@@ -11,9 +12,11 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	private _viewModel: {
 		edgeMetricData: MetricData[]
 		edgeMetric: string
+		hoveredEdgeValue: number
 	} = {
 		edgeMetricData: [],
-		edgeMetric: "None"
+		edgeMetric: "None",
+		hoveredEdgeValue: null
 	}
 
 	constructor(
@@ -23,6 +26,7 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		private settingsService: SettingsService
 	) {
 		EdgeMetricService.subscribe($rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHoveredEvents($rootScope, this)
 	}
 
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
@@ -37,6 +41,16 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 			} else {
 				this._viewModel.edgeMetric = this.noMetricsAvailable
 			}
+		}
+	}
+
+	public onBuildingHovered(data: CodeMapBuildingTransition) {
+		if (data && data.to && data.to.node && data.to.node.attributes) {
+			//this._viewModel.hoveredEdgeValue = this.edgeMetricService.getMetricValueForNode(data.to.node)
+
+			this._viewModel.hoveredEdgeValue = data.to.node.attributes[this._viewModel.edgeMetric]
+		} else {
+			this._viewModel.hoveredEdgeValue = null
 		}
 	}
 

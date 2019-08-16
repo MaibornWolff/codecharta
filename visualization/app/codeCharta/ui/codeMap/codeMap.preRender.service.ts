@@ -23,6 +23,7 @@ import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsServi
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { EdgeMetricService } from "../../state/edgeMetric.service"
 
 export interface RenderData {
 	map: CodeMapNode
@@ -49,11 +50,13 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		metricData: null
 	}
 
+	// TODO: probably we should not pass around edgeMetricService
 	constructor(
 		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
-		private loadingGifService: LoadingGifService
+		private loadingGifService: LoadingGifService,
+		private edgeMetricService: EdgeMetricService
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
@@ -124,7 +127,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 				this.lastRender.map,
 				this.lastRender.fileMeta,
 				this.lastRender.settings.fileSettings.blacklist,
-				this.lastRender.metricData
+				this.lastRender.metricData,
+				this.edgeMetricService
 			)
 		}
 	}
