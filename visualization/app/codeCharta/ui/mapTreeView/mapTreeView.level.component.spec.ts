@@ -2,7 +2,7 @@ import "./mapTreeView.module"
 
 import { MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"

@@ -1,7 +1,7 @@
 import "./resetSettingsButton.module"
 
 import { ResetSettingsButtonController } from "./resetSettingsButton.component"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
 

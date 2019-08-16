@@ -1,11 +1,24 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService } from "angular"
 import "./metricChooser.component.scss"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MetricData, Settings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import {
+	AreaMetricSubscriber,
+	ColorMetricSubscriber,
+	DistributionMetricSubscriber,
+	HeightMetricSubscriber
+} from "../../state/settingsService/settings.service.events"
 
-export class MetricChooserController implements MetricServiceSubscriber, BuildingHoveredEventSubscriber, SettingsServiceSubscriber {
+export class MetricChooserController
+	implements
+		MetricServiceSubscriber,
+		BuildingHoveredEventSubscriber,
+		AreaMetricSubscriber,
+		HeightMetricSubscriber,
+		ColorMetricSubscriber,
+		DistributionMetricSubscriber {
 	public hoveredAreaValue: number
 	public hoveredHeightValue: number
 	public hoveredColorValue: number
@@ -33,13 +46,29 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 
 	/* @ngInject */
 	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {
-		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
+		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
+		SettingsService.subscribeToColorMetric(this.$rootScope, this)
+		SettingsService.subscribeToDistributionMetric(this.$rootScope, this)
+
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this.updateViewModel(settings)
+	public onAreaMetricChanged(areaMetric: string) {
+		this._viewModel.areaMetric = areaMetric
+	}
+
+	public onHeightMetricChanged(heightMetric: string) {
+		this._viewModel.heightMetric = heightMetric
+	}
+
+	public onColorMetricChanged(colorMetric: string) {
+		this._viewModel.colorMetric = colorMetric
+	}
+
+	public onDistributionMetricChanged(distributionMetric: string) {
+		this._viewModel.distributionMetric = distributionMetric
 	}
 
 	public filterMetricData() {
@@ -90,13 +119,6 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 			metricSelectionIndex++
 		}
 		return settingsUpdate
-	}
-
-	private updateViewModel(settings: Settings) {
-		this._viewModel.areaMetric = settings.dynamicSettings.areaMetric
-		this._viewModel.colorMetric = settings.dynamicSettings.colorMetric
-		this._viewModel.heightMetric = settings.dynamicSettings.heightMetric
-		this._viewModel.distributionMetric = settings.dynamicSettings.distributionMetric
 	}
 
 	public applySettingsAreaMetric() {

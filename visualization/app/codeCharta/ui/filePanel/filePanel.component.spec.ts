@@ -6,7 +6,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { FileState, FileSelectionState } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("filePanelController", () => {
 	let fileStateService: FileStateService

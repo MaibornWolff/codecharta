@@ -1,5 +1,5 @@
 import "./fileExtensionBar.component.scss"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
