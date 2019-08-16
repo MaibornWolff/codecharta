@@ -71,7 +71,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 					this.notifySearchPatternSubscribers()
 				}
 			}
-			this.notifySubscribers()
+			this.notifySettingsSubscribers()
 		}
 		this.synchronizeAngularTwoWayBinding()
 	}
@@ -202,7 +202,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 		})
 	}
 
-	private notifySubscribers() {
+	private notifySettingsSubscribers() {
 		this.debounceBroadcast = _.debounce(() => {
 			this.$rootScope.$broadcast(SettingsEvents.SETTINGS_CHANGED_EVENT, {
 				settings: this.settings,
@@ -214,53 +214,37 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	private notifyBlacklistSubscribers() {
-		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.BLACKLIST_CHANGED_EVENT, { blacklist: this.settings.fileSettings.blacklist })
-		}, SettingsService.DEBOUNCE_TIME)
-		debounceBroadcast()
+		this.notify(SettingsEvents.BLACKLIST_CHANGED_EVENT, { blacklist: this.settings.fileSettings.blacklist })
 	}
 
 	private notifyAreaMetricSubscribers() {
-		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.AREA_METRIC_CHANGED_EVENT, { areaMetric: this.settings.dynamicSettings.areaMetric })
-		}, SettingsService.DEBOUNCE_TIME)
-		debounceBroadcast()
+		this.notify(SettingsEvents.AREA_METRIC_CHANGED_EVENT, { areaMetric: this.settings.dynamicSettings.areaMetric })
 	}
 
 	private notifyHeightMetricSubscribers() {
-		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT, {
-				heightMetric: this.settings.dynamicSettings.heightMetric
-			})
-		}, SettingsService.DEBOUNCE_TIME)
-		debounceBroadcast()
+		this.notify(SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT, { heightMetric: this.settings.dynamicSettings.heightMetric })
 	}
 
 	private notifyColorMetricSubscribers() {
-		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, {
-				colorMetric: this.settings.dynamicSettings.colorMetric
-			})
-		}, SettingsService.DEBOUNCE_TIME)
-		debounceBroadcast()
+		this.notify(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, { colorMetric: this.settings.dynamicSettings.colorMetric })
 	}
 
 	private notifyDistributionMetricSubscribers() {
-		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT, {
-				distributionMetric: this.settings.dynamicSettings.distributionMetric
-			})
-		}, SettingsService.DEBOUNCE_TIME)
-		debounceBroadcast()
+		this.notify(SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT, {
+			distributionMetric: this.settings.dynamicSettings.distributionMetric
+		})
 	}
 
 	private notifySearchPatternSubscribers() {
-		const debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, {
-				searchPattern: this.settings.dynamicSettings.searchPattern
-			})
-		}, SettingsService.DEBOUNCE_TIME)
-		debounceBroadcast()
+		this.notify(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: this.settings.dynamicSettings.searchPattern })
+	}
+
+	private notify(eventName: string, data: object, debounceTime: number = SettingsService.DEBOUNCE_TIME) {
+		this.debounceBroadcast = _.debounce(() => {
+			this.$rootScope.$broadcast(eventName, data)
+			this.update = {}
+		}, debounceTime)
+		this.debounceBroadcast()
 	}
 
 	private synchronizeAngularTwoWayBinding() {
