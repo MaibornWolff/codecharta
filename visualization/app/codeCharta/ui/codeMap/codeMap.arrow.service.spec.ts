@@ -109,23 +109,7 @@ describe("CodeMapArrowService", () => {
 		})
 	})
 
-	describe("addEdgeArrowsFromOrigin", () => {
-		beforeEach(() => {
-			codeMapArrowService.addEdgeArrows = jest.fn()
-		})
 
-		it("should call addEdgesArrows with empty resEdges array", () => {
-			codeMapArrowService.addEdgeArrowsFromOrigin(root, nodes, edges)
-
-			expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(nodes, [])
-		})
-
-		it("should call addEdgesArrows with testLeaf in array", () => {
-			codeMapArrowService.addEdgeArrowsFromOrigin(leaf, nodes, edges)
-
-			expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(nodes, [edges[0]])
-		})
-	})
 
 	describe("addEdgeArrows", () => {
 		beforeEach(() => {
