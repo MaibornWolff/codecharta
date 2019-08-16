@@ -8,7 +8,7 @@ import { IRootScopeService } from "angular"
 
 export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	private VERTICES_PER_LINE = 5
-	private map : Map<String,Node>
+	private map: Map<String, Node>
 	private arrows: Object3D[]
 	private isHovered: boolean = false
 
@@ -23,18 +23,15 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		const visibleEdges = this.settingsService.getSettings().fileSettings.edges.filter(x => x.visible)
-		if (data.to && !data.to.node.flat){
+		if (data.to && !data.to.node.flat) {
 			this.isHovered = true
 			this.clearArrows()
 			this.putOnlyHoveredEdges(data.to.node, visibleEdges)
-		}
-
-		else{
+		} else {
 			this.isHovered = false
 			this.clearArrows()
 			this.addEdgeArrows(null, visibleEdges)
 		}
-
 	}
 
 	public clearArrows() {
@@ -51,7 +48,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	}
 
 	public addEdgeArrows(nodes: Node[], edges: Edge[]) {
-		if(nodes){
+		if (nodes) {
 			this.map = this.getNodesAsMap(nodes)
 		}
 
@@ -60,26 +57,21 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const targetNode: Node = this.map.get(edge.toNodeName)
 
 			if (originNode && targetNode) {
-
 				this.addArrow(targetNode, originNode)
 			}
 		}
 	}
 
-	private putOnlyHoveredEdges(hoveredNode: Node, edges:Edge[]){
-
+	private putOnlyHoveredEdges(hoveredNode: Node, edges: Edge[]) {
 		for (const edge of edges) {
 			const originNode: Node = this.map.get(edge.fromNodeName)
 			const targetNode: Node = this.map.get(edge.toNodeName)
 
 			if (originNode && targetNode && (originNode.name === hoveredNode.name || targetNode.name === hoveredNode.name)) {
-
 				this.addArrow(targetNode, originNode)
 			}
 		}
 	}
-
-
 
 	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node): void {
 		const mapSize = this.settingsService.getSettings().treeMapSettings.mapSize
@@ -112,18 +104,15 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 				new Vector3(xTarget + wTarget / 2, yTarget + hTarget, zTarget + lTarget / 2)
 			)
 
-			if(this.isHovered){
+			if (this.isHovered) {
 				this.hoveredMode(curve)
-			}
-		else{
+			} else {
 				this.previewMode(curve, arrowOriginNode)
 			}
-
-
 		}
 	}
 
-	private hoveredMode(bezier: CubicBezierCurve3, bezierPoints: number = 50){
+	private hoveredMode(bezier: CubicBezierCurve3, bezierPoints: number = 50) {
 		const points = bezier.getPoints(bezierPoints)
 		const curveObject = this.buildLine(points)
 		curveObject.add(this.buildArrow(points))
@@ -160,24 +149,17 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		const points = bezier.getPoints(bezierPoints)
 		const pointsIncoming = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
 
-		return this.buildIncomingEdge(pointsIncoming)
+		return this.buildEdge(pointsIncoming)
 	}
 
 	private makeOutgoingArrowFromBezier(bezier: CubicBezierCurve3, height: number, bezierPoints: number = 50): Object3D {
 		const points = bezier.getPoints(bezierPoints)
 		const pointsOutgoing = this.getPointsToSurpassBuildingHeight(points, height)
 
-		return this.buildOutgoingEdge(pointsOutgoing)
+		return this.buildEdge(pointsOutgoing)
 	}
 
-	private buildIncomingEdge(points: Vector3[]): Object3D {
-		const curveObject = this.buildLine(points)
-		curveObject.add(this.buildArrow(points))
-
-		return curveObject
-	}
-
-	private buildOutgoingEdge(points: Vector3[]): Object3D {
+	private buildEdge(points: Vector3[]): Object3D {
 		const curveObject = this.buildLine(points)
 		curveObject.add(this.buildArrow(points))
 
