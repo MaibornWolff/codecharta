@@ -3,10 +3,10 @@ import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { EdgeMetricSubscriber, SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
 
-export class EdgeSettingsPanelController implements SettingsServiceSubscriber {
+export class EdgeSettingsPanelController implements SettingsServiceSubscriber, EdgeMetricSubscriber {
 	private _viewModel: {
 		amountOfEdgePreviews: number
 		totalAffectedBuildings: number
@@ -23,15 +23,17 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber {
 		private codeMapActionsService: CodeMapActionsService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (update.appSettings && update.appSettings.amountOfEdgePreviews) {
 			this._viewModel.amountOfEdgePreviews = update.appSettings.amountOfEdgePreviews
 		}
-		if (update.dynamicSettings && update.dynamicSettings.edgeMetric) {
-			this._viewModel.totalAffectedBuildings = this.edgeMetricService.getAmountOfAffectedBuildings(update.dynamicSettings.edgeMetric)
-		}
+	}
+
+	public onEdgeMetricChanged(edgeMetric: string) {
+		this._viewModel.totalAffectedBuildings = this.edgeMetricService.getAmountOfAffectedBuildings(edgeMetric)
 	}
 
 	public applySettingsAmountOfEdgePreviews() {

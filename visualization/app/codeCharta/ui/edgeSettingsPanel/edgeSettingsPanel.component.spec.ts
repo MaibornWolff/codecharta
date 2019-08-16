@@ -32,12 +32,21 @@ describe("EdgeSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to SettingsService", () => {
+		beforeEach(() => {
 			SettingsService.subscribe = jest.fn()
+			SettingsService.subscribeToEdgeMetric = jest.fn()
+		})
 
+		it("should subscribe to SettingsService", () => {
 			rebuildController()
 
 			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, edgeSettingsPanelController)
+		})
+
+		it("should subscribe to EdgeMetric-Events", () => {
+			rebuildController()
+
+			expect(SettingsService.subscribeToEdgeMetric).toHaveBeenCalledWith($rootScope, edgeSettingsPanelController)
 		})
 	})
 })
