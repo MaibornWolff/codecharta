@@ -17,8 +17,6 @@ describe("CodeMapArrowService", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 
-	let root: Node
-	let leaf: Node
 	let nodes: Node[]
 	let edges: Edge[]
 	let settings: Settings
@@ -41,8 +39,6 @@ describe("CodeMapArrowService", () => {
 		settingsService = getService<SettingsService>("settingsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 
-		root = JSON.parse(JSON.stringify(TEST_NODE_ROOT))
-		leaf = JSON.parse(JSON.stringify(TEST_NODE_LEAF))
 		nodes = JSON.parse(JSON.stringify([TEST_NODE_ROOT, TEST_NODE_LEAF]))
 		edges = JSON.parse(JSON.stringify(VALID_EDGES))
 		settings = JSON.parse(JSON.stringify(SETTINGS))
@@ -106,24 +102,6 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService.clearArrows()
 
 			expect(threeSceneService.edgeArrows.children.length).toBe(0)
-		})
-	})
-
-	describe("addEdgeArrowsFromOrigin", () => {
-		beforeEach(() => {
-			codeMapArrowService.addEdgeArrows = jest.fn()
-		})
-
-		it("should call addEdgesArrows with empty resEdges array", () => {
-			codeMapArrowService.addEdgeArrowsFromOrigin(root, nodes, edges)
-
-			expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(nodes, [])
-		})
-
-		it("should call addEdgesArrows with testLeaf in array", () => {
-			codeMapArrowService.addEdgeArrowsFromOrigin(leaf, nodes, edges)
-
-			expect(codeMapArrowService.addEdgeArrows).toHaveBeenCalledWith(nodes, [edges[0]])
 		})
 	})
 

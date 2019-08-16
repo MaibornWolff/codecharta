@@ -26,7 +26,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		if (data.to && !data.to.node.flat) {
 			this.isHovered = true
 			this.clearArrows()
-			this.putOnlyHoveredEdges(data.to.node, visibleEdges)
+			this.showOnlyEdgesFromHoveredBuilding(data.to.node, visibleEdges)
 		} else {
 			this.isHovered = false
 			this.clearArrows()
@@ -39,12 +39,6 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		while (this.threeSceneService.edgeArrows.children.length > 0) {
 			this.threeSceneService.edgeArrows.children.pop()
 		}
-	}
-
-	public addEdgeArrowsFromOrigin(origin: Node, nodes: Node[], edges: Edge[]) {
-		const originPath = origin.path
-		const resEdges: Edge[] = edges.filter(x => x.fromNodeName === originPath)
-		this.addEdgeArrows(nodes, resEdges)
 	}
 
 	public addEdgeArrows(nodes: Node[], edges: Edge[]) {
@@ -62,7 +56,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		}
 	}
 
-	private putOnlyHoveredEdges(hoveredNode: Node, edges: Edge[]) {
+	private showOnlyEdgesFromHoveredBuilding(hoveredNode: Node, edges: Edge[]) {
 		for (const edge of edges) {
 			const originNode: Node = this.map.get(edge.fromNodeName)
 			const targetNode: Node = this.map.get(edge.toNodeName)
