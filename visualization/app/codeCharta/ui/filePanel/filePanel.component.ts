@@ -3,7 +3,7 @@ import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 interface SelectedFileNames {
 	single: string
