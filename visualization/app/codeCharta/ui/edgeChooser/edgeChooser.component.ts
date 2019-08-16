@@ -3,7 +3,7 @@ import { MetricData } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	private noMetricsAvailable: string = "No Edge Metrics available"

@@ -10,7 +10,7 @@
     "url": "https://github.com/MaibornWolff/codecharta.git"
   },
   "name": "codecharta-analysis",
-  "version": "1.31.0",
+  "version": "1.32.0",
   "description": "MaibornWolff CodeCharta Analysis Tools",
   "scripts": {
     "prepare": "rm -rf ../build/install/codecharta-analysis public && ../gradlew -p .. installDist && cp -R ../build/install/codecharta-analysis public"

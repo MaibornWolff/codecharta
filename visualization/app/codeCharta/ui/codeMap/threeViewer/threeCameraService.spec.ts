@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelpe
 import { Settings } from "../../../codeCharta.model"
 import { SETTINGS } from "../../../util/dataMocks"
 import { PerspectiveCamera, Vector3 } from "three"
-import { SettingsService } from "../../../state/settings.service"
+import { SettingsService } from "../../../state/settingsService/settings.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 
 describe("ThreeCameraService", () => {

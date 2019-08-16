@@ -3,7 +3,8 @@ import { IRootScopeService } from "angular"
 import * as d3 from "d3"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
-import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
+import { SettingsService } from "./settingsService/settings.service"
+import { SettingsServiceSubscriber } from "./settingsService/settings.service.events"
 
 export interface NodeSearchSubscriber {
 	onNodeSearchComplete(searchedNodes: CodeMapNode[])

@@ -3,9 +3,9 @@ import { EdgeMetricService } from "./edgeMetric.service"
 import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { FileStateService } from "./fileState.service"
-import { SettingsService } from "./settings.service"
-import { MetricData, BlacklistItem, BlacklistType, RecursivePartial, Settings } from "../codeCharta.model"
+import { MetricData, BlacklistType } from "../codeCharta.model"
 import { FILE_STATES } from "../util/dataMocks"
+import { SettingsService } from "./settingsService/settings.service"
 
 describe("EdgeMetricService", () => {
 	let edgeMetricService: EdgeMetricService
@@ -15,6 +15,7 @@ describe("EdgeMetricService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
+		withMockedEventMethods()
 	})
 
 	function restartSystem() {
@@ -32,6 +33,11 @@ describe("EdgeMetricService", () => {
 		fileStateService.getFileStates = jest.fn().mockReturnValue(FILE_STATES)
 	}
 
+	function withMockedEventMethods() {
+		$rootScope.$on = edgeMetricService["$rootScope"].$on = jest.fn()
+		$rootScope.$broadcast = edgeMetricService["$rootScope"].$broadcast = jest.fn()
+	}
+
 	describe("someMethodName", () => {
 		it("should do something", () => {})
 	})
@@ -39,7 +45,7 @@ describe("EdgeMetricService", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			FileStateService.subscribe = jest.fn()
-			SettingsService.subscribe = jest.fn()
+			SettingsService.subscribeToBlacklist = jest.fn()
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -48,10 +54,10 @@ describe("EdgeMetricService", () => {
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricService)
 		})
 
-		it("should subscribe to SettingsService", () => {
+		it("should subscribe to Blacklist-Events", () => {
 			rebuildService()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricService)
+			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, edgeMetricService)
 		})
 	})
 
@@ -115,25 +121,29 @@ describe("EdgeMetricService", () => {
 
 	describe("onFileSelectionChanged", () => {})
 
-	describe("onSettingsChanged", () => {
-		let update: RecursivePartial<Settings>
+	describe("onBlacklistChanged", () => {
+		const blacklist = [
+			{
+				path: "/root/big leaf",
+				type: BlacklistType.exclude
+			},
+			{ path: "/root/Parent Leaf/small leaf", type: BlacklistType.hide }
+		]
 
 		beforeEach(() => {
 			withMockedFileStateService()
-			const exclude: BlacklistItem = { path: "/root/big leaf", type: BlacklistType.exclude }
-			const hide: BlacklistItem = { path: "/root/Parent Leaf/small leaf", type: BlacklistType.hide }
-			update = { fileSettings: { blacklist: [exclude, hide] } }
 		})
 
-		it("should create Edge Metric Data", () => {
-			edgeMetricService.onSettingsChanged(null, update)
-
-			expect(edgeMetricService["edgeMetricData"].keys()).toContain("pairingRate")
-			expect(edgeMetricService["edgeMetricData"].keys()).toContain("avgComits")
-		})
+		it("should create Edge Metric Data", () => {})
 
 		it("should ignore edges to/from excluded nodes", () => {})
 
 		it("should contain edges from/to hidden nodes")
+
+		it("should notify that edge metric has been updated", () => {
+			edgeMetricService.onBlacklistChanged(blacklist)
+
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("edge-metric-data-updated", edgeMetricService["edgeMetricData"])
+		})
 	})
 })

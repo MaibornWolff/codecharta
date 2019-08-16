@@ -1,9 +1,10 @@
 import "./edgeSettingsPanel.component.scss"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 export class EdgeSettingsPanelController implements SettingsServiceSubscriber {
 	private _viewModel: {

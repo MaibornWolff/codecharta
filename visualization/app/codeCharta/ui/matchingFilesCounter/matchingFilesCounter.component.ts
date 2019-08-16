@@ -1,11 +1,12 @@
 import "./matchingFilesCounter.component.scss"
-import { BlacklistType, BlacklistItem, CodeMapNode, Settings, RecursivePartial } from "../../codeCharta.model"
-import { SettingsServiceSubscriber, SettingsService } from "../../state/settings.service"
+import { BlacklistType, BlacklistItem, CodeMapNode } from "../../codeCharta.model"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
+import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 
-export class MatchingFilesCounterController implements NodeSearchSubscriber, SettingsServiceSubscriber {
+export class MatchingFilesCounterController implements NodeSearchSubscriber, BlacklistSubscriber {
 	private _viewModel: {
 		fileCount: number
 		hideCount: number
@@ -24,7 +25,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Set
 
 	constructor($rootScope: IRootScopeService) {
 		NodeSearchService.subscribe($rootScope, this)
-		SettingsService.subscribe($rootScope, this)
+		SettingsService.subscribeToBlacklist($rootScope, this)
 	}
 
 	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
@@ -32,11 +33,9 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Set
 		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		if (update.fileSettings && update.fileSettings.blacklist) {
-			this._viewModel.blacklist = settings.fileSettings.blacklist
-			this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
-		}
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this._viewModel.blacklist = blacklist
+		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
 	}
 
 	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[]) {

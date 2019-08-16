@@ -3,6 +3,7 @@ import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 interface SelectedFileNames {
 	single: string
@@ -23,6 +24,9 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		fileStates: FileState[]
 		renderState: FileSelectionState
 		selectedFileNames: SelectedFileNames
+		pictogramFirstFileColor: string
+		pictogramUpperColor: string
+		pictogramLowerColor: string
 	} = {
 		isSingleState: null,
 		isPartialState: null,
@@ -36,11 +40,18 @@ export class FilePanelController implements FileStateServiceSubscriber {
 				comparison: null
 			},
 			partial: null
-		}
+		},
+		pictogramFirstFileColor: null,
+		pictogramUpperColor: null,
+		pictogramLowerColor: null
 	}
 
 	/* @ngInject */
-	constructor(private fileStateService: FileStateService, private $rootScope: IRootScopeService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private settingsService: SettingsService,
+		private fileStateService: FileStateService
+	) {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -48,8 +59,15 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		this._viewModel.isSingleState = FileStateHelper.isSingleState(fileStates)
 		this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+		this.setPictogramColor()
 		this.updateSelectedFileNamesInViewModel(fileStates)
 		this.lastRenderState = this._viewModel.renderState
+	}
+
+	private setPictogramColor() {
+		this._viewModel.pictogramFirstFileColor = "#808080"
+		this._viewModel.pictogramUpperColor = this.settingsService.getSettings().appSettings.mapColors.positiveDelta
+		this._viewModel.pictogramLowerColor = this.settingsService.getSettings().appSettings.mapColors.negativeDelta
 	}
 
 	private updateSelectedFileNamesInViewModel(fileStates: FileState[]) {

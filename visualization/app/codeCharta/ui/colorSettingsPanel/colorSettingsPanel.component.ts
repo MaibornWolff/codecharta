@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import "./colorSettingsPanel.component.scss"
 import { FileState, MetricData, RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
@@ -6,6 +6,7 @@ import { FileStateService, FileStateServiceSubscriber } from "../../state/fileSt
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import _ from "lodash"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
 	private lastColorMetric: string = null

@@ -1,12 +1,13 @@
 "use strict"
 
 import * as THREE from "three"
-import { SettingsServiceSubscriber, SettingsService } from "../../../state/settings.service"
+import { SettingsService } from "../../../state/settingsService/settings.service"
 import { PerspectiveCamera, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { RecursivePartial, Settings } from "../../../codeCharta.model"
 import _ from "lodash"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { SettingsServiceSubscriber } from "../../../state/settingsService/settings.service.events"
 
 export class ThreeCameraService implements SettingsServiceSubscriber, CameraChangeSubscriber {
 	public static VIEW_ANGLE = 45

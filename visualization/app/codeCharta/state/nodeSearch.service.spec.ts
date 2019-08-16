@@ -3,7 +3,7 @@ import { NodeSearchService } from "./nodeSearch.service"
 import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
-import { SettingsService } from "./settings.service"
+import { SettingsService } from "./settingsService/settings.service"
 import { TEST_FILE_WITH_PATHS } from "../util/dataMocks"
 import { CodeMapHelper } from "../util/codeMapHelper"
 

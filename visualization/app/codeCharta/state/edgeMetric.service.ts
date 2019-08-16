@@ -1,15 +1,16 @@
-import { MetricData, Settings, RecursivePartial, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode } from "../codeCharta.model"
+import { MetricData, RecursivePartial, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode } from "../codeCharta.model"
 import { FileStateServiceSubscriber, FileStateService } from "./fileState.service"
-import { SettingsServiceSubscriber, SettingsService } from "./settings.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { CodeMapHelper } from "../util/codeMapHelper"
+import { BlacklistSubscriber } from "./settingsService/settings.service.events"
+import { SettingsService } from "./settingsService/settings.service"
 
 export interface EdgeMetricServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
 }
 
-export class EdgeMetricService implements FileStateServiceSubscriber, SettingsServiceSubscriber {
+export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
 	private static EDGE_METRIC_DATA_UPDATED_EVENT = "edge-metric-data-updated"
 
 	private edgeMetricData: MetricData[] = []
@@ -17,16 +18,14 @@ export class EdgeMetricService implements FileStateServiceSubscriber, SettingsSe
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		if (update.fileSettings && update.fileSettings.blacklist) {
-			const fileStates: FileState[] = this.fileStateService.getFileStates()
-			this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), update.fileSettings.blacklist)
-			this.sortNodeEdgeMetricsMap()
-			this.notifyEdgeMetricDataUpdated()
-		}
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		const fileStates: FileState[] = this.fileStateService.getFileStates()
+		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+		this.sortNodeEdgeMetricsMap()
+		this.notifyEdgeMetricDataUpdated()
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
