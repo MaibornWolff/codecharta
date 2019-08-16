@@ -10,8 +10,8 @@ import {
 	Settings
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import * as THREE from "three"
 import { MetricDistribution } from "./fileExtensionCalculator"
+import { Box3, Vector3 } from "three"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -495,8 +495,8 @@ export const SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 31,
 		amountOfEdgePreviews: 5,
-		scaling: new THREE.Vector3(1, 1.8, 1),
-		camera: new THREE.Vector3(0, 300, 1000),
+		scaling: new Vector3(1, 1.8, 1),
+		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		enableEdgeArrows: true,
 		hideFlatBuildings: true,
@@ -531,7 +531,7 @@ export const DEFAULT_SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,
-		camera: new THREE.Vector3(0, 300, 1000),
+		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		dynamicMargin: true,
 		enableEdgeArrows: true,
@@ -554,7 +554,7 @@ export const DEFAULT_SETTINGS: Settings = {
 			selected: "#EB8319"
 		},
 		maximizeDetailPanel: false,
-		scaling: new THREE.Vector3(1, 1, 1),
+		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
 		isPresentationMode: false
 	},
@@ -595,7 +595,9 @@ export const TEST_NODE_ROOT: Node = {
 	origin: "root",
 	link: "NO_LINK",
 	markingColor: "0x000000",
-	flat: false
+	flat: false,
+	incomingEdgePoint: new Vector3(),
+	outgoingEdgePoint: new Vector3()
 }
 
 export const TEST_NODE_LEAF: Node = {
@@ -616,14 +618,16 @@ export const TEST_NODE_LEAF: Node = {
 	origin: "root",
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
-	flat: false
+	flat: false,
+	incomingEdgePoint: new Vector3(),
+	outgoingEdgePoint: new Vector3()
 }
 
 export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,
-	new THREE.Box3(),
+	new Box3(),
 	TEST_NODE_ROOT,
 	DEFAULT_SETTINGS.appSettings.mapColors.neutral
 )

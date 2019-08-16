@@ -1,6 +1,7 @@
 import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
 import { CodeMapHelper } from "./codeMapHelper"
 import { Settings, Node } from "../codeCharta.model"
+import { Vector3 } from "three"
 
 export class TreeMapHelper {
 	private static FOLDER_HEIGHT = 2
@@ -34,18 +35,24 @@ export class TreeMapHelper {
 		const flattened: boolean = this.isNodeToBeFlat(squaredNode, s)
 		const heightValue: number = this.getHeightValue(s, squaredNode, maxHeight, flattened)
 		const depth: number = squaredNode.data.path.split("/").length - 2
+		const width = squaredNode.x1 - squaredNode.x0
+		const height = Math.abs(
+			isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
+		)
+		const length = squaredNode.y1 - squaredNode.y0
+		const x0 = squaredNode.x0
+		const y0 = squaredNode.y0
+		const z0 = depth * TreeMapHelper.FOLDER_HEIGHT
 
 		return {
 			name: squaredNode.data.name,
-			width: squaredNode.x1 - squaredNode.x0,
-			height: Math.abs(
-				isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
-			),
-			length: squaredNode.y1 - squaredNode.y0,
-			depth: depth,
-			x0: squaredNode.x0,
-			z0: depth * TreeMapHelper.FOLDER_HEIGHT,
-			y0: squaredNode.y0,
+			width,
+			height,
+			length,
+			depth,
+			x0,
+			z0,
+			y0,
 			isLeaf: isNodeLeaf,
 			attributes: squaredNode.data.attributes,
 			deltas: squaredNode.data.deltas,
@@ -58,7 +65,25 @@ export class TreeMapHelper {
 			origin: squaredNode.data.origin,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
-			flat: flattened
+			flat: flattened,
+			incomingEdgePoint: this.getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMapSettings.mapSize),
+			outgoingEdgePoint: this.getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMapSettings.mapSize)
+		}
+	}
+
+	private static getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+		if (width > length) {
+			return new Vector3(vector.x - mapSize * 0.5 + width / 4, vector.y + height, vector.z - mapSize * 0.5 + length / 2)
+		} else {
+			return new Vector3(vector.x - mapSize * 0.5 + width / 2, vector.y + height, vector.z - mapSize * 0.5 + length / 4)
+		}
+	}
+
+	private static getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+		if (width > length) {
+			return new Vector3(vector.x - mapSize * 0.5 + 0.75 * width, vector.y + height, vector.z - mapSize * 0.5 + length / 2)
+		} else {
+			return new Vector3(vector.x - mapSize * 0.5 + width / 2, vector.y + height, vector.z - mapSize * 0.5 + 0.75 * length)
 		}
 	}
 

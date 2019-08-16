@@ -92,10 +92,10 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const lOrigin: number = arrowOriginNode.length
 
 			const curve = new CubicBezierCurve3(
-				new Vector3(xOrigin + wOrigin / 2, 1, zOrigin + lOrigin / 2),
+				arrowOriginNode.outgoingEdgePoint,
 				new Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + mapSize * 2, zOrigin + lOrigin / 2),
 				new Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + mapSize, zTarget + lTarget / 2),
-				new Vector3(xTarget + wTarget / 2, yTarget + hTarget, zTarget + lTarget / 2)
+				arrowTargetNode.incomingEdgePoint
 			)
 
 			if (this.isHovered) {
