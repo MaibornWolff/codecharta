@@ -1,5 +1,5 @@
 import "./edgeChooser.component.scss"
-import { MetricData } from "../../codeCharta.model"
+import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
@@ -12,7 +12,7 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	private _viewModel: {
 		edgeMetricData: MetricData[]
 		edgeMetric: string
-		hoveredEdgeValue: number
+		hoveredEdgeValue: EdgeMetricCount
 	} = {
 		edgeMetricData: [],
 		edgeMetric: "None",

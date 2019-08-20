@@ -11,8 +11,9 @@
 	<div>
 		<edge-metric-type-component></edge-metric-type-component>
 		<span class="metric-value"
-			>{{ ($ctrl._viewModel.hoveredEdgeValue | number) || "-" }}
-			<span ng-hide="!$ctrl.hoveredEdgeDelta">(&Delta;{{ $ctrl.hoveredEdgeDelta | number }})</span>
+			>{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
+			{{ ($ctrl._viewModel.hoveredEdgeValue.outgoing | number) || "-" }}
+			<!-- TODO: What about delta mode? -->
 		</span>
 	</div>
 </md-input-container>

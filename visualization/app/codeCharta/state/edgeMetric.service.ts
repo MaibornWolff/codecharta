@@ -1,4 +1,13 @@
-import { MetricData, RecursivePartial, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode, Node } from "../codeCharta.model"
+import {
+	MetricData,
+	RecursivePartial,
+	FileState,
+	BlacklistItem,
+	Edge,
+	BlacklistType,
+	CodeMapNode,
+	EdgeMetricCount
+} from "../codeCharta.model"
 import { FileStateServiceSubscriber, FileStateService } from "./fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../util/fileStateHelper"
@@ -15,13 +24,9 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 	private static EDGE_METRIC_DATA_UPDATED_EVENT = "edge-metric-data-updated"
 
 	private edgeMetricData: MetricData[] = []
-	private nodeEdgeMetricsMap: Map<string, Map<string, number>>
+	private nodeEdgeMetricsMap: Map<string, Map<string, EdgeMetricCount>>
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private fileStateService: FileStateService,
-		private settingsService: SettingsService
-	) {
+	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
 		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
@@ -70,15 +75,6 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		return highestEdgeCountBuildings
 	}
 
-	// TODO: Probably not needed, remove
-	public getMetricValueForNode(node: Node) {
-		const currentEdgeMetric = this.settingsService.getSettings().dynamicSettings.edgeMetric
-		if (!this.nodeEdgeMetricsMap.get(currentEdgeMetric)) {
-			return 0
-		}
-		return this.nodeEdgeMetricsMap.get(currentEdgeMetric).get(node.path) || 0
-	}
-
 	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>) {
 		const metricNames = this.getMetricNames().filter(it => !!this.nodeEdgeMetricsMap.get(it))
 		let nodeEdgeMetrics = new Map()
@@ -105,7 +101,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 	private calculateEdgeMetricData(
 		fileStates: FileState[],
 		blacklist: RecursivePartial<BlacklistItem>[]
-	): Map<string, Map<string, number>> {
+	): Map<string, Map<string, EdgeMetricCount>> {
 		this.nodeEdgeMetricsMap = new Map()
 		fileStates.forEach(fileState => {
 			fileState.file.settings.fileSettings.edges.forEach(edge => {
@@ -119,22 +115,25 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 
 	private addEdgeToCalculationMap(edge: Edge) {
 		for (let edgeMetric of Object.keys(edge.attributes)) {
-			let edgeMetricEntry = this.getEntryForMetric(edgeMetric)
-
-			this.addEdgeToNode(edgeMetricEntry, edge.fromNodeName)
-			this.addEdgeToNode(edgeMetricEntry, edge.toNodeName)
+			const edgeMetricEntry = this.getEntryForMetric(edgeMetric)
+			this.addEdgeToNodes(edgeMetricEntry, edge.fromNodeName, edge.toNodeName)
 		}
 	}
 
-	private addEdgeToNode(edgeMetricEntry: Map<string, number>, nodeName: string) {
+	private addEdgeToNodes(edgeMetricEntry: Map<string, EdgeMetricCount>, fromNode: string, toNode: string) {
+		this.createEntryIfNecessary(edgeMetricEntry, fromNode)
+		this.createEntryIfNecessary(edgeMetricEntry, toNode)
+		edgeMetricEntry.get(fromNode).outgoing += 1
+		edgeMetricEntry.get(toNode).incoming += 1
+	}
+
+	private createEntryIfNecessary(edgeMetricEntry: Map<string, EdgeMetricCount>, nodeName: string) {
 		if (!edgeMetricEntry.has(nodeName)) {
-			edgeMetricEntry.set(nodeName, 1)
-		} else {
-			edgeMetricEntry.set(nodeName, edgeMetricEntry.get(nodeName) + 1)
+			edgeMetricEntry.set(nodeName, { incoming: 0, outgoing: 0 })
 		}
 	}
 
-	private getEntryForMetric(edgeMetricName: string): Map<string, number> {
+	private getEntryForMetric(edgeMetricName: string): Map<string, EdgeMetricCount> {
 		if (!this.nodeEdgeMetricsMap.has(edgeMetricName)) {
 			this.nodeEdgeMetricsMap.set(edgeMetricName, new Map())
 		}
@@ -162,14 +161,15 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		return !CodeMapHelper.isBlacklisted(node, blacklist as BlacklistItem[], BlacklistType.exclude)
 	}
 
-	private getMetricDataFromMap(hashMap: Map<string, Map<string, number>>) {
+	private getMetricDataFromMap(hashMap: Map<string, Map<string, EdgeMetricCount>>) {
 		let metricData: MetricData[] = []
 
 		hashMap.forEach((occurences: any, edgeMetric: any) => {
 			let maximumMetricValue = 0
-			occurences.forEach((value: number, _) => {
-				if (value > maximumMetricValue) {
-					maximumMetricValue = value
+			occurences.forEach((value: EdgeMetricCount, _) => {
+				const combinedValue = value.incoming + value.outgoing
+				if (combinedValue > maximumMetricValue) {
+					maximumMetricValue = combinedValue
 				}
 			})
 			metricData.push({ name: edgeMetric, maxValue: maximumMetricValue, availableInVisibleMaps: true })
@@ -181,7 +181,9 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 	private sortNodeEdgeMetricsMap() {
 		let sortedEdgeMetricMap = new Map()
 		this.nodeEdgeMetricsMap.forEach((value, key) => {
-			const sortedMapForMetric = new Map([...value.entries()].sort((a, b) => b[1] - a[1]))
+			const sortedMapForMetric = new Map(
+				[...value.entries()].sort((a, b) => b[1].incoming + b[1].outgoing - (a[1].incoming + a[1].outgoing))
+			)
 			sortedEdgeMetricMap.set(key, sortedMapForMetric)
 		})
 		this.nodeEdgeMetricsMap = sortedEdgeMetricMap

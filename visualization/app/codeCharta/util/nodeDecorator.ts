@@ -1,7 +1,7 @@
 "use strict"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
-import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta, Edge } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta, EdgeMetricCount } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 import { EdgeMetricService } from "../state/edgeMetric.service"
@@ -164,14 +164,18 @@ export class NodeDecorator {
 		return 0
 	}
 
-	// TODO: return correct type here
-	private static getEdgeMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metric: string): number {
+	private static getEdgeMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metric: string): EdgeMetricCount {
 		const metricValues = leaves.map(x => x.data.edgeAttributes[metric]).filter(x => !!x)
 
 		if (metricValues.length > 0) {
-			return metricValues.reduce((partialSum, a) => partialSum + a)
+			const sum = { incoming: 0, outgoing: 0 }
+			metricValues.forEach(element => {
+				sum.incoming += element.incoming
+				sum.outgoing += element.outgoing
+			})
+			return sum
 		}
 
-		return 0
+		return { incoming: 0, outgoing: 0 }
 	}
 }
