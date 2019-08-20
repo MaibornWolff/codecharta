@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import $ from "jquery"
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
@@ -7,6 +7,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export interface PackageList {
 	colorPixel: string

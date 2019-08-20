@@ -2,13 +2,13 @@ import "./areaSettingsPanel.module"
 import "../codeMap/codeMap.module"
 import "../../codeCharta.module"
 import { AreaSettingsPanelController } from "./areaSettingsPanel.component"
-import { SettingsService } from "../../state/settings.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Settings, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("AreaSettingsPanelController", () => {
 	let $rootScope: IRootScopeService

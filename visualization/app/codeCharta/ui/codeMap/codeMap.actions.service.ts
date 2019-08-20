@@ -1,4 +1,4 @@
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapNode, BlacklistType, BlacklistItem, Edge } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"

@@ -1,10 +1,12 @@
 import "./matchingFilesCounter.module"
 import { MatchingFilesCounterController } from "./matchingFilesCounter.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { VALID_NODE_WITH_PATH, SETTINGS } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
+import { NodeSearchService } from "../../state/nodeSearch.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("MatchingFilesCounterController", () => {
 	let matchingFilesCounterController: MatchingFilesCounterController
@@ -24,13 +26,30 @@ describe("MatchingFilesCounterController", () => {
 		matchingFilesCounterController = new MatchingFilesCounterController($rootScope)
 	}
 
-	describe("onSettingsChanged", () => {
+	describe("constructor", () => {
+		beforeEach(() => {
+			NodeSearchService.subscribe = jest.fn()
+			SettingsService.subscribeToBlacklist = jest.fn()
+		})
+
+		it("should subscribe to NodeSearchService", () => {
+			rebuildController()
+
+			expect(NodeSearchService.subscribe).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
+		})
+
+		it("should subscribe to Blacklist-Event", () => {
+			rebuildController()
+
+			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
+		})
+	})
+
+	describe("onBlacklistChanged", () => {
 		it("should update search pattern", () => {
 			const blacklist: BlacklistItem[] = [{ path: "/root/node/path", type: BlacklistType.exclude }]
-			SETTINGS.fileSettings.blacklist = blacklist
-			let update = { fileSettings: { blacklist: blacklist } }
 
-			matchingFilesCounterController.onSettingsChanged(SETTINGS, update)
+			matchingFilesCounterController.onBlacklistChanged(blacklist)
 
 			expect(matchingFilesCounterController["_viewModel"].blacklist).toBe(blacklist)
 		})

@@ -8,7 +8,7 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("CodeMapLabelService", () => {
 	let $rootScope: IRootScopeService
