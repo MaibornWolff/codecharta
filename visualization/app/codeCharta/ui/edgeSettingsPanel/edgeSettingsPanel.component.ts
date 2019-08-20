@@ -6,6 +6,12 @@ import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { EdgeMetricSubscriber, SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
 
+export enum VisualEdgeState {
+	Show_All_Buildings = "showAllBuildings",
+	Show_Buildings_With_Edges = "showOnlyBuildingsWithEdges",
+	Show_All_Buildings_Without_Edges = "showBuildings"
+}
+
 export class EdgeSettingsPanelController implements SettingsServiceSubscriber, EdgeMetricSubscriber {
 	private _viewModel: {
 		amountOfEdgePreviews: number
@@ -39,6 +45,22 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	public applySettingsAmountOfEdgePreviews() {
 		this.settingsService.updateSettings({ appSettings: { amountOfEdgePreviews: this._viewModel.amountOfEdgePreviews } })
 		this.codeMapActionsService.updateEdgePreviews()
+	}
+
+	public applyEdgesVisualChange(chosenVisualEdgeState: VisualEdgeState) {
+		switch (chosenVisualEdgeState) {
+			case VisualEdgeState.Show_All_Buildings:
+				this.codeMapActionsService.updateEdgePreviews()
+				this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: true } })
+				break
+			case VisualEdgeState.Show_Buildings_With_Edges:
+				this.codeMapActionsService.updateEdgePreviews()
+				this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: false } })
+				break
+			case VisualEdgeState.Show_All_Buildings_Without_Edges:
+				this.codeMapActionsService.hideAllEdges()
+				break
+		}
 	}
 }
 
