@@ -26,13 +26,23 @@
 </md-slider-container>
 
 <section layout="row" layout-align="center center" class="mode-chooser">
-	<md-button class="state-selector-button left" ng-class="{current:'showAllBuildings'==$ctrl._viewModel.visualMapEdgeState}" ng-click="$ctrl.applyEdgesVisualChange('showAllBuildings')"
+	<md-button
+		class="state-selector-button left"
+		ng-class="{current:'showAllBuildings'==$ctrl._viewModel.visualMapEdgeState}"
+		ng-click="$ctrl.applyEdgesVisualChange('showAllBuildings')"
 		><i class="fa fa-building"></i>
 	</md-button>
-	<md-button class="state-selector-button middle" ng-class="{current:'showOnlyBuildingsWithEdges'==$ctrl._viewModel.visualMapEdgeState}" ng-click="$ctrl.applyEdgesVisualChange('showOnlyBuildingsWithEdges')">
+	<md-button
+		class="state-selector-button middle"
+		ng-class="{current:'showOnlyBuildingsWithEdges'==$ctrl._viewModel.visualMapEdgeState}"
+		ng-click="$ctrl.applyEdgesVisualChange('showOnlyBuildingsWithEdges')"
+	>
 		<i class="fa fa-retweet"></i>
 	</md-button>
-	<md-button class="state-selector-button right" ng-class="{current:'showBuildings'==$ctrl._viewModel.visualMapEdgeState}" ng-click="$ctrl.applyEdgesVisualChange('showBuildings')"
+	<md-button
+		class="state-selector-button right"
+		ng-class="{current:'showBuildings'==$ctrl._viewModel.visualMapEdgeState}"
+		ng-click="$ctrl.applyEdgesVisualChange('showBuildings')"
 		><i class="fa fa-times"></i>
 	</md-button>
 </section>
