@@ -16,10 +16,14 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	private _viewModel: {
 		amountOfEdgePreviews: number
 		totalAffectedBuildings: number
+		visualMapEdgeState: VisualEdgeState
 	} = {
 		amountOfEdgePreviews: 1,
-		totalAffectedBuildings: 1
+		totalAffectedBuildings: 1,
+		visualMapEdgeState: VisualEdgeState.Show_All_Buildings
 	}
+
+
 
 	/* @ngInject */
 	constructor(
@@ -50,14 +54,17 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	public applyEdgesVisualChange(chosenVisualEdgeState: VisualEdgeState) {
 		switch (chosenVisualEdgeState) {
 			case VisualEdgeState.Show_All_Buildings:
+				this._viewModel.visualMapEdgeState= VisualEdgeState.Show_All_Buildings
 				this.codeMapActionsService.updateEdgePreviews()
 				this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: false } })
 				break
 			case VisualEdgeState.Show_Buildings_With_Edges:
+				this._viewModel.visualMapEdgeState= VisualEdgeState.Show_Buildings_With_Edges
 				this.codeMapActionsService.updateEdgePreviews()
 				this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: true } })
 				break
 			case VisualEdgeState.Show_All_Buildings_Without_Edges:
+				this._viewModel.visualMapEdgeState= VisualEdgeState.Show_All_Buildings_Without_Edges
 				this.codeMapActionsService.hideAllEdges()
 				break
 		}
