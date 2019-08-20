@@ -96,6 +96,7 @@ export interface DynamicSettings {
 export interface AppSettings {
 	amountOfTopLabels: number
 	amountOfEdgePreviews: number
+	edgeHeight: number
 	scaling: Vector3
 	camera: Vector3
 	enableEdgeArrows: boolean

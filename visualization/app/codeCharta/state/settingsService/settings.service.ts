@@ -123,6 +123,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 			appSettings: {
 				amountOfTopLabels: 1,
 				amountOfEdgePreviews: 1,
+				edgeHeight: 4,
 				scaling: scaling,
 				camera: camera,
 				enableEdgeArrows: true,
@@ -135,7 +136,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 				isWhiteBackground: false,
 				whiteColorBuildings: false,
 				mapColors: mapColors,
-				isPresentationMode: false
+				isPresentationMode: false,
+				showOnlyBuildingsWithEdges: false
 			},
 			treeMapSettings: {
 				mapSize: 500

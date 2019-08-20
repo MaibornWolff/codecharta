@@ -68,8 +68,9 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	}
 
 	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node): void {
-		const mapSize = this.settingsService.getSettings().treeMapSettings.mapSize
-		const CURVE_SCALE = 500
+		const settings = this.settingsService.getSettings()
+		const mapSize = settings.treeMapSettings.mapSize
+		const curveScale = 100 * settings.appSettings.edgeHeight
 
 		if (
 			arrowTargetNode.attributes &&
@@ -95,8 +96,8 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 
 			const curve = new CubicBezierCurve3(
 				arrowOriginNode.outgoingEdgePoint,
-				new Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + CURVE_SCALE, zOrigin + lOrigin / 2),
-				new Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + CURVE_SCALE, zTarget + lTarget / 2),
+				new Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + curveScale, zOrigin + lOrigin / 2),
+				new Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + curveScale, zTarget + lTarget / 2),
 				arrowTargetNode.incomingEdgePoint
 			)
 

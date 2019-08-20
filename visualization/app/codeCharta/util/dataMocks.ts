@@ -495,6 +495,7 @@ export const SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 31,
 		amountOfEdgePreviews: 5,
+		edgeHeight: 4,
 		scaling: new Vector3(1, 1.8, 1),
 		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
@@ -520,7 +521,8 @@ export const SETTINGS: Settings = {
 			angularGreen: "#00BFA5",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
 		},
-		isPresentationMode: false
+		isPresentationMode: false,
+		showOnlyBuildingsWithEdges: false
 	},
 	treeMapSettings: {
 		mapSize: 500
@@ -531,6 +533,7 @@ export const DEFAULT_SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 1,
 		amountOfEdgePreviews: 1,
+		edgeHeight: 4,
 		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		dynamicMargin: true,
@@ -556,7 +559,8 @@ export const DEFAULT_SETTINGS: Settings = {
 		maximizeDetailPanel: false,
 		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
-		isPresentationMode: false
+		isPresentationMode: false,
+		showOnlyBuildingsWithEdges: false
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -589,6 +593,7 @@ export const TEST_NODE_ROOT: Node = {
 	isLeaf: true,
 	deltas: { a: 1, b: 2 },
 	attributes: { a: 20, b: 15 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
 	heightDelta: 10,
 	visible: true,
 	path: "/root",
@@ -612,6 +617,7 @@ export const TEST_NODE_LEAF: Node = {
 	isLeaf: true,
 	deltas: { a: 1, b: 2 },
 	attributes: { a: 20, b: 15 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
 	heightDelta: 20,
 	visible: true,
 	path: "/root/big leaf",

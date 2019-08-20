@@ -17,10 +17,12 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 		amountOfEdgePreviews: number
 		totalAffectedBuildings: number
 		visualMapEdgeState: VisualEdgeState
+		edgeHeight: number
 	} = {
 		amountOfEdgePreviews: 1,
 		totalAffectedBuildings: 1,
-		visualMapEdgeState: VisualEdgeState.Show_All_Buildings
+		visualMapEdgeState: VisualEdgeState.Show_All_Buildings,
+		edgeHeight: 4
 	}
 
 	/* @ngInject */
@@ -46,6 +48,11 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 
 	public applySettingsAmountOfEdgePreviews() {
 		this.settingsService.updateSettings({ appSettings: { amountOfEdgePreviews: this._viewModel.amountOfEdgePreviews } })
+		this.codeMapActionsService.updateEdgePreviews()
+	}
+
+	public applySettingsEdgeHeight() {
+		this.settingsService.updateSettings({ appSettings: { edgeHeight: this._viewModel.edgeHeight } })
 		this.codeMapActionsService.updateEdgePreviews()
 	}
 
