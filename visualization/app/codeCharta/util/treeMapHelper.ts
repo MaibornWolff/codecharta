@@ -90,7 +90,11 @@ export class TreeMapHelper {
 
 	private static isNodeToBeFlat(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
 		let flattened = false
-		if (s.fileSettings.edges && s.fileSettings.edges.filter(edge => edge.visible).length > 0) {
+		if (
+			s.appSettings.showOnlyBuildingsWithEdges &&
+			s.fileSettings.edges &&
+			s.fileSettings.edges.filter(edge => edge.visible).length > 0
+		) {
 			flattened = this.nodeHasNoVisibleEdges(squaredNode, s)
 		}
 

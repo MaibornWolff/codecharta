@@ -109,6 +109,7 @@ export interface AppSettings {
 	mapColors: MapColors
 	whiteColorBuildings: boolean
 	isPresentationMode: boolean
+	showOnlyBuildingsWithEdges: boolean
 }
 
 export interface TreeMapSettings {
