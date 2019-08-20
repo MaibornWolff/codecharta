@@ -48,6 +48,9 @@ export interface CodeMapNode {
 	type: string
 	children?: CodeMapNode[]
 	attributes: KeyValuePair
+	edgeAttributes?: {
+		[key: string]: EdgeMetricCount
+	}
 	link?: string
 	origin?: string
 	path?: string
@@ -153,6 +156,11 @@ export interface Edge {
 	visible?: boolean
 }
 
+export interface EdgeMetricCount {
+	incoming: number
+	outgoing: number
+}
+
 export interface BlacklistItem {
 	path: string
 	type: BlacklistType
@@ -205,6 +213,9 @@ export interface Node {
 	isLeaf: boolean
 	deltas: KeyValuePair
 	attributes: KeyValuePair
+	edgeAttributes: {
+		[key: string]: EdgeMetricCount
+	}
 	heightDelta: number
 	visible: boolean
 	path: string

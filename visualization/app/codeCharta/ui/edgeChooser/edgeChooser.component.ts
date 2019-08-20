@@ -48,7 +48,7 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		if (data && data.to && data.to.node && data.to.node.attributes) {
 			//this._viewModel.hoveredEdgeValue = this.edgeMetricService.getMetricValueForNode(data.to.node)
 
-			this._viewModel.hoveredEdgeValue = data.to.node.attributes[this._viewModel.edgeMetric]
+			this._viewModel.hoveredEdgeValue = data.to.node.edgeAttributes[this._viewModel.edgeMetric]
 		} else {
 			this._viewModel.hoveredEdgeValue = null
 		}

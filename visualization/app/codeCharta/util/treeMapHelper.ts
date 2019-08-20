@@ -55,6 +55,7 @@ export class TreeMapHelper {
 			y0,
 			isLeaf: isNodeLeaf,
 			attributes: squaredNode.data.attributes,
+			edgeAttributes: squaredNode.data.edgeAttributes,
 			deltas: squaredNode.data.deltas,
 			heightDelta:
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
