@@ -24,3 +24,18 @@
 		/>
 	</md-input-container>
 </md-slider-container>
+
+<section layout="row" layout-align="center center" class="mode-chooser">
+	<md-button class="state-selector-button left" ng-click="$ctrl.applyEdgesVisualChange('showOnlyBuildingsWithEdges')"
+	> 		<i class="fa fa-ban"></i>
+
+	</md-button>
+	<md-button class="state-selector-button middle" ng-click="$ctrl.applyEdgesVisualChange('showAllBuildings')"
+	><i class="fa fa-ban"></i>
+
+	</md-button>
+	<md-button class="state-selector-button right" ng-click="$ctrl.applyEdgesVisualChange('showBuildings')"
+	><i class="fa fa-ban"></i>
+
+	</md-button>
+</section>
