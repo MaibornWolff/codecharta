@@ -5,7 +5,6 @@ import {
 	CodeMapNode,
 	FileState,
 	MetricData,
-	RecursivePartial,
 	Settings,
 	AttributeType,
 	AttributeTypeValue
@@ -14,12 +13,14 @@ import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { IRootScopeService } from "angular"
-import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
+import { SettingsService } from "./settingsService/settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
+import { BlacklistSubscriber } from "./settingsService/settings.service.events"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
+
 	onMetricDataRemoved()
 }
 
@@ -28,7 +29,7 @@ interface MaxMetricValuePair {
 	availableInVisibleMaps: boolean
 }
 
-export class MetricService implements FileStateServiceSubscriber, SettingsServiceSubscriber {
+export class MetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed"
 
@@ -37,7 +38,7 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
@@ -50,17 +51,11 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 		this.notifyMetricDataRemoved()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		if (update.fileSettings && update.fileSettings.blacklist) {
-			const fileStates: FileState[] = this.fileStateService.getFileStates()
-			this.metricData = this.calculateMetrics(
-				fileStates,
-				FileStateHelper.getVisibleFileStates(fileStates),
-				update.fileSettings.blacklist
-			)
-			this.addUnaryMetric()
-			this.notifyMetricDataAdded()
-		}
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		const fileStates: FileState[] = this.fileStateService.getFileStates()
+		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+		this.addUnaryMetric()
+		this.notifyMetricDataAdded()
 	}
 
 	public getMetrics(): string[] {

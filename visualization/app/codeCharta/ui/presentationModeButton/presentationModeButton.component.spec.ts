@@ -1,7 +1,7 @@
 import "./presentationModeButton.module"
 import { PresentationModeButtonController } from "./presentationModeButton.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("PresentationModeButtonController", () => {
 	let presentationModeButtonController: PresentationModeButtonController

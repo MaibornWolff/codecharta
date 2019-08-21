@@ -1,27 +1,32 @@
-import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../codeCharta.model"
+import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../../codeCharta.model"
 import _ from "lodash"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
-import { FileStateHelper } from "../util/fileStateHelper"
-import { SettingsMerger } from "../util/settingsMerger"
+import { FileStateService, FileStateServiceSubscriber } from "../fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsMerger } from "../../util/settingsMerger"
 import { Vector3 } from "three"
-import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
-
-export interface SettingsServiceSubscriber {
-	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>)
-}
+import { LoadingGifService } from "../../ui/loadingGif/loadingGif.service"
+import {
+	AreaMetricSubscriber,
+	BlacklistSubscriber,
+	ColorMetricSubscriber,
+	DistributionMetricSubscriber,
+	HeightMetricSubscriber,
+	SearchPatternSubscriber,
+	SettingsEvents,
+	SettingsServiceSubscriber
+} from "./settings.service.events"
 
 export class SettingsService implements FileStateServiceSubscriber {
-	private static SETTINGS_CHANGED_EVENT = "settings-changed"
 	private static DEBOUNCE_TIME = 400
 
 	private settings: Settings
 	private update: RecursivePartial<Settings> = {}
-	private readonly debounceBroadcast: () => void
+	private debounceBroadcast: () => void
 
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
 		this.settings = this.getDefaultSettings()
-		this.debounceBroadcast = _.debounce(this.notifySubscribers, SettingsService.DEBOUNCE_TIME)
+
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -40,7 +45,33 @@ export class SettingsService implements FileStateServiceSubscriber {
 		if (!isSilent) {
 			this.loadingGifService.updateLoadingMapFlag(true)
 			this.update = this.mergePartialSettings(this.update, update, this.settings)
-			this.debounceBroadcast()
+
+			if (update.fileSettings && update.fileSettings.blacklist) {
+				this.notifyBlacklistSubscribers()
+			}
+
+			if (update.dynamicSettings) {
+				if (update.dynamicSettings.areaMetric) {
+					this.notifyAreaMetricSubscribers()
+				}
+
+				if (update.dynamicSettings.heightMetric) {
+					this.notifyHeightMetricSubscribers()
+				}
+
+				if (update.dynamicSettings.colorMetric) {
+					this.notifyColorMetricSubscribers()
+				}
+
+				if (update.dynamicSettings.distributionMetric) {
+					this.notifyDistributionMetricSubscribers()
+				}
+
+				if (update.dynamicSettings.searchPattern) {
+					this.notifySearchPatternSubscribers()
+				}
+			}
+			this.notifySettingsSubscribers()
 		}
 		this.synchronizeAngularTwoWayBinding()
 	}
@@ -171,9 +202,49 @@ export class SettingsService implements FileStateServiceSubscriber {
 		})
 	}
 
-	private notifySubscribers() {
-		this.$rootScope.$broadcast(SettingsService.SETTINGS_CHANGED_EVENT, { settings: this.settings, update: this.update })
-		this.update = {}
+	private notifySettingsSubscribers() {
+		this.debounceBroadcast = _.debounce(() => {
+			this.$rootScope.$broadcast(SettingsEvents.SETTINGS_CHANGED_EVENT, {
+				settings: this.settings,
+				update: this.update
+			})
+			this.update = {}
+		}, SettingsService.DEBOUNCE_TIME)
+		this.debounceBroadcast()
+	}
+
+	private notifyBlacklistSubscribers() {
+		this.notify(SettingsEvents.BLACKLIST_CHANGED_EVENT, { blacklist: this.settings.fileSettings.blacklist })
+	}
+
+	private notifyAreaMetricSubscribers() {
+		this.notify(SettingsEvents.AREA_METRIC_CHANGED_EVENT, { areaMetric: this.settings.dynamicSettings.areaMetric })
+	}
+
+	private notifyHeightMetricSubscribers() {
+		this.notify(SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT, { heightMetric: this.settings.dynamicSettings.heightMetric })
+	}
+
+	private notifyColorMetricSubscribers() {
+		this.notify(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, { colorMetric: this.settings.dynamicSettings.colorMetric })
+	}
+
+	private notifyDistributionMetricSubscribers() {
+		this.notify(SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT, {
+			distributionMetric: this.settings.dynamicSettings.distributionMetric
+		})
+	}
+
+	private notifySearchPatternSubscribers() {
+		this.notify(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: this.settings.dynamicSettings.searchPattern })
+	}
+
+	private notify(eventName: string, data: object, debounceTime: number = SettingsService.DEBOUNCE_TIME) {
+		this.debounceBroadcast = _.debounce(() => {
+			this.$rootScope.$broadcast(eventName, data)
+			this.update = {}
+		}, debounceTime)
+		this.debounceBroadcast()
 	}
 
 	private synchronizeAngularTwoWayBinding() {
@@ -181,8 +252,44 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {
-		$rootScope.$on(SettingsService.SETTINGS_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SettingsEvents.SETTINGS_CHANGED_EVENT, (event, data) => {
 			subscriber.onSettingsChanged(data.settings, data.update)
+		})
+	}
+
+	public static subscribeToBlacklist($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
+		$rootScope.$on(SettingsEvents.BLACKLIST_CHANGED_EVENT, (event, data) => {
+			subscriber.onBlacklistChanged(data.blacklist)
+		})
+	}
+
+	public static subscribeToAreaMetric($rootScope: IRootScopeService, subscriber: AreaMetricSubscriber) {
+		$rootScope.$on(SettingsEvents.AREA_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onAreaMetricChanged(data.areaMetric)
+		})
+	}
+
+	public static subscribeToHeightMetric($rootScope: IRootScopeService, subscriber: HeightMetricSubscriber) {
+		$rootScope.$on(SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onHeightMetricChanged(data.heightMetric)
+		})
+	}
+
+	public static subscribeToColorMetric($rootScope: IRootScopeService, subscriber: ColorMetricSubscriber) {
+		$rootScope.$on(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onColorMetricChanged(data.colorMetric)
+		})
+	}
+
+	public static subscribeToDistributionMetric($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
+		$rootScope.$on(SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onDistributionMetricChanged(data.distributionMetric)
+		})
+	}
+
+	public static subscribeToSearchPattern($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
+		$rootScope.$on(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
+			subscriber.onSearchPatternChanged(data.searchPattern)
 		})
 	}
 }

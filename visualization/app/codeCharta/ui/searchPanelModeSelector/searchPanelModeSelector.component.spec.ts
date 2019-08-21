@@ -2,9 +2,9 @@ import "./searchPanelModeSelector.module"
 import { SearchPanelModeSelectorController } from "./searchPanelModeSelector.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { SETTINGS } from "../../util/dataMocks"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
 import { SearchPanelService } from "../../state/searchPanel.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("SearchPanelModeSelectorController", () => {
 	let searchPanelModeSelectorController: SearchPanelModeSelectorController
@@ -34,6 +34,33 @@ describe("SearchPanelModeSelectorController", () => {
 		})()
 	}
 
+	describe("constructor", () => {
+		beforeEach(() => {
+			SettingsService.subscribeToSearchPattern = jest.fn()
+			SettingsService.subscribeToBlacklist = jest.fn()
+
+			SearchPanelService.subscribe = jest.fn()
+		})
+
+		it("should subscribe to Search-Pattern-Event", () => {
+			rebuildController()
+
+			expect(SettingsService.subscribeToSearchPattern).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+		})
+
+		it("should subscribe to Blacklist-Event", () => {
+			rebuildController()
+
+			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+		})
+
+		it("should subscribe to SearchPanelService", () => {
+			rebuildController()
+
+			expect(SearchPanelService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+		})
+	})
+
 	describe("onSearchPanelModeChanged", () => {
 		it("should update searchPanelMode", () => {
 			let searchPanelMode = SearchPanelMode.hide
@@ -44,15 +71,28 @@ describe("SearchPanelModeSelectorController", () => {
 		})
 	})
 
-	describe("onSettingsChanged", () => {
-		it("should update counters", () => {
-			let blacklistItem1 = { path: "/root", type: BlacklistType.hide }
-			let blacklistItem2 = { path: "/root/foo", type: BlacklistType.exclude }
-			let blacklistItem3 = { path: "/root/bar", type: BlacklistType.exclude }
-			let blacklist = [blacklistItem1, blacklistItem2, blacklistItem3]
-			SETTINGS.fileSettings.blacklist = blacklist
+	describe("onSearchPatternChanged", () => {
+		it("should set searchFieldIsEmpty in viewModel", () => {
+			searchPanelModeSelectorController["_viewModel"].searchFieldIsEmpty = false
 
-			searchPanelModeSelectorController.onSettingsChanged(SETTINGS, null)
+			searchPanelModeSelectorController.onSearchPatternChanged("")
+
+			expect(searchPanelModeSelectorController["_viewModel"].searchFieldIsEmpty).toBeTruthy()
+		})
+	})
+
+	describe("onBlacklistChanged", () => {
+		it("should update counters", () => {
+			const blacklist = [
+				{ path: "/root", type: BlacklistType.hide },
+				{
+					path: "/root/foo",
+					type: BlacklistType.exclude
+				},
+				{ path: "/root/bar", type: BlacklistType.exclude }
+			]
+
+			searchPanelModeSelectorController.onBlacklistChanged(blacklist)
 
 			expect(searchPanelModeSelectorController["_viewModel"].hideListLength).toEqual(1)
 			expect(searchPanelModeSelectorController["_viewModel"].excludeListLength).toEqual(2)

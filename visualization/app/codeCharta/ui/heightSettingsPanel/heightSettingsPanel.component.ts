@@ -1,9 +1,10 @@
 import "./heightSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class HeightSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
 	private _viewModel: {

@@ -5,7 +5,7 @@ import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 
 interface InternalLabel {

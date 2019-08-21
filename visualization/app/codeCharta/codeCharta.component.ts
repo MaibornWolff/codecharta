@@ -2,7 +2,7 @@ import { UrlExtractor } from "./util/urlExtractor"
 import { IHttpService, ILocationService, IRootScopeService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
-import { SettingsService, SettingsServiceSubscriber } from "./state/settings.service"
+import { SettingsService } from "./state/settingsService/settings.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
@@ -10,6 +10,7 @@ import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
 import { NodeSearchService } from "./state/nodeSearch.service"
+import { SettingsServiceSubscriber } from "./state/settingsService/settings.service.events"
 
 export class CodeChartaController implements SettingsServiceSubscriber {
 	private _viewModel: {
