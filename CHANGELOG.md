@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Nodes with color metric equals 0 are colored correct again #677
+
 ### Chore
 
 ## [1.32.0] - 2019-08-09
