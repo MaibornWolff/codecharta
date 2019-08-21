@@ -94,11 +94,11 @@ export class MetricChooserController
 		const metricKeys: Partial<DynamicSettings> = {
 			areaMetric: "areaMetric",
 			heightMetric: "heightMetric",
-			colorMetric: "colorMetric",
-			distributionMetric: "distributionMetric"
+			colorMetric: "colorMetric"
 		}
 		let settingsUpdate: RecursivePartial<Settings> = this.prepareSettingsUpdateWithMetrics(metricKeys, metricData)
 		if (Object.keys(settingsUpdate.dynamicSettings).length !== 0) {
+			settingsUpdate.dynamicSettings["distributionMetric"] = settingsUpdate.dynamicSettings.areaMetric
 			this.settingsService.updateSettings(settingsUpdate)
 		}
 	}
@@ -108,11 +108,10 @@ export class MetricChooserController
 
 		let metricSelectionIndex = 0
 		for (const metricKey in metricKeys) {
-			const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
+			const metricName: string = this.settingsService.getSettings().dynamicSettings[metricKey]
 			const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
 
-			if (availableMetrics.length > 0 && !availableMetrics.find(x => x.name == metricValue)) {
-				// metric value is "rloc" if not found in available, then gogogo
+			if (availableMetrics.length > 0 && !availableMetrics.find(x => x.name == metricName)) {
 				settingsUpdate.dynamicSettings[metricKey] =
 					availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
 			}
