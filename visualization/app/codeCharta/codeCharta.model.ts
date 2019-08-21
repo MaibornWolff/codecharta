@@ -225,6 +225,7 @@ export interface Node {
 	link: string
 	markingColor: string
 	flat: boolean
+	color: string
 	incomingEdgePoint: Vector3
 	outgoingEdgePoint: Vector3
 }

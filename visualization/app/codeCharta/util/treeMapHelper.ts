@@ -1,6 +1,6 @@
 import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
 import { CodeMapHelper } from "./codeMapHelper"
-import { Settings, Node } from "../codeCharta.model"
+import { Settings, Node, CodeMapNode } from "../codeCharta.model"
 import { Vector3 } from "three"
 
 export class TreeMapHelper {
@@ -30,7 +30,13 @@ export class TreeMapHelper {
 		}
 	}
 
-	public static buildNodeFrom(squaredNode: SquarifiedValuedCodeMapNode, heightScale: number, maxHeight: number, s: Settings): Node {
+	public static buildNodeFrom(
+		squaredNode: SquarifiedValuedCodeMapNode,
+		heightScale: number,
+		maxHeight: number,
+		s: Settings,
+		isDeltaState: boolean
+	): Node {
 		const isNodeLeaf: boolean = !(squaredNode.children && squaredNode.children.length > 0)
 		const flattened: boolean = this.isNodeToBeFlat(squaredNode, s)
 		const heightValue: number = this.getHeightValue(s, squaredNode, maxHeight, flattened)
@@ -67,6 +73,7 @@ export class TreeMapHelper {
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
 			flat: flattened,
+			color: this.getBuildingColor(squaredNode.data, s, isDeltaState, flattened),
 			incomingEdgePoint: this.getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMapSettings.mapSize),
 			outgoingEdgePoint: this.getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMapSettings.mapSize)
 		}
@@ -114,5 +121,26 @@ export class TreeMapHelper {
 
 	private static isNodeNonSearched(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
 		return s.dynamicSettings.searchedNodePaths.filter(path => path == squaredNode.data.path).length == 0
+	}
+
+	private static getBuildingColor(node: CodeMapNode, s: Settings, isDeltaState: boolean, flattened: boolean): string {
+		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
+		if (isDeltaState) {
+			return s.appSettings.mapColors.base
+		} else {
+			const metricValue: number = node.attributes[s.dynamicSettings.colorMetric]
+
+			if (metricValue == null) {
+				return s.appSettings.mapColors.base
+			} else if (flattened) {
+				return s.appSettings.mapColors.flat
+			} else if (metricValue < s.dynamicSettings.colorRange.from) {
+				return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
+			} else if (metricValue > s.dynamicSettings.colorRange.to) {
+				return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
+			} else {
+				return s.appSettings.mapColors.neutral
+			}
+		}
 	}
 }

@@ -601,6 +601,7 @@ export const TEST_NODE_ROOT: Node = {
 	link: "NO_LINK",
 	markingColor: "0x000000",
 	flat: false,
+	color: "#AABBCC",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }
@@ -625,6 +626,7 @@ export const TEST_NODE_LEAF: Node = {
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
+	color: "#AABBCC",
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }

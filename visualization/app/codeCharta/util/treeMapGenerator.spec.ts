@@ -5,6 +5,7 @@ import { SETTINGS, METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALI
 
 describe("treeMapGenerator", () => {
 	let map: CodeMapNode, settings: Settings, metricData: MetricData[], codemapNode: CodeMapNode
+	let isDeltaState
 
 	beforeEach(() => {
 		restartSystem()
@@ -15,13 +16,14 @@ describe("treeMapGenerator", () => {
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 		codemapNode = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
 		metricData = METRIC_DATA
+		isDeltaState = false
 	}
 
 	describe("create Treemap nodes", () => {
 		it("only root node", () => {
 			map.children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -29,13 +31,13 @@ describe("treeMapGenerator", () => {
 		it("root node with two direct children", () => {
 			map.children[1].children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
 
 		it("root node with two direct children and some grand children", () => {
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -61,7 +63,7 @@ describe("treeMapGenerator", () => {
 				{ name: "myHeight", maxValue: 99, availableInVisibleMaps: true }
 			]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData, isDeltaState)
 
 			expect(nodes[2].name).toBe("Parent Leaf")
 			expect(nodes[2].width).toBeGreaterThan(0)
@@ -72,7 +74,7 @@ describe("treeMapGenerator", () => {
 			map.children = []
 			map.attributes = { a: 100 }
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["a"]).toBe(100)
 		})
@@ -80,7 +82,7 @@ describe("treeMapGenerator", () => {
 		it("attribute do not exists, no children", () => {
 			map.children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
@@ -93,7 +95,7 @@ describe("treeMapGenerator", () => {
 				{ name: "b", maxValue: 99, availableInVisibleMaps: true }
 			]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
@@ -104,7 +106,7 @@ describe("treeMapGenerator", () => {
 			settings.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "unknown", maxValue: 100, availableInVisibleMaps: true }]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData)
+			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, settings, metricData, isDeltaState)
 
 			expect(nodes[2].width * nodes[2].length).toEqual(0)
 		})

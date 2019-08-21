@@ -11,6 +11,7 @@ describe("treeMapHelper", () => {
 
 		let heightScale = 1
 		let maxHeight = 2000
+		let isDeltaState = false
 
 		beforeEach(() => {
 			codeMapNode = {
@@ -37,7 +38,7 @@ describe("treeMapHelper", () => {
 		})
 
 		function buildNode() {
-			return TreeMapHelper.buildNodeFrom(squaredNode, heightScale, maxHeight, settings)
+			return TreeMapHelper.buildNodeFrom(squaredNode, heightScale, maxHeight, settings, isDeltaState)
 		}
 
 		it("minimal", () => {
@@ -197,6 +198,98 @@ describe("treeMapHelper", () => {
 			treeMapSettings.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"]
 			treeMapSettings.dynamicSettings.searchPattern = ""
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy()
+		})
+	})
+
+	describe("getBuildingColor", () => {
+		let node: CodeMapNode
+		let settings: Settings
+
+		beforeEach(() => {
+			node = {
+				name: "Anode",
+				path: "/root/Anode",
+				type: "File",
+				attributes: {}
+			} as CodeMapNode
+
+			node.attributes = { validMetircName: 0 }
+
+			settings = SETTINGS
+			settings.appSettings.invertColorRange = false
+			settings.appSettings.whiteColorBuildings = false
+			settings.dynamicSettings.colorRange.from = 5
+			settings.dynamicSettings.colorRange.to = 10
+			settings.dynamicSettings.colorMetric = "validMetircName"
+		})
+
+		it("creates grey building for undefined colorMetric", () => {
+			settings.dynamicSettings.colorMetric = "invalid"
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
+			expect(buildingColor).toBe(settings.appSettings.mapColors.base)
+		})
+
+		it("creates flat colored building", () => {
+			const flattend = true
+
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, flattend)
+
+			expect(buildingColor).toBe(settings.appSettings.mapColors.flat)
+		})
+
+		it("creates green colored building colorMetricValue < colorRangeFrom", () => {
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
+
+			expect(buildingColor).toBe(settings.appSettings.mapColors.positive)
+		})
+
+		it("creates white colored building colorMetricValue < colorRangeFrom", () => {
+			settings.appSettings.whiteColorBuildings = true
+
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
+
+			expect(buildingColor).toBe(settings.appSettings.mapColors.lightGrey)
+		})
+
+		it("creates red colored building colorMetricValue < colorRangeFrom with inverted range", () => {
+			settings.appSettings.invertColorRange = true
+
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
+
+			expect(buildingColor).toBe(settings.appSettings.mapColors.negative)
+		})
+
+		it("creates red colored building colorMetricValue > colorRangeFrom", () => {
+			node.attributes = { validMetircName: 12 }
+
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
+
+			expect(buildingColor).toBe(settings.appSettings.mapColors.negative)
+		})
+
+		it("creates green colored building colorMetricValue > colorRangeFrom with inverted range", () => {
+			settings.appSettings.invertColorRange = true
+			node.attributes = { validMetircName: 12 }
+
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
+
+			expect(buildingColor).toBe(settings.appSettings.mapColors.positive)
+		})
+
+		it("creates white colored building colorMetricValue > colorRangeFrom with inverted range", () => {
+			settings.appSettings.invertColorRange = true
+			settings.appSettings.whiteColorBuildings = true
+			node.attributes = { validMetircName: 12 }
+
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
+
+			expect(buildingColor).toBe(settings.appSettings.mapColors.lightGrey)
+		})
+
+		it("creates yellow colored building", () => {
+			node.attributes = { validMetircName: 7 }
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
+			expect(buildingColor).toBe(settings.appSettings.mapColors.neutral)
 		})
 	})
 })

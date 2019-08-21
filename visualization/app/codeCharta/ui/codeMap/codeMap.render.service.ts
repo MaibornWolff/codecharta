@@ -39,7 +39,12 @@ export class CodeMapRenderService {
 	}
 
 	private getSortedNodes(renderData: RenderData): Node[] {
-		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
+		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(
+			renderData.map,
+			renderData.settings,
+			renderData.metricData,
+			FileStateHelper.isDeltaState(renderData.fileStates)
+		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)
 	}
