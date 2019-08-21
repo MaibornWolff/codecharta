@@ -1,5 +1,5 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import "./metricChooser.component.scss"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MetricData, Settings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
@@ -10,6 +10,7 @@ import {
 	DistributionMetricSubscriber,
 	HeightMetricSubscriber
 } from "../../state/settingsService/settings.service.events"
+import $ from "jquery"
 
 export class MetricChooserController
 	implements
@@ -45,7 +46,7 @@ export class MetricChooserController
 	}
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {
+	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
@@ -80,6 +81,12 @@ export class MetricChooserController
 	public clearSearchTerm() {
 		this._viewModel.searchTerm = ""
 		this._viewModel.metricData = this.originalMetricData
+	}
+
+	public focusInputField(idName: string) {
+		this.$timeout(() => {
+			$(".metric-search." + idName).focus()
+		}, 200)
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
