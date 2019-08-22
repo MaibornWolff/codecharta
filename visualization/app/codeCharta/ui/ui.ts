@@ -3,6 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
+import "./attributeSideBar/attributeSideBar.module"
 import "./presentationModeButton/presentationModeButton.module"
 import "./centerMapButton/centerMapButton.module"
 import "./matchingFilesCounter/matchingFilesCounter.module"
@@ -35,6 +36,7 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
+	"app.codeCharta.ui.attributeSideBar",
 	"app.codeCharta.ui.presentationModeButton",
 
 	"app.codeCharta.ui.centerMapButton",
