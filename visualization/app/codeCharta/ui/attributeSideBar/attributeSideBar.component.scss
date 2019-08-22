@@ -1,2 +1,37 @@
 attribute-side-bar-component {
+	md-sidenav {
+		width: 500px;
+		z-index: 50;
+
+		.headline,
+		.sub-headline {
+			margin: 0;
+		}
+
+		.sub-headline {
+			font-size: 10pt;
+			color: grey;
+		}
+
+		table.primary-metrics {
+			width: 100%;
+
+			.metric-value {
+				font-size: 10pt;
+			}
+
+			.metric-name {
+				font-size: 10pt;
+				color: grey;
+			}
+		}
+
+		table.secondary-metrics {
+			min-width: 50%;
+		}
+	}
+
+	td {
+		border: 1px solid grey;
+	}
 }
