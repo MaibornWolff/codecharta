@@ -1,5 +1,5 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapNode, BlacklistType, BlacklistItem, Edge } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, Edge, EdgeVisibility } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
@@ -117,15 +117,15 @@ export class CodeMapActionsService {
 	}
 
 	public showDependentEdges(node: CodeMapNode) {
-		this.changeEdgesVisibility(true, node)
+		this.changeEdgesVisibility(EdgeVisibility.both, node)
 	}
 
 	public hideDependentEdges(node: CodeMapNode) {
-		this.changeEdgesVisibility(false, node)
+		this.changeEdgesVisibility(EdgeVisibility.none, node)
 	}
 
 	public hideAllEdges() {
-		this.changeEdgesVisibility(false)
+		this.changeEdgesVisibility(EdgeVisibility.none)
 	}
 
 	public updateEdgePreviews() {
@@ -135,11 +135,17 @@ export class CodeMapActionsService {
 		const numberOfEdgesToDisplay = settings.appSettings.amountOfEdgePreviews
 		const edgePreviewNodes = this.edgeMetricService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
 
-		edges.forEach(edge => {
+		const filteredEdges = edges.filter(edge => Object.keys(edge.attributes).includes(edgeMetric))
+		filteredEdges.forEach(edge => {
 			if (edgePreviewNodes.includes(edge.fromNodeName) || edgePreviewNodes.includes(edge.toNodeName)) {
-				edge.visible = Object.keys(edge.attributes).includes(edgeMetric)
+				edge.visible = EdgeVisibility.both
+				if (!edgePreviewNodes.includes(edge.fromNodeName)) {
+					edge.visible = EdgeVisibility.to
+				} else if (!edgePreviewNodes.includes(edge.toNodeName)) {
+					edge.visible = EdgeVisibility.from
+				}
 			} else {
-				edge.visible = false
+				edge.visible = EdgeVisibility.none
 			}
 		})
 
@@ -211,7 +217,7 @@ export class CodeMapActionsService {
 		}
 	}
 
-	private changeEdgesVisibility(visibility: boolean, node: CodeMapNode = null) {
+	private changeEdgesVisibility(visibility: EdgeVisibility, node: CodeMapNode = null) {
 		let edges = this.settingsService.getSettings().fileSettings.edges
 		if (edges) {
 			edges.forEach(edge => {

@@ -155,7 +155,14 @@ export interface Edge {
 	fromNodeName: string
 	toNodeName: string
 	attributes: KeyValuePair
-	visible?: boolean
+	visible?: EdgeVisibility
+}
+
+export enum EdgeVisibility {
+	none = "none",
+	from = "from",
+	to = "to",
+	both = "both"
 }
 
 export interface EdgeMetricCount {

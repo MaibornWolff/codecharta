@@ -1,4 +1,4 @@
-import { Node } from "../../codeCharta.model"
+import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Edge } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
@@ -22,15 +22,15 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		const visibleEdges = this.settingsService.getSettings().fileSettings.edges
+		const edges = this.settingsService.getSettings().fileSettings.edges
 		if (data.to && !data.to.node.flat) {
 			this.isHovered = true
 			this.clearArrows()
-			this.showOnlyEdgesFromHoveredBuilding(data.to.node, visibleEdges)
+			this.showEdgesOfHoveredBuilding(data.to.node, edges)
 		} else {
 			this.isHovered = false
 			this.clearArrows()
-			this.addEdgeArrows(null, visibleEdges.filter(x => x.visible))
+			this.addEdgeArrows(null, edges.filter(x => x.visible != EdgeVisibility.none))
 		}
 	}
 
@@ -51,12 +51,12 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const targetNode: Node = this.map.get(edge.toNodeName)
 
 			if (originNode && targetNode) {
-				this.addArrow(targetNode, originNode)
+				this.addArrow(targetNode, originNode, edge.visible)
 			}
 		}
 	}
 
-	private showOnlyEdgesFromHoveredBuilding(hoveredNode: Node, edges: Edge[]) {
+	private showEdgesOfHoveredBuilding(hoveredNode: Node, edges: Edge[]) {
 		for (const edge of edges) {
 			const originNode: Node = this.map.get(edge.fromNodeName)
 			const targetNode: Node = this.map.get(edge.toNodeName)
@@ -67,7 +67,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		}
 	}
 
-	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node): void {
+	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, edgeVisibility?: EdgeVisibility): void {
 		const settings = this.settingsService.getSettings()
 		const mapSize = settings.treeMapSettings.mapSize
 		const curveScale = 100 * settings.appSettings.edgeHeight
@@ -104,7 +104,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			if (this.isHovered) {
 				this.hoveredMode(curve)
 			} else {
-				this.previewMode(curve, arrowOriginNode)
+				this.previewMode(curve, arrowOriginNode, edgeVisibility)
 			}
 		}
 	}
@@ -117,14 +117,18 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		this.threeSceneService.edgeArrows.add(curveObject)
 	}
 
-	private previewMode(curve, arrowOriginNode: Node) {
-		const incomingArrow: Object3D = this.makeIncomingArrowFromBezier(curve)
-		const outgoingArrow: Object3D = this.makeOutgoingArrowFromBezier(curve, arrowOriginNode.height)
+	private previewMode(curve, arrowOriginNode: Node, edgeVisibility: EdgeVisibility) {
+		if (edgeVisibility === EdgeVisibility.both || edgeVisibility === EdgeVisibility.from) {
+			const outgoingArrow: Object3D = this.makeOutgoingArrowFromBezier(curve, arrowOriginNode.height)
+			this.threeSceneService.edgeArrows.add(outgoingArrow)
+			this.arrows.push(outgoingArrow)
+		}
 
-		this.threeSceneService.edgeArrows.add(incomingArrow)
-		this.threeSceneService.edgeArrows.add(outgoingArrow)
-		this.arrows.push(incomingArrow)
-		this.arrows.push(outgoingArrow)
+		if (edgeVisibility === EdgeVisibility.both || edgeVisibility === EdgeVisibility.to) {
+			const incomingArrow: Object3D = this.makeIncomingArrowFromBezier(curve)
+			this.threeSceneService.edgeArrows.add(incomingArrow)
+			this.arrows.push(incomingArrow)
+		}
 	}
 
 	public scale(scale: Vector3) {
