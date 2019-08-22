@@ -22,7 +22,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		const visibleEdges = this.settingsService.getSettings().fileSettings.edges.filter(x => x.visible)
+		const visibleEdges = this.settingsService.getSettings().fileSettings.edges
 		if (data.to && !data.to.node.flat) {
 			this.isHovered = true
 			this.clearArrows()
@@ -30,7 +30,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		} else {
 			this.isHovered = false
 			this.clearArrows()
-			this.addEdgeArrows(null, visibleEdges)
+			this.addEdgeArrows(null, visibleEdges.filter(x => x.visible))
 		}
 	}
 
