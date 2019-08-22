@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- SourceCodeParser now skips custom metrics for files, if the syntax tree cannot be created
+
 ### Chore
 
 ## [1.32.0] - 2019-08-09
