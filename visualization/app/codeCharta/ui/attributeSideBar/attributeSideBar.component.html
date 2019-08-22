@@ -30,9 +30,9 @@
 				<td>Attribute</td>
 				<td>Value</td>
 			</tr>
-			<tr>
-				<td></td>
-				<td></td>
+			<tr ng-repeat="attributeKey in $ctrl._viewModel.attributeKeys">
+				<td>{{ attributeKey }}</td>
+				<td>{{ $ctrl._viewModel.attributes[attributeKey] }}</td>
 			</tr>
 		</table>
 	</md-content>
