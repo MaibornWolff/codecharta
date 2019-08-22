@@ -6,7 +6,7 @@ import {
 	BuildingSelectedEventSubscriber,
 	BuildingDeselectedEventSubscriber
 } from "../codeMap/codeMap.mouseEvent.service"
-import { KeyValuePair } from "../../codeCharta.model"
+import { KeyValuePair, Node } from "../../codeCharta.model"
 import _ from "lodash"
 import {
 	SettingsEvents,
@@ -30,12 +30,18 @@ export class AttributeSideBarController
 		HeightMetricSubscriber,
 		ColorMetricSubscriber {
 	private _viewModel: {
-		primaryMetrics: PrimaryMetrics
-		attributeKeys: string[]
+		nodeName: string
+		nodePath: string
+		primaryMetricKeys: PrimaryMetrics
+		secondaryMetricKeys: string[]
+		deltas: KeyValuePair
 		attributes: KeyValuePair
 	} = {
-		primaryMetrics: {} as PrimaryMetrics,
-		attributeKeys: null,
+		nodeName: null,
+		nodePath: null,
+		primaryMetricKeys: {} as PrimaryMetrics,
+		secondaryMetricKeys: null,
+		deltas: null,
 		attributes: null
 	}
 
@@ -51,28 +57,33 @@ export class AttributeSideBarController
 	}
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		this._viewModel.attributeKeys = _.keys(selectedBuilding.node.attributes).filter(
-			x => !_.values(this._viewModel.primaryMetrics).includes(x)
-		)
-		this._viewModel.attributes = selectedBuilding.node.attributes
+		const node: Node = selectedBuilding.node
+
+		this._viewModel.nodeName = node.name
+		this._viewModel.nodePath = node.path
+		this._viewModel.secondaryMetricKeys = _.keys(node.attributes)
+			.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
+			.sort()
+		this._viewModel.attributes = node.attributes
+		this._viewModel.deltas = node.deltas
 		//this.toggleAttributeSideBar()
 	}
 
 	public onBuildingDeselected() {
-		this._viewModel.attributeKeys = null
+		this._viewModel.secondaryMetricKeys = null
 		this._viewModel.attributes = null
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
-		this._viewModel.primaryMetrics.area = areaMetric
+		this._viewModel.primaryMetricKeys.area = areaMetric
 	}
 
 	public onHeightMetricChanged(heightMetric: string) {
-		this._viewModel.primaryMetrics.height = heightMetric
+		this._viewModel.primaryMetricKeys.height = heightMetric
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		this._viewModel.primaryMetrics.color = colorMetric
+		this._viewModel.primaryMetricKeys.color = colorMetric
 	}
 
 	public toggleAttributeSideBar() {

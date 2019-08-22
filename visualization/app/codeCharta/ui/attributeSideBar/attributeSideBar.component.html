@@ -1,38 +1,57 @@
 <md-sidenav class="md-sidenav-right" md-component-id="right" md-disable-backdrop md-whiteframe="4">
 	<md-content layout-padding>
-		<h2 class="headline">MyService.java</h2>
-		<p class="sub-headline">codecharta.cc.json</p>
+		<h2 class="filename">{{ $ctrl._viewModel.nodeName }}</h2>
+		<p class="file-type">codecharta.cc.json</p>
 
 		<table class="primary-metrics">
 			<tr>
 				<td>
 					<i class="fa fa-arrows-alt"></i>
-					<span class="metric-value">{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetrics.area] }}</span>
-					<span class="metric-name">{{ $ctrl._viewModel.primaryMetrics.area }}</span>
+					<span class="metric-value">
+						{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetricKeys.area] | number: 2 }}
+						<span ng-hide="!$ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
+							(&Delta;{{ $ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.area] | number: 2 }})
+						</span>
+					</span>
+					<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</span>
 				</td>
 				<td>
 					<i class="fa fa-arrows-v"></i>
-					<span class="metric-value">{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetrics.height] }}</span>
-					<span class="metric-name">{{ $ctrl._viewModel.primaryMetrics.height }}</span>
+					<span class="metric-value">
+						{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetricKeys.height] | number: 2 }}
+						<span ng-hide="!$ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
+							(&Delta;{{ $ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.height] | number: 2 }})
+						</span>
+					</span>
+					<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</span>
 				</td>
+			</tr>
+			<tr>
 				<td>
 					<i class="fa fa-paint-brush"></i>
-					<span class="metric-value">{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetrics.color] }}</span>
-					<span class="metric-name">{{ $ctrl._viewModel.primaryMetrics.color }}</span>
+					<span class="metric-value">
+						{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetricKeys.color] | number: 2 }}
+						<span ng-hide="!$ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
+							(&Delta;{{ $ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.color] | number: 2 }})
+						</span>
+					</span>
+					<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</span>
 				</td>
 			</tr>
 		</table>
 
-		<p class="node-path">/root/de.maibornwolff.codecharta/path/MyService.java</p>
+		<p class="node-path">{{ $ctrl._viewModel.nodePath }}</p>
 
+		<p class="metrics-headline">METRICS</p>
 		<table class="secondary-metrics">
-			<tr>
-				<td>Attribute</td>
-				<td>Value</td>
-			</tr>
-			<tr ng-repeat="attributeKey in $ctrl._viewModel.attributeKeys">
+			<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
 				<td>{{ attributeKey }}</td>
-				<td>{{ $ctrl._viewModel.attributes[attributeKey] }}</td>
+				<td>
+					{{ $ctrl._viewModel.attributes[attributeKey] | number: 2 }}
+					<span ng-hide="!$ctrl._viewModel.deltas[attributeKey]">
+						(&Delta;{{ $ctrl._viewModel.deltas[attributeKey] | number: 2 }})
+					</span>
+				</td>
 			</tr>
 		</table>
 	</md-content>
