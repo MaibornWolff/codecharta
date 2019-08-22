@@ -35,6 +35,12 @@ export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
 
+enum ClickType {
+	ClickAndMove,
+	LeftClick,
+	RightClick
+}
+
 export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
@@ -45,7 +51,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private oldMouse: Coordinates = { x: 0, y: 0 }
-	private dragOrClickFlag = 0
+	private clickType: ClickType = null
 
 	/* @ngInject */
 	constructor(
@@ -121,19 +127,15 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		const topOffset = $(this.threeRendererService.renderer.domElement).offset().top - $(window).scrollTop()
 		this.mouse.x = (event.clientX / this.threeRendererService.renderer.domElement.width) * 2 - 1
 		this.mouse.y = -((event.clientY - topOffset) / this.threeRendererService.renderer.domElement.height) * 2 + 1
-		this.dragOrClickFlag = 1
+		this.clickType = ClickType.ClickAndMove
 	}
 
 	public onDocumentMouseUp() {
-		const highlightedInCodeMap = this.threeSceneService.getHighlightedBuilding()
-		const selected = this.threeSceneService.getSelectedBuilding()
-
-		if (this.dragOrClickFlag === 0) {
-			if (highlightedInCodeMap && (!selected || (selected && selected.id !== highlightedInCodeMap.id))) {
-				this.onBuildingSelected(highlightedInCodeMap)
-			}
-
-			if (!highlightedInCodeMap && selected) {
+		if (this.clickType === ClickType.LeftClick) {
+			const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+			if (highlightedBuilding) {
+				this.onBuildingSelected(highlightedBuilding)
+			} else {
 				this.onBuildingDeselected()
 			}
 		}
@@ -141,10 +143,14 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 	public onDocumentMouseDown(event) {
 		if (event.button === 0) {
-			this.onLeftClick(event)
+			this.onLeftClick()
 		} else if (event.button === 2) {
 			this.onRightClick(event)
 		}
+	}
+
+	public onLeftClick() {
+		this.clickType = ClickType.LeftClick
 	}
 
 	public onRightClick(event) {
@@ -156,14 +162,10 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		})
 	}
 
-	public onLeftClick(event) {
-		this.dragOrClickFlag = 0
-	}
-
 	public onDocumentDoubleClick(event) {
-		if (this.threeSceneService.getHighlightedBuilding()) {
-			let fileSourceLink = this.threeSceneService.getHighlightedBuilding().node.link
-
+		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+		if (highlightedBuilding) {
+			let fileSourceLink = highlightedBuilding.node.link
 			if (fileSourceLink) {
 				this.$window.open(fileSourceLink, "_blank")
 			}

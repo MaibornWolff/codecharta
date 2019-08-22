@@ -1,8 +1,8 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import "./metricChooser.component.scss"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { MetricData, Settings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
+import { MetricData, Settings, DynamicSettings, RecursivePartial, Node } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import {
 	AreaMetricSubscriber,
@@ -45,7 +45,7 @@ export class MetricChooserController
 	}
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {
+	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
@@ -112,7 +112,6 @@ export class MetricChooserController
 			const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
 
 			if (availableMetrics.length > 0 && !availableMetrics.find(x => x.name == metricValue)) {
-				// metric value is "rloc" if not found in available, then gogogo
 				settingsUpdate.dynamicSettings[metricKey] =
 					availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
 			}
@@ -159,31 +158,40 @@ export class MetricChooserController
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data && data.to && data.to.node && data.to.node.attributes) {
-			this.hoveredAreaValue = data.to.node.attributes[this._viewModel.areaMetric]
-			this.hoveredColorValue = data.to.node.attributes[this._viewModel.colorMetric]
-			this.hoveredHeightValue = data.to.node.attributes[this._viewModel.heightMetric]
-
-			if (data.to.node.deltas) {
-				this.hoveredAreaDelta = data.to.node.deltas[this._viewModel.areaMetric]
-				this.hoveredColorDelta = data.to.node.deltas[this._viewModel.colorMetric]
-				this.hoveredHeightDelta = data.to.node.deltas[this._viewModel.heightMetric]
-
-				this.hoveredDeltaColor = this.getHoveredDeltaColor()
-			} else {
-				this.hoveredAreaDelta = null
-				this.hoveredColorDelta = null
-				this.hoveredHeightDelta = null
-				this.hoveredDeltaColor = null
-			}
+		if (data && data.to) {
+			this.buildingHovered(data.to.node)
 		} else {
-			this.hoveredAreaValue = null
-			this.hoveredColorValue = null
-			this.hoveredHeightValue = null
-			this.hoveredHeightDelta = null
+			this.buildingUnovered()
+		}
+		this.synchronizeAngularTwoWayBinding()
+	}
+
+	private buildingHovered(node: Node) {
+		this.hoveredAreaValue = node.attributes[this._viewModel.areaMetric]
+		this.hoveredColorValue = node.attributes[this._viewModel.colorMetric]
+		this.hoveredHeightValue = node.attributes[this._viewModel.heightMetric]
+
+		if (node.deltas) {
+			this.hoveredAreaDelta = node.deltas[this._viewModel.areaMetric]
+			this.hoveredColorDelta = node.deltas[this._viewModel.colorMetric]
+			this.hoveredHeightDelta = node.deltas[this._viewModel.heightMetric]
+
+			this.hoveredDeltaColor = this.getHoveredDeltaColor()
+		} else {
 			this.hoveredAreaDelta = null
 			this.hoveredColorDelta = null
+			this.hoveredHeightDelta = null
+			this.hoveredDeltaColor = null
 		}
+	}
+
+	private buildingUnovered() {
+		this.hoveredAreaValue = null
+		this.hoveredColorValue = null
+		this.hoveredHeightValue = null
+		this.hoveredHeightDelta = null
+		this.hoveredAreaDelta = null
+		this.hoveredColorDelta = null
 	}
 
 	private getHoveredDeltaColor() {
@@ -199,6 +207,10 @@ export class MetricChooserController
 		} else {
 			return "inherit"
 		}
+	}
+
+	private synchronizeAngularTwoWayBinding() {
+		this.$timeout(() => {})
 	}
 }
 

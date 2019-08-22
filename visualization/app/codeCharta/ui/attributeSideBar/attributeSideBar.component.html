@@ -1,5 +1,5 @@
 <md-sidenav class="md-sidenav-right" md-component-id="right" md-disable-backdrop md-whiteframe="4">
-	<md-content layout-padding class="padding_bottom">
+	<md-content layout-padding>
 		<h2 class="headline">MyService.java</h2>
 		<p class="sub-headline">codecharta.cc.json</p>
 
@@ -7,18 +7,18 @@
 			<tr>
 				<td>
 					<i class="fa fa-arrows-alt"></i>
-					<span class="metric-value">150</span>
-					<span class="metric-name">rloc</span>
+					<span class="metric-value">{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetrics.area] }}</span>
+					<span class="metric-name">{{ $ctrl._viewModel.primaryMetrics.area }}</span>
 				</td>
 				<td>
 					<i class="fa fa-arrows-v"></i>
-					<span class="metric-value">20</span>
-					<span class="metric-name">mcc</span>
+					<span class="metric-value">{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetrics.height] }}</span>
+					<span class="metric-name">{{ $ctrl._viewModel.primaryMetrics.height }}</span>
 				</td>
 				<td>
 					<i class="fa fa-paint-brush"></i>
-					<span class="metric-value">30</span>
-					<span class="metric-name">line_coverage</span>
+					<span class="metric-value">{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetrics.color] }}</span>
+					<span class="metric-name">{{ $ctrl._viewModel.primaryMetrics.color }}</span>
 				</td>
 			</tr>
 		</table>
