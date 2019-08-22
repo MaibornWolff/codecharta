@@ -62,7 +62,9 @@ export class ThreeSceneService implements BlacklistSubscriber {
 	}
 
 	public clearSelection() {
-		this.getMapMesh().clearSelection(this.selected)
+		if (this.selected) {
+			this.getMapMesh().clearSelection(this.selected)
+		}
 		if (this.highlighted) {
 			this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
 		}

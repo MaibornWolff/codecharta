@@ -264,7 +264,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
-			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, codeMapBuilding)
+			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(codeMapBuilding)
 		})
 
 		it("should call onBuildingSelected when a new building is selected", () => {
@@ -272,7 +272,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
-			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, codeMapBuilding)
+			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(codeMapBuilding)
 		})
 
 		it("should deselect building, when nothing is highlighted and something is selected", () => {
@@ -280,7 +280,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
-			expect(codeMapMouseEventService.onBuildingSelected).toHaveBeenCalledWith(null, null)
+			expect(codeMapMouseEventService.onBuildingDeselected).toHaveBeenCalled()
 		})
 	})
 
@@ -397,32 +397,23 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onBuildingSelected", () => {
 		it("should select a building", () => {
-			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, codeMapBuilding)
+			codeMapMouseEventService.onBuildingSelected(codeMapBuilding)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", {
-				to: codeMapBuilding,
-				from: codeMapBuilding
-			})
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", codeMapBuilding)
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
 
 		it("should clear selection", () => {
-			codeMapMouseEventService.onBuildingSelected(codeMapBuilding, null)
+			codeMapMouseEventService.onBuildingDeselected()
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", {
-				to: null,
-				from: codeMapBuilding
-			})
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-deselected")
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 		})
 
 		it("should clear the currently selected building and then select the new one", () => {
-			codeMapMouseEventService.onBuildingSelected(null, codeMapBuilding)
+			codeMapMouseEventService.onBuildingSelected(codeMapBuilding)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", {
-				to: codeMapBuilding,
-				from: null
-			})
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", codeMapBuilding)
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})

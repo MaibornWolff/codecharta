@@ -24,7 +24,11 @@ export interface BuildingHoveredEventSubscriber {
 }
 
 export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(data: CodeMapBuildingTransition)
+	onBuildingSelected(selectedBuilding: CodeMapBuilding)
+}
+
+export interface BuildingDeselectedEventSubscriber {
+	onBuildingDeselected()
 }
 
 export interface BuildingRightClickedEventSubscriber {
@@ -34,6 +38,7 @@ export interface BuildingRightClickedEventSubscriber {
 export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
+	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
 	private highlightedInTreeView: CodeMapBuilding = null
@@ -125,11 +130,11 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 
 		if (this.dragOrClickFlag === 0) {
 			if (highlightedInCodeMap && (!selected || (selected && selected.id !== highlightedInCodeMap.id))) {
-				this.onBuildingSelected(null, highlightedInCodeMap)
+				this.onBuildingSelected(highlightedInCodeMap)
 			}
 
 			if (!highlightedInCodeMap && selected) {
-				this.onBuildingSelected(null, null)
+				this.onBuildingDeselected()
 			}
 		}
 	}
@@ -186,17 +191,15 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
 	}
 
-	public onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
-		const selected = this.threeSceneService.getSelectedBuilding()
-		if (to) {
-			if (selected) {
-				this.threeSceneService.clearSelection()
-			}
-			this.threeSceneService.selectBuilding(to)
-		} else {
-			this.threeSceneService.clearSelection()
-		}
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, { to: to, from: from })
+	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
+		this.threeSceneService.clearSelection()
+		this.threeSceneService.selectBuilding(selectedBuilding)
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, selectedBuilding)
+	}
+
+	public onBuildingDeselected() {
+		this.threeSceneService.clearSelection()
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_DESELECTED_EVENT)
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
@@ -221,8 +224,14 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	}
 
 	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, data: CodeMapBuildingTransition) => {
-			subscriber.onBuildingSelected(data)
+		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, selectedBuilding: CodeMapBuilding) => {
+			subscriber.onBuildingSelected(selectedBuilding)
+		})
+	}
+
+	public static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
+		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, e => {
+			subscriber.onBuildingDeselected()
 		})
 	}
 
