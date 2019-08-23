@@ -110,6 +110,7 @@ export class NodeDecorator {
 				this.decorateNodeWithChildrenSumMetrics(node, blacklist, metricData, edgeMetricData)
 			})
 		}
+		return map
 	}
 
 	private static decorateNodeWithChildrenSumMetrics(
