@@ -495,7 +495,6 @@ export const SETTINGS: Settings = {
 		invertDeltaColors: false,
 		enableEdgeArrows: true,
 		hideFlatBuildings: true,
-		maximizeDetailPanel: false,
 		invertHeight: true,
 		invertColorRange: false,
 		dynamicMargin: true,
@@ -547,7 +546,6 @@ export const DEFAULT_SETTINGS: Settings = {
 			positiveDelta: "#69FF40",
 			selected: "#EB8319"
 		},
-		maximizeDetailPanel: false,
 		scaling: new THREE.Vector3(1, 1, 1),
 		whiteColorBuildings: false,
 		isPresentationMode: false

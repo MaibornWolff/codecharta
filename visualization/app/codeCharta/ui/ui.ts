@@ -14,7 +14,6 @@ import "./areaSettingsPanel/areaSettingsPanel.module"
 import "./blacklistPanel/blacklistPanel.module"
 import "./codeMap/codeMap.module"
 import "./colorSettingsPanel/colorSettingsPanel.module"
-import "./detailPanel/detailPanel.module"
 import "./dialog/dialog.module"
 import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
@@ -38,7 +37,6 @@ angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
 	"app.codeCharta.ui.attributeSideBar",
 	"app.codeCharta.ui.presentationModeButton",
-
 	"app.codeCharta.ui.centerMapButton",
 	"app.codeCharta.ui.matchingFilesCounter",
 	"app.codeCharta.ui.searchPanel",
@@ -49,7 +47,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.blacklistPanel",
 	"app.codeCharta.ui.codeMap",
 	"app.codeCharta.ui.colorSettingsPanel",
-	"app.codeCharta.ui.detailPanel",
 	"app.codeCharta.ui.dialog",
 	"app.codeCharta.ui.fileChooser",
 	"app.codeCharta.ui.fileExtensionBar",

@@ -30,7 +30,7 @@ describe("resetSettingsButtonController", () => {
 				updateSettings: jest.fn(),
 				getDefaultSettings: jest.fn(() => {
 					return {
-						appSettings: { maximizeDetailPanel: false, enableEdgeArrows: true }
+						appSettings: { hideFlatBuildings: false, enableEdgeArrows: true }
 					}
 				}),
 				getSettings: jest.fn()
@@ -41,29 +41,29 @@ describe("resetSettingsButtonController", () => {
 	describe("applyDefaultSettings", () => {
 		it("should call updateSettings with available default settings objects", () => {
 			resetSettingsButtonController["settingsNames"] =
-				"appSettings.enableEdgeArrows, appSettings.maximizeDetailPanel, appSettings.notInAppSettings, notInSettings.something"
+				"appSettings.enableEdgeArrows, appSettings.hideFlatBuildings, appSettings.notInAppSettings, notInSettings.something"
 			resetSettingsButtonController.applyDefaultSettings()
 
 			expect(settingsService.getDefaultSettings).toHaveBeenCalledTimes(1)
 			expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { enableEdgeArrows: true, maximizeDetailPanel: false }
+				appSettings: { enableEdgeArrows: true, hideFlatBuildings: false }
 			})
 		})
 
 		it("settingsNames should allow blank-space", () => {
-			resetSettingsButtonController["settingsNames"] = "appSettings.enableEdgeArrows, appSettings.maximizeDetailPanel"
+			resetSettingsButtonController["settingsNames"] = "appSettings.enableEdgeArrows, appSettings.hideFlatBuildings"
 			resetSettingsButtonController.applyDefaultSettings()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { enableEdgeArrows: true, maximizeDetailPanel: false }
+				appSettings: { enableEdgeArrows: true, hideFlatBuildings: false }
 			})
 		})
 
 		it("settingsNames should allow newline", () => {
-			resetSettingsButtonController["settingsNames"] = "appSettings.enableEdgeArrows,\nappSettings.maximizeDetailPanel"
+			resetSettingsButtonController["settingsNames"] = "appSettings.enableEdgeArrows,\nappSettings.hideFlatBuildings"
 			resetSettingsButtonController.applyDefaultSettings()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { enableEdgeArrows: true, maximizeDetailPanel: false }
+				appSettings: { enableEdgeArrows: true, hideFlatBuildings: false }
 			})
 		})
 

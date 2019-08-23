@@ -95,7 +95,6 @@ export interface AppSettings {
 	camera: Vector3
 	enableEdgeArrows: boolean
 	hideFlatBuildings: boolean
-	maximizeDetailPanel: boolean
 	invertColorRange: boolean
 	invertDeltaColors: boolean
 	invertHeight: boolean

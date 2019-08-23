@@ -38,7 +38,6 @@ Object {
       "positiveDelta": "#69FF40",
       "selected": "#EB8319",
     },
-    "maximizeDetailPanel": false,
     "scaling": Vector3 {
       "x": 1,
       "y": 1,
