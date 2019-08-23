@@ -62,7 +62,6 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		$("#red").attr("src", negative)
 		$("#blue").attr("src", incomingEdge)
 		$("#pink").attr("src", outgoingEdge)
-
 	}
 
 	private refreshDeltaColors(s: Settings) {
