@@ -24,6 +24,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
+import * as d3 from "d3"
 
 export interface RenderData {
 	map: CodeMapNode
@@ -123,13 +124,26 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.lastRender.settings.fileSettings.blacklist &&
 			this.lastRender.metricData
 		) {
-			this.lastRender.map = NodeDecorator.decorateMap(
+			this.lastRender.map = NodeDecorator.decorateMap(this.lastRender.map, this.lastRender.fileMeta, this.lastRender.metricData)
+			this.getEdgeMetricsForLeaves(this.lastRender.map)
+			NodeDecorator.decorateParentNodesWithSumAttributes(
 				this.lastRender.map,
-				this.lastRender.fileMeta,
 				this.lastRender.settings.fileSettings.blacklist,
 				this.lastRender.metricData,
-				this.edgeMetricService
+				this.edgeMetricService.getMetricData()
 			)
+		}
+	}
+
+	private getEdgeMetricsForLeaves(map: CodeMapNode) {
+		if (map && this.edgeMetricService.getMetricNames()) {
+			let root = d3.hierarchy<CodeMapNode>(map)
+			root.leaves().forEach(node => {
+				const edgeMetrics = this.edgeMetricService.getMetricValuesForNode(node)
+				for (let edgeMetric of edgeMetrics.keys()) {
+					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
+				}
+			})
 		}
 	}
 
