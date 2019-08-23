@@ -40,9 +40,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		this.updateEdgeMetrics(fileStates, [])
 	}
 
-	public onImportedFilesChanged(fileState: FileState[]) {
-		this.updateEdgeMetrics([], [])
-	}
+	public onImportedFilesChanged(fileState: FileState[]) {}
 
 	private updateEdgeMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), blacklist)
@@ -51,6 +49,10 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 	}
 
 	public getMetricNames(): string[] {
+		if (!this.edgeMetricData) {
+			return []
+		}
+
 		return this.edgeMetricData.map(x => x.name)
 	}
 
