@@ -1,5 +1,5 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapNode, BlacklistType, BlacklistItem, Edge, EdgeVisibility } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
