@@ -10,7 +10,6 @@ import { CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
 	let $rootScope: IRootScopeService
-	let edgeMetricService: EdgeMetricService
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
 
@@ -23,13 +22,12 @@ describe("EdgeChooserController", () => {
 		instantiateModule("app.codeCharta.ui.edgeChooser")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		settingsService = getService<SettingsService>("settingsService")
 	}
 
 	function rebuildController() {
-		edgeChooserController = new EdgeChooserController($rootScope, edgeMetricService, codeMapActionsService, settingsService)
+		edgeChooserController = new EdgeChooserController($rootScope, codeMapActionsService, settingsService)
 	}
 
 	describe("constructor", () => {

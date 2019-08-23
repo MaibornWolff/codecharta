@@ -7,8 +7,6 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 
 export class EdgeChooserController implements EdgeMetricServiceSubscriber {
-	private noMetricsAvailable: string = "No Edge Metrics available"
-
 	private _viewModel: {
 		edgeMetricData: MetricData[]
 		edgeMetric: string
@@ -21,7 +19,6 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 
 	constructor(
 		$rootScope: IRootScopeService,
-		private edgeMetricService: EdgeMetricService,
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService
 	) {
