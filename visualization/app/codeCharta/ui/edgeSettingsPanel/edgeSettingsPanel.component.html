@@ -1,5 +1,5 @@
 <md-slider-container class="md-block">
-	<span>Previews</span>
+	<span>Preview</span>
 	<md-slider
 		flex
 		step="1"
@@ -52,24 +52,12 @@
 	</md-input-container>
 </md-slider-container>
 
-<section layout="row" layout-align="center center" class="mode-chooser">
-	<md-button
-		class="state-selector-button left"
-		ng-class="{current:'showAllBuildings'==$ctrl._viewModel.visualMapEdgeState}"
-		ng-click="$ctrl.applyEdgesVisualChange('showAllBuildings')"
-		><i class="fa fa-building"></i>
-	</md-button>
-	<md-button
-		class="state-selector-button middle"
-		ng-class="{current:'showOnlyBuildingsWithEdges'==$ctrl._viewModel.visualMapEdgeState}"
-		ng-click="$ctrl.applyEdgesVisualChange('showOnlyBuildingsWithEdges')"
+<md-input-container class="md-block">
+	<md-checkbox
+		class="md-primary"
+		ng-model="$ctrl._viewModel.showOnlyBuildingsWithEdges"
+		ng-change="$ctrl.applyShowOnlyBuildingsWithEdges()"
 	>
-		<i class="fa fa-retweet"></i>
-	</md-button>
-	<md-button
-		class="state-selector-button right"
-		ng-class="{current:'showBuildings'==$ctrl._viewModel.visualMapEdgeState}"
-		ng-click="$ctrl.applyEdgesVisualChange('showBuildings')"
-		><i class="fa fa-times"></i>
-	</md-button>
-</section>
+		Show only nodes with edges
+	</md-checkbox>
+</md-input-container>

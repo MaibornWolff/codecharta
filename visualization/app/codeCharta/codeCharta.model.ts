@@ -130,6 +130,8 @@ export interface MapColors {
 	lightGrey: string
 	angularGreen: string
 	markingColors: string[]
+	outgoingEdge: string
+	incomingEdge: string
 }
 
 export interface ColorRange {

@@ -5,12 +5,14 @@ import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	private VERTICES_PER_LINE = 5
 	private map: Map<String, Node>
 	private arrows: Object3D[]
 	private isHovered: boolean = false
+	private hoveredNode: Node
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -25,6 +27,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		const edges = this.settingsService.getSettings().fileSettings.edges
 		if (data.to && !data.to.node.flat) {
 			this.isHovered = true
+			this.hoveredNode = data.to.node
 			this.clearArrows()
 			this.showEdgesOfHoveredBuilding(data.to.node, edges)
 		} else {
@@ -61,7 +64,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const originNode: Node = this.map.get(edge.fromNodeName)
 			const targetNode: Node = this.map.get(edge.toNodeName)
 
-			if (originNode && targetNode && (originNode.name === hoveredNode.name || targetNode.name === hoveredNode.name)) {
+			if (originNode && targetNode && (originNode.path === hoveredNode.path || targetNode.path === hoveredNode.path)) {
 				this.addArrow(targetNode, originNode)
 			}
 		}
@@ -102,19 +105,32 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			)
 
 			if (this.isHovered) {
-				this.hoveredMode(curve)
+				this.hoveredMode(curve, arrowOriginNode)
 			} else {
 				this.previewMode(curve, arrowOriginNode, edgeVisibility)
 			}
 		}
 	}
 
-	private hoveredMode(bezier: CubicBezierCurve3, bezierPoints: number = 50) {
+	private hoveredMode(bezier: CubicBezierCurve3, arrowOriginNode: Node, bezierPoints: number = 50) {
 		const points = bezier.getPoints(bezierPoints)
-		const curveObject = this.buildLine(points)
-		curveObject.add(this.buildArrow(points))
+		if (this.hoveredNode.path === arrowOriginNode.path) {
+			const curveObject = this.buildLine(
+				points,
+				ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
+			)
+			curveObject.add(this.buildArrow(points))
 
-		this.threeSceneService.edgeArrows.add(curveObject)
+			this.threeSceneService.edgeArrows.add(curveObject)
+		} else {
+			const curveObject = this.buildLine(
+				points,
+				ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
+			)
+			curveObject.add(this.buildArrow(points))
+
+			this.threeSceneService.edgeArrows.add(curveObject)
+		}
 	}
 
 	private previewMode(curve, arrowOriginNode: Node, edgeVisibility: EdgeVisibility) {
@@ -149,18 +165,24 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		const points = bezier.getPoints(bezierPoints)
 		const pointsIncoming = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
 
-		return this.buildEdge(pointsIncoming)
+		return this.buildEdge(
+			pointsIncoming,
+			ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
+		)
 	}
 
 	private makeOutgoingArrowFromBezier(bezier: CubicBezierCurve3, height: number, bezierPoints: number = 50): Object3D {
 		const points = bezier.getPoints(bezierPoints)
 		const pointsOutgoing = this.getPointsToSurpassBuildingHeight(points, height)
 
-		return this.buildEdge(pointsOutgoing)
+		return this.buildEdge(
+			pointsOutgoing,
+			ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
+		)
 	}
 
-	private buildEdge(points: Vector3[]): Object3D {
-		const curveObject = this.buildLine(points)
+	private buildEdge(points: Vector3[], color: number): Object3D {
+		const curveObject = this.buildLine(points, color)
 		curveObject.add(this.buildArrow(points))
 
 		return curveObject

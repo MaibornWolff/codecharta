@@ -6,23 +6,17 @@ import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { EdgeMetricSubscriber, SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
 
-export enum VisualEdgeState {
-	Show_All_Buildings = "showAllBuildings",
-	Show_Buildings_With_Edges = "showOnlyBuildingsWithEdges",
-	Show_All_Buildings_Without_Edges = "showBuildings"
-}
-
 export class EdgeSettingsPanelController implements SettingsServiceSubscriber, EdgeMetricSubscriber {
 	private _viewModel: {
 		amountOfEdgePreviews: number
 		totalAffectedBuildings: number
-		visualMapEdgeState: VisualEdgeState
 		edgeHeight: number
+		showOnlyBuildingsWithEdges: boolean
 	} = {
 		amountOfEdgePreviews: 1,
 		totalAffectedBuildings: 1,
-		visualMapEdgeState: VisualEdgeState.Show_All_Buildings,
-		edgeHeight: 4
+		edgeHeight: 4,
+		showOnlyBuildingsWithEdges: null
 	}
 
 	/* @ngInject */
@@ -37,8 +31,22 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		if (update.appSettings && update.appSettings.amountOfEdgePreviews) {
-			this._viewModel.amountOfEdgePreviews = update.appSettings.amountOfEdgePreviews
+		if (update.appSettings) {
+			if (update.appSettings.amountOfEdgePreviews) {
+				this._viewModel.amountOfEdgePreviews = update.appSettings.amountOfEdgePreviews
+			}
+
+			if (update.appSettings.edgeHeight) {
+				this._viewModel.edgeHeight = update.appSettings.edgeHeight
+			}
+
+			if (update.appSettings.showOnlyBuildingsWithEdges) {
+				this._viewModel.showOnlyBuildingsWithEdges = update.appSettings.showOnlyBuildingsWithEdges
+			}
+
+			if (update.appSettings.amountOfEdgePreviews || update.appSettings.edgeHeight || update.appSettings.showOnlyBuildingsWithEdges) {
+				this.codeMapActionsService.updateEdgePreviews()
+			}
 		}
 	}
 
@@ -48,31 +56,14 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 
 	public applySettingsAmountOfEdgePreviews() {
 		this.settingsService.updateSettings({ appSettings: { amountOfEdgePreviews: this._viewModel.amountOfEdgePreviews } })
-		this.codeMapActionsService.updateEdgePreviews()
 	}
 
 	public applySettingsEdgeHeight() {
 		this.settingsService.updateSettings({ appSettings: { edgeHeight: this._viewModel.edgeHeight } })
-		this.codeMapActionsService.updateEdgePreviews()
 	}
 
-	public applyEdgesVisualChange(chosenVisualEdgeState: VisualEdgeState) {
-		switch (chosenVisualEdgeState) {
-			case VisualEdgeState.Show_All_Buildings:
-				this._viewModel.visualMapEdgeState = VisualEdgeState.Show_All_Buildings
-				this.codeMapActionsService.updateEdgePreviews()
-				this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: false } })
-				break
-			case VisualEdgeState.Show_Buildings_With_Edges:
-				this._viewModel.visualMapEdgeState = VisualEdgeState.Show_Buildings_With_Edges
-				this.codeMapActionsService.updateEdgePreviews()
-				this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: true } })
-				break
-			case VisualEdgeState.Show_All_Buildings_Without_Edges:
-				this._viewModel.visualMapEdgeState = VisualEdgeState.Show_All_Buildings_Without_Edges
-				this.codeMapActionsService.hideAllEdges()
-				break
-		}
+	public applyShowOnlyBuildingsWithEdges() {
+		this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: this._viewModel.showOnlyBuildingsWithEdges } })
 	}
 }
 
