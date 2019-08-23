@@ -7,10 +7,7 @@ import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 
-export enum EdgeColor {
-	Outgoing_Color = "#ff00ff",
-	Incoming_Color = "#0066ff"
-}
+
 
 export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	private VERTICES_PER_LINE = 5
@@ -120,12 +117,12 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	private hoveredMode(bezier: CubicBezierCurve3, arrowOriginNode: Node, bezierPoints: number = 50) {
 		const points = bezier.getPoints(bezierPoints)
 		if (this.hoveredNode.path === arrowOriginNode.path) {
-			const curveObject = this.buildLine(points, ColorConverter.convertHexToNumber(EdgeColor.Outgoing_Color))
+			const curveObject = this.buildLine(points, ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge))
 			curveObject.add(this.buildArrow(points))
 
 			this.threeSceneService.edgeArrows.add(curveObject)
 		} else {
-			const curveObject = this.buildLine(points, ColorConverter.convertHexToNumber(EdgeColor.Incoming_Color))
+			const curveObject = this.buildLine(points, ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge))
 			curveObject.add(this.buildArrow(points))
 
 			this.threeSceneService.edgeArrows.add(curveObject)
@@ -164,14 +161,14 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		const points = bezier.getPoints(bezierPoints)
 		const pointsIncoming = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
 
-		return this.buildEdge(pointsIncoming, ColorConverter.convertHexToNumber(EdgeColor.Incoming_Color))
+		return this.buildEdge(pointsIncoming, ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge))
 	}
 
 	private makeOutgoingArrowFromBezier(bezier: CubicBezierCurve3, height: number, bezierPoints: number = 50): Object3D {
 		const points = bezier.getPoints(bezierPoints)
 		const pointsOutgoing = this.getPointsToSurpassBuildingHeight(points, height)
 
-		return this.buildEdge(pointsOutgoing, ColorConverter.convertHexToNumber(EdgeColor.Outgoing_Color))
+		return this.buildEdge(pointsOutgoing, ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge))
 	}
 
 	private buildEdge(points: Vector3[], color: number): Object3D {
