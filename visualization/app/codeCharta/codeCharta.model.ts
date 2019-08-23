@@ -99,7 +99,6 @@ export interface AppSettings {
 	edgeHeight: number
 	scaling: Vector3
 	camera: Vector3
-	enableEdgeArrows: boolean
 	hideFlatBuildings: boolean
 	maximizeDetailPanel: boolean
 	invertColorRange: boolean
