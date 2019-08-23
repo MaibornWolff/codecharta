@@ -55,9 +55,14 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		)
 		const neutral = ColorConverter.getImageDataUri(s.appSettings.mapColors.neutral)
 		const negative = ColorConverter.getImageDataUri(s.appSettings.mapColors.negative)
+		const incomingEdge = ColorConverter.getImageDataUri(s.appSettings.mapColors.incomingEdge)
+		const outgoingEdge = ColorConverter.getImageDataUri(s.appSettings.mapColors.outgoingEdge)
 		$("#green").attr("src", positive)
 		$("#yellow").attr("src", neutral)
 		$("#red").attr("src", negative)
+		$("#blue").attr("src", incomingEdge)
+		$("#pink").attr("src", outgoingEdge)
+
 	}
 
 	private refreshDeltaColors(s: Settings) {
