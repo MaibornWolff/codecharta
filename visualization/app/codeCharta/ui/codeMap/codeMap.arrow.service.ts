@@ -69,7 +69,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const originNode: Node = this.map.get(edge.fromNodeName)
 			const targetNode: Node = this.map.get(edge.toNodeName)
 
-			if (originNode && targetNode && (originNode.name === hoveredNode.name || targetNode.name === hoveredNode.name)) {
+			if (originNode && targetNode && (originNode.path === hoveredNode.path || targetNode.path === hoveredNode.path)) {
 				this.addArrow(targetNode, originNode)
 			}
 		}
