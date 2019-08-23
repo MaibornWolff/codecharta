@@ -174,7 +174,6 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	private makeOutgoingArrowFromBezier(bezier: CubicBezierCurve3, height: number, bezierPoints: number = 50): Object3D {
 		const points = bezier.getPoints(bezierPoints)
 		const pointsOutgoing = this.getPointsToSurpassBuildingHeight(points, height)
-
 		return this.buildEdge(
 			pointsOutgoing,
 			ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
