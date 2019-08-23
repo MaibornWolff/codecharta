@@ -242,7 +242,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 	private notify(eventName: string, data: object, debounceTime: number = SettingsService.DEBOUNCE_TIME) {
 		this.debounceBroadcast = _.debounce(() => {
 			this.$rootScope.$broadcast(eventName, data)
-			this.update = {}
 		}, debounceTime)
 		this.debounceBroadcast()
 	}
