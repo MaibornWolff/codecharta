@@ -33,20 +33,20 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const fileStates: FileState[] = this.fileStateService.getFileStates()
-		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), blacklist)
-		this.sortNodeEdgeMetricsMap()
-		this.notifyEdgeMetricDataUpdated()
+		this.updateEdgeMetrics(fileStates, blacklist)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), [])
-		this.sortNodeEdgeMetricsMap()
-		this.notifyEdgeMetricDataUpdated()
+		this.updateEdgeMetrics(fileStates, [])
 	}
 
-	// TODO: Probably not needed?
-	public onImportedFilesChanged(fileStates: FileState[]) {
-		this.edgeMetricData = []
+	public onImportedFilesChanged(fileState: FileState[]) {
+		this.updateEdgeMetrics([], [])
+	}
+
+	private updateEdgeMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
+		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+		this.sortNodeEdgeMetricsMap()
 		this.notifyEdgeMetricDataUpdated()
 	}
 
@@ -75,7 +75,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		return highestEdgeCountBuildings
 	}
 
-	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>) {
+	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>): Map<string, EdgeMetricCount> {
 		const metricNames = this.getMetricNames().filter(it => !!this.nodeEdgeMetricsMap.get(it))
 		let nodeEdgeMetrics = new Map()
 
@@ -85,11 +85,11 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		return nodeEdgeMetrics
 	}
 
-	public getMetricData() {
+	public getMetricData(): MetricData[] {
 		return this.edgeMetricData
 	}
 
-	private calculateMetrics(visibleFileStates: FileState[], blacklist: RecursivePartial<BlacklistItem>[]) {
+	private calculateMetrics(visibleFileStates: FileState[], blacklist: RecursivePartial<BlacklistItem>[]): MetricData[] {
 		if (visibleFileStates.length <= 0) {
 			return []
 		} else {
@@ -113,11 +113,39 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		return this.nodeEdgeMetricsMap
 	}
 
+	private bothNodesAssociatedAreVisible(edge: Edge, blacklist: BlacklistItem[], fileStates: FileState[]): boolean {
+		const fromNode = this.getMapNodeFromPath(edge.fromNodeName, fileStates)
+		const toNode = this.getMapNodeFromPath(edge.toNodeName, fileStates)
+		return fromNode && toNode && this.isNotBlacklisted(fromNode, blacklist) && this.isNotBlacklisted(toNode, blacklist)
+	}
+
+	private getMapNodeFromPath(path: string, fileStates: FileState[]): CodeMapNode {
+		let mapNode = undefined
+		fileStates.forEach(fileState => {
+			const nodeFound = CodeMapHelper.getCodeMapNodeFromPath(path, "File", fileState.file.map)
+			if (nodeFound) {
+				mapNode = nodeFound
+			}
+		})
+		return mapNode
+	}
+
+	private isNotBlacklisted(node: CodeMapNode, blacklist: BlacklistItem[]): boolean {
+		return !CodeMapHelper.isBlacklisted(node, blacklist as BlacklistItem[], BlacklistType.exclude)
+	}
+
 	private addEdgeToCalculationMap(edge: Edge) {
 		for (let edgeMetric of Object.keys(edge.attributes)) {
 			const edgeMetricEntry = this.getEntryForMetric(edgeMetric)
 			this.addEdgeToNodes(edgeMetricEntry, edge.fromNodeName, edge.toNodeName)
 		}
+	}
+
+	private getEntryForMetric(edgeMetricName: string): Map<string, EdgeMetricCount> {
+		if (!this.nodeEdgeMetricsMap.has(edgeMetricName)) {
+			this.nodeEdgeMetricsMap.set(edgeMetricName, new Map())
+		}
+		return this.nodeEdgeMetricsMap.get(edgeMetricName)
 	}
 
 	private addEdgeToNodes(edgeMetricEntry: Map<string, EdgeMetricCount>, fromNode: string, toNode: string) {
@@ -133,35 +161,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		}
 	}
 
-	private getEntryForMetric(edgeMetricName: string): Map<string, EdgeMetricCount> {
-		if (!this.nodeEdgeMetricsMap.has(edgeMetricName)) {
-			this.nodeEdgeMetricsMap.set(edgeMetricName, new Map())
-		}
-		return this.nodeEdgeMetricsMap.get(edgeMetricName)
-	}
-
-	private bothNodesAssociatedAreVisible(edge: Edge, blacklist, fileStates: FileState[]): boolean {
-		const fromNode = this.getMapNodeFromPath(edge.fromNodeName, fileStates)
-		const toNode = this.getMapNodeFromPath(edge.toNodeName, fileStates)
-		return fromNode && toNode && this.isNotBlacklisted(fromNode, blacklist) && this.isNotBlacklisted(toNode, blacklist)
-	}
-
-	private getMapNodeFromPath(path: string, fileStates: FileState[]) {
-		let mapNode = undefined
-		fileStates.forEach(fileState => {
-			const nodeFound = CodeMapHelper.getCodeMapNodeFromPath(path, "File", fileState.file.map)
-			if (nodeFound) {
-				mapNode = nodeFound
-			}
-		})
-		return mapNode
-	}
-
-	private isNotBlacklisted(node: CodeMapNode, blacklist: BlacklistItem[]): boolean {
-		return !CodeMapHelper.isBlacklisted(node, blacklist as BlacklistItem[], BlacklistType.exclude)
-	}
-
-	private getMetricDataFromMap(hashMap: Map<string, Map<string, EdgeMetricCount>>) {
+	private getMetricDataFromMap(hashMap: Map<string, Map<string, EdgeMetricCount>>): MetricData[] {
 		let metricData: MetricData[] = []
 
 		hashMap.forEach((occurences: any, edgeMetric: any) => {

@@ -97,7 +97,15 @@ export const VALID_EDGES: Edge[] = [
 		}
 	},
 	{
-		fromNodeName: "/root/sample1 only leaf",
+		fromNodeName: "/root/Parent Leaf/other small leaf",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			otherMetric: 34
+		}
+	},
+	{
+		fromNodeName: "/root/not available",
 		toNodeName: "/root/Parent Leaf/small leaf",
 		attributes: {
 			pairingRate: 89,

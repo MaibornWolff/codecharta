@@ -3,9 +3,10 @@ import { EdgeMetricService } from "./edgeMetric.service"
 import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { FileStateService } from "./fileState.service"
-import { MetricData, BlacklistType } from "../codeCharta.model"
-import { FILE_STATES } from "../util/dataMocks"
+import { MetricData, CodeMapNode } from "../codeCharta.model"
+import { FILE_STATES, VALID_NODE_WITH_PATH } from "../util/dataMocks"
 import { SettingsService } from "./settingsService/settings.service"
+import { HierarchyNode } from "d3"
 
 describe("EdgeMetricService", () => {
 	let edgeMetricService: EdgeMetricService
@@ -30,6 +31,7 @@ describe("EdgeMetricService", () => {
 	}
 
 	function withMockedFileStateService() {
+		FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
 		fileStateService.getFileStates = jest.fn().mockReturnValue(FILE_STATES)
 	}
 
@@ -115,35 +117,70 @@ describe("EdgeMetricService", () => {
 		it("should return the correct nodes", () => {
 			const nodePaths = edgeMetricService.getNodesWithHighestValue("pairing_rate", 2)
 
-			expect(nodePaths).toEqual(["bar", "foo"])
+			expect(nodePaths).toEqual(["foo", "bar"])
 		})
 	})
 
-	describe("onFileSelectionChanged", () => {})
-
-	describe("onBlacklistChanged", () => {
-		const blacklist = [
-			{
-				path: "/root/big leaf",
-				type: BlacklistType.exclude
-			},
-			{ path: "/root/Parent Leaf/small leaf", type: BlacklistType.hide }
-		]
-
+	describe("onFileSelectionChanged", () => {
 		beforeEach(() => {
 			withMockedFileStateService()
 		})
 
-		it("should create Edge Metric Data", () => {})
+		it("should create correct edge Metrics", () => {
+			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
 
-		it("should ignore edges to/from excluded nodes", () => {})
+			edgeMetricService.onFileSelectionStatesChanged(FILE_STATES)
 
-		it("should contain edges from/to hidden nodes")
+			expect(edgeMetricService.getMetricData().map(x => x.name)).toContain("pairingRate")
+			expect(edgeMetricService.getMetricData().map(x => x.name)).toContain("otherMetric")
+		})
 
-		it("should notify that edge metric has been updated", () => {
-			edgeMetricService.onBlacklistChanged(blacklist)
+		it("should calculate correct maximum value for edge Metrics", () => {
+			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("edge-metric-data-updated", edgeMetricService["edgeMetricData"])
+			edgeMetricService.onFileSelectionStatesChanged(FILE_STATES)
+
+			expect(edgeMetricService.getMetricData().find(x => x.name === "pairingRate").maxValue).toEqual(2)
+			expect(edgeMetricService.getMetricData().find(x => x.name === "otherMetric").maxValue).toEqual(1)
+		})
+
+		it("should broadcast edgeMetric Data", () => {
+			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
+
+			edgeMetricService.onFileSelectionStatesChanged(FILE_STATES)
+
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("edge-metric-data-updated", edgeMetricService.getMetricData())
+		})
+
+		it("metrics Map should contain correct entries entries", () => {
+			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
+			edgeMetricService.onFileSelectionStatesChanged(FILE_STATES)
+
+			const pairingRateMapKeys = edgeMetricService["nodeEdgeMetricsMap"].get("pairingRate").keys()
+			expect(pairingRateMapKeys.next().value).toEqual("/root/Parent Leaf/small leaf")
+			expect(pairingRateMapKeys.next().value).toEqual("/root/big leaf")
+			expect(pairingRateMapKeys.next().value).toEqual("/root/Parent Leaf/other small leaf")
+		})
+
+		it("metrics Map should be sorted entries", () => {
+			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
+			edgeMetricService.onFileSelectionStatesChanged(FILE_STATES)
+
+			const pairingRateMap = edgeMetricService["nodeEdgeMetricsMap"].get("pairingRate")
+			expect(pairingRateMap.get("/root/Parent Leaf/small leaf")).toEqual({ incoming: 2, outgoing: 0 })
+			const avgCommitsMap = edgeMetricService["nodeEdgeMetricsMap"].get("avgCommits")
+			expect(avgCommitsMap.get("/root/big leaf")).toEqual({ incoming: 0, outgoing: 1 })
+		})
+	})
+
+	describe("getMetricValuesForNode", () => {
+		it("should return Edge Metric counts for node", () => {
+			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
+			edgeMetricService.onFileSelectionStatesChanged(FILE_STATES)
+			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
+
+			const metricsForNode = edgeMetricService.getMetricValuesForNode(node)
+			expect(metricsForNode.get("pairingRate")).toEqual({ incoming: 0, outgoing: 1 })
 		})
 	})
 })
