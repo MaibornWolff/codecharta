@@ -1,5 +1,5 @@
 import "./attributeSideBar.component.scss"
-import { ITimeoutService, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import {
 	CodeMapMouseEventService,
@@ -8,12 +8,7 @@ import {
 } from "../codeMap/codeMap.mouseEvent.service"
 import { KeyValuePair, Node } from "../../codeCharta.model"
 import _ from "lodash"
-import {
-	SettingsEvents,
-	AreaMetricSubscriber,
-	HeightMetricSubscriber,
-	ColorMetricSubscriber
-} from "../../state/settingsService/settings.service.events"
+import { AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
 
 interface PrimaryMetrics {
@@ -29,26 +24,20 @@ export class AttributeSideBarController
 		AreaMetricSubscriber,
 		HeightMetricSubscriber,
 		ColorMetricSubscriber {
+	private SIDENAV_ID: string = "attribute-side-bar-right"
+
 	private _viewModel: {
-		nodeName: string
-		nodePath: string
+		node: Node
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
-		deltas: KeyValuePair
-		attributes: KeyValuePair
 	} = {
-		nodeName: null,
-		nodePath: null,
+		node: null,
 		primaryMetricKeys: {} as PrimaryMetrics,
-		secondaryMetricKeys: null,
-		deltas: null,
-		attributes: null
+		secondaryMetricKeys: null
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $mdSidenav: any, private $timeout: ITimeoutService) {
-		this.toggleAttributeSideBar()
-
+	constructor(private $rootScope: IRootScopeService, private $mdSidenav: any) {
 		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
@@ -57,21 +46,15 @@ export class AttributeSideBarController
 	}
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		const node: Node = selectedBuilding.node
-
-		this._viewModel.nodeName = node.name
-		this._viewModel.nodePath = node.path
-		this._viewModel.secondaryMetricKeys = _.keys(node.attributes)
+		this._viewModel.node = selectedBuilding.node
+		this._viewModel.secondaryMetricKeys = _.keys(selectedBuilding.node.attributes)
 			.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
 			.sort()
-		this._viewModel.attributes = node.attributes
-		this._viewModel.deltas = node.deltas
-		//this.toggleAttributeSideBar()
+		this.$mdSidenav(this.SIDENAV_ID).open()
 	}
 
 	public onBuildingDeselected() {
-		this._viewModel.secondaryMetricKeys = null
-		this._viewModel.attributes = null
+		this.$mdSidenav(this.SIDENAV_ID).close()
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
@@ -84,12 +67,6 @@ export class AttributeSideBarController
 
 	public onColorMetricChanged(colorMetric: string) {
 		this._viewModel.primaryMetricKeys.color = colorMetric
-	}
-
-	public toggleAttributeSideBar() {
-		this.$timeout(() => {
-			this.$mdSidenav("right").toggle()
-		}, 200)
 	}
 }
 

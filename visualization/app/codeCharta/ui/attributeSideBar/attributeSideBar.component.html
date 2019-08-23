@@ -1,16 +1,16 @@
-<md-sidenav class="md-sidenav-right" md-component-id="right" md-disable-backdrop md-whiteframe="4">
+<md-sidenav class="md-sidenav-right" md-component-id="{{ $ctrl.SIDENAV_ID }}" md-disable-backdrop md-whiteframe="4">
 	<md-content layout-padding>
-		<h2 class="filename">{{ $ctrl._viewModel.nodeName }}</h2>
-		<p class="file-type">codecharta.cc.json</p>
+		<h2 class="filename">{{ $ctrl._viewModel.node.name }}</h2>
+		<p class="file-type">{{ $ctrl._viewModel.node.origin }}</p>
 
 		<table class="primary-metrics">
 			<tr>
 				<td>
 					<i class="fa fa-arrows-alt"></i>
 					<span class="metric-value">
-						{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetricKeys.area] | number: 2 }}
-						<span ng-hide="!$ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
-							(&Delta;{{ $ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.area] | number: 2 }})
+						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] | number: 2 }}
+						<span ng-hide="!$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
+							(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] | number: 2 }})
 						</span>
 					</span>
 					<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</span>
@@ -18,9 +18,9 @@
 				<td>
 					<i class="fa fa-arrows-v"></i>
 					<span class="metric-value">
-						{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetricKeys.height] | number: 2 }}
-						<span ng-hide="!$ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
-							(&Delta;{{ $ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.height] | number: 2 }})
+						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] | number: 2 }}
+						<span ng-hide="!$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
+							(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] | number: 2 }})
 						</span>
 					</span>
 					<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</span>
@@ -30,9 +30,9 @@
 				<td>
 					<i class="fa fa-paint-brush"></i>
 					<span class="metric-value">
-						{{ $ctrl._viewModel.attributes[$ctrl._viewModel.primaryMetricKeys.color] | number: 2 }}
-						<span ng-hide="!$ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
-							(&Delta;{{ $ctrl._viewModel.deltas[$ctrl._viewModel.primaryMetricKeys.color] | number: 2 }})
+						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] | number: 2 }}
+						<span ng-hide="!$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
+							(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] | number: 2 }})
 						</span>
 					</span>
 					<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</span>
@@ -40,16 +40,16 @@
 			</tr>
 		</table>
 
-		<p class="node-path">{{ $ctrl._viewModel.nodePath }}</p>
+		<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
 
 		<p class="metrics-headline">METRICS</p>
 		<table class="secondary-metrics">
 			<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
 				<td>{{ attributeKey }}</td>
 				<td>
-					{{ $ctrl._viewModel.attributes[attributeKey] | number: 2 }}
-					<span ng-hide="!$ctrl._viewModel.deltas[attributeKey]">
-						(&Delta;{{ $ctrl._viewModel.deltas[attributeKey] | number: 2 }})
+					{{ $ctrl._viewModel.node.attributes[attributeKey] | number: 2 }}
+					<span ng-hide="!$ctrl._viewModel.node.deltas[attributeKey]">
+						(&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] | number: 2 }})
 					</span>
 				</td>
 			</tr>
