@@ -1,7 +1,8 @@
-import { TreeMapHelper } from "./treeMapHelper"
-import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
-import { CodeMapNode, Settings } from "../codeCharta.model"
-import { SETTINGS } from "./dataMocks"
+import {TreeMapHelper} from "./treeMapHelper"
+import {SquarifiedValuedCodeMapNode} from "./treeMapGenerator"
+import {CodeMapNode, EdgeVisibility, Settings} from "../codeCharta.model"
+import {SETTINGS} from "./dataMocks"
+
 
 describe("treeMapHelper", () => {
 	describe("build node", () => {
@@ -35,6 +36,7 @@ describe("treeMapHelper", () => {
 			settings.dynamicSettings.margin = 15
 			settings.dynamicSettings.heightMetric = "theHeight"
 			settings.appSettings.invertHeight = false
+
 		})
 
 		function buildNode() {
@@ -160,12 +162,14 @@ describe("treeMapHelper", () => {
 		})
 
 		it("should be a flat node when other edges are visible", () => {
+			SETTINGS.appSettings.showOnlyBuildingsWithEdges = true
 			treeMapSettings.fileSettings.edges = [
 				{
 					fromNodeName: "/root/anotherNode",
 					toNodeName: "/root/anotherNode2",
 					attributes: {},
-					visible: true
+					visible: EdgeVisibility.both
+
 				}
 			]
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy()
