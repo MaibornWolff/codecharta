@@ -179,7 +179,6 @@ describe("codeMapRenderService", () => {
 
 		it("should call codeMapArrowService.addEdgeArrows", () => {
 			settings.fileSettings.edges = VALID_EDGES
-			settings.fileSettings.edges.forEach(x => (x.visible = true))
 
 			codeMapRenderService["setArrows"](sortedNodes, settings)
 

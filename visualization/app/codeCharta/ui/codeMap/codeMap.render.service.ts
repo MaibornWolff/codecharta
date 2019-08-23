@@ -61,9 +61,8 @@ export class CodeMapRenderService {
 
 	private setArrows(sortedNodes: Node[], s: Settings) {
 		this.codeMapArrowService.clearArrows()
-		const visibleEdges = s.fileSettings.edges.filter(x => x.visible)
-		if (visibleEdges.length > 0 && s.appSettings.enableEdgeArrows) {
-			this.codeMapArrowService.addEdgeArrows(sortedNodes, visibleEdges)
+		if (s.fileSettings.edges.length > 0) {
+			this.codeMapArrowService.addEdgeArrows(sortedNodes, s.fileSettings.edges)
 		}
 	}
 

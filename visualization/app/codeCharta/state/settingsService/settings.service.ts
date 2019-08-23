@@ -128,7 +128,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 				edgeHeight: 4,
 				scaling: scaling,
 				camera: camera,
-				enableEdgeArrows: true,
 				hideFlatBuildings: true,
 				maximizeDetailPanel: false,
 				invertColorRange: false,
