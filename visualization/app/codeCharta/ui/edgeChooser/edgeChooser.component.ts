@@ -33,21 +33,15 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		this._viewModel.edgeMetricData = edgeMetrics
 		this._viewModel.edgeMetricData.push({ name: "None", maxValue: 0, availableInVisibleMaps: false })
 
-		let edgeMetricNames = this.edgeMetricService.getMetricNames()
+		let edgeMetricNames = edgeMetrics.map(x => x.name)
 
 		if (!edgeMetricNames.includes(this._viewModel.edgeMetric)) {
-			if (edgeMetricNames.length > 0) {
-				this._viewModel.edgeMetric = edgeMetricNames[0]
-			} else {
-				this._viewModel.edgeMetric = this.noMetricsAvailable
-			}
+			this._viewModel.edgeMetric = edgeMetricNames[0]
 		}
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data && data.to && data.to.node && data.to.node.attributes) {
-			//this._viewModel.hoveredEdgeValue = this.edgeMetricService.getMetricValueForNode(data.to.node)
-
+		if (data && data.to && data.to.node && data.to.node.edgeAttributes) {
 			this._viewModel.hoveredEdgeValue = data.to.node.edgeAttributes[this._viewModel.edgeMetric]
 		} else {
 			this._viewModel.hoveredEdgeValue = null
