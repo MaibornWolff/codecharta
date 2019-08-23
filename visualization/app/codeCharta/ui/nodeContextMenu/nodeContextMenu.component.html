@@ -34,26 +34,4 @@
 			><i class="fa fa-ban"></i> Exclude</md-button
 		>
 	</div>
-
-	<div class="button-group" ng-if="$ctrl._viewModel.amountOfDependentEdges > 0 || $ctrl._viewModel.anyEdgeIsVisible">
-		<md-divider></md-divider>
-		<md-button ng-disabled="true">Edges</md-button>
-		<md-button
-			ng-if="$ctrl._viewModel.amountOfDependentEdges > 0 && $ctrl._viewModel.amountOfVisibleDependentEdges < $ctrl._viewModel.amountOfDependentEdges"
-			ng-click="$ctrl.showDependentEdges()"
-			title="Show edges which are connected to this node"
-		>
-			<i class="fa fa-eye"></i> Show
-		</md-button>
-		<md-button
-			ng-if="$ctrl._viewModel.amountOfVisibleDependentEdges > 0"
-			ng-click="$ctrl.hideDependentEdges()"
-			title="Hide edges which are connected to this node"
-		>
-			<i class="fa fa-eye-slash"></i> Hide
-		</md-button>
-		<md-button ng-if="$ctrl._viewModel.anyEdgeIsVisible" ng-click="$ctrl.hideAllEdges()" title="Hide all visible edges">
-			<i class="fa fa-eye-slash"></i> Hide all
-		</md-button>
-	</div>
 </md-card>
