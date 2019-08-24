@@ -44,6 +44,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 
 	private updateEdgeMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+		this.edgeMetricData.push({ name: "None", maxValue: 0, availableInVisibleMaps: false })
 		this.sortNodeEdgeMetricsMap()
 		this.notifyEdgeMetricDataUpdated()
 	}
