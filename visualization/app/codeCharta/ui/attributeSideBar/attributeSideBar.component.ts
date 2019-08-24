@@ -24,13 +24,13 @@ export class AttributeSideBarController
 		AreaMetricSubscriber,
 		HeightMetricSubscriber,
 		ColorMetricSubscriber {
-	private SIDENAV_ID: string = "attribute-side-bar-right"
-
 	private _viewModel: {
+		SIDENAV_ID: string
 		node: Node
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
 	} = {
+		SIDENAV_ID: "attribute-side-bar-right",
 		node: null,
 		primaryMetricKeys: {} as PrimaryMetrics,
 		secondaryMetricKeys: null
@@ -47,9 +47,7 @@ export class AttributeSideBarController
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
-		this._viewModel.secondaryMetricKeys = _.keys(selectedBuilding.node.attributes)
-			.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
-			.sort()
+		this._viewModel.secondaryMetricKeys = this.getSortedMetricKeysWithoutPrimaryMetrics(selectedBuilding)
 		this.openSideBar()
 	}
 
@@ -70,11 +68,17 @@ export class AttributeSideBarController
 	}
 
 	public closeSideBar() {
-		this.$mdSidenav(this.SIDENAV_ID).close()
+		this.$mdSidenav(this._viewModel.SIDENAV_ID).close()
 	}
 
 	public openSideBar() {
-		this.$mdSidenav(this.SIDENAV_ID).open()
+		this.$mdSidenav(this._viewModel.SIDENAV_ID).open()
+	}
+
+	private getSortedMetricKeysWithoutPrimaryMetrics(selectedBuilding: CodeMapBuilding) {
+		return _.keys(selectedBuilding.node.attributes)
+			.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
+			.sort()
 	}
 }
 

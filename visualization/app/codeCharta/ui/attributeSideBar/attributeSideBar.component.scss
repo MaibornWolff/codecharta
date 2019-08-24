@@ -1,6 +1,6 @@
 attribute-side-bar-component {
 	md-sidenav {
-		width: 500px;
+		width: 350px;
 		margin-bottom: 98px; // canvas overflow (ribbonBar height)
 		z-index: 50;
 		font-size: 11pt;
@@ -50,6 +50,10 @@ attribute-side-bar-component {
 			background-color: #f0f0f0;
 			border-radius: 5px;
 
+			td {
+				vertical-align: initial;
+			}
+
 			i.fa {
 				font-size: 12pt;
 			}
@@ -60,6 +64,7 @@ attribute-side-bar-component {
 
 			.metric-name {
 				color: grey;
+				word-break: break-word;
 			}
 		}
 
@@ -67,7 +72,7 @@ attribute-side-bar-component {
 			border-radius: 5px;
 			background-color: #f0f0f0;
 			padding: 0;
-			max-height: calc(100% - 265px);
+			max-height: calc(100% - 265px); // height of the upper fixed sidebar content
 			overflow: scroll;
 		}
 	}

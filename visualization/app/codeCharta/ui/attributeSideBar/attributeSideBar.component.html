@@ -1,4 +1,4 @@
-<md-sidenav class="md-sidenav-right" md-component-id="{{ $ctrl.SIDENAV_ID }}" md-disable-backdrop md-whiteframe="4">
+<md-sidenav class="md-sidenav-right" md-component-id="{{ $ctrl._viewModel.SIDENAV_ID }}" md-disable-backdrop md-whiteframe="4">
 	<md-content layout-padding>
 		<i class="close-icon fa fa-times" ng-click="$ctrl.closeSideBar()"></i>
 		<h2 class="node-name">
@@ -14,11 +14,11 @@
 			<tr>
 				<td><i class="fa fa-arrows-alt"></i></td>
 				<td class="metric-value">
-					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] | number: 2 }}
+					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] }}
 				</td>
 				<td class="metric-value" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] !== null">
 					<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
-						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] | number: 2 }})
+						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] }})
 					</span>
 				</td>
 				<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</td>
@@ -26,11 +26,11 @@
 			<tr>
 				<td><i class="fa fa-arrows-v"></i></td>
 				<td class="metric-value">
-					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] | number: 2 }}
+					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] }}
 				</td>
 				<td ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] !== null">
 					<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
-						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] | number: 2 }})
+						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] }})
 					</span>
 				</td>
 				<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</td>
@@ -38,11 +38,11 @@
 			<tr>
 				<td><i class="fa fa-paint-brush"></i></td>
 				<td class="metric-value">
-					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] | number: 2 }}
+					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] }}
 				</td>
 				<td ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] !== null">
 					<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
-						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] | number: 2 }})
+						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] }})
 					</span>
 				</td>
 				<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</td>
@@ -55,10 +55,10 @@
 		<div class="metrics-wrapper">
 			<table>
 				<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
-					<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] | number: 2 }}</td>
+					<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] }}</td>
 					<td class="metric-value" ng-show="$ctrl._viewModel.node.deltas[attributeKey] !== null">
 						<span ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
-							(&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] | number: 2 }})
+							(&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] }})
 						</span>
 					</td>
 					<td class="metric-name">{{ attributeKey }}</td>
