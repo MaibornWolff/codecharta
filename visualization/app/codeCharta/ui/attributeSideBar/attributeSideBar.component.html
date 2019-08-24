@@ -10,49 +10,51 @@
 
 		<p class="node-origin">{{ $ctrl._viewModel.node.origin }}</p>
 
-		<table>
-			<tr>
-				<td><i class="fa fa-arrows-alt"></i></td>
-				<td class="metric-value">
-					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] }}
-				</td>
-				<td class="metric-value" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] !== null">
-					<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
-						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] }})
-					</span>
-				</td>
-				<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</td>
-			</tr>
-			<tr>
-				<td><i class="fa fa-arrows-v"></i></td>
-				<td class="metric-value">
-					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] }}
-				</td>
-				<td ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] !== null">
-					<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
-						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] }})
-					</span>
-				</td>
-				<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</td>
-			</tr>
-			<tr>
-				<td><i class="fa fa-paint-brush"></i></td>
-				<td class="metric-value">
-					{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] }}
-				</td>
-				<td ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] !== null">
-					<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
-						(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] }})
-					</span>
-				</td>
-				<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</td>
-			</tr>
-		</table>
+		<div class="metrics-wrapper">
+			<table>
+				<tr>
+					<td><i class="fa fa-arrows-alt"></i></td>
+					<td class="metric-value">
+						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] }}
+					</td>
+					<td class="metric-value" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] !== null">
+						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
+							(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] }})
+						</span>
+					</td>
+					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</td>
+				</tr>
+				<tr>
+					<td><i class="fa fa-arrows-v"></i></td>
+					<td class="metric-value">
+						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] }}
+					</td>
+					<td ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] !== null">
+						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
+							(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] }})
+						</span>
+					</td>
+					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</td>
+				</tr>
+				<tr>
+					<td><i class="fa fa-paint-brush"></i></td>
+					<td class="metric-value">
+						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] }}
+					</td>
+					<td ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] !== null">
+						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
+							(&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] }})
+						</span>
+					</td>
+					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</td>
+				</tr>
+			</table>
+		</div>
 
 		<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
 
 		<p class="metrics-headline">METRICS</p>
-		<div class="metrics-wrapper">
+		<div class="metrics-wrapper scrollable-metrics">
 			<table>
 				<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
 					<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] }}</td>

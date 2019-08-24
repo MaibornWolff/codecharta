@@ -46,12 +46,15 @@ attribute-side-bar-component {
 		}
 
 		table {
-			width: 100%;
 			background-color: #f0f0f0;
 			border-radius: 5px;
 
 			td {
 				vertical-align: initial;
+			}
+
+			tr:not(:last-child) td {
+				padding-bottom: 5px;
 			}
 
 			i.fa {
@@ -69,10 +72,13 @@ attribute-side-bar-component {
 		}
 
 		.metrics-wrapper {
+			width: 100%;
 			border-radius: 5px;
 			background-color: #f0f0f0;
-			padding: 0;
-			max-height: calc(100% - 265px); // height of the upper fixed sidebar content
+		}
+
+		.scrollable-metrics {
+			max-height: calc(100% - 268px); // height of the upper fixed sidebar content
 			overflow: scroll;
 		}
 	}
