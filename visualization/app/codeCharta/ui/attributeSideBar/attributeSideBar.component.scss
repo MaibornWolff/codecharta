@@ -1,16 +1,23 @@
 attribute-side-bar-component {
 	md-sidenav {
 		width: 500px;
+		margin-bottom: 98px; // canvas overflow (ribbonBar height)
 		z-index: 50;
 
-		.filename {
+		.node-name {
 			margin: 5px 0 0 0;
 		}
 
-		.file-type {
+		.node-origin {
 			margin: 0;
 			font-size: 11pt;
 			color: grey;
+		}
+
+		.node-link {
+			color: grey;
+			font-size: 11pt;
+			margin-left: 5px;
 		}
 
 		.metrics-headline {
@@ -19,26 +26,23 @@ attribute-side-bar-component {
 			color: grey;
 		}
 
-		table.primary-metrics {
-			tr {
-				line-height: 20px;
+		table {
+			font-size: 11pt;
+			width: 100%;
+			background: #f0f0f0;
+			border-radius: 5px;
+
+			i.fa {
+				font-size: 12pt;
 			}
 
 			.metric-value {
-				font-size: 11pt;
+				text-align: right;
 			}
 
 			.metric-name {
-				font-size: 11pt;
 				color: grey;
 			}
-		}
-
-		table {
-			width: 100%;
-			table-layout: fixed;
-			background: #f0f0f0;
-			border-radius: 5px;
 		}
 	}
 }

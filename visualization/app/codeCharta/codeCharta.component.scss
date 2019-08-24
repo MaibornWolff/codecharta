@@ -35,15 +35,10 @@ code-charta-component {
 	#codeMap {
 		position: fixed;
 		z-index: 0;
-		top: 90px;
+		top: 98px;
 		left: 0;
 		width: 100%;
 		height: 100%;
-		transition: all $animationDuration + s ease;
-
-		&.expanded {
-			height: calc(100% - 170px);
-		}
 	}
 
 	.cc-shadow {
