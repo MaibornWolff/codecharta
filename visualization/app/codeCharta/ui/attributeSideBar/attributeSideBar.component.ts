@@ -6,7 +6,7 @@ import {
 	BuildingSelectedEventSubscriber,
 	BuildingDeselectedEventSubscriber
 } from "../codeMap/codeMap.mouseEvent.service"
-import { KeyValuePair, Node } from "../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import _ from "lodash"
 import { AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"

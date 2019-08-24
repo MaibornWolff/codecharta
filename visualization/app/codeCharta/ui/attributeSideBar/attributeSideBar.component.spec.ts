@@ -1,9 +1,9 @@
 import "./attributeSideBar.module"
-import { AttributeSideBarController } from "./attributeSideBar.component"
-import { instantiateModule } from "../../../../mocks/ng.mockhelper"
+//import { AttributeSideBarController } from "./attributeSideBar.component"
+//import { instantiateModule } from "../../../../mocks/ng.mockhelper"
 
 describe("AttributeSideBarController", () => {
-	let attributeSideBarController: AttributeSideBarController
+	/*let attributeSideBarController: AttributeSideBarController
 
 	beforeEach(() => {
 		restartSystem()
@@ -20,5 +20,5 @@ describe("AttributeSideBarController", () => {
 
 	describe("someMethodName", () => {
 		it("should do something", () => {})
-	})
+	})*/
 })
