@@ -6,6 +6,7 @@ import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouse
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
+import { EdgeMetricSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	private VERTICES_PER_LINE = 5
@@ -24,16 +25,20 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		const edges = this.settingsService.getSettings().fileSettings.edges
-		if (data.to && !data.to.node.flat) {
-			this.isHovered = true
-			this.hoveredNode = data.to.node
-			this.clearArrows()
-			this.showEdgesOfHoveredBuilding(data.to.node, edges)
-		} else {
-			this.isHovered = false
-			this.clearArrows()
-			this.addEdgeArrows(null, edges.filter(x => x.visible != EdgeVisibility.none))
+		const settings = this.settingsService.getSettings()
+		if (settings.dynamicSettings.edgeMetric !== "None") {
+			const edges = settings.fileSettings.edges
+
+			if (data.to && !data.to.node.flat) {
+				this.isHovered = true
+				this.hoveredNode = data.to.node
+				this.clearArrows()
+				this.showEdgesOfHoveredBuilding(data.to.node, edges)
+			} else {
+				this.isHovered = false
+				this.clearArrows()
+				this.addEdgeArrows(null, edges.filter(x => x.visible != EdgeVisibility.none))
+			}
 		}
 	}
 
