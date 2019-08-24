@@ -50,11 +50,11 @@ export class AttributeSideBarController
 		this._viewModel.secondaryMetricKeys = _.keys(selectedBuilding.node.attributes)
 			.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
 			.sort()
-		this.$mdSidenav(this.SIDENAV_ID).open()
+		this.openSideBar()
 	}
 
 	public onBuildingDeselected() {
-		this.$mdSidenav(this.SIDENAV_ID).close()
+		this.closeSideBar()
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
@@ -67,6 +67,14 @@ export class AttributeSideBarController
 
 	public onColorMetricChanged(colorMetric: string) {
 		this._viewModel.primaryMetricKeys.color = colorMetric
+	}
+
+	public closeSideBar() {
+		this.$mdSidenav(this.SIDENAV_ID).close()
+	}
+
+	public openSideBar() {
+		this.$mdSidenav(this.SIDENAV_ID).open()
 	}
 }
 

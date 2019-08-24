@@ -1,5 +1,6 @@
 <md-sidenav class="md-sidenav-right" md-component-id="{{ $ctrl.SIDENAV_ID }}" md-disable-backdrop md-whiteframe="4">
 	<md-content layout-padding>
+		<i class="close-icon fa fa-times" ng-click="$ctrl.closeSideBar()"></i>
 		<h2 class="node-name">
 			{{ $ctrl._viewModel.node.name }}
 			<a ng-show="$ctrl._viewModel.node.link" class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank">
@@ -51,16 +52,18 @@
 		<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
 
 		<p class="metrics-headline">METRICS</p>
-		<table>
-			<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
-				<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] | number: 2 }}</td>
-				<td class="metric-value" ng-show="$ctrl._viewModel.node.deltas[attributeKey] !== null">
-					<span ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
-						(&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] | number: 2 }})
-					</span>
-				</td>
-				<td class="metric-name">{{ attributeKey }}</td>
-			</tr>
-		</table>
+		<div class="metrics-wrapper">
+			<table>
+				<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
+					<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] | number: 2 }}</td>
+					<td class="metric-value" ng-show="$ctrl._viewModel.node.deltas[attributeKey] !== null">
+						<span ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
+							(&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] | number: 2 }})
+						</span>
+					</td>
+					<td class="metric-name">{{ attributeKey }}</td>
+				</tr>
+			</table>
+		</div>
 	</md-content>
 </md-sidenav>

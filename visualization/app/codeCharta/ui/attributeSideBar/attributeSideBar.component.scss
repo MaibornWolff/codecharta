@@ -3,21 +3,40 @@ attribute-side-bar-component {
 		width: 500px;
 		margin-bottom: 98px; // canvas overflow (ribbonBar height)
 		z-index: 50;
+		font-size: 11pt;
+		height: calc(100% - 98px);
+		overflow: hidden;
+
+		md-content {
+			height: 100%;
+		}
+
+		.close-icon {
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			color: grey;
+			cursor: pointer;
+			outline: none;
+		}
 
 		.node-name {
-			margin: 5px 0 0 0;
+			margin: 10px 0 0 0;
+
+			.node-link {
+				color: grey;
+				margin-left: 5px;
+				font-size: 11pt;
+			}
 		}
 
 		.node-origin {
 			margin: 0;
-			font-size: 11pt;
 			color: grey;
 		}
 
-		.node-link {
-			color: grey;
-			font-size: 11pt;
-			margin-left: 5px;
+		.node-path {
+			overflow: hidden;
 		}
 
 		.metrics-headline {
@@ -27,9 +46,8 @@ attribute-side-bar-component {
 		}
 
 		table {
-			font-size: 11pt;
 			width: 100%;
-			background: #f0f0f0;
+			background-color: #f0f0f0;
 			border-radius: 5px;
 
 			i.fa {
@@ -43,6 +61,14 @@ attribute-side-bar-component {
 			.metric-name {
 				color: grey;
 			}
+		}
+
+		.metrics-wrapper {
+			border-radius: 5px;
+			background-color: #f0f0f0;
+			padding: 0;
+			max-height: calc(100% - 265px);
+			overflow: scroll;
 		}
 	}
 }
