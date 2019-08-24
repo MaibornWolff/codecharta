@@ -13,30 +13,39 @@ attribute-side-bar-component {
 
 		.close-icon {
 			position: absolute;
-			top: 3px;
-			right: 3px;
+			top: -3px;
+			left: -3px;
 			color: grey;
 			cursor: pointer;
 			outline: none;
 		}
 
+		.node-link {
+			position: absolute;
+			top: 1px;
+			right: 4px;
+			color: grey;
+			font-size: 11pt;
+		}
+
 		.node-name {
 			margin: 10px 0 0 0;
-
-			.node-link {
-				color: grey;
-				margin-left: 5px;
-				font-size: 11pt;
-			}
+			overflow: hidden;
+			text-overflow: ellipsis;
+			width: 90%;
+			display: inline-block;
 		}
 
 		.node-origin {
 			margin: 0;
 			color: grey;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		.node-path {
 			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		.metrics-headline {

@@ -1,12 +1,10 @@
 <md-sidenav class="md-sidenav-right" md-component-id="{{ $ctrl._viewModel.SIDENAV_ID }}" md-disable-backdrop md-whiteframe="4">
 	<md-content layout-padding>
 		<i class="close-icon fa fa-times" ng-click="$ctrl.closeSideBar()"></i>
-		<h2 class="node-name">
-			{{ $ctrl._viewModel.node.name }}
-			<a ng-show="$ctrl._viewModel.node.link" class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank">
-				<i class="fa fa-external-link"></i>
-			</a>
-		</h2>
+		<h2 class="node-name">{{ $ctrl._viewModel.node.name }}</h2>
+		<a ng-show="$ctrl._viewModel.node.link" class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank">
+			<i class="fa fa-external-link"></i>
+		</a>
 
 		<p class="node-origin">{{ $ctrl._viewModel.node.origin }}</p>
 
@@ -51,7 +49,7 @@
 			</table>
 		</div>
 
-		<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
+		<p class="node-path"><i class="fa fa-caret-right"></i>{{ $ctrl._viewModel.node.path }}</p>
 
 		<p class="metrics-headline">METRICS</p>
 		<div class="metrics-wrapper scrollable-metrics">
