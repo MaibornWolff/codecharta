@@ -35,7 +35,7 @@ export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
 
-enum ClickType {
+export enum ClickType {
 	ClickAndMove,
 	LeftClick,
 	RightClick

@@ -1,7 +1,7 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { IRootScopeService, IWindowService } from "angular"
-import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { CodeMapMouseEventService, ClickType } from "./codeMap.mouseEvent.service"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
@@ -248,6 +248,8 @@ describe("codeMapMouseEventService", () => {
 	describe("onDocumentMouseUp", () => {
 		beforeEach(() => {
 			codeMapMouseEventService.onBuildingSelected = jest.fn()
+			codeMapMouseEventService.onBuildingDeselected = jest.fn()
+			codeMapMouseEventService["clickType"] = ClickType.LeftClick
 		})
 
 		it("should not do anything when no building is hovered and nothing is selected", () => {
@@ -295,7 +297,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
 
-			expect(codeMapMouseEventService.onLeftClick).toHaveBeenCalledWith(event)
+			expect(codeMapMouseEventService.onLeftClick).toHaveBeenCalled()
 		})
 
 		it("should call onRightClick with 2 if event.button is 2", () => {
@@ -310,7 +312,7 @@ describe("codeMapMouseEventService", () => {
 	describe("onRightClick", () => {
 		it("should $broadcast a building-right-clicked event with data", () => {
 			const event = { clientX: 0, clientY: 1 }
-			codeMapMouseEventService["dragOrClickFlag"] = 1
+			codeMapMouseEventService["clickType"] = ClickType.RightClick
 
 			codeMapMouseEventService.onRightClick(event)
 
@@ -324,10 +326,10 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onLeftClick", () => {
-		it("should set dragOrClickFlag to 0", () => {
-			codeMapMouseEventService.onLeftClick(undefined)
+		it("should set clickType to LeftClick", () => {
+			codeMapMouseEventService.onLeftClick()
 
-			expect(codeMapMouseEventService["dragOrClickFlag"]).toBe(0)
+			expect(codeMapMouseEventService["clickType"]).toBe(ClickType.LeftClick)
 		})
 	})
 
