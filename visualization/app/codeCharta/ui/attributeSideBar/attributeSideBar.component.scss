@@ -25,24 +25,20 @@ attribute-side-bar-component {
 			top: 1px;
 			right: 4px;
 			color: grey;
-			font-size: 11pt;
 		}
 
 		.node-name {
 			margin: 10px 0 0 0;
-			overflow: hidden;
-			text-overflow: ellipsis;
 			width: 90%;
-			display: inline-block;
 		}
 
 		.node-origin {
 			margin: 0;
 			color: grey;
-			overflow: hidden;
-			text-overflow: ellipsis;
 		}
 
+		.node-name,
+		.node-origin,
 		.node-path {
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -54,41 +50,45 @@ attribute-side-bar-component {
 			color: grey;
 		}
 
-		table {
-			background-color: #f0f0f0;
-			border-radius: 5px;
-
-			td {
-				vertical-align: initial;
-			}
-
-			tr:not(:last-child) td {
-				padding-bottom: 5px;
-			}
-
-			i.fa {
-				font-size: 12pt;
-			}
-
-			.metric-value {
-				text-align: right;
-			}
-
-			.metric-name {
-				color: grey;
-				word-break: break-word;
-			}
-		}
-
 		.metrics-wrapper {
 			width: 100%;
 			border-radius: 5px;
 			background-color: #f0f0f0;
-		}
 
-		.scrollable-metrics {
-			max-height: calc(100% - 268px); // height of the upper fixed sidebar content
-			overflow: scroll;
+			&.scrollable-metrics {
+				max-height: calc(100% - 268px); // height of the upper fixed sidebar content
+				overflow: scroll;
+			}
+
+			table {
+				td {
+					vertical-align: initial;
+				}
+
+				tr:not(:last-child) td {
+					padding-bottom: 5px;
+				}
+
+				i.fa {
+					font-size: 12pt;
+				}
+
+				.metric-value {
+					text-align: right;
+				}
+
+				.metric-delta span {
+					text-align: right;
+					background: #cccccc;
+					border-radius: 3px;
+					padding: 1px 3px;
+				}
+
+				.metric-name {
+					color: grey;
+					word-break: break-word;
+				}
+			}
 		}
 	}
 }
