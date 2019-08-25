@@ -10,6 +10,7 @@ import {
 	DistributionMetricSubscriber,
 	HeightMetricSubscriber
 } from "../../state/settingsService/settings.service.events"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 export class MetricChooserController
 	implements
@@ -19,13 +20,6 @@ export class MetricChooserController
 		HeightMetricSubscriber,
 		ColorMetricSubscriber,
 		DistributionMetricSubscriber {
-	public hoveredAreaValue: number
-	public hoveredHeightValue: number
-	public hoveredColorValue: number
-	public hoveredHeightDelta: number
-	public hoveredAreaDelta: number
-	public hoveredColorDelta: number
-	public hoveredDeltaColor: string
 	private originalMetricData: MetricData[]
 
 	private _viewModel: {
@@ -34,6 +28,8 @@ export class MetricChooserController
 		colorMetric: string
 		heightMetric: string
 		distributionMetric: string
+		hoveredNode: Node
+		deltaColor: string
 		searchTerm: string
 	} = {
 		metricData: [],
@@ -41,6 +37,8 @@ export class MetricChooserController
 		colorMetric: null,
 		heightMetric: null,
 		distributionMetric: null,
+		hoveredNode: null,
+		deltaColor: null,
 		searchTerm: ""
 	}
 
@@ -159,51 +157,23 @@ export class MetricChooserController
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		if (data && data.to) {
-			this.buildingHovered(data.to.node)
+			this._viewModel.hoveredNode = data.to.node
+			if (data.to.node.deltas) {
+				this._viewModel.deltaColor = this.getHoveredDeltaColor()
+			}
 		} else {
-			this.buildingUnovered()
+			this._viewModel.hoveredNode = null
 		}
 		this.synchronizeAngularTwoWayBinding()
 	}
 
-	private buildingHovered(node: Node) {
-		this.hoveredAreaValue = node.attributes[this._viewModel.areaMetric]
-		this.hoveredColorValue = node.attributes[this._viewModel.colorMetric]
-		this.hoveredHeightValue = node.attributes[this._viewModel.heightMetric]
-
-		if (node.deltas) {
-			this.hoveredAreaDelta = node.deltas[this._viewModel.areaMetric]
-			this.hoveredColorDelta = node.deltas[this._viewModel.colorMetric]
-			this.hoveredHeightDelta = node.deltas[this._viewModel.heightMetric]
-
-			this.hoveredDeltaColor = this.getHoveredDeltaColor()
-		} else {
-			this.hoveredAreaDelta = null
-			this.hoveredColorDelta = null
-			this.hoveredHeightDelta = null
-			this.hoveredDeltaColor = null
-		}
-	}
-
-	private buildingUnovered() {
-		this.hoveredAreaValue = null
-		this.hoveredColorValue = null
-		this.hoveredHeightValue = null
-		this.hoveredHeightDelta = null
-		this.hoveredAreaDelta = null
-		this.hoveredColorDelta = null
-	}
-
 	private getHoveredDeltaColor() {
-		let colors = {
-			0: "green",
-			1: "red"
-		}
+		const heightDelta: number = this._viewModel.hoveredNode.deltas[this._viewModel.heightMetric]
 
-		if (this.hoveredHeightDelta > 0) {
-			return colors[Number(this.settingsService.getSettings().appSettings.invertDeltaColors)]
-		} else if (this.hoveredHeightDelta < 0) {
-			return colors[Number(!this.settingsService.getSettings().appSettings.invertDeltaColors)]
+		if (heightDelta > 0) {
+			return "green"
+		} else if (heightDelta < 0) {
+			return "red"
 		} else {
 			return "inherit"
 		}

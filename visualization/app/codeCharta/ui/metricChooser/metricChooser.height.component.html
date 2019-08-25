@@ -29,9 +29,9 @@
 	<div>
 		<height-metric-type-component></height-metric-type-component>
 		<span class="metric-value"
-			>{{ ($ctrl.hoveredHeightValue | number) || "-" }}
-			<span style="color: {{ $ctrl.hoveredDeltaColor }};" ng-hide="!$ctrl.hoveredHeightDelta"
-				>(&Delta;{{ $ctrl.hoveredHeightDelta | number }})</span
+			>{{ ($ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.heightMetric] | number) || "-" }}
+			<span ng-style="{color: $ctrl._viewModel.deltaColor}" ng-show="$ctrl._viewModel.hoveredNode.deltas"
+				>(&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.heightMetric] | number }})</span
 			>
 		</span>
 	</div>

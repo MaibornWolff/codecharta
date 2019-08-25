@@ -29,8 +29,10 @@
 	<div>
 		<color-metric-type-component></color-metric-type-component>
 		<span class="metric-value"
-			>{{ ($ctrl.hoveredColorValue | number) || "-" }}
-			<span ng-hide="!$ctrl.hoveredHeightDelta">(&Delta;{{ $ctrl.hoveredColorDelta | number }})</span>
+			>{{ ($ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.colorMetric] | number) || "-" }}
+			<span ng-show="$ctrl._viewModel.hoveredNode.deltas"
+				>(&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.colorMetric] | number }})</span
+			>
 		</span>
 	</div>
 </md-input-container>
