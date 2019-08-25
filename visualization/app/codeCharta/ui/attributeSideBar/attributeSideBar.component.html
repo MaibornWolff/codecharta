@@ -15,9 +15,9 @@
 					<td class="metric-value">
 						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] }}
 					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] !== null">
+					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
 						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
-							{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] }}&Delta;
+							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] }}
 						</span>
 					</td>
 					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</td>
@@ -27,9 +27,9 @@
 					<td class="metric-value">
 						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] }}
 					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] !== null">
+					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
 						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
-							{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] }}&Delta;
+							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] }}
 						</span>
 					</td>
 					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</td>
@@ -39,9 +39,9 @@
 					<td class="metric-value">
 						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] }}
 					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] !== null">
+					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
 						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
-							{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] }}&Delta;
+							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] }}
 						</span>
 					</td>
 					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</td>
@@ -56,9 +56,9 @@
 			<table>
 				<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
 					<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] }}</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[attributeKey] !== null">
+					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
 						<span ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
-							{{ $ctrl._viewModel.node.deltas[attributeKey] }}&Delta;
+							&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] }}
 						</span>
 					</td>
 					<td class="metric-name">{{ attributeKey }}</td>
