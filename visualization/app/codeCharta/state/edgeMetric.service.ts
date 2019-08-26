@@ -8,6 +8,7 @@ import {
 	CodeMapNode,
 	EdgeMetricCount
 } from "../codeCharta.model"
+import _ from "lodash"
 import { FileStateServiceSubscriber, FileStateService } from "./fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../util/fileStateHelper"
@@ -22,6 +23,9 @@ export interface EdgeMetricServiceSubscriber {
 
 export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
 	private static EDGE_METRIC_DATA_UPDATED_EVENT = "edge-metric-data-updated"
+
+	private static DEBOUNCE_TIME = 400
+	private debounceBroadcast: () => void
 
 	private edgeMetricData: MetricData[] = []
 	private nodeEdgeMetricsMap: Map<string, Map<string, EdgeMetricCount>>
@@ -44,6 +48,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 
 	private updateEdgeMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+		this.addNoneMetric()
 		this.sortNodeEdgeMetricsMap()
 		this.notifyEdgeMetricDataUpdated()
 	}
@@ -191,8 +196,15 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		this.nodeEdgeMetricsMap = sortedEdgeMetricMap
 	}
 
+	private addNoneMetric() {
+		this.edgeMetricData.push({ name: "None", maxValue: 0, availableInVisibleMaps: false })
+	}
+
 	private notifyEdgeMetricDataUpdated() {
-		this.$rootScope.$broadcast(EdgeMetricService.EDGE_METRIC_DATA_UPDATED_EVENT, this.edgeMetricData)
+		this.debounceBroadcast = _.debounce(() => {
+			this.$rootScope.$broadcast(EdgeMetricService.EDGE_METRIC_DATA_UPDATED_EVENT, this.edgeMetricData)
+		}, EdgeMetricService.DEBOUNCE_TIME)
+		this.debounceBroadcast()
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricServiceSubscriber) {

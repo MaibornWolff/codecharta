@@ -144,14 +144,6 @@ describe("EdgeMetricService", () => {
 			expect(edgeMetricService.getMetricData().find(x => x.name === "otherMetric").maxValue).toEqual(1)
 		})
 
-		it("should broadcast edgeMetric Data", () => {
-			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
-
-			edgeMetricService.onFileSelectionStatesChanged(FILE_STATES)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("edge-metric-data-updated", edgeMetricService.getMetricData())
-		})
-
 		it("metrics Map should contain correct entries entries", () => {
 			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
 			edgeMetricService.onFileSelectionStatesChanged(FILE_STATES)

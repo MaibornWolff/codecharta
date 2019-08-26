@@ -28,7 +28,6 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
 		this._viewModel.edgeMetricData = edgeMetrics
-		this._viewModel.edgeMetricData.push({ name: "None", maxValue: 0, availableInVisibleMaps: false })
 
 		let edgeMetricNames = edgeMetrics.map(x => x.name)
 
