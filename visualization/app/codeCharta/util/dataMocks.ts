@@ -407,25 +407,43 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
 	blacklist: [],
-	markedPackages: [],
 	edges: [
 		{
-			attributes: { avgCommits: 34, pairingRate: 89 },
+			attributes: {
+				avgCommits: 34,
+				pairingRate: 89
+			},
 			fromNodeName: "/root/big leaf",
 			toNodeName: "/root/Parent Leaf/small leaf"
 		},
 		{
-			attributes: { avgCommits: 34, pairingRate: 89 },
-			fromNodeName: "/root/sample1 only leaf",
+			attributes: {
+				otherMetric: 34,
+				pairingRate: 89
+			},
+			fromNodeName: "/root/Parent Leaf/other small leaf",
+			toNodeName: "/root/Parent Leaf/small leaf"
+		},
+		{
+			attributes: {
+				avgCommits: 34,
+				pairingRate: 89
+			},
+			fromNodeName: "/root/not available",
 			toNodeName: "/root/Parent Leaf/small leaf"
 		}
 	],
+	markedPackages: [],
 	nodes: [
 		{
 			attributes: {},
 			children: [
 				{
-					attributes: { Functions: 10, MCC: 1, RLOC: 100 },
+					attributes: {
+						Functions: 10,
+						MCC: 1,
+						RLOC: 100
+					},
 					link: "http://www.google.de",
 					name: "big leaf",
 					type: "File"
@@ -434,12 +452,20 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 					attributes: {},
 					children: [
 						{
-							attributes: { Functions: 100, MCC: 100, RLOC: 30 },
+							attributes: {
+								Functions: 100,
+								MCC: 100,
+								RLOC: 30
+							},
 							name: "small leaf",
 							type: "File"
 						},
 						{
-							attributes: { Functions: 1000, MCC: 10, RLOC: 70 },
+							attributes: {
+								Functions: 1000,
+								MCC: 10,
+								RLOC: 70
+							},
 							name: "other small leaf",
 							type: "File"
 						}
@@ -560,7 +586,9 @@ export const DEFAULT_SETTINGS: Settings = {
 			neutral: "#ddcc00",
 			positive: "#69AE40",
 			positiveDelta: "#69FF40",
-			selected: "#EB8319"
+			selected: "#EB8319",
+			incomingEdge: "#00ffff",
+			outgoingEdge: "#ff00ff"
 		},
 		maximizeDetailPanel: false,
 		scaling: new Vector3(1, 1, 1),
