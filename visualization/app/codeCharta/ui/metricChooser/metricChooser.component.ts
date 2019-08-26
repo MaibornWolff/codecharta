@@ -156,7 +156,7 @@ export class MetricChooserController
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data && data.to) {
+		if (data && data.to && data.to.node) {
 			this._viewModel.hoveredNode = data.to.node
 			if (data.to.node.deltas) {
 				this._viewModel.deltaColor = this.getHoveredDeltaColor()

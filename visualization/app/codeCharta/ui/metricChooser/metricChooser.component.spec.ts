@@ -7,6 +7,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
 import { MetricService } from "../../state/metric.service"
+import { Node } from "../../codeCharta.model"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
@@ -246,17 +247,12 @@ describe("MetricChooserController", () => {
 	})
 
 	describe("onBuildingHovered", () => {
-		it("should set values and deltas to null if data incomplete", () => {
+		it("should set hoveredNode to null if data incomplete", () => {
 			let data = { from: {}, to: {} } as CodeMapBuildingTransition
 
 			metricChooserController.onBuildingHovered(data)
 
-			expect(metricChooserController.hoveredAreaDelta).toBe(null)
-			expect(metricChooserController.hoveredAreaValue).toBe(null)
-			expect(metricChooserController.hoveredColorDelta).toBe(null)
-			expect(metricChooserController.hoveredColorValue).toBe(null)
-			expect(metricChooserController.hoveredHeightValue).toBe(null)
-			expect(metricChooserController.hoveredHeightDelta).toBe(null)
+			expect(metricChooserController["_viewModel"]["hoveredNode"]).toBe(null)
 		})
 
 		it("should set hovered values and set hovered deltas to null if not delta", () => {
@@ -266,13 +262,12 @@ describe("MetricChooserController", () => {
 			metricChooserController["_viewModel"].colorMetric = "color"
 
 			metricChooserController.onBuildingHovered(dataNotDelta)
+			const node: Node = metricChooserController["_viewModel"]["hoveredNode"]
 
-			expect(metricChooserController.hoveredAreaDelta).toBe(null)
-			expect(metricChooserController.hoveredAreaValue).toBe(10)
-			expect(metricChooserController.hoveredColorDelta).toBe(null)
-			expect(metricChooserController.hoveredColorValue).toBe(30)
-			expect(metricChooserController.hoveredHeightValue).toBe(20)
-			expect(metricChooserController.hoveredHeightDelta).toBe(null)
+			expect(node.deltas).toBe(undefined)
+			expect(node.attributes["area"]).toBe(10)
+			expect(node.attributes["color"]).toBe(30)
+			expect(node.attributes["height"]).toBe(20)
 		})
 
 		it("should set hovered values and deltas if delta", () => {
@@ -283,55 +278,49 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.onBuildingHovered(dataDelta)
 
-			expect(metricChooserController.hoveredAreaDelta).toBe(40)
-			expect(metricChooserController.hoveredAreaValue).toBe(10)
-			expect(metricChooserController.hoveredColorDelta).toBe(60)
-			expect(metricChooserController.hoveredColorValue).toBe(30)
-			expect(metricChooserController.hoveredHeightValue).toBe(20)
-			expect(metricChooserController.hoveredHeightDelta).toBe(50)
-		})
-
-		it("hovered delta color should be null if not delta", () => {
-			withMockedBuildingTransitions()
-			metricChooserController.hoveredDeltaColor = "foo"
-
-			metricChooserController.onBuildingHovered(dataNotDelta)
-
-			expect(metricChooserController.hoveredDeltaColor).toBe(null)
+			const node: Node = metricChooserController["_viewModel"]["hoveredNode"]
+			expect(node.deltas["area"]).toBe(40)
+			expect(node.attributes["area"]).toBe(10)
+			expect(node.deltas["color"]).toBe(60)
+			expect(node.attributes["color"]).toBe(30)
+			expect(node.deltas["height"]).toBe(50)
+			expect(node.attributes["height"]).toBe(20)
 		})
 
 		it("hovered delta color should be inherited if hoveredHeigtDelta is 0", () => {
 			withMockedBuildingTransitions()
-			metricChooserController.hoveredHeightDelta = 0
+			metricChooserController["_viewModel"].heightMetric = "height"
+			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
+			metricChooserController["_viewModel"]["hoveredNode"]["deltas"]["height"] = 0
 
 			metricChooserController.onBuildingHovered(dataDelta)
 
-			expect(metricChooserController.hoveredDeltaColor).toBe("inherit")
+			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("inherit")
 		})
 
-		it("hovered delta color should be set correctly", () => {
+		it("hovered delta color should be inherited if hoveredHeigtDelta is 2", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController.hoveredHeightDelta = 2
+			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
+			metricChooserController["_viewModel"]["hoveredNode"]["deltas"]["height"] = 2
 
 			metricChooserController.onBuildingHovered(dataDelta)
 
-			expect(metricChooserController.hoveredDeltaColor).toBe("green")
+			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("green")
 		})
 
-		it("hovered delta color should be set correctly if reversed colors", () => {
+		it("hovered delta color should be inherited if hoveredHeigtDelta is -2", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController.hoveredHeightDelta = 2
-			settingsService.getSettings = jest.fn(() => {
-				return { appSettings: { invertDeltaColors: true } }
-			})
+			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
+			metricChooserController["_viewModel"]["hoveredNode"]["deltas"]["height"] = -2
 
 			metricChooserController.onBuildingHovered(dataDelta)
 
-			expect(metricChooserController.hoveredDeltaColor).toBe("red")
+			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("red")
 		})
 	})
+
 	describe("filterMetricData()", () => {
 		it("should return the default MetricData list", () => {
 			let metricData = [
