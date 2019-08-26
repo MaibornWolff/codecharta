@@ -1,5 +1,5 @@
 import "./attributeSideBar.component.scss"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import {
 	CodeMapMouseEventService,
@@ -37,7 +37,7 @@ export class AttributeSideBarController
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $mdSidenav: any) {
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private $mdSidenav: any) {
 		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
@@ -49,10 +49,12 @@ export class AttributeSideBarController
 		this._viewModel.node = selectedBuilding.node
 		this._viewModel.secondaryMetricKeys = this.getSortedMetricKeysWithoutPrimaryMetrics(selectedBuilding)
 		this.openSideBar()
+		this.synchronizeAngularTwoWayBinding()
 	}
 
 	public onBuildingDeselected() {
 		this.closeSideBar()
+		this.synchronizeAngularTwoWayBinding()
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
@@ -79,6 +81,10 @@ export class AttributeSideBarController
 		return _.keys(selectedBuilding.node.attributes)
 			.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
 			.sort()
+	}
+
+	private synchronizeAngularTwoWayBinding() {
+		this.$timeout(() => {})
 	}
 }
 
