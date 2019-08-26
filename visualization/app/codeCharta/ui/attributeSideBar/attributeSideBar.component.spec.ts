@@ -1,9 +1,13 @@
 import "./attributeSideBar.module"
-//import { AttributeSideBarController } from "./attributeSideBar.component"
-//import { instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { AttributeSideBarController } from "./attributeSideBar.component"
+import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { IRootScopeService } from "angular"
+import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 
 describe("AttributeSideBarController", () => {
-	/*let attributeSideBarController: AttributeSideBarController
+	let attributeSideBarController: AttributeSideBarController
+	let $rootScope: IRootScopeService
+	let $mdSideNav
 
 	beforeEach(() => {
 		restartSystem()
@@ -12,13 +16,23 @@ describe("AttributeSideBarController", () => {
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.attributeSideBar")
+
+		$rootScope = getService<IRootScopeService>("$rootScope")
 	}
 
 	function rebuildController() {
-		attributeSideBarController = new AttributeSideBarController()
+		attributeSideBarController = new AttributeSideBarController($rootScope, $mdSideNav)
 	}
 
-	describe("someMethodName", () => {
-		it("should do something", () => {})
-	})*/
+	describe("constructor", () => {
+		beforeEach(() => {
+			CodeMapMouseEventService.subscribeToBuildingSelectedEvents = jest.fn()
+		})
+
+		it("should subscribe to Hovering-Events", () => {
+			rebuildController()
+
+			expect(CodeMapMouseEventService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+		})
+	})
 })
