@@ -32,11 +32,11 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (update.appSettings) {
-			if (update.appSettings.amountOfEdgePreviews) {
+			if (update.appSettings.amountOfEdgePreviews !== undefined) {
 				this._viewModel.amountOfEdgePreviews = update.appSettings.amountOfEdgePreviews
 			}
 
-			if (update.appSettings.edgeHeight) {
+			if (update.appSettings.edgeHeight !== undefined) {
 				this._viewModel.edgeHeight = update.appSettings.edgeHeight
 			}
 
@@ -44,7 +44,11 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 				this._viewModel.showOnlyBuildingsWithEdges = update.appSettings.showOnlyBuildingsWithEdges
 			}
 
-			if (update.appSettings.amountOfEdgePreviews || update.appSettings.edgeHeight || update.appSettings.showOnlyBuildingsWithEdges) {
+			if (
+				update.appSettings.amountOfEdgePreviews !== undefined ||
+				update.appSettings.edgeHeight !== undefined ||
+				update.appSettings.showOnlyBuildingsWithEdges
+			) {
 				this.codeMapActionsService.updateEdgePreviews()
 			}
 		}
