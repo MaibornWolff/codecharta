@@ -10,7 +10,6 @@ import {
 	DistributionMetricSubscriber,
 	HeightMetricSubscriber
 } from "../../state/settingsService/settings.service.events"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 export class MetricChooserController
 	implements
