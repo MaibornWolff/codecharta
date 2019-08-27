@@ -4,9 +4,8 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Object3D, Vector3 } from "three"
-import { Edge, Settings } from "../../codeCharta.model"
+import { Edge, EdgeVisibility, Node, Settings } from "../../codeCharta.model"
 import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
-import { Node } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
@@ -115,7 +114,7 @@ describe("CodeMapArrowService", () => {
 
 			codeMapArrowService.addEdgeArrows(nodes, edges)
 
-			expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(nodes[0], nodes[1])
+			expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(nodes[0], nodes[1], undefined)
 		})
 	})
 
@@ -125,9 +124,39 @@ describe("CodeMapArrowService", () => {
 
 			settingsService.getSettings = jest.fn().mockReturnValue(settings)
 
-			codeMapArrowService.addArrow(nodes[0], nodes[0])
+			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.both)
 
 			expect(codeMapArrowService["arrows"].length).toBe(2)
+		})
+
+		it("should insert one arrow, if we set the EdgeVisibility to from", () => {
+			settings.dynamicSettings.heightMetric = "a"
+
+			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+
+			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.from)
+
+			expect(codeMapArrowService["arrows"].length).toBe(1)
+		})
+
+		it("should insert one arrow, if we set the EdgeVisibility to to", () => {
+			settings.dynamicSettings.heightMetric = "a"
+
+			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+
+			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.to)
+
+			expect(codeMapArrowService["arrows"].length).toBe(1)
+		})
+
+		it("should't insert arrow, if we set the EdgeVisibility to none", () => {
+			settings.dynamicSettings.heightMetric = "a"
+
+			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+
+			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.none)
+
+			expect(codeMapArrowService["arrows"].length).toBe(0)
 		})
 
 		it("should not add arrows if node has not a height attribute mentioned in renderSettings", () => {
