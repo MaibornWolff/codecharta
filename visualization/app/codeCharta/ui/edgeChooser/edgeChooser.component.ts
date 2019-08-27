@@ -13,7 +13,7 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		hoveredEdgeValue: EdgeMetricCount
 	} = {
 		edgeMetricData: [],
-		edgeMetric: "None",
+		edgeMetric: null,
 		hoveredEdgeValue: null
 	}
 
