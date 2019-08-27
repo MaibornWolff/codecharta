@@ -40,6 +40,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 				this.addEdgeArrows(null, edges.filter(x => x.visible != EdgeVisibility.none))
 			}
 		}
+		this.scale(this.settingsService.getSettings().appSettings.scaling)
 	}
 
 	public clearArrows() {
@@ -77,7 +78,6 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 
 	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, edgeVisibility?: EdgeVisibility): void {
 		const settings = this.settingsService.getSettings()
-		const mapSize = settings.treeMapSettings.mapSize
 		const curveScale = 100 * settings.appSettings.edgeHeight
 
 		if (
@@ -86,33 +86,24 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			arrowOriginNode.attributes &&
 			arrowOriginNode.attributes[this.settingsService.getSettings().dynamicSettings.heightMetric]
 		) {
-			const xTarget: number = arrowTargetNode.x0 - mapSize * 0.5
-			const yTarget: number = arrowTargetNode.z0
-			const zTarget: number = arrowTargetNode.y0 - mapSize * 0.5
+			const bezierPoint2 = arrowOriginNode.outgoingEdgePoint.clone()
+			const bezierPoint3 = arrowTargetNode.incomingEdgePoint.clone()
 
-			const wTarget: number = arrowTargetNode.width
-			const hTarget: number = arrowTargetNode.height
-			const lTarget: number = arrowTargetNode.length
-
-			const xOrigin: number = arrowOriginNode.x0 - mapSize * 0.5
-			const yOrigin: number = arrowOriginNode.z0
-			const zOrigin: number = arrowOriginNode.y0 - mapSize * 0.5
-
-			const wOrigin: number = arrowOriginNode.width
-			const hOrigin: number = 1
-			const lOrigin: number = arrowOriginNode.length
+			const arrowHeight = Math.max(bezierPoint2.y + arrowTargetNode.height, bezierPoint3.y + 1) + curveScale
+			bezierPoint2.setY(arrowHeight)
+			bezierPoint3.setY(arrowHeight)
 
 			const curve = new CubicBezierCurve3(
 				arrowOriginNode.outgoingEdgePoint,
-				new Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + curveScale, zOrigin + lOrigin / 2),
-				new Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + curveScale, zTarget + lTarget / 2),
+				bezierPoint2,
+				bezierPoint3,
 				arrowTargetNode.incomingEdgePoint
 			)
 
 			if (this.isHovered) {
 				this.hoveredMode(curve, arrowOriginNode, arrowTargetNode)
 			} else {
-				this.previewMode(curve, arrowOriginNode, edgeVisibility)
+				this.previewMode(curve, edgeVisibility)
 			}
 		}
 	}
@@ -133,6 +124,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			curveObject.add(this.buildArrow(points))
 
 			this.threeSceneService.edgeArrows.add(curveObject)
+			this.arrows.push(curveObject)
 		} else {
 			const building: CodeMapBuilding = this.threeSceneService
 				.getMapMesh()
@@ -146,18 +138,19 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			curveObject.add(this.buildArrow(points))
 
 			this.threeSceneService.edgeArrows.add(curveObject)
+			this.arrows.push(curveObject)
 		}
 	}
 
-	private previewMode(curve, arrowOriginNode: Node, edgeVisibility: EdgeVisibility) {
+	private previewMode(curve, edgeVisibility: EdgeVisibility) {
 		if (edgeVisibility === EdgeVisibility.both || edgeVisibility === EdgeVisibility.from) {
-			const outgoingArrow: Object3D = this.makeOutgoingArrowFromBezier(curve, arrowOriginNode.height)
+			const outgoingArrow: Object3D = this.makeArrowFromBezier(curve, false)
 			this.threeSceneService.edgeArrows.add(outgoingArrow)
 			this.arrows.push(outgoingArrow)
 		}
 
 		if (edgeVisibility === EdgeVisibility.both || edgeVisibility === EdgeVisibility.to) {
-			const incomingArrow: Object3D = this.makeIncomingArrowFromBezier(curve)
+			const incomingArrow: Object3D = this.makeArrowFromBezier(curve, true)
 			this.threeSceneService.edgeArrows.add(incomingArrow)
 			this.arrows.push(incomingArrow)
 		}
@@ -177,23 +170,23 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		return map
 	}
 
-	private makeIncomingArrowFromBezier(bezier: CubicBezierCurve3, bezierPoints: number = 50): Object3D {
+	private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints: number = 50) {
 		const points = bezier.getPoints(bezierPoints)
-		const pointsIncoming = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
+		let pointsPrevies: Vector3[]
+		let arrowColor: string
 
-		return this.buildEdge(
-			pointsIncoming,
-			ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
-		)
-	}
+		if (incoming) {
+			pointsPrevies = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
+			arrowColor = this.settingsService.getSettings().appSettings.mapColors.incomingEdge
+		} else {
+			pointsPrevies = points
+				.reverse()
+				.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
+				.reverse()
+			arrowColor = this.settingsService.getSettings().appSettings.mapColors.outgoingEdge
+		}
 
-	private makeOutgoingArrowFromBezier(bezier: CubicBezierCurve3, height: number, bezierPoints: number = 50): Object3D {
-		const points = bezier.getPoints(bezierPoints)
-		const pointsOutgoing = this.getPointsToSurpassBuildingHeight(points, height)
-		return this.buildEdge(
-			pointsOutgoing,
-			ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
-		)
+		return this.buildEdge(pointsPrevies, ColorConverter.convertHexToNumber(arrowColor))
 	}
 
 	private buildEdge(points: Vector3[], color: number): Object3D {
@@ -219,20 +212,5 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 
 		const origin = points[points.length - 1].clone()
 		return new ArrowHelper(dir, origin, 0, ARROW_COLOR, headLength, headWidth)
-	}
-
-	private getPointsToSurpassBuildingHeight(points: Vector3[], height: number): Vector3[] {
-		const THRESHHOLD = 100
-		const result = []
-		let length = 0
-		let i = 0
-
-		while (length < height + THRESHHOLD && i < points.length - 1) {
-			length += points[i].distanceTo(points[i + 1])
-			result.push(points[i])
-			i++
-		}
-
-		return result
 	}
 }
