@@ -1,5 +1,6 @@
 import { CodeMapBuilding } from "./codeMapBuilding"
 import * as THREE from "three"
+import { Node } from "../../../codeCharta.model"
 
 export interface IntersectionResult {
 	intersectionFound: boolean
@@ -26,6 +27,10 @@ export class CodeMapGeometricDescription {
 
 	public setScales(scales: THREE.Vector3) {
 		this.scales = scales
+	}
+
+	public findBuildingToNode(node: Node) {
+		return this.buildings.find(x => x.node.path === node.path)
 	}
 
 	public intersect(ray: THREE.Ray): IntersectionResult {

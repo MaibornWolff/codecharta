@@ -21,6 +21,7 @@ export class ThreeSceneService implements BlacklistSubscriber {
 
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding = null
+	private highlightedBuildings: CodeMapBuilding[] = []
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
 		SettingsService.subscribeToBlacklist(this.$rootScope, this)
@@ -47,12 +48,20 @@ export class ThreeSceneService implements BlacklistSubscriber {
 	public highlightBuilding(building: CodeMapBuilding) {
 		const settings = this.settingsService.getSettings()
 		this.getMapMesh().highlightBuilding(building, this.selected, settings)
+		this.highlightedBuildings = []
 		this.highlighted = building
+	}
+
+	public addBuildingToHighlightingList(building: CodeMapBuilding) {
+		const settings = this.settingsService.getSettings()
+		this.highlightedBuildings.push(building)
+		this.getMapMesh().highlightBuildings(this.highlightedBuildings, this.selected, settings)
 	}
 
 	public clearHighlight() {
 		this.getMapMesh().clearHighlight(this.selected)
 		this.highlighted = null
+		this.highlightedBuildings = []
 	}
 
 	public selectBuilding(building: CodeMapBuilding) {
