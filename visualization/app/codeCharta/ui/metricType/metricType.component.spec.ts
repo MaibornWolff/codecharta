@@ -58,7 +58,6 @@ describe("MetricTypeController", () => {
 			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
 			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
 			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
-			expect(SettingsService.subscribeToEdgeMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 
 		it("should subscribe to CodeMapMouseEventService", () => {
@@ -89,14 +88,6 @@ describe("MetricTypeController", () => {
 			metricTypeController.onColorMetricChanged("coverage")
 
 			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeTypeValue.relative)
-		})
-	})
-
-	describe("onEdgeMetricChanged", () => {
-		it("should set the edgeMetricType to absolute", () => {
-			metricTypeController.onEdgeMetricChanged("pairing_rate")
-
-			expect(metricTypeController["_viewModel"].edgeMetricType).toBe(AttributeTypeValue.absolute)
 		})
 	})
 
@@ -173,32 +164,6 @@ describe("MetricTypeController", () => {
 			metricTypeController["_viewModel"].colorMetricType = AttributeTypeValue.relative
 
 			const actual = metricTypeController.isColorMetricAbsolute()
-
-			expect(actual).toBeFalsy()
-		})
-	})
-
-	describe("isEdgeMetricAbsolute", () => {
-		it("should return true if edgeMetric is absolute", () => {
-			metricTypeController["_viewModel"].edgeMetricType = AttributeTypeValue.absolute
-
-			const actual = metricTypeController.isEdgeMetricAbsolute()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return true if edgeMetric is null", () => {
-			metricTypeController["_viewModel"].edgeMetricType = null
-
-			const actual = metricTypeController.isEdgeMetricAbsolute()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if edgeMetric is relative", () => {
-			metricTypeController["_viewModel"].edgeMetricType = AttributeTypeValue.relative
-
-			const actual = metricTypeController.isEdgeMetricAbsolute()
 
 			expect(actual).toBeFalsy()
 		})

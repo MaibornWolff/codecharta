@@ -11,6 +11,7 @@ Object {
       "z": 1000,
     },
     "dynamicMargin": true,
+    "edgeHeight": 4,
     "hideFlatBuildings": true,
     "invertColorRange": false,
     "invertDeltaColors": false,
@@ -22,6 +23,7 @@ Object {
       "base": "#666666",
       "defaultC": "#89ACB4",
       "flat": "#AAAAAA",
+      "incomingEdge": "#00ffff",
       "lightGrey": "#DDDDDD",
       "markingColors": Array [
         "#FF1D8E",
@@ -34,6 +36,7 @@ Object {
       "negative": "#820E0E",
       "negativeDelta": "#ff0E0E",
       "neutral": "#ddcc00",
+      "outgoingEdge": "#ff00ff",
       "positive": "#69AE40",
       "positiveDelta": "#69FF40",
       "selected": "#EB8319",
@@ -44,6 +47,7 @@ Object {
       "y": 1,
       "z": 1,
     },
+    "showOnlyBuildingsWithEdges": false,
     "whiteColorBuildings": false,
   },
   "dynamicSettings": Object {

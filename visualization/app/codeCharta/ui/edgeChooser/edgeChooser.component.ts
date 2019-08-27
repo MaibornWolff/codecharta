@@ -48,6 +48,10 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: this._viewModel.edgeMetric } })
 		this.codeMapActionsService.updateEdgePreviews()
 	}
+
+	public noEdgesAvailable() {
+		return this._viewModel.edgeMetricData.length <= 1
+	}
 }
 
 export const edgeChooserComponent = {
