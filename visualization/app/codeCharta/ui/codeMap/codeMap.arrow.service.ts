@@ -111,7 +111,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			if (this.isHovered) {
 				this.hoveredMode(curve, arrowOriginNode)
 			} else {
-				this.previewMode(curve, arrowOriginNode, edgeVisibility)
+				this.previewMode(curve, edgeVisibility)
 			}
 		}
 	}
@@ -137,15 +137,15 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		}
 	}
 
-	private previewMode(curve, arrowOriginNode: Node, edgeVisibility: EdgeVisibility) {
+	private previewMode(curve, edgeVisibility: EdgeVisibility) {
 		if (edgeVisibility === EdgeVisibility.both || edgeVisibility === EdgeVisibility.from) {
-			const outgoingArrow: Object3D = this.makeOutgoingArrowFromBezier(curve, arrowOriginNode.height)
+			const outgoingArrow: Object3D = this.makeArrowFromBezier(curve, false)
 			this.threeSceneService.edgeArrows.add(outgoingArrow)
 			this.arrows.push(outgoingArrow)
 		}
 
 		if (edgeVisibility === EdgeVisibility.both || edgeVisibility === EdgeVisibility.to) {
-			const incomingArrow: Object3D = this.makeIncomingArrowFromBezier(curve)
+			const incomingArrow: Object3D = this.makeArrowFromBezier(curve, true)
 			this.threeSceneService.edgeArrows.add(incomingArrow)
 			this.arrows.push(incomingArrow)
 		}
@@ -165,23 +165,23 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		return map
 	}
 
-	private makeIncomingArrowFromBezier(bezier: CubicBezierCurve3, bezierPoints: number = 50): Object3D {
+	private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints: number = 50) {
 		const points = bezier.getPoints(bezierPoints)
-		const pointsIncoming = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
+		let pointsPrevies: Vector3[]
+		let arrowColor: string
 
-		return this.buildEdge(
-			pointsIncoming,
-			ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
-		)
-	}
+		if (incoming) {
+			pointsPrevies = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
+			arrowColor = this.settingsService.getSettings().appSettings.mapColors.incomingEdge
+		} else {
+			pointsPrevies = points
+				.reverse()
+				.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
+				.reverse()
+			arrowColor = this.settingsService.getSettings().appSettings.mapColors.outgoingEdge
+		}
 
-	private makeOutgoingArrowFromBezier(bezier: CubicBezierCurve3, height: number, bezierPoints: number = 50): Object3D {
-		const points = bezier.getPoints(bezierPoints)
-		const pointsOutgoing = this.getPointsToSurpassBuildingHeight(points, height)
-		return this.buildEdge(
-			pointsOutgoing,
-			ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
-		)
+		return this.buildEdge(pointsPrevies, ColorConverter.convertHexToNumber(arrowColor))
 	}
 
 	private buildEdge(points: Vector3[], color: number): Object3D {
@@ -207,20 +207,5 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 
 		const origin = points[points.length - 1].clone()
 		return new ArrowHelper(dir, origin, 0, ARROW_COLOR, headLength, headWidth)
-	}
-
-	private getPointsToSurpassBuildingHeight(points: Vector3[], height: number): Vector3[] {
-		const THRESHHOLD = 100
-		const result = []
-		let length = 0
-		let i = 0
-
-		while (length < height + THRESHHOLD && i < points.length - 1) {
-			length += points[i].distanceTo(points[i + 1])
-			result.push(points[i])
-			i++
-		}
-
-		return result
 	}
 }
