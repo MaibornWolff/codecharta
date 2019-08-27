@@ -59,7 +59,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const originNode: Node = this.map.get(edge.fromNodeName)
 			const targetNode: Node = this.map.get(edge.toNodeName)
 
-			if (originNode && targetNode) {
+			if (originNode && targetNode && edge.visible != EdgeVisibility.none && edge.visible) {
 				this.addArrow(targetNode, originNode, edge.visible)
 			}
 		}
