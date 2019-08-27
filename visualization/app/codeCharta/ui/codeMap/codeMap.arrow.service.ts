@@ -6,7 +6,6 @@ import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouse
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
-import { EdgeMetricSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	private VERTICES_PER_LINE = 5
