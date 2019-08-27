@@ -57,9 +57,11 @@ describe("settingService", () => {
 
 	describe("constructor", () => {
 		it("should set settings to default settings", () => {
+			settingsService["getDefaultSettings"] = jest.fn()
+
 			rebuildService()
 
-			expect(settingsService.getSettings()).toEqual(settings)
+			expect(settingsService["getDefaultSettings"]).toBeCalled()
 		})
 
 		it("should subscribe to FileStateService", () => {

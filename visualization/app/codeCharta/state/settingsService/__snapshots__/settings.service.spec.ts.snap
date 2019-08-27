@@ -58,7 +58,7 @@ Object {
       "to": null,
     },
     "distributionMetric": null,
-    "edgeMetric": "",
+    "edgeMetric": "None",
     "focusedNodePath": "",
     "heightMetric": null,
     "margin": null,
