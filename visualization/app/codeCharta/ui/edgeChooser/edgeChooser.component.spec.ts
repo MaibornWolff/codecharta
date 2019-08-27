@@ -49,12 +49,6 @@ describe("EdgeChooserController", () => {
 	})
 
 	describe("onEdgeMetricDataUpdated", () => {
-		it("should add non metric", () => {
-			edgeChooserController.onEdgeMetricDataUpdated([])
-
-			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("None")
-		})
-
 		it("should store edge data", () => {
 			const metricData = [
 				{ name: "metric1", maxValue: 22, availableInVisibleMaps: true },
@@ -63,7 +57,6 @@ describe("EdgeChooserController", () => {
 
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
-			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("None")
 			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("metric1")
 			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("metric2")
 		})

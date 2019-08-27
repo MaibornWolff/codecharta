@@ -99,10 +99,10 @@ describe("HeightSettingsPanelController", () => {
 
 	describe("applySettingsAmountOfTopLabels", () => {
 		it("should call updateSettings", () => {
-			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 31
+			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 12
 			const expected = {
 				appSettings: {
-					amountOfTopLabels: 31
+					amountOfTopLabels: 12
 				}
 			}
 

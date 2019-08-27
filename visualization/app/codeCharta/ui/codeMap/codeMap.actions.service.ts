@@ -1,5 +1,5 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapNode, BlacklistType, BlacklistItem, Edge, EdgeVisibility } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
@@ -116,18 +116,6 @@ export class CodeMapActionsService {
 		}
 	}
 
-	public showDependentEdges(node: CodeMapNode) {
-		this.changeEdgesVisibility(EdgeVisibility.both, node)
-	}
-
-	public hideDependentEdges(node: CodeMapNode) {
-		this.changeEdgesVisibility(EdgeVisibility.none, node)
-	}
-
-	public hideAllEdges() {
-		this.changeEdgesVisibility(EdgeVisibility.none)
-	}
-
 	public updateEdgePreviews() {
 		const settings = this.settingsService.getSettings()
 		const edges = settings.fileSettings.edges
@@ -154,19 +142,6 @@ export class CodeMapActionsService {
 				edges: edges
 			}
 		})
-	}
-
-	public amountOfDependentEdges(node: CodeMapNode) {
-		return this.settingsService.getSettings().fileSettings.edges.filter(edge => this.edgeContainsNode(edge, node)).length
-	}
-
-	public amountOfVisibleDependentEdges(node: CodeMapNode) {
-		return this.settingsService.getSettings().fileSettings.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible)
-			.length
-	}
-
-	public isAnyEdgeVisible() {
-		return this.settingsService.getSettings().fileSettings.edges.filter(edge => edge.visible).length > 0
 	}
 
 	public getParentMP(path: string, s: Settings): MarkedPackage {
@@ -215,26 +190,6 @@ export class CodeMapActionsService {
 		if (indexToRemove > -1) {
 			s.fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
-	}
-
-	private changeEdgesVisibility(visibility: EdgeVisibility, node: CodeMapNode = null) {
-		let edges = this.settingsService.getSettings().fileSettings.edges
-		if (edges) {
-			edges.forEach(edge => {
-				if (node === null || this.edgeContainsNode(edge, node)) {
-					edge.visible = visibility
-				}
-			})
-			this.settingsService.updateSettings({
-				fileSettings: {
-					edges: edges
-				}
-			})
-		}
-	}
-
-	private edgeContainsNode(edge: Edge, node: CodeMapNode): boolean {
-		return node.path == edge.fromNodeName || node.path == edge.toNodeName
 	}
 
 	private isEqualObjects(obj1, obj2): boolean {

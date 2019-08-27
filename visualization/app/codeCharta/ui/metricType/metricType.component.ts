@@ -4,26 +4,19 @@ import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import {
-	AreaMetricSubscriber,
-	ColorMetricSubscriber,
-	EdgeMetricSubscriber,
-	HeightMetricSubscriber
-} from "../../state/settingsService/settings.service.events"
+import { AreaMetricSubscriber, ColorMetricSubscriber, HeightMetricSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class MetricTypeController
-	implements AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, EdgeMetricSubscriber, BuildingHoveredEventSubscriber {
+	implements AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, BuildingHoveredEventSubscriber {
 	private _viewModel: {
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
 		colorMetricType: AttributeTypeValue
-		edgeMetricType: AttributeTypeValue
 		isBuildingHovered: boolean
 	} = {
 		areaMetricType: null,
 		heightMetricType: null,
 		colorMetricType: null,
-		edgeMetricType: null,
 		isBuildingHovered: false
 	}
 
@@ -32,7 +25,6 @@ export class MetricTypeController
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
-		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 	}
 
@@ -46,10 +38,6 @@ export class MetricTypeController
 
 	public onColorMetricChanged(colorMetric: string) {
 		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric, this.settingsService.getSettings())
-	}
-
-	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.edgeMetricType = this.metricService.getAttributeTypeByMetric(edgeMetric, this.settingsService.getSettings())
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
@@ -71,10 +59,6 @@ export class MetricTypeController
 
 	public isColorMetricAbsolute(): boolean {
 		return this._viewModel.colorMetricType === AttributeTypeValue.absolute || !this._viewModel.colorMetricType
-	}
-
-	public isEdgeMetricAbsolute(): boolean {
-		return this._viewModel.edgeMetricType === AttributeTypeValue.absolute || !this._viewModel.edgeMetricType
 	}
 }
 

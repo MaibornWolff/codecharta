@@ -4,22 +4,13 @@ import { HierarchyNode } from "d3"
 import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta, EdgeMetricCount } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
-import { EdgeMetricService } from "../state/edgeMetric.service"
 
 export class NodeDecorator {
-	public static decorateMap(
-		map: CodeMapNode,
-		fileMeta: FileMeta,
-		blacklist: BlacklistItem[],
-		metricData: MetricData[],
-		edgeMetricService: EdgeMetricService
-	): CodeMapNode {
+	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, metricData: MetricData[]): CodeMapNode {
 		let decoratedMap: CodeMapNode = _.cloneDeep(map)
 		this.decorateMapWithMissingObjects(decoratedMap, fileMeta)
 		this.decorateMapWithCompactMiddlePackages(decoratedMap)
 		this.decorateLeavesWithMissingMetrics(decoratedMap, metricData)
-		this.decorateLeavesWithEdgeMetrics(decoratedMap, edgeMetricService)
-		this.decorateParentNodesWithSumAttributesOfChildren(decoratedMap, blacklist, metricData, edgeMetricService)
 		return decoratedMap
 	}
 
@@ -107,38 +98,26 @@ export class NodeDecorator {
 		}
 	}
 
-	private static decorateLeavesWithEdgeMetrics(map: CodeMapNode, edgeMetricService: EdgeMetricService) {
-		if (map && edgeMetricService.getMetricNames()) {
-			let root = d3.hierarchy<CodeMapNode>(map)
-			root.leaves().forEach(node => {
-				const edgeMetrics = edgeMetricService.getMetricValuesForNode(node)
-				for (let edgeMetric of edgeMetrics.keys()) {
-					// TODO: Make sure we get correct type in the end
-					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
-				}
-			})
-		}
-	}
-
-	private static decorateParentNodesWithSumAttributesOfChildren(
+	public static decorateParentNodesWithSumAttributes(
 		map: CodeMapNode,
 		blacklist: BlacklistItem[],
 		metricData: MetricData[],
-		edgeMetricService: EdgeMetricService
+		edgeMetricData: MetricData[]
 	) {
 		if (map) {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.each((node: HierarchyNode<CodeMapNode>) => {
-				this.decorateNodeWithChildrenSumMetrics(node, blacklist, metricData, edgeMetricService)
+				this.decorateNodeWithChildrenSumMetrics(node, blacklist, metricData, edgeMetricData)
 			})
 		}
+		return map
 	}
 
 	private static decorateNodeWithChildrenSumMetrics(
 		node: HierarchyNode<CodeMapNode>,
 		blacklist: BlacklistItem[],
 		metricData: MetricData[],
-		edgeMetricService: EdgeMetricService
+		edgeMetricData: MetricData[]
 	) {
 		const leaves = node.leaves().filter(x => !CodeMapHelper.isBlacklisted(x.data, blacklist, BlacklistType.exclude))
 
@@ -147,7 +126,7 @@ export class NodeDecorator {
 				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(leaves, metric.name)
 			}
 		})
-		edgeMetricService.getMetricData().forEach(edgeMetric => {
+		edgeMetricData.forEach(edgeMetric => {
 			if (node.data.children && node.data.children.length > 0) {
 				node.data.edgeAttributes[edgeMetric.name] = this.getEdgeMetricSumOfLeaves(leaves, edgeMetric.name)
 			}
