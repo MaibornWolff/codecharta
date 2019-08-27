@@ -552,7 +552,9 @@ export const SETTINGS: Settings = {
 			flat: "#AAAAAA",
 			lightGrey: "#DDDDDD",
 			angularGreen: "#00BFA5",
-			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			incomingEdge: "#00ffff",
+			outgoingEdge: "#ff00ff"
 		},
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false
