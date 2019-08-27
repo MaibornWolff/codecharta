@@ -604,7 +604,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		focusedNodePath: "",
 		heightMetric: null,
 		distributionMetric: null,
-		edgeMetric: "",
+		edgeMetric: "None",
 		margin: null,
 		colorRange: {
 			from: null,

@@ -74,6 +74,9 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedEventMethods() {
+		NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
+		NodeContextMenuController.subscribeToHideNodeContextMenu = jest.fn()
+
 		$rootScope.$on = nodeContextMenuController["$rootScope"].$on = jest.fn()
 		$rootScope.$broadcast = nodeContextMenuController["$rootScope"].$broadcast = jest.fn()
 	}
@@ -110,13 +113,13 @@ describe("nodeContextMenuController", () => {
 		it("should subscribe to 'show-node-context-menu' events", () => {
 			withMockedEventMethods()
 			rebuildController()
-			expect($rootScope.$on).toHaveBeenCalledWith("show-node-context-menu", expect.any(Function))
+			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
 		it("should subscribe to 'hide-node-context-menu' events", () => {
 			withMockedEventMethods()
 			rebuildController()
-			expect($rootScope.$on).toHaveBeenCalledWith("hide-node-context-menu", expect.any(Function))
+			expect(NodeContextMenuController.subscribeToHideNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
 		it("should broadcast 'show-node-context-menu' when 'show' method is called", () => {

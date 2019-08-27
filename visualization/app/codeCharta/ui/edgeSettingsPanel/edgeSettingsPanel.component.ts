@@ -13,9 +13,9 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 		edgeHeight: number
 		showOnlyBuildingsWithEdges: boolean
 	} = {
-		amountOfEdgePreviews: 1,
-		totalAffectedBuildings: 1,
-		edgeHeight: 4,
+		amountOfEdgePreviews: null,
+		totalAffectedBuildings: null,
+		edgeHeight: null,
 		showOnlyBuildingsWithEdges: null
 	}
 

@@ -22,12 +22,12 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	}
 
 	constructor(
-		$rootScope: IRootScopeService,
+		private $rootScope: IRootScopeService,
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService
 	) {
-		EdgeMetricService.subscribe($rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents($rootScope, this)
+		EdgeMetricService.subscribe(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 	}
 
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
