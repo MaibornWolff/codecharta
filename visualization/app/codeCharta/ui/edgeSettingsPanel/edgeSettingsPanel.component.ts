@@ -56,6 +56,12 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 
 	public onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.totalAffectedBuildings = this.edgeMetricService.getAmountOfAffectedBuildings(edgeMetric)
+		if (edgeMetric === "None") {
+			this._viewModel.amountOfEdgePreviews = 0
+		} else {
+			this._viewModel.amountOfEdgePreviews = this.settingsService.getDefaultSettings().appSettings.amountOfEdgePreviews
+		}
+		this.applySettingsAmountOfEdgePreviews()
 	}
 
 	public applySettingsAmountOfEdgePreviews() {
