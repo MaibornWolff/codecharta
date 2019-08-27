@@ -119,4 +119,66 @@ describe("EdgeChooserController", () => {
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({ dynamicSettings: { edgeMetric: "metric1" } })
 		})
 	})
+
+	describe("filterMetricData()", () => {
+		it("should return the all entries if search term is empty", () => {
+			let metricData = [
+				{ name: "metric1", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "metric2", maxValue: 2, availableInVisibleMaps: false }
+			]
+			edgeChooserController["_viewModel"].searchTerm = ""
+			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+
+			edgeChooserController.filterMetricData()
+
+			expect(edgeChooserController["_viewModel"].edgeMetricData).toEqual(metricData)
+		})
+
+		it("should return only metrics that include search term", () => {
+			let metricData = [
+				{ name: "metric1", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "metric2", maxValue: 2, availableInVisibleMaps: false }
+			]
+			edgeChooserController["_viewModel"].searchTerm = "ic2"
+			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+
+			edgeChooserController.filterMetricData()
+
+			expect(edgeChooserController["_viewModel"].edgeMetricData).toEqual([
+				{ name: "metric2", maxValue: 2, availableInVisibleMaps: false }
+			])
+		})
+
+		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
+			let metricData = [
+				{ name: "metric1", maxValue: 1, availableInVisibleMaps: true },
+				{ name: "metric2", maxValue: 2, availableInVisibleMaps: false }
+			]
+			edgeChooserController["_viewModel"].searchTerm = "fooBar"
+			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+
+			edgeChooserController.filterMetricData()
+
+			expect(edgeChooserController["_viewModel"].edgeMetricData).toEqual([])
+		})
+	})
+	describe("clearSearchTerm()", () => {
+		it("should return an empty string, when function is called", () => {
+			edgeChooserController["_viewModel"].searchTerm = "someString"
+
+			edgeChooserController.clearSearchTerm()
+
+			expect(edgeChooserController["_viewModel"].searchTerm).toEqual("")
+		})
+
+		it("should return the the metricData Array with all Elements, when function is called", () => {
+			let metricData = [{ name: "metric1", maxValue: 1, availableInVisibleMaps: true }]
+			edgeChooserController["_viewModel"].searchTerm = "rlo"
+			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+
+			edgeChooserController.clearSearchTerm()
+
+			expect(edgeChooserController["_viewModel"].edgeMetricData).toEqual(metricData)
+		})
+	})
 })
