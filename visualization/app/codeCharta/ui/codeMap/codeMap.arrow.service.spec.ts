@@ -1,14 +1,14 @@
 import "../../codeCharta.module"
 import "./codeMap.module"
-import {CodeMapArrowService} from "./codeMap.arrow.service"
-import {ThreeSceneService} from "./threeViewer/threeSceneService"
-import {getService, instantiateModule} from "../../../../mocks/ng.mockhelper"
-import {Object3D, Vector3} from "three"
-import {Edge, EdgeVisibility, Node, Settings} from "../../codeCharta.model"
-import {SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES} from "../../util/dataMocks"
-import {IRootScopeService} from "angular"
-import {CodeMapMouseEventService} from "./codeMap.mouseEvent.service"
-import {SettingsService} from "../../state/settingsService/settings.service"
+import { CodeMapArrowService } from "./codeMap.arrow.service"
+import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { Object3D, Vector3 } from "three"
+import { Edge, EdgeVisibility, Node, Settings } from "../../codeCharta.model"
+import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
+import { IRootScopeService } from "angular"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
@@ -112,10 +112,7 @@ describe("CodeMapArrowService", () => {
 		it("should call addArrow with origin and target node", () => {
 			edges[0].toNodeName = "/root"
 
-
 			codeMapArrowService.addEdgeArrows(nodes, edges)
-
-
 
 			expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(nodes[0], nodes[1], undefined)
 		})
@@ -129,42 +126,38 @@ describe("CodeMapArrowService", () => {
 
 			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.both)
 
-
 			expect(codeMapArrowService["arrows"].length).toBe(2)
 		})
 
-        it("should insert one arrow, if we set the EdgeVisibility to from", () => {
-            settings.dynamicSettings.heightMetric = "a"
+		it("should insert one arrow, if we set the EdgeVisibility to from", () => {
+			settings.dynamicSettings.heightMetric = "a"
 
-            settingsService.getSettings = jest.fn().mockReturnValue(settings)
+			settingsService.getSettings = jest.fn().mockReturnValue(settings)
 
-            codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.from)
+			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.from)
 
+			expect(codeMapArrowService["arrows"].length).toBe(1)
+		})
 
-            expect(codeMapArrowService["arrows"].length).toBe(1)
-        })
+		it("should insert one arrow, if we set the EdgeVisibility to to", () => {
+			settings.dynamicSettings.heightMetric = "a"
 
-        it("should insert one arrow, if we set the EdgeVisibility to to", () => {
-            settings.dynamicSettings.heightMetric = "a"
+			settingsService.getSettings = jest.fn().mockReturnValue(settings)
 
-            settingsService.getSettings = jest.fn().mockReturnValue(settings)
+			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.to)
 
-            codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.to)
+			expect(codeMapArrowService["arrows"].length).toBe(1)
+		})
 
+		it("should't insert arrow, if we set the EdgeVisibility to none", () => {
+			settings.dynamicSettings.heightMetric = "a"
 
-            expect(codeMapArrowService["arrows"].length).toBe(1)
-        })
+			settingsService.getSettings = jest.fn().mockReturnValue(settings)
 
-        it("should't insert arrow, if we set the EdgeVisibility to none", () => {
-            settings.dynamicSettings.heightMetric = "a"
+			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.none)
 
-            settingsService.getSettings = jest.fn().mockReturnValue(settings)
-
-            codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.none)
-
-
-            expect(codeMapArrowService["arrows"].length).toBe(0)
-        })
+			expect(codeMapArrowService["arrows"].length).toBe(0)
+		})
 
 		it("should not add arrows if node has not a height attribute mentioned in renderSettings", () => {
 			nodes[0].attributes = { notsome: 0 }
