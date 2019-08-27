@@ -77,7 +77,6 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 
 	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, edgeVisibility?: EdgeVisibility): void {
 		const settings = this.settingsService.getSettings()
-		const mapSize = settings.treeMapSettings.mapSize
 		const curveScale = 100 * settings.appSettings.edgeHeight
 
 		if (
@@ -86,26 +85,17 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			arrowOriginNode.attributes &&
 			arrowOriginNode.attributes[this.settingsService.getSettings().dynamicSettings.heightMetric]
 		) {
-			const xTarget: number = arrowTargetNode.x0 - mapSize * 0.5
-			const yTarget: number = arrowTargetNode.z0
-			const zTarget: number = arrowTargetNode.y0 - mapSize * 0.5
+			const bezierPoint2 = arrowOriginNode.outgoingEdgePoint.clone()
+			const bezierPoint3 = arrowTargetNode.incomingEdgePoint.clone()
 
-			const wTarget: number = arrowTargetNode.width
-			const hTarget: number = arrowTargetNode.height
-			const lTarget: number = arrowTargetNode.length
-
-			const xOrigin: number = arrowOriginNode.x0 - mapSize * 0.5
-			const yOrigin: number = arrowOriginNode.z0
-			const zOrigin: number = arrowOriginNode.y0 - mapSize * 0.5
-
-			const wOrigin: number = arrowOriginNode.width
-			const hOrigin: number = 1
-			const lOrigin: number = arrowOriginNode.length
+			const arrowHeight = Math.max(bezierPoint2.y + arrowTargetNode.height, bezierPoint3.y + 1) + curveScale
+			bezierPoint2.setY(arrowHeight)
+			bezierPoint3.setY(arrowHeight)
 
 			const curve = new CubicBezierCurve3(
 				arrowOriginNode.outgoingEdgePoint,
-				new Vector3(xOrigin + wOrigin / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + curveScale, zOrigin + lOrigin / 2),
-				new Vector3(xTarget + wTarget / 2, Math.max(yOrigin + hOrigin, yTarget + hTarget) + curveScale, zTarget + lTarget / 2),
+				bezierPoint2,
+				bezierPoint3,
 				arrowTargetNode.incomingEdgePoint
 			)
 
