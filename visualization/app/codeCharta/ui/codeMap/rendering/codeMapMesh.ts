@@ -94,6 +94,17 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
+	public highlightBuildings(buildingArray: CodeMapBuilding[], selected: CodeMapBuilding, settings: Settings) {
+		for (let i = 0; i < buildingArray.length; i++) {
+			const currentBuilding: CodeMapBuilding = buildingArray[i]
+			if (!this.isBuildingSelected(selected, currentBuilding)) {
+				currentBuilding.decreaseLightness(-10)
+			}
+			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector(), currentBuilding.getDeltaColorVector())
+		}
+		this.updateVertices()
+	}
+
 	public clearHighlight(selected: CodeMapBuilding) {
 		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
 			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]

@@ -6,6 +6,7 @@ import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouse
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
+import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 
 export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 	private VERTICES_PER_LINE = 5
@@ -124,16 +125,22 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const curve = new CubicBezierCurve3(bezierPoint1, bezierPoint2, bezierPoint3, bezierPoint4)
 
 			if (this.isHovered) {
-				this.hoveredMode(curve, arrowOriginNode)
+				this.hoveredMode(curve, arrowOriginNode, arrowTargetNode)
 			} else {
 				this.previewMode(curve, edgeVisibility)
 			}
 		}
 	}
 
-	private hoveredMode(bezier: CubicBezierCurve3, arrowOriginNode: Node, bezierPoints: number = 50) {
+	private hoveredMode(bezier: CubicBezierCurve3, arrowOriginNode: Node, arrowTargetNode: Node, bezierPoints: number = 50) {
 		const points = bezier.getPoints(bezierPoints)
 		if (this.hoveredNode.path === arrowOriginNode.path) {
+			const building: CodeMapBuilding = this.threeSceneService
+				.getMapMesh()
+				.getMeshDescription()
+				.findBuildingToNode(arrowTargetNode)
+			this.threeSceneService.addBuildingToHighlightingList(building)
+
 			const curveObject = this.buildLine(
 				points,
 				ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
@@ -143,6 +150,11 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			this.threeSceneService.edgeArrows.add(curveObject)
 			this.arrows.push(curveObject)
 		} else {
+			const building: CodeMapBuilding = this.threeSceneService
+				.getMapMesh()
+				.getMeshDescription()
+				.findBuildingToNode(arrowOriginNode)
+			this.threeSceneService.addBuildingToHighlightingList(building)
 			const curveObject = this.buildLine(
 				points,
 				ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
