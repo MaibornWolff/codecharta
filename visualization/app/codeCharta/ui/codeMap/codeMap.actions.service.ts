@@ -123,9 +123,11 @@ export class CodeMapActionsService {
 		const numberOfEdgesToDisplay = settings.appSettings.amountOfEdgePreviews
 		const edgePreviewNodes = this.edgeMetricService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
 
-		const filteredEdges = edges.filter(edge => Object.keys(edge.attributes).includes(edgeMetric))
-		filteredEdges.forEach(edge => {
-			if (edgePreviewNodes.includes(edge.fromNodeName) || edgePreviewNodes.includes(edge.toNodeName)) {
+		edges.forEach(edge => {
+			if (
+				(edgePreviewNodes.includes(edge.fromNodeName) || edgePreviewNodes.includes(edge.toNodeName)) &&
+				Object.keys(edge.attributes).includes(edgeMetric)
+			) {
 				edge.visible = EdgeVisibility.both
 				if (!edgePreviewNodes.includes(edge.fromNodeName)) {
 					edge.visible = EdgeVisibility.to
