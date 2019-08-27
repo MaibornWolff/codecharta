@@ -7,14 +7,18 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 
 export class EdgeChooserController implements EdgeMetricServiceSubscriber {
+	private originalEdgeMetricData: MetricData[]
+
 	private _viewModel: {
 		edgeMetricData: MetricData[]
 		edgeMetric: string
 		hoveredEdgeValue: EdgeMetricCount
+		searchTerm: string
 	} = {
 		edgeMetricData: [],
-		edgeMetric: null,
-		hoveredEdgeValue: null
+		edgeMetric: "None",
+		hoveredEdgeValue: null,
+		searchTerm: ""
 	}
 
 	constructor(
@@ -28,6 +32,7 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
 		this._viewModel.edgeMetricData = edgeMetrics
+		this.originalEdgeMetricData = edgeMetrics
 
 		let edgeMetricNames = edgeMetrics.map(x => x.name)
 
@@ -51,6 +56,17 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 
 	public noEdgesAvailable() {
 		return this._viewModel.edgeMetricData.length <= 1
+	}
+
+	public filterMetricData() {
+		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(metric =>
+			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
+		)
+	}
+
+	public clearSearchTerm() {
+		this._viewModel.searchTerm = ""
+		this._viewModel.edgeMetricData = this.originalEdgeMetricData
 	}
 }
 

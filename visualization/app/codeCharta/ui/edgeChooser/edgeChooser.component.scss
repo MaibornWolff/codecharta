@@ -1,49 +1,5 @@
 edge-chooser-component {
-	$selectWidth: 150;
-
-	md-input-container {
-		display: block;
-		top: -5px;
-		margin: 0;
-		text-align: left;
-
-		md-select {
-			width: $selectWidth + px;
-		}
-
-		> * {
-			display: inline-block;
-			margin: 0;
-			padding: 0;
-			vertical-align: middle;
-		}
-	}
-
-	i.fa,
 	.metric-value {
-		vertical-align: middle;
-		margin-top: 8px;
-	}
-
-	i.fa {
-		margin-left: 5px;
-		margin-right: 10px;
-		min-width: 16px;
-	}
-
-	.metric-value {
-		margin-left: 5px;
-		min-width: 40px;
-		float: right;
 		margin-right: 15px;
 	}
-
-	.md-select-value .metric-max-value {
-		display: none;
-	}
-}
-
-.metric-max-value {
-	color: #ccc !important;
-	font-size: smaller !important;
 }
