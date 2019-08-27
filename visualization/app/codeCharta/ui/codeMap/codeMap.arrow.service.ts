@@ -39,6 +39,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 				this.addEdgeArrows(null, edges.filter(x => x.visible != EdgeVisibility.none))
 			}
 		}
+		this.scale(this.settingsService.getSettings().appSettings.scaling)
 	}
 
 	public clearArrows() {
@@ -126,6 +127,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			curveObject.add(this.buildArrow(points))
 
 			this.threeSceneService.edgeArrows.add(curveObject)
+			this.arrows.push(curveObject)
 		} else {
 			const curveObject = this.buildLine(
 				points,
@@ -134,6 +136,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			curveObject.add(this.buildArrow(points))
 
 			this.threeSceneService.edgeArrows.add(curveObject)
+			this.arrows.push(curveObject)
 		}
 	}
 
