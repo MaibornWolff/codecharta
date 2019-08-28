@@ -111,10 +111,11 @@ describe("CodeMapArrowService", () => {
 
 		it("should call addArrow with origin and target node", () => {
 			edges[0].toNodeName = "/root"
+			edges[0].visible = EdgeVisibility.both
 
 			codeMapArrowService.addEdgeArrows(nodes, edges)
 
-			expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(nodes[0], nodes[1], undefined)
+			expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(nodes[0], nodes[1], EdgeVisibility.both)
 		})
 	})
 
