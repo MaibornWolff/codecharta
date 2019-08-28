@@ -31,7 +31,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		private $element: Element,
 		private $timeout,
 		private $window,
-		private $rootScope,
+		private $rootScope: IRootScopeService,
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
 		private codeMapPreRenderService: CodeMapPreRenderService
@@ -167,7 +167,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 	}
 
 	public static subscribeToHideNodeContextMenu($rootScope: IRootScopeService, subscriber: HideNodeContextMenuSubscriber) {
-		$rootScope.$on(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, event => {
+		$rootScope.$on(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT, event => {
 			subscriber.onHideNodeContextMenu()
 		})
 	}

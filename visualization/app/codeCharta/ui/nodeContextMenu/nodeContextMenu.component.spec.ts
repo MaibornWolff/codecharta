@@ -138,20 +138,6 @@ describe("nodeContextMenuController", () => {
 			NodeContextMenuController.broadcastHideEvent($rootScope)
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
 		})
-
-		it("should call 'showContextMenu' on 'show-node-context-menu' events", () => {
-			nodeContextMenuController.onShowNodeContextMenu = jest.fn()
-			NodeContextMenuController.broadcastShowEvent($rootScope, "somepath", "sometype", 42, 24)
-			$rootScope.$digest()
-			expect(nodeContextMenuController.onShowNodeContextMenu).toHaveBeenCalledWith("somepath", "sometype", 42, 24)
-		})
-
-		it("should call 'hideContextMenu' on 'hide-node-context-menu' events", () => {
-			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
-			NodeContextMenuController.broadcastHideEvent($rootScope)
-			$rootScope.$digest()
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
-		})
 	})
 
 	describe("show", () => {

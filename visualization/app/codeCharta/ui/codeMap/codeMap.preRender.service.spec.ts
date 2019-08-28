@@ -10,6 +10,7 @@ import { MetricService } from "../../state/metric.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { EdgeMetricService } from "../../state/edgeMetric.service"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -17,6 +18,7 @@ describe("codeMapPreRenderService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
 	let loadingGifService: LoadingGifService
+	let edgeMetricService: EdgeMetricService
 
 	let settings: Settings
 	let file: CCFile
@@ -39,6 +41,7 @@ describe("codeMapPreRenderService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
+		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 		file = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS))
@@ -49,7 +52,8 @@ describe("codeMapPreRenderService", () => {
 			$rootScope,
 			threeOrbitControlsService,
 			codeMapRenderService,
-			loadingGifService
+			loadingGifService,
+			edgeMetricService
 		)
 	}
 
