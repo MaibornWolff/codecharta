@@ -9,9 +9,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Edge Previews (Palm-Tree-Effect) #529
+- Dropdown to select Edge Metric, including Edge Counter #529
+- Edge Metric settings for Edge Height, Number of Previews & show only building with Edges #529
+
 ### Changed
 
+- Edge Visualization to better distinguish between incoming and outgoing edges #529
+
 ### Removed
+
+- Edge Options in Context menu #529
 
 ### Fixed
 
