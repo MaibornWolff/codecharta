@@ -5,6 +5,7 @@
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
 ## Jump to Section
+
 -   [Installation](#installation)
 -   [Tasks](#tasks)
 -   [JSON structure](#json-structure)

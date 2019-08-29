@@ -30,9 +30,12 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.*
+import mu.KotlinLogging
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy,
                     private val projectName: String? = null) {
+
+    private val logger = KotlinLogging.logger { }
 
     fun extractProjectName(): String {
         if (projectName != null) return projectName
@@ -63,19 +66,28 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                 .map { it.apiVersion }
                 .filter { !Project.isAPIVersionCompatible(it) }
 
-        return !unsupportedAPIVersions.isNotEmpty()
+        return unsupportedAPIVersions.isEmpty()
     }
 
     private fun mergeProjectNodes(): List<MutableNode> {
-        return nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
+        val mergedNodes = nodeMerger.mergeNodeLists(projects.map { listOf(it.rootNode.toMutableNode()) })
+        nodeMerger.logMergeStats()
+        return mergedNodes
     }
 
     private fun mergeEdges(): MutableList<Edge> {
-        if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
-            return getMergedEdges()
+        return if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
+            getMergedEdges()
         } else {
-            return mutableListOf()
+            getEdgesOfMasterAndWarnIfDiscards()
         }
+    }
+
+    private fun getEdgesOfMasterAndWarnIfDiscards(): MutableList<Edge> {
+        projects.forEachIndexed { i, project ->
+            if (project.edges.isNotEmpty() && i > 0) logger.warn("Edges of ${project.projectName} were ignored. Use recursive strategy to merge edges.")
+        }
+        return projects.first().edges.toMutableList()
     }
 
     private fun getMergedEdges(): MutableList<Edge> {

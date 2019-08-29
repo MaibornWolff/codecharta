@@ -303,6 +303,3 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/intellij,jetbrains,java,code-java,macos,windows,linux,node,angular,grun...
 visualization/.vscode/launch.json
 visualization/.vscode/settings.json
-
-# temp files for travis
-RELEASE_NOTES.md

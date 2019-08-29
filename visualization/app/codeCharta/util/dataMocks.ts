@@ -1,4 +1,14 @@
-import { AttributeTypeValue, CCFile, CodeMapNode, Edge, MetricData, Node, Settings } from "../codeCharta.model"
+import {
+	AttributeTypeValue,
+	CCFile,
+	CodeMapNode,
+	Edge,
+	FileSelectionState,
+	FileState,
+	MetricData,
+	Node,
+	Settings
+} from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import * as THREE from "three"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -437,6 +447,13 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	projectName: "Sample Map"
 }
 
+export const FILE_STATES: FileState[] = [
+	{
+		file: TEST_FILE_DATA,
+		selectedAs: FileSelectionState.Single
+	}
+]
+
 export const SETTINGS: Settings = {
 	fileSettings: {
 		attributeTypes: {
@@ -497,7 +514,8 @@ export const SETTINGS: Settings = {
 			lightGrey: "#DDDDDD",
 			angularGreen: "#00BFA5",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
-		}
+		},
+		isPresentationMode: false
 	},
 	treeMapSettings: {
 		mapSize: 500
@@ -531,7 +549,8 @@ export const DEFAULT_SETTINGS: Settings = {
 		},
 		maximizeDetailPanel: false,
 		scaling: new THREE.Vector3(1, 1, 1),
-		whiteColorBuildings: false
+		whiteColorBuildings: false,
+		isPresentationMode: false
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -563,11 +582,9 @@ export const TEST_NODE_ROOT: Node = {
 	isLeaf: true,
 	deltas: { a: 1, b: 2 },
 	attributes: { a: 20, b: 15 },
-	children: [],
-	parent: undefined,
 	heightDelta: 10,
 	visible: true,
-	path: "root",
+	path: "/root",
 	origin: "root",
 	link: "NO_LINK",
 	markingColor: "0x000000",
@@ -586,16 +603,16 @@ export const TEST_NODE_LEAF: Node = {
 	isLeaf: true,
 	deltas: { a: 1, b: 2 },
 	attributes: { a: 20, b: 15 },
-	children: [],
-	parent: undefined,
 	heightDelta: 20,
 	visible: true,
-	path: "root/big leaf",
+	path: "/root/big leaf",
 	origin: "root",
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false
 }
+
+export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,

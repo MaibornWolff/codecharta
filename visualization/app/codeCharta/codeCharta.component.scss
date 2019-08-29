@@ -32,41 +32,85 @@ code-charta-component {
 		}
 	}
 
-	#title {
-		position: fixed;
-		z-index: 2;
-		width: 100%;
-	}
-
-	.small-info {
-		color: rgba(0, 0, 0, 0.38);
-		font-size: 9pt;
-	}
-
 	#codeMap {
 		position: fixed;
 		z-index: 0;
-		top: 46px;
+		top: 90px;
 		left: 0;
 		width: 100%;
 		height: 100%;
 		transition: all $animationDuration + s ease;
 
 		&.expanded {
-			top: 195px;
 			height: calc(100% - 170px);
 		}
 	}
 
-	#actionButtons {
+	.cc-shadow {
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+	}
+
+	.ribbon-bar-wrapper {
+		height: 500px;
+		position: fixed;
+		z-index: 10;
+		white-space: nowrap;
+		pointer-events: none;
+
+		.ribbon-bar-component {
+			md-card,
+			.section .section-header,
+			.section .section-body {
+				transition: all $animationDuration + s ease;
+			}
+		}
+	}
+
+	.angular-green {
+		color: #00bfa5;
+	}
+
+	.small-action-button {
+		height: 24px;
+		width: 24px;
+		float: left;
+
+		.md-fab {
+			min-height: 0;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+
+			i {
+				position: absolute;
+				top: 5px;
+				left: 6px;
+			}
+		}
+
+		&.transparent .md-fab {
+			background-color: transparent !important;
+			box-shadow: none;
+
+			&:hover {
+				background-color: #ddd !important;
+			}
+		}
+	}
+
+	.md-button.round-button {
+		margin-right: 0 !important;
+		float: right;
+		min-width: 36px;
+		width: 36px;
+		border-radius: 50%;
+	}
+
+	.action-buttons {
 		position: fixed;
 		bottom: 2em;
 		right: 2em;
 		z-index: 60;
-
-		i.fa-folder-open {
-			margin: 4px 0 0 2px;
-		}
 
 		.long-button {
 			width: inherit;
@@ -82,37 +126,48 @@ code-charta-component {
 		}
 	}
 
-	.dark_shadow_opacity {
-		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
-		opacity: 0.97;
-	}
+	.state-selector-button {
+		height: 22px;
+		vertical-align: bottom;
+		width: 30px;
+		min-height: 0;
+		min-width: 0;
+		margin: 0;
+		padding: 0;
+		font-size: 9pt;
+		text-transform: none;
+		background-color: rgba(230, 230, 230, 0.96);
 
-	.bottom_shadow {
-		box-shadow: 0 4px 4px -2px rgba(0, 0, 0, 0.2) !important;
-	}
-
-	.md-button.round-button {
-		margin-right: 0 !important;
-		float: right;
-		min-width: 36px;
-		width: 36px;
-		border-radius: 50%;
-	}
-
-	ribbon-bar-component {
-		position: fixed;
-		z-index: 10;
-		width: 100%;
-
-		#header,
-		#header .section .section-header,
-		#header .section .section-body,
-		#toggle-ribbon-bar-fab {
-			transition: all $animationDuration + s ease;
+		&:hover {
+			background-color: rgb(200, 200, 200) !important;
 		}
-	}
 
-	.angular-green {
-		color: #00bfa5;
+		i {
+			vertical-align: middle;
+			height: 26px;
+		}
+
+		&.left {
+			border-radius: 5px 0 0 5px;
+		}
+
+		&.middle {
+			border-radius: 0;
+			border-left: 1px solid rgba(255, 255, 255, 1);
+			border-right: 1px solid rgba(255, 255, 255, 1);
+		}
+
+		&.right {
+			border-radius: 0 5px 5px 0;
+		}
+
+		&.current {
+			background-color: rgb(0, 150, 136);
+			color: #ffffff;
+		}
+
+		&.current:hover {
+			background-color: rgb(0, 124, 112) !important;
+		}
 	}
 }

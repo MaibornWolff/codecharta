@@ -2,7 +2,7 @@ import "./scenarioDropDown.module"
 import "../codeMap/threeViewer/threeViewer.module"
 import { ScenarioDropDownController } from "./scenarioDropDown.component"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
@@ -75,23 +75,21 @@ describe("ScenarioDropDownController", () => {
 		it("should call getScenarios and set the scenarios in viewmodel correctly", () => {
 			ScenarioHelper.getScenarios = jest.fn().mockReturnValue([{ name: "scenario", settings: {} }])
 
-			scenarioButtonsController.onMetricDataAdded(metricData, undefined)
+			scenarioButtonsController.onMetricDataAdded(metricData)
 
 			expect(ScenarioHelper.getScenarios).toHaveBeenCalledWith(metricData)
 			expect(scenarioButtonsController["_viewModel"].scenarios).toEqual([{ name: "scenario", settings: {} }])
 		})
 	})
 
-	describe("applySettings", () => {
+	describe("applyScenario", () => {
 		it("should call getScenarioSettingsByName and set call updateSettings with scenarioSettings", () => {
 			const mockScenarioSettings = {}
 			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(mockScenarioSettings)
-			scenarioButtonsController["_viewModel"].selectedName = "scenario"
 
-			scenarioButtonsController.applySettings()
+			scenarioButtonsController.applyScenario("scenario")
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(mockScenarioSettings)
-			expect(scenarioButtonsController["_viewModel"].selectedName).toBeNull()
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 		})
 	})

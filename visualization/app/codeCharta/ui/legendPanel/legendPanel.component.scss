@@ -1,10 +1,10 @@
 legend-panel-component {
-	$fixedHeight: 280;
+	$fixedHeight: 35;
 
 	.panel-button {
 		position: fixed;
-		top: ($fixedHeight + 20) + px;
-		left: -35px;
+		bottom: ($fixedHeight + 20) + px;
+		right: -35px;
 		transform: rotate(90deg);
 		z-index: 2;
 	}
@@ -12,8 +12,8 @@ legend-panel-component {
 	.block-wrapper {
 		position: fixed;
 		z-index: 29;
-		top: $fixedHeight + px;
-		left: -500px; //initial state is closed
+		bottom: $fixedHeight + px;
+		right: -500px; //initial state is closed
 
 		background-color: #fff;
 		padding: 10px;

@@ -1,0 +1,40 @@
+<i class="fa fa-search search-icon"></i>
+
+<md-input-container class="md-block" md-no-float="">
+	<input
+		type="text"
+		placeholder="gitignore style: *.js, **/app/*"
+		ng-model="$ctrl._viewModel.searchPattern"
+		ng-change="$ctrl.applySettingsSearchPattern()"
+	/>
+</md-input-container>
+
+<md-menu>
+	<div class="small-action-button transparent">
+		<md-button class="md-fab" ng-click="$mdMenu.open($event)" title="Add to Blacklist...">
+			<i class="fa fa-ellipsis-h"></i>
+		</md-button>
+	</div>
+	<md-menu-content width="2">
+		<md-menu-item style="min-height: 20px; height: 20px;">
+			<md-button style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; text-align: center;" ng-disabled="true"
+				>Add Pattern to Blacklist</md-button
+			>
+		</md-menu-item>
+		<md-divider></md-divider>
+		<md-menu-item>
+			<md-button
+				ng-disabled="$ctrl._viewModel.folderCount + $ctrl._viewModel.fileCount == 0 || $ctrl._viewModel.isPatternHidden"
+				ng-click="$ctrl.onClickBlacklistPattern('hide')"
+				><i class="fa fa-eye-slash"></i> Hide</md-button
+			>
+		</md-menu-item>
+		<md-menu-item>
+			<md-button
+				ng-disabled="$ctrl._viewModel.folderCount + $ctrl._viewModel.fileCount == 0 || $ctrl._viewModel.isPatternExcluded"
+				ng-click="$ctrl.onClickBlacklistPattern('exclude')"
+				><i class="fa fa-ban"></i> Exclude</md-button
+			>
+		</md-menu-item>
+	</md-menu-content>
+</md-menu>

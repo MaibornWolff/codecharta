@@ -1,7 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 
+import com.sonar.sslr.api.RecognitionException
 import de.maibornwolff.codecharta.importer.sourcecodeparser.NullFileLinesContextFactory
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.visitors.MaxNestingLevelVisitor
 import org.sonar.api.SonarQubeSide
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder
@@ -19,11 +21,16 @@ import org.sonar.java.DefaultJavaResourceLocator
 import org.sonar.java.JavaClasspath
 import org.sonar.java.JavaTestClasspath
 import org.sonar.java.SonarComponents
+import org.sonar.java.ast.parser.JavaParser
 import org.sonar.java.checks.CheckList
+import org.sonar.java.model.DefaultJavaFileScannerContext
+import org.sonar.java.model.JavaVersionImpl
 import org.sonar.plugins.java.Java
 import org.sonar.plugins.java.JavaRulesDefinition
 import org.sonar.plugins.java.JavaSonarWayProfile
 import org.sonar.plugins.java.JavaSquidSensor
+import org.sonar.plugins.java.api.tree.CompilationUnitTree
+import org.sonar.plugins.java.api.tree.Tree
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
@@ -96,7 +103,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
             addFileToContext(file)
             executeScan()
             val fileMetrics = retrieveMetrics(file)
-            retrieveAdditionalMetrics().forEach { fileMetrics.add(it.key, it.value) }
+            retrieveAdditionalMetrics(file).forEach { fileMetrics.add(it.key, it.value) }
             retrieveIssues().forEach { fileMetrics.add(it.key, it.value) }
             projectMetrics.addFileMetricMap(file, fileMetrics)
         }
@@ -121,14 +128,17 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
 
     override fun addFileToContext(fileName: String) {
-        val inputFile = TestInputFileBuilder.create("moduleKey", fileName)
+        sensorContext.fileSystem().add(getInputFile(fileName))
+    }
+
+    private fun getInputFile(fileName: String) : InputFile {
+        return TestInputFileBuilder.create("moduleKey", fileName)
                 .setModuleBaseDir(baseDir.toPath())
                 .setCharset(StandardCharsets.UTF_8)
                 .setType(InputFile.Type.MAIN)
                 .setLanguage(Java.KEY)
                 .initMetadata(fileContent(File("$baseDir/$fileName"), StandardCharsets.UTF_8))
                 .build()
-        sensorContext.fileSystem().add(inputFile)
     }
 
     override fun executeScan() {
@@ -164,13 +174,34 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         return issues
     }
 
-    private fun retrieveAdditionalMetrics(): HashMap<String, Int> {
+    private fun retrieveAdditionalMetrics(fileName: String): HashMap<String, Int> {
         val additionalMetrics: HashMap<String, Int> = hashMapOf()
+
+        var tree: Tree
+        try {
+            tree = buildTree(fileName)
+        } catch (e: RecognitionException) {
+            System.err.println("Syntax error in file $fileName, therefore some metrics are not calculated")
+            return hashMapOf()
+        }
 
         val commentedOutBlocks = sensorContext.allIssues().filter { it.ruleKey().rule() == "CommentedOutCodeLine" }
         additionalMetrics["commented_out_code_blocks"] = commentedOutBlocks.size
+        addMetricsFromVisitors(tree, additionalMetrics)
 
         return additionalMetrics
+    }
+
+    private fun buildTree(fileName: String): Tree {
+        val compilationUnitTree = JavaParser.createParser().parse(File("$baseDir/$fileName")) as CompilationUnitTree
+        val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
+                compilationUnitTree, getInputFile(fileName), null, null, JavaVersionImpl(), true)
+
+        return defaultJavaFileScannerContext.tree
+    }
+
+    private fun addMetricsFromVisitors(tree: Tree, additionalMetrics: HashMap<String, Int>) {
+        additionalMetrics["max_nesting_level"] = MaxNestingLevelVisitor().getMaxNestingLevel(tree)
     }
 
     private fun printProgressBar(fileName: String) {

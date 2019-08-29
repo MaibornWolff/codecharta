@@ -5,13 +5,15 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService } from "angular"
 import * as THREE from "three"
-import { OrbitControls } from "three"
+import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
 	let $rootScope: IRootScopeService
 	let threeOrbitControlsService: ThreeOrbitControlsService
+
+	let vector: Vector3
 
 	afterEach(() => {
 		jest.resetAllMocks()
@@ -30,6 +32,8 @@ describe("ThreeOrbitControlsService", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+
+		vector = new Vector3(4.4577067775672665, 4.4577067775672665, 4.4577067775672665)
 	}
 
 	function withMockedThreeCameraService() {
@@ -45,7 +49,12 @@ describe("ThreeOrbitControlsService", () => {
 					lookAt: jest.fn(),
 					translateZ: jest.fn(),
 					updateProjectionMatrix: jest.fn(),
-					fov: 100
+					fov: 100,
+					clone: jest.fn(() => {
+						const camera = new PerspectiveCamera()
+						camera.position.set(vector.x, vector.y, vector.z)
+						return camera
+					})
 				}
 			}
 		})()
@@ -102,9 +111,12 @@ describe("ThreeOrbitControlsService", () => {
 
 		threeOrbitControlsService.autoFitTo(new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)))
 
-		expect(threeCameraService.camera.position.set).toBeCalledWith(4.4577067775672665, 4.4577067775672665, 4.4577067775672665)
+		expect(threeCameraService.camera.position.set).toBeCalledWith(vector.x, vector.y, vector.z)
 		expect(threeOrbitControlsService.controls.update).toBeCalled()
 		expect(threeCameraService.camera.lookAt).toBeCalledWith(new THREE.Vector3(0, 0, 0))
 		expect(threeCameraService.camera.updateProjectionMatrix).toBeCalled()
+		expect(threeOrbitControlsService.defaultCameraPosition.x).toEqual(vector.x)
+		expect(threeOrbitControlsService.defaultCameraPosition.y).toEqual(vector.y)
+		expect(threeOrbitControlsService.defaultCameraPosition.z).toEqual(vector.z)
 	})
 })

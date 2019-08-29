@@ -1,11 +1,13 @@
 import { CC_URL, puppeteer } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
+import { Browser, Page } from "puppeteer"
 
 jest.setTimeout(15000)
 
 describe("codecharta", () => {
-	let browser, page
+	let browser: Browser
+	let page: Page
 
 	beforeEach(async () => {
 		browser = await puppeteer.launch({
@@ -48,13 +50,13 @@ describe("codecharta", () => {
 		page.on("request", request => {
 			if (request.url().includes("/fileOne.json")) {
 				request.respond({
-					content: "application/json",
+					contentType: "application/json",
 					headers: { "Access-Control-Allow-Origin": "*" },
 					body: JSON.stringify(require("../assets/sample2.cc.json"))
 				})
 			} else if (request.url().includes("/fileTwo.json")) {
 				request.respond({
-					content: "application/json",
+					contentType: "application/json",
 					headers: { "Access-Control-Allow-Origin": "*" },
 					body: JSON.stringify(require("../assets/sample3.cc.json"))
 				})

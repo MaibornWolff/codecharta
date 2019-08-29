@@ -1,16 +1,23 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import "./detailPanel.component.scss"
 import {
+	BuildingHoveredEventSubscriber,
+	BuildingSelectedEventSubscriber,
 	CodeMapBuildingTransition,
-	CodeMapMouseEventService,
-	CodeMapMouseEventServiceSubscriber
+	CodeMapMouseEventService
 } from "../codeMap/codeMap.mouseEvent.service"
-import { Settings, KeyValuePair, MetricData, RecursivePartial } from "../../codeCharta.model"
+import { Settings, KeyValuePair, MetricData, RecursivePartial, BlacklistItem } from "../../codeCharta.model"
 import { Node } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import {
+	AreaMetricSubscriber,
+	BlacklistSubscriber,
+	ColorMetricSubscriber,
+	HeightMetricSubscriber,
+	SettingsServiceSubscriber
+} from "../../state/settingsService/settings.service.events"
 
 interface CommonDetails {
 	areaAttributeName: string
@@ -39,7 +46,16 @@ interface Details {
 	selected: SpecificDetails
 }
 
-export class DetailPanelController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber, MetricServiceSubscriber {
+export class DetailPanelController
+	implements
+		SettingsServiceSubscriber,
+		BuildingHoveredEventSubscriber,
+		BuildingSelectedEventSubscriber,
+		MetricServiceSubscriber,
+		BlacklistSubscriber,
+		AreaMetricSubscriber,
+		HeightMetricSubscriber,
+		ColorMetricSubscriber {
 	private _viewModel: {
 		maximizeDetailPanel: boolean
 		metrics: string[]
@@ -93,30 +109,48 @@ export class DetailPanelController implements SettingsServiceSubscriber, CodeMap
 	) {
 		MetricService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
-		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
+		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
+		SettingsService.subscribeToColorMetric(this.$rootScope, this)
+
+		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 	}
 
-	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.metrics = metricData.map(x => x.name)
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {}
+	public onMetricDataRemoved() {}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		this.onHover(data)
 	}
 
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+	public onBuildingSelected(data: CodeMapBuildingTransition) {
 		this.onSelect(data)
 	}
 
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {}
-
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this._viewModel.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
-		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
-		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.maximizeDetailPanel = settings.appSettings.maximizeDetailPanel
+	}
+
+	public onAreaMetricChanged(areaMetric: string) {
+		this._viewModel.details.common.areaAttributeName = areaMetric
+	}
+
+	public onHeightMetricChanged(heightMetric: string) {
+		this._viewModel.details.common.heightAttributeName = heightMetric
+	}
+
+	public onColorMetricChanged(colorMetric: string) {
+		this._viewModel.details.common.colorAttributeName = colorMetric
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.clearSelectedDetails()
+		this.clearHoveredDetails()
 	}
 
 	public onSelect(data: CodeMapBuildingTransition) {

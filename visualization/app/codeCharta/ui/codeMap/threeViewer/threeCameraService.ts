@@ -1,12 +1,13 @@
 "use strict"
 
 import * as THREE from "three"
-import { SettingsServiceSubscriber, SettingsService } from "../../../state/settings.service"
+import { SettingsService } from "../../../state/settingsService/settings.service"
 import { PerspectiveCamera, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { RecursivePartial, Settings } from "../../../codeCharta.model"
 import _ from "lodash"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { SettingsServiceSubscriber } from "../../../state/settingsService/settings.service.events"
 
 export class ThreeCameraService implements SettingsServiceSubscriber, CameraChangeSubscriber {
 	public static VIEW_ANGLE = 45
@@ -25,14 +26,14 @@ export class ThreeCameraService implements SettingsServiceSubscriber, CameraChan
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (JSON.stringify(settings.appSettings.camera) !== JSON.stringify(this.lastCameraVector)) {
 			this.lastCameraVector = settings.appSettings.camera
 			this.setPosition(this.lastCameraVector.x, this.lastCameraVector.y, this.lastCameraVector.z)
 		}
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+	public onCameraChanged(camera: PerspectiveCamera) {
 		this.throttledCameraChange()
 	}
 

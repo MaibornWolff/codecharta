@@ -1,12 +1,12 @@
 import * as THREE from "three"
-import { PerspectiveCamera, Sprite } from "three"
+import { PerspectiveCamera, Sprite, Vector3 } from "three"
 import { Node, Settings } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ColorConverter } from "../../util/colorConverter"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 interface InternalLabel {
 	sprite: THREE.Sprite
@@ -18,6 +18,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
 	private LABEL_WIDTH_DIVISOR: number = 2600 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR: number = 50 // empirically gathered
+
+	private currentScale: Vector3 = new THREE.Vector3(1, 1, 1)
+	private resetScale: boolean = false
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -48,6 +51,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			this.labels.push(label)
 		}
+		this.resetScale = true
 	}
 
 	public clearLabels() {
@@ -57,24 +61,30 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	public scale(x: number, y: number, z: number) {
+	public scale(scale: Vector3) {
+		if (this.resetScale) {
+			this.resetScale = false
+			this.currentScale = new THREE.Vector3(1, 1, 1)
+		}
+
 		for (let label of this.labels) {
-			label.sprite.position.x *= x
-			label.sprite.position.y *= y
-			label.sprite.position.z *= z
+			const labelHeightDifference = new Vector3(0, 60, 0)
+			label.sprite.position
+				.sub(labelHeightDifference.clone())
+				.divide(this.currentScale.clone())
+				.multiply(scale.clone())
+				.add(labelHeightDifference.clone())
 
 			//cast is a workaround for the compiler. Attribute vertices does exist on geometry
 			//but it is missing in the mapping file for TypeScript.
-			;(<any>label.line!.geometry).vertices[0].x *= x
-			;(<any>label.line!.geometry).vertices[0].y *= y
-			;(<any>label.line!.geometry).vertices[0].z *= z
-			;(<any>label.line!.geometry).vertices[1].x = label.sprite.position.x
-			;(<any>label.line!.geometry).vertices[1].y = label.sprite.position.y
-			;(<any>label.line!.geometry).vertices[1].z = label.sprite.position.z
+			;(<any>label.line.geometry).vertices[0].divide(this.currentScale.clone()).multiply(scale.clone())
+			;(<any>label.line.geometry).vertices[1].copy(label.sprite.position)
+			label.line.geometry.translate(0, 0, 0)
 		}
+		this.currentScale.copy(scale)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+	public onCameraChanged(camera: PerspectiveCamera) {
 		for (let label of this.labels) {
 			this.setLabelSize(label.sprite)
 		}

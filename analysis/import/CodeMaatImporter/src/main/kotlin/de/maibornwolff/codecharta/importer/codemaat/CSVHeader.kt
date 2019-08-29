@@ -21,10 +21,9 @@ class CSVHeader(header: Array<String?>) {
         headerMap = HashMap()
         for (i in header.indices) {
             when {
-                header[i] == null || header[i]!!.isEmpty() -> logger.warn { "Ignoring column number $i (counting from 0) as it has no column name." }
-                headerMap.containsValue(
-                        header[i])                         -> logger.warn { "Ignoring column number $i (counting from 0) with column name ${header[i]} as it duplicates a previous column." }
-                else                                       -> headerMap[i] = header[i]!!
+                header[i].isNullOrEmpty() -> logger.warn { "Ignoring column number $i (counting from 0) as it has no column name." }
+                headerMap.containsValue(header[i]) -> logger.warn { "Ignoring column number $i (counting from 0) with column name ${header[i]} as it duplicates a previous column." }
+                else -> headerMap[i] = header[i]!!
             }
         }
 

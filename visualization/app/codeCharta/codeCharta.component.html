@@ -1,20 +1,19 @@
 <tool-bar-component></tool-bar-component>
 
-<ribbon-bar-component></ribbon-bar-component>
+<file-extension-bar-component></file-extension-bar-component>
+<div class="ribbon-bar-wrapper">
+	<ribbon-bar-component class="ribbon-bar-component"></ribbon-bar-component>
+</div>
 
-<div id="actionButtons">
+<div class="action-buttons">
 	<md-button
 		ng-if="$ctrl._viewModel.focusedNodePath.length > 0"
-		class="md-fab md-primary dark_shadow_opacity long-button"
+		class="md-fab md-primary cc-shadow long-button"
 		aria-label="Remove Focus on node"
 		ng-click="$ctrl.removeFocusedNode()"
 	>
 		Show complete map
 	</md-button>
-	<md-button class="md-fab md-primary dark_shadow_opacity" aria-label="Fit Map to View" ng-click="$ctrl.fitMapToView()">
-		<i class="fa fa-compress fa-lg"></i>
-	</md-button>
-	<sidenav-toggle-component></sidenav-toggle-component>
 </div>
 
 <code-map-component></code-map-component>

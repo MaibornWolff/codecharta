@@ -205,7 +205,7 @@ class ProjectMergerTest: Spek({
             }
 
             it("should have correct number of edges") {
-                assertThat(project.sizeOfEdges(), CoreMatchers.`is`(0))
+                assertThat(project.sizeOfEdges(), CoreMatchers.`is`(2))
             }
 
             it("should have correct number of files") {

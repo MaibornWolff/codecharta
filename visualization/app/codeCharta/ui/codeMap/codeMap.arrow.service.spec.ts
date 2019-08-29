@@ -3,7 +3,7 @@ import "./codeMap.module"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { Object3D } from "three"
+import { Object3D, Vector3 } from "three"
 import { Edge, Settings } from "../../codeCharta.model"
 import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
 import { Node } from "../../codeCharta.model"
@@ -143,7 +143,7 @@ describe("CodeMapArrowService", () => {
 		it("should set the scale of all arrows to x, y and z", () => {
 			setupArrows()
 
-			codeMapArrowService.scale(1, 2, 3)
+			codeMapArrowService.scale(new Vector3(1, 2, 3))
 
 			expect(codeMapArrowService["arrows"][0].scale.x).toBe(1)
 			expect(codeMapArrowService["arrows"][0].scale.y).toBe(2)

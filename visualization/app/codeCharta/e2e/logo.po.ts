@@ -1,16 +1,18 @@
+import { Page } from "puppeteer"
+
 export class LogoPageObject {
-	constructor(private page) {}
+	constructor(private page: Page) {}
 
 	public async getVersion() {
-		const versionString = await this.page.evaluate(() => document.querySelector("#mw-logo > div > h2 > span")["innerText"])
+		const versionString = await this.page.$eval("#mw-logo > div > h2 > span", el => el["innerText"])
 		return versionString.split(" ")[1]
 	}
 
 	public async getLink() {
-		return await this.page.evaluate(() => document.querySelector("#mw-logo > div > a")["href"])
+		return await this.page.$eval("#mw-logo > div > a", el => el["href"])
 	}
 
 	public async getImageSrc() {
-		return await this.page.evaluate(() => document.querySelector("#mw-logo > div > a > img")["src"])
+		return await this.page.$eval("#mw-logo > div > a > img", el => el["src"])
 	}
 }

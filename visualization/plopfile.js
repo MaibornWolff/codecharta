@@ -49,6 +49,7 @@ module.exports = function(plop) {
 			buildAddAction(["{{camelCase name}}", "component", "html"], "codeCharta/ui/{{camelCase name}}"),
 			buildAddAction(["{{camelCase name}}", "component", "scss"], "codeCharta/ui/{{camelCase name}}"),
 			buildAddAction(["{{camelCase name}}", "e2e", "ts"], "codeCharta/ui/{{camelCase name}}"),
+			buildAddAction(["{{camelCase name}}", "po", "ts"], "codeCharta/ui/{{camelCase name}}"),
 			buildAddAction(["{{camelCase name}}", "component", "spec", "ts"], "codeCharta/ui/{{camelCase name}}"),
 			{
 				type: "modify",

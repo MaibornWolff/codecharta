@@ -1,14 +1,14 @@
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
-import { CodeMapBuildingTransition, CodeMapMouseEventService, CodeMapMouseEventServiceSubscriber } from "./codeMap.mouseEvent.service"
+import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 
 import "./codeMap.component.scss"
 
-import angular, { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
 
-export class CodeMapController implements CodeMapMouseEventServiceSubscriber, LoadingGifComponentSubscriber {
+export class CodeMapController implements BuildingRightClickedEventSubscriber, LoadingGifComponentSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 	} = {
@@ -23,7 +23,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber, Lo
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
-		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		LoadingGifService.subscribe(this.$rootScope, this)
 	}
 
@@ -33,7 +33,7 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber, Lo
 		this.codeMapMouseEventService.start()
 	}
 
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {
+	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 		if (building) {
 			const nodeType = building.node.isLeaf ? "File" : "Folder"
@@ -41,16 +41,12 @@ export class CodeMapController implements CodeMapMouseEventServiceSubscriber, Lo
 		}
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
-
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
-
-	public onLoadingFileStatusChanged(isLoadingFile: boolean, event: angular.IAngularEvent) {
+	public onLoadingFileStatusChanged(isLoadingFile: boolean) {
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
 	}
 
-	public onLoadingMapStatusChanged(isLoadingMap: boolean, event: angular.IAngularEvent) {}
+	public onLoadingMapStatusChanged(isLoadingMap: boolean) {}
 
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})

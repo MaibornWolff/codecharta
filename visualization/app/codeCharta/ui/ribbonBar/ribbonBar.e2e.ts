@@ -1,36 +1,51 @@
-import { CC_URL, delay, puppeteer } from "../../../puppeteer.helper"
+import { goto, puppeteer } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
-import { SettingsPanelPageObject } from "../settingsPanel/settingsPanel.po"
+import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
+import { Browser, Page } from "puppeteer"
 
 jest.setTimeout(10000)
 
 describe("RibbonBar", () => {
-	let browser, page
+	let browser: Browser
+	let page: Page
+
+	let settingsPanel: SearchPanelPageObject
+	let ribbonBar: RibbonBarPageObject
 
 	beforeAll(async () => {
 		browser = await puppeteer.launch({ headless: true })
-		page = await browser.newPage()
 	})
 
 	afterAll(async () => {
 		await browser.close()
 	})
 
+	beforeEach(async () => {
+		page = await browser.newPage()
+
+		settingsPanel = new SearchPanelPageObject(page)
+		ribbonBar = new RibbonBarPageObject(page)
+
+		await goto(page)
+	})
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
-		await page.goto(CC_URL)
-		await page.evaluate(() => {
-			const loadingIndicator = document.querySelector("#loading-gif-file")
-			loadingIndicator.parentNode.removeChild(loadingIndicator)
-		})
-		await delay(500)
-		const settingsPanel = new SettingsPanelPageObject(page)
-		await settingsPanel.open()
-		await settingsPanel.toggleTreeViewSearchPanel()
-		await settingsPanel.rightClickRootNodeInTreeViewSearchPanel()
-		const ribbonBar = new RibbonBarPageObject(page)
+		await settingsPanel.toggleTreeViewMode()
+		await settingsPanel.hoverRootNodeInTreeViewSearchPanel()
 
 		const actual = await ribbonBar.getAreaMetricValue()
 		expect(actual).toBe("600")
+	})
+
+	it("should toggle ribbonBar onClick toggle button", async () => {
+		expect((await ribbonBar.getRibbonBarClassList()).split(" ")).not.toContain("expanded")
+
+		await ribbonBar.toggle()
+
+		expect((await ribbonBar.getRibbonBarClassList()).split(" ")).toContain("expanded")
+
+		await ribbonBar.toggle()
+
+		expect((await ribbonBar.getRibbonBarClassList()).split(" ")).not.toContain("expanded")
 	})
 })

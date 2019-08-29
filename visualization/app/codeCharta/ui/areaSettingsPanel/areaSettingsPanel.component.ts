@@ -1,13 +1,12 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 
-export class AreaSettingsPanelController
-	implements SettingsServiceSubscriber, CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
+export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
 	private static MIN_MARGIN = 15
 	private static MAX_MARGIN = 100
 	private static MARGIN_FACTOR = 4
@@ -31,22 +30,22 @@ export class AreaSettingsPanelController
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
 		this._viewModel.margin = settings.dynamicSettings.margin
 		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), settings)
 	}
 
-	public onRenderMapChanged(map: CodeMapNode, event: angular.IAngularEvent) {
+	public onRenderMapChanged(map: CodeMapNode) {
 		this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
 		this.potentiallyUpdateMargin(map, this.settingsService.getSettings())
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetDynamicMargin()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	private resetDynamicMargin() {
 		this._viewModel.dynamicMargin = true

@@ -1,0 +1,20 @@
+search-panel-mode-selector-component {
+	float: left;
+
+	.mode-chooser {
+		display: inline-block;
+		margin-right: 10px;
+		margin-bottom: 3px;
+		font-size: 0px;
+	}
+
+	.list-length-count {
+		position: absolute;
+		margin-left: 18px;
+		margin-top: -32px;
+		border-radius: 50%;
+		background-color: red;
+		width: 5px;
+		height: 5px;
+	}
+}

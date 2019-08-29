@@ -4,7 +4,7 @@ import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { IntermediateVertexData } from "./intermediateVertexData"
 import { BoxGeometryGenerationHelper } from "./boxGeometryGenerationHelper"
-import { ColorConverter } from "../../../util/colorConverter"
+import { ColorConverter } from "../../../util/color/colorConverter"
 
 export interface BoxMeasures {
 	x: number
@@ -144,7 +144,7 @@ export class GeometryGenerator {
 		} else {
 			const metricValue: number = n.attributes[s.dynamicSettings.colorMetric]
 
-			if (!metricValue) {
+			if (metricValue == null) {
 				return s.appSettings.mapColors.base
 			} else if (n.flat) {
 				return s.appSettings.mapColors.flat
@@ -167,6 +167,7 @@ export class GeometryGenerator {
 		let normals: Float32Array = new Float32Array(numVertices * dimension)
 		let uvs: Float32Array = new Float32Array(numVertices * uvDimension)
 		let colors: Float32Array = new Float32Array(numVertices * dimension)
+		let deltaColors: Float32Array = new Float32Array(numVertices * dimension)
 		let ids: Float32Array = new Float32Array(numVertices)
 		let deltas: Float32Array = new Float32Array(numVertices)
 
@@ -188,6 +189,10 @@ export class GeometryGenerator {
 			colors[i * dimension + 1] = color.y
 			colors[i * dimension + 2] = color.z
 
+			deltaColors[i * dimension + 0] = color.x
+			deltaColors[i * dimension + 1] = color.y
+			deltaColors[i * dimension + 2] = color.z
+
 			ids[i] = data.subGeometryIdx[i]
 			deltas[i] = data.deltas[i]
 		}
@@ -204,6 +209,7 @@ export class GeometryGenerator {
 		geometry.addAttribute("normal", new THREE.BufferAttribute(normals, dimension))
 		geometry.addAttribute("uv", new THREE.BufferAttribute(uvs, uvDimension))
 		geometry.addAttribute("color", new THREE.BufferAttribute(colors, dimension))
+		geometry.addAttribute("deltaColor", new THREE.BufferAttribute(deltaColors, dimension))
 		geometry.addAttribute("subGeomIdx", new THREE.BufferAttribute(ids, 1))
 		geometry.addAttribute("delta", new THREE.BufferAttribute(deltas, 1))
 

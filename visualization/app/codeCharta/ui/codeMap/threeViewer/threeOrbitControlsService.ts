@@ -6,7 +6,7 @@ import * as THREE from "three"
 import { ThreeSceneService } from "./threeSceneService"
 
 export interface CameraChangeSubscriber {
-	onCameraChanged(camera: PerspectiveCamera, event: IAngularEvent)
+	onCameraChanged(camera: PerspectiveCamera)
 }
 
 /**
@@ -16,8 +16,7 @@ export class ThreeOrbitControlsService {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
 	public controls: OrbitControls
-	public pivotVector: THREE.Vector3
-	public pivot: THREE.Group
+	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
 
 	/* ngInject */
 	constructor(
@@ -60,18 +59,23 @@ export class ThreeOrbitControlsService {
 	public autoFitTo(obj = this.threeSceneService.mapGeometry) {
 		const boundingSphere = new THREE.Box3().setFromObject(obj).getBoundingSphere()
 
+		const cameraReference = this.threeCameraService.camera
+
 		const scale = 1.4 // object size / display size
-		const objectAngularSize = ((this.threeCameraService.camera.fov * Math.PI) / 180) * scale
+		const objectAngularSize = ((cameraReference.fov * Math.PI) / 180) * scale
 		const distanceToCamera = boundingSphere.radius / Math.tan(objectAngularSize / 2)
 		const len = Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
 
-		this.threeCameraService.camera.position.set(len, len, len)
+		cameraReference.position.set(len, len, len)
 		this.controls.update()
 
-		let t: Vector3 = boundingSphere.center.clone()
+		const t: Vector3 = boundingSphere.center.clone()
 		t.setY(0)
-		this.threeCameraService.camera.lookAt(t)
 		this.controls.target.set(t.x, t.y, t.z)
+
+		cameraReference.lookAt(t)
+
+		this.defaultCameraPosition = cameraReference.clone().position
 
 		this.threeCameraService.camera.updateProjectionMatrix()
 	}
@@ -90,7 +94,7 @@ export class ThreeOrbitControlsService {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CameraChangeSubscriber) {
 		$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (event: IAngularEvent, camera: PerspectiveCamera) => {
-			subscriber.onCameraChanged(camera, event)
+			subscriber.onCameraChanged(camera)
 		})
 	}
 }

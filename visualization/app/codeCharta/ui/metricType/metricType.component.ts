@@ -1,16 +1,13 @@
 import "./metricType.component.scss"
 import { MetricService } from "../../state/metric.service"
-import { AttributeTypeValue, RecursivePartial, Settings } from "../../codeCharta.model"
+import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import {
-	CodeMapBuildingTransition,
-	CodeMapMouseEventService,
-	CodeMapMouseEventServiceSubscriber
-} from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { SettingsService } from "../../state/settingsService/settings.service"
+import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { AreaMetricSubscriber, ColorMetricSubscriber, HeightMetricSubscriber } from "../../state/settingsService/settings.service.events"
 
-export class MetricTypeController implements SettingsServiceSubscriber, CodeMapMouseEventServiceSubscriber {
+export class MetricTypeController
+	implements AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, BuildingHoveredEventSubscriber {
 	private _viewModel: {
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
@@ -24,29 +21,26 @@ export class MetricTypeController implements SettingsServiceSubscriber, CodeMapM
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private metricService: MetricService) {
-		SettingsService.subscribe(this.$rootScope, this)
-		CodeMapMouseEventService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private metricService: MetricService, private settingsService: SettingsService) {
+		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
+		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
+		SettingsService.subscribeToColorMetric(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		if (update.dynamicSettings) {
-			if (update.dynamicSettings.areaMetric) {
-				this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(update.dynamicSettings.areaMetric, settings)
-			}
-			if (update.dynamicSettings.heightMetric) {
-				this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(
-					update.dynamicSettings.heightMetric,
-					settings
-				)
-			}
-			if (update.dynamicSettings.colorMetric) {
-				this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(update.dynamicSettings.colorMetric, settings)
-			}
-		}
+	public onAreaMetricChanged(areaMetric: string) {
+		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(areaMetric, this.settingsService.getSettings())
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {
+	public onHeightMetricChanged(heightMetric: string) {
+		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(heightMetric, this.settingsService.getSettings())
+	}
+
+	public onColorMetricChanged(colorMetric: string) {
+		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric, this.settingsService.getSettings())
+	}
+
+	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		if (data.from) {
 			this._viewModel.isBuildingHovered = false
 		}
@@ -54,10 +48,6 @@ export class MetricTypeController implements SettingsServiceSubscriber, CodeMapM
 			this._viewModel.isBuildingHovered = true
 		}
 	}
-
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number, event: angular.IAngularEvent) {}
-
-	public onBuildingSelected(data: CodeMapBuildingTransition, event: angular.IAngularEvent) {}
 
 	public isAreaMetricAbsolute(): boolean {
 		return this._viewModel.areaMetricType === AttributeTypeValue.absolute || !this._viewModel.areaMetricType

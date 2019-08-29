@@ -91,8 +91,8 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("getRenderMap", () => {
-		it("should return lastRender.renderFile", () => {
-			codeMapPreRenderService["lastRender"].renderFile = file
+		it("should return lastRender.map", () => {
+			codeMapPreRenderService["lastRender"].map = file.map
 
 			const result = codeMapPreRenderService.getRenderMap()
 
@@ -102,7 +102,7 @@ describe("codeMapPreRenderService", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should update lastRender.settings", () => {
-			codeMapPreRenderService.onSettingsChanged(settings, undefined, undefined)
+			codeMapPreRenderService.onSettingsChanged(settings, undefined)
 
 			expect(codeMapPreRenderService["lastRender"].settings).toEqual(settings)
 		})

@@ -38,4 +38,12 @@ class LogLineCollectorTest {
         val collector = LogLineCollector.create(Predicate { logLine -> logLine == "--" })
         assertThatThrownBy { logLines.collect(collector) }.isInstanceOf(IllegalArgumentException::class.java)
     }
+
+    @Test
+    fun BOMIsRemoved() {
+        val logLines = Stream.of("\uFEFF---", "whatever")
+        val collector = LogLineCollector.create(Predicate { logLine -> logLine.startsWith("---") })
+        val commits = logLines.collect(collector)
+        assertThat(commits).hasSize(1)
+    }
 }

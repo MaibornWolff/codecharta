@@ -2,10 +2,7 @@ import "./ribbonBar.component.scss"
 import $ from "jquery"
 
 export class RibbonBarController {
-	private collapsingElements = $(
-		"code-map-component #codeMap, ribbon-bar-component #header, ribbon-bar-component .section-body, #toggle-ribbon-bar-fab"
-	)
-	private toggleElements = $("ribbon-bar-component .section-title")
+	private collapsingElements = $("ribbon-bar-component .element-to-toggle")
 	private isExpanded: boolean = false
 
 	public toggle() {
@@ -24,14 +21,6 @@ export class RibbonBarController {
 	public collapse() {
 		this.isExpanded = false
 		this.collapsingElements.removeClass("expanded")
-	}
-
-	public hoverToggle() {
-		this.toggleElements.addClass("toggle-hovered")
-	}
-
-	public unhoverToggle() {
-		this.toggleElements.removeClass("toggle-hovered")
 	}
 }
 

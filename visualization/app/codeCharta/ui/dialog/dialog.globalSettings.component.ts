@@ -1,7 +1,8 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { Settings, RecursivePartial, AppSettings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class DialogGlobalSettingsController implements SettingsServiceSubscriber {
 	private _viewModel: {
@@ -21,7 +22,7 @@ export class DialogGlobalSettingsController implements SettingsServiceSubscriber
 		this.updateSettingsFields()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.updateSettingsFields(settings)
 	}
 

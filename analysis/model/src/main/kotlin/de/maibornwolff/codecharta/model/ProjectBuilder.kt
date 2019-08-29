@@ -42,7 +42,7 @@ open class ProjectBuilder(
 ) {
 
     init {
-        if (nodes.size != 1) throw IllegalStateException("no root node present in project")
+        if (nodes.size != 1) throw IllegalStateException("No unique root node was found, instead ${nodes.size} candidates identified.")
     }
 
     private val logger = KotlinLogging.logger {}
@@ -100,6 +100,7 @@ open class ProjectBuilder(
                 blacklist = blacklist.toList()
         )
 
+        System.err.println()
         logger.info { "Created Project with ${project.size} leaves." }
 
         return project

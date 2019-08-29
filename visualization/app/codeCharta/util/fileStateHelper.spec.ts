@@ -1,5 +1,5 @@
 import { FileStateHelper } from "./fileStateHelper"
-import { FileState, FileSelectionState, CCFile } from "../codeCharta.model"
+import { FileState, FileSelectionState } from "../codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "./dataMocks"
 
 describe("fileStateHelper", () => {

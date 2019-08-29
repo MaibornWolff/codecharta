@@ -1,0 +1,25 @@
+center-map-button-component {
+	.md-fab {
+		i {
+			position: absolute;
+			top: 4px;
+			left: 6px;
+			color: white;
+
+			&:hover {
+				cursor: pointer;
+				color: #eee;
+			}
+		}
+	}
+
+	.visible {
+		transition: opacity 0.3s linear;
+		opacity: 1;
+	}
+
+	.invisible {
+		transition: opacity 0.3s linear;
+		opacity: 0;
+	}
+}

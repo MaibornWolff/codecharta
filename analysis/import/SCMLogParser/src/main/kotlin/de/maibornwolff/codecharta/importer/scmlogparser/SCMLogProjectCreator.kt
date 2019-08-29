@@ -13,10 +13,11 @@ import java.util.stream.Stream
 class SCMLogProjectCreator(
         parserStrategy: LogParserStrategy,
         metricsFactory: MetricsFactory,
-        private val projectConverter: ProjectConverter
+        private val projectConverter: ProjectConverter,
+        private val silent: Boolean = false
 ) {
 
-    private val logLineParser: LogLineParser = LogLineParser(parserStrategy, metricsFactory)
+    private val logLineParser: LogLineParser = LogLineParser(parserStrategy, metricsFactory, silent)
 
     fun parse(lines: Stream<String>): Project {
         val versionControlledFiles = logLineParser.parse(lines)

@@ -32,6 +32,7 @@ package de.maibornwolff.codecharta.tools.ccsh
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
 import de.maibornwolff.codecharta.filter.edgefilter.EdgeFilter
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
+import de.maibornwolff.codecharta.filter.structuremodifier.StructureModifier
 import de.maibornwolff.codecharta.importer.codemaat.CodeMaatImporter
 import de.maibornwolff.codecharta.importer.crococosmo.CrococosmoImporter
 import de.maibornwolff.codecharta.importer.csv.CSVImporter
@@ -52,6 +53,7 @@ import java.util.concurrent.Callable
             ValidationTool::class,
             MergeFilter::class,
             EdgeFilter::class,
+            StructureModifier::class,
             CSVImporter::class,
             SonarImporterMain::class,
             SourceMonitorImporter::class,

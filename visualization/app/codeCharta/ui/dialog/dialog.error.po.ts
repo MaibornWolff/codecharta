@@ -1,12 +1,13 @@
+import { Page } from "puppeteer"
+
 export class DialogErrorPageObject {
-	constructor(private page) {}
+	constructor(private page: Page) {}
 
 	public async getMessage() {
-		return await this.page.evaluate(() => document.querySelector(".md-dialog-content-body p")["innerText"])
+		return await this.page.$eval(".md-dialog-content-body p", el => el["innerText"])
 	}
 
 	public async clickOk() {
-		const selector = "md-dialog-actions button"
-		return this.page.click(selector)
+		return this.page.click("md-dialog-actions button")
 	}
 }

@@ -21,6 +21,7 @@ dependencies {
     def crococosmoImporter = project(':import:CrococosmoImporter')
     def csvImporter = project(':import:CSVImporter')
     def jasomeImporter = project(':import:JasomeImporter')
+    def structureModifier = project(':filter:StructureModifier')
     def scmlogParser = project(':import:SCMLogParser')
     def sonarImporter = project(':import:SonarImporter')
     def sourceCodeParser = project(':import:SourceCodeParser')
@@ -43,6 +44,7 @@ dependencies {
     compile edgeFilter; testCompile edgeFilter.sourceSets.test.output
     compile validationTool; testCompile validationTool.sourceSets.test.output
     compile csvExporter; testCompile csvExporter.sourceSets.test.output
+    compile structureModifier; testCompile structureModifier.sourceSets.test.output
 
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
 
@@ -56,6 +58,7 @@ jar {
                 'Implementation-Title': 'CodeCharta ccsh',
                 'Implementation-Version': version
     }
+    zip64 true
 
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

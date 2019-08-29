@@ -31,6 +31,7 @@ package de.maibornwolff.codecharta.filter.mergefilter
 
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.Path
+import mu.KotlinLogging
 
 /**
  * merges leafs according to the level of matching of their paths
@@ -39,33 +40,46 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
 
     private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
+    private var nodesProcessed = 0
+    private var nodesMerged = 0
+    private val logger = KotlinLogging.logger { }
+
     init {
         mergeConditionSatisfied =
                 if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
                 else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
     }
 
-    /**
-     * merge list of nodeLists to single nodeList
-     */
-    override fun mergeNodeLists(lists: List<List<MutableNode>>): List<MutableNode> {
-        return if (lists.isEmpty()) listOf()
-        else lists.reduce { acc1, nodes ->
-            nodes.fold(acc1, { acc2: List<MutableNode>, node: MutableNode ->
-                acc2.flatMap { if (mergeConditionSatisfied(it, node)) merge(it, node) else listOf(it) }
+    override fun mergeNodeLists(nodeLists: List<List<MutableNode>>): List<MutableNode> {
+        return if (nodeLists.isEmpty()) listOf()
+        else nodeLists.reduce { mergedNodeList, nextNodeList ->
+            nextNodeList.fold(mergedNodeList, { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
+                mergeNodeIfExistentInList(accumulatedNodes, nextNode)
             })
         }
     }
 
-    /**
-     * merge multiple nodes
-     */
-    private fun merge(vararg nodes: MutableNode): List<MutableNode> {
+    private fun mergeNodeIfExistentInList(accumulatedNodes: List<MutableNode>, nextNode: MutableNode): List<MutableNode> {
+        nodesProcessed++
+        return accumulatedNodes.map { existingNode ->
+            if (mergeConditionSatisfied(existingNode, nextNode)) {
+                nodesMerged++
+                merge(existingNode, nextNode)
+            } else existingNode
+        }
+    }
+
+    override fun logMergeStats() {
+        logger.info("$nodesProcessed nodes were processed and $nodesMerged were merged")
+        if (nodesMerged == 0) logger.warn("No nodes were merged. Hierarchies may not match up.")
+    }
+
+    private fun merge(vararg nodes: MutableNode): MutableNode {
         val root = nodes[0].merge(nodes.asList())
         nodes.map { it.nodes }
                 .reduce { total, next -> total.addAll(next) }
                 .forEach { root.insertAt(Path(it.key.edgesList.dropLast(1)), it.value) }
-        return listOf(root)
+        return root
     }
 
     private fun replaceMisfittingPath(path: Path): Path {

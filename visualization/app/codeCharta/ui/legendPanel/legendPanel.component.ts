@@ -1,12 +1,13 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import $ from "jquery"
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
-import { ColorConverter } from "../../util/colorConverter"
 import { ColorRange, MarkedPackage, RecursivePartial, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { ColorConverter } from "../../util/color/colorConverter"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export interface PackageList {
 	colorPixel: string
@@ -32,7 +33,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		this.initAnimations()
 	}
 
-	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>) {
 		this._viewModel.colorRange = s.dynamicSettings.colorRange
 		this._viewModel.invertColorRange = s.appSettings.invertColorRange
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
@@ -134,7 +135,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 			let target = -500
 			let visible = false
 			$("legend-panel-component .panel-button").click(() => {
-				$("legend-panel-component .block-wrapper").animate({ left: visible ? target + "px" : start + "px" }, "fast")
+				$("legend-panel-component .block-wrapper").animate({ right: visible ? target + "px" : start + "px" }, "fast")
 				visible = !visible
 			})
 		})

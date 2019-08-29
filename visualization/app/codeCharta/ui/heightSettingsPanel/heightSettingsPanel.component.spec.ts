@@ -1,7 +1,7 @@
 import "./heightSettingsPanel.module"
 import { HeightSettingsPanelController } from "./heightSettingsPanel.component"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { Settings } from "../../codeCharta.model"
@@ -61,19 +61,19 @@ describe("HeightSettingsPanelController", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should set amountOfTopTables in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].amountOfTopLabels).toBe(31)
 		})
 
 		it("should set scalingY in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].scalingY).toBe(1.8)
 		})
 
 		it("should set invertHeight in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined, undefined)
+			heightSettingsPanelController.onSettingsChanged(settings, undefined)
 
 			expect(heightSettingsPanelController["_viewModel"].invertHeight).toBeTruthy()
 		})
@@ -85,34 +85,60 @@ describe("HeightSettingsPanelController", () => {
 		})
 
 		it("should set isDeltaState in viewModel", () => {
-			heightSettingsPanelController.onFileSelectionStatesChanged([], undefined)
+			heightSettingsPanelController.onFileSelectionStatesChanged([])
 
 			expect(heightSettingsPanelController["_viewModel"].isDeltaState).toBe(true)
 		})
 
 		it("should call isDeltaState with empty array", () => {
-			heightSettingsPanelController.onFileSelectionStatesChanged([], undefined)
+			heightSettingsPanelController.onFileSelectionStatesChanged([])
 
 			expect(FileStateHelper.isDeltaState).toHaveBeenCalledWith([])
 		})
 	})
 
-	describe("applySettings", () => {
+	describe("applySettingsAmountOfTopLabels", () => {
 		it("should call updateSettings", () => {
-			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 31
+			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 12
+			const expected = {
+				appSettings: {
+					amountOfTopLabels: 12
+				}
+			}
+
+			heightSettingsPanelController.applySettingsAmountOfTopLabels()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+		})
+	})
+
+	describe("applySettingsInvertHeight", () => {
+		it("should call updateSettings", () => {
 			heightSettingsPanelController["_viewModel"].invertHeight = true
+			const expected = {
+				appSettings: {
+					invertHeight: true
+				}
+			}
+
+			heightSettingsPanelController.applySettingsInvertHeight()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+		})
+	})
+
+	describe("applySettingsScaling", () => {
+		it("should call updateSettings", () => {
 			heightSettingsPanelController["_viewModel"].scalingY = 1.8
 			const expected = {
 				appSettings: {
-					amountOfTopLabels: 31,
-					invertHeight: true,
 					scaling: {
 						y: 1.8
 					}
 				}
 			}
 
-			heightSettingsPanelController.applySettings()
+			heightSettingsPanelController.applySettingsScaling()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 		})

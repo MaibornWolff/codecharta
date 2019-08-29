@@ -1,19 +1,24 @@
 <div class="tool-bar">
-	<div class="tool-bar-button">
+	<div class="small-action-button">
 		<file-chooser-directive></file-chooser-directive>
 	</div>
 
-	<div class="tool-bar-button download">
-		<md-button class="md-fab md-primary dark_shadow_opacity" ng-click="$ctrl.downloadFile()">
+	<div class="small-action-button download">
+		<md-button class="md-fab md-primary cc-shadow" ng-click="$ctrl.downloadFile()">
 			<i class="fa fa-download"></i>
 		</md-button>
 	</div>
 
 	<file-panel-component></file-panel-component>
 
-	<div class="tool-bar-button global-settings">
-		<md-button class="md-fab md-primary dark_shadow_opacity" ng-click="$ctrl.showGlobalSettings()">
-			<i class="fa fa-cog"></i>
-		</md-button>
+	<div class="right-aligned">
+		<presentation-mode-button-component></presentation-mode-button-component>
+
+		<loading-gif-map-component></loading-gif-map-component>
+		<div class="small-action-button global-settings">
+			<md-button class="md-fab md-primary cc-shadow" ng-click="$ctrl.showGlobalSettings()">
+				<i class="fa fa-cog"></i>
+			</md-button>
+		</div>
 	</div>
 </div>

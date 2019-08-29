@@ -18,6 +18,13 @@ export enum FileSelectionState {
 	None = "None"
 }
 
+export enum SearchPanelMode {
+	treeView = "treeView",
+	hide = "hide",
+	exclude = "exclude",
+	minimized = "minimized"
+}
+
 export interface ExportCCFile {
 	projectName: string
 	apiVersion: string
@@ -96,6 +103,7 @@ export interface AppSettings {
 	isWhiteBackground: boolean
 	mapColors: MapColors
 	whiteColorBuildings: boolean
+	isPresentationMode: boolean
 }
 
 export interface TreeMapSettings {
@@ -195,8 +203,6 @@ export interface Node {
 	isLeaf: boolean
 	deltas: KeyValuePair
 	attributes: KeyValuePair
-	children: Node[]
-	parent: Node
 	heightDelta: number
 	visible: boolean
 	path: string

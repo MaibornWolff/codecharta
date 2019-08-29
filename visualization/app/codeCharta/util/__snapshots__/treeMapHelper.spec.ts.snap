@@ -5,11 +5,10 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": Array [],
   "deltas": Object {
     "theHeight": 33,
   },
-  "depth": 0,
+  "depth": 1,
   "flat": false,
   "height": 100,
   "heightDelta": 33,
@@ -19,13 +18,12 @@ Object {
   "markingColor": null,
   "name": "Anode",
   "origin": undefined,
-  "parent": null,
   "path": "/root/Anode",
   "visible": undefined,
   "width": 400,
   "x0": 0,
   "y0": 0,
-  "z0": 0,
+  "z0": 2,
 }
 `;
 
@@ -34,9 +32,8 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": Array [],
   "deltas": undefined,
-  "depth": 0,
+  "depth": 1,
   "flat": false,
   "height": 1900,
   "heightDelta": 0,
@@ -46,13 +43,12 @@ Object {
   "markingColor": null,
   "name": "Anode",
   "origin": undefined,
-  "parent": null,
   "path": "/root/Anode",
   "visible": undefined,
   "width": 400,
   "x0": 0,
   "y0": 0,
-  "z0": 0,
+  "z0": 2,
 }
 `;
 
@@ -61,9 +57,8 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": Array [],
   "deltas": undefined,
-  "depth": 0,
+  "depth": 1,
   "flat": false,
   "height": 100,
   "heightDelta": 0,
@@ -73,13 +68,12 @@ Object {
   "markingColor": null,
   "name": "Anode",
   "origin": undefined,
-  "parent": null,
   "path": "/root/Anode",
   "visible": undefined,
   "width": 400,
   "x0": 0,
   "y0": 0,
-  "z0": 0,
+  "z0": 2,
 }
 `;
 
@@ -88,9 +82,8 @@ Object {
   "attributes": Object {
     "theHeight": 100,
   },
-  "children": Array [],
   "deltas": undefined,
-  "depth": 0,
+  "depth": 1,
   "flat": true,
   "height": 2,
   "heightDelta": 0,
@@ -100,12 +93,11 @@ Object {
   "markingColor": null,
   "name": "Anode",
   "origin": undefined,
-  "parent": null,
   "path": "/root/Anode",
   "visible": undefined,
   "width": 400,
   "x0": 0,
   "y0": 0,
-  "z0": 0,
+  "z0": 2,
 }
 `;

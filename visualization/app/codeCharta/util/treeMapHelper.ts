@@ -29,17 +29,11 @@ export class TreeMapHelper {
 		}
 	}
 
-	public static buildNodeFrom(
-		squaredNode: SquarifiedValuedCodeMapNode,
-		heightScale: number,
-		maxHeight: number,
-		depth: number,
-		parent: Node,
-		s: Settings
-	): Node {
+	public static buildNodeFrom(squaredNode: SquarifiedValuedCodeMapNode, heightScale: number, maxHeight: number, s: Settings): Node {
 		const isNodeLeaf: boolean = !(squaredNode.children && squaredNode.children.length > 0)
 		const flattened: boolean = this.isNodeToBeFlat(squaredNode, s)
 		const heightValue: number = this.getHeightValue(s, squaredNode, maxHeight, flattened)
+		const depth: number = squaredNode.data.path.split("/").length - 2
 
 		return {
 			name: squaredNode.data.name,
@@ -55,7 +49,6 @@ export class TreeMapHelper {
 			isLeaf: isNodeLeaf,
 			attributes: squaredNode.data.attributes,
 			deltas: squaredNode.data.deltas,
-			parent: parent,
 			heightDelta:
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
@@ -64,7 +57,6 @@ export class TreeMapHelper {
 			path: squaredNode.data.path,
 			origin: squaredNode.data.origin,
 			link: squaredNode.data.link,
-			children: [],
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
 			flat: flattened
 		}

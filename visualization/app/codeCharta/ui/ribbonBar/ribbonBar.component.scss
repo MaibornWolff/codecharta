@@ -5,43 +5,39 @@ ribbon-bar-component {
 	$padding: 5;
 	$animationDuration: 0.5;
 	$border: 1px solid #cdcdcd;
-	$border-thin: 0px dotted #cdcdcd;
+	$border-thin: 0 dotted #cdcdcd;
 	$subsection-bg: #efefef;
 	$headerColor: #444;
 	$headerSize: 1em;
 	$bodySize: 0.9em;
 	$toggleButtonSize: 35;
 
-	#toggle-ribbon-bar-fab {
-		position: absolute;
-		margin-top: (-1 * $toggleButtonSize - 5) + px;
-		right: 10px;
-		z-index: 999;
-		width: $toggleButtonSize + px;
-		height: $toggleButtonSize + px !important;
-		min-height: $toggleButtonSize + px !important;
-		line-height: $toggleButtonSize + px !important;
-		float: right;
+	pointer-events: none;
+	display: flex;
 
-		> i:before {
-			content: "\f107";
-		}
+	search-panel-component #search-panel.expanded {
+		height: auto;
+		max-height: 500px;
 
-		&.expanded {
-			> i:before {
-				content: "\f106";
-			}
+		.section-body {
+			height: auto;
+			min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
 		}
 	}
 
-	#header {
-		width: 100%;
+	md-card {
+		pointer-events: all;
 		margin: 0;
 		padding: 0;
-		display: block;
 		height: ($heightCollapsed + 8) + px;
-		overflow: hidden;
 		font-size: 0;
+		border-radius: 0;
+		border-top: $border;
+		float: left;
+
+		&.search {
+			width: 380px;
+		}
 
 		.section {
 			display: inline-block;
@@ -52,6 +48,7 @@ ribbon-bar-component {
 			vertical-align: top;
 			position: relative;
 			font-size: 12pt;
+			flex-grow: 100;
 
 			&.loading-gif {
 				border-right: none;
@@ -78,6 +75,10 @@ ribbon-bar-component {
 					border-bottom: $border-thin;
 					border-top: $border-thin;
 					background-color: $subsection-bg;
+				}
+
+				&.space {
+					width: 2000px;
 				}
 			}
 
@@ -109,6 +110,10 @@ ribbon-bar-component {
 				&:focus {
 					outline: none;
 				}
+
+				&.no-hover {
+					pointer-events: none;
+				}
 			}
 
 			.section-body {
@@ -118,14 +123,17 @@ ribbon-bar-component {
 				padding-right: $padding + px;
 				padding-left: 2 * $padding + px;
 				overflow: hidden;
-				border-top: $border;
+				border-top: 1px solid transparent;
 				font-size: $bodySize;
 				text-align: left;
 				vertical-align: top;
 
 				reset-settings-button-component .md-button {
-					top: ($heightExpanded - 45) + px;
+					top: 0;
 					right: -5px;
+					opacity: 0;
+					height: 0;
+					pointer-events: none;
 				}
 
 				md-checkbox .md-label {
@@ -146,6 +154,15 @@ ribbon-bar-component {
 					padding-top: 15px;
 					padding-bottom: 15px;
 					height: ($heightExpanded - $heightCollapsed) + px;
+					border-top: $border;
+
+					reset-settings-button-component .md-button {
+						top: ($heightExpanded - 45) + px;
+						opacity: 1;
+						height: 20px;
+						transition: all 0.5s ease;
+						pointer-events: all;
+					}
 				}
 			}
 		}

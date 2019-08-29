@@ -51,11 +51,11 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("constructor", () => {
 		it("should subscribe to CodeMapMouseEventService", () => {
-			CodeMapMouseEventService.subscribe = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingRightClickedEvents = jest.fn()
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribe).toHaveBeenCalledWith($rootScope, codeMapController)
+			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith($rootScope, codeMapController)
 		})
 
 		it("should subscribe to LoadingGifService", () => {
@@ -75,13 +75,13 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("onLoadingFileStatusChanged", () => {
 		it("should set isLoadingFile in viewModel to true", () => {
-			codeMapController.onLoadingFileStatusChanged(true, undefined)
+			codeMapController.onLoadingFileStatusChanged(true)
 
 			expect(codeMapController["_viewModel"].isLoadingFile).toBe(true)
 		})
 
 		it("should set isLoadingFile in viewModel to false", () => {
-			codeMapController.onLoadingFileStatusChanged(false, undefined)
+			codeMapController.onLoadingFileStatusChanged(false)
 
 			expect(codeMapController["_viewModel"].isLoadingFile).toBe(false)
 		})

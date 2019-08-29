@@ -1,12 +1,32 @@
 <md-list>
-	<span class="small-info">Add with TreeViewSearch or NodeContextMenu</span>
+	<span class="small-info">Add with search or node context-menu</span>
 	<md-divider></md-divider>
 
 	<div class="sub-list">
-		<md-list-item ng-repeat="item in $ctrl._viewModel.blacklist | orderBy: [$ctrl.sortByExcludes,'path']" title="{{::item.path}}">
+		<md-list-item
+			ng-show="$ctrl._viewModel.searchPanelMode == 'hide'"
+			ng-repeat="item in $ctrl._viewModel.hide | orderBy: ['path']"
+			title="{{::item.path}}"
+		>
 			<div class="md-icon item-type" layout="column">
-				<i ng-if="::item.type == 'hide'" class="fa fa-eye-slash" title="Hide"></i>
-				<i ng-if="::item.type == 'exclude'" class="fa fa-ban" title="Exclude"></i>
+				<i class="fa fa-eye-slash" title="Hide"></i>
+			</div>
+			<div class="md-list-item-text" layout="column">
+				<p>{{::item.path}}</p>
+			</div>
+			<md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
+				<i class="fa fa-trash" title="Remove list item"></i>
+			</md-button>
+			<md-divider></md-divider>
+		</md-list-item>
+
+		<md-list-item
+			ng-show="$ctrl._viewModel.searchPanelMode == 'exclude'"
+			ng-repeat="item in $ctrl._viewModel.exclude | orderBy: ['path']"
+			title="{{::item.path}}"
+		>
+			<div class="md-icon item-type" layout="column">
+				<i class="fa fa-ban" title="Exclude"></i>
 			</div>
 			<div class="md-list-item-text" layout="column">
 				<p>{{::item.path}}</p>

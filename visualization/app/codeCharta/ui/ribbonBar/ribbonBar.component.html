@@ -1,14 +1,15 @@
-<md-card id="header">
+<search-panel-component></search-panel-component>
+
+<md-card>
 	<div class="section">
 		<div class="section-header">
 			<scenario-drop-down-component></scenario-drop-down-component>
 		</div>
-		<span class="section-title" id="section-title" ng-click="$ctrl.toggle()">
-			Scenario
-		</span>
-		<div class="section-body"></div>
+		<span class="section-title no-hover">Scenario</span>
 	</div>
+</md-card>
 
+<md-card class="element-to-toggle">
 	<div class="section">
 		<div class="section-header">
 			<area-metric-chooser-component></area-metric-chooser-component>
@@ -18,7 +19,9 @@
 			<area-settings-panel-component></area-settings-panel-component>
 		</div>
 	</div>
+</md-card>
 
+<md-card class="element-to-toggle">
 	<div class="section">
 		<div class="section-header">
 			<height-metric-chooser-component></height-metric-chooser-component>
@@ -28,7 +31,9 @@
 			<height-settings-panel-component></height-settings-panel-component>
 		</div>
 	</div>
+</md-card>
 
+<md-card class="element-to-toggle">
 	<div class="section">
 		<div class="section-header">
 			<color-metric-chooser-component></color-metric-chooser-component>
@@ -38,23 +43,10 @@
 			<color-settings-panel-component></color-settings-panel-component>
 		</div>
 	</div>
-
-	<div class="section loading-gif">
-		<div class="section-header">
-			<loading-gif-map-component></loading-gif-map-component>
-		</div>
-	</div>
 </md-card>
 
-<md-button
-	id="toggle-ribbon-bar-fab"
-	class="md-fab md-primary"
-	aria-label="Toggle Ribbon Bar"
-	ng-click="$ctrl.toggle()"
-	ng-mouseover="$ctrl.hoverToggle()"
-	ng-mouseleave="$ctrl.unhoverToggle()"
->
-	<i class="fa fa-angle-down"></i>
-</md-button>
-
-<file-extension-bar-component></file-extension-bar-component>
+<md-card>
+	<div class="section">
+		<div class="section-header space"></div>
+	</div>
+</md-card>

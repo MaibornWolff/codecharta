@@ -6,9 +6,35 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
 ### Added
 
 ### Changed
+
+- Distribution metric is by default the same as area metric #689
+
+### Removed
+
+### Fixed
+
+
+- SourceCodeParser now skips custom metrics for files, if the syntax tree cannot be created
+- Nodes with color metric equals 0 are colored correct again #677
+
+
+### Chore
+
+## [1.32.0] - 2019-08-09
+
+### Added
+
+- Search for metrics and an indicator for the highest value in dropdown #575
+- Button to enable PresentationMode that uses Flashlight-Hovering #576
+- Clarifying information which file is which in the file bar when in delta mode #615
+
+### Changed
+
+- Replaced Scenario dropdown with button on the left of the metric sections #628
 
 ### Removed
 
@@ -16,8 +42,99 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore
 
-## [1.27.0] - 2019-06-25
+## [1.31.0] - 2019-08-02
+
 ### Added
+
+- New Metric in SourceCodeParser: Maximum-Nesting-Level #659
+
+### Changed
+
+### Removed
+
+### Fixed
+
+- Label hight adjustment now matches scaling of map #594
+- SCMLogParser now guesses the input file encoding #614
+
+### Chore
+
+## [1.30.0] - 2019-07-26
+
+### Added
+
+- New Search Bar #526
+- Number of Renames Metric to SCMLogParser #621
+- Age In Weeks Metric for SCMLogParser #620
+
+### Changed
+
+- ToolBar now shows partially cut-off controls if the window is too small #582
+- Position of the legendPanel was moved to the bottom-right corner #633
+- RibbonBar only opens the three metric section
+- Moved Scenario-select to the right in order to use less space
+- Moved loading-gif from ribbonBar to toolBar
+
+### Removed
+
+- RibbonBar toggle button
+
+### Fixed
+
+- FileExtensionBar height to not show a bottom-margin in Chrome
+- PointerEvents not being propagated when RibbonBar was extended
+- Reduced memory usage of SCMLogParser to avoid OutOfMemory Exception #631
+
+### Chore
+
+- [Security] Bump lodash.mergewith from 4.6.1 to 4.6.2 in /visualization
+- [Security] Bump lodash from 4.17.11 to 4.17.13 in /visualization
+- [Security] Bump fstream from 1.0.11 to 1.0.12 in /visualization
+
+## [1.29.0] - 2019-07-12
+
+### Added
+
+### Changed
+
+- Moved Button to reset the map to the center next to the view-cube #606
+- Moved FileExtensionBar #527
+
+### Removed
+
+- Burger Menu / SideNav #526
+
+### Fixed
+
+- Colors in File-Extension-Bar will be displayed in MS Edge and Standlone now #584
+
+### Chore
+
+## [1.28.0] - 2019-06-28
+
+### Added
+
+- Releasing will now remind the developer to manually add the release notes #533
+- StructureModifier to remove and move nodes and set root of projects #547 / #181
+
+### Changed
+
+- More informative log messages regarding the success of project merging #547
+
+### Removed
+
+- Release Notes are not generated and added automatically to a release #533
+
+### Fixed
+
+- Margin will now be set correctly depending on whether dynamicMargin is enabled or not #602
+
+### Chore
+
+## [1.27.0] - 2019-06-25
+
+### Added
+
 - Automatically generates release notes from changelog and appends it to release #533
 - Adds global settings-menu with settings from options panel and weblinks #528
 
@@ -35,7 +152,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
--  Unary Metric will no longer be auto-selected when a new map is loaded #579
+- Unary Metric will no longer be auto-selected when a new map is loaded #579
 
 ### Chore
 
@@ -44,8 +161,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - FileExtensionBar to show file-distribution of chosen metric #495
+- sum icon is now displayed on the left of the metric value #364
 - Added Pop-up dialog before downloading file to set filename and see what data will be stored #523
-- Sum icon is now displayed on the left of the metric value #364
 
 ### Changed
 
