@@ -8,6 +8,7 @@
 		ng-model="$ctrl._viewModel.amountOfEdgePreviews"
 		id="preview-slider"
 		ng-change="$ctrl.applySettingsAmountOfEdgePreviews()"
+		ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
 		class="md-primary"
 	>
 	</md-slider>
@@ -20,6 +21,7 @@
 			type="number"
 			ng-model="$ctrl._viewModel.amountOfEdgePreviews"
 			ng-change="$ctrl.applySettingsAmountOfEdgePreviews()"
+			ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
 			aria-controls="previews-slider"
 		/>
 	</md-input-container>
@@ -35,6 +37,7 @@
 		ng-model="$ctrl._viewModel.edgeHeight"
 		id="height-slider"
 		ng-change="$ctrl.applySettingsEdgeHeight()"
+		ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
 		class="md-primary"
 	>
 	</md-slider>
@@ -47,6 +50,7 @@
 			type="number"
 			ng-model="$ctrl._viewModel.edgeHeight"
 			ng-change="$ctrl.applySettingsEdgeHeight()"
+			ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
 			aria-controls="edge-height-slider"
 		/>
 	</md-input-container>
@@ -57,7 +61,12 @@
 		class="md-primary"
 		ng-model="$ctrl._viewModel.showOnlyBuildingsWithEdges"
 		ng-change="$ctrl.applyShowOnlyBuildingsWithEdges()"
+		ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
 	>
 		Show only nodes with edges
 	</md-checkbox>
 </md-input-container>
+
+<reset-settings-button-component
+	settings-names="appSettings.showOnlyBuildingsWithEdges, appSettings.amountOfEdgePreviews, appSettings.edgeHeight"
+></reset-settings-button-component>
