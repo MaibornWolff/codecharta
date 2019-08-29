@@ -40,14 +40,14 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 				this._viewModel.edgeHeight = update.appSettings.edgeHeight
 			}
 
-			if (update.appSettings.showOnlyBuildingsWithEdges) {
+			if (update.appSettings.showOnlyBuildingsWithEdges !== undefined) {
 				this._viewModel.showOnlyBuildingsWithEdges = update.appSettings.showOnlyBuildingsWithEdges
 			}
 
 			if (
 				update.appSettings.amountOfEdgePreviews !== undefined ||
 				update.appSettings.edgeHeight !== undefined ||
-				update.appSettings.showOnlyBuildingsWithEdges
+				update.appSettings.showOnlyBuildingsWithEdges !== undefined
 			) {
 				this.codeMapActionsService.updateEdgePreviews()
 			}
