@@ -39,6 +39,7 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		if (!edgeMetricNames.includes(this._viewModel.edgeMetric)) {
 			this._viewModel.edgeMetric = edgeMetricNames[0]
 		}
+		this.onEdgeMetricSelected()
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
