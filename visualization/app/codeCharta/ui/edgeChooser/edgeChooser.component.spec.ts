@@ -16,6 +16,7 @@ describe("EdgeChooserController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		withMockedCodeMapActionsService()
 	})
 
 	function restartSystem() {
@@ -28,6 +29,14 @@ describe("EdgeChooserController", () => {
 
 	function rebuildController() {
 		edgeChooserController = new EdgeChooserController($rootScope, codeMapActionsService, settingsService)
+	}
+
+	function withMockedCodeMapActionsService() {
+		codeMapActionsService = edgeChooserController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
+			return {
+				updateEdgePreviews: jest.fn()
+			}
+		})()
 	}
 
 	describe("constructor", () => {
