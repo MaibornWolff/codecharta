@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Distribution metric is by default the same as area metric #689
+
 ### Removed
 
 ### Fixed
