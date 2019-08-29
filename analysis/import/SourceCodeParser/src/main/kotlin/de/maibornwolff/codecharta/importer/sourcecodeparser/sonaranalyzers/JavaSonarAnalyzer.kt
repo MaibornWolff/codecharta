@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 
+import com.sonar.sslr.api.RecognitionException
 import de.maibornwolff.codecharta.importer.sourcecodeparser.NullFileLinesContextFactory
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.visitors.MaxNestingLevelVisitor
@@ -176,7 +177,13 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun retrieveAdditionalMetrics(fileName: String): HashMap<String, Int> {
         val additionalMetrics: HashMap<String, Int> = hashMapOf()
 
-        val tree = buildTree(fileName)
+        var tree: Tree
+        try {
+            tree = buildTree(fileName)
+        } catch (e: RecognitionException) {
+            System.err.println("Syntax error in file $fileName, therefore some metrics are not calculated")
+            return hashMapOf()
+        }
 
         val commentedOutBlocks = sensorContext.allIssues().filter { it.ruleKey().rule() == "CommentedOutCodeLine" }
         additionalMetrics["commented_out_code_blocks"] = commentedOutBlocks.size

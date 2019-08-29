@@ -87,6 +87,7 @@ class CSVProjectBuilder(
     private fun createParser(inStream: InputStream): CsvParser {
         val parserSettings = CsvParserSettings()
         parserSettings.format.delimiter = csvDelimiter
+        parserSettings.format.lineSeparator = "\n".toCharArray()
 
         val parser = CsvParser(parserSettings)
         parser.beginParsing(InputStreamReader(inStream, StandardCharsets.UTF_8))
