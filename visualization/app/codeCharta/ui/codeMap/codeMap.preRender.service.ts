@@ -51,7 +51,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		metricData: null
 	}
 
-	// TODO: probably we should not pass around edgeMetricService
 	constructor(
 		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
