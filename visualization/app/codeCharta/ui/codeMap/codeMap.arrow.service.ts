@@ -235,6 +235,9 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			.normalize()
 
 		const origin = points[points.length - 1].clone()
-		return new ArrowHelper(dir, origin, 0, ARROW_COLOR, headLength, headWidth)
+		if (dir.y < 0) {
+			origin.y += headLength + 1
+		}
+		return new ArrowHelper(dir, origin, headLength + 1, ARROW_COLOR, headLength, headWidth)
 	}
 }
