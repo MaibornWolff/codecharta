@@ -7,7 +7,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
-import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, CODE_MAP_BUILDING, VALID_NODE } from "../../util/dataMocks"
+import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
@@ -161,7 +161,6 @@ describe("codeMapPreRenderService", () => {
 			NodeDecorator.decorateMap = originalDecorateMap
 			edgeMetricService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
 				if (node.data.name === "big leaf") {
-					console.log(new Map().set("metric1", { incoming: 1, outgoing: 2 }))
 					return new Map().set("metric1", { incoming: 1, outgoing: 2 })
 				} else {
 					return new Map()
