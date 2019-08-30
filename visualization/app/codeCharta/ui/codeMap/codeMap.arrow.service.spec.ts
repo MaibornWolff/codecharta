@@ -120,6 +120,11 @@ describe("CodeMapArrowService", () => {
 	})
 
 	describe("addArrow", () => {
+		beforeEach(() => {
+			nodes[0].incomingEdgePoint = new Vector3()
+			nodes[0].outgoingEdgePoint = new Vector3()
+		})
+
 		it("should add outgoing and incoming arrow if node has a height attribute mentioned in renderSettings", () => {
 			settings.dynamicSettings.heightMetric = "a"
 
