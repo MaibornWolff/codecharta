@@ -1,4 +1,4 @@
-import { Node, EdgeVisibility, Settings } from "../../codeCharta.model"
+import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Edge } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
@@ -76,28 +76,6 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		}
 	}
 
-	private findStartingPointForArrow(node: Node, endPoint: Vector3, settings: Settings) {
-		let xBase: number = node.x0 - settings.treeMapSettings.mapSize * 0.5
-		let yBase: number = node.z0 + node.height
-		let zBase: number = node.y0 - settings.treeMapSettings.mapSize * 0.5
-
-		const candidates: Vector3[] = []
-		candidates.push(new Vector3(xBase, yBase, zBase))
-		candidates.push(new Vector3(xBase + node.width, yBase, zBase))
-		candidates.push(new Vector3(xBase + node.width, yBase, zBase + node.length))
-		candidates.push(new Vector3(xBase, yBase, zBase + node.length))
-
-		let minDistance = Infinity
-		let closestCandidate: Vector3
-		candidates.forEach(candidate => {
-			if (candidate.distanceTo(endPoint) < minDistance) {
-				minDistance = candidate.distanceTo(endPoint)
-				closestCandidate = candidate
-			}
-		})
-		return closestCandidate
-	}
-
 	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, edgeVisibility?: EdgeVisibility): void {
 		const settings = this.settingsService.getSettings()
 		const curveScale = 100 * settings.appSettings.edgeHeight
@@ -108,21 +86,19 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			arrowOriginNode.attributes &&
 			arrowOriginNode.attributes[this.settingsService.getSettings().dynamicSettings.heightMetric]
 		) {
-			const bezierPoint1 = this.findStartingPointForArrow(arrowOriginNode, arrowTargetNode.incomingEdgePoint, settings)
+			const bezierPoint2 = arrowOriginNode.outgoingEdgePoint.clone()
+			const bezierPoint3 = arrowTargetNode.incomingEdgePoint.clone()
 
-			const bezierPoint4 = new Vector3(
-				arrowTargetNode.x0 - settings.treeMapSettings.mapSize * 0.5 + arrowTargetNode.width / 2,
-				arrowTargetNode.z0 + arrowTargetNode.height,
-				arrowTargetNode.y0 - settings.treeMapSettings.mapSize * 0.5 + arrowTargetNode.length / 2
-			)
-
-			const bezierPoint2 = bezierPoint1.clone()
-			const bezierPoint3 = bezierPoint4.clone()
 			const arrowHeight = Math.max(bezierPoint2.y + arrowTargetNode.height, bezierPoint3.y + 1) + curveScale
 			bezierPoint2.setY(arrowHeight)
 			bezierPoint3.setY(arrowHeight)
 
-			const curve = new CubicBezierCurve3(bezierPoint1, bezierPoint2, bezierPoint3, bezierPoint4)
+			const curve = new CubicBezierCurve3(
+				arrowOriginNode.outgoingEdgePoint,
+				bezierPoint2,
+				bezierPoint3,
+				arrowTargetNode.incomingEdgePoint
+			)
 
 			if (this.isHovered) {
 				this.hoveredMode(curve, arrowOriginNode, arrowTargetNode)
