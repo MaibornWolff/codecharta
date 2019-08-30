@@ -53,7 +53,7 @@ describe("EdgeSettingsPanelController", () => {
 		})()
 	}
 
-	function withMockedEdgeMetricService(amountOfAffectedBuildings: number) {
+	function withMockedEdgeMetricService(amountOfAffectedBuildings: number = 0) {
 		edgeMetricService = edgeSettingsPanelController["edgeMetricService"] = jest.fn<EdgeMetricService>(() => {
 			return {
 				getAmountOfAffectedBuildings: jest.fn().mockReturnValue(amountOfAffectedBuildings)
@@ -139,9 +139,11 @@ describe("EdgeSettingsPanelController", () => {
 	})
 
 	describe("onEdgeMetricChanged", () => {
+		beforeEach(() => {
+			withMockedEdgeMetricService()
+		})
 		it("should get 0 totalAffectedBuildings", () => {
 			rebuildController()
-			withMockedEdgeMetricService(0)
 
 			edgeSettingsPanelController.onEdgeMetricChanged("anyMetricName")
 
@@ -159,20 +161,30 @@ describe("EdgeSettingsPanelController", () => {
 
 		it("should get amountOfEdgePreviews from settings", () => {
 			rebuildController()
-			withMockedEdgeMetricService(0)
 
 			edgeSettingsPanelController.onEdgeMetricChanged("anyMetricName")
 
 			expect(edgeSettingsPanelController["_viewModel"].amountOfEdgePreviews).toBe(settings.appSettings.amountOfEdgePreviews)
 		})
 
-		it("should get 0 amountOfEdgePreviews for metricName None", () => {
+		it("should get 0 amountOfEdgePreviews and call applySettingsAmountOfEdgePreviews for metricName None", () => {
 			rebuildController()
-			withMockedEdgeMetricService(0)
+			edgeSettingsPanelController.applySettingsAmountOfEdgePreviews = jest.fn()
 
 			edgeSettingsPanelController.onEdgeMetricChanged("None")
 
 			expect(edgeSettingsPanelController["_viewModel"].amountOfEdgePreviews).toBe(0)
+			expect(edgeSettingsPanelController.applySettingsAmountOfEdgePreviews).toHaveBeenCalled()
+		})
+
+		it("should get 0 amountOfEdgePreviews and call applyShowOnlyBuildingsWithEdges for metricName None", () => {
+			rebuildController()
+			edgeSettingsPanelController.applyShowOnlyBuildingsWithEdges = jest.fn()
+
+			edgeSettingsPanelController.onEdgeMetricChanged("None")
+
+			expect(edgeSettingsPanelController["_viewModel"].showOnlyBuildingsWithEdges).toBe(false)
+			expect(edgeSettingsPanelController.applyShowOnlyBuildingsWithEdges).toHaveBeenCalled()
 		})
 	})
 
