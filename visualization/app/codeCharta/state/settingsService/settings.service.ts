@@ -22,11 +22,14 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private settings: Settings
 	private update: RecursivePartial<Settings> = {}
-	private debounceBroadcast: () => void
+	private readonly debounceBroadcast: (eventName: string, data: any) => void
 
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
 		this.settings = this.getDefaultSettings()
-
+		this.debounceBroadcast = _.debounce((eventName: string, data: any) => {
+			this.$rootScope.$broadcast(eventName, data)
+			this.update = {}
+		}, SettingsService.DEBOUNCE_TIME)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -203,14 +206,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	private notifySettingsSubscribers() {
-		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.SETTINGS_CHANGED_EVENT, {
-				settings: this.settings,
-				update: this.update
-			})
-			this.update = {}
-		}, SettingsService.DEBOUNCE_TIME)
-		this.debounceBroadcast()
+		this.debounceBroadcast(SettingsEvents.SETTINGS_CHANGED_EVENT, {
+			settings: this.settings,
+			update: this.update
+		})
 	}
 
 	private notifyBlacklistSubscribers() {
@@ -239,11 +238,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.notify(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: this.settings.dynamicSettings.searchPattern })
 	}
 
-	private notify(eventName: string, data: object, debounceTime: number = SettingsService.DEBOUNCE_TIME) {
-		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(eventName, data)
-		}, debounceTime)
-		this.debounceBroadcast()
+	private notify(eventName: string, data: object) {
+		this.$rootScope.$broadcast(eventName, data)
 	}
 
 	private synchronizeAngularTwoWayBinding() {
