@@ -11,10 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Distribution metric is by default the same as area metric #689
+
 ### Removed
 
 ### Fixed
 
+- SourceCodeParser now skips custom metrics for files, if the syntax tree cannot be created
 - Nodes with color metric equals 0 are colored correct again #677
 
 ### Chore
