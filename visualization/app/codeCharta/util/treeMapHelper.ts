@@ -113,6 +113,7 @@ export class TreeMapHelper {
 
 	private static nodeHasNoVisibleEdges(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
 		return (
+			squaredNode.data.edgeAttributes[s.dynamicSettings.edgeMetric] === undefined ||
 			s.fileSettings.edges.filter(edge => squaredNode.data.path === edge.fromNodeName || squaredNode.data.path === edge.toNodeName)
 				.length == 0
 		)
