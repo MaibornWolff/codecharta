@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore
 
+- [Security] Bump mixin-deep from 1.3.1 to 1.3.2 in /visualization
+
 ## [1.32.0] - 2019-08-09
 
 ### Added
