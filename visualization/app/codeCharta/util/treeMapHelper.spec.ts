@@ -138,8 +138,8 @@ describe("treeMapHelper", () => {
 				path: "/root/Anode",
 				type: "File",
 				attributes: {},
-				edgeAttributes: { pairingRate: 42 }
-			} as CodeMapNode
+				edgeAttributes: { pairingRate: { incoming: 42, outgoing: 23 } }
+			}
 
 			squaredNode = {
 				data: codeMapNode,
