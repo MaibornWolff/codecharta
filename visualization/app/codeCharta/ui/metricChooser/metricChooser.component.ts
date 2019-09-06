@@ -86,47 +86,36 @@ export class MetricChooserController
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.metricData = metricData
 		this.originalMetricData = metricData
-		this.potentiallyUpdateChosenMetrics(metricData)
+		const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
+		if (availableMetrics.length > 0) {
+			this.potentiallyUpdateChosenMetrics(availableMetrics)
+		}
 	}
 
 	public onMetricDataRemoved() {}
 
-	private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {
-		const metricKeys: Partial<DynamicSettings> = {
-			areaMetric: "areaMetric",
-			heightMetric: "heightMetric",
-			colorMetric: "colorMetric"
+	private potentiallyUpdateChosenMetrics(availableMetrics: MetricData[]) {
+		let dynamicSettingsUpdate: RecursivePartial<DynamicSettings> = {}
+
+		if (this.isMetricUnavailable("areaMetric", availableMetrics)) {
+			dynamicSettingsUpdate["areaMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 0)
 		}
-		const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
-		if (availableMetrics.length > 0) {
-			let dynamicSettingsUpdate: RecursivePartial<DynamicSettings> = this.prepareSettingsUpdateWithMetrics(
-				metricKeys,
-				availableMetrics
-			)
 
-			if (this.isMetricUnavailable("distributionMetric", availableMetrics)) {
-				dynamicSettingsUpdate.distributionMetric =
-					dynamicSettingsUpdate.areaMetric || this.settingsService.getSettings().dynamicSettings.areaMetric
-			}
-
-			if (Object.keys(dynamicSettingsUpdate).length !== 0) {
-				this.settingsService.updateSettings({ dynamicSettings: dynamicSettingsUpdate })
-			}
+		if (this.isMetricUnavailable("heightMetric", availableMetrics)) {
+			dynamicSettingsUpdate["heightMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 1)
 		}
-	}
 
-	private prepareSettingsUpdateWithMetrics(
-		metricKeys: Partial<DynamicSettings>,
-		availableMetrics: MetricData[]
-	): RecursivePartial<DynamicSettings> {
-		let dynamicSettingsUpdate = {}
+		if (this.isMetricUnavailable("colorMetric", availableMetrics)) {
+			dynamicSettingsUpdate["colorMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 2)
+		}
 
-		_.keys(metricKeys).forEach((metricKey: string, index: number) => {
-			if (this.isMetricUnavailable(metricKey, availableMetrics)) {
-				dynamicSettingsUpdate[metricKey] = this.getMetricNameFromIndexOrLast(availableMetrics, index)
-			}
-		})
-		return dynamicSettingsUpdate
+		if (this.isMetricUnavailable("distributionMetric", availableMetrics)) {
+			dynamicSettingsUpdate["distributionMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 0)
+		}
+
+		if (_.keys(dynamicSettingsUpdate).length !== 0) {
+			this.settingsService.updateSettings({ dynamicSettings: dynamicSettingsUpdate })
+		}
 	}
 
 	private isMetricUnavailable(metricKey: string, availableMetrics: MetricData[]) {

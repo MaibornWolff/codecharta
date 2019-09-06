@@ -23,10 +23,19 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private settings: Settings
 	private update: RecursivePartial<Settings> = {}
-	private debounceBroadcast: () => void
+	private readonly debounceBroadcast: { [key: string]: (eventName: string, data: any) => void } = {}
 
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
 		this.settings = this.getDefaultSettings()
+
+		for (const key in SettingsEvents) {
+			this.debounceBroadcast[SettingsEvents[key]] = _.debounce((eventName: string, data: any) => {
+				if (eventName == SettingsEvents.SETTINGS_CHANGED_EVENT) {
+					this.update = {}
+				}
+				this.$rootScope.$broadcast(eventName, data)
+			}, SettingsService.DEBOUNCE_TIME)
+		}
 
 		FileStateService.subscribe(this.$rootScope, this)
 	}
@@ -47,32 +56,32 @@ export class SettingsService implements FileStateServiceSubscriber {
 			this.loadingGifService.updateLoadingMapFlag(true)
 			this.update = this.mergePartialSettings(this.update, update, this.settings)
 
-			if (update.fileSettings && update.fileSettings.blacklist) {
+			if (this.update.fileSettings && this.update.fileSettings.blacklist) {
 				this.notifyBlacklistSubscribers()
 			}
 
-			if (update.dynamicSettings) {
-				if (update.dynamicSettings.areaMetric) {
+			if (this.update.dynamicSettings) {
+				if (this.update.dynamicSettings.areaMetric) {
 					this.notifyAreaMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.heightMetric) {
+				if (this.update.dynamicSettings.heightMetric) {
 					this.notifyHeightMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.colorMetric) {
+				if (this.update.dynamicSettings.colorMetric) {
 					this.notifyColorMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.edgeMetric) {
+				if (this.update.dynamicSettings.edgeMetric) {
 					this.notifyEdgeMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.distributionMetric) {
+				if (this.update.dynamicSettings.distributionMetric) {
 					this.notifyDistributionMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.searchPattern) {
+				if (this.update.dynamicSettings.searchPattern) {
 					this.notifySearchPatternSubscribers()
 				}
 			}
@@ -213,14 +222,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	private notifySettingsSubscribers() {
-		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.SETTINGS_CHANGED_EVENT, {
-				settings: this.settings,
-				update: this.update
-			})
-			this.update = {}
-		}, SettingsService.DEBOUNCE_TIME)
-		this.debounceBroadcast()
+		this.notify(SettingsEvents.SETTINGS_CHANGED_EVENT, {
+			settings: this.settings,
+			update: this.update
+		})
 	}
 
 	private notifyBlacklistSubscribers() {
@@ -253,11 +258,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.notify(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: this.settings.dynamicSettings.searchPattern })
 	}
 
-	private notify(eventName: string, data: object, debounceTime: number = SettingsService.DEBOUNCE_TIME) {
-		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(eventName, data)
-		}, debounceTime)
-		this.debounceBroadcast()
+	private notify(eventName: string, data: object) {
+		this.debounceBroadcast[eventName](eventName, data)
 	}
 
 	private synchronizeAngularTwoWayBinding() {
