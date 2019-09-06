@@ -12,5 +12,5 @@ export const delay = timeout => {
 
 export const goto = async (page: Page): Promise<void> => {
 	await page.goto(CC_URL)
-	await delay(1000)
+	await delay(2000)
 }
