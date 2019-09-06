@@ -25,22 +25,22 @@ describe("codecharta", () => {
 		let dialogErrorPageObject = new DialogErrorPageObject(page)
 		let msg = await dialogErrorPageObject.getMessage()
 		expect(msg).toEqual("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.")
-		await page.waitFor(1000)
+		await page.waitFor(2000)
 		return dialogErrorPageObject.clickOk()
 	}
 
 	async function checkSelectedFileName(shouldBe: string) {
 		let filePanel = new FilePanelPageObject(page)
-		await page.waitFor(1000)
+		await page.waitFor(2000)
 		let name = await filePanel.getSelectedName()
 		expect(name).toEqual(shouldBe)
 	}
 
 	async function checkAllFileNames(shouldBe: string[]) {
 		let filePanel = new FilePanelPageObject(page)
-		await page.waitFor(1000)
+		await page.waitFor(2000)
 		await filePanel.clickChooser()
-		await page.waitFor(1000)
+		await page.waitFor(2000)
 		let names = await filePanel.getAllNames()
 		expect(names).toEqual(shouldBe)
 	}
