@@ -82,10 +82,11 @@ describe("EdgeChooserController", () => {
 		it("should update edge metric if selected one is no longer available", () => {
 			const metricData = [{ name: "metric2", maxValue: 22, availableInVisibleMaps: true }]
 			edgeChooserController["_viewModel"].edgeMetric = "metric1"
+			settingsService.updateSettings = jest.fn()
 
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
-			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("metric2")
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({ dynamicSettings: { edgeMetric: "metric2" } })
 		})
 	})
 
@@ -109,15 +110,33 @@ describe("EdgeChooserController", () => {
 		})
 	})
 
-	describe("onEdgeMetricSelected", () => {
+	describe("onEdgeMetricChanged", () => {
+		it("should set new edgeMetric into viewModel", () => {
+			codeMapActionsService.updateEdgePreviews = jest.fn()
+
+			edgeChooserController.onEdgeMetricChanged("myEdgeMetric")
+
+			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("myEdgeMetric")
+		})
+
+		it("should set None as edgeMetric into viewModel", () => {
+			codeMapActionsService.updateEdgePreviews = jest.fn()
+
+			edgeChooserController.onEdgeMetricChanged(null)
+
+			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("None")
+		})
+
 		it("should update Edge Previews", () => {
 			codeMapActionsService.updateEdgePreviews = jest.fn()
 
-			edgeChooserController.onEdgeMetricSelected()
+			edgeChooserController.onEdgeMetricChanged("myEdgeMetric")
 
 			expect(codeMapActionsService.updateEdgePreviews).toHaveBeenCalled()
 		})
+	})
 
+	describe("onEdgeMetricSelected", () => {
 		it("should update Settings", () => {
 			settingsService.updateSettings = jest.fn()
 			codeMapActionsService.updateEdgePreviews = jest.fn()

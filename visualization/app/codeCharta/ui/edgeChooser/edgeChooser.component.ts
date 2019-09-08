@@ -5,8 +5,9 @@ import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edge
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { EdgeMetricSubscriber } from "../../state/settingsService/settings.service.events"
 
-export class EdgeChooserController implements EdgeMetricServiceSubscriber {
+export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeMetricSubscriber {
 	private originalEdgeMetricData: MetricData[]
 
 	private _viewModel: {
@@ -16,7 +17,7 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		searchTerm: string
 	} = {
 		edgeMetricData: [],
-		edgeMetric: "None",
+		edgeMetric: null,
 		hoveredEdgeValue: null,
 		searchTerm: ""
 	}
@@ -28,18 +29,18 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 	) {
 		EdgeMetricService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
 	}
 
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
 		this._viewModel.edgeMetricData = edgeMetrics
 		this.originalEdgeMetricData = edgeMetrics
 
-		let edgeMetricNames = edgeMetrics.map(x => x.name)
+		const edgeMetricNames = edgeMetrics.map(x => x.name)
 
 		if (!edgeMetricNames.includes(this._viewModel.edgeMetric)) {
-			this._viewModel.edgeMetric = edgeMetricNames[0]
+			this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: edgeMetricNames[0] } })
 		}
-		this.onEdgeMetricSelected()
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
@@ -50,9 +51,13 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber {
 		}
 	}
 
+	public onEdgeMetricChanged(edgeMetric: string) {
+		this._viewModel.edgeMetric = edgeMetric == null ? "None" : edgeMetric
+		this.codeMapActionsService.updateEdgePreviews()
+	}
+
 	public onEdgeMetricSelected() {
 		this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: this._viewModel.edgeMetric } })
-		this.codeMapActionsService.updateEdgePreviews()
 	}
 
 	public noEdgesAvailable() {
