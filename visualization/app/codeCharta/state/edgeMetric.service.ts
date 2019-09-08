@@ -132,7 +132,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 	}
 
 	private isNotBlacklisted(node: CodeMapNode, blacklist: BlacklistItem[]): boolean {
-		return !CodeMapHelper.isBlacklisted(node, blacklist as BlacklistItem[], BlacklistType.exclude)
+		return !CodeMapHelper.isBlacklisted(node, blacklist, BlacklistType.exclude)
 	}
 
 	private addEdgeToCalculationMap(edge: Edge) {
