@@ -138,7 +138,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				heightMetric: null,
 				colorMetric: null,
 				distributionMetric: null,
-				edgeMetric: "None",
+				edgeMetric: null,
 				focusedNodePath: "",
 				searchedNodePaths: [],
 				searchPattern: "",
