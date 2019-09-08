@@ -24,9 +24,6 @@ export interface EdgeMetricServiceSubscriber {
 export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
 	private static EDGE_METRIC_DATA_UPDATED_EVENT = "edge-metric-data-updated"
 
-	private static DEBOUNCE_TIME = 400
-	private debounceBroadcast: () => void
-
 	private edgeMetricData: MetricData[] = []
 	private nodeEdgeMetricsMap: Map<string, Map<string, EdgeMetricCount>>
 
@@ -96,7 +93,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		return this.edgeMetricData
 	}
 
-	private calculateMetrics(visibleFileStates: FileState[], blacklist: RecursivePartial<BlacklistItem>[]): MetricData[] {
+	private calculateMetrics(visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {
 		if (visibleFileStates.length <= 0) {
 			return []
 		} else {
@@ -105,10 +102,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 		}
 	}
 
-	private calculateEdgeMetricData(
-		fileStates: FileState[],
-		blacklist: RecursivePartial<BlacklistItem>[]
-	): Map<string, Map<string, EdgeMetricCount>> {
+	private calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): Map<string, Map<string, EdgeMetricCount>> {
 		this.nodeEdgeMetricsMap = new Map()
 		fileStates.forEach(fileState => {
 			fileState.file.settings.fileSettings.edges.forEach(edge => {
@@ -201,10 +195,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 	}
 
 	private notifyEdgeMetricDataUpdated() {
-		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(EdgeMetricService.EDGE_METRIC_DATA_UPDATED_EVENT, this.edgeMetricData)
-		}, EdgeMetricService.DEBOUNCE_TIME)
-		this.debounceBroadcast()
+		this.$rootScope.$broadcast(EdgeMetricService.EDGE_METRIC_DATA_UPDATED_EVENT, this.edgeMetricData)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricServiceSubscriber) {
