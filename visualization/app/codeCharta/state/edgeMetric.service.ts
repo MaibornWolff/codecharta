@@ -1,13 +1,4 @@
-import {
-	MetricData,
-	RecursivePartial,
-	FileState,
-	BlacklistItem,
-	Edge,
-	BlacklistType,
-	CodeMapNode,
-	EdgeMetricCount
-} from "../codeCharta.model"
+import { MetricData, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount } from "../codeCharta.model"
 import _ from "lodash"
 import { FileStateServiceSubscriber, FileStateService } from "./fileState.service"
 import { IRootScopeService } from "angular"
