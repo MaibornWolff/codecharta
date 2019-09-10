@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.33.0] - 2019-09-10
+
+### Added
+
 - Edge Previews (Palm-Tree-Effect) #529
 - Dropdown to select Edge Metric, including Edge Counter #529
 - Edge Metric settings for Edge Height, Number of Previews & show only building with Edges #529
@@ -17,7 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Edge Visualization to better distinguish between incoming and outgoing edges #529
 - Distribution metric is by default the same as area metric #689
-- MapTreeView below searchBar opens the firt level by default #690
+- MapTreeView below searchBar opens the first level by default #690
+- Focus metric search when opening metricChooser #693
 
 ### Removed
 

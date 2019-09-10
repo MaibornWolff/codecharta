@@ -6,11 +6,12 @@
 		ng-model="$ctrl._viewModel.heightMetric"
 		ng-change="$ctrl.applySettingsHeightMetric()"
 		md-on-close="$ctrl.clearSearchTerm()"
+		md-on-open="$ctrl.focusInputField('height-metric')"
 		md-container-class="ribbonBarDropdown"
 	>
 		<md-select-header>
 			<input
-				class="metric-search"
+				class="metric-search height-metric"
 				ng-model="$ctrl._viewModel.searchTerm"
 				type="text"
 				placeholder="&#xF002; Metric (highest value)"

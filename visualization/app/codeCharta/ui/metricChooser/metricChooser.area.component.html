@@ -1,15 +1,17 @@
 <md-input-container>
 	<i class="fa fa-arrows-alt"></i>
+
 	<label></label>
 	<md-select
 		ng-model="$ctrl._viewModel.areaMetric"
 		ng-change="$ctrl.applySettingsAreaMetric()"
 		md-on-close="$ctrl.clearSearchTerm()"
+		md-on-open="$ctrl.focusInputField('area-metric')"
 		md-container-class="ribbonBarDropdown"
 	>
 		<md-select-header>
 			<input
-				class="metric-search"
+				class="metric-search area-metric"
 				ng-model="$ctrl._viewModel.searchTerm"
 				type="text"
 				placeholder="&#xF002; Metric (highest value)"

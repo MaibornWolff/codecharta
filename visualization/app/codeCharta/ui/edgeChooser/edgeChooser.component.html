@@ -9,6 +9,7 @@
 		ng-model="$ctrl._viewModel.edgeMetric"
 		ng-change="$ctrl.onEdgeMetricSelected()"
 		md-on-close="$ctrl.clearSearchTerm()"
+		md-on-open="$ctrl.focusInputField()"
 		md-container-class="ribbonBarDropdown"
 		ng-disabled="$ctrl.noEdgesAvailable()"
 	>

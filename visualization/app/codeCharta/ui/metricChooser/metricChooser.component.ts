@@ -10,6 +10,7 @@ import {
 	DistributionMetricSubscriber,
 	HeightMetricSubscriber
 } from "../../state/settingsService/settings.service.events"
+import $ from "jquery"
 import _ from "lodash"
 
 export class MetricChooserController
@@ -78,6 +79,12 @@ export class MetricChooserController
 	public clearSearchTerm() {
 		this._viewModel.searchTerm = ""
 		this._viewModel.metricData = this.originalMetricData
+	}
+
+	public focusInputField(idName: string) {
+		this.$timeout(() => {
+			$(".metric-search." + idName).focus()
+		}, 200)
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
