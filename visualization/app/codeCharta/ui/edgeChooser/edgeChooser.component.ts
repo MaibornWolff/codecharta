@@ -35,12 +35,10 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeM
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
 		this._viewModel.edgeMetricData = edgeMetrics
 		this.originalEdgeMetricData = edgeMetrics
-
-		const edgeMetricNames = edgeMetrics.map(x => x.name)
-
-		if (!edgeMetricNames.includes(this._viewModel.edgeMetric)) {
-			this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: edgeMetricNames[0] } })
+		if (!this.originalEdgeMetricData.map(x => x.name).includes(this._viewModel.edgeMetric)) {
+			this._viewModel.edgeMetric = "None"
 		}
+		this.onEdgeMetricSelected()
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {

@@ -71,7 +71,10 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should keep selected metric if available in new map", () => {
-			const metricData = [{ name: "metric1", maxValue: 22, availableInVisibleMaps: true }]
+			const metricData = [
+				{ name: "metric1", maxValue: 22, availableInVisibleMaps: true },
+				{ name: "None", maxValue: 1, availableInVisibleMaps: false }
+			]
 			edgeChooserController["_viewModel"].edgeMetric = "metric1"
 
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
@@ -79,14 +82,17 @@ describe("EdgeChooserController", () => {
 			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("metric1")
 		})
 
-		it("should update edge metric if selected one is no longer available", () => {
-			const metricData = [{ name: "metric2", maxValue: 22, availableInVisibleMaps: true }]
+		it("should update edgeMetric to None if selected edgeMetric is no longer available", () => {
+			const metricData = [
+				{ name: "metric2", maxValue: 22, availableInVisibleMaps: true },
+				{ name: "None", maxValue: 1, availableInVisibleMaps: false }
+			]
 			edgeChooserController["_viewModel"].edgeMetric = "metric1"
 			settingsService.updateSettings = jest.fn()
 
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ dynamicSettings: { edgeMetric: "metric2" } })
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({ dynamicSettings: { edgeMetric: "None" } })
 		})
 	})
 
