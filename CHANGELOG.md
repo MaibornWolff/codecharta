@@ -15,8 +15,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
--   Edge Visualization to better distinguish between incoming and outgoing edges #529
--   Distribution metric is by default the same as area metric #689
+- Edge Visualization to better distinguish between incoming and outgoing edges #529
+- Distribution metric is by default the same as area metric #689
+- MapTreeView below searchBar opens the first level by default #690
+
 
 ### Removed
 
