@@ -2,18 +2,16 @@ import "./edgeChooser.module"
 import { EdgeChooserController } from "./edgeChooser.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
-import {IRootScopeService, ITimeoutService} from "angular"
+import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
-import It = jest.It
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
 	let $rootScope: IRootScopeService
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
-	let $timeout: ITimeoutService
 
 	beforeEach(() => {
 		restartSystem()
@@ -27,11 +25,10 @@ describe("EdgeChooserController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		settingsService = getService<SettingsService>("settingsService")
-		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function rebuildController() {
-		edgeChooserController = new EdgeChooserController($rootScope, codeMapActionsService, settingsService, $timeout)
+		edgeChooserController = new EdgeChooserController($rootScope, codeMapActionsService, settingsService)
 	}
 
 	function withMockedCodeMapActionsService() {
