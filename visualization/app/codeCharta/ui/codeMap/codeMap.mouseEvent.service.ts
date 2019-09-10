@@ -4,11 +4,13 @@ import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode, FileState } from "../../codeCharta.model"
+import { CodeMapNode, FileState, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
+import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 interface Coordinates {
 	x: number
@@ -43,7 +45,7 @@ export enum ClickType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber {
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
@@ -67,6 +69,7 @@ export class CodeMapMouseEventService
 		this.threeUpdateCycleService.register(this.updateHovering.bind(this))
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public start() {
@@ -95,6 +98,10 @@ export class CodeMapMouseEventService
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+		this.onBuildingDeselected()
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.onBuildingDeselected()
 	}
 
