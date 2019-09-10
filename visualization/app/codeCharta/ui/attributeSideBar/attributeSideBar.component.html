@@ -4,6 +4,7 @@
 		<h2 class="node-name">{{ $ctrl._viewModel.node.name }}</h2>
 		<a ng-show="$ctrl._viewModel.node.link" class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank">
 			<i class="fa fa-external-link"></i>
+			<md-tooltip md-delay="200">{{ $ctrl._viewModel.node.link }}</md-tooltip>
 		</a>
 
 		<p class="node-origin">{{ $ctrl._viewModel.node.origin }}</p>
