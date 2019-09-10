@@ -2,7 +2,7 @@ import { goto, puppeteer } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
 import { Browser, Page } from "puppeteer"
 
-jest.setTimeout(10000)
+jest.setTimeout(20000)
 
 describe("CodeCharta logo", () => {
 	let browser: Browser

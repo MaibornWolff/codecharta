@@ -205,8 +205,8 @@ describe("settingService", () => {
 		})
 
 		it("should reset update after 400ms", done => {
-			settingsService["update"] = { fileSettings: { blacklist: ["entry"] } }
-			const update: RecursivePartial<Settings> = { fileSettings: { blacklist: [] } }
+			settingsService["update"] = { fileSettings: { edges: ["entry"] } }
+			const update: RecursivePartial<Settings> = { fileSettings: { edges: [] } }
 
 			settingsService.updateSettings(update)
 

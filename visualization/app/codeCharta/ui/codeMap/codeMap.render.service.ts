@@ -39,7 +39,12 @@ export class CodeMapRenderService {
 	}
 
 	private getSortedNodes(renderData: RenderData): Node[] {
-		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(renderData.map, renderData.settings, renderData.metricData)
+		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(
+			renderData.map,
+			renderData.settings,
+			renderData.metricData,
+			FileStateHelper.isDeltaState(renderData.fileStates)
+		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)
 	}
@@ -56,9 +61,8 @@ export class CodeMapRenderService {
 
 	private setArrows(sortedNodes: Node[], s: Settings) {
 		this.codeMapArrowService.clearArrows()
-		const visibleEdges = s.fileSettings.edges.filter(x => x.visible)
-		if (visibleEdges.length > 0 && s.appSettings.enableEdgeArrows) {
-			this.codeMapArrowService.addEdgeArrows(sortedNodes, visibleEdges, s)
+		if (s.fileSettings.edges.length > 0) {
+			this.codeMapArrowService.addEdgeArrows(sortedNodes, s.fileSettings.edges)
 		}
 	}
 

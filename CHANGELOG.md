@@ -9,18 +9,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Edge Previews (Palm-Tree-Effect) #529
+- Dropdown to select Edge Metric, including Edge Counter #529
+- Edge Metric settings for Edge Height, Number of Previews & show only building with Edges #529
+
 ### Changed
 
+- Edge Visualization to better distinguish between incoming and outgoing edges #529
 - Distribution metric is by default the same as area metric #689
 
 ### Removed
 
-### Fixed
+- Edge Options in Context menu #529
 
+### Fixed
 
 - SourceCodeParser now skips custom metrics for files, if the syntax tree cannot be created
 - Nodes with color metric equals 0 are colored correct again #677
-
 
 ### Chore
 

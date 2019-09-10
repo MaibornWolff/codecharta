@@ -6,12 +6,10 @@ import { SettingsServiceSubscriber } from "../../state/settingsService/settings.
 
 export class DialogGlobalSettingsController implements SettingsServiceSubscriber {
 	private _viewModel: {
-		enableEdgeArrows: boolean
 		hideFlatBuildings: boolean
 		maximizeDetailPanel: boolean
 		isWhiteBackground: boolean
 	} = {
-		enableEdgeArrows: null,
 		hideFlatBuildings: null,
 		maximizeDetailPanel: null,
 		isWhiteBackground: null

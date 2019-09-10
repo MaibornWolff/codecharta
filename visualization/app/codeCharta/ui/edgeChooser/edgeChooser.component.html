@@ -1,0 +1,40 @@
+<md-input-container>
+	<i class="fa fa-exchange"></i>
+	<md-tooltip ng-if="$ctrl.noEdgesAvailable()" md-delay="200">
+		Edges indicate relationships between buildings. Use the analysis to create edges.
+	</md-tooltip>
+
+	<label></label>
+	<md-select
+		ng-model="$ctrl._viewModel.edgeMetric"
+		ng-change="$ctrl.onEdgeMetricSelected()"
+		md-on-close="$ctrl.clearSearchTerm()"
+		md-container-class="ribbonBarDropdown"
+		ng-disabled="$ctrl.noEdgesAvailable()"
+	>
+		<md-select-header>
+			<input
+				class="metric-search"
+				ng-model="$ctrl._viewModel.searchTerm"
+				type="text"
+				placeholder="&#xF002; Metric (highest value)"
+				ng-keydown="$event.stopPropagation()"
+				ng-change="$ctrl.filterMetricData()"
+			/>
+		</md-select-header>
+		<md-content class="option-group">
+			<md-option ng-repeat="metric in $ctrl._viewModel.edgeMetricData" value="{{::metric.name}}">
+				{{::metric.name}}
+				<span class="metric-max-value">({{::metric.maxValue}})</span>
+			</md-option>
+		</md-content>
+	</md-select>
+
+	<div>
+		<edge-metric-type-component></edge-metric-type-component>
+		<span class="metric-value"
+			>{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
+			{{ ($ctrl._viewModel.hoveredEdgeValue.outgoing | number) || "-" }}
+		</span>
+	</div>
+</md-input-container>
