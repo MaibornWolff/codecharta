@@ -14,18 +14,10 @@ export class CodeMapHelper {
 	}
 
 	public static getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode): CodeMapNode {
-		let res = null
-
-		if (path === root.path) {
-			return root
-		}
-
-		hierarchy<CodeMapNode>(root).each(hierarchyNode => {
-			if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
-				res = hierarchyNode.data
-			}
-		})
-		return res
+		const matchingNode = hierarchy<CodeMapNode>(root)
+			.descendants()
+			.find(node => node.data.path === path && node.data.type === nodeType)
+		return matchingNode ? matchingNode.data : null
 	}
 
 	public static transformPath(toTransform: string): string {
