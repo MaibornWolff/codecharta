@@ -32,19 +32,19 @@ export class SettingsService implements FileStateServiceSubscriber {
 			this.debounceBroadcast[SettingsEvents[key]] = _.debounce((eventName: string, data: any) => {
 				if (eventName == SettingsEvents.SETTINGS_CHANGED_EVENT) {
 					this.update = {}
-				} else if (eventName == SettingsEvents.EDGE_METRIC_CHANGED_EVENT) {
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.EDGE_METRIC_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.edgeMetric
-				} else if (eventName == SettingsEvents.AREA_METRIC_CHANGED_EVENT) {
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.AREA_METRIC_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.areaMetric
-				} else if (eventName == SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT) {
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.heightMetric
-				} else if (eventName == SettingsEvents.COLOR_METRIC_CHANGED_EVENT) {
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.COLOR_METRIC_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.colorMetric
-				} else if (eventName == SettingsEvents.BLACKLIST_CHANGED_EVENT) {
+				} else if (this.update.fileSettings && eventName == SettingsEvents.BLACKLIST_CHANGED_EVENT) {
 					delete this.update.fileSettings.blacklist
-				} else if (eventName == SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT) {
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.distributionMetric
-				} else if (eventName == SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT) {
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.searchPattern
 				}
 				this.$rootScope.$broadcast(eventName, data)
