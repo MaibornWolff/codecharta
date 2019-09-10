@@ -1,6 +1,7 @@
 import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
 import { CodeMapHelper } from "./codeMapHelper"
-import { Settings, Node } from "../codeCharta.model"
+import { Settings, Node, CodeMapNode } from "../codeCharta.model"
+import { Vector3 } from "three"
 
 export class TreeMapHelper {
 	private static FOLDER_HEIGHT = 2
@@ -29,25 +30,38 @@ export class TreeMapHelper {
 		}
 	}
 
-	public static buildNodeFrom(squaredNode: SquarifiedValuedCodeMapNode, heightScale: number, maxHeight: number, s: Settings): Node {
+	public static buildNodeFrom(
+		squaredNode: SquarifiedValuedCodeMapNode,
+		heightScale: number,
+		maxHeight: number,
+		s: Settings,
+		isDeltaState: boolean
+	): Node {
 		const isNodeLeaf: boolean = !(squaredNode.children && squaredNode.children.length > 0)
 		const flattened: boolean = this.isNodeToBeFlat(squaredNode, s)
 		const heightValue: number = this.getHeightValue(s, squaredNode, maxHeight, flattened)
 		const depth: number = squaredNode.data.path.split("/").length - 2
+		const width = squaredNode.x1 - squaredNode.x0
+		const height = Math.abs(
+			isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
+		)
+		const length = squaredNode.y1 - squaredNode.y0
+		const x0 = squaredNode.x0
+		const y0 = squaredNode.y0
+		const z0 = depth * TreeMapHelper.FOLDER_HEIGHT
 
 		return {
 			name: squaredNode.data.name,
-			width: squaredNode.x1 - squaredNode.x0,
-			height: Math.abs(
-				isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
-			),
-			length: squaredNode.y1 - squaredNode.y0,
-			depth: depth,
-			x0: squaredNode.x0,
-			z0: depth * TreeMapHelper.FOLDER_HEIGHT,
-			y0: squaredNode.y0,
+			width,
+			height,
+			length,
+			depth,
+			x0,
+			z0,
+			y0,
 			isLeaf: isNodeLeaf,
 			attributes: squaredNode.data.attributes,
+			edgeAttributes: squaredNode.data.edgeAttributes,
 			deltas: squaredNode.data.deltas,
 			heightDelta:
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
@@ -58,13 +72,36 @@ export class TreeMapHelper {
 			origin: squaredNode.data.origin,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
-			flat: flattened
+			flat: flattened,
+			color: this.getBuildingColor(squaredNode.data, s, isDeltaState, flattened),
+			incomingEdgePoint: this.getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMapSettings.mapSize),
+			outgoingEdgePoint: this.getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMapSettings.mapSize)
+		}
+	}
+
+	private static getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+		if (width > length) {
+			return new Vector3(vector.x - mapSize * 0.5 + width / 4, vector.y + height, vector.z - mapSize * 0.5 + length / 2)
+		} else {
+			return new Vector3(vector.x - mapSize * 0.5 + width / 2, vector.y + height, vector.z - mapSize * 0.5 + length / 4)
+		}
+	}
+
+	private static getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+		if (width > length) {
+			return new Vector3(vector.x - mapSize * 0.5 + 0.75 * width, vector.y + height, vector.z - mapSize * 0.5 + length / 2)
+		} else {
+			return new Vector3(vector.x - mapSize * 0.5 + width / 2, vector.y + height, vector.z - mapSize * 0.5 + 0.75 * length)
 		}
 	}
 
 	private static isNodeToBeFlat(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
 		let flattened = false
-		if (s.fileSettings.edges && s.fileSettings.edges.filter(edge => edge.visible).length > 0) {
+		if (
+			s.appSettings.showOnlyBuildingsWithEdges &&
+			s.fileSettings.edges &&
+			s.fileSettings.edges.filter(edge => edge.visible).length > 0
+		) {
 			flattened = this.nodeHasNoVisibleEdges(squaredNode, s)
 		}
 
@@ -76,13 +113,34 @@ export class TreeMapHelper {
 
 	private static nodeHasNoVisibleEdges(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
 		return (
-			s.fileSettings.edges.filter(
-				edge => edge.visible && (squaredNode.data.path === edge.fromNodeName || squaredNode.data.path === edge.toNodeName)
-			).length == 0
+			squaredNode.data.edgeAttributes[s.dynamicSettings.edgeMetric] === undefined ||
+			s.fileSettings.edges.filter(edge => squaredNode.data.path === edge.fromNodeName || squaredNode.data.path === edge.toNodeName)
+				.length == 0
 		)
 	}
 
 	private static isNodeNonSearched(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
 		return s.dynamicSettings.searchedNodePaths.filter(path => path == squaredNode.data.path).length == 0
+	}
+
+	private static getBuildingColor(node: CodeMapNode, s: Settings, isDeltaState: boolean, flattened: boolean): string {
+		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
+		if (isDeltaState) {
+			return s.appSettings.mapColors.base
+		} else {
+			const metricValue: number = node.attributes[s.dynamicSettings.colorMetric]
+
+			if (metricValue == null) {
+				return s.appSettings.mapColors.base
+			} else if (flattened) {
+				return s.appSettings.mapColors.flat
+			} else if (metricValue < s.dynamicSettings.colorRange.from) {
+				return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
+			} else if (metricValue > s.dynamicSettings.colorRange.to) {
+				return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
+			} else {
+				return s.appSettings.mapColors.neutral
+			}
+		}
 	}
 }
