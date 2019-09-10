@@ -1,12 +1,17 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapNode, BlacklistType, BlacklistItem, Edge } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
+import { EdgeMetricService } from "../../state/edgeMetric.service"
 
 export class CodeMapActionsService {
-	constructor(private settingsService: SettingsService, private threeOrbitControlsService: ThreeOrbitControlsService) {}
+	constructor(
+		private settingsService: SettingsService,
+		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private edgeMetricService: EdgeMetricService
+	) {}
 
 	public toggleNodeVisibility(node: CodeMapNode) {
 		if (node.visible) {
@@ -111,29 +116,34 @@ export class CodeMapActionsService {
 		}
 	}
 
-	public showDependentEdges(node: CodeMapNode) {
-		this.changeEdgesVisibility(true, node)
-	}
+	public updateEdgePreviews() {
+		const settings = this.settingsService.getSettings()
+		const edges = settings.fileSettings.edges
+		const edgeMetric = settings.dynamicSettings.edgeMetric
+		const numberOfEdgesToDisplay = settings.appSettings.amountOfEdgePreviews
+		const edgePreviewNodes = this.edgeMetricService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
 
-	public hideDependentEdges(node: CodeMapNode) {
-		this.changeEdgesVisibility(false, node)
-	}
+		edges.forEach(edge => {
+			if (
+				(edgePreviewNodes.includes(edge.fromNodeName) || edgePreviewNodes.includes(edge.toNodeName)) &&
+				Object.keys(edge.attributes).includes(edgeMetric)
+			) {
+				edge.visible = EdgeVisibility.both
+				if (!edgePreviewNodes.includes(edge.fromNodeName)) {
+					edge.visible = EdgeVisibility.to
+				} else if (!edgePreviewNodes.includes(edge.toNodeName)) {
+					edge.visible = EdgeVisibility.from
+				}
+			} else {
+				edge.visible = EdgeVisibility.none
+			}
+		})
 
-	public hideAllEdges() {
-		this.changeEdgesVisibility(false)
-	}
-
-	public amountOfDependentEdges(node: CodeMapNode) {
-		return this.settingsService.getSettings().fileSettings.edges.filter(edge => this.edgeContainsNode(edge, node)).length
-	}
-
-	public amountOfVisibleDependentEdges(node: CodeMapNode) {
-		return this.settingsService.getSettings().fileSettings.edges.filter(edge => this.edgeContainsNode(edge, node) && edge.visible)
-			.length
-	}
-
-	public isAnyEdgeVisible() {
-		return this.settingsService.getSettings().fileSettings.edges.filter(edge => edge.visible).length > 0
+		this.settingsService.updateSettings({
+			fileSettings: {
+				edges: edges
+			}
+		})
 	}
 
 	public getParentMP(path: string, s: Settings): MarkedPackage {
@@ -182,26 +192,6 @@ export class CodeMapActionsService {
 		if (indexToRemove > -1) {
 			s.fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
-	}
-
-	private changeEdgesVisibility(visibility: boolean, node: CodeMapNode = null) {
-		let edges = this.settingsService.getSettings().fileSettings.edges
-		if (edges) {
-			edges.forEach(edge => {
-				if (node === null || this.edgeContainsNode(edge, node)) {
-					edge.visible = visibility
-				}
-			})
-			this.settingsService.updateSettings({
-				fileSettings: {
-					edges: edges
-				}
-			})
-		}
-	}
-
-	private edgeContainsNode(edge: Edge, node: CodeMapNode): boolean {
-		return node.path == edge.fromNodeName || node.path == edge.toNodeName
 	}
 
 	private isEqualObjects(obj1, obj2): boolean {
