@@ -4,10 +4,11 @@ import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode, FileState } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
+import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
 
 interface Coordinates {
 	x: number
@@ -41,7 +42,8 @@ export enum ClickType {
 	RightClick
 }
 
-export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber {
+export class CodeMapMouseEventService
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
@@ -64,6 +66,7 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	) {
 		this.threeUpdateCycleService.register(this.updateHovering.bind(this))
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public start() {
@@ -90,6 +93,12 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 				break
 		}
 	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+		this.onBuildingDeselected()
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public updateHovering() {
 		if (this.hasMouseMoved()) {
