@@ -1,6 +1,6 @@
 import "./edgeChooser.component.scss"
 import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
@@ -25,8 +25,7 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeM
 	constructor(
 		private $rootScope: IRootScopeService,
 		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService,
-		private $timeout: ITimeoutService
+		private settingsService: SettingsService
 	) {
 		EdgeMetricService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
@@ -53,7 +52,6 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeM
 	public onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.edgeMetric = edgeMetric == null ? "None" : edgeMetric
 		this.codeMapActionsService.updateEdgePreviews()
-		this.synchronizeAngularTwoWayBinding()
 	}
 
 	public onEdgeMetricSelected() {
@@ -73,10 +71,6 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeM
 	public clearSearchTerm() {
 		this._viewModel.searchTerm = ""
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData
-	}
-
-	private synchronizeAngularTwoWayBinding() {
-		this.$timeout(() => {})
 	}
 }
 
