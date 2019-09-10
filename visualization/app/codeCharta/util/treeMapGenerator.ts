@@ -19,7 +19,7 @@ export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
 	private static HEIGHT_DIVISOR = 1
 
-	public static createTreemapNodes(map: CodeMapNode, s: Settings, metricData: MetricData[]): Node[] {
+	public static createTreemapNodes(map: CodeMapNode, s: Settings, metricData: MetricData[], isDeltaState: boolean): Node[] {
 		const squarifiedTreeMap: SquarifiedValuedCodeMapNode = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
 		const heightScale = s.treeMapSettings.mapSize / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
@@ -28,7 +28,7 @@ export class TreeMapGenerator {
 			if (CodeMapHelper.isBlacklisted(squarifiedNode.data, s.fileSettings.blacklist, BlacklistType.hide)) {
 				squarifiedNode.data = this.setVisibilityOfNodeAndDescendants(squarifiedNode.data, false)
 			}
-			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s)
+			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState)
 		})
 	}
 

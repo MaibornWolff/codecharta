@@ -152,7 +152,7 @@ describe("MetricChooserController", () => {
 			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "d" }
+				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "a" }
 			})
 		})
 

@@ -10,8 +10,8 @@ import {
 	Settings
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import * as THREE from "three"
 import { MetricDistribution } from "./fileExtensionCalculator"
+import { Box3, Vector3 } from "three"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -97,7 +97,15 @@ export const VALID_EDGES: Edge[] = [
 		}
 	},
 	{
-		fromNodeName: "/root/sample1 only leaf",
+		fromNodeName: "/root/Parent Leaf/other small leaf",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			otherMetric: 34
+		}
+	},
+	{
+		fromNodeName: "/root/not available",
 		toNodeName: "/root/Parent Leaf/small leaf",
 		attributes: {
 			pairingRate: 89,
@@ -399,25 +407,43 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
 	blacklist: [],
-	markedPackages: [],
 	edges: [
 		{
-			attributes: { avgCommits: 34, pairingRate: 89 },
+			attributes: {
+				avgCommits: 34,
+				pairingRate: 89
+			},
 			fromNodeName: "/root/big leaf",
 			toNodeName: "/root/Parent Leaf/small leaf"
 		},
 		{
-			attributes: { avgCommits: 34, pairingRate: 89 },
-			fromNodeName: "/root/sample1 only leaf",
+			attributes: {
+				otherMetric: 34,
+				pairingRate: 89
+			},
+			fromNodeName: "/root/Parent Leaf/other small leaf",
+			toNodeName: "/root/Parent Leaf/small leaf"
+		},
+		{
+			attributes: {
+				avgCommits: 34,
+				pairingRate: 89
+			},
+			fromNodeName: "/root/not available",
 			toNodeName: "/root/Parent Leaf/small leaf"
 		}
 	],
+	markedPackages: [],
 	nodes: [
 		{
 			attributes: {},
 			children: [
 				{
-					attributes: { Functions: 10, MCC: 1, RLOC: 100 },
+					attributes: {
+						Functions: 10,
+						MCC: 1,
+						RLOC: 100
+					},
 					link: "http://www.google.de",
 					name: "big leaf",
 					type: "File"
@@ -426,12 +452,20 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 					attributes: {},
 					children: [
 						{
-							attributes: { Functions: 100, MCC: 100, RLOC: 30 },
+							attributes: {
+								Functions: 100,
+								MCC: 100,
+								RLOC: 30
+							},
 							name: "small leaf",
 							type: "File"
 						},
 						{
-							attributes: { Functions: 1000, MCC: 10, RLOC: 70 },
+							attributes: {
+								Functions: 1000,
+								MCC: 10,
+								RLOC: 70
+							},
 							name: "other small leaf",
 							type: "File"
 						}
@@ -466,6 +500,9 @@ export const SETTINGS: Settings = {
 				},
 				{
 					coverage: AttributeTypeValue.relative
+				},
+				{
+					pairing_rate: AttributeTypeValue.absolute
 				}
 			],
 			edges: []
@@ -479,6 +516,7 @@ export const SETTINGS: Settings = {
 		heightMetric: "mcc",
 		colorMetric: "mcc",
 		distributionMetric: "mcc",
+		edgeMetric: "pairingRate",
 		focusedNodePath: "/root",
 		searchedNodePaths: [],
 		searchPattern: "",
@@ -490,10 +528,11 @@ export const SETTINGS: Settings = {
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
-		scaling: new THREE.Vector3(1, 1.8, 1),
-		camera: new THREE.Vector3(0, 300, 1000),
+		amountOfEdgePreviews: 5,
+		edgeHeight: 4,
+		scaling: new Vector3(1, 1.8, 1),
+		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
-		enableEdgeArrows: true,
 		hideFlatBuildings: true,
 		invertHeight: true,
 		invertColorRange: false,
@@ -512,9 +551,12 @@ export const SETTINGS: Settings = {
 			flat: "#AAAAAA",
 			lightGrey: "#DDDDDD",
 			angularGreen: "#00BFA5",
-			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			incomingEdge: "#00ffff",
+			outgoingEdge: "#ff00ff"
 		},
-		isPresentationMode: false
+		isPresentationMode: false,
+		showOnlyBuildingsWithEdges: false
 	},
 	treeMapSettings: {
 		mapSize: 500
@@ -524,10 +566,11 @@ export const SETTINGS: Settings = {
 export const DEFAULT_SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 1,
-		camera: new THREE.Vector3(0, 300, 1000),
+		amountOfEdgePreviews: 1,
+		edgeHeight: 4,
+		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		dynamicMargin: true,
-		enableEdgeArrows: true,
 		hideFlatBuildings: true,
 		invertHeight: false,
 		invertColorRange: false,
@@ -544,11 +587,14 @@ export const DEFAULT_SETTINGS: Settings = {
 			neutral: "#ddcc00",
 			positive: "#69AE40",
 			positiveDelta: "#69FF40",
-			selected: "#EB8319"
+			selected: "#EB8319",
+			incomingEdge: "#00ffff",
+			outgoingEdge: "#ff00ff"
 		},
-		scaling: new THREE.Vector3(1, 1, 1),
+		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
-		isPresentationMode: false
+		isPresentationMode: false,
+		showOnlyBuildingsWithEdges: false
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -556,6 +602,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		focusedNodePath: "",
 		heightMetric: null,
 		distributionMetric: null,
+		edgeMetric: null,
 		margin: null,
 		colorRange: {
 			from: null,
@@ -580,13 +627,17 @@ export const TEST_NODE_ROOT: Node = {
 	isLeaf: true,
 	deltas: { a: 1, b: 2 },
 	attributes: { a: 20, b: 15 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
 	heightDelta: 10,
 	visible: true,
 	path: "/root",
 	origin: "root",
 	link: "NO_LINK",
 	markingColor: "0x000000",
-	flat: false
+	flat: false,
+	color: "#AABBCC",
+	incomingEdgePoint: new Vector3(),
+	outgoingEdgePoint: new Vector3()
 }
 
 export const TEST_NODE_LEAF: Node = {
@@ -601,20 +652,24 @@ export const TEST_NODE_LEAF: Node = {
 	isLeaf: true,
 	deltas: { a: 1, b: 2 },
 	attributes: { a: 20, b: 15 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
 	heightDelta: 20,
 	visible: true,
 	path: "/root/big leaf",
 	origin: "root",
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
-	flat: false
+	flat: false,
+	color: "#AABBCC",
+	incomingEdgePoint: new Vector3(),
+	outgoingEdgePoint: new Vector3()
 }
 
 export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,
-	new THREE.Box3(),
+	new Box3(),
 	TEST_NODE_ROOT,
 	DEFAULT_SETTINGS.appSettings.mapColors.neutral
 )

@@ -20,6 +20,10 @@ export interface ColorMetricSubscriber {
 	onColorMetricChanged(colorMetric: string)
 }
 
+export interface EdgeMetricSubscriber {
+	onEdgeMetricChanged(edgeMetric: string)
+}
+
 export interface DistributionMetricSubscriber {
 	onDistributionMetricChanged(distributionMetric: string)
 }
@@ -34,6 +38,7 @@ export enum SettingsEvents {
 	AREA_METRIC_CHANGED_EVENT = "area-metric-changed",
 	HEIGHT_METRIC_CHANGED_EVENT = "height-metric-changed",
 	COLOR_METRIC_CHANGED_EVENT = "color-metric-changed",
+	EDGE_METRIC_CHANGED_EVENT = "edge-metric-changed",
 	DISTRIBUTION_METRIC_CHANGED_EVENT = "distribution-metric-changed",
 	SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
 }
