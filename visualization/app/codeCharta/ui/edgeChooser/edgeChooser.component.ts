@@ -1,11 +1,12 @@
 import "./edgeChooser.component.scss"
 import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { EdgeMetricSubscriber } from "../../state/settingsService/settings.service.events"
+import $ from "jquery"
 
 export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeMetricSubscriber {
 	private originalEdgeMetricData: MetricData[]
@@ -25,7 +26,8 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeM
 	constructor(
 		private $rootScope: IRootScopeService,
 		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService
+		private settingsService: SettingsService,
+		private $timeout: ITimeoutService
 	) {
 		EdgeMetricService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
@@ -66,6 +68,12 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeM
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(metric =>
 			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
 		)
+	}
+
+	public focusInputField() {
+		this.$timeout(() => {
+			$(".metric-search").focus()
+		}, 200)
 	}
 
 	public clearSearchTerm() {
