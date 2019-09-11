@@ -43,9 +43,9 @@ export class ThreeViewerService {
 		element.appendChild(this.threeRendererService.renderer.domElement)
 
 		// handles resizing the renderer when the window is resized
-		window.addEventListener("resize", this.onWindowResize.bind(this), false)
-		window.addEventListener("focusin", this.onFocusIn.bind(this), false)
-		window.addEventListener("focusout", this.onFocusOut.bind(this), false)
+		window.addEventListener("resize", () => this.onWindowResize())
+		window.addEventListener("focusin", event => this.onFocusIn(event))
+		window.addEventListener("focusout", event => this.onFocusOut(event))
 	}
 
 	/**
@@ -75,7 +75,7 @@ export class ThreeViewerService {
 	 * Calls the animation loop.
 	 */
 	public animate() {
-		requestAnimationFrame(this.animate.bind(this))
+		requestAnimationFrame(() => this.animate())
 		this.threeRendererService.renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 		this.threeOrbitControlsService.controls.update()
 		this.threeUpdateCycleService.update()
