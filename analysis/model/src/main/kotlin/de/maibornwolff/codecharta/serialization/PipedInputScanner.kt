@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.tokeiimporter
+package de.maibornwolff.codecharta.serialization
 
 import java.io.InputStream
 import java.util.*
