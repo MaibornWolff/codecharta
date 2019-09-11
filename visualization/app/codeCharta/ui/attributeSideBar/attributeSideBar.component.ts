@@ -8,13 +8,19 @@ import {
 } from "../codeMap/codeMap.mouseEvent.service"
 import { Node } from "../../codeCharta.model"
 import _ from "lodash"
-import { AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber } from "../../state/settingsService/settings.service.events"
+import {
+	AreaMetricSubscriber,
+	HeightMetricSubscriber,
+	ColorMetricSubscriber,
+	EdgeMetricSubscriber
+} from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
 
 interface PrimaryMetrics {
 	area: string
 	color: string
 	height: string
+	edge: string
 }
 
 export class AttributeSideBarController
@@ -23,7 +29,8 @@ export class AttributeSideBarController
 		BuildingDeselectedEventSubscriber,
 		AreaMetricSubscriber,
 		HeightMetricSubscriber,
-		ColorMetricSubscriber {
+		ColorMetricSubscriber,
+		EdgeMetricSubscriber {
 	private _viewModel: {
 		SIDENAV_ID: string
 		node: Node
@@ -43,6 +50,7 @@ export class AttributeSideBarController
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
+		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
 	}
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
@@ -69,6 +77,11 @@ export class AttributeSideBarController
 
 	public onColorMetricChanged(colorMetric: string) {
 		this._viewModel.primaryMetricKeys.color = colorMetric
+		this.updateSortedMetricKeysWithoutPrimaryMetrics()
+	}
+
+	public onEdgeMetricChanged(edgeMetric: string) {
+		this._viewModel.primaryMetricKeys.edge = edgeMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
