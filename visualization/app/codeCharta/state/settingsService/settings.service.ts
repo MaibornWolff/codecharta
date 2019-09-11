@@ -161,7 +161,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 				whiteColorBuildings: false,
 				mapColors: mapColors,
 				isPresentationMode: false,
-				showOnlyBuildingsWithEdges: false
+				showOnlyBuildingsWithEdges: false,
+				resetCameraIfNewFileIsLoaded: true
 			},
 			treeMapSettings: {
 				mapSize: 500
