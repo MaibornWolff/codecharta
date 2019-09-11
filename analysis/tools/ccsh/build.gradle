@@ -25,6 +25,7 @@ dependencies {
     def scmlogParser = project(':import:SCMLogParser')
     def sonarImporter = project(':import:SonarImporter')
     def sourceCodeParser = project(':import:SourceCodeParser')
+    def tokeiImporter = project(':import:TokeiImporter')
     def understandImporter = project(':import:UnderstandImporter')
     def mergeFilter = project(':filter:MergeFilter')
     def edgeFilter = project(':filter:EdgeFilter')
@@ -39,6 +40,7 @@ dependencies {
     compile scmlogParser; testCompile scmlogParser.sourceSets.test.output
     compile sonarImporter; testCompile sonarImporter.sourceSets.test.output
     compile sourceCodeParser; testCompile sourceCodeParser.sourceSets.test.output
+    compile tokeiImporter; testCompile tokeiImporter.sourceSets.test.output
     compile understandImporter; testCompile understandImporter.sourceSets.test.output
     compile mergeFilter; testCompile mergeFilter.sourceSets.test.output
     compile edgeFilter; testCompile edgeFilter.sourceSets.test.output
