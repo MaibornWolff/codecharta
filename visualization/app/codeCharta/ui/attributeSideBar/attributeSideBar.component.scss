@@ -52,7 +52,7 @@ attribute-side-bar-component {
 			.node-origin,
 			.node-path {
 				margin: 10px;
-				word-wrap: break-word;
+				word-break: break-all;
 				-webkit-user-select: text;
 				-moz-user-select: text;
 				-ms-user-select: text;
