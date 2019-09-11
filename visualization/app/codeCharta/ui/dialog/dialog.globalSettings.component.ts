@@ -14,7 +14,7 @@ export class DialogGlobalSettingsController implements SettingsServiceSubscriber
 		hideFlatBuildings: null,
 		maximizeDetailPanel: null,
 		isWhiteBackground: null,
-		resetCameraIfNewFileIsLoaded: true
+		resetCameraIfNewFileIsLoaded: null
 	}
 
 	constructor(private $mdDialog, private $rootScope: IRootScopeService, private settingsService: SettingsService) {
