@@ -1,11 +1,13 @@
 package de.maibornwolff.codecharta.importer.tokeiimporter
 
 import com.google.gson.Gson
+import com.google.gson.JsonElement
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.*
 import java.util.concurrent.Callable
@@ -15,8 +17,12 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from tokei json"],
         footer = ["Copyright(c) 2019, MaibornWolff GmbH"]
 )
-class TokeiImporter : Callable<Void> {
+class TokeiImporter(private val input: InputStream = System.`in`,
+                    private val output: PrintStream = System.out,
+                    private val error: PrintStream = System.err) : Callable<Void> {
     private var TOP_LEVEL_OBJECT: String = "inner"
+    private val logger = KotlinLogging.logger {}
+
     private lateinit var projectBuilder: ProjectBuilder
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -40,8 +46,8 @@ class TokeiImporter : Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
         projectBuilder = ProjectBuilder(projectName)
-        val bufferedReader = file!!.bufferedReader()
-        val root = JsonParser().parse(bufferedReader)
+        val root = getInput() ?: return null
+
         val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
         val gson = Gson()
         for (languageEntry in languageSummaries.entrySet()) {
@@ -62,16 +68,28 @@ class TokeiImporter : Callable<Void> {
         val fileName = sanitizedName.substringAfterLast("/")
 
         val node = MutableNode(
-                fileName, attributes = mutableMapOf(
-                "blanks" to analysisObject.blanks,
-                "loc" to analysisObject.code,
-                "comments" to analysisObject.comments,
-                "lines" to analysisObject.lines
-        )
+                fileName, attributes = mapOf(
+                "empty_lines" to analysisObject.blanks,
+                "rloc" to analysisObject.code,
+                "comment_lines" to analysisObject.comments,
+                "loc" to analysisObject.lines)
         )
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
+    }
 
+    private fun getInput(): JsonElement? {
+        var root: JsonElement? = null
+        if (file == null) {
+            val projectString = input.mapLines { it }.joinToString(separator = "") { it }
+            root = JsonParser().parse(projectString)
+        } else if (!file!!.isFile) {
+            logger.error("${file!!.name} has not been found.")
+        } else {
+            val bufferedReader = file!!.bufferedReader()
+            root = JsonParser().parse(bufferedReader)
+        }
+        return root
     }
 
     private fun writer(): Writer {
