@@ -47,7 +47,7 @@ export class AttributeSideBarController
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
-		this._viewModel.secondaryMetricKeys = this.getSortedMetricKeysWithoutPrimaryMetrics(selectedBuilding)
+		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 		this.openSideBar()
 		this.synchronizeAngularTwoWayBinding()
 	}
@@ -59,14 +59,17 @@ export class AttributeSideBarController
 
 	public onAreaMetricChanged(areaMetric: string) {
 		this._viewModel.primaryMetricKeys.area = areaMetric
+		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
 	public onHeightMetricChanged(heightMetric: string) {
 		this._viewModel.primaryMetricKeys.height = heightMetric
+		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
 		this._viewModel.primaryMetricKeys.color = colorMetric
+		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
 	public closeSideBar() {
@@ -77,10 +80,12 @@ export class AttributeSideBarController
 		this.$mdSidenav(this._viewModel.SIDENAV_ID).open()
 	}
 
-	private getSortedMetricKeysWithoutPrimaryMetrics(selectedBuilding: CodeMapBuilding) {
-		return _.keys(selectedBuilding.node.attributes)
-			.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
-			.sort()
+	private updateSortedMetricKeysWithoutPrimaryMetrics() {
+		if (this._viewModel.node) {
+			this._viewModel.secondaryMetricKeys = _.keys(this._viewModel.node.attributes)
+				.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
+				.sort()
+		}
 	}
 
 	private synchronizeAngularTwoWayBinding() {
