@@ -81,15 +81,23 @@ class TokeiImporter(private val input: InputStream = System.`in`,
 
     private fun getInput(): JsonElement? {
         var root: JsonElement? = null
-        if (file == null) {
-            val projectString = input.mapLines { it }.joinToString(separator = "") { it }
-            root = JsonParser().parse(projectString)
-        } else if (!file!!.isFile) {
-            logger.error("${file!!.name} has not been found.")
+
+        if (file != null) {
+            if (file!!.isFile) {
+                val bufferedReader = file!!.bufferedReader()
+                root = JsonParser().parse(bufferedReader)
+            } else {
+                logger.error("${file!!.name} has not been found.")
+            }
         } else {
-            val bufferedReader = file!!.bufferedReader()
-            root = JsonParser().parse(bufferedReader)
+            val projectString: String = input.mapLines { it }.joinToString(separator = "") { it }
+            if (projectString.isNotEmpty()) {
+                root = JsonParser().parse(projectString)
+            } else {
+                logger.error("Neither source file nor piped input found.")
+            }
         }
+
         return root
     }
 
