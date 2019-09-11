@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 -   Checkbox in global Settings for disabling camera reset, when new map is loaded #685
+-   Prominent Notice that we use Sonar-jar #713
 
 ### Changed
 
