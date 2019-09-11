@@ -1,70 +1,77 @@
 <md-sidenav class="md-sidenav-right" md-component-id="{{ $ctrl._viewModel.SIDENAV_ID }}" md-disable-backdrop md-whiteframe="4">
-	<md-content layout-padding>
-		<i class="close-icon fa fa-times" ng-click="$ctrl.closeSideBar()"></i>
-		<h2 class="node-name">{{ $ctrl._viewModel.node.name }}</h2>
-		<a ng-show="$ctrl._viewModel.node.link" class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank">
-			<i class="fa fa-external-link"></i>
-			<md-tooltip md-delay="200">{{ $ctrl._viewModel.node.link }}</md-tooltip>
-		</a>
+	<div class="side-bar-container">
+		<div class="side-bar-header">
+			<i class="close-icon fa fa-times" ng-click="$ctrl.closeSideBar()"></i>
 
-		<p class="node-origin">{{ $ctrl._viewModel.node.origin }}</p>
+			<a ng-show="$ctrl._viewModel.node.link" class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank">
+				<i class="fa fa-external-link"></i>
+				<md-tooltip md-delay="200">{{ $ctrl._viewModel.node.link }}</md-tooltip>
+			</a>
 
-		<div class="metrics-wrapper">
-			<table>
-				<tr>
-					<td><i class="fa fa-arrows-alt"></i></td>
-					<td class="metric-value">
-						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] }}
-					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
-						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] }}
-						</span>
-					</td>
-					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</td>
-				</tr>
-				<tr>
-					<td><i class="fa fa-arrows-v"></i></td>
-					<td class="metric-value">
-						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] }}
-					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
-						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] }}
-						</span>
-					</td>
-					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</td>
-				</tr>
-				<tr>
-					<td><i class="fa fa-paint-brush"></i></td>
-					<td class="metric-value">
-						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] }}
-					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
-						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] }}
-						</span>
-					</td>
-					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</td>
-				</tr>
-			</table>
+			<h2 class="node-name">{{ $ctrl._viewModel.node.name }}</h2>
+
+			<p class="node-origin">{{ $ctrl._viewModel.node.origin }}</p>
+
+			<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
+
+			<div class="metric-box">
+				<table>
+					<tr>
+						<td><i class="fa fa-arrows-alt"></i></td>
+						<td class="metric-value">
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] }}
+						</td>
+						<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
+							<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
+								&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] }}
+							</span>
+						</td>
+						<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</td>
+					</tr>
+					<tr>
+						<td><i class="fa fa-arrows-v"></i></td>
+						<td class="metric-value">
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] }}
+						</td>
+						<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
+							<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
+								&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] }}
+							</span>
+						</td>
+						<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</td>
+					</tr>
+					<tr>
+						<td><i class="fa fa-paint-brush"></i></td>
+						<td class="metric-value">
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] }}
+						</td>
+						<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
+							<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
+								&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] }}
+							</span>
+						</td>
+						<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 
-		<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
-
-		<p class="metrics-headline">METRICS</p>
-		<div class="metrics-wrapper scrollable-metrics">
-			<table>
-				<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
-					<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] }}</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
-						<span ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] }}
-						</span>
-					</td>
-					<td class="metric-name">{{ attributeKey }}</td>
-				</tr>
-			</table>
+		<div class="side-bar-body">
+			<div class="metrics-wrapper">
+				<div class="metric-box scrollable-content">
+					<table>
+						<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
+							<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] }}</td>
+							<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
+								<span ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
+									&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] }}
+								</span>
+							</td>
+							<td class="metric-name">{{ attributeKey }}</td>
+						</tr>
+					</table>
+				</div>
+			</div>
 		</div>
-	</md-content>
+	</div>
 </md-sidenav>

@@ -2,99 +2,119 @@ attribute-side-bar-component {
 	md-sidenav {
 		width: 350px;
 		margin-bottom: 98px; // canvas overflow (ribbonBar height)
-		z-index: 50;
+		padding: 8px;
 		font-size: 11pt;
-		height: calc(100% - 98px);
 		overflow: hidden;
 
-		md-content {
+		.side-bar-container {
 			height: 100%;
-		}
 
-		.close-icon,
-		.node-link {
-			position: absolute;
-			color: grey;
-			padding: 0;
-			cursor: pointer;
-			outline: none;
-			transition: 0.2s;
-
-			&:hover {
-				color: #444444;
-			}
-		}
-
-		.close-icon {
-			top: 5px;
-			left: 5px;
-		}
-
-		.node-link {
-			top: 9px;
-			right: 12px;
-		}
-
-		.node-name {
-			margin: 10px 0 0 0;
-			width: 90%;
-		}
-
-		.node-origin {
-			margin: 0;
-			color: grey;
-		}
-
-		.node-name,
-		.node-origin,
-		.node-path {
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		.metrics-headline {
-			margin: 0;
-			font-size: 10pt;
-			color: grey;
-		}
-
-		.metrics-wrapper {
-			width: 100%;
-			border-radius: 5px;
-			background-color: #f0f0f0;
-
-			&.scrollable-metrics {
-				max-height: calc(100% - 268px); // height of the upper fixed sidebar content
-				overflow: scroll;
+			&:before {
+				content: "";
+				height: 100%;
+				float: left;
 			}
 
-			table {
-				td {
-					vertical-align: initial;
+			.close-icon,
+			.node-link {
+				position: absolute;
+				color: grey;
+				padding: 0;
+				cursor: pointer;
+				outline: none;
+				transition: 0.2s;
+
+				&:hover {
+					color: #444444;
+				}
+			}
+
+			.close-icon {
+				top: 5px;
+				left: 5px;
+			}
+
+			.node-link {
+				top: 9px;
+				right: 12px;
+			}
+
+			.node-name {
+				width: 90%;
+			}
+
+			.node-origin,
+			.node-path {
+				color: grey;
+			}
+
+			.node-name,
+			.node-origin,
+			.node-path {
+				margin: 10px;
+				word-wrap: break-word;
+				-webkit-user-select: text;
+				-moz-user-select: text;
+				-ms-user-select: text;
+				user-select: text;
+			}
+
+			.side-bar-body {
+				position: relative;
+
+				&:after {
+					content: "";
+					clear: both;
+					display: block;
+				}
+			}
+
+			.metrics-wrapper {
+				position: absolute;
+				width: 100%;
+				height: 100%;
+				padding: 12px 0 12px 0;
+			}
+
+			.metric-box {
+				width: 100%;
+				border-radius: 5px;
+				background-color: #f0f0f0;
+				padding: 5px;
+
+				&.scrollable-content {
+					height: 100%;
+					overflow: auto;
 				}
 
-				tr:not(:last-child) td {
-					padding-bottom: 5px;
-				}
+				table {
+					td {
+						vertical-align: initial;
+					}
 
-				i.fa {
-					font-size: 12pt;
-				}
+					tr:not(:last-child) td {
+						padding-bottom: 5px;
+					}
 
-				.metric-value {
-					text-align: right;
-				}
+					i.fa {
+						font-size: 12pt;
+					}
 
-				.metric-delta span {
-					text-align: right;
-					background: #d5d5d5;
-					border-radius: 3px;
-					padding: 1px 3px;
-				}
+					.metric-value {
+						text-align: right;
+					}
 
-				.metric-name {
-					color: grey;
-					word-break: break-word;
+					.metric-delta span {
+						text-align: right;
+						background: #d5d5d5;
+						border-radius: 3px;
+						padding: 1px 3px;
+					}
+
+					.metric-name {
+						color: grey;
+						word-break: break-word;
+					}
 				}
 			}
 		}
