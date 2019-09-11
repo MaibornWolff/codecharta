@@ -5,9 +5,6 @@ import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 
-/**
- * A service which manages the Three.js scene in an angular way.
- */
 export class ThreeSceneService {
 	public scene: Scene
 	public labels: Group

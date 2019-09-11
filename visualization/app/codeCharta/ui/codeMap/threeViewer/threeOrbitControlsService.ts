@@ -9,9 +9,6 @@ export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
-/**
- * Service to manage the three orbit controls in an angular way.
- */
 export class ThreeOrbitControlsService {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
