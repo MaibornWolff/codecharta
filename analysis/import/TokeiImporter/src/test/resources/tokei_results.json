@@ -18,7 +18,7 @@
           "code": 46,
           "comments": 0,
           "lines": 46,
-          "name": ".\\CODE_OF_CONDUCT.md"
+          "name": ".\\foo\\CODE_OF_CONDUCT.md"
         }
       ],
       "inaccurate": false
@@ -34,7 +34,7 @@
           "code": 99,
           "comments": 1,
           "lines": 123,
-          "name": ".\\build.rs"
+          "name": ".\\src\\build.rs"
         },
         {
           "blanks": 28,

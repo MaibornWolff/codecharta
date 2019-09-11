@@ -41,7 +41,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Parameters(paramLabel = "FILE", description = ["sourcemonitor csv file"])
+    @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["sourcemonitor csv file"])
     private var file: File? = null
 
     @Throws(IOException::class)
@@ -95,7 +95,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
 
     private fun writer(): Writer {
         return if (outputFile == null) {
-            OutputStreamWriter(System.out)
+            OutputStreamWriter(output)
         } else {
             BufferedWriter(FileWriter(outputFile!!))
         }
@@ -105,6 +105,11 @@ class TokeiImporter(private val input: InputStream = System.`in`,
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine.call(TokeiImporter(), System.out, *args)
+        }
+
+        @JvmStatic
+        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
+            CommandLine.call(TokeiImporter(input, output, error), output, *args)
         }
     }
 }
