@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Prominent Notice that we use Sonar-jar #713
+
 ### Changed
 
 ### Removed
