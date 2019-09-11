@@ -4,6 +4,7 @@ dependencies {
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.fastjson', name: 'boon', version: boon_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+    implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
