@@ -15,6 +15,8 @@ import {
 	EdgeMetricSubscriber
 } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { AttributeSideBarService } from "./attributeSideBar.service"
+import $ from "jquery"
 
 interface PrimaryMetrics {
 	area: string
@@ -32,19 +34,21 @@ export class AttributeSideBarController
 		ColorMetricSubscriber,
 		EdgeMetricSubscriber {
 	private _viewModel: {
-		SIDENAV_ID: string
 		node: Node
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
 	} = {
-		SIDENAV_ID: "attribute-side-bar-right",
 		node: null,
 		primaryMetricKeys: {} as PrimaryMetrics,
 		secondaryMetricKeys: null
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private $mdSidenav: any) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
+		private attributeSideBarService: AttributeSideBarService
+	) {
 		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
@@ -86,11 +90,13 @@ export class AttributeSideBarController
 	}
 
 	public closeSideBar() {
-		this.$mdSidenav(this._viewModel.SIDENAV_ID).close()
+		$(".side-bar-container").removeClass("expanded")
+		this.attributeSideBarService.closeSideBar()
 	}
 
 	public openSideBar() {
-		this.$mdSidenav(this._viewModel.SIDENAV_ID).open()
+		$(".side-bar-container").addClass("expanded")
+		this.attributeSideBarService.openSideBar()
 	}
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
