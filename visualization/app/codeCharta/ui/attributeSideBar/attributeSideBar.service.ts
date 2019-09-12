@@ -1,15 +1,32 @@
 import { IRootScopeService } from "angular"
+import {
+	CodeMapMouseEventService,
+	BuildingSelectedEventSubscriber,
+	BuildingDeselectedEventSubscriber
+} from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export interface AttributeSideBarVisibilitySubscriber {
 	onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean)
 }
 
-export class AttributeSideBarService {
+export class AttributeSideBarService implements BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber {
 	public static readonly ATTRIBUTE_SIDE_BAR_VISIBILITY_CHANGED_EVENT = "attribute-side-bar-visibility-changed-event"
 
 	private isAttributeSideBarVisible: boolean = false
 
-	constructor(private $rootScope: IRootScopeService) {}
+	constructor(private $rootScope: IRootScopeService) {
+		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
+	}
+
+	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
+		this.openSideBar()
+	}
+
+	public onBuildingDeselected() {
+		this.closeSideBar()
+	}
 
 	public openSideBar() {
 		this.isAttributeSideBarVisible = true

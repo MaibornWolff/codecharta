@@ -1,13 +1,12 @@
 import "./attributeSideBar.module"
 import { AttributeSideBarController } from "./attributeSideBar.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let $mdSideNav
 
 	beforeEach(() => {
@@ -19,11 +18,10 @@ describe("AttributeSideBarController", () => {
 		instantiateModule("app.codeCharta.ui.attributeSideBar")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function rebuildController() {
-		attributeSideBarController = new AttributeSideBarController($rootScope, $timeout, $mdSideNav)
+		attributeSideBarController = new AttributeSideBarController($rootScope)
 	}
 
 	describe("constructor", () => {
