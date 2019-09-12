@@ -8,13 +8,14 @@ import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 
 export interface PackageList {
 	colorPixel: string
 	markedPackages: MarkedPackage[]
 }
 
-export class LegendPanelController implements SettingsServiceSubscriber {
+export class LegendPanelController implements SettingsServiceSubscriber, AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
 		isDeltaState: boolean
 		colorRange: ColorRange
@@ -30,7 +31,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		SettingsService.subscribe(this.$rootScope, this)
-		this.initAnimations()
+		AttributeSideBarService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>) {
@@ -47,6 +48,14 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 			this.refreshNormalColors(s)
 		}
 		this.setMarkedPackageLists(s)
+	}
+
+	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
+		if (isAttributeSideBarVisible) {
+			$(".panel-button, legend-panel-component .block-wrapper").addClass("expanded")
+		} else {
+			$(".panel-button, legend-panel-component .block-wrapper").removeClass("expanded")
+		}
 	}
 
 	private refreshNormalColors(s: Settings) {
@@ -133,16 +142,13 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		return pathArray[pathArray.length - 1]
 	}
 
-	private initAnimations() {
-		$(document).ready(() => {
-			let start = 40
-			let target = -500
-			let visible = false
-			$("legend-panel-component .panel-button").click(() => {
-				$("legend-panel-component .block-wrapper").animate({ right: visible ? target + "px" : start + "px" }, "fast")
-				visible = !visible
-			})
-		})
+	public toggle() {
+		const button = $("legend-panel-component .block-wrapper")
+		if (button.hasClass("visible")) {
+			button.removeClass("visible")
+		} else {
+			button.addClass("visible")
+		}
 	}
 }
 
