@@ -6,7 +6,7 @@ legend-panel-component {
 		bottom: ($fixedHeight + 20) + px;
 		right: -35px;
 		transform: rotate(90deg);
-		z-index: 2;
+		border-radius: 0 0 5px 5px;
 
 		&.expanded {
 			right: 316px;
@@ -15,12 +15,12 @@ legend-panel-component {
 
 	.block-wrapper {
 		position: fixed;
-		z-index: 29;
 		bottom: $fixedHeight + px;
 		background-color: #fff;
 		padding: 10px;
 		right: 40px;
 		visibility: hidden;
+		border-radius: 5px;
 
 		&.expanded {
 			right: 390px;
