@@ -7,7 +7,6 @@ import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
 	let $rootScope: IRootScopeService
-	let $mdSideNav
 
 	beforeEach(() => {
 		restartSystem()
