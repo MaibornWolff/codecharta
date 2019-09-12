@@ -90,3 +90,7 @@ Via gradle:
 In order to keep the code style consistent, an XML-file containing the settings used for this project can be found in `intellij-resources`.
 
 Please import these settings in `File > Settings > Editor > Code Style`, and make sure you have ticked the box to reformat code before committing.
+
+## License
+
+Some parts of CodeCharta use the [SonarJava library](https://github.com/SonarSource/sonar-java/), which is licensed under the GNU Lesser General Public Library, version 3.

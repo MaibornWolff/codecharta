@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - Tokei Importer #538
+- Prominent Notice that we use Sonar-jar #713
 
 ### Changed
 
