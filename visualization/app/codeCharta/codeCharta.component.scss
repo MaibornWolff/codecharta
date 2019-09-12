@@ -63,7 +63,8 @@ code-charta-component {
 
 	attribute-side-bar-component .side-bar-container,
 	legend-panel-component .block-wrapper,
-	legend-panel-component .panel-button {
+	legend-panel-component .panel-button,
+	view-cube-component {
 		transition: right 0.25s ease;
 	}
 

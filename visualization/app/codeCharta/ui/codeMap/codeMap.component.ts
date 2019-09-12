@@ -7,8 +7,11 @@ import "./codeMap.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
+import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
+import $ from "jquery"
 
-export class CodeMapController implements BuildingRightClickedEventSubscriber, LoadingGifComponentSubscriber {
+export class CodeMapController
+	implements BuildingRightClickedEventSubscriber, LoadingGifComponentSubscriber, AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 	} = {
@@ -25,6 +28,7 @@ export class CodeMapController implements BuildingRightClickedEventSubscriber, L
 	) {
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		LoadingGifService.subscribe(this.$rootScope, this)
+		AttributeSideBarService.subscribe(this.$rootScope, this)
 	}
 
 	public $postLink() {
@@ -38,6 +42,14 @@ export class CodeMapController implements BuildingRightClickedEventSubscriber, L
 		if (building) {
 			const nodeType = building.node.isLeaf ? "File" : "Folder"
 			NodeContextMenuController.broadcastShowEvent(this.$rootScope, building.node.path, nodeType, x, y)
+		}
+	}
+
+	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
+		if (isAttributeSideBarVisible) {
+			$("view-cube-component").addClass("expanded")
+		} else {
+			$("view-cube-component").removeClass("expanded")
 		}
 	}
 
