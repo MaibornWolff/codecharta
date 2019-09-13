@@ -51,7 +51,7 @@ describe("CodeMapActionService", () => {
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = codeMapActionsService["threeOrbitControlsService"] = jest.fn(() => {
 			return {
-				autoFitTo: jest.fn()
+				resetCameraPerspective: jest.fn()
 			}
 		})()
 	}
@@ -240,7 +240,7 @@ describe("CodeMapActionService", () => {
 
 			codeMapActionsService.focusNode(nodeA)
 
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
+			expect(threeOrbitControlsService.resetCameraPerspective).toHaveBeenCalled()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 		})
 	})
@@ -251,7 +251,7 @@ describe("CodeMapActionService", () => {
 
 			codeMapActionsService.removeFocusedNode()
 
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
+			expect(threeOrbitControlsService.resetCameraPerspective).toHaveBeenCalled()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 		})
 	})
