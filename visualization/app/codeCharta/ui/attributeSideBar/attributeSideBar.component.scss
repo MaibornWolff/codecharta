@@ -92,22 +92,45 @@ attribute-side-bar-component {
 			}
 
 			table {
+				&.primary-metrics {
+					table-layout: fixed;
+					width: 100%;
+					border-collapse: collapse;
+
+					td {
+						padding: 5px;
+					}
+
+					tr:not(:last-child):nth-child(2n) td {
+						border-bottom: 3px solid white;
+					}
+
+					td:first-child {
+						border-right: 3px solid white;
+					}
+
+					i.fa {
+						font-size: 12pt;
+						min-width: 17px;
+						text-align: center;
+					}
+				}
+
 				td {
+					text-align: left;
 					vertical-align: initial;
+					margin: 0;
 				}
 
 				tr:not(:last-child) td {
 					padding-bottom: 5px;
 				}
 
-				i.fa {
-					font-size: 12pt;
-				}
-
 				.metric-value {
 					text-align: right;
 				}
 
+				&.primary-metrics .metric-delta,
 				.metric-delta span {
 					text-align: right;
 					background: #d5d5d5;

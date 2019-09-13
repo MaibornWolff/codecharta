@@ -14,58 +14,65 @@
 		<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
 
 		<div class="metric-box">
-			<table>
+			<table class="primary-metrics">
 				<tr>
-					<td><i class="fa fa-arrows-alt"></i></td>
-					<td class="metric-value">
-						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] | number }}
-					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
-						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
+					<td>
+						<i class="fa fa-arrows-alt"></i>
+						<span class="metric-value">
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] | number }}
+						</span>
+						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
 							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] | number }}
 						</span>
 					</td>
-					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</td>
-				</tr>
-				<tr>
-					<td><i class="fa fa-arrows-v"></i></td>
-					<td class="metric-value">
-						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] | number }}
-					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
-						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
+
+					<td>
+						<i class="fa fa-arrows-v"></i>
+						<span class="metric-value">
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] | number }}
+						</span>
+						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
 							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] | number }}
 						</span>
 					</td>
-					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</td>
 				</tr>
 				<tr>
-					<td><i class="fa fa-paint-brush"></i></td>
-					<td class="metric-value">
-						{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] | number }}
+					<td>
+						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</span>
 					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
-						<span ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
+
+					<td>
+						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</span>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<i class="fa fa-paint-brush"></i>
+						<span class="metric-value">
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] | number }}
+						</span>
+						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
 							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] | number }}
 						</span>
 					</td>
-					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</td>
-				</tr>
-				<tr ng-show="$ctrl._viewModel.primaryMetricKeys.edge != 'None'">
-					<td><i class="fa fa-exchange"></i></td>
-					<td class="metric-value">
-						{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge].incoming | number }}
+
+					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge != 'None'">
+						<i class="fa fa-exchange"></i>
+						<span class="metric-value">
+							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge].incoming | number }}
+							<span>/</span>
+							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge].outgoing | number }}
+						</span>
 					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas"></td>
-					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge }} (in)</td>
 				</tr>
-				<tr ng-show="$ctrl._viewModel.primaryMetricKeys.edge != 'None'">
-					<td></td>
-					<td class="metric-value">
-						{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge].outgoing | number }}
+				<tr>
+					<td>
+						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</span>
 					</td>
-					<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas"></td>
-					<td class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge }} (out)</td>
+					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge != 'None'">
+						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge }} (in/out)</span>
+					</td>
 				</tr>
 			</table>
 		</div>
