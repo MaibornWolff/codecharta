@@ -56,6 +56,11 @@ export class ThreeOrbitControlsService {
 		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
+	public resetCameraPerspective() {
+		const cameraReference = this.threeCameraService.camera
+		cameraReference.position.set(this.defaultCameraPosition.x, this.defaultCameraPosition.y, this.defaultCameraPosition.z)
+	}
+
 	public autoFitTo(obj = this.threeSceneService.mapGeometry) {
 		const boundingSphere = new THREE.Box3().setFromObject(obj).getBoundingSphere()
 
