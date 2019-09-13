@@ -101,7 +101,7 @@ open class ProjectBuilder(
         )
 
         System.err.println()
-        logger.info { "Created Project with ${project.size} leaves." }
+        System.err.println("Created Project with ${project.size} leaves.")
 
         return project
     }
