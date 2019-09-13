@@ -119,4 +119,19 @@ describe("ThreeOrbitControlsService", () => {
 		expect(threeOrbitControlsService.defaultCameraPosition.y).toEqual(vector.y)
 		expect(threeOrbitControlsService.defaultCameraPosition.z).toEqual(vector.z)
 	})
+	describe("resetCamera", () => {
+		it("should set the camera perspective, to the origin value", () => {
+			threeOrbitControlsService.defaultCameraPosition.set(12, 13, 14)
+
+			threeOrbitControlsService.resetCameraPerspective()
+
+			expect(threeCameraService.camera.position.set).toBeCalledWith(12, 13, 14)
+		})
+
+		it("should set the camera perspective, to Vector with 0 if no default Value is saved", () => {
+			threeOrbitControlsService.resetCameraPerspective()
+
+			expect(threeCameraService.camera.position.set).toBeCalledWith(0, 0, 0)
+		})
+	})
 })
