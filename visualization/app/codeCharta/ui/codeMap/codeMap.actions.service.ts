@@ -199,6 +199,6 @@ export class CodeMapActionsService {
 	}
 
 	private autoFit() {
-		this.threeOrbitControlsService.autoFitTo()
+		this.threeOrbitControlsService.resetCameraPerspective()
 	}
 }

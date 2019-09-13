@@ -20,7 +20,7 @@ export class CenterMapButtonController implements CameraChangeSubscriber {
 	}
 
 	public fitMapToView() {
-		this.threeOrbitControlsService.autoFitTo()
+		this.threeOrbitControlsService.resetCameraPerspective()
 	}
 
 	private isMapCentered(camera: PerspectiveCamera) {
