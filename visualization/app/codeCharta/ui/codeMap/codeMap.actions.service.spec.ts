@@ -234,7 +234,7 @@ describe("CodeMapActionService", () => {
 			expect(codeMapActionsService.removeFocusedNode).toHaveBeenCalled()
 		})
 
-		it("should call updateSettings and autoFitTo if node-path does not equal root-path", () => {
+		it("should call updateSettings and resetCameraPerspective if node-path does not equal root-path", () => {
 			CodeChartaService.ROOT_PATH = "/not/root"
 			const expected = { dynamicSettings: { focusedNodePath: nodeA.path } }
 
@@ -246,7 +246,7 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("removeFocusedNode", () => {
-		it("should call autoFitTo and updateSettings with focusedNodePath empty", () => {
+		it("should call resetCameraPerspective and updateSettings with focusedNodePath empty", () => {
 			const expected = { dynamicSettings: { focusedNodePath: "" } }
 
 			codeMapActionsService.removeFocusedNode()
