@@ -15,10 +15,14 @@ import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from ".
 import $ from "jquery"
 
 interface PrimaryMetrics {
-	area: string
-	color: string
-	height: string
-	edge: string
+	node: {
+		area: string
+		color: string
+		height: string
+	}
+	edge: {
+		edge: string
+	}
 }
 
 export class AttributeSideBarController
@@ -35,7 +39,7 @@ export class AttributeSideBarController
 		secondaryMetricKeys: string[]
 	} = {
 		node: null,
-		primaryMetricKeys: {} as PrimaryMetrics,
+		primaryMetricKeys: { node: {}, edge: {} } as PrimaryMetrics,
 		secondaryMetricKeys: null
 	}
 
@@ -55,22 +59,22 @@ export class AttributeSideBarController
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
-		this._viewModel.primaryMetricKeys.area = areaMetric
+		this._viewModel.primaryMetricKeys.node.area = areaMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
 	public onHeightMetricChanged(heightMetric: string) {
-		this._viewModel.primaryMetricKeys.height = heightMetric
+		this._viewModel.primaryMetricKeys.node.height = heightMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		this._viewModel.primaryMetricKeys.color = colorMetric
+		this._viewModel.primaryMetricKeys.node.color = colorMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.primaryMetricKeys.edge = edgeMetric
+		this._viewModel.primaryMetricKeys.edge.edge = edgeMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
@@ -89,7 +93,7 @@ export class AttributeSideBarController
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
 		if (this._viewModel.node) {
 			this._viewModel.secondaryMetricKeys = _.keys(this._viewModel.node.attributes)
-				.filter(x => !_.values(this._viewModel.primaryMetricKeys).includes(x))
+				.filter(x => !_.values(this._viewModel.primaryMetricKeys.node).includes(x))
 				.sort()
 		}
 	}

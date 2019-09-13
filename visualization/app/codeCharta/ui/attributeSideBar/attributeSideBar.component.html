@@ -19,30 +19,30 @@
 					<td>
 						<i class="fa fa-arrows-alt"></i>
 						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.area] | number }}
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number }}
 						</span>
-						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.area] | number }}
+						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.area]">
+							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.area] | number }}
 						</span>
 					</td>
 
 					<td>
 						<i class="fa fa-arrows-v"></i>
 						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.height] | number }}
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number }}
 						</span>
-						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.height] | number }}
+						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.height]">
+							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.height] | number }}
 						</span>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.area }}</span>
+						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</span>
 					</td>
 
 					<td>
-						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.height }}</span>
+						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.height }}</span>
 					</td>
 				</tr>
 
@@ -50,28 +50,28 @@
 					<td>
 						<i class="fa fa-paint-brush"></i>
 						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.color] | number }}
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number }}
 						</span>
-						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.color] | number }}
+						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.color]">
+							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.color] | number }}
 						</span>
 					</td>
 
-					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge != 'None'">
+					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
 						<i class="fa fa-exchange"></i>
 						<span class="metric-value">
-							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge].incoming | number }}
+							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].incoming | number }}
 							<span>/</span>
-							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge].outgoing | number }}
+							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].outgoing | number }}
 						</span>
 					</td>
 				</tr>
 				<tr>
 					<td>
-						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.color }}</span>
+						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</span>
 					</td>
-					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge != 'None'">
-						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge }} (in/out)</span>
+					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
+						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge.edge }} (in/out)</span>
 					</td>
 				</tr>
 			</table>
