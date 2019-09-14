@@ -96,16 +96,16 @@ attribute-side-bar-component {
 					width: 100%;
 					border-collapse: collapse;
 
-					td {
-						padding: 5px;
-					}
-
-					tr:not(:last-child):nth-child(2n) td {
+					tr:not(:last-child) td {
 						border-bottom: 3px solid white;
 					}
 
-					td:first-child {
-						border-right: 3px solid white;
+					td {
+						padding: 5px;
+
+						&:first-child {
+							border-right: 3px solid white;
+						}
 					}
 
 					i.fa {
@@ -116,6 +116,10 @@ attribute-side-bar-component {
 
 					.metric-delta {
 						margin-left: 3px;
+					}
+
+					.metric-name {
+						margin: 5px 0 0 0;
 					}
 				}
 

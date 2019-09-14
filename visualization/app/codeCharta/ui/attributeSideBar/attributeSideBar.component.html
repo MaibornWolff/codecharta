@@ -25,6 +25,7 @@
 						<attribute-side-bar-deltas-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.area"
 						></attribute-side-bar-deltas-component>
+						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</p>
 					</td>
 
 					<td>
@@ -35,15 +36,7 @@
 						<attribute-side-bar-deltas-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.height"
 						></attribute-side-bar-deltas-component>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</span>
-					</td>
-
-					<td>
-						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.height }}</span>
+						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.height }}</p>
 					</td>
 				</tr>
 
@@ -56,6 +49,7 @@
 						<attribute-side-bar-deltas-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.color"
 						></attribute-side-bar-deltas-component>
+						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</p>
 					</td>
 
 					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
@@ -65,14 +59,7 @@
 							<span>/</span>
 							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].outgoing | number }}
 						</span>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</span>
-					</td>
-					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
-						<span class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge.edge }} (in/out)</span>
+						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge.edge }} (in/out)</p>
 					</td>
 				</tr>
 			</table>
