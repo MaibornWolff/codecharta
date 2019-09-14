@@ -85,8 +85,8 @@
 				<table>
 					<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
 						<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] | number }}</td>
-						<td class="metric-delta" ng-show="$ctrl._viewModel.node.deltas">
-							<span ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
+						<td ng-show="$ctrl._viewModel.node.deltas">
+							<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
 								&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] | number }}
 							</span>
 						</td>
