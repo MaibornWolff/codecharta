@@ -21,7 +21,6 @@ attribute-side-bar-component {
 		.side-bar-header {
 			.close-icon,
 			.node-link {
-				position: absolute;
 				color: grey;
 				padding: 0;
 				cursor: pointer;
@@ -34,17 +33,17 @@ attribute-side-bar-component {
 			}
 
 			.close-icon {
+				position: absolute;
 				top: 5px;
-				left: 5px;
-			}
-
-			.node-link {
-				top: 9px;
-				right: 12px;
+				right: 5px;
 			}
 
 			.node-name {
 				width: 90%;
+
+				.node-link {
+					font-size: 11pt;
+				}
 			}
 
 			.node-origin,
