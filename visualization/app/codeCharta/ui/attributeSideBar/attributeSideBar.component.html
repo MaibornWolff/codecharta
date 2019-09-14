@@ -84,7 +84,9 @@
 			<div class="metric-box scrollable-content">
 				<table>
 					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys">
-						<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number }}</td>
+						<td>
+							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number }}</span>
+						</td>
 						<td ng-show="$ctrl._viewModel.node.deltas">
 							<attribute-side-bar-deltas-component attributekey="::attributekey"></attribute-side-bar-deltas-component>
 						</td>

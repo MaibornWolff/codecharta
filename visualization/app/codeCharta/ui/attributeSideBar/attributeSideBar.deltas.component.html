@@ -1,3 +1,3 @@
-<span class="metric-delta" ng-show="$ctrl._viewModel.deltas[$ctrl.attributekey]">
-	&Delta;{{ $ctrl._viewModel.deltas[$ctrl.attributekey] | number }}
+<span class="metric-delta {{ $ctrl._viewModel.colorClass }}" ng-show="$ctrl._viewModel.deltaValue">
+	&Delta;{{ $ctrl._viewModel.deltaValue | number }}
 </span>
