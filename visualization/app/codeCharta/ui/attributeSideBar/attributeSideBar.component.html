@@ -22,9 +22,9 @@
 						<span class="metric-value">
 							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number }}
 						</span>
-						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.area]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.area] | number }}
-						</span>
+						<attribute-side-bar-deltas-component
+							attributekey="$ctrl._viewModel.primaryMetricKeys.node.area"
+						></attribute-side-bar-deltas-component>
 					</td>
 
 					<td>
@@ -32,9 +32,9 @@
 						<span class="metric-value">
 							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number }}
 						</span>
-						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.height]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.height] | number }}
-						</span>
+						<attribute-side-bar-deltas-component
+							attributekey="$ctrl._viewModel.primaryMetricKeys.node.height"
+						></attribute-side-bar-deltas-component>
 					</td>
 				</tr>
 				<tr>
@@ -53,9 +53,9 @@
 						<span class="metric-value">
 							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number }}
 						</span>
-						<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.color]">
-							&Delta;{{ $ctrl._viewModel.node.deltas[$ctrl._viewModel.primaryMetricKeys.node.color] | number }}
-						</span>
+						<attribute-side-bar-deltas-component
+							attributekey="$ctrl._viewModel.primaryMetricKeys.node.color"
+						></attribute-side-bar-deltas-component>
 					</td>
 
 					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
@@ -83,14 +83,12 @@
 		<div class="metrics-wrapper">
 			<div class="metric-box scrollable-content">
 				<table>
-					<tr ng-repeat="attributeKey in $ctrl._viewModel.secondaryMetricKeys">
-						<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributeKey] | number }}</td>
+					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys">
+						<td class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number }}</td>
 						<td ng-show="$ctrl._viewModel.node.deltas">
-							<span class="metric-delta" ng-show="$ctrl._viewModel.node.deltas[attributeKey]">
-								&Delta;{{ $ctrl._viewModel.node.deltas[attributeKey] | number }}
-							</span>
+							<attribute-side-bar-deltas-component attributekey="::attributekey"></attribute-side-bar-deltas-component>
 						</td>
-						<td class="metric-name">{{ attributeKey }}</td>
+						<td class="metric-name">{{ attributekey }}</td>
 					</tr>
 				</table>
 			</div>
