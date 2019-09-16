@@ -8,7 +8,11 @@ import java.io.*
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
-@Command(name = "sourcecodeparser", description = ["generates cc.json from source code"], footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+@Command(
+        name = "sourcecodeparser",
+        description = ["generates cc.json from source code"],
+        footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2019, MaibornWolff GmbH"]
+)
 class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Void> {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
