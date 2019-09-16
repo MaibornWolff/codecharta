@@ -45,6 +45,7 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Throws(IOException::class)
     override fun call(): Void? {
 
+        print(" ")
         if (!file.exists()) {
             val path = Paths.get("").toAbsolutePath().toString()
             outputStream.println("Current working directory = $path")

@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.serialization.mapLines
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
