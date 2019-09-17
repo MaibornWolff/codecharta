@@ -10,7 +10,7 @@ dependencies {
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testCompile group: 'com.nhaarman', name: 'mockito-kotlin', version: '1.6.0'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
     testImplementation project(path: ':model', configuration: 'testOutput')
