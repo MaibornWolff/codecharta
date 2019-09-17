@@ -31,6 +31,7 @@ export class SearchBarController implements BlacklistSubscriber {
 				searchPattern: this._viewModel.searchPattern
 			}
 		})
+
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
@@ -48,6 +49,10 @@ export class SearchBarController implements BlacklistSubscriber {
 
 	public isSearchPatternEmpty() {
 		return this._viewModel.searchPattern === ""
+	}
+
+	public isPatternInBlackList(){
+		this.updateViewModel(this.settingsService.getSettings().fileSettings.blacklist)
 	}
 
 	private updateViewModel(blacklist: BlacklistItem[]) {
