@@ -4,5 +4,5 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetri
 import de.maibornwolff.codecharta.model.Project
 
 interface MetricWriter {
-    fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?)
+    fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project? = null)
 }

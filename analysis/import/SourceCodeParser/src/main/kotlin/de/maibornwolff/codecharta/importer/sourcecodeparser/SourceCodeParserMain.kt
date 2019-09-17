@@ -14,7 +14,11 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from source code"],
         footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2019, MaibornWolff GmbH"]
 )
-class SourceCodeParserMain(private val outputStream: PrintStream, private val input: InputStream = System.`in`) : Callable<Void> {
+class SourceCodeParserMain(
+        private val outputStream: PrintStream,
+        private val input: InputStream = System.`in`,
+        private val error: PrintStream = System.err
+) : Callable<Void> {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -96,6 +100,10 @@ class SourceCodeParserMain(private val outputStream: PrintStream, private val in
         @JvmStatic
         fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
             call(SourceCodeParserMain(outputStream), System.out, *args)
+        }
+        @JvmStatic
+        fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
+            call(SourceCodeParserMain(outputStream, input, error), outputStream, *args)
         }
     }
 }
