@@ -23,16 +23,12 @@
 		</md-menu-item>
 		<md-divider></md-divider>
 		<md-menu-item>
-			<md-button
-				ng-disabled="$ctrl.isSearchPatternEmpty() || $ctrl._viewModel.isPatternHidden"
-				ng-click="$ctrl.onClickBlacklistPattern('hide')"
+			<md-button ng-disabled="$ctrl.disableHiddenOption()" ng-click="$ctrl.onClickBlacklistPattern('hide')"
 				><i class="fa fa-eye-slash"></i> Hide</md-button
 			>
 		</md-menu-item>
 		<md-menu-item>
-			<md-button
-				ng-disabled="$ctrl.isSearchPatternEmpty() || $ctrl._viewModel.isPatternExcluded"
-				ng-click="$ctrl.onClickBlacklistPattern('exclude')"
+			<md-button ng-disabled="$ctrl.disableExcludeOption()" ng-click="$ctrl.onClickBlacklistPattern('exclude')"
 				><i class="fa fa-ban"></i> Exclude</md-button
 			>
 		</md-menu-item>
