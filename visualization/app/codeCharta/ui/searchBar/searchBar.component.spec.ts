@@ -106,4 +106,17 @@ describe("SearchBarController", () => {
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
 		})
 	})
+
+	describe("isSearchPatternEmpty", ()=>{
+		it("should return true, if SearchPattern is empty", () =>{
+			searchBarController["_viewModel"].searchPattern = ""
+
+			expect(searchBarController.isSearchPatternEmpty()).toBeTruthy()
+		})
+		it("should return false, if SearchPattern is empty", () =>{
+			searchBarController["_viewModel"].searchPattern = "test"
+
+			expect(searchBarController.isSearchPatternEmpty()).toBeFalsy()
+		})
+	})
 })
