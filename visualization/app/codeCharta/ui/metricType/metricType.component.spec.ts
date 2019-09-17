@@ -48,6 +48,7 @@ describe("MetricTypeController", () => {
 			SettingsService.subscribeToAreaMetric = jest.fn()
 			SettingsService.subscribeToHeightMetric = jest.fn()
 			SettingsService.subscribeToColorMetric = jest.fn()
+			SettingsService.subscribeToEdgeMetric = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
 		})
 

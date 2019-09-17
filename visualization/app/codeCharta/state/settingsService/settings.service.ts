@@ -11,6 +11,7 @@ import {
 	BlacklistSubscriber,
 	ColorMetricSubscriber,
 	DistributionMetricSubscriber,
+	EdgeMetricSubscriber,
 	HeightMetricSubscriber,
 	SearchPatternSubscriber,
 	SettingsEvents,
@@ -22,10 +23,33 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	private settings: Settings
 	private update: RecursivePartial<Settings> = {}
-	private debounceBroadcast: () => void
+	private readonly debounceBroadcast: { [key: string]: (eventName: string, data: any) => void } = {}
 
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
 		this.settings = this.getDefaultSettings()
+
+		for (const key in SettingsEvents) {
+			this.debounceBroadcast[SettingsEvents[key]] = _.debounce((eventName: string, data: any) => {
+				if (eventName == SettingsEvents.SETTINGS_CHANGED_EVENT) {
+					this.update = {}
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.EDGE_METRIC_CHANGED_EVENT) {
+					delete this.update.dynamicSettings.edgeMetric
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.AREA_METRIC_CHANGED_EVENT) {
+					delete this.update.dynamicSettings.areaMetric
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT) {
+					delete this.update.dynamicSettings.heightMetric
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.COLOR_METRIC_CHANGED_EVENT) {
+					delete this.update.dynamicSettings.colorMetric
+				} else if (this.update.fileSettings && eventName == SettingsEvents.BLACKLIST_CHANGED_EVENT) {
+					delete this.update.fileSettings.blacklist
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT) {
+					delete this.update.dynamicSettings.distributionMetric
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT) {
+					delete this.update.dynamicSettings.searchPattern
+				}
+				this.$rootScope.$broadcast(eventName, data)
+			}, SettingsService.DEBOUNCE_TIME)
+		}
 
 		FileStateService.subscribe(this.$rootScope, this)
 	}
@@ -46,28 +70,32 @@ export class SettingsService implements FileStateServiceSubscriber {
 			this.loadingGifService.updateLoadingMapFlag(true)
 			this.update = this.mergePartialSettings(this.update, update, this.settings)
 
-			if (update.fileSettings && update.fileSettings.blacklist) {
+			if (this.update.fileSettings && this.update.fileSettings.blacklist) {
 				this.notifyBlacklistSubscribers()
 			}
 
-			if (update.dynamicSettings) {
-				if (update.dynamicSettings.areaMetric) {
+			if (this.update.dynamicSettings) {
+				if (this.update.dynamicSettings.areaMetric) {
 					this.notifyAreaMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.heightMetric) {
+				if (this.update.dynamicSettings.heightMetric) {
 					this.notifyHeightMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.colorMetric) {
+				if (this.update.dynamicSettings.colorMetric) {
 					this.notifyColorMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.distributionMetric) {
+				if (this.update.dynamicSettings.edgeMetric) {
+					this.notifyEdgeMetricSubscribers()
+				}
+
+				if (this.update.dynamicSettings.distributionMetric) {
 					this.notifyDistributionMetricSubscribers()
 				}
 
-				if (update.dynamicSettings.searchPattern) {
+				if (this.update.dynamicSettings.searchPattern) {
 					this.notifySearchPatternSubscribers()
 				}
 			}
@@ -89,7 +117,9 @@ export class SettingsService implements FileStateServiceSubscriber {
 			flat: "#AAAAAA",
 			lightGrey: "#DDDDDD",
 			angularGreen: "#00BFA5",
-			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"]
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			incomingEdge: "#00ffff",
+			outgoingEdge: "#ff00ff"
 		}
 
 		const scaling: Vector3 = new Vector3(1, 1, 1)
@@ -108,6 +138,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				heightMetric: null,
 				colorMetric: null,
 				distributionMetric: null,
+				edgeMetric: null,
 				focusedNodePath: "",
 				searchedNodePaths: [],
 				searchPattern: "",
@@ -116,9 +147,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 			},
 			appSettings: {
 				amountOfTopLabels: 1,
+				amountOfEdgePreviews: 1,
+				edgeHeight: 4,
 				scaling: scaling,
 				camera: camera,
-				enableEdgeArrows: true,
 				hideFlatBuildings: true,
 				maximizeDetailPanel: false,
 				invertColorRange: false,
@@ -128,7 +160,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 				isWhiteBackground: false,
 				whiteColorBuildings: false,
 				mapColors: mapColors,
-				isPresentationMode: false
+				isPresentationMode: false,
+				showOnlyBuildingsWithEdges: false
 			},
 			treeMapSettings: {
 				mapSize: 500
@@ -203,14 +236,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	private notifySettingsSubscribers() {
-		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(SettingsEvents.SETTINGS_CHANGED_EVENT, {
-				settings: this.settings,
-				update: this.update
-			})
-			this.update = {}
-		}, SettingsService.DEBOUNCE_TIME)
-		this.debounceBroadcast()
+		this.notify(SettingsEvents.SETTINGS_CHANGED_EVENT, {
+			settings: this.settings,
+			update: this.update
+		})
 	}
 
 	private notifyBlacklistSubscribers() {
@@ -229,6 +258,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.notify(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, { colorMetric: this.settings.dynamicSettings.colorMetric })
 	}
 
+	private notifyEdgeMetricSubscribers() {
+		this.notify(SettingsEvents.EDGE_METRIC_CHANGED_EVENT, { edgeMetric: this.settings.dynamicSettings.edgeMetric })
+	}
+
 	private notifyDistributionMetricSubscribers() {
 		this.notify(SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT, {
 			distributionMetric: this.settings.dynamicSettings.distributionMetric
@@ -239,12 +272,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.notify(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: this.settings.dynamicSettings.searchPattern })
 	}
 
-	private notify(eventName: string, data: object, debounceTime: number = SettingsService.DEBOUNCE_TIME) {
-		this.debounceBroadcast = _.debounce(() => {
-			this.$rootScope.$broadcast(eventName, data)
-			this.update = {}
-		}, debounceTime)
-		this.debounceBroadcast()
+	private notify(eventName: string, data: object) {
+		this.debounceBroadcast[eventName](eventName, data)
 	}
 
 	private synchronizeAngularTwoWayBinding() {
@@ -278,6 +307,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribeToColorMetric($rootScope: IRootScopeService, subscriber: ColorMetricSubscriber) {
 		$rootScope.$on(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
 			subscriber.onColorMetricChanged(data.colorMetric)
+		})
+	}
+
+	public static subscribeToEdgeMetric($rootScope: IRootScopeService, subscriber: EdgeMetricSubscriber) {
+		$rootScope.$on(SettingsEvents.EDGE_METRIC_CHANGED_EVENT, (event, data) => {
+			subscriber.onEdgeMetricChanged(data.edgeMetric)
 		})
 	}
 

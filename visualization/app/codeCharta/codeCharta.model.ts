@@ -48,6 +48,9 @@ export interface CodeMapNode {
 	type: string
 	children?: CodeMapNode[]
 	attributes: KeyValuePair
+	edgeAttributes?: {
+		[key: string]: EdgeMetricCount
+	}
 	link?: string
 	origin?: string
 	path?: string
@@ -82,6 +85,7 @@ export interface DynamicSettings {
 	heightMetric: string
 	colorMetric: string
 	distributionMetric: string
+	edgeMetric: string
 	focusedNodePath: string
 	searchedNodePaths: Array<string>
 	searchPattern: string
@@ -91,9 +95,10 @@ export interface DynamicSettings {
 
 export interface AppSettings {
 	amountOfTopLabels: number
+	amountOfEdgePreviews: number
+	edgeHeight: number
 	scaling: Vector3
 	camera: Vector3
-	enableEdgeArrows: boolean
 	hideFlatBuildings: boolean
 	maximizeDetailPanel: boolean
 	invertColorRange: boolean
@@ -104,6 +109,7 @@ export interface AppSettings {
 	mapColors: MapColors
 	whiteColorBuildings: boolean
 	isPresentationMode: boolean
+	showOnlyBuildingsWithEdges: boolean
 }
 
 export interface TreeMapSettings {
@@ -123,6 +129,8 @@ export interface MapColors {
 	lightGrey: string
 	angularGreen: string
 	markingColors: string[]
+	outgoingEdge: string
+	incomingEdge: string
 }
 
 export interface ColorRange {
@@ -148,7 +156,19 @@ export interface Edge {
 	fromNodeName: string
 	toNodeName: string
 	attributes: KeyValuePair
-	visible?: boolean
+	visible?: EdgeVisibility
+}
+
+export enum EdgeVisibility {
+	none = "none",
+	from = "from",
+	to = "to",
+	both = "both"
+}
+
+export interface EdgeMetricCount {
+	incoming: number
+	outgoing: number
 }
 
 export interface BlacklistItem {
@@ -203,6 +223,9 @@ export interface Node {
 	isLeaf: boolean
 	deltas: KeyValuePair
 	attributes: KeyValuePair
+	edgeAttributes: {
+		[key: string]: EdgeMetricCount
+	}
 	heightDelta: number
 	visible: boolean
 	path: string
@@ -210,4 +233,7 @@ export interface Node {
 	link: string
 	markingColor: string
 	flat: boolean
+	color: string
+	incomingEdgePoint: Vector3
+	outgoingEdgePoint: Vector3
 }

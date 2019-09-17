@@ -4,7 +4,7 @@ import { MetricChooserController } from "./metricChooser.component"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
 import { MetricService } from "../../state/metric.service"
 
@@ -12,10 +12,11 @@ describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
+	let $timeout: ITimeoutService
 	let dataDelta, dataNotDelta
 
 	function rebuildController() {
-		metricChooserController = new MetricChooserController(settingsService, $rootScope)
+		metricChooserController = new MetricChooserController(settingsService, $rootScope, $timeout)
 	}
 
 	function restartSystem() {
@@ -23,6 +24,7 @@ describe("MetricChooserController", () => {
 
 		settingsService = getService<SettingsService>("settingsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function withMockedSettingsService() {
@@ -149,7 +151,7 @@ describe("MetricChooserController", () => {
 			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "d" }
+				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "a" }
 			})
 		})
 

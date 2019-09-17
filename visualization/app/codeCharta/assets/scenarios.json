@@ -8,7 +8,8 @@
       "dynamicSettings": {
         "areaMetric": "rloc",
         "heightMetric": "mcc",
-        "colorMetric": "mcc"
+        "colorMetric": "mcc",
+        "distributionMetric": "rloc"
       }
     }
   },
@@ -21,7 +22,8 @@
       "dynamicSettings": {
         "areaMetric": "unary",
         "heightMetric": "Average Complexity*",
-        "colorMetric": "Average Complexity*"
+        "colorMetric": "Average Complexity*",
+        "distributionMetric": "unary"
       }
     }
   },
@@ -34,7 +36,8 @@
       "dynamicSettings": {
         "areaMetric": "rloc",
         "heightMetric": "mcc",
-        "colorMetric": "line_coverage"
+        "colorMetric": "line_coverage",
+        "distributionMetric": "rloc"
       }
     }
   },
@@ -47,7 +50,8 @@
       "dynamicSettings": {
         "areaMetric": "rloc",
         "heightMetric": "abs_code_churn",
-        "colorMetric": "weeks_with_commits"
+        "colorMetric": "weeks_with_commits",
+        "distributionMetric": "rloc"
       }
     }
   }

@@ -14,18 +14,10 @@ export class CodeMapHelper {
 	}
 
 	public static getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode): CodeMapNode {
-		let res = null
-
-		if (path === root.path) {
-			return root
-		}
-
-		hierarchy<CodeMapNode>(root).each(hierarchyNode => {
-			if (hierarchyNode.data.path === path && hierarchyNode.data.type === nodeType) {
-				res = hierarchyNode.data
-			}
-		})
-		return res
+		const matchingNode = hierarchy<CodeMapNode>(root)
+			.descendants()
+			.find(node => node.data.path === path && node.data.type === nodeType)
+		return matchingNode ? matchingNode.data : null
 	}
 
 	public static transformPath(toTransform: string): string {
@@ -50,12 +42,16 @@ export class CodeMapHelper {
 	}
 
 	public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
+		return CodeMapHelper.isPathBlacklisted(node.path, blacklist, type)
+	}
+
+	public static isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
 		if (blacklist.length === 0) {
 			return false
 		}
 
 		const ig = ignore().add(blacklist.filter(b => b.type === type).map(ex => CodeMapHelper.transformPath(ex.path)))
-		return ig.ignores(CodeMapHelper.transformPath(node.path))
+		return ig.ignores(CodeMapHelper.transformPath(path))
 	}
 
 	public static getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {
