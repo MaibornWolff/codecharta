@@ -29,6 +29,7 @@
 
 package de.maibornwolff.codecharta.filter.mergefilter
 
+import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import mu.KotlinLogging
@@ -109,6 +110,14 @@ class MergeFilter: Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine.call(MergeFilter(), System.out, *args)
+        }
+
+        fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
+            return ProjectMerger(
+                    listOf(pipedProject, currentProject),
+                    RecursiveNodeMergerStrategy(false),
+                    pipedProject.projectName
+            ).merge()
         }
     }
 }

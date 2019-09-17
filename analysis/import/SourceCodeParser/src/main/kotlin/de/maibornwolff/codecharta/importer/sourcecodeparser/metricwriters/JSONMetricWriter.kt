@@ -1,9 +1,11 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 
+import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMap
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
+import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.Writer
@@ -11,11 +13,15 @@ import java.io.Writer
 class JSONMetricWriter(private val projectName: String, private val writer: Writer) : MetricWriter {
   private val projectBuilder = ProjectBuilder(this.projectName)
 
-  override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>) {
+  override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
 
     projectMetrics.projectMetrics.forEach { addAsNode(it) }
-    ProjectSerializer.serializeProject(projectBuilder.build(), writer)
 
+    var project = projectBuilder.build()
+    if (pipedProject != null) {
+      project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
+    }
+    ProjectSerializer.serializeProject(project, writer)
   }
 
   private fun addAsNode(metrics: Map.Entry<String, FileMetricMap>) {
