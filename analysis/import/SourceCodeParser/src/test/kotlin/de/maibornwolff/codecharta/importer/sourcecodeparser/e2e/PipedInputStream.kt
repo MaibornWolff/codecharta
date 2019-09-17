@@ -33,9 +33,9 @@ class PipedInputStream {
     }
 
     @Test
-    fun `json output does have project name of piped project`() {
+    fun `json output does have project name of current project`() {
         assertThat(output).contains(
-                """"projectName":"foo""""
+                """"projectName":"DefaultProjectName""""
         )
     }
 

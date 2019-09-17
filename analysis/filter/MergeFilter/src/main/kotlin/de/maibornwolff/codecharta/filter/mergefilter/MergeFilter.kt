@@ -112,11 +112,11 @@ class MergeFilter: Callable<Void?> {
             CommandLine.call(MergeFilter(), System.out, *args)
         }
 
-        fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
+        fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project, projectName: String?): Project {
             return ProjectMerger(
                     listOf(pipedProject, currentProject),
                     RecursiveNodeMergerStrategy(false),
-                    pipedProject.projectName
+                    projectName ?: pipedProject.projectName
             ).merge()
         }
     }

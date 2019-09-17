@@ -19,7 +19,7 @@ class JSONMetricWriter(private val projectName: String, private val writer: Writ
 
     var project = projectBuilder.build()
     if (pipedProject != null) {
-      project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
+      project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectName)
     }
     ProjectSerializer.serializeProject(project, writer)
   }
