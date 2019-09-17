@@ -46,6 +46,11 @@ export class SearchBarController implements BlacklistSubscriber {
 		this.resetSearchPattern()
 	}
 
+	public isSearchPatternEmpty(){
+		console.log(this.settingsService.getSettings().dynamicSettings.searchedNodePaths)
+		return this._viewModel.searchPattern === ""
+	}
+
 	private updateViewModel(blacklist: BlacklistItem[]) {
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.hide)

@@ -24,14 +24,14 @@
 		<md-divider></md-divider>
 		<md-menu-item>
 			<md-button
-				ng-disabled="$ctrl._viewModel.folderCount + $ctrl._viewModel.fileCount == 0 || $ctrl._viewModel.isPatternHidden"
+				ng-disabled="$ctrl.isSearchPatternEmpty() || $ctrl._viewModel.isPatternHidden"
 				ng-click="$ctrl.onClickBlacklistPattern('hide')"
 				><i class="fa fa-eye-slash"></i> Hide</md-button
 			>
 		</md-menu-item>
 		<md-menu-item>
 			<md-button
-				ng-disabled="$ctrl._viewModel.folderCount + $ctrl._viewModel.fileCount == 0 || $ctrl._viewModel.isPatternExcluded"
+				ng-disabled="$ctrl.isSearchPatternEmpty() || $ctrl._viewModel.isPatternExcluded"
 				ng-click="$ctrl.onClickBlacklistPattern('exclude')"
 				><i class="fa fa-ban"></i> Exclude</md-button
 			>
