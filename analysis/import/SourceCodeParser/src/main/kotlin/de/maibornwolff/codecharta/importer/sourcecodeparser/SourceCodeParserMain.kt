@@ -57,8 +57,8 @@ class SourceCodeParserMain(
         print(" ")
         if (!file.exists()) {
             val path = Paths.get("").toAbsolutePath().toString()
-            System.err.println("Current working directory = $path")
-            System.err.println("Could not find $file")
+            error.println("Current working directory = $path")
+            error.println("Could not find $file")
             return null
         }
 
