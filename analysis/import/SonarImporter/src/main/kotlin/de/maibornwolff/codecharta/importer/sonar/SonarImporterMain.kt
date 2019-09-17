@@ -29,15 +29,13 @@
 
 package de.maibornwolff.codecharta.importer.sonar
 
+import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMeasuresAPIDatasource
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
-import java.io.BufferedWriter
-import java.io.FileWriter
-import java.io.OutputStreamWriter
-import java.io.Writer
-import java.lang.System.out
+import java.io.*
 import java.net.URL
 import java.util.concurrent.Callable
 
@@ -46,7 +44,9 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from metric data from SonarQube"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class SonarImporterMain: Callable<Void> {
+class SonarImporterMain(private val input: InputStream = System.`in`,
+                        private val output: PrintStream = System.out,
+                        private val error: PrintStream = System.err) : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -72,7 +72,7 @@ class SonarImporterMain: Callable<Void> {
 
     private fun writer(): Writer {
         return if (outputFile.isEmpty()) {
-            OutputStreamWriter(out)
+            OutputStreamWriter(output)
         } else {
             BufferedWriter(FileWriter(outputFile))
         }
@@ -90,9 +90,14 @@ class SonarImporterMain: Callable<Void> {
     }
 
     override fun call(): Void? {
+        print(" ")
         val importer = createMesauresAPIImporter()
-        val project = importer.getProjectFromMeasureAPI(projectId, projectId, metrics)
+        var project = importer.getProjectFromMeasureAPI(projectId, projectId, metrics)
 
+        val pipedProject = ProjectDeserializer.deserializeProjectFromInputStream(input)
+        if (pipedProject != null) {
+            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectId)
+        }
         ProjectSerializer.serializeProject(project, writer())
 
         return null
@@ -103,6 +108,11 @@ class SonarImporterMain: Callable<Void> {
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine.call(SonarImporterMain(), System.out, *args)
+        }
+
+        @JvmStatic
+        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
+            CommandLine.call(SonarImporterMain(input, output, error), output, *args)
         }
     }
 }
