@@ -73,10 +73,13 @@ object ProjectDeserializer {
 
     fun deserializeProjectFromInputStream(input: InputStream): Project? {
         val projectString = input.mapLines { it }.joinToString(separator = "") { it }
+        if (projectString.length <= 1) return null
+
         return try {
             deserializeProjectString(projectString)
         } catch (e: Exception) {
-            logger.error("The piped input is not a valid project and no input file was specified.")
+            logger.error("Piped input: $projectString")
+            logger.error("The piped input is not a valid project.")
             null
         }
     }

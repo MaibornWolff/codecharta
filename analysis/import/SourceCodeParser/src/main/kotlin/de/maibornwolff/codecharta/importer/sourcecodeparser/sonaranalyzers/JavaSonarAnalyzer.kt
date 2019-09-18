@@ -164,7 +164,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         sensorContext.allIssues().forEach {
             val ruleKey = it.ruleKey().rule()
             val type = issueRepository.rule(ruleKey)?.type().toString().toLowerCase()
-            System.err.println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
+            if (verbose) System.err.println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
             if (issues.containsKey(type)) {
                 issues[type] = issues[type]!! + 1
             } else {
