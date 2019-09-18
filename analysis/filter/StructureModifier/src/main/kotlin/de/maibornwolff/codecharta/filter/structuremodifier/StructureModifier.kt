@@ -69,7 +69,11 @@ class StructureModifier(private val input: InputStream = System.`in`,
 
     private fun readProject(): Project? {
         if (source == null) {
-            return ProjectDeserializer.deserializeProjectFromInputStream(input)
+            val project = ProjectDeserializer.deserializeProjectFromInputStream(input)
+            if (project == null) {
+                logger.error("The piped input is not a valid project and no input file was specified.")
+            }
+            return project
         } else if (!source!!.isFile) {
             logger.error("${source!!.name} has not been found.")
             return null
