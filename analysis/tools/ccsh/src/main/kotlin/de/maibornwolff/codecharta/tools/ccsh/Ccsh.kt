@@ -41,6 +41,7 @@ import de.maibornwolff.codecharta.importer.jasome.JasomeImporter
 import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
+import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.CommandLine
@@ -64,7 +65,8 @@ import java.util.concurrent.Callable
             SourceCodeParserMain::class,
             UnderstandImporter::class,
             CodeMaatImporter::class,
-            JasomeImporter::class
+            JasomeImporter::class,
+            TokeiImporter::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]

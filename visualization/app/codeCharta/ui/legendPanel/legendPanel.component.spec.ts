@@ -4,7 +4,7 @@ import { LegendPanelController, PackageList } from "./legendPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
-import { CCFile, Settings } from "../../codeCharta.model"
+import { CCFile, ColorRange, Settings } from "../../codeCharta.model"
 import { SETTINGS, TEST_FILE_DATA } from "../../util/dataMocks"
 
 describe("LegendPanelController", () => {
@@ -52,6 +52,20 @@ describe("LegendPanelController", () => {
 			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
 		})
 
+		it("set correct markingPackage in Legend", () => {
+			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root", attributes: {} }]
+			const expectedPackageLists: PackageList[] = [
+				{
+					colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+					markedPackages: [{ color: "#FF0000", path: "/root", attributes: { name: "/root" } }]
+				}
+			]
+
+			legendPanelController.onSettingsChanged(settings, undefined)
+
+			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
+		})
+
 		it("shorten too long pathName in middle of the string for legendPanel", () => {
 			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }]
 			const shortenedPathname = "longNameToBe...enedInLegend"
@@ -66,6 +80,15 @@ describe("LegendPanelController", () => {
 
 			legendPanelController.onSettingsChanged(settings, undefined)
 			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
+		})
+		it("should update the ColorRange when it is changed", () => {
+			const newColorRange: ColorRange = { from: 13, to: 33 }
+
+			settings.dynamicSettings.colorRange.from = 13
+			settings.dynamicSettings.colorRange.to = 33
+			legendPanelController.onSettingsChanged(settings, undefined)
+
+			expect(legendPanelController["_viewModel"].colorRange).toEqual(newColorRange)
 		})
 	})
 })

@@ -17,6 +17,49 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore
 
+## [1.34.0] - 2019-09-20
+
+### Added
+
+- Tokei Importer #538
+- Prominent Notice that we use Sonar-jar #713
+
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.33.0] - 2019-09-10
+
+### Added
+
+- Edge Previews (Palm-Tree-Effect) #529
+- Dropdown to select Edge Metric, including Edge Counter #529
+- Edge Metric settings for Edge Height, Number of Previews & show only building with Edges #529
+
+### Changed
+
+- Edge Visualization to better distinguish between incoming and outgoing edges #529
+- Distribution metric is by default the same as area metric #689
+- MapTreeView below searchBar opens the first level by default #690
+- Focus metric search when opening metricChooser #693
+
+### Removed
+
+- Edge Options in Context menu #529
+
+### Fixed
+
+- SourceCodeParser now skips custom metrics for files, if the syntax tree cannot be created
+- Nodes with color metric equals 0 are colored correct again #677
+
+### Chore
+
+- [Security] Bump mixin-deep from 1.3.1 to 1.3.2 in /visualization
+
 ## [1.32.0] - 2019-08-09
 
 ### Added

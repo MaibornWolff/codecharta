@@ -7,11 +7,13 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import { EdgeMetricService } from "../../state/edgeMetric.service"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
 	let threeOrbitControlsService: ThreeOrbitControlsService
+	let edgeMetricService: EdgeMetricService
 
 	let nodeA: CodeMapNode
 	let settings: Settings
@@ -22,6 +24,7 @@ describe("CodeMapActionService", () => {
 
 		settingsService = getService<SettingsService>("settingsService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
 
 		nodeA = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
 		settings = JSON.parse(JSON.stringify(SETTINGS))
@@ -30,7 +33,7 @@ describe("CodeMapActionService", () => {
 	}
 
 	function rebuildService() {
-		codeMapActionsService = new CodeMapActionsService(settingsService, threeOrbitControlsService)
+		codeMapActionsService = new CodeMapActionsService(settingsService, threeOrbitControlsService, edgeMetricService)
 	}
 
 	function withMockedSettingsService() {
@@ -293,132 +296,6 @@ describe("CodeMapActionService", () => {
 			codeMapActionsService.pushItemToBlacklist(blacklistItem)
 
 			expect(settingsService.updateSettings).toHaveBeenCalled()
-		})
-	})
-
-	describe("showDependentEdges", () => {
-		it("should change edge visibility to true on edge", () => {
-			const expected = { ...edge, visible: true }
-
-			codeMapActionsService.showDependentEdges(nodeA.children[0])
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					edges: [expected]
-				}
-			})
-			expect(settings.fileSettings.edges[0].visible).toBeTruthy()
-		})
-
-		it("should not add visible property to edge", () => {
-			codeMapActionsService.showDependentEdges(nodeA)
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					edges: [edge]
-				}
-			})
-			expect(settings.fileSettings.edges[0].visible).toBeUndefined()
-		})
-	})
-
-	describe("hideDependentEdges", () => {
-		it("should change edge visibility to false on edge", () => {
-			const expected = { ...edge, visible: false }
-
-			codeMapActionsService.hideDependentEdges(nodeA.children[0])
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					edges: [expected]
-				}
-			})
-			expect(settings.fileSettings.edges[0].visible).toBeFalsy()
-		})
-
-		it("should not add visible property to edge", () => {
-			codeMapActionsService.hideDependentEdges(nodeA)
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					edges: [edge]
-				}
-			})
-			expect(settings.fileSettings.edges[0].visible).toBeUndefined()
-		})
-	})
-
-	describe("hideAllEdges", () => {
-		it("should change edge visibility to false on all edges", () => {
-			const expected = { ...edge, visible: false }
-
-			codeMapActionsService.hideAllEdges()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					edges: [expected]
-				}
-			})
-			expect(settings.fileSettings.edges[0].visible).toBeFalsy()
-		})
-	})
-
-	describe("amountOfDependentEdges", () => {
-		it("should return 0 if no edges are connected to given node", () => {
-			const result = codeMapActionsService.amountOfDependentEdges(nodeA)
-
-			expect(result).toBe(0)
-		})
-
-		it("should return 1 if one edges is connected to given node", () => {
-			const result = codeMapActionsService.amountOfDependentEdges(nodeA.children[0])
-
-			expect(result).toBe(1)
-		})
-	})
-
-	describe("amountOfVisibleDependentEdges", () => {
-		it("should return 0 if invisible edges are connected to given node", () => {
-			settings.fileSettings.edges[0].visible = false
-			const result = codeMapActionsService.amountOfVisibleDependentEdges(nodeA.children[0])
-
-			expect(result).toBe(0)
-		})
-
-		it("should return 1 if one visible edges is connected to given node", () => {
-			settings.fileSettings.edges[0].visible = true
-			const result = codeMapActionsService.amountOfVisibleDependentEdges(nodeA.children[0])
-
-			expect(result).toBe(1)
-		})
-
-		it("should return 0 if visible edges are not connected to given node", () => {
-			settings.fileSettings.edges[0].visible = true
-			const result = codeMapActionsService.amountOfVisibleDependentEdges(nodeA)
-
-			expect(result).toBe(0)
-		})
-	})
-
-	describe("isAnyEdgeVisible", () => {
-		it("should return false if no edge is visible", () => {
-			settings.fileSettings.edges[0].visible = false
-			const result = codeMapActionsService.isAnyEdgeVisible()
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false if visible property is undefined", () => {
-			const result = codeMapActionsService.isAnyEdgeVisible()
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return true if one edge is visible", () => {
-			settings.fileSettings.edges[0].visible = true
-			const result = codeMapActionsService.isAnyEdgeVisible()
-
-			expect(result).toBeTruthy()
 		})
 	})
 
