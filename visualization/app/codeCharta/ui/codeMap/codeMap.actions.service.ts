@@ -82,13 +82,13 @@ export class CodeMapActionsService {
 			this.removeFocusedNode()
 		} else {
 			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
-			this.autoFit()
+			this.threeOrbitControlsService.autoFitTo()
 		}
 	}
 
 	public removeFocusedNode() {
 		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: "" } })
-		this.autoFit()
+		this.resetCamera()
 	}
 
 	public excludeNode(node: CodeMapNode) {
@@ -198,7 +198,7 @@ export class CodeMapActionsService {
 		return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
 	}
 
-	private autoFit() {
+	private resetCamera() {
 		this.threeOrbitControlsService.resetCameraPerspective()
 	}
 }
