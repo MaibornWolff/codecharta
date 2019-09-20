@@ -25,14 +25,6 @@ export class SearchBarController implements BlacklistSubscriber {
 		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
-	public applySettingsSearchPattern() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				searchPattern: this._viewModel.searchPattern
-			}
-		})
-	}
-
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetSearchPattern()
 	}
@@ -50,7 +42,8 @@ export class SearchBarController implements BlacklistSubscriber {
 		return this._viewModel.searchPattern === ""
 	}
 
-	public isPatternInBlackList() {
+	public onSearchPatternChanged() {
+		this.applySettingsSearchPattern()
 		this.updateViewModel(this.settingsService.getSettings().fileSettings.blacklist)
 	}
 
@@ -66,6 +59,14 @@ export class SearchBarController implements BlacklistSubscriber {
 	private resetSearchPattern() {
 		this._viewModel.searchPattern = ""
 		this.applySettingsSearchPattern()
+	}
+
+	private applySettingsSearchPattern() {
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				searchPattern: this._viewModel.searchPattern
+			}
+		})
 	}
 }
 

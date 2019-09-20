@@ -30,6 +30,16 @@ describe("SearchBarController", () => {
 		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService)
 	}
 
+	function withMockedSettingsService(blacklist: BlacklistItem[]) {
+		settingsService = searchBarController["settingsService"] = jest.fn().mockReturnValue({
+			getSettings: jest.fn().mockReturnValue({
+				fileSettings: {
+					blacklist: blacklist
+				}
+			})()
+		})()
+	}
+
 	describe("constructor", () => {
 		SettingsService.subscribeToBlacklist = jest.fn()
 
@@ -120,39 +130,40 @@ describe("SearchBarController", () => {
 		})
 	})
 
-	describe("isPatternInBlackList", () => {
-		beforeEach(() => {
-			searchBarController["_viewModel"].searchPattern = "/root/node/path"
+	describe("updateViewModel", () => {
+		let blacklist: BlacklistItem[]
 
-			settingsService.getSettings().fileSettings.blacklist = [{ path: "/root/another/node/path", type: BlacklistType.exclude }]
+		beforeEach(() => {
+			blacklist = [{ path: "/root/another/node/path", type: BlacklistType.exclude }]
+			searchBarController["_viewModel"].searchPattern = "/root/node/path"
 		})
 		it("should set the isPatternHidden to true, when the pattern is already in Blacklist", () => {
+			blacklist.push({ path: "/root/node/path", type: BlacklistType.hide })
 			searchBarController["_viewModel"].isPatternHidden = false
-			settingsService.getSettings().fileSettings.blacklist.push({ path: "/root/node/path", type: BlacklistType.hide })
 
-			searchBarController.isPatternInBlackList()
+			searchBarController["updateViewModel"](blacklist)
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeTruthy()
 		})
 		it("should set the isPatternHidden to false, when the pattern is not in Blacklist", () => {
 			searchBarController["_viewModel"].isPatternHidden = true
 
-			searchBarController.isPatternInBlackList()
+			searchBarController["updateViewModel"](blacklist)
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
 		})
 		it("should set the isPatternExcluded to true, when the pattern is in Blacklist", () => {
+			blacklist.push({ path: "/root/node/path", type: BlacklistType.exclude })
 			searchBarController["_viewModel"].isPatternExcluded = false
-			settingsService.getSettings().fileSettings.blacklist.push({ path: "/root/node/path", type: BlacklistType.exclude })
 
-			searchBarController.isPatternInBlackList()
+			searchBarController["updateViewModel"](blacklist)
 
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
 		})
 		it("should set the isPatternExcluded to false, when the pattern is not in Blacklist", () => {
 			searchBarController["_viewModel"].isPatternExcluded = true
 
-			searchBarController.isPatternInBlackList()
+			searchBarController["updateViewModel"](blacklist)
 
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeFalsy()
 		})

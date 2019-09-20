@@ -5,13 +5,13 @@
 		type="text"
 		placeholder="gitignore style: *.js, **/app/*"
 		ng-model="$ctrl._viewModel.searchPattern"
-		ng-change="$ctrl.applySettingsSearchPattern()"
+		ng-change="$ctrl.onSearchPatternChanged()"
 	/>
 </md-input-container>
 
 <md-menu>
 	<div class="small-action-button transparent">
-		<md-button class="md-fab" ng-click="$mdMenu.open($event); $ctrl.isPatternInBlackList()" title="Add to Blacklist...">
+		<md-button class="md-fab" ng-click="$mdMenu.open($event)" title="Add to Blacklist...">
 			<i class="fa fa-ellipsis-h"></i>
 		</md-button>
 	</div>
