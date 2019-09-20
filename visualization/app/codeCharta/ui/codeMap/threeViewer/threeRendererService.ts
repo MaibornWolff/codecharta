@@ -1,8 +1,9 @@
 import * as THREE from "three"
 import { WebGLRenderer } from "three"
-import { SettingsService, SettingsServiceSubscriber } from "../../../state/settings.service"
+import { SettingsService } from "../../../state/settingsService/settings.service"
 import { RecursivePartial, Settings } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { SettingsServiceSubscriber } from "../../../state/settingsService/settings.service.events"
 
 export class ThreeRendererService implements SettingsServiceSubscriber {
 	public static BACKGROUND_COLOR = {
@@ -39,7 +40,7 @@ export class ThreeRendererService implements SettingsServiceSubscriber {
 		}
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.setCurrentClearColorFromSettings(settings)
 		this.renderer.setClearColor(ThreeRendererService.CLEAR_COLOR, ThreeRendererService.CLEAR_ALPHA)
 	}

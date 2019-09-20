@@ -10,8 +10,8 @@ import {
 	CodeMapNode,
 	FileMeta
 } from "../../codeCharta.model"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { SettingsService } from "../../state/settingsService/settings.service"
+import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import _ from "lodash"
 import { NodeDecorator } from "../../util/nodeDecorator"
@@ -22,6 +22,9 @@ import { DeltaGenerator } from "../../util/deltaGenerator"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { EdgeMetricService } from "../../state/edgeMetric.service"
+import * as d3 from "d3"
 
 export interface RenderData {
 	map: CodeMapNode
@@ -32,7 +35,7 @@ export interface RenderData {
 }
 
 export interface CodeMapPreRenderServiceSubscriber {
-	onRenderMapChanged(map: CodeMapNode, event: IAngularEvent)
+	onRenderMapChanged(map: CodeMapNode)
 }
 
 export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
@@ -52,7 +55,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
-		private loadingGifService: LoadingGifService
+		private loadingGifService: LoadingGifService,
+		private edgeMetricService: EdgeMetricService
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
@@ -67,7 +71,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		return this.lastRender.fileMeta
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.lastRender.settings = settings
 
 		if (this.lastRender.fileStates && update.fileSettings && (update.fileSettings.blacklist || update.fileSettings.markedPackages)) {
@@ -84,15 +88,15 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.lastRender.fileStates = fileStates
 		this.newFileLoaded = true
 		this.updateRenderMapAndFileMeta()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
-	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
+	public onMetricDataAdded(metricData: MetricData[]) {
 		this.lastRender.metricData = metricData
 		this.decorateIfPossible()
 		if (this.allNecessaryRenderDataAvailable()) {
@@ -100,7 +104,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
-	public onMetricDataRemoved(event: angular.IAngularEvent) {
+	public onMetricDataRemoved() {
 		this.lastRender.metricData = null
 	}
 
@@ -119,12 +123,26 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.lastRender.settings.fileSettings.blacklist &&
 			this.lastRender.metricData
 		) {
-			this.lastRender.map = NodeDecorator.decorateMap(
+			this.lastRender.map = NodeDecorator.decorateMap(this.lastRender.map, this.lastRender.fileMeta, this.lastRender.metricData)
+			this.getEdgeMetricsForLeaves(this.lastRender.map)
+			NodeDecorator.decorateParentNodesWithSumAttributes(
 				this.lastRender.map,
-				this.lastRender.fileMeta,
 				this.lastRender.settings.fileSettings.blacklist,
-				this.lastRender.metricData
+				this.lastRender.metricData,
+				this.edgeMetricService.getMetricData()
 			)
+		}
+	}
+
+	private getEdgeMetricsForLeaves(map: CodeMapNode) {
+		if (map && this.edgeMetricService.getMetricNames()) {
+			let root = d3.hierarchy<CodeMapNode>(map)
+			root.leaves().forEach(node => {
+				const edgeMetrics = this.edgeMetricService.getMetricValuesForNode(node)
+				for (let edgeMetric of edgeMetrics.keys()) {
+					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
+				}
+			})
 		}
 	}
 
@@ -202,7 +220,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
 		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (event, data) => {
-			subscriber.onRenderMapChanged(data, event)
+			subscriber.onRenderMapChanged(data)
 		})
 	}
 }

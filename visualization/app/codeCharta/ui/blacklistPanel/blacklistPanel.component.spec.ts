@@ -1,9 +1,9 @@
 import "./blacklistPanel.module"
 
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { BlacklistPanelController } from "./blacklistPanel.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { BlacklistType, BlacklistItem, RecursivePartial, Settings, SearchPanelMode } from "../../codeCharta.model"
+import { BlacklistType, BlacklistItem, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 
@@ -59,10 +59,8 @@ describe("blacklistController", () => {
 		expect(services.codeMapActionsService.removeBlacklistEntry).toHaveBeenCalledWith({ path: "/root", type: "exclude" })
 	})
 
-	it("update local blacklist with settingsService onSettingsChanged", () => {
-		let update: RecursivePartial<Settings> = { fileSettings: { blacklist: [blacklistItem] } }
-
-		blacklistPanelController.onSettingsChanged(null, update, null)
+	it("update local blacklist with settingsService onBlacklistChanged", () => {
+		blacklistPanelController.onBlacklistChanged([blacklistItem])
 
 		expect(blacklistPanelController["_viewModel"].exclude).toEqual([blacklistItem])
 		expect(blacklistPanelController["_viewModel"].hide).toEqual([])
@@ -71,7 +69,7 @@ describe("blacklistController", () => {
 	it("update local searchPanelMode onSearchPanelModeChanged", () => {
 		let searchPanelMode = SearchPanelMode.hide
 
-		blacklistPanelController.onSearchPanelModeChanged(searchPanelMode, null)
+		blacklistPanelController.onSearchPanelModeChanged(searchPanelMode)
 
 		expect(blacklistPanelController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.hide)
 	})

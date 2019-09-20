@@ -1,4 +1,5 @@
 import { Page } from "puppeteer"
+import { delay } from "../../../puppeteer.helper"
 
 export class RibbonBarPageObject {
 	constructor(private page: Page) {}
@@ -9,9 +10,10 @@ export class RibbonBarPageObject {
 
 	public async toggle() {
 		await this.page.click("ribbon-bar-component md-card:last-child .section-title")
+		await delay(400)
 	}
 
 	public async getAreaMetricValue(): Promise<number> {
-		return await this.page.$eval(".metric-value", el => el["innerText"])
+		return await this.page.$eval("area-metric-chooser-component .metric-value", el => el["innerText"])
 	}
 }

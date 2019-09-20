@@ -1,12 +1,12 @@
 import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CCFile, FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
+import { FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
 import { NodeDecorator } from "../util/nodeDecorator"
-import { SettingsService } from "./settings.service"
+import { SettingsService } from "./settingsService/settings.service"
 
 describe("MetricService", () => {
 	let metricService: MetricService
@@ -14,7 +14,6 @@ describe("MetricService", () => {
 	let fileStateService: FileStateService
 
 	let fileStates: FileState[]
-	let files: CCFile[]
 	let metricData: MetricData[]
 	let settings: Settings
 
@@ -30,7 +29,6 @@ describe("MetricService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		fileStateService = getService<FileStateService>("fileStateService")
 
-		files = [TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]
 		fileStates = [
 			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A), selectedAs: FileSelectionState.None },
 			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_B), selectedAs: FileSelectionState.None }
@@ -56,7 +54,7 @@ describe("MetricService", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			FileStateService.subscribe = jest.fn()
-			SettingsService.subscribe = jest.fn()
+			SettingsService.subscribeToBlacklist = jest.fn()
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -65,10 +63,10 @@ describe("MetricService", () => {
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, metricService)
 		})
 
-		it("should subscribe to SettingsService", () => {
+		it("should subscribe to Blacklist-Events", () => {
 			rebuildService()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, metricService)
+			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, metricService)
 		})
 	})
 
@@ -78,45 +76,39 @@ describe("MetricService", () => {
 		})
 
 		it("should trigger METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onFileSelectionStatesChanged(fileStates, undefined)
+			metricService.onFileSelectionStatesChanged(fileStates)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledTimes(1)
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_ADDED_EVENT"], metricData)
 		})
 	})
 
-	describe("onSettingsChanged", () => {
+	describe("onBlacklistChanged", () => {
 		beforeEach(() => {
 			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
 			metricService["calculateMetrics"] = jest.fn().mockReturnValue(metricData)
 		})
 
-		it("should not call getFileStates when update object is not a blacklist", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: null } }, null)
-
-			expect(fileStateService.getFileStates).not.toHaveBeenCalled()
-		})
-
 		it("should call calculateMetrics", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
+			metricService.onBlacklistChanged([])
 
 			expect(metricService["calculateMetrics"]).toHaveBeenCalledWith(fileStates, [], [])
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
+			metricService.onBlacklistChanged([])
 
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
 		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, null)
+			metricService.onBlacklistChanged([])
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
-			metricService.onSettingsChanged(null, { fileSettings: { blacklist: [] } }, undefined)
+			metricService.onBlacklistChanged([])
 
 			expect(metricService.getMetricData().filter(x => x.name === "unary").length).toBeGreaterThan(0)
 		})

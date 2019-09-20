@@ -1,5 +1,14 @@
 <search-panel-component></search-panel-component>
 
+<md-card>
+	<div class="section">
+		<div class="section-header">
+			<scenario-drop-down-component></scenario-drop-down-component>
+		</div>
+		<span class="section-title no-hover">Scenario</span>
+	</div>
+</md-card>
+
 <md-card class="element-to-toggle">
 	<div class="section">
 		<div class="section-header">
@@ -36,10 +45,22 @@
 	</div>
 </md-card>
 
+<md-card class="element-to-toggle">
+	<div class="section">
+		<div class="section-header">
+			<edge-chooser-component></edge-chooser-component>
+		</div>
+		<span class="section-title" ng-click="$ctrl.toggle()">
+			Edges
+		</span>
+		<div class="section-body">
+			<edge-settings-panel-component></edge-settings-panel-component>
+		</div>
+	</div>
+</md-card>
+
 <md-card>
 	<div class="section">
-		<div class="section-header space">
-			<scenario-drop-down-component></scenario-drop-down-component>
-		</div>
+		<div class="section-header space"></div>
 	</div>
 </md-card>

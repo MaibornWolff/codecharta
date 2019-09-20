@@ -2,7 +2,7 @@
 
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper, Scenario } from "../../util/scenarioHelper"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { MetricData } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
@@ -11,10 +11,8 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 export class ScenarioDropDownController implements MetricServiceSubscriber {
 	private _viewModel: {
 		scenarios: Scenario[]
-		selectedName: string
 	} = {
-		scenarios: null,
-		selectedName: null
+		scenarios: null
 	}
 
 	constructor(
@@ -25,19 +23,14 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onMetricDataAdded(metricData: MetricData[], event: angular.IAngularEvent) {
-		this.setScenarios(metricData)
-	}
-
-	public onMetricDataRemoved(event: angular.IAngularEvent) {}
-
-	private setScenarios(metricData: MetricData[]) {
+	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData)
 	}
 
-	public applySettings() {
-		this.settingsService.updateSettings(ScenarioHelper.getScenarioSettingsByName(this._viewModel.selectedName))
-		this._viewModel.selectedName = null
+	public onMetricDataRemoved() {}
+
+	public applyScenario(scenarioName: string) {
+		this.settingsService.updateSettings(ScenarioHelper.getScenarioSettingsByName(scenarioName))
 		this.threeOrbitControlsService.autoFitTo()
 	}
 }

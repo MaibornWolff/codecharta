@@ -2,25 +2,21 @@ import "./mapTreeView.module"
 
 import { MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
 import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
-import { FileStateService } from "../../state/fileState.service"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
 	let $rootScope: IRootScopeService
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
-	let fileStateService: FileStateService
 	let $event
 
 	beforeEach(() => {
@@ -33,10 +29,8 @@ describe("MapTreeViewLevelController", () => {
 		instantiateModule("app.codeCharta.ui.mapTreeView")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		settingsService = getService<SettingsService>("settingsService")
-		fileStateService = getService<FileStateService>("fileStateService")
 
 		$event = {
 			clientX: jest.fn(),
@@ -68,7 +62,7 @@ describe("MapTreeViewLevelController", () => {
 			const controllerNode: CodeMapNode = buildNodeAt("somePath")
 			const transition: CodeMapBuildingTransition = buildTransitionTo("somePath")
 			mapTreeViewLevelController["node"] = controllerNode
-			mapTreeViewLevelController.onBuildingHovered(transition, null)
+			mapTreeViewLevelController.onBuildingHovered(transition)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(true)
 		})
 
@@ -76,13 +70,13 @@ describe("MapTreeViewLevelController", () => {
 			const controllerNode: CodeMapNode = buildNodeAt("somePath")
 			const transition: CodeMapBuildingTransition = buildTransitionTo("someOtherPath")
 			mapTreeViewLevelController["node"] = controllerNode
-			mapTreeViewLevelController.onBuildingHovered(transition, null)
+			mapTreeViewLevelController.onBuildingHovered(transition)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
 		it("should set _isHoveredInCodeMap to false if hovered node is null", () => {
 			const transition: CodeMapBuildingTransition = { from: null, to: null }
-			mapTreeViewLevelController.onBuildingHovered(transition, null)
+			mapTreeViewLevelController.onBuildingHovered(transition)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
@@ -259,6 +253,29 @@ describe("MapTreeViewLevelController", () => {
 			mapTreeViewLevelController.onMouseLeave()
 
 			expect($rootScope.$on).toHaveBeenCalled
+		})
+	})
+	describe("openRootFolderByDefault", () => {
+		it("should set the collapsed variable to false, if depth size is 0", () => {
+			mapTreeViewLevelController["_viewModel"].collapsed = true
+
+			mapTreeViewLevelController.openRootFolderByDefault(0)
+
+			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
+		})
+		it("should do nothing, if the depth size is not 0", () => {
+			mapTreeViewLevelController["_viewModel"].collapsed = true
+
+			mapTreeViewLevelController.openRootFolderByDefault(5)
+
+			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeTruthy()
+		})
+		it("should do nothing, if the depth size is not 0 and the collapsed variable is false", () => {
+			mapTreeViewLevelController["_viewModel"].collapsed = false
+
+			mapTreeViewLevelController.openRootFolderByDefault(5)
+
+			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
 		})
 	})
 })

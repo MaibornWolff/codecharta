@@ -4,7 +4,7 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
-import { SettingsService } from "../../../state/settings.service"
+import { SettingsService } from "../../../state/settingsService/settings.service"
 
 /**
  * A service to angularize the Three.js canvas.

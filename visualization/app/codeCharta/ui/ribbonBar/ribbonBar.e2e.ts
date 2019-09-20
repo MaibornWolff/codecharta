@@ -3,7 +3,7 @@ import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
 
-jest.setTimeout(10000)
+jest.setTimeout(15000)
 
 describe("RibbonBar", () => {
 	let browser: Browser
@@ -31,7 +31,7 @@ describe("RibbonBar", () => {
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
 		await settingsPanel.toggleTreeViewMode()
-		await settingsPanel.rightClickRootNodeInTreeViewSearchPanel()
+		await settingsPanel.hoverRootNodeInTreeViewSearchPanel()
 
 		const actual = await ribbonBar.getAreaMetricValue()
 		expect(actual).toBe("600")

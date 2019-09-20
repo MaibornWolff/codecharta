@@ -5,7 +5,6 @@ import {
 	CodeMapNode,
 	FileState,
 	MetricData,
-	RecursivePartial,
 	Settings,
 	AttributeType,
 	AttributeTypeValue
@@ -13,14 +12,16 @@ import {
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
-import { IAngularEvent, IRootScopeService } from "angular"
-import { SettingsService, SettingsServiceSubscriber } from "./settings.service"
+import { IRootScopeService } from "angular"
+import { SettingsService } from "./settingsService/settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
+import { BlacklistSubscriber } from "./settingsService/settings.service.events"
 
 export interface MetricServiceSubscriber {
-	onMetricDataAdded(metricData: MetricData[], event: IAngularEvent)
-	onMetricDataRemoved(event: IAngularEvent)
+	onMetricDataAdded(metricData: MetricData[])
+
+	onMetricDataRemoved()
 }
 
 interface MaxMetricValuePair {
@@ -28,7 +29,7 @@ interface MaxMetricValuePair {
 	availableInVisibleMaps: boolean
 }
 
-export class MetricService implements FileStateServiceSubscriber, SettingsServiceSubscriber {
+export class MetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed"
 
@@ -37,30 +38,24 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
 		this.notifyMetricDataAdded()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onImportedFilesChanged(fileStates: FileState[]) {
 		this.metricData = null
 		this.notifyMetricDataRemoved()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		if (update.fileSettings && update.fileSettings.blacklist) {
-			const fileStates: FileState[] = this.fileStateService.getFileStates()
-			this.metricData = this.calculateMetrics(
-				fileStates,
-				FileStateHelper.getVisibleFileStates(fileStates),
-				update.fileSettings.blacklist
-			)
-			this.addUnaryMetric()
-			this.notifyMetricDataAdded()
-		}
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		const fileStates: FileState[] = this.fileStateService.getFileStates()
+		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+		this.addUnaryMetric()
+		this.notifyMetricDataAdded()
 	}
 
 	public getMetrics(): string[] {
@@ -204,11 +199,11 @@ export class MetricService implements FileStateServiceSubscriber, SettingsServic
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
 		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (event, data) => {
-			subscriber.onMetricDataAdded(data, event)
+			subscriber.onMetricDataAdded(data)
 		})
 
 		$rootScope.$on(MetricService.METRIC_DATA_REMOVED_EVENT, (event, data) => {
-			subscriber.onMetricDataRemoved(event)
+			subscriber.onMetricDataRemoved()
 		})
 	}
 }

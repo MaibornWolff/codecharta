@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import "./rangeSlider.component.scss"
 import $ from "jquery"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
@@ -6,6 +6,7 @@ import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 	private maxMetricValue: number
@@ -34,7 +35,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 		SettingsService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
+	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (this.metricService.getMetricData()) {
 			this.initSliderOptions(settings)
 		}

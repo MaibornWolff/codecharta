@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelpe
 import { Settings } from "../../../codeCharta.model"
 import { SETTINGS } from "../../../util/dataMocks"
 import { PerspectiveCamera, Vector3 } from "three"
-import { SettingsService } from "../../../state/settings.service"
+import { SettingsService } from "../../../state/settingsService/settings.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 
 describe("ThreeCameraService", () => {
@@ -49,19 +49,19 @@ describe("ThreeCameraService", () => {
 			const vector = new Vector3(0, 300, 1000)
 			threeCameraService["lastCameraVector"] = vector
 
-			threeCameraService.onSettingsChanged(settings, undefined, undefined)
+			threeCameraService.onSettingsChanged(settings, undefined)
 
 			expect(threeCameraService.setPosition).not.toHaveBeenCalled()
 		})
 
 		it("should call setPosition if camera and lastCameraVector are not the same", () => {
-			threeCameraService.onSettingsChanged(settings, undefined, undefined)
+			threeCameraService.onSettingsChanged(settings, undefined)
 
 			expect(threeCameraService.setPosition).toHaveBeenCalledWith(0, 300, 1000)
 		})
 
 		it("should set lastCameraVector if camera and lastCameraVector are not the same", () => {
-			threeCameraService.onSettingsChanged(settings, undefined, undefined)
+			threeCameraService.onSettingsChanged(settings, undefined)
 
 			expect(threeCameraService["lastCameraVector"]).toEqual(new Vector3(0, 300, 1000))
 		})
@@ -71,7 +71,7 @@ describe("ThreeCameraService", () => {
 		it("should call updateSettings", () => {
 			const cameraPosition = threeCameraService.camera.position
 
-			threeCameraService.onCameraChanged(null, null)
+			threeCameraService.onCameraChanged(null)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(
 				{ appSettings: { camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) } },

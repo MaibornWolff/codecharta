@@ -1,10 +1,11 @@
 import "./searchBar.component.scss"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { BlacklistType, BlacklistItem, Settings, RecursivePartial, FileState } from "../../codeCharta.model"
+import { SettingsService } from "../../state/settingsService/settings.service"
+import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
+import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 
-export class SearchBarController implements SettingsServiceSubscriber {
+export class SearchBarController implements BlacklistSubscriber {
 	private _viewModel: {
 		searchPattern: string
 		isPatternHidden: boolean
@@ -21,7 +22,7 @@ export class SearchBarController implements SettingsServiceSubscriber {
 		private settingsService: SettingsService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
-		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public applySettingsSearchPattern() {
@@ -32,12 +33,12 @@ export class SearchBarController implements SettingsServiceSubscriber {
 		})
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[], event: angular.IAngularEvent) {
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetSearchPattern()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>, event: angular.IAngularEvent) {
-		this.updateViewModel(settings.fileSettings.blacklist)
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.updateViewModel(blacklist)
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {

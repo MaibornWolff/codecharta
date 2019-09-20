@@ -2,11 +2,16 @@ import * as THREE from "three"
 import { Scene, Vector3 } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
+import { CodeMapBuilding } from "../rendering/codeMapBuilding"
+import { SettingsService } from "../../../state/settingsService/settings.service"
+import { BlacklistItem } from "../../../codeCharta.model"
+import { IRootScopeService } from "angular"
+import { BlacklistSubscriber } from "../../../state/settingsService/settings.service.events"
 
 /**
  * A service which manages the Three.js scene in an angular way.
  */
-export class ThreeSceneService {
+export class ThreeSceneService implements BlacklistSubscriber {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -14,7 +19,12 @@ export class ThreeSceneService {
 	private lights: Group
 	private mapMesh: CodeMapMesh
 
-	constructor() {
+	private selected: CodeMapBuilding = null
+	private highlighted: CodeMapBuilding = null
+	private highlightedBuildings: CodeMapBuilding[] = []
+
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 		this.scene = new THREE.Scene()
 
 		this.mapGeometry = new THREE.Group()
@@ -28,6 +38,44 @@ export class ThreeSceneService {
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.selected = null
+		this.highlighted = null
+	}
+
+	public highlightBuilding(building: CodeMapBuilding) {
+		const settings = this.settingsService.getSettings()
+		this.getMapMesh().highlightBuilding(building, this.selected, settings)
+		this.highlightedBuildings = []
+		this.highlighted = building
+	}
+
+	public addBuildingToHighlightingList(building: CodeMapBuilding) {
+		const settings = this.settingsService.getSettings()
+		this.highlightedBuildings.push(building)
+		this.getMapMesh().highlightBuildings(this.highlightedBuildings, this.selected, settings)
+	}
+
+	public clearHighlight() {
+		this.getMapMesh().clearHighlight(this.selected)
+		this.highlighted = null
+		this.highlightedBuildings = []
+	}
+
+	public selectBuilding(building: CodeMapBuilding) {
+		const color = this.settingsService.getSettings().appSettings.mapColors.selected
+		this.getMapMesh().selectBuilding(building, this.selected, color)
+		this.selected = building
+	}
+
+	public clearSelection() {
+		this.getMapMesh().clearSelection(this.selected)
+		if (this.highlighted) {
+			this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
+		}
+		this.selected = null
 	}
 
 	public initLights() {
@@ -79,5 +127,13 @@ export class ThreeSceneService {
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
 		this.mapGeometry.position.set((-mapSize / 2.0) * scale.x, 0.0, (-mapSize / 2.0) * scale.z)
 		this.mapMesh.setScale(scale)
+	}
+
+	public getSelectedBuilding(): CodeMapBuilding {
+		return this.selected
+	}
+
+	public getHighlightedBuilding(): CodeMapBuilding {
+		return this.highlighted
 	}
 }

@@ -48,7 +48,7 @@ describe("codeMapRenderService", () => {
 		settings = _.cloneDeep(SETTINGS)
 		metricData = _.cloneDeep(METRIC_DATA)
 		fileStates = FILE_STATES
-		map = NodeDecorator.decorateMap(_.cloneDeep(TEST_FILE_WITH_PATHS.map), fileMeta, [], metricData)
+		map = NodeDecorator.decorateMap(_.cloneDeep(TEST_FILE_WITH_PATHS.map), fileMeta, metricData)
 	}
 
 	function rebuildService() {
@@ -134,7 +134,7 @@ describe("codeMapRenderService", () => {
 				map: map,
 				settings: settings,
 				metricData: metricData,
-				fileStates: null,
+				fileStates: FILE_STATES,
 				fileMeta: null
 			}
 
@@ -179,11 +179,10 @@ describe("codeMapRenderService", () => {
 
 		it("should call codeMapArrowService.addEdgeArrows", () => {
 			settings.fileSettings.edges = VALID_EDGES
-			settings.fileSettings.edges.forEach(x => (x.visible = true))
 
 			codeMapRenderService["setArrows"](sortedNodes, settings)
 
-			expect(codeMapArrowService["addEdgeArrows"]).toHaveBeenCalledWith(sortedNodes, settings.fileSettings.edges, settings)
+			expect(codeMapArrowService["addEdgeArrows"]).toHaveBeenCalledWith(sortedNodes, settings.fileSettings.edges)
 		})
 	})
 

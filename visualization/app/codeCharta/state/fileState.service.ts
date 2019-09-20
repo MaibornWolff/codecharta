@@ -1,11 +1,11 @@
 import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
 
 export interface FileStateServiceSubscriber {
-	onFileSelectionStatesChanged(fileStates: FileState[], event: IAngularEvent)
+	onFileSelectionStatesChanged(fileStates: FileState[])
 
-	onImportedFilesChanged(fileStates: FileState[], event: IAngularEvent)
+	onImportedFilesChanged(fileStates: FileState[])
 }
 
 export class FileStateService {
@@ -79,10 +79,10 @@ export class FileStateService {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: FileStateServiceSubscriber) {
 		$rootScope.$on(FileStateService.FILE_STATE_CHANGED_EVENT, (event, data) => {
-			subscriber.onFileSelectionStatesChanged(data, event)
+			subscriber.onFileSelectionStatesChanged(data)
 		})
 		$rootScope.$on(FileStateService.IMPORTED_FILES_CHANGED_EVENT, (event, data) => {
-			subscriber.onImportedFilesChanged(data, event)
+			subscriber.onImportedFilesChanged(data)
 		})
 	}
 }

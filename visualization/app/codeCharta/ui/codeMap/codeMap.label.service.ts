@@ -4,9 +4,9 @@ import { Node, Settings } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { ColorConverter } from "../../util/colorConverter"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 interface InternalLabel {
 	sprite: THREE.Sprite
@@ -84,7 +84,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.currentScale.copy(scale)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera, event: angular.IAngularEvent) {
+	public onCameraChanged(camera: PerspectiveCamera) {
 		for (let label of this.labels) {
 			this.setLabelSize(label.sprite)
 		}

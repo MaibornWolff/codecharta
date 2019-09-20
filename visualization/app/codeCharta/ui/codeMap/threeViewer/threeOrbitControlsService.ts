@@ -6,7 +6,7 @@ import * as THREE from "three"
 import { ThreeSceneService } from "./threeSceneService"
 
 export interface CameraChangeSubscriber {
-	onCameraChanged(camera: PerspectiveCamera, event: IAngularEvent)
+	onCameraChanged(camera: PerspectiveCamera)
 }
 
 /**
@@ -94,7 +94,7 @@ export class ThreeOrbitControlsService {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CameraChangeSubscriber) {
 		$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (event: IAngularEvent, camera: PerspectiveCamera) => {
-			subscriber.onCameraChanged(camera, event)
+			subscriber.onCameraChanged(camera)
 		})
 	}
 }

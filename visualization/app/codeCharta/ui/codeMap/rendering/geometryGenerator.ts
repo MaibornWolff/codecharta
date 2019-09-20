@@ -4,7 +4,7 @@ import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { IntermediateVertexData } from "./intermediateVertexData"
 import { BoxGeometryGenerationHelper } from "./boxGeometryGenerationHelper"
-import { ColorConverter } from "../../../util/colorConverter"
+import { ColorConverter } from "../../../util/color/colorConverter"
 
 export interface BoxMeasures {
 	x: number
@@ -110,8 +110,6 @@ export class GeometryGenerator {
 		let measures: BoxMeasures = this.mapNodeToLocalBox(n)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
 
-		let color: string = this.getBuildingColor(n, settings, isDeltaState)
-
 		let renderDelta: number = 0.0
 
 		if (isDeltaState && n.deltas && n.deltas[settings.dynamicSettings.heightMetric] && n.heightDelta) {
@@ -130,32 +128,11 @@ export class GeometryGenerator {
 					new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 				),
 				n,
-				color
+				n.color
 			)
 		)
 
-		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta)
-	}
-
-	private getBuildingColor(n: Node, s: Settings, isDeltaState: boolean): string {
-		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
-		if (isDeltaState) {
-			return s.appSettings.mapColors.base
-		} else {
-			const metricValue: number = n.attributes[s.dynamicSettings.colorMetric]
-
-			if (!metricValue) {
-				return s.appSettings.mapColors.base
-			} else if (n.flat) {
-				return s.appSettings.mapColors.flat
-			} else if (metricValue < s.dynamicSettings.colorRange.from) {
-				return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
-			} else if (metricValue > s.dynamicSettings.colorRange.to) {
-				return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
-			} else {
-				return s.appSettings.mapColors.neutral
-			}
-		}
+		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, n.color, idx, renderDelta)
 	}
 
 	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: THREE.Material): THREE.Mesh {
@@ -167,6 +144,7 @@ export class GeometryGenerator {
 		let normals: Float32Array = new Float32Array(numVertices * dimension)
 		let uvs: Float32Array = new Float32Array(numVertices * uvDimension)
 		let colors: Float32Array = new Float32Array(numVertices * dimension)
+		let deltaColors: Float32Array = new Float32Array(numVertices * dimension)
 		let ids: Float32Array = new Float32Array(numVertices)
 		let deltas: Float32Array = new Float32Array(numVertices)
 
@@ -188,6 +166,10 @@ export class GeometryGenerator {
 			colors[i * dimension + 1] = color.y
 			colors[i * dimension + 2] = color.z
 
+			deltaColors[i * dimension + 0] = color.x
+			deltaColors[i * dimension + 1] = color.y
+			deltaColors[i * dimension + 2] = color.z
+
 			ids[i] = data.subGeometryIdx[i]
 			deltas[i] = data.deltas[i]
 		}
@@ -204,6 +186,7 @@ export class GeometryGenerator {
 		geometry.addAttribute("normal", new THREE.BufferAttribute(normals, dimension))
 		geometry.addAttribute("uv", new THREE.BufferAttribute(uvs, uvDimension))
 		geometry.addAttribute("color", new THREE.BufferAttribute(colors, dimension))
+		geometry.addAttribute("deltaColor", new THREE.BufferAttribute(deltaColors, dimension))
 		geometry.addAttribute("subGeomIdx", new THREE.BufferAttribute(ids, 1))
 		geometry.addAttribute("delta", new THREE.BufferAttribute(deltas, 1))
 

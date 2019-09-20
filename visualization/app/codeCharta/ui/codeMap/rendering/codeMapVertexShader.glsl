@@ -2,14 +2,15 @@
 #define saturate(a) clamp( a, 0.0, 1.0)
 
 attribute vec3 color;
+attribute vec3 defaultColor;
+attribute vec3 deltaColor;
 attribute highp float subGeomIdx;
 attribute highp float delta;
 
 varying vec3 vColor;
-varying vec3 viewDirection;
+varying vec3 vDeltaColor;
 varying vec3 worldNormal;
 varying vec3 vLightFront;
-varying highp float oSubGeomIdx;
 varying highp float vDelta;
 varying vec2 vUV;
 
@@ -35,6 +36,7 @@ struct IncidentLight {
 };
 
 uniform DirectionalLight directionalLights[NUM_DIR_LIGHTS];
+
 void getDirectionalDirectLightIrradiance(const in DirectionalLight directionalLight, const in GeometricContext geometry, out IncidentLight directLight) {
     directLight.color = directionalLight.color;
     directLight.direction = directionalLight.direction;
@@ -47,13 +49,10 @@ void main()
     vec4 viewPosition = viewMatrix * worldPosition;
     vec4 projectedPosition = projectionMatrix * viewPosition;
 
-    viewDirection = normalize(worldPosition.xyz - cameraPosition);
-
 	vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
 	gl_Position = projectionMatrix * modelViewPosition;
 
     worldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
-    oSubGeomIdx = float(subGeomIdx);
 
     vec3 diffuse = vec3(1.0);
     
@@ -65,6 +64,7 @@ void main()
     vLightFront = vec3(0.0);
     vUV = uv;
     vColor = color;
+    vDeltaColor = deltaColor;
     vDelta = delta;
 
     for (int i=0; i < 2; ++i)

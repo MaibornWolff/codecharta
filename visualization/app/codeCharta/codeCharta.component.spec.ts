@@ -1,9 +1,8 @@
 import "./codeCharta.module"
-import { ThreeOrbitControlsService } from "./ui/codeMap/threeViewer/threeOrbitControlsService"
 import { IHttpService, ILocationService, IRootScopeService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
-import { SettingsService } from "./state/settings.service"
+import { SettingsService } from "./state/settingsService/settings.service"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
@@ -144,7 +143,7 @@ describe("codeChartaController", () => {
 
 	describe("onSettingsChanged", () => {
 		it("should set focusedNodePath in viewModel", () => {
-			codeChartaController.onSettingsChanged(settings, undefined, undefined)
+			codeChartaController.onSettingsChanged(settings, undefined)
 
 			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
 		})

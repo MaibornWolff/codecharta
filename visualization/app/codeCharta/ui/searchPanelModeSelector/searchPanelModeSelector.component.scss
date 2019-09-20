@@ -8,57 +8,6 @@ search-panel-mode-selector-component {
 		font-size: 0px;
 	}
 
-	.md-button {
-		height: 22px;
-		vertical-align: bottom;
-		width: 30px;
-		min-height: 0px;
-		min-width: 0px;
-		margin: 0px !important;
-		padding: 0px !important;
-		font-size: 9pt;
-		text-transform: none;
-		background-color: rgba(230, 230, 230, 0.96);
-
-		&.left {
-			border-radius: 5px 0 0 5px;
-		}
-
-		&.middle {
-			border-radius: 0;
-			border-left: 1px solid rgba(255, 255, 255, 1);
-			border-right: 1px solid rgba(255, 255, 255, 1);
-		}
-
-		&.right {
-			border-radius: 0 5px 5px 0;
-		}
-
-		&:hover {
-			background-color: rgb(200, 200, 200) !important;
-		}
-
-		&.current {
-			background-color: rgb(0, 150, 136);
-			color: #ffffff;
-		}
-
-		&.current:hover {
-			background-color: rgb(0, 124, 112) !important;
-		}
-
-		.i:active {
-			margin: inherit;
-			padding: inherit;
-		}
-
-		i {
-			vertical-align: middle;
-			margin-top: -10px;
-			height: 16px;
-		}
-	}
-
 	.list-length-count {
 		position: absolute;
 		margin-left: 18px;

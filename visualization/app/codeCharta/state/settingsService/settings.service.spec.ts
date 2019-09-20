@@ -1,13 +1,13 @@
-import "./state.module"
+import "../state.module"
 import { SettingsService } from "./settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
-import { AttributeTypeValue, FileSelectionState, FileState, RecursivePartial, Settings } from "../codeCharta.model"
-import { FileStateService } from "./fileState.service"
-import { FileStateHelper } from "../util/fileStateHelper"
-import { SettingsMerger } from "../util/settingsMerger"
-import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
+import { LoadingGifService } from "../../ui/loadingGif/loadingGif.service"
+import { AttributeTypeValue, FileSelectionState, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { FileStateService } from "../fileState.service"
+import { FileStateHelper } from "../../util/fileStateHelper"
+import { SettingsMerger } from "../../util/settingsMerger"
 
 describe("settingService", () => {
 	let settingsService: SettingsService
@@ -81,25 +81,25 @@ describe("settingService", () => {
 
 		describe("onFileSelectionStateChanged", () => {
 			it("should call updateSettings with newFileSettings", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+				settingsService.onFileSelectionStatesChanged(fileStates)
 
 				expect(settingsService.updateSettings).toHaveBeenCalledWith({ fileSettings: DEFAULT_SETTINGS })
 			})
 
 			it("should call isPartialState with fileStates", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+				settingsService.onFileSelectionStatesChanged(fileStates)
 
 				expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
 			})
 
 			it("should call getVisibleFileStates with fileStates", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+				settingsService.onFileSelectionStatesChanged(fileStates)
 
 				expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			})
 
 			it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates, undefined)
+				settingsService.onFileSelectionStatesChanged(fileStates)
 				const visibleFiles = [fileStates[0].file, fileStates[1].file]
 
 				expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)
@@ -205,8 +205,8 @@ describe("settingService", () => {
 		})
 
 		it("should reset update after 400ms", done => {
-			settingsService["update"] = { fileSettings: { blacklist: ["entry"] } }
-			const update: RecursivePartial<Settings> = { fileSettings: { blacklist: [] } }
+			settingsService["update"] = { fileSettings: { edges: ["entry"] } }
+			const update: RecursivePartial<Settings> = { fileSettings: { edges: [] } }
 
 			settingsService.updateSettings(update)
 
