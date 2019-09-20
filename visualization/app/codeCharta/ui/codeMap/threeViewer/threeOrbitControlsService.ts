@@ -56,6 +56,10 @@ export class ThreeOrbitControlsService {
 		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
+	public setDefaultCameraPerspective(cameraPosition: Vector3) {
+		this.defaultCameraPosition = cameraPosition
+	}
+
 	public resetCameraPerspective() {
 		const cameraReference = this.threeCameraService.camera
 		cameraReference.position.set(this.defaultCameraPosition.x, this.defaultCameraPosition.y, this.defaultCameraPosition.z)
@@ -80,9 +84,9 @@ export class ThreeOrbitControlsService {
 
 		cameraReference.lookAt(t)
 
-		this.defaultCameraPosition = cameraReference.clone().position
-
 		this.threeCameraService.camera.updateProjectionMatrix()
+
+		return cameraReference.clone().position
 	}
 
 	public init(domElement) {
