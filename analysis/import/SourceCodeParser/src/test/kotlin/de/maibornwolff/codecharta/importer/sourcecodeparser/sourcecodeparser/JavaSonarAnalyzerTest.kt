@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.sourcecodeparser
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaSonarAnalyzer
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 import java.util.*
@@ -75,8 +74,6 @@ class JavaSonarAnalyzerTest {
 
         assertThat(
                 metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue("code_smell")).isEqualTo(1)
-        assertThat(metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue(
-                "security_hotspot")).isEqualTo(1)
     }
 
     @Test
