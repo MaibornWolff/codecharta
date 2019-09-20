@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Exclude and Hide options are disabled for empty search Pattern String #654
+
 ### Chore
 
 ## [1.34.0] - 2019-09-20
