@@ -1,8 +1,8 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import "./metricChooser.component.scss"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { MetricData, Settings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
+import { MetricData, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import {
 	AreaMetricSubscriber,
@@ -10,6 +10,8 @@ import {
 	DistributionMetricSubscriber,
 	HeightMetricSubscriber
 } from "../../state/settingsService/settings.service.events"
+import $ from "jquery"
+import _ from "lodash"
 
 export class MetricChooserController
 	implements
@@ -45,7 +47,7 @@ export class MetricChooserController
 	}
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {
+	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
@@ -82,43 +84,54 @@ export class MetricChooserController
 		this._viewModel.metricData = this.originalMetricData
 	}
 
+	public focusInputField(idName: string) {
+		this.$timeout(() => {
+			$(".metric-search." + idName).focus()
+		}, 200)
+	}
+
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.metricData = metricData
 		this.originalMetricData = metricData
-		this.potentiallyUpdateChosenMetrics(metricData)
+		const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
+		if (availableMetrics.length > 0) {
+			this.potentiallyUpdateChosenMetrics(availableMetrics)
+		}
 	}
 
 	public onMetricDataRemoved() {}
 
-	private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {
-		const metricKeys: Partial<DynamicSettings> = {
-			areaMetric: "areaMetric",
-			heightMetric: "heightMetric",
-			colorMetric: "colorMetric",
-			distributionMetric: "distributionMetric"
+	private potentiallyUpdateChosenMetrics(availableMetrics: MetricData[]) {
+		let dynamicSettingsUpdate: RecursivePartial<DynamicSettings> = {}
+
+		if (this.isMetricUnavailable("areaMetric", availableMetrics)) {
+			dynamicSettingsUpdate["areaMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 0)
 		}
-		let settingsUpdate: RecursivePartial<Settings> = this.prepareSettingsUpdateWithMetrics(metricKeys, metricData)
-		if (Object.keys(settingsUpdate.dynamicSettings).length !== 0) {
-			this.settingsService.updateSettings(settingsUpdate)
+
+		if (this.isMetricUnavailable("heightMetric", availableMetrics)) {
+			dynamicSettingsUpdate["heightMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 1)
+		}
+
+		if (this.isMetricUnavailable("colorMetric", availableMetrics)) {
+			dynamicSettingsUpdate["colorMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 2)
+		}
+
+		if (this.isMetricUnavailable("distributionMetric", availableMetrics)) {
+			dynamicSettingsUpdate["distributionMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 0)
+		}
+
+		if (_.keys(dynamicSettingsUpdate).length !== 0) {
+			this.settingsService.updateSettings({ dynamicSettings: dynamicSettingsUpdate })
 		}
 	}
 
-	private prepareSettingsUpdateWithMetrics(metricKeys: Partial<DynamicSettings>, metricData: MetricData[]): RecursivePartial<Settings> {
-		let settingsUpdate = { dynamicSettings: {} }
+	private isMetricUnavailable(metricKey: string, availableMetrics: MetricData[]) {
+		const metricName: string = this.settingsService.getSettings().dynamicSettings[metricKey]
+		return !availableMetrics.find(x => x.name == metricName)
+	}
 
-		let metricSelectionIndex = 0
-		for (const metricKey in metricKeys) {
-			const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
-			const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
-
-			if (availableMetrics.length > 0 && !availableMetrics.find(x => x.name == metricValue)) {
-				// metric value is "rloc" if not found in available, then gogogo
-				settingsUpdate.dynamicSettings[metricKey] =
-					availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
-			}
-			metricSelectionIndex++
-		}
-		return settingsUpdate
+	private getMetricNameFromIndexOrLast(metrics: MetricData[], index: number) {
+		return metrics[Math.min(index, metrics.length - 1)].name
 	}
 
 	public applySettingsAreaMetric() {

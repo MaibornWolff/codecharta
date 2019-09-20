@@ -95,6 +95,12 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 		return false
 	}
 
+	public openRootFolderByDefault(depth: number) {
+		if (depth == 0) {
+			this._viewModel.collapsed = false
+		}
+	}
+
 	public sortByFolder(node: CodeMapNode) {
 		return node && node.children && node.children.length > 0 ? 1 : 0
 	}
