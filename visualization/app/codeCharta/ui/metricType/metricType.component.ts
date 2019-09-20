@@ -1,11 +1,13 @@
 import "./metricType.component.scss"
 import { MetricService } from "../../state/metric.service"
-import { AttributeTypeValue, RecursivePartial, Settings } from "../../codeCharta.model"
+import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { AreaMetricSubscriber, ColorMetricSubscriber, HeightMetricSubscriber } from "../../state/settingsService/settings.service.events"
 
-export class MetricTypeController implements SettingsServiceSubscriber, BuildingHoveredEventSubscriber {
+export class MetricTypeController
+	implements AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, BuildingHoveredEventSubscriber {
 	private _viewModel: {
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
@@ -19,26 +21,23 @@ export class MetricTypeController implements SettingsServiceSubscriber, Building
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private metricService: MetricService) {
-		SettingsService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private metricService: MetricService, private settingsService: SettingsService) {
+		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
+		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
+		SettingsService.subscribeToColorMetric(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		if (update.dynamicSettings) {
-			if (update.dynamicSettings.areaMetric) {
-				this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(update.dynamicSettings.areaMetric, settings)
-			}
-			if (update.dynamicSettings.heightMetric) {
-				this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(
-					update.dynamicSettings.heightMetric,
-					settings
-				)
-			}
-			if (update.dynamicSettings.colorMetric) {
-				this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(update.dynamicSettings.colorMetric, settings)
-			}
-		}
+	public onAreaMetricChanged(areaMetric: string) {
+		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(areaMetric, this.settingsService.getSettings())
+	}
+
+	public onHeightMetricChanged(heightMetric: string) {
+		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(heightMetric, this.settingsService.getSettings())
+	}
+
+	public onColorMetricChanged(colorMetric: string) {
+		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric, this.settingsService.getSettings())
 	}
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
@@ -78,5 +77,11 @@ export const heightMetricTypeComponent = {
 export const colorMetricTypeComponent = {
 	selector: "colorMetricTypeComponent",
 	template: require("./colorMetricType.component.html"),
+	controller: MetricTypeController
+}
+
+export const edgeMetricTypeComponent = {
+	selector: "edgeMetricTypeComponent",
+	template: require("./edgeMetricType.component.html"),
 	controller: MetricTypeController
 }

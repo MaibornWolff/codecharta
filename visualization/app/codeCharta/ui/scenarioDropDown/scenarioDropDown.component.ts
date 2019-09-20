@@ -2,7 +2,7 @@
 
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper, Scenario } from "../../util/scenarioHelper"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { MetricData } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"

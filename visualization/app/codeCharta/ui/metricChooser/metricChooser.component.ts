@@ -1,11 +1,26 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
-import { IRootScopeService } from "angular"
+import { SettingsService } from "../../state/settingsService/settings.service"
+import { IRootScopeService, ITimeoutService } from "angular"
 import "./metricChooser.component.scss"
 import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { MetricData, Settings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
+import { MetricData, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import {
+	AreaMetricSubscriber,
+	ColorMetricSubscriber,
+	DistributionMetricSubscriber,
+	HeightMetricSubscriber
+} from "../../state/settingsService/settings.service.events"
+import $ from "jquery"
+import _ from "lodash"
 
-export class MetricChooserController implements MetricServiceSubscriber, BuildingHoveredEventSubscriber, SettingsServiceSubscriber {
+export class MetricChooserController
+	implements
+		MetricServiceSubscriber,
+		BuildingHoveredEventSubscriber,
+		AreaMetricSubscriber,
+		HeightMetricSubscriber,
+		ColorMetricSubscriber,
+		DistributionMetricSubscriber {
 	public hoveredAreaValue: number
 	public hoveredHeightValue: number
 	public hoveredColorValue: number
@@ -32,14 +47,30 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 	}
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService) {
-		SettingsService.subscribe(this.$rootScope, this)
+	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
+		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
+		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
+		SettingsService.subscribeToColorMetric(this.$rootScope, this)
+		SettingsService.subscribeToDistributionMetric(this.$rootScope, this)
+
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this.updateViewModel(settings)
+	public onAreaMetricChanged(areaMetric: string) {
+		this._viewModel.areaMetric = areaMetric
+	}
+
+	public onHeightMetricChanged(heightMetric: string) {
+		this._viewModel.heightMetric = heightMetric
+	}
+
+	public onColorMetricChanged(colorMetric: string) {
+		this._viewModel.colorMetric = colorMetric
+	}
+
+	public onDistributionMetricChanged(distributionMetric: string) {
+		this._viewModel.distributionMetric = distributionMetric
 	}
 
 	public filterMetricData() {
@@ -53,50 +84,54 @@ export class MetricChooserController implements MetricServiceSubscriber, Buildin
 		this._viewModel.metricData = this.originalMetricData
 	}
 
+	public focusInputField(idName: string) {
+		this.$timeout(() => {
+			$(".metric-search." + idName).focus()
+		}, 200)
+	}
+
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.metricData = metricData
 		this.originalMetricData = metricData
-		this.potentiallyUpdateChosenMetrics(metricData)
+		const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
+		if (availableMetrics.length > 0) {
+			this.potentiallyUpdateChosenMetrics(availableMetrics)
+		}
 	}
 
 	public onMetricDataRemoved() {}
 
-	private potentiallyUpdateChosenMetrics(metricData: MetricData[]) {
-		const metricKeys: Partial<DynamicSettings> = {
-			areaMetric: "areaMetric",
-			heightMetric: "heightMetric",
-			colorMetric: "colorMetric",
-			distributionMetric: "distributionMetric"
+	private potentiallyUpdateChosenMetrics(availableMetrics: MetricData[]) {
+		let dynamicSettingsUpdate: RecursivePartial<DynamicSettings> = {}
+
+		if (this.isMetricUnavailable("areaMetric", availableMetrics)) {
+			dynamicSettingsUpdate["areaMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 0)
 		}
-		let settingsUpdate: RecursivePartial<Settings> = this.prepareSettingsUpdateWithMetrics(metricKeys, metricData)
-		if (Object.keys(settingsUpdate.dynamicSettings).length !== 0) {
-			this.settingsService.updateSettings(settingsUpdate)
+
+		if (this.isMetricUnavailable("heightMetric", availableMetrics)) {
+			dynamicSettingsUpdate["heightMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 1)
+		}
+
+		if (this.isMetricUnavailable("colorMetric", availableMetrics)) {
+			dynamicSettingsUpdate["colorMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 2)
+		}
+
+		if (this.isMetricUnavailable("distributionMetric", availableMetrics)) {
+			dynamicSettingsUpdate["distributionMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 0)
+		}
+
+		if (_.keys(dynamicSettingsUpdate).length !== 0) {
+			this.settingsService.updateSettings({ dynamicSettings: dynamicSettingsUpdate })
 		}
 	}
 
-	private prepareSettingsUpdateWithMetrics(metricKeys: Partial<DynamicSettings>, metricData: MetricData[]): RecursivePartial<Settings> {
-		let settingsUpdate = { dynamicSettings: {} }
-
-		let metricSelectionIndex = 0
-		for (const metricKey in metricKeys) {
-			const metricValue: string = this.settingsService.getSettings().dynamicSettings[metricKey]
-			const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
-
-			if (availableMetrics.length > 0 && !availableMetrics.find(x => x.name == metricValue)) {
-				// metric value is "rloc" if not found in available, then gogogo
-				settingsUpdate.dynamicSettings[metricKey] =
-					availableMetrics[Math.min(metricSelectionIndex, availableMetrics.length - 1)].name
-			}
-			metricSelectionIndex++
-		}
-		return settingsUpdate
+	private isMetricUnavailable(metricKey: string, availableMetrics: MetricData[]) {
+		const metricName: string = this.settingsService.getSettings().dynamicSettings[metricKey]
+		return !availableMetrics.find(x => x.name == metricName)
 	}
 
-	private updateViewModel(settings: Settings) {
-		this._viewModel.areaMetric = settings.dynamicSettings.areaMetric
-		this._viewModel.colorMetric = settings.dynamicSettings.colorMetric
-		this._viewModel.heightMetric = settings.dynamicSettings.heightMetric
-		this._viewModel.distributionMetric = settings.dynamicSettings.distributionMetric
+	private getMetricNameFromIndexOrLast(metrics: MetricData[], index: number) {
+		return metrics[Math.min(index, metrics.length - 1)].name
 	}
 
 	public applySettingsAreaMetric() {

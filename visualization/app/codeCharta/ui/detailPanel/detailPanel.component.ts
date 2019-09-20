@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import "./detailPanel.component.scss"
 import {
 	BuildingHoveredEventSubscriber,
@@ -6,11 +6,18 @@ import {
 	CodeMapBuildingTransition,
 	CodeMapMouseEventService
 } from "../codeMap/codeMap.mouseEvent.service"
-import { Settings, KeyValuePair, MetricData, RecursivePartial } from "../../codeCharta.model"
+import { Settings, KeyValuePair, MetricData, RecursivePartial, BlacklistItem } from "../../codeCharta.model"
 import { Node } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import {
+	AreaMetricSubscriber,
+	BlacklistSubscriber,
+	ColorMetricSubscriber,
+	HeightMetricSubscriber,
+	SettingsServiceSubscriber
+} from "../../state/settingsService/settings.service.events"
 
 interface CommonDetails {
 	areaAttributeName: string
@@ -40,7 +47,15 @@ interface Details {
 }
 
 export class DetailPanelController
-	implements SettingsServiceSubscriber, BuildingHoveredEventSubscriber, BuildingSelectedEventSubscriber, MetricServiceSubscriber {
+	implements
+		SettingsServiceSubscriber,
+		BuildingHoveredEventSubscriber,
+		BuildingSelectedEventSubscriber,
+		MetricServiceSubscriber,
+		BlacklistSubscriber,
+		AreaMetricSubscriber,
+		HeightMetricSubscriber,
+		ColorMetricSubscriber {
 	private _viewModel: {
 		maximizeDetailPanel: boolean
 		metrics: string[]
@@ -94,6 +109,11 @@ export class DetailPanelController
 	) {
 		MetricService.subscribe(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
+		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
+		SettingsService.subscribeToColorMetric(this.$rootScope, this)
+
 		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 	}
@@ -113,15 +133,24 @@ export class DetailPanelController
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this._viewModel.details.common.areaAttributeName = settings.dynamicSettings.areaMetric
-		this._viewModel.details.common.heightAttributeName = settings.dynamicSettings.heightMetric
-		this._viewModel.details.common.colorAttributeName = settings.dynamicSettings.colorMetric
 		this._viewModel.maximizeDetailPanel = settings.appSettings.maximizeDetailPanel
+	}
 
-		if (update && update.fileSettings && update.fileSettings.blacklist) {
-			this.clearSelectedDetails()
-			this.clearHoveredDetails()
-		}
+	public onAreaMetricChanged(areaMetric: string) {
+		this._viewModel.details.common.areaAttributeName = areaMetric
+	}
+
+	public onHeightMetricChanged(heightMetric: string) {
+		this._viewModel.details.common.heightAttributeName = heightMetric
+	}
+
+	public onColorMetricChanged(colorMetric: string) {
+		this._viewModel.details.common.colorAttributeName = colorMetric
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.clearSelectedDetails()
+		this.clearHoveredDetails()
 	}
 
 	public onSelect(data: CodeMapBuildingTransition) {

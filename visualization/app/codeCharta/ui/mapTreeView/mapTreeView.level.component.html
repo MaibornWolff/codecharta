@@ -1,6 +1,7 @@
 <div
 	ng-if="!$ctrl.isBlacklisted($ctrl.node)"
 	class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
+	ng-init="$ctrl.openRootFolderByDefault($ctrl.depth)"
 >
 	<div
 		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label {{

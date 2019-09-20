@@ -110,8 +110,6 @@ export class GeometryGenerator {
 		let measures: BoxMeasures = this.mapNodeToLocalBox(n)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
 
-		let color: string = this.getBuildingColor(n, settings, isDeltaState)
-
 		let renderDelta: number = 0.0
 
 		if (isDeltaState && n.deltas && n.deltas[settings.dynamicSettings.heightMetric] && n.heightDelta) {
@@ -130,32 +128,11 @@ export class GeometryGenerator {
 					new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 				),
 				n,
-				color
+				n.color
 			)
 		)
 
-		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, renderDelta)
-	}
-
-	private getBuildingColor(n: Node, s: Settings, isDeltaState: boolean): string {
-		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
-		if (isDeltaState) {
-			return s.appSettings.mapColors.base
-		} else {
-			const metricValue: number = n.attributes[s.dynamicSettings.colorMetric]
-
-			if (!metricValue) {
-				return s.appSettings.mapColors.base
-			} else if (n.flat) {
-				return s.appSettings.mapColors.flat
-			} else if (metricValue < s.dynamicSettings.colorRange.from) {
-				return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
-			} else if (metricValue > s.dynamicSettings.colorRange.to) {
-				return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
-			} else {
-				return s.appSettings.mapColors.neutral
-			}
-		}
+		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, n.color, idx, renderDelta)
 	}
 
 	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: THREE.Material): THREE.Mesh {

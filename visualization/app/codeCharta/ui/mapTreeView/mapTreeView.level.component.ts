@@ -1,4 +1,4 @@
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
@@ -93,6 +93,12 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 			return this.settingsService.getSettings().dynamicSettings.searchedNodePaths.filter(path => path == node.path).length > 0
 		}
 		return false
+	}
+
+	public openRootFolderByDefault(depth: number) {
+		if (depth == 0) {
+			this._viewModel.collapsed = false
+		}
 	}
 
 	public sortByFolder(node: CodeMapNode) {

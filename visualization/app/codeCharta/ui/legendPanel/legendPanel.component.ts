@@ -1,4 +1,4 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import $ from "jquery"
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
@@ -7,6 +7,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export interface PackageList {
 	colorPixel: string
@@ -54,9 +55,13 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		)
 		const neutral = ColorConverter.getImageDataUri(s.appSettings.mapColors.neutral)
 		const negative = ColorConverter.getImageDataUri(s.appSettings.mapColors.negative)
+		const incomingEdge = ColorConverter.getImageDataUri(s.appSettings.mapColors.incomingEdge)
+		const outgoingEdge = ColorConverter.getImageDataUri(s.appSettings.mapColors.outgoingEdge)
 		$("#green").attr("src", positive)
 		$("#yellow").attr("src", neutral)
 		$("#red").attr("src", negative)
+		$("#blue").attr("src", incomingEdge)
+		$("#pink").attr("src", outgoingEdge)
 	}
 
 	private refreshDeltaColors(s: Settings) {

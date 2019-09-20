@@ -3,23 +3,24 @@ import { MetricTypeController } from "./metricType.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { AttributeTypeValue, Settings } from "../../codeCharta.model"
 import { SETTINGS } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { FileStateService } from "../../state/fileState.service"
 
 describe("MetricTypeController", () => {
 	let metricTypeController: MetricTypeController
 	let $rootScope: IRootScopeService
 	let metricService: MetricService
+	let settingsService: SettingsService
 
 	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		withMockedSettingsService()
 	})
 
 	function restartSystem() {
@@ -27,25 +28,36 @@ describe("MetricTypeController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		metricService = getService<MetricService>("metricService")
+		settingsService = getService<SettingsService>("settingsService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
 
 	function rebuildController() {
-		metricTypeController = new MetricTypeController($rootScope, metricService)
+		metricTypeController = new MetricTypeController($rootScope, metricService, settingsService)
+	}
+
+	function withMockedSettingsService() {
+		settingsService = metricTypeController["settingsService"] = jest.fn().mockReturnValue({
+			getSettings: jest.fn().mockReturnValue(settings)
+		})()
 	}
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			SettingsService.subscribe = jest.fn()
+			SettingsService.subscribeToAreaMetric = jest.fn()
+			SettingsService.subscribeToHeightMetric = jest.fn()
+			SettingsService.subscribeToColorMetric = jest.fn()
+			SettingsService.subscribeToEdgeMetric = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
-			FileStateService.subscribe = jest.fn()
 		})
 
-		it("should subscribe to SettingsService", () => {
+		it("should subscribe to Metric-Events", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 
 		it("should subscribe to CodeMapMouseEventService", () => {
@@ -55,21 +67,25 @@ describe("MetricTypeController", () => {
 		})
 	})
 
-	describe("onSettingsChanged", () => {
+	describe("onAreaMetricChanged", () => {
 		it("should set the areaMetricType to absolute", () => {
-			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { areaMetric: "rloc" } })
+			metricTypeController.onAreaMetricChanged("rloc")
 
 			expect(metricTypeController["_viewModel"].areaMetricType).toBe(AttributeTypeValue.absolute)
 		})
+	})
 
+	describe("onHeightMetricChanged", () => {
 		it("should set the heightMetricType to absolute", () => {
-			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { heightMetric: "mcc" } })
+			metricTypeController.onHeightMetricChanged("mcc")
 
 			expect(metricTypeController["_viewModel"].heightMetricType).toBe(AttributeTypeValue.absolute)
 		})
+	})
 
+	describe("onColorMetricChanged", () => {
 		it("should set the colorMetricType to relative", () => {
-			metricTypeController.onSettingsChanged(settings, { dynamicSettings: { colorMetric: "coverage" } })
+			metricTypeController.onColorMetricChanged("coverage")
 
 			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeTypeValue.relative)
 		})

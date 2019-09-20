@@ -1,16 +1,15 @@
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { Settings, RecursivePartial, AppSettings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
 export class DialogGlobalSettingsController implements SettingsServiceSubscriber {
 	private _viewModel: {
-		enableEdgeArrows: boolean
 		hideFlatBuildings: boolean
 		maximizeDetailPanel: boolean
 		isWhiteBackground: boolean
 	} = {
-		enableEdgeArrows: null,
 		hideFlatBuildings: null,
 		maximizeDetailPanel: null,
 		isWhiteBackground: null

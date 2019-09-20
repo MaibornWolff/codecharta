@@ -2,7 +2,7 @@ import "./mapTreeView.module"
 
 import { MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { SettingsService } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
@@ -253,6 +253,29 @@ describe("MapTreeViewLevelController", () => {
 			mapTreeViewLevelController.onMouseLeave()
 
 			expect($rootScope.$on).toHaveBeenCalled
+		})
+	})
+	describe("openRootFolderByDefault", () => {
+		it("should set the collapsed variable to false, if depth size is 0", () => {
+			mapTreeViewLevelController["_viewModel"].collapsed = true
+
+			mapTreeViewLevelController.openRootFolderByDefault(0)
+
+			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
+		})
+		it("should do nothing, if the depth size is not 0", () => {
+			mapTreeViewLevelController["_viewModel"].collapsed = true
+
+			mapTreeViewLevelController.openRootFolderByDefault(5)
+
+			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeTruthy()
+		})
+		it("should do nothing, if the depth size is not 0 and the collapsed variable is false", () => {
+			mapTreeViewLevelController["_viewModel"].collapsed = false
+
+			mapTreeViewLevelController.openRootFolderByDefault(5)
+
+			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
 		})
 	})
 })

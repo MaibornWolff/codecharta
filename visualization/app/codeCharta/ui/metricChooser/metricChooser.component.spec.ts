@@ -1,21 +1,22 @@
 import "./metricChooser.module"
 
 import { MetricChooserController } from "./metricChooser.component"
-import { SettingsService } from "../../state/settings.service"
-import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
+import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
-import { Settings } from "../../codeCharta.model"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
+import { MetricService } from "../../state/metric.service"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
+	let $timeout: ITimeoutService
 	let dataDelta, dataNotDelta
 
 	function rebuildController() {
-		metricChooserController = new MetricChooserController(settingsService, $rootScope)
+		metricChooserController = new MetricChooserController(settingsService, $rootScope, $timeout)
 	}
 
 	function restartSystem() {
@@ -23,6 +24,7 @@ describe("MetricChooserController", () => {
 
 		settingsService = getService<SettingsService>("settingsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function withMockedSettingsService() {
@@ -61,21 +63,68 @@ describe("MetricChooserController", () => {
 		withMockedSettingsService()
 	})
 
-	describe("onSettingsChanged", () => {
-		it("should update height/area/color metric on settings changed", () => {
-			let settings = {
-				dynamicSettings: {
-					areaMetric: "foo",
-					heightMetric: "bar",
-					colorMetric: "foobar"
-				}
-			} as Settings
+	describe("constructor", () => {
+		beforeEach(() => {
+			SettingsService.subscribeToAreaMetric = jest.fn()
+			SettingsService.subscribeToHeightMetric = jest.fn()
+			SettingsService.subscribeToColorMetric = jest.fn()
+			SettingsService.subscribeToDistributionMetric = jest.fn()
 
-			metricChooserController.onSettingsChanged(settings, undefined)
+			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
+			MetricService.subscribe = jest.fn()
+		})
 
-			expect(metricChooserController["_viewModel"].areaMetric).toEqual("foo")
-			expect(metricChooserController["_viewModel"].heightMetric).toEqual("bar")
-			expect(metricChooserController["_viewModel"].colorMetric).toEqual("foobar")
+		it("should subscribe to Metric-Events", () => {
+			rebuildController()
+
+			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(SettingsService.subscribeToDistributionMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
+		})
+
+		it("should subscribe to Building-Hovered-Event", () => {
+			rebuildController()
+
+			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, metricChooserController)
+		})
+
+		it("should subscribe to MetricService", () => {
+			rebuildController()
+
+			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
+		})
+	})
+
+	describe("onAreaMetricChanged", () => {
+		it("should update the viewModel", () => {
+			metricChooserController.onAreaMetricChanged("rloc")
+
+			expect(metricChooserController["_viewModel"].areaMetric).toEqual("rloc")
+		})
+	})
+
+	describe("onHeightMetricChanged", () => {
+		it("should update the viewModel", () => {
+			metricChooserController.onHeightMetricChanged("rloc")
+
+			expect(metricChooserController["_viewModel"].heightMetric).toEqual("rloc")
+		})
+	})
+
+	describe("onColorMetricChanged", () => {
+		it("should update the viewModel", () => {
+			metricChooserController.onColorMetricChanged("rloc")
+
+			expect(metricChooserController["_viewModel"].colorMetric).toEqual("rloc")
+		})
+	})
+
+	describe("onDistributionMetricChanged", () => {
+		it("should update the viewModel", () => {
+			metricChooserController.onDistributionMetricChanged("rloc")
+
+			expect(metricChooserController["_viewModel"].distributionMetric).toEqual("rloc")
 		})
 	})
 
@@ -102,7 +151,7 @@ describe("MetricChooserController", () => {
 			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "d" }
+				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "a" }
 			})
 		})
 

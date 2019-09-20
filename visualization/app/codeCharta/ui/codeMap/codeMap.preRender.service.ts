@@ -10,7 +10,7 @@ import {
 	CodeMapNode,
 	FileMeta
 } from "../../codeCharta.model"
-import { SettingsService, SettingsServiceSubscriber } from "../../state/settings.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import _ from "lodash"
@@ -22,6 +22,9 @@ import { DeltaGenerator } from "../../util/deltaGenerator"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { EdgeMetricService } from "../../state/edgeMetric.service"
+import * as d3 from "d3"
 
 export interface RenderData {
 	map: CodeMapNode
@@ -52,7 +55,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
-		private loadingGifService: LoadingGifService
+		private loadingGifService: LoadingGifService,
+		private edgeMetricService: EdgeMetricService
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
@@ -119,12 +123,26 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.lastRender.settings.fileSettings.blacklist &&
 			this.lastRender.metricData
 		) {
-			this.lastRender.map = NodeDecorator.decorateMap(
+			this.lastRender.map = NodeDecorator.decorateMap(this.lastRender.map, this.lastRender.fileMeta, this.lastRender.metricData)
+			this.getEdgeMetricsForLeaves(this.lastRender.map)
+			NodeDecorator.decorateParentNodesWithSumAttributes(
 				this.lastRender.map,
-				this.lastRender.fileMeta,
 				this.lastRender.settings.fileSettings.blacklist,
-				this.lastRender.metricData
+				this.lastRender.metricData,
+				this.edgeMetricService.getMetricData()
 			)
+		}
+	}
+
+	private getEdgeMetricsForLeaves(map: CodeMapNode) {
+		if (map && this.edgeMetricService.getMetricNames()) {
+			let root = d3.hierarchy<CodeMapNode>(map)
+			root.leaves().forEach(node => {
+				const edgeMetrics = this.edgeMetricService.getMetricValuesForNode(node)
+				for (let edgeMetric of edgeMetrics.keys()) {
+					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
+				}
+			})
 		}
 	}
 
