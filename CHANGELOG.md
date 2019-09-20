@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.34.0] - 2019-09-20
+
+### Added
+
 - Tokei Importer #538
 - Prominent Notice that we use Sonar-jar #713
 
