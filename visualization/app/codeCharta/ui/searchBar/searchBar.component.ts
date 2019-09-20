@@ -4,8 +4,9 @@ import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 
-export class SearchBarController implements BlacklistSubscriber {
+export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
 	private _viewModel: {
 		searchPattern: string
 		isPatternHidden: boolean
@@ -23,11 +24,14 @@ export class SearchBarController implements BlacklistSubscriber {
 		private codeMapActionsService: CodeMapActionsService
 	) {
 		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetSearchPattern()
 	}
+
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.updateViewModel(blacklist)
