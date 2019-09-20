@@ -3,7 +3,7 @@ import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
 
-jest.setTimeout(10000)
+jest.setTimeout(15000)
 
 describe("RibbonBar", () => {
 	let browser: Browser

@@ -3,7 +3,8 @@ $optionHeight: 48;
 area-metric-chooser-component,
 height-metric-chooser-component,
 color-metric-chooser-component,
-distribution-metric-chooser-component {
+distribution-metric-chooser-component,
+edge-chooser-component {
 	$selectWidth: 150;
 
 	md-input-container {
@@ -47,31 +48,6 @@ distribution-metric-chooser-component {
 	}
 }
 
-distribution-metric-chooser-component {
-	md-input-container {
-		top: 0;
-		padding: 0;
-		font-size: 12px;
-		background-color: white;
-
-		md-select-value {
-			min-height: 0 !important;
-			height: 15px;
-			padding: 0 !important;
-			border-bottom: none !important;
-
-			span {
-				margin-bottom: 2px;
-			}
-		}
-
-		i.fa {
-			margin-top: 2px;
-			margin-right: 5px;
-		}
-	}
-}
-
 .md-select-menu-container {
 	&.ribbonBarDropdown {
 		top: 75px !important;
@@ -85,6 +61,7 @@ distribution-metric-chooser-component {
 md-content.option-group {
 	top: $optionHeight + px !important;
 	min-height: auto;
+	margin-bottom: 40px;
 	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
 }
 
@@ -117,4 +94,29 @@ md-content.option-group {
 .metric-max-value {
 	color: #ccc !important;
 	margin-left: 5px !important;
+}
+
+distribution-metric-chooser-component {
+	md-input-container {
+		top: 0;
+		padding: 0;
+		font-size: 12px;
+		background-color: white;
+
+		md-select-value {
+			min-height: 0 !important;
+			height: 15px;
+			padding: 0 !important;
+			border-bottom: none !important;
+
+			span {
+				margin-bottom: 2px;
+			}
+		}
+
+		i.fa {
+			margin-top: 2px;
+			margin-right: 5px;
+		}
+	}
 }

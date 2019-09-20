@@ -1,0 +1,72 @@
+<md-slider-container class="md-block">
+	<span>Preview</span>
+	<md-slider
+		flex
+		step="1"
+		min="0"
+		max="{{ $ctrl._viewModel.totalAffectedBuildings }}"
+		ng-model="$ctrl._viewModel.amountOfEdgePreviews"
+		id="preview-slider"
+		ng-change="$ctrl.applySettingsAmountOfEdgePreviews()"
+		ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
+		class="md-primary"
+	>
+	</md-slider>
+	<md-input-container>
+		<input
+			flex
+			step="1"
+			min="0"
+			max="{{ $ctrl._viewModel.totalAffectedBuildings }}"
+			type="number"
+			ng-model="$ctrl._viewModel.amountOfEdgePreviews"
+			ng-change="$ctrl.applySettingsAmountOfEdgePreviews()"
+			ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
+			aria-controls="previews-slider"
+		/>
+	</md-input-container>
+</md-slider-container>
+
+<md-slider-container class="md-block">
+	<span>Height</span>
+	<md-slider
+		flex
+		step="1"
+		min="1"
+		max="9"
+		ng-model="$ctrl._viewModel.edgeHeight"
+		id="height-slider"
+		ng-change="$ctrl.applySettingsEdgeHeight()"
+		ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
+		class="md-primary"
+	>
+	</md-slider>
+	<md-input-container>
+		<input
+			flex
+			step="1"
+			min="1"
+			max="9"
+			type="number"
+			ng-model="$ctrl._viewModel.edgeHeight"
+			ng-change="$ctrl.applySettingsEdgeHeight()"
+			ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
+			aria-controls="edge-height-slider"
+		/>
+	</md-input-container>
+</md-slider-container>
+
+<md-input-container class="md-block">
+	<md-checkbox
+		class="md-primary"
+		ng-model="$ctrl._viewModel.showOnlyBuildingsWithEdges"
+		ng-change="$ctrl.applyShowOnlyBuildingsWithEdges()"
+		ng-disabled="$ctrl._viewModel.totalAffectedBuildings == 0"
+	>
+		Show only nodes with edges
+	</md-checkbox>
+</md-input-container>
+
+<reset-settings-button-component
+	settings-names="appSettings.showOnlyBuildingsWithEdges, appSettings.amountOfEdgePreviews, appSettings.edgeHeight"
+></reset-settings-button-component>

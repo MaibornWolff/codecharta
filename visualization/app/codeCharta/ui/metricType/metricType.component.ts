@@ -79,3 +79,9 @@ export const colorMetricTypeComponent = {
 	template: require("./colorMetricType.component.html"),
 	controller: MetricTypeController
 }
+
+export const edgeMetricTypeComponent = {
+	selector: "edgeMetricTypeComponent",
+	template: require("./edgeMetricType.component.html"),
+	controller: MetricTypeController
+}
