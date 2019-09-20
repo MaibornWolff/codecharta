@@ -31,16 +31,6 @@ describe("SearchBarController", () => {
 		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService)
 	}
 
-	function withMockedSettingsService(blacklist: BlacklistItem[]) {
-		settingsService = searchBarController["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue({
-				fileSettings: {
-					blacklist: blacklist
-				}
-			})()
-		})()
-	}
-
 	function withMockedEventMethods() {
 		$rootScope.$on = searchBarController["$rootScope"].$on = jest.fn()
 		$rootScope.$broadcast = searchBarController["$rootScope"].$broadcast = jest.fn()
