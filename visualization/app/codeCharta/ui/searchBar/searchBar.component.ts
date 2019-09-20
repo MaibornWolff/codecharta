@@ -28,10 +28,10 @@ export class SearchBarController implements BlacklistSubscriber {
 	public applySettingsSearchPattern() {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				searchPattern: this._viewModel.searchPattern,
-				searchedNodePaths: []
+				searchPattern: this._viewModel.searchPattern
 			}
 		})
+
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
@@ -47,32 +47,12 @@ export class SearchBarController implements BlacklistSubscriber {
 		this.resetSearchPattern()
 	}
 
-	public disableHiddenOption() {
-		if (this.isSearchPatternEmpty() || this._viewModel.isPatternHidden || !this.isSearchPatternExisting()) {
-			return true
-		} else {
-			return false
-		}
-	}
-
-	public disableExcludeOption() {
-		if (this.isSearchPatternEmpty() || this._viewModel.isPatternExcluded || !this.isSearchPatternExisting()) {
-			return true
-		} else {
-			return false
-		}
-	}
-
 	public isSearchPatternEmpty() {
 		return this._viewModel.searchPattern === ""
 	}
 
-	public isPatternInBlackList() {
+	public isPatternInBlackList(){
 		this.updateViewModel(this.settingsService.getSettings().fileSettings.blacklist)
-	}
-
-	public isSearchPatternExisting() {
-		return this.settingsService.getSettings().dynamicSettings.searchedNodePaths.length > 0
 	}
 
 	private updateViewModel(blacklist: BlacklistItem[]) {
