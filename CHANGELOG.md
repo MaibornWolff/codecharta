@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Sidebar with information regarding the selected building #527
+
 ### Changed
 
 ### Removed
+
+- Expandable detail panel in lower left corner #527
 
 ### Fixed
 
