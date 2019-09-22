@@ -23,6 +23,7 @@ Components that import data from an external source, e.g. SonarQube, and generat
 | SonarQube                | [SonarImporter](import/SonarImporter/README.md)           |
 | Source Code              | [SourceCodeParser](import/SourceCodeParser/README.md)     |
 | SourceMonitor CSV        | [SourceMonitorImporter](import/CSVImporter/README.md)     |
+| Tokei                    | [TokeiImporter](import/TokeiImporter/README.md)           |
 
 ### Filter
 

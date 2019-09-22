@@ -2,15 +2,15 @@ dependencies {
     implementation project(':model')
     
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
-    implementation group: 'org.sonarsource.java', name: 'sonar-java-plugin', version: '5.12.1.17771'
-    implementation group: 'org.json', name: 'json', version: '20180813'
-    compile "org.jetbrains.kotlin:kotlin-reflect:1.3.41"
+    implementation group: 'org.sonarsource.java', name: 'sonar-java-plugin', version: '5.14.0.18788'
+    implementation group: 'org.json', name: 'json', version: '20190722'
+    compile "org.jetbrains.kotlin:kotlin-reflect:1.3.50"
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.10.0'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testCompile group: 'com.nhaarman', name: 'mockito-kotlin', version: '1.6.0'
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
     testImplementation project(path: ':model', configuration: 'testOutput')
