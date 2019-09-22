@@ -6,6 +6,7 @@ import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import _ from "lodash"
 
 describe("AttributeSideBarController", () => {
@@ -83,20 +84,20 @@ describe("AttributeSideBarController", () => {
 		let codeMapBuilding: CodeMapBuilding
 
 		beforeEach(() => {
-			attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics = jest.fn()
+			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
 			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 		})
 
 		it("should set new viewModel node", () => {
 			attributeSideBarController.onBuildingSelected(codeMapBuilding)
 
-			expect(attributeSideBarController._viewModel.node).toBe(codeMapBuilding.node)
+			expect(attributeSideBarController["_viewModel"].node).toBe(codeMapBuilding.node)
 		})
 
 		it("should call function to update secondaryMetricKeys", () => {
 			attributeSideBarController.onBuildingSelected(codeMapBuilding)
 
-			expect(attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics).toHaveBeenCalled()
+			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
 		})
 	})
 
@@ -104,20 +105,20 @@ describe("AttributeSideBarController", () => {
 		let areaMetric: string
 
 		beforeEach(() => {
-			attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics = jest.fn()
+			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
 			areaMetric = "myAreaMetric"
 		})
 
 		it("should set new viewModel areaMetric", () => {
 			attributeSideBarController.onAreaMetricChanged(areaMetric)
 
-			expect(attributeSideBarController._viewModel.primaryMetricKeys.node.area).toBe(areaMetric)
+			expect(attributeSideBarController["_viewModel"].primaryMetricKeys.node.area).toBe(areaMetric)
 		})
 
 		it("should call function to update secondaryMetricKeys", () => {
 			attributeSideBarController.onAreaMetricChanged(areaMetric)
 
-			expect(attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics).toHaveBeenCalled()
+			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
 		})
 	})
 
@@ -125,20 +126,20 @@ describe("AttributeSideBarController", () => {
 		let heightMetric: string
 
 		beforeEach(() => {
-			attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics = jest.fn()
+			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
 			heightMetric = "myHeightMetric"
 		})
 
 		it("should set new viewModel heightMetric", () => {
 			attributeSideBarController.onHeightMetricChanged(heightMetric)
 
-			expect(attributeSideBarController._viewModel.primaryMetricKeys.node.height).toBe(heightMetric)
+			expect(attributeSideBarController["_viewModel"].primaryMetricKeys.node.height).toBe(heightMetric)
 		})
 
 		it("should call function to update secondaryMetricKeys", () => {
 			attributeSideBarController.onHeightMetricChanged(heightMetric)
 
-			expect(attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics).toHaveBeenCalled()
+			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
 		})
 	})
 
@@ -146,20 +147,20 @@ describe("AttributeSideBarController", () => {
 		let colorMetric: string
 
 		beforeEach(() => {
-			attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics = jest.fn()
+			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
 			colorMetric = "myColorMetric"
 		})
 
 		it("should set new viewModel colorMetric", () => {
 			attributeSideBarController.onColorMetricChanged(colorMetric)
 
-			expect(attributeSideBarController._viewModel.primaryMetricKeys.node.color).toBe(colorMetric)
+			expect(attributeSideBarController["_viewModel"].primaryMetricKeys.node.color).toBe(colorMetric)
 		})
 
 		it("should call function to update secondaryMetricKeys", () => {
 			attributeSideBarController.onColorMetricChanged(colorMetric)
 
-			expect(attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics).toHaveBeenCalled()
+			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
 		})
 	})
 
@@ -167,20 +168,20 @@ describe("AttributeSideBarController", () => {
 		let edgeMetric: string
 
 		beforeEach(() => {
-			attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics = jest.fn()
+			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
 			edgeMetric = "myEdgeMetric"
 		})
 
 		it("should set new viewModel edgeMetric", () => {
 			attributeSideBarController.onEdgeMetricChanged(edgeMetric)
 
-			expect(attributeSideBarController._viewModel.primaryMetricKeys.edge.edge).toBe(edgeMetric)
+			expect(attributeSideBarController["_viewModel"].primaryMetricKeys.edge.edge).toBe(edgeMetric)
 		})
 
 		it("should call function to update secondaryMetricKeys", () => {
 			attributeSideBarController.onEdgeMetricChanged(edgeMetric)
 
-			expect(attributeSideBarController.updateSortedMetricKeysWithoutPrimaryMetrics).toHaveBeenCalled()
+			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
 		})
 	})
 
@@ -198,8 +199,8 @@ describe("AttributeSideBarController", () => {
 
 	describe("updateSortedMetricKeysWithoutPrimaryMetrics", () => {
 		beforeEach(() => {
-			attributeSideBarController._viewModel = _.cloneDeep(CODE_MAP_BUILDING)
-			attributeSideBarController._viewModel.node.attributes = {
+			attributeSideBarController["_viewModel"].node = _.cloneDeep(CODE_MAP_BUILDING)
+			attributeSideBarController["_viewModel"].node.attributes = {
 				a: 1,
 				b: 2,
 				c: 3,
@@ -209,29 +210,29 @@ describe("AttributeSideBarController", () => {
 		})
 
 		it("should filter node.attributes by selected metricKeys 1", () => {
-			attributeSideBarController._viewModel.primaryMetricKeys = {
+			attributeSideBarController["_viewModel"].primaryMetricKeys = {
 				node: {
-					areaMetric: "a"
+					area: "a"
 				}
 			}
 
 			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]()
 
-			expect(attributeSideBarController._viewModel.secondaryMetricKeys).toEqual(["b", "c", "d", "e"])
+			expect(attributeSideBarController["_viewModel"].secondaryMetricKeys).toEqual(["b", "c", "d", "e"])
 		})
 
 		it("should filter node.attributes by selected metricKeys 2", () => {
-			attributeSideBarController._viewModel.primaryMetricKeys = {
+			attributeSideBarController["_viewModel"].primaryMetricKeys = {
 				node: {
 					area: "a",
 					color: "c",
-					edge: "e"
+					height: "e"
 				}
 			}
 
 			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]()
 
-			expect(attributeSideBarController._viewModel.secondaryMetricKeys).toEqual(["b", "d"])
+			expect(attributeSideBarController["_viewModel"].secondaryMetricKeys).toEqual(["b", "d"])
 		})
 	})
 })
