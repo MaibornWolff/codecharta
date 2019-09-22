@@ -71,7 +71,7 @@ describe("SearchBarController", () => {
 	describe("applySettingsSearchPattern", () => {
 		it("should set searchPattern in settings", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
-			searchBarController.applySettingsSearchPattern()
+			searchBarController["applySettingsSearchPattern"]()
 			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(searchBarController["_viewModel"].searchPattern)
 		})
 	})
@@ -143,19 +143,19 @@ describe("SearchBarController", () => {
 
 	describe("onSearchPatternChanged", () => {
 		it("call applySettingsSearchPattern", () => {
-			searchBarController.applySettingsSearchPattern = jest.fn()
+			searchBarController["applySettingsSearchPattern"] = jest.fn()
 
 			searchBarController.onSearchPatternChanged()
 
-			expect(searchBarController.applySettingsSearchPattern).toHaveBeenCalled()
+			expect(searchBarController["applySettingsSearchPattern"]).toHaveBeenCalled()
 		})
 
 		it("call updateViewModel", () => {
-			searchBarController.updateViewModel = jest.fn()
+			searchBarController["updateViewModel"] = jest.fn()
 
 			searchBarController.onSearchPatternChanged()
 
-			expect(searchBarController.updateViewModel).toHaveBeenCalled()
+			expect(searchBarController["updateViewModel"]).toHaveBeenCalled()
 		})
 	})
 
