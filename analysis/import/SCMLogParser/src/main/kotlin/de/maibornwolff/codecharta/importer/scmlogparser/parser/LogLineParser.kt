@@ -28,7 +28,7 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
     }
 
     private fun showProgress(date: OffsetDateTime) {
-        System.err.print("\r$numberOfCommitsParsed commits parsed. (Latest commit from $date)       ")
+        System.err.print("\r$numberOfCommitsParsed commits parsed. (Earliest commit from $date)       ")
         numberOfCommitsParsed++
     }
 }

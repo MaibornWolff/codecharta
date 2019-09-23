@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser
 
+import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.importer.scmlogparser.InputFormatNames.GIT_LOG
 import de.maibornwolff.codecharta.importer.scmlogparser.InputFormatNames.SVN_LOG
 import de.maibornwolff.codecharta.importer.scmlogparser.converter.ProjectConverter
@@ -11,12 +12,11 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserS
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogRawParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
-import java.io.File
-import java.io.IOException
-import java.io.OutputStreamWriter
+import java.io.*
 import java.nio.charset.Charset
 import java.util.*
 import java.util.concurrent.Callable
@@ -28,7 +28,9 @@ import java.util.stream.Stream
         description = ["generates cc.json from scm log file (git or svn)"],
         footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
 )
-class SCMLogParser: Callable<Void> {
+class SCMLogParser(private val input: InputStream = System.`in`,
+                   private val output: PrintStream = System.out,
+                   private val error: PrintStream = System.err) : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -86,17 +88,24 @@ class SCMLogParser: Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val project = createProjectFromLog(
+
+        print(" ")
+        var project = createProjectFromLog(
                 file!!,
                 logParserStrategy,
                 metricsFactory,
                 projectName,
                 addAuthor,
                 silent)
+
+        val pipedProject = ProjectDeserializer.deserializeProjectFromInputStream(input)
+        if (pipedProject != null) {
+            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectName)
+        }
         if (outputFile.isNotEmpty()) {
             ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
         } else {
-            ProjectSerializer.serializeProject(project, OutputStreamWriter(System.out))
+            ProjectSerializer.serializeProject(project, OutputStreamWriter(output))
         }
 
         return null
@@ -122,6 +131,22 @@ class SCMLogParser: Callable<Void> {
             InputFormatNames.GIT_LOG_NUMSTAT_RAW -> GitLogNumstatRawParserStrategy()
             SVN_LOG                              -> SVNLogParserStrategy()
         }
+    }
+
+    private fun createProjectFromLog(
+            pathToLog: File,
+            parserStrategy: LogParserStrategy,
+            metricsFactory: MetricsFactory,
+            projectName: String,
+            containsAuthors: Boolean,
+            silent: Boolean = false
+    ): Project {
+        val encoding = guessEncoding(pathToLog) ?: "UTF-8"
+        if (!silent) error.println("Assumed encoding $encoding")
+        val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
+
+        val projectConverter = ProjectConverter(containsAuthors, projectName)
+        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
     }
 
     // not implemented yet.
@@ -163,21 +188,9 @@ class SCMLogParser: Callable<Void> {
             CommandLine.call(SCMLogParser(), System.out, *args)
         }
 
-        @Throws(IOException::class)
-        private fun createProjectFromLog(
-                pathToLog: File,
-                parserStrategy: LogParserStrategy,
-                metricsFactory: MetricsFactory,
-                projectName: String,
-                containsAuthors: Boolean,
-                silent: Boolean = false
-        ): Project {
-            val encoding = guessEncoding(pathToLog) ?: "UTF-8"
-            if (!silent) System.err.println("Assumed encoding $encoding")
-            val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
-
-            val projectConverter = ProjectConverter(containsAuthors, projectName)
-            return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
+        @JvmStatic
+        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
+            CommandLine.call(SCMLogParser(input, output, error), output, *args)
         }
 
         private fun guessEncoding(pathToLog: File): String? {
