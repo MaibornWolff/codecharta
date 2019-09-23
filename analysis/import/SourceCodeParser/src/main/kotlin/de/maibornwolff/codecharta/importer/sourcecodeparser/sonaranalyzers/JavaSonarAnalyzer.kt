@@ -17,10 +17,7 @@ import org.sonar.api.rule.RuleKey
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition
 import org.sonar.api.server.rule.RulesDefinition
 import org.sonar.api.utils.Version
-import org.sonar.java.DefaultJavaResourceLocator
-import org.sonar.java.JavaClasspath
-import org.sonar.java.JavaTestClasspath
-import org.sonar.java.SonarComponents
+import org.sonar.java.*
 import org.sonar.java.ast.parser.JavaParser
 import org.sonar.java.checks.CheckList
 import org.sonar.java.model.DefaultJavaFileScannerContext
@@ -101,10 +98,17 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
             createContext()
             buildSonarComponents()
             addFileToContext(file)
-            executeScan()
+            try {
+                executeScan()
+            } catch (e: AnalysisException) {
+                System.err.println("Sonar AnalysisException while analyzing $file. File was therefore skipped.")
+                e.printStackTrace()
+                continue
+            }
+
             val fileMetrics = retrieveMetrics(file)
             retrieveAdditionalMetrics(file).forEach { fileMetrics.add(it.key, it.value) }
-            retrieveIssues().forEach { fileMetrics.add(it.key, it.value) }
+            if (searchIssues) retrieveIssues().forEach { fileMetrics.add(it.key, it.value) }
             projectMetrics.addFileMetricMap(file, fileMetrics)
         }
 
