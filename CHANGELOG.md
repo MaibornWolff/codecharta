@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Tokei Importer #538
 - Prominent Notice that we use Sonar-jar #713
+- Pipe support for SourceCodeParser #716
 
 ### Changed
 

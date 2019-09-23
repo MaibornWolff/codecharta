@@ -168,7 +168,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         sensorContext.allIssues().forEach {
             val ruleKey = it.ruleKey().rule()
             val type = issueRepository.rule(ruleKey)?.type().toString().toLowerCase()
-            println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
+            if (verbose) System.err.println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
             if (issues.containsKey(type)) {
                 issues[type] = issues[type]!! + 1
             } else {
@@ -181,7 +181,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun retrieveAdditionalMetrics(fileName: String): HashMap<String, Int> {
         val additionalMetrics: HashMap<String, Int> = hashMapOf()
 
-        var tree: Tree
+        val tree: Tree
         try {
             tree = buildTree(fileName)
         } catch (e: RecognitionException) {
@@ -216,7 +216,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         val message = "\r Analyzing .java files... $roundedPercentage% ($currentFile)"
 
         System.setOut(originalOut)
-        print(message)
+        System.err.print(message)
 
         if (!verbose) System.setOut(PrintStream(ByteArrayOutputStream()))
     }

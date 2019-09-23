@@ -32,15 +32,14 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.FileReader
-import java.io.Reader
+import mu.KotlinLogging
+import java.io.*
 
 /**
  * This class provides static methods and functions to convert a json to a Project-Object
  */
 object ProjectDeserializer {
+    private val logger = KotlinLogging.logger {}
 
     private val GSON = GsonBuilder()
             .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
@@ -70,5 +69,18 @@ object ProjectDeserializer {
 
     fun deserializeProjectString(projectString: String): Project {
         return GSON.fromJson(projectString, Project::class.java)
+    }
+
+    fun deserializeProjectFromInputStream(input: InputStream): Project? {
+        val projectString = input.mapLines { it }.joinToString(separator = "") { it }
+        if (projectString.length <= 1) return null
+
+        return try {
+            deserializeProjectString(projectString)
+        } catch (e: Exception) {
+            logger.error("Piped input: $projectString")
+            logger.error("The piped input is not a valid project.")
+            null
+        }
     }
 }

@@ -46,6 +46,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
 
     @Throws(IOException::class)
     override fun call(): Void? {
+        print(" ")
         projectBuilder = ProjectBuilder(projectName)
         val root = getInput() ?: return null
 
