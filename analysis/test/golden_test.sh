@@ -51,7 +51,7 @@ check_sourcemonitor() {
 check_understand() {
   echo " -- expect UnderstandImporter gives valid cc.json"
   ACTUAL_UNDERSTAND_JSON="${INSTALL_DIR}/actual_understandimporter.json"
-  "${CCSH}" understandimport data/codecharta/understand.csv > "${ACTUAL_UNDERSTAND_JSON}"
+  "${CCSH}" understandimport data/codecharta/understand.csv > "${ACTUAL_UNDERSTAND_JSON}" 2>${INSTALL_DIR}/understand_err.log
   validate "${ACTUAL_UNDERSTAND_JSON}"
 }
 
@@ -83,6 +83,40 @@ check_merge() {
   validate "${ACTUAL_MERGE_JSON}"
 }
 
+check_modify() {
+    echo " -- expect StructureModifier gives valid cc.json"
+    ACTUAL_MODIFY_JSON="${INSTALL_DIR}/actual_modify.json"
+    "${CCSH}" modify data/codecharta/tomerge.json --moveFrom=root/src --moveTo=root/bar > "${ACTUAL_MODIFY_JSON}"
+    validate "${ACTUAL_MODIFY_JSON}"
+}
+
+check_sourcecodeparser() {
+    echo " -- expect SourceCodeParser gives valid cc.json"
+    ACTUAL_SCP_JSON="${INSTALL_DIR}/actual_modify.json"
+    "${CCSH}" sourcecodeparser data/codecharta/ > "${ACTUAL_SCP_JSON}"
+    validate "${ACTUAL_SCP_JSON}"
+}
+
+check_tokei() {
+    echo " -- expect TokeiImporter gives valid cc.json"
+    ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_modify.json"
+    "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --pathSeparator \\ > "${ACTUAL_TOKEI_JSON}"
+    validate "${ACTUAL_TOKEI_JSON}"
+}
+
+check_pipe() {
+   echo " -- expect pipes to work"
+   sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --pathSeparator \\ \
+        | sh "${CCSH}" sourcecodeparser data/codecharta/ -p projectName1 \
+        | sh "${CCSH}" scmlogparser --svn data/codecharta/SVNTestLog.txt \
+        | sh "${CCSH}" modify --moveFrom=root/src --moveTo=root/bar -n projectName2 \
+            -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
+    validate ${INSTALL_DIR}/piped_out.json
+    if ! grep -q "Created Project with 9 leaves." ${INSTALL_DIR}/piped_out_log.json; then
+      exit_with_err "ERR: Pipes broken."
+    fi
+}
+
 run_tests() {
   echo
   echo "Running Tests..."
@@ -94,6 +128,11 @@ run_tests() {
   check_jasome
   check_scmlog
   check_merge
+  check_modify
+  check_sourcecodeparser
+  check_tokei
+
+  check_pipe
 
   echo
   echo "... Testing finished."
