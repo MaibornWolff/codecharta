@@ -39,6 +39,15 @@ class PipedInputStream {
         )
     }
 
+    @Test
+    fun `node attributes of piped input and result nodes are merged`() {
+        assertThat(output).contains(
+                """"projectName":"DefaultProjectName"""",
+                """"myMetric":42.0""",
+                """"rloc":31"""
+        )
+    }
+
     private fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
             outputAsString(input) { inputStream, outputStream, errorStream ->
                 mainWithInOut(outputStream, inputStream, errorStream, args)

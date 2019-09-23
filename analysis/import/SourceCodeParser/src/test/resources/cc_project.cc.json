@@ -25,6 +25,15 @@
               "children": []
             }
           ]
+        },
+        {
+          "name": "foo.java",
+          "type": "File",
+          "attributes": {
+            "myMetric": 42.0
+          },
+          "link": "",
+          "children": []
         }
       ]
     }
