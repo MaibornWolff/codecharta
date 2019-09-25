@@ -88,7 +88,9 @@ export class CodeMapActionsService {
 
 	public removeFocusedNode() {
 		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: "" } })
-		this.resetCamera()
+		setTimeout(() => {
+			this.resetCamera()
+		}, 100)
 	}
 
 	public excludeNode(node: CodeMapNode) {
