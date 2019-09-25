@@ -84,5 +84,7 @@ class ProjectConverterTest {
 
         //then
         assertThat(project.edges.size).isEqualTo(1)
+        assertThat(project.edges[0].toNodeName).isEqualTo("/root/File 2")
+        assertThat(project.edges[0].fromNodeName).isEqualTo("/root/File 1")
     }
 }

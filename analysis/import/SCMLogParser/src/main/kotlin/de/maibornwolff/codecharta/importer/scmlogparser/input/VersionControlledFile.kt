@@ -63,7 +63,7 @@ class VersionControlledFile internal constructor(
         return "$actualFilename with metrics $metricsMap"
     }
 
-    fun getEdgelist(): List<Edge> {
+    fun getEdgeList(): List<Edge> {
         val edgeList = mutableListOf<Edge>()
         metrics.flatMap { it.getEdges() }
                 .forEach { edge ->
