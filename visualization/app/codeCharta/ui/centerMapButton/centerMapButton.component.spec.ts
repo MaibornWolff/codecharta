@@ -44,10 +44,11 @@ describe("CenterMapButtonController", () => {
 	})
 
 	describe("fitMapToView", () => {
-		it("should call resetCameraPerspective", () => {
+		it("should call autoFitTo", () => {
+			threeOrbitControlsService.autoFitTo = jest.fn()
 			centerMapButtonController.fitMapToView()
 
-			expect(threeOrbitControlsService.resetCameraPerspective).toHaveBeenCalled()
+			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 		})
 	})
 
