@@ -41,11 +41,13 @@ class ProjectConverter(private val containsAuthors: Boolean, private val project
 
     private fun addVersionControlledFile(projectBuilder: ProjectBuilder, versionControlledFile: VersionControlledFile) {
         val attributes = extractAttributes(versionControlledFile)
+        val edges = versionControlledFile.getEdgelist()
         val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", ArrayList())
         val path = PathFactory.fromFileSystemPath(
                 versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
         projectBuilder.insertByPath(path, newNode)
+        edges.forEach { projectBuilder.insertEdge(it) }
     }
 
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
