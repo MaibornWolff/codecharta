@@ -17,6 +17,7 @@ export class ThreeOrbitControlsService {
 
 	public controls: OrbitControls
 	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
+	public defaultZoom: number
 
 	/* ngInject */
 	constructor(
@@ -58,11 +59,14 @@ export class ThreeOrbitControlsService {
 
 	public setDefaultCameraPerspective(cameraPosition: Vector3) {
 		this.defaultCameraPosition = cameraPosition
+		this.defaultZoom = this.getZoom()
 	}
 
 	public resetCameraPerspective() {
-		const cameraReference = this.threeCameraService.camera
-		cameraReference.position.set(this.defaultCameraPosition.x, this.defaultCameraPosition.y, this.defaultCameraPosition.z)
+		this.threeCameraService.camera.position
+			.sub(this.controls.target)
+			.setLength(this.defaultZoom)
+			.add(this.controls.target)
 	}
 
 	public autoFitTo(obj = this.threeSceneService.mapGeometry) {
