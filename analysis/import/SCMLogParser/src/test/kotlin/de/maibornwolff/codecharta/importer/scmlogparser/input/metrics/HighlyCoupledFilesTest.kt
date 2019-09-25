@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
+import de.maibornwolff.codecharta.model.Edge
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.OffsetDateTime
@@ -21,6 +22,7 @@ class HighlyCoupledFilesTest {
 
         // then
         assertThat(metric.value()).isEqualTo(0L)
+        assertThat(metric.getEdges()).isEmpty()
     }
 
     @Test
@@ -33,6 +35,7 @@ class HighlyCoupledFilesTest {
 
         // then
         assertThat(metric.value()).isEqualTo(0L)
+        assertThat(metric.getEdges()).isEmpty()
     }
 
     @Test
@@ -45,12 +48,14 @@ class HighlyCoupledFilesTest {
 
         // then
         assertThat(metric.value()).isEqualTo(0L)
+        assertThat(metric.getEdges()).isEmpty()
     }
 
     @Test
     fun should_increase_on_at_five_commits_of_same_files() {
         // given
         val metric = HighlyCoupledFiles()
+        val expectedEdge = Edge("filename", "coupledfilename1", mapOf("pairing_rate" to 1.0))
 
         // when
         for (i in 0..4) {
@@ -59,12 +64,14 @@ class HighlyCoupledFilesTest {
 
         // then
         assertThat(metric.value()).isEqualTo(1L)
+        assertThat(metric.getEdges()).containsOnly(expectedEdge)
     }
 
     @Test
     fun should_increase() {
         // given
         val metric = HighlyCoupledFiles()
+        val expectedEdge = Edge("filename", "coupledfilename1", mapOf("pairing_rate" to 0.6))
 
         // when
         registerModifications(metric, FILENAME, COUPLED_FILE1)
@@ -75,6 +82,7 @@ class HighlyCoupledFilesTest {
 
         // then
         assertThat(metric.value()).isEqualTo(1L)
+        assertThat(metric.getEdges()).containsOnly(expectedEdge)
     }
 
     private fun registerModifications(metric: Metric, vararg filenames: String) {

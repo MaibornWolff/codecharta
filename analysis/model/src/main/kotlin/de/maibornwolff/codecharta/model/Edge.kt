@@ -44,6 +44,15 @@ class Edge constructor(
                "attributes=$attributes)"
     }
 
+    override fun equals(other: Any?): Boolean {
+        val otherEdge = other as Edge
+        return (
+                this.fromNodeName == otherEdge.fromNodeName &&
+                        this.toNodeName == otherEdge.toNodeName &&
+                        this.attributes == otherEdge.attributes
+                )
+    }
+
     fun translateMetrics(metricNameTranslator: MetricNameTranslator) {
         attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }
     }
