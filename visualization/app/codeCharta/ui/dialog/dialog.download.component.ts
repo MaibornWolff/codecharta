@@ -23,7 +23,7 @@ export enum DownloadCheckboxNames {
 	markedPackages = "MarkedPackages"
 }
 
-export class DialogDownlodController {
+export class DialogDownloadController {
 	private _viewModel: {
 		fileName: string
 		amountOfNodes: number
@@ -108,6 +108,6 @@ export class DialogDownlodController {
 export const dialogDownloadComponent = {
 	clickOutsideToClose: true,
 	template: require("./dialog.download.component.html"),
-	controller: DialogDownlodController,
+	controller: DialogDownloadController,
 	controllerAs: "$ctrl"
 }
