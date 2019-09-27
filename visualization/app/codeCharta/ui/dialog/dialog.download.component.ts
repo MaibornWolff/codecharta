@@ -106,8 +106,9 @@ export class DialogDownloadController {
 }
 
 export const dialogDownloadComponent = {
-	clickOutsideToClose: true,
+	selector: "dialogDownloadComponent",
 	template: require("./dialog.download.component.html"),
 	controller: DialogDownloadController,
+	clickOutsideToClose: true,
 	controllerAs: "$ctrl"
 }

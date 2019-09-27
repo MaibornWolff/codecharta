@@ -44,8 +44,9 @@ export class DialogGlobalSettingsController implements SettingsServiceSubscriber
 }
 
 export const dialogGlobalSettingsComponent = {
-	clickOutsideToClose: true,
+	selector: "dialogGlobalSettingsComponent",
 	template: require("./dialog.globalSettings.component.html"),
 	controller: DialogGlobalSettingsController,
+	clickOutsideToClose: true,
 	controllerAs: "$ctrl"
 }
