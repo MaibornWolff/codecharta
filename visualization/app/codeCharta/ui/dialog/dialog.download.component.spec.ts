@@ -7,7 +7,7 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { Settings } from "../../codeCharta.model"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { stubDate } from "../../../../mocks/dateMock.helper"
-import { DEFAULT_SETTINGS, FILE_STATES, VALID_NODE_WITH_PATH_AND_EXTENSION, FILE_META, VALID_EDGES } from "../../util/dataMocks"
+import { DEFAULT_SETTINGS, FILE_STATES, VALID_NODE_WITH_PATH_AND_EXTENSION, FILE_META, VALID_EDGES, BLACKLIST } from "../../util/dataMocks"
 import _ from "lodash"
 
 describe("DialogDownloadController", () => {
@@ -136,6 +136,43 @@ describe("DialogDownloadController", () => {
 
 			it("should set correct isSelected flag", () => {
 				expect(getFilteredFileContent(DownloadCheckboxNames.edges).isSelected).toBeTruthy()
+			})
+		})
+	})
+
+	describe("viewModel.fileContent excludes", () => {
+		describe("no excludes available", () => {
+			it("should set correct numberOfListItems", () => {
+				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).numberOfListItems).toEqual(0)
+			})
+
+			it("should set correct isDisabled flag", () => {
+				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isDisabled).toBeTruthy()
+			})
+
+			it("should set correct isSelected flag", () => {
+				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isSelected).toBeFalsy()
+			})
+		})
+
+		describe("with excludes available", () => {
+			beforeEach(() => {
+				settings.fileSettings.blacklist = BLACKLIST
+				withMockedSettingsService(settings)
+
+				rebuildController()
+			})
+
+			it("should set correct numberOfListItems", () => {
+				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).numberOfListItems).toEqual(2)
+			})
+
+			it("should set correct isDisabled flag", () => {
+				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isDisabled).toBeFalsy()
+			})
+
+			it("should set correct isSelected flag", () => {
+				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isSelected).toBeTruthy()
 			})
 		})
 	})
