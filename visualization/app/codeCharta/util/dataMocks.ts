@@ -7,11 +7,13 @@ import {
 	FileState,
 	MetricData,
 	Node,
-	Settings
+	Settings,
+	BlacklistType
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
+import { BlacklistItem } from "../codeCharta.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -679,4 +681,19 @@ export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 export const METRIC_DATA: MetricData[] = [
 	{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
 	{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
+]
+
+export const BLACKLIST: BlacklistItem[] = [
+	{
+		path: "/my/path",
+		type: BlacklistType.hide
+	},
+	{
+		path: "/my/different/path",
+		type: BlacklistType.exclude
+	},
+	{
+		path: "/my/first/path",
+		type: BlacklistType.exclude
+	}
 ]
