@@ -130,12 +130,14 @@ export const TEST_FILE_CONTENT = {
 	nodes: [VALID_NODE]
 }
 
+export const FILE_META = {
+	fileName: "fileA",
+	projectName: "Sample Project",
+	apiVersion: "1.1"
+}
+
 export const TEST_FILE_DATA: CCFile = {
-	fileMeta: {
-		fileName: "file",
-		projectName: "Sample Map",
-		apiVersion: "1.1"
-	},
+	fileMeta: FILE_META,
 	map: VALID_NODE,
 	settings: {
 		fileSettings: {
@@ -148,11 +150,7 @@ export const TEST_FILE_DATA: CCFile = {
 }
 
 export const TEST_FILE_WITH_PATHS: CCFile = {
-	fileMeta: {
-		fileName: "fileA",
-		projectName: "Sample Project",
-		apiVersion: "1.1"
-	},
+	fileMeta: FILE_META,
 	map: {
 		name: "root",
 		type: "Folder",
@@ -478,7 +476,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			type: "Folder"
 		}
 	],
-	projectName: "Sample Map"
+	projectName: "Sample Project"
 }
 
 export const FILE_STATES: FileState[] = [
