@@ -1,11 +1,11 @@
 import "./attributeSideBar.module"
-import { AttributeSideBarController } from "./attributeSideBar.component"
+import { AttributeSideBarController, PrimaryMetrics } from "./attributeSideBar.component"
 import { AttributeSideBarService } from "./attributeSideBar.service"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CODE_MAP_BUILDING } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import _ from "lodash"
 
@@ -199,7 +199,7 @@ describe("AttributeSideBarController", () => {
 
 	describe("updateSortedMetricKeysWithoutPrimaryMetrics", () => {
 		beforeEach(() => {
-			attributeSideBarController["_viewModel"].node = _.cloneDeep(CODE_MAP_BUILDING)
+			attributeSideBarController["_viewModel"].node = _.cloneDeep(TEST_NODE_LEAF)
 			attributeSideBarController["_viewModel"].node.attributes = {
 				a: 1,
 				b: 2,
@@ -214,7 +214,7 @@ describe("AttributeSideBarController", () => {
 				node: {
 					area: "a"
 				}
-			}
+			} as PrimaryMetrics
 
 			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]()
 
@@ -228,7 +228,7 @@ describe("AttributeSideBarController", () => {
 					color: "c",
 					height: "e"
 				}
-			}
+			} as PrimaryMetrics
 
 			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]()
 

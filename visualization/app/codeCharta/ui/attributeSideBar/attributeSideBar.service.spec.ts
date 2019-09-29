@@ -63,37 +63,37 @@ describe("AttributeSideBarService", () => {
 
 	describe("openSideBar", () => {
 		it("should set new visibility state", () => {
-			attributeSideBarService.isAttributeSideBarVisible = null
+			attributeSideBarService["isAttributeSideBarVisible"] = null
 
 			attributeSideBarService.openSideBar()
 
-			expect(attributeSideBarService.isAttributeSideBarVisible).toEqual(true)
+			expect(attributeSideBarService["isAttributeSideBarVisible"]).toEqual(true)
 		})
 
 		it("should call function notify", () => {
-			attributeSideBarService.notify = jest.fn()
+			attributeSideBarService["notify"] = jest.fn()
 
 			attributeSideBarService.openSideBar()
 
-			expect(attributeSideBarService.notify).toHaveBeenCalled()
+			expect(attributeSideBarService["notify"]).toHaveBeenCalled()
 		})
 	})
 
 	describe("closeSideBar", () => {
 		it("should set new visibility state", () => {
-			attributeSideBarService.isAttributeSideBarVisible = null
+			attributeSideBarService["isAttributeSideBarVisible"] = null
 
 			attributeSideBarService.closeSideBar()
 
-			expect(attributeSideBarService.isAttributeSideBarVisible).toEqual(false)
+			expect(attributeSideBarService["isAttributeSideBarVisible"]).toEqual(false)
 		})
 
 		it("should call function notify", () => {
-			attributeSideBarService.notify = jest.fn()
+			attributeSideBarService["notify"] = jest.fn()
 
 			attributeSideBarService.closeSideBar()
 
-			expect(attributeSideBarService.notify).toHaveBeenCalled()
+			expect(attributeSideBarService["notify"]).toHaveBeenCalled()
 		})
 	})
 })

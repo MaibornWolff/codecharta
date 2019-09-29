@@ -7,6 +7,7 @@ import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { SETTINGS, CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { Settings } from "../../codecharta.model"
 import _ from "lodash"
 
 describe("AttributeSideBarDeltasController", () => {
@@ -75,13 +76,13 @@ describe("AttributeSideBarDeltasController", () => {
 			attributeSideBarDeltasController["setDeltaValue"] = jest.fn()
 		})
 		it("should call function setDeltaValue", () => {
-			attributeSideBarDeltasController.onBuildingSelected("mySelectedBuilding")
+			attributeSideBarDeltasController.onBuildingSelected("mySelectedBuilding" as CodeMapBuilding)
 
 			expect(attributeSideBarDeltasController["setDeltaValue"]).toHaveBeenCalledWith("mySelectedBuilding")
 		})
 
 		it("should call function setDeltaColorClass", () => {
-			attributeSideBarDeltasController.onBuildingSelected("mySelectedBuilding")
+			attributeSideBarDeltasController.onBuildingSelected("mySelectedBuilding" as CodeMapBuilding)
 
 			expect(attributeSideBarDeltasController["setDeltaColorClass"]).toHaveBeenCalled()
 		})
@@ -130,7 +131,7 @@ describe("AttributeSideBarDeltasController", () => {
 		})
 
 		it("should not call function setDeltaColorClass when appSettings is not in update object", () => {
-			const update = { somethingelse: true }
+			const update = { somethingelse: true } as RecursivePartial<Settings>
 
 			attributeSideBarDeltasController.onSettingsChanged(settings, update)
 
@@ -144,14 +145,16 @@ describe("AttributeSideBarDeltasController", () => {
 		beforeEach(() => {
 			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 			attributeSideBarDeltasController["_viewModel"] = {
-				deltaValue: null
+				deltaValue: null,
+				colorClass: null,
+				attributekey: null
 			}
 		})
 
 		it("should set deltaValue to null", () => {
 			codeMapBuilding.node.deltas = undefined
 
-			attributeSideBarDeltasController.setDeltaValue(codeMapBuilding)
+			attributeSideBarDeltasController["setDeltaValue"](codeMapBuilding)
 
 			expect(attributeSideBarDeltasController["_viewModel"].deltaValue).toEqual(null)
 		})
@@ -160,7 +163,7 @@ describe("AttributeSideBarDeltasController", () => {
 			codeMapBuilding.node.deltas = { rloc: 42 }
 			attributeSideBarDeltasController["attributekey"] = "rloc"
 
-			attributeSideBarDeltasController.setDeltaValue(codeMapBuilding)
+			attributeSideBarDeltasController["setDeltaValue"](codeMapBuilding)
 
 			expect(attributeSideBarDeltasController["_viewModel"].deltaValue).toEqual(42)
 		})
@@ -169,7 +172,7 @@ describe("AttributeSideBarDeltasController", () => {
 			codeMapBuilding = undefined
 			attributeSideBarDeltasController["_viewModel"].deltaValue = 17
 
-			attributeSideBarDeltasController.setDeltaValue(codeMapBuilding)
+			attributeSideBarDeltasController["setDeltaValue"](codeMapBuilding)
 
 			expect(attributeSideBarDeltasController["_viewModel"].deltaValue).toEqual(17)
 		})
@@ -186,7 +189,7 @@ describe("AttributeSideBarDeltasController", () => {
 			settings.appSettings.invertDeltaColors = true
 			attributeSideBarDeltasController["_viewModel"].deltaValue = 1
 
-			attributeSideBarDeltasController.setDeltaColorClass(settings)
+			attributeSideBarDeltasController["setDeltaColorClass"](settings)
 
 			expect(attributeSideBarDeltasController["_viewModel"].colorClass).toEqual("red")
 		})
@@ -195,7 +198,7 @@ describe("AttributeSideBarDeltasController", () => {
 			settings.appSettings.invertDeltaColors = true
 			attributeSideBarDeltasController["_viewModel"].deltaValue = -1
 
-			attributeSideBarDeltasController.setDeltaColorClass(settings)
+			attributeSideBarDeltasController["setDeltaColorClass"](settings)
 
 			expect(attributeSideBarDeltasController["_viewModel"].colorClass).toEqual("green")
 		})
@@ -204,7 +207,7 @@ describe("AttributeSideBarDeltasController", () => {
 			settings.appSettings.invertDeltaColors = false
 			attributeSideBarDeltasController["_viewModel"].deltaValue = 1
 
-			attributeSideBarDeltasController.setDeltaColorClass(settings)
+			attributeSideBarDeltasController["setDeltaColorClass"](settings)
 
 			expect(attributeSideBarDeltasController["_viewModel"].colorClass).toEqual("green")
 		})
@@ -213,7 +216,7 @@ describe("AttributeSideBarDeltasController", () => {
 			settings.appSettings.invertDeltaColors = false
 			attributeSideBarDeltasController["_viewModel"].deltaValue = -1
 
-			attributeSideBarDeltasController.setDeltaColorClass(settings)
+			attributeSideBarDeltasController["setDeltaColorClass"](settings)
 
 			expect(attributeSideBarDeltasController["_viewModel"].colorClass).toEqual("red")
 		})
