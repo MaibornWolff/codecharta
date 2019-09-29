@@ -4,7 +4,7 @@ import { DialogDownloadController, DownloadCheckboxNames } from "./dialog.downlo
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { Settings } from "../../codeCharta.model"
+import { Settings, AttributeTypes, AttributeTypeValue } from "../../codeCharta.model"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { stubDate } from "../../../../mocks/dateMock.helper"
 import {
@@ -95,7 +95,7 @@ describe("DialogDownloadController", () => {
 
 	describe("viewModel.amountOfAttributeTypes", () => {
 		it("should set correct amountOfAttributeTypes with no attributeTypes available", () => {
-			settings.fileSettings.attributeTypes = {}
+			settings.fileSettings.attributeTypes = {} as AttributeTypes
 			withMockedSettingsService(settings)
 
 			rebuildController()
@@ -105,8 +105,12 @@ describe("DialogDownloadController", () => {
 
 		it("should set correct amountOfAttributeTypes with attributeTypes available", () => {
 			settings.fileSettings.attributeTypes = {
-				nodes: [{ rloc: 42 }, { mcc: 17 }, { functions: 11 }],
-				edges: [{ avgCommits: 19 }, { pairingRate: 13 }]
+				nodes: [
+					{ metric1: AttributeTypeValue.relative },
+					{ metric2: AttributeTypeValue.absolute },
+					{ metric3: AttributeTypeValue.absolute }
+				],
+				edges: [{ metric4: AttributeTypeValue.absolute }, { metric5: AttributeTypeValue.relative }]
 			}
 			withMockedSettingsService(settings)
 
