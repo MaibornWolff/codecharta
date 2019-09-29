@@ -13,7 +13,7 @@ import {
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
-import { BlacklistItem } from "../codeCharta.model"
+import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -695,5 +695,28 @@ export const BLACKLIST: BlacklistItem[] = [
 	{
 		path: "/my/first/path",
 		type: BlacklistType.exclude
+	}
+]
+
+export const MARKED_PACKAGES: MarkedPackage[] = [
+	{
+		path: "/my/path",
+		color: "#AABBCC",
+		attributes: {}
+	},
+	{
+		path: "/my/different/path",
+		color: "#DDEEFF",
+		attributes: {}
+	},
+	{
+		path: "/my/first/path",
+		color: "#123456",
+		attributes: {}
+	},
+	{
+		path: "/my/last/path",
+		color: "#345678",
+		attributes: {}
 	}
 ]
