@@ -15,7 +15,8 @@ import {
 	HeightMetricSubscriber,
 	SearchPatternSubscriber,
 	SettingsEvents,
-	SettingsServiceSubscriber
+	SettingsServiceSubscriber,
+	FocusedNodePathSubscriber
 } from "./settings.service.events"
 
 export class SettingsService implements FileStateServiceSubscriber {
@@ -46,6 +47,8 @@ export class SettingsService implements FileStateServiceSubscriber {
 					delete this.update.dynamicSettings.distributionMetric
 				} else if (this.update.dynamicSettings && eventName == SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.searchPattern
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.FOCUSED_NODE_PATH_CHANGED) {
+					delete this.update.dynamicSettings.focusedNodePath
 				}
 				this.$rootScope.$broadcast(eventName, data)
 			}, SettingsService.DEBOUNCE_TIME)
@@ -69,6 +72,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 		if (!isSilent) {
 			this.loadingGifService.updateLoadingMapFlag(true)
 			this.update = this.mergePartialSettings(this.update, update, this.settings)
+			this.notifySettingsSubscribers()
 
 			if (this.update.fileSettings && this.update.fileSettings.blacklist) {
 				this.notifyBlacklistSubscribers()
@@ -98,8 +102,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 				if (this.update.dynamicSettings.searchPattern) {
 					this.notifySearchPatternSubscribers()
 				}
+				if (this.update.dynamicSettings.focusedNodePath || _.isEmpty(this.update.dynamicSettings.focusedNodePath)) {
+					this.notifyFocusedNodePathSubscribers()
+				}
 			}
-			this.notifySettingsSubscribers()
 		}
 		this.synchronizeAngularTwoWayBinding()
 	}
@@ -272,6 +278,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.notify(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: this.settings.dynamicSettings.searchPattern })
 	}
 
+	private notifyFocusedNodePathSubscribers() {
+		this.notify(SettingsEvents.FOCUSED_NODE_PATH_CHANGED, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
+	}
+
 	private notify(eventName: string, data: object) {
 		this.debounceBroadcast[eventName](eventName, data)
 	}
@@ -325,6 +335,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribeToSearchPattern($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
 		$rootScope.$on(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
 			subscriber.onSearchPatternChanged(data.searchPattern)
+		})
+	}
+
+	public static subscribeToFocusedNode($rootScope: IRootScopeService, subscriber: FocusedNodePathSubscriber) {
+		$rootScope.$on(SettingsEvents.FOCUSED_NODE_PATH_CHANGED, (event, data) => {
+			subscriber.onFocusedNodePathChanged(data.focusedNodePath)
 		})
 	}
 }

@@ -32,6 +32,10 @@ export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)
 }
 
+export interface FocusedNodePathSubscriber {
+	onFocusedNodePathChanged(focusedNodePath: string)
+}
+
 export enum SettingsEvents {
 	SETTINGS_CHANGED_EVENT = "settings-changed",
 	BLACKLIST_CHANGED_EVENT = "blacklist-changed",
@@ -40,5 +44,6 @@ export enum SettingsEvents {
 	COLOR_METRIC_CHANGED_EVENT = "color-metric-changed",
 	EDGE_METRIC_CHANGED_EVENT = "edge-metric-changed",
 	DISTRIBUTION_METRIC_CHANGED_EVENT = "distribution-metric-changed",
-	SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
+	SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed",
+	FOCUSED_NODE_PATH_CHANGED = "focused-node-path-changed"
 }
