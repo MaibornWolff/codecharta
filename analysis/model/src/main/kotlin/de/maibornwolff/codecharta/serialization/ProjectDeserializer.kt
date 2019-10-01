@@ -32,43 +32,36 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
-import java.io.BufferedReader
-import java.io.FileNotFoundException
-import java.io.FileReader
+import mu.KotlinLogging
+import java.io.InputStream
 import java.io.Reader
 
-/**
- * This class provides static methods and functions to convert a json to a Project-Object
- */
 object ProjectDeserializer {
+    private val logger = KotlinLogging.logger {}
 
     private val GSON = GsonBuilder()
             .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
             .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
             .create()
 
-    /**
-     * This function deserializes a given json-file and returns the Project-Object it represents.
-     *
-     * @param pathToJson the path to the Json-File
-     * @return the project, if the Json was parsed successfully, null if not
-     */
-    @Throws(FileNotFoundException::class)
-    fun deserializeProject(pathToJson: String): Project {
-        return deserializeProject(BufferedReader(FileReader(pathToJson)))
-    }
-
-    /**
-     * This function deserializes a json read from a reader and returns the Project-Object it represents.
-     *
-     * @param reader reader where
-     * @return the project, if the Json was parsed successfully, null if not
-     */
     fun deserializeProject(reader: Reader): Project {
         return GSON.fromJson(reader, Project::class.java)
     }
 
-    fun deserializeProjectString(projectString: String): Project {
+    fun deserializeProject(projectString: String): Project {
         return GSON.fromJson(projectString, Project::class.java)
+    }
+
+    fun deserializeProject(input: InputStream): Project? {
+        val projectString = input.mapLines { it }.joinToString(separator = "") { it }
+        if (projectString.length <= 1) return null
+
+        return try {
+            deserializeProject(projectString)
+        } catch (e: Exception) {
+            logger.error("Piped input: $projectString")
+            logger.error("The piped input is not a valid project.")
+            null
+        }
     }
 }

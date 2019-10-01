@@ -69,7 +69,7 @@ class StructureModifier(private val input: InputStream = System.`in`,
 
     private fun readProject(): Project? {
         if (source == null) {
-            return readPipedProject()
+            return ProjectDeserializer.deserializeProject(input)
         } else if (!source!!.isFile) {
             logger.error("${source!!.name} has not been found.")
             return null
@@ -81,16 +81,6 @@ class StructureModifier(private val input: InputStream = System.`in`,
         } catch (e: Exception) {
             val input = source!!.name
             logger.error("$input is not a valid project file and is therefore skipped.")
-            null
-        }
-    }
-
-    private fun readPipedProject(): Project? {
-        val projectString = input.mapLines { it }.joinToString(separator = "") { it }
-        return try {
-            ProjectDeserializer.deserializeProjectString(projectString)
-        } catch (e: Exception) {
-            logger.error("The piped input is not a valid project and no input file was specified.")
             null
         }
     }
