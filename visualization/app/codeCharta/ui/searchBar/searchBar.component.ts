@@ -4,8 +4,9 @@ import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 
-export class SearchBarController implements BlacklistSubscriber {
+export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
 	private _viewModel: {
 		searchPattern: string
 		isPatternHidden: boolean
@@ -23,19 +24,14 @@ export class SearchBarController implements BlacklistSubscriber {
 		private codeMapActionsService: CodeMapActionsService
 	) {
 		SettingsService.subscribeToBlacklist(this.$rootScope, this)
-	}
-
-	public applySettingsSearchPattern() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				searchPattern: this._viewModel.searchPattern
-			}
-		})
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.resetSearchPattern()
 	}
+
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.updateViewModel(blacklist)
@@ -44,6 +40,15 @@ export class SearchBarController implements BlacklistSubscriber {
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
 		this.codeMapActionsService.pushItemToBlacklist({ path: this._viewModel.searchPattern, type: blacklistType })
 		this.resetSearchPattern()
+	}
+
+	public isSearchPatternEmpty() {
+		return this._viewModel.searchPattern === ""
+	}
+
+	public onSearchPatternChanged() {
+		this.applySettingsSearchPattern()
+		this.updateViewModel(this.settingsService.getSettings().fileSettings.blacklist)
 	}
 
 	private updateViewModel(blacklist: BlacklistItem[]) {
@@ -58,6 +63,14 @@ export class SearchBarController implements BlacklistSubscriber {
 	private resetSearchPattern() {
 		this._viewModel.searchPattern = ""
 		this.applySettingsSearchPattern()
+	}
+
+	private applySettingsSearchPattern() {
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				searchPattern: this._viewModel.searchPattern
+			}
+		})
 	}
 }
 
