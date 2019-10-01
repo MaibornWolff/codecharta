@@ -25,7 +25,7 @@ import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import * as d3 from "d3"
-import {ThreeCameraService} from "./threeViewer/threeCameraService"
+import { ThreeCameraService } from "./threeViewer/threeCameraService"
 
 export interface RenderData {
 	map: CodeMapNode

@@ -12,8 +12,8 @@ import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import {ThreeCameraService} from "./threeViewer/threeCameraService"
-import {Vector3} from "three"
+import { ThreeCameraService } from "./threeViewer/threeCameraService"
+import { Vector3 } from "three"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -75,12 +75,12 @@ describe("codeMapPreRenderService", () => {
 		})()
 	}
 
-	function withMockedThreeCameraService(){
-	threeCameraService = codeMapPreRenderService["threeCameraService"] = jest.fn().mockReturnValue({
-		camera: {
-			position: new Vector3(0,0,0)
-		}
-	})()
+	function withMockedThreeCameraService() {
+		threeCameraService = codeMapPreRenderService["threeCameraService"] = jest.fn().mockReturnValue({
+			camera: {
+				position: new Vector3(0, 0, 0)
+			}
+		})()
 	}
 
 	function withMockedLoadingGifService() {

@@ -38,7 +38,7 @@ describe("ThreeOrbitControlsService", () => {
 	}
 
 	function withMockedThreeCameraService() {
-		const camera = 	new PerspectiveCamera(100, 0, 0, 0)
+		const camera = new PerspectiveCamera(100, 0, 0, 0)
 		camera.position.set(vector.x, vector.y, vector.z)
 		threeCameraService = threeOrbitControlsService["threeCameraService"] = jest.fn<ThreeCameraService>(() => {
 			return {
@@ -87,9 +87,8 @@ describe("ThreeOrbitControlsService", () => {
 		expect(threeCameraService.camera.position).toMatchSnapshot()
 	})
 
-
 	describe("onFocusedNodePathChanged", () => {
-		beforeEach(()=>{
+		beforeEach(() => {
 			threeOrbitControlsService.controls = {
 				target: new THREE.Vector3(1, 1, 1)
 			} as OrbitControls
