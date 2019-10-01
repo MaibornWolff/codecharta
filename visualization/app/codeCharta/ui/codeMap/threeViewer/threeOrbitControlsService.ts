@@ -1,9 +1,10 @@
-"use strict"
 import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService, IAngularEvent } from "angular"
-import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
-import * as THREE from "three"
+import {Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3} from "three"
 import { ThreeSceneService } from "./threeSceneService"
+import { SettingsService } from "../../../state/settingsService/settings.service"
+import _ from "lodash"
+import { FocusedNodePathSubscriber } from "../../../state/settingsService/settings.service.events"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -12,19 +13,29 @@ export interface CameraChangeSubscriber {
 /**
  * Service to manage the three orbit controls in an angular way.
  */
-export class ThreeOrbitControlsService {
+export class ThreeOrbitControlsService implements FocusedNodePathSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
 	public controls: OrbitControls
 	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
-	public defaultZoom: number
+	public defaultZoom: number = 0
 
 	/* ngInject */
 	constructor(
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private $rootScope: IRootScopeService
-	) {}
+	) {
+		SettingsService.subscribeToFocusedNode($rootScope, this)
+	}
+
+	public onFocusedNodePathChanged(focusedPath: string) {
+		if (_.isEmpty(focusedPath)) {
+			this.resetCameraPerspective()
+		} else {
+			this.autoFitTo()
+		}
+	}
 
 	public rotateCameraInVectorDirection(x: number, y: number, z: number) {
 		const zoom = this.getZoom()
@@ -35,7 +46,7 @@ export class ThreeOrbitControlsService {
 	private lookAtDirectionFromTarget(x: number, y: number, z: number) {
 		this.threeCameraService.camera.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
 
-		const alignmentCube = new THREE.Mesh(new THREE.CubeGeometry(20, 20, 20), new THREE.MeshNormalMaterial())
+		const alignmentCube = new Mesh(new CubeGeometry(20, 20, 20), new MeshNormalMaterial())
 
 		this.threeSceneService.scene.add(alignmentCube)
 
@@ -70,7 +81,7 @@ export class ThreeOrbitControlsService {
 	}
 
 	public autoFitTo(obj = this.threeSceneService.mapGeometry) {
-		const boundingSphere = new THREE.Box3().setFromObject(obj).getBoundingSphere()
+		const boundingSphere = new Box3().setFromObject(obj).getBoundingSphere()
 
 		const cameraReference = this.threeCameraService.camera
 
@@ -89,8 +100,6 @@ export class ThreeOrbitControlsService {
 		cameraReference.lookAt(t)
 
 		this.threeCameraService.camera.updateProjectionMatrix()
-
-		return cameraReference.clone().position
 	}
 
 	public init(domElement) {
