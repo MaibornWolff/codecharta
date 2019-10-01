@@ -12,11 +12,14 @@ import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
+import {ThreeCameraService} from "./threeViewer/threeCameraService"
+import {Vector3} from "three"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let threeOrbitControlsService: ThreeOrbitControlsService
+	let threeCameraService: ThreeCameraService
 	let codeMapRenderService: CodeMapRenderService
 	let loadingGifService: LoadingGifService
 	let edgeMetricService: EdgeMetricService
@@ -29,6 +32,7 @@ describe("codeMapPreRenderService", () => {
 		rebuildService()
 		withMockedEventMethods()
 		withMockedThreeOrbitControlsService()
+		withMockedThreeCameraService()
 		withMockedLoadingGifService()
 	})
 
@@ -41,6 +45,7 @@ describe("codeMapPreRenderService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
 
@@ -52,6 +57,7 @@ describe("codeMapPreRenderService", () => {
 		codeMapPreRenderService = new CodeMapPreRenderService(
 			$rootScope,
 			threeOrbitControlsService,
+			threeCameraService,
 			codeMapRenderService,
 			loadingGifService,
 			edgeMetricService
@@ -67,6 +73,14 @@ describe("codeMapPreRenderService", () => {
 		threeOrbitControlsService = codeMapPreRenderService["threeOrbitControlsService"] = jest.fn().mockReturnValue({
 			autoFitTo: jest.fn()
 		})()
+	}
+
+	function withMockedThreeCameraService(){
+	threeCameraService = codeMapPreRenderService["threeCameraService"] = jest.fn().mockReturnValue({
+		camera: {
+			position: new Vector3(0,0,0)
+		}
+	})()
 	}
 
 	function withMockedLoadingGifService() {
