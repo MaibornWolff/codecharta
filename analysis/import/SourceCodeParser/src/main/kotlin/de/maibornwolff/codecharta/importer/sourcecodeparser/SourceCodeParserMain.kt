@@ -70,7 +70,7 @@ class SourceCodeParserMain(
         projectParser.scanProject(file)
 
         val writer = getMetricWriter()
-        val pipedProject = ProjectDeserializer.deserializeProjectFromInputStream(input)
+        val pipedProject = ProjectDeserializer.deserializeProject(input)
         writer.generate(projectParser.projectMetrics, projectParser.metricKinds, pipedProject)
 
         return null

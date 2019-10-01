@@ -9,11 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Checkbox in global Settings for disabling camera reset, when new map is loaded #685
+- Pipe support for SourceCodeParser #716
+- Pipe support for SourceCodeParser #716
+- Pipe support for SCMLogParser #717
+
 ### Changed
 
 ### Removed
 
 ### Fixed
+
+- Exclude and Hide options are disabled for empty and already existing search patterns #654
 
 ### Chore
 
@@ -23,8 +30,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Tokei Importer #538
 - Prominent Notice that we use Sonar-jar #713
-- Pipe support for SourceCodeParser #716
-- Pipe support for SCMLogParser #717
 
 ### Changed
 
