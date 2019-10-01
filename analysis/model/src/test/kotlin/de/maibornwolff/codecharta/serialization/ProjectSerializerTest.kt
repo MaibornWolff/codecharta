@@ -33,20 +33,10 @@ import com.google.gson.JsonParser
 import org.hamcrest.BaseMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
-import org.hamcrest.MatcherAssert.assertThat
 import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.specification.describe
 import java.io.File
-import java.io.IOException
-import kotlin.test.assertFailsWith
-import kotlin.test.assertTrue
 
 class ProjectSerializerTest: Spek({
-    val EXAMPLE_JSON_PATH = this.javaClass.classLoader.getResource("example.cc.json").file
-
-    val tempDir = createTempDir()
-
-    val filename = tempDir.absolutePath + "test.cc.json"
 
     fun matchesProjectFile(expectedProjectFile: File): Matcher<File> {
         return object: BaseMatcher<File>() {
@@ -68,31 +58,6 @@ class ProjectSerializerTest: Spek({
                 val actualJson = parser.parse(actual.reader())
                 val expectedJson = parser.parse(expected.reader())
                 return actualJson == expectedJson
-            }
-        }
-    }
-
-    describe("ProjectSerializer") {
-        it("should serialize project") {
-            val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
-
-            ProjectSerializer.serializeProjectAndWriteToFile(testProject, filename)
-
-            val result = File(filename)
-            assertTrue(result.exists())
-            assertThat(result, matchesProjectFile(File(EXAMPLE_JSON_PATH)))
-        }
-    }
-
-    describe("ProjectSerializer") {
-        context("using non-existing path") {
-            it("should throw exception") {
-                val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
-
-                assertFailsWith(IOException::class) {
-                    ProjectSerializer.serializeProjectAndWriteToFile(testProject,
-                            tempDir.absolutePath + "/someverystupidpath/out.json")
-                }
             }
         }
     }
