@@ -33,7 +33,8 @@ import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
 import mu.KotlinLogging
-import java.io.*
+import java.io.InputStream
+import java.io.Reader
 
 object ProjectDeserializer {
     private val logger = KotlinLogging.logger {}
@@ -42,11 +43,6 @@ object ProjectDeserializer {
             .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
             .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
             .create()
-
-    @Throws(FileNotFoundException::class)
-    fun deserializeProjectFromFile(pathToJson: String): Project {
-        return deserializeProject(BufferedReader(FileReader(pathToJson)))
-    }
 
     fun deserializeProject(reader: Reader): Project {
         return GSON.fromJson(reader, Project::class.java)
