@@ -74,7 +74,7 @@ class ProjectSerializerTest: Spek({
 
     describe("ProjectSerializer") {
         it("should serialize project") {
-            val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
+            val testProject = ProjectDeserializer.deserializeProjectFromFile(EXAMPLE_JSON_PATH)
 
             ProjectSerializer.serializeProjectAndWriteToFile(testProject, filename)
 
@@ -87,7 +87,7 @@ class ProjectSerializerTest: Spek({
     describe("ProjectSerializer") {
         context("using non-existing path") {
             it("should throw exception") {
-                val testProject = ProjectDeserializer.deserializeProject(EXAMPLE_JSON_PATH)
+                val testProject = ProjectDeserializer.deserializeProjectFromFile(EXAMPLE_JSON_PATH)
 
                 assertFailsWith(IOException::class) {
                     ProjectSerializer.serializeProjectAndWriteToFile(testProject,
