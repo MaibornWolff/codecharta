@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+- Exclude and Hide options are disabled for empty and already existing search patterns #654
+
+### Chore
+
+## [1.34.0] - 2019-09-20
+
+### Added
+
 - Tokei Importer #538
 - Prominent Notice that we use Sonar-jar #713
 
@@ -19,6 +33,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 ### Chore
+
+- Bump kotlin-reflect from 1.3.41 to 1.3.50 in /analysis
+- Bump json from 20180813 to 20190722 in /analysis
+- Bump rxjava from 2.2.9 to 2.2.12 in /analysis
+- Bump assertj-core from 3.12.2 to 3.13.2 in /analysis
+- Bump sonar-java-plugin from 5.12.1.17771 to 5.14.0.18788 in /analysis
 
 ## [1.33.0] - 2019-09-10
 
