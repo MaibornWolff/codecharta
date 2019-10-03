@@ -98,7 +98,7 @@ class SCMLogParser(private val input: InputStream = System.`in`,
                 addAuthor,
                 silent)
 
-        val pipedProject = ProjectDeserializer.deserializeProjectFromInputStream(input)
+        val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectName)
         }
