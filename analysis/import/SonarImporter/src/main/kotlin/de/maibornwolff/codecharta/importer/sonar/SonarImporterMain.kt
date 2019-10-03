@@ -94,7 +94,7 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
         val importer = createMesauresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, projectId, metrics)
 
-        val pipedProject = ProjectDeserializer.deserializeProjectFromInputStream(input)
+        val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectId)
         }
