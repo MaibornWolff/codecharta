@@ -22,9 +22,9 @@
 						<span class="metric-value">
 							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number }}
 						</span>
-						<attribute-side-bar-deltas-component
+						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.area"
-						></attribute-side-bar-deltas-component>
+						></metric-delta-selected-component>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.area }}</p>
 					</td>
 
@@ -33,9 +33,9 @@
 						<span class="metric-value">
 							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number }}
 						</span>
-						<attribute-side-bar-deltas-component
+						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.height"
-						></attribute-side-bar-deltas-component>
+						></metric-delta-selected-component>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.height }}</p>
 					</td>
 				</tr>
@@ -46,9 +46,9 @@
 						<span class="metric-value">
 							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number }}
 						</span>
-						<attribute-side-bar-deltas-component
+						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.color"
-						></attribute-side-bar-deltas-component>
+						></metric-delta-selected-component>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.node.color }}</p>
 					</td>
 
@@ -75,7 +75,7 @@
 							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number }}</span>
 						</td>
 						<td ng-show="$ctrl._viewModel.node.deltas">
-							<attribute-side-bar-deltas-component attributekey="::attributekey"></attribute-side-bar-deltas-component>
+							<metric-delta-selected-component attributekey="::attributekey"></metric-delta-selected-component>
 						</td>
 						<td class="metric-name">{{ attributekey }}</td>
 					</tr>

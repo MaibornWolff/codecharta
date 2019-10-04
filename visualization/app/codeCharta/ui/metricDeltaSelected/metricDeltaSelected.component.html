@@ -1,1 +1,3 @@
-<h1>Hello MetricDeltaSelectedComponent!</h1>
+<span class="metric-delta {{ $ctrl._viewModel.colorClass }}" ng-show="$ctrl._viewModel.deltaValue">
+	&Delta;{{ $ctrl._viewModel.deltaValue | number }}
+</span>
