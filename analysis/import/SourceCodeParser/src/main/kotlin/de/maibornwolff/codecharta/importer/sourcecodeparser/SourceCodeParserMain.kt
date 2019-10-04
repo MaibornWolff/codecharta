@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
+import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine.*
 import java.io.*
 import java.nio.file.Paths
@@ -13,7 +14,11 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from source code"],
         footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2019, MaibornWolff GmbH"]
 )
-class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Void> {
+class SourceCodeParserMain(
+        private val outputStream: PrintStream,
+        private val input: InputStream = System.`in`,
+        private val error: PrintStream = System.err
+) : Callable<Void> {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
@@ -49,10 +54,11 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
     @Throws(IOException::class)
     override fun call(): Void? {
 
+        print(" ")
         if (!file.exists()) {
             val path = Paths.get("").toAbsolutePath().toString()
-            outputStream.println("Current working directory = $path")
-            outputStream.println("Could not find $file")
+            error.println("Current working directory = $path")
+            error.println("Could not find $file")
             return null
         }
 
@@ -63,24 +69,25 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         projectParser.setUpAnalyzers()
         projectParser.scanProject(file)
 
-        val writer = getPrinter()
-        writer.generate(projectParser.projectMetrics, projectParser.metricKinds)
+        val writer = getMetricWriter()
+        val pipedProject = ProjectDeserializer.deserializeProject(input)
+        writer.generate(projectParser.projectMetrics, projectParser.metricKinds, pipedProject)
 
         return null
     }
 
-    private fun getPrinter(): MetricWriter {
+    private fun getMetricWriter(): MetricWriter {
         return when (outputFormat) {
-            OutputFormat.JSON -> JSONMetricWriter(projectName, getWriter())
-            OutputFormat.TABLE -> CSVMetricWriter(getWriter())
+            OutputFormat.JSON -> JSONMetricWriter(projectName, getOutputWriter())
+            OutputFormat.TABLE -> CSVMetricWriter(getOutputWriter())
         }
     }
 
-    private fun getWriter(): Writer {
+    private fun getOutputWriter(): Writer {
         return if (outputFile == null) {
             OutputStreamWriter(outputStream)
         } else {
-            BufferedWriter(FileWriter(outputFile))
+            BufferedWriter(FileWriter(outputFile!!))
         }
     }
 
@@ -93,6 +100,10 @@ class SourceCodeParserMain(private val outputStream: PrintStream) : Callable<Voi
         @JvmStatic
         fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
             call(SourceCodeParserMain(outputStream), System.out, *args)
+        }
+        @JvmStatic
+        fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
+            call(SourceCodeParserMain(outputStream, input, error), outputStream, *args)
         }
     }
 }

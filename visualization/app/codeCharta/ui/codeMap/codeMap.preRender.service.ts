@@ -188,6 +188,9 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 			this.notifyLoadingFileStatus()
 			this.threeOrbitControlsService.autoFitTo()
 			this.threeOrbitControlsService.setDefaultCameraPerspective(this.threeCameraService.camera.position.clone())
+			if (this.lastRender.settings.appSettings.resetCameraIfNewFileIsLoaded) {
+				this.threeOrbitControlsService.autoFitTo()
+			}
 			this.newFileLoaded = false
 		}
 	}

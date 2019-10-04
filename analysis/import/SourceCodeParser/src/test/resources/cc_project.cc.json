@@ -1,0 +1,44 @@
+{
+  "projectName": "foo",
+  "apiVersion": "1.1",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "link": "",
+      "children": [
+        {
+          "name": "bar",
+          "type": "Folder",
+          "attributes": {},
+          "link": "",
+          "children": [
+            {
+              "name": "FooBar.java",
+              "type": "File",
+              "attributes": {
+                "coverage": 0.0,
+                "ncloc": 18.0
+              },
+              "link": "",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "foo.java",
+          "type": "File",
+          "attributes": {
+            "myMetric": 42.0
+          },
+          "link": "",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "edges": [],
+  "attributeTypes": {},
+  "blacklist": []
+}
