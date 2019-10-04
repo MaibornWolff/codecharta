@@ -55,4 +55,20 @@ describe("LoadingGifService", () => {
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("loading-map-status-changed", false)
 		})
 	})
+	describe("isLoadingNewFile", () => {
+		it("should return true, when isLoadingFile is true", () => {
+			loadingGifService["isLoadingFile"] = true
+
+			const result: boolean = loadingGifService.isLoadingNewFile()
+
+			expect(result).toBeTruthy()
+		})
+		it("should return false, when isLoadingFile is true", () => {
+			loadingGifService["isLoadingFile"] = false
+
+			const result: boolean = loadingGifService.isLoadingNewFile()
+
+			expect(result).toBeFalsy()
+		})
+	})
 })

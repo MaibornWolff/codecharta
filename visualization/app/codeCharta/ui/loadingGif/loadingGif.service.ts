@@ -25,6 +25,10 @@ export class LoadingGifService {
 		this.notifyLoadingMapFlagChange()
 	}
 
+	public isLoadingNewFile(): boolean {
+		return this.isLoadingFile
+	}
+
 	private notifyLoadingFileFlagChange() {
 		this.$rootScope.$broadcast(LoadingGifService.LOADING_FILE_STATUS_EVENT, this.isLoadingFile)
 	}
