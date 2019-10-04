@@ -14,7 +14,7 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "./attributeSideBar.service"
 import $ from "jquery"
 
-interface PrimaryMetrics {
+export interface PrimaryMetrics {
 	node: {
 		area: string
 		color: string

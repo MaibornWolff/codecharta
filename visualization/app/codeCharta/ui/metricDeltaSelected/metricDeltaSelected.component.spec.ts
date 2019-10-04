@@ -16,6 +16,7 @@ describe("MetricDeltaSelectedController", () => {
 	let $timeout: ITimeoutService
 	let threeSceneService: ThreeSceneService
 	let settingsService: SettingsService
+	let codeMapBuilding: CodeMapBuilding
 
 	beforeEach(() => {
 		restartSystem()
@@ -31,6 +32,8 @@ describe("MetricDeltaSelectedController", () => {
 		$timeout = getService<ITimeoutService>("$timeout")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		settingsService = getService<SettingsService>("settingsService")
+
+		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 	}
 
 	function rebuildController() {
@@ -76,13 +79,13 @@ describe("MetricDeltaSelectedController", () => {
 			metricDeltaSelectedController["setDeltaValue"] = jest.fn()
 		})
 		it("should call function setDeltaValue", () => {
-			metricDeltaSelectedController.onBuildingSelected("mySelectedBuilding" as CodeMapBuilding)
+			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
 
-			expect(metricDeltaSelectedController["setDeltaValue"]).toHaveBeenCalledWith("mySelectedBuilding")
+			expect(metricDeltaSelectedController["setDeltaValue"]).toHaveBeenCalledWith(codeMapBuilding)
 		})
 
 		it("should call function setDeltaColorClass", () => {
-			metricDeltaSelectedController.onBuildingSelected("mySelectedBuilding" as CodeMapBuilding)
+			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
 
 			expect(metricDeltaSelectedController["setDeltaColorClass"]).toHaveBeenCalled()
 		})
@@ -140,10 +143,7 @@ describe("MetricDeltaSelectedController", () => {
 	})
 
 	describe("setDeltaValue", () => {
-		let codeMapBuilding: CodeMapBuilding
-
 		beforeEach(() => {
-			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 			metricDeltaSelectedController["_viewModel"] = {
 				deltaValue: null,
 				colorClass: null,
