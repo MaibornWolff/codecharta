@@ -1,10 +1,11 @@
 import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService, IAngularEvent } from "angular"
-import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3 } from "three"
+import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3, Pass } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import _ from "lodash"
 import { FocusedNodePathSubscriber } from "../../../state/settingsService/settings.service.events"
+import { LoadingGifService } from "../../loadingGif/loadingGif.service"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -24,15 +25,17 @@ export class ThreeOrbitControlsService implements FocusedNodePathSubscriber {
 	constructor(
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
-		private $rootScope: IRootScopeService
+		private $rootScope: IRootScopeService,
+		private settingsService: SettingsService,
+		private loadingGifService: LoadingGifService
 	) {
 		SettingsService.subscribeToFocusedNode($rootScope, this)
 	}
 
 	public onFocusedNodePathChanged(focusedPath: string) {
-		if (_.isEmpty(focusedPath)) {
+		if (_.isEmpty(focusedPath) && !this.loadingGifService.isLoadingNewFile()) {
 			this.resetCameraPerspective()
-		} else {
+		} else if (!_.isEmpty(focusedPath)) {
 			this.autoFitTo()
 		}
 	}
@@ -41,6 +44,26 @@ export class ThreeOrbitControlsService implements FocusedNodePathSubscriber {
 		const zoom = this.getZoom()
 		this.lookAtDirectionFromTarget(x, y, z)
 		this.applyOldZoom(zoom)
+	}
+
+	public setCamera() {
+		if (this.settingsService.getSettings().appSettings.resetCameraIfNewFileIsLoaded) {
+			this.autoFitTo()
+			this.setDefaultZoom()
+		} else {
+			this.setDefaultZoomWithoutPerspective()
+		}
+	}
+
+	public setDefaultZoom() {
+		this.defaultZoom = this.getZoom()
+	}
+
+	public resetCameraPerspective() {
+		this.threeCameraService.camera.position
+			.sub(this.controls.target)
+			.setLength(this.defaultZoom)
+			.add(this.controls.target)
 	}
 
 	private lookAtDirectionFromTarget(x: number, y: number, z: number) {
@@ -68,27 +91,20 @@ export class ThreeOrbitControlsService implements FocusedNodePathSubscriber {
 		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
-	public setDefaultCameraPerspective(cameraPosition: Vector3) {
-		this.defaultCameraPosition = cameraPosition
-		this.defaultZoom = this.getZoom()
-	}
-
-	public resetCameraPerspective() {
-		this.threeCameraService.camera.position
-			.sub(this.controls.target)
-			.setLength(this.defaultZoom)
-			.add(this.controls.target)
-	}
-
-	public autoFitTo(obj = this.threeSceneService.mapGeometry) {
-		const boundingSphere = new Box3().setFromObject(obj).getBoundingSphere()
-
-		const cameraReference = this.threeCameraService.camera
-
+	private autoFitToCalculation(boundingSphere, cameraReference) {
 		const scale = 1.4 // object size / display size
 		const objectAngularSize = ((cameraReference.fov * Math.PI) / 180) * scale
 		const distanceToCamera = boundingSphere.radius / Math.tan(objectAngularSize / 2)
 		const len = Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
+
+		return len
+	}
+
+	public autoFitTo(obj = this.threeSceneService.mapGeometry) {
+		const boundingSphere = new Box3().setFromObject(obj).getBoundingSphere()
+		const cameraReference = this.threeCameraService.camera
+
+		const len: number = this.autoFitToCalculation(boundingSphere, cameraReference)
 
 		cameraReference.position.set(len, len, len)
 		this.controls.update()
@@ -100,6 +116,24 @@ export class ThreeOrbitControlsService implements FocusedNodePathSubscriber {
 		cameraReference.lookAt(t)
 
 		this.threeCameraService.camera.updateProjectionMatrix()
+	}
+
+	private setDefaultZoomWithoutPerspective() {
+		const obj = this.threeSceneService.mapGeometry.clone()
+		const boundingSphere = new Box3().setFromObject(obj).getBoundingSphere()
+
+		const cameraReference = this.threeCameraService.camera.clone()
+
+		const len = this.autoFitToCalculation(boundingSphere, cameraReference)
+
+		this.defaultCameraPosition.set(len, len, len)
+
+		const targetfake: Vector3 = new Vector3(0, 0, 0)
+		const t: Vector3 = boundingSphere.center
+		t.setY(0)
+		targetfake.set(t.x, t.y, t.z)
+
+		this.defaultZoom = this.defaultCameraPosition.distanceTo(targetfake)
 	}
 
 	public init(domElement) {
