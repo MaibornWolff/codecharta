@@ -16,7 +16,8 @@ import {
 	SearchPatternSubscriber,
 	SettingsEvents,
 	SettingsServiceSubscriber,
-	FocusedNodePathSubscriber
+	FocusNodePathSubscriber,
+	UnfocusNodePathSubscriber
 } from "./settings.service.events"
 
 export class SettingsService implements FileStateServiceSubscriber {
@@ -47,7 +48,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 					delete this.update.dynamicSettings.distributionMetric
 				} else if (this.update.dynamicSettings && eventName == SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.searchPattern
-				} else if (this.update.dynamicSettings && eventName == SettingsEvents.FOCUSED_NODE_PATH_CHANGED) {
+				} else if (this.update.dynamicSettings && eventName == SettingsEvents.NODE_PATH_FOCUSED) {
 					delete this.update.dynamicSettings.focusedNodePath
 				}
 				this.$rootScope.$broadcast(eventName, data)
@@ -102,8 +103,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 				if (this.update.dynamicSettings.searchPattern) {
 					this.notifySearchPatternSubscribers()
 				}
-				if (this.update.dynamicSettings.focusedNodePath || _.isEmpty(this.update.dynamicSettings.focusedNodePath)) {
+				if (this.update.dynamicSettings.focusedNodePath) {
 					this.notifyFocusedNodePathSubscribers()
+				}
+				if (_.isEmpty(this.update.dynamicSettings.focusedNodePath)) {
+					this.notifyUnfocusedNodePathSubscriber()
 				}
 			}
 		}
@@ -280,7 +284,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 	}
 
 	private notifyFocusedNodePathSubscribers() {
-		this.notify(SettingsEvents.FOCUSED_NODE_PATH_CHANGED, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
+		this.notify(SettingsEvents.NODE_PATH_FOCUSED, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
+	}
+
+	private notifyUnfocusedNodePathSubscriber() {
+		this.notify(SettingsEvents.NODE_PATH_UNFOCUSED, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
 	}
 
 	private notify(eventName: string, data: object) {
@@ -339,9 +347,15 @@ export class SettingsService implements FileStateServiceSubscriber {
 		})
 	}
 
-	public static subscribeToFocusedNode($rootScope: IRootScopeService, subscriber: FocusedNodePathSubscriber) {
-		$rootScope.$on(SettingsEvents.FOCUSED_NODE_PATH_CHANGED, (event, data) => {
-			subscriber.onFocusedNodePathChanged(data.focusedNodePath)
+	public static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodePathSubscriber) {
+		$rootScope.$on(SettingsEvents.NODE_PATH_FOCUSED, (event, data) => {
+			subscriber.onFocusNodePath(data.focusedNodePath)
+		})
+	}
+
+	public static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodePathSubscriber) {
+		$rootScope.$on(SettingsEvents.NODE_PATH_UNFOCUSED, (event, data) => {
+			subscriber.onUnfocusNodePath(data.focusedNodePath)
 		})
 	}
 }

@@ -1,10 +1,10 @@
 import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService, IAngularEvent } from "angular"
-import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3, Pass } from "three"
+import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import _ from "lodash"
-import { FocusedNodePathSubscriber } from "../../../state/settingsService/settings.service.events"
+import { FocusNodePathSubscriber, UnfocusNodePathSubscriber } from "../../../state/settingsService/settings.service.events"
 import { LoadingGifService } from "../../loadingGif/loadingGif.service"
 
 export interface CameraChangeSubscriber {
@@ -14,7 +14,7 @@ export interface CameraChangeSubscriber {
 /**
  * Service to manage the three orbit controls in an angular way.
  */
-export class ThreeOrbitControlsService implements FocusedNodePathSubscriber {
+export class ThreeOrbitControlsService implements FocusNodePathSubscriber, UnfocusNodePathSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
 	public controls: OrbitControls
@@ -26,17 +26,21 @@ export class ThreeOrbitControlsService implements FocusedNodePathSubscriber {
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private loadingGifService: LoadingGifService
+		private settingsService: SettingsService
 	) {
-		SettingsService.subscribeToFocusedNode($rootScope, this)
+		SettingsService.subscribeToFocusNode($rootScope, this)
+		SettingsService.subscribeToUnfocusNode($rootScope, this)
 	}
 
-	public onFocusedNodePathChanged(focusedPath: string) {
-		if (_.isEmpty(focusedPath) && !this.loadingGifService.isLoadingNewFile()) {
-			this.resetCameraPerspective()
-		} else if (!_.isEmpty(focusedPath)) {
+	public onFocusNodePath(focusPath: string) {
+		if (!_.isEmpty(focusPath)) {
 			this.autoFitTo()
+		}
+	}
+
+	public onUnfocusNodePath(unfocusNodePath: string) {
+		if (_.isEmpty(unfocusNodePath)) {
+			this.resetCameraPerspective()
 		}
 	}
 
