@@ -43,6 +43,15 @@ describe("DialogGlobalSettingsController", () => {
 		})()
 	}
 
+	function setEmptyViewModel() {
+		dialogGlobalSettingsController["_viewModel"] = {
+			hideFlatBuildings: null,
+			maximizeDetailPanel: null,
+			isWhiteBackground: null,
+			resetCameraIfNewFileIsLoaded: null
+		}
+	}
+
 	describe("constructor", () => {
 		it("should subscribe to SettingsService Events", () => {
 			SettingsService.subscribe = jest.fn()
@@ -55,7 +64,7 @@ describe("DialogGlobalSettingsController", () => {
 
 	describe("updateSettingsFields", () => {
 		it("should update viewModel.hideFlatBuildings with appSettings", () => {
-			dialogGlobalSettingsController["_viewModel"] = { hideFlatBuildings: null } as any
+			setEmptyViewModel()
 			settings.appSettings.hideFlatBuildings = false
 
 			dialogGlobalSettingsController.updateSettingsFields(settings)
@@ -64,7 +73,7 @@ describe("DialogGlobalSettingsController", () => {
 		})
 
 		it("should update viewModel.isWhiteBackground with appSettings", () => {
-			dialogGlobalSettingsController["_viewModel"] = { isWhiteBackground: null } as any
+			setEmptyViewModel()
 			settings.appSettings.isWhiteBackground = true
 
 			dialogGlobalSettingsController.updateSettingsFields(settings)
@@ -73,7 +82,7 @@ describe("DialogGlobalSettingsController", () => {
 		})
 
 		it("should update viewModel.resetCameraIfNewFileIsLoaded with appSettings", () => {
-			dialogGlobalSettingsController["_viewModel"] = { resetCameraIfNewFileIsLoaded: null } as any
+			setEmptyViewModel()
 			settings.appSettings.resetCameraIfNewFileIsLoaded = false
 
 			dialogGlobalSettingsController.updateSettingsFields(settings)
@@ -85,12 +94,13 @@ describe("DialogGlobalSettingsController", () => {
 	describe("applySettings", () => {
 		it("should call settingsService.updateSettings", () => {
 			settingsService.updateSettings = jest.fn()
-			const viewModel = { hideFlatBuildings: false, resetCameraIfNewFileIsLoaded: false }
-			dialogGlobalSettingsController["_viewModel"] = viewModel as any
+			setEmptyViewModel()
+			dialogGlobalSettingsController["_viewModel"].hideFlatBuildings = false
+			dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded = false
 
 			dialogGlobalSettingsController.applySettings()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: viewModel })
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: dialogGlobalSettingsController["_viewModel"] })
 		})
 	})
 
