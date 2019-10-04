@@ -143,16 +143,6 @@ attribute-side-bar-component {
 					background: #d5d5d5;
 				}
 
-				.metric-delta {
-					&.green {
-						background: #b1d8a8;
-					}
-
-					&.red {
-						background: #ffcccc;
-					}
-				}
-
 				.metric-name {
 					color: grey;
 					word-break: break-word;

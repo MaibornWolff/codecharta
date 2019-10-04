@@ -1,2 +1,11 @@
 metric-delta-selected-component {
+	.metric-delta {
+		&.green {
+			background: #b1d8a8;
+		}
+
+		&.red {
+			background: #ffcccc;
+		}
+	}
 }
