@@ -60,6 +60,17 @@ describe("DialogGlobalSettingsController", () => {
 
 			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
+
+		it("should call updateSettingsFields", () => {
+			dialogGlobalSettingsController["updateSettingsFields"] = jest.spyOn(
+				DialogGlobalSettingsController.prototype,
+				"updateSettingsFields"
+			)
+
+			rebuildController()
+
+			expect(dialogGlobalSettingsController["updateSettingsFields"]).toHaveBeenCalled()
+		})
 	})
 
 	describe("updateSettingsFields", () => {
@@ -67,7 +78,7 @@ describe("DialogGlobalSettingsController", () => {
 			setEmptyViewModel()
 			settings.appSettings.hideFlatBuildings = false
 
-			dialogGlobalSettingsController.updateSettingsFields(settings)
+			dialogGlobalSettingsController["updateSettingsFields"](settings)
 
 			expect(dialogGlobalSettingsController["_viewModel"].hideFlatBuildings).toBeFalsy()
 		})
@@ -76,7 +87,7 @@ describe("DialogGlobalSettingsController", () => {
 			setEmptyViewModel()
 			settings.appSettings.isWhiteBackground = true
 
-			dialogGlobalSettingsController.updateSettingsFields(settings)
+			dialogGlobalSettingsController["updateSettingsFields"](settings)
 
 			expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBeTruthy()
 		})
@@ -85,7 +96,7 @@ describe("DialogGlobalSettingsController", () => {
 			setEmptyViewModel()
 			settings.appSettings.resetCameraIfNewFileIsLoaded = false
 
-			dialogGlobalSettingsController.updateSettingsFields(settings)
+			dialogGlobalSettingsController["updateSettingsFields"](settings)
 
 			expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBeFalsy()
 		})

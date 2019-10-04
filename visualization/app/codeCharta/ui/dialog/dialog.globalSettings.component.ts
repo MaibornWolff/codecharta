@@ -23,13 +23,12 @@ export class DialogGlobalSettingsController implements SettingsServiceSubscriber
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		//TODO: dead code. Subscription does not work with "controllerAs $ctrl"
 		this.updateSettingsFields(settings)
 	}
 
-	public updateSettingsFields(s: Settings = this.settingsService.getSettings()) {
+	private updateSettingsFields(settings: Settings = this.settingsService.getSettings()) {
 		const interestingKeys = _.keys(this._viewModel)
-		const viewModelUpdate = _.pick(s.appSettings, interestingKeys)
+		const viewModelUpdate = _.pick(settings.appSettings, interestingKeys)
 		_.assign(this._viewModel, viewModelUpdate)
 	}
 
