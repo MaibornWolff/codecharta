@@ -92,14 +92,14 @@ check_modify() {
 
 check_sourcecodeparser() {
     echo " -- expect SourceCodeParser gives valid cc.json"
-    ACTUAL_SCP_JSON="${INSTALL_DIR}/actual_modify.json"
+    ACTUAL_SCP_JSON="${INSTALL_DIR}/actual_scp.json"
     "${CCSH}" sourcecodeparser data/codecharta/ > "${ACTUAL_SCP_JSON}"
     validate "${ACTUAL_SCP_JSON}"
 }
 
 check_tokei() {
     echo " -- expect TokeiImporter gives valid cc.json"
-    ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_modify.json"
+    ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_tokei.json"
     "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --pathSeparator \\ > "${ACTUAL_TOKEI_JSON}"
     validate "${ACTUAL_TOKEI_JSON}"
 }
