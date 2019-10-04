@@ -27,8 +27,6 @@ Additionally it saves the names of authors when the --add-author flag is set.
 | git | GIT_LOG_RAW         | `git log --raw --topo-order`           | yes            | yes                   | no                  |
 | SVN | SVN_LOG             | `svn log --verbose`                    | yes            | yes                   | no                  |
 
-The generated logs must be in UTF-8 encoding.
-
 You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
 
 ### Executing the SCMLogParser
@@ -38,6 +36,9 @@ See `ccsh -h` for help. Standard usage:
 > `ccsh scmlogparser <log_file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
+
+If a project is piped into the SCMLogParser, the results and the piped project are merged.
+The resulting project has the project name specified for the SCMLogParser.
 
 ### Example using Git
 
