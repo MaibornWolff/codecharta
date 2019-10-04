@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.35.0] - 2019-10-04
+
+### Added
+
 - Checkbox in global Settings for disabling camera reset, when new map is loaded #685
 - Pipe support for SourceCodeParser #716
 - Pipe support for SCMLogParser #717
