@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':model')
+    implementation project(':filter:MergeFilter')
     
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'org.sonarsource.java', name: 'sonar-java-plugin', version: '5.14.0.18788'

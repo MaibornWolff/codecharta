@@ -49,6 +49,9 @@ or
 ./ccsh sourcecodeparser src/test/resources -o foo.cc.json --f=table -i
 ```
 
+If a project is piped into the SourceCodeParser, the results and the piped project are merged.
+The resulting project has the project name specified for the SourceCodeParser.
+
 ## Parameters
 
 - --defaultExcludes (exclude build, target, dist and out folders as well as files/folders starting with '.')

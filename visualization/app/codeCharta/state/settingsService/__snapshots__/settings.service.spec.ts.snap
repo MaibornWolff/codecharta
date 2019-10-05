@@ -41,6 +41,7 @@ Object {
       "positiveDelta": "#69FF40",
       "selected": "#EB8319",
     },
+    "resetCameraIfNewFileIsLoaded": true,
     "scaling": Vector3 {
       "x": 1,
       "y": 1,

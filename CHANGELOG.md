@@ -24,6 +24,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore
 
+## [1.35.0] - 2019-10-04
+
+### Added
+
+- Checkbox in global Settings for disabling camera reset, when new map is loaded #685
+- Pipe support for SourceCodeParser #716
+- Pipe support for SCMLogParser #717
+- Pipe support for SonarImporter #715
+
+### Changed
+
+### Removed
+
+### Fixed
+
+- Exclude and Hide options are disabled for empty and already existing search patterns #654
+
+### Chore
+
 ## [1.34.0] - 2019-09-20
 
 ### Added

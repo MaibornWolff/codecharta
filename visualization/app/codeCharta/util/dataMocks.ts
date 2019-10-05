@@ -556,7 +556,8 @@ export const SETTINGS: Settings = {
 			outgoingEdge: "#ff00ff"
 		},
 		isPresentationMode: false,
-		showOnlyBuildingsWithEdges: false
+		showOnlyBuildingsWithEdges: false,
+		resetCameraIfNewFileIsLoaded: true
 	},
 	treeMapSettings: {
 		mapSize: 500
@@ -594,7 +595,8 @@ export const DEFAULT_SETTINGS: Settings = {
 		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
 		isPresentationMode: false,
-		showOnlyBuildingsWithEdges: false
+		showOnlyBuildingsWithEdges: false,
+		resetCameraIfNewFileIsLoaded: true
 	},
 	dynamicSettings: {
 		areaMetric: null,

@@ -30,7 +30,7 @@ class TokeiImporterTest {
 
         val cliResult = executeForOutput(input, arrayOf("--pathSeparator=\\"))
 
-        val project = ProjectDeserializer.deserializeProjectString(cliResult)
+        val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.size).isEqualTo(3)
         Assertions.assertThat(project.rootNode.children[0].name).isEqualTo("CHANGELOG.md")
         Assertions.assertThat(project.rootNode.children[0].attributes["loc"]).isEqualTo(450.0)
@@ -51,7 +51,7 @@ class TokeiImporterTest {
     fun `sets project name`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-p=myProject"))
 
-        val project = ProjectDeserializer.deserializeProjectString(cliResult)
+        val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.projectName).isEqualTo("myProject")
     }
 
@@ -59,7 +59,7 @@ class TokeiImporterTest {
     fun `sets root correctly`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
 
-        val project = ProjectDeserializer.deserializeProjectString(cliResult)
+        val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children[0].name).isEqualTo("CHANGELOG.md")
     }
 
@@ -67,7 +67,7 @@ class TokeiImporterTest {
     fun `handles path separator correctly`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--pathSeparator=\\"))
 
-        val project = ProjectDeserializer.deserializeProjectString(cliResult)
+        val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children[1].name).isEqualTo("foo")
     }
 }

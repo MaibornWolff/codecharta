@@ -109,6 +109,7 @@ export interface AppSettings {
 	whiteColorBuildings: boolean
 	isPresentationMode: boolean
 	showOnlyBuildingsWithEdges: boolean
+	resetCameraIfNewFileIsLoaded: boolean
 }
 
 export interface TreeMapSettings {
