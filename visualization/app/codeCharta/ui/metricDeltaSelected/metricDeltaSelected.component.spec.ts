@@ -7,7 +7,7 @@ import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { SETTINGS, CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { Settings } from "../../codecharta.model"
+import { Settings, RecursivePartial } from "../../codeCharta.model"
 import _ from "lodash"
 
 describe("MetricDeltaSelectedController", () => {
