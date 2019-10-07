@@ -81,217 +81,219 @@ describe("DialogDownloadController", () => {
 		return dialogDownloadController["_viewModel"].fileContent.find(x => x.name == name)
 	}
 
-	describe("viewModel.fileName", () => {
-		it("should set correct fileName", () => {
-			expect(dialogDownloadController["_viewModel"].fileName).toEqual("fileA_" + newDate)
-		})
-	})
-
-	describe("viewModel.amountOfNodes", () => {
-		it("should set correct amountOfNodes", () => {
-			expect(dialogDownloadController["_viewModel"].amountOfNodes).toEqual(8)
-		})
-	})
-
-	describe("viewModel.amountOfAttributeTypes", () => {
-		it("should set correct amountOfAttributeTypes with no attributeTypes available", () => {
-			settings.fileSettings.attributeTypes = {} as AttributeTypes
-			withMockedSettingsService(settings)
-
-			rebuildController()
-
-			expect(dialogDownloadController["_viewModel"].amountOfAttributeTypes).toEqual(0)
+	describe("constructor", () => {
+		describe("fileName", () => {
+			it("should set correct fileName", () => {
+				expect(dialogDownloadController["_viewModel"].fileName).toEqual("fileA_" + newDate)
+			})
 		})
 
-		it("should set correct amountOfAttributeTypes with attributeTypes available", () => {
-			settings.fileSettings.attributeTypes = {
-				nodes: [
-					{ metric1: AttributeTypeValue.relative },
-					{ metric2: AttributeTypeValue.absolute },
-					{ metric3: AttributeTypeValue.absolute }
-				],
-				edges: [{ metric4: AttributeTypeValue.absolute }, { metric5: AttributeTypeValue.relative }]
-			}
-			withMockedSettingsService(settings)
-
-			rebuildController()
-
-			expect(dialogDownloadController["_viewModel"].amountOfAttributeTypes).toEqual(5)
+		describe("amountOfNodes", () => {
+			it("should set correct amountOfNodes", () => {
+				expect(dialogDownloadController["_viewModel"].amountOfNodes).toEqual(8)
+			})
 		})
-	})
 
-	describe("viewModel.fileContent edges", () => {
-		describe("no edge available", () => {
-			beforeEach(() => {
-				settings.fileSettings.edges = []
+		describe("amountOfAttributeTypes", () => {
+			it("should set correct amountOfAttributeTypes with no attributeTypes available", () => {
+				settings.fileSettings.attributeTypes = {} as AttributeTypes
 				withMockedSettingsService(settings)
 
 				rebuildController()
+
+				expect(dialogDownloadController["_viewModel"].amountOfAttributeTypes).toEqual(0)
 			})
 
-			it("should set correct numberOfListItems", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.edges).numberOfListItems).toEqual(0)
-			})
-
-			it("should set correct isDisabled flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.edges).isDisabled).toBeTruthy()
-			})
-
-			it("should set correct isSelected flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.edges).isSelected).toBeFalsy()
-			})
-		})
-
-		describe("with edges available", () => {
-			beforeEach(() => {
-				settings.fileSettings.edges = VALID_EDGES
+			it("should set correct amountOfAttributeTypes with attributeTypes available", () => {
+				settings.fileSettings.attributeTypes = {
+					nodes: [
+						{ metric1: AttributeTypeValue.relative },
+						{ metric2: AttributeTypeValue.absolute },
+						{ metric3: AttributeTypeValue.absolute }
+					],
+					edges: [{ metric4: AttributeTypeValue.absolute }, { metric5: AttributeTypeValue.relative }]
+				}
 				withMockedSettingsService(settings)
 
 				rebuildController()
-			})
 
-			it("should set correct numberOfListItems", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.edges).numberOfListItems).toEqual(3)
-			})
-
-			it("should set correct isDisabled flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.edges).isDisabled).toBeFalsy()
-			})
-
-			it("should set correct isSelected flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.edges).isSelected).toBeTruthy()
-			})
-		})
-	})
-
-	describe("viewModel.fileContent excludes", () => {
-		describe("no excludes available", () => {
-			beforeEach(() => {
-				settings.fileSettings.blacklist = []
-				withMockedSettingsService(settings)
-
-				rebuildController()
-			})
-
-			it("should set correct numberOfListItems", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).numberOfListItems).toEqual(0)
-			})
-
-			it("should set correct isDisabled flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isDisabled).toBeTruthy()
-			})
-
-			it("should set correct isSelected flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isSelected).toBeFalsy()
+				expect(dialogDownloadController["_viewModel"].amountOfAttributeTypes).toEqual(5)
 			})
 		})
 
-		describe("with excludes available", () => {
-			beforeEach(() => {
-				settings.fileSettings.blacklist = BLACKLIST
-				withMockedSettingsService(settings)
+		describe("fileContent edges", () => {
+			describe("no edge available", () => {
+				beforeEach(() => {
+					settings.fileSettings.edges = []
+					withMockedSettingsService(settings)
 
-				rebuildController()
+					rebuildController()
+				})
+
+				it("should set correct numberOfListItems", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.edges).numberOfListItems).toEqual(0)
+				})
+
+				it("should set correct isDisabled flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.edges).isDisabled).toBeTruthy()
+				})
+
+				it("should set correct isSelected flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.edges).isSelected).toBeFalsy()
+				})
 			})
 
-			it("should set correct numberOfListItems", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).numberOfListItems).toEqual(2)
-			})
+			describe("with edges available", () => {
+				beforeEach(() => {
+					settings.fileSettings.edges = VALID_EDGES
+					withMockedSettingsService(settings)
 
-			it("should set correct isDisabled flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isDisabled).toBeFalsy()
-			})
+					rebuildController()
+				})
 
-			it("should set correct isSelected flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isSelected).toBeTruthy()
-			})
-		})
-	})
+				it("should set correct numberOfListItems", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.edges).numberOfListItems).toEqual(3)
+				})
 
-	describe("viewModel.fileContent hides", () => {
-		describe("no hides available", () => {
-			beforeEach(() => {
-				settings.fileSettings.blacklist = []
-				withMockedSettingsService(settings)
+				it("should set correct isDisabled flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.edges).isDisabled).toBeFalsy()
+				})
 
-				rebuildController()
-			})
-
-			it("should set correct numberOfListItems", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.hides).numberOfListItems).toEqual(0)
-			})
-
-			it("should set correct isDisabled flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.hides).isDisabled).toBeTruthy()
-			})
-
-			it("should set correct isSelected flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.hides).isSelected).toBeFalsy()
-			})
-		})
-
-		describe("with hides available", () => {
-			beforeEach(() => {
-				settings.fileSettings.blacklist = BLACKLIST
-				withMockedSettingsService(settings)
-
-				rebuildController()
-			})
-
-			it("should set correct numberOfListItems", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.hides).numberOfListItems).toEqual(1)
-			})
-
-			it("should set correct isDisabled flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.hides).isDisabled).toBeFalsy()
-			})
-
-			it("should set correct isSelected flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.hides).isSelected).toBeTruthy()
-			})
-		})
-	})
-
-	describe("viewModel.fileContent markedPackages", () => {
-		describe("no markedPackages available", () => {
-			beforeEach(() => {
-				settings.fileSettings.markedPackages = []
-				withMockedSettingsService(settings)
-
-				rebuildController()
-			})
-
-			it("should set correct numberOfListItems", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).numberOfListItems).toEqual(0)
-			})
-
-			it("should set correct isDisabled flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).isDisabled).toBeTruthy()
-			})
-
-			it("should set correct isSelected flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).isSelected).toBeFalsy()
+				it("should set correct isSelected flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.edges).isSelected).toBeTruthy()
+				})
 			})
 		})
 
-		describe("with markedPackages available", () => {
-			beforeEach(() => {
-				settings.fileSettings.markedPackages = MARKED_PACKAGES
-				withMockedSettingsService(settings)
+		describe("fileContent excludes", () => {
+			describe("no excludes available", () => {
+				beforeEach(() => {
+					settings.fileSettings.blacklist = []
+					withMockedSettingsService(settings)
 
-				rebuildController()
+					rebuildController()
+				})
+
+				it("should set correct numberOfListItems", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.excludes).numberOfListItems).toEqual(0)
+				})
+
+				it("should set correct isDisabled flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isDisabled).toBeTruthy()
+				})
+
+				it("should set correct isSelected flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isSelected).toBeFalsy()
+				})
 			})
 
-			it("should set correct numberOfListItems", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).numberOfListItems).toEqual(4)
+			describe("with excludes available", () => {
+				beforeEach(() => {
+					settings.fileSettings.blacklist = BLACKLIST
+					withMockedSettingsService(settings)
+
+					rebuildController()
+				})
+
+				it("should set correct numberOfListItems", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.excludes).numberOfListItems).toEqual(2)
+				})
+
+				it("should set correct isDisabled flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isDisabled).toBeFalsy()
+				})
+
+				it("should set correct isSelected flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.excludes).isSelected).toBeTruthy()
+				})
+			})
+		})
+
+		describe("fileContent hides", () => {
+			describe("no hides available", () => {
+				beforeEach(() => {
+					settings.fileSettings.blacklist = []
+					withMockedSettingsService(settings)
+
+					rebuildController()
+				})
+
+				it("should set correct numberOfListItems", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.hides).numberOfListItems).toEqual(0)
+				})
+
+				it("should set correct isDisabled flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.hides).isDisabled).toBeTruthy()
+				})
+
+				it("should set correct isSelected flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.hides).isSelected).toBeFalsy()
+				})
 			})
 
-			it("should set correct isDisabled flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).isDisabled).toBeFalsy()
+			describe("with hides available", () => {
+				beforeEach(() => {
+					settings.fileSettings.blacklist = BLACKLIST
+					withMockedSettingsService(settings)
+
+					rebuildController()
+				})
+
+				it("should set correct numberOfListItems", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.hides).numberOfListItems).toEqual(1)
+				})
+
+				it("should set correct isDisabled flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.hides).isDisabled).toBeFalsy()
+				})
+
+				it("should set correct isSelected flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.hides).isSelected).toBeTruthy()
+				})
+			})
+		})
+
+		describe("fileContent markedPackages", () => {
+			describe("no markedPackages available", () => {
+				beforeEach(() => {
+					settings.fileSettings.markedPackages = []
+					withMockedSettingsService(settings)
+
+					rebuildController()
+				})
+
+				it("should set correct numberOfListItems", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).numberOfListItems).toEqual(0)
+				})
+
+				it("should set correct isDisabled flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).isDisabled).toBeTruthy()
+				})
+
+				it("should set correct isSelected flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).isSelected).toBeFalsy()
+				})
 			})
 
-			it("should set correct isSelected flag", () => {
-				expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).isSelected).toBeTruthy()
+			describe("with markedPackages available", () => {
+				beforeEach(() => {
+					settings.fileSettings.markedPackages = MARKED_PACKAGES
+					withMockedSettingsService(settings)
+
+					rebuildController()
+				})
+
+				it("should set correct numberOfListItems", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).numberOfListItems).toEqual(4)
+				})
+
+				it("should set correct isDisabled flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).isDisabled).toBeFalsy()
+				})
+
+				it("should set correct isSelected flag", () => {
+					expect(getFilteredFileContent(DownloadCheckboxNames.markedPackages).isSelected).toBeTruthy()
+				})
 			})
 		})
 	})
