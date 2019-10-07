@@ -62,7 +62,7 @@ describe("DialogGlobalSettingsController", () => {
 		})
 
 		it("should call updateSettingsFields", () => {
-			jest.spyOn(DialogGlobalSettingsController.prototype, "updateSettingsFields")
+			jest.spyOn(DialogGlobalSettingsController.prototype as any, "updateSettingsFields")
 
 			rebuildController()
 
