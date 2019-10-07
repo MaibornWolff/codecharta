@@ -20,7 +20,7 @@
 					<td>
 						<i class="fa fa-arrows-alt"></i>
 						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number }}
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.area] | number: 0 }}
 						</span>
 						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.area"
@@ -31,7 +31,7 @@
 					<td>
 						<i class="fa fa-arrows-v"></i>
 						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number }}
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.height] | number: 0 }}
 						</span>
 						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.height"
@@ -44,7 +44,7 @@
 					<td>
 						<i class="fa fa-paint-brush"></i>
 						<span class="metric-value">
-							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number }}
+							{{ $ctrl._viewModel.node.attributes[$ctrl._viewModel.primaryMetricKeys.node.color] | number: 0 }}
 						</span>
 						<metric-delta-selected-component
 							attributekey="$ctrl._viewModel.primaryMetricKeys.node.color"
@@ -55,9 +55,9 @@
 					<td ng-show="$ctrl._viewModel.primaryMetricKeys.edge.edge != 'None'">
 						<i class="fa fa-exchange"></i>
 						<span class="metric-value">
-							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].incoming | number }}
+							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].incoming | number: 0 }}
 							<span>/</span>
-							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].outgoing | number }}
+							{{ $ctrl._viewModel.node.edgeAttributes[$ctrl._viewModel.primaryMetricKeys.edge.edge].outgoing | number: 0 }}
 						</span>
 						<p class="metric-name">{{ $ctrl._viewModel.primaryMetricKeys.edge.edge }} (in/out)</p>
 					</td>
@@ -72,7 +72,7 @@
 				<table>
 					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys">
 						<td>
-							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number }}</span>
+							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number: 0 }}</span>
 						</td>
 						<td ng-show="$ctrl._viewModel.node.deltas">
 							<metric-delta-selected-component attributekey="::attributekey"></metric-delta-selected-component>
