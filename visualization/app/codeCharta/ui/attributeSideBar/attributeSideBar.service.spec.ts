@@ -3,6 +3,8 @@ import { AttributeSideBarService } from "./attributeSideBar.service"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { CODE_MAP_BUILDING } from "../../util/dataMocks"
+import _ from "lodash"
 
 describe("AttributeSideBarService", () => {
 	let attributeSideBarService: AttributeSideBarService
@@ -44,8 +46,9 @@ describe("AttributeSideBarService", () => {
 	describe("onBuildingSelected", () => {
 		it("should call function openSideBar", () => {
 			attributeSideBarService.openSideBar = jest.fn()
+			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 
-			attributeSideBarService.onBuildingSelected("mySelectedBuilding")
+			attributeSideBarService.onBuildingSelected(codeMapBuilding)
 
 			expect(attributeSideBarService.openSideBar).toHaveBeenCalled()
 		})
