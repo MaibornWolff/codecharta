@@ -29,7 +29,7 @@ describe("CenterMapButtonController", () => {
 
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = centerMapButtonController["threeOrbitControlsService"] = jest.fn().mockReturnValue({
-			resetCameraPerspective: jest.fn()
+			autoFitTo: jest.fn()
 		})()
 	}
 
