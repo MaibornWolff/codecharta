@@ -12,8 +12,6 @@ import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
-import { Vector3 } from "three"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
