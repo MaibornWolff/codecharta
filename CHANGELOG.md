@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 - Increased size of ribbonBar for big screens #644
+- Sanitize input for shelljs #600
 
 ### Chore
 
