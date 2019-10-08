@@ -62,8 +62,10 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		const boundingSphere = this.getBoundingSphere()
 
 		const len: number = this.autoFitToCalculation(boundingSphere)
+		const cameraReference = this.threeCameraService.camera
 
-		this.threeCameraService.camera.position.set(len, len, len)
+		cameraReference.position.set(len, len, len)
+		this.defaultCameraPosition = cameraReference.position.clone()
 		this.controls.update()
 
 		this.focusCameraViewToCenter(boundingSphere)
@@ -132,6 +134,8 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		const len: number = this.autoFitToCalculation(boundingSphere)
 
 		autoFittedPerspective.set(len, len, len)
+
+		this.defaultCameraPosition = autoFittedPerspective.clone()
 
 		const t: Vector3 = boundingSphere.center
 		t.setY(0)
