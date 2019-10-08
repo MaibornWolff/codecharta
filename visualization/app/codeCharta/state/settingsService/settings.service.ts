@@ -48,7 +48,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 					delete this.update.dynamicSettings.distributionMetric
 				} else if (this.update.dynamicSettings && eventName == SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.searchPattern
-				} else if (this.update.dynamicSettings && eventName == SettingsEvents.NODE_PATH_FOCUSED) {
+				} else if (
+					this.update.dynamicSettings &&
+					(eventName == SettingsEvents.NODE_PATH_FOCUSED || eventName == SettingsEvents.NODE_PATH_UNFOCUSED)
+				) {
 					delete this.update.dynamicSettings.focusedNodePath
 				}
 				this.$rootScope.$broadcast(eventName, data)
@@ -75,39 +78,41 @@ export class SettingsService implements FileStateServiceSubscriber {
 			this.update = this.mergePartialSettings(this.update, update, this.settings)
 			this.notifySettingsSubscribers()
 
-			if (this.update.fileSettings && this.update.fileSettings.blacklist) {
+			if (update.fileSettings && update.fileSettings.blacklist) {
 				this.notifyBlacklistSubscribers()
 			}
 
-			if (this.update.dynamicSettings) {
-				if (this.update.dynamicSettings.areaMetric) {
+			if (update.dynamicSettings) {
+				if (update.dynamicSettings.areaMetric) {
 					this.notifyAreaMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.heightMetric) {
+				if (update.dynamicSettings.heightMetric) {
 					this.notifyHeightMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.colorMetric) {
+				if (update.dynamicSettings.colorMetric) {
 					this.notifyColorMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.edgeMetric) {
+				if (update.dynamicSettings.edgeMetric) {
 					this.notifyEdgeMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.distributionMetric) {
+				if (update.dynamicSettings.distributionMetric) {
 					this.notifyDistributionMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.searchPattern) {
+				if (update.dynamicSettings.searchPattern) {
 					this.notifySearchPatternSubscribers()
 				}
-				if (this.update.dynamicSettings.focusedNodePath) {
-					this.notifyFocusedNodePathSubscribers()
-				}
-				if (_.isEmpty(this.update.dynamicSettings.focusedNodePath)) {
-					this.notifyUnfocusedNodePathSubscriber()
+				if (update.dynamicSettings.focusedNodePath !== undefined) {
+					if (_.isEmpty(update.dynamicSettings.focusedNodePath)) {
+						this.notifyUnfocusedNodePathSubscribers()
+					}
+					if (!_.isEmpty(update.dynamicSettings.focusedNodePath)) {
+						this.notifyFocusedNodePathSubscribers()
+					}
 				}
 			}
 		}
@@ -287,7 +292,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.notify(SettingsEvents.NODE_PATH_FOCUSED, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
 	}
 
-	private notifyUnfocusedNodePathSubscriber() {
+	private notifyUnfocusedNodePathSubscribers() {
 		this.notify(SettingsEvents.NODE_PATH_UNFOCUSED, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
 	}
 
