@@ -4,6 +4,7 @@ import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExte
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
+import { HSL } from "../../util/color/hsl"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
@@ -37,7 +38,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private setColorForEachExtension() {
 		this._viewModel.distribution.forEach(x => {
-			x.color = x.color ? x.color : this.numberToHsl(this.hashCode(x.fileExtension))
+			x.color = x.color ? x.color : this.numberToHsl(this.hashCode(x.fileExtension)).toString()
 		})
 	}
 
@@ -55,9 +56,9 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		return hash
 	}
 
-	private numberToHsl(hashCode: number): string {
-		let shortened = hashCode % 360
-		return "hsl(" + shortened + ", 40%, 50%)"
+	private numberToHsl(hashCode: number): HSL {
+		const shortened = hashCode % 360
+		return new HSL(shortened, 40, 50)
 	}
 
 	private getNoneExtension(): MetricDistribution {
