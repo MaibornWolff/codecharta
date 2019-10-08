@@ -71,4 +71,20 @@ describe("LoadingGifService", () => {
 			expect(result).toBeFalsy()
 		})
 	})
+	describe("isLoadingNewMap", () => {
+		it("should return true, when isLoadingMap is true", () => {
+			loadingGifService["isLoadingMap"] = true
+
+			const result: boolean = loadingGifService.isLoadingNewMap()
+
+			expect(result).toBeTruthy()
+		})
+		it("should return false, when isLoadingMap is true", () => {
+			loadingGifService["isLoadingMap"] = false
+
+			const result: boolean = loadingGifService.isLoadingNewMap()
+
+			expect(result).toBeFalsy()
+		})
+	})
 })
