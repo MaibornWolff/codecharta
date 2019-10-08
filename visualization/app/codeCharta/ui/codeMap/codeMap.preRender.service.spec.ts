@@ -19,7 +19,6 @@ describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let threeCameraService: ThreeCameraService
 	let codeMapRenderService: CodeMapRenderService
 	let loadingGifService: LoadingGifService
 	let edgeMetricService: EdgeMetricService
@@ -32,7 +31,6 @@ describe("codeMapPreRenderService", () => {
 		rebuildService()
 		withMockedEventMethods()
 		withMockedThreeOrbitControlsService()
-		withMockedThreeCameraService()
 		withMockedLoadingGifService()
 	})
 
@@ -45,7 +43,6 @@ describe("codeMapPreRenderService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
-		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
 
@@ -57,7 +54,6 @@ describe("codeMapPreRenderService", () => {
 		codeMapPreRenderService = new CodeMapPreRenderService(
 			$rootScope,
 			threeOrbitControlsService,
-			threeCameraService,
 			codeMapRenderService,
 			loadingGifService,
 			edgeMetricService
@@ -72,14 +68,6 @@ describe("codeMapPreRenderService", () => {
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = codeMapPreRenderService["threeOrbitControlsService"] = jest.fn().mockReturnValue({
 			autoFitTo: jest.fn()
-		})()
-	}
-
-	function withMockedThreeCameraService() {
-		threeCameraService = codeMapPreRenderService["threeCameraService"] = jest.fn().mockReturnValue({
-			camera: {
-				position: new Vector3(0, 0, 0)
-			}
 		})()
 	}
 
