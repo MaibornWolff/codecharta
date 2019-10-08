@@ -1,4 +1,4 @@
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 
@@ -10,12 +10,17 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber 
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
 	public onRenderMapChanged(map: CodeMapNode) {
-		this._viewModel.rootNode = map
+		if (map == this._viewModel.rootNode) return
+
+		this._viewModel.rootNode = null // To force the update of the root folder's name in the UI
+		this.$timeout(() => {
+			this._viewModel.rootNode = map
+		})
 	}
 }
 
