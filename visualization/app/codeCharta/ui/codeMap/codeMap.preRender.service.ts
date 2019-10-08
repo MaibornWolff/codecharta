@@ -25,7 +25,6 @@ import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import * as d3 from "d3"
-import { ThreeCameraService } from "./threeViewer/threeCameraService"
 
 export interface RenderData {
 	map: CodeMapNode
@@ -55,7 +54,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	constructor(
 		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
-		private threeCameraService: ThreeCameraService,
 		private codeMapRenderService: CodeMapRenderService,
 		private loadingGifService: LoadingGifService,
 		private edgeMetricService: EdgeMetricService
