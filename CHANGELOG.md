@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 - Increased size of ribbonBar for big screens #644
+- File-Extension-Bar will not display excluded nodes anymore #725
 
 ### Chore
 
