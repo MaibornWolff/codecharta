@@ -32,12 +32,12 @@ export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)
 }
 
-export interface FocusNodePathSubscriber {
-	onFocusNodePath(focusedNodePath: string)
+export interface FocusNodeSubscriber {
+	onFocusNode(focusedNodePath: string)
 }
 
-export interface UnfocusNodePathSubscriber {
-	onUnfocusNodePath(unfocusNodePath: string)
+export interface UnfocusNodeSubscriber {
+	onUnfocusNode(focusedNodePath: string)
 }
 
 export enum SettingsEvents {
@@ -49,6 +49,6 @@ export enum SettingsEvents {
 	EDGE_METRIC_CHANGED_EVENT = "edge-metric-changed",
 	DISTRIBUTION_METRIC_CHANGED_EVENT = "distribution-metric-changed",
 	SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed",
-	NODE_PATH_FOCUSED = "node-path-focused",
-	NODE_PATH_UNFOCUSED = "node-path-unfocused"
+	NODE_FOCUSED_EVENT = "node-focused",
+	NODE_UNFOCUSED_EVENT = "node-unfocused"
 }

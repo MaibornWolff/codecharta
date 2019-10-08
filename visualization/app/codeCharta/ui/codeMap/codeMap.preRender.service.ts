@@ -184,7 +184,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.notifyMapChanged()
 		if (this.newFileLoaded) {
 			this.notifyLoadingFileStatus()
-			this.threeOrbitControlsService.setCamera()
+			this.threeOrbitControlsService.cameraActionWhenNewMapIsLoaded()
 			this.newFileLoaded = false
 		}
 	}

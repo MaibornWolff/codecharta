@@ -4,7 +4,7 @@ import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, Perspectiv
 import { ThreeSceneService } from "./threeSceneService"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import _ from "lodash"
-import { FocusNodePathSubscriber, UnfocusNodePathSubscriber } from "../../../state/settingsService/settings.service.events"
+import { FocusNodeSubscriber, UnfocusNodeSubscriber } from "../../../state/settingsService/settings.service.events"
 import { LoadingGifService } from "../../loadingGif/loadingGif.service"
 
 export interface CameraChangeSubscriber {
@@ -14,7 +14,7 @@ export interface CameraChangeSubscriber {
 /**
  * Service to manage the three orbit controls in an angular way.
  */
-export class ThreeOrbitControlsService implements FocusNodePathSubscriber, UnfocusNodePathSubscriber {
+export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
 	public controls: OrbitControls
@@ -33,11 +33,11 @@ export class ThreeOrbitControlsService implements FocusNodePathSubscriber, Unfoc
 		SettingsService.subscribeToUnfocusNode($rootScope, this)
 	}
 
-	public onFocusNodePath(focusPath: string) {
+	public onFocusNode(focusPath: string) {
 		this.autoFitTo()
 	}
 
-	public onUnfocusNodePath(unfocusNodePath: string) {
+	public onUnfocusNode(unfocusNodePath: string) {
 		if (!this.loadingGifService.isLoadingNewFile() && !this.loadingGifService.isLoadingNewMap()) {
 			this.resetCameraPerspective()
 		}
@@ -49,20 +49,20 @@ export class ThreeOrbitControlsService implements FocusNodePathSubscriber, Unfoc
 		this.applyOldZoom(zoom)
 	}
 
-	public setCamera() {
+	public cameraActionWhenNewMapIsLoaded() {
 		if (this.settingsService.getSettings().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 			this.setDefaultZoom()
 		} else {
-			this.setDefaultZoomWithoutPerspective()
+			this.initializeDefaultZoomWithoutAutoFit()
 		}
 	}
 
-	public setDefaultZoom() {
+	private setDefaultZoom() {
 		this.defaultZoom = this.getZoom()
 	}
 
-	public resetCameraPerspective() {
+	private resetCameraPerspective() {
 		this.threeCameraService.camera.position
 			.sub(this.controls.target)
 			.setLength(this.defaultZoom)
@@ -121,13 +121,13 @@ export class ThreeOrbitControlsService implements FocusNodePathSubscriber, Unfoc
 		this.threeCameraService.camera.updateProjectionMatrix()
 	}
 
-	private setDefaultZoomWithoutPerspective() {
-		const obj = this.threeSceneService.mapGeometry.clone()
+	private initializeDefaultZoomWithoutAutoFit() {
+		const obj = this.threeSceneService.mapGeometry
 		const boundingSphere = new Box3().setFromObject(obj).getBoundingSphere()
 
 		const cameraReference = this.threeCameraService.camera.clone()
 
-		const len = this.autoFitToCalculation(boundingSphere, cameraReference)
+		const len: number = this.autoFitToCalculation(boundingSphere, cameraReference)
 
 		this.defaultCameraPosition.set(len, len, len)
 

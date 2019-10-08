@@ -109,19 +109,19 @@ describe("ThreeOrbitControlsService", () => {
 		it("should set the camera perspective, to the origin value", () => {
 			threeOrbitControlsService.defaultCameraPosition.set(12, 13, 14)
 
-			threeOrbitControlsService.onFocusNodePath("")
+			threeOrbitControlsService.onFocusNode("")
 
 			expect(threeCameraService.camera.position).toMatchSnapshot()
 		})
 
 		it("should set the camera perspective, to Vector with 0 if no default Value is saved", () => {
-			threeOrbitControlsService.onFocusNodePath("")
+			threeOrbitControlsService.onFocusNode("")
 
 			expect(threeCameraService.camera.position).toMatchSnapshot()
 		})
 
 		it("autoFitTo ", () => {
-			threeOrbitControlsService.onFocusNodePath("something")
+			threeOrbitControlsService.onFocusNode("something")
 
 			expect(threeOrbitControlsService.controls.update).toBeCalled()
 

@@ -16,8 +16,8 @@ import {
 	SearchPatternSubscriber,
 	SettingsEvents,
 	SettingsServiceSubscriber,
-	FocusNodePathSubscriber,
-	UnfocusNodePathSubscriber
+	FocusNodeSubscriber,
+	UnfocusNodeSubscriber
 } from "./settings.service.events"
 
 export class SettingsService implements FileStateServiceSubscriber {
@@ -50,7 +50,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 					delete this.update.dynamicSettings.searchPattern
 				} else if (
 					this.update.dynamicSettings &&
-					(eventName == SettingsEvents.NODE_PATH_FOCUSED || eventName == SettingsEvents.NODE_PATH_UNFOCUSED)
+					(eventName == SettingsEvents.NODE_FOCUSED_EVENT || eventName == SettingsEvents.NODE_UNFOCUSED_EVENT)
 				) {
 					delete this.update.dynamicSettings.focusedNodePath
 				}
@@ -108,10 +108,10 @@ export class SettingsService implements FileStateServiceSubscriber {
 				}
 				if (update.dynamicSettings.focusedNodePath !== undefined) {
 					if (_.isEmpty(update.dynamicSettings.focusedNodePath)) {
-						this.notifyUnfocusedNodePathSubscribers()
+						this.notifyUnfocusNodeSubscribers()
 					}
 					if (!_.isEmpty(update.dynamicSettings.focusedNodePath)) {
-						this.notifyFocusedNodePathSubscribers()
+						this.notifyFocusNodeSubscribers()
 					}
 				}
 			}
@@ -288,12 +288,12 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.notify(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: this.settings.dynamicSettings.searchPattern })
 	}
 
-	private notifyFocusedNodePathSubscribers() {
-		this.notify(SettingsEvents.NODE_PATH_FOCUSED, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
+	private notifyFocusNodeSubscribers() {
+		this.notify(SettingsEvents.NODE_FOCUSED_EVENT, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
 	}
 
-	private notifyUnfocusedNodePathSubscribers() {
-		this.notify(SettingsEvents.NODE_PATH_UNFOCUSED, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
+	private notifyUnfocusNodeSubscribers() {
+		this.notify(SettingsEvents.NODE_UNFOCUSED_EVENT, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
 	}
 
 	private notify(eventName: string, data: object) {
@@ -352,15 +352,15 @@ export class SettingsService implements FileStateServiceSubscriber {
 		})
 	}
 
-	public static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodePathSubscriber) {
-		$rootScope.$on(SettingsEvents.NODE_PATH_FOCUSED, (event, data) => {
-			subscriber.onFocusNodePath(data.focusedNodePath)
+	public static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodeSubscriber) {
+		$rootScope.$on(SettingsEvents.NODE_FOCUSED_EVENT, (event, data) => {
+			subscriber.onFocusNode(data.focusedNodePath)
 		})
 	}
 
-	public static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodePathSubscriber) {
-		$rootScope.$on(SettingsEvents.NODE_PATH_UNFOCUSED, (event, data) => {
-			subscriber.onUnfocusNodePath(data.focusedNodePath)
+	public static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodeSubscriber) {
+		$rootScope.$on(SettingsEvents.NODE_UNFOCUSED_EVENT, (event, data) => {
+			subscriber.onUnfocusNode(data.focusedNodePath)
 		})
 	}
 }
