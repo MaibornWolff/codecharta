@@ -26,20 +26,19 @@ export class ThreeOrbitControlsService implements FocusNodePathSubscriber, Unfoc
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService
+		private settingsService: SettingsService,
+		private loadingGifService: LoadingGifService
 	) {
 		SettingsService.subscribeToFocusNode($rootScope, this)
 		SettingsService.subscribeToUnfocusNode($rootScope, this)
 	}
 
 	public onFocusNodePath(focusPath: string) {
-		if (!_.isEmpty(focusPath)) {
-			this.autoFitTo()
-		}
+		this.autoFitTo()
 	}
 
 	public onUnfocusNodePath(unfocusNodePath: string) {
-		if (_.isEmpty(unfocusNodePath)) {
+		if (!this.loadingGifService.isLoadingNewFile() && !this.loadingGifService.isLoadingNewMap()) {
 			this.resetCameraPerspective()
 		}
 	}
