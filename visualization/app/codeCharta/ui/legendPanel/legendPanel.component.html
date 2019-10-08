@@ -1,4 +1,4 @@
-<div class="block-wrapper cc-shadow" ng-class="{ visible: $ctrl._viewModel.isLegendVisible }">
+<div class="block-wrapper cc-shadow" ng-class="{ visible: $ctrl._viewModel.isLegendVisible, expanded: $ctrl._viewModel.isSideBarVisible }">
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="legend-block">
 			<img id="green" alt="green color" />
@@ -50,4 +50,9 @@
 		</span>
 	</div>
 </div>
-<md-button class="panel-button md-raised md-primary cc-shadow" ng-click="$ctrl.toggle()">Legend</md-button>
+<md-button
+	class="panel-button md-raised md-primary cc-shadow"
+	ng-click="$ctrl.toggle()"
+	ng-class="{ expanded: $ctrl._viewModel.isSideBarVisible }"
+	>Legend</md-button
+>

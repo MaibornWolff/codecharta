@@ -18,12 +18,14 @@ export interface PackageList {
 export class LegendPanelController implements SettingsServiceSubscriber, AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
 		isLegendVisible: boolean
+		isSideBarVisible: boolean
 		isDeltaState: boolean
 		colorRange: ColorRange
 		invertColorRange: boolean
 		packageLists: PackageList[]
 	} = {
 		isLegendVisible: false,
+		isSideBarVisible: null,
 		isDeltaState: null,
 		colorRange: null,
 		invertColorRange: null,
@@ -53,11 +55,7 @@ export class LegendPanelController implements SettingsServiceSubscriber, Attribu
 	}
 
 	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
-		if (isAttributeSideBarVisible) {
-			$(".panel-button, legend-panel-component .block-wrapper").addClass("expanded")
-		} else {
-			$(".panel-button, legend-panel-component .block-wrapper").removeClass("expanded")
-		}
+		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
 	private refreshNormalColors(s: Settings) {
