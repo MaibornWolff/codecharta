@@ -15,7 +15,9 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber 
 	}
 
 	public onRenderMapChanged(map: CodeMapNode) {
-		if (map == this._viewModel.rootNode) return
+		if (map == this._viewModel.rootNode) {
+			return
+		}
 
 		this._viewModel.rootNode = null // To force the update of the root folder's name in the UI
 		this.$timeout(() => {
