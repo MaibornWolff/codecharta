@@ -37,7 +37,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.autoFitTo()
 	}
 
-	public onUnfocusNode(unfocusNodePath: string) {
+	public onUnfocusNode() {
 		if (!this.loadingGifService.isLoadingNewFile() && !this.loadingGifService.isLoadingNewMap()) {
 			this.resetCameraPerspective()
 		}

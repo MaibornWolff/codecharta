@@ -360,7 +360,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 
 	public static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodeSubscriber) {
 		$rootScope.$on(SettingsEvents.NODE_UNFOCUSED_EVENT, (event, data) => {
-			subscriber.onUnfocusNode(data.focusedNodePath)
+			subscriber.onUnfocusNode()
 		})
 	}
 }

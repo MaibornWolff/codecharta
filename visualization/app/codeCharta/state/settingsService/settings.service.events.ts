@@ -37,7 +37,7 @@ export interface FocusNodeSubscriber {
 }
 
 export interface UnfocusNodeSubscriber {
-	onUnfocusNode(focusedNodePath: string)
+	onUnfocusNode()
 }
 
 export enum SettingsEvents {
