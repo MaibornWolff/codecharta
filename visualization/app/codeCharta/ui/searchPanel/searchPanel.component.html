@@ -4,9 +4,7 @@
 			<search-bar-component></search-bar-component>
 			<search-panel-mode-selector-component></search-panel-mode-selector-component>
 		</div>
-		<span class="section-title" ng-click="$ctrl.toggle()">
-			Search
-		</span>
+		<span class="section-title" ng-click="$ctrl.toggle()"> Search <i class="fa fa-angle-down"></i> </span>
 		<div class="section-body">
 			<blacklist-panel-component ng-show="$ctrl._viewModel.searchPanelMode == 'hide'"></blacklist-panel-component>
 			<blacklist-panel-component ng-show="$ctrl._viewModel.searchPanelMode == 'exclude'"></blacklist-panel-component>

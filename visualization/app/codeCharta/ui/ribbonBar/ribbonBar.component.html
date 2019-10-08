@@ -9,50 +9,48 @@
 	</div>
 </md-card>
 
-<md-card class="element-to-toggle">
+<md-card>
 	<div class="section">
 		<div class="section-header">
 			<area-metric-chooser-component></area-metric-chooser-component>
 		</div>
-		<span class="section-title" ng-click="$ctrl.toggle()">Size</span>
+		<span class="section-title" ng-click="$ctrl.toggle($event)">Size <i class="fa fa-angle-down"></i></span>
 		<div class="section-body">
 			<area-settings-panel-component></area-settings-panel-component>
 		</div>
 	</div>
 </md-card>
 
-<md-card class="element-to-toggle">
+<md-card>
 	<div class="section">
 		<div class="section-header">
 			<height-metric-chooser-component></height-metric-chooser-component>
 		</div>
-		<span class="section-title" ng-click="$ctrl.toggle()">Height</span>
+		<span class="section-title" ng-click="$ctrl.toggle($event)">Height <i class="fa fa-angle-down"></i></span>
 		<div class="section-body">
 			<height-settings-panel-component></height-settings-panel-component>
 		</div>
 	</div>
 </md-card>
 
-<md-card class="element-to-toggle">
+<md-card>
 	<div class="section">
 		<div class="section-header">
 			<color-metric-chooser-component></color-metric-chooser-component>
 		</div>
-		<span class="section-title" ng-click="$ctrl.toggle()">Color</span>
+		<span class="section-title" ng-click="$ctrl.toggle($event)">Color <i class="fa fa-angle-down"></i></span>
 		<div class="section-body">
 			<color-settings-panel-component></color-settings-panel-component>
 		</div>
 	</div>
 </md-card>
 
-<md-card class="element-to-toggle">
+<md-card>
 	<div class="section">
 		<div class="section-header">
 			<edge-chooser-component></edge-chooser-component>
 		</div>
-		<span class="section-title" ng-click="$ctrl.toggle()">
-			Edges
-		</span>
+		<span class="section-title" ng-click="$ctrl.toggle($event)"> Edges <i class="fa fa-angle-down"></i> </span>
 		<div class="section-body">
 			<edge-settings-panel-component></edge-settings-panel-component>
 		</div>
