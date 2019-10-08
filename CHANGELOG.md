@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Increased size of ribbonBar for big screens #644
+
 ### Chore
 
 ## [1.35.0] - 2019-10-04
