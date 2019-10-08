@@ -36,7 +36,7 @@ export class FileExtensionCalculator {
 				if (matchingFileExtensionObject) {
 					matchingFileExtensionObject.absoluteMetricValue += metricValue
 				} else {
-					distribution.push(this.getDistibutionObject(fileExtension, metricValue))
+					distribution.push(this.getDistributionObject(fileExtension, metricValue))
 				}
 			})
 		return distribution
@@ -96,7 +96,7 @@ export class FileExtensionCalculator {
 		}
 	}
 
-	private static getDistibutionObject(fileExtension: string, metricValue: number): MetricDistribution {
+	private static getDistributionObject(fileExtension: string, metricValue: number): MetricDistribution {
 		return {
 			fileExtension: fileExtension,
 			absoluteMetricValue: metricValue,
