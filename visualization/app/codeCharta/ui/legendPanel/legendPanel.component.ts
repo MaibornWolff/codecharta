@@ -17,11 +17,13 @@ export interface PackageList {
 
 export class LegendPanelController implements SettingsServiceSubscriber, AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
+		isLegendVisible: boolean
 		isDeltaState: boolean
 		colorRange: ColorRange
 		invertColorRange: boolean
 		packageLists: PackageList[]
 	} = {
+		isLegendVisible: false,
 		isDeltaState: null,
 		colorRange: null,
 		invertColorRange: null,
@@ -143,12 +145,7 @@ export class LegendPanelController implements SettingsServiceSubscriber, Attribu
 	}
 
 	public toggle() {
-		const button = $("legend-panel-component .block-wrapper")
-		if (button.hasClass("visible")) {
-			button.removeClass("visible")
-		} else {
-			button.addClass("visible")
-		}
+		this._viewModel.isLegendVisible = !this._viewModel.isLegendVisible
 	}
 }
 
