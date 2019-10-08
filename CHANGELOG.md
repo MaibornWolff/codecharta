@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Fixed root folder name in TreeView after new map after loading new map #649
+
 ### Chore
 
 ## [1.35.0] - 2019-10-04
