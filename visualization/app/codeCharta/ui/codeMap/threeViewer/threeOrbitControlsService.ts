@@ -58,8 +58,15 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		}
 	}
 
-	private setDefaultZoom() {
-		this.defaultZoom = this.getZoom()
+	public autoFitTo() {
+		const boundingSphere = this.getBoundingSphere()
+
+		const len: number = this.autoFitToCalculation(boundingSphere)
+
+		this.threeCameraService.camera.position.set(len, len, len)
+		this.controls.update()
+
+		this.focusCameraViewToCenter(boundingSphere)
 	}
 
 	private resetCameraPerspective() {
@@ -94,7 +101,13 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
-	private autoFitToCalculation(boundingSphere, cameraReference) {
+	private setDefaultZoom() {
+		this.defaultZoom = this.getZoom()
+	}
+
+	private autoFitToCalculation(boundingSphere) {
+		const cameraReference = this.threeCameraService.camera
+
 		const scale = 1.4 // object size / display size
 		const objectAngularSize = ((cameraReference.fov * Math.PI) / 180) * scale
 		const distanceToCamera = boundingSphere.radius / Math.tan(objectAngularSize / 2)
@@ -103,40 +116,33 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		return len
 	}
 
-	public autoFitTo(obj = this.threeSceneService.mapGeometry) {
-		const boundingSphere = new Box3().setFromObject(obj).getBoundingSphere()
-		const cameraReference = this.threeCameraService.camera
-
-		const len: number = this.autoFitToCalculation(boundingSphere, cameraReference)
-
-		cameraReference.position.set(len, len, len)
-		this.controls.update()
-
+	private focusCameraViewToCenter(boundingSphere) {
 		const t: Vector3 = boundingSphere.center.clone()
 		t.setY(0)
 		this.controls.target.set(t.x, t.y, t.z)
 
-		cameraReference.lookAt(t)
+		this.threeCameraService.camera.lookAt(t)
 
 		this.threeCameraService.camera.updateProjectionMatrix()
 	}
 
 	private initializeDefaultZoomWithoutAutoFit() {
-		const obj = this.threeSceneService.mapGeometry
-		const boundingSphere = new Box3().setFromObject(obj).getBoundingSphere()
+		const autoFittedPerspective: Vector3 = new Vector3(0, 0, 0)
+		const boundingSphere = this.getBoundingSphere()
+		const len: number = this.autoFitToCalculation(boundingSphere)
 
-		const cameraReference = this.threeCameraService.camera.clone()
+		autoFittedPerspective.set(len, len, len)
 
-		const len: number = this.autoFitToCalculation(boundingSphere, cameraReference)
-
-		this.defaultCameraPosition.set(len, len, len)
-
-		const targetfake: Vector3 = new Vector3(0, 0, 0)
 		const t: Vector3 = boundingSphere.center
 		t.setY(0)
-		targetfake.set(t.x, t.y, t.z)
 
-		this.defaultZoom = this.defaultCameraPosition.distanceTo(targetfake)
+		const centerVector: Vector3 = new Vector3(t.x, t.y, t.z)
+
+		this.defaultZoom = autoFittedPerspective.distanceTo(centerVector)
+	}
+
+	private getBoundingSphere() {
+		return new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere()
 	}
 
 	public init(domElement) {
