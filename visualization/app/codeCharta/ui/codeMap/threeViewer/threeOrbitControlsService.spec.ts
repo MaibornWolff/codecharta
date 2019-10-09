@@ -98,7 +98,7 @@ describe("ThreeOrbitControlsService", () => {
 		expect(threeCameraService.camera.position).toMatchSnapshot()
 	})
 
-	describe("onFocusedNodePathChanged", () => {
+	describe("onFocusedNode", () => {
 		beforeEach(() => {
 			threeOrbitControlsService.controls = {
 				target: new THREE.Vector3(1, 1, 1)
@@ -106,26 +106,41 @@ describe("ThreeOrbitControlsService", () => {
 			threeOrbitControlsService.controls.update = jest.fn()
 		})
 
-		it("should set the camera perspective, to the origin value", () => {
-			threeOrbitControlsService.defaultCameraPosition.set(12, 13, 14)
-
-			threeOrbitControlsService.onFocusNode("")
-
-			expect(threeCameraService.camera.position).toMatchSnapshot()
-		})
-
-		it("should set the camera perspective, to Vector with 0 if no default Value is saved", () => {
-			threeOrbitControlsService.onFocusNode("")
-
-			expect(threeCameraService.camera.position).toMatchSnapshot()
-		})
-
-		it("autoFitTo ", () => {
+		it("autoFitTo have to be ", () => {
 			threeOrbitControlsService.onFocusNode("something")
 
 			expect(threeOrbitControlsService.controls.update).toBeCalled()
 
-			expect(threeCameraService.camera.position).toMatchSnapshot()
 		})
 	})
+
+
+	describe("onUnfocusNode", () => {
+		beforeEach(() => {
+			threeOrbitControlsService["resetCameraPerspective"] = jest.fn()
+		})
+
+		it("should call resetCamera, when map is not loading ", () => {
+			loadingGifService["isLoadingFile"] = false
+			loadingGifService["isLoadingMap"] = false
+
+			threeOrbitControlsService.onUnfocusNode()
+
+			expect(threeOrbitControlsService["resetCameraPerspective"]).toBeCalled()
+
+		})
+
+
+		it("should not call resetCamera, when map is loading ", () => {
+			loadingGifService["isLoadingFile"] = true
+			loadingGifService["isLoadingMap"] = false
+
+			threeOrbitControlsService.onUnfocusNode()
+
+			expect(threeOrbitControlsService["resetCameraPerspective"]).not.toHaveBeenCalled()
+
+		})
+	})
+
+	
 })
