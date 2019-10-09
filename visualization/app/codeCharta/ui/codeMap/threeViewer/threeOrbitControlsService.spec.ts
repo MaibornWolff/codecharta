@@ -65,7 +65,7 @@ describe("ThreeOrbitControlsService", () => {
 		})()
 	}
 
-	function withMockedControlService(){
+	function withMockedControlService() {
 		threeOrbitControlsService.controls = {
 			target: new THREE.Vector3(1, 1, 1)
 		} as OrbitControls
@@ -107,16 +107,12 @@ describe("ThreeOrbitControlsService", () => {
 	})
 
 	describe("onFocusedNode", () => {
-
 		it("autoFitTo have to be ", () => {
-
 			threeOrbitControlsService.onFocusNode("something")
 
 			expect(threeOrbitControlsService.controls.update).toBeCalled()
-
 		})
 	})
-
 
 	describe("onUnfocusNode", () => {
 		beforeEach(() => {
@@ -130,9 +126,7 @@ describe("ThreeOrbitControlsService", () => {
 			threeOrbitControlsService.onUnfocusNode()
 
 			expect(threeOrbitControlsService["resetCameraPerspective"]).toBeCalled()
-
 		})
-
 
 		it("should not call resetCamera, when map is loading ", () => {
 			loadingGifService["isLoadingFile"] = true
@@ -141,33 +135,24 @@ describe("ThreeOrbitControlsService", () => {
 			threeOrbitControlsService.onUnfocusNode()
 
 			expect(threeOrbitControlsService["resetCameraPerspective"]).not.toHaveBeenCalled()
-
 		})
-
 	})
 
-	describe("autoFitTo", ()=>{
-
-		it("should auto fit map to its origin value ", ()=>{
-
-			threeCameraService.camera.position.set(0,0,0)
+	describe("autoFitTo", () => {
+		it("should auto fit map to its origin value ", () => {
+			threeCameraService.camera.position.set(0, 0, 0)
 
 			threeOrbitControlsService.autoFitTo()
 
 			expect(threeCameraService.camera.position).toEqual(vector)
-
 		})
 
-		it("should call an control update", () =>{
-			 threeCameraService.camera.lookAt = jest.fn()
-
+		it("should call an control update", () => {
+			threeCameraService.camera.lookAt = jest.fn()
 
 			threeOrbitControlsService.autoFitTo()
 
-
 			expect(threeCameraService.camera.lookAt).toBeCalledWith(threeOrbitControlsService.controls.target)
 		})
-
 	})
-
 })
