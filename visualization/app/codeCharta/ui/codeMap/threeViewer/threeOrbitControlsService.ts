@@ -119,13 +119,13 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	private focusCameraViewToCenter(boundingSphere) {
-		const cameraTarget: Vector3 = boundingSphere.center.clone()
+		const boundingSphereCenter: Vector3 = boundingSphere.center.clone()
 
-		cameraTarget.setY(0)
+		boundingSphereCenter.setY(0)
 
-		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
+		this.controls.target.set(boundingSphereCenter.x, boundingSphereCenter.y, boundingSphereCenter.z)
 
-		this.threeCameraService.camera.lookAt(cameraTarget)
+		this.threeCameraService.camera.lookAt(boundingSphereCenter)
 
 		this.threeCameraService.camera.updateProjectionMatrix()
 	}
@@ -139,11 +139,11 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 		this.defaultCameraPosition = autoFittedPerspective.clone()
 
-		const centerVector: Vector3 = boundingSphere.center
+		const boundingSphereCenter: Vector3 = boundingSphere.center
 
-		centerVector.setY(0)
+		boundingSphereCenter.setY(0)
 
-		this.defaultZoom = autoFittedPerspective.distanceTo(centerVector)
+		this.defaultZoom = autoFittedPerspective.distanceTo(boundingSphereCenter)
 	}
 
 	private getBoundingSphere() {
