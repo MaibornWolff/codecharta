@@ -8,7 +8,7 @@ legend-panel-component {
 		transform: rotate(90deg);
 		border-radius: 0 0 5px 5px;
 
-		&.expanded {
+		&.sideBarVisible {
 			right: 316px;
 		}
 	}
@@ -22,7 +22,7 @@ legend-panel-component {
 		visibility: hidden;
 		border-radius: 5px;
 
-		&.expanded {
+		&.sideBarVisible {
 			right: 390px;
 		}
 
