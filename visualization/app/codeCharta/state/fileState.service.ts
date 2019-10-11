@@ -1,6 +1,6 @@
 import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { LoadingGifService } from "../ui/loadingGif/loadingGif.service"
+import { LoadingStatusService } from "./loadingStatusService"
 
 export interface FileStateServiceSubscriber {
 	onFileSelectionStatesChanged(fileStates: FileState[])
@@ -15,7 +15,7 @@ export class FileStateService {
 	private fileStates: Array<FileState> = []
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private loadingGifService: LoadingGifService) {}
+	constructor(private $rootScope: IRootScopeService, private loadingStatusService: LoadingStatusService) {}
 
 	public resetMaps() {
 		this.fileStates = []
@@ -69,7 +69,7 @@ export class FileStateService {
 	}
 
 	private notifySelectionChange() {
-		this.loadingGifService.updateLoadingMapFlag(true)
+		this.loadingStatusService.updateLoadingMapFlag(true)
 		this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
 	}
 

@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapController } from "./codeMap.component"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../../state/loadingStatusService"
 
 describe("ColorSettingsPanelController", () => {
 	let codeMapController: CodeMapController
@@ -58,12 +58,12 @@ describe("ColorSettingsPanelController", () => {
 			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith($rootScope, codeMapController)
 		})
 
-		it("should subscribe to LoadingGifService", () => {
-			LoadingGifService.subscribe = jest.fn()
+		it("should subscribe to LoadingStatusService", () => {
+			LoadingStatusService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(LoadingGifService.subscribe).toHaveBeenCalledWith($rootScope, codeMapController)
+			expect(LoadingStatusService.subscribe).toHaveBeenCalledWith($rootScope, codeMapController)
 		})
 
 		it("should set attribute isLoadingFile to true", () => {

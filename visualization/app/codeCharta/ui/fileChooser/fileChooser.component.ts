@@ -10,7 +10,7 @@ import { DialogService } from "../dialog/dialog.service"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { NameDataPair } from "../../codeCharta.model"
-import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../../state/loadingStatusService"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -19,7 +19,7 @@ export class FileChooserController {
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
 		private fileStateService: FileStateService,
-		private loadingGifService: LoadingGifService
+		private loadingStatusService: LoadingStatusService
 	) {}
 
 	public onImportNewFiles(element) {
@@ -28,7 +28,7 @@ export class FileChooserController {
 			for (let file of element.files) {
 				let reader = new FileReader()
 				reader.onloadstart = () => {
-					this.loadingGifService.updateLoadingFileFlag(true)
+					this.loadingStatusService.updateLoadingFileFlag(true)
 				}
 				reader.onload = event => {
 					this.setNewData(file.name, (<any>event.target).result)
@@ -45,7 +45,7 @@ export class FileChooserController {
 		}
 
 		this.codeChartaService.loadFiles([nameDataPair]).catch(e => {
-			this.loadingGifService.updateLoadingFileFlag(false)
+			this.loadingStatusService.updateLoadingFileFlag(false)
 			console.error(e)
 			this.printErrors(e)
 		})

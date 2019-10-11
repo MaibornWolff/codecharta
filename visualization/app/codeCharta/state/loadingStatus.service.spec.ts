@@ -1,14 +1,14 @@
-import { LoadingGifService } from "./loadingGif.service"
+import { LoadingStatusService } from "./loadingStatusService"
 import { IRootScopeService } from "angular"
-import { getService } from "../../../../mocks/ng.mockhelper"
+import { getService } from "../../../mocks/ng.mockhelper"
 
-describe("LoadingGifService", () => {
-	let loadingGifService: LoadingGifService
+describe("LoadingStatusService", () => {
+	let loadingStatusService: LoadingStatusService
 	let $rootScope: IRootScopeService
 
 	beforeEach(() => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		loadingGifService = new LoadingGifService($rootScope)
+		loadingStatusService = new LoadingStatusService($rootScope)
 		withMockedEventMethods()
 	})
 
@@ -18,19 +18,19 @@ describe("LoadingGifService", () => {
 
 	describe("updateLoadingFileFlag", () => {
 		it("should set isLoadingFile to true", () => {
-			loadingGifService.updateLoadingFileFlag(true)
+			loadingStatusService.updateLoadingFileFlag(true)
 
-			expect(loadingGifService["isLoadingFile"]).toBeTruthy()
+			expect(loadingStatusService["isLoadingFile"]).toBeTruthy()
 		})
 
 		it("should set isLoadingFile to false", () => {
-			loadingGifService.updateLoadingFileFlag(false)
+			loadingStatusService.updateLoadingFileFlag(false)
 
-			expect(loadingGifService["isLoadingFile"]).toBeFalsy()
+			expect(loadingStatusService["isLoadingFile"]).toBeFalsy()
 		})
 
 		it("should broadcast LOADING_FILE_STATUS_EVENT", () => {
-			loadingGifService.updateLoadingFileFlag(false)
+			loadingStatusService.updateLoadingFileFlag(false)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("loading-file-status-changed", false)
 		})
@@ -38,51 +38,51 @@ describe("LoadingGifService", () => {
 
 	describe("updateLoadingMapFlag", () => {
 		it("should set isLoadingMap to true", () => {
-			loadingGifService.updateLoadingMapFlag(true)
+			loadingStatusService.updateLoadingMapFlag(true)
 
-			expect(loadingGifService["isLoadingMap"]).toBeTruthy()
+			expect(loadingStatusService["isLoadingMap"]).toBeTruthy()
 		})
 
 		it("should set isLoadingMap to false", () => {
-			loadingGifService.updateLoadingMapFlag(false)
+			loadingStatusService.updateLoadingMapFlag(false)
 
-			expect(loadingGifService["isLoadingMap"]).toBeFalsy()
+			expect(loadingStatusService["isLoadingMap"]).toBeFalsy()
 		})
 
 		it("should broadcast LOADING_MAP_STATUS_EVENT", () => {
-			loadingGifService.updateLoadingMapFlag(false)
+			loadingStatusService.updateLoadingMapFlag(false)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("loading-map-status-changed", false)
 		})
 	})
 	describe("isLoadingNewFile", () => {
 		it("should return true, when isLoadingFile is true", () => {
-			loadingGifService["isLoadingFile"] = true
+			loadingStatusService["isLoadingFile"] = true
 
-			const result: boolean = loadingGifService.isLoadingNewFile()
+			const result: boolean = loadingStatusService.isLoadingNewFile()
 
 			expect(result).toBeTruthy()
 		})
 		it("should return false, when isLoadingFile is true", () => {
-			loadingGifService["isLoadingFile"] = false
+			loadingStatusService["isLoadingFile"] = false
 
-			const result: boolean = loadingGifService.isLoadingNewFile()
+			const result: boolean = loadingStatusService.isLoadingNewFile()
 
 			expect(result).toBeFalsy()
 		})
 	})
 	describe("isLoadingNewMap", () => {
 		it("should return true, when isLoadingMap is true", () => {
-			loadingGifService["isLoadingMap"] = true
+			loadingStatusService["isLoadingMap"] = true
 
-			const result: boolean = loadingGifService.isLoadingNewMap()
+			const result: boolean = loadingStatusService.isLoadingNewMap()
 
 			expect(result).toBeTruthy()
 		})
 		it("should return false, when isLoadingMap is true", () => {
-			loadingGifService["isLoadingMap"] = false
+			loadingStatusService["isLoadingMap"] = false
 
-			const result: boolean = loadingGifService.isLoadingNewMap()
+			const result: boolean = loadingStatusService.isLoadingNewMap()
 
 			expect(result).toBeFalsy()
 		})

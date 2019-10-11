@@ -1,7 +1,7 @@
 import "../state.module"
 import { SettingsService } from "./settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { LoadingGifService } from "../../ui/loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../loadingStatusService"
 import { AttributeTypeValue, FileSelectionState, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
@@ -13,7 +13,7 @@ describe("settingService", () => {
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
-	let loadingGifService: LoadingGifService
+	let loadingStatusService: LoadingStatusService
 
 	let settings: Settings
 	let fileStates: FileState[]
@@ -23,7 +23,7 @@ describe("settingService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods()
-		withMockedLoadingGifService()
+		withMockedLoadingStatusService()
 	})
 
 	function restartSystem() {
@@ -31,7 +31,7 @@ describe("settingService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
-		loadingGifService = getService<LoadingGifService>("loadingGifService")
+		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
 		fileStates = [
@@ -41,7 +41,7 @@ describe("settingService", () => {
 	}
 
 	function rebuildService() {
-		settingsService = new SettingsService($rootScope, $timeout, loadingGifService)
+		settingsService = new SettingsService($rootScope, $timeout, loadingStatusService)
 	}
 
 	function withMockedEventMethods() {
@@ -49,8 +49,8 @@ describe("settingService", () => {
 		$rootScope.$broadcast = settingsService["$rootScope"].$on = jest.fn()
 	}
 
-	function withMockedLoadingGifService() {
-		loadingGifService = settingsService["loadingGifService"] = jest.fn().mockReturnValue({
+	function withMockedLoadingStatusService() {
+		loadingStatusService = settingsService["loadingStatusService"] = jest.fn().mockReturnValue({
 			updateLoadingMapFlag: jest.fn()
 		})()
 	}
@@ -122,7 +122,7 @@ describe("settingService", () => {
 		it("should call updateLoadingMapFlag", () => {
 			settingsService.updateSettings({ appSettings: { invertHeight: true } })
 
-			expect(loadingGifService.updateLoadingMapFlag).toHaveBeenCalledWith(true)
+			expect(loadingStatusService.updateLoadingMapFlag).toHaveBeenCalledWith(true)
 		})
 
 		it("should set attributeTypes", () => {

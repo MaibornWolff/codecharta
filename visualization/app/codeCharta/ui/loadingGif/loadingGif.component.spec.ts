@@ -2,7 +2,7 @@ import "./loadingGif.module"
 import { LoadingGifController } from "./loadingGif.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { LoadingGifService } from "./loadingGif.service"
+import { LoadingStatusService } from "../../state/loadingStatusService"
 
 describe("LoadingGifController", () => {
 	let loadingGifController: LoadingGifController
@@ -27,13 +27,13 @@ describe("LoadingGifController", () => {
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			LoadingGifService.subscribe = jest.fn()
+			LoadingStatusService.subscribe = jest.fn()
 		})
 
-		it("should subscribe to LoadingGifService", () => {
+		it("should subscribe to LoadingStatusService", () => {
 			rebuildController()
 
-			expect(LoadingGifService.subscribe).toHaveBeenCalledWith($rootScope, loadingGifController)
+			expect(LoadingStatusService.subscribe).toHaveBeenCalledWith($rootScope, loadingGifController)
 		})
 
 		it("should set attribute isLoadingFile to true", () => {

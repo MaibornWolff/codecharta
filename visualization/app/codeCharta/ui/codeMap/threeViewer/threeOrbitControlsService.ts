@@ -5,7 +5,7 @@ import { ThreeSceneService } from "./threeSceneService"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import _ from "lodash"
 import { FocusNodeSubscriber, UnfocusNodeSubscriber } from "../../../state/settingsService/settings.service.events"
-import { LoadingGifService } from "../../loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../../../state/loadingStatusService"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -27,7 +27,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		private threeSceneService: ThreeSceneService,
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private loadingGifService: LoadingGifService
+		private loadingStatusService: LoadingStatusService
 	) {
 		SettingsService.subscribeToFocusNode($rootScope, this)
 		SettingsService.subscribeToUnfocusNode($rootScope, this)
@@ -38,7 +38,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public onUnfocusNode() {
-		if (!this.loadingGifService.isLoadingNewFile() && !this.loadingGifService.isLoadingNewMap()) {
+		if (!this.loadingStatusService.isLoadingNewFile() && !this.loadingStatusService.isLoadingNewMap()) {
 			this.resetCameraPerspective()
 		}
 	}

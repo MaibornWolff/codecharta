@@ -9,7 +9,7 @@ import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
 import _ from "lodash"
-import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../../state/loadingStatusService"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
@@ -18,7 +18,7 @@ describe("fileChooserController", () => {
 	let settingsService: SettingsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
-	let loadingGifService: LoadingGifService
+	let loadingStatusService: LoadingStatusService
 
 	let fileName: string
 	let content: any
@@ -30,7 +30,7 @@ describe("fileChooserController", () => {
 		withMockedFileStateService()
 		withMockedDialogService()
 		withMockedCodeChartaService()
-		withMockedLoadingGifService()
+		withMockedLoadingStatusService()
 	})
 
 	afterEach(() => {
@@ -45,14 +45,14 @@ describe("fileChooserController", () => {
 		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
-		loadingGifService = getService<LoadingGifService>("loadingGifService")
+		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		fileName = "someFile.json"
 		content = _.cloneDeep(TEST_FILE_CONTENT)
 	}
 
 	function rebuildController() {
-		fileChooserController = new FileChooserController($scope, dialogService, codeChartaService, fileStateService, loadingGifService)
+		fileChooserController = new FileChooserController($scope, dialogService, codeChartaService, fileStateService, loadingStatusService)
 	}
 
 	function withMockedEventMethods() {
@@ -80,8 +80,8 @@ describe("fileChooserController", () => {
 		})()
 	}
 
-	function withMockedLoadingGifService() {
-		loadingGifService = settingsService["loadingGifService"] = jest.fn().mockReturnValue({
+	function withMockedLoadingStatusService() {
+		loadingStatusService = settingsService["loadingStatusService"] = jest.fn().mockReturnValue({
 			updateLoadingMapFlag: jest.fn(),
 			updateLoadingFileFlag: jest.fn()
 		})()
@@ -97,7 +97,7 @@ describe("fileChooserController", () => {
 		it("should not call updateLoadingFileFlag if no file loaded", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
 
-			expect(loadingGifService.updateLoadingFileFlag).not.toHaveBeenCalled()
+			expect(loadingStatusService.updateLoadingFileFlag).not.toHaveBeenCalled()
 		})
 	})
 

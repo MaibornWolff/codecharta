@@ -7,7 +7,7 @@ import { IRootScopeService } from "angular"
 import * as THREE from "three"
 import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { SettingsService } from "../../../state/settingsService/settings.service"
-import { LoadingGifService } from "../../loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../../../state/loadingStatusService"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeCameraService: ThreeCameraService
@@ -15,7 +15,7 @@ describe("ThreeOrbitControlsService", () => {
 	let $rootScope: IRootScopeService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let settingsService: SettingsService
-	let loadingGifService: LoadingGifService
+	let loadingStatusService: LoadingStatusService
 
 	let vector: Vector3
 
@@ -38,7 +38,7 @@ describe("ThreeOrbitControlsService", () => {
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
-		loadingGifService = getService<LoadingGifService>("loadingGifService")
+		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		vector = new Vector3(4.4577067775672665, 4.4577067775672665, 4.4577067775672665)
 	}
@@ -78,7 +78,7 @@ describe("ThreeOrbitControlsService", () => {
 			threeSceneService,
 			$rootScope,
 			settingsService,
-			loadingGifService
+			loadingStatusService
 		)
 	}
 
@@ -120,8 +120,8 @@ describe("ThreeOrbitControlsService", () => {
 		})
 
 		it("should call resetCamera, when map is not loading ", () => {
-			loadingGifService["isLoadingFile"] = false
-			loadingGifService["isLoadingMap"] = false
+			loadingStatusService["isLoadingFile"] = false
+			loadingStatusService["isLoadingMap"] = false
 
 			threeOrbitControlsService.onUnfocusNode()
 
@@ -129,8 +129,8 @@ describe("ThreeOrbitControlsService", () => {
 		})
 
 		it("should not call resetCamera, when map is loading ", () => {
-			loadingGifService["isLoadingFile"] = true
-			loadingGifService["isLoadingMap"] = false
+			loadingStatusService["isLoadingFile"] = true
+			loadingStatusService["isLoadingMap"] = false
 
 			threeOrbitControlsService.onUnfocusNode()
 

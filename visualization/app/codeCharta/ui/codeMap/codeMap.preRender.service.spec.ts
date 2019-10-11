@@ -9,7 +9,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
-import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../../state/loadingStatusService"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 
@@ -18,7 +18,7 @@ describe("codeMapPreRenderService", () => {
 	let $rootScope: IRootScopeService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
-	let loadingGifService: LoadingGifService
+	let loadingStatusService: LoadingStatusService
 	let edgeMetricService: EdgeMetricService
 
 	let settings: Settings
@@ -29,7 +29,7 @@ describe("codeMapPreRenderService", () => {
 		rebuildService()
 		withMockedEventMethods()
 		withMockedThreeOrbitControlsService()
-		withMockedLoadingGifService()
+		withMockedLoadingStatusService()
 	})
 
 	afterEach(() => {
@@ -53,7 +53,7 @@ describe("codeMapPreRenderService", () => {
 			$rootScope,
 			threeOrbitControlsService,
 			codeMapRenderService,
-			loadingGifService,
+			loadingStatusService,
 			edgeMetricService
 		)
 	}
@@ -69,8 +69,8 @@ describe("codeMapPreRenderService", () => {
 		})()
 	}
 
-	function withMockedLoadingGifService() {
-		loadingGifService = codeMapPreRenderService["loadingGifService"] = jest.fn().mockReturnValue({
+	function withMockedLoadingStatusService() {
+		loadingStatusService = codeMapPreRenderService["loadingStatusService"] = jest.fn().mockReturnValue({
 			updateLoadingMapFlag: jest.fn(),
 			updateLoadingFileFlag: jest.fn()
 		})()

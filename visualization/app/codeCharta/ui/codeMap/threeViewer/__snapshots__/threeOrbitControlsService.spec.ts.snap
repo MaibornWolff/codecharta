@@ -1,53 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ThreeOrbitControlsService onFocusedNode autoFitTo  1`] = `
-Vector3 {
-  "x": 4.4577067775672665,
-  "y": 4.4577067775672665,
-  "z": 4.4577067775672665,
-}
-`;
-
-exports[`ThreeOrbitControlsService onFocusedNode should set the camera perspective, to Vector with 0 if no default Value is saved 1`] = `
-Vector3 {
-  "x": 4.4577067775672665,
-  "y": 4.4577067775672665,
-  "z": 4.4577067775672665,
-}
-`;
-
-exports[`ThreeOrbitControlsService onFocusedNode should set the camera perspective, to the origin value 1`] = `
-Vector3 {
-  "x": 4.4577067775672665,
-  "y": 4.4577067775672665,
-  "z": 4.4577067775672665,
-}
-`;
-
-exports[`ThreeOrbitControlsService onFocusedNodePathChanged autoFitTo  1`] = `
-Vector3 {
-  "x": 4.4577067775672665,
-  "y": 4.4577067775672665,
-  "z": 4.4577067775672665,
-}
-`;
-
-exports[`ThreeOrbitControlsService onFocusedNodePathChanged should set the camera perspective, to Vector with 0 if no default Value is saved 1`] = `
-Vector3 {
-  "x": 4.4577067775672665,
-  "y": 4.4577067775672665,
-  "z": 4.4577067775672665,
-}
-`;
-
-exports[`ThreeOrbitControlsService onFocusedNodePathChanged should set the camera perspective, to the origin value 1`] = `
-Vector3 {
-  "x": 4.4577067775672665,
-  "y": 4.4577067775672665,
-  "z": 4.4577067775672665,
-}
-`;
-
 exports[`ThreeOrbitControlsService rotateCameraInVectorDirection  1`] = `
 Vector3 {
   "x": 0,
