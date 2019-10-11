@@ -25,7 +25,7 @@ allprojects {
     apply plugin: 'maven'
 
     jacoco {
-        toolVersion = '0.8.1'
+        toolVersion = jacoco_version
         reportsDir = file("$buildDir/reports")
     }
 }
