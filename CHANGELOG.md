@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Fixed root folder name in TreeView after new map after loading new map #649
 - Increased size of ribbonBar for big screens #644
+- Sanitize input for shelljs #600
 
 ### Chore
 
