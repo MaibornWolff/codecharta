@@ -15,10 +15,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
--   Increased size of ribbonBar for big screens #644
--   Camera is now resetted correctly, when unfocusing #634
+- Camera is now resetted correctly, when unfocusing #634
+- Fixed root folder name in TreeView after new map after loading new map #649
+- Increased size of ribbonBar for big screens #644
 
 ### Chore
+
+- Bump jacoco from 0.8.1 to 0.8.4 in /analysis
 
 ## [1.35.0] - 2019-10-04
 
