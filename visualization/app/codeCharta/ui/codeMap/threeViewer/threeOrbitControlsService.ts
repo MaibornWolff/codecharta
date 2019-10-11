@@ -19,7 +19,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 	public controls: OrbitControls
 	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
-	public defaultZoom: number = 0
+	private defaultZoom: number = 0
 
 	/* ngInject */
 	constructor(
@@ -61,7 +61,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	public autoFitTo() {
 		const boundingSphere = this.getBoundingSphere()
 
-		const len: number = this.autoFitToCalculation(boundingSphere)
+		const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
 		const cameraReference = this.threeCameraService.camera
 
 		cameraReference.position.set(len, len, len)
@@ -107,7 +107,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.defaultZoom = this.getZoom()
 	}
 
-	private autoFitToCalculation(boundingSphere) {
+	private cameraPerspectiveLengthCalculation(boundingSphere) {
 		const cameraReference = this.threeCameraService.camera
 
 		const scale = 1.4 // object size / display size
@@ -119,11 +119,13 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	private focusCameraViewToCenter(boundingSphere) {
-		const t: Vector3 = boundingSphere.center.clone()
-		t.setY(0)
-		this.controls.target.set(t.x, t.y, t.z)
+		const cameraTarget: Vector3 = boundingSphere.center.clone()
 
-		this.threeCameraService.camera.lookAt(t)
+		cameraTarget.setY(0)
+
+		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
+
+		this.threeCameraService.camera.lookAt(cameraTarget)
 
 		this.threeCameraService.camera.updateProjectionMatrix()
 	}
@@ -131,16 +133,15 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	private initializeDefaultZoomWithoutAutoFit() {
 		const autoFittedPerspective: Vector3 = new Vector3(0, 0, 0)
 		const boundingSphere = this.getBoundingSphere()
-		const len: number = this.autoFitToCalculation(boundingSphere)
+		const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
 
 		autoFittedPerspective.set(len, len, len)
 
 		this.defaultCameraPosition = autoFittedPerspective.clone()
 
-		const t: Vector3 = boundingSphere.center
-		t.setY(0)
+		const centerVector: Vector3 = boundingSphere.center
 
-		const centerVector: Vector3 = new Vector3(t.x, t.y, t.z)
+		centerVector.setY(0)
 
 		this.defaultZoom = autoFittedPerspective.distanceTo(centerVector)
 	}

@@ -154,5 +154,28 @@ describe("ThreeOrbitControlsService", () => {
 
 			expect(threeCameraService.camera.lookAt).toBeCalledWith(threeOrbitControlsService.controls.target)
 		})
+
+		it("should auto fit map to its original value ", () => {
+			threeCameraService.camera.updateProjectionMatrix= jest.fn()
+
+			threeOrbitControlsService.autoFitTo()
+
+			expect(threeOrbitControlsService.controls.update).toBeCalled()
+			expect(threeCameraService.camera.updateProjectionMatrix).toBeCalled()
+		})
+
+		it("should set the defaultCameraPerspective to the auto fitted vector", ()=>{
+
+			threeOrbitControlsService.defaultCameraPosition.set(0,0,0)
+
+			threeOrbitControlsService.autoFitTo()
+
+			expect(threeOrbitControlsService.defaultCameraPosition.x).toEqual(vector.x)
+			expect(threeOrbitControlsService.defaultCameraPosition.y).toEqual(vector.y)
+			expect(threeOrbitControlsService.defaultCameraPosition.z).toEqual(vector.z)
+
+		})
+
+
 	})
 })
