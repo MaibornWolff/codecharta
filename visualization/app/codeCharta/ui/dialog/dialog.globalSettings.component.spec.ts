@@ -43,15 +43,6 @@ describe("DialogGlobalSettingsController", () => {
 		})()
 	}
 
-	function setEmptyViewModel() {
-		dialogGlobalSettingsController["_viewModel"] = {
-			hideFlatBuildings: null,
-			maximizeDetailPanel: null,
-			isWhiteBackground: null,
-			resetCameraIfNewFileIsLoaded: null
-		}
-	}
-
 	describe("constructor", () => {
 		it("should subscribe to SettingsService Events", () => {
 			SettingsService.subscribe = jest.fn()
@@ -72,7 +63,6 @@ describe("DialogGlobalSettingsController", () => {
 
 	describe("updateSettingsFields", () => {
 		it("should update viewModel.hideFlatBuildings with appSettings", () => {
-			setEmptyViewModel()
 			settings.appSettings.hideFlatBuildings = false
 
 			dialogGlobalSettingsController["updateSettingsFields"](settings)
@@ -81,7 +71,6 @@ describe("DialogGlobalSettingsController", () => {
 		})
 
 		it("should update viewModel.isWhiteBackground with appSettings", () => {
-			setEmptyViewModel()
 			settings.appSettings.isWhiteBackground = true
 
 			dialogGlobalSettingsController["updateSettingsFields"](settings)
@@ -90,7 +79,6 @@ describe("DialogGlobalSettingsController", () => {
 		})
 
 		it("should update viewModel.resetCameraIfNewFileIsLoaded with appSettings", () => {
-			setEmptyViewModel()
 			settings.appSettings.resetCameraIfNewFileIsLoaded = false
 
 			dialogGlobalSettingsController["updateSettingsFields"](settings)
@@ -102,7 +90,6 @@ describe("DialogGlobalSettingsController", () => {
 	describe("applySettings", () => {
 		it("should call settingsService.updateSettings", () => {
 			settingsService.updateSettings = jest.fn()
-			setEmptyViewModel()
 			dialogGlobalSettingsController["_viewModel"].hideFlatBuildings = false
 			dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded = false
 
