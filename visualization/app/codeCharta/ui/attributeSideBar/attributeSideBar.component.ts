@@ -12,7 +12,6 @@ import {
 } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "./attributeSideBar.service"
-import $ from "jquery"
 
 export interface PrimaryMetrics {
 	node: {
@@ -37,10 +36,12 @@ export class AttributeSideBarController
 		node: Node
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
+		isSideBarVisible: boolean
 	} = {
 		node: null,
 		primaryMetricKeys: { node: {}, edge: {} } as PrimaryMetrics,
-		secondaryMetricKeys: null
+		secondaryMetricKeys: null,
+		isSideBarVisible: null
 	}
 
 	/* @ngInject */
@@ -79,11 +80,7 @@ export class AttributeSideBarController
 	}
 
 	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
-		if (isAttributeSideBarVisible) {
-			$(".side-bar-container").addClass("expanded")
-		} else {
-			$(".side-bar-container").removeClass("expanded")
-		}
+		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
 	public onClickCloseSideBar() {
