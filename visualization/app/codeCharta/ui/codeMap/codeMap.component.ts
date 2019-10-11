@@ -1,21 +1,20 @@
+import "./codeMap.component.scss"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-
-import "./codeMap.component.scss"
-
 import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
-import $ from "jquery"
 
 export class CodeMapController
 	implements BuildingRightClickedEventSubscriber, LoadingGifComponentSubscriber, AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
+		isSideBarVisible: boolean
 	} = {
-		isLoadingFile: true
+		isLoadingFile: true,
+		isSideBarVisible: null
 	}
 
 	/* @ngInject */
@@ -46,11 +45,7 @@ export class CodeMapController
 	}
 
 	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
-		if (isAttributeSideBarVisible) {
-			$("view-cube-component").addClass("expanded")
-		} else {
-			$("view-cube-component").removeClass("expanded")
-		}
+		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
 	public onLoadingFileStatusChanged(isLoadingFile: boolean) {
