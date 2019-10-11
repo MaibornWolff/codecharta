@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore
 
+- Bump jacoco from 0.8.1 to 0.8.4 in /analysis
+
 ## [1.35.0] - 2019-10-04
 
 ### Added
