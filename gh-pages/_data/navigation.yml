@@ -53,6 +53,11 @@ docs:
       - title: "Custom Metrics"
         url: /docs/custom-metrics/
 
+  - title: Visualization
+    children:
+      - title: "Visualization"
+        url: /docs/visualization/
+
   - title: Meta
     children:
       - title: "License"
