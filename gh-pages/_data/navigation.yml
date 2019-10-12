@@ -21,11 +21,15 @@ docs:
         url: /docs/installation/
       - title: "Upgrading"
         url: /docs/upgrading/
+      - title: "Upgrading"
+        url: /docs/versioning/
 
-  - title: Guides
+  - title: Tutorials
     children:
       - title: "Tutorials"
         url: /docs/tutorials/
+  - title: How-Tos
+    children:
       - title: "How-Tos"
         url: /docs/how-tos/
 
