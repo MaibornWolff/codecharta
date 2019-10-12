@@ -4,6 +4,8 @@ main:
     url: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json
   - title: "Docs"
     url: /docs/quick-start-guide/
+  - title: "Examples"
+    url: /docs/examples/
   - title: "News"
     url: /news/
 
