@@ -6,12 +6,13 @@ import { NodeSearchService } from "./nodeSearch.service"
 import { FileStateService } from "./fileState.service"
 import { SettingsService } from "./settingsService/settings.service"
 import { MetricService } from "./metric.service"
+import { LoadingStatusService } from "./loadingStatusService"
 import "../ui/loadingGif/loadingGif.module"
 import "../codeCharta.module"
 import _ from "lodash"
 
 angular
-	.module("app.codeCharta.state", ["app.codeCharta.ui.loadingGif", "app.codeCharta"])
+	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
 	.service(_.camelCase(EdgeMetricService.name), EdgeMetricService)
 	.service(_.camelCase(SearchPanelService.name), SearchPanelService)
@@ -19,3 +20,4 @@ angular
 	.service(_.camelCase(FileStateService.name), FileStateService)
 	.service(_.camelCase(SettingsService.name), SettingsService)
 	.service(_.camelCase(MetricService.name), MetricService)
+	.service(_.camelCase(LoadingStatusService.name), LoadingStatusService)
