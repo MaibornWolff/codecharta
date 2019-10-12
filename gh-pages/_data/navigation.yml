@@ -33,6 +33,15 @@ docs:
       - title: "How-Tos"
         url: /docs/how-tos/
 
+  - title: Analysis
+    children:
+      - title: "Analysis"
+        url: /docs/analysis/
+      - title: "Importers"
+        url: /docs/importers/
+      - title: "Custom Metrics"
+        url: /docs/custom-metrics/
+
   - title: Meta
     children:
       - title: "License"
