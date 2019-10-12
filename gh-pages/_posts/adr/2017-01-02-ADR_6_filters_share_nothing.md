@@ -12,7 +12,7 @@ accepted
 
 ## Context
 
-In [ADR-1]({% post_url 2017-01-02-ADR_1_decide_tech_stack %}) we argued that:
+In [ADR-1]({% post_url adr/2017-01-02-ADR_1_decide_tech_stack %}) we argued that:
 
 > it would be rather embarrassing for a code quality tool to become tangled and then bug-ridden.
 

@@ -12,7 +12,7 @@ accepted
 
 ## Context
 
-As noted in [ADR-1]({% post_url 2017-01-02-ADR_1_decide_tech_stack %}) CodeCharta will use the jvm for the analysis stack.
+As noted in [ADR-1]({% post_url adr/2017-01-02-ADR_1_decide_tech_stack %}) CodeCharta will use the jvm for the analysis stack.
 We haven't decided which language to program in though. The language should be familiar to developers used to OO languages
 and allow them to quickly start developing. This is especially relevant if team members change frequently.
 

@@ -12,7 +12,7 @@ accepted
 
 ## Context
 
-In [ADR-3]({% post_url 2017-01-02-ADR_3_pick_visualization_language %}) we picked our visualization language JavaScript.
+In [ADR-3]({% post_url adr/2017-01-02-ADR_3_pick_visualization_language %}) we picked our visualization language JavaScript.
 The missing static typing of that language has become a minor issue:
 
 - Some refactorings don't have IDE support.

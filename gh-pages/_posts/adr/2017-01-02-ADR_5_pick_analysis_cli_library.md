@@ -12,7 +12,7 @@ accepted
 
 ## Context
 
-As noted in [ADR-4]({% post_url 2017-01-02-ADR_4_decide_analysis_architecture %}) CodeCharta will use a pipes and filters architecture.
+As noted in [ADR-4]({% post_url adr/2017-01-02-ADR_4_decide_analysis_architecture %}) CodeCharta will use a pipes and filters architecture.
 But it has not been defined how the user will interact with the analysis.
 
 ## Decision
