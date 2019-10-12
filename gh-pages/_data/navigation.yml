@@ -21,7 +21,7 @@ docs:
         url: /docs/installation/
       - title: "Upgrading"
         url: /docs/upgrading/
-      - title: "Upgrading"
+      - title: "Versioning"
         url: /docs/versioning/
 
   - title: Tutorials
@@ -32,6 +32,15 @@ docs:
     children:
       - title: "How-Tos"
         url: /docs/how-tos/
+
+  - title: Design Goals
+    children:
+      - title: "Integrate"
+        url: /docs/integrate/
+      - title: "Universal"
+        url: /docs/universal/
+      - title: "Big Picture"
+        url: /docs/big-picture/
 
   - title: Analysis
     children:
