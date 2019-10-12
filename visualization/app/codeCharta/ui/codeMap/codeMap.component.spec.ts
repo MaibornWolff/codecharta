@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapController } from "./codeMap.component"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { LoadingStatusService } from "../../state/loadingStatusService"
+import { LoadingStatusService } from "../../state/loadingStatus.service"
 
 describe("ColorSettingsPanelController", () => {
 	let codeMapController: CodeMapController

@@ -7,7 +7,7 @@ import { IRootScopeService } from "angular"
 import * as THREE from "three"
 import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { SettingsService } from "../../../state/settingsService/settings.service"
-import { LoadingStatusService } from "../../../state/loadingStatusService"
+import { LoadingStatusService } from "../../../state/loadingStatus.service"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeCameraService: ThreeCameraService
@@ -156,7 +156,7 @@ describe("ThreeOrbitControlsService", () => {
 		})
 
 		it("should auto fit map to its original value ", () => {
-			threeCameraService.camera.updateProjectionMatrix= jest.fn()
+			threeCameraService.camera.updateProjectionMatrix = jest.fn()
 
 			threeOrbitControlsService.autoFitTo()
 
@@ -164,18 +164,14 @@ describe("ThreeOrbitControlsService", () => {
 			expect(threeCameraService.camera.updateProjectionMatrix).toBeCalled()
 		})
 
-		it("should set the defaultCameraPerspective to the auto fitted vector", ()=>{
-
-			threeOrbitControlsService.defaultCameraPosition.set(0,0,0)
+		it("should set the defaultCameraPerspective to the auto fitted vector", () => {
+			threeOrbitControlsService.defaultCameraPosition.set(0, 0, 0)
 
 			threeOrbitControlsService.autoFitTo()
 
 			expect(threeOrbitControlsService.defaultCameraPosition.x).toEqual(vector.x)
 			expect(threeOrbitControlsService.defaultCameraPosition.y).toEqual(vector.y)
 			expect(threeOrbitControlsService.defaultCameraPosition.z).toEqual(vector.z)
-
 		})
-
-
 	})
 })

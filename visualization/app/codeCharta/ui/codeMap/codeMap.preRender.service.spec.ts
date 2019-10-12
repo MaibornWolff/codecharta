@@ -9,7 +9,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
-import { LoadingStatusService } from "../../state/loadingStatusService"
+import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 

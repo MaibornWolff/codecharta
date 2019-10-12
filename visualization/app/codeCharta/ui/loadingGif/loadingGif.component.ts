@@ -1,6 +1,6 @@
 import "./loadingGif.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { LoadingGifComponentSubscriber, LoadingStatusService } from "../../state/loadingStatusService"
+import { LoadingGifComponentSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
 
 export class LoadingGifController implements LoadingGifComponentSubscriber {
 	private _viewModel: {

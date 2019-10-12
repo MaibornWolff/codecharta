@@ -9,7 +9,7 @@ import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT } from "../../util/dataMocks"
 import _ from "lodash"
-import { LoadingStatusService } from "../../state/loadingStatusService"
+import { LoadingStatusService } from "../../state/loadingStatus.service"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController

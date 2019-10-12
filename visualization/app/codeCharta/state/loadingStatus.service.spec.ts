@@ -1,4 +1,4 @@
-import { LoadingStatusService } from "./loadingStatusService"
+import { LoadingStatusService } from "./loadingStatus.service"
 import { IRootScopeService } from "angular"
 import { getService } from "../../../mocks/ng.mockhelper"
 

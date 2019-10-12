@@ -4,7 +4,7 @@ import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CCFile, FileSelectionState } from "../codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
-import { LoadingStatusService } from "./loadingStatusService"
+import { LoadingStatusService } from "./loadingStatus.service"
 
 describe("FileStateService", () => {
 	let fileStateService: FileStateService

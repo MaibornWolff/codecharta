@@ -1,6 +1,6 @@
 import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { LoadingStatusService } from "./loadingStatusService"
+import { LoadingStatusService } from "./loadingStatus.service"
 
 export interface FileStateServiceSubscriber {
 	onFileSelectionStatesChanged(fileStates: FileState[])

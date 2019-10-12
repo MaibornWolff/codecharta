@@ -10,7 +10,7 @@ import { Settings } from "./codeCharta.model"
 import { SETTINGS } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
-import { LoadingStatusService } from "./state/loadingStatusService"
+import { LoadingStatusService } from "./state/loadingStatus.service"
 import { NodeSearchService } from "./state/nodeSearch.service"
 
 describe("codeChartaController", () => {

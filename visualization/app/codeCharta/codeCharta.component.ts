@@ -8,7 +8,7 @@ import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
-import { LoadingStatusService } from "./state/loadingStatusService"
+import { LoadingStatusService } from "./state/loadingStatus.service"
 import { NodeSearchService } from "./state/nodeSearch.service"
 import { SettingsServiceSubscriber } from "./state/settingsService/settings.service.events"
 

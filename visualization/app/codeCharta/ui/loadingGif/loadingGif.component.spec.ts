@@ -2,7 +2,7 @@ import "./loadingGif.module"
 import { LoadingGifController } from "./loadingGif.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { LoadingStatusService } from "../../state/loadingStatusService"
+import { LoadingStatusService } from "../../state/loadingStatus.service"
 
 describe("LoadingGifController", () => {
 	let loadingGifController: LoadingGifController

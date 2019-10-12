@@ -10,7 +10,7 @@ import { DialogService } from "../dialog/dialog.service"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { NameDataPair } from "../../codeCharta.model"
-import { LoadingStatusService } from "../../state/loadingStatusService"
+import { LoadingStatusService } from "../../state/loadingStatus.service"
 
 export class FileChooserController {
 	/* @ngInject */

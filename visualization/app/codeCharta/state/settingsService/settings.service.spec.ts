@@ -1,7 +1,7 @@
 import "../state.module"
 import { SettingsService } from "./settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { LoadingStatusService } from "../loadingStatusService"
+import { LoadingStatusService } from "../loadingStatus.service"
 import { AttributeTypeValue, FileSelectionState, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"

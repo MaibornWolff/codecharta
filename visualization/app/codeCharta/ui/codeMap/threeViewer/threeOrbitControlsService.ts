@@ -5,7 +5,7 @@ import { ThreeSceneService } from "./threeSceneService"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import _ from "lodash"
 import { FocusNodeSubscriber, UnfocusNodeSubscriber } from "../../../state/settingsService/settings.service.events"
-import { LoadingStatusService } from "../../../state/loadingStatusService"
+import { LoadingStatusService } from "../../../state/loadingStatus.service"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)

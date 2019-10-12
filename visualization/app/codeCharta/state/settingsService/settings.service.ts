@@ -5,7 +5,7 @@ import { FileStateService, FileStateServiceSubscriber } from "../fileState.servi
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { SettingsMerger } from "../../util/settingsMerger"
 import { Vector3 } from "three"
-import { LoadingStatusService } from "../loadingStatusService"
+import { LoadingStatusService } from "../loadingStatus.service"
 import {
 	AreaMetricSubscriber,
 	BlacklistSubscriber,
@@ -27,7 +27,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 	private update: RecursivePartial<Settings> = {}
 	private readonly debounceBroadcast: { [key: string]: (eventName: string, data: any) => void } = {}
 
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingStatusService: LoadingStatusService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
+		private loadingStatusService: LoadingStatusService
+	) {
 		this.settings = this.getDefaultSettings()
 
 		for (const key in SettingsEvents) {
