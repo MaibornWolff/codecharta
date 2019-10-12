@@ -17,6 +17,8 @@ docs:
         url: /docs/quick-start-guide/
       - title: "Step-by-Step Example"
         url: /docs/step-by-step/
+      - title: "Examples"
+        url: /docs/examples/
       - title: "Installation"
         url: /docs/installation/
       - title: "Upgrading"
