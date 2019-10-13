@@ -5,9 +5,8 @@ import "angular-material"
 import "./codeCharta/codeCharta.module"
 import "./assets/icon.ico"
 import "./app.scss"
-import "@uirouter/angularjs"
 
-angular.module("app", ["app.codeCharta", "ngMaterial", "ui.router"])
+angular.module("app", ["app.codeCharta", "ngMaterial"])
 
 angular
 	.module("app")
