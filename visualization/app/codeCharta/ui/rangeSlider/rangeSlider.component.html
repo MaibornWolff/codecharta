@@ -6,6 +6,7 @@
 		min="0"
 		step="1"
 		ng-change="$ctrl._viewModel.sliderOptions.onFromChange()"
+		ng-model-options="{debounce: 1000}"
 	/>
 </md-input-container>
 
@@ -26,5 +27,6 @@
 		min="0"
 		step="1"
 		ng-change="$ctrl._viewModel.sliderOptions.onToChange()"
+		ng-model-options="{debounce: 1000}"
 	/>
 </md-input-container>

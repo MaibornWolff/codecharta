@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 - Camera is now resetted correctly, when unfocusing #634
+- Inputs of Color Range Slider now waits a second before it commits its values #676
 - Fixed root folder name in TreeView after new map after loading new map #649
 - Increased size of ribbonBar for big screens #644
+- Sanitize input for shelljs #600
 
 ### Chore
 
