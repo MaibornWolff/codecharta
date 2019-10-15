@@ -15,10 +15,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Fixed root folder name in TreeView after new map after loading new map #649
 - Increased size of ribbonBar for big screens #644
 - File-Extension-Bar will not display excluded nodes anymore #725
+- Sanitize input for shelljs #600
 
 ### Chore
+
+- Bump jacoco from 0.8.1 to 0.8.4 in /analysis
 
 ## [1.35.0] - 2019-10-04
 
