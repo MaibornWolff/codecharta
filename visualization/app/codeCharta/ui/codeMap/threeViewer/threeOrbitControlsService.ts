@@ -19,7 +19,6 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 	public controls: OrbitControls
 	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
-	private defaultZoom: number = 0
 
 	/* ngInject */
 	constructor(
@@ -39,7 +38,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 	public onUnfocusNode() {
 		if (!this.loadingStatusService.isLoadingNewFile() && !this.loadingStatusService.isLoadingNewMap()) {
-			this.resetCameraPerspective()
+			this.autoFitTo()
 		}
 	}
 
@@ -52,9 +51,6 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	public cameraActionWhenNewMapIsLoaded() {
 		if (this.settingsService.getSettings().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
-			this.setDefaultZoom()
-		} else {
-			this.initializeDefaultZoomWithoutAutoFit()
 		}
 	}
 
@@ -69,42 +65,6 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.controls.update()
 
 		this.focusCameraViewToCenter(boundingSphere)
-	}
-
-	private resetCameraPerspective() {
-		this.threeCameraService.camera.position
-			.sub(this.controls.target)
-			.setLength(this.defaultZoom)
-			.add(this.controls.target)
-	}
-
-	private lookAtDirectionFromTarget(x: number, y: number, z: number) {
-		this.threeCameraService.camera.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
-
-		const alignmentCube = new Mesh(new CubeGeometry(20, 20, 20), new MeshNormalMaterial())
-
-		this.threeSceneService.scene.add(alignmentCube)
-
-		alignmentCube.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
-
-		alignmentCube.translateX(x)
-		alignmentCube.translateY(y)
-		alignmentCube.translateZ(z)
-
-		this.threeCameraService.camera.lookAt(alignmentCube.getWorldPosition())
-		this.threeSceneService.scene.remove(alignmentCube)
-	}
-
-	private getZoom() {
-		return this.threeCameraService.camera.position.distanceTo(this.controls.target)
-	}
-
-	private applyOldZoom(oldZoom: number) {
-		this.threeCameraService.camera.translateZ(oldZoom)
-	}
-
-	private setDefaultZoom() {
-		this.defaultZoom = this.getZoom()
 	}
 
 	private cameraPerspectiveLengthCalculation(boundingSphere) {
@@ -130,24 +90,33 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.threeCameraService.camera.updateProjectionMatrix()
 	}
 
-	private initializeDefaultZoomWithoutAutoFit() {
-		const autoFittedPerspective: Vector3 = new Vector3(0, 0, 0)
-		const boundingSphere = this.getBoundingSphere()
-		const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
-
-		autoFittedPerspective.set(len, len, len)
-
-		this.defaultCameraPosition = autoFittedPerspective.clone()
-
-		const boundingSphereCenter: Vector3 = boundingSphere.center
-
-		boundingSphereCenter.setY(0)
-
-		this.defaultZoom = autoFittedPerspective.distanceTo(boundingSphereCenter)
-	}
-
 	private getBoundingSphere() {
 		return new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere()
+	}
+
+	private lookAtDirectionFromTarget(x: number, y: number, z: number) {
+		this.threeCameraService.camera.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
+
+		const alignmentCube = new Mesh(new CubeGeometry(20, 20, 20), new MeshNormalMaterial())
+
+		this.threeSceneService.scene.add(alignmentCube)
+
+		alignmentCube.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
+
+		alignmentCube.translateX(x)
+		alignmentCube.translateY(y)
+		alignmentCube.translateZ(z)
+
+		this.threeCameraService.camera.lookAt(alignmentCube.getWorldPosition())
+		this.threeSceneService.scene.remove(alignmentCube)
+	}
+
+	private getZoom() {
+		return this.threeCameraService.camera.position.distanceTo(this.controls.target)
+	}
+
+	private applyOldZoom(oldZoom: number) {
+		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
 	public init(domElement) {
