@@ -2,7 +2,6 @@ import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { BlacklistType, CodeMapNode, Settings } from "../codeCharta.model"
 import { SETTINGS, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
-import { CodeMapHelper } from "./codeMapHelper"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
