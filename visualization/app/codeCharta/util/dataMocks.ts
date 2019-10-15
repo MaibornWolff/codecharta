@@ -7,11 +7,13 @@ import {
 	FileState,
 	MetricData,
 	Node,
-	Settings
+	Settings,
+	BlacklistType
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
+import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -130,12 +132,14 @@ export const TEST_FILE_CONTENT = {
 	nodes: [VALID_NODE]
 }
 
+export const FILE_META = {
+	fileName: "fileA",
+	projectName: "Sample Project",
+	apiVersion: "1.1"
+}
+
 export const TEST_FILE_DATA: CCFile = {
-	fileMeta: {
-		fileName: "file",
-		projectName: "Sample Map",
-		apiVersion: "1.1"
-	},
+	fileMeta: FILE_META,
 	map: VALID_NODE,
 	settings: {
 		fileSettings: {
@@ -148,11 +152,7 @@ export const TEST_FILE_DATA: CCFile = {
 }
 
 export const TEST_FILE_WITH_PATHS: CCFile = {
-	fileMeta: {
-		fileName: "fileA",
-		projectName: "Sample Project",
-		apiVersion: "1.1"
-	},
+	fileMeta: FILE_META,
 	map: {
 		name: "root",
 		type: "Folder",
@@ -478,7 +478,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			type: "Folder"
 		}
 	],
-	projectName: "Sample Map"
+	projectName: "Sample Project"
 }
 
 export const FILE_STATES: FileState[] = [
@@ -679,4 +679,42 @@ export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 export const METRIC_DATA: MetricData[] = [
 	{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
 	{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
+]
+
+export const BLACKLIST: BlacklistItem[] = [
+	{
+		path: "/my/path",
+		type: BlacklistType.hide
+	},
+	{
+		path: "/my/different/path",
+		type: BlacklistType.exclude
+	},
+	{
+		path: "/my/first/path",
+		type: BlacklistType.exclude
+	}
+]
+
+export const MARKED_PACKAGES: MarkedPackage[] = [
+	{
+		path: "/my/path",
+		color: "#AABBCC",
+		attributes: {}
+	},
+	{
+		path: "/my/different/path",
+		color: "#DDEEFF",
+		attributes: {}
+	},
+	{
+		path: "/my/first/path",
+		color: "#123456",
+		attributes: {}
+	},
+	{
+		path: "/my/last/path",
+		color: "#345678",
+		attributes: {}
+	}
 ]

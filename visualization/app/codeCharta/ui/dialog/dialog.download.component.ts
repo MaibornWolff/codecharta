@@ -23,7 +23,7 @@ export enum DownloadCheckboxNames {
 	markedPackages = "MarkedPackages"
 }
 
-export class DialogDownlodController {
+export class DialogDownloadController {
 	private _viewModel: {
 		fileName: string
 		amountOfNodes: number
@@ -57,23 +57,19 @@ export class DialogDownlodController {
 			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
 			this._viewModel.fileName
 		)
-		this.$mdDialog.hide()
+		this.hide()
 	}
 
 	private initDialogFields() {
-		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
-		const fileMeta: FileMeta = this.codeMapPreRenderService.getRenderFileMeta()
-		const fileSettings: FileSettings = this.settingsService.getSettings().fileSettings
-		const isDeltaState: boolean = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
-
-		this.setFileContentList(fileSettings)
-		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState)
-		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
-		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(fileSettings.attributeTypes)
-		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
+		this.setFileContentList()
+		this.setFileName()
+		this.setAmountOfNodes()
+		this.setAmountOfAttributeTypes()
+		this.setSortedDownloadableFileSettings()
 	}
 
-	private setFileContentList(fileSettings: FileSettings) {
+	private setFileContentList() {
+		const fileSettings: FileSettings = this.settingsService.getSettings().fileSettings
 		this.pushFileContent(DownloadCheckboxNames.edges, fileSettings.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(fileSettings, BlacklistType.exclude))
@@ -93,11 +89,31 @@ export class DialogDownlodController {
 		})
 	}
 
+	private setFileName() {
+		const fileMeta: FileMeta = this.codeMapPreRenderService.getRenderFileMeta()
+		const isDeltaState: boolean = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState)
+	}
+
+	private setAmountOfNodes() {
+		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
+		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
+	}
+
+	private setAmountOfAttributeTypes() {
+		const attributeTypes: AttributeTypes = this.settingsService.getSettings().fileSettings.attributeTypes
+		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(attributeTypes)
+	}
+
 	private getAmountOfAttributeTypes(attributeTypes: AttributeTypes) {
 		let sum: number = 0
 		sum += attributeTypes.nodes ? attributeTypes.nodes.length : 0
 		sum += attributeTypes.edges ? attributeTypes.edges.length : 0
 		return sum
+	}
+
+	private setSortedDownloadableFileSettings() {
+		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
@@ -106,8 +122,9 @@ export class DialogDownlodController {
 }
 
 export const dialogDownloadComponent = {
-	clickOutsideToClose: true,
+	selector: "dialogDownloadComponent",
 	template: require("./dialog.download.component.html"),
-	controller: DialogDownlodController,
+	controller: DialogDownloadController,
+	clickOutsideToClose: true,
 	controllerAs: "$ctrl"
 }
