@@ -20,4 +20,10 @@ describe("HSL", () => {
 			expect(hsl.toHex()).toEqual("#5C423D")
 		})
 	})
+
+	describe("toString", () => {
+		it("should convert the hsl to a string for css", () => {
+			expect(hsl.toString()).toEqual("hsl(10, 20%, 30%)")
+		})
+	})
 })

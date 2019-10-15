@@ -6,9 +6,9 @@ import "./codeMap.component.scss"
 
 import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
-import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
+import { LoadingStatusServiceSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
 
-export class CodeMapController implements BuildingRightClickedEventSubscriber, LoadingGifComponentSubscriber {
+export class CodeMapController implements BuildingRightClickedEventSubscriber, LoadingStatusServiceSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 	} = {
@@ -24,7 +24,7 @@ export class CodeMapController implements BuildingRightClickedEventSubscriber, L
 		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
-		LoadingGifService.subscribe(this.$rootScope, this)
+		LoadingStatusService.subscribe(this.$rootScope, this)
 	}
 
 	public $postLink() {
