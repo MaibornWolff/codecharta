@@ -42,10 +42,11 @@ describe("MapTreeViewController", () => {
 	})
 
 	describe("onRenderMapChanged", () => {
-		it("should update viewModel.rootNode", () => {
+		it("should update viewModel.rootNode after timeout", () => {
 			mapTreeViewController["_viewModel"] = { rootNode: null }
 
 			mapTreeViewController.onRenderMapChanged(map)
+			$timeout.flush(100)
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toBe(map)
 		})
