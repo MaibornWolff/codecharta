@@ -3,15 +3,10 @@ import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../..
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 
 export class CodeMapActionsService {
-	constructor(
-		private settingsService: SettingsService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
-		private edgeMetricService: EdgeMetricService
-	) {}
+	constructor(private settingsService: SettingsService, private edgeMetricService: EdgeMetricService) {}
 
 	public toggleNodeVisibility(node: CodeMapNode) {
 		if (node.visible) {
@@ -82,13 +77,11 @@ export class CodeMapActionsService {
 			this.removeFocusedNode()
 		} else {
 			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
-			this.autoFit()
 		}
 	}
 
 	public removeFocusedNode() {
 		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: "" } })
-		this.autoFit()
 	}
 
 	public excludeNode(node: CodeMapNode) {
@@ -196,9 +189,5 @@ export class CodeMapActionsService {
 
 	private isEqualObjects(obj1, obj2): boolean {
 		return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
-	}
-
-	private autoFit() {
-		this.threeOrbitControlsService.autoFitTo()
 	}
 }

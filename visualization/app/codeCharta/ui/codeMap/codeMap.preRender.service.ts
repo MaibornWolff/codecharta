@@ -21,7 +21,7 @@ import { FileStateHelper } from "../../util/fileStateHelper"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { LoadingGifService } from "../loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import * as d3 from "d3"
@@ -55,7 +55,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
-		private loadingGifService: LoadingGifService,
+		private loadingStatusService: LoadingStatusService,
 		private edgeMetricService: EdgeMetricService
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
@@ -184,9 +184,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		this.notifyMapChanged()
 		if (this.newFileLoaded) {
 			this.notifyLoadingFileStatus()
-			if (this.lastRender.settings.appSettings.resetCameraIfNewFileIsLoaded) {
-				this.threeOrbitControlsService.autoFitTo()
-			}
+			this.threeOrbitControlsService.cameraActionWhenNewMapIsLoaded()
 			this.newFileLoaded = false
 		}
 	}
@@ -209,11 +207,11 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyLoadingFileStatus() {
-		this.loadingGifService.updateLoadingFileFlag(false)
+		this.loadingStatusService.updateLoadingFileFlag(false)
 	}
 
 	private notifyLoadingMapStatus() {
-		this.loadingGifService.updateLoadingMapFlag(false)
+		this.loadingStatusService.updateLoadingMapFlag(false)
 	}
 
 	private notifyMapChanged() {

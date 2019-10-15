@@ -1,12 +1,12 @@
 import { IRootScopeService } from "angular"
 
-export interface LoadingGifComponentSubscriber {
+export interface LoadingStatusServiceSubscriber {
 	onLoadingFileStatusChanged(isLoadingFile: boolean)
 
 	onLoadingMapStatusChanged(isLoadingMap: boolean)
 }
 
-export class LoadingGifService {
+export class LoadingStatusService {
 	public static readonly LOADING_FILE_STATUS_EVENT = "loading-file-status-changed"
 	public static readonly LOADING_MAP_STATUS_EVENT = "loading-map-status-changed"
 
@@ -25,19 +25,27 @@ export class LoadingGifService {
 		this.notifyLoadingMapFlagChange()
 	}
 
+	public isLoadingNewFile(): boolean {
+		return this.isLoadingFile
+	}
+
+	public isLoadingNewMap(): boolean {
+		return this.isLoadingMap
+	}
+
 	private notifyLoadingFileFlagChange() {
-		this.$rootScope.$broadcast(LoadingGifService.LOADING_FILE_STATUS_EVENT, this.isLoadingFile)
+		this.$rootScope.$broadcast(LoadingStatusService.LOADING_FILE_STATUS_EVENT, this.isLoadingFile)
 	}
 
 	private notifyLoadingMapFlagChange() {
-		this.$rootScope.$broadcast(LoadingGifService.LOADING_MAP_STATUS_EVENT, this.isLoadingMap)
+		this.$rootScope.$broadcast(LoadingStatusService.LOADING_MAP_STATUS_EVENT, this.isLoadingMap)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: LoadingGifComponentSubscriber) {
-		$rootScope.$on(LoadingGifService.LOADING_FILE_STATUS_EVENT, (event, data) => {
+	public static subscribe($rootScope: IRootScopeService, subscriber: LoadingStatusServiceSubscriber) {
+		$rootScope.$on(LoadingStatusService.LOADING_FILE_STATUS_EVENT, (event, data) => {
 			subscriber.onLoadingFileStatusChanged(data)
 		})
-		$rootScope.$on(LoadingGifService.LOADING_MAP_STATUS_EVENT, (event, data) => {
+		$rootScope.$on(LoadingStatusService.LOADING_MAP_STATUS_EVENT, (event, data) => {
 			subscriber.onLoadingMapStatusChanged(data)
 		})
 	}
