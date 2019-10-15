@@ -11,7 +11,7 @@ class OutputTypeConverter: CommandLine.ITypeConverter<OutputFormat> {
         OutputFormat.TABLE.name.equals(value, ignoreCase = true) -> OutputFormat.TABLE
         OutputFormat.JSON.name.equals(value, ignoreCase = true)  -> OutputFormat.JSON
         else                                                     -> {
-            println("Using default ${OutputFormat.JSON.name.toLowerCase()}"); OutputFormat.JSON
+            System.err.println("Using default ${OutputFormat.JSON.name.toLowerCase()}"); OutputFormat.JSON
         }
     }
 }

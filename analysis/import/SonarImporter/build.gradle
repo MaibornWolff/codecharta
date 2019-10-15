@@ -1,5 +1,6 @@
 dependencies {
     implementation project(':model')
+    implementation project(':filter:MergeFilter')
 
     implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.12'
     implementation group: 'org.glassfish.jersey.core', name: 'jersey-client', version: jersey_version

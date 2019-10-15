@@ -1,0 +1,57 @@
+{
+  "inner": {
+    "Markdown": {
+      "blanks": 0,
+      "code": 1965,
+      "comments": 0,
+      "lines": 1965,
+      "stats": [
+        {
+          "blanks": 0,
+          "code": 450,
+          "comments": 0,
+          "lines": 450,
+          "name": ".\\CHANGELOG.md"
+        },
+        {
+          "blanks": 0,
+          "code": 46,
+          "comments": 0,
+          "lines": 46,
+          "name": ".\\foo\\CODE_OF_CONDUCT.md"
+        }
+      ],
+      "inaccurate": false
+    },
+    "Rust": {
+      "blanks": 417,
+      "code": 2093,
+      "comments": 412,
+      "lines": 2922,
+      "stats": [
+        {
+          "blanks": 23,
+          "code": 99,
+          "comments": 1,
+          "lines": 123,
+          "name": ".\\src\\build.rs"
+        },
+        {
+          "blanks": 28,
+          "code": 170,
+          "comments": 16,
+          "lines": 214,
+          "name": ".\\src\\cli.rs"
+        },
+        {
+          "blanks": 27,
+          "code": 88,
+          "comments": 2,
+          "lines": 117,
+          "name": ".\\src\\main.rs"
+        }
+      ],
+      "inaccurate": false
+    }
+  }
+}
