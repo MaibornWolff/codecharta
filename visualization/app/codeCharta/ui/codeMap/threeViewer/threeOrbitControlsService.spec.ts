@@ -116,7 +116,7 @@ describe("ThreeOrbitControlsService", () => {
 
 	describe("onUnfocusNode", () => {
 		beforeEach(() => {
-			threeOrbitControlsService["resetCameraPerspective"] = jest.fn()
+			threeOrbitControlsService.autoFitTo = jest.fn()
 		})
 
 		it("should call resetCamera, when map is not loading ", () => {
@@ -125,7 +125,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			threeOrbitControlsService.onUnfocusNode()
 
-			expect(threeOrbitControlsService["resetCameraPerspective"]).toBeCalled()
+			expect(threeOrbitControlsService.autoFitTo).toBeCalled()
 		})
 
 		it("should not call resetCamera, when map is loading ", () => {
@@ -134,7 +134,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			threeOrbitControlsService.onUnfocusNode()
 
-			expect(threeOrbitControlsService["resetCameraPerspective"]).not.toHaveBeenCalled()
+			expect(threeOrbitControlsService.autoFitTo).not.toHaveBeenCalled()
 		})
 	})
 
