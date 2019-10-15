@@ -1,7 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
 import { MarkedPackage } from "../codeCharta.model"
 import ignore from "ignore"
-import * as path from "path"
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model"
 
 export class CodeMapHelper {
@@ -21,7 +20,14 @@ export class CodeMapHelper {
 	}
 
 	public static transformPath(toTransform: string): string {
-		return path.relative("/", toTransform)
+		let removeNumberOfCharactersFromStart = 0
+
+		if (toTransform.startsWith("./")) {
+			removeNumberOfCharactersFromStart = 2
+		} else if (toTransform[0] === "/") {
+			removeNumberOfCharactersFromStart = 1
+		}
+		return toTransform.substring(removeNumberOfCharactersFromStart)
 	}
 
 	public static getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string): CodeMapNode[] {

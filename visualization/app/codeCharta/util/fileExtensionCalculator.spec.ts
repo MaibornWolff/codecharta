@@ -8,23 +8,10 @@ describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
 	let settings: Settings
 
-	let isBlacklistedOriginal
-
 	beforeEach(() => {
 		map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
 		settings = _.cloneDeep(SETTINGS)
 	})
-
-	function mockIsBlacklisted() {
-		isBlacklistedOriginal = CodeMapHelper.isBlacklisted
-		CodeMapHelper.isBlacklisted = jest.fn((node: CodeMapNode, blacklist, type) => {
-			return node.path.includes(".java")
-		})
-	}
-
-	function unmockIsBlacklisted() {
-		CodeMapHelper.isBlacklisted = isBlacklistedOriginal
-	}
 
 	describe("getFileExtensionDistribution", () => {
 		it("should get correct absolute distribution of file-extensions for given metric", () => {
@@ -81,7 +68,6 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded path", () => {
-			mockIsBlacklisted()
 			const blacklistItem = { path: "*.java", type: BlacklistType.exclude }
 			settings.fileSettings.blacklist.push(blacklistItem)
 
@@ -98,8 +84,6 @@ describe("FileExtensionCalculator", () => {
 			)
 
 			expect(result).toEqual(expected)
-
-			unmockIsBlacklisted()
 		})
 
 		it("should get correct relative distribution of file-extensions for given metric", () => {
