@@ -7,7 +7,6 @@ import { FileStateService } from "./fileState.service"
 import { SettingsService } from "./settingsService/settings.service"
 import { MetricService } from "./metric.service"
 import { LoadingStatusService } from "./loadingStatus.service"
-import "../ui/loadingGif/loadingGif.module"
 import "../codeCharta.module"
 import _ from "lodash"
 

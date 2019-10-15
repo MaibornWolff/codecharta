@@ -1,6 +1,6 @@
 import { IRootScopeService } from "angular"
 
-export interface LoadingGifComponentSubscriber {
+export interface LoadingStatusServiceSubscriber {
 	onLoadingFileStatusChanged(isLoadingFile: boolean)
 
 	onLoadingMapStatusChanged(isLoadingMap: boolean)
@@ -41,7 +41,7 @@ export class LoadingStatusService {
 		this.$rootScope.$broadcast(LoadingStatusService.LOADING_MAP_STATUS_EVENT, this.isLoadingMap)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: LoadingGifComponentSubscriber) {
+	public static subscribe($rootScope: IRootScopeService, subscriber: LoadingStatusServiceSubscriber) {
 		$rootScope.$on(LoadingStatusService.LOADING_FILE_STATUS_EVENT, (event, data) => {
 			subscriber.onLoadingFileStatusChanged(data)
 		})

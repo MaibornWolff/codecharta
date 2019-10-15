@@ -6,9 +6,9 @@ import "./codeMap.component.scss"
 
 import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
-import { LoadingGifComponentSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
+import { LoadingStatusServiceSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
 
-export class CodeMapController implements BuildingRightClickedEventSubscriber, LoadingGifComponentSubscriber {
+export class CodeMapController implements BuildingRightClickedEventSubscriber, LoadingStatusServiceSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 	} = {
