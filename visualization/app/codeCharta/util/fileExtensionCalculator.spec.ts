@@ -2,15 +2,29 @@ import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { BlacklistType, CodeMapNode, Settings } from "../codeCharta.model"
 import { SETTINGS, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
+import { CodeMapHelper } from "./codeMapHelper"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
 	let settings: Settings
 
+	let isBlacklistedOriginal
+
 	beforeEach(() => {
 		map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
 		settings = _.cloneDeep(SETTINGS)
 	})
+
+	function mockIsBlacklisted() {
+		isBlacklistedOriginal = CodeMapHelper.isBlacklisted
+		CodeMapHelper.isBlacklisted = jest.fn((node: CodeMapNode, blacklist, type) => {
+			return node.path.includes(".java")
+		})
+	}
+
+	function unmockIsBlacklisted() {
+		CodeMapHelper.isBlacklisted = isBlacklistedOriginal
+	}
 
 	describe("getFileExtensionDistribution", () => {
 		it("should get correct absolute distribution of file-extensions for given metric", () => {
@@ -27,7 +41,7 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with hidden node", () => {
-			const blacklistItem = { path: "*.jpg", type: BlacklistType.hide }
+			const blacklistItem = { path: map.children[0].path, type: BlacklistType.hide }
 			settings.fileSettings.blacklist.push(blacklistItem)
 
 			const expected: MetricDistribution[] = [
@@ -67,6 +81,7 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded path", () => {
+			mockIsBlacklisted()
 			const blacklistItem = { path: "*.java", type: BlacklistType.exclude }
 			settings.fileSettings.blacklist.push(blacklistItem)
 
@@ -83,6 +98,8 @@ describe("FileExtensionCalculator", () => {
 			)
 
 			expect(result).toEqual(expected)
+
+			unmockIsBlacklisted()
 		})
 
 		it("should get correct relative distribution of file-extensions for given metric", () => {

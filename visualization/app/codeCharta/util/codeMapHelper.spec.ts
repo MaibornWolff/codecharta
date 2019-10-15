@@ -227,14 +227,6 @@ describe("codeMapHelper", () => {
 
 			expect(result).toBeTruthy()
 		})
-
-		it("should return true if pattern exists in blacklist and node matches it", () => {
-			blacklist.push({ path: "*.jpg", type: BlacklistType.exclude })
-
-			const result = CodeMapHelper.isBlacklisted(VALID_NODE_WITH_PATH_AND_EXTENSION.children[0], blacklist, BlacklistType.exclude)
-
-			expect(result).toBeTruthy()
-		})
 	})
 
 	describe("getMarkingColor", () => {
