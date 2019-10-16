@@ -58,6 +58,12 @@ export class ThreeSceneService {
 		this.selected = building
 	}
 
+	public reselectBuilding() {
+		if (this.selected) {
+			this.selectBuilding(this.selected)
+		}
+	}
+
 	public clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
