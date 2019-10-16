@@ -41,6 +41,13 @@ export class CodeMapHelper {
 		}
 	}
 
+	public static isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {
+		return (
+			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude) ||
+			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.hide)
+		)
+	}
+
 	public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
 		return CodeMapHelper.isPathBlacklisted(node.path, blacklist, type)
 	}

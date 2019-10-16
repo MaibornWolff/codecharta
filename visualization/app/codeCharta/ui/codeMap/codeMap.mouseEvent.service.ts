@@ -11,6 +11,7 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 
 interface Coordinates {
 	x: number
@@ -102,7 +103,14 @@ export class CodeMapMouseEventService
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.onBuildingDeselected()
+		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+		const isSelectedBuildingBlacklited = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
+
+		if (isSelectedBuildingBlacklited) {
+			this.onBuildingDeselected()
+		} else {
+			this.threeSceneService.reselectBuilding()
+		}
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[]) {}
