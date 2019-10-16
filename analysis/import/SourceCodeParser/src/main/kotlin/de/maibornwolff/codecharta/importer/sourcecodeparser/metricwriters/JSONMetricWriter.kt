@@ -25,9 +25,12 @@ class JSONMetricWriter(private val projectName: String, private val writer: Writ
   }
 
   private fun addAsNode(metrics: Map.Entry<String, FileMetricMap>) {
-
-    val directory = metrics.key.substringBeforeLast("/")
-    val fileName = metrics.key.substringAfterLast("/")
+    var directory = ""
+    var fileName = metrics.key
+    if (fileName.contains("/")) {
+      directory = metrics.key.substringBeforeLast("/")
+      fileName = metrics.key.substringAfterLast("/")
+    }
 
     val node = MutableNode(
             fileName, attributes = metrics.value.fileMetrics
