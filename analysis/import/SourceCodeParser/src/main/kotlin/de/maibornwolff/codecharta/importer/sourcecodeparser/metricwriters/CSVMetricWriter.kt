@@ -1,11 +1,16 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
+import de.maibornwolff.codecharta.model.Project
 import java.io.Writer
 
 class CSVMetricWriter(private val writer: Writer) : MetricWriter {
 
-  override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>) {
+  override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
+    if (pipedProject != null) {
+      System.err.println("Piped input project is not supported for csv output. Please merge projects and use CSVExporter after instead.")
+    }
+
     val csvOutput = StringBuilder()
       .append(generateHeader(allMetrics))
     for (entry in projectMetrics.projectMetrics) {

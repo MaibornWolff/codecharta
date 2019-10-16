@@ -2,7 +2,6 @@ import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapActionsService } from "./codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
@@ -12,7 +11,6 @@ import { EdgeMetricService } from "../../state/edgeMetric.service"
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let edgeMetricService: EdgeMetricService
 
 	let nodeA: CodeMapNode
@@ -23,7 +21,6 @@ describe("CodeMapActionService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		settingsService = getService<SettingsService>("settingsService")
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
 
 		nodeA = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
@@ -33,7 +30,7 @@ describe("CodeMapActionService", () => {
 	}
 
 	function rebuildService() {
-		codeMapActionsService = new CodeMapActionsService(settingsService, threeOrbitControlsService, edgeMetricService)
+		codeMapActionsService = new CodeMapActionsService(settingsService, edgeMetricService)
 	}
 
 	function withMockedSettingsService() {
@@ -48,19 +45,10 @@ describe("CodeMapActionService", () => {
 		})()
 	}
 
-	function withMockedThreeOrbitControlsService() {
-		threeOrbitControlsService = codeMapActionsService["threeOrbitControlsService"] = jest.fn(() => {
-			return {
-				autoFitTo: jest.fn()
-			}
-		})()
-	}
-
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		withMockedSettingsService()
-		withMockedThreeOrbitControlsService()
 	})
 
 	afterEach(() => {
@@ -234,24 +222,22 @@ describe("CodeMapActionService", () => {
 			expect(codeMapActionsService.removeFocusedNode).toHaveBeenCalled()
 		})
 
-		it("should call updateSettings and autoFitTo if node-path does not equal root-path", () => {
+		it("should call updateSettings if node-path does not equal root-path", () => {
 			CodeChartaService.ROOT_PATH = "/not/root"
 			const expected = { dynamicSettings: { focusedNodePath: nodeA.path } }
 
 			codeMapActionsService.focusNode(nodeA)
 
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 		})
 	})
 
 	describe("removeFocusedNode", () => {
-		it("should call autoFitTo and updateSettings with focusedNodePath empty", () => {
+		it("should call updateSettings with focusedNodePath empty", () => {
 			const expected = { dynamicSettings: { focusedNodePath: "" } }
 
 			codeMapActionsService.removeFocusedNode()
 
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 		})
 	})
