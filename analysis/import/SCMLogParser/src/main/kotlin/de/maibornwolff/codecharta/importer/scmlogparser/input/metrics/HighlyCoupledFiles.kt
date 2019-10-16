@@ -53,9 +53,9 @@ class HighlyCoupledFiles: Metric {
 
     }
 
-    private fun isHighlyCoupled(`val`: Int): Boolean {
-        return if (numberOfCommits >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
-            `val`.toDouble() / numberOfCommits.toDouble() > HIGH_COUPLING_VALUE
+    private fun isHighlyCoupled(value: Int): Boolean {
+        return if (value >= MIN_NO_COMMITS_FOR_HIGH_COUPLING) {
+            value.toDouble() / numberOfCommits.toDouble() > HIGH_COUPLING_VALUE
         } else false
     }
 

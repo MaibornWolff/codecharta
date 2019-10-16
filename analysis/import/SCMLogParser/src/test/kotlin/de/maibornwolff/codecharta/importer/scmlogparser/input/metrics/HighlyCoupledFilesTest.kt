@@ -71,13 +71,16 @@ class HighlyCoupledFilesTest {
     fun should_increase() {
         // given
         val metric = HighlyCoupledFiles()
-        val expectedEdge = Edge("filename", "coupledfilename1", mapOf("pairing_rate" to 0.6))
+        val expectedEdge = Edge("filename", "coupledfilename1", mapOf("pairing_rate" to 0.625))
 
         // when
         registerModifications(metric, FILENAME, COUPLED_FILE1)
         registerModifications(metric, FILENAME, COUPLED_FILE2)
         registerModifications(metric, FILENAME, COUPLED_FILE1)
         registerModifications(metric, FILENAME, COUPLED_FILE1)
+        registerModifications(metric, FILENAME, COUPLED_FILE1)
+        registerModifications(metric, FILENAME, COUPLED_FILE1)
+        registerModifications(metric, FILENAME)
         registerModifications(metric, FILENAME)
 
         // then
