@@ -18,6 +18,6 @@ export const goto = async (page: Page): Promise<void> => {
 export const launch = async (): Promise<Browser> => {
 	return await puppeteer.launch({
 		defaultViewport: { width: 1920, height: 1080 },
-		headless: false
+		headless: true
 	})
 }
