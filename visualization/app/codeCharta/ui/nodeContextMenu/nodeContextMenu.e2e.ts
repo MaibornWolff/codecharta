@@ -1,4 +1,4 @@
-import { goto, puppeteer } from "../../../puppeteer.helper"
+import { goto, launch } from "../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
@@ -13,7 +13,7 @@ describe("NodeContextMenu", () => {
 	let contextMenu: NodeContextMenuPageObject
 
 	beforeAll(async () => {
-		browser = await puppeteer.launch({ headless: true })
+		browser = await launch()
 	})
 
 	afterAll(async () => {
