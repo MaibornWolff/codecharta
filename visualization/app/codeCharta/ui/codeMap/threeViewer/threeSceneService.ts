@@ -60,7 +60,12 @@ export class ThreeSceneService {
 
 	public reselectBuilding() {
 		if (this.selected) {
-			this.selectBuilding(this.selected)
+			const reselect = this.getMapMesh()
+				.getMeshDescription()
+				.buildings.find(building => {
+					return building.node.path === this.selected.node.path
+				})
+			this.selectBuilding(reselect)
 		}
 	}
 
