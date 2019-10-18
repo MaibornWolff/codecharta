@@ -1,9 +1,9 @@
-import { goto, launch } from "../../../puppeteer.helper"
+import { goto, launch, newPage } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
 
-jest.setTimeout(15000)
+jest.setTimeout(40000)
 
 describe("RibbonBar", () => {
 	let browser: Browser
@@ -21,7 +21,7 @@ describe("RibbonBar", () => {
 	})
 
 	beforeEach(async () => {
-		page = await browser.newPage()
+		page = await newPage(browser)
 
 		searchPanel = new SearchPanelPageObject(page)
 		ribbonBar = new RibbonBarPageObject(page)
@@ -37,71 +37,73 @@ describe("RibbonBar", () => {
 		expect(actual).toBe("600")
 	})
 
-	it("should open and close the searchPanel", async () => {
-		expect(await searchPanel.isOpen()).toBeFalsy()
+	describe("opening and closing ribbon-bar cards", () => {
+		it("searchPanel", async () => {
+			expect(await searchPanel.isOpen()).toBeFalsy()
 
-		await searchPanel.toggle()
+			await searchPanel.toggle()
 
-		expect(await searchPanel.isOpen()).toBeTruthy()
+			expect(await searchPanel.isOpen()).toBeTruthy()
 
-		await searchPanel.toggle()
+			await searchPanel.toggle()
 
-		expect(await searchPanel.isOpen()).toBeFalsy()
-	})
+			expect(await searchPanel.isOpen()).toBeFalsy()
+		})
 
-	it("should open and close the height-metric cad", async () => {
-		const panel = "height-metric"
+		it("height-metric cad", async () => {
+			const panel = "height-metric"
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
-		await ribbonBar.togglePanel(panel)
+			await ribbonBar.togglePanel(panel)
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
 
-		await ribbonBar.togglePanel(panel)
+			await ribbonBar.togglePanel(panel)
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
-	})
+			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+		})
 
-	it("should open and close the area-metric card", async () => {
-		const panel = "area-metric"
+		it("area-metric card", async () => {
+			const panel = "area-metric"
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
-		await ribbonBar.togglePanel(panel)
+			await ribbonBar.togglePanel(panel)
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
 
-		await ribbonBar.togglePanel(panel)
+			await ribbonBar.togglePanel(panel)
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
-	})
+			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+		})
 
-	it("should open and close the color-metric card", async () => {
-		const panel = "color-metric"
+		it("color-metric card", async () => {
+			const panel = "color-metric"
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
-		await ribbonBar.togglePanel(panel)
+			await ribbonBar.togglePanel(panel)
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
 
-		await ribbonBar.togglePanel(panel)
+			await ribbonBar.togglePanel(panel)
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
-	})
+			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+		})
 
-	it("should open and close the edge-metric", async () => {
-		const panel = "edge-metric"
+		it("edge-metric", async () => {
+			const panel = "edge-metric"
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
-		await ribbonBar.togglePanel(panel)
+			await ribbonBar.togglePanel(panel)
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
 
-		await ribbonBar.togglePanel(panel)
+			await ribbonBar.togglePanel(panel)
 
-		expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+		})
 	})
 })

@@ -1,4 +1,4 @@
-import { goto, launch } from "../../puppeteer.helper"
+import { goto, launch, newPage } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
 import { Browser, Page } from "puppeteer"
 
@@ -18,7 +18,7 @@ describe("CodeCharta logo", () => {
 	})
 
 	beforeEach(async () => {
-		page = await browser.newPage()
+		page = await newPage(browser)
 		logo = new LogoPageObject(page)
 
 		await goto(page)
