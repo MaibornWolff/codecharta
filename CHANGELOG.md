@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Open and close the ribbonBar sections independently with an updated animation
+
 ### Removed
 
 ### Fixed
