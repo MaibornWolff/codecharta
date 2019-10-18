@@ -25,7 +25,6 @@ import { LoadingGifService } from "../loadingGif/loadingGif.service"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import * as d3 from "d3"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
 
 export interface RenderData {
 	map: CodeMapNode
@@ -57,8 +56,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
 		private loadingGifService: LoadingGifService,
-		private edgeMetricService: EdgeMetricService,
-		private threeSceneService: ThreeSceneService
+		private edgeMetricService: EdgeMetricService
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
@@ -181,7 +179,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	private renderAndNotify() {
 		this.codeMapRenderService.render(this.lastRender)
-		this.threeSceneService.reselectBuilding()
 
 		this.notifyLoadingMapStatus()
 		this.notifyMapChanged()

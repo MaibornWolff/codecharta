@@ -4,8 +4,11 @@ import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { SettingsService } from "../../../state/settingsService/settings.service"
+import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { IRootScopeService } from "angular"
 
-export class ThreeSceneService {
+export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -17,7 +20,8 @@ export class ThreeSceneService {
 	private highlighted: CodeMapBuilding = null
 	private highlightedBuildings: CodeMapBuilding[] = []
 
-	constructor(private settingsService: SettingsService) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 		this.scene = new THREE.Scene()
 
 		this.mapGeometry = new THREE.Group()
@@ -31,6 +35,12 @@ export class ThreeSceneService {
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
+	}
+
+	public onRenderMapChanged(map: CodeMapNode) {
+		if (this.selected) {
+			this.reselectBuilding()
+		}
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {
@@ -56,17 +66,6 @@ export class ThreeSceneService {
 		const color = this.settingsService.getSettings().appSettings.mapColors.selected
 		this.getMapMesh().selectBuilding(building, this.selected, color)
 		this.selected = building
-	}
-
-	public reselectBuilding() {
-		if (this.selected) {
-			const reselect = this.getMapMesh()
-				.getMeshDescription()
-				.buildings.find(building => {
-					return building.node.path === this.selected.node.path
-				})
-			this.selectBuilding(reselect)
-		}
 	}
 
 	public clearSelection() {
@@ -136,5 +135,16 @@ export class ThreeSceneService {
 
 	public getHighlightedBuilding(): CodeMapBuilding {
 		return this.highlighted
+	}
+
+	private reselectBuilding() {
+		const buildingToSelect: CodeMapBuilding = this.getMapMashBuildingByPath(this.selected.node.path)
+		this.selectBuilding(buildingToSelect)
+	}
+
+	private getMapMashBuildingByPath(path: string) {
+		return this.getMapMesh()
+			.getMeshDescription()
+			.buildings.find(building => building.node.path === path)
 	}
 }
