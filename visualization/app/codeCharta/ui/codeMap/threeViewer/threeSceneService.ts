@@ -47,10 +47,12 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Bla
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		const isSelectedBuildingBlacklited = CodeMapHelper.isPathHiddenOrExcluded(this.getSelectedBuilding().node.path, blacklist)
+		if (this.selected) {
+			const isSelectedBuildingBlacklited = CodeMapHelper.isPathHiddenOrExcluded(this.selected.node.path, blacklist)
 
-		if (!isSelectedBuildingBlacklited) {
-			this.reselectBuilding()
+			if (!isSelectedBuildingBlacklited) {
+				this.reselectBuilding()
+			}
 		}
 	}
 

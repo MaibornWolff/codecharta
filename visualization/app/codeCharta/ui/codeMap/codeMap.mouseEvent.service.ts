@@ -104,10 +104,12 @@ export class CodeMapMouseEventService
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
-		const isSelectedBuildingBlacklited = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
+		if (selectedBuilding) {
+			const isSelectedBuildingBlacklited = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
-		if (isSelectedBuildingBlacklited) {
-			this.onBuildingDeselected()
+			if (isSelectedBuildingBlacklited) {
+				this.onBuildingDeselected()
+			}
 		}
 	}
 
