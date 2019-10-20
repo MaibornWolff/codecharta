@@ -1,8 +1,8 @@
 import "./loadingGif.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { LoadingGifComponentSubscriber, LoadingGifService } from "./loadingGif.service"
+import { LoadingStatusServiceSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
 
-export class LoadingGifController implements LoadingGifComponentSubscriber {
+export class LoadingGifController implements LoadingStatusServiceSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isLoadingMap: boolean
@@ -13,7 +13,7 @@ export class LoadingGifController implements LoadingGifComponentSubscriber {
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
-		LoadingGifService.subscribe(this.$rootScope, this)
+		LoadingStatusService.subscribe(this.$rootScope, this)
 	}
 
 	public onLoadingFileStatusChanged(isLoadingFile: boolean) {

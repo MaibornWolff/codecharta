@@ -24,9 +24,9 @@ export class DialogGlobalSettingsController implements SettingsServiceSubscriber
 		this.updateSettingsFields(settings)
 	}
 
-	public updateSettingsFields(s: Settings = this.settingsService.getSettings()) {
+	private updateSettingsFields(settings: Settings = this.settingsService.getSettings()) {
 		const interestingKeys = _.keys(this._viewModel)
-		const viewModelUpdate = _.pick(s.appSettings, interestingKeys)
+		const viewModelUpdate = _.pick(settings.appSettings, interestingKeys)
 		_.assign(this._viewModel, viewModelUpdate)
 	}
 
@@ -42,8 +42,9 @@ export class DialogGlobalSettingsController implements SettingsServiceSubscriber
 }
 
 export const dialogGlobalSettingsComponent = {
-	clickOutsideToClose: true,
+	selector: "dialogGlobalSettingsComponent",
 	template: require("./dialog.globalSettings.component.html"),
 	controller: DialogGlobalSettingsController,
+	clickOutsideToClose: true,
 	controllerAs: "$ctrl"
 }

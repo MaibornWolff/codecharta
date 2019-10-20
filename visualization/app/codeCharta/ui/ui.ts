@@ -22,7 +22,6 @@ import "./dialog/dialog.module"
 import "./fileChooser/fileChooser.module"
 import "./fileExtensionBar/fileExtensionBar.module"
 import "./heightSettingsPanel/heightSettingsPanel.module"
-import "./layoutSwitcher/layoutSwitcher.module"
 import "./legendPanel/legendPanel.module"
 import "./loadingGif/loadingGif.module"
 import "./mapTreeView/mapTreeView.module"
@@ -60,7 +59,6 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.fileExtensionBar",
 	"app.codeCharta.ui.filePanel",
 	"app.codeCharta.ui.heightSettingsPanel",
-	"app.codeCharta.ui.layoutSwitcher",
 	"app.codeCharta.ui.legendPanel",
 	"app.codeCharta.ui.loadingGif",
 	"app.codeCharta.ui.mapTreeView",

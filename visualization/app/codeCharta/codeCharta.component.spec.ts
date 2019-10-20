@@ -10,7 +10,7 @@ import { Settings } from "./codeCharta.model"
 import { SETTINGS } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
-import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
+import { LoadingStatusService } from "./state/loadingStatus.service"
 import { NodeSearchService } from "./state/nodeSearch.service"
 
 describe("codeChartaController", () => {
@@ -24,7 +24,7 @@ describe("codeChartaController", () => {
 	let nodeSearchService: NodeSearchService
 	let $location: ILocationService
 	let $http: IHttpService
-	let loadingGifService: LoadingGifService
+	let loadingStatusService: LoadingStatusService
 
 	let settings: Settings
 
@@ -37,7 +37,7 @@ describe("codeChartaController", () => {
 		withMockedCodeChartaService()
 		withMockedDialogService()
 		withMockedScenarioHelper()
-		withMockedLoadingGifService()
+		withMockedLoadingStatusService()
 	})
 
 	function restartSystem() {
@@ -52,7 +52,7 @@ describe("codeChartaController", () => {
 		nodeSearchService = getService<NodeSearchService>("nodeSearchService")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
-		loadingGifService = getService<LoadingGifService>("loadingGifService")
+		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
@@ -68,7 +68,7 @@ describe("codeChartaController", () => {
 			nodeSearchService,
 			$location,
 			$http,
-			loadingGifService
+			loadingStatusService
 		)
 	}
 
@@ -112,8 +112,8 @@ describe("codeChartaController", () => {
 		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings })
 	}
 
-	function withMockedLoadingGifService() {
-		loadingGifService = codeChartaController["loadingGifService"] = jest.fn().mockReturnValue({
+	function withMockedLoadingStatusService() {
+		loadingStatusService = codeChartaController["loadingStatusService"] = jest.fn().mockReturnValue({
 			updateLoadingFileFlag: jest.fn(),
 			updateLoadingMapFlag: jest.fn()
 		})()
@@ -137,7 +137,7 @@ describe("codeChartaController", () => {
 		it("should call updateLoadingFileFlag with true", () => {
 			rebuildController()
 
-			expect(loadingGifService.updateLoadingFileFlag).toHaveBeenCalledWith(true)
+			expect(loadingStatusService.updateLoadingFileFlag).toHaveBeenCalledWith(true)
 		})
 	})
 
