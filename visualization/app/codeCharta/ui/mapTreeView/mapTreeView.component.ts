@@ -16,6 +16,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber 
 
 	public onRenderMapChanged(map: CodeMapNode) {
 		if (map == this._viewModel.rootNode) {
+			// needed to prevent flashing since event is triggered 4 times
 			return
 		}
 

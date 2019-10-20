@@ -4,11 +4,11 @@ import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
-import { LoadingGifComponentSubscriber, LoadingGifService } from "../loadingGif/loadingGif.service"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
+import { LoadingStatusServiceSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
 
 export class CodeMapController
-	implements BuildingRightClickedEventSubscriber, LoadingGifComponentSubscriber, AttributeSideBarVisibilitySubscriber {
+	implements BuildingRightClickedEventSubscriber, LoadingStatusServiceSubscriber, AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isSideBarVisible: boolean
@@ -26,8 +26,8 @@ export class CodeMapController
 		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
-		LoadingGifService.subscribe(this.$rootScope, this)
 		AttributeSideBarService.subscribe(this.$rootScope, this)
+		LoadingStatusService.subscribe(this.$rootScope, this)
 	}
 
 	public $postLink() {

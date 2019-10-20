@@ -1,8 +1,6 @@
 @import "../mixins.scss";
 
 code-charta-component {
-	$animationDuration: 0.5;
-
 	#mw-logo {
 		.logo {
 			width: 160px;
@@ -51,14 +49,6 @@ code-charta-component {
 		z-index: 10;
 		white-space: nowrap;
 		pointer-events: none;
-
-		.ribbon-bar-component {
-			md-card,
-			.section .section-header,
-			.section .section-body {
-				transition: all $animationDuration + s ease;
-			}
-		}
 	}
 
 	attribute-side-bar-component .side-bar-container,
