@@ -108,8 +108,6 @@ export class CodeMapMouseEventService
 
 		if (isSelectedBuildingBlacklited) {
 			this.onBuildingDeselected()
-		} else {
-			this.threeSceneService.reselectBuilding()
 		}
 	}
 

@@ -5,10 +5,12 @@ import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode, BlacklistItem } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { CodeMapHelper } from "../../../util/codeMapHelper"
+import { BlacklistSubscriber } from "../../../state/settingsService/settings.service.events"
 
-export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
+export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, BlacklistSubscriber {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -22,8 +24,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
-		this.scene = new THREE.Scene()
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 
+		this.scene = new THREE.Scene()
 		this.mapGeometry = new THREE.Group()
 		this.lights = new THREE.Group()
 		this.labels = new THREE.Group()
@@ -39,6 +42,14 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	public onRenderMapChanged(map: CodeMapNode) {
 		if (this.selected) {
+			this.reselectBuilding()
+		}
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		const isSelectedBuildingBlacklited = CodeMapHelper.isPathHiddenOrExcluded(this.getSelectedBuilding().node.path, blacklist)
+
+		if (!isSelectedBuildingBlacklited) {
 			this.reselectBuilding()
 		}
 	}
