@@ -138,13 +138,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	private reselectBuilding() {
-		const buildingToSelect: CodeMapBuilding = this.getMapMashBuildingByPath(this.selected.node.path)
+		const buildingToSelect: CodeMapBuilding = this.getMapMesh().getBuildingByNode(this.selected.node)
 		this.selectBuilding(buildingToSelect)
-	}
-
-	private getMapMashBuildingByPath(path: string) {
-		return this.getMapMesh()
-			.getMeshDescription()
-			.buildings.find(building => building.node.path === path)
 	}
 }
