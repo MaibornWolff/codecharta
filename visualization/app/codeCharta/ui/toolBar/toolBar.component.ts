@@ -4,7 +4,7 @@ import { BuildingHoveredEventSubscriber, CodeMapMouseEventService, CodeMapBuildi
 import { IRootScopeService } from "angular"
 
 export class ToolBarController implements BuildingHoveredEventSubscriber {
-	_viewModel: {
+	private _viewModel: {
 		nodeHovered: boolean
 	} = {
 		nodeHovered: null
