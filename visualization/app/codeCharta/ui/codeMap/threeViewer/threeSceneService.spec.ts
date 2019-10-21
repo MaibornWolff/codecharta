@@ -2,7 +2,8 @@ import "./threeViewer.module"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { VALID_NODE, CODE_MAP_BUILDING } from "../../../util/dataMocks"
-import { CodeMapNode, CodeMapBuilding } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
@@ -36,20 +37,20 @@ describe("ThreeSceneService", () => {
 	describe("onRenderMapChanged", () => {
 		it("should call reselectBuilding", () => {
 			threeSceneService["selected"] = codeMapBuilding
-			threeSceneService.reselectBuilding = jest.fn()
+			threeSceneService["reselectBuilding"] = jest.fn()
 
 			threeSceneService.onRenderMapChanged(map)
 
-			expect(threeSceneService.reselectBuilding).toHaveBeenCalled()
+			expect(threeSceneService["reselectBuilding"]).toHaveBeenCalled()
 		})
 
 		it("should not call reselectBuilding", () => {
 			threeSceneService["selected"] = null
-			threeSceneService.reselectBuilding = jest.fn()
+			threeSceneService["reselectBuilding"] = jest.fn()
 
 			threeSceneService.onRenderMapChanged(map)
 
-			expect(threeSceneService.reselectBuilding).not.toHaveBeenCalled()
+			expect(threeSceneService["reselectBuilding"]).not.toHaveBeenCalled()
 		})
 	})
 })
