@@ -1,3 +1,9 @@
 <div id="node-path">
-	{{ $ctrl._viewModel.hoveredNodePath }}
+	<span ng-repeat="folder in $ctrl._viewModel.hoveredNodePath track by $index">
+		<span role="img" class="fa fa-folder"></span>
+		{{ folder }} >
+	</span>
+
+	<span role="img" class="fa fa-file-o"></span>
+	{{ $ctrl._viewModel.hoveredNodeName }}
 </div>

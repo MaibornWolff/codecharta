@@ -6,9 +6,11 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 
 export class NodePathPanelController implements BuildingHoveredEventSubscriber {
 	private _viewModel: {
-		hoveredNodePath: string
+		hoveredNodePath: string[]
+		hoveredNodeName: string
 	} = {
-		hoveredNodePath: null
+		hoveredNodePath: [],
+		hoveredNodeName: null
 	}
 
 	/* @ngInject */
@@ -19,10 +21,14 @@ export class NodePathPanelController implements BuildingHoveredEventSubscriber {
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		if (data.to && data.to.node) {
-			this._viewModel.hoveredNodePath = data.to.node.path
-		} else {
-			this._viewModel.hoveredNodePath = null
+			this.updatePathAndName(data.to.node.path)
 		}
+	}
+
+	private updatePathAndName(path: string) {
+		const pathComponents = path.substr(1).split("/")
+		this._viewModel.hoveredNodeName = pathComponents.pop()
+		this._viewModel.hoveredNodePath = pathComponents
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
