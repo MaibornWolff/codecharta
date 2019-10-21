@@ -15,6 +15,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+### Chore
+
+## [1.36.0] - 2019-10-18
+
+### Added
+
+### Changed
+
+- Open and close the ribbonBar sections independently with an updated animation
+
+### Removed
+
+### Fixed
+
 - Camera is now resetted correctly, when unfocusing #634
 - Inputs of Color Range Slider now waits a second before it commits its values #676
 - Fixed root folder name in TreeView after new map after loading new map #649
