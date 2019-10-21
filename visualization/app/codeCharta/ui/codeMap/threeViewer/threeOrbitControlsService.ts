@@ -60,7 +60,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
 		const cameraReference = this.threeCameraService.camera
 
-		cameraReference.position.set(boundingSphere.center.x + len, boundingSphere.center.y + len, boundingSphere.center.z + len)
+		cameraReference.position.set(boundingSphere.center.x + len, len, boundingSphere.center.z + len)
 		this.defaultCameraPosition = cameraReference.position.clone()
 		this.controls.update()
 
