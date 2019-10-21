@@ -4,6 +4,7 @@
 		{{ folder }} >
 	</span>
 
-	<span role="img" class="fa fa-file-o"></span>
+	<span role="img" class="fa fa-file-o" ng-if="$ctrl._viewModel.hoveredNodeIsFile"></span>
+	<span role="img" class="fa fa-folder" ng-if="!$ctrl._viewModel.hoveredNodeIsFile"></span>
 	{{ $ctrl._viewModel.hoveredNodeName }}
 </div>

@@ -37,7 +37,8 @@ describe("NodePathPanelController", () => {
 		const dataHovered = {
 			to: {
 				node: {
-					path: "/root/my/path"
+					path: "/root/my/path",
+					isLeaf: true
 				}
 			}
 		} as CodeMapBuildingTransition
@@ -45,7 +46,6 @@ describe("NodePathPanelController", () => {
 		it("should update the hoveredNodeName when hovering", () => {
 			nodePathPanelController.onBuildingHovered(dataHovered)
 
-			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(["root", "my"])
 			expect(nodePathPanelController["_viewModel"].hoveredNodeName).toEqual("path")
 		})
 
@@ -53,6 +53,12 @@ describe("NodePathPanelController", () => {
 			nodePathPanelController.onBuildingHovered(dataHovered)
 
 			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(["root", "my"])
+		})
+
+		it("should update the hoveredNodeIsFile when hovering", () => {
+			nodePathPanelController.onBuildingHovered(dataHovered)
+
+			expect(nodePathPanelController["_viewModel"].hoveredNodeIsFile).toEqual(true)
 		})
 	})
 })
