@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- Autofocus and label size for focused nodes #747
+
 ### Chore
 
 ## [1.36.0] - 2019-10-18
