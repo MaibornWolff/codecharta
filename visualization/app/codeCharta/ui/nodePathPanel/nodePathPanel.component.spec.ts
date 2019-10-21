@@ -34,28 +34,25 @@ describe("NodePathPanelController", () => {
 	})
 
 	describe("onBuildingHovered", () => {
-		it("should update the viewModel when hovering", () => {
-			const dataHovered = {
-				to: {
-					node: {
-						path: "/root/my/path"
-					}
+		const dataHovered = {
+			to: {
+				node: {
+					path: "/root/my/path"
 				}
-			} as CodeMapBuildingTransition
+			}
+		} as CodeMapBuildingTransition
 
+		it("should update the hoveredNodeName when hovering", () => {
 			nodePathPanelController.onBuildingHovered(dataHovered)
 
-			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual("/root/my/path")
+			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(["root", "my"])
+			expect(nodePathPanelController["_viewModel"].hoveredNodeName).toEqual("path")
 		})
 
-		it("should update the viewModel when unhovering", () => {
-			const dataUnhovered = {
-				to: {}
-			} as CodeMapBuildingTransition
+		it("should update the hoveredNodePath when hovering", () => {
+			nodePathPanelController.onBuildingHovered(dataHovered)
 
-			nodePathPanelController.onBuildingHovered(dataUnhovered)
-
-			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(null)
+			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(["root", "my"])
 		})
 	})
 })
