@@ -9,8 +9,8 @@
 		</md-button>
 	</div>
 
-	<file-panel-component ng-if="!$ctrl._viewModel.nodeHovered"></file-panel-component>
-	<node-path-panel-component ng-if="$ctrl._viewModel.nodeHovered"></node-path-panel-component>
+	<file-panel-component ng-show="!$ctrl._viewModel.nodeHovered"></file-panel-component>
+	<node-path-panel-component ng-show="$ctrl._viewModel.nodeHovered"></node-path-panel-component>
 
 	<div class="right-aligned">
 		<presentation-mode-button-component></presentation-mode-button-component>
