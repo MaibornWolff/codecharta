@@ -1,7 +1,8 @@
 tool-bar-component {
 	.tool-bar {
 		background-color: #f0f0f0;
-		height: 35px;
+		min-height: 35px;
+		overflow: auto;
 		margin-block-end: 0;
 		padding-bottom: 0;
 		margin-bottom: 0;

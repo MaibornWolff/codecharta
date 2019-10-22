@@ -1,13 +1,9 @@
 node-path-panel-component {
 	#node-path {
-		margin-top: 10px;
-		margin-left: 10px;
+		margin: 10px;
 		font-weight: bold;
 		float: left;
-		vertical-align: middle;
 		font-size: 10pt;
-		max-width: calc(100% - 150px);
-		-ms-word-break: break-all;
-		word-break: break-all;
+		max-width: calc(100% - 250px);
 	}
 }
