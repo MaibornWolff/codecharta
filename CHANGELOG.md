@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - Sidebar with information regarding the selected building #527
+- Sidebar closes when selected buildings is excluded #748
 
 ### Changed
 
@@ -21,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Removed option to maximize/minimize detail panel #527
 
 ### Fixed
+
+- Selected buildings stays selected when settings are changed #748
 
 ### Chore
 
