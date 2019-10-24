@@ -2,6 +2,7 @@
 layout: splash
 permalink: /
 header:
+  overlay_color: "#5e616c"
   overlay_image: /assets/images/CC-Home.png
   actions:
     - label: "<i class='fas fa-fw fa-link'></i> Quick Start"
@@ -28,5 +29,9 @@ feature_row:
     btn_class: "btn--primary"
     btn_label: "Learn more"
 ---
+
+# How do you communicate software quality?
+
+CodeCharta is a tool that allows you to import and **combine** metrics from various sources like [SonarQube](https://www.sonarqube.org/), Svn, Git or directly from your source code. It's not tied to a specific programming language and we provide several [importers]({% link _docs/05-02-importers.md %}) that you can use. After importing the sources you can then visualize your code metrics.
 
 {% include feature_row %}
