@@ -9,7 +9,7 @@ header:
     - label: "<i class='fas fa-download'></i> Install now"
       url: "/docs/installation/"
 excerpt: >
-  Collaborate on Code Quality.<br />
+  Visualize and understand code metrics. <br />
   <small><a href="https://github.com/MaibornWolff/codecharta/releases/latest">Latest releases</a></small>
 feature_row:
   - title: "Integrate any Metric"
