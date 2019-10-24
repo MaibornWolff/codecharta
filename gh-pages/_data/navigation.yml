@@ -55,6 +55,8 @@ docs:
     children:
       - title: "Visualization"
         url: /docs/visualization/
+      - title: "Timeline"
+        url: /docs/timeline/
 
   - title: Meta
     children:
