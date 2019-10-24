@@ -133,6 +133,9 @@ collections:
   docs:
     output: true
     permalink: /:collection/:path/
+  showcase:
+    output: true
+    permalink: /:collection/:path/
 
 # Front Matter Defaults (https://jekyllrb.com/docs/configuration/front-matter-defaults/)
 # so you don't need to write values like the page template for each file
@@ -154,6 +157,12 @@ defaults:
       layout: single
       sidebar:
         nav: "docs"
+  # _showcase
+  - scope:
+      path: ""
+      type: showcase
+    values:
+      layout: single
   # _posts
   - scope:
       path: ""
