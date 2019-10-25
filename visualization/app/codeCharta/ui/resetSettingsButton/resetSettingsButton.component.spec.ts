@@ -30,7 +30,7 @@ describe("resetSettingsButtonController", () => {
 				updateSettings: jest.fn(),
 				getDefaultSettings: jest.fn(() => {
 					return {
-						appSettings: { maximizeDetailPanel: false, invertColorRange: true }
+						appSettings: { hideFlatBuildings: false, invertColorRange: true }
 					}
 				}),
 				getSettings: jest.fn()
@@ -41,29 +41,29 @@ describe("resetSettingsButtonController", () => {
 	describe("applyDefaultSettings", () => {
 		it("should call updateSettings with available default settings objects", () => {
 			resetSettingsButtonController["settingsNames"] =
-				"appSettings.invertColorRange, appSettings.maximizeDetailPanel, appSettings.notInAppSettings, notInSettings.something"
+				"appSettings.invertColorRange, appSettings.hideFlatBuildings, appSettings.notInAppSettings, notInSettings.something"
 			resetSettingsButtonController.applyDefaultSettings()
 
 			expect(settingsService.getDefaultSettings).toHaveBeenCalledTimes(1)
 			expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { invertColorRange: true, maximizeDetailPanel: false }
+				appSettings: { invertColorRange: true, hideFlatBuildings: false }
 			})
 		})
 
 		it("settingsNames should allow blank-space", () => {
-			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange, appSettings.maximizeDetailPanel"
+			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange, appSettings.hideFlatBuildings"
 			resetSettingsButtonController.applyDefaultSettings()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { invertColorRange: true, maximizeDetailPanel: false }
+				appSettings: { invertColorRange: true, hideFlatBuildings: false }
 			})
 		})
 
 		it("settingsNames should allow newline", () => {
-			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange,\nappSettings.maximizeDetailPanel"
+			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange,\nappSettings.hideFlatBuildings"
 			resetSettingsButtonController.applyDefaultSettings()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { invertColorRange: true, maximizeDetailPanel: false }
+				appSettings: { invertColorRange: true, hideFlatBuildings: false }
 			})
 		})
 

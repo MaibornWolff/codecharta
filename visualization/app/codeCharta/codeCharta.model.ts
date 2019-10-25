@@ -100,7 +100,6 @@ export interface AppSettings {
 	scaling: Vector3
 	camera: Vector3
 	hideFlatBuildings: boolean
-	maximizeDetailPanel: boolean
 	invertColorRange: boolean
 	invertDeltaColors: boolean
 	invertHeight: boolean

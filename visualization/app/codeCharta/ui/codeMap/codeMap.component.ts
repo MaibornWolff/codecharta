@@ -1,18 +1,20 @@
+import "./codeMap.component.scss"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-
-import "./codeMap.component.scss"
-
 import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
+import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 import { LoadingStatusServiceSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
 
-export class CodeMapController implements BuildingRightClickedEventSubscriber, LoadingStatusServiceSubscriber {
+export class CodeMapController
+	implements BuildingRightClickedEventSubscriber, LoadingStatusServiceSubscriber, AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
+		isSideBarVisible: boolean
 	} = {
-		isLoadingFile: true
+		isLoadingFile: true,
+		isSideBarVisible: null
 	}
 
 	/* @ngInject */
@@ -24,6 +26,7 @@ export class CodeMapController implements BuildingRightClickedEventSubscriber, L
 		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
+		AttributeSideBarService.subscribe(this.$rootScope, this)
 		LoadingStatusService.subscribe(this.$rootScope, this)
 	}
 
@@ -39,6 +42,10 @@ export class CodeMapController implements BuildingRightClickedEventSubscriber, L
 			const nodeType = building.node.isLeaf ? "File" : "Folder"
 			NodeContextMenuController.broadcastShowEvent(this.$rootScope, building.node.path, nodeType, x, y)
 		}
+	}
+
+	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
+		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
 	public onLoadingFileStatusChanged(isLoadingFile: boolean) {

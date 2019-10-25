@@ -30,8 +30,10 @@
 	<div>
 		<area-metric-type-component></area-metric-type-component>
 		<span class="metric-value"
-			>{{ ($ctrl.hoveredAreaValue | number) || "-" }}
-			<span ng-hide="!$ctrl.hoveredAreaDelta">(&Delta;{{ $ctrl.hoveredAreaDelta | number }})</span>
+			>{{ ($ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.areaMetric] | number) || "-" }}
+			<span ng-show="$ctrl._viewModel.hoveredNode.deltas"
+				>(&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.areaMetric] | number }})</span
+			>
 		</span>
 	</div>
 </md-input-container>

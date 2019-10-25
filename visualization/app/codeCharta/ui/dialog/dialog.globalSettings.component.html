@@ -20,12 +20,6 @@
 			</md-input-container>
 
 			<md-input-container class="md-block">
-				<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.maximizeDetailPanel" ng-change="$ctrl.applySettings()">
-					Maximize Detail Panel
-				</md-checkbox>
-			</md-input-container>
-
-			<md-input-container class="md-block">
 				<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.isWhiteBackground" ng-change="$ctrl.applySettings()">
 					White Background
 				</md-checkbox>
@@ -45,7 +39,7 @@
 
 			<reset-settings-button-component
 				autofocus="false"
-				settings-names="appSettings.hideFlatBuildings, appSettings.maximizeDetailPanel, appSettings.isWhiteBackground, appSettings.resetCameraIfNewFileIsLoaded"
+				settings-names="appSettings.hideFlatBuildings, appSettings.isWhiteBackground, appSettings.resetCameraIfNewFileIsLoaded"
 			></reset-settings-button-component>
 		</div>
 	</md-dialog-content>
