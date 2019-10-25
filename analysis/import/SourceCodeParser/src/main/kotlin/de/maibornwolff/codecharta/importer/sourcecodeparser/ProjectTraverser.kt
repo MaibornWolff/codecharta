@@ -3,8 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import org.sonar.api.internal.apachecommons.io.FilenameUtils
 import java.io.File
 import java.nio.file.Paths
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 class ProjectTraverser(var root: File, private val exclude: Array<String> = arrayOf()) {
     private var fileList: MutableList<File> = mutableListOf()
@@ -48,16 +47,15 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
     }
 
     private fun getRelativeFileName(fileName: String): String {
-
-        return root.toPath()
-                .relativize(Paths.get(fileName))
+        return root.toPath().toAbsolutePath()
+                .relativize(Paths.get(fileName).toAbsolutePath())
                 .toString()
                 .replace('\\', '/')
     }
 
     private fun adjustRootFolderIfRootIsFile() {
-        if(fileList.size == 1 && fileList[0] == root){
-            root = root.parentFile
+        if (root.isFile) {
+            root = root.absoluteFile.parentFile
         }
     }
 }
