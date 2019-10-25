@@ -200,7 +200,6 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(CodeMapMouseEventService["BUILDING_DESELECTED_EVENT"])
 		})
 
 		it("should deselect the building when the selected building is hidden", () => {
@@ -209,14 +208,12 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(CodeMapMouseEventService["BUILDING_DESELECTED_EVENT"])
 		})
 
 		it("should not deselect the building when the selected building is not blacklisted", () => {
 			codeMapMouseEventService.onBlacklistChanged([])
 
 			expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
-			expect($rootScope.$broadcast).not.toHaveBeenCalledWith(CodeMapMouseEventService["BUILDING_DESELECTED_EVENT"])
 		})
 
 		it("should not deselect the building when no building is selected", () => {
@@ -225,7 +222,6 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onBlacklistChanged([])
 
 			expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
-			expect($rootScope.$broadcast).not.toHaveBeenCalledWith(CodeMapMouseEventService["BUILDING_DESELECTED_EVENT"])
 		})
 	})
 
@@ -437,21 +433,18 @@ describe("codeMapMouseEventService", () => {
 		it("should select a building", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", codeMapBuilding)
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
 
 		it("should clear selection", () => {
 			codeMapMouseEventService.onBuildingDeselected()
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-deselected")
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 		})
 
 		it("should clear the currently selected building and then select the new one", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", codeMapBuilding)
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})

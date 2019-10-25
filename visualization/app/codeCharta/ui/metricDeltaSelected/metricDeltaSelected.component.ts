@@ -1,9 +1,8 @@
 import "./metricDeltaSelected.component.scss"
 import { Settings, RecursivePartial } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { BuildingSelectedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 
@@ -27,7 +26,7 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 		private threeSceneService: ThreeSceneService,
 		private settingsService: SettingsService
 	) {
-		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
+		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		SettingsService.subscribe(this.$rootScope, this)
 		this.$timeout(() => {
 			this.onBuildingSelected(this.threeSceneService.getSelectedBuilding())

@@ -27,14 +27,6 @@ export interface BuildingHoveredEventSubscriber {
 	onBuildingHovered(data: CodeMapBuildingTransition)
 }
 
-export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(selectedBuilding: CodeMapBuilding)
-}
-
-export interface BuildingDeselectedEventSubscriber {
-	onBuildingDeselected()
-}
-
 export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
@@ -48,8 +40,6 @@ export enum ClickType {
 export class CodeMapMouseEventService
 	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
-	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
-	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
 	private highlightedInTreeView: CodeMapBuilding = null
@@ -220,12 +210,10 @@ export class CodeMapMouseEventService
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this.threeSceneService.clearSelection()
 		this.threeSceneService.selectBuilding(selectedBuilding)
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, selectedBuilding)
 	}
 
 	public onBuildingDeselected() {
 		this.threeSceneService.clearSelection()
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_DESELECTED_EVENT)
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
@@ -246,18 +234,6 @@ export class CodeMapMouseEventService
 	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {
 		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data: CodeMapBuildingTransition) => {
 			subscriber.onBuildingHovered(data)
-		})
-	}
-
-	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, selectedBuilding: CodeMapBuilding) => {
-			subscriber.onBuildingSelected(selectedBuilding)
-		})
-	}
-
-	public static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, e => {
-			subscriber.onBuildingDeselected()
 		})
 	}
 

@@ -8,7 +8,18 @@ import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../c
 import { CodeMapNode } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
 
+export interface BuildingSelectedEventSubscriber {
+	onBuildingSelected(selectedBuilding: CodeMapBuilding)
+}
+
+export interface BuildingDeselectedEventSubscriber {
+	onBuildingDeselected()
+}
+
 export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
+	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
+	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
+
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -64,11 +75,13 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		const color = this.settingsService.getSettings().appSettings.mapColors.selected
 		this.getMapMesh().selectBuilding(building, this.selected, color)
 		this.selected = building
+		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
 	}
 
 	public clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
+			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
 		if (this.highlighted) {
 			this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
@@ -142,5 +155,17 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 				this.selectBuilding(buildingToSelect)
 			}
 		}
+	}
+
+	public static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
+		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, e => {
+			subscriber.onBuildingDeselected()
+		})
+	}
+
+	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
+		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, selectedBuilding: CodeMapBuilding) => {
+			subscriber.onBuildingSelected(selectedBuilding)
+		})
 	}
 }

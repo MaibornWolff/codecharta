@@ -1,7 +1,6 @@
 import "./attributeSideBar.component.scss"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { CodeMapMouseEventService, BuildingSelectedEventSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { Node } from "../../codeCharta.model"
 import _ from "lodash"
 import {
@@ -12,6 +11,7 @@ import {
 } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "./attributeSideBar.service"
+import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 export interface PrimaryMetrics {
 	node: {
@@ -46,7 +46,7 @@ export class AttributeSideBarController
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private attributeSideBarService: AttributeSideBarService) {
-		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
+		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)

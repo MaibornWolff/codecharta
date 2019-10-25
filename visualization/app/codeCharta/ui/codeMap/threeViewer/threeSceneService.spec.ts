@@ -36,14 +36,6 @@ describe("ThreeSceneService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe blacklist", () => {
-			SettingsService.subscribeToBlacklist = jest.fn()
-
-			rebuildService()
-
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, threeSceneService)
-		})
-
 		it("should subscribe renderMap", () => {
 			CodeMapPreRenderService.subscribe = jest.fn()
 
@@ -61,15 +53,6 @@ describe("ThreeSceneService", () => {
 			threeSceneService.onRenderMapChanged(map)
 
 			expect(threeSceneService["reselectBuilding"]).toHaveBeenCalled()
-		})
-
-		it("should not call reselectBuilding", () => {
-			threeSceneService["selected"] = null
-			threeSceneService["reselectBuilding"] = jest.fn()
-
-			threeSceneService.onRenderMapChanged(map)
-
-			expect(threeSceneService["reselectBuilding"]).not.toHaveBeenCalled()
 		})
 	})
 })
