@@ -43,6 +43,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - File-Extension-Bar will not display excluded nodes anymore #725
 - Sanitize input for shelljs #600
 - Fix IllegalStateException when scanning single file in SourceCodeParser #573
+- SourceCodeParser places files in the project root correctly into the hierarchy #574
+
 
 ### Chore
 
