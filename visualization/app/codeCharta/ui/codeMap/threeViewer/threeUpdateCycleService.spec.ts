@@ -1,42 +1,63 @@
 import "./threeViewer.module"
-import { NG } from "../../../../../mocks/ng.mockhelper"
-import sinon from "sinon"
-import angular from "angular"
+import { instantiateModule } from "../../../../../mocks/ng.mockhelper"
+import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 
-/**
- * @test {ThreeUpdateCycleService}
- */
-describe("app.codeCharta.ui.codeMap.threeViewer.threeUpdateCycleService", () => {
-	//noinspection TypeScriptUnresolvedVariable
-	beforeEach(angular.mock.module("app.codeCharta.ui.codeMap.threeViewer"))
+describe("ThreeUpdateCycleService", () => {
+	let threeUpdateCycleService: ThreeUpdateCycleService
 
-	//noinspection TypeScriptUnresolvedVariable
-	/**
-	 * @test {ThreeUpdateCycleService#constructor}
-	 */
-	it(
-		"should retrieve the angular service instance with no updatable references",
-		NG.mock.inject(threeUpdateCycleService => {
+	beforeEach(() => {
+		restartSystem()
+		rebuildService()
+	})
+
+	function restartSystem() {
+		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
+	}
+
+	function rebuildService() {
+		threeUpdateCycleService = new ThreeUpdateCycleService()
+	}
+
+	describe("constructor", () => {
+		it("should retrieve the angular service instance", () => {
 			expect(threeUpdateCycleService).not.toBe(undefined)
-			expect(threeUpdateCycleService.updatables.length).toBe(0)
 		})
-	)
 
-	//noinspection TypeScriptUnresolvedVariable
-	/**
-	 * @test {ThreeUpdateCycleService#update}
-	 */
-	it(
-		"added updatable references should be updated on update call",
-		NG.mock.inject(threeUpdateCycleService => {
-			let ref1 = sinon.spy()
-			let ref2 = sinon.spy()
+		it("should have no updatable references when instantiated", () => {
+			expect(threeUpdateCycleService["updatables"].length).toBe(0)
+		})
+	})
 
-			threeUpdateCycleService.updatables.push(ref1, ref2)
+	describe("register", () => {
+		it("add one function to updatable object", () => {
+			let ref1 = jest.fn()
+
+			threeUpdateCycleService.register(ref1)
+
+			expect(threeUpdateCycleService["updatables"]).toEqual([ref1])
+		})
+
+		it("add multiple functions to updatable object", () => {
+			let ref1 = jest.fn()
+			let ref2 = jest.fn()
+
+			threeUpdateCycleService.register(ref1)
+			threeUpdateCycleService.register(ref2)
+
+			expect(threeUpdateCycleService["updatables"]).toEqual([ref1, ref2])
+		})
+	})
+
+	describe("update", () => {
+		it("added updatable references should be updated on update call", () => {
+			let ref1 = jest.fn()
+			let ref2 = jest.fn()
+
+			threeUpdateCycleService["updatables"].push(ref1, ref2)
 			threeUpdateCycleService.update()
 
-			expect(ref1.calledOnce)
-			expect(ref2.calledOnce)
+			expect(ref1).toHaveBeenCalledTimes(1)
+			expect(ref2).toHaveBeenCalledTimes(1)
 		})
-	)
+	})
 })

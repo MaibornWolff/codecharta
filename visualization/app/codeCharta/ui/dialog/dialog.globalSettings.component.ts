@@ -7,12 +7,10 @@ import { SettingsServiceSubscriber } from "../../state/settingsService/settings.
 export class DialogGlobalSettingsController implements SettingsServiceSubscriber {
 	private _viewModel: {
 		hideFlatBuildings: boolean
-		maximizeDetailPanel: boolean
 		isWhiteBackground: boolean
 		resetCameraIfNewFileIsLoaded: boolean
 	} = {
 		hideFlatBuildings: null,
-		maximizeDetailPanel: null,
 		isWhiteBackground: null,
 		resetCameraIfNewFileIsLoaded: null
 	}

@@ -9,9 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Sidebar with information regarding the selected building #527
+
 ### Changed
 
+- Animation to show or hide the legend panel #527
+
 ### Removed
+
+- Expandable detail panel in lower left corner #527
+- Removed option to maximize/minimize detail panel #527
 
 ### Fixed
 

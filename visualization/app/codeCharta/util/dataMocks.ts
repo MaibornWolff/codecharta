@@ -534,7 +534,6 @@ export const SETTINGS: Settings = {
 		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		hideFlatBuildings: true,
-		maximizeDetailPanel: false,
 		invertHeight: true,
 		invertColorRange: false,
 		dynamicMargin: true,
@@ -593,7 +592,6 @@ export const DEFAULT_SETTINGS: Settings = {
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff"
 		},
-		maximizeDetailPanel: false,
 		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
 		isPresentationMode: false,
