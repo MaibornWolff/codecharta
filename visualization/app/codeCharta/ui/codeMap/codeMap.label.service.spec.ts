@@ -9,6 +9,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import * as THREE from "three"
 
 describe("CodeMapLabelService", () => {
 	let $rootScope: IRootScopeService
@@ -65,7 +66,7 @@ describe("CodeMapLabelService", () => {
 	function withMockedThreeSceneService() {
 		threeSceneService = jest.fn<ThreeSceneService>(() => {
 			return {
-				mapGeometry: jest.fn(),
+				mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)),
 				labels: {
 					add: jest.fn(),
 					children: jest.fn()

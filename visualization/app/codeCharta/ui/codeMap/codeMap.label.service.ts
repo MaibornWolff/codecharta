@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { PerspectiveCamera, Sprite, Vector3 } from "three"
+import { PerspectiveCamera, Sprite, Vector3, Box3 } from "three"
 import { Node, Settings } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -16,8 +16,8 @@ interface InternalLabel {
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
-	private LABEL_WIDTH_DIVISOR: number = 2600 // empirically gathered
-	private LABEL_HEIGHT_DIVISOR: number = 50 // empirically gathered
+	private LABEL_WIDTH_DIVISOR: number = 2100 // empirically gathered
+	private LABEL_HEIGHT_DIVISOR: number = 40 // empirically gathered
 
 	private currentScale: Vector3 = new THREE.Vector3(1, 1, 1)
 	private resetScale: boolean = false
@@ -133,7 +133,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	private setLabelSize(sprite: Sprite, currentLabelWidth: number = undefined) {
-		const distance = this.threeCameraService.camera.position.distanceTo(this.threeSceneService.mapGeometry.position)
+		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere().center
+		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
 		const resultingLabelWidth = !currentLabelWidth ? sprite.material.map.image.width : currentLabelWidth
 		sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * resultingLabelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
 	}
