@@ -34,10 +34,10 @@ export class ViewCubeMouseEventsService {
 	}
 
 	private initRendererEventListeners(renderer: THREE.WebGLRenderer) {
-		renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false)
-		renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false)
-		renderer.domElement.addEventListener("mousedown", (event: MouseEvent) => this.checkMouseIntersection(event, "mousedown"), false)
-		renderer.domElement.addEventListener("dblclick", (event: MouseEvent) => this.checkMouseIntersection(event, "dblclick"), false)
+		renderer.domElement.addEventListener("mousemove", (event: MouseEvent) => this.onDocumentMouseMove(event))
+		renderer.domElement.addEventListener("mouseup", (event: MouseEvent) => this.onDocumentMouseUp(event))
+		renderer.domElement.addEventListener("mousedown", (event: MouseEvent) => this.checkMouseIntersection(event, "mousedown"))
+		renderer.domElement.addEventListener("dblclick", (event: MouseEvent) => this.checkMouseIntersection(event, "dblclick"))
 	}
 
 	private checkMouseIntersection(event: MouseEvent, mouseAction: string) {
