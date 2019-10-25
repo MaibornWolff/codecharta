@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 - Sidebar with information regarding the selected building #527
+- Sidebar closes when selected buildings is excluded #748
 
 ### Changed
 
@@ -23,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed
 
 - Autofocus and label size for focused nodes #747
+- Selected buildings stays selected when settings are changed #748
 
 ### Chore
 

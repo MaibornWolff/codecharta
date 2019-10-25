@@ -3,11 +3,11 @@ import { AttributeSideBarController, PrimaryMetrics } from "./attributeSideBar.c
 import { AttributeSideBarService } from "./attributeSideBar.service"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CODE_MAP_BUILDING, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import _ from "lodash"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
@@ -32,11 +32,11 @@ describe("AttributeSideBarController", () => {
 
 	describe("constructor", () => {
 		it("should subscribe to Node Selected Events", () => {
-			CodeMapMouseEventService.subscribeToBuildingSelectedEvents = jest.fn()
+			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
 		it("should subscribe to AreaMetric Events", () => {
