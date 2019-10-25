@@ -2,7 +2,7 @@ import "./threeViewer.module"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { VALID_NODE, CODE_MAP_BUILDING } from "../../../util/dataMocks"
-import { CodeMapNode, BlacklistType } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
@@ -70,39 +70,6 @@ describe("ThreeSceneService", () => {
 			threeSceneService.onRenderMapChanged(map)
 
 			expect(threeSceneService["reselectBuilding"]).not.toHaveBeenCalled()
-		})
-	})
-
-	describe("onBlacklistChanged", () => {
-		beforeEach(() => {
-			threeSceneService["selected"] = codeMapBuilding
-		})
-
-		it("should not call reselectBuilding as nothing is selected", () => {
-			threeSceneService["reselectBuilding"] = jest.fn()
-			threeSceneService["selected"] = null
-
-			threeSceneService.onBlacklistChanged([])
-
-			expect(threeSceneService["reselectBuilding"]).not.toHaveBeenCalled()
-		})
-
-		it("should not call reselectBuilding as the selected is exluded", () => {
-			threeSceneService["reselectBuilding"] = jest.fn()
-			threeSceneService["selected"].node.path = "excludedPath"
-			const blacklist = [{ path: "excludedPath", type: BlacklistType.exclude }]
-
-			threeSceneService.onBlacklistChanged(blacklist)
-
-			expect(threeSceneService["reselectBuilding"]).not.toHaveBeenCalled()
-		})
-
-		it("should call reselectBuilding as a building was selected", () => {
-			threeSceneService["reselectBuilding"] = jest.fn()
-
-			threeSceneService.onBlacklistChanged([])
-
-			expect(threeSceneService["reselectBuilding"]).toHaveBeenCalled()
 		})
 	})
 })

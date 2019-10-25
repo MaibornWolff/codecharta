@@ -5,12 +5,10 @@ import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
-import { CodeMapNode, BlacklistItem } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { CodeMapHelper } from "../../../util/codeMapHelper"
-import { BlacklistSubscriber } from "../../../state/settingsService/settings.service.events"
 
-export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, BlacklistSubscriber {
+export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -24,7 +22,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Bla
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 
 		this.scene = new THREE.Scene()
 		this.mapGeometry = new THREE.Group()
@@ -41,19 +38,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Bla
 	}
 
 	public onRenderMapChanged(map: CodeMapNode) {
-		if (this.selected) {
-			this.reselectBuilding()
-		}
-	}
-
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		if (this.selected) {
-			const isSelectedBuildingBlacklited = CodeMapHelper.isPathHiddenOrExcluded(this.selected.node.path, blacklist)
-
-			if (!isSelectedBuildingBlacklited) {
-				this.reselectBuilding()
-			}
-		}
+		this.reselectBuilding()
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {
@@ -151,7 +136,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber, Bla
 	}
 
 	private reselectBuilding() {
-		const buildingToSelect: CodeMapBuilding = this.getMapMesh().getBuildingByPath(this.selected.node.path)
-		this.selectBuilding(buildingToSelect)
+		if (this.selected) {
+			const buildingToSelect: CodeMapBuilding = this.getMapMesh().getBuildingByPath(this.selected.node.path)
+			if (buildingToSelect) {
+				this.selectBuilding(buildingToSelect)
+			}
+		}
 	}
 }
