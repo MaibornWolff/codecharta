@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Increased size of ribbonBar for big screens #644
 - File-Extension-Bar will not display excluded nodes anymore #725
 - Sanitize input for shelljs #600
+- SourceCodeParser places files in the project root correctly into the hierarchy #574
 
 ### Chore
 
