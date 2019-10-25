@@ -4,10 +4,14 @@ import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode, FileState, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
+import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
+import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
+import { SettingsService } from "../../state/settingsService/settings.service"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 
 interface Coordinates {
 	x: number
@@ -23,24 +27,26 @@ export interface BuildingHoveredEventSubscriber {
 	onBuildingHovered(data: CodeMapBuildingTransition)
 }
 
-export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(data: CodeMapBuildingTransition)
-}
-
 export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
 
-export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber {
+export enum ClickType {
+	ClickAndMove,
+	LeftClick,
+	RightClick
+}
+
+export class CodeMapMouseEventService
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
-	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
 	private highlightedInTreeView: CodeMapBuilding = null
 
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private oldMouse: Coordinates = { x: 0, y: 0 }
-	private dragOrClickFlag = 0
+	private clickType: ClickType = null
 
 	/* @ngInject */
 	constructor(
@@ -51,15 +57,17 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		private threeSceneService: ThreeSceneService,
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
-		this.threeUpdateCycleService.register(this.updateHovering.bind(this))
+		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public start() {
-		this.threeRendererService.renderer.domElement.addEventListener("mousemove", this.onDocumentMouseMove.bind(this), false)
-		this.threeRendererService.renderer.domElement.addEventListener("mouseup", this.onDocumentMouseUp.bind(this), false)
-		this.threeRendererService.renderer.domElement.addEventListener("mousedown", this.onDocumentMouseDown.bind(this), false)
-		this.threeRendererService.renderer.domElement.addEventListener("dblclick", this.onDocumentDoubleClick.bind(this), false)
+		this.threeRendererService.renderer.domElement.addEventListener("mousemove", () => this.onDocumentMouseMove(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mouseup", () => this.onDocumentMouseUp())
+		this.threeRendererService.renderer.domElement.addEventListener("mousedown", () => this.onDocumentMouseDown(event))
+		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick(event))
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -79,6 +87,23 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 				break
 		}
 	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+		this.onBuildingDeselected()
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+		if (selectedBuilding) {
+			const isSelectedBuildingBlacklisted = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
+
+			if (isSelectedBuildingBlacklisted) {
+				this.onBuildingDeselected()
+			}
+		}
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public updateHovering() {
 		if (this.hasMouseMoved()) {
@@ -116,30 +141,30 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		const topOffset = $(this.threeRendererService.renderer.domElement).offset().top - $(window).scrollTop()
 		this.mouse.x = (event.clientX / this.threeRendererService.renderer.domElement.width) * 2 - 1
 		this.mouse.y = -((event.clientY - topOffset) / this.threeRendererService.renderer.domElement.height) * 2 + 1
-		this.dragOrClickFlag = 1
+		this.clickType = ClickType.ClickAndMove
 	}
 
 	public onDocumentMouseUp() {
-		const highlightedInCodeMap = this.threeSceneService.getHighlightedBuilding()
-		const selected = this.threeSceneService.getSelectedBuilding()
-
-		if (this.dragOrClickFlag === 0) {
-			if (highlightedInCodeMap && (!selected || (selected && selected.id !== highlightedInCodeMap.id))) {
-				this.onBuildingSelected(null, highlightedInCodeMap)
-			}
-
-			if (!highlightedInCodeMap && selected) {
-				this.onBuildingSelected(null, null)
+		if (this.clickType === ClickType.LeftClick) {
+			const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+			if (highlightedBuilding) {
+				this.onBuildingSelected(highlightedBuilding)
+			} else {
+				this.onBuildingDeselected()
 			}
 		}
 	}
 
 	public onDocumentMouseDown(event) {
 		if (event.button === 0) {
-			this.onLeftClick(event)
+			this.onLeftClick()
 		} else if (event.button === 2) {
 			this.onRightClick(event)
 		}
+	}
+
+	public onLeftClick() {
+		this.clickType = ClickType.LeftClick
 	}
 
 	public onRightClick(event) {
@@ -151,14 +176,10 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		})
 	}
 
-	public onLeftClick(event) {
-		this.dragOrClickFlag = 0
-	}
-
 	public onDocumentDoubleClick(event) {
-		if (this.threeSceneService.getHighlightedBuilding()) {
-			let fileSourceLink = this.threeSceneService.getHighlightedBuilding().node.link
-
+		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+		if (highlightedBuilding) {
+			let fileSourceLink = highlightedBuilding.node.link
 			if (fileSourceLink) {
 				this.$window.open(fileSourceLink, "_blank")
 			}
@@ -186,17 +207,13 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
 	}
 
-	public onBuildingSelected(from: CodeMapBuilding, to: CodeMapBuilding) {
-		const selected = this.threeSceneService.getSelectedBuilding()
-		if (to) {
-			if (selected) {
-				this.threeSceneService.clearSelection()
-			}
-			this.threeSceneService.selectBuilding(to)
-		} else {
-			this.threeSceneService.clearSelection()
-		}
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_SELECTED_EVENT, { to: to, from: from })
+	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
+		this.threeSceneService.clearSelection()
+		this.threeSceneService.selectBuilding(selectedBuilding)
+	}
+
+	public onBuildingDeselected() {
+		this.threeSceneService.clearSelection()
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
@@ -217,12 +234,6 @@ export class CodeMapMouseEventService implements MapTreeViewHoverEventSubscriber
 	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {
 		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data: CodeMapBuildingTransition) => {
 			subscriber.onBuildingHovered(data)
-		})
-	}
-
-	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, data: CodeMapBuildingTransition) => {
-			subscriber.onBuildingSelected(data)
 		})
 	}
 

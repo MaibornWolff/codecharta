@@ -9,11 +9,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Sidebar with information regarding the selected building #527
+- Sidebar closes when selected buildings is excluded #748
+
 ### Changed
+
+- Animation to show or hide the legend panel #527
 
 ### Removed
 
+- Expandable detail panel in lower left corner #527
+- Removed option to maximize/minimize detail panel #527
+
 ### Fixed
+
+- Selected buildings stays selected when settings are changed #748
 
 ### Chore
 
@@ -35,6 +45,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Increased size of ribbonBar for big screens #644
 - File-Extension-Bar will not display excluded nodes anymore #725
 - Sanitize input for shelljs #600
+- Fix IllegalStateException when scanning single file in SourceCodeParser #573
+- SourceCodeParser places files in the project root correctly into the hierarchy #574
+
 
 ### Chore
 

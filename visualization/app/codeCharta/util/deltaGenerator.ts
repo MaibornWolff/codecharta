@@ -79,12 +79,12 @@ export class DeltaGenerator {
 	private static getFileMetaData(referenceFile: CCFile, comparisonFile: CCFile): FileMeta {
 		return {
 			fileName:
-				"Delta between " +
+				"delta_between_" +
 				FileNameHelper.withoutCCJsonExtension(referenceFile.fileMeta.fileName) +
-				" and " +
+				"_and_" +
 				FileNameHelper.withoutCCJsonExtension(comparisonFile.fileMeta.fileName),
 			apiVersion: require("../../../package.json").codecharta.apiVersion,
-			projectName: "Delta between " + referenceFile.fileMeta.projectName + ", " + comparisonFile.fileMeta.projectName
+			projectName: "delta_between_" + referenceFile.fileMeta.projectName + "_and_" + comparisonFile.fileMeta.projectName
 		}
 	}
 
