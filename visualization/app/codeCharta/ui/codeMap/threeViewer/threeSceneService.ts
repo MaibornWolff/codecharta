@@ -4,14 +4,8 @@ import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { SettingsService } from "../../../state/settingsService/settings.service"
-import { BlacklistItem } from "../../../codeCharta.model"
-import { IRootScopeService } from "angular"
-import { BlacklistSubscriber } from "../../../state/settingsService/settings.service.events"
 
-/**
- * A service which manages the Three.js scene in an angular way.
- */
-export class ThreeSceneService implements BlacklistSubscriber {
+export class ThreeSceneService {
 	public scene: Scene
 	public labels: Group
 	public edgeArrows: Group
@@ -23,8 +17,7 @@ export class ThreeSceneService implements BlacklistSubscriber {
 	private highlighted: CodeMapBuilding = null
 	private highlightedBuildings: CodeMapBuilding[] = []
 
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+	constructor(private settingsService: SettingsService) {
 		this.scene = new THREE.Scene()
 
 		this.mapGeometry = new THREE.Group()
@@ -38,11 +31,6 @@ export class ThreeSceneService implements BlacklistSubscriber {
 		this.scene.add(this.edgeArrows)
 		this.scene.add(this.labels)
 		this.scene.add(this.lights)
-	}
-
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.selected = null
-		this.highlighted = null
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {
@@ -71,7 +59,9 @@ export class ThreeSceneService implements BlacklistSubscriber {
 	}
 
 	public clearSelection() {
-		this.getMapMesh().clearSelection(this.selected)
+		if (this.selected) {
+			this.getMapMesh().clearSelection(this.selected)
+		}
 		if (this.highlighted) {
 			this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
 		}

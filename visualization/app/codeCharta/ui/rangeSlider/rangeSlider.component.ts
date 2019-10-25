@@ -57,10 +57,10 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 
 		this._viewModel.sliderOptions = {
 			ceil: this.maxMetricValue,
-			onChange: this.applySettings.bind(this),
+			onChange: () => this.applySettings(),
 			pushRange: true,
-			onToChange: this.onToSliderChange.bind(this),
-			onFromChange: this.onFromSliderChange.bind(this),
+			onToChange: () => this.onToSliderChange(),
+			onFromChange: () => this.onFromSliderChange(),
 			disabled: FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 		}
 	}

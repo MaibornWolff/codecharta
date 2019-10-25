@@ -8,19 +8,24 @@ import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 
 export interface PackageList {
 	colorPixel: string
 	markedPackages: MarkedPackage[]
 }
 
-export class LegendPanelController implements SettingsServiceSubscriber {
+export class LegendPanelController implements SettingsServiceSubscriber, AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
+		isLegendVisible: boolean
+		isSideBarVisible: boolean
 		isDeltaState: boolean
 		colorRange: ColorRange
 		invertColorRange: boolean
 		packageLists: PackageList[]
 	} = {
+		isLegendVisible: false,
+		isSideBarVisible: null,
 		isDeltaState: null,
 		colorRange: null,
 		invertColorRange: null,
@@ -30,7 +35,7 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		SettingsService.subscribe(this.$rootScope, this)
-		this.initAnimations()
+		AttributeSideBarService.subscribe(this.$rootScope, this)
 	}
 
 	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>) {
@@ -47,6 +52,10 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 			this.refreshNormalColors(s)
 		}
 		this.setMarkedPackageLists(s)
+	}
+
+	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
+		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
 	private refreshNormalColors(s: Settings) {
@@ -133,16 +142,8 @@ export class LegendPanelController implements SettingsServiceSubscriber {
 		return pathArray[pathArray.length - 1]
 	}
 
-	private initAnimations() {
-		$(document).ready(() => {
-			let start = 40
-			let target = -500
-			let visible = false
-			$("legend-panel-component .panel-button").click(() => {
-				$("legend-panel-component .block-wrapper").animate({ right: visible ? target + "px" : start + "px" }, "fast")
-				visible = !visible
-			})
-		})
+	public toggle() {
+		this._viewModel.isLegendVisible = !this._viewModel.isLegendVisible
 	}
 }
 
