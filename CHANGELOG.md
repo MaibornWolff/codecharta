@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.37.0] - 2019-10-25
+
+### Added
+
 - Sidebar with information regarding the selected building #527
 - Sidebar closes when selected buildings is excluded #748
 
