@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Autofocus and label size for focused nodes #747
 - Selected buildings stays selected when settings are changed #748
+- IllegalStateException when scanning single file in SourceCodeParser #573
+- SourceCodeParser places files in the project root correctly into the hierarchy #574
 
 ### Chore
 
