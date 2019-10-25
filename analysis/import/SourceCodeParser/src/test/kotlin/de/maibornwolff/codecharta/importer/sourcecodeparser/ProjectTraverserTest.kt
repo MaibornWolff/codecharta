@@ -38,7 +38,7 @@ class ProjectTraverserTest {
 
     @Test
     fun `should add file when file is provided as root`() {
-        val projectTraverser = ProjectTraverser(File("src/test/resources/ScriptShellSample.java").absoluteFile)
+        val projectTraverser = ProjectTraverser(File("src/test/resources/ScriptShellSample.java"))
         projectTraverser.traverse()
         val javaFiles = projectTraverser.getFileListByExtension("java")
 
