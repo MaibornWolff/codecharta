@@ -2,9 +2,9 @@ import "./attributeSideBar.module"
 import { AttributeSideBarService } from "./attributeSideBar.service"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import _ from "lodash"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("AttributeSideBarService", () => {
 	let attributeSideBarService: AttributeSideBarService
@@ -27,19 +27,19 @@ describe("AttributeSideBarService", () => {
 
 	describe("constructor", () => {
 		it("should subscribe to Node Selected Events", () => {
-			CodeMapMouseEventService.subscribeToBuildingSelectedEvents = jest.fn()
+			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
 
 			rebuildService()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarService)
+			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarService)
 		})
 
 		it("should subscribe to Node Deselected Events", () => {
-			CodeMapMouseEventService.subscribeToBuildingDeselectedEvents = jest.fn()
+			ThreeSceneService.subscribeToBuildingDeselectedEvents = jest.fn()
 
 			rebuildService()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingDeselectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarService)
+			expect(ThreeSceneService.subscribeToBuildingDeselectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarService)
 		})
 	})
 

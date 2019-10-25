@@ -3,7 +3,6 @@ import { MetricDeltaSelectedController } from "./metricDeltaSelected.component"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { SETTINGS, CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -54,14 +53,11 @@ describe("MetricDeltaSelectedController", () => {
 
 	describe("constructor", () => {
 		it("should subscribe to Node Selected Events", () => {
-			CodeMapMouseEventService.subscribeToBuildingSelectedEvents = jest.fn()
+			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith(
-				$rootScope,
-				metricDeltaSelectedController
-			)
+			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, metricDeltaSelectedController)
 		})
 
 		it("should subscribe to SettingsService", () => {

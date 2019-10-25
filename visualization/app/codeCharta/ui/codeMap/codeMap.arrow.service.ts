@@ -114,7 +114,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const building: CodeMapBuilding = this.threeSceneService
 				.getMapMesh()
 				.getMeshDescription()
-				.findBuildingToNode(arrowTargetNode)
+				.getBuildingByPath(arrowTargetNode.path)
 			this.threeSceneService.addBuildingToHighlightingList(building)
 
 			const curveObject = this.buildLine(
@@ -129,7 +129,7 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 			const building: CodeMapBuilding = this.threeSceneService
 				.getMapMesh()
 				.getMeshDescription()
-				.findBuildingToNode(arrowOriginNode)
+				.getBuildingByPath(arrowOriginNode.path)
 			this.threeSceneService.addBuildingToHighlightingList(building)
 			const curveObject = this.buildLine(
 				points,
