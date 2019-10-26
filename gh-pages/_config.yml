@@ -27,7 +27,7 @@ social:
   name: # If the user or organization name differs from the site's name
   links: # An array of links to social media profiles
 
-# Custom variables
+# Custom site variables, reference them in liquid like this: {{site.web_visualization_link}}
 web_visualization_link: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json
 
 # Site Footer
