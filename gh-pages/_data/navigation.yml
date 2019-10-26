@@ -1,7 +1,5 @@
 # main links
 main:
-  - title: "Open Web Studio"
-    url: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json
   - title: "Docs"
     url: /docs/quick-start-guide/
   - title: "Showcase"
@@ -46,6 +44,8 @@ docs:
     children:
       - title: "Analysis"
         url: /docs/analysis/
+      - title: "Metrics"
+        url: /docs/metrics/
       - title: "Importers"
         url: /docs/importers/
       - title: "Custom Metrics"
@@ -55,6 +55,8 @@ docs:
     children:
       - title: "Visualization"
         url: /docs/visualization/
+      - title: "User Controls"
+        url: /docs/user-controls/
       - title: "Timeline"
         url: /docs/timeline/
 
