@@ -2,13 +2,13 @@
 header:
   teaser: assets/images/showcase/junit4/junit4[rloc,mcc,mcc].png
 title: "Junit 4"
-excerpt: "500.000 LoC"
+excerpt: "44.691 LoC"
 
 sidebar:
   - title: <a href="/assets/ccjson/showcase/junit4/junit4.cc.json" download>Download cc.json</a>
   - title: "Size"
-    text: "500.000 LoC"
-  - title: "Highest Complexity"
+    text: "44.691 LoC (lines_of_code)"
+  - title: "Highest Complexity (mcc)"
     text: "AssertionTest.java"
 gallery:
   - url: /assets/images/showcase/junit4/junit4[rloc,mcc,mcc].png

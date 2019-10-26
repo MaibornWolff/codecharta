@@ -80,7 +80,7 @@ MM can be modified by copying files from MM directly and changing their content.
 
 ### Markdown
 
-Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images).
+Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images). Also please use this format for internal links between markdown files: `[visualization]({% link _docs/06-01-visualization.md %})`. It has the benefit that the build will fail locally if a file cannot be found.
 
 ## Troubleshoot Docs Generation
 
