@@ -9,12 +9,11 @@ tool-bar-component {
 		border-bottom: 1px solid #cdcdcd;
 	}
 
-	file-panel-component.hidden {
-		display: none;
-	}
-
-	node-path-panel-component.hidden {
-		display: none;
+	file-panel-component,
+	node-path-panel-component {
+		&.hidden {
+			display: none;
+		}
 	}
 
 	.small-action-button {
