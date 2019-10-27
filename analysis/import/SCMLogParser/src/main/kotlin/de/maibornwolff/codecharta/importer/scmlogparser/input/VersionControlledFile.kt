@@ -68,7 +68,6 @@ class VersionControlledFile internal constructor(
         metrics.flatMap { it.getEdges() }
                 .forEach { edge ->
                     addEdgeToEdgeList(edge, edgeList)
-
                 }
         return edgeList
     }
@@ -77,7 +76,7 @@ class VersionControlledFile internal constructor(
         edgeList.forEach {
             if (it.toNodeName == edge.toNodeName) {
                 it.attributes.toMutableMap().putAll(edge.attributes)
-                return@forEach
+                return
             }
         }
         edgeList.add(edge)
