@@ -89,7 +89,7 @@ export class CodeMapMouseEventService
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.onBuildingDeselected()
+		this.threeSceneService.clearSelection()
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
@@ -98,7 +98,7 @@ export class CodeMapMouseEventService
 			const isSelectedBuildingBlacklisted = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
 			if (isSelectedBuildingBlacklisted) {
-				this.onBuildingDeselected()
+				this.threeSceneService.clearSelection()
 			}
 		}
 	}
@@ -148,9 +148,10 @@ export class CodeMapMouseEventService
 		if (this.clickType === ClickType.LeftClick) {
 			const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
 			if (highlightedBuilding) {
-				this.onBuildingSelected(highlightedBuilding)
+				this.threeSceneService.clearSelection()
+				this.threeSceneService.selectBuilding(highlightedBuilding)
 			} else {
-				this.onBuildingDeselected()
+				this.threeSceneService.clearSelection()
 			}
 		}
 	}
@@ -205,15 +206,6 @@ export class CodeMapMouseEventService
 			this.threeSceneService.clearHighlight()
 		}
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
-	}
-
-	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		this.threeSceneService.clearSelection()
-		this.threeSceneService.selectBuilding(selectedBuilding)
-	}
-
-	public onBuildingDeselected() {
-		this.threeSceneService.clearSelection()
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
