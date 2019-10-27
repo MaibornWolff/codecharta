@@ -49,7 +49,7 @@ describe("MetricTypeController", () => {
 			SettingsService.subscribeToHeightMetric = jest.fn()
 			SettingsService.subscribeToColorMetric = jest.fn()
 			SettingsService.subscribeToEdgeMetric = jest.fn()
-			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 		})
 
 		it("should subscribe to Metric-Events", () => {
@@ -63,7 +63,7 @@ describe("MetricTypeController", () => {
 		it("should subscribe to CodeMapMouseEventService", () => {
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 	})
 
@@ -170,37 +170,34 @@ describe("MetricTypeController", () => {
 	})
 
 	describe("onBuildingHovered", () => {
-		it("should set isBuildingHovered to false", () => {
-			metricTypeController.onBuildingHovered({ from: {} as CodeMapBuilding, to: undefined })
-
-			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
-		})
-
 		it("should set isBuildingHovered to true", () => {
-			metricTypeController.onBuildingHovered({
-				from: undefined,
-				to: { node: { isLeaf: false } } as CodeMapBuilding
-			})
+			metricTypeController.onBuildingHovered({ node: { isLeaf: false } } as CodeMapBuilding)
 
 			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeTruthy()
 		})
 
 		it("should not set isBuildingHovered to true if building is a leaf", () => {
 			metricTypeController.onBuildingHovered({
-				from: undefined,
-				to: { node: { isLeaf: true } } as CodeMapBuilding
-			})
+				node: { isLeaf: true }
+			} as CodeMapBuilding)
 
 			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
 		})
 
 		it("should set isBuildingHovered to true when going from a folder to another folder", () => {
 			metricTypeController.onBuildingHovered({
-				from: { node: { isLeaf: false } } as CodeMapBuilding,
-				to: { node: { isLeaf: false } } as CodeMapBuilding
-			})
+				node: { isLeaf: false }
+			} as CodeMapBuilding)
 
 			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeTruthy()
+		})
+	})
+
+	describe("onBuildingUnhovered", () => {
+		it("should set isBuildingHovered to false", () => {
+			metricTypeController.onBuildingUnhovered()
+
+			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
 		})
 	})
 })
