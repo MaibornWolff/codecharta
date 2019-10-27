@@ -47,6 +47,7 @@ export enum ClickType {
 
 export class CodeMapMouseEventService
 	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber, BlacklistSubscriber {
+	private static readonly BUILDING_HOVERED_EVENT_OLD = "building-hovered-old"
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -216,7 +217,7 @@ export class CodeMapMouseEventService
 			this.threeSceneService.clearHighlight()
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 		}
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT_OLD, { to: to, from: from })
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
@@ -235,7 +236,7 @@ export class CodeMapMouseEventService
 	}
 
 	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {
-		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data: CodeMapBuildingTransition) => {
+		$rootScope.$on(this.BUILDING_HOVERED_EVENT_OLD, (e, data: CodeMapBuildingTransition) => {
 			subscriber.onBuildingHovered(data)
 		})
 	}
