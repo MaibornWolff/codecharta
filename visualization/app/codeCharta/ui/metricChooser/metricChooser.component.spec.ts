@@ -8,13 +8,15 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
 import { MetricService } from "../../state/metric.service"
 import { Node } from "../../codeCharta.model"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
-	let dataDelta, dataNotDelta
+	let deltaBuilding
+	let codeMapBuilding
 
 	function rebuildController() {
 		metricChooserController = new MetricChooserController(settingsService, $rootScope, $timeout)
@@ -40,22 +42,18 @@ describe("MetricChooserController", () => {
 	}
 
 	function withMockedBuildingTransitions() {
-		dataDelta = ({
-			to: {
-				node: {
-					attributes: { area: 10, height: 20, color: 30 },
-					deltas: { area: 40, height: 50, color: 60 }
-				}
+		deltaBuilding = {
+			node: {
+				attributes: { area: 10, height: 20, color: 30 },
+				deltas: { area: 40, height: 50, color: 60 }
 			}
-		} as unknown) as CodeMapBuildingTransition
+		} as CodeMapBuilding
 
-		dataNotDelta = ({
-			to: {
-				node: {
-					attributes: { area: 10, height: 20, color: 30 }
-				}
+		codeMapBuilding = {
+			node: {
+				attributes: { area: 10, height: 20, color: 30 }
 			}
-		} as unknown) as CodeMapBuildingTransition
+		} as CodeMapBuilding
 	}
 
 	beforeEach(() => {
@@ -71,7 +69,8 @@ describe("MetricChooserController", () => {
 			SettingsService.subscribeToColorMetric = jest.fn()
 			SettingsService.subscribeToDistributionMetric = jest.fn()
 
-			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 			MetricService.subscribe = jest.fn()
 		})
 
@@ -87,7 +86,13 @@ describe("MetricChooserController", () => {
 		it("should subscribe to Building-Hovered-Event", () => {
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, metricChooserController)
+		})
+
+		it("should subscribe to Building-Unhovered-Event", () => {
+			rebuildController()
+
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
 		it("should subscribe to MetricService", () => {
@@ -247,21 +252,13 @@ describe("MetricChooserController", () => {
 	})
 
 	describe("onBuildingHovered", () => {
-		it("should set hoveredNode to null if data incomplete", () => {
-			let data = { from: {}, to: {} } as CodeMapBuildingTransition
-
-			metricChooserController.onBuildingHovered(data)
-
-			expect(metricChooserController["_viewModel"]["hoveredNode"]).toBe(null)
-		})
-
 		it("should set hovered values and set hovered deltas to null if not delta", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].areaMetric = "area"
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"].colorMetric = "color"
 
-			metricChooserController.onBuildingHovered(dataNotDelta)
+			metricChooserController.onBuildingHovered(codeMapBuilding)
 			const node: Node = metricChooserController["_viewModel"]["hoveredNode"]
 
 			expect(node.deltas).toBe(undefined)
@@ -276,7 +273,7 @@ describe("MetricChooserController", () => {
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"].colorMetric = "color"
 
-			metricChooserController.onBuildingHovered(dataDelta)
+			metricChooserController.onBuildingHovered(deltaBuilding)
 
 			const node: Node = metricChooserController["_viewModel"]["hoveredNode"]
 			expect(node.deltas["area"]).toBe(40)
@@ -290,10 +287,10 @@ describe("MetricChooserController", () => {
 		it("hovered delta color should be inherited if hoveredHeigtDelta is 0", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
+			metricChooserController["_viewModel"]["hoveredNode"] = deltaBuilding.node as Node
 			metricChooserController["_viewModel"]["hoveredNode"]["deltas"]["height"] = 0
 
-			metricChooserController.onBuildingHovered(dataDelta)
+			metricChooserController.onBuildingHovered(deltaBuilding)
 
 			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("inherit")
 		})
@@ -301,10 +298,10 @@ describe("MetricChooserController", () => {
 		it("hovered delta color should be inherited if hoveredHeigtDelta is 2", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
+			metricChooserController["_viewModel"]["hoveredNode"] = deltaBuilding.node as Node
 			metricChooserController["_viewModel"]["hoveredNode"]["deltas"]["height"] = 2
 
-			metricChooserController.onBuildingHovered(dataDelta)
+			metricChooserController.onBuildingHovered(deltaBuilding)
 
 			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("green")
 		})
@@ -312,12 +309,20 @@ describe("MetricChooserController", () => {
 		it("hovered delta color should be inherited if hoveredHeigtDelta is -2", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
+			metricChooserController["_viewModel"]["hoveredNode"] = deltaBuilding.node as Node
 			metricChooserController["_viewModel"]["hoveredNode"]["deltas"]["height"] = -2
 
-			metricChooserController.onBuildingHovered(dataDelta)
+			metricChooserController.onBuildingHovered(deltaBuilding)
 
 			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("red")
+		})
+	})
+
+	describe("onBuildingUnhovered", () => {
+		it("should set hoveredNode to null if data incomplete", () => {
+			metricChooserController.onBuildingUnhovered()
+
+			expect(metricChooserController["_viewModel"]["hoveredNode"]).toBe(null)
 		})
 	})
 
