@@ -397,7 +397,7 @@ describe("codeMapMouseEventService", () => {
 		it("should clear the highlight when to is null", () => {
 			codeMapMouseEventService.onBuildingHovered(null, null)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-hovered", { to: null, from: null })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-hovered-old", { to: null, from: null })
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
 
