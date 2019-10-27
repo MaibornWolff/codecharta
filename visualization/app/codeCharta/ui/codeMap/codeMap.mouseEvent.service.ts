@@ -127,7 +127,7 @@ export class CodeMapMouseEventService
 				}
 
 				if (from !== to) {
-					this.onBuildingHovered(from, to)
+					this.onBuildingHovered(to)
 				}
 			}
 		}
@@ -187,22 +187,22 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onBuildingHovered(from: CodeMapBuilding, to: CodeMapBuilding) {
+	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		/*
          if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
          then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
          handle delta objects, until there is a method for mergng their meshes and materials correctly.
          See codeMapRenderService.js
          */
-		if (to && !to.node) {
-			if (to.parent && to.parent.node) {
-				to.setNode(to.parent.node)
+		if (hoveredBuilding && !hoveredBuilding.node) {
+			if (hoveredBuilding.parent && hoveredBuilding.parent.node) {
+				hoveredBuilding.setNode(hoveredBuilding.parent.node)
 			}
 		}
 
-		if (to) {
-			this.threeSceneService.highlightBuilding(to)
-			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: to })
+		if (hoveredBuilding) {
+			this.threeSceneService.highlightBuilding(hoveredBuilding)
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 		} else {
 			this.threeSceneService.clearHighlight()
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
@@ -213,14 +213,14 @@ export class CodeMapMouseEventService
 		const buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
-				this.onBuildingHovered(this.threeSceneService.getHighlightedBuilding(), building)
+				this.onBuildingHovered(building)
 				this.highlightedInTreeView = building
 			}
 		})
 	}
 
 	public onShouldUnhoverNode(node: CodeMapNode) {
-		this.onBuildingHovered(this.highlightedInTreeView, null)
+		this.onBuildingHovered(null)
 		this.highlightedInTreeView = null
 	}
 

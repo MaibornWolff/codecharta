@@ -395,14 +395,14 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onBuildingHovered", () => {
 		it("should clear the highlight when to is null", () => {
-			codeMapMouseEventService.onBuildingHovered(null, null)
+			codeMapMouseEventService.onBuildingHovered(null)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-unhovered")
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
 
 		it("should set the highlight when to is not null", () => {
-			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
+			codeMapMouseEventService.onBuildingHovered(codeMapBuilding)
 
 			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
@@ -412,7 +412,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapBuilding.parent = codeMapBuilding
 			codeMapBuilding.parent.setNode(TEST_NODE_ROOT)
 
-			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
+			codeMapMouseEventService.onBuildingHovered(codeMapBuilding)
 
 			expect(codeMapBuilding.node).toEqual(codeMapBuilding.parent.node)
 		})
@@ -421,7 +421,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapBuilding.setNode(undefined)
 			codeMapBuilding.parent = undefined
 
-			codeMapMouseEventService.onBuildingHovered(null, codeMapBuilding)
+			codeMapMouseEventService.onBuildingHovered(codeMapBuilding)
 
 			expect(codeMapBuilding.node).not.toEqual(TEST_NODE_ROOT)
 		})
@@ -444,7 +444,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onShouldHoverNode(TEST_FILE_WITH_PATHS.map)
 
-			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(null, codeMapBuilding)
+			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(codeMapBuilding)
 		})
 	})
 
@@ -455,7 +455,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onShouldUnhoverNode(null)
 
-			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(codeMapBuilding, null)
+			expect(codeMapMouseEventService.onBuildingHovered).toHaveBeenCalledWith(null)
 		})
 	})
 })
