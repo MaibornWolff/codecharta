@@ -3,6 +3,7 @@ import { NodePathPanelController } from "./nodePathPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("NodePathPanelController", () => {
 	let nodePathPanelController: NodePathPanelController
@@ -24,36 +25,40 @@ describe("NodePathPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to Building-Hovered-Event", () => {
-			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
+		it("should subscribe to Building-Hovered", () => {
+			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, nodePathPanelController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
+		})
+
+		it("should subscribe to Building-Unhovered", () => {
+			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
+
+			rebuildController()
+
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
 		})
 	})
 
 	describe("onBuildingHovered", () => {
 		it("should update the viewModel when hovering", () => {
-			const dataHovered = {
-				to: {
-					node: {
-						path: "/root/my/path"
-					}
+			const hoveredBuilding = {
+				node: {
+					path: "/root/my/path"
 				}
-			} as CodeMapBuildingTransition
+			} as CodeMapBuilding
 
-			nodePathPanelController.onBuildingHovered(dataHovered)
+			nodePathPanelController.onBuildingHovered(hoveredBuilding)
 
 			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual("/root/my/path")
 		})
+	})
 
+	describe("onBuildingUnhovered", () => {
 		it("should update the viewModel when unhovering", () => {
-			const dataUnhovered = {
-				to: {}
-			} as CodeMapBuildingTransition
-
-			nodePathPanelController.onBuildingHovered(dataUnhovered)
+			nodePathPanelController.onBuildingUnhovered()
 
 			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(null)
 		})
