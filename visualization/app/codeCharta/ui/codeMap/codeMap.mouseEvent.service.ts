@@ -27,6 +27,14 @@ export interface BuildingHoveredEventSubscriber {
 	onBuildingHovered(data: CodeMapBuildingTransition)
 }
 
+export interface BuildingHoveredSubscriber {
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding)
+}
+
+export interface BuildingUnhoveredSubscriber {
+	onBuildingUnhovered()
+}
+
 export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
@@ -40,6 +48,7 @@ export enum ClickType {
 export class CodeMapMouseEventService
 	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
+	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
 	private highlightedInTreeView: CodeMapBuilding = null
@@ -202,8 +211,10 @@ export class CodeMapMouseEventService
 
 		if (to) {
 			this.threeSceneService.highlightBuilding(to)
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: to })
 		} else {
 			this.threeSceneService.clearHighlight()
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 		}
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
 	}
@@ -226,6 +237,18 @@ export class CodeMapMouseEventService
 	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {
 		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data: CodeMapBuildingTransition) => {
 			subscriber.onBuildingHovered(data)
+		})
+	}
+
+	public static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
+		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data) => {
+			subscriber.onBuildingHovered(data.hoveredBuilding)
+		})
+	}
+
+	public static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
+		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, e => {
+			subscriber.onBuildingUnhovered()
 		})
 	}
 
