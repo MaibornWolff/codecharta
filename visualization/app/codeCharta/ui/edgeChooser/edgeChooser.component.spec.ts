@@ -5,7 +5,7 @@ import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("EdgeChooserController", () => {

@@ -1,12 +1,7 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import "./metricChooser.component.scss"
-import {
-	BuildingHoveredSubscriber,
-	BuildingUnhoveredSubscriber,
-	CodeMapBuildingTransition,
-	CodeMapMouseEventService
-} from "../codeMap/codeMap.mouseEvent.service"
+import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MetricData, DynamicSettings, RecursivePartial, Node } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import {

@@ -2,7 +2,7 @@ import "./nodePathPanel.module"
 import { NodePathPanelController } from "./nodePathPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("NodePathPanelController", () => {

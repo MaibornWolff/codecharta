@@ -2,7 +2,7 @@ import "./metricChooser.module"
 
 import { MetricChooserController } from "./metricChooser.component"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
