@@ -55,7 +55,7 @@ class HighlyCoupledFilesTest {
     fun should_increase_on_at_five_commits_of_same_files() {
         // given
         val metric = HighlyCoupledFiles()
-        val expectedEdge = Edge("filename", "coupledfilename1", mapOf("pairing_rate" to 1.0))
+        val expectedEdge = Edge("filename", "coupledfilename1", mapOf("temporal_coupling" to 1.0))
 
         // when
         for (i in 0..4) {
@@ -71,7 +71,7 @@ class HighlyCoupledFilesTest {
     fun should_increase() {
         // given
         val metric = HighlyCoupledFiles()
-        val expectedEdge = Edge("filename", "coupledfilename1", mapOf("pairing_rate" to 0.625))
+        val expectedEdge = Edge("filename", "coupledfilename1", mapOf("temporal_coupling" to 0.625))
 
         // when
         registerModifications(metric, FILENAME, COUPLED_FILE1)

@@ -20,7 +20,7 @@ class HighlyCoupledFiles: Metric {
     }
 
     override fun edgeMetricName(): String {
-        return "pairing_rate"
+        return "temporal_coupling"
     }
 
     override fun value(): Number {
