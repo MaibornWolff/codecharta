@@ -10,7 +10,8 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
 import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
-import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING } from "../../util/dataMocks"
+import _ from "lodash"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -49,34 +50,29 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	describe("Listen to code map hovering", () => {
-		function buildNodeAt(path: string): CodeMapNode {
-			return ({ path: "somePath" } as any) as CodeMapNode
-		}
+		let codeMapBuilding: CodeMapBuilding
 
-		function buildTransitionTo(path: string): CodeMapBuildingTransition {
-			const hoveredCodeMapBuilding: CodeMapBuilding = ({ node: ({ path: path } as any) as Node } as any) as CodeMapBuilding
-			return { from: null, to: hoveredCodeMapBuilding }
-		}
+		beforeEach(() => {
+			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			codeMapBuilding.node.path = "somePath"
+		})
 
 		it("should set _isHoveredInCodeMap to true if hovered node path from the event is the same as the node path assigned to this controller", () => {
-			const controllerNode: CodeMapNode = buildNodeAt("somePath")
-			const transition: CodeMapBuildingTransition = buildTransitionTo("somePath")
-			mapTreeViewLevelController["node"] = controllerNode
-			mapTreeViewLevelController.onBuildingHovered(transition)
+			mapTreeViewLevelController["node"] = codeMapBuilding.node
+			mapTreeViewLevelController.onBuildingHovered(codeMapBuilding)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(true)
 		})
 
 		it("should set _isHoveredInCodeMap to false if hovered node path from the event is not the same as the node path assigned to this controller", () => {
-			const controllerNode: CodeMapNode = buildNodeAt("somePath")
-			const transition: CodeMapBuildingTransition = buildTransitionTo("someOtherPath")
-			mapTreeViewLevelController["node"] = controllerNode
-			mapTreeViewLevelController.onBuildingHovered(transition)
+			const differentCodeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			differentCodeMapBuilding.node.path = "someOtherPath"
+			mapTreeViewLevelController["node"] = codeMapBuilding.node
+			mapTreeViewLevelController.onBuildingHovered(differentCodeMapBuilding)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
-		it("should set _isHoveredInCodeMap to false if hovered node is null", () => {
-			const transition: CodeMapBuildingTransition = { from: null, to: null }
-			mapTreeViewLevelController.onBuildingHovered(transition)
+		it("should set _isHoveredInCodeMap to false if unhovered", () => {
+			mapTreeViewLevelController.onBuildingUnhovered()
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
