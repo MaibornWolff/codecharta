@@ -74,7 +74,8 @@ class SCMLogParser(private val input: InputStream = System.`in`,
                     "range_of_weeks_with_commits",
                     "successive_weeks_of_commits",
                     "weeks_with_commits",
-                    "highly_coupled_files"
+                    "highly_coupled_files",
+                    "median_coupled_files"
             )
 
             if (getInputFormatNames() == null) {
