@@ -2,13 +2,13 @@ import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Edge } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
-import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 
-export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
+export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private VERTICES_PER_LINE = 5
 	private map: Map<String, Node>
 	private arrows: Object3D[]
@@ -21,24 +21,27 @@ export class CodeMapArrowService implements BuildingHoveredEventSubscriber {
 		private settingsService: SettingsService
 	) {
 		this.arrows = new Array<Object3D>()
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition) {
+	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		const settings = this.settingsService.getSettings()
+		if (settings.dynamicSettings.edgeMetric !== "None" && !hoveredBuilding.node.flat) {
+			this.isHovered = true
+			this.hoveredNode = hoveredBuilding.node
+			this.clearArrows()
+			this.showEdgesOfHoveredBuilding(hoveredBuilding.node, settings.fileSettings.edges)
+		}
+		this.scale(this.settingsService.getSettings().appSettings.scaling)
+	}
+
+	public onBuildingUnhovered() {
 		const settings = this.settingsService.getSettings()
 		if (settings.dynamicSettings.edgeMetric !== "None") {
-			const edges = settings.fileSettings.edges
-
-			if (data.to && !data.to.node.flat) {
-				this.isHovered = true
-				this.hoveredNode = data.to.node
-				this.clearArrows()
-				this.showEdgesOfHoveredBuilding(data.to.node, edges)
-			} else {
-				this.isHovered = false
-				this.clearArrows()
-				this.addEdgeArrows(null, edges.filter(x => x.visible != EdgeVisibility.none))
-			}
+			this.isHovered = false
+			this.clearArrows()
+			this.addEdgeArrows(null, settings.fileSettings.edges.filter(x => x.visible != EdgeVisibility.none))
 		}
 		this.scale(this.settingsService.getSettings().appSettings.scaling)
 	}
