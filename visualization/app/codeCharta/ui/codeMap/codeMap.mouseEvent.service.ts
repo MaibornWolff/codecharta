@@ -127,7 +127,11 @@ export class CodeMapMouseEventService
 				}
 
 				if (from !== to) {
-					this.onBuildingHovered(to)
+					if (to) {
+						this.onBuildingHovered(to)
+					} else {
+						this.unhoverBuilding()
+					}
 				}
 			}
 		}
@@ -203,10 +207,12 @@ export class CodeMapMouseEventService
 		if (hoveredBuilding) {
 			this.threeSceneService.highlightBuilding(hoveredBuilding)
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
-		} else {
-			this.threeSceneService.clearHighlight()
-			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 		}
+	}
+
+	public unhoverBuilding() {
+		this.threeSceneService.clearHighlight()
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
@@ -220,7 +226,7 @@ export class CodeMapMouseEventService
 	}
 
 	public onShouldUnhoverNode(node: CodeMapNode) {
-		this.onBuildingHovered(null)
+		this.unhoverBuilding()
 		this.highlightedInTreeView = null
 	}
 
