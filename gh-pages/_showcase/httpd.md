@@ -16,7 +16,7 @@ sidebar:
   - title: "Most Edited File"
     text: "mod_md.c"
   - title: "Utilized Importers"
-    text: Tokeiimporter<br/>ScmlogParser
+    text: Tokeiimporter<br/>ScmlogParser (Git)
 gallery:
   - url: /assets/images/showcase/httpd/httpd_2019-10-27[rloc,abs_code_churn,weeks_with_commits].png
     image_path: assets/images/showcase/httpd/httpd_2019-10-27[rloc,abs_code_churn,weeks_with_commits].png
