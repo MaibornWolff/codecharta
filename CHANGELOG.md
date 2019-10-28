@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+- SCMLogParser is now more resilient to unusual SVN commit messages #763
+
 ### Chore
 
 ## [1.37.0] - 2019-10-25
