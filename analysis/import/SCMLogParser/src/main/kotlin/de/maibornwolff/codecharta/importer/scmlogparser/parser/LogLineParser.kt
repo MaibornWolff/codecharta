@@ -27,7 +27,7 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
             if (!silent) showProgress(commitDate)
             Commit(author, modifications, commitDate)
         } catch (e: NoSuchElementException) {
-            System.err.println("WARN: Skipped commit with invalid syntax ($commitLines)")
+            System.err.println("Skipped commit with invalid syntax ($commitLines)")
             Commit("", listOf(), OffsetDateTime.now())
         }
     }

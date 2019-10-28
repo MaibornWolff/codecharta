@@ -23,8 +23,11 @@ class Commit(val author: String, modifications: List<Modification>, val commitDa
 
     fun getModification(filename: String): Modification {
         val modifications = modifications.filter { filename == it.filename }
-        if (modifications.size != 1) {
-            throw IllegalStateException("No unique file name was found in commit for $filename, ${modifications.size} files were found")
+        if (modifications.isEmpty()) {
+            throw IllegalStateException("File $filename could not be assigned to a modification.")
+        } else if (modifications.size > 1) {
+            System.err.println("No unique file name was found in commit for $filename, ${modifications.size} files were found")
+            System.err.println("This likely means that the Syntax of this commit is broken.")
         }
         return modifications.first()
     }
