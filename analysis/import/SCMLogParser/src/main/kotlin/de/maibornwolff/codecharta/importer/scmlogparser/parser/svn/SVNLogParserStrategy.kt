@@ -53,7 +53,7 @@ class SVNLogParserStrategy: LogParserStrategy {
 
     private fun isFileLine(commitLine: String): Boolean {
         val commitLineWithoutWhitespacePrefix = stripWhitespacePrefix(commitLine)
-        if (commitLineWithoutWhitespacePrefix.length < 2) {
+        if (commitLineWithoutWhitespacePrefix.length < 3) {
             return false
         }
         val firstChar = commitLineWithoutWhitespacePrefix[0]
