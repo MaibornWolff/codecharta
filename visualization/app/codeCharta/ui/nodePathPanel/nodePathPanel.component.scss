@@ -4,6 +4,9 @@ node-path-panel-component {
 		float: left;
 		font-size: 10pt;
 		max-width: calc(100% - 250px);
+		direction: rtl;
+		overflow: hidden;
+		white-space: nowrap;
 	}
 
 	.hovered-node-name {
