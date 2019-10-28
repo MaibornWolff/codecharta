@@ -99,7 +99,7 @@ class SVNLogParserStrategy: LogParserStrategy {
 
         private const val RENAME_FILE_LINE_IDENTIFIER = " (from "
         private val SVN_COMMIT_SEPARATOR_TEST =
-                Predicate<String> { logLine -> logLine.isNotEmpty() && StringUtils.containsOnly(logLine, '-') }
+                Predicate<String> { logLine -> logLine.isNotEmpty() && StringUtils.containsOnly(logLine, '-') && logLine.length > 70 }
         private val DEFAULT_REPOSITORY_FOLDER_PREFIXES = arrayOf("/branches/", "/tags/", "/trunk/", "/")
         private val DATE_TIME_FORMATTER = DateTimeFormatterBuilder()
                 .parseCaseInsensitive()
