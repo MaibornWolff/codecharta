@@ -49,14 +49,18 @@ describe("MapTreeViewLevelController", () => {
 
 	describe("Listen to code map hovering", () => {
 		let codeMapBuilding: CodeMapBuilding
+		let codeMapNode: CodeMapNode
 
 		beforeEach(() => {
 			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 			codeMapBuilding.node.path = "somePath"
+
+			codeMapNode = _.cloneDeep(VALID_NODE_WITH_PATH)
+			codeMapNode.path = "somePath"
 		})
 
 		it("should set _isHoveredInCodeMap to true if hovered node path from the event is the same as the node path assigned to this controller", () => {
-			mapTreeViewLevelController["node"] = codeMapBuilding.node
+			mapTreeViewLevelController["node"] = codeMapNode
 			mapTreeViewLevelController.onBuildingHovered(codeMapBuilding)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(true)
 		})
@@ -64,7 +68,7 @@ describe("MapTreeViewLevelController", () => {
 		it("should set _isHoveredInCodeMap to false if hovered node path from the event is not the same as the node path assigned to this controller", () => {
 			const differentCodeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 			differentCodeMapBuilding.node.path = "someOtherPath"
-			mapTreeViewLevelController["node"] = codeMapBuilding.node
+			mapTreeViewLevelController["node"] = codeMapNode
 			mapTreeViewLevelController.onBuildingHovered(differentCodeMapBuilding)
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})

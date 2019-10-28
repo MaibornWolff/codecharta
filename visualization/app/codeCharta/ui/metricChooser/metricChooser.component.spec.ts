@@ -5,10 +5,10 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
+import { DEFAULT_SETTINGS, SETTINGS, CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { MetricService } from "../../state/metric.service"
 import { Node } from "../../codeCharta.model"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import _ from "lodash"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
@@ -42,18 +42,13 @@ describe("MetricChooserController", () => {
 	}
 
 	function withMockedBuildingTransitions() {
-		deltaBuilding = {
-			node: {
-				attributes: { area: 10, height: 20, color: 30 },
-				deltas: { area: 40, height: 50, color: 60 }
-			}
-		} as CodeMapBuilding
+		deltaBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+		deltaBuilding.node.attributes = { area: 10, height: 20, color: 30 }
+		deltaBuilding.node.deltas = { area: 40, height: 50, color: 60 }
 
-		codeMapBuilding = {
-			node: {
-				attributes: { area: 10, height: 20, color: 30 }
-			}
-		} as CodeMapBuilding
+		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+		codeMapBuilding.node.attributes = { area: 10, height: 20, color: 30 }
+		codeMapBuilding.node.deltas = undefined
 	}
 
 	beforeEach(() => {

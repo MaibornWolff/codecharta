@@ -6,7 +6,8 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { CODE_MAP_BUILDING } from "../../util/dataMocks"
+import _ from "lodash"
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
@@ -109,7 +110,8 @@ describe("EdgeChooserController", () => {
 
 	describe("onBuildingHovered", () => {
 		it("should set hovered value to null if no node is hovered", () => {
-			const codeMapBuilding = { node: {} } as CodeMapBuilding
+			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			codeMapBuilding.setNode({})
 			edgeChooserController["_viewModel"].hoveredEdgeValue = { incoming: 22, outgoing: 42 }
 
 			edgeChooserController.onBuildingHovered(codeMapBuilding)
@@ -118,8 +120,8 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should update hoveredEdgeValue according to hovered building", () => {
-			const metricData = { name: "metric2", maxValue: 22, availableInVisibleMaps: true }
-			const codeMapBuilding = { node: { edgeAttributes: metricData } } as CodeMapBuilding
+			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			codeMapBuilding.edgeAttributes = { name: "metric2", maxValue: 22, availableInVisibleMaps: true }
 
 			edgeChooserController.onBuildingHovered(codeMapBuilding)
 
