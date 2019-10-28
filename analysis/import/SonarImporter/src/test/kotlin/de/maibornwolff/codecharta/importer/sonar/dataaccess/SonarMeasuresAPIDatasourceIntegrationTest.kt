@@ -135,9 +135,9 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
 
-        val measures1 = ds.getMeasures(PROJECT_KEY, listOf("coverage"), 1)
-        val measures2 = ds.getMeasures(PROJECT_KEY, listOf("coverage"), 2)
-        val measures3 = ds.getMeasures(PROJECT_KEY, listOf("coverage"), 3)
+        val measures1 = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
+        val measures2 = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 2)
+        val measures3 = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 3)
 
         // then
         assertThat(measures1, `is`(createExpectedPagedMeasures(1)))
@@ -157,7 +157,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
-        val measures = ds.getMeasures(PROJECT_KEY, listOf("coverage"), 1)
+        val measures = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
 
         // then
         assertThat(measures, `is`(createExpectedMeasures()))
@@ -175,7 +175,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
-        val measures = ds.getMeasures(PROJECT_KEY, listOf("coverage"), 1)
+        val measures = ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
 
         // then
         assertThat(measures, `is`(createExpectedMeasures()))
@@ -193,7 +193,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
 
         // when
         val ds = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
-        ds.getMeasures(PROJECT_KEY, listOf("coverage"), 1)
+        ds.getMeasuresFromPage(PROJECT_KEY, listOf("coverage"), 1)
     }
 
     @Test
