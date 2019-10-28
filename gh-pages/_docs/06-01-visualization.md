@@ -8,7 +8,7 @@ gallery:
     title: "Visualization"
 ---
 
-The goal of the CodeCharta visualization is to provide a [big picture view]({% link _docs/04-03-big-picture.md %}) of code to **experienced professionals** and then allow them free exploration of the code files and their metrics. We use the _city metaphor_ and represent each file in your source code with a _building_.
+The goal of the CodeCharta visualization is to provide a big picture view of code to **experienced professionals** and then allow them free exploration of the code files and their metrics. We use the _city metaphor_ and represent each file in your source code with a _building_.
 
 We won't sugar coat it, the visualization can look a bit daunting at first. This is what you will find, once you [open the web visualization]({{site.web_visualization_link}}):
 

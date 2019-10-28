@@ -31,15 +31,6 @@ docs:
       - title: "How-Tos"
         url: /docs/how-tos/
 
-  - title: Design Goals
-    children:
-      - title: "Integrate"
-        url: /docs/integrate/
-      - title: "Universal"
-        url: /docs/universal/
-      - title: "Big Picture"
-        url: /docs/big-picture/
-
   - title: Analysis
     children:
       - title: "Analysis"
