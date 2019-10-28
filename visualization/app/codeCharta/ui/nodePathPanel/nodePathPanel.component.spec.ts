@@ -43,16 +43,10 @@ describe("NodePathPanelController", () => {
 			}
 		} as CodeMapBuildingTransition
 
-		it("should update the hoveredNodeName when hovering", () => {
-			nodePathPanelController.onBuildingHovered(dataHovered)
-
-			expect(nodePathPanelController["_viewModel"].hoveredNodeName).toEqual("path")
-		})
-
 		it("should update the hoveredNodePath when hovering", () => {
 			nodePathPanelController.onBuildingHovered(dataHovered)
 
-			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(["root", "my"])
+			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(["root", "my", "path"])
 		})
 
 		it("should update the hoveredNodeIsFile when hovering", () => {

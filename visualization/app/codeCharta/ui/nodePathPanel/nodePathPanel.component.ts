@@ -7,11 +7,9 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 export class NodePathPanelController implements BuildingHoveredEventSubscriber {
 	private _viewModel: {
 		hoveredNodePath: string[]
-		hoveredNodeName: string
 		hoveredNodeIsFile: boolean
 	} = {
 		hoveredNodePath: [],
-		hoveredNodeName: null,
 		hoveredNodeIsFile: null
 	}
 
@@ -23,15 +21,9 @@ export class NodePathPanelController implements BuildingHoveredEventSubscriber {
 
 	public onBuildingHovered(data: CodeMapBuildingTransition) {
 		if (data.to && data.to.node) {
-			this.updatePathAndName(data.to.node.path)
+			this._viewModel.hoveredNodePath = data.to.node.path.substr(1).split("/")
 			this._viewModel.hoveredNodeIsFile = data.to.node.isLeaf
 		}
-	}
-
-	private updatePathAndName(path: string) {
-		const pathComponents = path.substr(1).split("/")
-		this._viewModel.hoveredNodeName = pathComponents.pop()
-		this._viewModel.hoveredNodePath = pathComponents
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
