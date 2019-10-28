@@ -1,6 +1,9 @@
 ---
 permalink: /docs/installation/
 title: "Installation"
+
+toc: true
+toc_label: "Jump to Section"
 ---
 
 CodeCharta consists of the two parts analysis and visualization which can be installed and used separately. The analysis programm we can install is the Codecharta shell (ccsh). The visualization program is the desktop version of the [the web visualization]({{site.web_visualization_link}}).
@@ -43,18 +46,18 @@ npm i codecharta-analysis
 
 # Do either A or B
 
-## A) Navigate to the codecharta-analysis folder
-cd node_modules/codecharta-analysis
-## A) Navigate to the binaries
-cd public/bin
-## A) Explore ccsh with
-./ccsh -h
-## A) or use the ccsh.bat
-
-## B) Create an executable link to ccsh in your local directory
+## A) Create an executable link to ccsh in your local directory
 ln -s ./node_modules/codecharta-analysis/public/bin/ccsh ccsh
-## B) Explore ccsh
+## A) Explore ccsh
 ./ccsh -h
+
+## B) Navigate to the codecharta-analysis folder
+cd node_modules/codecharta-analysis
+## B) Navigate to the binaries
+cd public/bin
+## B) Explore ccsh with
+./ccsh -h
+## B) or use the ccsh.bat
 ```
 
 ### Desktop Visualization
@@ -65,15 +68,15 @@ npm i codecharta-visualization
 
 # Do either A or B
 
-## A) Navigate to the codecharta-visualization folder
-cd node_modules/codecharta-visualization
-## A) Start visualization with
-npm start
-
-## B) Create an executable link to the visualization in your local directory
+## A) Create an executable link to the visualization in your local directory
 ln -s ./node_modules/codecharta-visualization/cli.js ccstudio
-## B) Start visualization
+## A) Start visualization
 ./ccstudio
+
+## B) Navigate to the codecharta-visualization folder
+cd node_modules/codecharta-visualization
+## B) Start visualization with
+npm start
 ```
 
 ## Docker Hub Install
