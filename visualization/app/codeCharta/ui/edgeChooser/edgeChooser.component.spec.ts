@@ -111,7 +111,7 @@ describe("EdgeChooserController", () => {
 	describe("onBuildingHovered", () => {
 		it("should set hovered value to null if no node is hovered", () => {
 			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
-			codeMapBuilding.setNode({})
+			codeMapBuilding.setNode({} as Node)
 			edgeChooserController["_viewModel"].hoveredEdgeValue = { incoming: 22, outgoing: 42 }
 
 			edgeChooserController.onBuildingHovered(codeMapBuilding)
@@ -121,7 +121,7 @@ describe("EdgeChooserController", () => {
 
 		it("should update hoveredEdgeValue according to hovered building", () => {
 			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
-			codeMapBuilding.edgeAttributes = { name: "metric2", maxValue: 22, availableInVisibleMaps: true }
+			codeMapBuilding.node.edgeAttributes = { name: "metric2", maxValue: 22, availableInVisibleMaps: true }
 
 			edgeChooserController.onBuildingHovered(codeMapBuilding)
 
