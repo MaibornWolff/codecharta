@@ -395,7 +395,7 @@ describe("codeMapMouseEventService", () => {
 
 	describe("unhoverBuilding", () => {
 		it("should clear the highlight when to is null", () => {
-			codeMapMouseEventService.unhoverBuilding()
+			codeMapMouseEventService["unhoverBuilding"]()
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-unhovered")
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
@@ -452,12 +452,12 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onShouldUnhoverNode", () => {
 		it("should call onBuildingHovered", () => {
-			codeMapMouseEventService.unhoverBuilding = jest.fn()
+			codeMapMouseEventService["unhoverBuilding"] = jest.fn()
 			codeMapMouseEventService["highlightedInTreeView"] = codeMapBuilding
 
 			codeMapMouseEventService.onShouldUnhoverNode(null)
 
-			expect(codeMapMouseEventService.unhoverBuilding).toHaveBeenCalled()
+			expect(codeMapMouseEventService["unhoverBuilding"]).toHaveBeenCalled()
 		})
 	})
 })

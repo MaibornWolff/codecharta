@@ -210,7 +210,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public unhoverBuilding() {
+	private unhoverBuilding() {
 		this.threeSceneService.clearHighlight()
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}
