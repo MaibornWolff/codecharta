@@ -404,7 +404,7 @@ describe("codeMapMouseEventService", () => {
 
 	describe("hoverBuilding", () => {
 		it("should set the highlight when to is not null", () => {
-			codeMapMouseEventService.hoverBuilding(codeMapBuilding)
+			codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
 
 			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
@@ -414,7 +414,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapBuilding.parent = codeMapBuilding
 			codeMapBuilding.parent.setNode(TEST_NODE_ROOT)
 
-			codeMapMouseEventService.hoverBuilding(codeMapBuilding)
+			codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
 
 			expect(codeMapBuilding.node).toEqual(codeMapBuilding.parent.node)
 		})
@@ -423,7 +423,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapBuilding.setNode(undefined)
 			codeMapBuilding.parent = undefined
 
-			codeMapMouseEventService.hoverBuilding(codeMapBuilding)
+			codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
 
 			expect(codeMapBuilding.node).not.toEqual(TEST_NODE_ROOT)
 		})
@@ -431,7 +431,7 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onShouldHoverNode", () => {
 		beforeEach(() => {
-			codeMapMouseEventService.hoverBuilding = jest.fn()
+			codeMapMouseEventService["hoverBuilding"] = jest.fn()
 		})
 
 		it("should call threeSceneService.getMapDescription", () => {
@@ -446,7 +446,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.onShouldHoverNode(TEST_FILE_WITH_PATHS.map)
 
-			expect(codeMapMouseEventService.hoverBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			expect(codeMapMouseEventService["hoverBuilding"]).toHaveBeenCalledWith(codeMapBuilding)
 		})
 	})
 
