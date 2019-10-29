@@ -128,7 +128,7 @@ export class CodeMapMouseEventService
 
 				if (from !== to) {
 					if (to) {
-						this.onBuildingHovered(to)
+						this.hoverBuilding(to)
 					} else {
 						this.unhoverBuilding()
 					}
@@ -191,7 +191,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+	public hoverBuilding(hoveredBuilding: CodeMapBuilding) {
 		/*
          if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
          then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
@@ -219,7 +219,7 @@ export class CodeMapMouseEventService
 		const buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
-				this.onBuildingHovered(building)
+				this.hoverBuilding(building)
 				this.highlightedInTreeView = building
 			}
 		})
