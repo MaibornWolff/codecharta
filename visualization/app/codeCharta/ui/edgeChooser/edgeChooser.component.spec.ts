@@ -109,23 +109,28 @@ describe("EdgeChooserController", () => {
 	})
 
 	describe("onBuildingHovered", () => {
+		beforeEach(() => {
+			edgeChooserController["_viewModel"].edgeMetric = "metric2"
+		})
+
 		it("should set hovered value to null if no node is hovered", () => {
 			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
-			codeMapBuilding.setNode(({} as any) as Node)
+			codeMapBuilding.setNode(null)
 			edgeChooserController["_viewModel"].hoveredEdgeValue = { incoming: 22, outgoing: 42 }
 
 			edgeChooserController.onBuildingHovered(codeMapBuilding)
 
-			expect((edgeChooserController["_viewModel"].hoveredEdgeValue = null))
+			expect(edgeChooserController["_viewModel"].hoveredEdgeValue).toEqual(null)
 		})
 
 		it("should update hoveredEdgeValue according to hovered building", () => {
+			const hoveredEdgeValue = { incoming: 22, outgoing: 23 }
 			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
-			codeMapBuilding.node.edgeAttributes = { metric2: { incoming: 22, outgoing: 23 } }
+			codeMapBuilding.node.edgeAttributes = { metric2: hoveredEdgeValue }
 
 			edgeChooserController.onBuildingHovered(codeMapBuilding)
 
-			expect((edgeChooserController["_viewModel"].hoveredEdgeValue = null))
+			expect(edgeChooserController["_viewModel"].hoveredEdgeValue).toEqual(hoveredEdgeValue)
 		})
 	})
 
@@ -135,7 +140,7 @@ describe("EdgeChooserController", () => {
 
 			edgeChooserController.onBuildingUnhovered()
 
-			expect((edgeChooserController["_viewModel"].hoveredEdgeValue = null))
+			expect(edgeChooserController["_viewModel"].hoveredEdgeValue).toEqual(null)
 		})
 	})
 
