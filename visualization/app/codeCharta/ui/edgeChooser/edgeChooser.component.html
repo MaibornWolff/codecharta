@@ -32,10 +32,10 @@
 	</md-select>
 
 	<div class="metric-value" ng-show="$ctrl._viewModel.hoveredEdgeValue">
-		<edge-metric-type-component></edge-metric-type-component>
-		<span
-			>{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
+		<div class="rounded-box">
+			<edge-metric-type-component></edge-metric-type-component>
+			{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
 			{{ ($ctrl._viewModel.hoveredEdgeValue.outgoing | number) || "-" }}
-		</span>
+		</div>
 	</div>
 </md-input-container>
