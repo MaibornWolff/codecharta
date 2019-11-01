@@ -30,7 +30,7 @@
 	<div class="metric-value">
 		<color-metric-type-component></color-metric-type-component>
 		<span
-			>{{ ($ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.colorMetric] | number) || "-" }}
+			>{{ $ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.colorMetric] | number }}
 			<span ng-show="$ctrl._viewModel.hoveredNode.deltas"
 				>(&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.colorMetric] | number }})</span
 			>
