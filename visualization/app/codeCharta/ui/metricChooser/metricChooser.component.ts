@@ -27,7 +27,7 @@ export class MetricChooserController
 
 	private POSITIVE_COLOR = "#b1d8a8"
 	private NEGATIVE_COLOR = "#ffcccc"
-	private NEUTRAL_COLOR = "lightgrey"
+	private NEUTRAL_COLOR = "#e6e6e6"
 
 	private _viewModel: {
 		metricData: MetricData[]

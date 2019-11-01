@@ -287,7 +287,7 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.onBuildingHovered(deltaBuilding)
 
-			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("lightgrey")
+			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("#e6e6e6")
 		})
 
 		it("hovered delta color should be positive color if hoveredHeigtDelta is 2", () => {
