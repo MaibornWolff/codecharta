@@ -3,7 +3,7 @@ import { ToolBarController } from "./toolBar.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { DialogService } from "../dialog/dialog.service"
 import { IRootScopeService } from "angular"
-import { CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("ToolBarController", () => {
 	let $rootScope: IRootScopeService
@@ -52,17 +52,17 @@ describe("ToolBarController", () => {
 
 	describe("onBuildingHovered", () => {
 		it("should set nodeHovered to true if node is hovered", () => {
-			const dataHovered = ({ to: { node: {} } } as unknown) as CodeMapBuildingTransition
+			const dataHovered = ({ node: {} } as unknown) as CodeMapBuilding
 
 			toolBarController.onBuildingHovered(dataHovered)
 
 			expect(toolBarController["_viewModel"].nodeHovered).toBe(true)
 		})
+	})
 
+	describe("onBuildingUnhovered", () => {
 		it("should set nodeHovered to false if no node is hovered", () => {
-			const dataHovered = ({ to: null } as unknown) as CodeMapBuildingTransition
-
-			toolBarController.onBuildingHovered(dataHovered)
+			toolBarController.onBuildingUnhovered()
 
 			expect(toolBarController["_viewModel"].nodeHovered).toBe(false)
 		})

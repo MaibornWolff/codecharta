@@ -1,9 +1,10 @@
 import "./toolBar.component.scss"
 import { DialogService } from "../dialog/dialog.service"
-import { BuildingHoveredEventSubscriber, CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapMouseEventService, BuildingUnhoveredSubscriber, BuildingHoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
-export class ToolBarController implements BuildingHoveredEventSubscriber {
+export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {
 		nodeHovered: boolean
 	} = {
@@ -12,7 +13,8 @@ export class ToolBarController implements BuildingHoveredEventSubscriber {
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private dialogService: DialogService) {
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
 	public downloadFile() {
@@ -23,12 +25,12 @@ export class ToolBarController implements BuildingHoveredEventSubscriber {
 		this.dialogService.showGlobalSettingsDialog()
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data.to && data.to.node) {
-			this._viewModel.nodeHovered = true
-		} else {
-			this._viewModel.nodeHovered = false
-		}
+	public onBuildingHovered(data: CodeMapBuilding) {
+		this._viewModel.nodeHovered = true
+	}
+
+	public onBuildingUnhovered() {
+		this._viewModel.nodeHovered = false
 	}
 }
 
