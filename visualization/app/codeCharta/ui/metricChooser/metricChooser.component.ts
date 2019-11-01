@@ -23,6 +23,10 @@ export class MetricChooserController
 		DistributionMetricSubscriber {
 	private originalMetricData: MetricData[]
 
+	private POSITIVE_COLOR = "#b1d8a8"
+	private NEGATIVE_COLOR = "#ffcccc"
+	private NEUTRAL_COLOR = "lightgrey"
+
 	private _viewModel: {
 		metricData: MetricData[]
 		areaMetric: string
@@ -184,11 +188,11 @@ export class MetricChooserController
 		const heightDelta: number = this._viewModel.hoveredNode.deltas[this._viewModel.heightMetric]
 
 		if (heightDelta > 0) {
-			return "#b1d8a8"
+			return this.POSITIVE_COLOR
 		} else if (heightDelta < 0) {
-			return "#ffcccc"
+			return this.NEGATIVE_COLOR
 		} else {
-			return "lightgrey"
+			return this.NEUTRAL_COLOR
 		}
 	}
 

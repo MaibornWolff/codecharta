@@ -287,7 +287,7 @@ describe("MetricChooserController", () => {
 			expect(node.attributes["height"]).toBe(20)
 		})
 
-		it("hovered delta color should be inherited if hoveredHeigtDelta is 0", () => {
+		it("hovered delta color should be neutral color if hoveredHeigtDelta is 0", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
@@ -295,10 +295,10 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.onBuildingHovered(dataDelta)
 
-			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("inherit")
+			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("lightgrey")
 		})
 
-		it("hovered delta color should be inherited if hoveredHeigtDelta is 2", () => {
+		it("hovered delta color should be positive color if hoveredHeigtDelta is 2", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
@@ -306,10 +306,10 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.onBuildingHovered(dataDelta)
 
-			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("green")
+			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("#b1d8a8")
 		})
 
-		it("hovered delta color should be inherited if hoveredHeigtDelta is -2", () => {
+		it("hovered delta color should be negative color if hoveredHeigtDelta is -2", () => {
 			withMockedBuildingTransitions()
 			metricChooserController["_viewModel"].heightMetric = "height"
 			metricChooserController["_viewModel"]["hoveredNode"] = dataDelta.to.node as Node
@@ -317,7 +317,7 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.onBuildingHovered(dataDelta)
 
-			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("red")
+			expect(metricChooserController["_viewModel"]["deltaColor"]).toBe("#ffcccc")
 		})
 	})
 
