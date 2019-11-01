@@ -43,16 +43,23 @@ describe("NodePathPanelController", () => {
 	})
 
 	describe("onBuildingHovered", () => {
+		const dataHovered = {
+			node: {
+				path: "/root/my/path",
+				isLeaf: true
+			}
+		} as CodeMapBuilding
+
 		it("should update the viewModel when hovering", () => {
-			const hoveredBuilding = {
-				node: {
-					path: "/root/my/path"
-				}
-			} as CodeMapBuilding
+			nodePathPanelController.onBuildingHovered(dataHovered)
 
-			nodePathPanelController.onBuildingHovered(hoveredBuilding)
+			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(["root", "my", "path"])
+		})
 
-			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual("/root/my/path")
+		it("should update the hoveredNodeIsFile when hovering", () => {
+			nodePathPanelController.onBuildingHovered(dataHovered)
+
+			expect(nodePathPanelController["_viewModel"].hoveredNodeIsFile).toEqual(true)
 		})
 	})
 
