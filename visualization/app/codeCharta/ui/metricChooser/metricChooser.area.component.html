@@ -27,7 +27,7 @@
 		</md-content>
 	</md-select>
 
-	<div class="metric-value">
+	<div class="metric-value" ng-show="$ctrl._viewModel.hoveredNode">
 		<area-metric-type-component></area-metric-type-component>
 		<span
 			>{{ $ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.areaMetric] | number }}
