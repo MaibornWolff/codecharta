@@ -18,13 +18,12 @@ interface Coordinates {
 	y: number
 }
 
-export interface CodeMapBuildingTransition {
-	from: CodeMapBuilding
-	to: CodeMapBuilding
+export interface BuildingHoveredSubscriber {
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding)
 }
 
-export interface BuildingHoveredEventSubscriber {
-	onBuildingHovered(data: CodeMapBuildingTransition)
+export interface BuildingUnhoveredSubscriber {
+	onBuildingUnhovered()
 }
 
 export interface BuildingRightClickedEventSubscriber {
@@ -40,6 +39,7 @@ export enum ClickType {
 export class CodeMapMouseEventService
 	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
+	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
 	private highlightedInTreeView: CodeMapBuilding = null
@@ -89,7 +89,7 @@ export class CodeMapMouseEventService
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.onBuildingDeselected()
+		this.threeSceneService.clearSelection()
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
@@ -98,7 +98,7 @@ export class CodeMapMouseEventService
 			const isSelectedBuildingBlacklisted = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
 
 			if (isSelectedBuildingBlacklisted) {
-				this.onBuildingDeselected()
+				this.threeSceneService.clearSelection()
 			}
 		}
 	}
@@ -127,7 +127,11 @@ export class CodeMapMouseEventService
 				}
 
 				if (from !== to) {
-					this.onBuildingHovered(from, to)
+					if (to) {
+						this.hoverBuilding(to)
+					} else {
+						this.unhoverBuilding()
+					}
 				}
 			}
 		}
@@ -148,9 +152,10 @@ export class CodeMapMouseEventService
 		if (this.clickType === ClickType.LeftClick) {
 			const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
 			if (highlightedBuilding) {
-				this.onBuildingSelected(highlightedBuilding)
+				this.threeSceneService.clearSelection()
+				this.threeSceneService.selectBuilding(highlightedBuilding)
 			} else {
-				this.onBuildingDeselected()
+				this.threeSceneService.clearSelection()
 			}
 		}
 	}
@@ -186,54 +191,54 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onBuildingHovered(from: CodeMapBuilding, to: CodeMapBuilding) {
+	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {
 		/*
          if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
          then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
          handle delta objects, until there is a method for mergng their meshes and materials correctly.
          See codeMapRenderService.js
          */
-		if (to && !to.node) {
-			if (to.parent && to.parent.node) {
-				to.setNode(to.parent.node)
+		if (hoveredBuilding && !hoveredBuilding.node) {
+			if (hoveredBuilding.parent && hoveredBuilding.parent.node) {
+				hoveredBuilding.setNode(hoveredBuilding.parent.node)
 			}
 		}
 
-		if (to) {
-			this.threeSceneService.highlightBuilding(to)
-		} else {
-			this.threeSceneService.clearHighlight()
+		if (hoveredBuilding) {
+			this.threeSceneService.highlightBuilding(hoveredBuilding)
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 		}
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { to: to, from: from })
 	}
 
-	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		this.threeSceneService.clearSelection()
-		this.threeSceneService.selectBuilding(selectedBuilding)
-	}
-
-	public onBuildingDeselected() {
-		this.threeSceneService.clearSelection()
+	private unhoverBuilding() {
+		this.threeSceneService.clearHighlight()
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
 		const buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
-				this.onBuildingHovered(this.threeSceneService.getHighlightedBuilding(), building)
+				this.hoverBuilding(building)
 				this.highlightedInTreeView = building
 			}
 		})
 	}
 
 	public onShouldUnhoverNode(node: CodeMapNode) {
-		this.onBuildingHovered(this.highlightedInTreeView, null)
+		this.unhoverBuilding()
 		this.highlightedInTreeView = null
 	}
 
-	public static subscribeToBuildingHoveredEvents($rootScope: IRootScopeService, subscriber: BuildingHoveredEventSubscriber) {
-		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data: CodeMapBuildingTransition) => {
-			subscriber.onBuildingHovered(data)
+	public static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
+		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data) => {
+			subscriber.onBuildingHovered(data.hoveredBuilding)
+		})
+	}
+
+	public static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
+		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, e => {
+			subscriber.onBuildingUnhovered()
 		})
 	}
 

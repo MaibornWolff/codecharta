@@ -78,11 +78,19 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should subscribe to Building-Hovered-Events", () => {
-			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 
 			rebuildService()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, codeMapArrowService)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, codeMapArrowService)
+		})
+
+		it("should subscribe to Building-Unhovered-Events", () => {
+			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
+
+			rebuildService()
+
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, codeMapArrowService)
 		})
 	})
 
