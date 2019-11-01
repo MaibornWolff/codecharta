@@ -184,11 +184,11 @@ export class MetricChooserController
 		const heightDelta: number = this._viewModel.hoveredNode.deltas[this._viewModel.heightMetric]
 
 		if (heightDelta > 0) {
-			return "green"
+			return "#b1d8a8"
 		} else if (heightDelta < 0) {
-			return "red"
+			return "#ffcccc"
 		} else {
-			return "inherit"
+			return "lightgrey"
 		}
 	}
 

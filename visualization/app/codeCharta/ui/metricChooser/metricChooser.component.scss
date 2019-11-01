@@ -38,16 +38,20 @@ edge-chooser-component {
 	}
 
 	.metric-value {
-		background-color: lightgray;
-		border-radius: 3px;
-		margin-top: 5px;
 		height: 25px;
-		padding: 2px;
-		padding-left: 5px;
-		padding-right: 5px;
 		float: right;
 		position: absolute;
 		right: 0;
+	}
+
+	.rounded-box {
+		margin-top: -2px;
+		background-color: lightgray;
+		border-radius: 3px;
+		padding: 2px;
+		padding-left: 5px;
+		padding-right: 5px;
+		display: inline-block;
 	}
 
 	.md-select-value .metric-max-value {
