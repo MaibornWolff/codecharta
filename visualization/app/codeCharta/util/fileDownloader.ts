@@ -1,6 +1,6 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, FileMeta, AttributeTypes } from "../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, FileMeta, AttributeTypes, Edge } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { stringify } from "querystring"
@@ -29,7 +29,7 @@ export class FileDownloader {
 			apiVersion: fileMeta.apiVersion,
 			nodes: [this.undecorateMap(map)],
 			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
-			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? fileSettings.edges : [],
+			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? this.undecorateEdges(fileSettings.edges) : [],
 			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? fileSettings.markedPackages : [],
 			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist)
 		}
@@ -60,7 +60,7 @@ export class FileDownloader {
 		return blacklist.filter(x => x.type == type)
 	}
 
-	private static undecorateMap(map: CodeMapNode) {
+	private static undecorateMap(map: CodeMapNode): CodeMapNode {
 		let copy: CodeMapNode = JSON.parse(JSON.stringify(map))
 		d3.hierarchy(copy).each(node => {
 			delete node.data.visible
@@ -73,6 +73,14 @@ export class FileDownloader {
 				delete node.data.attributes["unary"]
 			}
 		})
+		return copy
+	}
+
+	private static undecorateEdges(edges: Edge[]): Edge[] {
+		const copy: Edge[] = JSON.parse(JSON.stringify(edges))
+		for (let edge of copy) {
+			delete edge.visible
+		}
 		return copy
 	}
 
