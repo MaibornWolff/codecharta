@@ -2,7 +2,8 @@ import "./nodePathPanel.module"
 import { NodePathPanelController } from "./nodePathPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("NodePathPanelController", () => {
 	let nodePathPanelController: NodePathPanelController
@@ -24,26 +25,32 @@ describe("NodePathPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to Building-Hovered-Event", () => {
-			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
+		it("should subscribe to Building-Hovered", () => {
+			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, nodePathPanelController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
+		})
+
+		it("should subscribe to Building-Unhovered", () => {
+			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
+
+			rebuildController()
+
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
 		})
 	})
 
 	describe("onBuildingHovered", () => {
 		const dataHovered = {
-			to: {
-				node: {
-					path: "/root/my/path",
-					isLeaf: true
-				}
+			node: {
+				path: "/root/my/path",
+				isLeaf: true
 			}
-		} as CodeMapBuildingTransition
+		} as CodeMapBuilding
 
-		it("should update the hoveredNodePath when hovering", () => {
+		it("should update the viewModel when hovering", () => {
 			nodePathPanelController.onBuildingHovered(dataHovered)
 
 			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(["root", "my", "path"])
@@ -53,6 +60,14 @@ describe("NodePathPanelController", () => {
 			nodePathPanelController.onBuildingHovered(dataHovered)
 
 			expect(nodePathPanelController["_viewModel"].hoveredNodeIsFile).toEqual(true)
+		})
+	})
+
+	describe("onBuildingUnhovered", () => {
+		it("should update the viewModel when unhovering", () => {
+			nodePathPanelController.onBuildingUnhovered()
+
+			expect(nodePathPanelController["_viewModel"].hoveredNodePath).toEqual(null)
 		})
 	})
 })
