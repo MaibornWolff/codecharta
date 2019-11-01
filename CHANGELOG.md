@@ -9,7 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.37.0] - 2019-10-25
+
+### Added
+
 - Sidebar with information regarding the selected building #527
+- Sidebar closes when selected buildings is excluded #748
 
 ### Changed
 
@@ -22,6 +35,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Removed option to maximize/minimize detail panel #527
 
 ### Fixed
+
+- Autofocus and label size for focused nodes #747
+- Selected buildings stays selected when settings are changed #748
+- IllegalStateException when scanning single file in SourceCodeParser #573
+- SourceCodeParser places files in the project root correctly into the hierarchy #574
 
 ### Chore
 
@@ -43,9 +61,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Increased size of ribbonBar for big screens #644
 - File-Extension-Bar will not display excluded nodes anymore #725
 - Sanitize input for shelljs #600
-- Fix IllegalStateException when scanning single file in SourceCodeParser #573
-- SourceCodeParser places files in the project root correctly into the hierarchy #574
-
 
 ### Chore
 

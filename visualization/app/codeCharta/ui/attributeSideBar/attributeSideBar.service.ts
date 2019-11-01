@@ -1,10 +1,10 @@
 import { IRootScopeService } from "angular"
-import {
-	CodeMapMouseEventService,
-	BuildingSelectedEventSubscriber,
-	BuildingDeselectedEventSubscriber
-} from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import {
+	BuildingDeselectedEventSubscriber,
+	BuildingSelectedEventSubscriber,
+	ThreeSceneService
+} from "../codeMap/threeViewer/threeSceneService"
 
 export interface AttributeSideBarVisibilitySubscriber {
 	onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean)
@@ -16,8 +16,8 @@ export class AttributeSideBarService implements BuildingSelectedEventSubscriber,
 	private isAttributeSideBarVisible: boolean = false
 
 	constructor(private $rootScope: IRootScopeService) {
-		CodeMapMouseEventService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
+		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
+		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
 	}
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {

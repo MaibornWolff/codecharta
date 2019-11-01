@@ -12,7 +12,7 @@ import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.ser
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../util/dataMocks"
 import _ from "lodash"
-import { Node } from "../../codeCharta.model"
+import { BlacklistType, Node } from "../../codeCharta.model"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -190,6 +190,38 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onViewCubeEventPropagation("dblclick", null)
 
 			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalledWith(null)
+		})
+	})
+
+	describe("onBlacklistChanged", () => {
+		it("should deselect the building when the selected building is excluded", () => {
+			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.exclude }]
+
+			codeMapMouseEventService.onBlacklistChanged(blacklist)
+
+			expect(threeSceneService.clearSelection).toHaveBeenCalled()
+		})
+
+		it("should deselect the building when the selected building is hidden", () => {
+			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.hide }]
+
+			codeMapMouseEventService.onBlacklistChanged(blacklist)
+
+			expect(threeSceneService.clearSelection).toHaveBeenCalled()
+		})
+
+		it("should not deselect the building when the selected building is not blacklisted", () => {
+			codeMapMouseEventService.onBlacklistChanged([])
+
+			expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
+		})
+
+		it("should not deselect the building when no building is selected", () => {
+			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
+
+			codeMapMouseEventService.onBlacklistChanged([])
+
+			expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
 		})
 	})
 
@@ -401,21 +433,18 @@ describe("codeMapMouseEventService", () => {
 		it("should select a building", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", codeMapBuilding)
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
 
 		it("should clear selection", () => {
 			codeMapMouseEventService.onBuildingDeselected()
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-deselected")
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 		})
 
 		it("should clear the currently selected building and then select the new one", () => {
 			codeMapMouseEventService.onBuildingSelected(codeMapBuilding)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-selected", codeMapBuilding)
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
