@@ -1,7 +1,7 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import "./metricChooser.component.scss"
-import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MetricData, DynamicSettings, RecursivePartial, Node } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import {
@@ -12,11 +12,13 @@ import {
 } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import _ from "lodash"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class MetricChooserController
 	implements
 		MetricServiceSubscriber,
-		BuildingHoveredEventSubscriber,
+		BuildingHoveredSubscriber,
+		BuildingUnhoveredSubscriber,
 		AreaMetricSubscriber,
 		HeightMetricSubscriber,
 		ColorMetricSubscriber,
@@ -54,7 +56,9 @@ export class MetricChooserController
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
 		SettingsService.subscribeToDistributionMetric(this.$rootScope, this)
 
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
+
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
@@ -172,15 +176,18 @@ export class MetricChooserController
 		})
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data && data.to && data.to.node) {
-			this._viewModel.hoveredNode = data.to.node
-			if (data.to.node.deltas) {
+	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		if (hoveredBuilding.node) {
+			this._viewModel.hoveredNode = hoveredBuilding.node
+			if (hoveredBuilding.node.deltas) {
 				this._viewModel.deltaColor = this.getHoveredDeltaColor()
 			}
-		} else {
-			this._viewModel.hoveredNode = null
 		}
+		this.synchronizeAngularTwoWayBinding()
+	}
+
+	public onBuildingUnhovered() {
+		this._viewModel.hoveredNode = null
 		this.synchronizeAngularTwoWayBinding()
 	}
 

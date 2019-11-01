@@ -1,16 +1,15 @@
 node-path-panel-component {
 	#node-path {
-		position: fixed;
-		z-index: 40;
-		bottom: 0.5em;
-		left: 0.5em;
-		background-color: #fff;
-		color: #5a585a;
+		margin: 10px 10px 0 10px;
+		float: left;
 		font-size: 10pt;
-		font-weight: bold;
-		padding: 4px;
-		max-width: 60%;
-		-ms-word-break: break-all;
-		word-break: break-all;
+		max-width: calc(100% - 250px);
+		direction: rtl;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+
+	.bold {
+		font-weight: 600;
 	}
 }
