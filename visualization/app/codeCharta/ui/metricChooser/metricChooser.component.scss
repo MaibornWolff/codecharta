@@ -5,8 +5,6 @@ height-metric-chooser-component,
 color-metric-chooser-component,
 distribution-metric-chooser-component,
 edge-chooser-component {
-	$selectWidth: 210;
-
 	md-input-container {
 		display: block;
 		top: -5px;
@@ -21,7 +19,11 @@ edge-chooser-component {
 		}
 
 		md-select {
-			width: $selectWidth + px;
+			width: 210px;
+
+			.metric-max-value {
+				display: none;
+			}
 		}
 
 		i.fa,
@@ -51,10 +53,6 @@ edge-chooser-component {
 				display: inline-block;
 			}
 		}
-	}
-
-	.md-select-value .metric-max-value {
-		display: none;
 	}
 }
 
@@ -102,10 +100,6 @@ edge-chooser-component {
 			margin-left: 5px !important;
 		}
 	}
-}
-
-.md-overflow {
-	display: initial;
 }
 
 distribution-metric-chooser-component {
