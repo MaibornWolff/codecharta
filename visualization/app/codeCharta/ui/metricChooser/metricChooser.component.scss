@@ -13,46 +13,44 @@ edge-chooser-component {
 		margin: 0;
 		text-align: left;
 
-		md-select {
-			width: $selectWidth + px;
-		}
-
 		> * {
 			display: inline-block;
 			margin: 0;
 			padding: 0;
 			vertical-align: middle;
 		}
-	}
 
-	i.fa,
-	.metric-value {
-		vertical-align: middle;
-		margin-top: 8px;
-	}
+		md-select {
+			width: $selectWidth + px;
+		}
 
-	i.fa {
-		margin-left: 5px;
-		margin-right: 5px;
-		min-width: 16px;
-		text-align: center;
-	}
+		i.fa,
+		.metric-value {
+			vertical-align: middle;
+			margin-top: 8px;
+		}
 
-	.metric-value {
-		height: 25px;
-		float: right;
-		position: absolute;
-		right: 0;
-	}
+		i.fa {
+			margin-left: 5px;
+			margin-right: 5px;
+			min-width: 16px;
+			text-align: center;
+		}
 
-	.rounded-box {
-		margin-top: -2px;
-		background-color: #e6e6e6;
-		border-radius: 3px;
-		padding: 2px;
-		padding-left: 5px;
-		padding-right: 5px;
-		display: inline-block;
+		.metric-value {
+			height: 25px;
+			float: right;
+			position: absolute;
+			right: 0;
+
+			.rounded-box {
+				margin-top: -2px;
+				background-color: #e6e6e6;
+				border-radius: 3px;
+				padding: 2px 5px;
+				display: inline-block;
+			}
+		}
 	}
 
 	.md-select-value .metric-max-value {
@@ -68,44 +66,44 @@ edge-chooser-component {
 	&.distributionBarDropdown {
 		top: 45px !important;
 	}
-}
 
-md-content.option-group {
-	top: $optionHeight + px !important;
-	min-height: auto;
-	margin-bottom: 40px;
-	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+	.metric-search {
+		display: block;
+		position: fixed;
+		top: 8px;
+		width: 100%;
+		padding: 10px;
+		height: $optionHeight - 8 + px;
+		outline: none;
+		border: none;
+		border-bottom: solid 2px;
+		border-color: rgba(0, 0, 0, 0.12);
+		background-color: #f5f5f5;
+		font-family: Arial, FontAwesome;
+		font-size: 11pt;
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+
+		&:focus {
+			border-color: rgb(0, 150, 136);
+			color: rgb(0, 150, 136);
+		}
+	}
+
+	md-content.option-group {
+		top: $optionHeight + px !important;
+		min-height: auto;
+		margin-bottom: 40px;
+		box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
+
+		.metric-max-value {
+			color: #ccc !important;
+			margin-left: 5px !important;
+		}
+	}
 }
 
 .md-overflow {
 	display: initial;
-}
-
-.metric-search {
-	display: block;
-	position: fixed;
-	top: 8px;
-	width: 100%;
-	padding: 10px;
-	height: $optionHeight - 8 + px;
-	outline: none;
-	border: none;
-	border-bottom: solid 2px;
-	border-color: rgba(0, 0, 0, 0.12);
-	background-color: #f5f5f5;
-	font-family: Arial, FontAwesome;
-	font-size: 11pt;
-	box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2) !important;
-
-	&:focus {
-		border-color: rgb(0, 150, 136);
-		color: rgb(0, 150, 136);
-	}
-}
-
-.metric-max-value {
-	color: #ccc !important;
-	margin-left: 5px !important;
 }
 
 distribution-metric-chooser-component {
