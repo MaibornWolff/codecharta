@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Moved nodePathPanel to toolBar and updated style #607
+
 ### Removed
 
 ### Fixed
@@ -27,7 +29,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Animation to show or hide the legend panel #527
-- Moved nodePathPanel to toolBar and updated style #607
 
 ### Removed
 
