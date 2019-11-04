@@ -110,6 +110,10 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return node && node.children && node.children.length > 0 ? 1 : 0
 	}
 
+	public getNodeRloc(){
+		return this.node.attributes["rloc"]
+	}
+
 	public static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
 		$rootScope.$on("should-hover-node", (event, args) => subscriber.onShouldHoverNode(args))
 		$rootScope.$on("should-unhover-node", (event, args) => subscriber.onShouldUnhoverNode(args))

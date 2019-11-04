@@ -35,7 +35,7 @@
 		</span>
 
 		<span class="cursor-pointer no-outline {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}" ng-click="$ctrl.onLabelClick()">
-			{{::$ctrl.node.name}}
+			{{::$ctrl.node.name}} ({{::$ctrl.getNodeRloc()}} rloc)
 		</span>
 	</div>
 
