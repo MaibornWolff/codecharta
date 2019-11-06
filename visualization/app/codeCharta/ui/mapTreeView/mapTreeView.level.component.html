@@ -34,13 +34,18 @@
 			<span role="img" ng-if="!$ctrl.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
 		</span>
 
-		<span class="cursor-pointer no-outline {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}" ng-click="$ctrl.onLabelClick()">
+		<span
+			class="cursor-pointer no-outline {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }} {{
+				$ctrl.isRlocNotZero($ctrl.node) ? 'fontBold' : 'fontGray'
+			}}"
+			ng-click="$ctrl.onLabelClick()"
+		>
 			{{::$ctrl.node.name}} ({{::$ctrl.getNodeRloc()}} rloc)
 		</span>
 	</div>
 
-	<div class="tree-element-children tree-element-children-{{::$ctr.depth?$ctrl.depth:0}}">
-		<div ng-if="!$ctrl._viewModel.collapsed" ng-repeat="node in $ctrl.node.children | orderBy: [$ctrl.sortByFolder,'name'] ">
+	<div class="tree-element-children tree-element-children-{{::$ctrl.depth?$ctrl.depth:0}}">
+		<div ng-if="!$ctrl._viewModel.collapsed" ng-repeat="node in $ctrl.node.children | orderBy: [$ctrl.sortByFolder,'name']">
 			<map-tree-view-level-component node="::node" depth="::$ctrl.depth+1"></map-tree-view-level-component>
 		</div>
 	</div>
