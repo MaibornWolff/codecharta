@@ -8,7 +8,7 @@ import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
-import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS } from "../../util/dataMocks"
 import _ from "lodash"
 
 describe("MapTreeViewLevelController", () => {
@@ -274,6 +274,15 @@ describe("MapTreeViewLevelController", () => {
 			mapTreeViewLevelController.openRootFolderByDefault(5)
 
 			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
+		})
+	})
+	describe("getNodeRloc", () => {
+		it("should return the rloc of the current node", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_METRICS
+
+			const nodeRloc: number = mapTreeViewLevelController.getNodeRloc()
+
+			expect(nodeRloc).toBe(VALID_NODE_WITH_METRICS.attributes["rloc"])
 		})
 	})
 })

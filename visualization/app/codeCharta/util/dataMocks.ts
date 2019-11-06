@@ -89,6 +89,15 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	]
 }
 
+
+export const VALID_NODE_WITH_METRICS: CodeMapNode = {
+	name: "root",
+	type: "Folder",
+	attributes: { rloc: 100, Functions: 10, MCC: 1 },
+
+}
+
+
 export const VALID_EDGES: Edge[] = [
 	{
 		fromNodeName: "/root/big leaf",
