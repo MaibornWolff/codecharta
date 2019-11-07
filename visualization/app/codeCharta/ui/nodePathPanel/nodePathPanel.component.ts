@@ -7,9 +7,11 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class NodePathPanelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {
-		hoveredNodePath: string
+		hoveredNodePath: string[]
+		hoveredNodeIsFile: boolean
 	} = {
-		hoveredNodePath: null
+		hoveredNodePath: [],
+		hoveredNodeIsFile: null
 	}
 
 	/* @ngInject */
@@ -21,7 +23,8 @@ export class NodePathPanelController implements BuildingHoveredSubscriber, Build
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		if (hoveredBuilding.node) {
-			this._viewModel.hoveredNodePath = hoveredBuilding.node.path
+			this._viewModel.hoveredNodePath = hoveredBuilding.node.path.substr(1).split("/")
+			this._viewModel.hoveredNodeIsFile = hoveredBuilding.node.isLeaf
 		}
 	}
 
