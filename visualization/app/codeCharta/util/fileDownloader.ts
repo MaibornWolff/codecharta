@@ -87,7 +87,7 @@ export class FileDownloader {
 	private static downloadData(data: ExportCCFile, fileName: string) {
 		let dataJson = stringify(data)
 		if (typeof data === "object") {
-			dataJson = angular.toJson(data, 4)
+			dataJson = angular.toJson(data)
 		}
 
 		const blob = new Blob([dataJson], { type: "text/json" })
