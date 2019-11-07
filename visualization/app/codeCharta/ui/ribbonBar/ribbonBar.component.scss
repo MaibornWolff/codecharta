@@ -86,11 +86,29 @@ ribbon-bar-component {
 			}
 
 			.section-body {
-				margin: 5px 5px 5px 10px;
-				overflow: hidden;
+				margin: 5px 5px 5px 5px;
+				overflow: visible;
 				font-size: 0.9em;
 				text-align: left;
 				vertical-align: top;
+
+				md-slider-container {
+					position: relative;
+					padding-left: 2px;
+
+					span {
+						position: absolute;
+						top: 0;
+						font-size: 10pt;
+						color: grey;
+						left: 5px;
+					}
+				}
+
+				md-checkbox {
+					font-size: 10pt;
+					margin-left: 5px;
+				}
 
 				reset-settings-button-component .md-button {
 					top: 0;
