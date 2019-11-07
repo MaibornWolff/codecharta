@@ -11,9 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Downloaded files are no longer formatted #679
+
 ### Removed
 
 ### Fixed
+
+- Removed attributes from downloaded files that should not be there #679
 
 ### Chore
 
