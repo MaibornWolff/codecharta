@@ -1,28 +1,35 @@
 import "./nodePathPanel.component.scss"
-import { BuildingHoveredEventSubscriber, CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
-export class NodePathPanelController implements BuildingHoveredEventSubscriber {
+export class NodePathPanelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {
-		hoveredNodePath: string
+		hoveredNodePath: string[]
+		hoveredNodeIsFile: boolean
 	} = {
-		hoveredNodePath: null
+		hoveredNodePath: [],
+		hoveredNodeIsFile: null
 	}
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService) {
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data.to && data.to.node) {
-			this._viewModel.hoveredNodePath = data.to.node.path
-		} else {
-			this._viewModel.hoveredNodePath = null
+	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		if (hoveredBuilding.node) {
+			this._viewModel.hoveredNodePath = hoveredBuilding.node.path.substr(1).split("/")
+			this._viewModel.hoveredNodeIsFile = hoveredBuilding.node.isLeaf
 		}
+	}
+
+	public onBuildingUnhovered() {
+		this._viewModel.hoveredNodePath = null
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
