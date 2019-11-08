@@ -120,6 +120,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 					type: "File",
 					path: "/root/Parent Leaf/other small leaf",
 					attributes: { RLOC: 70, Functions: 1000, MCC: 10, unary: 1 },
+					edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
 					visible: true
 				}
 			]
