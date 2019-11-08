@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - New style for hovered metric values #696
+- Redesigned slider labels in ribbonBar sections #696
+- Shortened ribbonBar sections #696
 
 ### Removed
 
