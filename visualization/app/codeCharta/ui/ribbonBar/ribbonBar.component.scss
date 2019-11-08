@@ -31,10 +31,13 @@ ribbon-bar-component {
 			width: 380px;
 		}
 
+		&:not(#scenario-card) {
+			min-width: 240px;
+		}
+
 		.section {
 			display: inline-block;
 			height: 100%;
-			width: auto;
 			border-right: $border;
 			vertical-align: top;
 			flex-grow: 100;
