@@ -105,6 +105,11 @@ ribbon-bar-component {
 					}
 				}
 
+				md-input-container:not(#colorSliderContainer) > input {
+					height: 30px;
+					margin-top: -17px;
+				}
+
 				md-checkbox {
 					font-size: 10pt;
 					margin-left: 5px;
