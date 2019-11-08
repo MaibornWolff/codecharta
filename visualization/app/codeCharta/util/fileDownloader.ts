@@ -1,5 +1,6 @@
 import angular from "angular"
 import * as d3 from "d3"
+import _ from "lodash"
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, FileMeta, AttributeTypes, Edge } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
@@ -61,7 +62,7 @@ export class FileDownloader {
 	}
 
 	private static undecorateMap(map: CodeMapNode): CodeMapNode {
-		let copy: CodeMapNode = JSON.parse(JSON.stringify(map))
+		let copy: CodeMapNode = _.cloneDeep(map)
 		d3.hierarchy(copy).each(node => {
 			delete node.data.visible
 			delete node.data.origin
@@ -77,7 +78,7 @@ export class FileDownloader {
 	}
 
 	private static undecorateEdges(edges: Edge[]): Edge[] {
-		const copy: Edge[] = JSON.parse(JSON.stringify(edges))
+		const copy: Edge[] = _.cloneDeep(edges)
 		for (let edge of copy) {
 			delete edge.visible
 		}
