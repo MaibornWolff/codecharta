@@ -2,25 +2,16 @@ import "./ribbonBar.component.scss"
 import $ from "jquery"
 
 export class RibbonBarController {
-	private collapsingElements = $("ribbon-bar-component .element-to-toggle")
-	private isExpanded: boolean = false
+	private readonly EXPANDED_CLASS = "expanded"
 
-	public toggle() {
-		if (this.isExpanded) {
-			this.collapse()
+	public toggle(event) {
+		const boxElement = $(event.srcElement).closest("md-card")
+
+		if (boxElement.hasClass(this.EXPANDED_CLASS)) {
+			boxElement.removeClass(this.EXPANDED_CLASS)
 		} else {
-			this.expand()
+			boxElement.addClass(this.EXPANDED_CLASS)
 		}
-	}
-
-	public expand() {
-		this.isExpanded = true
-		this.collapsingElements.addClass("expanded")
-	}
-
-	public collapse() {
-		this.isExpanded = false
-		this.collapsingElements.removeClass("expanded")
 	}
 }
 

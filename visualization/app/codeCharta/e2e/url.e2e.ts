@@ -1,4 +1,4 @@
-import { CC_URL, puppeteer } from "../../puppeteer.helper"
+import { CC_URL, newPage, puppeteer } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import { Browser, Page } from "puppeteer"
@@ -14,7 +14,7 @@ describe("codecharta", () => {
 			headless: true,
 			args: ["--allow-file-access-from-files"]
 		})
-		page = await browser.newPage()
+		page = await newPage(browser)
 	})
 
 	afterEach(async () => {

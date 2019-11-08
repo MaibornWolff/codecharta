@@ -171,7 +171,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 				scaling: scaling,
 				camera: camera,
 				hideFlatBuildings: true,
-				maximizeDetailPanel: false,
 				invertColorRange: false,
 				invertDeltaColors: false,
 				invertHeight: false,

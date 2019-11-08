@@ -1,0 +1,15 @@
+node-path-panel-component {
+	#node-path {
+		margin: 10px 10px 0 10px;
+		float: left;
+		font-size: 10pt;
+		max-width: calc(100% - 250px);
+		direction: rtl;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+
+	.bold {
+		font-weight: 600;
+	}
+}

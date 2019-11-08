@@ -11,9 +11,6 @@ export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
-/**
- * Service to manage the three orbit controls in an angular way.
- */
 export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 
@@ -60,7 +57,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
 		const cameraReference = this.threeCameraService.camera
 
-		cameraReference.position.set(len, len, len)
+		cameraReference.position.set(boundingSphere.center.x + len, len, boundingSphere.center.z + len)
 		this.defaultCameraPosition = cameraReference.position.clone()
 		this.controls.update()
 

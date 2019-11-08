@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.35.0",
+	"version": "1.37.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -149,7 +149,6 @@
 		"@types/puppeteer": "^1.12.4",
 		"@types/sinon": "^2.3.5",
 		"@types/three": "^0.89.12",
-		"@uirouter/angularjs": "^1.0.16",
 		"ajv": "^6.10.0",
 		"angular": "^1.6.9",
 		"angular-animate": "^1.6.9",
