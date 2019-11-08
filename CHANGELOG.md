@@ -13,12 +13,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Downloaded files are no longer formatted #679
 - Added highly and median coupled files metrics to non-churn metric list of SCMLogParser #622
 - Moved nodePathPanel to toolBar and updated style #607
 
 ### Removed
 
 ### Fixed
+
+- Removed attributes from downloaded files that should not be there #679
 
 ### Chore
 
