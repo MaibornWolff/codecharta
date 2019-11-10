@@ -612,7 +612,7 @@ export const SETTINGS: Settings = {
 		resetCameraIfNewFileIsLoaded: true
 	},
 	treeMapSettings: {
-		mapSize: 500
+		mapSize: 250
 	}
 }
 
@@ -666,7 +666,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		searchedNodePaths: []
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
-	treeMapSettings: { mapSize: 500 }
+	treeMapSettings: { mapSize: 250 }
 }
 
 export const TEST_NODE_ROOT: Node = {

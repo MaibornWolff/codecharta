@@ -24,9 +24,9 @@ export class CodeMapBuilding {
 
 	public getCenterPoint(mapSize: number): Vector3 {
 		return new Vector3(
-			this._node.x0 - mapSize * 0.5 + this._node.width / 2,
+			this._node.x0 - mapSize + this._node.width / 2,
 			this._node.z0 + this._node.height,
-			this._node.y0 - mapSize * 0.5 + this._node.length / 2
+			this._node.y0 - mapSize + this._node.length / 2
 		)
 	}
 
