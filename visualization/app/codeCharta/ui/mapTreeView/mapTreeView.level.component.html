@@ -39,9 +39,9 @@
 				$ctrl.isUnaryNotZero($ctrl.node) ? 'fontBold' : 'fontGray'
 			}}"
 			ng-click="$ctrl.onLabelClick()"
-		>
+			><md-tooltip md-delay="200" ng-if="!$ctrl.isLeaf()">({{::$ctrl.getNodeUnary()}} files)</md-tooltip>
 			{{::$ctrl.node.name}}
-			<span ng-if="!$ctrl.isLeaf()"> ({{::$ctrl.getNodeUnary()}} files)({{::$ctrl.getUnaryPercentage()}}%) </span>
+			<span ng-if="!$ctrl.isLeaf()" class="fontGray">({{::$ctrl.getUnaryPercentage()}}%) </span>
 		</span>
 	</div>
 

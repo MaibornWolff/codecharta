@@ -26,19 +26,15 @@ map-tree-view-component {
 	.cursor-pointer {
 		cursor: pointer;
 
-		&.fontBold{
+		&.fontBold {
 			font-weight: bold;
 			color: black;
 		}
-
-		&.fontGray{
-			font-weight: lighter;
-			color: #5a585a;
-		}
 	}
-
-
-	
+	.fontGray {
+		font-weight: lighter;
+		color: #a3a3a3;
+	}
 
 	.no-outline:focus {
 		outline: none;
