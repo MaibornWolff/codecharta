@@ -1,0 +1,8 @@
+<div id="node-path">
+	<span ng-repeat="folder in $ctrl._viewModel.hoveredNodePath track by $index">
+		<i role="img" class="fa fa-file-o" ng-if="$last && $ctrl._viewModel.hoveredNodeIsFile"></i>
+		<i role="img" class="fa fa-folder" ng-if="$last && !$ctrl._viewModel.hoveredNodeIsFile"></i>
+		<span ng-class="{bold: $last}">{{ folder }}</span>
+		<i ng-if="!$last" class="fa fa-angle-right"></i>
+	</span>
+</div>

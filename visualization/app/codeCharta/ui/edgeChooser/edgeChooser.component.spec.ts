@@ -5,7 +5,9 @@ import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { CodeMapMouseEventService, CodeMapBuildingTransition } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { CODE_MAP_BUILDING } from "../../util/dataMocks"
+import _ from "lodash"
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
@@ -50,12 +52,20 @@ describe("EdgeChooserController", () => {
 			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 
-		it("should subscribe to CodeMapMouseEventService, hovered buildings", () => {
-			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
+		it("should subscribe to hovered buildings", () => {
+			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 
 			rebuildController()
 
-			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
+		})
+
+		it("should subscribe to unhovered buildings", () => {
+			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
+
+			rebuildController()
+
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 	})
 
@@ -99,22 +109,38 @@ describe("EdgeChooserController", () => {
 	})
 
 	describe("onBuildingHovered", () => {
+		beforeEach(() => {
+			edgeChooserController["_viewModel"].edgeMetric = "metric2"
+		})
+
 		it("should set hovered value to null if no node is hovered", () => {
-			const data = { to: { node: {} } } as CodeMapBuildingTransition
+			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			codeMapBuilding.setNode(null)
 			edgeChooserController["_viewModel"].hoveredEdgeValue = { incoming: 22, outgoing: 42 }
 
-			edgeChooserController.onBuildingHovered(data)
+			edgeChooserController.onBuildingHovered(codeMapBuilding)
 
-			expect((edgeChooserController["_viewModel"].hoveredEdgeValue = null))
+			expect(edgeChooserController["_viewModel"].hoveredEdgeValue).toEqual(null)
 		})
 
 		it("should update hoveredEdgeValue according to hovered building", () => {
-			const metricData = { name: "metric2", maxValue: 22, availableInVisibleMaps: true }
-			const data = ({ to: { node: { edgeAttributes: metricData } } } as unknown) as CodeMapBuildingTransition
+			const hoveredEdgeValue = { incoming: 22, outgoing: 23 }
+			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			codeMapBuilding.node.edgeAttributes = { metric2: hoveredEdgeValue }
 
-			edgeChooserController.onBuildingHovered(data)
+			edgeChooserController.onBuildingHovered(codeMapBuilding)
 
-			expect((edgeChooserController["_viewModel"].hoveredEdgeValue = null))
+			expect(edgeChooserController["_viewModel"].hoveredEdgeValue).toEqual(hoveredEdgeValue)
+		})
+	})
+
+	describe("onBuildingUnhovered", () => {
+		it("should set hovered value to null if no node is hovered", () => {
+			edgeChooserController["_viewModel"].hoveredEdgeValue = { incoming: 22, outgoing: 42 }
+
+			edgeChooserController.onBuildingUnhovered()
+
+			expect(edgeChooserController["_viewModel"].hoveredEdgeValue).toEqual(null)
 		})
 	})
 

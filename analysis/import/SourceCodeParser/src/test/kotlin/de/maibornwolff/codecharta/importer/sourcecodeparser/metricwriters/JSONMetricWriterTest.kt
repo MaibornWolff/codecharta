@@ -67,4 +67,20 @@ class JSONMetricWriterTest {
         Assertions.assertThat(resultJSON == expectedJson).isTrue()
     }
 
+    @Test
+    fun `top level files are embedded correctly`() {
+        val fileMetrics = FileMetricMap().add("mcc", 2).add("rloc", 3)
+        val metrics = ProjectMetrics()
+        metrics.addFileMetricMap("foo.java", fileMetrics)
+        val result = ByteArrayOutputStream()
+
+        JSONMetricWriter("project", OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+
+        val resultJSON = JSONObject(result.toString())
+        val leaf = resultJSON.getJSONArray("nodes").getJSONObject(0).getJSONArray("children").getJSONObject(0)
+        Assertions.assertThat(leaf["type"]).isEqualTo("File")
+        Assertions.assertThat(leaf["name"]).isEqualTo("foo.java")
+        Assertions.assertThat(leaf.getJSONObject("attributes").length()).isEqualTo(2)
+    }
+
 }

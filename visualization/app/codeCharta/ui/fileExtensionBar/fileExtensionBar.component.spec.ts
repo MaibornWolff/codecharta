@@ -1,10 +1,12 @@
 import "./fileExtensionBar.module"
+import _ from "lodash"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { TEST_FILE_WITH_PATHS, SETTINGS, METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION } from "../../util/dataMocks"
-import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
+import { METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION, SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
+import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
+import { BlacklistType, Settings } from "../../codeCharta.model"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
@@ -12,6 +14,7 @@ describe("FileExtensionBarController", () => {
 	let settingsService: SettingsService
 
 	let distribution: MetricDistribution[] = METRIC_DISTRIBUTION
+	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
@@ -24,6 +27,8 @@ describe("FileExtensionBarController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+
+		settings = _.cloneDeep(SETTINGS)
 	}
 
 	function rebuildController() {
@@ -32,7 +37,7 @@ describe("FileExtensionBarController", () => {
 
 	function withMockedSettingsService() {
 		settingsService = fileExtensionBarController["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(SETTINGS)
+			getSettings: jest.fn().mockReturnValue(settings)
 		})()
 	}
 
@@ -49,7 +54,20 @@ describe("FileExtensionBarController", () => {
 		it("should call getMetricDistribution with mcc", () => {
 			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
-			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(TEST_FILE_WITH_PATHS.map, "mcc")
+			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(TEST_FILE_WITH_PATHS.map, "mcc", [])
+		})
+
+		it("should call getMetricDistribution with a blacklist", () => {
+			const blacklistEntry = { path: "a/path", type: BlacklistType.exclude }
+			settings.fileSettings.blacklist.push(blacklistEntry)
+
+			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
+
+			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(
+				TEST_FILE_WITH_PATHS.map,
+				"mcc",
+				settings.fileSettings.blacklist
+			)
 		})
 
 		it("should set the color of given extension attribute", () => {

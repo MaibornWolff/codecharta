@@ -1,7 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
 import { MarkedPackage } from "../codeCharta.model"
 import ignore from "ignore"
-import * as path from "path"
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model"
 
 export class CodeMapHelper {
@@ -21,7 +20,14 @@ export class CodeMapHelper {
 	}
 
 	public static transformPath(toTransform: string): string {
-		return path.relative("/", toTransform)
+		let removeNumberOfCharactersFromStart = 0
+
+		if (toTransform.startsWith("./")) {
+			removeNumberOfCharactersFromStart = 2
+		} else if (toTransform.startsWith("/")) {
+			removeNumberOfCharactersFromStart = 1
+		}
+		return toTransform.substring(removeNumberOfCharactersFromStart)
 	}
 
 	public static getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string): CodeMapNode[] {
@@ -39,6 +45,13 @@ export class CodeMapHelper {
 		} else {
 			return 0
 		}
+	}
+
+	public static isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {
+		return (
+			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude) ||
+			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.hide)
+		)
 	}
 
 	public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {

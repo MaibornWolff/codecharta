@@ -6,17 +6,29 @@ legend-panel-component {
 		bottom: ($fixedHeight + 20) + px;
 		right: -35px;
 		transform: rotate(90deg);
-		z-index: 2;
+		border-radius: 0 0 5px 5px;
+
+		&.sideBarVisible {
+			right: 316px;
+		}
 	}
 
 	.block-wrapper {
 		position: fixed;
-		z-index: 29;
 		bottom: $fixedHeight + px;
-		right: -500px; //initial state is closed
-
 		background-color: #fff;
 		padding: 10px;
+		right: 40px;
+		visibility: hidden;
+		border-radius: 5px;
+
+		&.sideBarVisible {
+			right: 390px;
+		}
+
+		&.visible {
+			visibility: visible;
+		}
 
 		hr {
 			border-right-style: none;
