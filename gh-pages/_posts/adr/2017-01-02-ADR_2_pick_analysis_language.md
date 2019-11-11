@@ -2,26 +2,25 @@
 categories:
   - ADR
 tags:
-  - adr
+  - analysis
+  - kotlin
 title: "ADR 2: Pick Analysis Stack Language"
 ---
-
-# Status
-
-accepted
-
-## Context
 
 As noted in [ADR-1]({% post_url adr/2017-01-02-ADR_1_decide_tech_stack %}) CodeCharta will use the jvm for the analysis stack.
 We haven't decided which language to program in though. The language should be familiar to developers used to OO languages
 and allow them to quickly start developing. This is especially relevant if team members change frequently.
 
-## Decision
+# Status
+
+accepted
+
+# Decision
 
 We will use [Kotlin](https://kotlinlang.org/). It is more expressive than our other choice, Java, and the syntax feels familiar to developers familiar with the latter.
 Also it has great interop support with java, which is of great benefit since many metric parsing tools are also based on java.
 
-## Consequences
+# Consequences
 
 - While similar to Java, Kotlin is different enough to require some getting used to. The transition shouldn't take longer than a couple of weeks though.
 - Not every tool that is available for Java development, is also available in a Kotlin edition.

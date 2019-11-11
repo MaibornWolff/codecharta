@@ -1,8 +1,6 @@
 ---
 categories:
   - ADR
-tags:
-  - adr
 title: "ADR 0: We'll write architecture decision records"
 ---
 
@@ -20,13 +18,13 @@ An ADR is not a concept or an instruction. It simply remembers the why of our de
 
 # title: <short present tense imperative phrase, less than 50 characters, like a git commit message.>
 
+# Context (dont write the header so the excerpt looks good)
+
+<what is the issue that we're seeing that is motivating this decision or change.>
+
 # Status
 
 <proposed, accepted, rejected, deprecated, superseded, etc.>
-
-# Context
-
-<what is the issue that we're seeing that is motivating this decision or change.>
 
 # Decision
 

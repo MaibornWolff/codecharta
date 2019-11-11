@@ -2,15 +2,10 @@
 categories:
   - ADR
 tags:
-  - adr
+  - visualization
+  - typescript
 title: "ADR 7: Pick Visualization Language"
 ---
-
-# Status
-
-accepted
-
-## Context
 
 In [ADR-3]({% post_url adr/2017-01-02-ADR_3_pick_visualization_language %}) we picked our visualization language JavaScript.
 The missing static typing of that language has become a minor issue:
@@ -18,12 +13,16 @@ The missing static typing of that language has become a minor issue:
 - Some refactorings don't have IDE support.
 - It's sometimes tricky to discern what methods and fields the passed function parameters sport.
 
-## Decision
+# Status
+
+accepted
+
+# Decision
 
 CodeCharta will use [TypeScript](https://www.typescriptlang.org/). It's developed since 2012 by a well-known company, has static types, tool support is increasing every day and many frontend frameworks support it.
 Plus CodeCharta already requires a build pipeline so no change there.
 
-## Consequences
+# Consequences
 
 - Existing JavaScript code needs to be migrated.
 - Untyped libraries that don't have types need to be supplied with them, custom written if necessary.

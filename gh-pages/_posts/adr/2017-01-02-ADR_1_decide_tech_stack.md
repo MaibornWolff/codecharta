@@ -2,15 +2,11 @@
 categories:
   - ADR
 tags:
-  - adr
+  - analysis
+  - visualization
+  - cc.json
 title: "ADR 1: Decide Tech Stack"
 ---
-
-# Status
-
-accepted
-
-## Context
 
 CodeCharta needs to analyze and visualize code to facilitate code audits. Many great tools exist that do one of these or both.
 If we can, we want to incorporate the analysis tools, because finding new quality code metrics is not something we want to do in the beginning.
@@ -18,7 +14,11 @@ On the other hand visualizing code is something we feel very confident about and
 To keep CodeCharta from becoming tangled these two concerns, analysis and visualization, should be separated.
 After all, it would be rather embarrassing for a code quality tool to become tangled and then bug-ridden.
 
-## Decision
+# Status
+
+accepted
+
+# Decision
 
 CodeCharta will be divided into two tech stacks and also folders for `analysis/` and `visualization/` that only communicate via .json files.
 
@@ -29,7 +29,7 @@ CodeCharta will be divided into two tech stacks and also folders for `analysis/`
 - If we ship a desktop version we can do that as well.
 - The interchange file format is `json`, the file extension `.cc.json`. The browser supports it directly and many libraries exist for the jvm.
 
-## Consequences
+# Consequences
 
 Many benefits have already been listed. There are a couple of trade-offs though.
 
