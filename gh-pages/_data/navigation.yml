@@ -17,10 +17,10 @@ docs:
         url: /docs/step-by-step/
       - title: "Installation"
         url: /docs/installation/
-      - title: "Upgrading"
-        url: /docs/upgrading/
       - title: "Versioning"
         url: /docs/versioning/
+      - title: "Price"
+        url: /docs/price/
 
   - title: Tutorials
     children:
@@ -50,6 +50,11 @@ docs:
         url: /docs/user-controls/
       - title: "Timeline"
         url: /docs/timeline/
+
+  - title: Reference
+    children:
+      - title: "New to this Code?"
+        url: /docs/new-to-code/
 
   - title: Meta
     children:
