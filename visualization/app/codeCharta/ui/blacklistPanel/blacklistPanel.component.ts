@@ -8,11 +8,11 @@ import { BlacklistSubscriber } from "../../state/settingsService/settings.servic
 
 export class BlacklistPanelController implements BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
-		hide: Array<BlacklistItem>
+		flatten: Array<BlacklistItem>
 		exclude: Array<BlacklistItem>
 		searchPanelMode: SearchPanelMode
 	} = {
-		hide: null,
+		flatten: null,
 		exclude: null,
 		searchPanelMode: null
 	}
@@ -23,7 +23,7 @@ export class BlacklistPanelController implements BlacklistSubscriber, SearchPane
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this._viewModel.hide = blacklist.filter(x => x.type === BlacklistType.hide)
+		this._viewModel.flatten = blacklist.filter(x => x.type === BlacklistType.flatten)
 		this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
 	}
 

@@ -277,9 +277,9 @@ describe("SettingsMerger", () => {
 
 	describe("Blacklist merge", () => {
 		const blacklistItem1: BlacklistItem = { path: "/root/nodeA", type: BlacklistType.exclude }
-		const blacklistItem2: BlacklistItem = { path: "/another/nodeB", type: BlacklistType.hide }
+		const blacklistItem2: BlacklistItem = { path: "/another/nodeB", type: BlacklistType.flatten }
 		const blacklistItem3: BlacklistItem = { path: "/another/nodeC", type: BlacklistType.exclude }
-		const blacklistItem4: BlacklistItem = { path: "*prefix/nodeD", type: BlacklistType.hide }
+		const blacklistItem4: BlacklistItem = { path: "*prefix/nodeD", type: BlacklistType.flatten }
 		const blacklistItem1Duplicate: BlacklistItem = { path: "/root/nodeA", type: BlacklistType.exclude }
 
 		it("should merge blacklist for different paths", () => {
