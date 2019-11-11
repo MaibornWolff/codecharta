@@ -22,14 +22,10 @@ docs:
       - title: "Price"
         url: /docs/price/
 
-  - title: Tutorials
-    children:
-      - title: "Tutorials"
-        url: /docs/tutorials/
   - title: How-Tos
     children:
       - title: "How-Tos"
-        url: /docs/how-tos/
+        url: categories/#how-to
 
   - title: Analysis
     children:
