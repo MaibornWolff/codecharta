@@ -10,7 +10,7 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
 import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS, VALID_NODE_WITH_ROOT_RLOC } from "../../util/dataMocks"
 import _ from "lodash"
-import { CodeMapPreRenderService, RenderData } from "../codeMap/codeMap.preRender.service"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -24,6 +24,7 @@ describe("MapTreeViewLevelController", () => {
 		restartSystem()
 		rebuildController()
 		withMockedEventMethods()
+		withMockedCodeMapPreRenderService()
 	})
 
 	function restartSystem() {
@@ -52,6 +53,14 @@ describe("MapTreeViewLevelController", () => {
 		$rootScope.$broadcast = jest.fn()
 		$rootScope.$digest = jest.fn()
 		$rootScope.$on = jest.fn()
+	}
+
+	function withMockedCodeMapPreRenderService() {
+		codeMapPreRenderService = jest.fn<CodeMapPreRenderService>(() => {
+			return {
+				getRenderMap: jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_RLOC)
+			}
+		})()
 	}
 
 	describe("Listen to code map hovering", () => {
@@ -290,16 +299,6 @@ describe("MapTreeViewLevelController", () => {
 			const nodeRloc: number = mapTreeViewLevelController.getNodeRloc()
 
 			expect(nodeRloc).toBe(VALID_NODE_WITH_METRICS.attributes["rloc"])
-		})
-	})
-	describe("getRlocPercentage", () => {
-		it("should return the Node Rloc-Percentage relative to the total Root-Rlocs", () => {
-			codeMapPreRenderService["lastRender"]
-			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC.children[0]
-
-			const nodePercentage = mapTreeViewLevelController.getRlocPercentage() //leave for later
-
-			console.log(nodePercentage)
 		})
 	})
 	describe("isRoot", () => {
