@@ -21,6 +21,8 @@ docs:
         url: /docs/versioning/
       - title: "Price"
         url: /docs/price/
+      - title: "Feedback"
+        url: /docs/feedback/
 
   - title: How-Tos
     children:
