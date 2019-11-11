@@ -121,7 +121,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public getRlocPercentage() {
-		console.log(this.codeMapPreRenderService.getRenderMap())
 		const rootRlocs = this.codeMapPreRenderService.getRenderMap().attributes["rloc"]
 		const nodeRlocs = this.node.attributes["rloc"]
 		return ((100 * nodeRlocs) / rootRlocs).toFixed(1)

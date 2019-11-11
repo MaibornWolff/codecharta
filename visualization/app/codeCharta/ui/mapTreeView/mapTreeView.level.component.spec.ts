@@ -22,9 +22,9 @@ describe("MapTreeViewLevelController", () => {
 
 	beforeEach(() => {
 		restartSystem()
+		withMockedCodeMapPreRenderService()
 		rebuildController()
 		withMockedEventMethods()
-		withMockedCodeMapPreRenderService()
 	})
 
 	function restartSystem() {
@@ -299,6 +299,22 @@ describe("MapTreeViewLevelController", () => {
 			const nodeRloc: number = mapTreeViewLevelController.getNodeRloc()
 
 			expect(nodeRloc).toBe(VALID_NODE_WITH_METRICS.attributes["rloc"])
+		})
+	})
+	describe("getRlocPercentage", () => {
+		it("should return the Child Node Rloc-Percentage to 50,0%", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC.children[0]
+
+			const nodePercentage = mapTreeViewLevelController.getRlocPercentage() //leave for later
+
+			expect(nodePercentage).toBe("50.0")
+		})
+		it("should return the Root-Node Rloc-Precentage to 100,0%", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC
+
+			const nodePercentage = mapTreeViewLevelController.getRlocPercentage() //leave for later
+
+			expect(nodePercentage).toBe("100.0")
 		})
 	})
 	describe("isRoot", () => {
