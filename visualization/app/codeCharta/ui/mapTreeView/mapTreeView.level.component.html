@@ -40,8 +40,8 @@
 			}}"
 			ng-click="$ctrl.onLabelClick()"
 		>
-			{{::$ctrl.node.name}} ({{::$ctrl.getNodeUnary()}} Subfiles)
-			<span ng-if="!$ctrl.isRoot()">({{::$ctrl.getUnaryPercentage()}}%)</span>
+			{{::$ctrl.node.name}}
+			<span ng-if="!$ctrl.isLeaf()"> ({{::$ctrl.getNodeUnary()}} files)({{::$ctrl.getUnaryPercentage()}}%) </span>
 		</span>
 	</div>
 
