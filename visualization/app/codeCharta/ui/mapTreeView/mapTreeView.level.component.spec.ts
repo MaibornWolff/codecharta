@@ -8,7 +8,7 @@ import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
-import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS, VALID_NODE_WITH_ROOT_RLOC } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS, VALID_NODE_WITH_ROOT_UNARY } from "../../util/dataMocks"
 import _ from "lodash"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
@@ -58,7 +58,7 @@ describe("MapTreeViewLevelController", () => {
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService = jest.fn<CodeMapPreRenderService>(() => {
 			return {
-				getRenderMap: jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_RLOC)
+				getRenderMap: jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_UNARY)
 			}
 		})()
 	}
@@ -292,41 +292,41 @@ describe("MapTreeViewLevelController", () => {
 			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
 		})
 	})
-	describe("getNodeRloc", () => {
-		it("should return the rloc of the current node", () => {
+	describe("getNodeUnary", () => {
+		it("should return the unary of the current node", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_METRICS
 
-			const nodeRloc: number = mapTreeViewLevelController.getNodeRloc()
+			const nodeUnary: number = mapTreeViewLevelController.getNodeUnary()
 
-			expect(nodeRloc).toBe(VALID_NODE_WITH_METRICS.attributes["rloc"])
+			expect(nodeUnary).toBe(VALID_NODE_WITH_METRICS.attributes["unary"])
 		})
 	})
-	describe("getRlocPercentage", () => {
-		it("should return the Child Node Rloc-Percentage to 50,0%", () => {
-			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC.children[0]
+	describe("getUnaryPercentage", () => {
+		it("should return the Child Node Unary-Percentage to 50,0%", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
 
-			const nodePercentage = mapTreeViewLevelController.getRlocPercentage() //leave for later
+			const nodePercentage = mapTreeViewLevelController.getUnaryPercentage() //leave for later
 
 			expect(nodePercentage).toBe("50.0")
 		})
-		it("should return the Root-Node Rloc-Precentage to 100,0%", () => {
-			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC
+		it("should return the Root-Node Unary-Precentage to 100,0%", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
 
-			const nodePercentage = mapTreeViewLevelController.getRlocPercentage() //leave for later
+			const nodePercentage = mapTreeViewLevelController.getUnaryPercentage() //leave for later
 
 			expect(nodePercentage).toBe("100.0")
 		})
 	})
 	describe("isRoot", () => {
 		it("should return that the current Node is a Root", () => {
-			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
 
 			const nodeIsRoot: boolean = mapTreeViewLevelController.isRoot()
 
 			expect(nodeIsRoot).toBeTruthy()
 		})
 		it("should return that the current Node is not Root", () => {
-			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC.children[0]
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
 
 			const nodeIsRoot: boolean = mapTreeViewLevelController.isRoot()
 

@@ -36,12 +36,12 @@
 
 		<span
 			class="cursor-pointer no-outline {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }} {{
-				$ctrl.isRlocNotZero($ctrl.node) ? 'fontBold' : 'fontGray'
+				$ctrl.isUnaryNotZero($ctrl.node) ? 'fontBold' : 'fontGray'
 			}}"
 			ng-click="$ctrl.onLabelClick()"
 		>
-			{{::$ctrl.node.name}} ({{::$ctrl.getNodeRloc()}} rloc)
-			<span ng-if="!$ctrl.isRoot()">({{::$ctrl.getRlocPercentage()}}%)</span>
+			{{::$ctrl.node.name}} ({{::$ctrl.getNodeUnary()}} Subfiles)
+			<span ng-if="!$ctrl.isRoot()">({{::$ctrl.getUnaryPercentage()}}%)</span>
 		</span>
 	</div>
 

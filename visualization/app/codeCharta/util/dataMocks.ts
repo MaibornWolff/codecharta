@@ -89,9 +89,9 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_WITH_ROOT_RLOC: CodeMapNode = {
+export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
-	attributes: { rloc: 200 },
+	attributes: { unary: 200 },
 	type: "Folder",
 	path: "/root",
 	children: [
@@ -99,13 +99,13 @@ export const VALID_NODE_WITH_ROOT_RLOC: CodeMapNode = {
 			name: "first leaf",
 			type: "File",
 			path: "/root/first leaf",
-			attributes: { rloc: 100, Functions: 10, MCC: 1 }
+			attributes: { unary: 100, Functions: 10, MCC: 1 }
 		},
 		{
 			name: "second leaf",
 			type: "File",
 			path: "/root/second leaf",
-			attributes: { rloc: 100, Functions: 5, MCC: 1 }
+			attributes: { unary: 100, Functions: 5, MCC: 1 }
 		}
 	]
 }

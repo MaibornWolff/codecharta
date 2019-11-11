@@ -112,18 +112,18 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return node && node.children && node.children.length > 0 ? 1 : 0
 	}
 
-	public getNodeRloc() {
-		return this.node.attributes["rloc"]
+	public getNodeUnary() {
+		return this.node.attributes["unary"]
 	}
 
-	public isRlocNotZero() {
-		return this.getNodeRloc() > 0
+	public isUnaryNotZero() {
+		return this.getNodeUnary() > 0
 	}
 
-	public getRlocPercentage() {
-		const rootRlocs = this.codeMapPreRenderService.getRenderMap().attributes["rloc"]
-		const nodeRlocs = this.node.attributes["rloc"]
-		return ((100 * nodeRlocs) / rootRlocs).toFixed(1)
+	public getUnaryPercentage() {
+		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes["unary"]
+		const nodeUnary = this.node.attributes["unary"]
+		return ((100 * nodeUnary) / rootUnary).toFixed(1)
 	}
 
 	public isRoot() {
