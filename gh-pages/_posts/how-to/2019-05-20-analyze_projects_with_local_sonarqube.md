@@ -2,7 +2,7 @@
 categories:
   - How-to
 tags:
-  - how-to
+  - sonarimport
 title: Analyze Projects with a local SonarQube Instance for CodeCharta
 ---
 
