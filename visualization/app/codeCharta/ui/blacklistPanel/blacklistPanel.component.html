@@ -1,6 +1,13 @@
 <md-list>
-	<span class="small-info">Add with search or node context-menu</span>
-	<md-divider></md-divider>
+	<span class="small-info" ng-show="$ctrl._viewModel.searchPanelMode == 'hide' && $ctrl._viewModel.hide.length == 0">
+		Hidden buildings are flattened and are included in folder metrics.<br />
+		Add items via the search or node context-menu
+	</span>
+	<span class="small-info" ng-show="$ctrl._viewModel.searchPanelMode == 'exclude' && $ctrl._viewModel.exclude.length == 0">
+		Excluded buildings are not shown in the map<br />
+		and neither are they not included in folder metrics.<br />
+		Add items via the search or node context-menu
+	</span>
 
 	<div class="sub-list">
 		<md-list-item
@@ -8,15 +15,12 @@
 			ng-repeat="item in $ctrl._viewModel.hide | orderBy: ['path']"
 			title="{{::item.path}}"
 		>
-			<div class="md-icon item-type" layout="column">
-				<i class="fa fa-eye-slash" title="Hide"></i>
-			</div>
+			<md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
+				<i class="fa fa-minus-square" title="Remove list item"></i>
+			</md-button>
 			<div class="md-list-item-text" layout="column">
 				<p>{{::item.path}}</p>
 			</div>
-			<md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
-				<i class="fa fa-trash" title="Remove list item"></i>
-			</md-button>
 			<md-divider></md-divider>
 		</md-list-item>
 
@@ -25,15 +29,12 @@
 			ng-repeat="item in $ctrl._viewModel.exclude | orderBy: ['path']"
 			title="{{::item.path}}"
 		>
-			<div class="md-icon item-type" layout="column">
-				<i class="fa fa-ban" title="Exclude"></i>
-			</div>
+			<md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
+				<i class="fa fa-minus-square" title="Remove list item"></i>
+			</md-button>
 			<div class="md-list-item-text" layout="column">
 				<p>{{::item.path}}</p>
 			</div>
-			<md-button class="md-secondary round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
-				<i class="fa fa-trash" title="Remove list item"></i>
-			</md-button>
 			<md-divider></md-divider>
 		</md-list-item>
 	</div>
