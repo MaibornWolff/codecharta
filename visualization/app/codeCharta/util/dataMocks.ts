@@ -89,14 +89,32 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_WITH_ROOT_RLOC: CodeMapNode = {
+	name: "root",
+	attributes: { rloc: 200 },
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "first leaf",
+			type: "File",
+			path: "/root/first leaf",
+			attributes: { rloc: 100, Functions: 10, MCC: 1 }
+		},
+		{
+			name: "second leaf",
+			type: "File",
+			path: "/root/second leaf",
+			attributes: { rloc: 100, Functions: 5, MCC: 1 }
+		}
+	]
+}
 
 export const VALID_NODE_WITH_METRICS: CodeMapNode = {
 	name: "root",
 	type: "Folder",
-	attributes: { rloc: 100, Functions: 10, MCC: 1 },
-
+	attributes: { rloc: 100, Functions: 10, MCC: 1 }
 }
-
 
 export const VALID_EDGES: Edge[] = [
 	{

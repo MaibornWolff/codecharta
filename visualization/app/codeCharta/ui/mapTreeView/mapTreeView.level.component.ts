@@ -6,6 +6,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -31,7 +32,8 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	constructor(
 		private $rootScope: IRootScopeService,
 		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService
+		private settingsService: SettingsService,
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
@@ -117,6 +119,17 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	public isRlocNotZero() {
 		return this.getNodeRloc() > 0
 	}
+
+	public getRlocPercentage() {
+		const rootRlocs = this.codeMapPreRenderService.getRenderMap().attributes["rloc"]
+		const nodeRlocs = this.node.attributes["rloc"]
+		return ((100 * nodeRlocs) / rootRlocs).toFixed(1)
+	}
+
+	public isRoot() {
+		return this.node.path.split("/").length === 2
+	}
+
 	public static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
 		$rootScope.$on("should-hover-node", (event, args) => subscriber.onShouldHoverNode(args))
 		$rootScope.$on("should-unhover-node", (event, args) => subscriber.onShouldUnhoverNode(args))

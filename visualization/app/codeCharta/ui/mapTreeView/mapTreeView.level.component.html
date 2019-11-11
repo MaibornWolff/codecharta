@@ -41,6 +41,7 @@
 			ng-click="$ctrl.onLabelClick()"
 		>
 			{{::$ctrl.node.name}} ({{::$ctrl.getNodeRloc()}} rloc)
+			<span ng-if="!$ctrl.isRoot()">({{::$ctrl.getRlocPercentage()}}%)</span>
 		</span>
 	</div>
 

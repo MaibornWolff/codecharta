@@ -8,14 +8,16 @@ import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
-import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS, VALID_NODE_WITH_ROOT_RLOC } from "../../util/dataMocks"
 import _ from "lodash"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
 	let $rootScope: IRootScopeService
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
+	let codeMapPreRenderService: CodeMapPreRenderService
 	let $event
 
 	beforeEach(() => {
@@ -30,7 +32,7 @@ describe("MapTreeViewLevelController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		settingsService = getService<SettingsService>("settingsService")
-
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		$event = {
 			clientX: jest.fn(),
 			clientY: jest.fn()
@@ -38,7 +40,12 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	function rebuildController() {
-		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapActionsService, settingsService)
+		mapTreeViewLevelController = new MapTreeViewLevelController(
+			$rootScope,
+			codeMapActionsService,
+			settingsService,
+			codeMapPreRenderService
+		)
 	}
 
 	function withMockedEventMethods() {
@@ -283,6 +290,31 @@ describe("MapTreeViewLevelController", () => {
 			const nodeRloc: number = mapTreeViewLevelController.getNodeRloc()
 
 			expect(nodeRloc).toBe(VALID_NODE_WITH_METRICS.attributes["rloc"])
+		})
+	})
+	describe("getRlocPercentage", () => {
+		it("should return the Node Rloc-Percentage relative to the total Root-Rlocs", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC.children[0]
+
+			const nodePercentage = mapTreeViewLevelController.getRlocPercentage() //leave for later
+
+			console.log(nodePercentage)
+		})
+	})
+	describe("isRoot", () => {
+		it("should return that the current Node is a Root", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC
+
+			const nodeIsRoot: boolean = mapTreeViewLevelController.isRoot()
+
+			expect(nodeIsRoot).toBeTruthy()
+		})
+		it("should return that the current Node is not Root", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC.children[0]
+
+			const nodeIsRoot: boolean = mapTreeViewLevelController.isRoot()
+
+			expect(nodeIsRoot).toBeFalsy()
 		})
 	})
 })
