@@ -10,7 +10,7 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
 import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS, VALID_NODE_WITH_ROOT_RLOC } from "../../util/dataMocks"
 import _ from "lodash"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { CodeMapPreRenderService, RenderData } from "../codeMap/codeMap.preRender.service"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -294,6 +294,7 @@ describe("MapTreeViewLevelController", () => {
 	})
 	describe("getRlocPercentage", () => {
 		it("should return the Node Rloc-Percentage relative to the total Root-Rlocs", () => {
+			codeMapPreRenderService["lastRender"]
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_RLOC.children[0]
 
 			const nodePercentage = mapTreeViewLevelController.getRlocPercentage() //leave for later
