@@ -61,6 +61,10 @@ export class CodeMapMesh {
 		return this.mapGeomDesc
 	}
 
+	public getBuildingByPath(path: string): CodeMapBuilding {
+		return this.mapGeomDesc.getBuildingByPath(path)
+	}
+
 	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera): IntersectionResult {
 		const ray: Ray = this.calculatePickingRay(mouse, camera)
 		return this.getMeshDescription().intersect(ray)

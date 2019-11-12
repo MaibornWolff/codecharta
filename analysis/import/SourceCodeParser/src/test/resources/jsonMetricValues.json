@@ -3,40 +3,24 @@
     {
       "children": [
         {
-          "children": [
-            {
-              "children": [],
-              "name": "foo.java",
-              "link": "",
-              "attributes": {
-                "rloc": 3,
-                "mcc": 2
-              },
-              "type": "File"
-            }
-          ],
+          "children": [],
           "name": "foo.java",
           "link": "",
-          "attributes": {},
-          "type": "Folder"
+          "attributes": {
+            "rloc": 3,
+            "mcc": 2
+          },
+          "type": "File"
         },
         {
-          "children": [
-            {
-              "children": [],
-              "name": "bar.kt",
-              "link": "",
-              "attributes": {
-                "rloc": 4,
-                "mcc": 1
-              },
-              "type": "File"
-            }
-          ],
+          "children": [],
           "name": "bar.kt",
           "link": "",
-          "attributes": {},
-          "type": "Folder"
+          "attributes": {
+            "rloc": 4,
+            "mcc": 1
+          },
+          "type": "File"
         }
       ],
       "name": "root",

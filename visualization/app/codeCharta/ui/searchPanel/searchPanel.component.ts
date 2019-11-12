@@ -21,7 +21,7 @@ export class SearchPanelController implements SearchPanelServiceSubscriber {
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
 		this._viewModel.searchPanelMode = searchPanelMode
 		this.collapsingElements.attr("id", "")
-		this.$timeout(() => this.collapsingElements.attr("id", "search-panel"), 500)
+		this.$timeout(() => this.collapsingElements.attr("id", "search-panel"), 300)
 	}
 
 	public toggle() {

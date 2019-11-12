@@ -18,4 +18,8 @@ export class HSL {
 	public setLightness(value: number) {
 		this.l = value
 	}
+
+	public toString(): string {
+		return `hsl(${this.h}, ${this.s}%, ${this.l}%)`
+	}
 }

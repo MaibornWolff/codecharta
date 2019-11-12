@@ -3,11 +3,12 @@ import { MetricService } from "../../state/metric.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { AreaMetricSubscriber, ColorMetricSubscriber, HeightMetricSubscriber } from "../../state/settingsService/settings.service.events"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class MetricTypeController
-	implements AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, BuildingHoveredEventSubscriber {
+	implements AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
@@ -25,7 +26,8 @@ export class MetricTypeController
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
@@ -40,13 +42,12 @@ export class MetricTypeController
 		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric, this.settingsService.getSettings())
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data.from) {
-			this._viewModel.isBuildingHovered = false
-		}
-		if (data.to && data.to.node && !data.to.node.isLeaf) {
-			this._viewModel.isBuildingHovered = true
-		}
+	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		this._viewModel.isBuildingHovered = hoveredBuilding.node && !hoveredBuilding.node.isLeaf
+	}
+
+	public onBuildingUnhovered() {
+		this._viewModel.isBuildingHovered = false
 	}
 
 	public isAreaMetricAbsolute(): boolean {

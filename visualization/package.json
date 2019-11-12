@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.35.0",
+	"version": "1.38.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -149,7 +149,6 @@
 		"@types/puppeteer": "^1.12.4",
 		"@types/sinon": "^2.3.5",
 		"@types/three": "^0.89.12",
-		"@uirouter/angularjs": "^1.0.16",
 		"ajv": "^6.10.0",
 		"angular": "^1.6.9",
 		"angular-animate": "^1.6.9",
@@ -166,7 +165,7 @@
 		"babel-preset-es2015": "^6.18.0",
 		"babel-register": "^6.18.0",
 		"bestzip": "^2.1.2",
-		"browser-sync": "^2.26.3",
+		"browser-sync": "^2.26.7",
 		"browser-sync-webpack-plugin": "^2.2.2",
 		"clean-webpack-plugin": "^0.1.19",
 		"color-convert": "^2.0.0",
@@ -182,7 +181,7 @@
 		"html-webpack-plugin": "^3.2.0",
 		"husky": "^2.2.0",
 		"ignore": "^5.0.2",
-		"inquirer-directory": "^2.1.0",
+		"inquirer-directory": "^2.2.0",
 		"inquirer-file": "^1.0.1",
 		"jest": "^22.4.3",
 		"jest-serializer-html": "^6.0.0",
@@ -213,7 +212,7 @@
 		"ts-jest": "^21.1.3",
 		"ts-loader": "^2.3.6",
 		"tslint": "^5.12.1",
-		"typedoc": "^0.14.2",
+		"typedoc": "^0.15.0",
 		"typescript": "^3.3.3333",
 		"webpack": "^3.11.0",
 		"webpack-glsl-loader": "^1.0.1"
