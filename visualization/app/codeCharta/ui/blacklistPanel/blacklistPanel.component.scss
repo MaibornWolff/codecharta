@@ -4,8 +4,15 @@ blacklist-panel-component {
 		font-size: 9pt;
 	}
 
+	.md-list-item-text {
+		direction: rtl;
+		overflow: hidden;
+		width: 100%;
+	}
+
 	md-list-item.md-no-proxy,
 	md-list-item .md-no-style {
 		padding: 0;
+		margin-left: -15px;
 	}
 }
