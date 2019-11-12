@@ -9,21 +9,19 @@ The generated docs can be viewed locally before being pushed to Github (see belo
 ### Local
 
 1. [Install Ruby](https://www.ruby-lang.org/en/documentation/installation/) version 2.4.0 or above (check with `ruby -v`). I had a lot of fun with this one because macOS comes with an old Ruby version. [Rubyenv](https://github.com/rbenv/rbenv#installation) did wonders for me (you can skip these steps if you use rbenv already or have some other way to aquire ruby):
-   _ `brew install rbenv`  
-    _ `rbenv init`  
-    _ Close terminal  
-    _ `which ruby` should now point to _~/.rbenv/shims/ruby_  
-    _ `rbenv install -v 2.6.3`
-   _ OPTIONAL to create a `.ruby-version` in `gh-pages`
-   _ `cd gh-pages`
-   _ `rbenv local 2.6.3` \* `ruby -v` should now be 2.6.3 for this directory  
-   . Go into the docs directory
-   `cd gh-pages`
-   . Install all gems:
-   `bundle`
-   . Build the site and make it available on a local server:
-   `bundle exec jekyll serve`
-   . Now browse to http://localhost:4000
+   - `brew install rbenv`
+   - Add `eval "$(rbenv init -)"` to the `~/.bash_profile`
+   - Close terminal
+   - `which ruby` should now point to _~/.rbenv/shims/ruby_
+   - `rbenv install -v 2.6.3`
+   - OPTIONAL to create a `.ruby-version` in `gh-pages`
+   - `cd gh-pages` to go into the docs directory
+   - `rbenv local 2.6.3`
+   - `ruby -v` should now be 2.6.3 for this directory
+   - `bundle` to install all gems
+     - `gem install bundler:2.0.2` and `bundle update --bundler` in case the bundler needs to be updated first
+   - `bundle exec jekyll serve` to build the site and make it available on a local server
+   - Now browse to http://localhost:4000
 
 ### Github
 
