@@ -12,7 +12,7 @@ Object {
     },
     "dynamicMargin": true,
     "edgeHeight": 4,
-    "hideFlatBuildings": true,
+    "hideFlatBuildings": false,
     "invertColorRange": false,
     "invertDeltaColors": false,
     "invertHeight": false,

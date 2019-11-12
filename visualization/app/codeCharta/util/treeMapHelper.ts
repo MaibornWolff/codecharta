@@ -128,7 +128,7 @@ export class TreeMapHelper {
 	}
 
 	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedValuedCodeMapNode, blacklist: BlacklistItem[]): boolean {
-		return !!blacklist.filter(x => x.type === BlacklistType.flatten).find(x => squaredNode.data.path.startsWith(x.path))
+		return CodeMapHelper.isBlacklisted(squaredNode.data, blacklist, BlacklistType.flatten)
 	}
 
 	private static getBuildingColor(node: CodeMapNode, s: Settings, isDeltaState: boolean, flattened: boolean): string {
