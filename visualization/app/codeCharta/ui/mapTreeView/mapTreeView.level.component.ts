@@ -116,10 +116,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return this.node.attributes["unary"]
 	}
 
-	public isUnaryNotZero() {
-		return this.getNodeUnary() > 0
-	}
-
 	public getUnaryPercentage() {
 		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes["unary"]
 		const nodeUnary = this.node.attributes["unary"]
