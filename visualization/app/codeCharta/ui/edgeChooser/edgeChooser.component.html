@@ -31,11 +31,11 @@
 		</md-content>
 	</md-select>
 
-	<div>
-		<edge-metric-type-component></edge-metric-type-component>
-		<span class="metric-value"
-			>{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
+	<div class="metric-value" ng-show="$ctrl._viewModel.hoveredEdgeValue">
+		<div class="rounded-box">
+			<edge-metric-type-component></edge-metric-type-component>
+			{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
 			{{ ($ctrl._viewModel.hoveredEdgeValue.outgoing | number) || "-" }}
-		</span>
+		</div>
 	</div>
 </md-input-container>
