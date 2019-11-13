@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Progress indicator for SonarImporter #544
+
+### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.38.1] - 2019-11-13
+
+### Added
+
 ### Changed
 
 - New style for hovered metric values #696
