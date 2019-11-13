@@ -75,7 +75,7 @@ Object {
     "markedPackages": Array [],
   },
   "treeMapSettings": Object {
-    "mapSize": 500,
+    "mapSize": 250,
   },
 }
 `;
