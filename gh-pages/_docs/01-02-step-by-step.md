@@ -63,4 +63,4 @@ Change the visualized content:
 
 - click on the right button to open the settings-sidebar
 
-![Image](../images/screenshot_visualization.png)
+![Image](/images/screenshot_visualization.png)
