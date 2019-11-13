@@ -17,6 +17,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
+### Chore
+
+## [1.38.1] - 2019-11-13
+
+### Added
+
+### Changed
+
+### Removed
+
+### Fixed
+
 - Sum symbol for hovered metric values only shows for folders #775
 
 ### Chore
