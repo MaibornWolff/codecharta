@@ -34,9 +34,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	public addLabel(node: Node, settings: Settings): void {
 		if (node.attributes && node.attributes[settings.dynamicSettings.heightMetric]) {
-			const x: number = node.x0 - settings.treeMapSettings.mapSize * 0.5
+			const x: number = node.x0 - settings.treeMapSettings.mapSize
 			const y: number = node.z0
-			const z: number = node.y0 - settings.treeMapSettings.mapSize * 0.5
+			const z: number = node.y0 - settings.treeMapSettings.mapSize
 
 			const labelX: number = x + node.width / 2
 			const labelY: number = y + node.height
