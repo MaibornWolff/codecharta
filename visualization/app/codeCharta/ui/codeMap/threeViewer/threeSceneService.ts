@@ -123,9 +123,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.mapGeometry.remove(this.mapGeometry.children[0])
 		}
 
-		this.mapGeometry.position.x = -mapSize / 2.0
+		this.mapGeometry.position.x = -mapSize
 		this.mapGeometry.position.y = 0.0
-		this.mapGeometry.position.z = -mapSize / 2.0
+		this.mapGeometry.position.z = -mapSize
 
 		this.mapGeometry.add(this.mapMesh.getThreeMesh())
 	}
@@ -136,7 +136,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	public scale(scale: Vector3, mapSize: number) {
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
-		this.mapGeometry.position.set((-mapSize / 2.0) * scale.x, 0.0, (-mapSize / 2.0) * scale.z)
+		this.mapGeometry.position.set(-mapSize * scale.x, 0.0, -mapSize * scale.z)
 		this.mapMesh.setScale(scale)
 	}
 
