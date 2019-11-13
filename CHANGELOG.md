@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Progress indicator for SonarImporter #544
+
 ### Changed
 
 ### Removed
