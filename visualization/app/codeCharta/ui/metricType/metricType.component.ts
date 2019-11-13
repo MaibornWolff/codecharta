@@ -43,9 +43,7 @@ export class MetricTypeController
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		if (hoveredBuilding.node && !hoveredBuilding.node.isLeaf) {
-			this._viewModel.isBuildingHovered = true
-		}
+		this._viewModel.isBuildingHovered = hoveredBuilding.node && !hoveredBuilding.node.isLeaf
 	}
 
 	public onBuildingUnhovered() {

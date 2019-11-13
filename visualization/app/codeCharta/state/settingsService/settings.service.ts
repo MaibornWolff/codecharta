@@ -183,7 +183,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				resetCameraIfNewFileIsLoaded: true
 			},
 			treeMapSettings: {
-				mapSize: 500
+				mapSize: 250
 			}
 		}
 

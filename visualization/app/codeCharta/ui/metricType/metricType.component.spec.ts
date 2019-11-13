@@ -191,6 +191,18 @@ describe("MetricTypeController", () => {
 
 			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeTruthy()
 		})
+
+		it("should set isBuildingHovered to false when going from a folder to leaf", () => {
+			metricTypeController.onBuildingHovered({
+				node: { isLeaf: false }
+			} as CodeMapBuilding)
+
+			metricTypeController.onBuildingHovered({
+				node: { isLeaf: true }
+			} as CodeMapBuilding)
+
+			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
+		})
 	})
 
 	describe("onBuildingUnhovered", () => {

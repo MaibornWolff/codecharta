@@ -9,13 +9,33 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- Progress indicator for SonarImporter #544
+
 ### Changed
+
+### Removed
+
+### Fixed
+
+### Chore
+
+## [1.38.1] - 2019-11-13
+
+### Added
+
+### Changed
+
+- New style for hovered metric values #696
+- Redesigned slider labels in ribbonBar sections #696
+- Shortened ribbonBar sections #696
 
 ### Removed
 
 ### Fixed
 - SCMLogParser is now more resilient to unusual SVN commit messages #763
 
+
+- Sum symbol for hovered metric values only shows for folders #775
 
 ### Chore
 

@@ -106,7 +106,7 @@ describe("codeMapRenderService", () => {
 
 		beforeEach(() => {
 			scale = new Vector3(1, 2, 3)
-			mapSize = 500
+			mapSize = 250
 		})
 
 		it("should call threeSceneService.scale", () => {

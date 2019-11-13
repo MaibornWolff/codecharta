@@ -31,19 +31,16 @@ ribbon-bar-component {
 			width: 380px;
 		}
 
+		&:not(#scenario-card) {
+			min-width: 240px;
+		}
+
 		.section {
 			display: inline-block;
 			height: 100%;
-			width: auto;
 			border-right: $border;
 			vertical-align: top;
 			flex-grow: 100;
-
-			md-input-container,
-			md-button {
-				margin: 0;
-				padding: 0;
-			}
 
 			.section-header {
 				padding: 0;
@@ -86,11 +83,34 @@ ribbon-bar-component {
 			}
 
 			.section-body {
-				margin: 5px 5px 5px 10px;
-				overflow: hidden;
+				margin: 5px 5px 5px 5px;
+				overflow: visible;
 				font-size: 0.9em;
 				text-align: left;
 				vertical-align: top;
+
+				md-slider-container {
+					position: relative;
+					padding-left: 2px;
+
+					span {
+						position: absolute;
+						top: 0;
+						font-size: 10pt;
+						color: grey;
+						left: 5px;
+					}
+				}
+
+				md-input-container:not(#colorSliderContainer) > input {
+					height: 30px;
+					margin-top: -17px;
+				}
+
+				md-checkbox {
+					font-size: 10pt;
+					margin-left: 5px;
+				}
 
 				reset-settings-button-component .md-button {
 					top: 0;
