@@ -1,5 +1,5 @@
 import { FileValidator } from "./util/fileValidator"
-import { AttributeTypes, CCFile, NameDataPair } from "./codeCharta.model"
+import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
 
@@ -38,7 +38,7 @@ export class CodeChartaService {
 				fileSettings: {
 					edges: fileContent.edges || [],
 					attributeTypes: this.getAttributeTypes(fileContent.attributeTypes),
-					blacklist: fileContent.blacklist || [],
+					blacklist: this.potentiallyUpdateBlacklistTypes(fileContent.blacklist || []),
 					markedPackages: []
 				}
 			},
@@ -68,5 +68,14 @@ export class CodeChartaService {
 			}
 		}
 		return newAttributeTypes
+	}
+
+	private potentiallyUpdateBlacklistTypes(blacklist: BlacklistItem[]): BlacklistItem[] {
+		blacklist.forEach(x => {
+			if (x.type === "hide") {
+				x.type = BlacklistType.flatten
+			}
+		})
+		return blacklist
 	}
 }
