@@ -43,7 +43,7 @@ npm i -g codecharta-visualization
 
 - If you want to analyze a different language or combine java metrics with git metrics, you should take a look at our [Quick-Start Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/).
 - If you want to go further we have multiple [how-tos](https://maibornwolff.github.io/codecharta/categories/#how-to). For example they'll explain how to integrate CodeCharta into your delivery pipeline.
-- If you want to know more about the ccsh api, please check [their docs](https://maibornwolff.github.io/codecharta/docs/importers/).
+- If you want to know more about the ccsh api, please check [the ccsh docs](https://maibornwolff.github.io/codecharta/docs/ccsh/).
 
 ## Feature request / Bug / Feedback
 

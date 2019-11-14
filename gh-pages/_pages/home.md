@@ -29,7 +29,7 @@ feature_row:
     btn_label: "Learn more"
 ---
 
-**How do you communicate software quality?** CodeCharta is a tool collection that allows you to import and **combine** metrics from various sources like SonarQube, Svn, Git or directly from your source code. It's not tied to a specific programming language and there are several [importers]({{site.baseurl}}{% link _docs/05-03-importers.md %}) already provided that you can use to gain metrics. CodeCharta also provides a tool to [visualize]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) these metrics and make the quality of your code base **tangible**, which you in turn can use to gain insights and **communicate with your stakeholders**.
+**How do you communicate software quality?** CodeCharta is a tool collection that allows you to import and **combine** metrics from various sources like SonarQube, Svn, Git or directly from your source code. It's not tied to a specific programming language and there are several [importers]({{site.baseurl}}{% link _docs/05-03-ccsh.md %}) already provided that you can use to gain metrics. CodeCharta also provides a tool to [visualize]({{site.baseurl}}{% link _docs/06-01-visualization.md %}) these metrics and make the quality of your code base **tangible**, which you in turn can use to gain insights and **communicate with your stakeholders**.
 
 ## CodeCharta Design Goals
 

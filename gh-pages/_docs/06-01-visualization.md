@@ -22,7 +22,7 @@ In the center is the map. Each building in it has the attributes **size**, **hei
 
 > If you want more information what these names mean you can look at the [metrics section]({{site.baseurl}}{% link _docs/05-02-metrics.md %}).
 >
-> Please also be aware that the metrics in the dropdown are tied to the metric sources and the [importers]({{site.baseurl}}{% link _docs/05-03-importers.md %}) you used to generate said map.
+> Please also be aware that the metrics in the dropdown are tied to the metric sources and the [ccsh tool]({{site.baseurl}}{% link _docs/05-03-ccsh.md %}) you used to generate said map.
 
 You can change the representation in the _metrics bar_ and explore your code from different perspectives. For example, try setting the metrics mentioned above and then hovering your mouse over the most complex file in the code: the biggest, tallest, reddest building. You can see its file path and metrics in the top of the screen. This building might need improving.
 

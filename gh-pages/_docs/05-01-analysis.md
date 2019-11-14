@@ -9,4 +9,4 @@ There are many tools already available that generate metrics and we wanted to in
 
 All of these tools have in common that their input and/or output is a `.cc.json` which they usually enrich with quantitative measurements called metrics. We think these metrics are i some ways flawed but still very useful as a conversation starter. They should never finish a conversation ("You have to increase line_coverage!").
 
-If you want to learn more, you can read about good and bad [metrics]({{site.baseurl}}{% link _docs/05-02-metrics.md %}), how the [importers]({{site.baseurl}}{% link _docs/05-03-importers.md %}) plus the `.cc.json` work or how to create [custom metrics or importers]({{site.baseurl}}{% link _docs/05-04-custom-metrics.md %}).
+If you want to learn more, you can read about good and bad [metrics]({{site.baseurl}}{% link _docs/05-02-metrics.md %}), how the [ccsh]({{site.baseurl}}{% link _docs/05-03-ccsh.md %}) works or how to create [custom metrics or importers]({{site.baseurl}}{% link _docs/05-04-custom-metrics.md %}).

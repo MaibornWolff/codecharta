@@ -107,7 +107,7 @@ ccsh modify junit4.git.cc.json -p 1
 
 # CodeCharta in a Tweet Quickstart
 
-`ccsh merge` is a powerful tool to merge multiple `.cc.json` files. Sometimes though you do not need the intermediate `.cc.json` files though and just want a combined file as fast as possible. For this purpose the most popular `ccsh` importers allow piping the `.cc.json` contents (see [importers documentation]({{site.baseurl}}{% link _docs/05-03-importers.md %})). This allows us to generate a combine `.cc.json` in less than 280 characters :)
+`ccsh merge` is a powerful tool to merge multiple `.cc.json` files. Sometimes though you do not need the intermediate `.cc.json` files though and just want a combined file as fast as possible. For this purpose the most popular `ccsh` importers allow piping the `.cc.json` contents (see [ccsh docs]({{site.baseurl}}{% link _docs/05-03-ccsh.md %})). This allows us to generate a combine `.cc.json` in less than 280 characters :)
 
 ```bash
 npm i -g codecharta-analysis
