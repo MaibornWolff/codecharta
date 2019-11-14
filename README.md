@@ -10,20 +10,22 @@
 
 CodeCharta is a beautiful tool to help you visualize and understand code. It can combine code metrics from multiple sources and visualize them using 3D tree maps. CodeCharta's two major parts are:
 
-- [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/): Command-Line-Tool for generating visualization data. It includes some pre-defined importers for e.g. SonarQube, SourceMonitor, SCM log information, generic csv data, as well as a command to validate and merge multiple data files.
-- [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/): GUI for visualizing code metrics given in json files, specified by [cc.json](/visualization/app/codeCharta/util/schema.json) using [json-schema v4](https://tools.ietf.org/html/draft-zyp-json-schema-04).
+- [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/): Command-Line-Tool for generating visualization data in the form of `.cc.json` files. It includes some pre-defined importers for e.g. SonarQube, SourceMonitor, SCM log information, generic csv data, as well as a command to validate and merge multiple data files.
+- [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/): GUI for visualizing the code metrics inside the `.cc.json` files. The file schema is located [here](/visualization/app/codeCharta/util/schema.json) and we are using the [json-schema v4](https://tools.ietf.org/html/draft-zyp-json-schema-04) format.
 
 ![Screenshot of visualization](screenshot.png)
 
 ## Usage
 
-You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json) without any installation and explore the CodeCharta code which is shown by default.
+You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json) without any installation and explore the CodeCharta code (shown by default).
 
-The visualization takes a `.json` file and to generate a new one you need to install the CodeCharta shell (ccsh). The are [multiple ways](https://maibornwolff.github.io/codecharta/docs/installation/) to do so, we'll assume you picked npm here:
+The visualization takes a `.json` file and to generate a new one you need to install the CodeCharta shell (ccsh). The are [multiple ways](https://maibornwolff.github.io/codecharta/docs/installation/) to do so including non-global install. We'll use npm here because it is the most convenient:
 
-`npm i -g codecharta-analysis`
+```
+npm i -g codecharta-analysis
+```
 
-We'll also assume you want to analyze Junit4 for this example:
+For this example we'll also assume you want to analyze Junit4. CodeCharta is not limited to java code though.
 
 ```bash
 # Download code base of your choice
@@ -35,11 +37,13 @@ ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
 
 You can now open this file in the web visualization (top left corner) or install it locally via npm:
 
-`npm i -g codecharta-visualization`
+```
+npm i -g codecharta-visualization
+```
 
-If you want to analyze a different language, you should take a look at our [Quick-Start Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/).
-If you want to go further we have multiple [How-Tos](https://maibornwolff.github.io/codecharta/categories/#how-to) that for example explain how to integrate CodeCharta into your delivery pipeline.
-If you want to know more about the ccsh api, please check [their docs](https://maibornwolff.github.io/codecharta/docs/importers/).
+- If you want to analyze a different language or combine java metrics with git metrics, you should take a look at our [Quick-Start Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/).
+- If you want to go further we have multiple [how-tos](https://maibornwolff.github.io/codecharta/categories/#how-to). For example they'll explain how to integrate CodeCharta into your delivery pipeline.
+- If you want to know more about the ccsh api, please check [their docs](https://maibornwolff.github.io/codecharta/docs/importers/).
 
 ## Feature request / Bug / Feedback
 
