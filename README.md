@@ -35,7 +35,7 @@ ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
 # done :)
 ```
 
-You can now open this file in the web visualization (top left corner) or install it locally via npm:
+You can now load this file (top left corner) either in the web or the local visualization:
 
 ```
 npm i -g codecharta-visualization
