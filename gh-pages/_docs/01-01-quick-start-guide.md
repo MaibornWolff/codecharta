@@ -83,20 +83,26 @@ cd junit4; git log --numstat --raw --topo-order > ../junit4.git.log; cd ..
 ccsh scmlogparser junit4.git.log -p junit4 -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
 ```
 
-Now you have two files that need to be merged: `<project>.source.cc.json` and `<project>.git.cc.json`. Before you merge them you should compare their structure with `ccsh modify`. A simple structural comparison is to check that the source.cc.json has a folder src directly under root and the git.cc.json has the same folder also under root. It's ok if the structure does not match exactly because `ccsh merge` will create the union of both files.
+We can now merge the files.
+
+```bash
+ccsh merge junit4.source.cc.json junit4.git.cc.json -o junit4.cc.json
+```
+
+With the merge done you can now open it in the visualization again.
+
+Depending on what importer you use there might be a structural problem though. `ccsh merge` actually creates a union of all files you give it and only merges the metrics for which the path matches. That's great if one file only contains metrics for `.java` files and the other file has metrics for all files but it can create problems.
+
+For example the path for a file Foo.java should be the same in both files. If the structures don't match, the metrics you got from different sources won't be merged into the same entity but stay separate. In the visualization you'll see one one building _root/Foo.java_ that has all source metrics and one _root/src/main/java/Foo.java_ that has all the git metrics. That's not what you want.
+
+A simple comparison you can do is to check that the `<project>.source.cc.json` has a folder src directly under root (root/src) and the git.cc.json has the same folder also under root.
 
 ```bash
 # Print the first level of the <project>.source.cc.json
 ccsh modify junit4.source.cc.json -p 1
 # Print the first level of the <project>.git.cc.json
 ccsh modify junit4.git.cc.json -p 1
-# Use --moveFrom and --moveTo or --setRoot to correct wrong structure
-```
-
-After making sure the structure matches you can merge the files.
-
-```bash
-ccsh merge junit4.source.cc.json junit4.git.cc.json -o junit4.cc.json
+# Use (--moveFrom and --moveTo) or --setRoot to correct wrong structure
 ```
 
 # CodeCharta in a Tweet Quickstart
