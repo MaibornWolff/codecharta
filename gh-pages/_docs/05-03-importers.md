@@ -14,7 +14,7 @@ The CodeCharta Shell (ccsh) is a convenient way to access the various tools. The
 
 If you want to combine multiple metrics into one `.cc.json` you should get comfortable with the [merge mapper](#merge). Some importers support direct pipe-through, which means you don't have to use the merge mapper.
 
-[Custom Metics and Importer]({% link _docs/05-04-custom-metrics.md %})
+[Custom Metics and Importer]({{site.baseurl}}{% link _docs/05-04-custom-metrics.md %})
 
 # Importers
 

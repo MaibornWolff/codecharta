@@ -16,7 +16,7 @@ Metrics are really bad as targets however.
 
 It is really easy to increase the line coverage by writing tests **without** asserts for all class methods. If we are evaluated or paid based on the amount of coverage we generate, we'll do that and the metric will cease to be a good metric. Job accomplished, the patient is dead.
 
-However, as long as we have a shared understanding and don't abuse metrics we can gain a lot of valuable insight from them. An excerpt of the metrics we find quite valuable are listed below. If you want to add your own metrics you should take a look at adding [custom metrics]({% link _docs/05-04-custom-metrics.md %}).
+However, as long as we have a shared understanding and don't abuse metrics we can gain a lot of valuable insight from them. An excerpt of the metrics we find quite valuable are listed below. If you want to add your own metrics you should take a look at adding [custom metrics]({{site.baseurl}}{% link _docs/05-04-custom-metrics.md %}).
 
 - rloc (Real lines of code): All lines that aren't comments or whitespace. Helpful because it tells us how much actual code exists and excludes commented code as well as other heavy comments like copyright notices. Can be extracted from source code.
 - mcc (McCabe [cyclomatic complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity)): the number of times the control flow branches. An if is a branch, so is a switch case or a while loop. Each of these branches means a decision was made. Code were many decisions are made is complex to understand. Can be extracted from source code.

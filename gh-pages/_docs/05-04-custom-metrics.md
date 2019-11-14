@@ -3,7 +3,7 @@ permalink: /docs/custom-metrics/
 title: "Custom Metrics"
 ---
 
-`ccsh` supplies a lot of metrics out of the box. Should that not match your need there are two general ways to add new metrics to CodeCharta. The more expensive way is to add a new importer, generate a new `.cc.json` and then merge that with your existing `.cc.json`. You should take a look at the [reference]({% link _docs/07-01-new-to-code.md %}) if you are interested in this.
+`ccsh` supplies a lot of metrics out of the box. Should that not match your need there are two general ways to add new metrics to CodeCharta. The more expensive way is to add a new importer, generate a new `.cc.json` and then merge that with your existing `.cc.json`. You should take a look at the [reference]({{site.baseurl}}{% link _docs/07-01-new-to-code.md %}) if you are interested in this.
 
 However, there is an easier way if your metric is available in CSV form because we have an importer for such data.
 

@@ -22,7 +22,7 @@ title: Using Sonarqube and the Log from Git or Svn to visualize Codecharta's own
 - Install the latest analysis tools globally `npm i -g codecharta-analysis`
 - Generate visualization data from our CodeCharta Sonarqube analysis `ccsh sonarimport -o sonar.cc.json https://sonarcloud.io de.maibornwolff.codecharta:visualization`. A new file named _sonar.cc.json_ should appear in your working directory.
 
-This file can already be opened in the [visualization]({{site.web_visualization_link}}). If you want the information from the SCM log we need to continue a bit...
+This file can already be opened in the [web visualization]({{site.web_visualization_link}}). If you want the information from the SCM log we need to continue a bit...
 
 # Getting SCM Log Data
 
