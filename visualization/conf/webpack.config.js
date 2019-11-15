@@ -2,11 +2,21 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const path = require("path")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 
+const dist = path.resolve(__dirname, "../dist/webpack")
+
 module.exports = {
+	mode: "development",
 	entry: "./app/app.ts",
 	output: {
 		filename: "bundle.js",
 		path: dist
+	},
+	devServer: {
+		contentBase: dist,
+		compress: true, // enable gzip compression
+		hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
+		port: 3000,
+		clientLogLevel: "error"
 	},
 	module: require("./webpack.loaders.js"),
 	plugins: [
@@ -18,13 +28,5 @@ module.exports = {
 	devtool: "source-map",
 	resolve: {
 		extensions: [".ts", ".tsx", ".js"]
-	},
-	devServer: {
-		contentBase: "./dist",
-		compress: true, // enable gzip compression
-		historyApiFallback: true, // true for index.html upon 404, object for multiple paths
-		hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
-		https: false, // true for self-signed, object for cert authority
-		noInfo: true // only errors & warns on hot reload
 	}
 }
