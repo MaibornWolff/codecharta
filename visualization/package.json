@@ -149,7 +149,7 @@
 		"@types/node": "^11.11.3",
 		"@types/puppeteer": "^1.12.4",
 		"@types/sinon": "^2.3.5",
-		"@types/three": "^0.89.12",
+		"@types/three": "^0.103.2",
 		"ajv": "^6.10.0",
 		"angular": "^1.6.9",
 		"angular-animate": "^1.6.9",
