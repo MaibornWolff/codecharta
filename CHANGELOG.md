@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+- Bump angularjs-slider from 6.5.1 to 7.0.0 in /visualization #454
+
 ## [1.39.0] - 2019-11-15
 
 ### Added
