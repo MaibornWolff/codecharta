@@ -167,7 +167,7 @@
 		"bestzip": "^2.1.2",
 		"browser-sync": "^2.26.7",
 		"browser-sync-webpack-plugin": "^2.2.2",
-		"clean-webpack-plugin": "^0.1.19",
+		"clean-webpack-plugin": "^3.0.0",
 		"color-convert": "^2.0.0",
 		"css-loader": "^0.28.10",
 		"d3": "^5.9.2",
