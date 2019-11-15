@@ -214,7 +214,7 @@
 		"tslint": "^5.12.1",
 		"typedoc": "^0.15.0",
 		"typescript": "^3.3.3333",
-		"webpack": "^3.11.0",
+		"webpack": "^4.41.2",
 		"webpack-glsl-loader": "^1.0.1"
 	},
 	"optionalDependencies": {
