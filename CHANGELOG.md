@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.39.0] - 2019-11-15
+
 ### Added
 
 - Progress indicator for SonarImporter #544
