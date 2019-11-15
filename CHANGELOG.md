@@ -29,6 +29,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
+- New github-pages https://maibornwolff.github.io/codecharta/
+
 ### Changed
 
 ### Removed
