@@ -7,15 +7,37 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+- Bump @types/three from 0.89.12 to 0.103.2 in /visualization #453
+- Bump angularjs-slider from 6.5.1 to 7.0.0 in /visualization #454
+
+## [1.39.0] - 2019-11-15
+
 ### Added
 
 - Progress indicator for SonarImporter #544
 
 ### Changed
 
+- New style for hovered metric values #696
+- Redesigned slider labels in ribbonBar sections #696
+- Shortened ribbonBar sections #696
+
 ### Removed
 
 ### Fixed
+
+- Missing pictures and broken links in docs #785
+- SCMLogParser is now more resilient to unusual SVN commit messages #763
 
 ### Chore
 
@@ -23,11 +45,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added
 
-### Changed
+- New github-pages https://maibornwolff.github.io/codecharta/
 
-- New style for hovered metric values #696
-- Redesigned slider labels in ribbonBar sections #696
-- Shortened ribbonBar sections #696
+### Changed
 
 ### Removed
 

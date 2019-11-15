@@ -21,7 +21,8 @@ The generated docs can be viewed locally before being pushed to Github (see belo
    - `bundle` to install all gems
      - `gem install bundler:2.0.2` and `bundle update --bundler` in case the bundler needs to be updated first
    - `bundle exec jekyll serve` to build the site and make it available on a local server
-   - Now browse to http://localhost:4000
+   - Now browse to http://localhost:4000/codecharta/
+     - the path `/codecharta` is there because we added `baseurl` to our `_config.yml`
 
 ### Github
 
@@ -78,7 +79,7 @@ MM can be modified by copying files from MM directly and changing their content.
 
 ### Markdown
 
-Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images). Also please use this format for internal links between markdown files: `[visualization]({% link _docs/06-01-visualization.md %})`. It has the benefit that the build will fail locally if a file cannot be found.
+Jekyll uses kramdown to parse Markdown. Please take a look at its [qickref](https://kramdown.gettalong.org/syntax.html#links-and-images). Also please use this format for internal links between markdown files: `[visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %})`. It has the benefit that the build will fail locally if a file cannot be found.
 
 ## Troubleshoot Docs Generation
 

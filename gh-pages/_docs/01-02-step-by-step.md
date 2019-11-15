@@ -5,7 +5,7 @@ title: "Step by Step Example"
 
 Here we will explain an example to analyze a SonarQube Project and visualize it afterwards.
 
-## Run local sonar analysis with a docker container (Mac)
+# Run local sonar analysis with a docker container (Mac)
 
 - `brew install sonar-scanner`
 - `docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube`
@@ -13,7 +13,7 @@ Here we will explain an example to analyze a SonarQube Project and visualize it 
 - run `sonar-scanner` in the projects folder
 - you can now access your sonarqube instance and analysis on localhost:9000
 
-## Analyze a sonarqube project
+# Analyze a sonarqube project
 
 Choose a sonar analysed project of your choice and enter the file, url and project-id.
 If necessary, generate a User Token in the sonar remote instance and include it in the following command:
@@ -40,13 +40,13 @@ The easiest example:
 
 An output file has been created.
 
-## Visualizing the analyzed project
+# Visualizing the analyzed project
 
 Open the visualization directory and run the executable. A new window should open now.
-You can also use the [online demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json).
+You can also use the [web visualization]({{site.web_visualization_link}}).
 
-- In the right lower corner, click on the folder icon.
-- Choose the generated `.json` file from the previous step
+- In the top left corner, click on the folder icon.
+- Choose the generated `.cc.json` file from the previous step
 
 Now you can see the analysis of the chosen project visualized in coloured blocks.
 
@@ -55,12 +55,16 @@ Navigation:
 - left click and drag -> rotate
 - right click and drag -> move the blocks
 - mousewheel -> zoom in and out
-
-Tip: If your device has a touch display, you can quickly navigate with your fingers.
-Use multiple fingers to drag and move the blocks.
+- click on the view cube in the top right corner to change perspective quickly
 
 Change the visualized content:
 
-- click on the right button to open the settings-sidebar
+- try hovering your mouse over wide, tall, red buildings
+- use the ribbon bar to change the metrics and explore if the same building is also bad from a different perspective
+- try searching for `*.ts`
+- then use the three dots to **hide** those, don't worry, we can restore the buildings
+- what buildings are left and do they have interesting metrics
+- click on the eye icon, then remove the `*.ts` query to restore all buildings
+- try excluding `**/ui/*` or `**/vendor/*`, is something interesting left now
 
-![Image](/images/screenshot_visualization.png)
+![Image]({{site.baseurl}}/assets/images/docs/step-by-step/visualization.drawio.png)
