@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+- SCMLogParser is now more resilient to unusual SVN commit messages #763
+
 
 - Sum symbol for hovered metric values only shows for folders #775
 
