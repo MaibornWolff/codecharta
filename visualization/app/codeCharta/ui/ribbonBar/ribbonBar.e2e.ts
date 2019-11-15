@@ -34,7 +34,7 @@ describe("RibbonBar", () => {
 		await searchPanel.hoverRootNodeInTreeViewSearchPanel()
 
 		const actual = await ribbonBar.getAreaMetricValue()
-		expect(actual).toBe("600")
+		expect(actual).toContain("600")
 	})
 
 	describe("opening and closing ribbon-bar cards", () => {

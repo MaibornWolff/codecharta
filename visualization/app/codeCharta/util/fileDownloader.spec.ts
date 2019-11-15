@@ -1,7 +1,7 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
-import { FileMeta, CodeMapNode, FileSettings } from "../codeCharta.model"
-import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED } from "./dataMocks"
+import { FileMeta, CodeMapNode, FileSettings, BlacklistType } from "../codeCharta.model"
+import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED, VALID_NODE_DECORATED, VALID_EDGES_DECORATED } from "./dataMocks"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 
 describe("fileDownloader", () => {
@@ -14,22 +14,52 @@ describe("fileDownloader", () => {
 	stubDate(new Date("2018-12-14T09:39:59"))
 
 	beforeEach(() => {
-		map = TEST_FILE_DATA.map
+		map = VALID_NODE_DECORATED
 		fileMeta = TEST_FILE_DATA.fileMeta
 		filesettings = TEST_FILE_DATA.settings.fileSettings
+		filesettings.edges = VALID_EDGES_DECORATED
+		filesettings.blacklist = [
+			{ path: "/root/bigLeaf.ts", type: BlacklistType.hide },
+			{ path: "/root/sample1OnlyLeaf.scss", type: BlacklistType.exclude }
+		]
 		fileName = "foo_2019-04-22_18-01"
 		fileNameWithExtension = "foo_2019-04-22_18-01.cc.json"
-		downloadSettingsNames = [DownloadCheckboxNames.edges, DownloadCheckboxNames.excludes, DownloadCheckboxNames.hides]
-
 		FileDownloader["downloadData"] = jest.fn()
 	})
 
 	describe("downloadCurrentMap", () => {
-		it("should call downloadData with correct parameter data", () => {
+		it("should call downloadData with undecorated ExportCCFile", () => {
+			downloadSettingsNames = []
+			const expected = JSON.parse(JSON.stringify(TEST_FILE_DATA_DOWNLOADED))
+			expected.blacklist = []
+			expected.edges = []
+
 			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettingsNames, fileName)
 
 			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
-			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(TEST_FILE_DATA_DOWNLOADED, fileNameWithExtension)
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(expected, fileNameWithExtension)
+		})
+
+		it("should call downloadData with undecorated ExportCCFile including undecorated edges", () => {
+			downloadSettingsNames = [DownloadCheckboxNames.edges]
+			const expected = JSON.parse(JSON.stringify(TEST_FILE_DATA_DOWNLOADED))
+			expected.blacklist = []
+
+			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettingsNames, fileName)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(expected, fileNameWithExtension)
+		})
+
+		it("should call downloadData with undecorated ExportCCFile including blacklist", () => {
+			downloadSettingsNames = [DownloadCheckboxNames.excludes, DownloadCheckboxNames.hides]
+			const expected = JSON.parse(JSON.stringify(TEST_FILE_DATA_DOWNLOADED))
+			expected.edges = []
+
+			FileDownloader.downloadCurrentMap(map, fileMeta, filesettings, downloadSettingsNames, fileName)
+
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledTimes(1)
+			expect(FileDownloader["downloadData"]).toHaveBeenCalledWith(expected, fileNameWithExtension)
 		})
 	})
 })

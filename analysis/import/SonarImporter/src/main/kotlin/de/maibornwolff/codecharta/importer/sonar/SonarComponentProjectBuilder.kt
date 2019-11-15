@@ -36,13 +36,15 @@ import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
-class SonarComponentProjectBuilder constructor(
+class SonarComponentProjectBuilder(
         name: String,
         private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
         private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
         private val usePath: Boolean = false
 ) {
 
+    private var totalComponents = 0
+    private var processedComponents = -1
     private val projectBuilder = ProjectBuilder(name)
     val size: Int
         get() = projectBuilder.size
@@ -52,9 +54,13 @@ class SonarComponentProjectBuilder constructor(
     }
 
     fun addComponentMapsAsNodes(components: ComponentMap): SonarComponentProjectBuilder {
+        setTotalComponents(components)
         components.componentList
                 .sortedBy { it.path }
-                .forEach { this.addComponentAsNode(it) }
+                .forEach {
+                    this.addComponentAsNode(it)
+                    logProgress()
+                }
         return this
     }
 
@@ -137,5 +143,15 @@ class SonarComponentProjectBuilder constructor(
         } else {
             Path.trivialPath()
         }
+    }
+
+    private fun setTotalComponents(components: ComponentMap) {
+        totalComponents = components.componentList.size
+        logProgress()
+    }
+
+    private fun logProgress() {
+        processedComponents++
+        System.err.print("\r$processedComponents of $totalComponents components processed...")
     }
 }
