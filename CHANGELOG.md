@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Bump @types/three from 0.89.12 to 0.103.2 in /visualization #453
 - Bump angularjs-slider from 6.5.1 to 7.0.0 in /visualization #454
+- Bump webpack from 3.12.0 to 4.41.2 in /visualization #436
 
 ## [1.39.0] - 2019-11-15
 
