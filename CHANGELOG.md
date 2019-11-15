@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+Bump @types/three from 0.89.12 to 0.103.2 in /visualization #453
+
 ## [1.39.0] - 2019-11-15
 
 ### Added
