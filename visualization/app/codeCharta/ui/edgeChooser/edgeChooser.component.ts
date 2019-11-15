@@ -4,11 +4,13 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { EdgeMetricSubscriber } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
-export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeMetricSubscriber {
+export class EdgeChooserController
+	implements EdgeMetricServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private originalEdgeMetricData: MetricData[]
 
 	private _viewModel: {
@@ -30,7 +32,8 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeM
 		private $timeout: ITimeoutService
 	) {
 		EdgeMetricService.subscribe(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
 	}
 
@@ -43,12 +46,16 @@ export class EdgeChooserController implements EdgeMetricServiceSubscriber, EdgeM
 		this.onEdgeMetricSelected()
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data && data.to && data.to.node && data.to.node.edgeAttributes) {
-			this._viewModel.hoveredEdgeValue = data.to.node.edgeAttributes[this._viewModel.edgeMetric]
+	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		if (hoveredBuilding.node && hoveredBuilding.node.edgeAttributes) {
+			this._viewModel.hoveredEdgeValue = hoveredBuilding.node.edgeAttributes[this._viewModel.edgeMetric]
 		} else {
 			this._viewModel.hoveredEdgeValue = null
 		}
+	}
+
+	public onBuildingUnhovered() {
+		this._viewModel.hoveredEdgeValue = null
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {

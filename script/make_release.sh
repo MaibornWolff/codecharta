@@ -67,7 +67,7 @@ echo "incremented version in ./visualization/package.json + locks"
 
 # update changelog
 DATE=`date +%Y-%m-%d`
-UNRELEASED_TPL="## [unreleased]\n### Added\n\n### Changed\n\n### Removed\n\n### Fixed\n\n### Chore\n\n"
+UNRELEASED_TPL="## [unreleased]\n### Added 🚀\n\n### Changed\n\n### Removed 🗑\n\n### Fixed 🐞\n\n### Chore 👨‍💻 👩‍💻\n\n"
 REPLACE="${UNRELEASED_TPL}## [${NEW_VERSION}] - ${DATE}"
 $(perl -p -i -e "s/^\#\# \[unreleased\]/${REPLACE}/g" ./CHANGELOG.md)
 echo "updated ./CHANGELOG.md"

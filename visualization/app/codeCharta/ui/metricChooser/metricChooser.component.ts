@@ -1,8 +1,8 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import "./metricChooser.component.scss"
-import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { MetricData, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
+import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { MetricData, DynamicSettings, RecursivePartial, Node } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import {
 	AreaMetricSubscriber,
@@ -12,23 +12,22 @@ import {
 } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import _ from "lodash"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class MetricChooserController
 	implements
 		MetricServiceSubscriber,
-		BuildingHoveredEventSubscriber,
+		BuildingHoveredSubscriber,
+		BuildingUnhoveredSubscriber,
 		AreaMetricSubscriber,
 		HeightMetricSubscriber,
 		ColorMetricSubscriber,
 		DistributionMetricSubscriber {
-	public hoveredAreaValue: number
-	public hoveredHeightValue: number
-	public hoveredColorValue: number
-	public hoveredHeightDelta: number
-	public hoveredAreaDelta: number
-	public hoveredColorDelta: number
-	public hoveredDeltaColor: string
 	private originalMetricData: MetricData[]
+
+	private POSITIVE_COLOR = "#b1d8a8"
+	private NEGATIVE_COLOR = "#ffcccc"
+	private NEUTRAL_COLOR = "#e6e6e6"
 
 	private _viewModel: {
 		metricData: MetricData[]
@@ -36,6 +35,8 @@ export class MetricChooserController
 		colorMetric: string
 		heightMetric: string
 		distributionMetric: string
+		hoveredNode: Node
+		deltaColor: string
 		searchTerm: string
 	} = {
 		metricData: [],
@@ -43,6 +44,8 @@ export class MetricChooserController
 		colorMetric: null,
 		heightMetric: null,
 		distributionMetric: null,
+		hoveredNode: null,
+		deltaColor: null,
 		searchTerm: ""
 	}
 
@@ -53,7 +56,9 @@ export class MetricChooserController
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
 		SettingsService.subscribeToDistributionMetric(this.$rootScope, this)
 
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
+
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
@@ -171,47 +176,35 @@ export class MetricChooserController
 		})
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition) {
-		if (data && data.to && data.to.node && data.to.node.attributes) {
-			this.hoveredAreaValue = data.to.node.attributes[this._viewModel.areaMetric]
-			this.hoveredColorValue = data.to.node.attributes[this._viewModel.colorMetric]
-			this.hoveredHeightValue = data.to.node.attributes[this._viewModel.heightMetric]
-
-			if (data.to.node.deltas) {
-				this.hoveredAreaDelta = data.to.node.deltas[this._viewModel.areaMetric]
-				this.hoveredColorDelta = data.to.node.deltas[this._viewModel.colorMetric]
-				this.hoveredHeightDelta = data.to.node.deltas[this._viewModel.heightMetric]
-
-				this.hoveredDeltaColor = this.getHoveredDeltaColor()
-			} else {
-				this.hoveredAreaDelta = null
-				this.hoveredColorDelta = null
-				this.hoveredHeightDelta = null
-				this.hoveredDeltaColor = null
+	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		if (hoveredBuilding.node) {
+			this._viewModel.hoveredNode = hoveredBuilding.node
+			if (hoveredBuilding.node.deltas) {
+				this._viewModel.deltaColor = this.getHoveredDeltaColor()
 			}
-		} else {
-			this.hoveredAreaValue = null
-			this.hoveredColorValue = null
-			this.hoveredHeightValue = null
-			this.hoveredHeightDelta = null
-			this.hoveredAreaDelta = null
-			this.hoveredColorDelta = null
 		}
+		this.synchronizeAngularTwoWayBinding()
+	}
+
+	public onBuildingUnhovered() {
+		this._viewModel.hoveredNode = null
+		this.synchronizeAngularTwoWayBinding()
 	}
 
 	private getHoveredDeltaColor() {
-		let colors = {
-			0: "green",
-			1: "red"
-		}
+		const heightDelta: number = this._viewModel.hoveredNode.deltas[this._viewModel.heightMetric]
 
-		if (this.hoveredHeightDelta > 0) {
-			return colors[Number(this.settingsService.getSettings().appSettings.invertDeltaColors)]
-		} else if (this.hoveredHeightDelta < 0) {
-			return colors[Number(!this.settingsService.getSettings().appSettings.invertDeltaColors)]
+		if (heightDelta > 0) {
+			return this.POSITIVE_COLOR
+		} else if (heightDelta < 0) {
+			return this.NEGATIVE_COLOR
 		} else {
-			return "inherit"
+			return this.NEUTRAL_COLOR
 		}
+	}
+
+	private synchronizeAngularTwoWayBinding() {
+		this.$timeout(() => {})
 	}
 }
 

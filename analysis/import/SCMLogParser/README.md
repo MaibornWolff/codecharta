@@ -13,7 +13,13 @@ Generates visualisation data from repository (Git or SVN) logs. It supports the 
 | `number_of_authors`    | number of authors with commits                                                        |
 | `code_churn`           | code churn, i.e. number of additions plus deletions to file                           |
 
-Additionally it saves the names of authors when the --add-author flag is set.
+Additionally the following Edge Metrics are calculated:
+
+| Metric              | Description                                               |
+| ------------------- | --------------------------------------------------------- |
+| `temporal_coupling` | The degree of temporal coupling between two files (>=35%) |
+
+The names of authors are saved when the --add-author flag is set.
 
 ## Usage
 

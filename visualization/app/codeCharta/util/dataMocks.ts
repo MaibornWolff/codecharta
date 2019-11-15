@@ -8,7 +8,8 @@ import {
 	MetricData,
 	Node,
 	Settings,
-	BlacklistType
+	BlacklistType,
+	EdgeVisibility
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -89,6 +90,44 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_DECORATED: CodeMapNode = {
+	name: "root",
+	attributes: { RLOC: 100, Functions: 10, MCC: 1, unary: 5 },
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf",
+			type: "File",
+			path: "/root/big leaf",
+			attributes: { RLOC: 100, Functions: 10, MCC: 1, unary: 1 },
+			link: "http://www.google.de"
+		},
+		{
+			name: "Parent Leaf",
+			type: "Folder",
+			attributes: { RLOC: 100, Functions: 10, MCC: 1, unary: 1 },
+			path: "/root/Parent Leaf",
+			children: [
+				{
+					name: "small leaf",
+					type: "File",
+					path: "/root/Parent Leaf/small leaf",
+					attributes: { RLOC: 30, Functions: 100, MCC: 100, unary: 1 }
+				},
+				{
+					name: "other small leaf",
+					type: "File",
+					path: "/root/Parent Leaf/other small leaf",
+					attributes: { RLOC: 70, Functions: 1000, MCC: 10, unary: 1 },
+					edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
+					visible: true
+				}
+			]
+		}
+	]
+}
+
 export const VALID_EDGES: Edge[] = [
 	{
 		fromNodeName: "/root/big leaf",
@@ -113,6 +152,27 @@ export const VALID_EDGES: Edge[] = [
 			pairingRate: 89,
 			avgCommits: 34
 		}
+	}
+]
+
+export const VALID_EDGES_DECORATED: Edge[] = [
+	{
+		fromNodeName: "/root/big leaf",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			avgCommits: 34
+		},
+		visible: EdgeVisibility.from
+	},
+	{
+		fromNodeName: "/root/Parent Leaf/other small leaf",
+		toNodeName: "/root/Parent Leaf/small leaf",
+		attributes: {
+			pairingRate: 89,
+			otherMetric: 34
+		},
+		visible: EdgeVisibility.none
 	}
 ]
 
@@ -406,7 +466,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
-	blacklist: [],
+	blacklist: [{ path: "/root/bigLeaf.ts", type: "hide" }, { path: "/root/sample1OnlyLeaf.scss", type: "exclude" }],
 	edges: [
 		{
 			attributes: {
@@ -422,14 +482,6 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 				pairingRate: 89
 			},
 			fromNodeName: "/root/Parent Leaf/other small leaf",
-			toNodeName: "/root/Parent Leaf/small leaf"
-		},
-		{
-			attributes: {
-				avgCommits: 34,
-				pairingRate: 89
-			},
-			fromNodeName: "/root/not available",
 			toNodeName: "/root/Parent Leaf/small leaf"
 		}
 	],
@@ -534,7 +586,6 @@ export const SETTINGS: Settings = {
 		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		hideFlatBuildings: true,
-		maximizeDetailPanel: false,
 		invertHeight: true,
 		invertColorRange: false,
 		dynamicMargin: true,
@@ -561,7 +612,7 @@ export const SETTINGS: Settings = {
 		resetCameraIfNewFileIsLoaded: true
 	},
 	treeMapSettings: {
-		mapSize: 500
+		mapSize: 250
 	}
 }
 
@@ -593,7 +644,6 @@ export const DEFAULT_SETTINGS: Settings = {
 			incomingEdge: "#00ffff",
 			outgoingEdge: "#ff00ff"
 		},
-		maximizeDetailPanel: false,
 		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
 		isPresentationMode: false,
@@ -616,7 +666,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		searchedNodePaths: []
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
-	treeMapSettings: { mapSize: 500 }
+	treeMapSettings: { mapSize: 250 }
 }
 
 export const TEST_NODE_ROOT: Node = {
