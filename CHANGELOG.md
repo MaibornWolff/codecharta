@@ -13,9 +13,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- New style for hovered metric values #696
+- Redesigned slider labels in ribbonBar sections #696
+- Shortened ribbonBar sections #696
+
 ### Removed
 
 ### Fixed
+
+- Missing pictures and broken links in our docs #785
 
 ### Chore
 
@@ -24,10 +30,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added
 
 ### Changed
-
-- New style for hovered metric values #696
-- Redesigned slider labels in ribbonBar sections #696
-- Shortened ribbonBar sections #696
 
 ### Removed
 
