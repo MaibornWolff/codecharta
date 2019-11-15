@@ -1,19 +1,31 @@
 blacklist-panel-component {
-	.small-info {
-		color: rgba(0, 0, 0, 0.38);
-		font-size: 9pt;
+	.header {
+		display: block;
+
+		.header-text {
+			display: inline-block;
+			margin: 0;
+		}
+
+		i.fa {
+			font-size: 12pt;
+			cursor: pointer;
+			color: grey;
+		}
 	}
 
-	.md-list-item-text {
+	md-list-item {
+		border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+		&.md-no-proxy {
+			padding: 0;
+		}
+	}
+
+	.pattern-text {
 		direction: rtl;
 		overflow: hidden;
 		width: 100%;
 		padding-right: 10px;
-	}
-
-	md-list-item.md-no-proxy,
-	md-list-item .md-no-style {
-		padding: 0;
-		margin-left: -15px;
 	}
 }

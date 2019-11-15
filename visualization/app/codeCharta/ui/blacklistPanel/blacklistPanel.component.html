@@ -1,16 +1,22 @@
-<md-list>
-	<span class="small-info" ng-show="$ctrl._viewModel.searchPanelMode == 'flatten' && $ctrl._viewModel.flatten.length == 0">
-		Flattened nodes and are shown as empty space in the map <br />
-		and are included in folder metrics.<br />
-		Add items via the search or node context-menu
-	</span>
-	<span class="small-info" ng-show="$ctrl._viewModel.searchPanelMode == 'exclude' && $ctrl._viewModel.exclude.length == 0">
-		Excluded buildings are not shown in the map<br />
-		and neither are they not included in folder metrics.<br />
-		Add items via the search or node context-menu
+<md-list ng-show="$ctrl._viewModel.searchPanelMode == 'flatten'">
+	<span class="header">
+		<h3 class="header-text">Flattened</h3>
+		<i class="fa fa-question-circle-o">
+			<md-tooltip>
+				Flattened nodes are shown as flat/short buildings and are included in folder metrics
+			</md-tooltip>
+		</i>
 	</span>
 
 	<div class="sub-list">
+		<md-list-item ng-show="$ctrl._viewModel.flatten.length == 0">
+			<div class="pattern-text" layout="column">
+				<p>
+					<bdi>Add pattern via search or node context-menu</bdi>
+				</p>
+			</div>
+		</md-list-item>
+
 		<md-list-item
 			ng-show="$ctrl._viewModel.searchPanelMode == 'flatten'"
 			ng-repeat="item in $ctrl._viewModel.flatten | orderBy: ['path']"
@@ -19,12 +25,32 @@
 			<md-button class="round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
 				<i class="fa fa-minus-square" title="Remove list item"></i>
 			</md-button>
-			<div class="md-list-item-text" layout="column">
+			<div class="pattern-text" layout="column">
 				<p>
 					<bdi>{{::item.path}}</bdi>
 				</p>
 			</div>
-			<md-divider></md-divider>
+		</md-list-item>
+	</div>
+</md-list>
+
+<md-list ng-show="$ctrl._viewModel.searchPanelMode == 'exclude'">
+	<span class="header">
+		<h3 class="header-text">Excluded</h3>
+		<i class="fa fa-question-circle-o">
+			<md-tooltip>
+				Excluded buildings are not shown in the map and are not included in folder metrics
+			</md-tooltip>
+		</i>
+	</span>
+
+	<div class="sub-list">
+		<md-list-item ng-show="$ctrl._viewModel.exclude.length == 0">
+			<div class="pattern-text" layout="column">
+				<p>
+					<bdi>Add pattern via search or node context-menu</bdi>
+				</p>
+			</div>
 		</md-list-item>
 
 		<md-list-item
@@ -35,12 +61,11 @@
 			<md-button class="round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
 				<i class="fa fa-minus-square" title="Remove list item"></i>
 			</md-button>
-			<div class="md-list-item-text" layout="column">
+			<div class="pattern-text" layout="column">
 				<p>
 					<bdi>{{::item.path}}</bdi>
 				</p>
 			</div>
-			<md-divider></md-divider>
 		</md-list-item>
 	</div>
 </md-list>
