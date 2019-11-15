@@ -16,8 +16,6 @@
 		"dist/webpack",
 		"app",
 		"conf",
-		"mocks",
-		"script",
 		".babelrc",
 		"Dockerfile",
 		"LICENSE.md",
@@ -25,7 +23,6 @@
 		"package-lock.json",
 		"README.md",
 		"tsconfig.json",
-		"tsconfig.webpack.json",
 		"cli.js"
 	],
 	"codecharta": {
