@@ -63,6 +63,7 @@
 	"scripts": {
 		"start": "run --mirror https://dl.nwjs.io/ .",
 		"build": "webpack --config ./conf/webpack.config.js",
+		"dev": "webpack-dev-server --open",
 		"test": "jest .*\\.spec\\.ts --runInBand",
 		"test:auto": "jest .*\\.spec\\.ts --watch",
 		"test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",
@@ -165,9 +166,6 @@
 		"babel-preset-es2015": "^6.18.0",
 		"babel-register": "^6.18.0",
 		"bestzip": "^2.1.2",
-		"browser-sync": "^2.26.7",
-		"browser-sync-webpack-plugin": "^2.2.2",
-		"clean-webpack-plugin": "^0.1.19",
 		"color-convert": "^2.0.0",
 		"css-loader": "^0.28.10",
 		"d3": "^5.9.2",
