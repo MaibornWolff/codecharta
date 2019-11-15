@@ -1,6 +1,6 @@
 ---
 header:
-  teaser: assets/images/showcase/netbeans/netbeans_2019-10-19_Spotlight[rloc,mcc,mcc].png.png
+  teaser: assets/images/showcase/netbeans/netbeans_2019-10-19_Spotlight[rloc,mcc,mcc].png
 title: "NetBeans"
 excerpt: "5 034 211 RLoC"
 
@@ -21,8 +21,8 @@ gallery:
   - url: /assets/images/showcase/netbeans/netbeans_2019-10-19[rloc,mcc,mcc].png
     image_path: assets/images/showcase/netbeans/netbeans_2019-10-19[rloc,mcc,mcc].png
     title: "NetBeans Metrics 2019 for Rloc, Mcc, Mcc"
-  - url: /assets/images/showcase/netbeans/netbeans_2019-10-19_Spotlight[rloc,mcc,mcc].png.png
-    image_path: assets/images/showcase/netbeans/netbeans_2019-10-19_Spotlight[rloc,mcc,mcc].png.png
+  - url: /assets/images/showcase/netbeans/netbeans_2019-10-19_Spotlight[rloc,mcc,mcc].png
+    image_path: assets/images/showcase/netbeans/netbeans_2019-10-19_Spotlight[rloc,mcc,mcc].png
     title: "NetBeans Metrics 2019 with presentation mode for Rloc, Mcc"
 ---
 
