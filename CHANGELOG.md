@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed
 
-- Missing pictures and broken links in our docs #785
+- Missing pictures and broken links in docs #785
+- SCMLogParser is now more resilient to unusual SVN commit messages #763
 
 ### Chore
 
@@ -36,8 +37,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
-- SCMLogParser is now more resilient to unusual SVN commit messages #763
-
 
 - Sum symbol for hovered metric values only shows for folders #775
 
