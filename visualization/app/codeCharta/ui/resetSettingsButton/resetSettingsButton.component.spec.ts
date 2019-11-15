@@ -1,5 +1,6 @@
 import "./resetSettingsButton.module"
 
+import { Vector3 } from "three"
 import { ResetSettingsButtonController } from "./resetSettingsButton.component"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
@@ -87,11 +88,11 @@ describe("resetSettingsButtonController", () => {
 
 		it("should update nested settings in service", () => {
 			const newSettings: RecursivePartial<Settings> = {
-				appSettings: { scaling: { x: 42, y: 42, z: 42 } }
+				appSettings: { scaling: new Vector3(42, 42, 42) }
 			}
 
 			settingsService.updateSettings({
-				appSettings: { scaling: { x: 1, y: 1, z: 1 } }
+				appSettings: { scaling: new Vector3(1, 1, 1) }
 			})
 
 			resetSettingsButtonController["settingsNames"] = "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"
