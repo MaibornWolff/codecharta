@@ -16,13 +16,13 @@ We won't sugar coat it, the visualization can look a bit daunting at first. This
 
 In the center is the map. Each building in it has the attributes **size**, **height** and **color**. Each of these attributes can represent a different metric. This way the visualization allows you to contrast multiple metrics at the same time. A typical metric example is:
 
-- size ![](/assets/images/vendor/fontawesome/arrows-alt-solid-white.svg){: width="20px"}=_rloc (real lines of code)_
-- height ![](/assets/images/vendor/fontawesome/arrows-alt-v-solid-white.svg){: width="10px"}=_mcc (McCabe complexity)_
-- color ![](/assets/images/vendor/fontawesome/paint-brush-solid-white.svg){: width="20px"}=_sonar_cognitive_complexity_
+- size ![]({{site.baseurl}}/assets/images/vendor/fontawesome/arrows-alt-solid-white.svg){: width="20px"}=_rloc (real lines of code)_
+- height ![]({{site.baseurl}}/assets/images/vendor/fontawesome/arrows-alt-v-solid-white.svg){: width="10px"}=_mcc (McCabe complexity)_
+- color ![]({{site.baseurl}}/assets/images/vendor/fontawesome/paint-brush-solid-white.svg){: width="20px"}=_sonar_cognitive_complexity_
 
-> If you want more information what these names mean you can look at the [metrics section]({% link _docs/05-02-metrics.md %}).
+> If you want more information what these names mean you can look at the [metrics section]({{site.baseurl}}{% link _docs/05-02-metrics.md %}).
 >
-> Please also be aware that the metrics in the dropdown are tied to the metric sources and the [importers]({% link _docs/05-03-importers.md %}) you used to generate said map.
+> Please also be aware that the metrics in the dropdown are tied to the metric sources and the [ccsh tool]({{site.baseurl}}{% link _docs/05-03-ccsh.md %}) you used to generate said map.
 
 You can change the representation in the _metrics bar_ and explore your code from different perspectives. For example, try setting the metrics mentioned above and then hovering your mouse over the most complex file in the code: the biggest, tallest, reddest building. You can see its file path and metrics in the top of the screen. This building might need improving.
 
@@ -36,6 +36,6 @@ Depending on the importers you used to generate your map you might also be able 
 
 You can see the building with most edges because purple edges leave and cyan edges enter. When you hover over a building with edges you can see exactly where they lead or are coming from. Edges that stretch over the whole map might indicate a problem because buildings that are connected should usually be put in the same package in your source code.
 
-[Read on]({% link _docs/06-02-user-controls.md %}) to see an overview of the user controls available.
+[Read on]({{site.baseurl}}{% link _docs/06-02-user-controls.md %}) to see an overview of the user controls available.
 
 > Icons by [fontawesome](https://fontawesome.com/icons?d=gallery&q=arrows)

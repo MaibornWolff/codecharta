@@ -3,27 +3,27 @@ permalink: /docs/new-to-code/
 title: "New to this Code?"
 ---
 
-Thank you for being interested in CodeCharta. You should first familiarize yourself with the [quick-start guide]({% link _docs/01-01-quick-start-guide.md %}), and the difference between [analysis]({% link _docs/05-01-analysis.md %}) and the [visualization]({% link _docs/06-01-visualization.md %}). Afterwards it makes sense to check the [architecture decision records (ADR)](http://localhost:4000/categories/#adr) to get up to speed with the decisions we have made so far. Finally it's important to know that CodeCharta uses [two different tech stacks]({% link _posts/adr/2017-01-02-ADR_1_decide_tech_stack.md %}) for analysis and visualization.
+Thank you for being interested in CodeCharta. You should first familiarize yourself with the [quick-start guide]({{site.baseurl}}{% link _docs/01-01-quick-start-guide.md %}), and the difference between [analysis]({{site.baseurl}}{% link _docs/05-01-analysis.md %}) and the [visualization]({{site.baseurl}}{% link _docs/06-01-visualization.md %}). Afterwards it makes sense to check the [architecture decision records (ADR)](http://localhost:4000/categories/#adr) to get up to speed with the decisions we have made so far. It's also important to know that CodeCharta uses [two different tech stacks]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_1_decide_tech_stack.md %}) for analysis and visualization.
 
-Finally it would be great if you looked at how we give and receive [feedback]({% link _docs/01-07-feedback.md %}). If you want to contribute you should check our [CONTRIBUTING.md](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTING.md) and see what naming conventions branches and commit messages use.
+Finally it would be great if you looked at how we give and receive [feedback]({{site.baseurl}}{% link _docs/01-07-feedback.md %}). If you want to contribute you should check our [CONTRIBUTING.md](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTING.md) and see what naming conventions branches and commit messages use.
 
 # Analysis
 
 ## Important Tech
 
-- [Kotlin]({% link _posts/adr/2017-01-02-ADR_2_pick_analysis_language.md %})
-- [PicoCli]({% link _posts/adr/2017-01-02-ADR_5_pick_analysis_cli_library.md %})
+- [Kotlin]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_2_pick_analysis_language.md %})
+- [PicoCli]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_5_pick_analysis_cli_library.md %})
 
 ## Important Concepts
 
-- [Pipes and filters architecture]({% link _posts/adr/2017-01-02-ADR_4_decide_analysis_architecture.md %})
+- [Pipes and filters architecture]({{site.baseurl}}{% link _posts/adr/2017-01-02-ADR_4_decide_analysis_architecture.md %})
 - Shared nothing importers.
 
 # Visualization
 
 ## Important Tech
 
-- [Typescript]({% link _posts/adr/2017-09-03-ADR_7_pick_visualization_language.md %})
+- [Typescript]({{site.baseurl}}{% link _posts/adr/2017-09-03-ADR_7_pick_visualization_language.md %})
 - npm
 - plopjs
 - AngularJs 1.x, specifically what are Components, Services

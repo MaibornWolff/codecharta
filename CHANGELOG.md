@@ -13,18 +13,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
-### Removed
-
-### Fixed
-
-### Chore
-
-## [1.38.1] - 2019-11-13
-
-### Added
-
-### Changed
-
 - New style for hovered metric values #696
 - Redesigned slider labels in ribbonBar sections #696
 - Shortened ribbonBar sections #696
@@ -32,8 +20,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed
 
 ### Fixed
+
+- Missing pictures and broken links in docs #785
 - SCMLogParser is now more resilient to unusual SVN commit messages #763
 
+### Chore
+
+## [1.38.1] - 2019-11-13
+
+### Added
+
+- New github-pages https://maibornwolff.github.io/codecharta/
+
+### Changed
+
+### Removed
+
+### Fixed
 
 - Sum symbol for hovered metric values only shows for folders #775
 

@@ -5,8 +5,6 @@ title: "Junit 4"
 excerpt: "30 909 RLoC"
 
 sidebar:
-  - title: Download cc.json
-    text: <a href="/assets/ccjson/showcase/junit4/junit4_2019-10-26.cc.json" download>Code at 2019-10-26</a><br/><a href="/assets/ccjson/showcase/junit4/junit4_2016-10-28.cc.json" download>Code at 2016-10-28</a>
   - title: Source Code
     text: <a href="https://github.com/junit-team/junit4" download>On Github</a>
   - title: "Size"
@@ -25,3 +23,11 @@ gallery:
 ---
 
 {% include gallery caption="Example Images for JUnit4." %}
+
+<!--
+I would have liked this link to be in the sidebar but liquid properties don't work there.
+I would also have liked this to be a markdown link but then the browser tries to open it instead of "download"ing it.
+ -->
+
+<a href="{{site.baseurl}}/assets/ccjson/showcase/junit4/junit4_2019-10-26.cc.json" download>Download cc.json at 2019-10-26</a><br/>
+<a href="{{site.baseurl}}/assets/ccjson/showcase/junit4/junit4_2016-10-28.cc.json" download>Download cc.json at 2016-10-28</a>

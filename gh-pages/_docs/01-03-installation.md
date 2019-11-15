@@ -12,9 +12,9 @@ We use npm to distribute [both](https://www.npmjs.com/package/codecharta-analysi
 
 If you are on Windows we recommend installing Git and use the bundled Git Bash to make the scripts easily transferable.
 
-## Global Install with npm (recommended)
+# Global Install with npm (recommended)
 
-### Analysis
+## Analysis
 
 ```bash
 # Install
@@ -25,7 +25,7 @@ ccsh -h
 ccsh sourcecodeparser -h
 ```
 
-### Desktop Visualization
+## Desktop Visualization
 
 ```bash
 # Install
@@ -34,11 +34,11 @@ npm i -g codecharta-visualization
 codecharta-visualization
 ```
 
-## Local Install with npm
+# Local Install with npm
 
-This might be a good idea if you don't want to install CodeCharta globally and just try it out in a temporary folder (`mkdir tmp; cd tmp`).
+This installation option might be a good idea if you don't want to install CodeCharta globally and just try it out in a temporary folder (`mkdir tmp; cd tmp`).
 
-### Analysis
+## Analysis
 
 ```bash
 # Download CodeCharta Shell into the current directory
@@ -60,7 +60,7 @@ cd public/bin
 ## B) or use the ccsh.bat
 ```
 
-### Desktop Visualization
+## Desktop Visualization
 
 ```bash
 # Download CodeCharta Visualization into the current directory
@@ -79,22 +79,22 @@ cd node_modules/codecharta-visualization
 npm start
 ```
 
-## Docker Hub Install
+# Docker Hub Install
 
 The visualization is [published to Docker Hub](https://hub.docker.com/r/maibornwolff/codecharta-visualization).
 
-### Visualization
+## Visualization
 
 ```bash
 # run visualization with
 docker run -p 80:8080 maibornwolff/codecharta-visualization
 ```
 
-## Github Release
+# Github Release
 
 Download the [latest release](https://github.com/MaibornWolff/codecharta/releases) of CodeCharta (codecharta-analysis and codecharta-visualization) and unpack them to a folder of your choice. The visualization bundles an operation system (OS)-specific runtime. Since the analysis runs on the JVM it only has a single `.tar`, no matter what OS you use.
 
-### Analysis
+## Analysis
 
 ```bash
 # Navigate to the codecharta-analysis folder
@@ -104,7 +104,7 @@ cd codecharta-analysis/bin
 # or use the ccsh.bat
 ```
 
-### Desktop Visualization
+## Desktop Visualization
 
 ```bash
 # Navigate to the codecharta-visualization folder

@@ -35,8 +35,8 @@ docs:
         url: /docs/analysis/
       - title: "Metrics"
         url: /docs/metrics/
-      - title: "Importers"
-        url: /docs/importers/
+      - title: "CodeCharta Shell"
+        url: /docs/ccsh/
       - title: "Custom Metrics"
         url: /docs/custom-metrics/
 
