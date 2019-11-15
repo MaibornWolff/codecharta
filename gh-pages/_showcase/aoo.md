@@ -1,6 +1,6 @@
 ---
 header:
-  teaser: assets/images/showcase/aoo/aoo_2019-08-02_search=i18npool[rloc,rloc,rloc>1000].png
+  teaser: assets/images/showcase/aoo/aoo_2019-08-02_search=i18npool[rloc,rloc,rloc_more_than_1000].png
 title: "Apache OpenOffice"
 excerpt: "6 145 332 RLoC"
 
@@ -16,14 +16,14 @@ sidebar:
   - title: "Utilized Importers"
     text: Tokeiimporter<br/>ScmlogParser (SVN)
 gallery:
-  - url: /assets/images/showcase/aoo/aoo_2019-08-02[rloc,rloc,rloc>1000].png
-    image_path: assets/images/showcase/aoo/aoo_2019-08-02[rloc,rloc,rloc>1000].png
+  - url: /assets/images/showcase/aoo/aoo_2019-08-02[rloc,rloc,rloc_more_than_1000].png
+    image_path: assets/images/showcase/aoo/aoo_2019-08-02[rloc,rloc,rloc_more_than_1000].png
     title: "Apache OpenOffice Metrics 2019 for rloc, rloc, rloc[>1000 is red]"
-  - url: /assets/images/showcase/aoo/aoo_2019-08-02_search=i18npool[rloc,rloc,rloc>1000].png
-    image_path: assets/images/showcase/aoo/aoo_2019-08-02_search=i18npool[rloc,rloc,rloc>1000].png
+  - url: /assets/images/showcase/aoo/aoo_2019-08-02_search=i18npool[rloc,rloc,rloc_more_than_1000].png
+    image_path: assets/images/showcase/aoo/aoo_2019-08-02_search=i18npool[rloc,rloc,rloc_more_than_1000].png
     title: "Apache OpenOffice Metrics 2019 for rloc, rloc, rloc with search=i18npool"
-  - url: /assets/images/showcase/aoo/aoo_2019-08-02_hide=i18npool,xml,xsl[rloc,rloc,rloc>1000].png
-    image_path: assets/images/showcase/aoo/aoo_2019-08-02_hide=i18npool,xml,xsl[rloc,rloc,rloc>1000].png
+  - url: /assets/images/showcase/aoo/aoo_2019-08-02_hide=i18npool,xml,xsl[rloc,rloc,rloc_more_than_1000].png
+    image_path: assets/images/showcase/aoo/aoo_2019-08-02_hide=i18npool,xml,xsl[rloc,rloc,rloc_more_than_1000].png
     title: "Apache OpenOffice Metrics 2019 for rloc, rloc, rloc with hide=**/i18npool/**,*.xml,*.xsl"
 ---
 
