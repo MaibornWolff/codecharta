@@ -12,6 +12,7 @@ import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
 	let $rootScope: IRootScopeService
+	let codeMapPreRenderService: CodeMapPreRenderService
 	let attributeSideBarService: AttributeSideBarService
 
 	beforeEach(() => {
@@ -23,11 +24,20 @@ describe("AttributeSideBarController", () => {
 		instantiateModule("app.codeCharta.ui.attributeSideBar")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		attributeSideBarService = getService<AttributeSideBarService>("attributeSideBarService")
 	}
 
 	function rebuildController() {
-		attributeSideBarController = new AttributeSideBarController($rootScope, attributeSideBarService)
+		attributeSideBarController = new AttributeSideBarController($rootScope, codeMapPreRenderService, attributeSideBarService)
+	}
+
+	function withMockedCodeMapPreRenderService() {
+		codeMapPreRenderService = attributeSideBarController["codeMapPreRenderService"] = jest.fn<CodeMapPreRenderService>(() => {
+			return {
+				getRenderFileMeta: jest.fn().mockReturnValue({ fileName: "my_fileName" })
+			}
+		})()
 	}
 
 	describe("constructor", () => {
@@ -84,6 +94,7 @@ describe("AttributeSideBarController", () => {
 		let codeMapBuilding: CodeMapBuilding
 
 		beforeEach(() => {
+			withMockedCodeMapPreRenderService()
 			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
 			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 		})
@@ -98,6 +109,12 @@ describe("AttributeSideBarController", () => {
 			attributeSideBarController.onBuildingSelected(codeMapBuilding)
 
 			expect(attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"]).toHaveBeenCalled()
+		})
+
+		it("should get fileName from codeMapPreRenderService", () => {
+			attributeSideBarController.onBuildingSelected(codeMapBuilding)
+
+			expect(attributeSideBarController["_viewModel"].fileName).toEqual("my_fileName")
 		})
 	})
 

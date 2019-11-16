@@ -52,7 +52,6 @@ export interface CodeMapNode {
 		[key: string]: EdgeMetricCount
 	}
 	link?: string
-	origin?: string
 	path?: string
 	visible?: boolean
 	deltas?: {
@@ -229,7 +228,6 @@ export interface Node {
 	heightDelta: number
 	visible: boolean
 	path: string
-	origin: string
 	link: string
 	markingColor: string
 	flat: boolean
