@@ -148,9 +148,6 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
 		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
-		visibleFileStates.forEach(fileState => {
-			fileState.file = NodeDecorator.preDecorateFile(fileState.file)
-		})
 
 		if (FileStateHelper.isSingleState(fileStates)) {
 			return visibleFileStates[0].file
