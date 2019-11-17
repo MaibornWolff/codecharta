@@ -8,6 +8,7 @@ import { CODE_MAP_BUILDING, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import _ from "lodash"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
