@@ -21,10 +21,6 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 		this.dialogService.showDownloadDialog()
 	}
 
-	public showGlobalSettings() {
-		this.dialogService.showGlobalSettingsDialog()
-	}
-
 	public onBuildingHovered(data: CodeMapBuilding) {
 		this._viewModel.nodeHovered = true
 	}

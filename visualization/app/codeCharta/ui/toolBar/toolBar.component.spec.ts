@@ -29,8 +29,7 @@ describe("ToolBarController", () => {
 
 	function withMockedDialogService() {
 		dialogService = toolBarController["dialogService"] = jest.fn().mockReturnValue({
-			showDownloadDialog: jest.fn(),
-			showGlobalSettingsDialog: jest.fn()
+			showDownloadDialog: jest.fn()
 		})()
 	}
 
@@ -39,14 +38,6 @@ describe("ToolBarController", () => {
 			toolBarController.downloadFile()
 
 			expect(dialogService.showDownloadDialog).toHaveBeenCalled()
-		})
-	})
-
-	describe("showGlobalSettings", () => {
-		it("should call showGlobalSettingsDialog", () => {
-			toolBarController.showGlobalSettings()
-
-			expect(dialogService.showGlobalSettingsDialog).toHaveBeenCalled()
 		})
 	})
 
