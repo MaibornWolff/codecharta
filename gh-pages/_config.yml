@@ -1,7 +1,176 @@
-theme: jekyll-theme-architect
-show_downloads: false
-project_title: "CodeCharta"
-zip_url: "https://github.com/MaibornWolff/codecharta/zipball/latest"
-tar_url: "https://github.com/MaibornWolff/codecharta/tarball/latest"
-releases_url: "https://github.com/MaibornWolff/codecharta/releases"
-issues_url: "https://github.com/MaibornWolff/codecharta/issues"
+# some of these settings are jekyll Configurations: https://jekyllrb.com/docs/configuration/
+# the others are Minimal Mistakes Configurations: https://mmistakes.github.io/minimal-mistakes/docs/configuration/
+
+remote_theme: "mmistakes/minimal-mistakes"
+minimal_mistakes_skin: "dark" # "default", "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+
+# Site Settings
+locale: "en-US"
+title: "CodeCharta"
+title_separator: "-"
+subtitle: # site tagline that appears below site title in masthead
+url: https://maibornwolff.github.io/ # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
+baseurl: /codecharta # the subpath of your site, e.g. "/blog"
+repository: MaibornWolff/codecharta # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
+teaser: # path of fallback teaser image, e.g. "/assets/images/500x300.png"
+logo: # path of logo image to display in the masthead, e.g. "/assets/images/88x88.png"
+masthead_title: # overrides the website title displayed in the masthead, use " " for no title
+# breadcrumbs            : false # true, false (default)
+words_per_minute: 200
+
+search: true
+search_full_content: false
+search_provider: lunr
+
+social:
+  type: Organization # Person or Organization (defaults to Person)
+  name: # If the user or organization name differs from the site's name
+  links: # An array of links to social media profiles
+
+# Custom site variables, reference them in liquid like this: {{site.web_visualization_link}}
+web_visualization_link: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json
+
+# Site Footer
+footer:
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: https://github.com/MaibornWolff/codecharta
+
+# Reading Files
+include:
+  - .htaccess
+  - _pages
+exclude:
+  - "*.sublime-project"
+  - "*.sublime-workspace"
+  - .idea/
+  - .asset-cache
+  - .bundle
+  - .jekyll-assets-cache
+  - .sass-cache
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+keep_files:
+  - .git
+  - .svn
+encoding: "utf-8"
+markdown_ext: "markdown,mkdown,mkdn,mkd,md"
+
+# Conversion
+markdown: kramdown
+highlighter: rouge
+lsi: false
+excerpt_separator: "\n\n"
+incremental: false
+
+# Markdown Processing
+kramdown:
+  input: GFM
+  hard_wrap: false
+  auto_ids: true
+  footnote_nr: 1
+  entity_output: as_char
+  toc_levels: 1..6
+  smart_quotes: lsquo,rsquo,ldquo,rdquo
+  enable_coderay: false
+
+# Sass/SCSS
+sass:
+  sass_dir: _sass
+  style: compressed # https://sass-lang.com/documentation/file.SASS_REFERENCE.html#output_style
+
+# Outputting
+permalink: /:categories/:title/
+paginate: 5 # amount of posts to show
+paginate_path: /page:num/
+timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+# Plugins (previously gems:)
+plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jekyll-include-cache
+
+# mimic GitHub Pages with --safe
+whitelist:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
+  - jekyll-feed
+  - jekyll-include-cache
+
+# Archives
+#  Type
+#  - GitHub Pages compatible archive pages built with Liquid ~> type: liquid (default)
+#  - Jekyll Archives plugin archive pages ~> type: jekyll-archives
+#  Path (examples)
+#  - Archive page should exist at path when using Liquid method or you can
+#    expect broken links (especially with breadcrumbs enabled)
+#  - <base_path>/tags/my-awesome-tag/index.html ~> path: /tags/
+#  - <base_path>/categories/my-awesome-category/index.html ~> path: /categories/
+#  - <base_path>/my-awesome-category/index.html ~> path: /
+category_archive:
+  type: liquid
+  path: /categories/
+tag_archive:
+  type: liquid
+  path: /tags/
+
+# HTML Compression
+# - https://jch.penibelst.de/
+compress_html:
+  clippings: all
+  ignore:
+    envs: development
+
+# Collections: https://jekyllrb.com/docs/collections/
+# Can be used as a type for the #defaults
+# The folder must be named identically to the collection you defined in your _config.yml file, with the addition of the preceding _ character.
+# Remember to define everything as a collection that you want to be able to search for.
+# The files in the _docs have the number prefix so the previous and next buttons work as expected and not alphabetically.
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+  showcase:
+    output: true
+    permalink: /:collection/:path/
+
+# Front Matter Defaults (https://jekyllrb.com/docs/configuration/front-matter-defaults/)
+# so you don't need to write values like the page template for each file
+defaults:
+  # _pages
+  - scope:
+      path: "" # an empty string here means all files in the project
+      # define the type so you don't set defaults for every file (.css files would not benefit)
+      # Type can be one of jekyll's defaults: pages, posts, drafts
+      # Everything that’s not a page, a post or a draft can be represented as a collection
+      type: pages
+    values:
+      layout: single
+  # _docs
+  - scope:
+      path: ""
+      type: docs
+    values:
+      layout: single
+      sidebar:
+        nav: "docs"
+  # _showcase
+  - scope:
+      path: ""
+      type: showcase
+    values:
+      layout: single
+  # _posts
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      read_time: true
+      related: true
