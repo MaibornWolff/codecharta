@@ -1,5 +1,4 @@
 import "./toolBar.component.scss"
-import { DialogService } from "../dialog/dialog.service"
 import { CodeMapMouseEventService, BuildingUnhoveredSubscriber, BuildingHoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -12,13 +11,9 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private dialogService: DialogService) {
+	constructor(private $rootScope: IRootScopeService) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-	}
-
-	public downloadFile() {
-		this.dialogService.showDownloadDialog()
 	}
 
 	public onBuildingHovered(data: CodeMapBuilding) {

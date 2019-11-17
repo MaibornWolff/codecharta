@@ -2,12 +2,7 @@
 	<div class="small-action-button">
 		<file-chooser-directive></file-chooser-directive>
 	</div>
-
-	<div class="small-action-button download">
-		<md-button class="md-fab md-primary cc-shadow" ng-click="$ctrl.downloadFile()">
-			<i class="fa fa-download"></i>
-		</md-button>
-	</div>
+	<download-button-component></download-button-component>
 
 	<file-panel-component ng-class="{ hidden: $ctrl._viewModel.nodeHovered }"></file-panel-component>
 	<node-path-panel-component ng-class="{ hidden: !$ctrl._viewModel.nodeHovered }"></node-path-panel-component>

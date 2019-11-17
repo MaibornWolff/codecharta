@@ -1,45 +1,27 @@
 import "./toolBar.module"
 import { ToolBarController } from "./toolBar.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { DialogService } from "../dialog/dialog.service"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("ToolBarController", () => {
 	let $rootScope: IRootScopeService
 	let toolBarController: ToolBarController
-	let dialogService: DialogService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedDialogService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.toolBar")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		dialogService = getService<DialogService>("dialogService")
 	}
 
 	function rebuildController() {
-		toolBarController = new ToolBarController($rootScope, dialogService)
+		toolBarController = new ToolBarController($rootScope)
 	}
-
-	function withMockedDialogService() {
-		dialogService = toolBarController["dialogService"] = jest.fn().mockReturnValue({
-			showDownloadDialog: jest.fn()
-		})()
-	}
-
-	describe("downloadFile", () => {
-		it("should call showDownloadDialog", () => {
-			toolBarController.downloadFile()
-
-			expect(dialogService.showDownloadDialog).toHaveBeenCalled()
-		})
-	})
 
 	describe("onBuildingHovered", () => {
 		it("should set nodeHovered to true if node is hovered", () => {
