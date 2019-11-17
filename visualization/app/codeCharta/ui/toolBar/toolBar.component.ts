@@ -5,9 +5,9 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {
-		nodeHovered: boolean
+		isNodeHovered: boolean
 	} = {
-		nodeHovered: null
+		isNodeHovered: null
 	}
 
 	/* @ngInject */
@@ -17,11 +17,11 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 	}
 
 	public onBuildingHovered(data: CodeMapBuilding) {
-		this._viewModel.nodeHovered = true
+		this._viewModel.isNodeHovered = true
 	}
 
 	public onBuildingUnhovered() {
-		this._viewModel.nodeHovered = false
+		this._viewModel.isNodeHovered = false
 	}
 }
 
