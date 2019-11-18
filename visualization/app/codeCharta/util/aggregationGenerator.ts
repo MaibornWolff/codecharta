@@ -32,7 +32,6 @@ export class AggregationGenerator {
 				type: "Folder",
 				children: [],
 				attributes: {},
-				origin: "file_aggregation_of_" + this.fileNameArray.join("_and_"),
 				path: CodeChartaService.ROOT_PATH,
 				visible: true
 			},

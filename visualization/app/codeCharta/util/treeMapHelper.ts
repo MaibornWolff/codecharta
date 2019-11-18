@@ -69,7 +69,6 @@ export class TreeMapHelper {
 					: 0,
 			visible: squaredNode.data.visible && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
 			path: squaredNode.data.path,
-			origin: squaredNode.data.origin,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
 			flat: flattened,
