@@ -15,7 +15,6 @@ export class NodeDecorator {
 	}
 
 	public static preDecorateFile(file: CCFile): CCFile {
-		// TODO: predecorate origin as well? so in multiple mode the files keep its original origin attribute
 		let decoratedFile: CCFile = _.cloneDeep(file)
 		this.decorateMapWithPathAttribute(decoratedFile)
 		return decoratedFile
@@ -77,7 +76,6 @@ export class NodeDecorator {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.each(node => {
 				node.data.visible = true
-				node.data.origin = fileMeta.fileName
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				node.data.edgeAttributes = !node.data.edgeAttributes ? {} : node.data.edgeAttributes
 				Object.assign(node.data.attributes, { unary: 1 })
