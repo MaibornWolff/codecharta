@@ -70,7 +70,7 @@ export class CodeChartaService {
 		return newAttributeTypes
 	}
 
-	private potentiallyUpdateBlacklistTypes(blacklist: BlacklistItem[]): BlacklistItem[] {
+	private potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
 		blacklist.forEach(x => {
 			if (x.type === "hide") {
 				x.type = BlacklistType.flatten
