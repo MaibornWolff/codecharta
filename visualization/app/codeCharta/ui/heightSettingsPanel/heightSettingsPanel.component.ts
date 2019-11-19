@@ -1,5 +1,6 @@
 import "./heightSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
+import { Vector3 } from "three"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
@@ -54,11 +55,10 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
 	}
 
 	public applySettingsScaling() {
+		const oldScaling = this.settingsService.getSettings().appSettings.scaling
 		this.settingsService.updateSettings({
 			appSettings: {
-				scaling: {
-					y: this._viewModel.scalingY
-				}
+				scaling: new Vector3(oldScaling.x, this._viewModel.scalingY, oldScaling.z)
 			}
 		})
 	}

@@ -69,7 +69,6 @@ export class TreeMapHelper {
 					: 0,
 			visible: squaredNode.data.visible && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
 			path: squaredNode.data.path,
-			origin: squaredNode.data.origin,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
 			flat: flattened,
@@ -81,17 +80,17 @@ export class TreeMapHelper {
 
 	private static getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
 		if (width > length) {
-			return new Vector3(vector.x - mapSize * 0.5 + width / 4, vector.y + height, vector.z - mapSize * 0.5 + length / 2)
+			return new Vector3(vector.x - mapSize + width / 4, vector.y + height, vector.z - mapSize + length / 2)
 		} else {
-			return new Vector3(vector.x - mapSize * 0.5 + width / 2, vector.y + height, vector.z - mapSize * 0.5 + length / 4)
+			return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + length / 4)
 		}
 	}
 
 	private static getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
 		if (width > length) {
-			return new Vector3(vector.x - mapSize * 0.5 + 0.75 * width, vector.y + height, vector.z - mapSize * 0.5 + length / 2)
+			return new Vector3(vector.x - mapSize + 0.75 * width, vector.y + height, vector.z - mapSize + length / 2)
 		} else {
-			return new Vector3(vector.x - mapSize * 0.5 + width / 2, vector.y + height, vector.z - mapSize * 0.5 + 0.75 * length)
+			return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + 0.75 * length)
 		}
 	}
 

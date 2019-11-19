@@ -1,4 +1,6 @@
 import "./heightSettingsPanel.module"
+
+import { Vector3 } from "three"
 import { HeightSettingsPanelController } from "./heightSettingsPanel.component"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
@@ -36,7 +38,8 @@ describe("HeightSettingsPanelController", () => {
 
 	function withMockedSettingsService() {
 		settingsService = heightSettingsPanelController["settingsService"] = jest.fn().mockReturnValue({
-			updateSettings: jest.fn()
+			updateSettings: jest.fn(),
+			getSettings: jest.fn().mockReturnValue({ appSettings: { scaling: new Vector3(1, 1, 1) } })
 		})()
 	}
 
@@ -132,9 +135,7 @@ describe("HeightSettingsPanelController", () => {
 			heightSettingsPanelController["_viewModel"].scalingY = 1.8
 			const expected = {
 				appSettings: {
-					scaling: {
-						y: 1.8
-					}
+					scaling: new Vector3(1, 1.8, 1)
 				}
 			}
 
