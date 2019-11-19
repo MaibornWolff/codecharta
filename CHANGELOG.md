@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Sum hovered delta values for folders #781
+
 ### Changed
 
 ### Removed 🗑
