@@ -12,6 +12,7 @@ import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
+import _ from "lodash"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -44,8 +45,8 @@ describe("codeMapPreRenderService", () => {
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		file = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS))
+		settings = _.cloneDeep(SETTINGS)
+		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
 	}
 
 	function rebuildService() {
@@ -69,6 +70,12 @@ describe("codeMapPreRenderService", () => {
 		})()
 	}
 
+	function withMockedCodeMapRenderService() {
+		codeMapRenderService = codeMapPreRenderService["codeMapRenderService"] = jest.fn().mockReturnValue({
+			render: jest.fn()
+		})()
+	}
+
 	function withMockedLoadingStatusService() {
 		loadingStatusService = codeMapPreRenderService["loadingStatusService"] = jest.fn().mockReturnValue({
 			updateLoadingMapFlag: jest.fn(),
@@ -81,6 +88,7 @@ describe("codeMapPreRenderService", () => {
 		const fileMeta = { fileName: "foo", apiVersion: "1.0", projectName: "bar" }
 		codeMapPreRenderService["lastRender"].fileMeta = fileMeta
 		codeMapPreRenderService["lastRender"].map = VALID_NODE
+		codeMapPreRenderService["lastRender"].fileStates = []
 	}
 
 	describe("constructor", () => {
@@ -150,6 +158,7 @@ describe("codeMapPreRenderService", () => {
 			NodeDecorator.decorateParentNodesWithSumAttributes = jest.fn()
 			const fileMeta = { fileName: "foo", apiVersion: "1.0", projectName: "bar" }
 			withLastRenderData()
+			withMockedCodeMapRenderService()
 
 			codeMapPreRenderService.onMetricDataAdded(METRIC_DATA)
 
@@ -167,6 +176,7 @@ describe("codeMapPreRenderService", () => {
 				}
 			})
 			withLastRenderData()
+			withMockedCodeMapRenderService()
 
 			codeMapPreRenderService.onMetricDataAdded(METRIC_DATA)
 

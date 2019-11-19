@@ -1,7 +1,7 @@
 "use strict"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
-import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta, EdgeMetricCount } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta, EdgeMetricCount, KeyValuePair } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 
@@ -100,12 +100,13 @@ export class NodeDecorator {
 		map: CodeMapNode,
 		blacklist: BlacklistItem[],
 		metricData: MetricData[],
-		edgeMetricData: MetricData[]
+		edgeMetricData: MetricData[],
+		isDeltaState: boolean
 	) {
 		if (map) {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.each((node: HierarchyNode<CodeMapNode>) => {
-				this.decorateNodeWithChildrenSumMetrics(node, blacklist, metricData, edgeMetricData)
+				this.decorateNodeWithChildrenSumMetrics(node, blacklist, metricData, edgeMetricData, isDeltaState)
 			})
 		}
 		return map
@@ -115,13 +116,17 @@ export class NodeDecorator {
 		node: HierarchyNode<CodeMapNode>,
 		blacklist: BlacklistItem[],
 		metricData: MetricData[],
-		edgeMetricData: MetricData[]
+		edgeMetricData: MetricData[],
+		isDeltaState: boolean
 	) {
 		const leaves = node.leaves().filter(x => !CodeMapHelper.isBlacklisted(x.data, blacklist, BlacklistType.exclude))
 
 		metricData.forEach(metric => {
 			if (node.data.children && node.data.children.length > 0) {
-				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(leaves, metric.name)
+				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(leaves.map(x => x.data.attributes), metric.name)
+				if (isDeltaState) {
+					node.data.deltas[metric.name] = this.getMetricSumOfLeaves(leaves.map(x => x.data.deltas), metric.name)
+				}
 			}
 		})
 		edgeMetricData.forEach(edgeMetric => {
@@ -131,18 +136,17 @@ export class NodeDecorator {
 		})
 	}
 
-	private static getMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metric: string): number {
-		const metricValues = leaves.map(x => x.data.attributes[metric]).filter(x => !!x)
+	private static getMetricSumOfLeaves(metrics: KeyValuePair[], metricName: string): number {
+		const metricValues: number[] = metrics.map(x => x[metricName]).filter(x => !!x)
 
 		if (metricValues.length > 0) {
 			return metricValues.reduce((partialSum, a) => partialSum + a)
 		}
-
 		return 0
 	}
 
-	private static getEdgeMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metric: string): EdgeMetricCount {
-		const metricValues = leaves.map(x => x.data.edgeAttributes[metric]).filter(x => !!x)
+	private static getEdgeMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metricName: string): EdgeMetricCount {
+		const metricValues: EdgeMetricCount[] = leaves.map(x => x.data.edgeAttributes[metricName]).filter(x => !!x)
 
 		if (metricValues.length > 0) {
 			const sum = { incoming: 0, outgoing: 0 }

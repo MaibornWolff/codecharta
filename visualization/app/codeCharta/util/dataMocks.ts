@@ -338,6 +338,53 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	deltas: {},
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf.jpg",
+			type: "File",
+			path: "/root/big leaf.jpg",
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			deltas: { rloc: 300, functions: -15, mcc: 12 }
+		},
+		{
+			name: "another big leaf.java",
+			type: "File",
+			path: "/root/another big leaf.java",
+			attributes: { rloc: 120, functions: 20, mcc: 2 },
+			deltas: { rloc: -150, functions: 9, mcc: 33 }
+		},
+		{
+			name: "Parent Leaf",
+			type: "Folder",
+			attributes: {},
+			deltas: {},
+			path: "/root/Parent Leaf",
+			children: [
+				{
+					name: "small leaf.jpg",
+					type: "File",
+					path: "/root/Parent Leaf/small leaf.json",
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					deltas: { rloc: -55, functions: 38, mcc: -40 }
+				},
+				{
+					name: "other small leaf.json",
+					type: "File",
+					path: "/root/Parent Leaf/other small leaf.json",
+					attributes: { rloc: 70, functions: 1000, mcc: 10 },
+					deltas: { rloc: 200, functions: -27, mcc: 65 }
+				}
+			]
+		}
+	]
+}
+
 export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 	name: "root",
 	attributes: {},
