@@ -24,6 +24,8 @@ describe("StoreService", () => {
 	}
 
 	describe("someMethodName", () => {
-		it("should do something", () => {})
+		it("should do something", () => {
+			storeService.getState()
+		})
 	})
 })
