@@ -51,12 +51,10 @@ describe("MetricValueHoveredController", () => {
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 		})
 
-		it("should subscribe to Metric-Events", () => {
+		it("should subscribe to Height-Metric", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
 			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
-			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
 		})
 
 		it("should subscribe to Building-Hovered-Event", () => {
@@ -72,14 +70,6 @@ describe("MetricValueHoveredController", () => {
 		})
 	})
 
-	describe("onAreaMetricChanged", () => {
-		it("should update the viewModel", () => {
-			metricValueHoveredController.onAreaMetricChanged("rloc")
-
-			expect(metricValueHoveredController["_viewModel"].areaMetric).toEqual("rloc")
-		})
-	})
-
 	describe("onHeightMetricChanged", () => {
 		it("should update the viewModel", () => {
 			metricValueHoveredController.onHeightMetricChanged("rloc")
@@ -88,20 +78,10 @@ describe("MetricValueHoveredController", () => {
 		})
 	})
 
-	describe("onColorMetricChanged", () => {
-		it("should update the viewModel", () => {
-			metricValueHoveredController.onColorMetricChanged("rloc")
-
-			expect(metricValueHoveredController["_viewModel"].colorMetric).toEqual("rloc")
-		})
-	})
-
 	describe("onBuildingHovered", () => {
 		it("should set hovered values and set hovered deltas to null if not delta", () => {
 			withMockedBuildingTransitions()
-			metricValueHoveredController["_viewModel"].areaMetric = "area"
 			metricValueHoveredController["_viewModel"].heightMetric = "height"
-			metricValueHoveredController["_viewModel"].colorMetric = "color"
 
 			metricValueHoveredController.onBuildingHovered(codeMapBuilding)
 			const node: Node = metricValueHoveredController["_viewModel"]["hoveredNode"]
@@ -114,9 +94,7 @@ describe("MetricValueHoveredController", () => {
 
 		it("should set hovered values and deltas if delta", () => {
 			withMockedBuildingTransitions()
-			metricValueHoveredController["_viewModel"].areaMetric = "area"
 			metricValueHoveredController["_viewModel"].heightMetric = "height"
-			metricValueHoveredController["_viewModel"].colorMetric = "color"
 
 			metricValueHoveredController.onBuildingHovered(deltaBuilding)
 
