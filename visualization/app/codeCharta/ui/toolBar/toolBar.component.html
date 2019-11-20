@@ -1,25 +1,13 @@
 <div class="tool-bar">
-	<div class="small-action-button">
-		<file-chooser-directive></file-chooser-directive>
-	</div>
+	<file-chooser-directive></file-chooser-directive>
+	<download-button-component></download-button-component>
 
-	<div class="small-action-button download">
-		<md-button class="md-fab md-primary cc-shadow" ng-click="$ctrl.downloadFile()">
-			<i class="fa fa-download"></i>
-		</md-button>
-	</div>
-
-	<file-panel-component ng-class="{ hidden: $ctrl._viewModel.nodeHovered }"></file-panel-component>
-	<node-path-panel-component ng-class="{ hidden: !$ctrl._viewModel.nodeHovered }"></node-path-panel-component>
+	<file-panel-component ng-class="{ hidden: $ctrl._viewModel.isNodeHovered }"></file-panel-component>
+	<node-path-panel-component ng-class="{ hidden: !$ctrl._viewModel.isNodeHovered }"></node-path-panel-component>
 
 	<div class="right-aligned">
 		<presentation-mode-button-component></presentation-mode-button-component>
-
 		<loading-gif-map-component></loading-gif-map-component>
-		<div class="small-action-button global-settings">
-			<md-button class="md-fab md-primary cc-shadow" ng-click="$ctrl.showGlobalSettings()">
-				<i class="fa fa-cog"></i>
-			</md-button>
-		</div>
+		<global-settings-button-component></global-settings-button-component>
 	</div>
 </div>

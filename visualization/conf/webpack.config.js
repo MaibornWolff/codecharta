@@ -1,27 +1,28 @@
-const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
-const BrowserSyncPlugin = require("browser-sync-webpack-plugin")
 const path = require("path")
-const CleanWebpackPlugin = require("clean-webpack-plugin")
+const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 
 const dist = path.resolve(__dirname, "../dist/webpack")
 
 module.exports = {
+	mode: "development",
 	entry: "./app/app.ts",
 	output: {
 		filename: "bundle.js",
 		path: dist
 	},
+	devServer: {
+		contentBase: dist,
+		compress: true, // enable gzip compression
+		hot: true, // hot module replacement. Depends on HotModuleReplacementPlugin
+		port: 3000,
+		clientLogLevel: "error"
+	},
 	module: require("./webpack.loaders.js"),
 	plugins: [
-		new CleanWebpackPlugin([dist], { verbose: true, root: dist + "/.." }),
+		new CleanWebpackPlugin(),
 		new HtmlWebpackPlugin({
 			template: "./app/index.html"
-		}),
-		new BrowserSyncPlugin({
-			host: "localhost",
-			port: 3000,
-			server: { baseDir: [dist] }
 		})
 	],
 	devtool: "source-map",
