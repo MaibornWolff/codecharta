@@ -216,6 +216,16 @@ describe("MetricChooserController", () => {
 		})
 	})
 
+	describe("applySettingsDistributionMetric", () => {
+		it("should update distribution metric  settings", () => {
+			metricChooserController["_viewModel"].distributionMetric = "d"
+
+			metricChooserController.applySettingsDistributionMetric()
+
+			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { distributionMetric: "d" } })
+		})
+	})
+
 	describe("filterMetricData", () => {
 		it("should return the default MetricData list", () => {
 			let metricData = [
