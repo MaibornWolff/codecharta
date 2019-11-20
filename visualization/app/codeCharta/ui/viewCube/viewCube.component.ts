@@ -1,10 +1,13 @@
 import "./viewCube.component.scss"
 import * as THREE from "three"
+import { PerspectiveCamera } from "three"
 import { IRootScopeService } from "angular"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
-import { ThreeOrbitControlsService, CameraChangeSubscriber } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { PerspectiveCamera } from "three"
-import { ViewCubeMouseEventsService, ViewCubeEventSubscriber } from "./viewCube.mouseEvents.service"
+import { CameraChangeSubscriber, ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { ViewCubeEventSubscriber, ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
+import { StoreService } from "../../state/store.service"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { BlacklistType } from "../../codeCharta.model"
 
 export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEventSubscriber {
 	private lights: THREE.Group
@@ -29,7 +32,8 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		private $element,
 		private $rootScope: IRootScopeService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
-		private viewCubeMouseEventsService: ViewCubeMouseEventsService
+		private viewCubeMouseEventsService: ViewCubeMouseEventsService,
+		private storeService: StoreService
 	) {
 		this.initScene()
 		this.initLights()
@@ -124,6 +128,8 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 			originalMaterial: cube.material
 		}
 		this.hoverInfo.cube.material.emissive = new THREE.Color(0xffffff)
+
+		console.log("store: ", this.storeService.getState())
 	}
 
 	public onCubeUnhovered() {
@@ -132,6 +138,10 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	public onCubeClicked(cube: THREE.Mesh) {
+		console.log("CLICKED!")
+		this.storeService.dispatch(addBlacklistItem({ type: BlacklistType.hide, path: "abc" }))
+		console.log("Store is now:", this.storeService.getState())
+
 		switch (cube) {
 			case this.cubeDefinition.front.top.middle:
 				this.threeOrbitControlsService.rotateCameraInVectorDirection(0, -1, -1)
