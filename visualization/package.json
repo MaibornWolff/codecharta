@@ -86,7 +86,7 @@
 			"!**/node_modules/**"
 		],
 		"coveragePathIgnorePatterns": [
-			"(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
+			"(/__tests__/.*|\\.(spec|e2e|po))\\.(ts|tsx)$",
 			"<rootDir>/app/puppeteer.helper.ts"
 		],
 		"snapshotSerializers": [
