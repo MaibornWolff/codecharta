@@ -24,7 +24,6 @@ Object {
   "link": undefined,
   "markingColor": null,
   "name": "Anode",
-  "origin": undefined,
   "outgoingEdgePoint": Vector3 {
     "x": 199,
     "y": 102,
@@ -61,7 +60,6 @@ Object {
   "link": undefined,
   "markingColor": null,
   "name": "Anode",
-  "origin": undefined,
   "outgoingEdgePoint": Vector3 {
     "x": 199,
     "y": 1902,
@@ -98,7 +96,6 @@ Object {
   "link": undefined,
   "markingColor": null,
   "name": "Anode",
-  "origin": undefined,
   "outgoingEdgePoint": Vector3 {
     "x": 199,
     "y": 102,
@@ -135,7 +132,6 @@ Object {
   "link": undefined,
   "markingColor": null,
   "name": "Anode",
-  "origin": undefined,
   "outgoingEdgePoint": Vector3 {
     "x": 199,
     "y": 102,
