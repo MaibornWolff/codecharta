@@ -69,7 +69,6 @@ export class FileDownloader {
 		let copy: CodeMapNode = _.cloneDeep(map)
 		d3.hierarchy(copy).each(node => {
 			delete node.data.visible
-			delete node.data.origin
 			delete node.data.edgeAttributes
 			delete node.data.path
 			if (node.data.type === "Folder") {
