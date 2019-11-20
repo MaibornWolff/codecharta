@@ -43,10 +43,7 @@ describe("MetricValueHoveredController", () => {
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			SettingsService.subscribeToAreaMetric = jest.fn()
 			SettingsService.subscribeToHeightMetric = jest.fn()
-			SettingsService.subscribeToColorMetric = jest.fn()
-
 			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 		})
