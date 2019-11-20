@@ -624,7 +624,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		dynamicMargin: true,
-		hideFlatBuildings: true,
+		hideFlatBuildings: false,
 		invertHeight: false,
 		invertColorRange: false,
 		isWhiteBackground: false,
@@ -734,7 +734,7 @@ export const METRIC_DATA: MetricData[] = [
 export const BLACKLIST: BlacklistItem[] = [
 	{
 		path: "/my/path",
-		type: BlacklistType.hide
+		type: BlacklistType.flatten
 	},
 	{
 		path: "/my/different/path",
