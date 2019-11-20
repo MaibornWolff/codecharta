@@ -7,11 +7,13 @@ import { METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION, SETTINGS, TEST_FILE_WITH
 import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
 import { BlacklistType, Settings } from "../../codeCharta.model"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
+	let threeSceneService: ThreeSceneService
 
 	let distribution: MetricDistribution[] = METRIC_DISTRIBUTION
 	let settings: Settings
@@ -32,7 +34,7 @@ describe("FileExtensionBarController", () => {
 	}
 
 	function rebuildController() {
-		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService)
+		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService, threeSceneService)
 	}
 
 	function withMockedSettingsService() {

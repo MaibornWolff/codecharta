@@ -5,6 +5,8 @@ import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { HSL } from "../../util/color/hsl"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
@@ -16,7 +18,11 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private settingsService: SettingsService,
+		private threeSceneService: ThreeSceneService
+	) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
@@ -24,6 +30,23 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.setNewDistribution(map)
 		this.setColorForEachExtension()
 		this.potentiallyAddNoneExtension()
+	}
+
+	//TODO: None extensions are not found
+
+	public highlightBarHoveredBuildings(extension: string) {
+		let buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
+		buildings.forEach(building => {
+			if (FileExtensionCalculator.estimateFileExtension(building.node.name) === extension) {
+				this.threeSceneService.addBuildingToHighlightingList(building)
+			}
+		})
+
+		this.threeSceneService.highlightBuildings()
+	}
+
+	public clearHighlightedBarHoveredBuildings() {
+		this.threeSceneService.clearHighlight()
 	}
 
 	public toggleExtensiveMode() {
