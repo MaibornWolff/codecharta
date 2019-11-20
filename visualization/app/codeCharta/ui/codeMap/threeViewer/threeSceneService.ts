@@ -28,7 +28,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private mapMesh: CodeMapMesh
 
 	private selected: CodeMapBuilding = null
-	private highlighted: CodeMapBuilding = null
 	private highlightedBuildings: CodeMapBuilding[] = []
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
@@ -53,21 +52,21 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public highlightBuilding(building: CodeMapBuilding) {
+		this.addBuildingToHighlightingList(building)
+		this.highlightBuildings()
+	}
+
+	public highlightBuildings() {
 		const settings = this.settingsService.getSettings()
-		this.getMapMesh().highlightBuilding(building, this.selected, settings)
-		this.highlightedBuildings = []
-		this.highlighted = building
+		this.getMapMesh().highlightMultipleBuildings(this.highlightedBuildings, this.selected, settings)
 	}
 
 	public addBuildingToHighlightingList(building: CodeMapBuilding) {
-		const settings = this.settingsService.getSettings()
 		this.highlightedBuildings.push(building)
-		this.getMapMesh().highlightBuildings(this.highlightedBuildings, this.selected, settings)
 	}
 
 	public clearHighlight() {
 		this.getMapMesh().clearHighlight(this.selected)
-		this.highlighted = null
 		this.highlightedBuildings = []
 	}
 
@@ -83,8 +82,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.getMapMesh().clearSelection(this.selected)
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
-		if (this.highlighted) {
-			this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
+		if (this.highlightedBuildings.length > 0) {
+			this.highlightBuildings()
 		}
 		this.selected = null
 	}
@@ -145,7 +144,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public getHighlightedBuilding(): CodeMapBuilding {
-		return this.highlighted
+		return this.highlightedBuildings[0]
 	}
 
 	private reselectBuilding() {
