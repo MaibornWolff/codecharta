@@ -1,6 +1,6 @@
 import _ from "lodash"
-import { BlacklistItem } from "../../../codeCharta.model"
-import { BlacklistAction, BlacklistActions } from "../../actions/blacklist"
+import { BlacklistItem } from "../../../../codeCharta.model"
+import { BlacklistAction, BlacklistActions } from "./blacklist.actions"
 
 export function blacklist(state: BlacklistItem[] = [], action: BlacklistAction): BlacklistItem[] {
 	switch (action.type) {

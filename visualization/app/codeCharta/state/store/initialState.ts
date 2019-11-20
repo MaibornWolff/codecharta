@@ -1,6 +1,7 @@
 import { State } from "../../codeCharta.model"
 import { Vector3 } from "three"
 
+// This will be gone, once all the initialStates are specific on their reducer
 export const initialState: State = {
 	fileSettings: {
 		attributeTypes: { nodes: [], edges: [] },

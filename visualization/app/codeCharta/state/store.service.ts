@@ -1,5 +1,5 @@
 import { createStore, Store, Action } from "redux"
-import rootReducer from "./reducers/reducer"
+import rootReducer from "./store/reducer"
 import { State } from "../codeCharta.model"
 
 export class StoreService {
