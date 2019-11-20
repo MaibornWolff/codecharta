@@ -12,6 +12,7 @@ import {
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "./attributeSideBar.service"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 export interface PrimaryMetrics {
 	node: {
@@ -34,18 +35,24 @@ export class AttributeSideBarController
 		AttributeSideBarVisibilitySubscriber {
 	private _viewModel: {
 		node: Node
+		fileName: string
 		primaryMetricKeys: PrimaryMetrics
 		secondaryMetricKeys: string[]
 		isSideBarVisible: boolean
 	} = {
 		node: null,
+		fileName: null,
 		primaryMetricKeys: { node: {}, edge: {} } as PrimaryMetrics,
 		secondaryMetricKeys: null,
 		isSideBarVisible: null
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private attributeSideBarService: AttributeSideBarService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private attributeSideBarService: AttributeSideBarService
+	) {
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
@@ -56,6 +63,7 @@ export class AttributeSideBarController
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
+		this._viewModel.fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 

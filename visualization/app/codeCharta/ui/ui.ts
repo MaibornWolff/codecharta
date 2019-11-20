@@ -4,6 +4,8 @@ import angular from "angular"
 
 // Plop: Append module import here
 import "./metricValueHovered/metricValueHovered.module"
+import "./downloadButton/downloadButton.module"
+import "./globalSettingsButton/globalSettingsButton.module"
 import "./metricDeltaSelected/metricDeltaSelected.module"
 import "./nodePathPanel/nodePathPanel.module"
 import "./attributeSideBar/attributeSideBar.module"
@@ -40,6 +42,8 @@ import "./viewCube/viewCube.module"
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
 	"app.codeCharta.ui.metricValueHovered",
+	"app.codeCharta.ui.downloadButton",
+	"app.codeCharta.ui.globalSettingsButton",
 	"app.codeCharta.ui.metricDeltaSelected",
 	"app.codeCharta.ui.nodePathPanel",
 	"app.codeCharta.ui.attributeSideBar",
