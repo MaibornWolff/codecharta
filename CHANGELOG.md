@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Replaced Blacklist Hide with Flatten option #691
+- Flattened buildings are not hidden by default #691
+
 ### Removed 🗑
 
 ### Fixed 🐞
@@ -69,8 +72,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Downloaded files are no longer formatted #679
 - Added highly and median coupled files metrics to non-churn metric list of SCMLogParser #622
 - Moved nodePathPanel to toolBar and updated style #607
-- Replaced Blacklist Hide with Flatten option #691
-- Flattened buildings are not hidden by default #691
 
 ### Removed
 
