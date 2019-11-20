@@ -1,8 +1,7 @@
+import "./metricChooser.component.scss"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import "./metricChooser.component.scss"
-import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { MetricData, DynamicSettings, RecursivePartial, Node } from "../../codeCharta.model"
+import { MetricData, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import {
 	AreaMetricSubscriber,
@@ -12,17 +11,9 @@ import {
 } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import _ from "lodash"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class MetricChooserController
-	implements
-		MetricServiceSubscriber,
-		BuildingHoveredSubscriber,
-		BuildingUnhoveredSubscriber,
-		AreaMetricSubscriber,
-		HeightMetricSubscriber,
-		ColorMetricSubscriber,
-		DistributionMetricSubscriber {
+	implements MetricServiceSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
 	private originalMetricData: MetricData[]
 
 	private _viewModel: {
@@ -31,8 +22,6 @@ export class MetricChooserController
 		colorMetric: string
 		heightMetric: string
 		distributionMetric: string
-		hoveredNode: Node
-		deltaColor: string
 		searchTerm: string
 	} = {
 		metricData: [],
@@ -40,8 +29,6 @@ export class MetricChooserController
 		colorMetric: null,
 		heightMetric: null,
 		distributionMetric: null,
-		hoveredNode: null,
-		deltaColor: null,
 		searchTerm: ""
 	}
 
@@ -51,10 +38,6 @@ export class MetricChooserController
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
 		SettingsService.subscribeToDistributionMetric(this.$rootScope, this)
-
-		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
@@ -170,37 +153,6 @@ export class MetricChooserController
 				distributionMetric: this._viewModel.distributionMetric
 			}
 		})
-	}
-
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		if (hoveredBuilding.node) {
-			this._viewModel.hoveredNode = hoveredBuilding.node
-			if (hoveredBuilding.node.deltas) {
-				this._viewModel.deltaColor = this.getHoveredDeltaColor()
-			}
-		}
-		this.synchronizeAngularTwoWayBinding()
-	}
-
-	public onBuildingUnhovered() {
-		this._viewModel.hoveredNode = null
-		this.synchronizeAngularTwoWayBinding()
-	}
-
-	private getHoveredDeltaColor() {
-		const heightDelta: number = this._viewModel.hoveredNode.deltas[this._viewModel.heightMetric]
-
-		if (heightDelta > 0) {
-			return "green"
-		} else if (heightDelta < 0) {
-			return "red"
-		} else {
-			return "inherit"
-		}
-	}
-
-	private synchronizeAngularTwoWayBinding() {
-		this.$timeout(() => {})
 	}
 }
 

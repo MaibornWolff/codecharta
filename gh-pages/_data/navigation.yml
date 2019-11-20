@@ -1,0 +1,60 @@
+# main links
+main:
+  - title: "Docs"
+    url: /docs/quick-start-guide/
+  - title: "Showcase"
+    url: /showcase/
+  - title: "News"
+    url: /news/
+
+# docs navigation bar
+docs:
+  - title: Getting Started
+    children:
+      - title: "Quick-Start Guide"
+        url: /docs/quick-start-guide/
+      - title: "Step-by-Step Example"
+        url: /docs/step-by-step/
+      - title: "Installation"
+        url: /docs/installation/
+      - title: "Versioning"
+        url: /docs/versioning/
+      - title: "Price"
+        url: /docs/price/
+      - title: "Feedback"
+        url: /docs/feedback/
+
+  - title: How-Tos
+    children:
+      - title: "How-Tos"
+        url: categories/#how-to
+
+  - title: Analysis
+    children:
+      - title: "Analysis"
+        url: /docs/analysis/
+      - title: "Metrics"
+        url: /docs/metrics/
+      - title: "CodeCharta Shell"
+        url: /docs/ccsh/
+      - title: "Custom Metrics"
+        url: /docs/custom-metrics/
+
+  - title: Visualization
+    children:
+      - title: "Visualization"
+        url: /docs/visualization/
+      - title: "User Controls"
+        url: /docs/user-controls/
+      - title: "Timeline"
+        url: /docs/timeline/
+
+  - title: Reference
+    children:
+      - title: "New to this Code?"
+        url: /docs/new-to-code/
+
+  - title: Meta
+    children:
+      - title: "License"
+        url: /docs/license/

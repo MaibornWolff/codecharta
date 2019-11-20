@@ -8,12 +8,12 @@ import { BlacklistSubscriber, SearchPatternSubscriber } from "../../state/settin
 export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
-		hideListLength: number
+		flattenListLength: number
 		excludeListLength: number
 		searchFieldIsEmpty: boolean
 	} = {
 		searchPanelMode: SearchPanelMode.minimized,
-		hideListLength: 0,
+		flattenListLength: 0,
 		excludeListLength: 0,
 		searchFieldIsEmpty: true
 	}
@@ -30,7 +30,7 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this._viewModel.hideListLength = blacklist.filter(x => x.type === BlacklistType.hide).length
+		this._viewModel.flattenListLength = blacklist.filter(x => x.type === BlacklistType.flatten).length
 		this._viewModel.excludeListLength = blacklist.filter(x => x.type === BlacklistType.exclude).length
 	}
 

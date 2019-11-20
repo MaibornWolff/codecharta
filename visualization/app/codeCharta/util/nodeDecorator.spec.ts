@@ -277,15 +277,6 @@ describe("nodeDecorator", () => {
 			expect(h.data.attributes["functions"]).toBe(1110)
 		})
 
-		it("all nodes should have an origin", () => {
-			map.children[0].origin = undefined
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			let h = d3.hierarchy(result)
-			h.each(node => {
-				expect(node.data.origin).toBeDefined()
-			})
-		})
-
 		it("maps with no attribute nodes should be accepted and an attributes member added", () => {
 			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
 

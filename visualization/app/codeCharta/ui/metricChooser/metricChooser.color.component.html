@@ -27,13 +27,5 @@
 		</md-content>
 	</md-select>
 
-	<div>
-		<color-metric-type-component></color-metric-type-component>
-		<span class="metric-value"
-			>{{ ($ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.colorMetric] | number) || "-" }}
-			<span ng-show="$ctrl._viewModel.hoveredNode.deltas"
-				>(&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.colorMetric] | number }})</span
-			>
-		</span>
-	</div>
+	<color-metric-value-hovered-component></color-metric-value-hovered-component>
 </md-input-container>
