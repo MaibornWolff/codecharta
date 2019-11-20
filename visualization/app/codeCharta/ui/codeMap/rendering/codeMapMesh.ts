@@ -4,6 +4,7 @@ import { CodeMapGeometricDescription, IntersectionResult } from "./codeMapGeomet
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, Settings } from "../../../codeCharta.model"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
+import { TreeMapHelper } from "../../../util/treeMapHelper"
 
 export interface MousePos {
 	x: number
@@ -13,6 +14,8 @@ export interface MousePos {
 export class CodeMapMesh {
 	public static readonly NUM_OF_COLOR_VECTOR_FIELDS = 3
 	public static readonly NUM_OF_VERTICES = 24
+	public static readonly LIGHTNESS_INCREASE = -10
+	public static readonly LIGHTNESS_DECREASE = 20
 
 	private threeMesh: Mesh
 	private material: ShaderMaterial
@@ -74,39 +77,28 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	public highlightBuilding(highlighted: CodeMapBuilding, selected: CodeMapBuilding, settings: Settings) {
-		const mapSize = settings.treeMapSettings.mapSize
-
-		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
-			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
-			this.setNewDeltaColor(currentBuilding, settings)
-			const distance = highlighted.getCenterPoint(mapSize).distanceTo(currentBuilding.getCenterPoint(mapSize))
-
-			if (!this.isBuildingSelected(selected, currentBuilding)) {
-				if (!currentBuilding.equals(highlighted)) {
-					if (settings.appSettings.isPresentationMode) {
-						this.decreaseLightnessByDistance(currentBuilding, distance)
-					} else {
-						currentBuilding.decreaseLightness(20)
-					}
-				} else {
-					currentBuilding.decreaseLightness(-10)
-				}
+	public highlightMultipleBuildings(buildingArray: CodeMapBuilding[], selected: CodeMapBuilding, settings: Settings) {
+		const highlightBuildingMap = TreeMapHelper.arrayToMap(buildingArray)
+		const allBuildings = this.mapGeomDesc.buildings
+		allBuildings.forEach(building => {
+			if (highlightBuildingMap.get(building.id)) {
+				building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
+			} else {
+				this.presentationModeHighlight(buildingArray, building, settings)
 			}
-			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector(), currentBuilding.getDeltaColorVector())
-		}
+			this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
+		})
 		this.updateVertices()
 	}
 
-	public highlightBuildings(buildingArray: CodeMapBuilding[], selected: CodeMapBuilding, settings: Settings) {
-		for (let i = 0; i < buildingArray.length; i++) {
-			const currentBuilding: CodeMapBuilding = buildingArray[i]
-			if (!this.isBuildingSelected(selected, currentBuilding)) {
-				currentBuilding.decreaseLightness(-10)
-			}
-			this.setVertexColor(currentBuilding.id, currentBuilding.getColorVector(), currentBuilding.getDeltaColorVector())
+	private presentationModeHighlight(buildingList: CodeMapBuilding[], building: CodeMapBuilding, settings: Settings) {
+		const mapSize = settings.treeMapSettings.mapSize
+		if (settings.appSettings.isPresentationMode && buildingList.length === 1) {
+			const distance = buildingList[0].getCenterPoint(mapSize).distanceTo(building.getCenterPoint(mapSize))
+			this.decreaseLightnessByDistance(building, distance)
+		} else {
+			building.decreaseLightness(CodeMapMesh.LIGHTNESS_DECREASE)
 		}
-		this.updateVertices()
 	}
 
 	public clearHighlight(selected: CodeMapBuilding) {
