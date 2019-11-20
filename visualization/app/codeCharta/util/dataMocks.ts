@@ -466,7 +466,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
-	blacklist: [{ path: "/root/bigLeaf.ts", type: "flatten" }, { path: "/root/sample1OnlyLeaf.scss", type: "exclude" }],
+	blacklist: [{ path: "/root/bigLeaf.ts", type: "hide" }, { path: "/root/sample1OnlyLeaf.scss", type: "exclude" }],
 	edges: [
 		{
 			attributes: {
