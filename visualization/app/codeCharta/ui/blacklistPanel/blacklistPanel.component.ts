@@ -1,10 +1,10 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
+import { StoreService } from "../../state/store.service"
 
 export class BlacklistPanelController implements BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
@@ -18,7 +18,7 @@ export class BlacklistPanelController implements BlacklistSubscriber, SearchPane
 	}
 
 	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
-		SettingsService.subscribeToBlacklist($rootScope, this)
+		StoreService.subscribeToBlacklist($rootScope, this)
 		SearchPanelService.subscribe($rootScope, this)
 	}
 

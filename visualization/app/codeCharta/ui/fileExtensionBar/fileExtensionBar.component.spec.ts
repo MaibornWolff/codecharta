@@ -7,11 +7,13 @@ import { METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION, SETTINGS, TEST_FILE_WITH
 import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
 import { BlacklistType, Settings } from "../../codeCharta.model"
+import { StoreService } from "../../state/store.service"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
+	let storeService: StoreService
 
 	let distribution: MetricDistribution[] = METRIC_DISTRIBUTION
 	let settings: Settings
@@ -20,6 +22,7 @@ describe("FileExtensionBarController", () => {
 		restartSystem()
 		rebuildController()
 		withMockedSettingsService()
+		withMockedStoreService()
 	})
 
 	function restartSystem() {
@@ -27,17 +30,24 @@ describe("FileExtensionBarController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 
 		settings = _.cloneDeep(SETTINGS)
 	}
 
 	function rebuildController() {
-		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService)
+		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService, storeService)
 	}
 
 	function withMockedSettingsService() {
 		settingsService = fileExtensionBarController["settingsService"] = jest.fn().mockReturnValue({
 			getSettings: jest.fn().mockReturnValue(settings)
+		})()
+	}
+
+	function withMockedStoreService() {
+		storeService = fileExtensionBarController["storeService"] = jest.fn().mockReturnValue({
+			getState: jest.fn().mockReturnValue(settings)
 		})()
 	}
 

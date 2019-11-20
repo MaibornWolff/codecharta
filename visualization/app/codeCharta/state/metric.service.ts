@@ -13,10 +13,10 @@ import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "./settingsService/settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
 import { BlacklistSubscriber } from "./settingsService/settings.service.events"
+import { StoreService } from "./store.service"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -38,7 +38,7 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		StoreService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {

@@ -6,7 +6,7 @@ import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.mode
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService } from "../../state/nodeSearch.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
 
 describe("MatchingFilesCounterController", () => {
 	let matchingFilesCounterController: MatchingFilesCounterController
@@ -29,7 +29,7 @@ describe("MatchingFilesCounterController", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			NodeSearchService.subscribe = jest.fn()
-			SettingsService.subscribeToBlacklist = jest.fn()
+			StoreService.subscribeToBlacklist = jest.fn()
 		})
 
 		it("should subscribe to NodeSearchService", () => {
@@ -41,7 +41,7 @@ describe("MatchingFilesCounterController", () => {
 		it("should subscribe to Blacklist-Event", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
+			expect(StoreService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
 		})
 	})
 

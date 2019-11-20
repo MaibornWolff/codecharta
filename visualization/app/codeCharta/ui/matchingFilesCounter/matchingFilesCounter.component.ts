@@ -1,10 +1,10 @@
 import "./matchingFilesCounter.component.scss"
 import { BlacklistType, BlacklistItem, CodeMapNode } from "../../codeCharta.model"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
+import { StoreService } from "../../state/store.service"
 
 export class MatchingFilesCounterController implements NodeSearchSubscriber, BlacklistSubscriber {
 	private _viewModel: {
@@ -25,7 +25,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	constructor($rootScope: IRootScopeService) {
 		NodeSearchService.subscribe($rootScope, this)
-		SettingsService.subscribeToBlacklist($rootScope, this)
+		StoreService.subscribeToBlacklist($rootScope, this)
 	}
 
 	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
