@@ -235,3 +235,10 @@ export interface Node {
 	incomingEdgePoint: Vector3
 	outgoingEdgePoint: Vector3
 }
+
+export interface State {
+	fileSettings: FileSettings
+	dynamicSettings: DynamicSettings
+	appSettings: AppSettings
+	treeMapSettings: TreeMapSettings
+}
