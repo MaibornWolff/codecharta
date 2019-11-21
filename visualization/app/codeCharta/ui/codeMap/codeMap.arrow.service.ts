@@ -35,7 +35,7 @@ export class CodeMapArrowService
 		if (settings.dynamicSettings.edgeMetric !== "None" && !selectedBuilding.node.flat) {
 			this.clickedNode = selectedBuilding.node
 			this.isClicked = true
-			this.showEdgesOfClickedBuilding(this.clickedNode, settings.fileSettings.edges)
+			this.showEdgesOfBuilding(this.clickedNode, settings.fileSettings.edges)
 		}
 		this.scale(this.settingsService.getSettings().appSettings.scaling)
 	}
@@ -52,9 +52,9 @@ export class CodeMapArrowService
 			this.isHovered = true
 			this.hoveredNode = hoveredBuilding.node
 			this.clearArrows()
-			this.showEdgesOfHoveredBuilding(hoveredBuilding.node, settings.fileSettings.edges)
+			this.showEdgesOfBuilding(hoveredBuilding.node, settings.fileSettings.edges)
 			if (this.isClicked) {
-				this.showEdgesOfClickedBuilding(this.clickedNode, settings.fileSettings.edges)
+				this.showEdgesOfBuilding(this.clickedNode, settings.fileSettings.edges)
 			}
 		}
 		this.scale(this.settingsService.getSettings().appSettings.scaling)
@@ -69,7 +69,7 @@ export class CodeMapArrowService
 		}
 		if (this.isClicked) {
 			this.clearArrows()
-			this.showEdgesOfClickedBuilding(this.clickedNode, settings.fileSettings.edges)
+			this.showEdgesOfBuilding(this.clickedNode, settings.fileSettings.edges)
 		}
 		this.scale(this.settingsService.getSettings().appSettings.scaling)
 	}
@@ -95,21 +95,11 @@ export class CodeMapArrowService
 		}
 	}
 
-	private showEdgesOfHoveredBuilding(hoveredNode: Node, edges: Edge[]) {
+	private showEdgesOfBuilding(node: Node, edges: Edge[]) {
 		for (const edge of edges) {
 			const originNode: Node = this.map.get(edge.fromNodeName)
 			const targetNode: Node = this.map.get(edge.toNodeName)
-			if (originNode && targetNode && (originNode.path === hoveredNode.path || targetNode.path === hoveredNode.path)) {
-				this.addArrow(targetNode, originNode)
-			}
-		}
-	}
-
-	private showEdgesOfClickedBuilding(clickedNode: Node, edges: Edge[]) {
-		for (const edge of edges) {
-			const originNode: Node = this.map.get(edge.fromNodeName)
-			const targetNode: Node = this.map.get(edge.toNodeName)
-			if (originNode && targetNode && (originNode.path === clickedNode.path || targetNode.path === clickedNode.path)) {
+			if (originNode && targetNode && (originNode.path === node.path || targetNode.path === node.path)) {
 				this.addArrow(targetNode, originNode)
 			}
 		}
