@@ -1,5 +1,5 @@
 import { Node, EdgeVisibility } from "../../codeCharta.model"
-import { ThreeSceneService } from "./threeViewer/threeSceneService"
+import { BuildingSelectedEventSubscriber, ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Edge } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
@@ -8,12 +8,14 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 
-export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+export class CodeMapArrowService implements BuildingSelectedEventSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private VERTICES_PER_LINE = 5
 	private map: Map<String, Node>
 	private arrows: Object3D[]
 	private isHovered: boolean = false
+	private isClicked: boolean = false
 	private hoveredNode: Node
+	private clickedNode: Node = null
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -23,6 +25,26 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 		this.arrows = new Array<Object3D>()
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
+		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
+	}
+
+	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
+		console.log("Building Selected", selectedBuilding)
+		console.log("IS SELECTED = HOVERED", selectedBuilding.node == this.hoveredNode)
+		const settings = this.settingsService.getSettings()
+		if (settings.dynamicSettings.edgeMetric !== "None" && !selectedBuilding.node.flat) {
+			if (this.clickedNode == selectedBuilding.node) {
+				console.log("same Node")
+				this.clickedNode = null
+				this.isClicked = false
+			} else {
+				console.log("new Node, Show Edges")
+				this.clickedNode = selectedBuilding.node
+				this.isClicked = true
+				this.showEdgesOfClickedBuilding(this.clickedNode, settings.fileSettings.edges)
+			}
+		}
+		this.scale(this.settingsService.getSettings().appSettings.scaling)
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -79,7 +101,18 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 		}
 	}
 
+	private showEdgesOfClickedBuilding(clickedNode: Node, edges: Edge[]) {
+		for (const edge of edges) {
+			const originNode: Node = this.map.get(edge.fromNodeName)
+			const targetNode: Node = this.map.get(edge.toNodeName)
+			if (originNode && targetNode && (originNode.path === clickedNode.path || targetNode.path === clickedNode.path)) {
+				this.addArrow(targetNode, originNode)
+			}
+		}
+	}
+
 	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, edgeVisibility?: EdgeVisibility): void {
+		console.log("new Arrow")
 		const settings = this.settingsService.getSettings()
 		const curveScale = 100 * settings.appSettings.edgeHeight
 
@@ -103,7 +136,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 				arrowTargetNode.incomingEdgePoint
 			)
 
-			if (this.isHovered) {
+			if (this.isClicked || this.isHovered) {
 				this.hoveredMode(curve, arrowOriginNode, arrowTargetNode)
 			} else {
 				this.previewMode(curve, edgeVisibility)
