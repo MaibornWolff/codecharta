@@ -149,35 +149,68 @@ export class CodeMapArrowService
 
 	private hoveredMode(bezier: CubicBezierCurve3, arrowOriginNode: Node, arrowTargetNode: Node, bezierPoints: number = 50) {
 		const points = bezier.getPoints(bezierPoints)
-		if (this.hoveredNode.path === arrowOriginNode.path) {
-			const building: CodeMapBuilding = this.threeSceneService
-				.getMapMesh()
-				.getMeshDescription()
-				.getBuildingByPath(arrowTargetNode.path)
-			this.threeSceneService.addBuildingToHighlightingList(building)
+		if (this.isClicked) {
+			if (this.hoveredNode.path === arrowOriginNode.path || this.clickedNode.path === arrowOriginNode.path) {
+				const building: CodeMapBuilding = this.threeSceneService
+					.getMapMesh()
+					.getMeshDescription()
+					.getBuildingByPath(arrowTargetNode.path)
+				this.threeSceneService.addBuildingToHighlightingList(building)
 
-			const curveObject = this.buildLine(
-				points,
-				ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
-			)
-			curveObject.add(this.buildArrow(points))
+				const curveObject = this.buildLine(
+					points,
+					ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
+				)
+				curveObject.add(this.buildArrow(points))
 
-			this.threeSceneService.edgeArrows.add(curveObject)
-			this.arrows.push(curveObject)
+				this.threeSceneService.edgeArrows.add(curveObject)
+				this.arrows.push(curveObject)
+			} else {
+				const building: CodeMapBuilding = this.threeSceneService
+					.getMapMesh()
+					.getMeshDescription()
+					.getBuildingByPath(arrowOriginNode.path)
+				this.threeSceneService.addBuildingToHighlightingList(building)
+				const curveObject = this.buildLine(
+					points,
+					ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
+				)
+				curveObject.add(this.buildArrow(points))
+
+				this.threeSceneService.edgeArrows.add(curveObject)
+				this.arrows.push(curveObject)
+			}
 		} else {
-			const building: CodeMapBuilding = this.threeSceneService
-				.getMapMesh()
-				.getMeshDescription()
-				.getBuildingByPath(arrowOriginNode.path)
-			this.threeSceneService.addBuildingToHighlightingList(building)
-			const curveObject = this.buildLine(
-				points,
-				ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
-			)
-			curveObject.add(this.buildArrow(points))
+			if (this.hoveredNode.path === arrowOriginNode.path) {
+				const building: CodeMapBuilding = this.threeSceneService
+					.getMapMesh()
+					.getMeshDescription()
+					.getBuildingByPath(arrowTargetNode.path)
+				this.threeSceneService.addBuildingToHighlightingList(building)
 
-			this.threeSceneService.edgeArrows.add(curveObject)
-			this.arrows.push(curveObject)
+				const curveObject = this.buildLine(
+					points,
+					ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
+				)
+				curveObject.add(this.buildArrow(points))
+
+				this.threeSceneService.edgeArrows.add(curveObject)
+				this.arrows.push(curveObject)
+			} else {
+				const building: CodeMapBuilding = this.threeSceneService
+					.getMapMesh()
+					.getMeshDescription()
+					.getBuildingByPath(arrowOriginNode.path)
+				this.threeSceneService.addBuildingToHighlightingList(building)
+				const curveObject = this.buildLine(
+					points,
+					ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
+				)
+				curveObject.add(this.buildArrow(points))
+
+				this.threeSceneService.edgeArrows.add(curveObject)
+				this.arrows.push(curveObject)
+			}
 		}
 	}
 
