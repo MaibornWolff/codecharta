@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
 import { EdgeMetricService } from "./edgeMetric.service"
@@ -15,6 +16,7 @@ import _ from "lodash"
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.cloneDeep(BlacklistService.name), BlacklistService)
 	.service(_.camelCase(InjectorService.name), InjectorService)
 	.service(_.camelCase(StoreService.name), StoreService)
 	.service(_.camelCase(EdgeMetricService.name), EdgeMetricService)
