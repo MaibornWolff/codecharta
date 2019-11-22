@@ -1,6 +1,6 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { State, BlacklistItem } from "../../../../codeCharta.model"
+import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistActions } from "./blacklist.actions"
 import _ from "lodash"
 
@@ -17,12 +17,12 @@ export class BlacklistService implements StoreSubscriber {
 
 	public onStoreChanged(actionType) {
 		if (_.values(BlacklistActions).includes(actionType)) {
-			this.notify(this.select(this.storeService.getState()))
+			this.notify(this.select())
 		}
 	}
 
-	private select(state: State) {
-		return state.fileSettings.blacklist
+	private select() {
+		return this.storeService.getState().fileSettings.blacklist
 	}
 
 	private notify(newState) {
