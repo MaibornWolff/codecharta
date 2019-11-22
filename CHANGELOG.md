@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.40.0] - 2019-11-22
+
+### Added 🚀
+
+### Changed
+
 - Replaced Blacklist Hide with Flatten option #691
 - Flattened buildings are not hidden by default #691
 
