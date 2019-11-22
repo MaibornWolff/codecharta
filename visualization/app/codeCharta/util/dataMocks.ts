@@ -624,7 +624,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		dynamicMargin: true,
-		hideFlatBuildings: true,
+		hideFlatBuildings: false,
 		invertHeight: false,
 		invertColorRange: false,
 		isWhiteBackground: false,
@@ -685,7 +685,6 @@ export const TEST_NODE_ROOT: Node = {
 	heightDelta: 10,
 	visible: true,
 	path: "/root",
-	origin: "root",
 	link: "NO_LINK",
 	markingColor: "0x000000",
 	flat: false,
@@ -710,7 +709,6 @@ export const TEST_NODE_LEAF: Node = {
 	heightDelta: 20,
 	visible: true,
 	path: "/root/big leaf",
-	origin: "root",
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
@@ -736,7 +734,7 @@ export const METRIC_DATA: MetricData[] = [
 export const BLACKLIST: BlacklistItem[] = [
 	{
 		path: "/my/path",
-		type: BlacklistType.hide
+		type: BlacklistType.flatten
 	},
 	{
 		path: "/my/different/path",

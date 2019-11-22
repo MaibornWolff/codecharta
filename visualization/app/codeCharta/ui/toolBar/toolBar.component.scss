@@ -4,39 +4,36 @@ tool-bar-component {
 		height: 35px;
 		font-size: 0px;
 		border-bottom: 1px solid #cdcdcd;
-	}
 
-	file-panel-component,
-	node-path-panel-component {
-		&.hidden {
-			display: none;
+		file-panel-component,
+		node-path-panel-component {
+			&.hidden {
+				display: none;
+			}
 		}
-	}
 
-	.small-action-button {
-		&.download {
-			margin-left: 0px;
+		.small-action-button {
+			margin: 5px;
 		}
-		margin: 5px;
-	}
 
-	.right-aligned {
-		right: 10px;
-		position: fixed;
+		.right-aligned {
+			right: 10px;
+			position: fixed;
 
-		> * {
-			float: left;
+			> * {
+				float: left;
+			}
+
+			loading-gif-map-component {
+				margin-top: 5px;
+				margin-right: 10px;
+				margin-left: 10px;
+			}
+
+			.presentation-mode-button {
+				float: right;
+				margin-top: 5px;
+			}
 		}
-	}
-
-	loading-gif-map-component {
-		margin-top: 5px;
-		margin-right: 10px;
-		margin-left: 10px;
-	}
-
-	.presentation-mode-button {
-		float: right;
-		margin-top: 5px;
 	}
 }
