@@ -1,48 +1,43 @@
 import "./toolBar.module"
 import { ToolBarController } from "./toolBar.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { DialogService } from "../dialog/dialog.service"
+import { IRootScopeService } from "angular"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("ToolBarController", () => {
+	let $rootScope: IRootScopeService
 	let toolBarController: ToolBarController
-	let dialogService: DialogService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedDialogService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.toolBar")
 
-		dialogService = getService<DialogService>("dialogService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 	}
 
 	function rebuildController() {
-		toolBarController = new ToolBarController(dialogService)
+		toolBarController = new ToolBarController($rootScope)
 	}
 
-	function withMockedDialogService() {
-		dialogService = toolBarController["dialogService"] = jest.fn().mockReturnValue({
-			showDownloadDialog: jest.fn(),
-			showGlobalSettingsDialog: jest.fn()
-		})()
-	}
+	describe("onBuildingHovered", () => {
+		it("should set isNodeHovered to true if node is hovered", () => {
+			const dataHovered = ({ node: {} } as unknown) as CodeMapBuilding
 
-	describe("downloadFile", () => {
-		it("should call showDownloadDialog", () => {
-			toolBarController.downloadFile()
+			toolBarController.onBuildingHovered(dataHovered)
 
-			expect(dialogService.showDownloadDialog).toHaveBeenCalled()
+			expect(toolBarController["_viewModel"].isNodeHovered).toBe(true)
 		})
 	})
 
-	describe("showGlobalSettings", () => {
-		it("should call showGlobalSettingsDialog", () => {
-			toolBarController.showGlobalSettings()
+	describe("onBuildingUnhovered", () => {
+		it("should set isNodeHovered to false if no node is hovered", () => {
+			toolBarController.onBuildingUnhovered()
 
-			expect(dialogService.showGlobalSettingsDialog).toHaveBeenCalled()
+			expect(toolBarController["_viewModel"].isNodeHovered).toBe(false)
 		})
 	})
 })

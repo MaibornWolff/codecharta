@@ -1,6 +1,6 @@
 import { TreeMapHelper } from "./treeMapHelper"
 import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
-import { CodeMapNode, EdgeVisibility, Settings } from "../codeCharta.model"
+import { CodeMapNode, EdgeVisibility, Settings, BlacklistType } from "../codeCharta.model"
 import { SETTINGS } from "./dataMocks"
 
 describe("treeMapHelper", () => {
@@ -199,6 +199,18 @@ describe("treeMapHelper", () => {
 		it("should not be a flat node when searchPattern is empty", () => {
 			treeMapSettings.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"]
 			treeMapSettings.dynamicSettings.searchPattern = ""
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy()
+		})
+
+		it("should be flat if node is flattened in blacklist", () => {
+			treeMapSettings.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
+
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy()
+		})
+
+		it("should not be flat if node is not blacklisted", () => {
+			treeMapSettings.fileSettings.blacklist = []
+
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy()
 		})
 	})

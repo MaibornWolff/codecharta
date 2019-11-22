@@ -15,20 +15,25 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
 
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
         return logLines.collect(parserStrategy.createLogLineCollector())
-                .map { this.parseCommit(it) }
+                .map { this.parseCommit(it) }.filter { !it.isEmpty }
                 .collect(CommitCollector.create(metricsFactory))
     }
 
     internal fun parseCommit(commitLines: List<String>): Commit {
-        val author = parserStrategy.parseAuthor(commitLines)
-        val commitDate = parserStrategy.parseDate(commitLines)
-        val modifications = parserStrategy.parseModifications(commitLines)
-        if (!silent) showProgress(commitDate)
-        return Commit(author, modifications, commitDate)
+        return try {
+            val author = parserStrategy.parseAuthor(commitLines)
+            val commitDate = parserStrategy.parseDate(commitLines)
+            val modifications = parserStrategy.parseModifications(commitLines)
+            if (!silent) showProgress(commitDate)
+            Commit(author, modifications, commitDate)
+        } catch (e: NoSuchElementException) {
+            System.err.println("Skipped commit with invalid syntax ($commitLines)")
+            Commit("", listOf(), OffsetDateTime.now())
+        }
     }
 
     private fun showProgress(date: OffsetDateTime) {
-        System.err.print("\r$numberOfCommitsParsed commits parsed. (Latest commit from $date)       ")
+        System.err.print("\r$numberOfCommitsParsed commits parsed. (Earliest commit from $date)       ")
         numberOfCommitsParsed++
     }
 }

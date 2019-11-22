@@ -20,7 +20,7 @@ export enum FileSelectionState {
 
 export enum SearchPanelMode {
 	treeView = "treeView",
-	hide = "hide",
+	flatten = "flatten",
 	exclude = "exclude",
 	minimized = "minimized"
 }
@@ -52,7 +52,6 @@ export interface CodeMapNode {
 		[key: string]: EdgeMetricCount
 	}
 	link?: string
-	origin?: string
 	path?: string
 	visible?: boolean
 	deltas?: {
@@ -100,7 +99,6 @@ export interface AppSettings {
 	scaling: Vector3
 	camera: Vector3
 	hideFlatBuildings: boolean
-	maximizeDetailPanel: boolean
 	invertColorRange: boolean
 	invertDeltaColors: boolean
 	invertHeight: boolean
@@ -178,7 +176,7 @@ export interface BlacklistItem {
 }
 
 export enum BlacklistType {
-	hide = "hide",
+	flatten = "flatten",
 	exclude = "exclude"
 }
 
@@ -230,7 +228,6 @@ export interface Node {
 	heightDelta: number
 	visible: boolean
 	path: string
-	origin: string
 	link: string
 	markingColor: string
 	flat: boolean

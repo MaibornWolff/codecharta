@@ -2,7 +2,6 @@ import "./metricChooser.module"
 
 import { MetricChooserController } from "./metricChooser.component"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
@@ -13,7 +12,6 @@ describe("MetricChooserController", () => {
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
-	let dataDelta, dataNotDelta
 
 	function rebuildController() {
 		metricChooserController = new MetricChooserController(settingsService, $rootScope, $timeout)
@@ -38,25 +36,6 @@ describe("MetricChooserController", () => {
 		})()
 	}
 
-	function withMockedBuildingTransitions() {
-		dataDelta = ({
-			to: {
-				node: {
-					attributes: { area: 10, height: 20, color: 30 },
-					deltas: { area: 40, height: 50, color: 60 }
-				}
-			}
-		} as unknown) as CodeMapBuildingTransition
-
-		dataNotDelta = ({
-			to: {
-				node: {
-					attributes: { area: 10, height: 20, color: 30 }
-				}
-			}
-		} as unknown) as CodeMapBuildingTransition
-	}
-
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
@@ -69,8 +48,6 @@ describe("MetricChooserController", () => {
 			SettingsService.subscribeToHeightMetric = jest.fn()
 			SettingsService.subscribeToColorMetric = jest.fn()
 			SettingsService.subscribeToDistributionMetric = jest.fn()
-
-			CodeMapMouseEventService.subscribeToBuildingHoveredEvents = jest.fn()
 			MetricService.subscribe = jest.fn()
 		})
 
@@ -81,12 +58,6 @@ describe("MetricChooserController", () => {
 			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
 			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
 			expect(SettingsService.subscribeToDistributionMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
-		})
-
-		it("should subscribe to Building-Hovered-Event", () => {
-			rebuildController()
-
-			expect(CodeMapMouseEventService.subscribeToBuildingHoveredEvents).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
 		it("should subscribe to MetricService", () => {
@@ -245,94 +216,17 @@ describe("MetricChooserController", () => {
 		})
 	})
 
-	describe("onBuildingHovered", () => {
-		it("should set values and deltas to null if data incomplete", () => {
-			let data = { from: {}, to: {} } as CodeMapBuildingTransition
+	describe("applySettingsDistributionMetric", () => {
+		it("should update distribution metric  settings", () => {
+			metricChooserController["_viewModel"].distributionMetric = "d"
 
-			metricChooserController.onBuildingHovered(data)
+			metricChooserController.applySettingsDistributionMetric()
 
-			expect(metricChooserController.hoveredAreaDelta).toBe(null)
-			expect(metricChooserController.hoveredAreaValue).toBe(null)
-			expect(metricChooserController.hoveredColorDelta).toBe(null)
-			expect(metricChooserController.hoveredColorValue).toBe(null)
-			expect(metricChooserController.hoveredHeightValue).toBe(null)
-			expect(metricChooserController.hoveredHeightDelta).toBe(null)
-		})
-
-		it("should set hovered values and set hovered deltas to null if not delta", () => {
-			withMockedBuildingTransitions()
-			metricChooserController["_viewModel"].areaMetric = "area"
-			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController["_viewModel"].colorMetric = "color"
-
-			metricChooserController.onBuildingHovered(dataNotDelta)
-
-			expect(metricChooserController.hoveredAreaDelta).toBe(null)
-			expect(metricChooserController.hoveredAreaValue).toBe(10)
-			expect(metricChooserController.hoveredColorDelta).toBe(null)
-			expect(metricChooserController.hoveredColorValue).toBe(30)
-			expect(metricChooserController.hoveredHeightValue).toBe(20)
-			expect(metricChooserController.hoveredHeightDelta).toBe(null)
-		})
-
-		it("should set hovered values and deltas if delta", () => {
-			withMockedBuildingTransitions()
-			metricChooserController["_viewModel"].areaMetric = "area"
-			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController["_viewModel"].colorMetric = "color"
-
-			metricChooserController.onBuildingHovered(dataDelta)
-
-			expect(metricChooserController.hoveredAreaDelta).toBe(40)
-			expect(metricChooserController.hoveredAreaValue).toBe(10)
-			expect(metricChooserController.hoveredColorDelta).toBe(60)
-			expect(metricChooserController.hoveredColorValue).toBe(30)
-			expect(metricChooserController.hoveredHeightValue).toBe(20)
-			expect(metricChooserController.hoveredHeightDelta).toBe(50)
-		})
-
-		it("hovered delta color should be null if not delta", () => {
-			withMockedBuildingTransitions()
-			metricChooserController.hoveredDeltaColor = "foo"
-
-			metricChooserController.onBuildingHovered(dataNotDelta)
-
-			expect(metricChooserController.hoveredDeltaColor).toBe(null)
-		})
-
-		it("hovered delta color should be inherited if hoveredHeigtDelta is 0", () => {
-			withMockedBuildingTransitions()
-			metricChooserController.hoveredHeightDelta = 0
-
-			metricChooserController.onBuildingHovered(dataDelta)
-
-			expect(metricChooserController.hoveredDeltaColor).toBe("inherit")
-		})
-
-		it("hovered delta color should be set correctly", () => {
-			withMockedBuildingTransitions()
-			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController.hoveredHeightDelta = 2
-
-			metricChooserController.onBuildingHovered(dataDelta)
-
-			expect(metricChooserController.hoveredDeltaColor).toBe("green")
-		})
-
-		it("hovered delta color should be set correctly if reversed colors", () => {
-			withMockedBuildingTransitions()
-			metricChooserController["_viewModel"].heightMetric = "height"
-			metricChooserController.hoveredHeightDelta = 2
-			settingsService.getSettings = jest.fn(() => {
-				return { appSettings: { invertDeltaColors: true } }
-			})
-
-			metricChooserController.onBuildingHovered(dataDelta)
-
-			expect(metricChooserController.hoveredDeltaColor).toBe("red")
+			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { distributionMetric: "d" } })
 		})
 	})
-	describe("filterMetricData()", () => {
+
+	describe("filterMetricData", () => {
 		it("should return the default MetricData list", () => {
 			let metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
@@ -420,7 +314,7 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].metricData).toEqual([])
 		})
 	})
-	describe("clearSearchTerm()", () => {
+	describe("clearSearchTerm", () => {
 		it("should return an empty string, when function is called", () => {
 			metricChooserController["_viewModel"].searchTerm = "someString"
 

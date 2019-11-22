@@ -1,4 +1,4 @@
-import { CC_URL, puppeteer, delay } from "./puppeteer.helper"
+import { CC_URL, puppeteer, delay, newPage } from "./puppeteer.helper"
 
 jest.setTimeout(10000)
 
@@ -7,7 +7,7 @@ describe("app", () => {
 
 	beforeAll(async () => {
 		browser = await puppeteer.launch()
-		page = await browser.newPage()
+		page = await newPage(browser)
 	})
 
 	afterAll(async () => {

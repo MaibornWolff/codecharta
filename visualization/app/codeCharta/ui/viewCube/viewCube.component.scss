@@ -1,2 +1,12 @@
 view-cube-component {
+	#centerMap {
+		position: absolute;
+		right: 15px;
+		float: right;
+
+		.md-fab {
+			width: 36px;
+			height: 36px;
+		}
+	}
 }

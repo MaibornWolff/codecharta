@@ -1,16 +1,7 @@
 ribbon-bar-component {
-	$heightExpanded: 195;
+	$heightExpanded: 185;
 	$heightCollapsed: 38;
-	$sectionWidth: 275;
-	$padding: 5;
-	$animationDuration: 0.5;
 	$border: 1px solid #cdcdcd;
-	$border-thin: 0 dotted #cdcdcd;
-	$subsection-bg: #efefef;
-	$headerColor: #444;
-	$headerSize: 1em;
-	$bodySize: 0.9em;
-	$toggleButtonSize: 35;
 
 	pointer-events: none;
 	display: flex;
@@ -30,79 +21,50 @@ ribbon-bar-component {
 		margin: 0;
 		padding: 0;
 		height: ($heightCollapsed + 8) + px;
-		font-size: 0;
 		border-radius: 0;
 		border-top: $border;
 		float: left;
+		position: relative;
+		overflow: hidden;
 
 		&.search {
 			width: 380px;
 		}
 
+		&:not(#scenario-card) {
+			min-width: 240px;
+		}
+
 		.section {
 			display: inline-block;
 			height: 100%;
-			width: auto;
-			padding-top: $padding + px;
 			border-right: $border;
 			vertical-align: top;
-			position: relative;
-			font-size: 12pt;
 			flex-grow: 100;
 
-			&.loading-gif {
-				border-right: none;
-			}
-
-			md-input-container,
-			md-button {
-				margin: 0;
-				padding: 0;
-			}
-
 			.section-header {
-				margin-bottom: ($padding * 2) + px;
 				padding: 0;
-				height: ($heightCollapsed - 5) + px !important;
-				font-size: $headerSize;
-				color: $headerColor;
-				text-align: center;
+				height: 31px;
+				color: #444444;
 				overflow: hidden;
-				padding-right: $padding + px;
-				padding-left: $padding + px;
-
-				&.bordered {
-					border-bottom: $border-thin;
-					border-top: $border-thin;
-					background-color: $subsection-bg;
-				}
+				padding: 5px;
 
 				&.space {
-					width: 2000px;
+					width: 10000px;
 				}
 			}
 
 			.section-title {
 				font-size: 8pt;
 				display: block;
-				position: absolute;
-				bottom: 0;
 				width: 100%;
 				color: gray;
 				text-align: center;
 				transition: background-color 0.4s;
-				padding: 1px 0 2px 0;
+				padding: 1px 0 1px 0;
+				border-bottom: 1px solid transparent;
 
-				.first {
-					padding-left: 8px;
-				}
-
-				.second {
-					padding-left: 85px;
-				}
-
-				&:hover,
-				&.toggle-hovered {
+				&:hover {
 					background-color: #e0e0e0;
 					cursor: pointer;
 				}
@@ -114,19 +76,41 @@ ribbon-bar-component {
 				&.no-hover {
 					pointer-events: none;
 				}
+
+				i:before {
+					content: "\f107";
+				}
 			}
 
 			.section-body {
-				margin-top: 0;
-				height: 0;
-				padding-top: $padding + px;
-				padding-right: $padding + px;
-				padding-left: 2 * $padding + px;
-				overflow: hidden;
-				border-top: 1px solid transparent;
-				font-size: $bodySize;
+				margin: 5px 5px 5px 5px;
+				overflow: visible;
+				font-size: 0.9em;
 				text-align: left;
 				vertical-align: top;
+
+				md-slider-container {
+					position: relative;
+					padding-left: 2px;
+
+					span {
+						position: absolute;
+						top: 0;
+						font-size: 10pt;
+						color: grey;
+						left: 5px;
+					}
+				}
+
+				md-input-container:not(#colorSliderContainer) > input {
+					height: 30px;
+					margin-top: -17px;
+				}
+
+				md-checkbox {
+					font-size: 10pt;
+					margin-left: 5px;
+				}
 
 				reset-settings-button-component .md-button {
 					top: 0;
@@ -135,36 +119,35 @@ ribbon-bar-component {
 					height: 0;
 					pointer-events: none;
 				}
-
-				md-checkbox .md-label {
-					margin-left: 25px;
-				}
 			}
 		}
 
 		&.expanded {
 			height: $heightExpanded + px;
 
-			.section {
-				.section-header {
-					margin-bottom: 0;
-					height: ($heightCollapsed - 10) + px !important;
-				}
-				.section-body {
-					padding-top: 15px;
-					padding-bottom: 15px;
-					height: ($heightExpanded - $heightCollapsed) + px;
-					border-top: $border;
+			.section-title {
+				border-bottom: $border;
 
-					reset-settings-button-component .md-button {
-						top: ($heightExpanded - 45) + px;
-						opacity: 1;
-						height: 20px;
-						transition: all 0.5s ease;
-						pointer-events: all;
-					}
+				i:before {
+					content: "\f106";
+				}
+			}
+
+			.section-body {
+				reset-settings-button-component .md-button {
+					top: ($heightExpanded - 45) + px;
+					opacity: 1;
+					height: 20px;
+					pointer-events: all;
 				}
 			}
 		}
+	}
+
+	md-card,
+	.section .section-header,
+	.section .section-body,
+	.section-body reset-settings-button-component .md-button {
+		transition: all 0.3s ease;
 	}
 }

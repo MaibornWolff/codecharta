@@ -3,8 +3,9 @@ import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { BuildingHoveredEventSubscriber, CodeMapBuildingTransition, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -12,7 +13,7 @@ export interface MapTreeViewHoverEventSubscriber {
 	onShouldUnhoverNode(node: CodeMapNode)
 }
 
-export class MapTreeViewLevelController implements BuildingHoveredEventSubscriber {
+export class MapTreeViewLevelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private static MAP_TREE_VIEW_HOVER_NODE_EVENT = "should-hover-node"
 	private static MAP_TREE_VIEW_UNHOVER_NODE_EVENT = "should-unhover-node"
 
@@ -32,7 +33,8 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService
 	) {
-		CodeMapMouseEventService.subscribeToBuildingHoveredEvents(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
 	public getMarkingColor() {
@@ -42,14 +44,17 @@ export class MapTreeViewLevelController implements BuildingHoveredEventSubscribe
 		return markingColor ? markingColor : defaultColor
 	}
 
-	public onBuildingHovered(data: CodeMapBuildingTransition) {
+	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		this._viewModel.isHoveredInCodeMap = !!(
-			data.to &&
-			data.to.node &&
 			this.node &&
 			this.node.path &&
-			data.to.node.path === this.node.path
+			hoveredBuilding.node &&
+			hoveredBuilding.node.path === this.node.path
 		)
+	}
+
+	public onBuildingUnhovered() {
+		this._viewModel.isHoveredInCodeMap = false
 	}
 
 	public onMouseEnter() {

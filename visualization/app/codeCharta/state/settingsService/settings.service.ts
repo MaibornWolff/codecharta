@@ -5,7 +5,7 @@ import { FileStateService, FileStateServiceSubscriber } from "../fileState.servi
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { SettingsMerger } from "../../util/settingsMerger"
 import { Vector3 } from "three"
-import { LoadingGifService } from "../../ui/loadingGif/loadingGif.service"
+import { LoadingStatusService } from "../loadingStatus.service"
 import {
 	AreaMetricSubscriber,
 	BlacklistSubscriber,
@@ -15,7 +15,9 @@ import {
 	HeightMetricSubscriber,
 	SearchPatternSubscriber,
 	SettingsEvents,
-	SettingsServiceSubscriber
+	SettingsServiceSubscriber,
+	FocusNodeSubscriber,
+	UnfocusNodeSubscriber
 } from "./settings.service.events"
 
 export class SettingsService implements FileStateServiceSubscriber {
@@ -25,7 +27,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 	private update: RecursivePartial<Settings> = {}
 	private readonly debounceBroadcast: { [key: string]: (eventName: string, data: any) => void } = {}
 
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private loadingGifService: LoadingGifService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
+		private loadingStatusService: LoadingStatusService
+	) {
 		this.settings = this.getDefaultSettings()
 
 		for (const key in SettingsEvents) {
@@ -46,6 +52,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 					delete this.update.dynamicSettings.distributionMetric
 				} else if (this.update.dynamicSettings && eventName == SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT) {
 					delete this.update.dynamicSettings.searchPattern
+				} else if (
+					this.update.dynamicSettings &&
+					(eventName == SettingsEvents.NODE_FOCUSED_EVENT || eventName == SettingsEvents.NODE_UNFOCUSED_EVENT)
+				) {
+					delete this.update.dynamicSettings.focusedNodePath
 				}
 				this.$rootScope.$broadcast(eventName, data)
 			}, SettingsService.DEBOUNCE_TIME)
@@ -67,39 +78,47 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public updateSettings(update: RecursivePartial<Settings>, isSilent: boolean = false) {
 		this.settings = this.mergePartialSettings(this.settings, update, this.settings) as Settings
 		if (!isSilent) {
-			this.loadingGifService.updateLoadingMapFlag(true)
+			this.loadingStatusService.updateLoadingMapFlag(true)
 			this.update = this.mergePartialSettings(this.update, update, this.settings)
+			this.notifySettingsSubscribers()
 
-			if (this.update.fileSettings && this.update.fileSettings.blacklist) {
+			if (update.fileSettings && update.fileSettings.blacklist) {
 				this.notifyBlacklistSubscribers()
 			}
 
-			if (this.update.dynamicSettings) {
-				if (this.update.dynamicSettings.areaMetric) {
+			if (update.dynamicSettings) {
+				if (update.dynamicSettings.areaMetric) {
 					this.notifyAreaMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.heightMetric) {
+				if (update.dynamicSettings.heightMetric) {
 					this.notifyHeightMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.colorMetric) {
+				if (update.dynamicSettings.colorMetric) {
 					this.notifyColorMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.edgeMetric) {
+				if (update.dynamicSettings.edgeMetric) {
 					this.notifyEdgeMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.distributionMetric) {
+				if (update.dynamicSettings.distributionMetric) {
 					this.notifyDistributionMetricSubscribers()
 				}
 
-				if (this.update.dynamicSettings.searchPattern) {
+				if (update.dynamicSettings.searchPattern) {
 					this.notifySearchPatternSubscribers()
 				}
+				if (update.dynamicSettings.focusedNodePath !== undefined) {
+					if (_.isEmpty(update.dynamicSettings.focusedNodePath)) {
+						this.notifyUnfocusNodeSubscribers()
+					}
+					if (!_.isEmpty(update.dynamicSettings.focusedNodePath)) {
+						this.notifyFocusNodeSubscribers()
+					}
+				}
 			}
-			this.notifySettingsSubscribers()
 		}
 		this.synchronizeAngularTwoWayBinding()
 	}
@@ -151,8 +170,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				edgeHeight: 4,
 				scaling: scaling,
 				camera: camera,
-				hideFlatBuildings: true,
-				maximizeDetailPanel: false,
+				hideFlatBuildings: false,
 				invertColorRange: false,
 				invertDeltaColors: false,
 				invertHeight: false,
@@ -165,7 +183,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				resetCameraIfNewFileIsLoaded: true
 			},
 			treeMapSettings: {
-				mapSize: 500
+				mapSize: 250
 			}
 		}
 
@@ -273,6 +291,14 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.notify(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: this.settings.dynamicSettings.searchPattern })
 	}
 
+	private notifyFocusNodeSubscribers() {
+		this.notify(SettingsEvents.NODE_FOCUSED_EVENT, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
+	}
+
+	private notifyUnfocusNodeSubscribers() {
+		this.notify(SettingsEvents.NODE_UNFOCUSED_EVENT, { focusedNodePath: this.settings.dynamicSettings.focusedNodePath })
+	}
+
 	private notify(eventName: string, data: object) {
 		this.debounceBroadcast[eventName](eventName, data)
 	}
@@ -326,6 +352,18 @@ export class SettingsService implements FileStateServiceSubscriber {
 	public static subscribeToSearchPattern($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
 		$rootScope.$on(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
 			subscriber.onSearchPatternChanged(data.searchPattern)
+		})
+	}
+
+	public static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodeSubscriber) {
+		$rootScope.$on(SettingsEvents.NODE_FOCUSED_EVENT, (event, data) => {
+			subscriber.onFocusNode(data.focusedNodePath)
+		})
+	}
+
+	public static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodeSubscriber) {
+		$rootScope.$on(SettingsEvents.NODE_UNFOCUSED_EVENT, (event, data) => {
+			subscriber.onUnfocusNode()
 		})
 	}
 }

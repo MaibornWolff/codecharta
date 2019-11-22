@@ -51,6 +51,9 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     private val client: Client = ClientBuilder.newClient()
     private val logger = KotlinLogging.logger {}
 
+    private var measureBatches = 0
+    private var processedPages = 0
+
     init {
         client.register(ErrorResponseFilter::class.java)
         client.register(GsonProvider::class.java)
@@ -58,14 +61,17 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
     fun getComponentMap(componentKey: String, metricsList: List<String>): ComponentMap {
         val componentMap = ComponentMap()
+        System.err.print("0% of data retrieved...")
 
-        Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, MAX_METRICS_IN_ONE_SONARCALL, true))
-                .flatMap { p ->
+        val flowable = Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, MAX_METRICS_IN_ONE_SONARCALL, true))
+        flowable.flatMap { p ->
+            measureBatches++
                     getMeasures(componentKey, p)
                             .subscribeOn(Schedulers.computation())
                 }
-                .blockingForEach({ componentMap.updateComponent(it) })
+                .blockingForEach { componentMap.updateComponent(it) }
 
+        System.err.println()
         return componentMap
     }
 
@@ -73,22 +79,24 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
         return Flowable.create({ subscriber ->
             var page = 1
-            var total = 0L
+            var total: Int
             do {
-                val measures = getMeasures(componentKey, sublist, page)
-                total = measures.paging.total.toLong()
+                val measures = getMeasuresFromPage(componentKey, sublist, page)
+                total = measures.paging.total
 
                 if (measures.components != null) {
                     measures.components
                             .filter { c -> c.qualifier == Qualifier.FIL || c.qualifier == Qualifier.UTS }
-                            .forEach({ subscriber.onNext(it) })
+                            .forEach { subscriber.onNext(it) }
                 }
+
+                updateProgress(total)
             } while (page++ * PAGE_SIZE < total)
             subscriber.onComplete()
         }, BackpressureStrategy.BUFFER)
     }
 
-    internal fun getMeasures(componentKey: String, metrics: List<String>, pageNumber: Int): Measures {
+    internal fun getMeasuresFromPage(componentKey: String, metrics: List<String>, pageNumber: Int): Measures {
         val measureAPIRequestURI = createMeasureAPIRequestURI(componentKey, metrics, pageNumber)
 
         val request = client
@@ -118,6 +126,13 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         } catch (e: URISyntaxException) {
             throw SonarImporterException(e)
         }
+    }
+
+    private fun updateProgress(componentCount: Int) {
+        processedPages++
+        val pagesPerRun = (componentCount + PAGE_SIZE - 1) / PAGE_SIZE
+        val currentProgress = 100 * processedPages / (pagesPerRun * measureBatches)
+        System.err.print("\r$currentProgress% of data retrieved...")
     }
 
     companion object {

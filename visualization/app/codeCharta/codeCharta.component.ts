@@ -8,7 +8,7 @@ import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
-import { LoadingGifService } from "./ui/loadingGif/loadingGif.service"
+import { LoadingStatusService } from "./state/loadingStatus.service"
 import { NodeSearchService } from "./state/nodeSearch.service"
 import { SettingsServiceSubscriber } from "./state/settingsService/settings.service.events"
 
@@ -39,12 +39,12 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		private nodeSearchService: NodeSearchService, // We have to inject it somewhere
 		private $location: ILocationService,
 		private $http: IHttpService,
-		private loadingGifService: LoadingGifService
+		private loadingStatusService: LoadingStatusService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
-		this.loadingGifService.updateLoadingFileFlag(true)
+		this.loadingStatusService.updateLoadingFileFlag(true)
 		this.loadFileOrSample()
 	}
 
@@ -93,7 +93,7 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			})
 			.catch(e => {
-				this.loadingGifService.updateLoadingFileFlag(false)
+				this.loadingStatusService.updateLoadingFileFlag(false)
 				console.error(e)
 				this.printErrors(e)
 			})

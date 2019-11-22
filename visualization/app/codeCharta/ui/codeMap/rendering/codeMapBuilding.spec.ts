@@ -8,7 +8,7 @@ describe("CodeMapBuilding", () => {
 	let building1: CodeMapBuilding
 	let building2: CodeMapBuilding
 
-	const MAP_SIZE = 500
+	const MAP_SIZE = 250
 
 	beforeEach(() => {
 		mockColorConverter()

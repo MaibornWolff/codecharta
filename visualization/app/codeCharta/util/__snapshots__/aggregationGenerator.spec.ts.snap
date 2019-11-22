@@ -4,8 +4,8 @@ exports[`AggregationGenerator multipleService aggregation of four maps 1`] = `
 Object {
   "fileMeta": Object {
     "apiVersion": "1.1",
-    "fileName": "File-Aggregation of file1 file2 file1 file2",
-    "projectName": "Project-Aggregation of Sample Project, Sample Project, Sample Project, Sample Project",
+    "fileName": "file_aggregation_of_file1_and_file2_and_file1_and_file2",
+    "projectName": "project_aggregation_of_Sample_Project_and_Sample_Project_and_Sample_Project_and_Sample_Project",
   },
   "map": Object {
     "attributes": Object {
@@ -199,7 +199,6 @@ Object {
       },
     ],
     "name": "root",
-    "origin": "File-Aggregation of file1, file2, file1, file2",
     "path": "/root",
     "type": "Folder",
     "visible": true,
@@ -222,8 +221,8 @@ exports[`AggregationGenerator multipleService aggregation of two maps 1`] = `
 Object {
   "fileMeta": Object {
     "apiVersion": "1.1",
-    "fileName": "File-Aggregation of file1 file2",
-    "projectName": "Project-Aggregation of Sample Project, Sample Project",
+    "fileName": "file_aggregation_of_file1_and_file2",
+    "projectName": "project_aggregation_of_Sample_Project_and_Sample_Project",
   },
   "map": Object {
     "attributes": Object {
@@ -326,7 +325,6 @@ Object {
       },
     ],
     "name": "root",
-    "origin": "File-Aggregation of file1, file2",
     "path": "/root",
     "type": "Folder",
     "visible": true,

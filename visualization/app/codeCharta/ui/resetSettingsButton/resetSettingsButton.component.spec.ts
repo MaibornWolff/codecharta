@@ -1,5 +1,6 @@
 import "./resetSettingsButton.module"
 
+import { Vector3 } from "three"
 import { ResetSettingsButtonController } from "./resetSettingsButton.component"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
@@ -30,7 +31,7 @@ describe("resetSettingsButtonController", () => {
 				updateSettings: jest.fn(),
 				getDefaultSettings: jest.fn(() => {
 					return {
-						appSettings: { maximizeDetailPanel: false, invertColorRange: true }
+						appSettings: { hideFlatBuildings: false, invertColorRange: true }
 					}
 				}),
 				getSettings: jest.fn()
@@ -41,29 +42,29 @@ describe("resetSettingsButtonController", () => {
 	describe("applyDefaultSettings", () => {
 		it("should call updateSettings with available default settings objects", () => {
 			resetSettingsButtonController["settingsNames"] =
-				"appSettings.invertColorRange, appSettings.maximizeDetailPanel, appSettings.notInAppSettings, notInSettings.something"
+				"appSettings.invertColorRange, appSettings.hideFlatBuildings, appSettings.notInAppSettings, notInSettings.something"
 			resetSettingsButtonController.applyDefaultSettings()
 
 			expect(settingsService.getDefaultSettings).toHaveBeenCalledTimes(1)
 			expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { invertColorRange: true, maximizeDetailPanel: false }
+				appSettings: { invertColorRange: true, hideFlatBuildings: false }
 			})
 		})
 
 		it("settingsNames should allow blank-space", () => {
-			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange, appSettings.maximizeDetailPanel"
+			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange, appSettings.hideFlatBuildings"
 			resetSettingsButtonController.applyDefaultSettings()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { invertColorRange: true, maximizeDetailPanel: false }
+				appSettings: { invertColorRange: true, hideFlatBuildings: false }
 			})
 		})
 
 		it("settingsNames should allow newline", () => {
-			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange,\nappSettings.maximizeDetailPanel"
+			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange,\nappSettings.hideFlatBuildings"
 			resetSettingsButtonController.applyDefaultSettings()
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { invertColorRange: true, maximizeDetailPanel: false }
+				appSettings: { invertColorRange: true, hideFlatBuildings: false }
 			})
 		})
 
@@ -87,11 +88,11 @@ describe("resetSettingsButtonController", () => {
 
 		it("should update nested settings in service", () => {
 			const newSettings: RecursivePartial<Settings> = {
-				appSettings: { scaling: { x: 42, y: 42, z: 42 } }
+				appSettings: { scaling: new Vector3(42, 42, 42) }
 			}
 
 			settingsService.updateSettings({
-				appSettings: { scaling: { x: 1, y: 1, z: 1 } }
+				appSettings: { scaling: new Vector3(1, 1, 1) }
 			})
 
 			resetSettingsButtonController["settingsNames"] = "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"

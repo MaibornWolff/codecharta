@@ -1,13 +1,11 @@
 import { CodeMapHelper } from "./codeMapHelper"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../codeCharta.model"
-import * as path from "path"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
-import { TEST_FILE_WITH_PATHS } from "./dataMocks"
+import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH_AND_EXTENSION } from "./dataMocks"
 
 describe("codeMapHelper", () => {
 	let testRoot: CodeMapNode
 	let blacklist: BlacklistItem[]
-	let transformPath
 
 	beforeEach(() => {
 		restartSystem()
@@ -29,17 +27,6 @@ describe("codeMapHelper", () => {
 
 	function addSubNodeToBlacklist() {
 		blacklist.push({ path: testRoot.children[0].path, type: BlacklistType.exclude })
-	}
-
-	function mockTransformPath() {
-		transformPath = CodeMapHelper.transformPath
-		CodeMapHelper.transformPath = jest.fn((path: string) => {
-			return path.substr(1)
-		})
-	}
-
-	function unmockTransformPath() {
-		CodeMapHelper.transformPath = transformPath
 	}
 
 	describe("getCodeMapNodeFromPath", () => {
@@ -109,19 +96,17 @@ describe("codeMapHelper", () => {
 		it("should remove ./ from path and return path", () => {
 			const result = CodeMapHelper.transformPath("./root/Big Leaf")
 
-			expect(result).toBe(path.relative("/", "root/Big Leaf"))
+			expect(result).toBe("root/Big Leaf")
 		})
 	})
 
 	describe("getNodesByGitignorePath", () => {
 		it("should return the ignored leaf if parent folder is provided", () => {
-			mockTransformPath()
 			const expected = [testRoot.children[1].children[1]]
 
 			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children[1].children, "/root/Parent Leaf/other small leaf")
 
 			expect(result).toEqual(expected)
-			unmockTransformPath()
 		})
 
 		it("should return an empty array if no direct children are found with path", () => {
@@ -139,13 +124,11 @@ describe("codeMapHelper", () => {
 		})
 
 		it("should return all children of subfolder if root/subfolder is ignored", () => {
-			mockTransformPath()
 			const expected = [testRoot.children[1]]
 
 			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children, "/root/Parent Leaf")
 
 			expect(result).toEqual(expected)
-			unmockTransformPath()
 		})
 	})
 
@@ -175,13 +158,11 @@ describe("codeMapHelper", () => {
 		})
 
 		it("should return 1 if only one sub-node is blacklisted and but root and sub-node are provided for nodes", () => {
-			mockTransformPath()
 			addSubNodeToBlacklist()
 
 			const result = CodeMapHelper.numberOfBlacklistedNodes([testRoot, testRoot.children[0]], blacklist)
 
 			expect(result).toBe(1)
-			unmockTransformPath()
 		})
 	})
 
@@ -207,7 +188,7 @@ describe("codeMapHelper", () => {
 		it("should return false if node exists in blacklist, but does not match BlacklistType", () => {
 			addRootToBlacklist()
 
-			const result = CodeMapHelper.isBlacklisted(testRoot, blacklist, BlacklistType.hide)
+			const result = CodeMapHelper.isBlacklisted(testRoot, blacklist, BlacklistType.flatten)
 
 			expect(result).toBeFalsy()
 		})
@@ -224,6 +205,14 @@ describe("codeMapHelper", () => {
 			addRootToBlacklist()
 
 			const result = CodeMapHelper.isBlacklisted(testRoot.children[0], blacklist, BlacklistType.exclude)
+
+			expect(result).toBeTruthy()
+		})
+
+		it("should return true if pattern exists in blacklist and node matches it", () => {
+			blacklist.push({ path: "*.jpg", type: BlacklistType.exclude })
+
+			const result = CodeMapHelper.isBlacklisted(VALID_NODE_WITH_PATH_AND_EXTENSION.children[0], blacklist, BlacklistType.exclude)
 
 			expect(result).toBeTruthy()
 		})

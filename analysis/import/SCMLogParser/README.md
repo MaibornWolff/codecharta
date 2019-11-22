@@ -13,7 +13,13 @@ Generates visualisation data from repository (Git or SVN) logs. It supports the 
 | `number_of_authors`    | number of authors with commits                                                        |
 | `code_churn`           | code churn, i.e. number of additions plus deletions to file                           |
 
-Additionally it saves the names of authors when the --add-author flag is set.
+Additionally the following Edge Metrics are calculated:
+
+| Metric              | Description                                               |
+| ------------------- | --------------------------------------------------------- |
+| `temporal_coupling` | The degree of temporal coupling between two files (>=35%) |
+
+The names of authors are saved when the --add-author flag is set.
 
 ## Usage
 
@@ -27,8 +33,6 @@ Additionally it saves the names of authors when the --add-author flag is set.
 | git | GIT_LOG_RAW         | `git log --raw --topo-order`           | yes            | yes                   | no                  |
 | SVN | SVN_LOG             | `svn log --verbose`                    | yes            | yes                   | no                  |
 
-The generated logs must be in UTF-8 encoding.
-
 You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
 
 ### Executing the SCMLogParser
@@ -38,6 +42,9 @@ See `ccsh -h` for help. Standard usage:
 > `ccsh scmlogparser <log_file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
+
+If a project is piped into the SCMLogParser, the results and the piped project are merged.
+The resulting project has the project name specified for the SCMLogParser.
 
 ### Example using Git
 

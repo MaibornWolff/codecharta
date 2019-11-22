@@ -1,16 +1,27 @@
 import "./toolBar.component.scss"
-import { DialogService } from "../dialog/dialog.service"
+import { CodeMapMouseEventService, BuildingUnhoveredSubscriber, BuildingHoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
+import { IRootScopeService } from "angular"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
-export class ToolBarController {
-	/* @ngInject */
-	constructor(private dialogService: DialogService) {}
-
-	public downloadFile() {
-		this.dialogService.showDownloadDialog()
+export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+	private _viewModel: {
+		isNodeHovered: boolean
+	} = {
+		isNodeHovered: null
 	}
 
-	public showGlobalSettings() {
-		this.dialogService.showGlobalSettingsDialog()
+	/* @ngInject */
+	constructor(private $rootScope: IRootScopeService) {
+		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
+		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
+	}
+
+	public onBuildingHovered(data: CodeMapBuilding) {
+		this._viewModel.isNodeHovered = true
+	}
+
+	public onBuildingUnhovered() {
+		this._viewModel.isNodeHovered = false
 	}
 }
 

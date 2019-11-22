@@ -5,10 +5,8 @@ import "angular-material"
 import "./codeCharta/codeCharta.module"
 import "./assets/icon.ico"
 import "./app.scss"
-import "@uirouter/angularjs"
-import "./testVille/testVille"
 
-angular.module("app", ["app.codeCharta", "ngMaterial", "ui.router"])
+angular.module("app", ["app.codeCharta", "ngMaterial"])
 
 angular
 	.module("app")
@@ -32,17 +30,6 @@ angular
 	.config($mdAriaProvider => {
 		$mdAriaProvider.disableWarnings()
 	})
-	.config($stateProvider => {
-		$stateProvider.state({
-			name: "CodeCharta",
-			template: "<code-charta-component>Loading CodeCharta...</code-charta-component>"
-		})
-
-		$stateProvider.state({
-			name: "TestVille",
-			template: "<test-ville-component>Loading testVille...</test-ville-component>"
-		})
-	})
 	.config([
 		"$compileProvider",
 		$compileProvider => {
@@ -50,6 +37,3 @@ angular
 			$compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|tel|file|chrome-extension):/)
 		}
 	])
-	.run($state => {
-		$state.go("CodeCharta")
-	})

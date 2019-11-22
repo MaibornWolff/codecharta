@@ -2,37 +2,38 @@ tool-bar-component {
 	.tool-bar {
 		background-color: #f0f0f0;
 		height: 35px;
-		margin-block-end: 0;
-		padding-bottom: 0;
-		margin-bottom: 0;
 		font-size: 0px;
 		border-bottom: 1px solid #cdcdcd;
-	}
 
-	.small-action-button {
-		&.download {
-			margin-left: 0px;
+		file-panel-component,
+		node-path-panel-component {
+			&.hidden {
+				display: none;
+			}
 		}
-		margin: 5px;
-	}
 
-	.right-aligned {
-		right: 10px;
-		position: fixed;
-
-		> * {
-			float: left;
+		.small-action-button {
+			margin: 5px;
 		}
-	}
 
-	loading-gif-map-component {
-		margin-top: 5px;
-		margin-right: 10px;
-		margin-left: 10px;
-	}
+		.right-aligned {
+			right: 10px;
+			position: fixed;
 
-	.presentation-mode-button {
-		float: right;
-		margin-top: 5px;
+			> * {
+				float: left;
+			}
+
+			loading-gif-map-component {
+				margin-top: 5px;
+				margin-right: 10px;
+				margin-left: 10px;
+			}
+
+			.presentation-mode-button {
+				float: right;
+				margin-top: 5px;
+			}
+		}
 	}
 }
