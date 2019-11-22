@@ -210,7 +210,7 @@ describe("DialogDownloadController", () => {
 		})
 
 		describe("fileContent hides", () => {
-			describe("no hides available", () => {
+			describe("no flattens available", () => {
 				beforeEach(() => {
 					settings.fileSettings.blacklist = []
 					withMockedSettingsService(settings)
@@ -219,19 +219,19 @@ describe("DialogDownloadController", () => {
 				})
 
 				it("should set correct numberOfListItems", () => {
-					expect(getFilteredFileContent(DownloadCheckboxNames.hides).numberOfListItems).toEqual(0)
+					expect(getFilteredFileContent(DownloadCheckboxNames.flattens).numberOfListItems).toEqual(0)
 				})
 
 				it("should set correct isDisabled flag", () => {
-					expect(getFilteredFileContent(DownloadCheckboxNames.hides).isDisabled).toBeTruthy()
+					expect(getFilteredFileContent(DownloadCheckboxNames.flattens).isDisabled).toBeTruthy()
 				})
 
 				it("should set correct isSelected flag", () => {
-					expect(getFilteredFileContent(DownloadCheckboxNames.hides).isSelected).toBeFalsy()
+					expect(getFilteredFileContent(DownloadCheckboxNames.flattens).isSelected).toBeFalsy()
 				})
 			})
 
-			describe("with hides available", () => {
+			describe("with flattens available", () => {
 				beforeEach(() => {
 					settings.fileSettings.blacklist = BLACKLIST
 					withMockedSettingsService(settings)
@@ -240,15 +240,15 @@ describe("DialogDownloadController", () => {
 				})
 
 				it("should set correct numberOfListItems", () => {
-					expect(getFilteredFileContent(DownloadCheckboxNames.hides).numberOfListItems).toEqual(1)
+					expect(getFilteredFileContent(DownloadCheckboxNames.flattens).numberOfListItems).toEqual(1)
 				})
 
 				it("should set correct isDisabled flag", () => {
-					expect(getFilteredFileContent(DownloadCheckboxNames.hides).isDisabled).toBeFalsy()
+					expect(getFilteredFileContent(DownloadCheckboxNames.flattens).isDisabled).toBeFalsy()
 				})
 
 				it("should set correct isSelected flag", () => {
-					expect(getFilteredFileContent(DownloadCheckboxNames.hides).isSelected).toBeTruthy()
+					expect(getFilteredFileContent(DownloadCheckboxNames.flattens).isSelected).toBeTruthy()
 				})
 			})
 		})
