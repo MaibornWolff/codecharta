@@ -58,15 +58,15 @@ describe("CodeMapActionService", () => {
 	describe("toggleNodeVisibility", () => {
 		beforeEach(() => {
 			codeMapActionsService.showNode = jest.fn()
-			codeMapActionsService.hideNode = jest.fn()
+			codeMapActionsService.flattenNode = jest.fn()
 		})
 
-		it("should call hideNode if node is visible", () => {
+		it("should call flattenNode if node is visible", () => {
 			nodeA.visible = true
 
 			codeMapActionsService.toggleNodeVisibility(nodeA)
 
-			expect(codeMapActionsService.hideNode).toHaveBeenCalled()
+			expect(codeMapActionsService.flattenNode).toHaveBeenCalled()
 		})
 
 		it("should call showNode if node is not visible", () => {
@@ -187,13 +187,13 @@ describe("CodeMapActionService", () => {
 		})
 	})
 
-	describe("hideNode", () => {
+	describe("flattenNode", () => {
 		it("should call pushItemToBlacklist with built BlackListItem", () => {
 			codeMapActionsService.pushItemToBlacklist = jest.fn()
 
-			const expected = { path: nodeA.path, type: BlacklistType.hide }
+			const expected = { path: nodeA.path, type: BlacklistType.flatten }
 
-			codeMapActionsService.hideNode(nodeA)
+			codeMapActionsService.flattenNode(nodeA)
 
 			expect(codeMapActionsService.pushItemToBlacklist).toHaveBeenCalledWith(expected)
 		})
@@ -203,7 +203,7 @@ describe("CodeMapActionService", () => {
 		it("should call removeBlackListEntry with built BlackListItem", () => {
 			codeMapActionsService.removeBlacklistEntry = jest.fn()
 
-			const expected = { path: nodeA.path, type: BlacklistType.hide }
+			const expected = { path: nodeA.path, type: BlacklistType.flatten }
 
 			codeMapActionsService.showNode(nodeA)
 
