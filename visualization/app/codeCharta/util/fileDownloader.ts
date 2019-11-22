@@ -36,11 +36,15 @@ export class FileDownloader {
 		}
 	}
 
-	private static getBlacklistToDownload(downloadSettingsNames: string[], blacklist: BlacklistItem[]): BlacklistItem[] {
-		let mergedBlacklist: BlacklistItem[] = []
+	private static getBlacklistToDownload(downloadSettingsNames: string[], blacklist: BlacklistItem[]) {
+		let mergedBlacklist = []
 
-		if (downloadSettingsNames.includes(DownloadCheckboxNames.hides)) {
-			mergedBlacklist.push(...this.getFilteredBlacklist(blacklist, BlacklistType.hide))
+		if (downloadSettingsNames.includes(DownloadCheckboxNames.flattens)) {
+			mergedBlacklist.push(
+				...this.getFilteredBlacklist(blacklist, BlacklistType.flatten).map(x => {
+					return { path: x.path, type: "hide" }
+				})
+			)
 		}
 
 		if (downloadSettingsNames.includes(DownloadCheckboxNames.excludes)) {

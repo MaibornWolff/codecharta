@@ -50,7 +50,7 @@ export class CodeMapHelper {
 	public static isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {
 		return (
 			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude) ||
-			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.hide)
+			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.flatten)
 		)
 	}
 

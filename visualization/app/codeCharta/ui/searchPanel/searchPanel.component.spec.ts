@@ -65,7 +65,7 @@ describe("SearchPanelController", () => {
 		})
 
 		it("should minimize when opened & clicked", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = SearchPanelMode.hide
+			searchPanelModeController["_viewModel"].searchPanelMode = SearchPanelMode.flatten
 
 			searchPanelModeController.toggle()
 

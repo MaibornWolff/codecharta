@@ -86,7 +86,7 @@ describe("nodeContextMenuController", () => {
 			return {
 				getParentMP: jest.fn(),
 				anyEdgeIsVisible: jest.fn(),
-				hideNode: jest.fn(),
+				flattenNode: jest.fn(),
 				markFolder: jest.fn(),
 				unmarkFolder: jest.fn(),
 				focusNode: jest.fn(),
@@ -189,12 +189,12 @@ describe("nodeContextMenuController", () => {
 
 	describe("hideNode", () => {
 		it("should set _viewModel.contextMenuBuilding to null and call codeMapActionService.hideNode with null", () => {
-			codeMapActionsService.hideNode = jest.fn()
+			codeMapActionsService.flattenNode = jest.fn()
 
-			nodeContextMenuController.hideNode()
+			nodeContextMenuController.flattenNode()
 			$timeout.flush()
 
-			expect(codeMapActionsService.hideNode).toHaveBeenCalledWith(null)
+			expect(codeMapActionsService.flattenNode).toHaveBeenCalledWith(null)
 		})
 	})
 
