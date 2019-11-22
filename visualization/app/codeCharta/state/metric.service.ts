@@ -16,7 +16,7 @@ import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
 import { BlacklistSubscriber } from "./settingsService/settings.service.events"
-import { StoreService } from "./store.service"
+import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -38,7 +38,7 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		StoreService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {

@@ -6,7 +6,7 @@ import { FileStateService } from "./fileState.service"
 import { MetricData, CodeMapNode } from "../codeCharta.model"
 import { FILE_STATES, VALID_NODE_WITH_PATH } from "../util/dataMocks"
 import { HierarchyNode } from "d3"
-import { StoreService } from "./store.service"
+import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 
 describe("EdgeMetricService", () => {
 	let edgeMetricService: EdgeMetricService
@@ -47,7 +47,7 @@ describe("EdgeMetricService", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			FileStateService.subscribe = jest.fn()
-			StoreService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribeToBlacklist = jest.fn()
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -59,7 +59,7 @@ describe("EdgeMetricService", () => {
 		it("should subscribe to Blacklist-Events", () => {
 			rebuildService()
 
-			expect(StoreService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, edgeMetricService)
+			expect(BlacklistService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, edgeMetricService)
 		})
 	})
 

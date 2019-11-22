@@ -7,6 +7,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
@@ -45,11 +46,11 @@ describe("SearchBarController", () => {
 		})
 
 		it("subscribe to blacklist", () => {
-			StoreService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribeToBlacklist = jest.fn()
 
 			rebuildController()
 
-			expect(StoreService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchBarController)
+			expect(BlacklistService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchBarController)
 		})
 
 		it("subscribe to fileStateService", () => {

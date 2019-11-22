@@ -6,6 +6,7 @@ import { IRootScopeService } from "angular"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
 	private _viewModel: {
@@ -25,7 +26,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 		private codeMapActionsService: CodeMapActionsService,
 		private storeService: StoreService
 	) {
-		StoreService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribeToBlacklist(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 

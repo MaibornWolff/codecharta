@@ -6,7 +6,7 @@ import { FileStateHelper } from "../util/fileStateHelper"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { BlacklistSubscriber } from "./settingsService/settings.service.events"
 import { HierarchyNode } from "d3"
-import { StoreService } from "./store.service"
+import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 
 export interface EdgeMetricServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
@@ -20,7 +20,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		StoreService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
