@@ -2,6 +2,9 @@ import "./state.module"
 import { StoreService } from "./store.service"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
+import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
+import { BlacklistItem, BlacklistType } from "../codeCharta.model"
+import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -15,7 +18,6 @@ describe("StoreService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.state")
 
-		// initialise injected services and used variables
 		$rootScope = getService<IRootScopeService>("$rootScope")
 	}
 
@@ -23,9 +25,25 @@ describe("StoreService", () => {
 		storeService = new StoreService($rootScope)
 	}
 
-	describe("someMethodName", () => {
-		it("should do something", () => {
-			storeService.getState()
+	describe("constructor", () => {
+		it("should initialize the store", () => {
+			rebuildService()
+
+			expect(storeService["store"]).not.toBeNull()
+		})
+	})
+
+	describe("dispatch", () => {
+		it("it should notify store change and update the store", () => {
+			$rootScope.$broadcast = jest.fn()
+
+			const item: BlacklistItem = { type: BlacklistType.exclude, path: "foo/bar" }
+			const action: BlacklistAction = { type: BlacklistActions.ADD_BLACKLIST_ITEM, payload: item }
+
+			storeService.dispatch(action)
+
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("store-changed", { actionType: BlacklistActions.ADD_BLACKLIST_ITEM })
+			expect(storeService.getState().fileSettings.blacklist).toEqual([item])
 		})
 	})
 })
