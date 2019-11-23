@@ -16,7 +16,7 @@ import _ from "lodash"
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
-	.service(_.cloneDeep(BlacklistService.name), BlacklistService)
+	.service(_.camelCase(BlacklistService.name), BlacklistService)
 	.service(_.camelCase(InjectorService.name), InjectorService)
 	.service(_.camelCase(StoreService.name), StoreService)
 	.service(_.camelCase(EdgeMetricService.name), EdgeMetricService)

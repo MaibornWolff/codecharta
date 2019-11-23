@@ -1,4 +1,5 @@
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
+
 export class InjectorService {
 	/* @ngInject */
 	constructor(
