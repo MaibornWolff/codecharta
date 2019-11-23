@@ -12,10 +12,12 @@ import { MetricService } from "./metric.service"
 import { LoadingStatusService } from "./loadingStatus.service"
 import "../codeCharta.module"
 import _ from "lodash"
+import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(IsPresentationModeService.name), IsPresentationModeService)
 	.service(_.camelCase(BlacklistService.name), BlacklistService)
 	.service(_.camelCase(InjectorService.name), InjectorService)
 	.service(_.camelCase(StoreService.name), StoreService)
