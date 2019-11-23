@@ -8,11 +8,13 @@ import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
+import { StoreService } from "../../../state/store.service"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
+	let storeService: StoreService
 	let map: CodeMapNode
 	let codeMapBuilding: CodeMapBuilding
 
@@ -26,13 +28,14 @@ describe("ThreeSceneService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 
 		map = _.cloneDeep(VALID_NODE)
 		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 	}
 
 	function rebuildService() {
-		threeSceneService = new ThreeSceneService($rootScope, settingsService)
+		threeSceneService = new ThreeSceneService($rootScope, settingsService, storeService)
 	}
 
 	describe("constructor", () => {

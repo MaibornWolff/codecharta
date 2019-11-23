@@ -22,10 +22,6 @@ module.exports = {
 			use: ["file-loader"]
 		},
 		{
-			test: /\.(json)$/,
-			use: ["json-loader"]
-		},
-		{
 			test: /\.(woff|woff2|eot|ttf|otf)$/,
 			use: ["file-loader"]
 		},
@@ -35,7 +31,7 @@ module.exports = {
 		},
 		{
 			test: /\.ts(x?)$/,
-			use: ["ng-annotate-loader", "babel-loader", "ts-loader?configFile=tsconfig.json"]
+			use: ["ng-annotate-loader", "babel-loader", "ts-loader?configFile=tsconfig.webpack.json"]
 		},
 		{
 			test: /\.glsl$/,

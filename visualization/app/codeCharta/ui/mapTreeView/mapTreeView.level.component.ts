@@ -7,6 +7,7 @@ import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredS
 import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { StoreService } from "../../state/store.service"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -33,7 +34,8 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		private $rootScope: IRootScopeService,
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
-		private codeMapPreRenderService: CodeMapPreRenderService
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private storeService: StoreService
 	) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
@@ -90,7 +92,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public isBlacklisted(node: CodeMapNode): boolean {
 		if (node) {
-			return CodeMapHelper.isBlacklisted(node, this.settingsService.getSettings().fileSettings.blacklist, BlacklistType.exclude)
+			return CodeMapHelper.isBlacklisted(node, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
 		}
 		return false
 	}

@@ -20,8 +20,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.40.0] - 2019-11-22
+
+### Added 🚀
+
+### Changed
+
+- Replaced Blacklist Hide with Flatten option #691
+- Flattened buildings are not hidden by default #691
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
 - Bump @types/three from 0.89.12 to 0.103.2 in /visualization #453
 - Bump angularjs-slider from 6.5.1 to 7.0.0 in /visualization #454
+- Bump webpack from 3.12.0 to 4.41.2 in /visualization #436
+- [Security] Bump angular from 1.7.7 to 1.7.9 in /visualization #800
 
 ## [1.39.0] - 2019-11-15
 

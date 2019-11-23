@@ -1,21 +1,21 @@
 import "./matchingFilesCounter.component.scss"
 import { BlacklistType, BlacklistItem, CodeMapNode } from "../../codeCharta.model"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class MatchingFilesCounterController implements NodeSearchSubscriber, BlacklistSubscriber {
 	private _viewModel: {
 		fileCount: number
-		hideCount: number
+		flattenCount: number
 		excludeCount: number
 		searchPattern: string
 		blacklist: BlacklistItem[]
 	} = {
 		fileCount: 0,
-		hideCount: 0,
+		flattenCount: 0,
 		excludeCount: 0,
 		searchPattern: "",
 		blacklist: []
@@ -25,7 +25,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	constructor($rootScope: IRootScopeService) {
 		NodeSearchService.subscribe($rootScope, this)
-		SettingsService.subscribeToBlacklist($rootScope, this)
+		BlacklistService.subscribe($rootScope, this)
 	}
 
 	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
@@ -40,7 +40,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[]) {
 		this._viewModel.fileCount = searchedNodeLeaves.length
-		this._viewModel.hideCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.hide)
+		this._viewModel.flattenCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.flatten)
 		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.exclude)
 	}
 

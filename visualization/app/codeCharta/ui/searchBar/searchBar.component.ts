@@ -5,6 +5,8 @@ import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { StoreService } from "../../state/store.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
 	private _viewModel: {
@@ -21,9 +23,10 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private codeMapActionsService: CodeMapActionsService
+		private codeMapActionsService: CodeMapActionsService,
+		private storeService: StoreService
 	) {
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -48,12 +51,12 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 
 	public onSearchPatternChanged() {
 		this.applySettingsSearchPattern()
-		this.updateViewModel(this.settingsService.getSettings().fileSettings.blacklist)
+		this.updateViewModel(this.storeService.getState().fileSettings.blacklist)
 	}
 
 	private updateViewModel(blacklist: BlacklistItem[]) {
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
-		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.hide)
+		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {

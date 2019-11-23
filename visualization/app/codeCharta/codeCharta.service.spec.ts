@@ -4,7 +4,8 @@ import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { CCFile } from "./codeCharta.model"
+import { CCFile, BlacklistType } from "./codeCharta.model"
+import _ from "lodash"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -14,7 +15,7 @@ describe("codeChartaService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		validFileContent = TEST_FILE_CONTENT
+		validFileContent = _.cloneDeep(TEST_FILE_CONTENT)
 	})
 
 	function restartSystem() {
@@ -111,6 +112,17 @@ describe("codeChartaService", () => {
 					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
 					done()
 				})
+		})
+
+		it("should convert old blacklist type", done => {
+			validFileContent.blacklist = [{ path: "foo", type: "hide" }]
+
+			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
+				const expectedWithBlacklist = _.cloneDeep(expected)
+				expectedWithBlacklist.settings.fileSettings.blacklist = [{ path: "foo", type: BlacklistType.flatten }]
+				expect(fileStateService.addFile).toHaveBeenLastCalledWith(expectedWithBlacklist)
+				done()
+			})
 		})
 	})
 })

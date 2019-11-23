@@ -63,14 +63,14 @@ describe("blacklistController", () => {
 		blacklistPanelController.onBlacklistChanged([blacklistItem])
 
 		expect(blacklistPanelController["_viewModel"].exclude).toEqual([blacklistItem])
-		expect(blacklistPanelController["_viewModel"].hide).toEqual([])
+		expect(blacklistPanelController["_viewModel"].flatten).toEqual([])
 	})
 
 	it("update local searchPanelMode onSearchPanelModeChanged", () => {
-		let searchPanelMode = SearchPanelMode.hide
+		let searchPanelMode = SearchPanelMode.flatten
 
 		blacklistPanelController.onSearchPanelModeChanged(searchPanelMode)
 
-		expect(blacklistPanelController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.hide)
+		expect(blacklistPanelController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.flatten)
 	})
 })

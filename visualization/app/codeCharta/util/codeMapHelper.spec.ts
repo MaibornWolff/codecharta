@@ -188,7 +188,7 @@ describe("codeMapHelper", () => {
 		it("should return false if node exists in blacklist, but does not match BlacklistType", () => {
 			addRootToBlacklist()
 
-			const result = CodeMapHelper.isBlacklisted(testRoot, blacklist, BlacklistType.hide)
+			const result = CodeMapHelper.isBlacklisted(testRoot, blacklist, BlacklistType.flatten)
 
 			expect(result).toBeFalsy()
 		})

@@ -5,6 +5,7 @@ import { IRootScopeService } from "angular"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
 import { SearchPanelService } from "../../state/searchPanel.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("SearchPanelModeSelectorController", () => {
 	let searchPanelModeSelectorController: SearchPanelModeSelectorController
@@ -37,7 +38,7 @@ describe("SearchPanelModeSelectorController", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			SettingsService.subscribeToSearchPattern = jest.fn()
-			SettingsService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 
 			SearchPanelService.subscribe = jest.fn()
 		})
@@ -51,7 +52,7 @@ describe("SearchPanelModeSelectorController", () => {
 		it("should subscribe to Blacklist-Event", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
 		it("should subscribe to SearchPanelService", () => {
@@ -63,11 +64,11 @@ describe("SearchPanelModeSelectorController", () => {
 
 	describe("onSearchPanelModeChanged", () => {
 		it("should update searchPanelMode", () => {
-			let searchPanelMode = SearchPanelMode.hide
+			let searchPanelMode = SearchPanelMode.flatten
 
 			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode)
 
-			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.hide)
+			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.flatten)
 		})
 	})
 
@@ -84,7 +85,7 @@ describe("SearchPanelModeSelectorController", () => {
 	describe("onBlacklistChanged", () => {
 		it("should update counters", () => {
 			const blacklist = [
-				{ path: "/root", type: BlacklistType.hide },
+				{ path: "/root", type: BlacklistType.flatten },
 				{
 					path: "/root/foo",
 					type: BlacklistType.exclude
@@ -94,7 +95,7 @@ describe("SearchPanelModeSelectorController", () => {
 
 			searchPanelModeSelectorController.onBlacklistChanged(blacklist)
 
-			expect(searchPanelModeSelectorController["_viewModel"].hideListLength).toEqual(1)
+			expect(searchPanelModeSelectorController["_viewModel"].flattenListLength).toEqual(1)
 			expect(searchPanelModeSelectorController["_viewModel"].excludeListLength).toEqual(2)
 		})
 	})

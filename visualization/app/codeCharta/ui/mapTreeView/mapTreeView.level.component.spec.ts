@@ -11,6 +11,7 @@ import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.mode
 import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS, VALID_NODE_WITH_ROOT_UNARY } from "../../util/dataMocks"
 import _ from "lodash"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { StoreService } from "../../state/store.service"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -18,6 +19,7 @@ describe("MapTreeViewLevelController", () => {
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
 	let codeMapPreRenderService: CodeMapPreRenderService
+	let storeService: StoreService
 	let $event
 
 	beforeEach(() => {
@@ -34,6 +36,8 @@ describe("MapTreeViewLevelController", () => {
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		settingsService = getService<SettingsService>("settingsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
+		storeService = getService<StoreService>("storeService")
+
 		$event = {
 			clientX: jest.fn(),
 			clientY: jest.fn()
@@ -45,7 +49,8 @@ describe("MapTreeViewLevelController", () => {
 			$rootScope,
 			codeMapActionsService,
 			settingsService,
-			codeMapPreRenderService
+			codeMapPreRenderService,
+			storeService
 		)
 	}
 
@@ -200,7 +205,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(CodeMapHelper.isBlacklisted).toHaveBeenCalledWith(
 				mapTreeViewLevelController["node"],
-				settingsService.getSettings().fileSettings.blacklist,
+				storeService.getState().fileSettings.blacklist,
 				BlacklistType.exclude
 			)
 		})
