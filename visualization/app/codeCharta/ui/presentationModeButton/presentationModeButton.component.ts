@@ -1,7 +1,14 @@
 import "./presentationModeButton.component.scss"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
+import { PresentationModeActions, setPresentationMode } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
+import {
+	IsPresentationModeService,
+	IsPresentationModeSubscriber
+} from "../../state/store/appSettings/isPresentationMode/isPresentationMode.service"
+import { IRootScopeService } from "angular"
 
-export class PresentationModeButtonController {
+export class PresentationModeButtonController implements IsPresentationModeSubscriber {
 	private _viewModel: {
 		isEnabled: boolean
 	} = {
@@ -9,11 +16,17 @@ export class PresentationModeButtonController {
 	}
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService) {}
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		IsPresentationModeService.subscribe($rootScope, this)
+	}
+
+	public onPresentationModeChanged(isPresentationMode: boolean) {
+		this._viewModel.isEnabled = isPresentationMode
+	}
 
 	public toggleMode() {
 		this._viewModel.isEnabled = !this._viewModel.isEnabled
-		this.settingsService.updateSettings({ appSettings: { isPresentationMode: this._viewModel.isEnabled } }, true)
+		this.storeService.dispatch(setPresentationMode(this._viewModel.isEnabled))
 	}
 }
 
