@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Show the relative number of files a folder includes compared to the project in the TreeView #380
+- Show the number of files a folder includes in the TreeView when hovering #380
+
 ### Changed
 
 ### Removed 🗑

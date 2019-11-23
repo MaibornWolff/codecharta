@@ -6,6 +6,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 
 export interface MapTreeViewHoverEventSubscriber {
@@ -33,6 +34,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		private $rootScope: IRootScopeService,
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
+		private codeMapPreRenderService: CodeMapPreRenderService,
 		private storeService: StoreService
 	) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
@@ -110,6 +112,20 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public sortByFolder(node: CodeMapNode) {
 		return node && node.children && node.children.length > 0 ? 1 : 0
+	}
+
+	public getNodeUnary() {
+		return this.node.attributes["unary"]
+	}
+
+	public getUnaryPercentage() {
+		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes["unary"]
+		const nodeUnary = this.node.attributes["unary"]
+		return ((100 * nodeUnary) / rootUnary).toFixed(0)
+	}
+
+	public isRoot() {
+		return this.node.path.split("/").length === 2
 	}
 
 	public static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
