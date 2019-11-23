@@ -82,7 +82,9 @@ describe("MapTreeViewLevelController", () => {
 
 		it("should set _isHoveredInCodeMap to true if hovered node path from the event is the same as the node path assigned to this controller", () => {
 			mapTreeViewLevelController["node"] = codeMapNode
+
 			mapTreeViewLevelController.onBuildingHovered(codeMapBuilding)
+
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(true)
 		})
 
@@ -90,17 +92,21 @@ describe("MapTreeViewLevelController", () => {
 			const differentCodeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 			differentCodeMapBuilding.node.path = "someOtherPath"
 			mapTreeViewLevelController["node"] = codeMapNode
+
 			mapTreeViewLevelController.onBuildingHovered(differentCodeMapBuilding)
+
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
 		it("should set _isHoveredInCodeMap to false if unhovered", () => {
 			mapTreeViewLevelController.onBuildingUnhovered()
+
 			expect(mapTreeViewLevelController["_viewModel"].isHoveredInCodeMap).toBe(false)
 		})
 
 		it("Black color if no folder", () => {
 			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: "File" } as CodeMapNode
+
 			expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000000")
 		})
 
@@ -112,12 +118,14 @@ describe("MapTreeViewLevelController", () => {
 					color: "#123FDE"
 				} as MarkedPackage
 			]
+
 			expect(mapTreeViewLevelController.getMarkingColor()).toBe("#123FDE")
 		})
 
 		it("Return black if no markingColor in node", () => {
 			mapTreeViewLevelController["node"] = { path: "/root/node/path", type: "Folder" } as CodeMapNode
 			mapTreeViewLevelController["settingsService"]["settings"].fileSettings.markedPackages = []
+
 			expect(mapTreeViewLevelController.getMarkingColor()).toBe("#000000")
 		})
 	})
@@ -125,11 +133,13 @@ describe("MapTreeViewLevelController", () => {
 	describe("Mouse movement", () => {
 		it("Mouse enter", () => {
 			mapTreeViewLevelController.onMouseEnter()
+
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-hover-node", mapTreeViewLevelController["node"])
 		})
 
 		it("Mouse leave", () => {
 			mapTreeViewLevelController.onMouseLeave()
+
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-unhover-node", mapTreeViewLevelController["node"])
 		})
 	})
@@ -143,6 +153,7 @@ describe("MapTreeViewLevelController", () => {
 				x: $event.clientX,
 				y: $event.clientY
 			}
+
 			mapTreeViewLevelController.onRightClick($event)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
@@ -151,19 +162,24 @@ describe("MapTreeViewLevelController", () => {
 
 		it("Folder click collapse", () => {
 			mapTreeViewLevelController["_viewModel"].collapsed = true
+
 			mapTreeViewLevelController.onFolderClick()
+
 			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
 		})
 
 		it("Folder click uncollapse", () => {
 			mapTreeViewLevelController["_viewModel"].collapsed = false
+
 			mapTreeViewLevelController.onFolderClick()
+
 			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeTruthy()
 		})
 
 		it("Label click", () => {
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			mapTreeViewLevelController["codeMapActionsService"].focusNode = jest.fn()
+
 			mapTreeViewLevelController.onLabelClick()
 
 			expect(mapTreeViewLevelController["codeMapActionsService"].focusNode).toHaveBeenCalledWith(mapTreeViewLevelController["node"])
@@ -172,6 +188,7 @@ describe("MapTreeViewLevelController", () => {
 		it("Eye click", () => {
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
 			mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility = jest.fn()
+
 			mapTreeViewLevelController.onEyeClick()
 
 			expect(mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility).toHaveBeenCalledWith(
@@ -185,22 +202,25 @@ describe("MapTreeViewLevelController", () => {
 				"File",
 				VALID_NODE_WITH_PATH
 			)
+
 			expect(mapTreeViewLevelController.isLeaf()).toBeTruthy()
 		})
 
 		it("Is not leaf", () => {
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
+
 			expect(mapTreeViewLevelController.isLeaf(mapTreeViewLevelController["node"])).toBeFalsy()
 		})
 
 		it("Is blacklisted", () => {
+			CodeMapHelper.isBlacklisted = jest.fn()
+
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf/empty folder",
 				"Folder",
 				VALID_NODE_WITH_PATH
 			)
 
-			CodeMapHelper.isBlacklisted = jest.fn()
 			mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
 
 			expect(CodeMapHelper.isBlacklisted).toHaveBeenCalledWith(
@@ -212,8 +232,10 @@ describe("MapTreeViewLevelController", () => {
 
 		it("Not blacklisted, not exist", () => {
 			CodeMapHelper.isBlacklisted = jest.fn()
-			let blacklisted = mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
-			expect(blacklisted).toBeFalsy()
+
+			const result = mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
+
+			expect(result).toBeFalsy()
 		})
 
 		it("Is searched", () => {
@@ -226,8 +248,10 @@ describe("MapTreeViewLevelController", () => {
 				"/root/Parent Leaf/",
 				"/root/Parent Leaf/empty folder"
 			]
-			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
-			expect(searched).toBeTruthy()
+
+			const result = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
+
+			expect(result).toBeTruthy()
 		})
 
 		it("Is not searched", () => {
@@ -237,13 +261,16 @@ describe("MapTreeViewLevelController", () => {
 				VALID_NODE_WITH_PATH
 			)
 			mapTreeViewLevelController["settingsService"]["settings"].dynamicSettings.searchedNodePaths = ["/root/Parent Leaf"]
-			let searched = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
-			expect(searched).toBeFalsy()
+
+			const result = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
+
+			expect(result).toBeFalsy()
 		})
 
 		it("Is not searched with null parameter", () => {
-			let searched = mapTreeViewLevelController.isSearched(null)
-			expect(searched).toBeFalsy()
+			const result = mapTreeViewLevelController.isSearched(null)
+
+			expect(result).toBeFalsy()
 		})
 
 		it("Sort leaf", () => {
@@ -252,14 +279,18 @@ describe("MapTreeViewLevelController", () => {
 				"File",
 				VALID_NODE_WITH_PATH
 			)
-			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
-			expect(sortValue).toBe(0)
+
+			const result = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
+
+			expect(result).toBe(0)
 		})
 
 		it("Sort not a leaf", () => {
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
-			let sortValue = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
-			expect(sortValue).toBe(1)
+
+			const result = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
+
+			expect(result).toBe(1)
 		})
 
 		it("Hover", () => {
@@ -301,41 +332,41 @@ describe("MapTreeViewLevelController", () => {
 		it("should return the unary of the current node", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_METRICS
 
-			const nodeUnary = mapTreeViewLevelController.getNodeUnary()
+			const result = mapTreeViewLevelController.getNodeUnary()
 
-			expect(nodeUnary).toBe(VALID_NODE_WITH_METRICS.attributes["unary"])
+			expect(result).toBe(VALID_NODE_WITH_METRICS.attributes["unary"])
 		})
 	})
 	describe("getUnaryPercentage", () => {
 		it("should return the Child Node Unary-Percentage to 50 percent", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
 
-			const nodePercentage = mapTreeViewLevelController.getUnaryPercentage()
+			const result = mapTreeViewLevelController.getUnaryPercentage()
 
-			expect(nodePercentage).toBe("50")
+			expect(result).toBe("50")
 		})
 		it("should return the Root-Node Unary-Precentage to 100 percent", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
 
-			const nodePercentage = mapTreeViewLevelController.getUnaryPercentage()
+			const result = mapTreeViewLevelController.getUnaryPercentage()
 
-			expect(nodePercentage).toBe("100")
+			expect(result).toBe("100")
 		})
 	})
 	describe("isRoot", () => {
 		it("should return that the current Node is a Root", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
 
-			const isRootNode = mapTreeViewLevelController.isRoot()
+			const result = mapTreeViewLevelController.isRoot()
 
-			expect(isRootNode).toBeTruthy()
+			expect(result).toBeTruthy()
 		})
 		it("should return that the current Node is not Root", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
 
-			const isRootNode = mapTreeViewLevelController.isRoot()
+			const result = mapTreeViewLevelController.isRoot()
 
-			expect(isRootNode).toBeFalsy()
+			expect(result).toBeFalsy()
 		})
 	})
 })
