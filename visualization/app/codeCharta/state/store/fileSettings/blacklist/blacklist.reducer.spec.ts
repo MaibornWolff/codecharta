@@ -3,7 +3,7 @@ import { blacklist } from "./blacklist.reducer"
 import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 
 describe("blacklist", () => {
-	const item: BlacklistItem = { type: BlacklistType.hide, path: "foo/bar" }
+	const item: BlacklistItem = { type: BlacklistType.flatten, path: "foo/bar" }
 
 	describe("Default State", () => {
 		it("should initialize the default state", () => {

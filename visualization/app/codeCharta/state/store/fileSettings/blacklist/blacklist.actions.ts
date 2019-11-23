@@ -22,10 +22,8 @@ export interface LoadBlacklistAction extends Action {
 	payload: BlacklistItem[]
 }
 
-// Bundle all the types
 export type BlacklistAction = AddBlacklistAction | RemoveBlacklistAction | LoadBlacklistAction
 
-// Declare your action creators here
 export function addBlacklistItem(item: BlacklistItem): BlacklistAction {
 	return {
 		type: BlacklistActions.ADD_BLACKLIST_ITEM,

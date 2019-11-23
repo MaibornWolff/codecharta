@@ -15,7 +15,7 @@ export class BlacklistService implements StoreSubscriber {
 		StoreService.subscribe($rootScope, this)
 	}
 
-	public onStoreChanged(actionType) {
+	public onStoreChanged(actionType: BlacklistActions) {
 		if (_.values(BlacklistActions).includes(actionType)) {
 			this.notify(this.select())
 		}
@@ -25,7 +25,7 @@ export class BlacklistService implements StoreSubscriber {
 		return this.storeService.getState().fileSettings.blacklist
 	}
 
-	private notify(newState) {
+	private notify(newState: BlacklistItem[]) {
 		this.$rootScope.$broadcast(BlacklistService.BLACKLIST_CHANGED_EVENT, { blacklist: newState })
 	}
 
