@@ -296,7 +296,7 @@ describe("MapTreeViewLevelController", () => {
 		it("should return the unary of the current node", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_METRICS
 
-			const nodeUnary: number = mapTreeViewLevelController.getNodeUnary()
+			const nodeUnary = mapTreeViewLevelController.getNodeUnary()
 
 			expect(nodeUnary).toBe(VALID_NODE_WITH_METRICS.attributes["unary"])
 		})
@@ -321,16 +321,16 @@ describe("MapTreeViewLevelController", () => {
 		it("should return that the current Node is a Root", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
 
-			const nodeIsRoot: boolean = mapTreeViewLevelController.isRoot()
+			const isRootNode = mapTreeViewLevelController.isRoot()
 
-			expect(nodeIsRoot).toBeTruthy()
+			expect(isRootNode).toBeTruthy()
 		})
 		it("should return that the current Node is not Root", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
 
-			const nodeIsRoot: boolean = mapTreeViewLevelController.isRoot()
+			const isRootNode = mapTreeViewLevelController.isRoot()
 
-			expect(nodeIsRoot).toBeFalsy()
+			expect(isRootNode).toBeFalsy()
 		})
 	})
 })
