@@ -305,14 +305,14 @@ describe("MapTreeViewLevelController", () => {
 		it("should return the Child Node Unary-Percentage to 50 percent", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
 
-			const nodePercentage = mapTreeViewLevelController.getUnaryPercentage() //leave for later
+			const nodePercentage = mapTreeViewLevelController.getUnaryPercentage()
 
 			expect(nodePercentage).toBe("50")
 		})
 		it("should return the Root-Node Unary-Precentage to 100 percent", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
 
-			const nodePercentage = mapTreeViewLevelController.getUnaryPercentage() //leave for later
+			const nodePercentage = mapTreeViewLevelController.getUnaryPercentage()
 
 			expect(nodePercentage).toBe("100")
 		})
