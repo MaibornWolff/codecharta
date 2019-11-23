@@ -75,6 +75,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.lastRender.settings = settings
+
+		//TODO: Remove when all settings are in the store
 		this.lastRender.settings.fileSettings.blacklist = this.storeService.getState().fileSettings.blacklist
 
 		if (
