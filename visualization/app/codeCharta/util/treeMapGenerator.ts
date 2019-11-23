@@ -25,9 +25,6 @@ export class TreeMapGenerator {
 		const heightScale = (s.treeMapSettings.mapSize * 2) / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
 		const nodesAsArray: SquarifiedValuedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
-			if (CodeMapHelper.isBlacklisted(squarifiedNode.data, s.fileSettings.blacklist, BlacklistType.hide)) {
-				squarifiedNode.data = this.setVisibilityOfNodeAndDescendants(squarifiedNode.data, false)
-			}
 			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState)
 		})
 	}

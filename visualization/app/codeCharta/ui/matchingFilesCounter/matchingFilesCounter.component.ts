@@ -9,13 +9,13 @@ import { BlacklistService } from "../../state/store/fileSettings/blacklist/black
 export class MatchingFilesCounterController implements NodeSearchSubscriber, BlacklistSubscriber {
 	private _viewModel: {
 		fileCount: number
-		hideCount: number
+		flattenCount: number
 		excludeCount: number
 		searchPattern: string
 		blacklist: BlacklistItem[]
 	} = {
 		fileCount: 0,
-		hideCount: 0,
+		flattenCount: 0,
 		excludeCount: 0,
 		searchPattern: "",
 		blacklist: []
@@ -40,7 +40,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[]) {
 		this._viewModel.fileCount = searchedNodeLeaves.length
-		this._viewModel.hideCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.hide)
+		this._viewModel.flattenCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.flatten)
 		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.exclude)
 	}
 

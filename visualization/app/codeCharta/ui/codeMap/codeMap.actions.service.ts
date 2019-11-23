@@ -16,7 +16,7 @@ export class CodeMapActionsService {
 
 	public toggleNodeVisibility(node: CodeMapNode) {
 		if (node.visible) {
-			this.hideNode(node)
+			this.flattenNode(node)
 		} else {
 			this.showNode(node)
 		}
@@ -70,12 +70,12 @@ export class CodeMapActionsService {
 		})
 	}
 
-	public hideNode(node: CodeMapNode) {
-		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.hide })
+	public flattenNode(node: CodeMapNode) {
+		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.flatten })
 	}
 
 	public showNode(node: CodeMapNode) {
-		this.removeBlacklistEntry({ path: node.path, type: BlacklistType.hide })
+		this.removeBlacklistEntry({ path: node.path, type: BlacklistType.flatten })
 	}
 
 	public focusNode(node: CodeMapNode) {

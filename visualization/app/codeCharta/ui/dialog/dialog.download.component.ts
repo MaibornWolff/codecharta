@@ -19,7 +19,7 @@ interface FileDownloadContent {
 export enum DownloadCheckboxNames {
 	edges = "Edges",
 	excludes = "Excludes",
-	hides = "Hides",
+	flattens = "Flattens",
 	markedPackages = "MarkedPackages"
 }
 
@@ -73,7 +73,7 @@ export class DialogDownloadController {
 		this.pushFileContent(DownloadCheckboxNames.edges, fileSettings.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(fileSettings, BlacklistType.exclude))
-		this.pushFileContent(DownloadCheckboxNames.hides, this.getFilteredBlacklistLength(fileSettings, BlacklistType.hide))
+		this.pushFileContent(DownloadCheckboxNames.flattens, this.getFilteredBlacklistLength(fileSettings, BlacklistType.flatten))
 	}
 
 	private getFilteredBlacklistLength(fileSettings: FileSettings, blacklistType: BlacklistType) {

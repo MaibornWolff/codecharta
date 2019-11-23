@@ -66,14 +66,14 @@ describe("MatchingFilesCounterController", () => {
 			searchedNodeLeaves[0].path = matchingFilesCounterController["_viewModel"].searchPattern
 			const blacklist: BlacklistItem[] = [
 				{ path: "/root/node/path", type: BlacklistType.exclude },
-				{ path: "/root/node/path", type: BlacklistType.hide }
+				{ path: "/root/node/path", type: BlacklistType.flatten }
 			]
 
 			// On Windows 'ignore' generates paths with backslashes instead of slashes when executing
 			// the unit tests, and thus the test case fails without this mock.
 			CodeMapHelper.isBlacklisted = jest.fn((node, blacklist, type) => {
 				return (
-					(type == BlacklistType.hide && node.path == "/root/node/path") ||
+					(type == BlacklistType.flatten && node.path == "/root/node/path") ||
 					(type == BlacklistType.exclude && node.path == "/root/node/path")
 				)
 			})
@@ -81,7 +81,7 @@ describe("MatchingFilesCounterController", () => {
 			matchingFilesCounterController["updateViewModel"](searchedNodeLeaves, blacklist)
 
 			expect(matchingFilesCounterController["_viewModel"].fileCount).toEqual(searchedNodeLeaves.length)
-			expect(matchingFilesCounterController["_viewModel"].hideCount).toEqual(2)
+			expect(matchingFilesCounterController["_viewModel"].flattenCount).toEqual(2)
 			expect(matchingFilesCounterController["_viewModel"].excludeCount).toEqual(2)
 		})
 	})

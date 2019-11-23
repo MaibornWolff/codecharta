@@ -64,11 +64,11 @@ describe("SearchPanelModeSelectorController", () => {
 
 	describe("onSearchPanelModeChanged", () => {
 		it("should update searchPanelMode", () => {
-			let searchPanelMode = SearchPanelMode.hide
+			let searchPanelMode = SearchPanelMode.flatten
 
 			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode)
 
-			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.hide)
+			expect(searchPanelModeSelectorController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.flatten)
 		})
 	})
 
@@ -85,7 +85,7 @@ describe("SearchPanelModeSelectorController", () => {
 	describe("onBlacklistChanged", () => {
 		it("should update counters", () => {
 			const blacklist = [
-				{ path: "/root", type: BlacklistType.hide },
+				{ path: "/root", type: BlacklistType.flatten },
 				{
 					path: "/root/foo",
 					type: BlacklistType.exclude
@@ -95,7 +95,7 @@ describe("SearchPanelModeSelectorController", () => {
 
 			searchPanelModeSelectorController.onBlacklistChanged(blacklist)
 
-			expect(searchPanelModeSelectorController["_viewModel"].hideListLength).toEqual(1)
+			expect(searchPanelModeSelectorController["_viewModel"].flattenListLength).toEqual(1)
 			expect(searchPanelModeSelectorController["_viewModel"].excludeListLength).toEqual(2)
 		})
 	})

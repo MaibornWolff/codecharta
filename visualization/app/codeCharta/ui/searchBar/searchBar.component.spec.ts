@@ -121,7 +121,7 @@ describe("SearchBarController", () => {
 		it("should update ViewModel when pattern hidden and excluded", () => {
 			const blacklist: BlacklistItem[] = [
 				{ path: "/root/node/path", type: BlacklistType.exclude },
-				{ path: "/root/node/path", type: BlacklistType.hide }
+				{ path: "/root/node/path", type: BlacklistType.flatten }
 			]
 
 			searchBarController.onBlacklistChanged(blacklist)
@@ -172,7 +172,7 @@ describe("SearchBarController", () => {
 		})
 
 		it("should set the isPatternHidden to true, when the pattern is already in Blacklist", () => {
-			blacklist.push({ path: "/root/node/path", type: BlacklistType.hide })
+			blacklist.push({ path: "/root/node/path", type: BlacklistType.flatten })
 			searchBarController["_viewModel"].isPatternHidden = false
 
 			searchBarController["updateViewModel"](blacklist)
