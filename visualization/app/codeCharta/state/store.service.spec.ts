@@ -2,7 +2,6 @@ import "./state.module"
 import { StoreService } from "./store.service"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { BlacklistItem, BlacklistType } from "../codeCharta.model"
 import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
 
