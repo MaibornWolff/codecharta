@@ -22,7 +22,7 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 	/* @ngInject */
 	constructor(private searchPanelService: SearchPanelService, private $rootScope: IRootScopeService) {
 		SettingsService.subscribeToSearchPattern(this.$rootScope, this)
-		BlacklistService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 

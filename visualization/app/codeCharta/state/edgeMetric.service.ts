@@ -20,7 +20,7 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		BlacklistService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {

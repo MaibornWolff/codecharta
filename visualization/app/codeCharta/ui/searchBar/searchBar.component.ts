@@ -26,7 +26,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 		private codeMapActionsService: CodeMapActionsService,
 		private storeService: StoreService
 	) {
-		BlacklistService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 

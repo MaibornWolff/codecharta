@@ -29,7 +29,7 @@ export class BlacklistService implements StoreSubscriber {
 		this.$rootScope.$broadcast(BlacklistService.BLACKLIST_CHANGED_EVENT, { blacklist: newState })
 	}
 
-	public static subscribeToBlacklist($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
+	public static subscribe($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
 		$rootScope.$on(BlacklistService.BLACKLIST_CHANGED_EVENT, (event, data) => {
 			subscriber.onBlacklistChanged(data.blacklist)
 		})

@@ -38,7 +38,7 @@ describe("SearchPanelModeSelectorController", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			SettingsService.subscribeToSearchPattern = jest.fn()
-			BlacklistService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 
 			SearchPanelService.subscribe = jest.fn()
 		})
@@ -52,7 +52,7 @@ describe("SearchPanelModeSelectorController", () => {
 		it("should subscribe to Blacklist-Event", () => {
 			rebuildController()
 
-			expect(BlacklistService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
 		it("should subscribe to SearchPanelService", () => {

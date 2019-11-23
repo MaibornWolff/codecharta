@@ -47,7 +47,7 @@ describe("EdgeMetricService", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			FileStateService.subscribe = jest.fn()
-			BlacklistService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -59,7 +59,7 @@ describe("EdgeMetricService", () => {
 		it("should subscribe to Blacklist-Events", () => {
 			rebuildService()
 
-			expect(BlacklistService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, edgeMetricService)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricService)
 		})
 	})
 

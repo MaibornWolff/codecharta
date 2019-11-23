@@ -18,7 +18,7 @@ export class NodePathPanelController implements BuildingHoveredSubscriber, Build
 	constructor(private $rootScope: IRootScopeService) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-		BlacklistService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {

@@ -29,7 +29,7 @@ describe("MatchingFilesCounterController", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			NodeSearchService.subscribe = jest.fn()
-			BlacklistService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 		})
 
 		it("should subscribe to NodeSearchService", () => {
@@ -41,7 +41,7 @@ describe("MatchingFilesCounterController", () => {
 		it("should subscribe to Blacklist-Event", () => {
 			rebuildController()
 
-			expect(BlacklistService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
 		})
 	})
 

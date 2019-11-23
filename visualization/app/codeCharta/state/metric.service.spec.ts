@@ -54,7 +54,7 @@ describe("MetricService", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			FileStateService.subscribe = jest.fn()
-			BlacklistService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -66,7 +66,7 @@ describe("MetricService", () => {
 		it("should subscribe to Blacklist-Events", () => {
 			rebuildService()
 
-			expect(BlacklistService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, metricService)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, metricService)
 		})
 	})
 
