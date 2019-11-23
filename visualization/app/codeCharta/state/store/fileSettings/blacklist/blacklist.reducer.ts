@@ -1,7 +1,6 @@
 import _ from "lodash"
 import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistAction, BlacklistActions } from "./blacklist.actions"
-import angular from "angular"
 
 export function blacklist(state: BlacklistItem[] = [], action: BlacklistAction): BlacklistItem[] {
 	switch (action.type) {
@@ -17,7 +16,7 @@ export function blacklist(state: BlacklistItem[] = [], action: BlacklistAction):
 }
 
 function removeBlacklistItem(blacklist: BlacklistItem[], item: BlacklistItem): BlacklistItem[] {
-	return blacklist.filter(x => {
-		return JSON.stringify(angular.toJson(x)) !== JSON.stringify(angular.toJson(item))
+	return _.cloneDeep(blacklist).filter(x => {
+		return JSON.stringify(x) !== JSON.stringify(item)
 	})
 }

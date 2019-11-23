@@ -15,7 +15,7 @@ export class BlacklistService implements StoreSubscriber {
 		StoreService.subscribe($rootScope, this)
 	}
 
-	public onStoreChanged(actionType: BlacklistActions) {
+	public onStoreChanged(actionType: string) {
 		if (_.values(BlacklistActions).includes(actionType)) {
 			this.notify(this.select())
 		}
