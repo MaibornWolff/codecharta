@@ -35,11 +35,11 @@ describe("BlacklistService", () => {
 
 	describe("constructor", () => {
 		it("should subscribe to store", () => {
-			StoreService.subscribeToStore = jest.fn()
+			StoreService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(StoreService.subscribeToStore).toHaveBeenCalledWith($rootScope, blacklistService)
+			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, blacklistService)
 		})
 	})
 

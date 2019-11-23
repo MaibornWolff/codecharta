@@ -12,7 +12,7 @@ export class BlacklistService implements StoreSubscriber {
 	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribeToStore($rootScope, this)
+		StoreService.subscribe($rootScope, this)
 	}
 
 	public onStoreChanged(actionType) {

@@ -29,7 +29,7 @@ export class StoreService {
 		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType: actionType })
 	}
 
-	public static subscribeToStore($rootScope: IRootScopeService, subscriber: StoreSubscriber) {
+	public static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {
 		$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (event, data) => {
 			subscriber.onStoreChanged(data.actionType)
 		})
