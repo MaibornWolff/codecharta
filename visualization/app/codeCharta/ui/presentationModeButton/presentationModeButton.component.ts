@@ -1,7 +1,6 @@
 import "./presentationModeButton.component.scss"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { StoreService } from "../../state/store.service"
-import { PresentationModeActions, setPresentationMode } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
+import { setPresentationMode } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 import {
 	IsPresentationModeService,
 	IsPresentationModeSubscriber
@@ -17,7 +16,7 @@ export class PresentationModeButtonController implements IsPresentationModeSubsc
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		IsPresentationModeService.subscribe($rootScope, this)
+		IsPresentationModeService.subscribe(this.$rootScope, this)
 	}
 
 	public onPresentationModeChanged(isPresentationMode: boolean) {
