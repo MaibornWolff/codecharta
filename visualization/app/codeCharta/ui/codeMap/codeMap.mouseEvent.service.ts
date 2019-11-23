@@ -10,8 +10,8 @@ import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 interface Coordinates {
 	x: number
@@ -60,7 +60,7 @@ export class CodeMapMouseEventService
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
 	public start() {

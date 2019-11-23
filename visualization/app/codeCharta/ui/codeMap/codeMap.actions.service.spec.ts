@@ -7,11 +7,14 @@ import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.mod
 import { CodeChartaService } from "../../codeCharta.service"
 import { SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { StoreService } from "../../state/store.service"
+import { removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
 	let edgeMetricService: EdgeMetricService
+	let storeService: StoreService
 
 	let nodeA: CodeMapNode
 	let settings: Settings
@@ -22,6 +25,7 @@ describe("CodeMapActionService", () => {
 
 		settingsService = getService<SettingsService>("settingsService")
 		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+		storeService = getService<StoreService>("storeService")
 
 		nodeA = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
 		settings = JSON.parse(JSON.stringify(SETTINGS))
@@ -30,7 +34,7 @@ describe("CodeMapActionService", () => {
 	}
 
 	function rebuildService() {
-		codeMapActionsService = new CodeMapActionsService(settingsService, edgeMetricService)
+		codeMapActionsService = new CodeMapActionsService(settingsService, edgeMetricService, storeService)
 	}
 
 	function withMockedSettingsService() {
@@ -45,10 +49,18 @@ describe("CodeMapActionService", () => {
 		})()
 	}
 
+	function withMockedStoreService() {
+		storeService = codeMapActionsService["storeService"] = jest.fn().mockReturnValue({
+			dispatch: jest.fn(),
+			getState: jest.fn().mockReturnValue(settings)
+		})()
+	}
+
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		withMockedSettingsService()
+		withMockedStoreService()
 	})
 
 	afterEach(() => {
@@ -258,11 +270,10 @@ describe("CodeMapActionService", () => {
 		it("should call pushItemToBlacklist with BlacklistType exclude", () => {
 			settings.fileSettings.blacklist.push({ path: nodeA.path + "/leaf", type: BlacklistType.exclude })
 			const entry = { path: nodeA.path, type: BlacklistType.exclude }
-			const expected = { fileSettings: { blacklist: settings.fileSettings.blacklist } }
 
 			codeMapActionsService.removeBlacklistEntry(entry)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+			expect(storeService.dispatch).toHaveBeenCalledWith(removeBlacklistItem(entry))
 		})
 	})
 
@@ -273,7 +284,7 @@ describe("CodeMapActionService", () => {
 
 			codeMapActionsService.pushItemToBlacklist(blacklistItem)
 
-			expect(settingsService.updateSettings).not.toHaveBeenCalled()
+			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
 
 		it("should update settings if item is not blacklisted", () => {
@@ -281,7 +292,7 @@ describe("CodeMapActionService", () => {
 
 			codeMapActionsService.pushItemToBlacklist(blacklistItem)
 
-			expect(settingsService.updateSettings).toHaveBeenCalled()
+			expect(storeService.dispatch).toHaveBeenCalled()
 		})
 	})
 

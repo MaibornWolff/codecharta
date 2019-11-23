@@ -4,9 +4,15 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { StoreService } from "../../state/store.service"
+import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 export class CodeMapActionsService {
-	constructor(private settingsService: SettingsService, private edgeMetricService: EdgeMetricService) {}
+	constructor(
+		private settingsService: SettingsService,
+		private edgeMetricService: EdgeMetricService,
+		private storeService: StoreService
+	) {}
 
 	public toggleNodeVisibility(node: CodeMapNode) {
 		if (node.visible) {
@@ -89,23 +95,15 @@ export class CodeMapActionsService {
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
-		this.settingsService.updateSettings({
-			fileSettings: {
-				blacklist: this.settingsService.getSettings().fileSettings.blacklist.filter(obj => !this.isEqualObjects(obj, entry))
-			}
-		})
+		this.storeService.dispatch(removeBlacklistItem(entry))
 	}
 
 	public pushItemToBlacklist(item: BlacklistItem) {
-		const foundDuplicate = this.settingsService.getSettings().fileSettings.blacklist.filter(obj => {
+		const foundDuplicate = this.storeService.getState().fileSettings.blacklist.filter(obj => {
 			return this.isEqualObjects(obj, item)
 		})
 		if (foundDuplicate.length === 0) {
-			this.settingsService.updateSettings({
-				fileSettings: {
-					blacklist: [...this.settingsService.getSettings().fileSettings.blacklist, item]
-				}
-			})
+			this.storeService.dispatch(addBlacklistItem(item))
 		}
 	}
 

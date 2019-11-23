@@ -6,6 +6,8 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
+import { StoreService } from "../../state/store.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
@@ -13,6 +15,7 @@ describe("SearchBarController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let codeMapActionsService: CodeMapActionsService
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
@@ -25,10 +28,11 @@ describe("SearchBarController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService)
+		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService, storeService)
 	}
 
 	function withMockedEventMethods() {
@@ -42,11 +46,11 @@ describe("SearchBarController", () => {
 		})
 
 		it("subscribe to blacklist", () => {
-			SettingsService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchBarController)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchBarController)
 		})
 
 		it("subscribe to fileStateService", () => {
@@ -83,7 +87,7 @@ describe("SearchBarController", () => {
 
 			searchBarController.onClickBlacklistPattern(blacklistItem.type)
 
-			expect(settingsService.getSettings().fileSettings.blacklist).toContainEqual(blacklistItem)
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItem)
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 		})
 	})

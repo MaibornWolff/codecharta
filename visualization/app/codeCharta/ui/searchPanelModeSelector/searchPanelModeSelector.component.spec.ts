@@ -5,6 +5,7 @@ import { IRootScopeService } from "angular"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
 import { SearchPanelService } from "../../state/searchPanel.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("SearchPanelModeSelectorController", () => {
 	let searchPanelModeSelectorController: SearchPanelModeSelectorController
@@ -37,7 +38,7 @@ describe("SearchPanelModeSelectorController", () => {
 	describe("constructor", () => {
 		beforeEach(() => {
 			SettingsService.subscribeToSearchPattern = jest.fn()
-			SettingsService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 
 			SearchPanelService.subscribe = jest.fn()
 		})
@@ -51,7 +52,7 @@ describe("SearchPanelModeSelectorController", () => {
 		it("should subscribe to Blacklist-Event", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
 		it("should subscribe to SearchPanelService", () => {
