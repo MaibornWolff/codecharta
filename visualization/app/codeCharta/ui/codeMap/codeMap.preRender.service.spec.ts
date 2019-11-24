@@ -13,6 +13,7 @@ import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricService } from "../../state/edgeMetric.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import _ from "lodash"
+import { StoreService } from "../../state/store.service"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -21,6 +22,7 @@ describe("codeMapPreRenderService", () => {
 	let codeMapRenderService: CodeMapRenderService
 	let loadingStatusService: LoadingStatusService
 	let edgeMetricService: EdgeMetricService
+	let storeService: StoreService
 
 	let settings: Settings
 	let file: CCFile
@@ -44,6 +46,7 @@ describe("codeMapPreRenderService", () => {
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+		storeService = getService<StoreService>("storeService")
 
 		settings = _.cloneDeep(SETTINGS)
 		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
@@ -55,7 +58,8 @@ describe("codeMapPreRenderService", () => {
 			threeOrbitControlsService,
 			codeMapRenderService,
 			loadingStatusService,
-			edgeMetricService
+			edgeMetricService,
+			storeService
 		)
 	}
 

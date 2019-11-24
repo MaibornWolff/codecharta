@@ -1,29 +1,32 @@
-blacklist-panel-component {
-	.small-info {
-		color: rgba(0, 0, 0, 0.38);
-		font-size: 9pt;
+blacklist-panel-flatten-component,
+blacklist-panel-exclude-component {
+	.header {
+		display: block;
+
+		.header-text {
+			display: inline-block;
+			margin: 0;
+		}
+
+		i.fa {
+			font-size: 12pt;
+			cursor: pointer;
+			color: grey;
+		}
 	}
 
-	.item-type {
-		min-width: 25px !important;
+	md-list-item {
+		border-top: 1px solid rgba(0, 0, 0, 0.12);
+
+		&.md-no-proxy {
+			padding: 0;
+		}
 	}
 
-	md-list-item.md-no-proxy,
-	md-list-item .md-no-style {
-		padding: 0;
-	}
-
-	.md-list-item-text p {
-		-webkit-touch-callout: initial;
-		-webkit-user-select: initial;
-		-khtml-user-select: initial;
-		-moz-user-select: initial;
-		-ms-user-select: initial;
-		user-select: initial;
-	}
-
-	md-list .sub-list {
-		max-height: 300px;
-		overflow: auto;
+	.pattern-text {
+		direction: rtl;
+		overflow: hidden;
+		width: 100%;
+		padding-right: 10px;
 	}
 }

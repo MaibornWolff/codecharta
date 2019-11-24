@@ -7,6 +7,7 @@ import { SettingsService } from "../../../state/settingsService/settings.service
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { StoreService } from "../../../state/store.service"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding: CodeMapBuilding)
@@ -31,7 +32,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private highlighted: CodeMapBuilding = null
 	private highlightedBuildings: CodeMapBuilding[] = []
 
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
 		this.scene = new THREE.Scene()
@@ -54,6 +55,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	public highlightBuilding(building: CodeMapBuilding) {
 		const settings = this.settingsService.getSettings()
+
+		//TODO: Remove once all settings are in the store
+		settings.appSettings.isPresentationMode = this.storeService.getState().appSettings.isPresentationMode
+
 		this.getMapMesh().highlightBuilding(building, this.selected, settings)
 		this.highlightedBuildings = []
 		this.highlighted = building
@@ -61,6 +66,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	public addBuildingToHighlightingList(building: CodeMapBuilding) {
 		const settings = this.settingsService.getSettings()
+
+		//TODO: Remove once all settings are in the store
+		settings.appSettings.isPresentationMode = this.storeService.getState().appSettings.isPresentationMode
+
 		this.highlightedBuildings.push(building)
 		this.getMapMesh().highlightBuildings(this.highlightedBuildings, this.selected, settings)
 	}
@@ -84,7 +93,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
 		if (this.highlighted) {
-			this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
+			const settings = this.settingsService.getSettings()
+			//TODO: Remove once all settings are in the store
+			settings.appSettings.isPresentationMode = this.storeService.getState().appSettings.isPresentationMode
+
+			this.getMapMesh().highlightBuilding(this.highlighted, null, settings)
 		}
 		this.selected = null
 	}

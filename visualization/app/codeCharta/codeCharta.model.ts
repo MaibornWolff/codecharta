@@ -20,7 +20,7 @@ export enum FileSelectionState {
 
 export enum SearchPanelMode {
 	treeView = "treeView",
-	hide = "hide",
+	flatten = "flatten",
 	exclude = "exclude",
 	minimized = "minimized"
 }
@@ -176,7 +176,7 @@ export interface BlacklistItem {
 }
 
 export enum BlacklistType {
-	hide = "hide",
+	flatten = "flatten",
 	exclude = "exclude"
 }
 
@@ -234,4 +234,11 @@ export interface Node {
 	color: string
 	incomingEdgePoint: Vector3
 	outgoingEdgePoint: Vector3
+}
+
+export interface State {
+	fileSettings: FileSettings
+	dynamicSettings: DynamicSettings
+	appSettings: AppSettings
+	treeMapSettings: TreeMapSettings
 }

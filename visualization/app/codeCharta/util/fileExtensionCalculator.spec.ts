@@ -27,7 +27,7 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with hidden node", () => {
-			const blacklistItem = { path: map.children[0].path, type: BlacklistType.hide }
+			const blacklistItem = { path: map.children[0].path, type: BlacklistType.flatten }
 			settings.fileSettings.blacklist.push(blacklistItem)
 
 			const expected: MetricDistribution[] = [

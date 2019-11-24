@@ -11,6 +11,7 @@ import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
 import { NodeSearchService } from "./state/nodeSearch.service"
 import { SettingsServiceSubscriber } from "./state/settingsService/settings.service.events"
+import { InjectorService } from "./state/injector.service"
 
 export class CodeChartaController implements SettingsServiceSubscriber {
 	private _viewModel: {
@@ -37,6 +38,8 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 		private fileStateService: FileStateService,
 		// tslint:disable-next-line
 		private nodeSearchService: NodeSearchService, // We have to inject it somewhere
+		// tslint:disable-next-line
+		private injectorService: InjectorService, // We have to inject it somewhere
 		private $location: ILocationService,
 		private $http: IHttpService,
 		private loadingStatusService: LoadingStatusService

@@ -203,7 +203,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should deselect the building when the selected building is hidden", () => {
-			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.hide }]
+			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.flatten }]
 
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 
