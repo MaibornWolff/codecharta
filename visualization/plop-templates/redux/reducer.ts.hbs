@@ -1,0 +1,10 @@
+import { {{properCase name}}Action, {{properCase name}}Actions } from "./{{camelCase name}}.actions"
+
+export function {{camelCase name}}(state: {{interface}} = {{default}}, action: {{properCase name}}Action): {{interface}} {
+	switch (action.type) {
+		case {{properCase name}}Actions.SET_{{constantCase name}}:
+			return action.payload //TODO: Only for primitive types, objects/arrays need to be transferred to a new object first
+		default:
+			return state
+	}
+}
