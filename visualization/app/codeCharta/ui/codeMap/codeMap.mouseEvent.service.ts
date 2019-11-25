@@ -127,10 +127,9 @@ export class CodeMapMouseEventService
 				}
 
 				if (from !== to) {
+					this.unhoverBuilding()
 					if (to) {
 						this.hoverBuilding(to)
-					} else {
-						this.unhoverBuilding()
 					}
 				}
 			}
