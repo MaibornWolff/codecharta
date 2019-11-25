@@ -32,17 +32,36 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.potentiallyAddNoneExtension()
 	}
 
-	//TODO: None extensions are not found
-
 	public highlightBarHoveredBuildings(extension: string) {
-		let buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
-		buildings.forEach(building => {
-			if (FileExtensionCalculator.estimateFileExtension(building.node.name) === extension) {
+		const mapBuildings: CodeMapBuilding[] = this.threeSceneService
+			.getMapMesh()
+			.getMeshDescription()
+			.buildings.filter(building => building.node.isLeaf)
+		if (extension === "other") {
+			this.findBuildingsSummarizedInOtherDistribution(mapBuildings)
+		} else {
+			mapBuildings.forEach(building => {
+				if (FileExtensionCalculator.estimateFileExtension(building.node.name) === extension) {
+					this.threeSceneService.addBuildingToHighlightingList(building)
+				}
+			})
+		}
+
+		this.threeSceneService.highlightBuildings()
+	}
+	private findBuildingsSummarizedInOtherDistribution(mapBuildings: CodeMapBuilding[]) {
+		const visibleDistributionEndings: String[] = []
+		this._viewModel.distribution
+			.filter(metric => metric.fileExtension != "other")
+			.forEach(metricDestribution => {
+				visibleDistributionEndings.push(metricDestribution.fileExtension)
+			})
+
+		mapBuildings.forEach(building => {
+			if (!visibleDistributionEndings.includes(FileExtensionCalculator.estimateFileExtension(building.node.name))) {
 				this.threeSceneService.addBuildingToHighlightingList(building)
 			}
 		})
-
-		this.threeSceneService.highlightBuildings()
 	}
 
 	public clearHighlightedBarHoveredBuildings() {
