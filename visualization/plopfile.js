@@ -161,6 +161,18 @@ module.exports = function(plop) {
 				path: "app/codeCharta/state/injector.service.ts",
 				pattern: /(\/\/ Plop: Append service injection here)/gi,
 				template: "$1\r\n\t\tprivate {{camelCase name}}Service: {{properCase name}}Service,"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
+				pattern: /(\/\/ Plop: Append reducer import here)/gi,
+				template: '$1\r\nimport { {{camelCase name}} } from "./{{camelCase name}}/{{camelCase name}}.reducer"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
+				pattern: /(\/\/ Plop: Append reducer usage here)/gi,
+				template: "$1\r\n\t{{camelCase name}},"
 			}
 		]
 	})
