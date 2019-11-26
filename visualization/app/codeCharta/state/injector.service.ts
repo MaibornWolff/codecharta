@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { SearchedNodePathsService } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
 import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
@@ -12,6 +13,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private searchedNodePathsService: SearchedNodePathsService,
 		private focusedNodePathService: FocusedNodePathService,
 		private heightMetricService: HeightMetricService,
 		private distributionMetricService: DistributionMetricService,
