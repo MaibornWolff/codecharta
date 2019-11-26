@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { DistributionMetricService } from "./store/dynamicSettings/distributionMetric/distributionMetric.service"
 import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMetric.service"
 import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
@@ -19,6 +20,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(DistributionMetricService.name), DistributionMetricService)
 	.service(_.camelCase(ColorMetricService.name), ColorMetricService)
 	.service(_.camelCase(AreaMetricService.name), AreaMetricService)
 	.service(_.camelCase(IsPresentationModeService.name), IsPresentationModeService)
