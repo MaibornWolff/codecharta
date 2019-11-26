@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { margin } from "./margin/margin.reducer"
 import { searchPattern } from "./searchPattern/searchPattern.reducer"
 import { searchedNodePaths } from "./searchedNodePaths/searchedNodePaths.reducer"
 import { focusedNodePath } from "./focusedNodePath/focusedNodePath.reducer"
@@ -10,6 +11,7 @@ import { combineReducers } from "redux"
 
 const dynamicSettings = combineReducers({
 	// Plop: Append reducer usage here
+	margin,
 	searchPattern,
 	searchedNodePaths,
 	focusedNodePath,
