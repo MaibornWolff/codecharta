@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
 import { SearchedNodePathsService } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.service"
 import { FocusedNodePathService } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { HeightMetricService } from "./store/dynamicSettings/heightMetric/heightMetric.service"
@@ -23,6 +24,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(SearchPatternService.name), SearchPatternService)
 	.service(_.camelCase(SearchedNodePathsService.name), SearchedNodePathsService)
 	.service(_.camelCase(FocusedNodePathService.name), FocusedNodePathService)
 	.service(_.camelCase(HeightMetricService.name), HeightMetricService)

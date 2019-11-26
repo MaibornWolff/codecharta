@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { searchPattern } from "./searchPattern/searchPattern.reducer"
 import { searchedNodePaths } from "./searchedNodePaths/searchedNodePaths.reducer"
 import { focusedNodePath } from "./focusedNodePath/focusedNodePath.reducer"
 import { heightMetric } from "./heightMetric/heightMetric.reducer"
@@ -9,6 +10,7 @@ import { combineReducers } from "redux"
 
 const dynamicSettings = combineReducers({
 	// Plop: Append reducer usage here
+	searchPattern,
 	searchedNodePaths,
 	focusedNodePath,
 	heightMetric,
