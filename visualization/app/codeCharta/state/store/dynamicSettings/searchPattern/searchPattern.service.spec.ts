@@ -9,6 +9,7 @@ describe("SearchPatternService", () => {
 	let searchPatternService: SearchPatternService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
+	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
@@ -42,7 +43,7 @@ describe("SearchPatternService", () => {
 	})
 
 	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new searchPattern value", () => {
+		it("should notify all subscribers with the new searchPattern value", done => {
 			const action: SearchPatternAction = {
 				type: SearchPatternActions.SET_SEARCH_PATTERN,
 				payload: "mySearch/*.ts"
@@ -51,7 +52,10 @@ describe("SearchPatternService", () => {
 
 			searchPatternService.onStoreChanged(SearchPatternActions.SET_SEARCH_PATTERN)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("search-pattern-changed", { searchPattern: "mySearch/*.ts" })
+			setTimeout(() => {
+				expect($rootScope.$broadcast).toHaveBeenCalledWith("search-pattern-changed", { searchPattern: "mySearch/*.ts" })
+				done()
+			}, SearchPatternService["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 
 		it("should not notify anything on non-search-pattern-events", () => {

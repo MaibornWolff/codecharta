@@ -9,14 +9,20 @@ export interface SearchPatternSubscriber {
 
 export class SearchPatternService implements StoreSubscriber {
 	private static SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
+	private static DEBOUNCE_TIME = 400
+	private readonly notifyWithDebounce: (newState: string) => void
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe($rootScope, this)
+
+		this.notifyWithDebounce = _.debounce((newState: string) => {
+			this.notify(newState)
+		}, SearchPatternService.DEBOUNCE_TIME)
 	}
 
 	public onStoreChanged(actionType: string) {
 		if (_.values(SearchPatternActions).includes(actionType)) {
-			this.notify(this.select())
+			this.notifyWithDebounce(this.select())
 		}
 	}
 
