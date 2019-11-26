@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
 import { SearchedNodePathsService } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.service"
@@ -15,6 +16,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private colorRangeService: ColorRangeService,
 		private marginService: MarginService,
 		private searchPatternService: SearchPatternService,
 		private searchedNodePathsService: SearchedNodePathsService,
