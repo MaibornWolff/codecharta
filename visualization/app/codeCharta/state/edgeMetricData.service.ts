@@ -8,11 +8,11 @@ import { BlacklistSubscriber } from "./settingsService/settings.service.events"
 import { HierarchyNode } from "d3"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 
-export interface EdgeMetricServiceSubscriber {
+export interface EdgeMetricDataServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
 }
 
-export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
+export class EdgeMetricDataService implements FileStateServiceSubscriber, BlacklistSubscriber {
 	private static EDGE_METRIC_DATA_UPDATED_EVENT = "edge-metric-data-updated"
 
 	private edgeMetricData: MetricData[] = []
@@ -186,11 +186,11 @@ export class EdgeMetricService implements FileStateServiceSubscriber, BlacklistS
 	}
 
 	private notifyEdgeMetricDataUpdated() {
-		this.$rootScope.$broadcast(EdgeMetricService.EDGE_METRIC_DATA_UPDATED_EVENT, this.edgeMetricData)
+		this.$rootScope.$broadcast(EdgeMetricDataService.EDGE_METRIC_DATA_UPDATED_EVENT, this.edgeMetricData)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricServiceSubscriber) {
-		$rootScope.$on(EdgeMetricService.EDGE_METRIC_DATA_UPDATED_EVENT, (event, data) => {
+	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricDataServiceSubscriber) {
+		$rootScope.$on(EdgeMetricDataService.EDGE_METRIC_DATA_UPDATED_EVENT, (event, data) => {
 			subscriber.onEdgeMetricDataUpdated(data)
 		})
 	}

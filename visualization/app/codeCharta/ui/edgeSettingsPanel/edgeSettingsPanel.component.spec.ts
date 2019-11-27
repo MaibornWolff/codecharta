@@ -3,7 +3,7 @@ import { EdgeSettingsPanelController } from "./edgeSettingsPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { DEFAULT_SETTINGS } from "../../util/dataMocks"
 import _ from "lodash"
@@ -13,7 +13,7 @@ describe("EdgeSettingsPanelController", () => {
 	let edgeSettingsPanelController: EdgeSettingsPanelController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
-	let edgeMetricService: EdgeMetricService
+	let edgeMetricDataService: EdgeMetricDataService
 	let codeMapActionsService: CodeMapActionsService
 
 	let settings: Settings
@@ -29,14 +29,19 @@ describe("EdgeSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
-		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 
 		settings = _.cloneDeep(DEFAULT_SETTINGS)
 	}
 
 	function rebuildController() {
-		edgeSettingsPanelController = new EdgeSettingsPanelController($rootScope, settingsService, edgeMetricService, codeMapActionsService)
+		edgeSettingsPanelController = new EdgeSettingsPanelController(
+			$rootScope,
+			settingsService,
+			edgeMetricDataService,
+			codeMapActionsService
+		)
 	}
 
 	function withMockedEvents() {
@@ -53,8 +58,8 @@ describe("EdgeSettingsPanelController", () => {
 		})()
 	}
 
-	function withMockedEdgeMetricService(amountOfAffectedBuildings: number = 0) {
-		edgeMetricService = edgeSettingsPanelController["edgeMetricService"] = jest.fn<EdgeMetricService>(() => {
+	function withMockedEdgeMetricDataService(amountOfAffectedBuildings: number = 0) {
+		edgeMetricDataService = edgeSettingsPanelController["edgeMetricDataService"] = jest.fn<EdgeMetricDataService>(() => {
 			return {
 				getAmountOfAffectedBuildings: jest.fn().mockReturnValue(amountOfAffectedBuildings)
 			}
@@ -140,7 +145,7 @@ describe("EdgeSettingsPanelController", () => {
 
 	describe("onEdgeMetricChanged", () => {
 		beforeEach(() => {
-			withMockedEdgeMetricService()
+			withMockedEdgeMetricDataService()
 		})
 		it("should get 0 totalAffectedBuildings", () => {
 			rebuildController()
@@ -152,7 +157,7 @@ describe("EdgeSettingsPanelController", () => {
 
 		it("should get 42 totalAffectedBuildings", () => {
 			rebuildController()
-			withMockedEdgeMetricService(42)
+			withMockedEdgeMetricDataService(42)
 
 			edgeSettingsPanelController.onEdgeMetricChanged("anyMetricName")
 

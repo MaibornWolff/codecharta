@@ -1,7 +1,7 @@
 import "./edgeChooser.module"
 import { EdgeChooserController } from "./edgeChooser.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
@@ -44,12 +44,12 @@ describe("EdgeChooserController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to EdgeMetricService", () => {
-			EdgeMetricService.subscribe = jest.fn()
+		it("should subscribe to EdgeMetricDataService", () => {
+			EdgeMetricDataService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
+			expect(EdgeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 
 		it("should subscribe to hovered buildings", () => {
