@@ -2,7 +2,7 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { MarginAction, MarginActions } from "../../dynamicSettings/margin/margin.actions"
+import { MarginAction, MarginActions } from "./margin.actions"
 import { MarginService } from "./margin.service"
 
 describe("MarginService", () => {

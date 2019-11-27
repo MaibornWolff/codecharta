@@ -2,8 +2,8 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { DistributionMetricAction, DistributionMetricActions } from "../../dynamicSettings/distributionMetric/distributionMetric.actions"
 import { DistributionMetricService } from "./distributionMetric.service"
+import { DistributionMetricAction, DistributionMetricActions } from "./distributionMetric.actions"
 
 describe("DistributionMetricService", () => {
 	let distributionMetricService: DistributionMetricService

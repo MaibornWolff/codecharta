@@ -2,8 +2,8 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { AreaMetricAction, AreaMetricActions } from "../../dynamicSettings/areaMetric/areaMetric.actions"
 import { AreaMetricService } from "./areaMetric.service"
+import { AreaMetricAction, AreaMetricActions } from "./areaMetric.actions"
 
 describe("AreaMetricService", () => {
 	let areaMetricService: AreaMetricService

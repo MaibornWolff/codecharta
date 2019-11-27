@@ -6,13 +6,13 @@ describe("areaMetric", () => {
 		it("should initialize the default state", () => {
 			const result = areaMetric(undefined, {} as AreaMetricAction)
 
-			expect(result).toEqual(null)
+			expect(result).toBeNull()
 		})
 	})
 
 	describe("Action: SET_AREA_METRIC", () => {
 		it("should set new areaMetric", () => {
-			const result = areaMetric(null, setAreaMetric("another_area_metric"))
+			const result = areaMetric("mcc", setAreaMetric("another_area_metric"))
 
 			expect(result).toEqual("another_area_metric")
 		})

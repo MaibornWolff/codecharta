@@ -2,8 +2,8 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { ColorMetricAction, ColorMetricActions } from "../../dynamicSettings/colorMetric/colorMetric.actions"
 import { ColorMetricService } from "./colorMetric.service"
+import { ColorMetricAction, ColorMetricActions } from "./colorMetric.actions"
 
 describe("ColorMetricService", () => {
 	let colorMetricService: ColorMetricService

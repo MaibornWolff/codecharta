@@ -6,13 +6,13 @@ describe("margin", () => {
 		it("should initialize the default state", () => {
 			const result = margin(undefined, {} as MarginAction)
 
-			expect(result).toEqual(null)
+			expect(result).toBeNull()
 		})
 	})
 
 	describe("Action: SET_MARGIN", () => {
 		it("should set new margin", () => {
-			const result = margin(null, setMargin(42))
+			const result = margin(21, setMargin(42))
 
 			expect(result).toEqual(42)
 		})

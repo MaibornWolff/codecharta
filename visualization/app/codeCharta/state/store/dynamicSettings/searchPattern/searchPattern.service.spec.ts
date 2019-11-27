@@ -2,7 +2,7 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { SearchPatternAction, SearchPatternActions } from "../../dynamicSettings/searchPattern/searchPattern.actions"
+import { SearchPatternAction, SearchPatternActions } from "./searchPattern.actions"
 import { SearchPatternService } from "./searchPattern.service"
 
 describe("SearchPatternService", () => {

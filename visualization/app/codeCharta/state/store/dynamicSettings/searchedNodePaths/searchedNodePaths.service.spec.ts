@@ -2,7 +2,7 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { SearchedNodePathsAction, SearchedNodePathsActions } from "../../dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
+import { SearchedNodePathsAction, SearchedNodePathsActions } from "./searchedNodePaths.actions"
 import { SearchedNodePathsService } from "./searchedNodePaths.service"
 
 describe("SearchedNodePathsService", () => {

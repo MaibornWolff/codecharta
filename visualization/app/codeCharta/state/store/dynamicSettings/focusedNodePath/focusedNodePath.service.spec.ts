@@ -2,7 +2,7 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { FocusedNodePathAction, FocusedNodePathActions } from "../../dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { FocusedNodePathAction, FocusedNodePathActions } from "./focusedNodePath.actions"
 import { FocusedNodePathService } from "./focusedNodePath.service"
 
 describe("FocusedNodePathService", () => {

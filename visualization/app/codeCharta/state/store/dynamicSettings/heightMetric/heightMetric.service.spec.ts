@@ -2,7 +2,7 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { HeightMetricAction, HeightMetricActions } from "../../dynamicSettings/heightMetric/heightMetric.actions"
+import { HeightMetricAction, HeightMetricActions } from "./heightMetric.actions"
 import { HeightMetricService } from "./heightMetric.service"
 
 describe("HeightMetricService", () => {

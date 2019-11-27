@@ -6,13 +6,13 @@ describe("heightMetric", () => {
 		it("should initialize the default state", () => {
 			const result = heightMetric(undefined, {} as HeightMetricAction)
 
-			expect(result).toEqual(null)
+			expect(result).toBeNull()
 		})
 	})
 
 	describe("Action: SET_HEIGHT_METRIC", () => {
 		it("should set new heightMetric", () => {
-			const result = heightMetric(null, setHeightMetric("another_height_metric"))
+			const result = heightMetric("mcc", setHeightMetric("another_height_metric"))
 
 			expect(result).toEqual("another_height_metric")
 		})

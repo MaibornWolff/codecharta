@@ -2,8 +2,8 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { ColorRangeAction, ColorRangeActions } from "../../dynamicSettings/colorRange/colorRange.actions"
 import { ColorRangeService } from "./colorRange.service"
+import { ColorRangeAction, ColorRangeActions } from "./colorRange.actions"
 
 describe("ColorRangeService", () => {
 	let colorRangeService: ColorRangeService
