@@ -2,6 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MarkedPackagesActions } from "./markedPackages.actions"
 import _ from "lodash"
+import { MarkedPackage } from "../../../../codeCharta.model"
 
 export interface MarkedPackagesSubscriber {
 	onMarkedPackagesChanged(markedPackages: MarkedPackage[])
