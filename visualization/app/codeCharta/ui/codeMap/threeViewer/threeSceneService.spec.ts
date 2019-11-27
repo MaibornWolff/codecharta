@@ -38,6 +38,7 @@ describe("ThreeSceneService", () => {
 
 	beforeEach(() => {
 		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, settingsService.getSettings(), false)
+		threeSceneService["listOfBuildingsToHighlight"] = [CODE_MAP_BUILDING]
 	})
 
 	describe("constructor", () => {
@@ -63,14 +64,12 @@ describe("ThreeSceneService", () => {
 
 	describe("highlightBuildings", () => {
 		it("should call highlightMultipleBuildings", () => {
-			threeSceneService["highlightedBuildings"] = [CODE_MAP_BUILDING]
-
 			threeSceneService["mapMesh"].highlightMultipleBuildings = jest.fn()
 
 			threeSceneService.highlightBuildings()
 
 			expect(threeSceneService["mapMesh"].highlightMultipleBuildings).toHaveBeenCalledWith(
-				threeSceneService["highlightedBuildings"],
+				threeSceneService["listOfBuildingsToHighlight"],
 				null,
 				settingsService.getSettings()
 			)
@@ -79,21 +78,21 @@ describe("ThreeSceneService", () => {
 
 	describe("addBuildingToHighlightingList", () => {
 		it("should add the given building to the HighlightingList ", () => {
-			threeSceneService["highlightedBuildings"] = []
+			threeSceneService["listOfBuildingsToHighlight"] = []
 
 			threeSceneService.addBuildingToHighlightingList(CODE_MAP_BUILDING)
 
-			expect(threeSceneService["highlightedBuildings"]).toEqual([CODE_MAP_BUILDING])
+			expect(threeSceneService["listOfBuildingsToHighlight"]).toEqual([CODE_MAP_BUILDING])
 		})
 	})
 
-	describe("highlightBuilding", () => {
+	describe("highlightSingleBuilding", () => {
 		it("should add a building to the highlighting list and call the highlight function", () => {
 			threeSceneService.addBuildingToHighlightingList = jest.fn()
 			threeSceneService.highlightBuildings = jest.fn()
-			threeSceneService["highlightedBuildings"] = []
+			threeSceneService["listOfBuildingsToHighlight"] = []
 
-			threeSceneService.highlightBuilding(CODE_MAP_BUILDING)
+			threeSceneService.highlightSingleBuilding(CODE_MAP_BUILDING)
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
@@ -102,11 +101,9 @@ describe("ThreeSceneService", () => {
 
 	describe("clearHighlight", () => {
 		it("should clear the highlighting list", () => {
-			threeSceneService["highlightedBuildings"] = [CODE_MAP_BUILDING]
-
 			threeSceneService.clearHighlight()
 
-			expect(threeSceneService["highlightedBuildings"]).toHaveLength(0)
+			expect(threeSceneService["listOfBuildingsToHighlight"]).toHaveLength(0)
 		})
 	})
 })

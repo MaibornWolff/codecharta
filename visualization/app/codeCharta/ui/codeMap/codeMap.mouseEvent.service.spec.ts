@@ -260,7 +260,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.updateHovering()
 
-			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(CODE_MAP_BUILDING)
+			expect(threeSceneService.highlightSingleBuilding).toHaveBeenCalledWith(CODE_MAP_BUILDING)
 		})
 
 		it("should not hover a node again when the intersection building is the same as the hovered building", () => {
@@ -273,7 +273,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.updateHovering()
 
-			expect(threeSceneService.highlightBuilding).not.toHaveBeenCalled()
+			expect(threeSceneService.highlightSingleBuilding).not.toHaveBeenCalled()
 		})
 	})
 
@@ -406,7 +406,7 @@ describe("codeMapMouseEventService", () => {
 		it("should set the highlight when to is not null", () => {
 			codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
 
-			expect(threeSceneService.highlightBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			expect(threeSceneService.highlightSingleBuilding).toHaveBeenCalledWith(codeMapBuilding)
 		})
 
 		it("should add property node", () => {

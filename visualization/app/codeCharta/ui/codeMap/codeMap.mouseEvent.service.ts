@@ -204,7 +204,7 @@ export class CodeMapMouseEventService
 		}
 
 		if (hoveredBuilding) {
-			this.threeSceneService.highlightBuilding(hoveredBuilding)
+			this.threeSceneService.highlightSingleBuilding(hoveredBuilding)
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 		}
 	}

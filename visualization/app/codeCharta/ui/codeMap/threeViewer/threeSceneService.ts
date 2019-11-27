@@ -28,7 +28,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private mapMesh: CodeMapMesh
 
 	private selected: CodeMapBuilding = null
-	private highlightedBuildings: CodeMapBuilding[] = []
+	private listOfBuildingsToHighlight: CodeMapBuilding[] = []
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
@@ -51,23 +51,23 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.reselectBuilding()
 	}
 
-	public highlightBuilding(building: CodeMapBuilding) {
+	public highlightBuildings() {
+		const settings = this.settingsService.getSettings()
+		this.getMapMesh().highlightMultipleBuildings(this.listOfBuildingsToHighlight, this.selected, settings)
+	}
+
+	public highlightSingleBuilding(building: CodeMapBuilding) {
 		this.addBuildingToHighlightingList(building)
 		this.highlightBuildings()
 	}
 
-	public highlightBuildings() {
-		const settings = this.settingsService.getSettings()
-		this.getMapMesh().highlightMultipleBuildings(this.highlightedBuildings, this.selected, settings)
-	}
-
 	public addBuildingToHighlightingList(building: CodeMapBuilding) {
-		this.highlightedBuildings.push(building)
+		this.listOfBuildingsToHighlight.push(building)
 	}
 
 	public clearHighlight() {
 		this.getMapMesh().clearHighlight(this.selected)
-		this.highlightedBuildings = []
+		this.listOfBuildingsToHighlight = []
 	}
 
 	public selectBuilding(building: CodeMapBuilding) {
@@ -82,7 +82,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.getMapMesh().clearSelection(this.selected)
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
-		if (this.highlightedBuildings.length > 0) {
+		if (this.listOfBuildingsToHighlight.length > 0) {
 			this.highlightBuildings()
 		}
 		this.selected = null
@@ -144,7 +144,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public getHighlightedBuilding(): CodeMapBuilding {
-		return this.highlightedBuildings[0]
+		return this.listOfBuildingsToHighlight[0]
 	}
 
 	private reselectBuilding() {
