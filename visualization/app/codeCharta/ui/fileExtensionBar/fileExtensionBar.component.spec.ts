@@ -3,11 +3,18 @@ import _ from "lodash"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION, SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
+import {
+	METRIC_DISTRIBUTION,
+	NONE_METRIC_DISTRIBUTION,
+	SETTINGS,
+	TEST_FILE_WITH_PATHS,
+	CODE_MAP_BUILDING_TS_NODE
+} from "../../util/dataMocks"
 import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
 import { BlacklistType, Settings } from "../../codeCharta.model"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
@@ -17,11 +24,13 @@ describe("FileExtensionBarController", () => {
 
 	let distribution: MetricDistribution[] = METRIC_DISTRIBUTION
 	let settings: Settings
+	let codeMapBuilding: CodeMapBuilding
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
 		withMockedSettingsService()
+		withMockedThreeSceneService()
 	})
 
 	function restartSystem() {
@@ -31,10 +40,23 @@ describe("FileExtensionBarController", () => {
 		settingsService = getService<SettingsService>("settingsService")
 
 		settings = _.cloneDeep(SETTINGS)
+		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING_TS_NODE)
 	}
 
 	function rebuildController() {
 		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService, threeSceneService)
+	}
+
+	function withMockedThreeSceneService() {
+		threeSceneService = fileExtensionBarController["threeSceneService"] = jest.fn().mockReturnValue({
+			getMapMesh: jest.fn().mockReturnValue({
+				getMeshDescription: jest.fn().mockReturnValue({
+					buildings: [codeMapBuilding]
+				})
+			}),
+			addBuildingToHighlightingList: jest.fn(),
+			highlightBuildings: jest.fn()
+		})()
 	}
 
 	function withMockedSettingsService() {
@@ -110,6 +132,28 @@ describe("FileExtensionBarController", () => {
 			fileExtensionBarController.toggleExtensiveMode()
 
 			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeTruthy
+		})
+	})
+
+	describe("highlightBarHoveredBuildings", () => {
+		it("should call findBuildingsSummarizedInOtherDistribution function, when other is given as parameter", () => {
+			fileExtensionBarController["findBuildingsSummarizedInOtherDistribution"] = jest.fn()
+
+			fileExtensionBarController.highlightBarHoveredBuildings("other")
+
+			expect(fileExtensionBarController["findBuildingsSummarizedInOtherDistribution"]).toHaveBeenCalled()
+		})
+
+		it("should call addBuilding to addBuildingToHighlightingList, when a Building with the given file Extension exists ", () => {
+			fileExtensionBarController.highlightBarHoveredBuildings("ts")
+
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
+		})
+
+		it("should not call addBuilding to addBuildingToHighlightingList, when Building with the given file Extension does not exists ", () => {
+			fileExtensionBarController.highlightBarHoveredBuildings("ne")
+
+			expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
 		})
 	})
 })

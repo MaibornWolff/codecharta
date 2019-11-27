@@ -695,7 +695,7 @@ export const TEST_NODE_ROOT: Node = {
 }
 
 export const TEST_NODE_LEAF: Node = {
-	name: "root/big leaf",
+	name: "root/big leaf.ts",
 	width: 1,
 	height: 2,
 	length: 3,
@@ -725,6 +725,13 @@ export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,
 	new Box3(),
 	TEST_NODE_ROOT,
+	DEFAULT_SETTINGS.appSettings.mapColors.neutral
+)
+
+export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
+	1,
+	new Box3(),
+	TEST_NODE_LEAF,
 	DEFAULT_SETTINGS.appSettings.mapColors.neutral
 )
 
