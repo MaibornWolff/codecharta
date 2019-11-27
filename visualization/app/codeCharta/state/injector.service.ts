@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
@@ -18,6 +19,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private edgesService: EdgesService,
 		private attributeTypesService: AttributeTypesService,
 		private edgeMetricService: EdgeMetricService,
 		private colorRangeService: ColorRangeService,
