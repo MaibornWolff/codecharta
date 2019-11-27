@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
 import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
@@ -35,6 +36,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)
 	.service(_.camelCase(CameraService.name), CameraService)
 	.service(_.camelCase(ScalingService.name), ScalingService)
 	.service(_.camelCase(EdgeHeightService.name), EdgeHeightService)
