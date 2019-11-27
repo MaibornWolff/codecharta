@@ -4,7 +4,6 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { AttributeTypesAction, AttributeTypesActions } from "./attributeTypes.actions"
 import { AttributeTypesService } from "./attributeTypes.service"
-import fileSettings from "../fileSettings.reducer"
 import { SETTINGS } from "../../../../util/dataMocks"
 
 describe("AttributeTypesService", () => {
