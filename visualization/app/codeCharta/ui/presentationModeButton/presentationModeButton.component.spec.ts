@@ -1,32 +1,28 @@
 import "./presentationModeButton.module"
 import { PresentationModeButtonController } from "./presentationModeButton.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
+import { IRootScopeService } from "angular"
 
 describe("PresentationModeButtonController", () => {
 	let presentationModeButtonController: PresentationModeButtonController
-	let settingsService: SettingsService
+	let $rootScope: IRootScopeService
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.presentationModeButton")
 
-		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 	}
 
 	function rebuildController() {
-		presentationModeButtonController = new PresentationModeButtonController(settingsService)
-	}
-
-	function withMockedSettingsService() {
-		settingsService = presentationModeButtonController["settingsService"] = jest.fn().mockReturnValue({
-			updateSettings: jest.fn()
-		})()
+		presentationModeButtonController = new PresentationModeButtonController($rootScope, storeService)
 	}
 
 	describe("toggleMode", () => {
@@ -51,7 +47,17 @@ describe("PresentationModeButtonController", () => {
 
 			presentationModeButtonController.toggleMode()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { isPresentationMode: true } }, true)
+			expect(storeService.getState().appSettings.isPresentationMode).toBeTruthy()
+		})
+	})
+
+	describe("onPresentationModeChanged", () => {
+		it("should update the viewModel", () => {
+			presentationModeButtonController["_viewModel"].isEnabled = false
+
+			presentationModeButtonController.onPresentationModeChanged(true)
+
+			expect(presentationModeButtonController["_viewModel"].isEnabled).toBeTruthy()
 		})
 	})
 })

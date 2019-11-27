@@ -26,24 +26,12 @@ edge-chooser-component {
 			}
 		}
 
-		i.fa,
-		.metric-value {
-			vertical-align: middle;
-			margin-top: 8px;
-		}
-
-		i.fa {
-			margin-left: 5px;
-			margin-right: 5px;
-			width: 16px;
-			text-align: center;
-		}
-
 		.metric-value {
 			height: 25px;
 			float: right;
 			position: absolute;
 			right: 0;
+			margin-top: -9px;
 
 			.rounded-box {
 				margin-top: -2px;
@@ -53,6 +41,15 @@ edge-chooser-component {
 				padding: 2px 5px;
 				display: inline-block;
 			}
+		}
+
+		i.fa {
+			margin-top: 8px;
+			vertical-align: middle;
+			margin-left: 5px;
+			margin-right: 5px;
+			width: 16px;
+			text-align: center;
 		}
 	}
 }

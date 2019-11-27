@@ -12,6 +12,7 @@ import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
 import { NodeSearchService } from "./state/nodeSearch.service"
+import { InjectorService } from "./state/injector.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -22,6 +23,7 @@ describe("codeChartaController", () => {
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
 	let nodeSearchService: NodeSearchService
+	let injectorService: InjectorService
 	let $location: ILocationService
 	let $http: IHttpService
 	let loadingStatusService: LoadingStatusService
@@ -50,6 +52,7 @@ describe("codeChartaController", () => {
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		nodeSearchService = getService<NodeSearchService>("nodeSearchService")
+		injectorService = getService<InjectorService>("injectorService")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
@@ -66,6 +69,7 @@ describe("codeChartaController", () => {
 			codeChartaService,
 			fileStateService,
 			nodeSearchService,
+			injectorService,
 			$location,
 			$http,
 			loadingStatusService

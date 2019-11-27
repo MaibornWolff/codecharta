@@ -19,7 +19,7 @@ describe("fileDownloader", () => {
 		filesettings = TEST_FILE_DATA.settings.fileSettings
 		filesettings.edges = VALID_EDGES_DECORATED
 		filesettings.blacklist = [
-			{ path: "/root/bigLeaf.ts", type: BlacklistType.hide },
+			{ path: "/root/bigLeaf.ts", type: BlacklistType.flatten },
 			{ path: "/root/sample1OnlyLeaf.scss", type: BlacklistType.exclude }
 		]
 		fileName = "foo_2019-04-22_18-01"
@@ -52,7 +52,7 @@ describe("fileDownloader", () => {
 		})
 
 		it("should call downloadData with undecorated ExportCCFile including blacklist", () => {
-			downloadSettingsNames = [DownloadCheckboxNames.excludes, DownloadCheckboxNames.hides]
+			downloadSettingsNames = [DownloadCheckboxNames.excludes, DownloadCheckboxNames.flattens]
 			const expected = JSON.parse(JSON.stringify(TEST_FILE_DATA_DOWNLOADED))
 			expected.edges = []
 

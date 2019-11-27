@@ -7,6 +7,7 @@ import { SettingsService } from "../../../state/settingsService/settings.service
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { StoreService } from "../../../state/store.service"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding: CodeMapBuilding)
@@ -30,7 +31,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private selected: CodeMapBuilding = null
 	private listOfBuildingsToHighlight: CodeMapBuilding[] = []
 
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
 		this.scene = new THREE.Scene()
@@ -53,6 +54,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	public highlightBuildings() {
 		const settings = this.settingsService.getSettings()
+		//TODO: Remove once all settings are in the store
+		settings.appSettings.isPresentationMode = this.storeService.getState().appSettings.isPresentationMode
 		this.getMapMesh().setBuildingHighlight(this.listOfBuildingsToHighlight, this.selected, settings)
 	}
 

@@ -59,7 +59,7 @@ Array [
   },
   Object {
     "path": "/another/nodeB",
-    "type": "hide",
+    "type": "flatten",
   },
   Object {
     "path": "/another/nodeC",
@@ -67,7 +67,7 @@ Array [
   },
   Object {
     "path": "*prefix/nodeD",
-    "type": "hide",
+    "type": "flatten",
   },
 ]
 `;
@@ -80,11 +80,11 @@ Array [
   },
   Object {
     "path": "/another/nodeB",
-    "type": "hide",
+    "type": "flatten",
   },
   Object {
     "path": "*prefix/nodeD",
-    "type": "hide",
+    "type": "flatten",
   },
 ]
 `;
