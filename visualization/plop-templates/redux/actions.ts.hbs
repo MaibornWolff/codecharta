@@ -6,12 +6,12 @@ export enum {{properCase name}}Actions {
 
 export interface Set{{properCase name}}Action extends Action {
 	type: {{properCase name}}Actions.SET_{{constantCase name}}
-	payload: {{interface}}
+	payload: {{type}}
 }
 
 export type {{properCase name}}Action = Set{{properCase name}}Action
 
-export function set{{properCase name}}({{camelCase name}}: {{interface}}): {{properCase name}}Action {
+export function set{{properCase name}}({{camelCase name}}: {{type}}): {{properCase name}}Action {
 	return {
 		type: {{properCase name}}Actions.SET_{{constantCase name}},
 		payload: {{camelCase name}}

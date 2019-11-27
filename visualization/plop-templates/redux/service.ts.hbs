@@ -4,7 +4,7 @@ import { {{properCase name}}Actions } from "./{{camelCase name}}.actions"
 import _ from "lodash"
 
 export interface {{properCase name}}Subscriber {
-	on{{properCase name}}Changed({{camelCase name}}: {{interface}})
+	on{{properCase name}}Changed({{camelCase name}}: {{type}})
 }
 
 export class {{properCase name}}Service implements StoreSubscriber {
@@ -24,7 +24,7 @@ export class {{properCase name}}Service implements StoreSubscriber {
 		return this.storeService.getState().{{camelCase subreducer}}.{{camelCase name}}
 	}
 
-	private notify(newState: {{interface}}) {
+	private notify(newState: {{type}}) {
 		this.$rootScope.$broadcast({{properCase name}}Service.{{constantCase name}}_CHANGED_EVENT, { {{camelCase name}}: newState })
 	}
 
