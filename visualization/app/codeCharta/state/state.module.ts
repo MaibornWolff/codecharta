@@ -12,7 +12,7 @@ import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
-import { EdgeMetricService } from "./edgeMetric.service"
+import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { SearchPanelService } from "./searchPanel.service"
 import { NodeSearchService } from "./nodeSearch.service"
 import { FileStateService } from "./fileState.service"
@@ -39,7 +39,7 @@ angular
 	.service(_.camelCase(BlacklistService.name), BlacklistService)
 	.service(_.camelCase(InjectorService.name), InjectorService)
 	.service(_.camelCase(StoreService.name), StoreService)
-	.service(_.camelCase(EdgeMetricService.name), EdgeMetricService)
+	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(_.camelCase(SearchPanelService.name), SearchPanelService)
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
 	.service(_.camelCase(FileStateService.name), FileStateService)

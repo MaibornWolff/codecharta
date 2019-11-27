@@ -1,7 +1,7 @@
 import "./edgeSettingsPanel.component.scss"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { EdgeMetricSubscriber, SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
@@ -23,7 +23,7 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private edgeMetricService: EdgeMetricService,
+		private edgeMetricDataService: EdgeMetricDataService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
@@ -55,7 +55,7 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.totalAffectedBuildings = this.edgeMetricService.getAmountOfAffectedBuildings(edgeMetric)
+		this._viewModel.totalAffectedBuildings = this.edgeMetricDataService.getAmountOfAffectedBuildings(edgeMetric)
 		if (edgeMetric === "None") {
 			this._viewModel.amountOfEdgePreviews = 0
 			this._viewModel.showOnlyBuildingsWithEdges = false

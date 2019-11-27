@@ -10,7 +10,7 @@ import { MetricService } from "../../state/metric.service"
 import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { StoreService } from "../../state/store.service"
 
@@ -20,7 +20,7 @@ describe("codeMapPreRenderService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
 	let loadingStatusService: LoadingStatusService
-	let edgeMetricService: EdgeMetricService
+	let edgeMetricDataService: EdgeMetricDataService
 	let storeService: StoreService
 
 	let settings: Settings
@@ -44,7 +44,7 @@ describe("codeMapPreRenderService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
-		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		storeService = getService<StoreService>("storeService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
@@ -57,7 +57,7 @@ describe("codeMapPreRenderService", () => {
 			threeOrbitControlsService,
 			codeMapRenderService,
 			loadingStatusService,
-			edgeMetricService,
+			edgeMetricDataService,
 			storeService
 		)
 	}
@@ -163,7 +163,7 @@ describe("codeMapPreRenderService", () => {
 
 		it("should retrieve correct edge metrics for leaves", () => {
 			NodeDecorator.decorateMap = originalDecorateMap
-			edgeMetricService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
+			edgeMetricDataService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
 				if (node.data.name === "big leaf") {
 					return new Map().set("metric1", { incoming: 1, outgoing: 2 })
 				} else {
