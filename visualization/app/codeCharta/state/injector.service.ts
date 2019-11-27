@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { WhiteColorBuildingsService } from "./store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
@@ -33,6 +34,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private resetCameraIfNewFileIsLoadedService: ResetCameraIfNewFileIsLoadedService,
 		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
 		private whiteColorBuildingsService: WhiteColorBuildingsService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
