@@ -91,8 +91,8 @@ module.exports = function(plop) {
 			},
 			{
 				type: "input",
-				name: "interface",
-				message: "Interface (e.x. string, boolean, Edge[]):"
+				name: "type",
+				message: "Type (e.x. string, boolean, Edge[]):"
 			},
 			{
 				type: "input",
@@ -102,12 +102,12 @@ module.exports = function(plop) {
 			{
 				type: "input",
 				name: "randomvalue",
-				message: "Another possible Value (e.x. false, 5678 or ANOTHER_STRING):"
+				message: "Another possible Value, we use in tests (e.x. false, 5678 or ANOTHER_STRING):"
 			},
 			{
 				type: "input",
 				name: "subreducer",
-				message: "Sub Reducer (e.x. fileSettings):"
+				message: "Sub Reducer MUST EXIST BEFORE USING (e.x. fileSettings):"
 			}
 		],
 		actions: [
