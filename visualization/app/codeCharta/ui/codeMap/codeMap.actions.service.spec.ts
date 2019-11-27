@@ -6,14 +6,14 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import { removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
-	let edgeMetricService: EdgeMetricService
+	let edgeMetricDataService: EdgeMetricDataService
 	let storeService: StoreService
 
 	let nodeA: CodeMapNode
@@ -24,7 +24,7 @@ describe("CodeMapActionService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		settingsService = getService<SettingsService>("settingsService")
-		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		storeService = getService<StoreService>("storeService")
 
 		nodeA = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
@@ -34,7 +34,7 @@ describe("CodeMapActionService", () => {
 	}
 
 	function rebuildService() {
-		codeMapActionsService = new CodeMapActionsService(settingsService, edgeMetricService, storeService)
+		codeMapActionsService = new CodeMapActionsService(settingsService, edgeMetricDataService, storeService)
 	}
 
 	function withMockedSettingsService() {

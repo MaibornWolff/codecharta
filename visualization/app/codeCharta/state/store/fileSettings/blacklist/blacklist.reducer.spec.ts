@@ -1,4 +1,4 @@
-import { addBlacklistItem, BlacklistAction, loadBlacklist, removeBlacklistItem } from "./blacklist.actions"
+import { addBlacklistItem, BlacklistAction, setBlacklist, removeBlacklistItem } from "./blacklist.actions"
 import { blacklist } from "./blacklist.reducer"
 import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 
@@ -29,9 +29,9 @@ describe("blacklist", () => {
 		})
 	})
 
-	describe("Action: LOAD_BLACKLIST", () => {
+	describe("Action: SET_BLACKLIST", () => {
 		it("should update the blacklist with a new one", () => {
-			const result = blacklist([], loadBlacklist([item, item]))
+			const result = blacklist([], setBlacklist([item, item]))
 
 			expect(result).toEqual([item, item])
 		})

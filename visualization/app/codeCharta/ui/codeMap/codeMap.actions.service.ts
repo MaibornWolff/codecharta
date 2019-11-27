@@ -3,14 +3,14 @@ import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../..
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 export class CodeMapActionsService {
 	constructor(
 		private settingsService: SettingsService,
-		private edgeMetricService: EdgeMetricService,
+		private edgeMetricDataService: EdgeMetricDataService,
 		private storeService: StoreService
 	) {}
 
@@ -112,7 +112,7 @@ export class CodeMapActionsService {
 		const edges = settings.fileSettings.edges
 		const edgeMetric = settings.dynamicSettings.edgeMetric
 		const numberOfEdgesToDisplay = settings.appSettings.amountOfEdgePreviews
-		const edgePreviewNodes = this.edgeMetricService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
+		const edgePreviewNodes = this.edgeMetricDataService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
 
 		edges.forEach(edge => {
 			if (

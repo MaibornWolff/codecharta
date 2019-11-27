@@ -4,7 +4,7 @@ import { Action } from "redux"
 export enum BlacklistActions {
 	ADD_BLACKLIST_ITEM = "ADD_BLACKLIST_ITEM",
 	REMOVE_BLACKLIST_ITEM = "REMOVE_BLACKLIST_ITEM",
-	LOAD_BLACKLIST = "LOAD_BLACKLIST"
+	SET_BLACKLIST = "SET_BLACKLIST"
 }
 
 export interface AddBlacklistAction extends Action {
@@ -17,12 +17,12 @@ export interface RemoveBlacklistAction extends Action {
 	payload: BlacklistItem
 }
 
-export interface LoadBlacklistAction extends Action {
-	type: BlacklistActions.LOAD_BLACKLIST
+export interface SetBlacklistAction extends Action {
+	type: BlacklistActions.SET_BLACKLIST
 	payload: BlacklistItem[]
 }
 
-export type BlacklistAction = AddBlacklistAction | RemoveBlacklistAction | LoadBlacklistAction
+export type BlacklistAction = AddBlacklistAction | RemoveBlacklistAction | SetBlacklistAction
 
 export function addBlacklistItem(item: BlacklistItem): BlacklistAction {
 	return {
@@ -38,9 +38,9 @@ export function removeBlacklistItem(item: BlacklistItem): BlacklistAction {
 	}
 }
 
-export function loadBlacklist(blacklist: BlacklistItem[]): BlacklistAction {
+export function setBlacklist(blacklist: BlacklistItem[]): BlacklistAction {
 	return {
-		type: BlacklistActions.LOAD_BLACKLIST,
+		type: BlacklistActions.SET_BLACKLIST,
 		payload: blacklist
 	}
 }
