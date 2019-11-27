@@ -5,8 +5,8 @@ import { combineReducers } from "redux"
 
 const rootReducer = combineReducers({
 	fileSettings,
-	appSettings,
-	dynamicSettings
+	appSettings
+	//dynamicSettings
 })
 
 export default rootReducer
