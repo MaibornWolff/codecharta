@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { AmountOfTopLabelsService } from "./store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
 import { AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
@@ -20,6 +21,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private amountOfTopLabelsService: AmountOfTopLabelsService,
 		private markedPackagesService: MarkedPackagesService,
 		private edgesService: EdgesService,
 		private attributeTypesService: AttributeTypesService,
