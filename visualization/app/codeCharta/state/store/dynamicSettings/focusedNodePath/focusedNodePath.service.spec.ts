@@ -44,14 +44,26 @@ describe("FocusedNodePathService", () => {
 	describe("onStoreChanged", () => {
 		it("should notify all subscribers with the new focusedNodePath value", () => {
 			const action: FocusedNodePathAction = {
-				type: FocusedNodePathActions.SET_FOCUSED_NODE_PATH,
+				type: FocusedNodePathActions.FOCUS_NODE,
 				payload: "some/path/*.ts"
 			}
 			storeService["store"].dispatch(action)
 
-			focusedNodePathService.onStoreChanged(FocusedNodePathActions.SET_FOCUSED_NODE_PATH)
+			focusedNodePathService.onStoreChanged(FocusedNodePathActions.FOCUS_NODE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("focused-node-path-changed", { focusedNodePath: "some/path/*.ts" })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("focus-node", { focusedNodePath: "some/path/*.ts" })
+		})
+
+		it("should notify all subscribers with the new focusedNodePath value", () => {
+			const action: FocusedNodePathAction = {
+				type: FocusedNodePathActions.UNFOCUS_NODE,
+				payload: ""
+			}
+			storeService["store"].dispatch(action)
+
+			focusedNodePathService.onStoreChanged(FocusedNodePathActions.UNFOCUS_NODE)
+
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("unfocus-node")
 		})
 
 		it("should not notify anything on non-focused-node-path-events", () => {

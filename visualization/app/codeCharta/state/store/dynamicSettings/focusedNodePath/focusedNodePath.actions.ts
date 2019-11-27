@@ -1,19 +1,32 @@
 import { Action } from "redux"
 
 export enum FocusedNodePathActions {
-	SET_FOCUSED_NODE_PATH = "SET_FOCUSED_NODE_PATH"
+	FOCUS_NODE = "FOCUS_NODE",
+	UNFOCUS_NODE = "UNFOCUS_NODE"
 }
 
-export interface SetFocusedNodePathAction extends Action {
-	type: FocusedNodePathActions.SET_FOCUSED_NODE_PATH
+export interface FocusNodeAction extends Action {
+	type: FocusedNodePathActions.FOCUS_NODE
 	payload: string
 }
 
-export type FocusedNodePathAction = SetFocusedNodePathAction
+export interface UnfocusNodeAction extends Action {
+	type: FocusedNodePathActions.UNFOCUS_NODE
+	payload: string
+}
 
-export function setFocusedNodePath(focusedNodePath: string): FocusedNodePathAction {
+export type FocusedNodePathAction = FocusNodeAction | UnfocusNodeAction
+
+export function focusNode(focusedNodePath: string): FocusedNodePathAction {
 	return {
-		type: FocusedNodePathActions.SET_FOCUSED_NODE_PATH,
+		type: FocusedNodePathActions.FOCUS_NODE,
 		payload: focusedNodePath
+	}
+}
+
+export function unfocusNode(): FocusedNodePathAction {
+	return {
+		type: FocusedNodePathActions.UNFOCUS_NODE,
+		payload: ""
 	}
 }

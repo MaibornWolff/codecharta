@@ -1,5 +1,5 @@
 import { focusedNodePath } from "./focusedNodePath.reducer"
-import { FocusedNodePathAction, setFocusedNodePath } from "./focusedNodePath.actions"
+import { FocusedNodePathAction, focusNode, unfocusNode } from "./focusedNodePath.actions"
 
 describe("focusedNodePath", () => {
 	describe("Default State", () => {
@@ -10,11 +10,19 @@ describe("focusedNodePath", () => {
 		})
 	})
 
-	describe("Action: SET_FOCUSED_NODE_PATH", () => {
+	describe("Action: FOCUS_NODE", () => {
 		it("should set new focusedNodePath", () => {
-			const result = focusedNodePath("", setFocusedNodePath("some/path/*.ts"))
+			const result = focusedNodePath("", focusNode("some/path/*.ts"))
 
 			expect(result).toEqual("some/path/*.ts")
+		})
+	})
+
+	describe("Action: UNFOCUS_NODE", () => {
+		it("should remove focusedNodePath", () => {
+			const result = focusedNodePath("some/path/*.ts", unfocusNode())
+
+			expect(result).toEqual("")
 		})
 	})
 })

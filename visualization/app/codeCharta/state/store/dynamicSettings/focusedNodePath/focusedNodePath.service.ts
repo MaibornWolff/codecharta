@@ -3,20 +3,27 @@ import { IRootScopeService } from "angular"
 import { FocusedNodePathActions } from "./focusedNodePath.actions"
 import _ from "lodash"
 
-export interface FocusedNodePathSubscriber {
-	onFocusedNodePathChanged(focusedNodePath: string)
+export interface FocusNodeSubscriber {
+	onFocusNode(focusedNodePath: string)
+}
+
+export interface UnfocusNodeSubscriber {
+	onUnfocusNode()
 }
 
 export class FocusedNodePathService implements StoreSubscriber {
-	private static FOCUSED_NODE_PATH_CHANGED_EVENT = "focused-node-path-changed"
+	private static FOCUS_NODE_EVENT = "focus-node"
+	private static UNFOCUS_NODE_EVENT = "unfocus-node"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe($rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(FocusedNodePathActions).includes(actionType)) {
-			this.notify(this.select())
+		if (actionType === FocusedNodePathActions.FOCUS_NODE) {
+			this.notifyFocus(this.select())
+		} else if (actionType === FocusedNodePathActions.UNFOCUS_NODE) {
+			this.notifyUnfocus()
 		}
 	}
 
@@ -24,13 +31,23 @@ export class FocusedNodePathService implements StoreSubscriber {
 		return this.storeService.getState().dynamicSettings.focusedNodePath
 	}
 
-	private notify(newState: string) {
-		this.$rootScope.$broadcast(FocusedNodePathService.FOCUSED_NODE_PATH_CHANGED_EVENT, { focusedNodePath: newState })
+	private notifyFocus(newState: string) {
+		this.$rootScope.$broadcast(FocusedNodePathService.FOCUS_NODE_EVENT, { focusedNodePath: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: FocusedNodePathSubscriber) {
-		$rootScope.$on(FocusedNodePathService.FOCUSED_NODE_PATH_CHANGED_EVENT, (event, data) => {
-			subscriber.onFocusedNodePathChanged(data.focusedNodePath)
+	private notifyUnfocus() {
+		this.$rootScope.$broadcast(FocusedNodePathService.UNFOCUS_NODE_EVENT)
+	}
+
+	public static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodeSubscriber) {
+		$rootScope.$on(FocusedNodePathService.FOCUS_NODE_EVENT, (event, data) => {
+			subscriber.onFocusNode(data.focusedNodePath)
+		})
+	}
+
+	public static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodeSubscriber) {
+		$rootScope.$on(FocusedNodePathService.UNFOCUS_NODE_EVENT, (event, data) => {
+			subscriber.onUnfocusNode()
 		})
 	}
 }
