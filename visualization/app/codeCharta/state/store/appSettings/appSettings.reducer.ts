@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { mapColors } from "./mapColors/mapColors.reducer"
 import { resetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.reducer"
 import { showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
 import { whiteColorBuildings } from "./whiteColorBuildings/whiteColorBuildings.reducer"
@@ -18,6 +19,7 @@ import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
 	// Plop: Append reducer usage here
+	mapColors,
 	resetCameraIfNewFileIsLoaded,
 	showOnlyBuildingsWithEdges,
 	whiteColorBuildings,
