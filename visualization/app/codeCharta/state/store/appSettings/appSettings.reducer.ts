@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { invertDeltaColors } from "./invertDeltaColors/invertDeltaColors.reducer"
 import { invertColorRange } from "./invertColorRange/invertColorRange.reducer"
 import { hideFlatBuildings } from "./hideFlatBuildings/hideFlatBuildings.reducer"
 import { camera } from "./camera/camera.reducer"
@@ -11,6 +12,7 @@ import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
 	// Plop: Append reducer usage here
+	invertDeltaColors,
 	invertColorRange,
 	hideFlatBuildings,
 	camera,
