@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { AmountOfEdgePreviewsService } from "./store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
 import { AmountOfTopLabelsService } from "./store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
 import { EdgesService } from "./store/fileSettings/edges/edges.service"
@@ -31,6 +32,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(AmountOfEdgePreviewsService.name), AmountOfEdgePreviewsService)
 	.service(_.camelCase(AmountOfTopLabelsService.name), AmountOfTopLabelsService)
 	.service(_.camelCase(MarkedPackagesService.name), MarkedPackagesService)
 	.service(_.camelCase(EdgesService.name), EdgesService)
