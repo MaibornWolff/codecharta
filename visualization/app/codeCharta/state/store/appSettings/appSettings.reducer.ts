@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { showOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.reducer"
 import { whiteColorBuildings } from "./whiteColorBuildings/whiteColorBuildings.reducer"
 import { isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer"
 import { dynamicMargin } from "./dynamicMargin/dynamicMargin.reducer"
@@ -16,6 +17,7 @@ import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
 	// Plop: Append reducer usage here
+	showOnlyBuildingsWithEdges,
 	whiteColorBuildings,
 	isWhiteBackground,
 	dynamicMargin,

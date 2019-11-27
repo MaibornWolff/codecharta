@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { ShowOnlyBuildingsWithEdgesService } from "./store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { WhiteColorBuildingsService } from "./store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
@@ -32,6 +33,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService,
 		private whiteColorBuildingsService: WhiteColorBuildingsService,
 		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private dynamicMarginService: DynamicMarginService,
