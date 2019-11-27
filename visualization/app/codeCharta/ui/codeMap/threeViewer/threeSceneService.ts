@@ -53,7 +53,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	public highlightBuildings() {
 		const settings = this.settingsService.getSettings()
-		this.getMapMesh().highlightMultipleBuildings(this.listOfBuildingsToHighlight, this.selected, settings)
+		this.getMapMesh().setBuildingHighlight(this.listOfBuildingsToHighlight, this.selected, settings)
 	}
 
 	public highlightSingleBuilding(building: CodeMapBuilding) {

@@ -77,7 +77,7 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	public highlightMultipleBuildings(buildingArray: CodeMapBuilding[], selected: CodeMapBuilding, settings: Settings) {
+	public setBuildingHighlight(buildingArray: CodeMapBuilding[], selected: CodeMapBuilding, settings: Settings) {
 		const highlightBuildingMap = TreeMapHelper.arrayToMap(buildingArray)
 		const allBuildings = this.mapGeomDesc.buildings
 		allBuildings.forEach(building => {
