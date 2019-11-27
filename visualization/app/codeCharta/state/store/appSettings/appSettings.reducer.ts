@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { isWhiteBackground } from "./isWhiteBackground/isWhiteBackground.reducer"
 import { dynamicMargin } from "./dynamicMargin/dynamicMargin.reducer"
 import { invertHeight } from "./invertHeight/invertHeight.reducer"
 import { invertDeltaColors } from "./invertDeltaColors/invertDeltaColors.reducer"
@@ -14,6 +15,7 @@ import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
 	// Plop: Append reducer usage here
+	isWhiteBackground,
 	dynamicMargin,
 	invertHeight,
 	invertDeltaColors,

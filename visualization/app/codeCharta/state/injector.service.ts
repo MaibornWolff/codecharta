@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
 import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
@@ -30,6 +31,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private isWhiteBackgroundService: IsWhiteBackgroundService,
 		private dynamicMarginService: DynamicMarginService,
 		private invertHeightService: InvertHeightService,
 		private invertDeltaColorsService: InvertDeltaColorsService,
