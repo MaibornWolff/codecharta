@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
 import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { InvertColorRangeService } from "./store/appSettings/invertColorRange/invertColorRange.service"
 import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
@@ -38,6 +39,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(InvertHeightService.name), InvertHeightService)
 	.service(_.camelCase(InvertDeltaColorsService.name), InvertDeltaColorsService)
 	.service(_.camelCase(InvertColorRangeService.name), InvertColorRangeService)
 	.service(_.camelCase(HideFlatBuildingsService.name), HideFlatBuildingsService)

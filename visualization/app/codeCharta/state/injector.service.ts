@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
 import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { InvertColorRangeService } from "./store/appSettings/invertColorRange/invertColorRange.service"
 import { HideFlatBuildingsService } from "./store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
@@ -28,6 +29,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private invertHeightService: InvertHeightService,
 		private invertDeltaColorsService: InvertDeltaColorsService,
 		private invertColorRangeService: InvertColorRangeService,
 		private hideFlatBuildingsService: HideFlatBuildingsService,
