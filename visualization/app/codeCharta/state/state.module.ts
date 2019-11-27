@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { WhiteColorBuildingsService } from "./store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { IsWhiteBackgroundService } from "./store/appSettings/isWhiteBackground/isWhiteBackground.service"
 import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
@@ -41,6 +42,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(WhiteColorBuildingsService.name), WhiteColorBuildingsService)
 	.service(_.camelCase(IsWhiteBackgroundService.name), IsWhiteBackgroundService)
 	.service(_.camelCase(DynamicMarginService.name), DynamicMarginService)
 	.service(_.camelCase(InvertHeightService.name), InvertHeightService)
