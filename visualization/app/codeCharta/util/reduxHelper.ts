@@ -12,8 +12,3 @@ export function addItemToArray(array: any[], item: any): any[] {
 
 	return copy
 }
-
-export function updateArray(array: any[], updateArray: any[]): any[] {
-	const copy = _.cloneDeep(updateArray)
-	return [...copy]
-}

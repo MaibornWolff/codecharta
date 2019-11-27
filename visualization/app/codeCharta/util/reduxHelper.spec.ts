@@ -1,4 +1,4 @@
-import { addItemToArray, removeItemFromArray, updateArray } from "./reduxHelper"
+import { addItemToArray, removeItemFromArray } from "./reduxHelper"
 
 describe("reduxHelper", () => {
 	let obj1: { x: number; y: number }
@@ -32,19 +32,6 @@ describe("reduxHelper", () => {
 			arr.push(obj1)
 
 			const result = addItemToArray(arr, obj2)
-			mutateObject(obj1)
-			mutateObject(obj1)
-
-			expect(result).toEqual([{ x: 1, y: 2 }, { x: 3, y: 4 }])
-		})
-	})
-
-	describe("updateArray", () => {
-		it("should return a deep-cloned array", () => {
-			arr.push(obj1)
-			arr.push(obj2)
-
-			const result = updateArray([], arr)
 			mutateObject(obj1)
 			mutateObject(obj1)
 
