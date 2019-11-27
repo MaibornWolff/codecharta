@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
 import { AmountOfEdgePreviewsService } from "./store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
 import { AmountOfTopLabelsService } from "./store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { MarkedPackagesService } from "./store/fileSettings/markedPackages/markedPackages.service"
@@ -22,6 +23,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private edgeHeightService: EdgeHeightService,
 		private amountOfEdgePreviewsService: AmountOfEdgePreviewsService,
 		private amountOfTopLabelsService: AmountOfTopLabelsService,
 		private markedPackagesService: MarkedPackagesService,
