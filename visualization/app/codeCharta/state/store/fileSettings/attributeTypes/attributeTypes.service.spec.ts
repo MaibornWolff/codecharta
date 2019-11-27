@@ -46,7 +46,7 @@ describe("AttributeTypesService", () => {
 		it("should notify all subscribers with the new attributeTypes value", () => {
 			const action: AttributeTypesAction = {
 				type: AttributeTypesActions.SET_ATTRIBUTE_TYPES,
-				payload: { nodes: [], edges: [] }
+				payload: SETTINGS.fileSettings.attributeTypes
 			}
 			storeService["store"].dispatch(action)
 
