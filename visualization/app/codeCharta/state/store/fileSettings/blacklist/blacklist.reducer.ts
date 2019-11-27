@@ -8,7 +8,7 @@ export function blacklist(state: BlacklistItem[] = [], action: BlacklistAction):
 			return [...state, action.payload]
 		case BlacklistActions.REMOVE_BLACKLIST_ITEM:
 			return removeBlacklistItem(state, action.payload)
-		case BlacklistActions.LOAD_BLACKLIST:
+		case BlacklistActions.SET_BLACKLIST:
 			return [...action.payload]
 		default:
 			return state
