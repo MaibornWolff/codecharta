@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { EdgeMetricService } from "./store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { ColorRangeService } from "./store/dynamicSettings/colorRange/colorRange.service"
 import { MarginService } from "./store/dynamicSettings/margin/margin.service"
 import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
@@ -26,6 +27,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(EdgeMetricService.name), EdgeMetricService)
 	.service(_.camelCase(ColorRangeService.name), ColorRangeService)
 	.service(_.camelCase(MarginService.name), MarginService)
 	.service(_.camelCase(SearchPatternService.name), SearchPatternService)

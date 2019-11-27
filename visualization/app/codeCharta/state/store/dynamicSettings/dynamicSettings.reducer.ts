@@ -1,4 +1,5 @@
 // Plop: Append reducer import here
+import { edgeMetric } from "./edgeMetric/edgeMetric.reducer"
 import { colorRange } from "./colorRange/colorRange.reducer"
 import { margin } from "./margin/margin.reducer"
 import { searchPattern } from "./searchPattern/searchPattern.reducer"
@@ -12,6 +13,7 @@ import { combineReducers } from "redux"
 
 const dynamicSettings = combineReducers({
 	// Plop: Append reducer usage here
+	edgeMetric,
 	colorRange,
 	margin,
 	searchPattern,
