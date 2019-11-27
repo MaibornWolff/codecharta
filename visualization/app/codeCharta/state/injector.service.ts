@@ -1,4 +1,5 @@
 // Plop: Append service import here
+import { CameraService } from "./store/appSettings/camera/camera.service"
 import { ScalingService } from "./store/appSettings/scaling/scaling.service"
 import { EdgeHeightService } from "./store/appSettings/edgeHeight/edgeHeight.service"
 import { AmountOfEdgePreviewsService } from "./store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
@@ -24,6 +25,7 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private cameraService: CameraService,
 		private scalingService: ScalingService,
 		private edgeHeightService: EdgeHeightService,
 		private amountOfEdgePreviewsService: AmountOfEdgePreviewsService,
