@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { DynamicMarginService } from "./store/appSettings/dynamicMargin/dynamicMargin.service"
 import { InvertHeightService } from "./store/appSettings/invertHeight/invertHeight.service"
 import { InvertDeltaColorsService } from "./store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { InvertColorRangeService } from "./store/appSettings/invertColorRange/invertColorRange.service"
@@ -39,6 +40,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(DynamicMarginService.name), DynamicMarginService)
 	.service(_.camelCase(InvertHeightService.name), InvertHeightService)
 	.service(_.camelCase(InvertDeltaColorsService.name), InvertDeltaColorsService)
 	.service(_.camelCase(InvertColorRangeService.name), InvertColorRangeService)
