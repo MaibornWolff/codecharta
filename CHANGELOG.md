@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Show the relative number of files a folder includes compared to the project in the TreeView #380
 - Show the number of files a folder includes in the TreeView when hovering #380
+- When the File Extension Bar is hovered, all buldings corresponding to that extension are highlighted #545
 
 ### Changed
 
