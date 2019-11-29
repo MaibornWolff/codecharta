@@ -115,7 +115,7 @@ describe("codeMapMouseEventService", () => {
 		threeSceneService = codeMapMouseEventService["threeSceneService"] = jest.fn().mockReturnValue({
 			getMapMesh: jest.fn().mockReturnValue({
 				clearHighlight: jest.fn(),
-				highlightBuilding: jest.fn(),
+				highlightSingleBuilding: jest.fn(),
 				clearSelection: jest.fn(),
 				selectBuilding: jest.fn(),
 				getMeshDescription: jest.fn().mockReturnValue({
@@ -123,7 +123,7 @@ describe("codeMapMouseEventService", () => {
 				})
 			}),
 			clearHighlight: jest.fn(),
-			highlightBuilding: jest.fn(),
+			highlightSingleBuilding: jest.fn(),
 			clearSelection: jest.fn(),
 			selectBuilding: jest.fn(),
 			getSelectedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),

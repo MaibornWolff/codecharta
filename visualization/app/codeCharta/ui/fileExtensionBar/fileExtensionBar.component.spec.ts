@@ -48,7 +48,7 @@ describe("FileExtensionBarController", () => {
 	}
 
 	function rebuildController() {
-		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService, threeSceneService)
+		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService, storeService, threeSceneService)
 	}
 
 	function withMockedThreeSceneService() {
@@ -61,7 +61,6 @@ describe("FileExtensionBarController", () => {
 			addBuildingToHighlightingList: jest.fn(),
 			highlightBuildings: jest.fn()
 		})()
-		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService, storeService)
 	}
 
 	function withMockedSettingsService() {
