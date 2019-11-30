@@ -17,8 +17,8 @@ module.exports = function(plop) {
 			}
 		],
 		actions: [
-			buildAddAction(["{{camelCase name}}", "service", "ts"], "codeCharta/state"),
-			buildAddAction(["{{camelCase name}}", "service", "spec", "ts"], "codeCharta/state"),
+			buildAddAction("state", ["{{camelCase name}}", "service", "ts"], "codeCharta/state"),
+			buildAddAction("state", ["{{camelCase name}}", "service", "spec", "ts"], "codeCharta/state"),
 			{
 				type: "modify",
 				path: "app/codeCharta/state/state.module.ts",
@@ -44,13 +44,13 @@ module.exports = function(plop) {
 			}
 		],
 		actions: [
-			buildAddAction(["{{camelCase name}}", "component", "ts"], "codeCharta/ui/{{camelCase name}}"),
-			buildAddAction(["{{camelCase name}}", "module", "ts"], "codeCharta/ui/{{camelCase name}}", "ui"),
-			buildAddAction(["{{camelCase name}}", "component", "html"], "codeCharta/ui/{{camelCase name}}"),
-			buildAddAction(["{{camelCase name}}", "component", "scss"], "codeCharta/ui/{{camelCase name}}"),
-			buildAddAction(["{{camelCase name}}", "e2e", "ts"], "codeCharta/ui/{{camelCase name}}"),
-			buildAddAction(["{{camelCase name}}", "po", "ts"], "codeCharta/ui/{{camelCase name}}"),
-			buildAddAction(["{{camelCase name}}", "component", "spec", "ts"], "codeCharta/ui/{{camelCase name}}"),
+			buildAddAction("ui", ["{{camelCase name}}", "component", "ts"], "codeCharta/ui/{{camelCase name}}"),
+			buildAddAction("ui", ["{{camelCase name}}", "module", "ts"], "codeCharta/ui/{{camelCase name}}", "ui"),
+			buildAddAction("ui", ["{{camelCase name}}", "component", "html"], "codeCharta/ui/{{camelCase name}}"),
+			buildAddAction("ui", ["{{camelCase name}}", "component", "scss"], "codeCharta/ui/{{camelCase name}}"),
+			buildAddAction("ui", ["{{camelCase name}}", "e2e", "ts"], "codeCharta/ui/{{camelCase name}}"),
+			buildAddAction("ui", ["{{camelCase name}}", "po", "ts"], "codeCharta/ui/{{camelCase name}}"),
+			buildAddAction("ui", ["{{camelCase name}}", "component", "spec", "ts"], "codeCharta/ui/{{camelCase name}}"),
 			{
 				type: "modify",
 				path: "app/codeCharta/ui/ui.ts",
@@ -76,13 +76,114 @@ module.exports = function(plop) {
 			}
 		],
 		actions: [
-			buildAddAction(["{{camelCase name}}", "ts"], "codeCharta/util", "util"),
-			buildAddAction(["{{camelCase name}}", "spec", "ts"], "codeCharta/util", "util")
+			buildAddAction("util", ["{{camelCase name}}", "ts"], "codeCharta/util", "util"),
+			buildAddAction("util", ["{{camelCase name}}", "spec", "ts"], "codeCharta/util", "util")
+		]
+	})
+
+	plop.setGenerator("redux property", {
+		description: "a store property including actions, reducer, service and test files",
+		prompts: [
+			{
+				type: "input",
+				name: "name",
+				message: "Property Name (e.x. areaMetric):"
+			},
+			{
+				type: "input",
+				name: "type",
+				message: "Type (e.x. string, boolean, Edge[]):"
+			},
+			{
+				type: "input",
+				name: "default",
+				message: "Default Value (e.x. null, true, 1234 or MY_STRING):"
+			},
+			{
+				type: "input",
+				name: "randomvalue",
+				message: "Another possible Value, we use in tests (e.x. false, 5678 or ANOTHER_STRING):"
+			},
+			{
+				type: "input",
+				name: "subreducer",
+				message: "Sub Reducer MUST EXIST BEFORE USING (e.x. fileSettings):"
+			}
+		],
+		actions: [
+			buildAddAction(
+				"redux",
+				["{{camelCase name}}", "actions", "ts"],
+				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
+			),
+			buildAddAction(
+				"redux",
+				["{{camelCase name}}", "reducer", "spec", "ts"],
+				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
+			),
+			buildAddAction(
+				"redux",
+				["{{camelCase name}}", "reducer", "ts"],
+				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
+			),
+			buildAddAction(
+				"redux",
+				["{{camelCase name}}", "service", "spec", "ts"],
+				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
+			),
+			buildAddAction(
+				"redux",
+				["{{camelCase name}}", "service", "ts"],
+				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
+			),
+			{
+				type: "modify",
+				path: "app/codeCharta/state/state.module.ts",
+				pattern: /(\/\/ Plop: Append service name here)/gi,
+				template: "$1\r\n\t.service(_.camelCase({{properCase name}}Service.name), {{properCase name}}Service)"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/state.module.ts",
+				pattern: /(\/\/ Plop: Append module import here)/gi,
+				template:
+					'$1\r\nimport { {{properCase name}}Service } from "./store/{{camelCase subreducer}}/{{camelCase name}}/{{camelCase name}}.service"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/injector.service.ts",
+				pattern: /(\/\/ Plop: Append service import here)/gi,
+				template:
+					'$1\r\nimport { {{properCase name}}Service } from "./store/{{camelCase subreducer}}/{{camelCase name}}/{{camelCase name}}.service"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/injector.service.ts",
+				pattern: /(\/\/ Plop: Append service injection here)/gi,
+				template: "$1\r\n\t\tprivate {{camelCase name}}Service: {{properCase name}}Service,"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
+				pattern: /(\/\/ Plop: Append reducer import here)/gi,
+				template: '$1\r\nimport { {{camelCase name}} } from "./{{camelCase name}}/{{camelCase name}}.reducer"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
+				pattern: /(\/\/ Plop: Append reducer usage here)/gi,
+				template: "$1\r\n\t{{camelCase name}},"
+			}
 		]
 	})
 }
 
-function buildAddAction(suffixTokens = ["{{camelCase name}}", "ts"], dir = "{{directory}}", templatePrefix = null) {
+function buildAddAction(
+	sourceDirectory,
+	suffixTokens = ["{{camelCase name}}", "ts"],
+	destinationDirectory = "{{directory}}",
+	templatePrefix = null
+) {
 	let templateNameSuffixTokens = suffixTokens
 	if (templatePrefix) {
 		templateNameSuffixTokens = templateNameSuffixTokens.slice(1)
@@ -90,7 +191,7 @@ function buildAddAction(suffixTokens = ["{{camelCase name}}", "ts"], dir = "{{di
 	}
 	return {
 		type: "add",
-		path: appBase + "/" + dir + "/" + suffixTokens.join("."),
-		templateFile: "plop-templates/" + templateNameSuffixTokens.slice(1).join(".") + ".hbs"
+		path: appBase + "/" + destinationDirectory + "/" + suffixTokens.join("."),
+		templateFile: "plop-templates/" + sourceDirectory + "/" + templateNameSuffixTokens.slice(1).join(".") + ".hbs"
 	}
 }

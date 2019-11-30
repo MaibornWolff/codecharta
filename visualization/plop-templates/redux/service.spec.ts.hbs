@@ -1,0 +1,63 @@
+import "../../../state.module"
+import { IRootScopeService } from "angular"
+import { StoreService } from "../../../store.service"
+import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
+import { {{properCase name}}Action, {{properCase name}}Actions } from "./{{camelCase name}}.actions"
+import { {{properCase name}}Service } from "./{{camelCase name}}.service"
+
+describe("{{properCase name}}Service", () => {
+	let {{camelCase name}}Service: {{properCase name}}Service
+	let storeService: StoreService
+	let $rootScope: IRootScopeService
+
+	beforeEach(() => {
+		restartSystem()
+		rebuildService()
+		withMockedEventMethods()
+	})
+
+	function restartSystem() {
+		instantiateModule("app.codeCharta.state")
+
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
+	}
+
+	function rebuildService() {
+		{{camelCase name}}Service = new {{properCase name}}Service($rootScope, storeService)
+	}
+
+	function withMockedEventMethods() {
+		$rootScope.$broadcast = jest.fn()
+	}
+
+	describe("constructor", () => {
+		it("should subscribe to store", () => {
+			StoreService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, {{camelCase name}}Service)
+		})
+	})
+
+	describe("onStoreChanged", () => {
+		it("should notify all subscribers with the new {{camelCase name}} value", () => {
+			const action: {{properCase name}}Action = {
+				type: {{properCase name}}Actions.SET_{{constantCase name}},
+				payload: {{randomvalue}}
+			}
+			storeService["store"].dispatch(action)
+
+			{{camelCase name}}Service.onStoreChanged({{properCase name}}Actions.SET_{{constantCase name}})
+
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("{{kebabCase name}}-changed", { {{camelCase name}}: {{randomvalue}} })
+		})
+
+		it("should not notify anything on non-{{kebabCase name}}-events", () => {
+			{{camelCase name}}Service.onStoreChanged("ANOTHER_ACTION")
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+	})
+})

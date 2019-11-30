@@ -1,5 +1,5 @@
 import { createStore, Store, Action } from "redux"
-import rootReducer from "./store/reducer"
+import { rootReducer } from "./store/reducer"
 import { State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 

@@ -1,0 +1,20 @@
+import { {{camelCase name}} } from "./{{camelCase name}}.reducer"
+import { {{properCase name}}Action, set{{properCase name}} } from "./{{camelCase name}}.actions"
+
+describe("{{camelCase name}}", () => {
+	describe("Default State", () => {
+		it("should initialize the default state", () => {
+			const result = {{camelCase name}}(undefined, {} as {{properCase name}}Action)
+
+			expect(result).toEqual({{default}})
+		})
+	})
+
+	describe("Action: SET_{{constantCase name}}", () => {
+		it("should set new {{camelCase name}}", () => {
+			const result = {{camelCase name}}({{default}}, set{{properCase name}}({{randomvalue}}))
+
+			expect(result).toEqual({{randomvalue}})
+		})
+	})
+})

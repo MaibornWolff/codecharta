@@ -1,7 +1,7 @@
 import "./edgeChooser.component.scss"
 import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
@@ -10,7 +10,7 @@ import $ from "jquery"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class EdgeChooserController
-	implements EdgeMetricServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+	implements EdgeMetricDataServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private originalEdgeMetricData: MetricData[]
 
 	private _viewModel: {
@@ -31,7 +31,7 @@ export class EdgeChooserController
 		private settingsService: SettingsService,
 		private $timeout: ITimeoutService
 	) {
-		EdgeMetricService.subscribe(this.$rootScope, this)
+		EdgeMetricDataService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
