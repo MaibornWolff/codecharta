@@ -1,5 +1,4 @@
-import { Action } from "redux"
-import { Edge } from "../../../../codeCharta.model"
+import { CCAction, Edge } from "../../../../codeCharta.model"
 
 export enum EdgesActions {
 	SET_EDGES = "SET_EDGES",
@@ -7,17 +6,17 @@ export enum EdgesActions {
 	REMOVE_EDGE = "REMOVE_EDGE"
 }
 
-export interface SetEdgesAction extends Action {
+export interface SetEdgesAction extends CCAction {
 	type: EdgesActions.SET_EDGES
 	payload: Edge[]
 }
 
-export interface AddEdgeAction extends Action {
+export interface AddEdgeAction extends CCAction {
 	type: EdgesActions.ADD_EDGE
 	payload: Edge
 }
 
-export interface RemoveEdgeAction extends Action {
+export interface RemoveEdgeAction extends CCAction {
 	type: EdgesActions.REMOVE_EDGE
 	payload: Edge
 }

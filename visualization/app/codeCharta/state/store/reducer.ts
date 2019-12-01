@@ -1,14 +1,13 @@
 import appSettings from "./appSettings/appSettings.reducer"
 import fileSettings from "./fileSettings/fileSettings.reducer"
 import dynamicSettings from "./dynamicSettings/dynamicSettings.reducer"
-import { Action } from "redux"
-import { State } from "../../codeCharta.model"
+import { CCAction, State } from "../../codeCharta.model"
 import { StateActions } from "./state.actions"
 import { setFileSettings } from "./fileSettings/fileSettings.actions"
 import { setAppSettings } from "./appSettings/appSettings.actions"
 import { setDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
 
-export function rootReducer(state: State, action: Action) {
+export function rootReducer(state: State, action: CCAction) {
 	switch (action.type) {
 		case StateActions.SET_STATE:
 			return {

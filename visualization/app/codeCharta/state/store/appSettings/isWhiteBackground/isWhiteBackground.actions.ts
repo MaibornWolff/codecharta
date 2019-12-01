@@ -1,10 +1,10 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum IsWhiteBackgroundActions {
 	SET_IS_WHITE_BACKGROUND = "SET_IS_WHITE_BACKGROUND"
 }
 
-export interface SetIsWhiteBackgroundAction extends Action {
+export interface SetIsWhiteBackgroundAction extends CCAction {
 	type: IsWhiteBackgroundActions.SET_IS_WHITE_BACKGROUND
 	payload: boolean
 }

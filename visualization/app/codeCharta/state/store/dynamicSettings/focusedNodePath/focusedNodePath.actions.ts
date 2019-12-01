@@ -1,16 +1,16 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum FocusedNodePathActions {
 	FOCUS_NODE = "FOCUS_NODE",
 	UNFOCUS_NODE = "UNFOCUS_NODE"
 }
 
-export interface FocusNodeAction extends Action {
+export interface FocusNodeAction extends CCAction {
 	type: FocusedNodePathActions.FOCUS_NODE
 	payload: string
 }
 
-export interface UnfocusNodeAction extends Action {
+export interface UnfocusNodeAction extends CCAction {
 	type: FocusedNodePathActions.UNFOCUS_NODE
 	payload: string
 }

@@ -1,11 +1,10 @@
-import { Action } from "redux"
-import { State } from "../../codeCharta.model"
+import { CCAction, State } from "../../codeCharta.model"
 
 export enum StateActions {
 	SET_STATE = "SET_STATE"
 }
 
-export interface SetStateAction extends Action {
+export interface SetStateAction extends CCAction {
 	type: StateActions.SET_STATE
 	payload: State
 }

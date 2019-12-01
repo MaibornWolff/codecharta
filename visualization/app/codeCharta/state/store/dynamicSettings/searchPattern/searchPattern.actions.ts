@@ -1,10 +1,10 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum SearchPatternActions {
 	SET_SEARCH_PATTERN = "SET_SEARCH_PATTERN"
 }
 
-export interface SetSearchPatternAction extends Action {
+export interface SetSearchPatternAction extends CCAction {
 	type: SearchPatternActions.SET_SEARCH_PATTERN
 	payload: string
 }

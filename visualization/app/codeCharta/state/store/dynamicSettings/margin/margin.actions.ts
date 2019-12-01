@@ -1,10 +1,10 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum MarginActions {
 	SET_MARGIN = "SET_MARGIN"
 }
 
-export interface SetMarginAction extends Action {
+export interface SetMarginAction extends CCAction {
 	type: MarginActions.SET_MARGIN
 	payload: number
 }

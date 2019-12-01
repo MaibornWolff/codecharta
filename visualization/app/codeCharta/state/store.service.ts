@@ -1,6 +1,6 @@
-import { createStore, Store, Action } from "redux"
+import { createStore, Store } from "redux"
 import { rootReducer } from "./store/reducer"
-import { State } from "../codeCharta.model"
+import { CCAction, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 
 export interface StoreSubscriber {
@@ -16,7 +16,7 @@ export class StoreService {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: Action) {
+	public dispatch(action: CCAction) {
 		this.store.dispatch(action)
 		this.notify(action.type)
 	}

@@ -1,10 +1,10 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum PresentationModeActions {
 	SET_PRESENTATION_MODE = "SET_PRESENTATION_MODE"
 }
 
-export interface SetPresentationModeAction extends Action {
+export interface SetPresentationModeAction extends CCAction {
 	type: PresentationModeActions.SET_PRESENTATION_MODE
 	payload: boolean
 }

@@ -1,11 +1,10 @@
-import { Action } from "redux"
-import { ColorRange } from "../../../../codeCharta.model"
+import { CCAction, ColorRange } from "../../../../codeCharta.model"
 
 export enum ColorRangeActions {
 	SET_COLOR_RANGE = "SET_COLOR_RANGE"
 }
 
-export interface SetColorRangeAction extends Action {
+export interface SetColorRangeAction extends CCAction {
 	type: ColorRangeActions.SET_COLOR_RANGE
 	payload: ColorRange
 }

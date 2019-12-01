@@ -1,5 +1,4 @@
-import { BlacklistItem } from "../../../../codeCharta.model"
-import { Action } from "redux"
+import { BlacklistItem, CCAction } from "../../../../codeCharta.model"
 
 export enum BlacklistActions {
 	ADD_BLACKLIST_ITEM = "ADD_BLACKLIST_ITEM",
@@ -7,17 +6,17 @@ export enum BlacklistActions {
 	SET_BLACKLIST = "SET_BLACKLIST"
 }
 
-export interface AddBlacklistAction extends Action {
+export interface AddBlacklistAction extends CCAction {
 	type: BlacklistActions.ADD_BLACKLIST_ITEM
 	payload: BlacklistItem
 }
 
-export interface RemoveBlacklistAction extends Action {
+export interface RemoveBlacklistAction extends CCAction {
 	type: BlacklistActions.REMOVE_BLACKLIST_ITEM
 	payload: BlacklistItem
 }
 
-export interface SetBlacklistAction extends Action {
+export interface SetBlacklistAction extends CCAction {
 	type: BlacklistActions.SET_BLACKLIST
 	payload: BlacklistItem[]
 }

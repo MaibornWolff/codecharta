@@ -1,10 +1,10 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum WhiteColorBuildingsActions {
 	SET_WHITE_COLOR_BUILDINGS = "SET_WHITE_COLOR_BUILDINGS"
 }
 
-export interface SetWhiteColorBuildingsAction extends Action {
+export interface SetWhiteColorBuildingsAction extends CCAction {
 	type: WhiteColorBuildingsActions.SET_WHITE_COLOR_BUILDINGS
 	payload: boolean
 }

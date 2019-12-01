@@ -1,11 +1,10 @@
-import { Action } from "redux"
-import { FileSettings } from "../../../codeCharta.model"
+import { CCAction, FileSettings } from "../../../codeCharta.model"
 
 export enum FileSettingsActions {
 	SET_FILE_SETTINGS = "SET_FILE_SETTINGS"
 }
 
-export interface SetFileSettingsAction extends Action {
+export interface SetFileSettingsAction extends CCAction {
 	type: FileSettingsActions.SET_FILE_SETTINGS
 	payload: FileSettings
 }

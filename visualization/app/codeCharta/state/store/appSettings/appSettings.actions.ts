@@ -1,11 +1,10 @@
-import { Action } from "redux"
-import { AppSettings } from "../../../codeCharta.model"
+import { AppSettings, CCAction } from "../../../codeCharta.model"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
 }
 
-export interface SetAppSettingsAction extends Action {
+export interface SetAppSettingsAction extends CCAction {
 	type: AppSettingsActions.SET_APP_SETTINGS
 	payload: AppSettings
 }

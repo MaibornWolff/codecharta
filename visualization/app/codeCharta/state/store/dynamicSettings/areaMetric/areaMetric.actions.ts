@@ -1,10 +1,10 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum AreaMetricActions {
 	SET_AREA_METRIC = "SET_AREA_METRIC"
 }
 
-export interface SetAreaMetricAction extends Action {
+export interface SetAreaMetricAction extends CCAction {
 	type: AreaMetricActions.SET_AREA_METRIC
 	payload: string
 }

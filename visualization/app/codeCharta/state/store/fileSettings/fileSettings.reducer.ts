@@ -3,15 +3,14 @@ import { markedPackages } from "./markedPackages/markedPackages.reducer"
 import { edges } from "./edges/edges.reducer"
 import { attributeTypes } from "./attributeTypes/attributeTypes.reducer"
 import { blacklist } from "./blacklist/blacklist.reducer"
-import { Action } from "redux"
 import { setMarkedPackages } from "./markedPackages/markedPackages.actions"
 import { setEdges } from "./edges/edges.actions"
 import { setAttributeTypes } from "./attributeTypes/attributeTypes.actions"
 import { setBlacklist } from "./blacklist/blacklist.actions"
-import { FileSettings } from "../../../codeCharta.model"
+import { FileSettings, CCAction } from "../../../codeCharta.model"
 import { FileSettingsActions } from "./fileSettings.actions"
 
-export function fileSettings(state: FileSettings, action: Action) {
+export function fileSettings(state: FileSettings, action: CCAction) {
 	switch (action.type) {
 		case FileSettingsActions.SET_FILE_SETTINGS:
 			return {

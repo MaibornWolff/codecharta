@@ -1,10 +1,10 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum AmountOfTopLabelsActions {
 	SET_AMOUNT_OF_TOP_LABELS = "SET_AMOUNT_OF_TOP_LABELS"
 }
 
-export interface SetAmountOfTopLabelsAction extends Action {
+export interface SetAmountOfTopLabelsAction extends CCAction {
 	type: AmountOfTopLabelsActions.SET_AMOUNT_OF_TOP_LABELS
 	payload: number
 }

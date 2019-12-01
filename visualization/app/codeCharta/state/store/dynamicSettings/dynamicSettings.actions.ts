@@ -1,11 +1,10 @@
-import { Action } from "redux"
-import { DynamicSettings } from "../../../codeCharta.model"
+import { CCAction, DynamicSettings } from "../../../codeCharta.model"
 
 export enum DynamicSettingsActions {
 	SET_DYNAMIC_SETTINGS = "SET_DYNAMIC_SETTINGS"
 }
 
-export interface SetDynamicSettingsAction extends Action {
+export interface SetDynamicSettingsAction extends CCAction {
 	type: DynamicSettingsActions.SET_DYNAMIC_SETTINGS
 	payload: DynamicSettings
 }
