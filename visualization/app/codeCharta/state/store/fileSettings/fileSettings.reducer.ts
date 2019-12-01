@@ -10,7 +10,7 @@ import { setBlacklist } from "./blacklist/blacklist.actions"
 import { FileSettings, CCAction } from "../../../codeCharta.model"
 import { FileSettingsActions } from "./fileSettings.actions"
 
-export function fileSettings(state: FileSettings, action: CCAction) {
+export default function fileSettings(state: FileSettings = {} as FileSettings, action: CCAction) {
 	switch (action.type) {
 		case FileSettingsActions.SET_FILE_SETTINGS:
 			return {
@@ -28,5 +28,3 @@ export function fileSettings(state: FileSettings, action: CCAction) {
 			}
 	}
 }
-
-export default fileSettings

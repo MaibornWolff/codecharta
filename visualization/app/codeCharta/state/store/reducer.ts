@@ -7,7 +7,7 @@ import { setFileSettings } from "./fileSettings/fileSettings.actions"
 import { setAppSettings } from "./appSettings/appSettings.actions"
 import { setDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
 
-export function rootReducer(state: State, action: CCAction) {
+export function rootReducer(state: State = {} as State, action: CCAction) {
 	switch (action.type) {
 		case StateActions.SET_STATE:
 			return {

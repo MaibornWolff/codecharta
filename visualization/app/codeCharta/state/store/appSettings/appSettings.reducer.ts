@@ -34,7 +34,7 @@ import { setAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePrev
 import { setAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 
-export function appSettings(state: AppSettings, action: CCAction): AppSettings {
+export default function appSettings(state: AppSettings = {} as AppSettings, action: CCAction): AppSettings {
 	switch (action.type) {
 		case AppSettingsActions.SET_APP_SETTINGS:
 			return {
@@ -88,5 +88,3 @@ export function appSettings(state: AppSettings, action: CCAction): AppSettings {
 			}
 	}
 }
-
-export default appSettings

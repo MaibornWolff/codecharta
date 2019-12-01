@@ -22,7 +22,7 @@ import { setAreaMetric } from "./areaMetric/areaMetric.actions"
 import { setHeightMetric } from "./heightMetric/heightMetric.actions"
 import { focusNode } from "./focusedNodePath/focusedNodePath.actions"
 
-export function dynamicSettings(state: DynamicSettings, action: CCAction): DynamicSettings {
+export default function dynamicSettings(state: DynamicSettings = {} as DynamicSettings, action: CCAction): DynamicSettings {
 	switch (action.type) {
 		case DynamicSettingsActions.SET_DYNAMIC_SETTINGS:
 			return {
@@ -52,5 +52,3 @@ export function dynamicSettings(state: DynamicSettings, action: CCAction): Dynam
 			}
 	}
 }
-
-export default dynamicSettings
