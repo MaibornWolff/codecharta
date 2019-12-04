@@ -185,7 +185,7 @@ module.exports = function(plop) {
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
 				pattern: /(\/\/ Plop: Append check for action payload here)/gi,
 				template:
-					"$1\r\n\t\tif (action.payload.{{camelCase name}}) {\n\t\t\t{{camelCase name}}Action = set{{properCase name}}(action.payload.{{camelCase name}})\n\t\t}\n"
+					"$1\r\n\t\tif (action.payload.{{camelCase name}} !== undefined) {\n\t\t\t{{camelCase name}}Action = set{{properCase name}}(action.payload.{{camelCase name}})\n\t\t}\n"
 			},
 			{
 				type: "modify",

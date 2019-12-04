@@ -11,9 +11,11 @@ export interface Set{{properCase name}}Action extends Action {
 
 export type {{properCase name}}Action = Set{{properCase name}}Action
 
-export function set{{properCase name}}({{camelCase name}}: {{type}} = {{default}}): Set{{properCase name}}Action {
+export function set{{properCase name}}({{camelCase name}}: {{type}} = default{{properCase name}}): Set{{properCase name}}Action {
 	return {
 		type: {{properCase name}}Actions.SET_{{constantCase name}},
 		payload: {{camelCase name}}
 	}
 }
+
+export const default{{properCase name}} : {{type}} = {{default}}
