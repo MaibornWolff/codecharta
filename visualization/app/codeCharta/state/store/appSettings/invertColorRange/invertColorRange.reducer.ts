@@ -1,6 +1,6 @@
-import { InvertColorRangeAction, InvertColorRangeActions } from "./invertColorRange.actions"
+import { InvertColorRangeAction, InvertColorRangeActions, setInvertColorRange } from "./invertColorRange.actions"
 
-export function invertColorRange(state: boolean = false, action: InvertColorRangeAction): boolean {
+export function invertColorRange(state: boolean = setInvertColorRange().payload, action: InvertColorRangeAction): boolean {
 	switch (action.type) {
 		case InvertColorRangeActions.SET_INVERT_COLOR_RANGE:
 			return action.payload
