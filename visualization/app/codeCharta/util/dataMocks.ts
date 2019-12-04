@@ -656,7 +656,7 @@ export const DEFAULT_SETTINGS: Settings = {
 		camera: new Vector3(0, 300, 1000),
 		invertDeltaColors: false,
 		dynamicMargin: true,
-		hideFlatBuildings: true,
+		hideFlatBuildings: false,
 		invertHeight: false,
 		invertColorRange: false,
 		isWhiteBackground: false,

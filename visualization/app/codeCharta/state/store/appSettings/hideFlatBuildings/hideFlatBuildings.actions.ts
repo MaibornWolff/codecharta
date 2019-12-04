@@ -18,4 +18,4 @@ export function setHideFlatBuildings(hideFlatBuildings: boolean = defaultHideFla
 	}
 }
 
-export const defaultHideFlatBuildings = true
+export const defaultHideFlatBuildings = false
