@@ -6,7 +6,7 @@ describe("dynamicMargin", () => {
 		it("should initialize the default state", () => {
 			const result = dynamicMargin(undefined, {} as DynamicMarginAction)
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("dynamicMargin", () => {
 		it("should set new dynamicMargin", () => {
 			const result = dynamicMargin(true, setDynamicMargin(false))
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
+		})
+
+		it("should set default dynamicMargin", () => {
+			const result = dynamicMargin(false, setDynamicMargin())
+
+			expect(result).toBeTruthy()
 		})
 	})
 })
