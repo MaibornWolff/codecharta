@@ -16,5 +16,11 @@ describe("searchedNodePaths", () => {
 
 			expect(result).toEqual(["myPath", "anotherPath"])
 		})
+
+		it("should set new searchedNodePaths", () => {
+			const result = searchedNodePaths(["myPath", "anotherPath"], setSearchedNodePaths())
+
+			expect(result).toEqual([])
+		})
 	})
 })
