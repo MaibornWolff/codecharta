@@ -16,5 +16,11 @@ describe("{{camelCase name}}", () => {
 
 			expect(result).toEqual({{randomvalue}})
 		})
+
+		it("should set default {{camelCase name}}", () => {
+        	const result = {{camelCase name}}({{randomvalue}}, set{{properCase name}}())
+
+        	expect(result).toEqual({{default}})
+        })
 	})
 })
