@@ -8,18 +8,27 @@ import { setAppSettings } from "./appSettings/appSettings.actions"
 import { setDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
 
 export function rootReducer(state: State = {} as State, action: CCAction) {
-	switch (action.type) {
-		case StateActions.SET_STATE:
-			return {
-				fileSettings: fileSettings(state.fileSettings, setFileSettings(action.payload.fileSettings)),
-				appSettings: appSettings(state.appSettings, setAppSettings(action.payload.appSettings)),
-				dynamicSettings: dynamicSettings(state.dynamicSettings, setDynamicSettings(action.payload.dynamicSettings))
-			}
-		default:
-			return {
-				fileSettings: fileSettings(state.fileSettings, action),
-				appSettings: appSettings(state.appSettings, action),
-				dynamicSettings: dynamicSettings(state.dynamicSettings, action)
-			}
+	let fileSettingsAction,
+		appSettingsAction,
+		dynamicSettingsAction = action
+
+	if (action.type === StateActions.SET_STATE) {
+		if (action.payload.fileSettings) {
+			fileSettingsAction = setFileSettings(action.payload.fileSettings)
+		}
+
+		if (action.payload.appSettings) {
+			appSettingsAction = setAppSettings(action.payload.appSettings)
+		}
+
+		if (action.payload.dynamicSettings) {
+			dynamicSettingsAction = setDynamicSettings(action.payload.dynamicSettings)
+		}
+	}
+
+	return {
+		fileSettings: fileSettings(state.fileSettings, fileSettingsAction),
+		appSettings: appSettings(state.appSettings, appSettingsAction),
+		dynamicSettings: dynamicSettings(state.dynamicSettings, dynamicSettingsAction)
 	}
 }

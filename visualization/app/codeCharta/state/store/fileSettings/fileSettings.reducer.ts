@@ -11,20 +11,33 @@ import { FileSettings, CCAction } from "../../../codeCharta.model"
 import { FileSettingsActions } from "./fileSettings.actions"
 
 export default function fileSettings(state: FileSettings = {} as FileSettings, action: CCAction) {
-	switch (action.type) {
-		case FileSettingsActions.SET_FILE_SETTINGS:
-			return {
-				markedPackages: markedPackages(state.markedPackages, setMarkedPackages(action.payload.markedPackages)),
-				edges: edges(state.edges, setEdges(action.payload.edges)),
-				attributeTypes: attributeTypes(state.attributeTypes, setAttributeTypes(action.payload.attributeTypes)),
-				blacklist: blacklist(state.blacklist, setBlacklist(action.payload.blacklist))
-			}
-		default:
-			return {
-				markedPackages: markedPackages(state.markedPackages, action),
-				edges: edges(state.edges, action),
-				attributeTypes: attributeTypes(state.attributeTypes, action),
-				blacklist: blacklist(state.blacklist, action)
-			}
+	let markedPackagesAction,
+		edgesAction,
+		attributeTypesAction,
+		blacklistAction = action
+
+	if (action.type === FileSettingsActions.SET_FILE_SETTINGS) {
+		if (action.payload.markedPackages) {
+			markedPackagesAction = setMarkedPackages(action.payload.markedPackages)
+		}
+
+		if (action.payload.edges) {
+			edgesAction = setEdges(action.payload.edges)
+		}
+
+		if (action.payload.attributeTypes) {
+			attributeTypesAction = setAttributeTypes(action.payload.attributeTypes)
+		}
+
+		if (action.payload.blacklist) {
+			blacklistAction = setBlacklist(action.payload.blacklist)
+		}
+	}
+
+	return {
+		markedPackages: markedPackages(state.markedPackages, markedPackagesAction),
+		edges: edges(state.edges, edgesAction),
+		attributeTypes: attributeTypes(state.attributeTypes, attributeTypesAction),
+		blacklist: blacklist(state.blacklist, blacklistAction)
 	}
 }

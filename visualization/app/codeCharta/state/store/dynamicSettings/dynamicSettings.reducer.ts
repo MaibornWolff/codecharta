@@ -23,32 +23,69 @@ import { setHeightMetric } from "./heightMetric/heightMetric.actions"
 import { focusNode } from "./focusedNodePath/focusedNodePath.actions"
 
 export default function dynamicSettings(state: DynamicSettings = {} as DynamicSettings, action: CCAction): DynamicSettings {
-	switch (action.type) {
-		case DynamicSettingsActions.SET_DYNAMIC_SETTINGS:
-			return {
-				edgeMetric: edgeMetric(state.edgeMetric, setEdgeMetric(action.payload.edgeMetric)),
-				colorRange: colorRange(state.colorRange, setColorRange(action.payload.colorRange)),
-				margin: margin(state.margin, setMargin(action.payload.margin)),
-				searchPattern: searchPattern(state.searchPattern, setSearchPattern(action.payload.searchPattern)),
-				searchedNodePaths: searchedNodePaths(state.searchedNodePaths, setSearchedNodePaths(action.payload.searchedNodePaths)),
-				focusedNodePath: focusedNodePath(state.focusedNodePath, focusNode(action.payload.focusedNodePath)),
-				heightMetric: heightMetric(state.heightMetric, setHeightMetric(action.payload.heightMetric)),
-				distributionMetric: distributionMetric(state.distributionMetric, setDistributionMetric(action.payload.distributionMetric)),
-				colorMetric: colorMetric(state.colorMetric, setColorMetric(action.payload.colorMetric)),
-				areaMetric: areaMetric(state.areaMetric, setAreaMetric(action.payload.areaMetric))
-			}
-		default:
-			return {
-				edgeMetric: edgeMetric(state.edgeMetric, action),
-				colorRange: colorRange(state.colorRange, action),
-				margin: margin(state.margin, action),
-				searchPattern: searchPattern(state.searchPattern, action),
-				searchedNodePaths: searchedNodePaths(state.searchedNodePaths, action),
-				focusedNodePath: focusedNodePath(state.focusedNodePath, action),
-				heightMetric: heightMetric(state.heightMetric, action),
-				distributionMetric: distributionMetric(state.distributionMetric, action),
-				colorMetric: colorMetric(state.colorMetric, action),
-				areaMetric: areaMetric(state.areaMetric, action)
-			}
+	let edgeMetricAction,
+		colorRangeAction,
+		marginAction,
+		searchPatternAction,
+		searchedNodePathsAction,
+		focusedNodePathAction,
+		heightMetricAction,
+		distributionMetricAction,
+		colorMetricAction,
+		areaMetricAction = action
+
+	if (action.type === DynamicSettingsActions.SET_DYNAMIC_SETTINGS) {
+		if (action.payload.edgeMetric) {
+			edgeMetricAction = setEdgeMetric(action.payload.edgeMetric)
+		}
+
+		if (action.payload.colorRange) {
+			colorRangeAction = setColorRange(action.payload.colorRange)
+		}
+
+		if (action.payload.margin) {
+			marginAction = setMargin(action.payload.margin)
+		}
+
+		if (action.payload.searchPattern) {
+			searchPatternAction = setSearchPattern(action.payload.searchPattern)
+		}
+
+		if (action.payload.searchedNodePaths) {
+			searchedNodePathsAction = setSearchedNodePaths(action.payload.searchedNodePaths)
+		}
+
+		if (action.payload.focusedNodePath) {
+			focusedNodePathAction = focusNode(action.payload.focusedNodePath)
+		}
+
+		if (action.payload.heightMetric) {
+			heightMetricAction = setHeightMetric(action.payload.heightMetric)
+		}
+
+		if (action.payload.distributionMetric) {
+			distributionMetricAction = setDistributionMetric(action.payload.distributionMetric)
+		}
+
+		if (action.payload.colorMetric) {
+			colorMetricAction = setColorMetric(action.payload.colorMetric)
+		}
+
+		if (action.payload.areaMetric) {
+			areaMetricAction = setAreaMetric(action.payload.areaMetric)
+		}
+	}
+
+	return {
+		edgeMetric: edgeMetric(state.edgeMetric, edgeMetricAction),
+		colorRange: colorRange(state.colorRange, colorRangeAction),
+		margin: margin(state.margin, marginAction),
+		searchPattern: searchPattern(state.searchPattern, searchPatternAction),
+		searchedNodePaths: searchedNodePaths(state.searchedNodePaths, searchedNodePathsAction),
+		focusedNodePath: focusedNodePath(state.focusedNodePath, focusedNodePathAction),
+		heightMetric: heightMetric(state.heightMetric, heightMetricAction),
+		distributionMetric: distributionMetric(state.distributionMetric, distributionMetricAction),
+		colorMetric: colorMetric(state.colorMetric, colorMetricAction),
+		areaMetric: areaMetric(state.areaMetric, areaMetricAction)
 	}
 }

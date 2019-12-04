@@ -35,56 +35,105 @@ import { setAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.acti
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 
 export default function appSettings(state: AppSettings = {} as AppSettings, action: CCAction): AppSettings {
-	switch (action.type) {
-		case AppSettingsActions.SET_APP_SETTINGS:
-			return {
-				mapColors: mapColors(state.mapColors, setMapColors(action.payload.mapColors)),
-				resetCameraIfNewFileIsLoaded: resetCameraIfNewFileIsLoaded(
-					state.resetCameraIfNewFileIsLoaded,
-					setResetCameraIfNewFileIsLoaded(action.payload.resetCameraIfNewFileIsLoaded)
-				),
-				showOnlyBuildingsWithEdges: showOnlyBuildingsWithEdges(
-					state.showOnlyBuildingsWithEdges,
-					setShowOnlyBuildingsWithEdges(action.payload.showOnlyBuildingsWithEdges)
-				),
-				whiteColorBuildings: whiteColorBuildings(
-					state.whiteColorBuildings,
-					setWhiteColorBuildings(action.payload.whiteColorBuildings)
-				),
-				isWhiteBackground: isWhiteBackground(state.isWhiteBackground, setIsWhiteBackground(action.payload.isWhiteBackground)),
-				dynamicMargin: dynamicMargin(state.dynamicMargin, setDynamicMargin(action.payload.dynamicMargin)),
-				invertHeight: invertHeight(state.invertHeight, setInvertHeight(action.payload.invertHeight)),
-				invertDeltaColors: invertDeltaColors(state.invertDeltaColors, setInvertDeltaColors(action.payload.invertDeltaColors)),
-				invertColorRange: invertColorRange(state.invertColorRange, setInvertColorRange(action.payload.invertColorRange)),
-				hideFlatBuildings: hideFlatBuildings(state.hideFlatBuildings, setHideFlatBuildings(action.payload.hideFlatBuildings)),
-				camera: camera(state.camera, setCamera(action.payload.camera)),
-				scaling: scaling(state.scaling, setScaling(action.payload.scaling)),
-				edgeHeight: edgeHeight(state.edgeHeight, setEdgeHeight(action.payload.edgeHeight)),
-				amountOfEdgePreviews: amountOfEdgePreviews(
-					state.amountOfEdgePreviews,
-					setAmountOfEdgePreviews(action.payload.amountOfEdgePreviews)
-				),
-				amountOfTopLabels: amountOfTopLabels(state.amountOfTopLabels, setAmountOfTopLabels(action.payload.amountOfTopLabels)),
-				isPresentationMode: isPresentationMode(state.isPresentationMode, setPresentationMode(action.payload.isPresentationMode))
-			}
-		default:
-			return {
-				mapColors: mapColors(state.mapColors, action),
-				resetCameraIfNewFileIsLoaded: resetCameraIfNewFileIsLoaded(state.resetCameraIfNewFileIsLoaded, action),
-				showOnlyBuildingsWithEdges: showOnlyBuildingsWithEdges(state.showOnlyBuildingsWithEdges, action),
-				whiteColorBuildings: whiteColorBuildings(state.whiteColorBuildings, action),
-				isWhiteBackground: isWhiteBackground(state.isWhiteBackground, action),
-				dynamicMargin: dynamicMargin(state.dynamicMargin, action),
-				invertHeight: invertHeight(state.invertHeight, action),
-				invertDeltaColors: invertDeltaColors(state.invertDeltaColors, action),
-				invertColorRange: invertColorRange(state.invertColorRange, action),
-				hideFlatBuildings: hideFlatBuildings(state.hideFlatBuildings, action),
-				camera: camera(state.camera, action),
-				scaling: scaling(state.scaling, action),
-				edgeHeight: edgeHeight(state.edgeHeight, action),
-				amountOfEdgePreviews: amountOfEdgePreviews(state.amountOfEdgePreviews, action),
-				amountOfTopLabels: amountOfTopLabels(state.amountOfTopLabels, action),
-				isPresentationMode: isPresentationMode(state.isPresentationMode, action)
-			}
+	let mapColorsAction,
+		resetCameraIfNewFileIsLoadedAction,
+		showOnlyBuildingsWithEdgesAction,
+		whiteColorBuildingsAction,
+		isWhiteBackgroundAction,
+		dynamicMarginAction,
+		invertHeightAction,
+		invertDeltaColorsAction,
+		invertColorRangeAction,
+		hideFlatBuildingsAction,
+		cameraAction,
+		scalingAction,
+		edgeHeightAction,
+		amountOfEdgePreviewsAction,
+		amountOfTopLabelsAction,
+		isPresentationModeAction = action
+
+	if (action.type === AppSettingsActions.SET_APP_SETTINGS) {
+		if (action.payload.mapColors) {
+			mapColorsAction = setMapColors(action.payload.mapColors)
+		}
+
+		if (action.payload.resetCameraIfNewFileIsLoaded) {
+			resetCameraIfNewFileIsLoadedAction = setResetCameraIfNewFileIsLoaded(action.payload.resetCameraIfNewFileIsLoaded)
+		}
+
+		if (action.payload.showOnlyBuildingsWithEdges) {
+			showOnlyBuildingsWithEdgesAction = setShowOnlyBuildingsWithEdges(action.payload.showOnlyBuildingsWithEdges)
+		}
+
+		if (action.payload.whiteColorBuildings) {
+			whiteColorBuildingsAction = setWhiteColorBuildings(action.payload.whiteColorBuildings)
+		}
+
+		if (action.payload.isWhiteBackground) {
+			isWhiteBackgroundAction = setIsWhiteBackground(action.payload.isWhiteBackground)
+		}
+
+		if (action.payload.dynamicMargin) {
+			dynamicMarginAction = setDynamicMargin(action.payload.dynamicMargin)
+		}
+
+		if (action.payload.invertHeight) {
+			invertHeightAction = setInvertHeight(action.payload.invertHeight)
+		}
+
+		if (action.payload.invertDeltaColors) {
+			invertDeltaColorsAction = setInvertDeltaColors(action.payload.invertDeltaColors)
+		}
+
+		if (action.payload.invertColorRange) {
+			invertColorRangeAction = setInvertColorRange(action.payload.invertColorRange)
+		}
+
+		if (action.payload.hideFlatBuildings) {
+			hideFlatBuildingsAction = setHideFlatBuildings(action.payload.hideFlatBuildings)
+		}
+
+		if (action.payload.camera) {
+			cameraAction = setCamera(action.payload.camera)
+		}
+
+		if (action.payload.scaling) {
+			scalingAction = setScaling(action.payload.scaling)
+		}
+
+		if (action.payload.edgeHeight) {
+			edgeHeightAction = setEdgeHeight(action.payload.edgeHeight)
+		}
+
+		if (action.payload.amountOfEdgePreviews) {
+			amountOfEdgePreviewsAction = setAmountOfEdgePreviews(action.payload.amountOfEdgePreviews)
+		}
+
+		if (action.payload.amountOfTopLabels) {
+			amountOfTopLabelsAction = setAmountOfTopLabels(action.payload.amountOfTopLabels)
+		}
+
+		if (action.payload.isPresentationMode) {
+			isPresentationModeAction = setPresentationMode(action.payload.isPresentationMode)
+		}
+	}
+
+	return {
+		mapColors: mapColors(state.mapColors, mapColorsAction),
+		resetCameraIfNewFileIsLoaded: resetCameraIfNewFileIsLoaded(state.resetCameraIfNewFileIsLoaded, resetCameraIfNewFileIsLoadedAction),
+		showOnlyBuildingsWithEdges: showOnlyBuildingsWithEdges(state.showOnlyBuildingsWithEdges, showOnlyBuildingsWithEdgesAction),
+		whiteColorBuildings: whiteColorBuildings(state.whiteColorBuildings, whiteColorBuildingsAction),
+		isWhiteBackground: isWhiteBackground(state.isWhiteBackground, isWhiteBackgroundAction),
+		dynamicMargin: dynamicMargin(state.dynamicMargin, dynamicMarginAction),
+		invertHeight: invertHeight(state.invertHeight, invertHeightAction),
+		invertDeltaColors: invertDeltaColors(state.invertDeltaColors, invertDeltaColorsAction),
+		invertColorRange: invertColorRange(state.invertColorRange, invertColorRangeAction),
+		hideFlatBuildings: hideFlatBuildings(state.hideFlatBuildings, hideFlatBuildingsAction),
+		camera: camera(state.camera, cameraAction),
+		scaling: scaling(state.scaling, scalingAction),
+		edgeHeight: edgeHeight(state.edgeHeight, edgeHeightAction),
+		amountOfEdgePreviews: amountOfEdgePreviews(state.amountOfEdgePreviews, amountOfEdgePreviewsAction),
+		amountOfTopLabels: amountOfTopLabels(state.amountOfTopLabels, amountOfTopLabelsAction),
+		isPresentationMode: isPresentationMode(state.isPresentationMode, isPresentationModeAction)
 	}
 }
