@@ -1,4 +1,3 @@
-import { Vector3 } from "three"
 import { BLACKLIST, DEFAULT_SETTINGS, SETTINGS } from "../../../util/dataMocks"
 import fileSettings from "./fileSettings.reducer"
 import { FileSettingsAction, setFileSettings } from "./fileSettings.actions"
