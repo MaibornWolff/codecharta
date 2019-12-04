@@ -30,10 +30,16 @@ describe("blacklist", () => {
 	})
 
 	describe("Action: SET_BLACKLIST", () => {
-		it("should update the blacklist with a new one", () => {
+		it("should set new blacklist", () => {
 			const result = blacklist([], setBlacklist([item, item]))
 
 			expect(result).toEqual([item, item])
+		})
+
+		it("should set default blacklist", () => {
+			const result = blacklist([item, item], setBlacklist())
+
+			expect(result).toEqual([])
 		})
 	})
 })

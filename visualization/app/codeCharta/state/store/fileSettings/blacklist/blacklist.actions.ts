@@ -23,21 +23,21 @@ export interface SetBlacklistAction extends CCAction {
 
 export type BlacklistAction = AddBlacklistAction | RemoveBlacklistAction | SetBlacklistAction
 
-export function addBlacklistItem(item: BlacklistItem): BlacklistAction {
+export function addBlacklistItem(item: BlacklistItem): AddBlacklistAction {
 	return {
 		type: BlacklistActions.ADD_BLACKLIST_ITEM,
 		payload: item
 	}
 }
 
-export function removeBlacklistItem(item: BlacklistItem): BlacklistAction {
+export function removeBlacklistItem(item: BlacklistItem): RemoveBlacklistAction {
 	return {
 		type: BlacklistActions.REMOVE_BLACKLIST_ITEM,
 		payload: item
 	}
 }
 
-export function setBlacklist(blacklist: BlacklistItem[]): BlacklistAction {
+export function setBlacklist(blacklist: BlacklistItem[] = []): SetBlacklistAction {
 	return {
 		type: BlacklistActions.SET_BLACKLIST,
 		payload: blacklist
