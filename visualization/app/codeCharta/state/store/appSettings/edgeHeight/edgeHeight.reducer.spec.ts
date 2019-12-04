@@ -16,5 +16,11 @@ describe("edgeHeight", () => {
 
 			expect(result).toEqual(1)
 		})
+
+		it("should set default edgeHeight", () => {
+			const result = edgeHeight(5, setEdgeHeight())
+
+			expect(result).toEqual(4)
+		})
 	})
 })
