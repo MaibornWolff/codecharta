@@ -2,13 +2,14 @@ import { AppSettingsAction, setAppSettings } from "./appSettings.actions"
 import appSettings from "./appSettings.reducer"
 import { AppSettings } from "../../../codeCharta.model"
 import { Vector3 } from "three"
+import { DEFAULT_SETTINGS } from "../../../util/dataMocks"
 
 describe("appSettings", () => {
 	describe("Default State", () => {
 		it("should initialize the default state", () => {
 			const result = appSettings(undefined, {} as AppSettingsAction)
 
-			expect(result).toEqual({})
+			expect(result).toEqual(DEFAULT_SETTINGS.appSettings)
 		})
 	})
 
