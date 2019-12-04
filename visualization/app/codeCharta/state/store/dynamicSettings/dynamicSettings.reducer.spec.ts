@@ -1,5 +1,4 @@
 import { DynamicSettings } from "../../../codeCharta.model"
-import { Vector3 } from "three"
 import { DEFAULT_SETTINGS, STATE } from "../../../util/dataMocks"
 import dynamicSettings from "./dynamicSettings.reducer"
 import { DynamicSettingsAction, setDynamicSettings } from "./dynamicSettings.actions"
