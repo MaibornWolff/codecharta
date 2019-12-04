@@ -11,9 +11,11 @@ export interface SetHeightMetricAction extends CCAction {
 
 export type HeightMetricAction = SetHeightMetricAction
 
-export function setHeightMetric(heightMetric: string = null): SetHeightMetricAction {
+export function setHeightMetric(heightMetric: string = defaultHeightMetric): SetHeightMetricAction {
 	return {
 		type: HeightMetricActions.SET_HEIGHT_METRIC,
 		payload: heightMetric
 	}
 }
+
+export const defaultHeightMetric = null

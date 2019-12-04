@@ -11,9 +11,11 @@ export interface SetSearchPatternAction extends CCAction {
 
 export type SearchPatternAction = SetSearchPatternAction
 
-export function setSearchPattern(searchPattern: string = ""): SetSearchPatternAction {
+export function setSearchPattern(searchPattern: string = defaultSearchPattern): SetSearchPatternAction {
 	return {
 		type: SearchPatternActions.SET_SEARCH_PATTERN,
 		payload: searchPattern
 	}
 }
+
+export const defaultSearchPattern = ""

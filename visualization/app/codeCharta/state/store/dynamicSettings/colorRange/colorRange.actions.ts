@@ -11,9 +11,11 @@ export interface SetColorRangeAction extends CCAction {
 
 export type ColorRangeAction = SetColorRangeAction
 
-export function setColorRange(colorRange: ColorRange = { from: null, to: null }): SetColorRangeAction {
+export function setColorRange(colorRange: ColorRange = defaultColorRange): SetColorRangeAction {
 	return {
 		type: ColorRangeActions.SET_COLOR_RANGE,
 		payload: colorRange
 	}
 }
+
+export const defaultColorRange: ColorRange = { from: null, to: null }

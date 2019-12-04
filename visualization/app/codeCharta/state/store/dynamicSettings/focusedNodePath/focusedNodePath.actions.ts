@@ -17,7 +17,7 @@ export interface UnfocusNodeAction extends CCAction {
 
 export type FocusedNodePathAction = FocusNodeAction | UnfocusNodeAction
 
-export function focusNode(focusedNodePath: string = ""): FocusNodeAction {
+export function focusNode(focusedNodePath: string = defaultFocusedNodePath): FocusNodeAction {
 	return {
 		type: FocusedNodePathActions.FOCUS_NODE,
 		payload: focusedNodePath
@@ -30,3 +30,5 @@ export function unfocusNode(): UnfocusNodeAction {
 		payload: ""
 	}
 }
+
+export const defaultFocusedNodePath = ""

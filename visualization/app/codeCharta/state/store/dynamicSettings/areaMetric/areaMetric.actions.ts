@@ -11,9 +11,11 @@ export interface SetAreaMetricAction extends CCAction {
 
 export type AreaMetricAction = SetAreaMetricAction
 
-export function setAreaMetric(areaMetric: string = null): SetAreaMetricAction {
+export function setAreaMetric(areaMetric: string = defaultAreaMetric): SetAreaMetricAction {
 	return {
 		type: AreaMetricActions.SET_AREA_METRIC,
 		payload: areaMetric
 	}
 }
+
+export const defaultAreaMetric = null

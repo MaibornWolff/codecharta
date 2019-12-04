@@ -11,9 +11,11 @@ export interface SetColorMetricAction extends CCAction {
 
 export type ColorMetricAction = SetColorMetricAction
 
-export function setColorMetric(colorMetric: string = null): SetColorMetricAction {
+export function setColorMetric(colorMetric: string = defaultColorMetric): SetColorMetricAction {
 	return {
 		type: ColorMetricActions.SET_COLOR_METRIC,
 		payload: colorMetric
 	}
 }
+
+export const defaultColorMetric = null
