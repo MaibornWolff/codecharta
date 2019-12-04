@@ -171,8 +171,27 @@ module.exports = function(plop) {
 			{
 				type: "modify",
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
-				pattern: /(\/\/ Plop: Append reducer usage here)/gi,
-				template: "$1\r\n\t{{camelCase name}},"
+				pattern: /(\/\/ Plop: Append reducer import here)/gi,
+				template: '$1\r\nimport { set{{properCase name}} } from "./{{camelCase name}}/{{camelCase name}}.actions"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
+				pattern: /(\/\/ Plop: Append acion declaration here)/gi,
+				template: "$1\r\n\tlet {{camelCase name}}Action = action"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
+				pattern: /(\/\/ Plop: Append check for action payload here)/gi,
+				template:
+					"$1\r\n\t\tif (action.payload.{{camelCase name}}) {\n\t\t\t{{camelCase name}}Action = set{{properCase name}}(action.payload.{{camelCase name}})\n\t\t}\n"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
+				pattern: /(\/\/ Plop: Append action forwarding here)/gi,
+				template: "$1\r\n\t\t{{camelCase name}}: {{camelCase name}}(state.{{camelCase name}}, {{camelCase name}}Action),"
 			}
 		]
 	})
