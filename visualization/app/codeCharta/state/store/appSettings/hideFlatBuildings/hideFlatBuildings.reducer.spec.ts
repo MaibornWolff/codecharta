@@ -6,7 +6,7 @@ describe("hideFlatBuildings", () => {
 		it("should initialize the default state", () => {
 			const result = hideFlatBuildings(undefined, {} as HideFlatBuildingsAction)
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("hideFlatBuildings", () => {
 		it("should set new hideFlatBuildings", () => {
 			const result = hideFlatBuildings(true, setHideFlatBuildings(false))
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
+		})
+
+		it("should set new hideFlatBuildings", () => {
+			const result = hideFlatBuildings(false, setHideFlatBuildings())
+
+			expect(result).toBeTruthy()
 		})
 	})
 })
