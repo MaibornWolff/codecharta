@@ -1,5 +1,5 @@
-import { defaultMapColors, mapColors } from "./mapColors.reducer"
-import { MapColorsAction, setMapColors } from "./mapColors.actions"
+import { mapColors } from "./mapColors.reducer"
+import { defaultMapColors, MapColorsAction, setMapColors } from "./mapColors.actions"
 
 describe("mapColors", () => {
 	describe("Default State", () => {
@@ -17,6 +17,14 @@ describe("mapColors", () => {
 			const result = mapColors(defaultMapColors, setMapColors(newMapColors))
 
 			expect(result).toEqual(newMapColors)
+		})
+
+		it("should set default mapColors", () => {
+			const oldMapColors = { ...defaultMapColors, positive: "ABCDEF" }
+
+			const result = mapColors(oldMapColors, setMapColors())
+
+			expect(result).toEqual(defaultMapColors)
 		})
 	})
 })
