@@ -1,9 +1,8 @@
-import { AmountOfEdgePreviewsAction, AmountOfEdgePreviewsActions, setDefaultAmountOfEdgePreviews } from "./amountOfEdgePreviews.actions"
+import { AmountOfEdgePreviewsAction, AmountOfEdgePreviewsActions } from "./amountOfEdgePreviews.actions"
 
-export function amountOfEdgePreviews(state: number = setDefaultAmountOfEdgePreviews().payload, action: AmountOfEdgePreviewsAction): number {
+export function amountOfEdgePreviews(state: number = 1, action: AmountOfEdgePreviewsAction): number {
 	switch (action.type) {
 		case AmountOfEdgePreviewsActions.SET_AMOUNT_OF_EDGE_PREVIEWS:
-		case AmountOfEdgePreviewsActions.SET_DEFAULT_AMOUNT_OF_EDGE_PREVIEWS:
 			return action.payload
 		default:
 			return state
