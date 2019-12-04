@@ -11,7 +11,7 @@ export interface SetAmountOfTopLabelsAction extends CCAction {
 
 export type AmountOfTopLabelsAction = SetAmountOfTopLabelsAction
 
-export function setAmountOfTopLabels(amountOfTopLabels: number): AmountOfTopLabelsAction {
+export function setAmountOfTopLabels(amountOfTopLabels: number = 1): AmountOfTopLabelsAction {
 	return {
 		type: AmountOfTopLabelsActions.SET_AMOUNT_OF_TOP_LABELS,
 		payload: amountOfTopLabels
