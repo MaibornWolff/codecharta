@@ -11,9 +11,11 @@ export interface SetInvertHeightAction extends CCAction {
 
 export type InvertHeightAction = SetInvertHeightAction
 
-export function setInvertHeight(invertHeight: boolean = false): SetInvertHeightAction {
+export function setInvertHeight(invertHeight: boolean = defaultInvertHeight): SetInvertHeightAction {
 	return {
 		type: InvertHeightActions.SET_INVERT_HEIGHT,
 		payload: invertHeight
 	}
 }
+
+export const defaultInvertHeight = false

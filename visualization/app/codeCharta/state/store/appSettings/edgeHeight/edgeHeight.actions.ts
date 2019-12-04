@@ -11,9 +11,11 @@ export interface SetEdgeHeightAction extends CCAction {
 
 export type EdgeHeightAction = SetEdgeHeightAction
 
-export function setEdgeHeight(edgeHeight: number = 4): SetEdgeHeightAction {
+export function setEdgeHeight(edgeHeight: number = defaultEdgeHeight): SetEdgeHeightAction {
 	return {
 		type: EdgeHeightActions.SET_EDGE_HEIGHT,
 		payload: edgeHeight
 	}
 }
+
+export const defaultEdgeHeight = 4

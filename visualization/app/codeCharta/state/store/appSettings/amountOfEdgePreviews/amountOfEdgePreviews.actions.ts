@@ -11,9 +11,11 @@ export interface SetAmountOfEdgePreviewsAction extends CCAction {
 
 export type AmountOfEdgePreviewsAction = SetAmountOfEdgePreviewsAction
 
-export function setAmountOfEdgePreviews(amountOfEdgePreviews: number = 1): SetAmountOfEdgePreviewsAction {
+export function setAmountOfEdgePreviews(amountOfEdgePreviews: number = defaultAmountOfEdgePreviews): SetAmountOfEdgePreviewsAction {
 	return {
 		type: AmountOfEdgePreviewsActions.SET_AMOUNT_OF_EDGE_PREVIEWS,
 		payload: amountOfEdgePreviews
 	}
 }
+
+export const defaultAmountOfEdgePreviews = 1

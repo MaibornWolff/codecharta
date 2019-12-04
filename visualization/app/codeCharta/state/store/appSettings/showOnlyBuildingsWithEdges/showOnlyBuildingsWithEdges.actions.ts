@@ -11,9 +11,13 @@ export interface SetShowOnlyBuildingsWithEdgesAction extends CCAction {
 
 export type ShowOnlyBuildingsWithEdgesAction = SetShowOnlyBuildingsWithEdgesAction
 
-export function setShowOnlyBuildingsWithEdges(showOnlyBuildingsWithEdges: boolean = false): SetShowOnlyBuildingsWithEdgesAction {
+export function setShowOnlyBuildingsWithEdges(
+	showOnlyBuildingsWithEdges: boolean = defaultShowOnlyBuildingsWithEdges
+): SetShowOnlyBuildingsWithEdgesAction {
 	return {
 		type: ShowOnlyBuildingsWithEdgesActions.SET_SHOW_ONLY_BUILDINGS_WITH_EDGES,
 		payload: showOnlyBuildingsWithEdges
 	}
 }
+
+export const defaultShowOnlyBuildingsWithEdges = false

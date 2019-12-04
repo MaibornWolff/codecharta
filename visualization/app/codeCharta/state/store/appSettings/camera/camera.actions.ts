@@ -12,9 +12,11 @@ export interface SetCameraAction extends CCAction {
 
 export type CameraAction = SetCameraAction
 
-export function setCamera(camera: Vector3 = new Vector3(0, 300, 1000)): SetCameraAction {
+export function setCamera(camera: Vector3 = defaultCamera): SetCameraAction {
 	return {
 		type: CameraActions.SET_CAMERA,
 		payload: camera
 	}
 }
+
+export const defaultCamera = new Vector3(0, 300, 1000)
