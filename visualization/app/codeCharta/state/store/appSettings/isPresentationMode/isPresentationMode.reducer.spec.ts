@@ -16,5 +16,11 @@ describe("isPresentationMode", () => {
 
 			expect(result).toBeTruthy()
 		})
+
+		it("should set default presentation mode", () => {
+			const result = isPresentationMode(true, setPresentationMode())
+
+			expect(result).toBeFalsy()
+		})
 	})
 })
