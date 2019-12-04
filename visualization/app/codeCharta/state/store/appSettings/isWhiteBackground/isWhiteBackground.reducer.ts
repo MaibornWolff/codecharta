@@ -1,6 +1,6 @@
-import { IsWhiteBackgroundAction, IsWhiteBackgroundActions } from "./isWhiteBackground.actions"
+import { IsWhiteBackgroundAction, IsWhiteBackgroundActions, setIsWhiteBackground } from "./isWhiteBackground.actions"
 
-export function isWhiteBackground(state: boolean = false, action: IsWhiteBackgroundAction): boolean {
+export function isWhiteBackground(state: boolean = setIsWhiteBackground().payload, action: IsWhiteBackgroundAction): boolean {
 	switch (action.type) {
 		case IsWhiteBackgroundActions.SET_IS_WHITE_BACKGROUND:
 			return action.payload

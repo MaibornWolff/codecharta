@@ -6,7 +6,7 @@ describe("isWhiteBackground", () => {
 		it("should initialize the default state", () => {
 			const result = isWhiteBackground(undefined, {} as IsWhiteBackgroundAction)
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("isWhiteBackground", () => {
 		it("should set new isWhiteBackground", () => {
 			const result = isWhiteBackground(false, setIsWhiteBackground(true))
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
+		})
+
+		it("should set default isWhiteBackground", () => {
+			const result = isWhiteBackground(true, setIsWhiteBackground())
+
+			expect(result).toBeFalsy()
 		})
 	})
 })
