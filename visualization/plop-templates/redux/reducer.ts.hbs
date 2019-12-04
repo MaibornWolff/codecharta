@@ -1,7 +1,7 @@
 import { {{properCase name}}Action, {{properCase name}}Actions, set{{properCase name}} } from "./{{camelCase name}}.actions"
 import _ from "lodash"
 
-export function {{camelCase name}}(state: {{type}} = {{default}} = set{{properCase name}}().payload, action: {{properCase name}}Action): {{type}} {
+export function {{camelCase name}}(state: {{type}} = set{{properCase name}}().payload, action: {{properCase name}}Action): {{type}} {
 	switch (action.type) {
 		case {{properCase name}}Actions.SET_{{constantCase name}}:
 			return _.cloneDeep(action.payload) //TODO: _.cloneDeep not required for primitives
