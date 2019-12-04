@@ -1,6 +1,6 @@
-import { ColorMetricAction, ColorMetricActions } from "./colorMetric.actions"
+import { ColorMetricAction, ColorMetricActions, setColorMetric } from "./colorMetric.actions"
 
-export function colorMetric(state: string = null, action: ColorMetricAction): string {
+export function colorMetric(state: string = setColorMetric().payload, action: ColorMetricAction): string {
 	switch (action.type) {
 		case ColorMetricActions.SET_COLOR_METRIC:
 			return action.payload
