@@ -1,15 +1,8 @@
 import { Vector3 } from "three"
 import { CCAction } from "../../../../codeCharta.model"
-import { initialState } from "../../initialState"
 
 export enum CameraActions {
-	SET_CAMERA = "SET_CAMERA",
-	SET_DEFAULT = "SET_DEFAULT"
-}
-
-export interface SetDefaultCameraAction extends CCAction {
-	type: CameraActions.SET_DEFAULT
-	payload: Vector3
+	SET_CAMERA = "SET_CAMERA"
 }
 
 export interface SetCameraAction extends CCAction {
@@ -17,18 +10,11 @@ export interface SetCameraAction extends CCAction {
 	payload: Vector3
 }
 
-export type CameraAction = SetCameraAction | SetDefaultCameraAction
+export type CameraAction = SetCameraAction
 
-export function setCamera(camera: Vector3): CameraAction {
+export function setCamera(camera: Vector3 = new Vector3(0, 300, 1000)): CameraAction {
 	return {
 		type: CameraActions.SET_CAMERA,
 		payload: camera
-	}
-}
-
-export function setDefaultCamera(): CameraAction {
-	return {
-		type: CameraActions.SET_DEFAULT,
-		payload: initialState.appSettings.camera
 	}
 }
