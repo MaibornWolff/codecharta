@@ -11,7 +11,7 @@ export interface SetResetCameraIfNewFileIsLoadedAction extends CCAction {
 
 export type ResetCameraIfNewFileIsLoadedAction = SetResetCameraIfNewFileIsLoadedAction
 
-export function setResetCameraIfNewFileIsLoaded(resetCameraIfNewFileIsLoaded: boolean): ResetCameraIfNewFileIsLoadedAction {
+export function setResetCameraIfNewFileIsLoaded(resetCameraIfNewFileIsLoaded: boolean = true): ResetCameraIfNewFileIsLoadedAction {
 	return {
 		type: ResetCameraIfNewFileIsLoadedActions.SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED,
 		payload: resetCameraIfNewFileIsLoaded
