@@ -2,7 +2,7 @@ import { AppSettingsAction, setAppSettings } from "./appSettings.actions"
 import appSettings from "./appSettings.reducer"
 import { AppSettings } from "../../../codeCharta.model"
 import { Vector3 } from "three"
-import { DEFAULT_SETTINGS } from "../../../util/dataMocks"
+import { DEFAULT_SETTINGS, SETTINGS } from "../../../util/dataMocks"
 
 describe("appSettings", () => {
 	describe("Default State", () => {
@@ -21,6 +21,12 @@ describe("appSettings", () => {
 			const result = appSettings({} as AppSettings, setAppSettings(partialAppSettings))
 
 			expect(result.invertHeight).toEqual(true)
+		})
+
+		it("should set default appSettings", () => {
+			const result = appSettings(SETTINGS.appSettings, setAppSettings())
+
+			expect(result).toEqual(DEFAULT_SETTINGS.appSettings)
 		})
 
 		it("should set edgeHeight number in new appSettings", () => {

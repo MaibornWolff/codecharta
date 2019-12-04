@@ -13,15 +13,15 @@ export function rootReducer(state: State = {} as State, action: CCAction) {
 	let dynamicSettingsAction = action
 
 	if (action.type === StateActions.SET_STATE) {
-		if (action.payload.fileSettings) {
+		if (action.payload.fileSettings !== undefined) {
 			fileSettingsAction = setFileSettings(action.payload.fileSettings)
 		}
 
-		if (action.payload.appSettings) {
+		if (action.payload.appSettings !== undefined) {
 			appSettingsAction = setAppSettings(action.payload.appSettings)
 		}
 
-		if (action.payload.dynamicSettings) {
+		if (action.payload.dynamicSettings !== undefined) {
 			dynamicSettingsAction = setDynamicSettings(action.payload.dynamicSettings)
 		}
 	}

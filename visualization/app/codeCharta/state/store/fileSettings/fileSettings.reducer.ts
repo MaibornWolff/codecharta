@@ -19,19 +19,19 @@ export default function fileSettings(state: FileSettings = {} as FileSettings, a
 
 	if (action.type === FileSettingsActions.SET_FILE_SETTINGS) {
 		// Plop: Append check for action payload here
-		if (action.payload.markedPackages) {
+		if (action.payload.markedPackages !== undefined) {
 			markedPackagesAction = setMarkedPackages(action.payload.markedPackages)
 		}
 
-		if (action.payload.edges) {
+		if (action.payload.edges !== undefined) {
 			edgesAction = setEdges(action.payload.edges)
 		}
 
-		if (action.payload.attributeTypes) {
+		if (action.payload.attributeTypes !== undefined) {
 			attributeTypesAction = setAttributeTypes(action.payload.attributeTypes)
 		}
 
-		if (action.payload.blacklist) {
+		if (action.payload.blacklist !== undefined) {
 			blacklistAction = setBlacklist(action.payload.blacklist)
 		}
 	}

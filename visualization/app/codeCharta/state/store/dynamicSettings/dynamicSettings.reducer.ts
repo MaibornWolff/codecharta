@@ -37,43 +37,43 @@ export default function dynamicSettings(state: DynamicSettings = {} as DynamicSe
 
 	if (action.type === DynamicSettingsActions.SET_DYNAMIC_SETTINGS) {
 		// Plop: Append check for action payload here
-		if (action.payload.edgeMetric) {
+		if (action.payload.edgeMetric !== undefined) {
 			edgeMetricAction = setEdgeMetric(action.payload.edgeMetric)
 		}
 
-		if (action.payload.colorRange) {
+		if (action.payload.colorRange !== undefined) {
 			colorRangeAction = setColorRange(action.payload.colorRange)
 		}
 
-		if (action.payload.margin) {
+		if (action.payload.margin !== undefined) {
 			marginAction = setMargin(action.payload.margin)
 		}
 
-		if (action.payload.searchPattern) {
+		if (action.payload.searchPattern !== undefined) {
 			searchPatternAction = setSearchPattern(action.payload.searchPattern)
 		}
 
-		if (action.payload.searchedNodePaths) {
+		if (action.payload.searchedNodePaths !== undefined) {
 			searchedNodePathsAction = setSearchedNodePaths(action.payload.searchedNodePaths)
 		}
 
-		if (action.payload.focusedNodePath) {
+		if (action.payload.focusedNodePath !== undefined) {
 			focusedNodePathAction = focusNode(action.payload.focusedNodePath)
 		}
 
-		if (action.payload.heightMetric) {
+		if (action.payload.heightMetric !== undefined) {
 			heightMetricAction = setHeightMetric(action.payload.heightMetric)
 		}
 
-		if (action.payload.distributionMetric) {
+		if (action.payload.distributionMetric !== undefined) {
 			distributionMetricAction = setDistributionMetric(action.payload.distributionMetric)
 		}
 
-		if (action.payload.colorMetric) {
+		if (action.payload.colorMetric !== undefined) {
 			colorMetricAction = setColorMetric(action.payload.colorMetric)
 		}
 
-		if (action.payload.areaMetric) {
+		if (action.payload.areaMetric !== undefined) {
 			areaMetricAction = setAreaMetric(action.payload.areaMetric)
 		}
 	}

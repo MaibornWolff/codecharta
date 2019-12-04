@@ -55,67 +55,67 @@ export default function appSettings(state: AppSettings = {} as AppSettings, acti
 
 	if (action && action.type === AppSettingsActions.SET_APP_SETTINGS) {
 		// Plop: Append check for action payload here
-		if (action.payload.mapColors) {
+		if (action.payload.mapColors !== undefined) {
 			mapColorsAction = setMapColors(action.payload.mapColors)
 		}
 
-		if (action.payload.resetCameraIfNewFileIsLoaded) {
+		if (action.payload.resetCameraIfNewFileIsLoaded !== undefined) {
 			resetCameraIfNewFileIsLoadedAction = setResetCameraIfNewFileIsLoaded(action.payload.resetCameraIfNewFileIsLoaded)
 		}
 
-		if (action.payload.showOnlyBuildingsWithEdges) {
+		if (action.payload.showOnlyBuildingsWithEdges !== undefined) {
 			showOnlyBuildingsWithEdgesAction = setShowOnlyBuildingsWithEdges(action.payload.showOnlyBuildingsWithEdges)
 		}
 
-		if (action.payload.whiteColorBuildings) {
+		if (action.payload.whiteColorBuildings !== undefined) {
 			whiteColorBuildingsAction = setWhiteColorBuildings(action.payload.whiteColorBuildings)
 		}
 
-		if (action.payload.isWhiteBackground) {
+		if (action.payload.isWhiteBackground !== undefined) {
 			isWhiteBackgroundAction = setIsWhiteBackground(action.payload.isWhiteBackground)
 		}
 
-		if (action.payload.dynamicMargin) {
+		if (action.payload.dynamicMargin !== undefined) {
 			dynamicMarginAction = setDynamicMargin(action.payload.dynamicMargin)
 		}
 
-		if (action.payload.invertHeight) {
+		if (action.payload.invertHeight !== undefined) {
 			invertHeightAction = setInvertHeight(action.payload.invertHeight)
 		}
 
-		if (action.payload.invertDeltaColors) {
+		if (action.payload.invertDeltaColors !== undefined) {
 			invertDeltaColorsAction = setInvertDeltaColors(action.payload.invertDeltaColors)
 		}
 
-		if (action.payload.invertColorRange) {
+		if (action.payload.invertColorRange !== undefined) {
 			invertColorRangeAction = setInvertColorRange(action.payload.invertColorRange)
 		}
 
-		if (action.payload.hideFlatBuildings) {
+		if (action.payload.hideFlatBuildings !== undefined) {
 			hideFlatBuildingsAction = setHideFlatBuildings(action.payload.hideFlatBuildings)
 		}
 
-		if (action.payload.camera) {
+		if (action.payload.camera !== undefined) {
 			cameraAction = setCamera(action.payload.camera)
 		}
 
-		if (action.payload.scaling) {
+		if (action.payload.scaling !== undefined) {
 			scalingAction = setScaling(action.payload.scaling)
 		}
 
-		if (action.payload.edgeHeight) {
+		if (action.payload.edgeHeight !== undefined) {
 			edgeHeightAction = setEdgeHeight(action.payload.edgeHeight)
 		}
 
-		if (action.payload.amountOfEdgePreviews) {
+		if (action.payload.amountOfEdgePreviews !== undefined) {
 			amountOfEdgePreviewsAction = setAmountOfEdgePreviews(action.payload.amountOfEdgePreviews)
 		}
 
-		if (action.payload.amountOfTopLabels) {
+		if (action.payload.amountOfTopLabels !== undefined) {
 			amountOfTopLabelsAction = setAmountOfTopLabels(action.payload.amountOfTopLabels)
 		}
 
-		if (action.payload.isPresentationMode) {
+		if (action.payload.isPresentationMode !== undefined) {
 			isPresentationModeAction = setPresentationMode(action.payload.isPresentationMode)
 		}
 	}

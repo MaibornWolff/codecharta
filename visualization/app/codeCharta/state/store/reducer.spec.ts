@@ -1,6 +1,6 @@
 import { rootReducer } from "./reducer"
 import { STATE } from "../../util/dataMocks"
-import { setState } from "./state.actions"
+import { defaultState, setState } from "./state.actions"
 import { initialState } from "./initialState"
 import { setDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./dynamicSettings/margin/margin.actions"
@@ -33,5 +33,11 @@ describe("rootReducer", () => {
 		const result = rootReducer(initialState, setMargin(20))
 
 		expect(result.dynamicSettings.margin).toEqual(20)
+	})
+
+	it("should reset the state to default", () => {
+		const result = rootReducer(STATE, setState(defaultState))
+
+		expect(result).toEqual(defaultState)
 	})
 })
