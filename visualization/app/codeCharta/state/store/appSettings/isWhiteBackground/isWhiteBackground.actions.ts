@@ -11,7 +11,7 @@ export interface SetIsWhiteBackgroundAction extends CCAction {
 
 export type IsWhiteBackgroundAction = SetIsWhiteBackgroundAction
 
-export function setIsWhiteBackground(isWhiteBackground: boolean = false): IsWhiteBackgroundAction {
+export function setIsWhiteBackground(isWhiteBackground: boolean = false): SetIsWhiteBackgroundAction {
 	return {
 		type: IsWhiteBackgroundActions.SET_IS_WHITE_BACKGROUND,
 		payload: isWhiteBackground

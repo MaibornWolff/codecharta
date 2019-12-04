@@ -11,7 +11,7 @@ export interface SetDynamicMarginAction extends CCAction {
 
 export type DynamicMarginAction = SetDynamicMarginAction
 
-export function setDynamicMargin(dynamicMargin: boolean = true): DynamicMarginAction {
+export function setDynamicMargin(dynamicMargin: boolean = true): SetDynamicMarginAction {
 	return {
 		type: DynamicMarginActions.SET_DYNAMIC_MARGIN,
 		payload: dynamicMargin

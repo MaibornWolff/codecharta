@@ -11,7 +11,7 @@ export interface SetEdgeMetricAction extends CCAction {
 
 export type EdgeMetricAction = SetEdgeMetricAction
 
-export function setEdgeMetric(edgeMetric: string = null): EdgeMetricAction {
+export function setEdgeMetric(edgeMetric: string = null): SetEdgeMetricAction {
 	return {
 		type: EdgeMetricActions.SET_EDGE_METRIC,
 		payload: edgeMetric

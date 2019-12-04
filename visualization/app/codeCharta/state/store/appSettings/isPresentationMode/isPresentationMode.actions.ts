@@ -11,7 +11,7 @@ export interface SetPresentationModeAction extends CCAction {
 
 export type PresentationModeAction = SetPresentationModeAction
 
-export function setPresentationMode(active: boolean = false): PresentationModeAction {
+export function setPresentationMode(active: boolean = false): SetPresentationModeAction {
 	return {
 		type: PresentationModeActions.SET_PRESENTATION_MODE,
 		payload: active

@@ -11,7 +11,7 @@ export interface SetMapColorsAction extends CCAction {
 
 export type MapColorsAction = SetMapColorsAction
 
-export function setMapColors(mapColors: MapColors = defaultMapColors): MapColorsAction {
+export function setMapColors(mapColors: MapColors = defaultMapColors): SetMapColorsAction {
 	return {
 		type: MapColorsActions.SET_MAP_COLORS,
 		payload: mapColors

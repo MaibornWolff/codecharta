@@ -11,7 +11,7 @@ export interface SetInvertDeltaColorsAction extends CCAction {
 
 export type InvertDeltaColorsAction = SetInvertDeltaColorsAction
 
-export function setInvertDeltaColors(invertDeltaColors: boolean = false): InvertDeltaColorsAction {
+export function setInvertDeltaColors(invertDeltaColors: boolean = false): SetInvertDeltaColorsAction {
 	return {
 		type: InvertDeltaColorsActions.SET_INVERT_DELTA_COLORS,
 		payload: invertDeltaColors

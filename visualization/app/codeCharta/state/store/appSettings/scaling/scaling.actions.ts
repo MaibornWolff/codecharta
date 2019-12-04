@@ -12,7 +12,7 @@ export interface SetScalingAction extends CCAction {
 
 export type ScalingAction = SetScalingAction
 
-export function setScaling(scaling: Vector3 = new Vector3(1, 1, 1)): ScalingAction {
+export function setScaling(scaling: Vector3 = new Vector3(1, 1, 1)): SetScalingAction {
 	return {
 		type: ScalingActions.SET_SCALING,
 		payload: scaling

@@ -11,7 +11,7 @@ export interface SetInvertColorRangeAction extends CCAction {
 
 export type InvertColorRangeAction = SetInvertColorRangeAction
 
-export function setInvertColorRange(invertColorRange: boolean = false): InvertColorRangeAction {
+export function setInvertColorRange(invertColorRange: boolean = false): SetInvertColorRangeAction {
 	return {
 		type: InvertColorRangeActions.SET_INVERT_COLOR_RANGE,
 		payload: invertColorRange

@@ -11,7 +11,7 @@ export interface SetAreaMetricAction extends CCAction {
 
 export type AreaMetricAction = SetAreaMetricAction
 
-export function setAreaMetric(areaMetric: string = null): AreaMetricAction {
+export function setAreaMetric(areaMetric: string = null): SetAreaMetricAction {
 	return {
 		type: AreaMetricActions.SET_AREA_METRIC,
 		payload: areaMetric
