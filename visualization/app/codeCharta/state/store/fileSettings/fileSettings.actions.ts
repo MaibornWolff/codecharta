@@ -1,4 +1,4 @@
-import { AppSettings, CCAction, FileSettings, RecursivePartial } from "../../../codeCharta.model"
+import { CCAction, FileSettings, RecursivePartial } from "../../../codeCharta.model"
 
 export enum FileSettingsActions {
 	SET_FILE_SETTINGS = "SET_FILE_SETTINGS"
