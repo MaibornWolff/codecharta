@@ -23,7 +23,7 @@ export interface UnmarkPackageAction extends CCAction {
 
 export type MarkedPackagesAction = SetMarkedPackagesAction | MarkPackageAction | UnmarkPackageAction
 
-export function setMarkedPackages(markedPackages: MarkedPackage[] = []): SetMarkedPackagesAction {
+export function setMarkedPackages(markedPackages: MarkedPackage[] = defaultMarkedPackages): SetMarkedPackagesAction {
 	return {
 		type: MarkedPackagesActions.SET_MARKED_PACKAGES,
 		payload: markedPackages
@@ -43,3 +43,5 @@ export function unmarkPackage(markedPackage: MarkedPackage): UnmarkPackageAction
 		payload: markedPackage
 	}
 }
+
+export const defaultMarkedPackages: MarkedPackage[] = []

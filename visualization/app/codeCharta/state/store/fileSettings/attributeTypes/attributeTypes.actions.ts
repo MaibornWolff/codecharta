@@ -11,9 +11,11 @@ export interface SetAttributeTypesAction extends CCAction {
 
 export type AttributeTypesAction = SetAttributeTypesAction
 
-export function setAttributeTypes(attributeTypes: AttributeTypes = { nodes: [], edges: [] }): AttributeTypesAction {
+export function setAttributeTypes(attributeTypes: AttributeTypes = defaultAttributeTypes): AttributeTypesAction {
 	return {
 		type: AttributeTypesActions.SET_ATTRIBUTE_TYPES,
 		payload: attributeTypes
 	}
 }
+
+export const defaultAttributeTypes: AttributeTypes = { nodes: [], edges: [] }

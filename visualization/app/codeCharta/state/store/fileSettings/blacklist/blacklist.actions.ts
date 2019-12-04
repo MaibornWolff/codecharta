@@ -37,9 +37,11 @@ export function removeBlacklistItem(item: BlacklistItem): RemoveBlacklistAction 
 	}
 }
 
-export function setBlacklist(blacklist: BlacklistItem[] = []): SetBlacklistAction {
+export function setBlacklist(blacklist: BlacklistItem[] = defaultBlacklist): SetBlacklistAction {
 	return {
 		type: BlacklistActions.SET_BLACKLIST,
 		payload: blacklist
 	}
 }
+
+export const defaultBlacklist: BlacklistItem[] = []
