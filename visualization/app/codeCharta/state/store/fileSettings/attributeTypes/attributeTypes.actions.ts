@@ -11,7 +11,7 @@ export interface SetAttributeTypesAction extends CCAction {
 
 export type AttributeTypesAction = SetAttributeTypesAction
 
-export function setAttributeTypes(attributeTypes: AttributeTypes): AttributeTypesAction {
+export function setAttributeTypes(attributeTypes: AttributeTypes = { nodes: [], edges: [] }): AttributeTypesAction {
 	return {
 		type: AttributeTypesActions.SET_ATTRIBUTE_TYPES,
 		payload: attributeTypes
