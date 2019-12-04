@@ -6,7 +6,7 @@ describe("showOnlyBuildingsWithEdges", () => {
 		it("should initialize the default state", () => {
 			const result = showOnlyBuildingsWithEdges(undefined, {} as ShowOnlyBuildingsWithEdgesAction)
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("showOnlyBuildingsWithEdges", () => {
 		it("should set new showOnlyBuildingsWithEdges", () => {
 			const result = showOnlyBuildingsWithEdges(false, setShowOnlyBuildingsWithEdges(true))
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
+		})
+
+		it("should set default showOnlyBuildingsWithEdges", () => {
+			const result = showOnlyBuildingsWithEdges(true, setShowOnlyBuildingsWithEdges())
+
+			expect(result).toBeFalsy()
 		})
 	})
 })
