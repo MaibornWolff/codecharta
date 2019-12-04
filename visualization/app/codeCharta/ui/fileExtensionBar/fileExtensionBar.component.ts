@@ -51,13 +51,11 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 		this.threeSceneService.highlightBuildings()
 	}
+
 	private findBuildingsSummarizedInOtherDistribution(mapBuildings: CodeMapBuilding[]) {
-		const visibleDistributionEndings: String[] = []
-		this._viewModel.distribution
+		const visibleDistributionEndings: string[] = this._viewModel.distribution
 			.filter(metric => metric.fileExtension != "other")
-			.forEach(metricDestribution => {
-				visibleDistributionEndings.push(metricDestribution.fileExtension)
-			})
+			.map(metric => metric.fileExtension)
 
 		mapBuildings.forEach(building => {
 			if (!visibleDistributionEndings.includes(FileExtensionCalculator.estimateFileExtension(building.node.name))) {
