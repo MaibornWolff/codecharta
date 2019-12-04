@@ -28,7 +28,7 @@
 					>{{ item.relativeMetricValue.toFixed(2) }}%</span
 				>
 				<span class="metric-value" ng-class="{ hidden: !$ctrl._viewModel.isAbsoluteValueVisible }">{{
-					item.absoluteMetricValue.toFixed(0)
+					item.absoluteMetricValue.toFixed(0) | number
 				}}</span>
 			</p>
 		</div>
