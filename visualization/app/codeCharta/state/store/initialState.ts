@@ -53,8 +53,5 @@ export const initialState: State = {
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true
-	},
-	treeMapSettings: {
-		mapSize: 250
 	}
 }

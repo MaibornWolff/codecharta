@@ -16,5 +16,11 @@ describe("amountOfEdgePreviews", () => {
 
 			expect(result).toEqual(2)
 		})
+
+		it("should set default amountOfEdgePreviews", () => {
+			const result = amountOfEdgePreviews(2, setAmountOfEdgePreviews())
+
+			expect(result).toEqual(1)
+		})
 	})
 })
