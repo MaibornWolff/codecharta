@@ -241,7 +241,6 @@ export interface State {
 	fileSettings: FileSettings
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
-	treeMapSettings: TreeMapSettings
 }
 
 export interface CCAction extends Action {
