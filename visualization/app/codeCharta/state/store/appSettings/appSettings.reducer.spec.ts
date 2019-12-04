@@ -17,7 +17,7 @@ describe("appSettings", () => {
 		it("should set invertHeight boolean in new appSettings", () => {
 			const partialAppSettings = {
 				invertHeight: true
-			} as AppSettings
+			}
 			const result = appSettings({} as AppSettings, setAppSettings(partialAppSettings))
 
 			expect(result.invertHeight).toEqual(true)
@@ -26,7 +26,7 @@ describe("appSettings", () => {
 		it("should set edgeHeight number in new appSettings", () => {
 			const partialAppSettings = {
 				edgeHeight: 42
-			} as AppSettings
+			}
 			const result = appSettings({} as AppSettings, setAppSettings(partialAppSettings))
 
 			expect(result.edgeHeight).toEqual(42)
@@ -35,7 +35,7 @@ describe("appSettings", () => {
 		it("should set camera object in new appSettings", () => {
 			const partialAppSettings = {
 				camera: new Vector3(0, 300, 1000)
-			} as AppSettings
+			}
 			const result = appSettings({} as AppSettings, setAppSettings(partialAppSettings))
 
 			expect(result.camera).toEqual(new Vector3(0, 300, 1000))
