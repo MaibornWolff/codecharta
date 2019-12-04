@@ -16,6 +16,12 @@ describe("focusedNodePath", () => {
 
 			expect(result).toEqual("some/path/*.ts")
 		})
+
+		it("should set default focusedNodePath", () => {
+			const result = focusedNodePath("some/path/*.ts", focusNode())
+
+			expect(result).toEqual("")
+		})
 	})
 
 	describe("Action: UNFOCUS_NODE", () => {

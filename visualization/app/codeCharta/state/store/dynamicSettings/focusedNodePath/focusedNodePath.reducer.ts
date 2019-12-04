@@ -1,6 +1,6 @@
-import { FocusedNodePathAction, FocusedNodePathActions } from "./focusedNodePath.actions"
+import { FocusedNodePathAction, FocusedNodePathActions, focusNode } from "./focusedNodePath.actions"
 
-export function focusedNodePath(state: string = "", action: FocusedNodePathAction): string {
+export function focusedNodePath(state: string = focusNode().payload, action: FocusedNodePathAction): string {
 	switch (action.type) {
 		case FocusedNodePathActions.FOCUS_NODE:
 			return action.payload
