@@ -34,7 +34,7 @@ export default function dynamicSettings(state: DynamicSettings = {} as DynamicSe
 		colorMetricAction,
 		areaMetricAction = action
 
-	if (action.type === DynamicSettingsActions.SET_DYNAMIC_SETTINGS) {
+	if (action && action.type === DynamicSettingsActions.SET_DYNAMIC_SETTINGS) {
 		if (action.payload.edgeMetric) {
 			edgeMetricAction = setEdgeMetric(action.payload.edgeMetric)
 		}

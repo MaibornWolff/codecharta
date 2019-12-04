@@ -12,7 +12,7 @@ export function rootReducer(state: State = {} as State, action: CCAction) {
 		appSettingsAction,
 		dynamicSettingsAction = action
 
-	if (action.type === StateActions.SET_STATE) {
+	if (action && action.type === StateActions.SET_STATE) {
 		if (action.payload.fileSettings) {
 			fileSettingsAction = setFileSettings(action.payload.fileSettings)
 		}

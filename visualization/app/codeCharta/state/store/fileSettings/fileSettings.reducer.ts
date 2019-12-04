@@ -16,7 +16,7 @@ export default function fileSettings(state: FileSettings = {} as FileSettings, a
 		attributeTypesAction,
 		blacklistAction = action
 
-	if (action.type === FileSettingsActions.SET_FILE_SETTINGS) {
+	if (action && action.type === FileSettingsActions.SET_FILE_SETTINGS) {
 		if (action.payload.markedPackages) {
 			markedPackagesAction = setMarkedPackages(action.payload.markedPackages)
 		}

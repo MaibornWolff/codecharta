@@ -52,7 +52,7 @@ export default function appSettings(state: AppSettings = {} as AppSettings, acti
 		amountOfTopLabelsAction,
 		isPresentationModeAction = action
 
-	if (action.type === AppSettingsActions.SET_APP_SETTINGS) {
+	if (action && action.type === AppSettingsActions.SET_APP_SETTINGS) {
 		if (action.payload.mapColors) {
 			mapColorsAction = setMapColors(action.payload.mapColors)
 		}

@@ -1,4 +1,4 @@
-import { CCAction, State } from "../../codeCharta.model"
+import { CCAction, RecursivePartial, State } from "../../codeCharta.model"
 
 export enum StateActions {
 	SET_STATE = "SET_STATE"
@@ -6,12 +6,12 @@ export enum StateActions {
 
 export interface SetStateAction extends CCAction {
 	type: StateActions.SET_STATE
-	payload: State
+	payload: RecursivePartial<State>
 }
 
 export type StateAction = SetStateAction
 
-export function setState(state: State): StateAction {
+export function setState(state: RecursivePartial<State>): StateAction {
 	return {
 		type: StateActions.SET_STATE,
 		payload: state

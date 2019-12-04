@@ -1,4 +1,4 @@
-import { CCAction, DynamicSettings } from "../../../codeCharta.model"
+import { CCAction, DynamicSettings, RecursivePartial } from "../../../codeCharta.model"
 
 export enum DynamicSettingsActions {
 	SET_DYNAMIC_SETTINGS = "SET_DYNAMIC_SETTINGS"
@@ -6,12 +6,12 @@ export enum DynamicSettingsActions {
 
 export interface SetDynamicSettingsAction extends CCAction {
 	type: DynamicSettingsActions.SET_DYNAMIC_SETTINGS
-	payload: DynamicSettings
+	payload: RecursivePartial<DynamicSettings>
 }
 
 export type DynamicSettingsAction = SetDynamicSettingsAction
 
-export function setDynamicSettings(dynamicSettings: DynamicSettings): DynamicSettingsAction {
+export function setDynamicSettings(dynamicSettings: RecursivePartial<DynamicSettings>): DynamicSettingsAction {
 	return {
 		type: DynamicSettingsActions.SET_DYNAMIC_SETTINGS,
 		payload: dynamicSettings
