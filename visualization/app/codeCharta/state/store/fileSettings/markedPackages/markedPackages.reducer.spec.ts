@@ -17,6 +17,12 @@ describe("markedPackages", () => {
 
 			expect(result).toEqual(MARKED_PACKAGES)
 		})
+
+		it("should set default markedPackages", () => {
+			const result = markedPackages(MARKED_PACKAGES, setMarkedPackages())
+
+			expect(result).toEqual([])
+		})
 	})
 
 	describe("Action: MARK_PACKAGE", () => {

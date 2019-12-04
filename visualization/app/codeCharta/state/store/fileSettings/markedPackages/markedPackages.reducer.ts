@@ -1,9 +1,9 @@
-import { MarkedPackagesAction, MarkedPackagesActions } from "./markedPackages.actions"
+import { MarkedPackagesAction, MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actions"
 import { MarkedPackage } from "../../../../codeCharta.model"
 import _ from "lodash"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 
-export function markedPackages(state: MarkedPackage[] = [], action: MarkedPackagesAction): MarkedPackage[] {
+export function markedPackages(state: MarkedPackage[] = setMarkedPackages().payload, action: MarkedPackagesAction): MarkedPackage[] {
 	switch (action.type) {
 		case MarkedPackagesActions.SET_MARKED_PACKAGES:
 			return _.cloneDeep(action.payload)
