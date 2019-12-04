@@ -1,11 +1,19 @@
 import { camera } from "./camera.reducer"
-import { CameraAction, setCamera } from "./camera.actions"
+import { CameraAction, setCamera, setDefaultCamera } from "./camera.actions"
 import { Vector3 } from "three"
 
 describe("camera", () => {
 	describe("Default State", () => {
 		it("should initialize the default state", () => {
 			const result = camera(undefined, {} as CameraAction)
+
+			expect(result).toEqual(new Vector3(0, 300, 1000))
+		})
+	})
+
+	describe("Action: SET_DEFAULT", () => {
+		it("should set default state", () => {
+			const result = camera(new Vector3(100, 100, 100), setDefaultCamera())
 
 			expect(result).toEqual(new Vector3(0, 300, 1000))
 		})
