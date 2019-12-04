@@ -11,13 +11,13 @@ import { FileSettings, CCAction } from "../../../codeCharta.model"
 import { FileSettingsActions } from "./fileSettings.actions"
 
 export default function fileSettings(state: FileSettings = {} as FileSettings, action: CCAction) {
-	// Plop: Append acion declaration here
-	let markedPackagesAction,
-		edgesAction,
-		attributeTypesAction,
-		blacklistAction = action
+	// Plop: Append action declaration here
+	let markedPackagesAction = action
+	let edgesAction = action
+	let attributeTypesAction = action
+	let blacklistAction = action
 
-	if (action && action.type === FileSettingsActions.SET_FILE_SETTINGS) {
+	if (action.type === FileSettingsActions.SET_FILE_SETTINGS) {
 		// Plop: Append check for action payload here
 		if (action.payload.markedPackages) {
 			markedPackagesAction = setMarkedPackages(action.payload.markedPackages)

@@ -9,7 +9,8 @@ import {
 	Node,
 	Settings,
 	BlacklistType,
-	EdgeVisibility
+	EdgeVisibility,
+	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -567,7 +568,7 @@ export const FILE_STATES: FileState[] = [
 	}
 ]
 
-export const SETTINGS: Settings = {
+export const STATE: State = {
 	fileSettings: {
 		attributeTypes: {
 			nodes: [
@@ -637,7 +638,11 @@ export const SETTINGS: Settings = {
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true
-	},
+	}
+}
+
+export const SETTINGS: Settings = {
+	...STATE,
 	treeMapSettings: {
 		mapSize: 250
 	}

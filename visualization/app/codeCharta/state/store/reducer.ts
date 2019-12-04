@@ -8,11 +8,11 @@ import { setAppSettings } from "./appSettings/appSettings.actions"
 import { setDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
 
 export function rootReducer(state: State = {} as State, action: CCAction) {
-	let fileSettingsAction,
-		appSettingsAction,
-		dynamicSettingsAction = action
+	let fileSettingsAction = action
+	let appSettingsAction = action
+	let dynamicSettingsAction = action
 
-	if (action && action.type === StateActions.SET_STATE) {
+	if (action.type === StateActions.SET_STATE) {
 		if (action.payload.fileSettings) {
 			fileSettingsAction = setFileSettings(action.payload.fileSettings)
 		}

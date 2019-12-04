@@ -23,19 +23,19 @@ import { setHeightMetric } from "./heightMetric/heightMetric.actions"
 import { focusNode } from "./focusedNodePath/focusedNodePath.actions"
 
 export default function dynamicSettings(state: DynamicSettings = {} as DynamicSettings, action: CCAction): DynamicSettings {
-	// Plop: Append acion declaration here
-	let edgeMetricAction,
-		colorRangeAction,
-		marginAction,
-		searchPatternAction,
-		searchedNodePathsAction,
-		focusedNodePathAction,
-		heightMetricAction,
-		distributionMetricAction,
-		colorMetricAction,
-		areaMetricAction = action
+	// Plop: Append action declaration here
+	let edgeMetricAction = action
+	let colorRangeAction = action
+	let marginAction = action
+	let searchPatternAction = action
+	let searchedNodePathsAction = action
+	let focusedNodePathAction = action
+	let heightMetricAction = action
+	let distributionMetricAction = action
+	let colorMetricAction = action
+	let areaMetricAction = action
 
-	if (action && action.type === DynamicSettingsActions.SET_DYNAMIC_SETTINGS) {
+	if (action.type === DynamicSettingsActions.SET_DYNAMIC_SETTINGS) {
 		// Plop: Append check for action payload here
 		if (action.payload.edgeMetric) {
 			edgeMetricAction = setEdgeMetric(action.payload.edgeMetric)

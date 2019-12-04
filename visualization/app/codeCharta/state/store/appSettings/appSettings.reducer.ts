@@ -35,23 +35,23 @@ import { setAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.acti
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 
 export default function appSettings(state: AppSettings = {} as AppSettings, action: CCAction): AppSettings {
-	// Plop: Append acion declaration here
-	let mapColorsAction,
-		resetCameraIfNewFileIsLoadedAction,
-		showOnlyBuildingsWithEdgesAction,
-		whiteColorBuildingsAction,
-		isWhiteBackgroundAction,
-		dynamicMarginAction,
-		invertHeightAction,
-		invertDeltaColorsAction,
-		invertColorRangeAction,
-		hideFlatBuildingsAction,
-		cameraAction,
-		scalingAction,
-		edgeHeightAction,
-		amountOfEdgePreviewsAction,
-		amountOfTopLabelsAction,
-		isPresentationModeAction = action
+	// Plop: Append action declaration here
+	let mapColorsAction = action
+	let resetCameraIfNewFileIsLoadedAction = action
+	let showOnlyBuildingsWithEdgesAction = action
+	let whiteColorBuildingsAction = action
+	let isWhiteBackgroundAction = action
+	let dynamicMarginAction = action
+	let invertHeightAction = action
+	let invertDeltaColorsAction = action
+	let invertColorRangeAction = action
+	let hideFlatBuildingsAction = action
+	let cameraAction = action
+	let scalingAction = action
+	let edgeHeightAction = action
+	let amountOfEdgePreviewsAction = action
+	let amountOfTopLabelsAction = action
+	let isPresentationModeAction = action
 
 	if (action && action.type === AppSettingsActions.SET_APP_SETTINGS) {
 		// Plop: Append check for action payload here

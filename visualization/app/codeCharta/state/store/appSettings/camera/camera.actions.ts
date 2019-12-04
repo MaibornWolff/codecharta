@@ -1,14 +1,15 @@
 import { Vector3 } from "three"
 import { CCAction } from "../../../../codeCharta.model"
-import { Action } from "redux"
+import { initialState } from "../../initialState"
 
 export enum CameraActions {
 	SET_CAMERA = "SET_CAMERA",
 	SET_DEFAULT = "SET_DEFAULT"
 }
 
-export interface SetDefaultCameraAction extends Action {
+export interface SetDefaultCameraAction extends CCAction {
 	type: CameraActions.SET_DEFAULT
+	payload: Vector3
 }
 
 export interface SetCameraAction extends CCAction {
@@ -27,6 +28,7 @@ export function setCamera(camera: Vector3): CameraAction {
 
 export function setDefaultCamera(): CameraAction {
 	return {
-		type: CameraActions.SET_DEFAULT
+		type: CameraActions.SET_DEFAULT,
+		payload: initialState.appSettings.camera
 	}
 }

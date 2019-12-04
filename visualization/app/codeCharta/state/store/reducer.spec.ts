@@ -1,5 +1,5 @@
 import { rootReducer } from "./reducer"
-import { SETTINGS } from "../../util/dataMocks"
+import { STATE } from "../../util/dataMocks"
 import { setState } from "./state.actions"
 import { initialState } from "./initialState"
 import { setDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
@@ -7,9 +7,9 @@ import { setMargin } from "./dynamicSettings/margin/margin.actions"
 
 describe("rootReducer", () => {
 	it("should update the whole state", () => {
-		const result = rootReducer(initialState, setState(SETTINGS))
+		const result = rootReducer(initialState, setState(STATE))
 
-		expect(result).toEqual(SETTINGS)
+		expect(result).toEqual(STATE)
 	})
 
 	it("should partial state (all metrics)", () => {
