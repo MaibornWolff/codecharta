@@ -145,6 +145,24 @@ describe("FileExtensionBarController", () => {
 		})
 	})
 
+	describe("togglePercentageAbsoluteValues", () => {
+		it("should set viewModel.isAbsoluteValueVisible to false", () => {
+			fileExtensionBarController["_viewModel"].isAbsoluteValueVisible = true
+
+			fileExtensionBarController.togglePercentageAbsoluteValues()
+
+			expect(fileExtensionBarController["_viewModel"].isAbsoluteValueVisible).toBeFalsy()
+		})
+
+		it("should set viewModel.isAbsoluteValueVisible to true", () => {
+			fileExtensionBarController["_viewModel"].isAbsoluteValueVisible = false
+
+			fileExtensionBarController.togglePercentageAbsoluteValues()
+
+			expect(fileExtensionBarController["_viewModel"].isAbsoluteValueVisible).toBeTruthy
+		})
+	})
+
 	describe("highlightBarHoveredBuildings", () => {
 		it("should call findBuildingsSummarizedInOtherDistribution function, when other is given as parameter", () => {
 			fileExtensionBarController["findBuildingsSummarizedInOtherDistribution"] = jest.fn()

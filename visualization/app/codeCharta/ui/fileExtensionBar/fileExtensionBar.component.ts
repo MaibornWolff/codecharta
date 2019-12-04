@@ -13,9 +13,11 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	private _viewModel: {
 		distribution: MetricDistribution[]
 		isExtensiveMode: boolean
+		isAbsoluteValueVisible: boolean
 	} = {
 		distribution: [],
-		isExtensiveMode: false
+		isExtensiveMode: false,
+		isAbsoluteValueVisible: false
 	}
 
 	/* @ngInject */
@@ -70,6 +72,10 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	public toggleExtensiveMode() {
 		this._viewModel.isExtensiveMode = !this._viewModel.isExtensiveMode
+	}
+
+	public togglePercentageAbsoluteValues() {
+		this._viewModel.isAbsoluteValueVisible = !this._viewModel.isAbsoluteValueVisible
 	}
 
 	private setNewDistribution(map: CodeMapNode) {
