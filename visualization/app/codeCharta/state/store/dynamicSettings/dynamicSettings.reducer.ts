@@ -23,6 +23,7 @@ import { setHeightMetric } from "./heightMetric/heightMetric.actions"
 import { focusNode } from "./focusedNodePath/focusedNodePath.actions"
 
 export default function dynamicSettings(state: DynamicSettings = {} as DynamicSettings, action: CCAction): DynamicSettings {
+	// Plop: Append acion declaration here
 	let edgeMetricAction,
 		colorRangeAction,
 		marginAction,
@@ -35,6 +36,7 @@ export default function dynamicSettings(state: DynamicSettings = {} as DynamicSe
 		areaMetricAction = action
 
 	if (action && action.type === DynamicSettingsActions.SET_DYNAMIC_SETTINGS) {
+		// Plop: Append check for action payload here
 		if (action.payload.edgeMetric) {
 			edgeMetricAction = setEdgeMetric(action.payload.edgeMetric)
 		}
@@ -77,6 +79,7 @@ export default function dynamicSettings(state: DynamicSettings = {} as DynamicSe
 	}
 
 	return {
+		// Plop: Append action forwarding here
 		edgeMetric: edgeMetric(state.edgeMetric, edgeMetricAction),
 		colorRange: colorRange(state.colorRange, colorRangeAction),
 		margin: margin(state.margin, marginAction),

@@ -35,6 +35,7 @@ import { setAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.acti
 import { setPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 
 export default function appSettings(state: AppSettings = {} as AppSettings, action: CCAction): AppSettings {
+	// Plop: Append acion declaration here
 	let mapColorsAction,
 		resetCameraIfNewFileIsLoadedAction,
 		showOnlyBuildingsWithEdgesAction,
@@ -53,6 +54,7 @@ export default function appSettings(state: AppSettings = {} as AppSettings, acti
 		isPresentationModeAction = action
 
 	if (action && action.type === AppSettingsActions.SET_APP_SETTINGS) {
+		// Plop: Append check for action payload here
 		if (action.payload.mapColors) {
 			mapColorsAction = setMapColors(action.payload.mapColors)
 		}
@@ -119,6 +121,7 @@ export default function appSettings(state: AppSettings = {} as AppSettings, acti
 	}
 
 	return {
+		// Plop: Append action forwarding here
 		mapColors: mapColors(state.mapColors, mapColorsAction),
 		resetCameraIfNewFileIsLoaded: resetCameraIfNewFileIsLoaded(state.resetCameraIfNewFileIsLoaded, resetCameraIfNewFileIsLoadedAction),
 		showOnlyBuildingsWithEdges: showOnlyBuildingsWithEdges(state.showOnlyBuildingsWithEdges, showOnlyBuildingsWithEdgesAction),
