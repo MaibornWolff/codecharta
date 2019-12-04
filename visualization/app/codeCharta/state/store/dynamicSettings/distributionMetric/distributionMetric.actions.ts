@@ -11,7 +11,7 @@ export interface SetDistributionMetricAction extends CCAction {
 
 export type DistributionMetricAction = SetDistributionMetricAction
 
-export function setDistributionMetric(distributionMetric: string): DistributionMetricAction {
+export function setDistributionMetric(distributionMetric: string = null): DistributionMetricAction {
 	return {
 		type: DistributionMetricActions.SET_DISTRIBUTION_METRIC,
 		payload: distributionMetric
