@@ -17,6 +17,12 @@ describe("edges", () => {
 
 			expect(result).toEqual([VALID_EDGE])
 		})
+
+		it("should set new edges", () => {
+			const result = edges([VALID_EDGE], setEdges())
+
+			expect(result).toEqual([])
+		})
 	})
 
 	describe("Action: ADD_EDGE", () => {

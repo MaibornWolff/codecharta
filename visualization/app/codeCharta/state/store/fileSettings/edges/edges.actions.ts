@@ -23,21 +23,21 @@ export interface RemoveEdgeAction extends CCAction {
 
 export type EdgesAction = SetEdgesAction | AddEdgeAction | RemoveEdgeAction
 
-export function setEdges(edges: Edge[]): EdgesAction {
+export function setEdges(edges: Edge[] = []): SetEdgesAction {
 	return {
 		type: EdgesActions.SET_EDGES,
 		payload: edges
 	}
 }
 
-export function addEdge(edge: Edge): EdgesAction {
+export function addEdge(edge: Edge): AddEdgeAction {
 	return {
 		type: EdgesActions.ADD_EDGE,
 		payload: edge
 	}
 }
 
-export function removeEdge(edge: Edge): EdgesAction {
+export function removeEdge(edge: Edge): RemoveEdgeAction {
 	return {
 		type: EdgesActions.REMOVE_EDGE,
 		payload: edge
