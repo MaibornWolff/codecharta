@@ -11,7 +11,7 @@ export interface SetMarginAction extends CCAction {
 
 export type MarginAction = SetMarginAction
 
-export function setMargin(margin: number): MarginAction {
+export function setMargin(margin: number = null): MarginAction {
 	return {
 		type: MarginActions.SET_MARGIN,
 		payload: margin
