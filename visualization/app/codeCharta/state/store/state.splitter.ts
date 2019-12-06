@@ -12,19 +12,19 @@ import { TreeMapSettingsActions } from "./treeMap/treeMap.actions"
 
 export function splitStateActions(action: CCAction): CCAction[] {
 	if (_.values(DynamicSettingsActions).includes(action.type)) {
-		return splitDynamicSettingsActions(action.payload.dynamicSettings)
+		return splitDynamicSettingsActions(action.payload)
 	}
 
 	if (_.values(FileSettingsActions).includes(action.type)) {
-		return splitFileSettingsActions(action.payload.fileSettings)
+		return splitFileSettingsActions(action.payload)
 	}
 
 	if (_.values(AppSettingsActions).includes(action.type)) {
-		return splitAppSettingsActions(action.payload.appSettings)
+		return splitAppSettingsActions(action.payload)
 	}
 
 	if (_.values(TreeMapSettingsActions).includes(action.type)) {
-		return splitTreeMapSettingsActions(action.payload.treeMap)
+		return splitTreeMapSettingsActions(action.payload)
 	}
 
 	if (_.values(StateActions).includes(action.type)) {
