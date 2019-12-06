@@ -177,13 +177,13 @@ module.exports = function(plop) {
 				type: "modify",
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
 				pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
-				template: '$1\r\nimport { set{{properCase name}} } from "./{{camelCase name}}/{{camelCase name}}.actions"'
+				template: "$1\r\n{{camelCase name}},"
 			},
 			{
 				type: "modify",
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.splitter.ts",
-				pattern: /(\/\/ Plop: Append action splitter importer here)/gi,
-				template: "$1\r\n\t {{camelCase name}},"
+				pattern: /(\/\/ Plop: Append action splitter import here)/gi,
+				template: '$1\r\n\t import { split{{properCase name}}Action } from "./{{camelCase name}}/{{camelCase name}}.splitter"}'
 			},
 			{
 				type: "modify",
