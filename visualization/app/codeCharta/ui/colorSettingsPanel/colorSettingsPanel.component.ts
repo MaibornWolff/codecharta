@@ -7,6 +7,13 @@ import { MetricService, MetricServiceSubscriber } from "../../state/metric.servi
 import { FileStateHelper } from "../../util/fileStateHelper"
 import _ from "lodash"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { StoreService } from "../../state/store.service"
+import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { setAppSettings } from "../../state/store/appSettings/appSettings.actions"
+import { setInvertDeltaColors } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.actions"
+import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { setWhiteColorBuildings } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.actions"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
 	private lastColorMetric: string = null
@@ -25,7 +32,12 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private metricService: MetricService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private settingsService: SettingsService,
+		private storeService: StoreService,
+		private metricService: MetricService
+	) {
 		SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
@@ -70,6 +82,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 				invertColorRange: this._viewModel.invertColorRange
 			}
 		})
+		this.storeService.dispatch(setInvertColorRange(this._viewModel.invertColorRange))
 	}
 
 	public invertDeltaColors() {
@@ -85,6 +98,14 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 				}
 			}
 		})
+		this.storeService.dispatch(setInvertDeltaColors(this._viewModel.invertDeltaColors))
+		this.storeService.dispatch(
+			setMapColors({
+				...this.settingsService.getSettings().appSettings.mapColors,
+				negativeDelta: positiveDelta,
+				positiveDelta: negativeDelta
+			})
+		)
 	}
 
 	public applyWhiteColorBuildings() {
@@ -93,6 +114,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 				whiteColorBuildings: this._viewModel.whiteColorBuildings
 			}
 		})
+		this.storeService.dispatch(setWhiteColorBuildings(this._viewModel.whiteColorBuildings))
 	}
 
 	private containsColorRangeValues(settings): boolean {
@@ -111,6 +133,7 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 				}
 			}
 		})
+		this.storeService.dispatch(setColorRange({ from: firstThird, to: secondThird }))
 	}
 }
 
