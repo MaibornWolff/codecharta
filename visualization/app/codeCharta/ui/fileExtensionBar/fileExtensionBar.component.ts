@@ -86,35 +86,13 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private setColorForEachExtension() {
 		this._viewModel.distribution.forEach(x => {
-			x.color = x.color ? x.color : this.numberToHsl(this.hashCode(x.fileExtension)).toString()
+			x.color = x.color ? x.color : FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(x.fileExtension)).toString()
 		})
 	}
 
 	private potentiallyAddNoneExtension() {
 		if (this._viewModel.distribution.length === 0) {
-			this._viewModel.distribution.push(this.getNoneExtension())
-		}
-	}
-
-	private hashCode(fileExtension: string): number {
-		let hash: number = 0
-		for (let i = 0; i < fileExtension.length; i++) {
-			hash = fileExtension.charCodeAt(i) + ((hash << 5) - hash)
-		}
-		return hash
-	}
-
-	private numberToHsl(hashCode: number): HSL {
-		const shortened = hashCode % 360
-		return new HSL(shortened, 40, 50)
-	}
-
-	private getNoneExtension(): MetricDistribution {
-		return {
-			fileExtension: "none",
-			absoluteMetricValue: null,
-			relativeMetricValue: 100,
-			color: "#000000"
+			this._viewModel.distribution.push(FileExtensionCalculator.getNoneExtension())
 		}
 	}
 }

@@ -87,10 +87,20 @@ describe("FileExtensionCalculator", () => {
 
 		it("should get correct relative distribution of file-extensions for given metric", () => {
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.97082228116711, color: null },
+				{
+					fileExtension: "java",
+					absoluteMetricValue: 162,
+					relativeMetricValue: 42.97082228116711,
+					color: null
+				},
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.48275862068966, color: null },
 				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.56763925729443, color: null },
-				{ fileExtension: "other", absoluteMetricValue: 15, relativeMetricValue: 3.978779840848806, color: "#676867" }
+				{
+					fileExtension: "other",
+					absoluteMetricValue: 15,
+					relativeMetricValue: 3.978779840848806,
+					color: "#676867"
+				}
 			]
 
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
@@ -118,12 +128,32 @@ describe("FileExtensionCalculator", () => {
 				{ name: "child4.xml", type: "File", path: "/root/child4.xml", attributes: { rloc: 8 } }
 			]
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 40.80604534005038, color: null },
+				{
+					fileExtension: "java",
+					absoluteMetricValue: 162,
+					relativeMetricValue: 40.80604534005038,
+					color: null
+				},
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 32.7455919395466, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 17.632241813602015, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 3.7783375314861463, color: null },
+				{
+					fileExtension: "json",
+					absoluteMetricValue: 70,
+					relativeMetricValue: 17.632241813602015,
+					color: null
+				},
+				{
+					fileExtension: "None",
+					absoluteMetricValue: 15,
+					relativeMetricValue: 3.7783375314861463,
+					color: null
+				},
 				{ fileExtension: "xml", absoluteMetricValue: 8, relativeMetricValue: 2.0151133501259446, color: null },
-				{ fileExtension: "other", absoluteMetricValue: 12, relativeMetricValue: 3.0226700251889165, color: "#676867" }
+				{
+					fileExtension: "other",
+					absoluteMetricValue: 12,
+					relativeMetricValue: 3.0226700251889165,
+					color: "#676867"
+				}
 			]
 			map.children.push(...additionalChildren)
 			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 95
@@ -151,6 +181,15 @@ describe("FileExtensionCalculator", () => {
 			const fileName: string = "name_without_extension"
 			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("None")
+		})
+	})
+
+	describe("hashCode => numberToHashCode", () => {
+		it("should generate a hsl-color for file extension", () => {
+			const hashCode = FileExtensionCalculator.hashCode("ts")
+			const result = FileExtensionCalculator.numberToHsl(hashCode)
+
+			expect(result).toEqual({ h: 111, l: 50, s: 40 })
 		})
 	})
 })
