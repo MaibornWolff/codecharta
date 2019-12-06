@@ -8,7 +8,9 @@ import {
 	NONE_METRIC_DISTRIBUTION,
 	SETTINGS,
 	TEST_FILE_WITH_PATHS,
-	CODE_MAP_BUILDING_TS_NODE
+	CODE_MAP_BUILDING_TS_NODE,
+	VALID_NODE,
+	VALID_NODE_WITH_PATH_AND_EXTENSION
 } from "../../util/dataMocks"
 import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
@@ -164,24 +166,37 @@ describe("FileExtensionBarController", () => {
 	})
 
 	describe("highlightBarHoveredBuildings", () => {
-		it("should call findBuildingsSummarizedInOtherDistribution function, when other is given as parameter", () => {
-			fileExtensionBarController["findBuildingsSummarizedInOtherDistribution"] = jest.fn()
+		beforeEach(() => {
+			const map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
+			map.children.push({
+				name: "README.md",
+				type: "File",
+				path: "/root/README.md",
+				attributes: { rloc: 120, functions: 20, mcc: 2 }
+			})
+			fileExtensionBarController.onRenderMapChanged(map)
+		})
 
+		it("should highlight all buildings with 'other' extension", () => {
 			fileExtensionBarController.highlightBarHoveredBuildings("other")
 
-			expect(fileExtensionBarController["findBuildingsSummarizedInOtherDistribution"]).toHaveBeenCalled()
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledTimes(1)
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 		})
 
 		it("should call addBuilding to addBuildingToHighlightingList, when a Building with the given file Extension exists ", () => {
 			fileExtensionBarController.highlightBarHoveredBuildings("ts")
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 		})
 
 		it("should not call addBuilding to addBuildingToHighlightingList, when Building with the given file Extension does not exists ", () => {
 			fileExtensionBarController.highlightBarHoveredBuildings("ne")
 
 			expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 		})
 	})
 })
