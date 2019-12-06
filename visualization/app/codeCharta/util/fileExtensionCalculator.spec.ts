@@ -2,6 +2,7 @@ import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { BlacklistType, CodeMapNode, Settings } from "../codeCharta.model"
 import { SETTINGS, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
+import { HSL } from "./color/hsl"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
@@ -189,7 +190,7 @@ describe("FileExtensionCalculator", () => {
 			const hashCode = FileExtensionCalculator.hashCode("ts")
 			const result = FileExtensionCalculator.numberToHsl(hashCode)
 
-			expect(result).toEqual({ h: 111, l: 50, s: 40 })
+			expect(result).toEqual(new HSL(111, 40, 50))
 		})
 	})
 })
