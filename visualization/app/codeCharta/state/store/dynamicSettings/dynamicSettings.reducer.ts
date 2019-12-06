@@ -9,86 +9,19 @@ import { heightMetric } from "./heightMetric/heightMetric.reducer"
 import { distributionMetric } from "./distributionMetric/distributionMetric.reducer"
 import { colorMetric } from "./colorMetric/colorMetric.reducer"
 import { areaMetric } from "./areaMetric/areaMetric.reducer"
-import { DynamicSettingsActions } from "./dynamicSettings.actions"
-import { DynamicSettings, CCAction } from "../../../codeCharta.model"
-import { setEdgeMetric } from "./edgeMetric/edgeMetric.actions"
-import { setColorRange } from "./colorRange/colorRange.actions"
-import { setMargin } from "./margin/margin.actions"
-import { setSearchPattern } from "./searchPattern/searchPattern.actions"
-import { setSearchedNodePaths } from "./searchedNodePaths/searchedNodePaths.actions"
-import { setDistributionMetric } from "./distributionMetric/distributionMetric.actions"
-import { setColorMetric } from "./colorMetric/colorMetric.actions"
-import { setAreaMetric } from "./areaMetric/areaMetric.actions"
-import { setHeightMetric } from "./heightMetric/heightMetric.actions"
-import { focusNode } from "./focusedNodePath/focusedNodePath.actions"
+import { combineReducers } from "redux"
 
-export default function dynamicSettings(state: DynamicSettings = {} as DynamicSettings, action: CCAction): DynamicSettings {
-	// Plop: Append action declaration here
-	let edgeMetricAction = action
-	let colorRangeAction = action
-	let marginAction = action
-	let searchPatternAction = action
-	let searchedNodePathsAction = action
-	let focusedNodePathAction = action
-	let heightMetricAction = action
-	let distributionMetricAction = action
-	let colorMetricAction = action
-	let areaMetricAction = action
+const dynamicSettings = combineReducers({
+	edgeMetric,
+	colorRange,
+	margin,
+	searchPattern,
+	searchedNodePaths,
+	focusedNodePath,
+	heightMetric,
+	distributionMetric,
+	colorMetric,
+	areaMetric
+})
 
-	if (action.type === DynamicSettingsActions.SET_DYNAMIC_SETTINGS) {
-		// Plop: Append check for action payload here
-		if (action.payload.edgeMetric !== undefined) {
-			edgeMetricAction = setEdgeMetric(action.payload.edgeMetric)
-		}
-
-		if (action.payload.colorRange !== undefined) {
-			colorRangeAction = setColorRange(action.payload.colorRange)
-		}
-
-		if (action.payload.margin !== undefined) {
-			marginAction = setMargin(action.payload.margin)
-		}
-
-		if (action.payload.searchPattern !== undefined) {
-			searchPatternAction = setSearchPattern(action.payload.searchPattern)
-		}
-
-		if (action.payload.searchedNodePaths !== undefined) {
-			searchedNodePathsAction = setSearchedNodePaths(action.payload.searchedNodePaths)
-		}
-
-		if (action.payload.focusedNodePath !== undefined) {
-			focusedNodePathAction = focusNode(action.payload.focusedNodePath)
-		}
-
-		if (action.payload.heightMetric !== undefined) {
-			heightMetricAction = setHeightMetric(action.payload.heightMetric)
-		}
-
-		if (action.payload.distributionMetric !== undefined) {
-			distributionMetricAction = setDistributionMetric(action.payload.distributionMetric)
-		}
-
-		if (action.payload.colorMetric !== undefined) {
-			colorMetricAction = setColorMetric(action.payload.colorMetric)
-		}
-
-		if (action.payload.areaMetric !== undefined) {
-			areaMetricAction = setAreaMetric(action.payload.areaMetric)
-		}
-	}
-
-	return {
-		// Plop: Append action forwarding here
-		edgeMetric: edgeMetric(state.edgeMetric, edgeMetricAction),
-		colorRange: colorRange(state.colorRange, colorRangeAction),
-		margin: margin(state.margin, marginAction),
-		searchPattern: searchPattern(state.searchPattern, searchPatternAction),
-		searchedNodePaths: searchedNodePaths(state.searchedNodePaths, searchedNodePathsAction),
-		focusedNodePath: focusedNodePath(state.focusedNodePath, focusedNodePathAction),
-		heightMetric: heightMetric(state.heightMetric, heightMetricAction),
-		distributionMetric: distributionMetric(state.distributionMetric, distributionMetricAction),
-		colorMetric: colorMetric(state.colorMetric, colorMetricAction),
-		areaMetric: areaMetric(state.areaMetric, areaMetricAction)
-	}
-}
+export default dynamicSettings

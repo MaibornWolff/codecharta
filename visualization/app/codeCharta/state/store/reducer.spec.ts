@@ -1,4 +1,4 @@
-import { rootReducer } from "./reducer"
+import rootReducer from "./reducer"
 import { STATE } from "../../util/dataMocks"
 import { defaultState, setState } from "./state.actions"
 import { setDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
