@@ -2,12 +2,11 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { MapColorsAction, MapColorsActions } from "./mapColors.actions"
-import { MapColorsService } from "./mapColors.service"
-import { defaultMapColors } from "./mapColors.actions"
+import { MapSizeAction, MapSizeActions } from "./mapSize.actions"
+import { MapSizeService } from "./mapSize.service"
 
-describe("MapColorsService", () => {
-	let mapColorsService: MapColorsService
+describe("MapSizeService", () => {
+	let mapSizeService: MapSizeService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
 
@@ -25,7 +24,7 @@ describe("MapColorsService", () => {
 	}
 
 	function rebuildService() {
-		mapColorsService = new MapColorsService($rootScope, storeService)
+		mapSizeService = new MapSizeService($rootScope, storeService)
 	}
 
 	function withMockedEventMethods() {
@@ -38,25 +37,25 @@ describe("MapColorsService", () => {
 
 			rebuildService()
 
-			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, mapColorsService)
+			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, mapSizeService)
 		})
 	})
 
 	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new mapColors value", () => {
-			const action: MapColorsAction = {
-				type: MapColorsActions.SET_MAP_COLORS,
-				payload: defaultMapColors
+		it("should notify all subscribers with the new mapSize value", () => {
+			const action: MapSizeAction = {
+				type: MapSizeActions.SET_MAP_SIZE,
+				payload: 42
 			}
 			storeService["store"].dispatch(action)
 
-			mapColorsService.onStoreChanged(MapColorsActions.SET_MAP_COLORS)
+			mapSizeService.onStoreChanged(MapSizeActions.SET_MAP_SIZE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("map-colors-changed", { mapColors: defaultMapColors })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("map-size-changed", { mapSize: 42 })
 		})
 
-		it("should not notify anything on non-map-colors-events", () => {
-			mapColorsService.onStoreChanged("ANOTHER_ACTION")
+		it("should not notify anything on non-map-size-events", () => {
+			mapSizeService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})

@@ -2,6 +2,7 @@ import { CCAction, RecursivePartial, State } from "../../codeCharta.model"
 import { defaultAppSettings } from "./appSettings/appSettings.actions"
 import { defaultFileSettings } from "./fileSettings/fileSettings.actions"
 import { defaultDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
+import { defaultTreeMapSettings } from "./treeMap/treeMap.actions"
 
 export enum StateActions {
 	SET_STATE = "SET_STATE"
@@ -24,5 +25,6 @@ export function setState(state: RecursivePartial<State> = defaultState): StateAc
 export const defaultState: State = {
 	appSettings: defaultAppSettings,
 	fileSettings: defaultFileSettings,
-	dynamicSettings: defaultDynamicSettings
+	dynamicSettings: defaultDynamicSettings,
+	treeMap: defaultTreeMapSettings
 }
