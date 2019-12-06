@@ -4,6 +4,8 @@ import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType } from "../codeCharta.model"
 import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
+import { STATE } from "../util/dataMocks"
+import { setState } from "./store/state.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -33,6 +35,12 @@ describe("StoreService", () => {
 	})
 
 	describe("dispatch", () => {
+		it("should update the whole state", () => {
+			storeService.dispatch(setState(STATE))
+
+			expect(storeService.getState()).toEqual(STATE)
+		})
+
 		it("it should notify store change and update the store", () => {
 			$rootScope.$broadcast = jest.fn()
 
