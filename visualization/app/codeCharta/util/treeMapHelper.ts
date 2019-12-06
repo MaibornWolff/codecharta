@@ -19,9 +19,9 @@ export class TreeMapHelper {
 		return count
 	}
 
-	public static arrayToMap(highlightArray: CodeMapBuilding[]) {
+	public static buildingArrayToMap(highlighted: CodeMapBuilding[]): Map<number, CodeMapBuilding> {
 		const geomMap = new Map()
-		highlightArray.forEach(building => {
+		highlighted.forEach(building => {
 			geomMap.set(building.id, building)
 		})
 

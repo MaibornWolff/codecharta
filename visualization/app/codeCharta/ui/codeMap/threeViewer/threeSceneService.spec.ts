@@ -66,12 +66,12 @@ describe("ThreeSceneService", () => {
 	})
 
 	describe("highlightBuildings", () => {
-		it("should call setBuildingHighlight", () => {
-			threeSceneService["mapMesh"].setBuildingHighlight = jest.fn()
+		it("should call highlightBuilding", () => {
+			threeSceneService["mapMesh"].highlightBuilding = jest.fn()
 
 			threeSceneService.highlightBuildings()
 
-			expect(threeSceneService["mapMesh"].setBuildingHighlight).toHaveBeenCalledWith(
+			expect(threeSceneService["mapMesh"].highlightBuilding).toHaveBeenCalledWith(
 				threeSceneService["listOfBuildingsToHighlight"],
 				null,
 				settingsService.getSettings()

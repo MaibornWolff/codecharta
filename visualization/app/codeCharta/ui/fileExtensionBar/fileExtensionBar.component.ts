@@ -37,14 +37,14 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	public highlightBarHoveredBuildings(extension: string) {
-		const mapBuildings: CodeMapBuilding[] = this.threeSceneService
+		const buildings = this.threeSceneService
 			.getMapMesh()
 			.getMeshDescription()
 			.buildings.filter(building => building.node.isLeaf)
 		if (extension === "other") {
-			this.findBuildingsSummarizedInOtherDistribution(mapBuildings)
+			this.highlightBuildingsSummarizedInOtherDistribution(buildings)
 		} else {
-			mapBuildings.forEach(building => {
+			buildings.forEach(building => {
 				if (FileExtensionCalculator.estimateFileExtension(building.node.name) === extension) {
 					this.threeSceneService.addBuildingToHighlightingList(building)
 				}
@@ -54,9 +54,9 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.threeSceneService.highlightBuildings()
 	}
 
-	private findBuildingsSummarizedInOtherDistribution(mapBuildings: CodeMapBuilding[]) {
+	private highlightBuildingsSummarizedInOtherDistribution(mapBuildings: CodeMapBuilding[]) {
 		const visibleDistributionEndings: string[] = this._viewModel.distribution
-			.filter(metric => metric.fileExtension != "other")
+			.filter(metric => metric.fileExtension !== "other")
 			.map(metric => metric.fileExtension)
 
 		mapBuildings.forEach(building => {

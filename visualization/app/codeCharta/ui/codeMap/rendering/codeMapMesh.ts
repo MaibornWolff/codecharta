@@ -77,10 +77,9 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	public setBuildingHighlight(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, settings: Settings) {
-		const highlightBuildingMap = TreeMapHelper.arrayToMap(highlightedBuildings)
-		const allBuildings = this.mapGeomDesc.buildings
-		allBuildings.forEach(building => {
+	public highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, settings: Settings) {
+		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
+		this.mapGeomDesc.buildings.forEach(building => {
 			if (!this.isBuildingSelected(selected, building)) {
 				if (highlightBuildingMap.get(building.id)) {
 					building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
@@ -93,10 +92,10 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	private presentationModeHighlight(buildingList: CodeMapBuilding[], building: CodeMapBuilding, settings: Settings) {
+	private presentationModeHighlight(highlighted: CodeMapBuilding[], building: CodeMapBuilding, settings: Settings) {
 		const mapSize = settings.treeMapSettings.mapSize
-		if (settings.appSettings.isPresentationMode && buildingList.length === 1) {
-			const distance = buildingList[0].getCenterPoint(mapSize).distanceTo(building.getCenterPoint(mapSize))
+		if (settings.appSettings.isPresentationMode && highlighted.length === 1) {
+			const distance = highlighted[0].getCenterPoint(mapSize).distanceTo(building.getCenterPoint(mapSize))
 			this.decreaseLightnessByDistance(building, distance)
 		} else {
 			building.decreaseLightness(CodeMapMesh.LIGHTNESS_DECREASE)

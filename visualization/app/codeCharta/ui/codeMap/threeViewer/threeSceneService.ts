@@ -29,7 +29,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private mapMesh: CodeMapMesh
 
 	private selected: CodeMapBuilding = null
-	private listOfBuildingsToHighlight: CodeMapBuilding[] = []
+	private highlighted: CodeMapBuilding[] = []
 
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
@@ -56,21 +56,22 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		const settings = this.settingsService.getSettings()
 		//TODO: Remove once all settings are in the store
 		settings.appSettings.isPresentationMode = this.storeService.getState().appSettings.isPresentationMode
-		this.getMapMesh().setBuildingHighlight(this.listOfBuildingsToHighlight, this.selected, settings)
+		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, settings)
 	}
 
 	public highlightSingleBuilding(building: CodeMapBuilding) {
+		this.highlighted = []
 		this.addBuildingToHighlightingList(building)
 		this.highlightBuildings()
 	}
 
 	public addBuildingToHighlightingList(building: CodeMapBuilding) {
-		this.listOfBuildingsToHighlight.push(building)
+		this.highlighted.push(building)
 	}
 
 	public clearHighlight() {
 		this.getMapMesh().clearHighlight(this.selected)
-		this.listOfBuildingsToHighlight = []
+		this.highlighted = []
 	}
 
 	public selectBuilding(building: CodeMapBuilding) {
@@ -86,7 +87,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.getMapMesh().clearSelection(this.selected)
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
-		if (this.listOfBuildingsToHighlight.length > 0) {
+		if (this.highlighted.length > 0) {
 			this.highlightBuildings()
 		}
 		this.selected = null
@@ -148,7 +149,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public getHighlightedBuilding(): CodeMapBuilding {
-		return this.listOfBuildingsToHighlight[0]
+		return this.highlighted[0]
 	}
 
 	private reselectBuilding() {
