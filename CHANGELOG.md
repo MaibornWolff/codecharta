@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Show the number of files a folder includes in the TreeView when hovering #380
 - When the File Extension Bar is hovered, all buldings corresponding to that extension are highlighted #545
 - Toggle between percentage and absolute values when clicking the file extension details section #545
+- Sum hovered delta values for folders #781
 
 ### Changed
 
