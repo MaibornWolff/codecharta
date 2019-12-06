@@ -1,4 +1,4 @@
-import { RecursivePartial, CCAction, FileSettings, AttributeTypes } from "../../../codeCharta.model"
+import { RecursivePartial, CCAction, FileSettings, AttributeTypes, MarkedPackage, Edge, BlacklistItem } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
 import { splitMarkedPackagesAction } from "./markedPackages/markedPackages.splitter"
@@ -11,11 +11,11 @@ export function splitFileSettingsActions(payload: RecursivePartial<FileSettings>
 
 	// Plop: Append action split here
 	if (payload.markedPackages !== undefined) {
-		actions.push(splitMarkedPackagesAction(payload.markedPackages))
+		actions.push(splitMarkedPackagesAction(payload.markedPackages as MarkedPackage[]))
 	}
 
 	if (payload.edges !== undefined) {
-		actions.push(splitEdgesAction(payload.edges))
+		actions.push(splitEdgesAction(payload.edges as Edge[]))
 	}
 
 	if (payload.attributeTypes !== undefined) {
@@ -23,7 +23,7 @@ export function splitFileSettingsActions(payload: RecursivePartial<FileSettings>
 	}
 
 	if (payload.blacklist !== undefined) {
-		actions.push(splitBlacklistAction(payload.blacklist))
+		actions.push(splitBlacklistAction(payload.blacklist as BlacklistItem[]))
 	}
 
 	return actions
