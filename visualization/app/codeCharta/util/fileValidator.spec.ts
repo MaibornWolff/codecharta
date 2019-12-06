@@ -49,7 +49,7 @@ describe("FileValidator", () => {
 	})
 
 	it("should not reject a file when numbers are floating point values", () => {
-		file.nodes[0].children[0].attributes["RLOC"] = 333.4
+		file.nodes[0].children[0].attributes["rloc"] = 333.4
 		const errors = FileValidator.validate(file)
 		expectFileToBeValid(errors)
 	})

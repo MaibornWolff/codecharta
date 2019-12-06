@@ -2,6 +2,7 @@ import { BlacklistItem, BlacklistType, CodeMapNode } from "../codeCharta.model"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
 import { CodeMapHelper } from "./codeMapHelper"
+import { HSL } from "./color/hsl"
 
 export interface MetricDistribution {
 	fileExtension: string
@@ -89,15 +90,6 @@ export class FileExtensionCalculator {
 		}
 	}
 
-	private static getNoneExtension() {
-		return {
-			fileExtension: FileExtensionCalculator.NO_EXTENSION,
-			absoluteMetricValue: null,
-			relativeMetricValue: 100,
-			color: "#676867"
-		}
-	}
-
 	private static getDistributionObject(fileExtension: string, metricValue: number): MetricDistribution {
 		return {
 			fileExtension: fileExtension,
@@ -119,6 +111,28 @@ export class FileExtensionCalculator {
 				.toLowerCase()
 		} else {
 			return FileExtensionCalculator.NO_EXTENSION
+		}
+	}
+
+	public static hashCode(fileExtension: string): number {
+		let hash: number = 0
+		for (let i = 0; i < fileExtension.length; i++) {
+			hash = fileExtension.charCodeAt(i) + ((hash << 5) - hash)
+		}
+		return hash
+	}
+
+	public static numberToHsl(hashCode: number): HSL {
+		const shortened = hashCode % 360
+		return new HSL(shortened, 40, 50)
+	}
+
+	public static getNoneExtension() {
+		return {
+			fileExtension: FileExtensionCalculator.NO_EXTENSION,
+			absoluteMetricValue: null,
+			relativeMetricValue: 100,
+			color: "#676867"
 		}
 	}
 }

@@ -127,10 +127,9 @@ export class CodeMapMouseEventService
 				}
 
 				if (from !== to) {
+					this.unhoverBuilding()
 					if (to) {
 						this.hoverBuilding(to)
-					} else {
-						this.unhoverBuilding()
 					}
 				}
 			}
@@ -205,7 +204,7 @@ export class CodeMapMouseEventService
 		}
 
 		if (hoveredBuilding) {
-			this.threeSceneService.highlightBuilding(hoveredBuilding)
+			this.threeSceneService.highlightSingleBuilding(hoveredBuilding)
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 		}
 	}
