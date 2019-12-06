@@ -12,7 +12,7 @@ import {
 	EdgeVisibility
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
+import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 
