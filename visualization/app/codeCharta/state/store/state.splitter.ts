@@ -8,7 +8,7 @@ import { splitDynamicSettingsActions } from "./dynamicSettings/dynamicSettings.s
 import { splitFileSettingsActions } from "./fileSettings/fileSettings.splitter"
 import { splitAppSettingsActions } from "./appSettings/appSettings.splitter"
 
-export function splitInAtomicActions(action: CCAction): CCAction[] {
+export function splitStateActions(action: CCAction): CCAction[] {
 	if (_.values(DynamicSettingsActions).includes(action.type)) {
 		return splitDynamicSettingsActions(action.payload.dynamicSettings)
 	}
@@ -22,21 +22,20 @@ export function splitInAtomicActions(action: CCAction): CCAction[] {
 	}
 
 	if (_.values(StateActions).includes(action.type)) {
-		const actions: CCAction[] = []
+		let actions: CCAction[] = []
 
 		if (action.payload.dynamicSettings !== undefined) {
-			actions.concat(splitDynamicSettingsActions(action.payload.dynamicSettings))
+			actions = actions.concat(...splitDynamicSettingsActions(action.payload.dynamicSettings))
 		}
 
 		if (action.payload.fileSettings !== undefined) {
-			actions.concat(splitFileSettingsActions(action.payload.fileSettings))
+			actions = actions.concat(splitFileSettingsActions(action.payload.fileSettings))
 		}
 
 		if (action.payload.appSettings !== undefined) {
-			actions.concat(splitAppSettingsActions(action.payload.appSettings))
+			actions = actions.concat(splitAppSettingsActions(action.payload.appSettings))
 		}
 		return actions
 	}
-
 	return [action]
 }
