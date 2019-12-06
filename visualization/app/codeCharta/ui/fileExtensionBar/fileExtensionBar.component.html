@@ -10,16 +10,26 @@
 			ng-repeat="item in $ctrl._viewModel.distribution"
 			ng-style="{ 'width': item.relativeMetricValue + '%', 'background': item.color}"
 		>
-			<p class="bar-section-text" title="{{ item.relativeMetricValue.toFixed(2) }}%">
+			<p
+				class="bar-section-text"
+				ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
+				ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
+				title="{{ item.relativeMetricValue.toFixed(2) }}%"
+			>
 				{{ item.fileExtension }}
 			</p>
 		</div>
 	</div>
-	<div class="bar-details" ng-class="{expanded: $ctrl._viewModel.isExtensiveMode}">
+	<div class="bar-details" ng-class="{expanded: $ctrl._viewModel.isExtensiveMode}" ng-click="$ctrl.togglePercentageAbsoluteValues()">
 		<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution">
 			<p class="bar-details-text">
 				<span class="dot" ng-style="{'background': item.color}"></span>{{ item.fileExtension }} :
-				<span class="percentage">{{ item.relativeMetricValue.toFixed(2) }}%</span>
+				<span class="metric-value" ng-class="{ hidden: $ctrl._viewModel.isAbsoluteValueVisible }"
+					>{{ item.relativeMetricValue.toFixed(2) }}%</span
+				>
+				<span class="metric-value" ng-class="{ hidden: !$ctrl._viewModel.isAbsoluteValueVisible }">{{
+					item.absoluteMetricValue.toFixed(0) | number
+				}}</span>
 			</p>
 		</div>
 	</div>
