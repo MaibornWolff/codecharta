@@ -1,5 +1,5 @@
 import { DEFAULT_SETTINGS } from "../../../util/dataMocks"
-import fileSettings from "./mapSize.reducer"
+import fileSettings from "./treeMap.reducer"
 import { TreeMapSettingsAction } from "./treeMap.actions"
 
 describe("treeMapSettings", () => {
