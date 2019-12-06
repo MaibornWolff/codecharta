@@ -12,7 +12,7 @@ import { areaMetric } from "./areaMetric/areaMetric.reducer"
 import { combineReducers } from "redux"
 
 const dynamicSettings = combineReducers({
-	//Plop: Append sub-reducer here
+	// Plop: Append sub-reducer here
 	edgeMetric,
 	colorRange,
 	margin,

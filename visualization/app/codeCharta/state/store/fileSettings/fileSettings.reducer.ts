@@ -6,7 +6,7 @@ import { blacklist } from "./blacklist/blacklist.reducer"
 import { combineReducers } from "redux"
 
 const fileSettings = combineReducers({
-	//Plop: Append sub-reducer here
+	// Plop: Append sub-reducer here
 	markedPackages,
 	edges,
 	attributeTypes,

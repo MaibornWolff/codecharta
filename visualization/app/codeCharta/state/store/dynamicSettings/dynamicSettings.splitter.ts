@@ -1,6 +1,6 @@
 import { RecursivePartial, DynamicSettings, CCAction, ColorRange } from "../../../codeCharta.model"
 
-//Plop: Append action splitter import here
+// Plop: Append action splitter import here
 import { splitEdgeMetricAction } from "./edgeMetric/edgeMetric.splitter"
 import { splitColorRangeAction } from "./colorRange/colorRange.splitter"
 import { splitMarginAction } from "./margin/margin.splitter"
@@ -15,7 +15,7 @@ import { splitAreaMetricAction } from "./areaMetric/areaMetric.splitter"
 export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSettings>): CCAction[] {
 	const actions: CCAction[] = []
 
-	//Plop: Append action split here
+	// Plop: Append action split here
 	if (payload.edgeMetric !== undefined) {
 		actions.push(splitEdgeMetricAction(payload.edgeMetric))
 	}
