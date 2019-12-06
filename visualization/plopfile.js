@@ -136,6 +136,11 @@ module.exports = function(plop) {
 				["{{camelCase name}}", "service", "ts"],
 				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
 			),
+			buildAddAction(
+				"redux",
+				["{{camelCase name}}", "splitter", "ts"],
+				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
+			),
 			{
 				type: "modify",
 				path: "app/codeCharta/state/state.module.ts",
@@ -171,21 +176,21 @@ module.exports = function(plop) {
 			{
 				type: "modify",
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
-				pattern: /(\/\/ Plop: Append reducer import here)/gi,
+				pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
 				template: '$1\r\nimport { set{{properCase name}} } from "./{{camelCase name}}/{{camelCase name}}.actions"'
 			},
 			{
 				type: "modify",
-				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
-				pattern: /(\/\/ Plop: Append action declaration here)/gi,
-				template: "$1\r\n\tlet {{camelCase name}}Action = action"
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.splitter.ts",
+				pattern: /(\/\/ Plop: Append action splitter importer here)/gi,
+				template: "$1\r\n\t {{camelCase name}},"
 			},
 			{
 				type: "modify",
-				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
-				pattern: /(\/\/ Plop: Append check for action payload here)/gi,
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.splitter.ts",
+				pattern: /(\/\/ Plop: Append action split here)/gi,
 				template:
-					"$1\r\n\t\tif (action.payload.{{camelCase name}} !== undefined) {\n\t\t\t{{camelCase name}}Action = set{{properCase name}}(action.payload.{{camelCase name}})\n\t\t}\n"
+					"$1\r\n\t\tif (payload.{{camelCase name}} !== undefined) {\n\t\t\t\t\tactions.push(split{{properCase name}}Action(payload.{{camelCase name}}))\n\n\t\t}\n"
 			},
 			{
 				type: "modify",

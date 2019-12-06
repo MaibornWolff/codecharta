@@ -18,6 +18,7 @@ import { isPresentationMode } from "./isPresentationMode/isPresentationMode.redu
 import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
+	//Plop: Append sub-reducer here
 	mapColors,
 	resetCameraIfNewFileIsLoaded,
 	showOnlyBuildingsWithEdges,
