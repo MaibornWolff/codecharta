@@ -12,7 +12,7 @@ import {
 	EdgeVisibility
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import { MetricDistribution } from "./fileExtensionCalculator"
+import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 
@@ -303,10 +303,10 @@ export const METRIC_DISTRIBUTION: MetricDistribution[] = [
 
 export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 	{
-		fileExtension: "none",
+		fileExtension: "None",
 		absoluteMetricValue: null,
 		relativeMetricValue: 100,
-		color: "#000000"
+		color: "#676867"
 	}
 ]
 
