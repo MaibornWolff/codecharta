@@ -136,6 +136,11 @@ module.exports = function(plop) {
 				["{{camelCase name}}", "service", "ts"],
 				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
 			),
+			buildAddAction(
+				"redux",
+				["{{camelCase name}}", "splitter", "ts"],
+				"codeCharta/state/store/{{camelCase subreducer}}/{{camelCase name}}"
+			),
 			{
 				type: "modify",
 				path: "app/codeCharta/state/state.module.ts",
@@ -171,8 +176,27 @@ module.exports = function(plop) {
 			{
 				type: "modify",
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
-				pattern: /(\/\/ Plop: Append reducer usage here)/gi,
-				template: "$1\r\n\t{{camelCase name}},"
+				pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
+				template: "$1\r\n{{camelCase name}},"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.splitter.ts",
+				pattern: /(\/\/ Plop: Append action splitter import here)/gi,
+				template: '$1\r\n\t import { split{{properCase name}}Action } from "./{{camelCase name}}/{{camelCase name}}.splitter"}'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.splitter.ts",
+				pattern: /(\/\/ Plop: Append action split here)/gi,
+				template:
+					"$1\r\n\t\tif (payload.{{camelCase name}} !== undefined) {\n\t\t\t\t\tactions.push(split{{properCase name}}Action(payload.{{camelCase name}}))\n\n\t\t}\n"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
+				pattern: /(\/\/ Plop: Append action forwarding here)/gi,
+				template: "$1\r\n\t\t{{camelCase name}}: {{camelCase name}}(state.{{camelCase name}}, {{camelCase name}}Action),"
 			}
 		]
 	})

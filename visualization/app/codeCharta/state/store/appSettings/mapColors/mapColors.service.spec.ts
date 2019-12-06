@@ -4,7 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { MapColorsAction, MapColorsActions } from "./mapColors.actions"
 import { MapColorsService } from "./mapColors.service"
-import { defaultMapColors } from "./mapColors.reducer"
+import { defaultMapColors } from "./mapColors.actions"
 
 describe("MapColorsService", () => {
 	let mapColorsService: MapColorsService

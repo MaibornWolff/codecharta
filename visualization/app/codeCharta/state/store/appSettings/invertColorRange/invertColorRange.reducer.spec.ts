@@ -6,7 +6,7 @@ describe("invertColorRange", () => {
 		it("should initialize the default state", () => {
 			const result = invertColorRange(undefined, {} as InvertColorRangeAction)
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("invertColorRange", () => {
 		it("should set new invertColorRange", () => {
 			const result = invertColorRange(false, setInvertColorRange(true))
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
+		})
+
+		it("should set default invertColorRange", () => {
+			const result = invertColorRange(true, setInvertColorRange())
+
+			expect(result).toBeFalsy()
 		})
 	})
 })

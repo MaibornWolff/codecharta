@@ -16,5 +16,11 @@ describe("heightMetric", () => {
 
 			expect(result).toEqual("another_height_metric")
 		})
+
+		it("should set default heightMetric", () => {
+			const result = heightMetric("another_height_metric", setHeightMetric())
+
+			expect(result).toBeNull()
+		})
 	})
 })

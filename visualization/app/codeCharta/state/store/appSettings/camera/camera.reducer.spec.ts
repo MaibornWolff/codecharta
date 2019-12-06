@@ -17,5 +17,11 @@ describe("camera", () => {
 
 			expect(result).toEqual(new Vector3(0, 1, 2))
 		})
+
+		it("should set default camera", () => {
+			const result = camera(new Vector3(0, 300, 1111), setCamera())
+
+			expect(result).toEqual(new Vector3(0, 300, 1000))
+		})
 	})
 })

@@ -16,5 +16,11 @@ describe("searchPattern", () => {
 
 			expect(result).toEqual("mySearch/*.ts")
 		})
+
+		it("should set default searchPattern", () => {
+			const result = searchPattern("mySearch/*.ts", setSearchPattern())
+
+			expect(result).toEqual("")
+		})
 	})
 })

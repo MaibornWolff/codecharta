@@ -16,5 +16,11 @@ describe("edgeMetric", () => {
 
 			expect(result).toEqual("another_edge_metric")
 		})
+
+		it("should set default edgeMetric", () => {
+			const result = edgeMetric("another_edge_metric", setEdgeMetric())
+
+			expect(result).toBeNull()
+		})
 	})
 })

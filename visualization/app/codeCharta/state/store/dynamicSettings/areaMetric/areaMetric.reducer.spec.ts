@@ -16,5 +16,11 @@ describe("areaMetric", () => {
 
 			expect(result).toEqual("another_area_metric")
 		})
+
+		it("should set new areaMetric", () => {
+			const result = areaMetric("another_area_metric", setAreaMetric())
+
+			expect(result).toBeNull()
+		})
 	})
 })

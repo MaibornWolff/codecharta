@@ -1,7 +1,8 @@
-import { createStore, Store, Action } from "redux"
-import { rootReducer } from "./store/reducer"
-import { State } from "../codeCharta.model"
+import { createStore, Store } from "redux"
+import rootReducer from "./store/reducer"
+import { CCAction, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { splitStateActions } from "./store/state.splitter"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -16,9 +17,11 @@ export class StoreService {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: Action) {
-		this.store.dispatch(action)
-		this.notify(action.type)
+	public dispatch(action: CCAction) {
+		splitStateActions(action).forEach(atomicAction => {
+			this.store.dispatch(atomicAction)
+			this.notify(atomicAction.type)
+		})
 	}
 
 	public getState(): State {

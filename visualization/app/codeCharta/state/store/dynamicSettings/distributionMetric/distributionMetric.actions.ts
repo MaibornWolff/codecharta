@@ -1,19 +1,21 @@
-import { Action } from "redux"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum DistributionMetricActions {
 	SET_DISTRIBUTION_METRIC = "SET_DISTRIBUTION_METRIC"
 }
 
-export interface SetDistributionMetricAction extends Action {
+export interface SetDistributionMetricAction extends CCAction {
 	type: DistributionMetricActions.SET_DISTRIBUTION_METRIC
 	payload: string
 }
 
 export type DistributionMetricAction = SetDistributionMetricAction
 
-export function setDistributionMetric(distributionMetric: string): DistributionMetricAction {
+export function setDistributionMetric(distributionMetric: string = defaultDistributionMetric): SetDistributionMetricAction {
 	return {
 		type: DistributionMetricActions.SET_DISTRIBUTION_METRIC,
 		payload: distributionMetric
 	}
 }
+
+export const defaultDistributionMetric = null

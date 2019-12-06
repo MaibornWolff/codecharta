@@ -6,7 +6,7 @@ describe("invertHeight", () => {
 		it("should initialize the default state", () => {
 			const result = invertHeight(undefined, {} as InvertHeightAction)
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("invertHeight", () => {
 		it("should set new invertHeight", () => {
 			const result = invertHeight(false, setInvertHeight(true))
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
+		})
+
+		it("should set default invertHeight", () => {
+			const result = invertHeight(true, setInvertHeight())
+
+			expect(result).toBeFalsy()
 		})
 	})
 })

@@ -1,9 +1,9 @@
-import { EdgesAction, EdgesActions } from "./edges.actions"
+import { EdgesAction, EdgesActions, setEdges } from "./edges.actions"
 import { Edge } from "../../../../codeCharta.model"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 import _ from "lodash"
 
-export function edges(state: Edge[] = [], action: EdgesAction): Edge[] {
+export function edges(state: Edge[] = setEdges().payload, action: EdgesAction): Edge[] {
 	switch (action.type) {
 		case EdgesActions.SET_EDGES:
 			return _.cloneDeep(action.payload)

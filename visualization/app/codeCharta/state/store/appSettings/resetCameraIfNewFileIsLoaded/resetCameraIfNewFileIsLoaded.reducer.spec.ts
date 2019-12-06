@@ -6,7 +6,7 @@ describe("resetCameraIfNewFileIsLoaded", () => {
 		it("should initialize the default state", () => {
 			const result = resetCameraIfNewFileIsLoaded(undefined, {} as ResetCameraIfNewFileIsLoadedAction)
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("resetCameraIfNewFileIsLoaded", () => {
 		it("should set new resetCameraIfNewFileIsLoaded", () => {
 			const result = resetCameraIfNewFileIsLoaded(true, setResetCameraIfNewFileIsLoaded(false))
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
+		})
+
+		it("should set default resetCameraIfNewFileIsLoaded", () => {
+			const result = resetCameraIfNewFileIsLoaded(false, setResetCameraIfNewFileIsLoaded())
+
+			expect(result).toBeTruthy()
 		})
 	})
 })

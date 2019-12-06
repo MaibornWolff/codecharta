@@ -1,9 +1,9 @@
 import { BlacklistItem } from "../../../../codeCharta.model"
-import { BlacklistAction, BlacklistActions } from "./blacklist.actions"
+import { BlacklistAction, BlacklistActions, setBlacklist } from "./blacklist.actions"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 import _ from "lodash"
 
-export function blacklist(state: BlacklistItem[] = [], action: BlacklistAction): BlacklistItem[] {
+export function blacklist(state: BlacklistItem[] = setBlacklist().payload, action: BlacklistAction): BlacklistItem[] {
 	switch (action.type) {
 		case BlacklistActions.ADD_BLACKLIST_ITEM:
 			return addItemToArray(state, action.payload)

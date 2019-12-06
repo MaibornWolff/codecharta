@@ -16,5 +16,11 @@ describe("margin", () => {
 
 			expect(result).toEqual(42)
 		})
+
+		it("should set default margin", () => {
+			const result = margin(21, setMargin())
+
+			expect(result).toBeNull()
+		})
 	})
 })

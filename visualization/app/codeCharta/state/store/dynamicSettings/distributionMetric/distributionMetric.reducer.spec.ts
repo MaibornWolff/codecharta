@@ -16,5 +16,11 @@ describe("distributionMetric", () => {
 
 			expect(result).toEqual("another_distribution_metric")
 		})
+
+		it("should set new distributionMetric", () => {
+			const result = distributionMetric("another_distribution_metric", setDistributionMetric())
+
+			expect(result).toBeNull()
+		})
 	})
 })

@@ -16,5 +16,11 @@ describe("colorRange", () => {
 
 			expect(result).toEqual({ from: 33, to: 66 })
 		})
+
+		it("should set default colorRange", () => {
+			const result = colorRange({ from: 33, to: 66 }, setColorRange())
+
+			expect(result).toEqual({ from: null, to: null })
+		})
 	})
 })

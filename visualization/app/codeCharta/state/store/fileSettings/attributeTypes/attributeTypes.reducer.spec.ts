@@ -23,5 +23,11 @@ describe("attributeTypes", () => {
 
 			expect(result).toEqual(SETTINGS.fileSettings.attributeTypes)
 		})
+
+		it("should set default attributeTypes", () => {
+			const result = attributeTypes(SETTINGS.fileSettings.attributeTypes, setAttributeTypes())
+
+			expect(result).toEqual(defaultValue)
+		})
 	})
 })

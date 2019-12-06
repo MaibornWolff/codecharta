@@ -16,5 +16,11 @@ describe("colorMetric", () => {
 
 			expect(result).toEqual("another_color_metric")
 		})
+
+		it("should set default colorMetric", () => {
+			const result = colorMetric("another_color_metric", setColorMetric())
+
+			expect(result).toBeNull()
+		})
 	})
 })

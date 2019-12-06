@@ -16,5 +16,11 @@ describe("amountOfTopLabels", () => {
 
 			expect(result).toEqual(2)
 		})
+
+		it("should set default amountOfTopLabels", () => {
+			const result = amountOfTopLabels(2, setAmountOfTopLabels())
+
+			expect(result).toEqual(1)
+		})
 	})
 })

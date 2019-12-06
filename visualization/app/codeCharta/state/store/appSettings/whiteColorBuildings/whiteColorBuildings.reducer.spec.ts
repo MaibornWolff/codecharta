@@ -6,7 +6,7 @@ describe("whiteColorBuildings", () => {
 		it("should initialize the default state", () => {
 			const result = whiteColorBuildings(undefined, {} as WhiteColorBuildingsAction)
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("whiteColorBuildings", () => {
 		it("should set new whiteColorBuildings", () => {
 			const result = whiteColorBuildings(false, setWhiteColorBuildings(true))
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
+		})
+
+		it("should set default whiteColorBuildings", () => {
+			const result = whiteColorBuildings(true, setWhiteColorBuildings())
+
+			expect(result).toBeFalsy()
 		})
 	})
 })

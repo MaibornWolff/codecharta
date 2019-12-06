@@ -6,7 +6,7 @@ describe("invertDeltaColors", () => {
 		it("should initialize the default state", () => {
 			const result = invertDeltaColors(undefined, {} as InvertDeltaColorsAction)
 
-			expect(result).toEqual(false)
+			expect(result).toBeFalsy()
 		})
 	})
 
@@ -14,7 +14,13 @@ describe("invertDeltaColors", () => {
 		it("should set new invertDeltaColors", () => {
 			const result = invertDeltaColors(false, setInvertDeltaColors(true))
 
-			expect(result).toEqual(true)
+			expect(result).toBeTruthy()
+		})
+
+		it("should set new invertDeltaColors", () => {
+			const result = invertDeltaColors(true, setInvertDeltaColors())
+
+			expect(result).toBeFalsy()
 		})
 	})
 })
