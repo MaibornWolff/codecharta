@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.0] - 2019-12-06
+
+### Added 🚀
+
 - Show the relative number of files a folder includes compared to the project in the TreeView #380
 - Show the number of files a folder includes in the TreeView when hovering #380
 - When the File Extension Bar is hovered, all buildings corresponding to that extension are highlighted #545
