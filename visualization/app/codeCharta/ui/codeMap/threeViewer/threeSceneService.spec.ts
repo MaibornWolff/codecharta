@@ -41,7 +41,7 @@ describe("ThreeSceneService", () => {
 
 	beforeEach(() => {
 		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, settingsService.getSettings(), false)
-		threeSceneService["listOfBuildingsToHighlight"] = [CODE_MAP_BUILDING]
+		threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 	})
 
 	describe("constructor", () => {
@@ -72,7 +72,7 @@ describe("ThreeSceneService", () => {
 			threeSceneService.highlightBuildings()
 
 			expect(threeSceneService["mapMesh"].highlightBuilding).toHaveBeenCalledWith(
-				threeSceneService["listOfBuildingsToHighlight"],
+				threeSceneService["highlighted"],
 				null,
 				settingsService.getSettings()
 			)
@@ -81,11 +81,11 @@ describe("ThreeSceneService", () => {
 
 	describe("addBuildingToHighlightingList", () => {
 		it("should add the given building to the HighlightingList ", () => {
-			threeSceneService["listOfBuildingsToHighlight"] = []
+			threeSceneService["highlighted"] = []
 
 			threeSceneService.addBuildingToHighlightingList(CODE_MAP_BUILDING)
 
-			expect(threeSceneService["listOfBuildingsToHighlight"]).toEqual([CODE_MAP_BUILDING])
+			expect(threeSceneService["highlighted"]).toEqual([CODE_MAP_BUILDING])
 		})
 	})
 
@@ -93,7 +93,7 @@ describe("ThreeSceneService", () => {
 		it("should add a building to the highlighting list and call the highlight function", () => {
 			threeSceneService.addBuildingToHighlightingList = jest.fn()
 			threeSceneService.highlightBuildings = jest.fn()
-			threeSceneService["listOfBuildingsToHighlight"] = []
+			threeSceneService["highlighted"] = []
 
 			threeSceneService.highlightSingleBuilding(CODE_MAP_BUILDING)
 
@@ -106,7 +106,7 @@ describe("ThreeSceneService", () => {
 		it("should clear the highlighting list", () => {
 			threeSceneService.clearHighlight()
 
-			expect(threeSceneService["listOfBuildingsToHighlight"]).toHaveLength(0)
+			expect(threeSceneService["highlighted"]).toHaveLength(0)
 		})
 	})
 })

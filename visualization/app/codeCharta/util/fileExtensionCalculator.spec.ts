@@ -21,7 +21,7 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "RLOC", [])
+			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc", [])
 
 			expect(result).toEqual(expected)
 		})
@@ -39,7 +39,7 @@ describe("FileExtensionCalculator", () => {
 
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
-				"RLOC",
+				"rloc",
 				settings.fileSettings.blacklist
 			)
 
@@ -59,7 +59,7 @@ describe("FileExtensionCalculator", () => {
 
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
-				"RLOC",
+				"rloc",
 				settings.fileSettings.blacklist
 			)
 
@@ -78,7 +78,7 @@ describe("FileExtensionCalculator", () => {
 
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
-				"RLOC",
+				"rloc",
 				settings.fileSettings.blacklist
 			)
 
@@ -93,7 +93,7 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "other", absoluteMetricValue: 15, relativeMetricValue: 3.978779840848806, color: "#676867" }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "RLOC", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
 
 			expect(result).toEqual(expected)
 		})
@@ -105,17 +105,17 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: null, relativeMetricValue: 100, color: "#676867" }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "RLOC", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should get correct distribution of file-extensions for given metric using other-grouping", () => {
 			const additionalChildren: CodeMapNode[] = [
-				{ name: "child1.txt", type: "File", path: "/root/child1.txt", attributes: { RLOC: 2 } },
-				{ name: "child2.kt", type: "File", path: "/root/child2.kt", attributes: { RLOC: 4 } },
-				{ name: "child3.ts", type: "File", path: "/root/child3.ts", attributes: { RLOC: 6 } },
-				{ name: "child4.xml", type: "File", path: "/root/child4.xml", attributes: { RLOC: 8 } }
+				{ name: "child1.txt", type: "File", path: "/root/child1.txt", attributes: { rloc: 2 } },
+				{ name: "child2.kt", type: "File", path: "/root/child2.kt", attributes: { rloc: 4 } },
+				{ name: "child3.ts", type: "File", path: "/root/child3.ts", attributes: { rloc: 6 } },
+				{ name: "child4.xml", type: "File", path: "/root/child4.xml", attributes: { rloc: 8 } }
 			]
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 40.80604534005038, color: null },
@@ -128,7 +128,7 @@ describe("FileExtensionCalculator", () => {
 			map.children.push(...additionalChildren)
 			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 95
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "RLOC", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
 
 			expect(result).toEqual(expected)
 		})

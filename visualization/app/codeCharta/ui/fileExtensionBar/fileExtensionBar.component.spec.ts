@@ -9,7 +9,6 @@ import {
 	SETTINGS,
 	TEST_FILE_WITH_PATHS,
 	CODE_MAP_BUILDING_TS_NODE,
-	VALID_NODE,
 	VALID_NODE_WITH_PATH_AND_EXTENSION
 } from "../../util/dataMocks"
 import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
