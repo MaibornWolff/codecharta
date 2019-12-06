@@ -33,12 +33,12 @@ describe("codeChartaService", () => {
 			map: {
 				attributes: {},
 				children: [
-					{ attributes: { Functions: 10, MCC: 1, RLOC: 100 }, link: "http://www.google.de", name: "big leaf", type: "File" },
+					{ attributes: { functions: 10, mcc: 1, rloc: 100 }, link: "http://www.google.de", name: "big leaf", type: "File" },
 					{
 						attributes: {},
 						children: [
-							{ attributes: { Functions: 100, MCC: 100, RLOC: 30 }, name: "small leaf", type: "File" },
-							{ attributes: { Functions: 1000, MCC: 10, RLOC: 70 }, name: "other small leaf", type: "File" }
+							{ attributes: { functions: 100, mcc: 100, rloc: 30 }, name: "small leaf", type: "File" },
+							{ attributes: { functions: 1000, mcc: 10, rloc: 70 }, name: "other small leaf", type: "File" }
 						],
 						name: "Parent Leaf",
 						type: "Folder"

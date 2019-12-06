@@ -126,6 +126,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	private decorateIfPossible() {
 		if (
 			this.lastRender.map &&
+			this.lastRender.fileStates &&
 			this.lastRender.fileMeta &&
 			this.lastRender.settings &&
 			this.lastRender.settings.fileSettings &&
@@ -138,7 +139,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 				this.lastRender.map,
 				this.lastRender.settings.fileSettings.blacklist,
 				this.lastRender.metricData,
-				this.edgeMetricDataService.getMetricData()
+				this.edgeMetricDataService.getMetricData(),
+				FileStateHelper.isDeltaState(this.lastRender.fileStates)
 			)
 		}
 	}

@@ -25,7 +25,7 @@ export const VALID_NODE: CodeMapNode = {
 		{
 			name: "big leaf",
 			type: "File",
-			attributes: { RLOC: 100, Functions: 10, MCC: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			link: "http://www.google.de"
 		},
 		{
@@ -36,12 +36,12 @@ export const VALID_NODE: CodeMapNode = {
 				{
 					name: "small leaf",
 					type: "File",
-					attributes: { RLOC: 30, Functions: 100, MCC: 100 }
+					attributes: { rloc: 30, functions: 100, mcc: 100 }
 				},
 				{
 					name: "other small leaf",
 					type: "File",
-					attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
+					attributes: { rloc: 70, functions: 1000, mcc: 10 }
 				}
 			]
 		}
@@ -58,7 +58,7 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 			name: "big leaf",
 			type: "File",
 			path: "/root/big leaf",
-			attributes: { RLOC: 100, Functions: 10, MCC: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			link: "http://www.google.de"
 		},
 		{
@@ -71,13 +71,13 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 					name: "small leaf",
 					type: "File",
 					path: "/root/Parent Leaf/small leaf",
-					attributes: { RLOC: 30, Functions: 100, MCC: 100 }
+					attributes: { rloc: 30, functions: 100, mcc: 100 }
 				},
 				{
 					name: "other small leaf",
 					type: "File",
 					path: "/root/Parent Leaf/other small leaf",
-					attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
+					attributes: { rloc: 70, functions: 1000, mcc: 10 }
 				},
 				{
 					name: "empty folder",
@@ -101,20 +101,20 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 			name: "first leaf",
 			type: "File",
 			path: "/root/first leaf",
-			attributes: { unary: 100, Functions: 10, MCC: 1 }
+			attributes: { unary: 100, functions: 10, mcc: 1 }
 		},
 		{
 			name: "second leaf",
 			type: "File",
 			path: "/root/second leaf",
-			attributes: { unary: 100, Functions: 5, MCC: 1 }
+			attributes: { unary: 100, functions: 5, mcc: 1 }
 		}
 	]
 }
 
 export const VALID_NODE_DECORATED: CodeMapNode = {
 	name: "root",
-	attributes: { RLOC: 100, Functions: 10, MCC: 1, unary: 5 },
+	attributes: { rloc: 100, functions: 10, mcc: 1, unary: 5 },
 	type: "Folder",
 	path: "/root",
 	children: [
@@ -122,26 +122,26 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 			name: "big leaf",
 			type: "File",
 			path: "/root/big leaf",
-			attributes: { RLOC: 100, Functions: 10, MCC: 1, unary: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
 			link: "http://www.google.de"
 		},
 		{
 			name: "Parent Leaf",
 			type: "Folder",
-			attributes: { RLOC: 100, Functions: 10, MCC: 1, unary: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
 			path: "/root/Parent Leaf",
 			children: [
 				{
 					name: "small leaf",
 					type: "File",
 					path: "/root/Parent Leaf/small leaf",
-					attributes: { RLOC: 30, Functions: 100, MCC: 100, unary: 1 }
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
 				},
 				{
 					name: "other small leaf",
 					type: "File",
 					path: "/root/Parent Leaf/other small leaf",
-					attributes: { RLOC: 70, Functions: 1000, MCC: 10, unary: 1 },
+					attributes: { rloc: 70, functions: 1000, mcc: 10, unary: 1 },
 					edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
 					visible: true
 				}
@@ -153,7 +153,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 export const VALID_NODE_WITH_METRICS: CodeMapNode = {
 	name: "root",
 	type: "Folder",
-	attributes: { rloc: 100, Functions: 10, MCC: 1 }
+	attributes: { rloc: 100, functions: 10, mcc: 1 }
 }
 
 export const VALID_EDGES: Edge[] = [
@@ -304,10 +304,10 @@ export const METRIC_DISTRIBUTION: MetricDistribution[] = [
 
 export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 	{
-		fileExtension: "none",
+		fileExtension: "None",
 		absoluteMetricValue: null,
 		relativeMetricValue: 100,
-		color: "#000000"
+		color: "#676867"
 	}
 ]
 
@@ -321,13 +321,13 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 			name: "big leaf.jpg",
 			type: "File",
 			path: "/root/big leaf.jpg",
-			attributes: { RLOC: 100, Functions: 10, MCC: 1 }
+			attributes: { rloc: 100, functions: 10, mcc: 1 }
 		},
 		{
 			name: "another big leaf.java",
 			type: "File",
 			path: "/root/another big leaf.java",
-			attributes: { RLOC: 120, Functions: 20, MCC: 2 }
+			attributes: { rloc: 120, functions: 20, mcc: 2 }
 		},
 		{
 			name: "Parent Leaf",
@@ -339,27 +339,74 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 					name: "small leaf.jpg",
 					type: "File",
 					path: "/root/Parent Leaf/small leaf.json",
-					attributes: { RLOC: 30, Functions: 100, MCC: 100 }
+					attributes: { rloc: 30, functions: 100, mcc: 100 }
 				},
 				{
 					name: "other small leaf.json",
 					type: "File",
 					path: "/root/Parent Leaf/other small leaf.json",
-					attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
+					attributes: { rloc: 70, functions: 1000, mcc: 10 }
 				},
 				{
 					name: "another leaf.java",
 					type: "File",
 					path: "/root/Parent Leaf/another leaf.java",
-					attributes: { RLOC: 42, Functions: 330, MCC: 45 },
+					attributes: { rloc: 42, functions: 330, mcc: 45 },
 					children: []
 				},
 				{
 					name: "leaf without extension",
 					type: "File",
 					path: "/root/Parent Leaf/leaf without extension",
-					attributes: { RLOC: 15, Functions: 23, MCC: 33 },
+					attributes: { rloc: 15, functions: 23, mcc: 33 },
 					children: []
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	deltas: {},
+	type: "Folder",
+	path: "/root",
+	children: [
+		{
+			name: "big leaf.jpg",
+			type: "File",
+			path: "/root/big leaf.jpg",
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			deltas: { rloc: 300, functions: -15, mcc: 12 }
+		},
+		{
+			name: "another big leaf.java",
+			type: "File",
+			path: "/root/another big leaf.java",
+			attributes: { rloc: 120, functions: 20, mcc: 2 },
+			deltas: { rloc: -150, functions: 9, mcc: 33 }
+		},
+		{
+			name: "Parent Leaf",
+			type: "Folder",
+			attributes: {},
+			deltas: {},
+			path: "/root/Parent Leaf",
+			children: [
+				{
+					name: "small leaf.jpg",
+					type: "File",
+					path: "/root/Parent Leaf/small leaf.json",
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					deltas: { rloc: -55, functions: 38, mcc: -40 }
+				},
+				{
+					name: "other small leaf.json",
+					type: "File",
+					path: "/root/Parent Leaf/other small leaf.json",
+					attributes: { rloc: 70, functions: 1000, mcc: 10 },
+					deltas: { rloc: 200, functions: -27, mcc: 65 }
 				}
 			]
 		}
@@ -376,13 +423,13 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 			name: "big leaf.jpg",
 			type: "File",
 			path: "/root/big leaf.jpg",
-			attributes: { RLOC: 0, Functions: 10, MCC: 1 }
+			attributes: { rloc: 0, functions: 10, mcc: 1 }
 		},
 		{
 			name: "another big leaf.java",
 			type: "File",
 			path: "/root/another big leaf.java",
-			attributes: { RLOC: 0, Functions: 20, MCC: 2 }
+			attributes: { rloc: 0, functions: 20, mcc: 2 }
 		}
 	]
 }
@@ -520,9 +567,9 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 			children: [
 				{
 					attributes: {
-						Functions: 10,
-						MCC: 1,
-						RLOC: 100
+						functions: 10,
+						mcc: 1,
+						rloc: 100
 					},
 					link: "http://www.google.de",
 					name: "big leaf",
@@ -533,18 +580,18 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 					children: [
 						{
 							attributes: {
-								Functions: 100,
-								MCC: 100,
-								RLOC: 30
+								functions: 100,
+								mcc: 100,
+								rloc: 30
 							},
 							name: "small leaf",
 							type: "File"
 						},
 						{
 							attributes: {
-								Functions: 1000,
-								MCC: 10,
-								RLOC: 70
+								functions: 1000,
+								mcc: 10,
+								rloc: 70
 							},
 							name: "other small leaf",
 							type: "File"
@@ -782,7 +829,7 @@ export const TEST_NODE_ROOT: Node = {
 }
 
 export const TEST_NODE_LEAF: Node = {
-	name: "root/big leaf",
+	name: "root/big leaf.ts",
 	width: 1,
 	height: 2,
 	length: 3,
@@ -811,6 +858,13 @@ export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,
 	new Box3(),
 	TEST_NODE_ROOT,
+	DEFAULT_SETTINGS.appSettings.mapColors.neutral
+)
+
+export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
+	1,
+	new Box3(),
+	TEST_NODE_LEAF,
 	DEFAULT_SETTINGS.appSettings.mapColors.neutral
 )
 
