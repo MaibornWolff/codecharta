@@ -8,6 +8,8 @@ import { RecursivePartial, Settings } from "../../../codeCharta.model"
 import _ from "lodash"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { SettingsServiceSubscriber } from "../../../state/settingsService/settings.service.events"
+import { StoreService } from "../../../state/store.service"
+import { setCamera } from "../../../state/store/appSettings/camera/camera.actions"
 
 export class ThreeCameraService implements SettingsServiceSubscriber, CameraChangeSubscriber {
 	public static VIEW_ANGLE = 45
@@ -22,9 +24,12 @@ export class ThreeCameraService implements SettingsServiceSubscriber, CameraChan
 			{ appSettings: { camera: new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z) } },
 			true
 		)
+
+		// TODO: Make optional silent StoreService
+		this.storeService.dispatch(setCamera(new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z)))
 	}, 1000)
 
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {}
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private settingsService: SettingsService) {}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (JSON.stringify(settings.appSettings.camera) !== JSON.stringify(this.lastCameraVector)) {
