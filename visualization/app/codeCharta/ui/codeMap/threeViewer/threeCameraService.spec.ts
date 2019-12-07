@@ -84,7 +84,6 @@ describe("ThreeCameraService", () => {
 		})
 
 		it("should not call storeService.notify method", () => {
-			const cameraPosition = threeCameraService.camera.position
 			storeService["notify"] = jest.fn()
 
 			threeCameraService.onCameraChanged(null)
