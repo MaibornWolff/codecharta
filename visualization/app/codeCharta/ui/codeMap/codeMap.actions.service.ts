@@ -6,6 +6,9 @@ import angular from "angular"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
+import { markPackage, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 export class CodeMapActionsService {
 	constructor(
@@ -83,11 +86,13 @@ export class CodeMapActionsService {
 			this.removeFocusedNode()
 		} else {
 			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
+			this.storeService.dispatch(focusNode(node.path))
 		}
 	}
 
 	public removeFocusedNode() {
 		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: "" } })
+		this.storeService.dispatch(unfocusNode())
 	}
 
 	public excludeNode(node: CodeMapNode) {
@@ -135,6 +140,7 @@ export class CodeMapActionsService {
 				edges: edges
 			}
 		})
+		this.storeService.dispatch(setEdges(edges))
 	}
 
 	public getParentMP(path: string, s: Settings): MarkedPackage {
@@ -176,6 +182,7 @@ export class CodeMapActionsService {
 				markedPackages: s.fileSettings.markedPackages
 			}
 		})
+		this.storeService.dispatch(markPackage(markedPackage))
 	}
 
 	private removeMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
@@ -183,6 +190,7 @@ export class CodeMapActionsService {
 		if (indexToRemove > -1) {
 			s.fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
+		this.storeService.dispatch(unmarkPackage(markedPackage))
 	}
 
 	private isEqualObjects(obj1, obj2): boolean {
