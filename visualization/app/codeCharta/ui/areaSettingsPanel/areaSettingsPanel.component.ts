@@ -5,6 +5,9 @@ import { CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCh
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { StoreService } from "../../state/store.service"
+import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
+import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 
 export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
 	private static MIN_MARGIN = 15
@@ -23,6 +26,7 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
+		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
@@ -63,6 +67,7 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 				dynamicMargin: this._viewModel.dynamicMargin
 			}
 		})
+		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
 	public applySettings() {
@@ -74,6 +79,8 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 				dynamicMargin: this._viewModel.dynamicMargin
 			}
 		})
+		this.storeService.dispatch(setMargin(this._viewModel.margin))
+		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
 	private potentiallyUpdateMargin(map: CodeMapNode, settings: Settings) {

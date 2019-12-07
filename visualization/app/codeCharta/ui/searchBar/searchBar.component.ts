@@ -7,6 +7,7 @@ import { BlacklistSubscriber } from "../../state/settingsService/settings.servic
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 
 export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
 	private _viewModel: {
@@ -74,6 +75,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 				searchPattern: this._viewModel.searchPattern
 			}
 		})
+		this.storeService.dispatch(setSearchPattern(this._viewModel.searchPattern))
 	}
 }
 

@@ -33,7 +33,7 @@ describe("ThreeCameraService", () => {
 	}
 
 	function rebuildService() {
-		threeCameraService = new ThreeCameraService($rootScope, settingsService, storeService)
+		threeCameraService = new ThreeCameraService($rootScope, storeService, settingsService)
 		threeCameraService.camera = new PerspectiveCamera()
 	}
 
@@ -72,12 +72,23 @@ describe("ThreeCameraService", () => {
 
 	describe("onCameraChanged", () => {
 		it("should call updateSettings", () => {
-			threeCameraService.setPosition(1, 2, 3)
+			const cameraPosition = threeCameraService.camera.position
 
-			threeCameraService.onCameraChanged(threeCameraService.camera)
+			threeCameraService.onCameraChanged(null)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { camera: new Vector3(1, 2, 3) } }, true)
-			expect(storeService.getState().appSettings.camera.position).toEqual(new Vector3(1, 2, 3))
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(
+				{ appSettings: { camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) } },
+				true
+			)
+			expect(storeService.getState().appSettings.camera).toEqual(new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z))
+		})
+
+		it("should not call storeService.notify method", () => {
+			storeService["notify"] = jest.fn()
+
+			threeCameraService.onCameraChanged(null)
+
+			expect(storeService["notify"]).not.toHaveBeenCalled()
 		})
 	})
 

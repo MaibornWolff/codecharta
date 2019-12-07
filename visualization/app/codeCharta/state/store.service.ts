@@ -17,10 +17,12 @@ export class StoreService {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: CCAction) {
+	public dispatch(action: CCAction, isSilent: boolean = false) {
 		splitStateActions(action).forEach(atomicAction => {
 			this.store.dispatch(atomicAction)
-			this.notify(atomicAction.type)
+			if (!isSilent) {
+				this.notify(atomicAction.type)
+			}
 		})
 	}
 

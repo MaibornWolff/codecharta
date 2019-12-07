@@ -8,19 +8,31 @@
 	<md-dialog-content>
 		<div class="md-dialog-content">
 			<md-input-container class="md-block">
-				<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.hideFlatBuildings" ng-change="$ctrl.applySettings()">
+				<md-checkbox
+					class="md-primary"
+					ng-model="$ctrl._viewModel.hideFlatBuildings"
+					ng-change="$ctrl.applySettingsHideFlatBuildings()"
+				>
 					Hide Flattened Buildings
 				</md-checkbox>
 			</md-input-container>
 
 			<md-input-container class="md-block">
-				<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.resetCameraIfNewFileIsLoaded" ng-change="$ctrl.applySettings()">
+				<md-checkbox
+					class="md-primary"
+					ng-model="$ctrl._viewModel.resetCameraIfNewFileIsLoaded"
+					ng-change="$ctrl.applySettingsResetCamera()"
+				>
 					Reset Camera when changing map
 				</md-checkbox>
 			</md-input-container>
 
 			<md-input-container class="md-block">
-				<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.isWhiteBackground" ng-change="$ctrl.applySettings()">
+				<md-checkbox
+					class="md-primary"
+					ng-model="$ctrl._viewModel.isWhiteBackground"
+					ng-change="$ctrl.applySettingsIsWhiteBackground()"
+				>
 					White Background
 				</md-checkbox>
 			</md-input-container>
