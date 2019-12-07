@@ -9,10 +9,12 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Settings, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
 
 describe("AreaSettingsPanelController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
+	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let areaSettingsPanelController: AreaSettingsPanelController
 
@@ -31,6 +33,7 @@ describe("AreaSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
@@ -38,7 +41,7 @@ describe("AreaSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, settingsService, codeMapPreRenderService)
+		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, settingsService, storeService, codeMapPreRenderService)
 	}
 
 	function withMockedSettingsService() {
@@ -200,6 +203,7 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.applySettingsDynamicMargin()
 
 			expect(settingsService.updateSettings).toBeCalledWith({ appSettings: { dynamicMargin: false } })
+			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 	})
 
@@ -212,6 +216,8 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.applySettings()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 	})
 })
