@@ -15,21 +15,22 @@ export class ThreeCameraService implements SettingsServiceSubscriber, CameraChan
 	public static VIEW_ANGLE = 45
 	public static NEAR = 100
 	public static FAR = 200000 //TODO optimize renderer for far objects
+	private static DEBOUNCE_TIME = 400
+	private readonly throttledCameraChange: () => void
 
 	public camera: PerspectiveCamera
 	private lastCameraVector: Vector3 = new Vector3(0, 0, 0)
 
-	private throttledCameraChange = _.throttle(() => {
-		this.settingsService.updateSettings(
-			{ appSettings: { camera: new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z) } },
-			true
-		)
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private settingsService: SettingsService) {
+		this.throttledCameraChange = _.throttle(() => {
+			this.settingsService.updateSettings(
+				{ appSettings: { camera: new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z) } },
+				true
+			)
 
-		// TODO: Make optional silent StoreService
-		this.storeService.dispatch(setCamera(new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z)))
-	}, 1000)
-
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private settingsService: SettingsService) {}
+			this.storeService.dispatch(setCamera(new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z)), true)
+		}, ThreeCameraService.DEBOUNCE_TIME)
+	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		if (JSON.stringify(settings.appSettings.camera) !== JSON.stringify(this.lastCameraVector)) {
