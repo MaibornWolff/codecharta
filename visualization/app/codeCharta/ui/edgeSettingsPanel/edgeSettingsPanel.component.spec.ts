@@ -8,11 +8,13 @@ import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { DEFAULT_SETTINGS } from "../../util/dataMocks"
 import _ from "lodash"
 import { Settings } from "../../codeCharta.model"
+import { StoreService } from "../../state/store.service"
 
 describe("EdgeSettingsPanelController", () => {
 	let edgeSettingsPanelController: EdgeSettingsPanelController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
+	let storeService: StoreService
 	let edgeMetricDataService: EdgeMetricDataService
 	let codeMapActionsService: CodeMapActionsService
 
@@ -29,6 +31,7 @@ describe("EdgeSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 
@@ -39,6 +42,7 @@ describe("EdgeSettingsPanelController", () => {
 		edgeSettingsPanelController = new EdgeSettingsPanelController(
 			$rootScope,
 			settingsService,
+			storeService,
 			edgeMetricDataService,
 			codeMapActionsService
 		)
@@ -201,6 +205,7 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.applySettingsAmountOfEdgePreviews()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { amountOfEdgePreviews: 42 } })
+			expect(storeService.getState().appSettings.amountOfEdgePreviews).toEqual(42)
 		})
 	})
 
@@ -212,6 +217,7 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.applySettingsEdgeHeight()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { edgeHeight: 21 } })
+			expect(storeService.getState().appSettings.edgeHeight).toEqual(21)
 		})
 	})
 
@@ -223,6 +229,7 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.applyShowOnlyBuildingsWithEdges()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { showOnlyBuildingsWithEdges: false } })
+			expect(storeService.getState().appSettings.showOnlyBuildingsWithEdges).toBeFalsy()
 		})
 	})
 })
