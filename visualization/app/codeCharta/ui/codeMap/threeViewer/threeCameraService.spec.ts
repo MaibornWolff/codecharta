@@ -7,11 +7,13 @@ import { SETTINGS } from "../../../util/dataMocks"
 import { PerspectiveCamera, Vector3 } from "three"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
+import { StoreService } from "../../../state/store.service"
 
 describe("ThreeCameraService", () => {
 	let threeCameraService: ThreeCameraService
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
+	let storeService: StoreService
 	let settings: Settings
 
 	beforeEach(() => {
@@ -25,12 +27,13 @@ describe("ThreeCameraService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
 
 	function rebuildService() {
-		threeCameraService = new ThreeCameraService($rootScope, settingsService)
+		threeCameraService = new ThreeCameraService($rootScope, storeService, settingsService)
 		threeCameraService.camera = new PerspectiveCamera()
 	}
 
@@ -77,6 +80,7 @@ describe("ThreeCameraService", () => {
 				{ appSettings: { camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) } },
 				true
 			)
+			expect(storeService.getState().appSettings.camera).toEqual(new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z))
 		})
 	})
 
