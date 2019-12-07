@@ -5,6 +5,10 @@ import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { EdgeMetricSubscriber, SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
+import { setAmountOfEdgePreviews } from "../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
+import { setEdgeHeight } from "../../state/store/appSettings/edgeHeight/edgeHeight.actions"
+import { setShowOnlyBuildingsWithEdges } from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 
 export class EdgeSettingsPanelController implements SettingsServiceSubscriber, EdgeMetricSubscriber {
 	private _viewModel: {
@@ -23,6 +27,7 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
+		private storeService: StoreService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
@@ -68,14 +73,17 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 
 	public applySettingsAmountOfEdgePreviews() {
 		this.settingsService.updateSettings({ appSettings: { amountOfEdgePreviews: this._viewModel.amountOfEdgePreviews } })
+		this.storeService.dispatch(setAmountOfEdgePreviews(this._viewModel.amountOfEdgePreviews))
 	}
 
 	public applySettingsEdgeHeight() {
 		this.settingsService.updateSettings({ appSettings: { edgeHeight: this._viewModel.edgeHeight } })
+		this.storeService.dispatch(setEdgeHeight(this._viewModel.edgeHeight))
 	}
 
 	public applyShowOnlyBuildingsWithEdges() {
 		this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: this._viewModel.showOnlyBuildingsWithEdges } })
+		this.storeService.dispatch(setShowOnlyBuildingsWithEdges(this._viewModel.showOnlyBuildingsWithEdges))
 	}
 }
 
