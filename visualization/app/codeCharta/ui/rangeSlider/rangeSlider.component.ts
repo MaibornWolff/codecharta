@@ -7,6 +7,8 @@ import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { StoreService } from "../../state/store.service"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 export class RangeSliderController implements SettingsServiceSubscriber {
 	private maxMetricValue: number
@@ -28,6 +30,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	/* @ngInject */
 	constructor(
 		private settingsService: SettingsService,
+		private storeService: StoreService,
 		private fileStateService: FileStateService,
 		private metricService: MetricService,
 		private $rootScope: IRootScopeService
@@ -78,7 +81,6 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private applySettings() {
-		//TODO: fill StoreService
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				colorRange: {
@@ -87,6 +89,12 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 				}
 			}
 		})
+		this.storeService.dispatch(
+			setColorRange({
+				to: this._viewModel.colorRangeTo,
+				from: this._viewModel.colorRangeFrom
+			})
+		)
 	}
 
 	private updateInputFieldWidth(s: Settings) {

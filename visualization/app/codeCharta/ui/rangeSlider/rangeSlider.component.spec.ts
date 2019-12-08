@@ -9,22 +9,25 @@ import { IRootScopeService } from "angular"
 import { Settings } from "../../codeCharta.model"
 import { SETTINGS } from "../../util/dataMocks"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { StoreService } from "../../state/store.service"
 
 describe("RangeSliderController", () => {
 	let settingsService: SettingsService
+	let storeService: StoreService
 	let fileStateService: FileStateService
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
 	let rangeSliderController: RangeSliderController
 
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController(settingsService, fileStateService, metricService, $rootScope)
+		rangeSliderController = new RangeSliderController(settingsService, storeService, fileStateService, metricService, $rootScope)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.rangeSlider")
 
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
@@ -115,6 +118,8 @@ describe("RangeSliderController", () => {
 			expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
 
 			expect(settingsService.updateSettings).toHaveBeenCalled()
+			expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
+			expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
 		})
 
 		it("should be able to call onToChange and set the color range correctly", () => {
@@ -130,6 +135,8 @@ describe("RangeSliderController", () => {
 			expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
 
 			expect(settingsService.updateSettings).toHaveBeenCalled()
+			expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
+			expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
 		})
 	})
 })
