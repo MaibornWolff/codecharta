@@ -99,8 +99,9 @@ describe("StoreService", () => {
 
 		it("should reset the state to default", () => {
 			storeService.dispatch(setState())
+			storeService.dispatch(setState(STATE))
 
-			expect(storeService.getState()).toEqual(DEFAULT_STATE)
+			expect(storeService.getState()).toEqual(STATE)
 		})
 	})
 })
