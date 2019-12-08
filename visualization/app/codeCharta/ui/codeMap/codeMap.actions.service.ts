@@ -32,6 +32,7 @@ export class CodeMapActionsService {
 		const parentMP: MarkedPackage = this.getParentMP(newMP.path, s)
 
 		this.handleUpdatingMarkedPackages(s, newMP, clickedMP, parentMP)
+		//TODO: fill StoreService
 		this.settingsService.updateSettings({
 			fileSettings: {
 				markedPackages: s.fileSettings.markedPackages
@@ -66,6 +67,7 @@ export class CodeMapActionsService {
 			const parentMP: MarkedPackage = this.getParentMP(node.path, s)
 			this.removeMarkedPackage(parentMP, s)
 		}
+		//TODO: fill StoreService
 		this.settingsService.updateSettings({
 			fileSettings: {
 				markedPackages: s.fileSettings.markedPackages

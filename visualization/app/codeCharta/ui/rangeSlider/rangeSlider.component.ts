@@ -78,6 +78,7 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	}
 
 	private applySettings() {
+		//TODO: fill StoreService
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				colorRange: {

@@ -88,11 +88,13 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
+		//TODO: fill StoreService
 		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
 
 		this.codeChartaService
 			.loadFiles(values)
 			.then(() => {
+				//TODO: fill StoreService
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 			})
 			.catch(e => {

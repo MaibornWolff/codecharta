@@ -64,6 +64,7 @@ export class EdgeChooserController
 	}
 
 	public onEdgeMetricSelected() {
+		//TODO: fill StoreService
 		this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: this._viewModel.edgeMetric } })
 	}
 

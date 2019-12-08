@@ -38,6 +38,7 @@ export class ResetSettingsButtonController {
 		})
 
 		if (Object.keys(updatedSettings).length > 0) {
+			//TODO: fill StoreService
 			this.settingsService.updateSettings(updatedSettings)
 		}
 	}
