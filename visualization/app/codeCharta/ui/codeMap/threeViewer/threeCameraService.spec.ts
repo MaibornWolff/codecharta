@@ -80,7 +80,7 @@ describe("ThreeCameraService", () => {
 				{ appSettings: { camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) } },
 				true
 			)
-			expect(storeService.getState().appSettings.camera).toEqual(new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z))
+			expect(storeService.getState().appSettings.camera).toEqual(cameraPosition)
 		})
 
 		it("should not call storeService.notify method", () => {

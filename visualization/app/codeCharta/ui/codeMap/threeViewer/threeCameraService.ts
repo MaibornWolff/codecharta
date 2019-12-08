@@ -28,7 +28,7 @@ export class ThreeCameraService implements SettingsServiceSubscriber, CameraChan
 				true
 			)
 
-			this.storeService.dispatch(setCamera(new Vector3(this.camera.position.x, this.camera.position.y, this.camera.position.z)), true)
+			this.storeService.dispatch(setCamera(this.camera.position), true)
 		}, ThreeCameraService.DEBOUNCE_TIME)
 	}
 
