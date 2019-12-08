@@ -1,12 +1,14 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
 import "./resetSettingsButton.component.scss"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
+import { StoreService } from "../../state/store.service"
+import { setState } from "../../state/store/state.actions"
 
 export class ResetSettingsButtonController {
 	private settingsNames: string = ""
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService) {}
+	constructor(private settingsService: SettingsService, private storeService: StoreService) {}
 
 	public applyDefaultSettings() {
 		const tokens: string[] = this.settingsNames
@@ -38,8 +40,8 @@ export class ResetSettingsButtonController {
 		})
 
 		if (Object.keys(updatedSettings).length > 0) {
-			//TODO: fill StoreService
 			this.settingsService.updateSettings(updatedSettings)
+			this.storeService.dispatch(setState(updatedSettings))
 		}
 	}
 }
