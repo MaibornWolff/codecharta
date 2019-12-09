@@ -2,9 +2,7 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { CameraAction, CameraActions } from "./camera.actions"
 import { CameraService } from "./camera.service"
-import { Vector3 } from "three"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("CameraService", () => {
