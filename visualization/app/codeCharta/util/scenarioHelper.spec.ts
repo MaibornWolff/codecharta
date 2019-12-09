@@ -26,6 +26,18 @@ describe("scenarioHelper", () => {
 
 			expect(result[0].settings.appSettings.camera.clone).not.toBeUndefined()
 		})
+
+		it("should assume 0 as default value if only one dimension is given", () => {
+			scenarios[0].settings.appSettings.camera = { y: 1 } as any
+			expect(scenarios[0].settings.appSettings.camera.clone).toBeUndefined()
+
+			const result = ScenarioHelper.importScenarios(scenarios)
+
+			expect(result[0].settings.appSettings.camera.clone).not.toBeUndefined()
+			expect(result[0].settings.appSettings.camera.x).toBe(0)
+			expect(result[0].settings.appSettings.camera.y).toBe(1)
+			expect(result[0].settings.appSettings.camera.z).toBe(0)
+		})
 	})
 
 	describe("isScenarioPossible", () => {
