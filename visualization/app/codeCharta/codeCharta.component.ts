@@ -12,6 +12,8 @@ import { LoadingStatusService } from "./state/loadingStatus.service"
 import { NodeSearchService } from "./state/nodeSearch.service"
 import { SettingsServiceSubscriber } from "./state/settingsService/settings.service.events"
 import { InjectorService } from "./state/injector.service"
+import { StoreService } from "./state/store.service"
+import { setState } from "./state/store/state.actions"
 
 export class CodeChartaController implements SettingsServiceSubscriber {
 	private _viewModel: {
@@ -31,18 +33,17 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private dialogService: DialogService,
-		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService,
-		private codeChartaService: CodeChartaService,
-		private fileStateService: FileStateService,
-		// tslint:disable-next-line
-		private nodeSearchService: NodeSearchService, // We have to inject it somewhere
-		// tslint:disable-next-line
-		private injectorService: InjectorService, // We have to inject it somewhere
 		private $location: ILocationService,
 		private $http: IHttpService,
-		private loadingStatusService: LoadingStatusService
+		private settingsService: SettingsService,
+		private storeService: StoreService,
+		private dialogService: DialogService,
+		private codeMapActionsService: CodeMapActionsService,
+		private codeChartaService: CodeChartaService,
+		private fileStateService: FileStateService,
+		private loadingStatusService: LoadingStatusService,
+		// tslint:disable-next-line
+		private injectorService: InjectorService // We have to inject it somewhere
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 
@@ -88,14 +89,14 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
-		//TODO: fill StoreService
 		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
+		this.storeService.dispatch(setState())
 
 		this.codeChartaService
 			.loadFiles(values)
 			.then(() => {
-				//TODO: fill StoreService
 				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
+				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenario().settings))
 			})
 			.catch(e => {
 				this.loadingStatusService.updateLoadingFileFlag(false)

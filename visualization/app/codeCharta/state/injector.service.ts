@@ -29,6 +29,7 @@ import { DistributionMetricService } from "./store/dynamicSettings/distributionM
 import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMetric.service"
 import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
+import { NodeSearchService } from "./nodeSearch.service"
 
 export class InjectorService {
 	/* @ngInject */
@@ -65,6 +66,7 @@ export class InjectorService {
 		private distributionMetricService: DistributionMetricService,
 		private colorMetricService: ColorMetricService,
 		private areaMetricService: AreaMetricService,
-		private blacklistService: BlacklistService
+		private blacklistService: BlacklistService,
+		private nodeSearchService: NodeSearchService
 	) {}
 }
