@@ -17,6 +17,17 @@ describe("scenarioHelper", () => {
 		]
 	})
 
+	describe("importScenarios", () => {
+		it("should convert vectors when importing scenarios", () => {
+			scenarios[0].settings.appSettings.camera = { x: 0, y: 1, z: 2 } as any
+			expect(scenarios[0].settings.appSettings.camera.clone).toBeUndefined()
+
+			const result = ScenarioHelper.importScenarios(scenarios)
+
+			expect(result[0].settings.appSettings.camera.clone).not.toBeUndefined()
+		})
+	})
+
 	describe("isScenarioPossible", () => {
 		it("should return true for a possible scenario", () => {
 			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)

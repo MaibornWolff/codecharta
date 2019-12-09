@@ -27,7 +27,6 @@ export interface SetAppSettingsAction extends CCAction {
 
 export type AppSettingsAction = SetAppSettingsAction
 
-// TODO: The interface is not correct, as a the given json object does not include objects like Vector3
 export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defaultAppSettings): AppSettingsAction {
 	return {
 		type: AppSettingsActions.SET_APP_SETTINGS,
