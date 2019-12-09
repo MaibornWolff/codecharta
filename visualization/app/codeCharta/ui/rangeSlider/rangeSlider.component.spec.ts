@@ -19,6 +19,8 @@ describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
 	let rangeSliderController: RangeSliderController
 
+	let SOME_EXTRA_TIME = 400
+
 	function rebuildController() {
 		rangeSliderController = new RangeSliderController(settingsService, storeService, fileStateService, metricService, $rootScope)
 	}
@@ -105,7 +107,7 @@ describe("RangeSliderController", () => {
 			expect(rangeSliderController["_viewModel"].sliderOptions.onFromChange).not.toBeUndefined()
 		})
 
-		it("should be able to call onFromChange and set the color range correctly", () => {
+		it("should be able to call onFromChange and set the color range correctly", done => {
 			settingsService.updateSettings = jest.fn()
 			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
@@ -118,11 +120,15 @@ describe("RangeSliderController", () => {
 			expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
 
 			expect(settingsService.updateSettings).toHaveBeenCalled()
-			expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
-			expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
+				expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
+				done()
+			}, RangeSliderController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 
-		it("should be able to call onToChange and set the color range correctly", () => {
+		it("should be able to call onToChange and set the color range correctly", done => {
 			settingsService.updateSettings = jest.fn()
 			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
@@ -135,8 +141,12 @@ describe("RangeSliderController", () => {
 			expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
 
 			expect(settingsService.updateSettings).toHaveBeenCalled()
-			expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
-			expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
+				expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
+				done()
+			}, RangeSliderController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 })
