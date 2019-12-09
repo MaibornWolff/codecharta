@@ -20,6 +20,7 @@ describe("AreaSettingsPanelController", () => {
 
 	let settings: Settings
 	let map: CodeMapNode
+	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
@@ -173,6 +174,7 @@ describe("AreaSettingsPanelController", () => {
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				appSettings: { dynamicMargin: true }
 			})
+			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 	})
 
@@ -208,7 +210,7 @@ describe("AreaSettingsPanelController", () => {
 	})
 
 	describe("applySettings", () => {
-		it("should call updateSettings", () => {
+		it("should call updateSettings", done => {
 			areaSettingsPanelController["_viewModel"].dynamicMargin = false
 			areaSettingsPanelController["_viewModel"].margin = 28
 			const expected = { dynamicSettings: { margin: 28 }, appSettings: { dynamicMargin: false } }
@@ -216,8 +218,12 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.applySettings()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
-			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
-			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+				expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
+				done()
+			}, AreaSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 })
