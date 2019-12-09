@@ -50,14 +50,14 @@ export class EdgeMetricDataService implements FileStateServiceSubscriber, Blackl
 	}
 
 	public getAmountOfAffectedBuildings(metricName: string): number {
-		if (!this.nodeEdgeMetricsMap || !this.nodeEdgeMetricsMap.has(metricName)) {
+		if (!this.nodeEdgeMetricsMap.has(metricName)) {
 			return 0
 		}
 		return this.nodeEdgeMetricsMap.get(metricName).size
 	}
 
 	public getNodesWithHighestValue(metricName: string, numberOfNodes: number): string[] {
-		if (!this.nodeEdgeMetricsMap || !this.nodeEdgeMetricsMap.has(metricName)) {
+		if (!this.nodeEdgeMetricsMap.has(metricName)) {
 			return []
 		}
 
@@ -172,14 +172,12 @@ export class EdgeMetricDataService implements FileStateServiceSubscriber, Blackl
 
 	private sortNodeEdgeMetricsMap() {
 		let sortedEdgeMetricMap = new Map()
-		if (this.nodeEdgeMetricsMap) {
-			this.nodeEdgeMetricsMap.forEach((value, key) => {
-				const sortedMapForMetric = new Map(
-					[...value.entries()].sort((a, b) => b[1].incoming + b[1].outgoing - (a[1].incoming + a[1].outgoing))
-				)
-				sortedEdgeMetricMap.set(key, sortedMapForMetric)
-			})
-		}
+		this.nodeEdgeMetricsMap.forEach((value, key) => {
+			const sortedMapForMetric = new Map(
+				[...value.entries()].sort((a, b) => b[1].incoming + b[1].outgoing - (a[1].incoming + a[1].outgoing))
+			)
+			sortedEdgeMetricMap.set(key, sortedMapForMetric)
+		})
 		this.nodeEdgeMetricsMap = sortedEdgeMetricMap
 	}
 
