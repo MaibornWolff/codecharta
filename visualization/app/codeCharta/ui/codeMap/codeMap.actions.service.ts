@@ -43,14 +43,11 @@ export class CodeMapActionsService {
 	private handleUpdatingMarkedPackages(s: Settings, newMP: MarkedPackage, clickedMP: MarkedPackage, parentMP: MarkedPackage): void {
 		if (!clickedMP && this.packagesHaveDifferentColor(parentMP, newMP)) {
 			this.addMarkedPackage(newMP, s)
-			this.storeService.dispatch(markPackage(newMP))
 		} else if (this.packagesHaveDifferentColor(clickedMP, newMP)) {
 			this.removeMarkedPackage(clickedMP, s)
-			this.storeService.dispatch(unmarkPackage(clickedMP))
 
 			if (this.packagesHaveDifferentColor(parentMP, newMP)) {
 				this.addMarkedPackage(newMP, s)
-				this.storeService.dispatch(markPackage(newMP))
 			}
 		}
 		this.removeChildrenMPWithSameColor(newMP, s)
@@ -66,11 +63,9 @@ export class CodeMapActionsService {
 
 		if (clickedMP) {
 			this.removeMarkedPackage(clickedMP, s)
-			this.storeService.dispatch(unmarkPackage(clickedMP))
 		} else {
 			const parentMP: MarkedPackage = this.getParentMP(node.path, s)
 			this.removeMarkedPackage(parentMP, s)
-			this.storeService.dispatch(unmarkPackage(parentMP))
 		}
 		// this settings update is dispatched in the store separately using the unmark action
 		this.settingsService.updateSettings({
@@ -174,7 +169,6 @@ export class CodeMapActionsService {
 			const parentMP = this.getParentMP(childPackage.path, s)
 			if (parentMP && parentMP.color === childPackage.color) {
 				this.removeMarkedPackage(childPackage, s)
-				this.storeService.dispatch(unmarkPackage(childPackage))
 			}
 		})
 	}
@@ -190,6 +184,7 @@ export class CodeMapActionsService {
 				markedPackages: s.fileSettings.markedPackages
 			}
 		})
+		this.storeService.dispatch(markPackage(markedPackage))
 	}
 
 	private removeMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
@@ -197,6 +192,7 @@ export class CodeMapActionsService {
 		if (indexToRemove > -1) {
 			s.fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
+		this.storeService.dispatch(unmarkPackage(markedPackage))
 	}
 
 	private isEqualObjects(obj1, obj2): boolean {
