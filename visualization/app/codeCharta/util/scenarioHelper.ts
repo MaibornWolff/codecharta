@@ -1,7 +1,7 @@
 "use strict"
 import { MetricData, RecursivePartial, Settings } from "../codeCharta.model"
 import { Vector3 } from "three"
-import _ from "lodash"
+import { convertToVectors } from "./settingsHelper"
 
 export interface Scenario {
 	name: string
@@ -35,29 +35,8 @@ export class ScenarioHelper {
 
 	public static importScenarios(scenarios: Scenario[]): Scenario[] {
 		scenarios.forEach(scenario => {
-			this.convertToVectors(scenario.settings)
+			convertToVectors(scenario.settings)
 		})
 		return scenarios
-	}
-
-	private static convertToVectors(settings: RecursivePartial<Settings>) {
-		const DEFAULT_VALUE = 0
-
-		for (let key of Object.keys(settings)) {
-			if (_.isObject(settings[key])) {
-				const xExists = settings[key].hasOwnProperty("x")
-				const yExists = settings[key].hasOwnProperty("y")
-				const zExists = settings[key].hasOwnProperty("z")
-
-				if (xExists || yExists || zExists) {
-					settings[key] = new Vector3(
-						xExists ? settings[key].x : DEFAULT_VALUE,
-						yExists ? settings[key].y : DEFAULT_VALUE,
-						zExists ? settings[key].z : DEFAULT_VALUE
-					)
-				}
-				this.convertToVectors(settings[key])
-			}
-		}
 	}
 }

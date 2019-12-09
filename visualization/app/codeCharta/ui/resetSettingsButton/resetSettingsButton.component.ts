@@ -3,6 +3,8 @@ import "./resetSettingsButton.component.scss"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
+import { ScenarioHelper } from "../../util/scenarioHelper"
+import { convertToVectors } from "../../util/settingsHelper"
 
 export class ResetSettingsButtonController {
 	private settingsNames: string = ""
@@ -40,6 +42,7 @@ export class ResetSettingsButtonController {
 		})
 
 		if (Object.keys(updatedSettings).length > 0) {
+			convertToVectors(updatedSettings)
 			this.settingsService.updateSettings(updatedSettings)
 			this.storeService.dispatch(setState(updatedSettings))
 		}
