@@ -38,24 +38,4 @@ describe("CameraService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, cameraService)
 		})
 	})
-
-	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new camera value", () => {
-			const action: CameraAction = {
-				type: CameraActions.SET_CAMERA,
-				payload: new Vector3(0, 1, 2)
-			}
-			storeService["store"].dispatch(action)
-
-			cameraService.onStoreChanged(CameraActions.SET_CAMERA)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("camera-changed", { camera: new Vector3(0, 1, 2) })
-		})
-
-		it("should not notify anything on non-camera-events", () => {
-			cameraService.onStoreChanged("ANOTHER_ACTION")
-
-			expect($rootScope.$broadcast).not.toHaveBeenCalled()
-		})
-	})
 })
