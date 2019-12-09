@@ -299,10 +299,11 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.storeService.dispatch(setMargin())
 		this.storeService.dispatch(setColorRange())
 
+		const fileSettings = this.getNewFileSettings(fileStates)
 		this.updateSettings({
-			fileSettings: this.getNewFileSettings(fileStates)
+			fileSettings
 		})
-		this.storeService.dispatch(setFileSettings())
+		this.storeService.dispatch(setFileSettings(fileSettings))
 	}
 
 	private notifySettingsSubscribers() {
