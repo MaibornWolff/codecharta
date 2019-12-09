@@ -915,4 +915,6 @@ export const MARKED_PACKAGES: MarkedPackage[] = [
 export function withMockedEventMethods($rootScope: IRootScopeService) {
 	$rootScope.$broadcast = jest.fn()
 	$rootScope.$on = jest.fn()
+	$rootScope.$digest = jest.fn()
+	$rootScope.$apply = jest.fn()
 }

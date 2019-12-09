@@ -6,6 +6,7 @@ import { BlacklistService } from "./blacklist.service"
 import { BlacklistAction, BlacklistActions } from "./blacklist.actions"
 import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 import { PresentationModeActions } from "../../appSettings/isPresentationMode/isPresentationMode.actions"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("BlacklistService", () => {
 	let blacklistService: BlacklistService
@@ -15,7 +16,7 @@ describe("BlacklistService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -27,10 +28,6 @@ describe("BlacklistService", () => {
 
 	function rebuildService() {
 		blacklistService = new BlacklistService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

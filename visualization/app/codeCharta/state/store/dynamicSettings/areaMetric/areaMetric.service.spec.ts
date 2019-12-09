@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { AreaMetricService } from "./areaMetric.service"
 import { AreaMetricAction, AreaMetricActions } from "./areaMetric.actions"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("AreaMetricService", () => {
 	let areaMetricService: AreaMetricService
@@ -13,7 +14,7 @@ describe("AreaMetricService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("AreaMetricService", () => {
 
 	function rebuildService() {
 		areaMetricService = new AreaMetricService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

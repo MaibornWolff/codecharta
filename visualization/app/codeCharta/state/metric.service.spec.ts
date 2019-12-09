@@ -2,7 +2,7 @@ import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS } from "../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS, withMockedEventMethods } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
 import { NodeDecorator } from "../util/nodeDecorator"
@@ -20,7 +20,7 @@ describe("MetricService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -45,10 +45,6 @@ describe("MetricService", () => {
 		metricService = new MetricService($rootScope, fileStateService)
 		metricService["metricData"] = metricData
 		metricService["fileStates"] = fileStates
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = metricService["$rootScope"].$broadcast = jest.fn((event, data) => {})
 	}
 
 	describe("constructor", () => {

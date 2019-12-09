@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { HideFlatBuildingsAction, HideFlatBuildingsActions } from "./hideFlatBuildings.actions"
 import { HideFlatBuildingsService } from "./hideFlatBuildings.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("HideFlatBuildingsService", () => {
 	let hideFlatBuildingsService: HideFlatBuildingsService
@@ -13,7 +14,7 @@ describe("HideFlatBuildingsService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("HideFlatBuildingsService", () => {
 
 	function rebuildService() {
 		hideFlatBuildingsService = new HideFlatBuildingsService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { MapColorsAction, MapColorsActions } from "./mapColors.actions"
 import { MapColorsService } from "./mapColors.service"
 import { defaultMapColors } from "./mapColors.actions"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("MapColorsService", () => {
 	let mapColorsService: MapColorsService
@@ -14,7 +15,7 @@ describe("MapColorsService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -26,10 +27,6 @@ describe("MapColorsService", () => {
 
 	function rebuildService() {
 		mapColorsService = new MapColorsService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { DynamicMarginAction, DynamicMarginActions } from "./dynamicMargin.actions"
 import { DynamicMarginService } from "./dynamicMargin.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("DynamicMarginService", () => {
 	let dynamicMarginService: DynamicMarginService
@@ -13,7 +14,7 @@ describe("DynamicMarginService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("DynamicMarginService", () => {
 
 	function rebuildService() {
 		dynamicMarginService = new DynamicMarginService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

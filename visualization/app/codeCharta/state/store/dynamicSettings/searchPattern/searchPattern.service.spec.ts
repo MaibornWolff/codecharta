@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { SearchPatternAction, SearchPatternActions } from "./searchPattern.actions"
 import { SearchPatternService } from "./searchPattern.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("SearchPatternService", () => {
 	let searchPatternService: SearchPatternService
@@ -14,7 +15,7 @@ describe("SearchPatternService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -26,10 +27,6 @@ describe("SearchPatternService", () => {
 
 	function rebuildService() {
 		searchPatternService = new SearchPatternService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

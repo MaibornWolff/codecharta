@@ -4,7 +4,7 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { LoadingStatusService } from "../loadingStatus.service"
 import { AttributeTypeValue, FileSelectionState, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS, DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { DEFAULT_SETTINGS, DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../../util/dataMocks"
 import { FileStateService } from "../fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { SettingsMerger } from "../../util/settingsMerger"
@@ -24,7 +24,7 @@ describe("settingService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 		withMockedLoadingStatusService()
 	})
 
@@ -45,11 +45,6 @@ describe("settingService", () => {
 
 	function rebuildService() {
 		settingsService = new SettingsService($rootScope, $timeout, storeService, loadingStatusService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$on = settingsService["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast = settingsService["$rootScope"].$on = jest.fn()
 	}
 
 	function withMockedLoadingStatusService() {

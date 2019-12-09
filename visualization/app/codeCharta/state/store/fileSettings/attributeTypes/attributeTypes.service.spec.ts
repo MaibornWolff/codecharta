@@ -4,7 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { AttributeTypesAction, AttributeTypesActions } from "./attributeTypes.actions"
 import { AttributeTypesService } from "./attributeTypes.service"
-import { SETTINGS } from "../../../../util/dataMocks"
+import { SETTINGS, withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("AttributeTypesService", () => {
 	let attributeTypesService: AttributeTypesService
@@ -14,7 +14,7 @@ describe("AttributeTypesService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -26,10 +26,6 @@ describe("AttributeTypesService", () => {
 
 	function rebuildService() {
 		attributeTypesService = new AttributeTypesService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

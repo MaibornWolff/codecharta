@@ -7,7 +7,7 @@ import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
+import { DEFAULT_SETTINGS, SETTINGS, withMockedEventMethods } from "../../util/dataMocks"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import * as THREE from "three"
 
@@ -24,7 +24,7 @@ describe("CodeMapLabelService", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedSettingsService()
@@ -43,12 +43,6 @@ describe("CodeMapLabelService", () => {
 
 	function rebuild() {
 		codeMapLabelService = new CodeMapLabelService($rootScope, settingsService, threeCameraService, threeSceneService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$on = jest.fn()
-
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	function withMockedThreeCameraService() {

@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { MarginAction, MarginActions } from "./margin.actions"
 import { MarginService } from "./margin.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("MarginService", () => {
 	let marginService: MarginService
@@ -13,7 +14,7 @@ describe("MarginService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("MarginService", () => {
 
 	function rebuildService() {
 		marginService = new MarginService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

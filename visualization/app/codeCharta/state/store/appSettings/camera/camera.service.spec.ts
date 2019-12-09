@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { CameraAction, CameraActions } from "./camera.actions"
 import { CameraService } from "./camera.service"
 import { Vector3 } from "three"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("CameraService", () => {
 	let cameraService: CameraService
@@ -14,7 +15,7 @@ describe("CameraService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -26,10 +27,6 @@ describe("CameraService", () => {
 
 	function rebuildService() {
 		cameraService = new CameraService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

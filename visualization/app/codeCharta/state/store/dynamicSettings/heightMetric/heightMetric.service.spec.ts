@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { HeightMetricAction, HeightMetricActions } from "./heightMetric.actions"
 import { HeightMetricService } from "./heightMetric.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("HeightMetricService", () => {
 	let heightMetricService: HeightMetricService
@@ -13,7 +14,7 @@ describe("HeightMetricService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("HeightMetricService", () => {
 
 	function rebuildService() {
 		heightMetricService = new HeightMetricService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

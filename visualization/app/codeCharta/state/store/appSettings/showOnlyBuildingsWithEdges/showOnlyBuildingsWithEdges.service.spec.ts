@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { ShowOnlyBuildingsWithEdgesAction, ShowOnlyBuildingsWithEdgesActions } from "./showOnlyBuildingsWithEdges.actions"
 import { ShowOnlyBuildingsWithEdgesService } from "./showOnlyBuildingsWithEdges.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("ShowOnlyBuildingsWithEdgesService", () => {
 	let showOnlyBuildingsWithEdgesService: ShowOnlyBuildingsWithEdgesService
@@ -13,7 +14,7 @@ describe("ShowOnlyBuildingsWithEdgesService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("ShowOnlyBuildingsWithEdgesService", () => {
 
 	function rebuildService() {
 		showOnlyBuildingsWithEdgesService = new ShowOnlyBuildingsWithEdgesService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { EdgeMetricAction, EdgeMetricActions } from "./edgeMetric.actions"
 import { EdgeMetricService } from "./edgeMetric.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("EdgeMetricService", () => {
 	let edgeMetricService: EdgeMetricService
@@ -13,7 +14,7 @@ describe("EdgeMetricService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("EdgeMetricService", () => {
 
 	function rebuildService() {
 		edgeMetricService = new EdgeMetricService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

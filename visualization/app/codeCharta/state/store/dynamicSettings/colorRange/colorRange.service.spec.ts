@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { ColorRangeService } from "./colorRange.service"
 import { ColorRangeAction, ColorRangeActions } from "./colorRange.actions"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("ColorRangeService", () => {
 	let colorRangeService: ColorRangeService
@@ -13,7 +14,7 @@ describe("ColorRangeService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("ColorRangeService", () => {
 
 	function rebuildService() {
 		colorRangeService = new ColorRangeService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

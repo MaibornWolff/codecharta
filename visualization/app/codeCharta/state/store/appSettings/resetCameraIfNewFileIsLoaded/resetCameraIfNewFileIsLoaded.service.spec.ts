@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { ResetCameraIfNewFileIsLoadedAction, ResetCameraIfNewFileIsLoadedActions } from "./resetCameraIfNewFileIsLoaded.actions"
 import { ResetCameraIfNewFileIsLoadedService } from "./resetCameraIfNewFileIsLoaded.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("ResetCameraIfNewFileIsLoadedService", () => {
 	let resetCameraIfNewFileIsLoadedService: ResetCameraIfNewFileIsLoadedService
@@ -13,7 +14,7 @@ describe("ResetCameraIfNewFileIsLoadedService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("ResetCameraIfNewFileIsLoadedService", () => {
 
 	function rebuildService() {
 		resetCameraIfNewFileIsLoadedService = new ResetCameraIfNewFileIsLoadedService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

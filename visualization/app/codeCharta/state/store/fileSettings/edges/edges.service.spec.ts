@@ -4,7 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { EdgesAction, EdgesActions } from "./edges.actions"
 import { EdgesService } from "./edges.service"
-import { VALID_EDGE } from "../../../../util/dataMocks"
+import { VALID_EDGE, withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("EdgesService", () => {
 	let edgesService: EdgesService
@@ -14,7 +14,7 @@ describe("EdgesService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -26,10 +26,6 @@ describe("EdgesService", () => {
 
 	function rebuildService() {
 		edgesService = new EdgesService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

@@ -8,6 +8,7 @@ import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { withMockedEventMethods } from "../../util/dataMocks"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
@@ -20,6 +21,7 @@ describe("SearchBarController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -35,16 +37,7 @@ describe("SearchBarController", () => {
 		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService, storeService)
 	}
 
-	function withMockedEventMethods() {
-		$rootScope.$on = searchBarController["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast = searchBarController["$rootScope"].$broadcast = jest.fn()
-	}
-
 	describe("constructor", () => {
-		beforeEach(() => {
-			withMockedEventMethods()
-		})
-
 		it("subscribe to blacklist", () => {
 			BlacklistService.subscribe = jest.fn()
 

@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { EdgeHeightAction, EdgeHeightActions } from "./edgeHeight.actions"
 import { EdgeHeightService } from "./edgeHeight.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("EdgeHeightService", () => {
 	let edgeHeightService: EdgeHeightService
@@ -13,7 +14,7 @@ describe("EdgeHeightService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("EdgeHeightService", () => {
 
 	function rebuildService() {
 		edgeHeightService = new EdgeHeightService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {
