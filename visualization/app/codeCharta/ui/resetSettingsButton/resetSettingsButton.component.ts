@@ -3,7 +3,6 @@ import "./resetSettingsButton.component.scss"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
-import { ScenarioHelper } from "../../util/scenarioHelper"
 import { convertToVectors } from "../../util/settingsHelper"
 
 export class ResetSettingsButtonController {

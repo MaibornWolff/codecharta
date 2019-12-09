@@ -1,6 +1,5 @@
 "use strict"
 import { MetricData, RecursivePartial, Settings } from "../codeCharta.model"
-import { Vector3 } from "three"
 import { convertToVectors } from "./settingsHelper"
 
 export interface Scenario {
