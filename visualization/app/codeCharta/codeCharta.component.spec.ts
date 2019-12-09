@@ -8,7 +8,7 @@ import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { Settings } from "./codeCharta.model"
-import { DEFAULT_STATE, SETTINGS, withMockedEventMethods } from "./util/dataMocks"
+import { SETTINGS, withMockedEventMethods } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
@@ -206,20 +206,6 @@ describe("codeChartaController", () => {
 			codeChartaController.tryLoadingSampleFiles()
 
 			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected)
-		})
-
-		it("should update settings with default settings", () => {
-			codeChartaController.tryLoadingSampleFiles()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
-			expect(storeService.getState()).toEqual(DEFAULT_STATE)
-		})
-
-		it("should update settings from default scenario", () => {
-			codeChartaController.tryLoadingSampleFiles()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
-			expect(storeService.getState()).toEqual(DEFAULT_STATE)
 		})
 
 		it("should call loadFiles with sample files", () => {
