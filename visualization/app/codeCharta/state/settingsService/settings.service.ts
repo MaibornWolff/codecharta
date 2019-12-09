@@ -83,43 +83,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 		return this.settings
 	}
 
-	private logStore() {
-		console.log("STORE CHANGED")
-		console.log("Are they identical?")
-
-		const equalAppSettings = _.isEqual(this.storeService.getState().appSettings, this.settings.appSettings)
-		const equalFileSettings = _.isEqual(this.storeService.getState().fileSettings, this.settings.fileSettings)
-		const equalDynamicSettings = _.isEqual(this.storeService.getState().dynamicSettings, this.settings.dynamicSettings)
-		const equalTreeMapSettings = _.isEqual(this.storeService.getState().treeMap, this.settings.treeMapSettings)
-
-		console.log("AppSettings: ", equalAppSettings)
-		if (!equalAppSettings) {
-			console.log("Settings:", this.settings.appSettings)
-			console.log("State: ", this.storeService.getState().appSettings)
-		}
-
-		console.log("FileSettings: ", equalFileSettings)
-		if (!equalFileSettings) {
-			console.log("Settings:", this.settings.fileSettings)
-			console.log("State: ", this.storeService.getState().fileSettings)
-		}
-
-		console.log("DynamicSettings: ", equalDynamicSettings)
-		if (!equalDynamicSettings) {
-			console.log("Settings:", this.settings.dynamicSettings)
-			console.log("State: ", this.storeService.getState().dynamicSettings)
-		}
-
-		console.log("TreeMapSettings: ", equalTreeMapSettings)
-		if (!equalTreeMapSettings) {
-			console.log("Settings:", this.settings.treeMapSettings)
-			console.log("State: ", this.storeService.getState().treeMap)
-		}
-	}
-
 	public updateSettings(update: RecursivePartial<Settings>, isSilent: boolean = false) {
-		this.logStore()
-
 		this.settings = this.mergePartialSettings(this.settings, update, this.settings) as Settings
 		if (!isSilent) {
 			this.loadingStatusService.updateLoadingMapFlag(true)
