@@ -65,7 +65,16 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 
 	public onChangeMarginSlider() {
 		this._viewModel.dynamicMargin = false
-		this.applySettings()
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				margin: this._viewModel.margin
+			},
+			appSettings: {
+				dynamicMargin: this._viewModel.dynamicMargin
+			}
+		})
+		this.applyDebouncedMargin()
+		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
 	public applySettingsDynamicMargin() {
@@ -86,7 +95,7 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 				dynamicMargin: this._viewModel.dynamicMargin
 			}
 		})
-		this.applyDebouncedMargin()
+		this.storeService.dispatch(setMargin(this._viewModel.margin))
 		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 

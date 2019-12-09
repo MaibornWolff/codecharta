@@ -109,12 +109,6 @@ describe("AreaSettingsPanelController", () => {
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
 		})
 
-		it("should call applySettings after setting new margin", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
-		})
-
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
 			settings.dynamicSettings.margin = 28
 
@@ -191,10 +185,20 @@ describe("AreaSettingsPanelController", () => {
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeFalsy()
 		})
 
-		it("should call applySettings after updating viewModel", () => {
+		it("should call updateSettings", done => {
+			areaSettingsPanelController["_viewModel"].dynamicMargin = false
+			areaSettingsPanelController["_viewModel"].margin = 28
+			const expected = { dynamicSettings: { margin: 28 }, appSettings: { dynamicMargin: false } }
+
 			areaSettingsPanelController.onChangeMarginSlider()
 
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+				expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
+				done()
+			}, AreaSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 
@@ -210,7 +214,7 @@ describe("AreaSettingsPanelController", () => {
 	})
 
 	describe("applySettings", () => {
-		it("should call updateSettings", done => {
+		it("should call updateSettings", () => {
 			areaSettingsPanelController["_viewModel"].dynamicMargin = false
 			areaSettingsPanelController["_viewModel"].margin = 28
 			const expected = { dynamicSettings: { margin: 28 }, appSettings: { dynamicMargin: false } }
@@ -218,12 +222,8 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.applySettings()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
-
-			setTimeout(() => {
-				expect(storeService.getState().dynamicSettings.margin).toEqual(28)
-				expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
-				done()
-			}, AreaSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 	})
 })
