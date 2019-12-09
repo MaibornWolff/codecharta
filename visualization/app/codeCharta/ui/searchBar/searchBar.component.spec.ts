@@ -17,6 +17,7 @@ describe("SearchBarController", () => {
 	let settingsService: SettingsService
 	let codeMapActionsService: CodeMapActionsService
 	let storeService: StoreService
+	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
@@ -56,12 +57,17 @@ describe("SearchBarController", () => {
 	})
 
 	describe("onFileSelectionStatesChanged", () => {
-		it("should set empty searchPattern", () => {
+		it("should set empty searchPattern", done => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
 			searchBarController.onFileSelectionStatesChanged(null)
 
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe("")
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
+				done()
+			}, SearchBarController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 
@@ -142,11 +148,11 @@ describe("SearchBarController", () => {
 
 	describe("onSearchPatternChanged", () => {
 		it("call applySettingsSearchPattern", () => {
-			searchBarController["applySettingsSearchPattern"] = jest.fn()
+			searchBarController["applyDebouncedSearchPattern"] = jest.fn()
 
 			searchBarController.onSearchPatternChanged()
 
-			expect(searchBarController["applySettingsSearchPattern"]).toHaveBeenCalled()
+			expect(searchBarController["applyDebouncedSearchPattern"]).toHaveBeenCalled()
 		})
 
 		it("call updateViewModel", () => {
