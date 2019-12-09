@@ -17,7 +17,6 @@ import { splitEdgeHeightAction } from "./edgeHeight/edgeHeight.splitter"
 import { splitAmountOfEdgePreviewsAction } from "./amountOfEdgePreviews/amountOfEdgePreviews.splitter"
 import { splitAmountOfTopLabelsAction } from "./amountOfTopLabels/amountOfTopLabels.splitter"
 import { splitIsPresentationModeAction } from "./isPresentationMode/isPresentationMode.splitter"
-import { Vector3 } from "three"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>): CCAction[] {
 	const actions: CCAction[] = []
@@ -64,11 +63,11 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 	}
 
 	if (payload.camera !== undefined) {
-		actions.push(splitCameraAction(payload.camera as Vector3))
+		actions.push(splitCameraAction(payload.camera))
 	}
 
 	if (payload.scaling !== undefined) {
-		actions.push(splitScalingAction(payload.scaling as Vector3))
+		actions.push(splitScalingAction(payload.scaling))
 	}
 
 	if (payload.edgeHeight !== undefined) {
