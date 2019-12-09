@@ -18,6 +18,7 @@ describe("HeightSettingsPanelController", () => {
 	let storeService: StoreService
 
 	let settings: Settings
+	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
@@ -104,7 +105,7 @@ describe("HeightSettingsPanelController", () => {
 	})
 
 	describe("applySettingsAmountOfTopLabels", () => {
-		it("should call updateSettings", () => {
+		it("should call updateSettings", done => {
 			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 12
 			const expected = {
 				appSettings: {
@@ -115,7 +116,11 @@ describe("HeightSettingsPanelController", () => {
 			heightSettingsPanelController.applySettingsAmountOfTopLabels()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
-			expect(storeService.getState().appSettings.amountOfTopLabels).toBe(12)
+
+			setTimeout(() => {
+				expect(storeService.getState().appSettings.amountOfTopLabels).toBe(12)
+				done()
+			}, HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 
@@ -136,7 +141,7 @@ describe("HeightSettingsPanelController", () => {
 	})
 
 	describe("applySettingsScaling", () => {
-		it("should call updateSettings", () => {
+		it("should call updateSettings", done => {
 			heightSettingsPanelController["_viewModel"].scalingY = 1.8
 			const expected = {
 				appSettings: {
@@ -147,7 +152,11 @@ describe("HeightSettingsPanelController", () => {
 			heightSettingsPanelController.applySettingsScaling()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
-			expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1.8, 1))
+
+			setTimeout(() => {
+				expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1.8, 1))
+				done()
+			}, HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 })
