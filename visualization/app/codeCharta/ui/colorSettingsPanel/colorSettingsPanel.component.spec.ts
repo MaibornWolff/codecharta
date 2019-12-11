@@ -7,8 +7,12 @@ import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_STATE, SETTINGS } from "../../util/dataMocks"
-import { Settings, FileSelectionState, FileState } from "../../codeCharta.model"
+import { FileSelectionState, FileState } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
+import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
+import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
+import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
@@ -57,15 +61,12 @@ describe("ColorSettingsPanelController", () => {
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			SettingsService.subscribe = jest.fn()
 			FileStateService.subscribe = jest.fn()
 			MetricService.subscribe = jest.fn()
-		})
-
-		it("should subscribe to SettingsService", () => {
-			rebuildController()
-
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+			InvertDeltaColorsService.subscribe = jest.fn()
+			WhiteColorBuildingsService.subscribe = jest.fn()
+			InvertColorRangeService.subscribe = jest.fn()
+			ColorMetricService.subscribe = jest.fn()
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -79,57 +80,92 @@ describe("ColorSettingsPanelController", () => {
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
+
+		it("should subscribe to InvertDeltaColorsService", () => {
+			rebuildController()
+
+			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+		})
+
+		it("should subscribe to WhiteColorBuildingsService", () => {
+			rebuildController()
+
+			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+		})
+
+		it("should subscribe to InvertColorRangeService", () => {
+			rebuildController()
+
+			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+		})
+
+		it("should subscribe to ColorMetricService", () => {
+			rebuildController()
+
+			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+		})
 	})
 
-	describe("onSettingsChanged", () => {
-		it("should set invertDeltaColors flag", () => {
-			const settings = { appSettings: { invertDeltaColors: true }, dynamicSettings: {} } as Settings
+	describe("onInvertDeltaColorsChanged", () => {
+		it("should set invertDeltaColors flag to true", () => {
+			colorSettingsPanelController.onInvertDeltaColorsChanged(true)
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBe(true)
+			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBeTruthy()
 		})
 
-		it("should set white color buildings", () => {
-			const settings = { appSettings: { whiteColorBuildings: true }, dynamicSettings: {} } as Settings
+		it("should set invertDeltaColors flag to false", () => {
+			colorSettingsPanelController.onInvertDeltaColorsChanged(false)
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
+			expect(colorSettingsPanelController["_viewModel"].invertDeltaColors).toBeFalsy()
 		})
+	})
 
-		it("should set invertColorRange", () => {
-			const settings = {
-				dynamicSettings: { colorMetric: "foo" },
-				appSettings: {
-					invertColorRange: true
-				}
-			} as Settings
-			colorSettingsPanelController["lastColorMetric"] = "foo"
-
-			colorSettingsPanelController.onSettingsChanged(settings, undefined)
+	describe("onInvertColorRangeChanged", () => {
+		it("should set invertColorRange flag to true", () => {
+			colorSettingsPanelController.onInvertColorRangeChanged(true)
 
 			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeTruthy()
 		})
 
-		it("should only adapt color range if color metric is not the same ", () => {
-			const settings = { dynamicSettings: { colorMetric: "foo" }, appSettings: {} } as Settings
+		it("should set invertColorRange flag to false", () => {
+			colorSettingsPanelController.onInvertColorRangeChanged(false)
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined)
+			expect(colorSettingsPanelController["_viewModel"].invertColorRange).toBeFalsy()
+		})
+	})
 
-			expect(settingsService.updateSettings).toHaveBeenCalledTimes(1)
+	describe("onWhiteColorBuildingsChanged", () => {
+		it("should set whiteColorBuildings flag to true", () => {
+			colorSettingsPanelController.onWhiteColorBuildingsChanged(true)
+
+			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeTruthy()
 		})
 
-		it("should set correct metric max is retrieved for range calculation ", () => {
-			const settings = { dynamicSettings: { colorMetric: "rloc" }, appSettings: {} } as Settings
+		it("should set whiteColorBuildings flag to false", () => {
+			colorSettingsPanelController.onWhiteColorBuildingsChanged(false)
 
-			colorSettingsPanelController.onSettingsChanged(settings, undefined)
+			expect(colorSettingsPanelController["_viewModel"].whiteColorBuildings).toBeFalsy()
+		})
+	})
 
-			expect(metricService.getMaxMetricByMetricName).toHaveBeenCalledWith("rloc")
+	describe("onColorMetricChanged", () => {
+		it("should only adapt color range if color metric is not the same", () => {
+			storeService.dispatch = jest.fn()
+			colorSettingsPanelController["lastColorMetric"] = "lastColorMetric"
+
+			colorSettingsPanelController.onColorMetricChanged("newColorMetric")
+
+			expect(storeService.dispatch).toHaveBeenCalled()
+		})
+
+		it("should call getMaxMetricByMetricName with colorMetric", () => {
+			colorSettingsPanelController.onColorMetricChanged("newColorMetric")
+
+			expect(metricService.getMaxMetricByMetricName).toHaveBeenCalledWith("newColorMetric")
 		})
 
 		it("should set adapted ColorRange in thirds for given metricValues", () => {
-			colorSettingsPanelController.onSettingsChanged(settingsService.getSettings(), undefined)
+			colorSettingsPanelController.onColorMetricChanged("rloc")
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
