@@ -6,9 +6,13 @@ import { IRootScopeService } from "angular"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
+import _ from "lodash"
 
 export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
+	private static DEBOUNCE_TIME = 400
+	private readonly applyDebouncedSearchPattern: () => void
+
 	private _viewModel: {
 		searchPattern: string
 		isPatternHidden: boolean
@@ -26,8 +30,11 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 		private codeMapActionsService: CodeMapActionsService,
 		private storeService: StoreService
 	) {
-		BlacklistService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
+		this.applyDebouncedSearchPattern = _.debounce(() => {
+			this.applySettingsSearchPattern()
+		}, SearchBarController.DEBOUNCE_TIME)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
@@ -50,7 +57,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 	}
 
 	public onSearchPatternChanged() {
-		this.applySettingsSearchPattern()
+		this.applyDebouncedSearchPattern()
 		this.updateViewModel(this.storeService.getState().fileSettings.blacklist)
 	}
 
@@ -65,7 +72,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 
 	private resetSearchPattern() {
 		this._viewModel.searchPattern = ""
-		this.applySettingsSearchPattern()
+		this.applyDebouncedSearchPattern()
 	}
 
 	private applySettingsSearchPattern() {
@@ -74,6 +81,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 				searchPattern: this._viewModel.searchPattern
 			}
 		})
+		this.storeService.dispatch(setSearchPattern(this._viewModel.searchPattern))
 	}
 }
 

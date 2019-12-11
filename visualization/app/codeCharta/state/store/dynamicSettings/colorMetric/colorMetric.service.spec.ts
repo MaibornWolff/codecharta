@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { ColorMetricService } from "./colorMetric.service"
 import { ColorMetricAction, ColorMetricActions } from "./colorMetric.actions"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("ColorMetricService", () => {
 	let colorMetricService: ColorMetricService
@@ -13,7 +14,7 @@ describe("ColorMetricService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("ColorMetricService", () => {
 
 	function rebuildService() {
 		colorMetricService = new ColorMetricService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

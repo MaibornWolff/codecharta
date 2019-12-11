@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { PresentationModeAction, PresentationModeActions } from "../../appSettings/isPresentationMode/isPresentationMode.actions"
 import { IsPresentationModeService } from "./isPresentationMode.service"
 import { BlacklistActions } from "../../fileSettings/blacklist/blacklist.actions"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("IsPresentationModeService", () => {
 	let isPresentationModeService: IsPresentationModeService
@@ -14,7 +15,7 @@ describe("IsPresentationModeService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -26,10 +27,6 @@ describe("IsPresentationModeService", () => {
 
 	function rebuildService() {
 		isPresentationModeService = new IsPresentationModeService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

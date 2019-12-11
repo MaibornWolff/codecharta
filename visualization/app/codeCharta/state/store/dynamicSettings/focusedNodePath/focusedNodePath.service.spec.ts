@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { FocusedNodePathAction, FocusedNodePathActions } from "./focusedNodePath.actions"
 import { FocusedNodePathService } from "./focusedNodePath.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("FocusedNodePathService", () => {
 	let focusedNodePathService: FocusedNodePathService
@@ -13,7 +14,7 @@ describe("FocusedNodePathService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("FocusedNodePathService", () => {
 
 	function rebuildService() {
 		focusedNodePathService = new FocusedNodePathService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

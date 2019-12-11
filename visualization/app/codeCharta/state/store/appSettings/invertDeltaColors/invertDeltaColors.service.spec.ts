@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { InvertDeltaColorsAction, InvertDeltaColorsActions } from "./invertDeltaColors.actions"
 import { InvertDeltaColorsService } from "./invertDeltaColors.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("InvertDeltaColorsService", () => {
 	let invertDeltaColorsService: InvertDeltaColorsService
@@ -13,7 +14,7 @@ describe("InvertDeltaColorsService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("InvertDeltaColorsService", () => {
 
 	function rebuildService() {
 		invertDeltaColorsService = new InvertDeltaColorsService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

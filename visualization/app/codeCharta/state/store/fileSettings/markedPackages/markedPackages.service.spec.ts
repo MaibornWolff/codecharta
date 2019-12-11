@@ -4,7 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { MarkedPackagesAction, MarkedPackagesActions } from "./markedPackages.actions"
 import { MarkedPackagesService } from "./markedPackages.service"
-import { MARKED_PACKAGES } from "../../../../util/dataMocks"
+import { MARKED_PACKAGES, withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("MarkedPackagesService", () => {
 	let markedPackagesService: MarkedPackagesService
@@ -14,7 +14,7 @@ describe("MarkedPackagesService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -26,10 +26,6 @@ describe("MarkedPackagesService", () => {
 
 	function rebuildService() {
 		markedPackagesService = new MarkedPackagesService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

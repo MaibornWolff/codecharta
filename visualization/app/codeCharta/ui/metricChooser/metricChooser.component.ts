@@ -11,6 +11,14 @@ import {
 } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import _ from "lodash"
+import { StoreService } from "../../state/store.service"
+import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
+import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
+import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 export class MetricChooserController
 	implements MetricServiceSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
@@ -33,7 +41,12 @@ export class MetricChooserController
 	}
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
+		private settingsService: SettingsService,
+		private storeService: StoreService
+	) {
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
@@ -106,6 +119,7 @@ export class MetricChooserController
 
 		if (_.keys(dynamicSettingsUpdate).length !== 0) {
 			this.settingsService.updateSettings({ dynamicSettings: dynamicSettingsUpdate })
+			this.storeService.dispatch(setDynamicSettings(dynamicSettingsUpdate))
 		}
 	}
 
@@ -128,6 +142,8 @@ export class MetricChooserController
 				margin
 			}
 		})
+		this.storeService.dispatch(setAreaMetric(this._viewModel.areaMetric))
+		this.storeService.dispatch(setMargin(margin))
 	}
 
 	public applySettingsColorMetric() {
@@ -137,6 +153,8 @@ export class MetricChooserController
 				colorRange: this.settingsService.getDefaultSettings().dynamicSettings.colorRange
 			}
 		})
+		this.storeService.dispatch(setColorMetric(this._viewModel.colorMetric))
+		this.storeService.dispatch(setColorRange())
 	}
 
 	public applySettingsHeightMetric() {
@@ -145,6 +163,7 @@ export class MetricChooserController
 				heightMetric: this._viewModel.heightMetric
 			}
 		})
+		this.storeService.dispatch(setHeightMetric(this._viewModel.heightMetric))
 	}
 
 	public applySettingsDistributionMetric() {
@@ -153,6 +172,7 @@ export class MetricChooserController
 				distributionMetric: this._viewModel.distributionMetric
 			}
 		})
+		this.storeService.dispatch(setDistributionMetric(this._viewModel.distributionMetric))
 	}
 }
 

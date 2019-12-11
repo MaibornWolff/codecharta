@@ -12,7 +12,7 @@ export class CameraService implements StoreSubscriber {
 	private static CAMERA_CHANGED_EVENT = "camera-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -26,7 +26,8 @@ export class CameraService implements StoreSubscriber {
 	}
 
 	private notify(newState: Vector3) {
-		this.$rootScope.$broadcast(CameraService.CAMERA_CHANGED_EVENT, { camera: newState })
+		//TODO: Move camera out of the state and persist it in a service
+		//this.$rootScope.$broadcast(CameraService.CAMERA_CHANGED_EVENT, { camera: newState })
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CameraSubscriber) {

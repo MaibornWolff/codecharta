@@ -11,7 +11,7 @@ export class {{properCase name}}Service implements StoreSubscriber {
 	private static {{constantCase name}}_CHANGED_EVENT = "{{kebabCase name}}-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {

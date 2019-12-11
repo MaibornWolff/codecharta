@@ -13,14 +13,19 @@ export class StoreService {
 	private store: Store
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(
+		// tslint:disable-next-line
+		private $rootScope: IRootScopeService
+	) {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: CCAction) {
+	public dispatch(action: CCAction, isSilent: boolean = false) {
 		splitStateActions(action).forEach(atomicAction => {
 			this.store.dispatch(atomicAction)
-			this.notify(atomicAction.type)
+			if (!isSilent) {
+				this.notify(atomicAction.type)
+			}
 		})
 	}
 
@@ -29,7 +34,8 @@ export class StoreService {
 	}
 
 	private notify(actionType: string) {
-		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType: actionType })
+		//TODO: Activate when settingsService is deleted
+		//this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType: actionType })
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {

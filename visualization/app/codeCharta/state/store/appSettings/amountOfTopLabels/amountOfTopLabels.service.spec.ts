@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { AmountOfTopLabelsAction, AmountOfTopLabelsActions } from "./amountOfTopLabels.actions"
 import { AmountOfTopLabelsService } from "./amountOfTopLabels.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("AmountOfTopLabelsService", () => {
 	let amountOfTopLabelsService: AmountOfTopLabelsService
@@ -13,7 +14,7 @@ describe("AmountOfTopLabelsService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("AmountOfTopLabelsService", () => {
 
 	function rebuildService() {
 		amountOfTopLabelsService = new AmountOfTopLabelsService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

@@ -16,6 +16,7 @@ import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
+import { IRootScopeService } from "angular"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -910,3 +911,10 @@ export const MARKED_PACKAGES: MarkedPackage[] = [
 		attributes: {}
 	}
 ]
+
+export function withMockedEventMethods($rootScope: IRootScopeService) {
+	$rootScope.$broadcast = jest.fn()
+	$rootScope.$on = jest.fn()
+	$rootScope.$digest = jest.fn()
+	$rootScope.$apply = jest.fn()
+}

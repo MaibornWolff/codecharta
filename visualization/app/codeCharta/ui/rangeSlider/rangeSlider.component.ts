@@ -7,8 +7,14 @@ import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { StoreService } from "../../state/store.service"
+import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import _ from "lodash"
 
 export class RangeSliderController implements SettingsServiceSubscriber {
+	private static DEBOUNCE_TIME = 400
+	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
+
 	private maxMetricValue: number
 	private DIGIT_WIDTH: number = 11
 	private MIN_DIGITS: number = 4
@@ -28,11 +34,16 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 	/* @ngInject */
 	constructor(
 		private settingsService: SettingsService,
+		private storeService: StoreService,
 		private fileStateService: FileStateService,
 		private metricService: MetricService,
 		private $rootScope: IRootScopeService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
+
+		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
+			this.storeService.dispatch(action)
+		}, RangeSliderController.DEBOUNCE_TIME)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
@@ -86,6 +97,12 @@ export class RangeSliderController implements SettingsServiceSubscriber {
 				}
 			}
 		})
+		this.applyDebouncedColorRange(
+			setColorRange({
+				to: this._viewModel.colorRangeTo,
+				from: this._viewModel.colorRangeFrom
+			})
+		)
 	}
 
 	private updateInputFieldWidth(s: Settings) {

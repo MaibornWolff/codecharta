@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { AmountOfEdgePreviewsAction, AmountOfEdgePreviewsActions } from "./amountOfEdgePreviews.actions"
 import { AmountOfEdgePreviewsService } from "./amountOfEdgePreviews.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("AmountOfEdgePreviewsService", () => {
 	let amountOfEdgePreviewsService: AmountOfEdgePreviewsService
@@ -13,7 +14,7 @@ describe("AmountOfEdgePreviewsService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("AmountOfEdgePreviewsService", () => {
 
 	function rebuildService() {
 		amountOfEdgePreviewsService = new AmountOfEdgePreviewsService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

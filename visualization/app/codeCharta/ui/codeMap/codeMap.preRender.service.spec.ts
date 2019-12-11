@@ -7,7 +7,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
-import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE } from "../../util/dataMocks"
+import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
@@ -30,7 +30,7 @@ describe("codeMapPreRenderService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 		withMockedThreeOrbitControlsService()
 		withMockedLoadingStatusService()
 	})
@@ -61,11 +61,6 @@ describe("codeMapPreRenderService", () => {
 			edgeMetricDataService,
 			storeService
 		)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$on = codeMapPreRenderService["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast = codeMapPreRenderService["$rootScope"].$broadcast = jest.fn()
 	}
 
 	function withMockedThreeOrbitControlsService() {

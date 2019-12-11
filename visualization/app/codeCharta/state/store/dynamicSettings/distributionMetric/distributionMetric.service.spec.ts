@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { DistributionMetricService } from "./distributionMetric.service"
 import { DistributionMetricAction, DistributionMetricActions } from "./distributionMetric.actions"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("DistributionMetricService", () => {
 	let distributionMetricService: DistributionMetricService
@@ -13,7 +14,7 @@ describe("DistributionMetricService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("DistributionMetricService", () => {
 
 	function rebuildService() {
 		distributionMetricService = new DistributionMetricService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

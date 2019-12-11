@@ -5,11 +5,17 @@ import { CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCh
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { StoreService } from "../../state/store.service"
+import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
+import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
+import _ from "lodash"
 
 export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
 	private static MIN_MARGIN = 15
 	private static MAX_MARGIN = 100
 	private static MARGIN_FACTOR = 4
+	private static DEBOUNCE_TIME = 400
+	private readonly applyDebouncedMargin: () => void
 
 	private _viewModel: {
 		margin: number
@@ -23,11 +29,16 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
+		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
+
+		this.applyDebouncedMargin = _.debounce(() => {
+			this.storeService.dispatch(setMargin(this._viewModel.margin))
+		}, AreaSettingsPanelController.DEBOUNCE_TIME)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
@@ -54,7 +65,16 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 
 	public onChangeMarginSlider() {
 		this._viewModel.dynamicMargin = false
-		this.applySettings()
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				margin: this._viewModel.margin
+			},
+			appSettings: {
+				dynamicMargin: this._viewModel.dynamicMargin
+			}
+		})
+		this.applyDebouncedMargin()
+		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
 	public applySettingsDynamicMargin() {
@@ -63,6 +83,7 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 				dynamicMargin: this._viewModel.dynamicMargin
 			}
 		})
+		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
 	public applySettings() {
@@ -74,6 +95,8 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 				dynamicMargin: this._viewModel.dynamicMargin
 			}
 		})
+		this.storeService.dispatch(setMargin(this._viewModel.margin))
+		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
 	private potentiallyUpdateMargin(map: CodeMapNode, settings: Settings) {

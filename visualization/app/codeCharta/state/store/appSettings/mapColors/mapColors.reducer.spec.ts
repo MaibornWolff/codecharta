@@ -1,5 +1,7 @@
 import { mapColors } from "./mapColors.reducer"
 import { defaultMapColors, MapColorsAction, setMapColors } from "./mapColors.actions"
+import _ from "lodash"
+import { MapColors } from "../../../../codeCharta.model"
 
 describe("mapColors", () => {
 	describe("Default State", () => {
@@ -25,6 +27,15 @@ describe("mapColors", () => {
 			const result = mapColors(oldMapColors, setMapColors())
 
 			expect(result).toEqual(defaultMapColors)
+		})
+
+		it("should update mapColors with partial mapColors object", () => {
+			const oldMapColors = { ...defaultMapColors }
+
+			const result = mapColors(oldMapColors, setMapColors({ positive: "ABCDEF" } as MapColors))
+
+			expect(_.values(result)).toHaveLength(14)
+			expect(result.positive).toEqual("ABCDEF")
 		})
 	})
 })

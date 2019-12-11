@@ -2,11 +2,11 @@ import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS } from "../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS, withMockedEventMethods } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
 import { NodeDecorator } from "../util/nodeDecorator"
-import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
+import { SettingsService } from "./settingsService/settings.service"
 
 describe("MetricService", () => {
 	let metricService: MetricService
@@ -20,7 +20,7 @@ describe("MetricService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -47,14 +47,10 @@ describe("MetricService", () => {
 		metricService["fileStates"] = fileStates
 	}
 
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = metricService["$rootScope"].$broadcast = jest.fn((event, data) => {})
-	}
-
 	describe("constructor", () => {
 		beforeEach(() => {
 			FileStateService.subscribe = jest.fn()
-			BlacklistService.subscribe = jest.fn()
+			SettingsService.subscribeToBlacklist = jest.fn()
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -66,7 +62,7 @@ describe("MetricService", () => {
 		it("should subscribe to Blacklist-Events", () => {
 			rebuildService()
 
-			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, metricService)
+			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, metricService)
 		})
 	})
 

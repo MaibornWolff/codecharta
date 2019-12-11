@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { IsWhiteBackgroundAction, IsWhiteBackgroundActions } from "./isWhiteBackground.actions"
 import { IsWhiteBackgroundService } from "./isWhiteBackground.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("IsWhiteBackgroundService", () => {
 	let isWhiteBackgroundService: IsWhiteBackgroundService
@@ -13,7 +14,7 @@ describe("IsWhiteBackgroundService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("IsWhiteBackgroundService", () => {
 
 	function rebuildService() {
 		isWhiteBackgroundService = new IsWhiteBackgroundService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

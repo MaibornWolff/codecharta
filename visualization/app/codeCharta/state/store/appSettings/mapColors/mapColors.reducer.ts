@@ -5,7 +5,7 @@ import { MapColors } from "../../../../codeCharta.model"
 export function mapColors(state: MapColors = setMapColors().payload, action: MapColorsAction): MapColors {
 	switch (action.type) {
 		case MapColorsActions.SET_MAP_COLORS:
-			return _.cloneDeep(action.payload)
+			return { ...state, ...action.payload }
 		default:
 			return state
 	}

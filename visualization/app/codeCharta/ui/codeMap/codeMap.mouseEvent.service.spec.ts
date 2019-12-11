@@ -10,7 +10,7 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEventMethods } from "../../util/dataMocks"
 import _ from "lodash"
 import { BlacklistType, Node } from "../../codeCharta.model"
 
@@ -36,7 +36,7 @@ describe("codeMapMouseEventService", () => {
 		withMockedViewCubeMouseEventsService()
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	afterEach(() => {
@@ -68,11 +68,6 @@ describe("codeMapMouseEventService", () => {
 
 		codeMapMouseEventService["mouse"] = { x: 0, y: 0 }
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
-		$rootScope.$on = jest.fn()
 	}
 
 	function withMockedWindow() {

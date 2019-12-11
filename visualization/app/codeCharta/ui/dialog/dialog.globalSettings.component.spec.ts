@@ -7,12 +7,14 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_SETTINGS } from "../../util/dataMocks"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
+import { StoreService } from "../../state/store.service"
 
 describe("DialogGlobalSettingsController", () => {
 	let dialogGlobalSettingsController: DialogGlobalSettingsController
 	let $mdDialog
-	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
+	let storeService: StoreService
+	let settingsService: SettingsService
 	let settings: Settings
 
 	beforeEach(() => {
@@ -24,15 +26,16 @@ describe("DialogGlobalSettingsController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.dialog")
 
+		$rootScope = getService<IRootScopeService>("$rootScope")
 		$mdDialog = getService("$mdDialog")
 		settingsService = getService<SettingsService>("settingsService")
-		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
 
 		settings = _.cloneDeep(DEFAULT_SETTINGS)
 	}
 
 	function rebuildController() {
-		dialogGlobalSettingsController = new DialogGlobalSettingsController($mdDialog, $rootScope, settingsService)
+		dialogGlobalSettingsController = new DialogGlobalSettingsController($mdDialog, $rootScope, storeService, settingsService)
 	}
 
 	function withMockedSettingsService(mockSettings: Settings = settings) {
@@ -87,15 +90,39 @@ describe("DialogGlobalSettingsController", () => {
 		})
 	})
 
-	describe("applySettings", () => {
+	describe("applySettingsHideFlatBuildings", () => {
 		it("should call settingsService.updateSettings", () => {
 			settingsService.updateSettings = jest.fn()
 			dialogGlobalSettingsController["_viewModel"].hideFlatBuildings = false
+
+			dialogGlobalSettingsController.applySettingsHideFlatBuildings()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { hideFlatBuildings: false } })
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
+		})
+	})
+
+	describe("applySettingsResetCamera", () => {
+		it("should call settingsService.updateSettings", () => {
+			settingsService.updateSettings = jest.fn()
 			dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded = false
 
-			dialogGlobalSettingsController.applySettings()
+			dialogGlobalSettingsController.applySettingsResetCamera()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: dialogGlobalSettingsController["_viewModel"] })
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { resetCameraIfNewFileIsLoaded: false } })
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeFalsy()
+		})
+	})
+
+	describe("applySettingsIsWhiteBackground", () => {
+		it("should call settingsService.updateSettings", () => {
+			settingsService.updateSettings = jest.fn()
+			dialogGlobalSettingsController["_viewModel"].isWhiteBackground = false
+
+			dialogGlobalSettingsController.applySettingsIsWhiteBackground()
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { isWhiteBackground: false } })
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
 		})
 	})
 

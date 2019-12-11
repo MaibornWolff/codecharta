@@ -4,9 +4,9 @@ import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { FileStateService } from "./fileState.service"
 import { MetricData, CodeMapNode } from "../codeCharta.model"
-import { FILE_STATES, VALID_NODE_WITH_PATH } from "../util/dataMocks"
+import { FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../util/dataMocks"
 import { HierarchyNode } from "d3"
-import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
+import { SettingsService } from "./settingsService/settings.service"
 
 describe("EdgeMetricDataService", () => {
 	let edgeMetricDataService: EdgeMetricDataService
@@ -16,7 +16,7 @@ describe("EdgeMetricDataService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -35,19 +35,10 @@ describe("EdgeMetricDataService", () => {
 		fileStateService.getFileStates = jest.fn().mockReturnValue(FILE_STATES)
 	}
 
-	function withMockedEventMethods() {
-		$rootScope.$on = edgeMetricDataService["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast = edgeMetricDataService["$rootScope"].$broadcast = jest.fn()
-	}
-
-	describe("someMethodName", () => {
-		it("should do something", () => {})
-	})
-
 	describe("constructor", () => {
 		beforeEach(() => {
 			FileStateService.subscribe = jest.fn()
-			BlacklistService.subscribe = jest.fn()
+			SettingsService.subscribeToBlacklist = jest.fn()
 		})
 
 		it("should subscribe to FileStateService", () => {
@@ -59,7 +50,7 @@ describe("EdgeMetricDataService", () => {
 		it("should subscribe to Blacklist-Events", () => {
 			rebuildService()
 
-			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
+			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
 		})
 	})
 

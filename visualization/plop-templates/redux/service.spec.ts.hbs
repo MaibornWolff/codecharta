@@ -4,6 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { {{properCase name}}Action, {{properCase name}}Actions } from "./{{camelCase name}}.actions"
 import { {{properCase name}}Service } from "./{{camelCase name}}.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("{{properCase name}}Service", () => {
 	let {{camelCase name}}Service: {{properCase name}}Service
@@ -13,7 +14,7 @@ describe("{{properCase name}}Service", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,10 +26,6 @@ describe("{{properCase name}}Service", () => {
 
 	function rebuildService() {
 		{{camelCase name}}Service = new {{properCase name}}Service($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {

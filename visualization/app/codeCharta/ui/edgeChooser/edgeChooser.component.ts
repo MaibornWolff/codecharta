@@ -8,6 +8,8 @@ import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredS
 import { EdgeMetricSubscriber } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { StoreService } from "../../state/store.service"
+import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 
 export class EdgeChooserController
 	implements EdgeMetricDataServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
@@ -27,6 +29,7 @@ export class EdgeChooserController
 
 	constructor(
 		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
 		private $timeout: ITimeoutService
@@ -65,6 +68,7 @@ export class EdgeChooserController
 
 	public onEdgeMetricSelected() {
 		this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: this._viewModel.edgeMetric } })
+		this.storeService.dispatch(setEdgeMetric(this._viewModel.edgeMetric))
 	}
 
 	public noEdgesAvailable() {

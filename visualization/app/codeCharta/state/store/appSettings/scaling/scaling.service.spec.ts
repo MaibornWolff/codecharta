@@ -5,6 +5,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { ScalingAction, ScalingActions } from "./scaling.actions"
 import { ScalingService } from "./scaling.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("ScalingService", () => {
 	let scalingService: ScalingService
@@ -14,7 +15,7 @@ describe("ScalingService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -26,10 +27,6 @@ describe("ScalingService", () => {
 
 	function rebuildService() {
 		scalingService = new ScalingService($rootScope, storeService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("constructor", () => {
