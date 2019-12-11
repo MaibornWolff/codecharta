@@ -2,7 +2,7 @@ import { CodeMapShaderStrings } from "./codeMapShaderStrings"
 import { BuildResult, GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription, IntersectionResult } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { Node, Settings } from "../../../codeCharta.model"
+import { Node, Settings, State } from "../../../codeCharta.model"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 import { TreeMapHelper } from "../../../util/treeMapHelper"
 
@@ -22,7 +22,7 @@ export class CodeMapMesh {
 	private geomGen: GeometryGenerator
 	private mapGeomDesc: CodeMapGeometricDescription
 
-	constructor(nodes: Node[], settings: Settings, isDeltaState: boolean) {
+	constructor(nodes: Node[], settings: State, isDeltaState: boolean) {
 		this.initMaterial()
 
 		this.geomGen = new GeometryGenerator()
@@ -34,7 +34,7 @@ export class CodeMapMesh {
 		this.initDeltaColorsOnMesh(settings)
 	}
 
-	private initDeltaColorsOnMesh(settings: Settings) {
+	private initDeltaColorsOnMesh(settings: State) {
 		if (this.mapGeomDesc.buildings[0].node.deltas) {
 			this.mapGeomDesc.buildings.forEach(building => {
 				this.setNewDeltaColor(building, settings)
@@ -116,7 +116,7 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	private setNewDeltaColor(building: CodeMapBuilding, settings: Settings) {
+	private setNewDeltaColor(building: CodeMapBuilding, settings: State) {
 		if (building.node.deltas) {
 			const deltaValue = building.node.deltas[settings.dynamicSettings.heightMetric]
 

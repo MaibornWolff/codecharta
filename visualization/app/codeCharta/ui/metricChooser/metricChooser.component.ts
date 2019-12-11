@@ -19,6 +19,11 @@ import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/
 import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
+import { defaultState } from "../../state/store/state.actions"
 
 export class MetricChooserController
 	implements MetricServiceSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
@@ -47,10 +52,10 @@ export class MetricChooserController
 		private settingsService: SettingsService,
 		private storeService: StoreService
 	) {
-		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
-		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
-		SettingsService.subscribeToColorMetric(this.$rootScope, this)
-		SettingsService.subscribeToDistributionMetric(this.$rootScope, this)
+		AreaMetricService.subscribe(this.$rootScope, this)
+		HeightMetricService.subscribe(this.$rootScope, this)
+		ColorMetricService.subscribe(this.$rootScope, this)
+		DistributionMetricService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
@@ -124,7 +129,7 @@ export class MetricChooserController
 	}
 
 	private isMetricUnavailable(metricKey: string, availableMetrics: MetricData[]) {
-		const metricName: string = this.settingsService.getSettings().dynamicSettings[metricKey]
+		const metricName: string = this.storeService.getState().dynamicSettings[metricKey]
 		return !availableMetrics.find(x => x.name == metricName)
 	}
 
@@ -133,7 +138,7 @@ export class MetricChooserController
 	}
 
 	public applySettingsAreaMetric() {
-		const settings = this.settingsService.getSettings()
+		const settings = this.storeService.getState()
 		const margin = settings.appSettings.dynamicMargin ? null : settings.dynamicSettings.margin
 
 		this.settingsService.updateSettings({
@@ -150,7 +155,7 @@ export class MetricChooserController
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				colorMetric: this._viewModel.colorMetric,
-				colorRange: this.settingsService.getDefaultSettings().dynamicSettings.colorRange
+				colorRange: defaultState.dynamicSettings.colorRange
 			}
 		})
 		this.storeService.dispatch(setColorMetric(this._viewModel.colorMetric))

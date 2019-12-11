@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import { PerspectiveCamera, Sprite, Vector3, Box3 } from "three"
-import { Node, Settings } from "../../codeCharta.model"
+import { Node, State } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -32,11 +32,11 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	public addLabel(node: Node, settings: Settings): void {
+	public addLabel(node: Node, settings: State): void {
 		if (node.attributes && node.attributes[settings.dynamicSettings.heightMetric]) {
-			const x: number = node.x0 - settings.treeMapSettings.mapSize
+			const x: number = node.x0 - settings.treeMap.mapSize
 			const y: number = node.z0
-			const z: number = node.y0 - settings.treeMapSettings.mapSize
+			const z: number = node.y0 - settings.treeMap.mapSize
 
 			const labelX: number = x + node.width / 2
 			const labelY: number = y + node.height

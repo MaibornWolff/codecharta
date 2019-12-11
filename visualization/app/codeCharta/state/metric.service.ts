@@ -43,6 +43,9 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
+		console.log("metricData", this.metricData)
+
+		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
 	}
 

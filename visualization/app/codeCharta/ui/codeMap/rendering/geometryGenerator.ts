@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { Node, Settings } from "../../../codeCharta.model"
+import { Node, State } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { IntermediateVertexData } from "./intermediateVertexData"
@@ -25,9 +25,9 @@ export class GeometryGenerator {
 
 	private floorGradient: string[]
 
-	public build(nodes: Node[], material: THREE.Material, settings: Settings, isDeltaState: boolean): BuildResult {
+	public build(nodes: Node[], material: THREE.Material, settings: State, isDeltaState: boolean): BuildResult {
 		let data: IntermediateVertexData = new IntermediateVertexData()
-		let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.treeMapSettings.mapSize)
+		let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.treeMap.mapSize)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 
@@ -104,7 +104,7 @@ export class GeometryGenerator {
 		n: Node,
 		idx: number,
 		desc: CodeMapGeometricDescription,
-		settings: Settings,
+		settings: State,
 		isDeltaState: boolean
 	): void {
 		let measures: BoxMeasures = this.mapNodeToLocalBox(n)
