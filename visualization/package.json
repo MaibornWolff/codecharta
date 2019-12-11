@@ -123,8 +123,7 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "npm run format:quick",
-			"pre-push": "npm run lint"
+			"pre-commit": "npm run format:quick && npm run lint"
 		}
 	},
 	"dependencies": {

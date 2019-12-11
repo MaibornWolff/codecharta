@@ -8,6 +8,7 @@ import { FileStateService, FileStateServiceSubscriber } from "../../state/fileSt
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import _ from "lodash"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -27,10 +28,10 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private codeMapActionsService: CodeMapActionsService,
-		private storeService: StoreService
+		private storeService: StoreService,
+		private codeMapActionsService: CodeMapActionsService
 	) {
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 		this.applyDebouncedSearchPattern = _.debounce(() => {
 			this.applySettingsSearchPattern()
@@ -47,6 +48,11 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 		this.updateViewModel(blacklist)
 	}
 
+	public onSearchPatternChanged() {
+		this.applyDebouncedSearchPattern()
+		this.updateViewModel(this.storeService.getState().fileSettings.blacklist)
+	}
+
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
 		this.codeMapActionsService.pushItemToBlacklist({ path: this._viewModel.searchPattern, type: blacklistType })
 		this.resetSearchPattern()
@@ -54,11 +60,6 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 
 	public isSearchPatternEmpty() {
 		return this._viewModel.searchPattern === ""
-	}
-
-	public onSearchPatternChanged() {
-		this.applyDebouncedSearchPattern()
-		this.updateViewModel(this.storeService.getState().fileSettings.blacklist)
 	}
 
 	private updateViewModel(blacklist: BlacklistItem[]) {
