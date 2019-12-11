@@ -1,33 +1,35 @@
 import "./metricDeltaSelected.component.scss"
-import { Settings, RecursivePartial } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { SettingsService } from "../../state/settingsService/settings.service"
-import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { StoreService } from "../../state/store.service"
+import {
+	InvertDeltaColorsService,
+	InvertDeltaColorsSubscriber
+} from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 
-export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, SettingsServiceSubscriber {
+export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, InvertDeltaColorsSubscriber {
 	private static TIME_TO_INIT_BINDING: number = 50
-	private attributekey: string
+	private attributeKey: string
 
 	private _viewModel: {
 		deltaValue: number
 		colorClass: string
-		attributekey: string
+		attributeKey: string
 	} = {
 		deltaValue: null,
 		colorClass: null,
-		attributekey: null
+		attributeKey: null
 	}
 
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
 		private threeSceneService: ThreeSceneService,
-		private settingsService: SettingsService
+		private storeService: StoreService
 	) {
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		SettingsService.subscribe(this.$rootScope, this)
+		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 		this.$timeout(() => {
 			this.onBuildingSelected(this.threeSceneService.getSelectedBuilding())
 		}, MetricDeltaSelectedController.TIME_TO_INIT_BINDING)
@@ -35,24 +37,22 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this.setDeltaValue(selectedBuilding)
-		this.setDeltaColorClass(this.settingsService.getSettings())
+		this.setDeltaColorClass()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		if (update.appSettings && update.appSettings.invertDeltaColors !== undefined) {
-			this.setDeltaColorClass(settings)
-		}
+	public onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
+		this.setDeltaColorClass()
 	}
 
 	private setDeltaValue(selectedBuilding: CodeMapBuilding) {
 		if (selectedBuilding) {
 			const deltas = selectedBuilding.node.deltas
-			this._viewModel.deltaValue = deltas ? deltas[this.attributekey] : null
+			this._viewModel.deltaValue = deltas ? deltas[this.attributeKey] : null
 		}
 	}
 
-	private setDeltaColorClass(settings: Settings) {
-		if (settings.appSettings.invertDeltaColors) {
+	private setDeltaColorClass() {
+		if (this.storeService.getState().appSettings.invertDeltaColors) {
 			this._viewModel.colorClass = this._viewModel.deltaValue > 0 ? "red" : "green"
 		} else {
 			this._viewModel.colorClass = this._viewModel.deltaValue > 0 ? "green" : "red"
@@ -65,6 +65,6 @@ export const metricDeltaSelectedComponent = {
 	template: require("./metricDeltaSelected.component.html"),
 	controller: MetricDeltaSelectedController,
 	bindings: {
-		attributekey: "="
+		attributeKey: "="
 	}
 }
