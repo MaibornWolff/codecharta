@@ -4,7 +4,6 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
 import { SearchPanelService } from "../../state/searchPanel.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
