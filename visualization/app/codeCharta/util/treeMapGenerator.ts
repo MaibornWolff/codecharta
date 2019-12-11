@@ -22,7 +22,6 @@ export class TreeMapGenerator {
 	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
 		const squarifiedTreeMap: SquarifiedValuedCodeMapNode = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
-		console.log("md, s", metricData, s)
 		const heightScale = (s.treeMap.mapSize * 2) / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
 		const nodesAsArray: SquarifiedValuedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
