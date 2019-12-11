@@ -9,6 +9,7 @@ import { SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH } from "../../util/dataMocks
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import _ from "lodash"
+import { markPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
@@ -27,9 +28,9 @@ describe("CodeMapActionService", () => {
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		storeService = getService<StoreService>("storeService")
 
-		nodeA = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		edge = JSON.parse(JSON.stringify(VALID_EDGE))
+		nodeA = _.cloneDeep(VALID_NODE_WITH_PATH)
+		settings = _.cloneDeep(SETTINGS)
+		edge = _.cloneDeep(VALID_EDGE)
 		settings.fileSettings.edges.push(edge)
 	}
 
@@ -40,11 +41,7 @@ describe("CodeMapActionService", () => {
 	function withMockedSettingsService() {
 		settingsService = codeMapActionsService["settingsService"] = jest.fn(() => {
 			return {
-				getSettings: jest.fn().mockReturnValue(settings),
-				updateSettings: jest.fn(),
-				fileSettings: {
-					markedPackage: []
-				}
+				updateSettings: jest.fn()
 			}
 		})()
 	}
@@ -53,6 +50,8 @@ describe("CodeMapActionService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedSettingsService()
+
+		storeService.dispatch(setMarkedPackages())
 	})
 
 	afterEach(() => {
@@ -96,11 +95,9 @@ describe("CodeMapActionService", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				fileSettings: {
-					markedPackages: settings.fileSettings.markedPackages
+					markedPackages: expected
 				}
 			})
-			expect(settings.fileSettings.markedPackages.length).toBe(1)
-			expect(settings.fileSettings.markedPackages).toEqual(expected)
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(1)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
@@ -114,11 +111,9 @@ describe("CodeMapActionService", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				fileSettings: {
-					markedPackages: settings.fileSettings.markedPackages
+					markedPackages: expected
 				}
 			})
-			expect(settings.fileSettings.markedPackages.length).toBe(1)
-			expect(settings.fileSettings.markedPackages).toEqual(expected)
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(1)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
@@ -126,21 +121,18 @@ describe("CodeMapActionService", () => {
 
 		it("should not remove the children of a marked package if color is different", () => {
 			const expected = [
-				{ attributes: {}, color: "0x000001", path: "/root/big leaf" },
-				{ attributes: {}, color: "0x000000", path: "/root" }
+				{ attributes: {}, color: "0x000000", path: "/root" },
+				{ attributes: {}, color: "0x000001", path: "/root/big leaf" }
 			]
 
-			codeMapActionsService.markFolder(nodeA.children[0], "0x000001")
-
 			codeMapActionsService.markFolder(nodeA, "0x000000")
+			codeMapActionsService.markFolder(nodeA.children[0], "0x000001")
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				fileSettings: {
-					markedPackages: settings.fileSettings.markedPackages
+					markedPackages: expected
 				}
 			})
-			expect(settings.fileSettings.markedPackages.length).toBe(2)
-			expect(settings.fileSettings.markedPackages).toEqual(expected)
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(2)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
@@ -161,11 +153,9 @@ describe("CodeMapActionService", () => {
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				fileSettings: {
-					markedPackages: settings.fileSettings.markedPackages
+					markedPackages: expected
 				}
 			})
-			expect(settings.fileSettings.markedPackages.length).toBe(3)
-			expect(settings.fileSettings.markedPackages).toEqual(expected)
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(3)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
@@ -177,14 +167,6 @@ describe("CodeMapActionService", () => {
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 
 			codeMapActionsService.unmarkFolder(nodeA)
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					markedPackages: settings.fileSettings.markedPackages
-				}
-			})
-			expect(settings.fileSettings.markedPackages.length).toBe(0)
-			expect(settings.fileSettings.markedPackages).toEqual([])
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(0)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual([])
@@ -200,14 +182,6 @@ describe("CodeMapActionService", () => {
 			codeMapActionsService.markFolder(nodeA.children[1], "0x000000")
 
 			codeMapActionsService.unmarkFolder(nodeA)
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					markedPackages: settings.fileSettings.markedPackages
-				}
-			})
-			expect(settings.fileSettings.markedPackages.length).toBe(2)
-			expect(settings.fileSettings.markedPackages).toEqual(expected)
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(2)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
@@ -320,24 +294,24 @@ describe("CodeMapActionService", () => {
 
 	describe("getParentMP", () => {
 		it("should return null if there are no marked packages", () => {
-			const result = codeMapActionsService.getParentMP(nodeA.path, settings)
+			const result = codeMapActionsService.getParentMP(nodeA.path)
 
 			expect(result).toBeNull()
 		})
 
 		it("should return null if node is a marked package", () => {
-			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000000", path: "/root" })
+			storeService.dispatch(markPackage({ attributes: {}, color: "0x000000", path: "/root" }))
 
-			const result = codeMapActionsService.getParentMP(nodeA.path, settings)
+			const result = codeMapActionsService.getParentMP(nodeA.path)
 
 			expect(result).toBeNull()
 		})
 
 		it("should return marked package of root", () => {
 			const expected = { attributes: {}, color: "0x000000", path: "/root" }
-			settings.fileSettings.markedPackages.push(expected)
+			storeService.dispatch(markPackage(expected))
 
-			const result = codeMapActionsService.getParentMP(nodeA.children[0].path, settings)
+			const result = codeMapActionsService.getParentMP(nodeA.children[0].path)
 
 			expect(result).toEqual(expected)
 		})
@@ -345,10 +319,10 @@ describe("CodeMapActionService", () => {
 		it("should return the first marked package found in sorted list", () => {
 			const mp1 = { attributes: {}, color: "0x000000", path: "/root" }
 			const mp2 = { attributes: {}, color: "0x000000", path: "/root/Parent Leaf" }
-			settings.fileSettings.markedPackages.push(mp1)
-			settings.fileSettings.markedPackages.push(mp2)
+			storeService.dispatch(markPackage(mp1))
+			storeService.dispatch(markPackage(mp2))
 
-			const result = codeMapActionsService.getParentMP(nodeA.children[1].children[0].path, settings)
+			const result = codeMapActionsService.getParentMP(nodeA.children[1].children[0].path)
 
 			expect(result).toEqual({ attributes: {}, color: "0x000000", path: "/root/Parent Leaf" })
 		})

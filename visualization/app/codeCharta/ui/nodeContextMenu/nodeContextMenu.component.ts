@@ -2,9 +2,9 @@ import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { StoreService } from "../../state/store.service"
 
 export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
@@ -32,15 +32,15 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		private $timeout,
 		private $window,
 		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
 		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
 
 		document.body.addEventListener("click", () => this.onHideNodeContextMenu(), true)
-		this._viewModel.markingColors = this.settingsService.getSettings().appSettings.mapColors.markingColors
+		this._viewModel.markingColors = this.storeService.getState().appSettings.mapColors.markingColors
 	}
 
 	public onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
@@ -107,21 +107,20 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 	}
 
 	private packageIsMarked(): boolean {
-		return !!this.settingsService
-			.getSettings()
-			.fileSettings.markedPackages.find(mp => mp.path == this._viewModel.contextMenuBuilding.path)
+		return !!this.storeService.getState().fileSettings.markedPackages.find(mp => mp.path == this._viewModel.contextMenuBuilding.path)
 	}
 
 	private packageMatchesColor(color: string): boolean {
-		return !!this.settingsService
-			.getSettings()
+		return !!this.storeService
+			.getState()
 			.fileSettings.markedPackages.find(mp => mp.path == this._viewModel.contextMenuBuilding.path && mp.color == color)
 	}
 
 	private packageMatchesColorOfParentMP(color: string): boolean {
-		const s = this.settingsService.getSettings()
-		const parentMP = this.codeMapActionsService.getParentMP(this._viewModel.contextMenuBuilding.path, s)
-		return !!s.fileSettings.markedPackages.find(mp => parentMP && mp.path == parentMP.path && mp.color == color)
+		const parentMP = this.codeMapActionsService.getParentMP(this._viewModel.contextMenuBuilding.path)
+		return !!this.storeService
+			.getState()
+			.fileSettings.markedPackages.find(mp => parentMP && mp.path == parentMP.path && mp.color == color)
 	}
 
 	public markFolder(color: string) {
@@ -153,7 +152,12 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 	}
 
 	public static broadcastShowEvent($rootScope, path: string, type: string, x, y) {
-		$rootScope.$broadcast(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, { path: path, type: type, x: x, y: y })
+		$rootScope.$broadcast(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, {
+			path: path,
+			type: type,
+			x: x,
+			y: y
+		})
 	}
 
 	public static broadcastHideEvent($rootScope) {
