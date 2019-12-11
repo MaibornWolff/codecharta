@@ -1,8 +1,8 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import { ColorRange } from "../../codeCharta.model"
-import { MetricService } from "../../state/metric.service"
+import { ColorRange, MetricData } from "../../codeCharta.model"
+import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../../util/fileStateHelper"
@@ -12,7 +12,7 @@ import _ from "lodash"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
-export class RangeSliderController implements ColorMetricSubscriber, ColorRangeSubscriber {
+export class RangeSliderController implements ColorMetricSubscriber, ColorRangeSubscriber, MetricServiceSubscriber, ColorMetricSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
@@ -42,6 +42,8 @@ export class RangeSliderController implements ColorMetricSubscriber, ColorRangeS
 	) {
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
+		MetricService.subscribe(this.$rootScope, this)
+		ColorMetricService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
@@ -50,16 +52,47 @@ export class RangeSliderController implements ColorMetricSubscriber, ColorRangeS
 
 	public onColorMetricChanged(colorMetric: string) {
 		if (this.metricService.getMetricData()) {
+			const colorRange = this.storeService.getState().dynamicSettings.colorRange
+			if (colorRange.from === null || colorRange.to === null) {
+				this.applyAdaptedColorRange()
+			}
+
 			this.initSliderOptions()
 		}
 	}
 
 	public onColorRangeChanged(colorRange: ColorRange) {
-		if (colorRange.from && colorRange.to) {
+		if (colorRange.from === null || colorRange.to === null) {
+			this.applyAdaptedColorRange()
+		} else {
 			this.updateViewModel(colorRange)
 			this.updateSliderColors()
 			this.updateInputFieldWidth()
 		}
+	}
+
+	public onMetricDataAdded(metricData: MetricData[]) {
+		this.applyAdaptedColorRange()
+	}
+
+	public onMetricDataRemoved() {}
+
+	private applyAdaptedColorRange() {
+		const maxMetricValue: number = this.metricService.getMaxMetricByMetricName(
+			this.settingsService.getSettings().dynamicSettings.colorMetric
+		)
+		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
+		const secondThird = Math.round(firstThird * 2 * 100) / 100
+
+		this.settingsService.updateSettings({
+			dynamicSettings: {
+				colorRange: {
+					from: firstThird,
+					to: secondThird
+				}
+			}
+		})
+		this.storeService.dispatch(setColorRange({ from: firstThird, to: secondThird }))
 	}
 
 	private updateViewModel(colorRange: ColorRange) {

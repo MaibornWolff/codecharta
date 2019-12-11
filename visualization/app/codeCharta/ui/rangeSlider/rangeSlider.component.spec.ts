@@ -91,6 +91,24 @@ describe("RangeSliderController", () => {
 		})
 	})
 
+	describe("onMetricDataAdded", () => {
+		it("should adapt colorRange", () => {
+			settingsService.updateSettings = jest.fn()
+
+			rangeSliderController.onMetricDataAdded([])
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: {
+					colorRange: {
+						from: 33.33,
+						to: 66.66
+					}
+				}
+			})
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
+		})
+	})
+
 	describe("onColorRangeChanged", () => {
 		beforeEach(() => {
 			rangeSliderController["maxMetricValue"] = 100
@@ -140,6 +158,17 @@ describe("RangeSliderController", () => {
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
 			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+		})
+
+		it("should set adapted ColorRange in thirds for given metricValues", () => {
+			settingsService.updateSettings = jest.fn()
+
+			rangeSliderController.onColorMetricChanged("rloc")
+
+			expect(settingsService.updateSettings).toHaveBeenCalledWith({
+				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
+			})
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})
 	})
 })

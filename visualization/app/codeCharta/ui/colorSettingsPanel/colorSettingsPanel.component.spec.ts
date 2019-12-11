@@ -4,7 +4,6 @@ import { ColorSettingsPanelController } from "./colorSettingsPanel.component"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
-import { MetricService } from "../../state/metric.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DEFAULT_STATE, SETTINGS } from "../../util/dataMocks"
 import { FileSelectionState, FileState } from "../../codeCharta.model"
@@ -19,12 +18,10 @@ describe("ColorSettingsPanelController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let storeService: StoreService
-	let metricService: MetricService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedMetricService()
 		withMockedSettingsService()
 	})
 
@@ -34,7 +31,6 @@ describe("ColorSettingsPanelController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
-		metricService = getService<MetricService>("metricService")
 	}
 
 	function withMockedSettingsService() {
@@ -46,23 +42,13 @@ describe("ColorSettingsPanelController", () => {
 		})()
 	}
 
-	function withMockedMetricService() {
-		metricService = colorSettingsPanelController["metricService"] = jest.fn(() => {
-			return {
-				getMetricData: jest.fn().mockReturnValue([]),
-				getMaxMetricByMetricName: jest.fn().mockReturnValue(100)
-			}
-		})()
-	}
-
 	function rebuildController() {
-		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, settingsService, storeService, metricService)
+		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, settingsService, storeService)
 	}
 
 	describe("constructor", () => {
 		beforeEach(() => {
 			FileStateService.subscribe = jest.fn()
-			MetricService.subscribe = jest.fn()
 			InvertDeltaColorsService.subscribe = jest.fn()
 			WhiteColorBuildingsService.subscribe = jest.fn()
 			InvertColorRangeService.subscribe = jest.fn()
@@ -73,12 +59,6 @@ describe("ColorSettingsPanelController", () => {
 			rebuildController()
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
-		})
-
-		it("should subscribe to MetricService", () => {
-			rebuildController()
-
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
 		it("should subscribe to InvertDeltaColorsService", () => {
@@ -97,12 +77,6 @@ describe("ColorSettingsPanelController", () => {
 			rebuildController()
 
 			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
-		})
-
-		it("should subscribe to ColorMetricService", () => {
-			rebuildController()
-
-			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 	})
 
@@ -148,32 +122,6 @@ describe("ColorSettingsPanelController", () => {
 		})
 	})
 
-	describe("onColorMetricChanged", () => {
-		it("should only adapt color range if color metric is not the same", () => {
-			storeService.dispatch = jest.fn()
-			colorSettingsPanelController["lastColorMetric"] = "lastColorMetric"
-
-			colorSettingsPanelController.onColorMetricChanged("newColorMetric")
-
-			expect(storeService.dispatch).toHaveBeenCalled()
-		})
-
-		it("should call getMaxMetricByMetricName with colorMetric", () => {
-			colorSettingsPanelController.onColorMetricChanged("newColorMetric")
-
-			expect(metricService.getMaxMetricByMetricName).toHaveBeenCalledWith("newColorMetric")
-		})
-
-		it("should set adapted ColorRange in thirds for given metricValues", () => {
-			colorSettingsPanelController.onColorMetricChanged("rloc")
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
-			})
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
-		})
-	})
-
 	describe("onFileSelectionStatesChanged", () => {
 		it("should detect delta mode selection", () => {
 			const fileStates = [
@@ -195,36 +143,6 @@ describe("ColorSettingsPanelController", () => {
 			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
-		})
-	})
-
-	describe("onMetricDataAdded", () => {
-		it("should set lastMaxColorMetricValue if newMaxColorMetricValue is different", () => {
-			colorSettingsPanelController.onMetricDataAdded([])
-
-			expect(colorSettingsPanelController["lastMaxColorMetricValue"]).toBe(100)
-		})
-
-		it("should adaptColorRange if newMaxColorMetricValue is different", () => {
-			colorSettingsPanelController.onMetricDataAdded([])
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: {
-					colorRange: {
-						from: 33.33,
-						to: 66.66
-					}
-				}
-			})
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
-		})
-
-		it("should not set lastMaxColorMetricValue if newMaxColorMetricValue is the same", () => {
-			colorSettingsPanelController["lastMaxColorMetricValue"] = 100
-
-			colorSettingsPanelController.onMetricDataAdded([])
-
-			expect(colorSettingsPanelController["lastMaxColorMetricValue"]).toBe(100)
 		})
 	})
 
