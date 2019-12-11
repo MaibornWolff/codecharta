@@ -3,8 +3,10 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber } from "../../state/settingsService/settings.service.events"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
+import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 export class MetricValueHoveredController
 	implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber {
@@ -28,9 +30,9 @@ export class MetricValueHoveredController
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
-		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
-		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
-		SettingsService.subscribeToColorMetric(this.$rootScope, this)
+		AreaMetricService.subscribe(this.$rootScope, this)
+		HeightMetricService.subscribe(this.$rootScope, this)
+		ColorMetricService.subscribe(this.$rootScope, this)
 
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
@@ -75,6 +77,7 @@ export class MetricValueHoveredController
 		}
 	}
 
+	//TODO: Check if this is required after finishing redux
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})
 	}
