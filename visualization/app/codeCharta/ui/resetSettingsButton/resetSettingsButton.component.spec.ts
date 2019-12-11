@@ -6,10 +6,12 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 describe("resetSettingsButtonController", () => {
 	let resetSettingsButtonController: ResetSettingsButtonController
 	let storeService: StoreService
+	let settingsService: SettingsService
 
 	beforeEach(() => {
 		restartSystem()
@@ -20,10 +22,11 @@ describe("resetSettingsButtonController", () => {
 		instantiateModule("app.codeCharta.ui.resetSettingsButton")
 
 		storeService = getService<StoreService>("storeService")
+		settingsService = getService<SettingsService>("settingsService")
 	}
 
 	function rebuildController() {
-		resetSettingsButtonController = new ResetSettingsButtonController(storeService)
+		resetSettingsButtonController = new ResetSettingsButtonController(storeService, settingsService)
 	}
 
 	describe("applyDefaultSettings", () => {
