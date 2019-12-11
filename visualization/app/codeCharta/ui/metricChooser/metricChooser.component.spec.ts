@@ -4,9 +4,16 @@ import { MetricChooserController } from "./metricChooser.component"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { DEFAULT_SETTINGS, DEFAULT_STATE, SETTINGS } from "../../util/dataMocks"
+import { DEFAULT_SETTINGS, DEFAULT_STATE, SETTINGS, STATE } from "../../util/dataMocks"
 import { MetricService } from "../../state/metric.service"
 import { StoreService } from "../../state/store.service"
+import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
+import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
+import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
+import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
@@ -47,20 +54,20 @@ describe("MetricChooserController", () => {
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			SettingsService.subscribeToAreaMetric = jest.fn()
-			SettingsService.subscribeToHeightMetric = jest.fn()
-			SettingsService.subscribeToColorMetric = jest.fn()
-			SettingsService.subscribeToDistributionMetric = jest.fn()
+			AreaMetricService.subscribe = jest.fn()
+			HeightMetricService.subscribe = jest.fn()
+			ColorMetricService.subscribe = jest.fn()
+			DistributionMetricService.subscribe = jest.fn()
 			MetricService.subscribe = jest.fn()
 		})
 
 		it("should subscribe to Metric-Events", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
-			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
-			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
-			expect(SettingsService.subscribeToDistributionMetric).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(DistributionMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
 		it("should subscribe to MetricService", () => {
@@ -151,6 +158,7 @@ describe("MetricChooserController", () => {
 		})
 
 		it("settings are not updated if selected metrics are available", () => {
+			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 			const metricData = [
 				{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
@@ -159,7 +167,7 @@ describe("MetricChooserController", () => {
 			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).not.toBeCalled()
-			expect(storeService.getState()).toEqual(DEFAULT_STATE)
+			expect(storeService.getState().dynamicSettings).toEqual(STATE.dynamicSettings)
 		})
 
 		it("no metrics available, should not update settings", () => {
@@ -191,11 +199,8 @@ describe("MetricChooserController", () => {
 		})
 
 		it("should updateSettings with areaMetric and margin from settings, when dynamicMargin is disabled", () => {
-			settingsService.getSettings = jest.fn().mockReturnValue({
-				appSettings: { dynamicMargin: false },
-				dynamicSettings: { margin: 20 }
-			})
-
+			storeService.dispatch(setDynamicMargin(false))
+			storeService.dispatch(setMargin(20))
 			metricChooserController["_viewModel"].areaMetric = "mcc"
 
 			metricChooserController.applySettingsAreaMetric()
@@ -335,6 +340,7 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].metricData).toEqual([])
 		})
 	})
+
 	describe("clearSearchTerm", () => {
 		it("should return an empty string, when function is called", () => {
 			metricChooserController["_viewModel"].searchTerm = "someString"
