@@ -10,7 +10,7 @@ import {
 
 export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, InvertDeltaColorsSubscriber {
 	private static TIME_TO_INIT_BINDING: number = 50
-	private attributeKey: string
+	private attributekey: string // angular bindings do not accept camelCase
 
 	private _viewModel: {
 		deltaValue: number
@@ -47,7 +47,7 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 	private setDeltaValue(selectedBuilding: CodeMapBuilding) {
 		if (selectedBuilding) {
 			const deltas = selectedBuilding.node.deltas
-			this._viewModel.deltaValue = deltas ? deltas[this.attributeKey] : null
+			this._viewModel.deltaValue = deltas ? deltas[this.attributekey] : null
 		}
 	}
 
@@ -65,6 +65,6 @@ export const metricDeltaSelectedComponent = {
 	template: require("./metricDeltaSelected.component.html"),
 	controller: MetricDeltaSelectedController,
 	bindings: {
-		attributeKey: "="
+		attributekey: "="
 	}
 }
