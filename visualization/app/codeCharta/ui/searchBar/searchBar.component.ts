@@ -6,7 +6,6 @@ import { IRootScopeService } from "angular"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import _ from "lodash"
 
@@ -31,7 +30,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 		private codeMapActionsService: CodeMapActionsService,
 		private storeService: StoreService
 	) {
-		BlacklistService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 		this.applyDebouncedSearchPattern = _.debounce(() => {
 			this.applySettingsSearchPattern()

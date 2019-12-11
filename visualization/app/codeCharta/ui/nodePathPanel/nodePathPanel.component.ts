@@ -3,7 +3,7 @@ import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEve
 import { BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 export class NodePathPanelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {
@@ -18,7 +18,7 @@ export class NodePathPanelController implements BuildingHoveredSubscriber, Build
 	constructor(private $rootScope: IRootScopeService) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-		BlacklistService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {

@@ -4,7 +4,7 @@ import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 export class BlacklistPanelController implements BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
@@ -18,7 +18,7 @@ export class BlacklistPanelController implements BlacklistSubscriber, SearchPane
 	}
 
 	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
-		BlacklistService.subscribe($rootScope, this)
+		SettingsService.subscribeToBlacklist($rootScope, this)
 		SearchPanelService.subscribe($rootScope, this)
 	}
 
