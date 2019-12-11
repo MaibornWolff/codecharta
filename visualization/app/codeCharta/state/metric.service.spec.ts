@@ -1,12 +1,13 @@
 import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { FileState, FileSelectionState, MetricData, Settings, AttributeTypeValue } from "../codeCharta.model"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, SETTINGS, withMockedEventMethods } from "../util/dataMocks"
+import { FileState, FileSelectionState, MetricData, AttributeTypeValue, State } from "../codeCharta.model"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods, STATE } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
 import { NodeDecorator } from "../util/nodeDecorator"
 import { SettingsService } from "./settingsService/settings.service"
+import _ from "lodash"
 
 describe("MetricService", () => {
 	let metricService: MetricService
@@ -15,7 +16,7 @@ describe("MetricService", () => {
 
 	let fileStates: FileState[]
 	let metricData: MetricData[]
-	let settings: Settings
+	let state: State
 
 	beforeEach(() => {
 		restartSystem()
@@ -38,7 +39,7 @@ describe("MetricService", () => {
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
 		]
-		settings = JSON.parse(JSON.stringify(SETTINGS))
+		state = _.cloneDeep(STATE)
 	}
 
 	function rebuildService() {
@@ -112,19 +113,19 @@ describe("MetricService", () => {
 
 	describe("getAttributeTypeByMetric", () => {
 		it("should return absolute", () => {
-			const actual = metricService.getAttributeTypeByMetric("rloc", settings)
+			const actual = metricService.getAttributeTypeByMetric("rloc", state)
 
 			expect(actual).toBe(AttributeTypeValue.absolute)
 		})
 
 		it("should return relative", () => {
-			const actual = metricService.getAttributeTypeByMetric("coverage", settings)
+			const actual = metricService.getAttributeTypeByMetric("coverage", state)
 
 			expect(actual).toBe(AttributeTypeValue.relative)
 		})
 
 		it("should return null", () => {
-			const actual = metricService.getAttributeTypeByMetric("notfound", settings)
+			const actual = metricService.getAttributeTypeByMetric("notfound", state)
 
 			expect(actual).toBeNull()
 		})

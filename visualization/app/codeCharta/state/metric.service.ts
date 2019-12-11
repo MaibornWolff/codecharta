@@ -5,9 +5,9 @@ import {
 	CodeMapNode,
 	FileState,
 	MetricData,
-	Settings,
 	AttributeType,
-	AttributeTypeValue
+	AttributeTypeValue,
+	State
 } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
@@ -71,10 +71,8 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		return metric ? metric.maxValue : undefined
 	}
 
-	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeTypeValue {
-		const attributeTypes = settings.fileSettings.attributeTypes
-
-		const attributeType = this.getMergedAttributeTypes(attributeTypes).find(x => {
+	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
+		const attributeType = this.getMergedAttributeTypes(state.fileSettings.attributeTypes).find(x => {
 			return _.findKey(x) === metricName
 		})
 
