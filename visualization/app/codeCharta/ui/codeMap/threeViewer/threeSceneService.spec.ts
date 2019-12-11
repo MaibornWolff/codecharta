@@ -40,7 +40,7 @@ describe("ThreeSceneService", () => {
 	}
 
 	beforeEach(() => {
-		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, settingsService.getSettings(), false)
+		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 		threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 	})
 
