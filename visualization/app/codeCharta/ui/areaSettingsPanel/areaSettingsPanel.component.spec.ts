@@ -10,6 +10,10 @@ import { Settings, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { StoreService } from "../../state/store.service"
+import { DynamicMarginService } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
+import { MarginService } from "../../state/store/dynamicSettings/margin/margin.service"
+import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 
 describe("AreaSettingsPanelController", () => {
 	let $rootScope: IRootScopeService
@@ -63,12 +67,20 @@ describe("AreaSettingsPanelController", () => {
 			SettingsService.subscribe = jest.fn()
 			CodeMapPreRenderService.subscribe = jest.fn()
 			FileStateService.subscribe = jest.fn()
+			DynamicMarginService.subscribe = jest.fn()
+			MarginService.subscribe = jest.fn()
 		})
 
-		it("should subscribe to SettingsService", () => {
+		it("should subscribe to DynamicMarginService", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(DynamicMarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+		})
+
+		it("should subscribe to MarginService", () => {
+			rebuildController()
+
+			expect(MarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
 		it("should subscribe to CodeMapPreRenderService", () => {
@@ -84,82 +96,88 @@ describe("AreaSettingsPanelController", () => {
 		})
 	})
 
-	describe("onSettingsChanged", () => {
-		beforeEach(() => {
-			areaSettingsPanelController.applySettings = jest.fn()
-		})
-
+	describe("onDynamicMarginChanged", () => {
 		it("should set the dynamicMargin in viewModel", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+			areaSettingsPanelController.onDynamicMarginChanged(true)
 
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
 		})
 
 		it("should set margin from settings if dynamicMargin is false", () => {
-			settings.appSettings.dynamicMargin = false
+			areaSettingsPanelController["_viewModel"].margin = 48
 
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+			areaSettingsPanelController.onDynamicMarginChanged(false)
 
-			expect(areaSettingsPanelController["_viewModel"].margin).toBe(48)
+			expect(areaSettingsPanelController["_viewModel"].margin).toEqual(48)
 		})
 
 		it("should set new calculated margin correctly", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+			storeService.dispatch(setAreaMetric("rloc"))
+
+			areaSettingsPanelController.onDynamicMarginChanged(true)
+
+			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+		})
+	})
+
+	describe("onMarginChanged", () => {
+		it("should not call applySettings if margin and new calculated margin are the same", () => {
+			areaSettingsPanelController.onMarginChanged(28)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
-		})
-
-		it("should not call applySettings if margin and new calculated margin are the same", () => {
-			settings.dynamicSettings.margin = 28
-
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
 		})
 	})
 
 	describe("onRenderFileChange", () => {
 		beforeEach(() => {
-			areaSettingsPanelController.applySettings = jest.fn()
-
-			areaSettingsPanelController["makeAutoFit"] = true
 			settings.appSettings.dynamicMargin = true
 		})
 
-		it("should not call applySettings if dynamicMargin is false", () => {
-			settings.appSettings.dynamicMargin = false
+		it("should not call dispatch if dynamicMargin is false", () => {
+			storeService.dispatch(setDynamicMargin(false))
+			storeService.dispatch = jest.fn()
 
 			areaSettingsPanelController.onRenderMapChanged(map)
 
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
+			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
 
 		it("should set new calculated margin correctly", () => {
+			areaSettingsPanelController["_viewModel"].dynamicMargin = true
+			storeService.dispatch(setAreaMetric("rloc"))
+
 			areaSettingsPanelController.onRenderMapChanged(map)
 
-			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
+			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
 		})
 
-		it("should call applySettings after setting new margin", () => {
+		it("should call dispatch after setting new margin", () => {
+			areaSettingsPanelController["_viewModel"].dynamicMargin = true
+			storeService.dispatch(setAreaMetric("rloc"))
+			storeService.dispatch = jest.fn()
+
 			areaSettingsPanelController.onRenderMapChanged(map)
 
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
+			expect(storeService.dispatch).toHaveBeenCalled()
 		})
 
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
 			areaSettingsPanelController["_viewModel"].margin = 28
+			areaSettingsPanelController["_viewModel"].dynamicMargin = true
+			storeService.dispatch(setAreaMetric("rloc"))
+			storeService.dispatch = jest.fn()
 
 			areaSettingsPanelController.onRenderMapChanged(map)
 
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
+			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
 	})
 
 	describe("onFileSelectionStatesChanged", () => {
-		it("should set dynamicMargin in viewModel to true", () => {
+		it("should set dynamicMargin to true", () => {
 			areaSettingsPanelController.onFileSelectionStatesChanged(undefined)
 
-			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
+			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 
 		it("should update margin and dynamicMargin in settingsService", () => {
@@ -173,16 +191,12 @@ describe("AreaSettingsPanelController", () => {
 	})
 
 	describe("onChangeMarginSlider", () => {
-		beforeEach(() => {
-			areaSettingsPanelController.applySettings = jest.fn()
-		})
-
-		it("should set dynamicMargin in viewModel to false", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = true
+		it("should set dynamicMargin to false", () => {
+			storeService.dispatch(setDynamicMargin(true))
 
 			areaSettingsPanelController.onChangeMarginSlider()
 
-			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeFalsy()
+			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 
 		it("should call updateSettings", done => {
@@ -199,31 +213,6 @@ describe("AreaSettingsPanelController", () => {
 				expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 				done()
 			}, AreaSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
-		})
-	})
-
-	describe("applySettingsDynamicMargin", () => {
-		it("should call updateSettings with new dynamicMargin value", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = false
-
-			areaSettingsPanelController.applySettingsDynamicMargin()
-
-			expect(settingsService.updateSettings).toBeCalledWith({ appSettings: { dynamicMargin: false } })
-			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
-		})
-	})
-
-	describe("applySettings", () => {
-		it("should call updateSettings", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = false
-			areaSettingsPanelController["_viewModel"].margin = 28
-			const expected = { dynamicSettings: { margin: 28 }, appSettings: { dynamicMargin: false } }
-
-			areaSettingsPanelController.applySettings()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
-			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
-			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 	})
 })

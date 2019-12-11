@@ -1,7 +1,7 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { CodeMapNode, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { CodeMapNode, FileState } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
@@ -9,8 +9,11 @@ import { StoreService } from "../../state/store.service"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import _ from "lodash"
+import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
+import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
 
-export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber {
+export class AreaSettingsPanelController
+	implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber, DynamicMarginSubscriber, MarginSubscriber {
 	private static MIN_MARGIN = 15
 	private static MAX_MARGIN = 100
 	private static MARGIN_FACTOR = 4
@@ -32,7 +35,8 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
-		SettingsService.subscribe(this.$rootScope, this)
+		DynamicMarginService.subscribe(this.$rootScope, this)
+		MarginService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 
@@ -41,70 +45,58 @@ export class AreaSettingsPanelController implements CodeMapPreRenderServiceSubsc
 		}, AreaSettingsPanelController.DEBOUNCE_TIME)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this._viewModel.dynamicMargin = settings.appSettings.dynamicMargin
-		this._viewModel.margin = settings.dynamicSettings.margin
-		this.potentiallyUpdateMargin(this.codeMapPreRenderService.getRenderMap(), settings)
+	public onDynamicMarginChanged(dynamicMargin: boolean) {
+		this._viewModel.dynamicMargin = dynamicMargin
+		this.potentiallyUpdateMargin()
+	}
+
+	public onMarginChanged(margin: number) {
+		this._viewModel.margin = margin
 	}
 
 	public onRenderMapChanged(map: CodeMapNode) {
-		this._viewModel.dynamicMargin = this.settingsService.getSettings().appSettings.dynamicMargin
-		this.potentiallyUpdateMargin(map, this.settingsService.getSettings())
+		this.potentiallyUpdateMargin(map)
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.resetDynamicMargin()
+		this._viewModel.dynamicMargin = true
+		this.applyDynamicMargin()
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[]) {}
 
-	private resetDynamicMargin() {
-		this._viewModel.dynamicMargin = true
-		this.applySettingsDynamicMargin()
+	private applyDynamicMargin() {
+		this.settingsService.updateSettings({
+			appSettings: {
+				dynamicMargin: this._viewModel.dynamicMargin
+			}
+		})
+		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
 	public onChangeMarginSlider() {
-		this._viewModel.dynamicMargin = false
 		this.settingsService.updateSettings({
 			dynamicSettings: {
 				margin: this._viewModel.margin
 			},
 			appSettings: {
-				dynamicMargin: this._viewModel.dynamicMargin
+				dynamicMargin: false
 			}
 		})
 		this.applyDebouncedMargin()
-		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
+		this.storeService.dispatch(setDynamicMargin(false))
 	}
 
-	public applySettingsDynamicMargin() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				dynamicMargin: this._viewModel.dynamicMargin
-			}
-		})
-		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
-	}
-
-	public applySettings() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				margin: this._viewModel.margin
-			},
-			appSettings: {
-				dynamicMargin: this._viewModel.dynamicMargin
-			}
-		})
-		this.storeService.dispatch(setMargin(this._viewModel.margin))
-		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
-	}
-
-	private potentiallyUpdateMargin(map: CodeMapNode, settings: Settings) {
-		if (settings.appSettings.dynamicMargin && settings.dynamicSettings.areaMetric && map) {
-			const newMargin = this.computeMargin(settings.dynamicSettings.areaMetric, map)
+	private potentiallyUpdateMargin(map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()) {
+		if (this._viewModel.dynamicMargin && this.storeService.getState().dynamicSettings.areaMetric && map) {
+			const newMargin = this.computeMargin(this.storeService.getState().dynamicSettings.areaMetric, map)
 			if (this._viewModel.margin !== newMargin) {
-				this._viewModel.margin = newMargin
-				this.applySettings()
+				this.settingsService.updateSettings({
+					dynamicSettings: {
+						margin: newMargin
+					}
+				})
+				this.storeService.dispatch(setMargin(newMargin))
 			}
 		}
 	}
