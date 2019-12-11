@@ -110,7 +110,7 @@ describe("MetricDeltaSelectedController", () => {
 
 		it("should set deltaValue to existing metric value", () => {
 			codeMapBuilding.node.deltas = { rloc: 42 }
-			metricDeltaSelectedController["attributeKey"] = "rloc"
+			metricDeltaSelectedController["attributekey"] = "rloc"
 
 			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
 
