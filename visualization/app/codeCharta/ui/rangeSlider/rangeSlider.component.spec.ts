@@ -6,23 +6,25 @@ import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { Settings } from "../../codeCharta.model"
-import { SETTINGS } from "../../util/dataMocks"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
+import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
+import { setWhiteColorBuildings } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.actions"
+import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { MapColors } from "../../codeCharta.model"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 describe("RangeSliderController", () => {
+	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let storeService: StoreService
 	let fileStateService: FileStateService
 	let metricService: MetricService
-	let $rootScope: IRootScopeService
 	let rangeSliderController: RangeSliderController
 
-	let SOME_EXTRA_TIME = 400
+	let mapColors: MapColors
 
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController(settingsService, storeService, fileStateService, metricService, $rootScope)
+		rangeSliderController = new RangeSliderController($rootScope, settingsService, storeService, fileStateService, metricService)
 	}
 
 	function restartSystem() {
@@ -38,115 +40,106 @@ describe("RangeSliderController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		withMockedMetricService()
+
+		mapColors = storeService.getState().appSettings.mapColors
 	})
 
 	afterEach(() => {
 		jest.resetAllMocks()
 	})
 
-	describe("onSettingsChanged", () => {
-		it("should only call initSliderOptions when settings.dynamicSettings.colorRange is undefined", () => {
-			rangeSliderController.initSliderOptions = jest.fn()
-			rangeSliderController["updateViewModel"] = jest.fn()
+	function withMockedMetricService() {
+		metricService = rangeSliderController["metricService"] = jest.fn().mockReturnValue({
+			getMaxMetricByMetricName: jest.fn().mockReturnValue(100),
+			getMetricData: jest.fn().mockReturnValue({})
+		})()
+	}
 
-			const settings = { dynamicSettings: { colorRange: { from: null, to: null } } } as Settings
+	describe("constructor", () => {
+		it("should subscribe to Color-Metric-Change", () => {
+			ColorMetricService.subscribe = jest.fn()
 
-			rangeSliderController.onSettingsChanged(settings, undefined)
+			rebuildController()
 
-			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(settings)
-			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
+			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should only call initSliderOptions when settings.dynamicSettings.colorRange is null", () => {
-			rangeSliderController.initSliderOptions = jest.fn()
-			rangeSliderController["updateViewModel"] = jest.fn()
+		it("should subscribe to Color-Range-Change", () => {
+			ColorRangeService.subscribe = jest.fn()
 
-			const settings = { dynamicSettings: { colorRange: { from: null, to: null } } } as Settings
+			rebuildController()
 
-			rangeSliderController.onSettingsChanged(settings, undefined)
-
-			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(settings)
-			expect(rangeSliderController["updateViewModel"]).not.toHaveBeenCalled()
-		})
-
-		it("should call initSliderOptions and update the viewModel, set colored range colors and inputfield width", () => {
-			rangeSliderController.initSliderOptions = jest.fn()
-
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
-
-			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
-			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.colorRange.from)
-			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.colorRange.to)
-		})
-
-		it("should call initSliderOptions and update the viewModel, set grey range colors and inputfield width", () => {
-			rangeSliderController.initSliderOptions = jest.fn()
-
-			rangeSliderController["_viewModel"].sliderOptions.disabled = true
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
-
-			expect(rangeSliderController.initSliderOptions).toHaveBeenCalledWith(SETTINGS)
-			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(SETTINGS.dynamicSettings.colorRange.from)
-			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(SETTINGS.dynamicSettings.colorRange.to)
+			expect(ColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 	})
 
-	describe("initSliderOptions", () => {
-		it("should init the slider options correctly", () => {
-			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(true)
+	describe("onSettingsChanged", () => {
+		it("should init the slider options when metric data is available", () => {
+			const expected = {
+				ceil: 100,
+				onChange: () => rangeSliderController["applySettings"],
+				pushRange: true,
+				onToChange: () => rangeSliderController["onToSliderChange"],
+				onFromChange: () => rangeSliderController["onFromSliderChange"],
+				disabled: false
+			}
 
-			const expected = { ceil: rangeSliderController["maxMetricValue"], pushRange: true, disabled: true }
+			rangeSliderController.onColorMetricChanged("mcc")
 
-			rangeSliderController.initSliderOptions(SETTINGS)
+			expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
+		})
+	})
 
-			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(expected.ceil)
-			expect(rangeSliderController["_viewModel"].sliderOptions.pushRange).toBeTruthy()
-			expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeTruthy()
-			expect(rangeSliderController["_viewModel"].sliderOptions.onChange).not.toBeUndefined()
-			expect(rangeSliderController["_viewModel"].sliderOptions.onToChange).not.toBeUndefined()
-			expect(rangeSliderController["_viewModel"].sliderOptions.onFromChange).not.toBeUndefined()
+	describe("onColorRangeChanged", () => {
+		beforeEach(() => {
+			rangeSliderController["maxMetricValue"] = 100
 		})
 
-		it("should be able to call onFromChange and set the color range correctly", done => {
-			settingsService.updateSettings = jest.fn()
-			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
+		it("should update the viewModel", () => {
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
-
-			rangeSliderController["_viewModel"].sliderOptions.onFromChange()
-
-			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(19)
-			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(67)
-			expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
-
-			expect(settingsService.updateSettings).toHaveBeenCalled()
-
-			setTimeout(() => {
-				expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
-				expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
-				done()
-			}, RangeSliderController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(10)
+			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(30)
 		})
 
-		it("should be able to call onToChange and set the color range correctly", done => {
-			settingsService.updateSettings = jest.fn()
-			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
+		it("should set grey colors when slider is disabled", () => {
+			rangeSliderController["applyCssColors"] = jest.fn()
+			rangeSliderController["_viewModel"].sliderOptions.disabled = true
+			const expected = { left: mapColors.lightGrey, middle: mapColors.lightGrey, right: mapColors.lightGrey }
 
-			rangeSliderController.onSettingsChanged(SETTINGS, undefined)
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			rangeSliderController["_viewModel"].sliderOptions.onToChange()
+			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+		})
 
-			expect(rangeSliderController["_viewModel"].colorRangeFrom).toBe(19)
-			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(67)
-			expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
+		it("should set standard colors", () => {
+			rangeSliderController["applyCssColors"] = jest.fn()
+			const expected = { left: mapColors.positive, middle: mapColors.neutral, right: mapColors.negative }
 
-			expect(settingsService.updateSettings).toHaveBeenCalled()
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			setTimeout(() => {
-				expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
-				expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
-				done()
-			}, RangeSliderController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+		})
+
+		it("should set grey positive color when positive buildings are white", () => {
+			rangeSliderController["applyCssColors"] = jest.fn()
+			storeService.dispatch(setWhiteColorBuildings(true))
+			const expected = { left: mapColors.lightGrey, middle: mapColors.neutral, right: mapColors.negative }
+
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+		})
+
+		it("should set inverted color slider", () => {
+			rangeSliderController["applyCssColors"] = jest.fn()
+			storeService.dispatch(setInvertColorRange(true))
+			const expected = { left: mapColors.negative, middle: mapColors.neutral, right: mapColors.positive }
+
+			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
 		})
 	})
 })
