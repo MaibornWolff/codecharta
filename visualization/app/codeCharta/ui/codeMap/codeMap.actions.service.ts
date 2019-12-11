@@ -1,7 +1,7 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import { MarkedPackage, Settings } from "../../codeCharta.model"
+import { MarkedPackage } from "../../codeCharta.model"
 import angular from "angular"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
@@ -26,31 +26,30 @@ export class CodeMapActionsService {
 	}
 
 	public markFolder(node: CodeMapNode, color: string) {
-		let s = this.settingsService.getSettings()
 		const newMP: MarkedPackage = this.getNewMarkedPackage(node.path, color)
-		const clickedMP: MarkedPackage = s.fileSettings.markedPackages.find(p => p.path === newMP.path)
-		const parentMP: MarkedPackage = this.getParentMP(newMP.path, s)
+		const clickedMP: MarkedPackage = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === newMP.path)
+		const parentMP: MarkedPackage = this.getParentMP(newMP.path)
 
-		this.handleUpdatingMarkedPackages(s, newMP, clickedMP, parentMP)
+		this.handleUpdatingMarkedPackages(newMP, clickedMP, parentMP)
 		// this settings update is dispatched in the store using separate actions inside handleUpdatingMarkedPackages
 		this.settingsService.updateSettings({
 			fileSettings: {
-				markedPackages: s.fileSettings.markedPackages
+				markedPackages: this.storeService.getState().fileSettings.markedPackages
 			}
 		})
 	}
 
-	private handleUpdatingMarkedPackages(s: Settings, newMP: MarkedPackage, clickedMP: MarkedPackage, parentMP: MarkedPackage): void {
+	private handleUpdatingMarkedPackages(newMP: MarkedPackage, clickedMP: MarkedPackage, parentMP: MarkedPackage): void {
 		if (!clickedMP && this.packagesHaveDifferentColor(parentMP, newMP)) {
-			this.addMarkedPackage(newMP, s)
+			this.addMarkedPackage(newMP)
 		} else if (this.packagesHaveDifferentColor(clickedMP, newMP)) {
-			this.removeMarkedPackage(clickedMP, s)
+			this.removeMarkedPackage(clickedMP)
 
 			if (this.packagesHaveDifferentColor(parentMP, newMP)) {
-				this.addMarkedPackage(newMP, s)
+				this.addMarkedPackage(newMP)
 			}
 		}
-		this.removeChildrenMPWithSameColor(newMP, s)
+		this.removeChildrenMPWithSameColor(newMP)
 	}
 
 	private packagesHaveDifferentColor(mp1: MarkedPackage, mp2: MarkedPackage): boolean {
@@ -58,19 +57,18 @@ export class CodeMapActionsService {
 	}
 
 	public unmarkFolder(node: CodeMapNode) {
-		let s = this.settingsService.getSettings()
-		let clickedMP: MarkedPackage = s.fileSettings.markedPackages.find(p => p.path === node.path)
+		const clickedMP: MarkedPackage = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === node.path)
 
 		if (clickedMP) {
-			this.removeMarkedPackage(clickedMP, s)
+			this.removeMarkedPackage(clickedMP)
 		} else {
-			const parentMP: MarkedPackage = this.getParentMP(node.path, s)
-			this.removeMarkedPackage(parentMP, s)
+			const parentMP: MarkedPackage = this.getParentMP(node.path)
+			this.removeMarkedPackage(parentMP)
 		}
 		// this settings update is dispatched in the store separately using the unmark action
 		this.settingsService.updateSettings({
 			fileSettings: {
-				markedPackages: s.fileSettings.markedPackages
+				markedPackages: this.storeService.getState().fileSettings.markedPackages
 			}
 		})
 	}
@@ -115,7 +113,7 @@ export class CodeMapActionsService {
 	}
 
 	public updateEdgePreviews() {
-		const settings = this.settingsService.getSettings()
+		const settings = this.storeService.getState()
 		const edges = settings.fileSettings.edges
 		const edgeMetric = settings.dynamicSettings.edgeMetric
 		const numberOfEdgesToDisplay = settings.appSettings.amountOfEdgePreviews
@@ -145,52 +143,51 @@ export class CodeMapActionsService {
 		this.storeService.dispatch(setEdges(edges))
 	}
 
-	public getParentMP(path: string, s: Settings): MarkedPackage {
-		const sortedParentMP = s.fileSettings.markedPackages
-			.filter(p => path.includes(p.path) && p.path !== path)
+	public getParentMP(path: string): MarkedPackage {
+		const sortedParentMP = this.storeService
+			.getState()
+			.fileSettings.markedPackages.filter(p => path.includes(p.path) && p.path !== path)
 			.sort((a, b) => b.path.length - a.path.length)
 
 		return sortedParentMP.length > 0 ? sortedParentMP[0] : null
 	}
 
 	private getNewMarkedPackage(path: string, color: string): MarkedPackage {
-		let coloredPackage: MarkedPackage = {
+		return {
 			path: path,
 			color: color,
 			attributes: {}
 		}
-
-		return coloredPackage
 	}
 
-	private removeChildrenMPWithSameColor(newMP: MarkedPackage, s: Settings) {
-		const allChildrenMP: MarkedPackage[] = this.getAllChildrenMP(newMP.path, s)
+	private removeChildrenMPWithSameColor(newMP: MarkedPackage) {
+		const allChildrenMP: MarkedPackage[] = this.getAllChildrenMP(newMP.path)
 		allChildrenMP.forEach(childPackage => {
-			const parentMP = this.getParentMP(childPackage.path, s)
+			const parentMP = this.getParentMP(childPackage.path)
 			if (parentMP && parentMP.color === childPackage.color) {
-				this.removeMarkedPackage(childPackage, s)
+				this.removeMarkedPackage(childPackage)
 			}
 		})
 	}
 
-	private getAllChildrenMP(path: string, s: Settings): MarkedPackage[] {
-		return s.fileSettings.markedPackages.filter(p => p.path.includes(path) && p.path != path)
+	private getAllChildrenMP(path: string): MarkedPackage[] {
+		return this.storeService.getState().fileSettings.markedPackages.filter(p => p.path.includes(path) && p.path != path)
 	}
 
-	private addMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
-		s.fileSettings.markedPackages.push(markedPackage)
+	private addMarkedPackage(markedPackage: MarkedPackage) {
+		this.storeService.getState().fileSettings.markedPackages.push(markedPackage)
 		this.settingsService.updateSettings({
 			fileSettings: {
-				markedPackages: s.fileSettings.markedPackages
+				markedPackages: this.storeService.getState().fileSettings.markedPackages
 			}
 		})
 		this.storeService.dispatch(markPackage(markedPackage))
 	}
 
-	private removeMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
-		const indexToRemove = s.fileSettings.markedPackages.indexOf(markedPackage)
+	private removeMarkedPackage(markedPackage: MarkedPackage) {
+		const indexToRemove = this.storeService.getState().fileSettings.markedPackages.indexOf(markedPackage)
 		if (indexToRemove > -1) {
-			s.fileSettings.markedPackages.splice(indexToRemove, 1)
+			this.storeService.getState().fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
 		this.storeService.dispatch(unmarkPackage(markedPackage))
 	}
