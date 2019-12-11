@@ -4,6 +4,8 @@ import { SearchPanelMode, BlacklistType, BlacklistItem } from "../../codeCharta.
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 import { BlacklistSubscriber, SearchPatternSubscriber } from "../../state/settingsService/settings.service.events"
+import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
@@ -19,9 +21,9 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 	}
 
 	/* @ngInject */
-	constructor(private searchPanelService: SearchPanelService, private $rootScope: IRootScopeService) {
-		SettingsService.subscribeToSearchPattern(this.$rootScope, this)
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private searchPanelService: SearchPanelService) {
+		SearchPatternService.subscribe(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 
