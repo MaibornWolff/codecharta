@@ -2,17 +2,23 @@ import "./heightSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { Vector3 } from "three"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { FileState } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { StoreService } from "../../state/store.service"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setInvertHeight } from "../../state/store/appSettings/invertHeight/invertHeight.actions"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import _ from "lodash"
+import {
+	AmountOfTopLabelsService,
+	AmountOfTopLabelsSubscriber
+} from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
+import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
+import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/appSettings/invertHeight/invertHeight.service"
 
-export class HeightSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
+export class HeightSettingsPanelController
+	implements FileStateServiceSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedTopLabels: () => void
 	private readonly applyDebouncedScaling: (newScaling: Vector3) => void
@@ -31,7 +37,9 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private storeService: StoreService) {
-		SettingsService.subscribe(this.$rootScope, this)
+		AmountOfTopLabelsService.subscribe(this.$rootScope, this)
+		ScalingService.subscribe(this.$rootScope, this)
+		InvertHeightService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedTopLabels = _.debounce(() => {
@@ -43,10 +51,16 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
 		}, HeightSettingsPanelController.DEBOUNCE_TIME)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this._viewModel.amountOfTopLabels = settings.appSettings.amountOfTopLabels
-		this._viewModel.scalingY = settings.appSettings.scaling.y
-		this._viewModel.invertHeight = settings.appSettings.invertHeight
+	public onAmountOfTopLabelsChanged(amountOfTopLabels: number) {
+		this._viewModel.amountOfTopLabels = amountOfTopLabels
+	}
+
+	public onInvertHeightChanged(invertHeight: boolean) {
+		this._viewModel.invertHeight = invertHeight
+	}
+
+	public onScalingChanged(scaling) {
+		this._viewModel.scalingY = scaling.y
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {

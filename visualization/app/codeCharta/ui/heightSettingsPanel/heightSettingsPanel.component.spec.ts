@@ -6,10 +6,11 @@ import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
-import { Settings } from "../../codeCharta.model"
-import { SETTINGS } from "../../util/dataMocks"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
+import { AmountOfTopLabelsService } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
+import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
+import { InvertHeightService } from "../../state/store/appSettings/invertHeight/invertHeight.service"
 
 describe("HeightSettingsPanelController", () => {
 	let heightSettingsPanelController: HeightSettingsPanelController
@@ -17,7 +18,6 @@ describe("HeightSettingsPanelController", () => {
 	let settingsService: SettingsService
 	let storeService: StoreService
 
-	let settings: Settings
 	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
@@ -32,8 +32,6 @@ describe("HeightSettingsPanelController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
-
-		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
 
 	function rebuildController() {
@@ -48,41 +46,60 @@ describe("HeightSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			SettingsService.subscribe = jest.fn()
-			FileStateService.subscribe = jest.fn()
-		})
+		it("should subscribe to AmountOfTopLabelsService", () => {
+			AmountOfTopLabelsService.subscribe = jest.fn()
 
-		it("should subscribe to SettingsService", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+			expect(AmountOfTopLabelsService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+		})
+
+		it("should subscribe to ScalingService", () => {
+			ScalingService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ScalingService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+		})
+
+		it("should subscribe to InvertHeightService", () => {
+			InvertHeightService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(InvertHeightService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
 		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 	})
 
-	describe("onSettingsChanged", () => {
-		it("should set amountOfTopTables in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined)
+	describe("onAmountOfTopLabelsChanged", () => {
+		it("should set amountOfTopLabels in viewModel", () => {
+			heightSettingsPanelController.onAmountOfTopLabelsChanged(31)
 
 			expect(heightSettingsPanelController["_viewModel"].amountOfTopLabels).toBe(31)
 		})
+	})
 
-		it("should set scalingY in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(heightSettingsPanelController["_viewModel"].scalingY).toBe(1.8)
-		})
-
+	describe("onInvertHeightChanged", () => {
 		it("should set invertHeight in viewModel", () => {
-			heightSettingsPanelController.onSettingsChanged(settings, undefined)
+			heightSettingsPanelController.onInvertHeightChanged(true)
 
 			expect(heightSettingsPanelController["_viewModel"].invertHeight).toBeTruthy()
+		})
+	})
+
+	describe("onScalingChanged", () => {
+		it("should set scalingY in viewModel", () => {
+			heightSettingsPanelController.onScalingChanged(new Vector3(0, 1.8, 0))
+
+			expect(heightSettingsPanelController["_viewModel"].scalingY).toBe(1.8)
 		})
 	})
 
