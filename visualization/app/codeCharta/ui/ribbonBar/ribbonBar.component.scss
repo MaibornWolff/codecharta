@@ -150,4 +150,9 @@ ribbon-bar-component {
 	.section-body reset-settings-button-component .md-button {
 		transition: all 0.3s ease;
 	}
+
+	md-input-container {
+		padding: 0;
+		margin: 0;
+	}
 }
