@@ -44,7 +44,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	public getMarkingColor() {
 		// TODO: set a 'black' color in settings.mapColors ?
 		let defaultColor = "#000000"
-		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.settingsService.getSettings().fileSettings.markedPackages)
+		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
 	}
 
@@ -114,14 +114,13 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return node && node.children && node.children.length > 0 ? 1 : 0
 	}
 
-	public getNodeUnary() {
+	public getNodeUnaryValue() {
 		return this.node.attributes["unary"]
 	}
 
 	public getUnaryPercentage() {
 		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes["unary"]
-		const nodeUnary = this.node.attributes["unary"]
-		return ((100 * nodeUnary) / rootUnary).toFixed(0)
+		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
 	}
 
 	public isRoot() {
