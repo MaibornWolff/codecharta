@@ -9,6 +9,7 @@ import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
+import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
@@ -69,6 +70,14 @@ describe("EdgeChooserController", () => {
 			rebuildController()
 
 			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
+		})
+
+		it("should subscribe to EdgeMetricService", () => {
+			EdgeMetricService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 	})
 

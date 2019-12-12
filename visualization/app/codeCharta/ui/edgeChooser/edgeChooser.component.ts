@@ -5,11 +5,11 @@ import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../st
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
-import { EdgeMetricSubscriber } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 
 export class EdgeChooserController
 	implements EdgeMetricDataServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
@@ -37,7 +37,7 @@ export class EdgeChooserController
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
+		EdgeMetricService.subscribe(this.$rootScope, this)
 	}
 
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
