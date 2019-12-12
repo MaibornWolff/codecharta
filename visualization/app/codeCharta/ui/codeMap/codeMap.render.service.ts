@@ -6,32 +6,37 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, Node, FileState } from "../../codeCharta.model"
+import { CodeMapNode, Node } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import { RenderData } from "./codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { FileStateService } from "../../state/fileState.service"
+import { MetricService } from "../../state/metric.service"
 
 export class CodeMapRenderService {
 	constructor(
 		private storeService: StoreService,
 		private fileStateService: FileStateService,
+		private metricService: MetricService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
 	) {}
 
-	public render(renderData: RenderData) {
-		this.showAllOrOnlyFocusedNode(renderData.map)
-		const sortedNodes: Node[] = this.getSortedNodes(renderData)
-		this.setNewMapMesh(sortedNodes, this.fileStateService.getFileStates())
+	public render(map: CodeMapNode) {
+		this.showAllOrOnlyFocusedNode(map)
+		const sortedNodes: Node[] = this.getSortedNodes(map)
+		this.setNewMapMesh(sortedNodes)
 		this.setLabels(sortedNodes)
 		this.setArrows(sortedNodes)
 		this.scaleMap()
 	}
 
-	private setNewMapMesh(sortedNodes, fileStates: FileState[]) {
-		const mapMesh: CodeMapMesh = new CodeMapMesh(sortedNodes, this.storeService.getState(), FileStateHelper.isDeltaState(fileStates))
+	private setNewMapMesh(sortedNodes) {
+		const mapMesh: CodeMapMesh = new CodeMapMesh(
+			sortedNodes,
+			this.storeService.getState(),
+			FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+		)
 		this.threeSceneService.setMapMesh(mapMesh, this.storeService.getState().treeMap.mapSize)
 	}
 
@@ -43,11 +48,11 @@ export class CodeMapRenderService {
 		this.codeMapArrowService.scale(scale)
 	}
 
-	private getSortedNodes(renderData: RenderData): Node[] {
+	private getSortedNodes(map: CodeMapNode): Node[] {
 		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(
-			renderData.map,
+			map,
 			this.storeService.getState(),
-			renderData.metricData,
+			this.metricService.getMetricData(),
 			FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)

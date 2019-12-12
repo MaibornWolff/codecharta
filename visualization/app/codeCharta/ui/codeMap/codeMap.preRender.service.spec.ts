@@ -21,6 +21,7 @@ describe("codeMapPreRenderService", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let fileStateService: FileStateService
+	let metricService: MetricService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
 	let loadingStatusService: LoadingStatusService
@@ -40,6 +41,7 @@ describe("codeMapPreRenderService", () => {
 		withMockedThreeOrbitControlsService()
 		withMockedLoadingStatusService()
 		withMockedCodeMapRenderService()
+		withMockedMetricService()
 	})
 
 	afterEach(() => {
@@ -52,6 +54,7 @@ describe("codeMapPreRenderService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
+		metricService = getService<MetricService>("metricService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
@@ -69,6 +72,7 @@ describe("codeMapPreRenderService", () => {
 			$rootScope,
 			storeService,
 			fileStateService,
+			metricService,
 			threeOrbitControlsService,
 			codeMapRenderService,
 			loadingStatusService,
@@ -102,11 +106,15 @@ describe("codeMapPreRenderService", () => {
 		})()
 	}
 
+	function withMockedMetricService() {
+		metricService = codeMapPreRenderService["metricService"] = jest.fn().mockReturnValue({
+			getMetricData: jest.fn().mockReturnValue(metricData)
+		})()
+	}
 	function withLastRenderData() {
 		codeMapPreRenderService["lastRender"] = {
 			fileMeta,
-			map,
-			metricData
+			map
 		}
 	}
 
@@ -166,12 +174,6 @@ describe("codeMapPreRenderService", () => {
 
 	describe("on metric data added", () => {
 		const originalDecorateMap = NodeDecorator.decorateMap
-
-		it("should set metric data of last render", () => {
-			codeMapPreRenderService.onMetricDataAdded(metricData)
-
-			expect(codeMapPreRenderService["lastRender"].metricData).toEqual(metricData)
-		})
 
 		it("should call Node Decorator functions if all required data is available", () => {
 			NodeDecorator.decorateMap = jest.fn()

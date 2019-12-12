@@ -7,7 +7,6 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { Node, MetricData, CodeMapNode, FileMeta, FileState, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FILE_STATES, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
-import { RenderData } from "./codeMap.preRender.service"
 import * as _ from "lodash"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Vector3 } from "three"
@@ -18,10 +17,12 @@ import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { FileStateService } from "../../state/fileState.service"
+import { MetricService } from "../../state/metric.service"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
 	let fileStateService: FileStateService
+	let metricService: MetricService
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
@@ -40,6 +41,7 @@ describe("codeMapRenderService", () => {
 		withMockedCodeMapLabelService()
 		withMockedCodeMapArrowService()
 		withMockedFileStateService()
+		withMockedMetricService()
 	})
 
 	afterEach(() => {
@@ -51,6 +53,7 @@ describe("codeMapRenderService", () => {
 
 		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
+		metricService = getService<MetricService>("metricService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
@@ -67,6 +70,7 @@ describe("codeMapRenderService", () => {
 		codeMapRenderService = new CodeMapRenderService(
 			storeService,
 			fileStateService,
+			metricService,
 			threeSceneService,
 			codeMapLabelService,
 			codeMapArrowService
@@ -107,11 +111,17 @@ describe("codeMapRenderService", () => {
 		})()
 	}
 
+	function withMockedMetricService() {
+		metricService = codeMapRenderService["metricService"] = jest.fn().mockReturnValue({
+			getMetricData: jest.fn().mockReturnValue(metricData)
+		})()
+	}
+
 	describe("setNewMapMesh", () => {
 		it("should call threeSceneService.scale", () => {
 			const sortedNodes: Node[] = TEST_NODES
 
-			codeMapRenderService["setNewMapMesh"](sortedNodes, fileStates)
+			codeMapRenderService["setNewMapMesh"](sortedNodes)
 
 			expect(threeSceneService.setMapMesh).toHaveBeenCalled()
 		})
@@ -153,13 +163,7 @@ describe("codeMapRenderService", () => {
 
 	describe("getSortedNodes", () => {
 		it("should get sorted Nodes as array", () => {
-			const renderData: RenderData = {
-				map: map,
-				metricData: metricData,
-				fileMeta: null
-			}
-
-			const sortedNodes: Node[] = codeMapRenderService["getSortedNodes"](renderData)
+			const sortedNodes: Node[] = codeMapRenderService["getSortedNodes"](map)
 
 			expect(sortedNodes).toMatchSnapshot()
 		})

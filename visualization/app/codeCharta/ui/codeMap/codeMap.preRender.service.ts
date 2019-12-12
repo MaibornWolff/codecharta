@@ -20,7 +20,6 @@ import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings
 export interface RenderData {
 	map: CodeMapNode
 	fileMeta: FileMeta
-	metricData: MetricData[]
 }
 
 export interface CodeMapPreRenderServiceSubscriber {
@@ -32,14 +31,14 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private lastRender: RenderData = {
 		map: null,
-		fileMeta: null,
-		metricData: null
+		fileMeta: null
 	}
 
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private fileStateService: FileStateService,
+		private metricService: MetricService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
 		private loadingStatusService: LoadingStatusService,
@@ -71,7 +70,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
-		this.lastRender.metricData = metricData
 		if (this.fileStateService.getFileStates().length > 0) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
@@ -82,9 +80,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}
 	}
 
-	public onMetricDataRemoved() {
-		this.lastRender.metricData = null
-	}
+	public onMetricDataRemoved() {}
 
 	private updateRenderMapAndFileMeta() {
 		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap()
@@ -93,13 +89,22 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private decorateIfPossible() {
-		if (this.lastRender.map && this.fileStateService.getFileStates() && this.lastRender.fileMeta && this.lastRender.metricData) {
-			this.lastRender.map = NodeDecorator.decorateMap(this.lastRender.map, this.lastRender.fileMeta, this.lastRender.metricData)
+		if (
+			this.lastRender.map &&
+			this.fileStateService.getFileStates() &&
+			this.lastRender.fileMeta &&
+			this.metricService.getMetricData()
+		) {
+			this.lastRender.map = NodeDecorator.decorateMap(
+				this.lastRender.map,
+				this.lastRender.fileMeta,
+				this.metricService.getMetricData()
+			)
 			this.getEdgeMetricsForLeaves(this.lastRender.map)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
 				this.lastRender.map,
 				this.storeService.getState().fileSettings.blacklist,
-				this.lastRender.metricData,
+				this.metricService.getMetricData(),
 				this.edgeMetricDataService.getMetricData(),
 				FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 			)
@@ -147,7 +152,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private renderAndNotify() {
-		this.codeMapRenderService.render(this.lastRender)
+		this.codeMapRenderService.render(this.lastRender.map)
 
 		this.notifyLoadingMapStatus()
 		this.notifyMapChanged()
@@ -164,7 +169,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private allNecessaryRenderDataAvailable(): boolean {
 		return (
-			this.fileStateService.getFileStates().length > 0 && this.lastRender.metricData !== null && this.lastRender.metricData.length > 1
+			this.fileStateService.getFileStates().length > 0 &&
+			this.metricService.getMetricData() !== null &&
+			this.metricService.getMetricData().length > 1
 		)
 	}
 
