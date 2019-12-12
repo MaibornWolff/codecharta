@@ -113,10 +113,10 @@ export class CodeMapActionsService {
 	}
 
 	public updateEdgePreviews() {
-		const settings = this.storeService.getState()
-		const edges = settings.fileSettings.edges
-		const edgeMetric = settings.dynamicSettings.edgeMetric
-		const numberOfEdgesToDisplay = settings.appSettings.amountOfEdgePreviews
+		const state = this.storeService.getState()
+		const edges = state.fileSettings.edges
+		const edgeMetric = state.dynamicSettings.edgeMetric
+		const numberOfEdgesToDisplay = state.appSettings.amountOfEdgePreviews
 		const edgePreviewNodes = this.edgeMetricDataService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
 
 		edges.forEach(edge => {
