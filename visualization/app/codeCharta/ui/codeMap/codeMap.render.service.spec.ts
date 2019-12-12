@@ -157,7 +157,7 @@ describe("codeMapRenderService", () => {
 
 			codeMapRenderService["scaleMap"]()
 
-			expect(codeMapArrowService.scale).toHaveBeenCalledWith(scaling)
+			expect(codeMapArrowService.scale).toHaveBeenCalledWith()
 		})
 	})
 

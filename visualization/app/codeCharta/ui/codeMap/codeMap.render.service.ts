@@ -45,7 +45,7 @@ export class CodeMapRenderService {
 		const mapSize = this.storeService.getState().treeMap.mapSize
 		this.threeSceneService.scale(scale, mapSize)
 		this.codeMapLabelService.scale(scale)
-		this.codeMapArrowService.scale(scale)
+		this.codeMapArrowService.scale()
 	}
 
 	private getSortedNodes(map: CodeMapNode): Node[] {
