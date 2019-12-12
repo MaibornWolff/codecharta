@@ -17,9 +17,11 @@ import { setScaling } from "../../state/store/appSettings/scaling/scaling.action
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { FileStateService } from "../../state/fileState.service"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
+	let fileStateService: FileStateService
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
@@ -37,6 +39,7 @@ describe("codeMapRenderService", () => {
 		withMockedThreeSceneService()
 		withMockedCodeMapLabelService()
 		withMockedCodeMapArrowService()
+		withMockedFileStateService()
 	})
 
 	afterEach(() => {
@@ -47,6 +50,7 @@ describe("codeMapRenderService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		storeService = getService<StoreService>("storeService")
+		fileStateService = getService<FileStateService>("fileStateService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
@@ -60,7 +64,13 @@ describe("codeMapRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapRenderService = new CodeMapRenderService(storeService, threeSceneService, codeMapLabelService, codeMapArrowService)
+		codeMapRenderService = new CodeMapRenderService(
+			storeService,
+			fileStateService,
+			threeSceneService,
+			codeMapLabelService,
+			codeMapArrowService
+		)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
 	}
 
@@ -91,17 +101,17 @@ describe("codeMapRenderService", () => {
 		})()
 	}
 
+	function withMockedFileStateService() {
+		fileStateService = codeMapRenderService["fileStateService"] = jest.fn().mockReturnValue({
+			getFileStates: jest.fn().mockReturnValue(fileStates)
+		})()
+	}
+
 	describe("setNewMapMesh", () => {
 		it("should call threeSceneService.scale", () => {
 			const sortedNodes: Node[] = TEST_NODES
-			const renderData: RenderData = {
-				map: map,
-				metricData: metricData,
-				fileStates: fileStates,
-				fileMeta: fileMeta
-			}
 
-			codeMapRenderService["setNewMapMesh"](sortedNodes, renderData.fileStates)
+			codeMapRenderService["setNewMapMesh"](sortedNodes, fileStates)
 
 			expect(threeSceneService.setMapMesh).toHaveBeenCalled()
 		})
@@ -146,7 +156,6 @@ describe("codeMapRenderService", () => {
 			const renderData: RenderData = {
 				map: map,
 				metricData: metricData,
-				fileStates: fileStates,
 				fileMeta: null
 			}
 

@@ -10,10 +10,12 @@ import { CodeMapNode, Node, FileState } from "../../codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { RenderData } from "./codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
+import { FileStateService } from "../../state/fileState.service"
 
 export class CodeMapRenderService {
 	constructor(
 		private storeService: StoreService,
+		private fileStateService: FileStateService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
@@ -22,7 +24,7 @@ export class CodeMapRenderService {
 	public render(renderData: RenderData) {
 		this.showAllOrOnlyFocusedNode(renderData.map)
 		const sortedNodes: Node[] = this.getSortedNodes(renderData)
-		this.setNewMapMesh(sortedNodes, renderData.fileStates)
+		this.setNewMapMesh(sortedNodes, this.fileStateService.getFileStates())
 		this.setLabels(sortedNodes)
 		this.setArrows(sortedNodes)
 		this.scaleMap()
@@ -46,7 +48,7 @@ export class CodeMapRenderService {
 			renderData.map,
 			this.storeService.getState(),
 			renderData.metricData,
-			FileStateHelper.isDeltaState(renderData.fileStates)
+			FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)

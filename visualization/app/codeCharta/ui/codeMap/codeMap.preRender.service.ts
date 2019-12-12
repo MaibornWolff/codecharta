@@ -72,9 +72,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this.lastRender.metricData = metricData
-		this.updateRenderMapAndFileMeta()
+		if (this.fileStateService.getFileStates().length > 0) {
+			this.updateRenderMapAndFileMeta()
+			this.decorateIfPossible()
+		}
 
-		this.decorateIfPossible()
 		if (this.allNecessaryRenderDataAvailable()) {
 			this.renderAndNotify()
 		}
@@ -162,7 +164,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private allNecessaryRenderDataAvailable(): boolean {
 		return (
-			this.fileStateService.getFileStates() !== null && this.lastRender.metricData !== null && this.lastRender.metricData.length > 1
+			this.fileStateService.getFileStates().length > 0 && this.lastRender.metricData !== null && this.lastRender.metricData.length > 1
 		)
 	}
 
