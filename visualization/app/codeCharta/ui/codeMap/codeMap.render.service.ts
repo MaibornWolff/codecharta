@@ -44,7 +44,7 @@ export class CodeMapRenderService {
 		const scale = this.storeService.getState().appSettings.scaling
 		const mapSize = this.storeService.getState().treeMap.mapSize
 		this.threeSceneService.scale(scale, mapSize)
-		this.codeMapLabelService.scale(scale)
+		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
 	}
 
@@ -67,7 +67,7 @@ export class CodeMapRenderService {
 			++i
 		) {
 			if (sortedNodes[i].isLeaf) {
-				this.codeMapLabelService.addLabel(sortedNodes[i], this.storeService.getState())
+				this.codeMapLabelService.addLabel(sortedNodes[i])
 				++numAdded
 			}
 		}
