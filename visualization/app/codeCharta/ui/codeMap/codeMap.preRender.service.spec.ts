@@ -1,13 +1,13 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { CCFile, CodeMapNode } from "../../codeCharta.model"
+import { CCFile, CodeMapNode, FileMeta, FileState, MetricData } from "../../codeCharta.model"
 import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
-import { TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE, withMockedEventMethods } from "../../util/dataMocks"
+import { TEST_FILE_WITH_PATHS, METRIC_DATA, withMockedEventMethods, FILE_STATES } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
@@ -27,11 +27,16 @@ describe("codeMapPreRenderService", () => {
 	let edgeMetricDataService: EdgeMetricDataService
 
 	let file: CCFile
+	let fileMeta: FileMeta
+	let map: CodeMapNode
+	let fileStates: FileState[]
+	let metricData: MetricData[]
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
+		withMockedFileStateService()
 		withMockedThreeOrbitControlsService()
 		withMockedLoadingStatusService()
 		withMockedCodeMapRenderService()
@@ -52,6 +57,11 @@ describe("codeMapPreRenderService", () => {
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
 		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
+		fileMeta = _.cloneDeep(FILE_STATES[0].file.fileMeta)
+		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		map.children[1].children = _.slice(map.children[1].children, 0, 2)
+		fileStates = _.cloneDeep(FILE_STATES)
+		metricData = _.cloneDeep(METRIC_DATA)
 	}
 
 	function rebuildService() {
@@ -86,11 +96,18 @@ describe("codeMapPreRenderService", () => {
 		})()
 	}
 
+	function withMockedFileStateService() {
+		fileStateService = codeMapPreRenderService["fileStateService"] = jest.fn().mockReturnValue({
+			getFileStates: jest.fn().mockReturnValue(fileStates)
+		})()
+	}
+
 	function withLastRenderData() {
-		codeMapPreRenderService["lastRender"].fileMeta = { fileName: "foo", apiVersion: "1.0", projectName: "bar" }
-		codeMapPreRenderService["lastRender"].map = VALID_NODE
-		codeMapPreRenderService["lastRender"].fileStates = []
-		codeMapPreRenderService["lastRender"].metricData = METRIC_DATA
+		codeMapPreRenderService["lastRender"] = {
+			fileMeta,
+			map,
+			metricData
+		}
 	}
 
 	describe("constructor", () => {
@@ -151,9 +168,9 @@ describe("codeMapPreRenderService", () => {
 		const originalDecorateMap = NodeDecorator.decorateMap
 
 		it("should set metric data of last render", () => {
-			codeMapPreRenderService.onMetricDataAdded(METRIC_DATA)
+			codeMapPreRenderService.onMetricDataAdded(metricData)
 
-			expect(codeMapPreRenderService["lastRender"].metricData).toEqual(METRIC_DATA)
+			expect(codeMapPreRenderService["lastRender"].metricData).toEqual(metricData)
 		})
 
 		it("should call Node Decorator functions if all required data is available", () => {
@@ -161,9 +178,9 @@ describe("codeMapPreRenderService", () => {
 			NodeDecorator.decorateParentNodesWithSumAttributes = jest.fn()
 			withLastRenderData()
 
-			codeMapPreRenderService.onMetricDataAdded(METRIC_DATA)
+			codeMapPreRenderService.onMetricDataAdded(metricData)
 
-			expect(NodeDecorator.decorateMap).toHaveBeenCalledWith(VALID_NODE, codeMapPreRenderService["lastRender"].fileMeta, METRIC_DATA)
+			expect(NodeDecorator.decorateMap).toHaveBeenCalledWith(map, fileMeta, metricData)
 			expect(NodeDecorator.decorateParentNodesWithSumAttributes).toHaveBeenCalled()
 		})
 
@@ -178,7 +195,7 @@ describe("codeMapPreRenderService", () => {
 			})
 			withLastRenderData()
 
-			codeMapPreRenderService.onMetricDataAdded(METRIC_DATA)
+			codeMapPreRenderService.onMetricDataAdded(metricData)
 
 			const rootChildren = codeMapPreRenderService["lastRender"].map.children
 			expect(rootChildren.find(x => x.name == "big leaf").edgeAttributes).toEqual({ metric1: { incoming: 1, outgoing: 2 } })
