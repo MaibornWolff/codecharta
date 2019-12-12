@@ -3,13 +3,14 @@ import "../../codeCharta.module"
 import { CodeMapActionsService } from "./codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import { SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import _ from "lodash"
 import { markPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
@@ -18,8 +19,6 @@ describe("CodeMapActionService", () => {
 	let storeService: StoreService
 
 	let nodeA: CodeMapNode
-	let settings: Settings
-	let edge: Edge
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
@@ -29,9 +28,7 @@ describe("CodeMapActionService", () => {
 		storeService = getService<StoreService>("storeService")
 
 		nodeA = _.cloneDeep(VALID_NODE_WITH_PATH)
-		settings = _.cloneDeep(SETTINGS)
-		edge = _.cloneDeep(VALID_EDGE)
-		settings.fileSettings.edges.push(edge)
+		storeService.dispatch(setMarkedPackages())
 	}
 
 	function rebuildService() {
@@ -50,8 +47,6 @@ describe("CodeMapActionService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedSettingsService()
-
-		storeService.dispatch(setMarkedPackages())
 	})
 
 	afterEach(() => {
@@ -259,7 +254,7 @@ describe("CodeMapActionService", () => {
 
 	describe("removeBlacklistEntry", () => {
 		it("should call pushItemToBlacklist with BlacklistType exclude", () => {
-			settings.fileSettings.blacklist.push({ path: nodeA.path + "/leaf", type: BlacklistType.exclude })
+			storeService.dispatch(addBlacklistItem({ path: nodeA.path + "/leaf", type: BlacklistType.exclude }))
 			const entry = { path: nodeA.path, type: BlacklistType.exclude }
 
 			codeMapActionsService.removeBlacklistEntry(entry)
@@ -271,7 +266,7 @@ describe("CodeMapActionService", () => {
 	describe("pushItemToBlacklist", () => {
 		it("should not update settings if item is already blacklisted", () => {
 			const blacklistItem = { path: nodeA.path, type: BlacklistType.exclude }
-			settings.fileSettings.blacklist.push(blacklistItem)
+			storeService.dispatch(addBlacklistItem(blacklistItem))
 
 			codeMapActionsService.pushItemToBlacklist(blacklistItem)
 			codeMapActionsService.pushItemToBlacklist(_.cloneDeep(blacklistItem))
