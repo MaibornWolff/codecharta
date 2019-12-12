@@ -6,7 +6,6 @@ import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../c
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
@@ -35,37 +34,29 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.potentiallyAddNoneExtension()
 	}
 
-	public highlightBarHoveredBuildings(extension: string) {
+	public onHoverFileExtensionBar(hoveredExtension: string) {
 		const buildings = this.threeSceneService
 			.getMapMesh()
 			.getMeshDescription()
 			.buildings.filter(building => building.node.isLeaf)
-		if (extension === "other") {
-			this.highlightBuildingsSummarizedInOtherDistribution(buildings)
-		} else {
-			buildings.forEach(building => {
-				if (FileExtensionCalculator.estimateFileExtension(building.node.name) === extension) {
-					this.threeSceneService.addBuildingToHighlightingList(building)
-				}
-			})
-		}
 
-		this.threeSceneService.highlightBuildings()
-	}
-
-	private highlightBuildingsSummarizedInOtherDistribution(mapBuildings: CodeMapBuilding[]) {
-		const visibleDistributionEndings: string[] = this._viewModel.distribution
+		const visibleFileExtensions: string[] = this._viewModel.distribution
 			.filter(metric => metric.fileExtension !== "other")
 			.map(metric => metric.fileExtension)
 
-		mapBuildings.forEach(building => {
-			if (!visibleDistributionEndings.includes(FileExtensionCalculator.estimateFileExtension(building.node.name))) {
+		buildings.forEach(building => {
+			const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
+			if (
+				buildingExtension === hoveredExtension ||
+				(hoveredExtension === "other" && !visibleFileExtensions.includes(buildingExtension))
+			) {
 				this.threeSceneService.addBuildingToHighlightingList(building)
 			}
 		})
+		this.threeSceneService.highlightBuildings()
 	}
 
-	public clearHighlightedBarHoveredBuildings() {
+	public onUnhoverFileExtensionBar() {
 		this.threeSceneService.clearHighlight()
 	}
 

@@ -177,7 +177,7 @@ describe("FileExtensionBarController", () => {
 		})
 
 		it("should highlight all buildings with 'other' extension", () => {
-			fileExtensionBarController.highlightBarHoveredBuildings("other")
+			fileExtensionBarController.onHoverFileExtensionBar("other")
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledTimes(1)
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
@@ -185,14 +185,14 @@ describe("FileExtensionBarController", () => {
 		})
 
 		it("should call addBuilding to addBuildingToHighlightingList, when a Building with the given file Extension exists ", () => {
-			fileExtensionBarController.highlightBarHoveredBuildings("ts")
+			fileExtensionBarController.onHoverFileExtensionBar("ts")
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 		})
 
 		it("should not call addBuilding to addBuildingToHighlightingList, when Building with the given file Extension does not exists ", () => {
-			fileExtensionBarController.highlightBarHoveredBuildings("ne")
+			fileExtensionBarController.onHoverFileExtensionBar("ne")
 
 			expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
