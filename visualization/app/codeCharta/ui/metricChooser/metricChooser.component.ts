@@ -136,8 +136,8 @@ export class MetricChooserController
 	}
 
 	public applySettingsAreaMetric() {
-		const settings = this.storeService.getState()
-		const margin = settings.appSettings.dynamicMargin ? null : settings.dynamicSettings.margin
+		const state = this.storeService.getState()
+		const margin = state.appSettings.dynamicMargin ? null : state.dynamicSettings.margin
 
 		this.settingsService.updateSettings({
 			dynamicSettings: {
