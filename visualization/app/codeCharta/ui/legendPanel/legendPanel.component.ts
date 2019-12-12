@@ -1,21 +1,27 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import $ from "jquery"
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
-import { ColorRange, MarkedPackage, RecursivePartial, Settings } from "../../codeCharta.model"
+import { ColorRange, MarkedPackage } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
-import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
+import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
+import {
+	InvertColorRangeService,
+	InvertColorRangeSubscriber
+} from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
+import { StoreService } from "../../state/store.service"
+import { MarkedPackagesSubscriber } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
 
 export interface PackageList {
 	colorPixel: string
 	markedPackages: MarkedPackage[]
 }
 
-export class LegendPanelController implements SettingsServiceSubscriber, AttributeSideBarVisibilitySubscriber {
+export class LegendPanelController
+	implements AttributeSideBarVisibilitySubscriber, ColorRangeSubscriber, InvertColorRangeSubscriber, MarkedPackagesSubscriber {
 	private _viewModel: {
 		isLegendVisible: boolean
 		isSideBarVisible: boolean
@@ -33,59 +39,70 @@ export class LegendPanelController implements SettingsServiceSubscriber, Attribu
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
-		SettingsService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private fileStateService: FileStateService) {
+		ColorRangeService.subscribe(this.$rootScope, this)
+		InvertColorRangeService.subscribe(this.$rootScope, this)
 		AttributeSideBarService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(s: Settings, update: RecursivePartial<Settings>) {
-		this._viewModel.colorRange = s.dynamicSettings.colorRange
-		this._viewModel.invertColorRange = s.appSettings.invertColorRange
-		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+	public onColorRangeChanged(colorRange: ColorRange) {
+		this._viewModel.colorRange = colorRange
+		this.updatePixelColors()
+	}
 
-		const select = ColorConverter.getImageDataUri(s.appSettings.mapColors.selected)
-		$("#select").attr("src", select)
+	public onInvertColorRangeChanged(invertColorRange: boolean) {
+		this._viewModel.invertColorRange = invertColorRange
+		this.updatePixelColors()
+	}
 
-		if (this._viewModel.isDeltaState) {
-			this.refreshDeltaColors(s)
-		} else {
-			this.refreshNormalColors(s)
-		}
-		this.setMarkedPackageLists(s)
+	public onMarkedPackagesChanged(markedPackages: MarkedPackage[]) {
+		this.setMarkedPackageLists(markedPackages)
 	}
 
 	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
-	private refreshNormalColors(s: Settings) {
-		const positive = ColorConverter.getImageDataUri(
-			s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
-		)
-		const neutral = ColorConverter.getImageDataUri(s.appSettings.mapColors.neutral)
-		const negative = ColorConverter.getImageDataUri(s.appSettings.mapColors.negative)
-		const incomingEdge = ColorConverter.getImageDataUri(s.appSettings.mapColors.incomingEdge)
-		const outgoingEdge = ColorConverter.getImageDataUri(s.appSettings.mapColors.outgoingEdge)
-		$("#green").attr("src", positive)
-		$("#yellow").attr("src", neutral)
-		$("#red").attr("src", negative)
-		$("#blue").attr("src", incomingEdge)
-		$("#pink").attr("src", outgoingEdge)
+	public toggle() {
+		this._viewModel.isLegendVisible = !this._viewModel.isLegendVisible
 	}
 
-	private refreshDeltaColors(s: Settings) {
-		const positiveDeltaPixel = ColorConverter.getImageDataUri(
-			s.appSettings.invertDeltaColors ? s.appSettings.mapColors.negativeDelta : s.appSettings.mapColors.positiveDelta
-		)
-		const negativeDeltaPixel = ColorConverter.getImageDataUri(
-			s.appSettings.invertDeltaColors ? s.appSettings.mapColors.positiveDelta : s.appSettings.mapColors.negativeDelta
-		)
-		$("#positiveDelta").attr("src", positiveDeltaPixel)
-		$("#negativeDelta").attr("src", negativeDeltaPixel)
+	private updatePixelColors() {
+		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+		this.setPixel("selected", this.storeService.getState().appSettings.mapColors.selected)
+
+		if (this._viewModel.isDeltaState) {
+			this.updateDeltaColors()
+		} else {
+			this.updateNormalColors()
+		}
 	}
 
-	private setMarkedPackageLists(s: Settings) {
-		const markedPackages: MarkedPackage[] = s.fileSettings.markedPackages
+	private updateNormalColors() {
+		const mapColors = this.storeService.getState().appSettings.mapColors
+		const positive = this.storeService.getState().appSettings.whiteColorBuildings ? mapColors.lightGrey : mapColors.positive
+
+		this.setPixel("positive", positive)
+		this.setPixel("neutral", mapColors.neutral)
+		this.setPixel("negative", mapColors.negative)
+		this.setPixel("incomingEdge", mapColors.incomingEdge)
+		this.setPixel("outgoingEdge", mapColors.outgoingEdge)
+	}
+
+	private updateDeltaColors() {
+		const mapColors = this.storeService.getState().appSettings.mapColors
+		const positiveDelta = this.storeService.getState().appSettings.invertDeltaColors ? mapColors.negativeDelta : mapColors.positiveDelta
+		const negativeDelta = this.storeService.getState().appSettings.invertDeltaColors ? mapColors.positiveDelta : mapColors.negativeDelta
+
+		this.setPixel("positiveDelta", positiveDelta)
+		this.setPixel("negativeDelta", negativeDelta)
+	}
+
+	private setPixel(id: string, color: string) {
+		$("#" + id).attr("src", ColorConverter.getImageDataUri(color))
+	}
+
+	private setMarkedPackageLists(markedPackages: MarkedPackage[]) {
 		if (markedPackages) {
 			this._viewModel.packageLists = []
 			markedPackages.forEach(mp => this.handleMarkedPackage(mp))
@@ -140,10 +157,6 @@ export class LegendPanelController implements SettingsServiceSubscriber, Attribu
 	private getPackageNameFromPath(path: string): string {
 		const pathArray = path.split("/")
 		return pathArray[pathArray.length - 1]
-	}
-
-	public toggle() {
-		this._viewModel.isLegendVisible = !this._viewModel.isLegendVisible
 	}
 }
 

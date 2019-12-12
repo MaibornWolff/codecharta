@@ -4,16 +4,16 @@
 >
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="legend-block">
-			<img id="green" alt="green color" />
+			<img id="positive" alt="positive color" />
 			<span ng-if="!$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from }}</span>
 			<span ng-if="$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to }} to Infinite</span>
 		</div>
 		<div class="legend-block">
-			<img id="yellow" alt="yellow color" />
+			<img id="neutral" alt="neutral color" />
 			&ge; {{ $ctrl._viewModel.colorRange.from }} to &le; {{ $ctrl._viewModel.colorRange.to }}
 		</div>
 		<div class="legend-block">
-			<img id="red" alt="red color" />
+			<img id="negative" alt="negative color" />
 			<span ng-if="!$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to }} to Infinite</span>
 			<span ng-if="$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from }}</span>
 		</div>
@@ -31,17 +31,17 @@
 	</div>
 
 	<div class="legend-block">
-		<img id="select" alt="selected color" />
+		<img id="selected" alt="selected color" />
 		selected
 	</div>
 	<hr />
 	<div class="legend-block">
-		<img id="pink" alt="pink color" />
+		<img id="outgoingEdge" alt="outgoing edge color" />
 		Outgoing Edge
 	</div>
 
 	<div class="legend-block">
-		<img id="blue" alt="blue color" />
+		<img id="incomingEdge" alt="incoming edge color" />
 		Incoming Edge
 	</div>
 
