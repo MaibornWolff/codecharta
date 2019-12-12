@@ -1,7 +1,8 @@
 node-path-panel-component {
 	#node-path {
-		margin: 10px 10px 0 10px;
-		float: left;
+		vertical-align: middle;
+		margin: 0 10px 0 10px;
+		display: inline-block;
 		font-size: 10pt;
 		max-width: calc(100% - 250px);
 		direction: rtl;
