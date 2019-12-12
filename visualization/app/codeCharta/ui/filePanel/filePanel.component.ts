@@ -3,7 +3,7 @@ import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
 
 interface SelectedFileNames {
 	single: string
@@ -47,11 +47,7 @@ export class FilePanelController implements FileStateServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private fileStateService: FileStateService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
@@ -66,8 +62,8 @@ export class FilePanelController implements FileStateServiceSubscriber {
 
 	private setPictogramColor() {
 		this._viewModel.pictogramFirstFileColor = "#808080"
-		this._viewModel.pictogramUpperColor = this.settingsService.getSettings().appSettings.mapColors.positiveDelta
-		this._viewModel.pictogramLowerColor = this.settingsService.getSettings().appSettings.mapColors.negativeDelta
+		this._viewModel.pictogramUpperColor = this.storeService.getState().appSettings.mapColors.positiveDelta
+		this._viewModel.pictogramLowerColor = this.storeService.getState().appSettings.mapColors.negativeDelta
 	}
 
 	private updateSelectedFileNamesInViewModel(fileStates: FileState[]) {
