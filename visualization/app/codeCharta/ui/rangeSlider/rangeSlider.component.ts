@@ -1,8 +1,8 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import { ColorRange, MetricData } from "../../codeCharta.model"
-import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import { ColorRange } from "../../codeCharta.model"
+import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../../util/fileStateHelper"
@@ -11,8 +11,17 @@ import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSet
 import _ from "lodash"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import {
+	InvertColorRangeService,
+	InvertColorRangeSubscriber
+} from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
+import {
+	WhiteColorBuildingsService,
+	WhiteColorBuildingsSubscriber
+} from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 
-export class RangeSliderController implements ColorMetricSubscriber, ColorRangeSubscriber, MetricServiceSubscriber, ColorMetricSubscriber {
+export class RangeSliderController
+	implements ColorMetricSubscriber, ColorRangeSubscriber, InvertColorRangeSubscriber, WhiteColorBuildingsSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
@@ -42,8 +51,8 @@ export class RangeSliderController implements ColorMetricSubscriber, ColorRangeS
 	) {
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
-		MetricService.subscribe(this.$rootScope, this)
-		ColorMetricService.subscribe(this.$rootScope, this)
+		InvertColorRangeService.subscribe(this.$rootScope, this)
+		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
@@ -51,14 +60,9 @@ export class RangeSliderController implements ColorMetricSubscriber, ColorRangeS
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		if (this.metricService.getMetricData()) {
-			const colorRange = this.storeService.getState().dynamicSettings.colorRange
-			if (colorRange.from === null || colorRange.to === null) {
-				this.applyAdaptedColorRange()
-			}
-			this.setMaxMetricValue()
-			this.initSliderOptions()
-		}
+		this.setMaxMetricValue()
+		this.initSliderOptions()
+		this.applyAdaptedColorRange()
 	}
 
 	public onColorRangeChanged(colorRange: ColorRange) {
@@ -71,11 +75,13 @@ export class RangeSliderController implements ColorMetricSubscriber, ColorRangeS
 		}
 	}
 
-	public onMetricDataAdded(metricData: MetricData[]) {
-		this.applyAdaptedColorRange()
+	public onInvertColorRangeChanged(invertColorRange: boolean) {
+		this.updateSliderColors()
 	}
 
-	public onMetricDataRemoved() {}
+	public onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
+		this.updateSliderColors()
+	}
 
 	private applyAdaptedColorRange() {
 		const firstThird = Math.round((this.maxMetricValue / 3) * 100) / 100

@@ -12,6 +12,8 @@ import { setWhiteColorBuildings } from "../../state/store/appSettings/whiteColor
 import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
 import { MapColors } from "../../codeCharta.model"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
+import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 
 describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
@@ -57,7 +59,7 @@ describe("RangeSliderController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to Color-Metric-Change", () => {
+		it("should subscribe to ColorMetricService", () => {
 			ColorMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -65,16 +67,38 @@ describe("RangeSliderController", () => {
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribe to Color-Range-Change", () => {
+		it("should subscribe to ColorRangeService", () => {
 			ColorRangeService.subscribe = jest.fn()
 
 			rebuildController()
 
 			expect(ColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
+
+		it("should subscribe to InvertColorRangeService", () => {
+			InvertColorRangeService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
+		})
+
+		it("should subscribe to WhiteColorBuildingsService", () => {
+			WhiteColorBuildingsService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
+		})
 	})
 
-	describe("onSettingsChanged", () => {
+	describe("onColorMetricChanged", () => {
+		it("should set the maxMetricValue", () => {
+			rangeSliderController.onColorMetricChanged("someMetric")
+
+			expect(rangeSliderController["maxMetricValue"]).toEqual(100)
+		})
+
 		it("should init the slider options when metric data is available", () => {
 			const expected = {
 				ceil: 100,
@@ -89,24 +113,31 @@ describe("RangeSliderController", () => {
 
 			expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
 		})
+
+		it("should apply adapted colorRange", () => {
+			rangeSliderController.onColorMetricChanged("someMetric")
+
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
+		})
 	})
 
-	describe("onMetricDataAdded", () => {
-		it("should adapt colorRange", () => {
-			settingsService.updateSettings = jest.fn()
-			rangeSliderController["maxMetricValue"] = 100
+	describe("onInvertColorRangeChanged", () => {
+		it("should set the maxMetricValue", () => {
+			rangeSliderController["updateSliderColors"] = jest.fn()
 
-			rangeSliderController.onMetricDataAdded([])
+			rangeSliderController.onInvertColorRangeChanged(false)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: {
-					colorRange: {
-						from: 33.33,
-						to: 66.66
-					}
-				}
-			})
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
+			expect(rangeSliderController["updateSliderColors"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("onWhiteColorBuildingsChanged", () => {
+		it("should set the maxMetricValue", () => {
+			rangeSliderController["updateSliderColors"] = jest.fn()
+
+			rangeSliderController.onWhiteColorBuildingsChanged(false)
+
+			expect(rangeSliderController["updateSliderColors"]).toHaveBeenCalled()
 		})
 	})
 
