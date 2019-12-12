@@ -1,11 +1,9 @@
 search-bar-component {
-	display: block;
+	display: inline-block;
 
 	.search-icon {
-		vertical-align: middle;
-		margin-top: 5px;
-		float: left;
-		margin-right: 10px;
+		display: inline-block;
+		margin-right: 6px;
 		min-width: 16px;
 	}
 
@@ -17,17 +15,15 @@ search-bar-component {
 		min-height: 0px !important;
 		vertical-align: middle;
 		height: 30px;
-		float: left;
 
 		> * {
-			margin: 0;
-			padding: 0;
 			vertical-align: middle;
 			display: inline-block;
 		}
 	}
 
 	.small-action-button {
-		margin-left: 10px;
+		margin: 0px 5px 0px 5px;
+		display: inline-block;
 	}
 }

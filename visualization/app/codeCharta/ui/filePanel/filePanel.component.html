@@ -1,18 +1,18 @@
 <section layout="row" layout-align="center center" class="mode-chooser">
 	<md-button
-		class="state-selector-button left"
+		class="state-selector-button toolbar-selector left"
 		ng-class="{current: $ctrl._viewModel.isSingleState}"
 		ng-click="$ctrl.onSingleStateSelected()"
 		><span class="text">Single</span></md-button
 	>
 	<md-button
-		class="state-selector-button middle"
+		class="state-selector-button toolbar-selector middle"
 		ng-class="{current: $ctrl._viewModel.isPartialState}"
 		ng-click="$ctrl.onPartialStateSelected()"
 		><span class="text">Multiple</span></md-button
 	>
 	<md-button
-		class="state-selector-button right"
+		class="state-selector-button toolbar-selector right"
 		ng-class="{current: $ctrl._viewModel.isDeltaState}"
 		ng-click="$ctrl.onDeltaStateSelected()"
 		><span class="text">Delta</span></md-button
