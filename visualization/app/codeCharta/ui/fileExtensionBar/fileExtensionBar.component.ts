@@ -1,5 +1,4 @@
 import "./fileExtensionBar.component.scss"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
@@ -19,12 +18,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private storeService: StoreService,
-		private threeSceneService: ThreeSceneService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
@@ -69,7 +63,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	private setNewDistribution(map: CodeMapNode) {
-		const distributionMetric = this.settingsService.getSettings().dynamicSettings.distributionMetric
+		const distributionMetric = this.storeService.getState().dynamicSettings.distributionMetric
 		const blacklist = this.storeService.getState().fileSettings.blacklist
 		this._viewModel.distribution = FileExtensionCalculator.getMetricDistribution(map, distributionMetric, blacklist)
 	}
