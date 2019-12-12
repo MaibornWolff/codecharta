@@ -19,7 +19,7 @@
 	>
 </section>
 
-<md-input-container ng-show="$ctrl._viewModel.isSingleState">
+<md-input-container class="input-container" ng-show="$ctrl._viewModel.isSingleState">
 	<md-select
 		ng-model="$ctrl._viewModel.selectedFileNames.single"
 		ng-change="$ctrl.onSingleFileChange($ctrl._viewModel.selectedFileNames.single)"
@@ -30,7 +30,7 @@
 	</md-select>
 </md-input-container>
 
-<md-input-container ng-show="$ctrl._viewModel.isPartialState">
+<md-input-container class="input-container" ng-show="$ctrl._viewModel.isPartialState">
 	<md-select
 		ng-model="$ctrl._viewModel.selectedFileNames.partial"
 		multiple="{{ true }}"
@@ -46,9 +46,9 @@
 	</md-select>
 </md-input-container>
 
-<div class="delta-chooser" ng-show="$ctrl._viewModel.isDeltaState">
+<div class="input-container delta-chooser" ng-show="$ctrl._viewModel.isDeltaState">
 	<div class="pictogram" ng-style="{'background': $ctrl._viewModel.pictogramFirstFileColor}"></div>
-	<md-input-container class="delta-select">
+	<md-input-container class="delta-select input-container">
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
 			ng-change="$ctrl.onDeltaReferenceFileChange($ctrl._viewModel.selectedFileNames.delta.reference)"
@@ -63,7 +63,7 @@
 		class="pictogram"
 		ng-style="{'background': 'linear-gradient('+$ctrl._viewModel.pictogramUpperColor+' 50%, '+$ctrl._viewModel.pictogramLowerColor+' 50%)'}"
 	></div>
-	<md-input-container class="delta-select">
+	<md-input-container class="input-container delta-select">
 		<md-select
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
 			ng-change="$ctrl.onDeltaComparisonFileChange($ctrl._viewModel.selectedFileNames.delta.comparison)"

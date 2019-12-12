@@ -7,7 +7,7 @@
 
 	<md-dialog-content>
 		<div class="md-dialog-content">
-			<md-input-container class="md-block">
+			<md-input-container class="input-container md-block">
 				<label>FileName</label>
 				<input class="filename-input" type="text" ng-model="$ctrl._viewModel.fileName" />
 				<span class="cc-file-extension">.cc.json</span>
@@ -17,7 +17,7 @@
 			<p class="dialog-list">Nodes ({{ $ctrl._viewModel.amountOfNodes }})</p>
 			<p class="dialog-list">AttributeTypes ({{ $ctrl._viewModel.amountOfAttributeTypes }})</p>
 
-			<md-input-container ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
+			<md-input-container class="input-container md-block" ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
 				<md-checkbox class="dialog-list md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
 					<span>{{::item.name}} ({{::item.numberOfListItems}})</span>
 				</md-checkbox>
