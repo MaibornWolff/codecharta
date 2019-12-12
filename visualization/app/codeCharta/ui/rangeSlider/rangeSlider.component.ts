@@ -56,7 +56,7 @@ export class RangeSliderController implements ColorMetricSubscriber, ColorRangeS
 			if (colorRange.from === null || colorRange.to === null) {
 				this.applyAdaptedColorRange()
 			}
-
+			this.setMaxMetricValue()
 			this.initSliderOptions()
 		}
 	}
@@ -78,10 +78,7 @@ export class RangeSliderController implements ColorMetricSubscriber, ColorRangeS
 	public onMetricDataRemoved() {}
 
 	private applyAdaptedColorRange() {
-		const maxMetricValue: number = this.metricService.getMaxMetricByMetricName(
-			this.settingsService.getSettings().dynamicSettings.colorMetric
-		)
-		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
+		const firstThird = Math.round((this.maxMetricValue / 3) * 100) / 100
 		const secondThird = Math.round(firstThird * 2 * 100) / 100
 
 		this.settingsService.updateSettings({
@@ -100,9 +97,11 @@ export class RangeSliderController implements ColorMetricSubscriber, ColorRangeS
 		this._viewModel.colorRangeTo = colorRange.to
 	}
 
-	private initSliderOptions() {
+	private setMaxMetricValue() {
 		this.maxMetricValue = this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
+	}
 
+	private initSliderOptions() {
 		this._viewModel.sliderOptions = {
 			ceil: this.maxMetricValue,
 			onChange: () => this.applySettings(),

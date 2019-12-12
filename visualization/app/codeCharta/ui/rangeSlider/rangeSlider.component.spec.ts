@@ -94,6 +94,7 @@ describe("RangeSliderController", () => {
 	describe("onMetricDataAdded", () => {
 		it("should adapt colorRange", () => {
 			settingsService.updateSettings = jest.fn()
+			rangeSliderController["maxMetricValue"] = 100
 
 			rangeSliderController.onMetricDataAdded([])
 
