@@ -4,22 +4,28 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Settings, Node, MetricData, CodeMapNode, FileMeta, FileState } from "../../codeCharta.model"
+import { Node, MetricData, CodeMapNode, FileMeta, FileState, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { FILE_STATES, METRIC_DATA, SETTINGS, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
+import { FILE_STATES, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
 import { RenderData } from "./codeMap.preRender.service"
 import * as _ from "lodash"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Vector3 } from "three"
 import * as THREE from "three"
+import { StoreService } from "../../state/store.service"
+import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
+import { setState } from "../../state/store/state.actions"
+import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
+import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 describe("codeMapRenderService", () => {
+	let storeService: StoreService
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
 	let codeMapArrowService: CodeMapArrowService
 
-	let settings: Settings
+	let state: State
 	let map: CodeMapNode
 	let metricData: MetricData[]
 	let fileMeta: FileMeta
@@ -40,19 +46,21 @@ describe("codeMapRenderService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
+		storeService = getService<StoreService>("storeService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
 		fileMeta = _.cloneDeep(TEST_FILE_WITH_PATHS.fileMeta)
-		settings = _.cloneDeep(SETTINGS)
+		state = _.cloneDeep(STATE)
 		metricData = _.cloneDeep(METRIC_DATA)
 		fileStates = FILE_STATES
 		map = NodeDecorator.decorateMap(_.cloneDeep(TEST_FILE_WITH_PATHS.map), fileMeta, metricData)
+		storeService.dispatch(setState(state))
 	}
 
 	function rebuildService() {
-		codeMapRenderService = new CodeMapRenderService(threeSceneService, codeMapLabelService, codeMapArrowService)
+		codeMapRenderService = new CodeMapRenderService(storeService, threeSceneService, codeMapLabelService, codeMapArrowService)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
 	}
 
@@ -88,43 +96,48 @@ describe("codeMapRenderService", () => {
 			const sortedNodes: Node[] = TEST_NODES
 			const renderData: RenderData = {
 				map: map,
-				settings: settings,
 				metricData: metricData,
 				fileStates: fileStates,
 				fileMeta: fileMeta
 			}
 
-			codeMapRenderService["setNewMapMesh"](sortedNodes, renderData.settings, renderData.fileStates)
+			codeMapRenderService["setNewMapMesh"](sortedNodes, renderData.fileStates)
 
 			expect(threeSceneService.setMapMesh).toHaveBeenCalled()
 		})
 	})
 
 	describe("scaleMap", () => {
-		let scale: Vector3
+		let scaling: Vector3
 		let mapSize: number
 
 		beforeEach(() => {
-			scale = new Vector3(1, 2, 3)
+			scaling = new Vector3(1, 2, 3)
 			mapSize = 250
 		})
 
 		it("should call threeSceneService.scale", () => {
-			codeMapRenderService["scaleMap"](scale, mapSize)
+			storeService.dispatch(setScaling(scaling))
 
-			expect(threeSceneService.scale).toHaveBeenCalledWith(scale, mapSize)
+			codeMapRenderService["scaleMap"]()
+
+			expect(threeSceneService.scale).toHaveBeenCalledWith(scaling, mapSize)
 		})
 
 		it("should call codeMapLabelService.scale", () => {
-			codeMapRenderService["scaleMap"](scale, mapSize)
+			storeService.dispatch(setScaling(scaling))
 
-			expect(codeMapLabelService.scale).toHaveBeenCalledWith(scale)
+			codeMapRenderService["scaleMap"]()
+
+			expect(codeMapLabelService.scale).toHaveBeenCalledWith(scaling)
 		})
 
 		it("should call codeMapArrowService.scale", () => {
-			codeMapRenderService["scaleMap"](scale, mapSize)
+			storeService.dispatch(setScaling(scaling))
 
-			expect(codeMapArrowService.scale).toHaveBeenCalledWith(scale)
+			codeMapRenderService["scaleMap"]()
+
+			expect(codeMapArrowService.scale).toHaveBeenCalledWith(scaling)
 		})
 	})
 
@@ -132,9 +145,8 @@ describe("codeMapRenderService", () => {
 		it("should get sorted Nodes as array", () => {
 			const renderData: RenderData = {
 				map: map,
-				settings: settings,
 				metricData: metricData,
-				fileStates: FILE_STATES,
+				fileStates: fileStates,
 				fileMeta: null
 			}
 
@@ -152,13 +164,13 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should call codeMapLabelService.clearLabels", () => {
-			codeMapRenderService["setLabels"](sortedNodes, settings)
+			codeMapRenderService["setLabels"](sortedNodes)
 
 			expect(codeMapLabelService.clearLabels).toHaveBeenCalled()
 		})
 
 		it("should call codeMapLabelService.addLabels for each shown leaf label", () => {
-			codeMapRenderService["setLabels"](sortedNodes, settings)
+			codeMapRenderService["setLabels"](sortedNodes)
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(2)
 		})
@@ -172,17 +184,17 @@ describe("codeMapRenderService", () => {
 		})
 
 		it("should call codeMapArrowService.clearArrows", () => {
-			codeMapRenderService["setArrows"](sortedNodes, settings)
+			codeMapRenderService["setArrows"](sortedNodes)
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
 		})
 
 		it("should call codeMapArrowService.addEdgeArrows", () => {
-			settings.fileSettings.edges = VALID_EDGES
+			storeService.dispatch(setEdges(VALID_EDGES))
 
-			codeMapRenderService["setArrows"](sortedNodes, settings)
+			codeMapRenderService["setArrows"](sortedNodes)
 
-			expect(codeMapArrowService["addEdgeArrows"]).toHaveBeenCalledWith(sortedNodes, settings.fileSettings.edges)
+			expect(codeMapArrowService["addEdgeArrows"]).toHaveBeenCalledWith(sortedNodes, storeService.getState().fileSettings.edges)
 		})
 	})
 
@@ -191,10 +203,9 @@ describe("codeMapRenderService", () => {
 			const bigLeaf = map.children[0]
 			const smallLeaf = map.children[1].children[0]
 			const otherSmallLeaf = map.children[1].children[1]
+			storeService.dispatch(focusNode(smallLeaf.path))
 
-			settings.dynamicSettings.focusedNodePath = smallLeaf.path
-
-			codeMapRenderService["showAllOrOnlyFocusedNode"](map, settings)
+			codeMapRenderService["showAllOrOnlyFocusedNode"](map)
 
 			expect(map.visible).toBeFalsy()
 			expect(bigLeaf.visible).toBeFalsy()
@@ -206,10 +217,9 @@ describe("codeMapRenderService", () => {
 			const bigLeaf = map.children[0]
 			const smallLeaf = map.children[1].children[0]
 			const otherSmallLeaf = map.children[1].children[1]
+			storeService.dispatch(unfocusNode())
 
-			settings.dynamicSettings.focusedNodePath = ""
-
-			codeMapRenderService["showAllOrOnlyFocusedNode"](map, settings)
+			codeMapRenderService["showAllOrOnlyFocusedNode"](map)
 
 			expect(map.visible).toBeTruthy()
 			expect(bigLeaf.visible).toBeTruthy()
