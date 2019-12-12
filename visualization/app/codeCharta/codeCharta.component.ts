@@ -88,8 +88,8 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
-		// This does not need to be raplced as the default is already set with createStore()
 		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
+		this.storeService.dispatch(setState())
 
 		this.codeChartaService
 			.loadFiles(values)
