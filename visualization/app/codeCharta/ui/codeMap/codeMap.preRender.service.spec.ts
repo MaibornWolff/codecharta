@@ -111,11 +111,10 @@ describe("codeMapPreRenderService", () => {
 			getMetricData: jest.fn().mockReturnValue(metricData)
 		})()
 	}
+
 	function withLastRenderData() {
-		codeMapPreRenderService["lastRender"] = {
-			fileMeta,
-			map
-		}
+		codeMapPreRenderService["unifiedMap"] = map
+		codeMapPreRenderService["unifiedFileMeta"] = fileMeta
 	}
 
 	describe("constructor", () => {
@@ -145,8 +144,8 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("getRenderMap", () => {
-		it("should return lastRender.map", () => {
-			codeMapPreRenderService["lastRender"].map = file.map
+		it("should return unifiedMap", () => {
+			codeMapPreRenderService["unifiedMap"] = file.map
 
 			const result = codeMapPreRenderService.getRenderMap()
 
@@ -199,7 +198,7 @@ describe("codeMapPreRenderService", () => {
 
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
-			const rootChildren = codeMapPreRenderService["lastRender"].map.children
+			const rootChildren = codeMapPreRenderService["unifiedMap"].children
 			expect(rootChildren.find(x => x.name == "big leaf").edgeAttributes).toEqual({ metric1: { incoming: 1, outgoing: 2 } })
 		})
 	})

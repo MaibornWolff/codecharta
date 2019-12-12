@@ -3,7 +3,6 @@
 import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService } from "../../state/fileState.service"
-import _ from "lodash"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
@@ -17,11 +16,6 @@ import * as d3 from "d3"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 
-export interface RenderData {
-	map: CodeMapNode
-	fileMeta: FileMeta
-}
-
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
@@ -29,10 +23,8 @@ export interface CodeMapPreRenderServiceSubscriber {
 export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
-	private lastRender: RenderData = {
-		map: null,
-		fileMeta: null
-	}
+	private unifiedMap: CodeMapNode
+	private unifiedFileMeta: FileMeta
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -50,11 +42,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public getRenderMap(): CodeMapNode {
-		return this.lastRender.map
+		return this.unifiedMap
 	}
 
 	public getRenderFileMeta(): FileMeta {
-		return this.lastRender.fileMeta
+		return this.unifiedFileMeta
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -84,25 +76,16 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private updateRenderMapAndFileMeta() {
 		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap()
-		this.lastRender.map = unifiedFile.map
-		this.lastRender.fileMeta = unifiedFile.fileMeta
+		this.unifiedMap = unifiedFile.map
+		this.unifiedFileMeta = unifiedFile.fileMeta
 	}
 
 	private decorateIfPossible() {
-		if (
-			this.lastRender.map &&
-			this.fileStateService.getFileStates() &&
-			this.lastRender.fileMeta &&
-			this.metricService.getMetricData()
-		) {
-			this.lastRender.map = NodeDecorator.decorateMap(
-				this.lastRender.map,
-				this.lastRender.fileMeta,
-				this.metricService.getMetricData()
-			)
-			this.getEdgeMetricsForLeaves(this.lastRender.map)
+		if (this.unifiedMap && this.fileStateService.getFileStates() && this.unifiedFileMeta && this.metricService.getMetricData()) {
+			this.unifiedMap = NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
+			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
-				this.lastRender.map,
+				this.unifiedMap,
 				this.storeService.getState().fileSettings.blacklist,
 				this.metricService.getMetricData(),
 				this.edgeMetricDataService.getMetricData(),
@@ -152,7 +135,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private renderAndNotify() {
-		this.codeMapRenderService.render(this.lastRender.map)
+		this.codeMapRenderService.render(this.unifiedMap)
 
 		this.notifyLoadingMapStatus()
 		this.notifyMapChanged()
@@ -184,7 +167,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private notifyMapChanged() {
-		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.lastRender.map)
+		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.unifiedMap)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
