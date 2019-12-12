@@ -18,12 +18,10 @@ import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actio
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
-import { defaultState } from "../../state/store/state.actions"
 
 export class MetricChooserController
 	implements MetricServiceSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
@@ -154,12 +152,10 @@ export class MetricChooserController
 	public applySettingsColorMetric() {
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				colorMetric: this._viewModel.colorMetric,
-				colorRange: defaultState.dynamicSettings.colorRange
+				colorMetric: this._viewModel.colorMetric
 			}
 		})
 		this.storeService.dispatch(setColorMetric(this._viewModel.colorMetric))
-		this.storeService.dispatch(setColorRange())
 	}
 
 	public applySettingsHeightMetric() {

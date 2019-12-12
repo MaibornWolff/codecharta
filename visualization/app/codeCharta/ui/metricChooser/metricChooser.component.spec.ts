@@ -223,10 +223,9 @@ describe("MetricChooserController", () => {
 			metricChooserController.applySettingsColorMetric()
 
 			expect(settingsService.updateSettings).toBeCalledWith({
-				dynamicSettings: { colorMetric: "c", colorRange: { from: null, to: null } }
+				dynamicSettings: { colorMetric: "c" }
 			})
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("c")
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual(DEFAULT_STATE.dynamicSettings.colorRange)
 		})
 	})
 
