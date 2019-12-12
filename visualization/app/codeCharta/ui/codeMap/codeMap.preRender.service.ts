@@ -20,7 +20,6 @@ import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings
 export interface RenderData {
 	map: CodeMapNode
 	fileMeta: FileMeta
-	fileStates: FileState[]
 	metricData: MetricData[]
 }
 
@@ -34,7 +33,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	private lastRender: RenderData = {
 		map: null,
 		fileMeta: null,
-		fileStates: null,
 		metricData: null
 	}
 
@@ -74,7 +72,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this.lastRender.metricData = metricData
-		this.lastRender.fileStates = this.fileStateService.getFileStates()
 		this.updateRenderMapAndFileMeta()
 
 		this.decorateIfPossible()
@@ -88,13 +85,13 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private updateRenderMapAndFileMeta() {
-		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
+		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap()
 		this.lastRender.map = unifiedFile.map
 		this.lastRender.fileMeta = unifiedFile.fileMeta
 	}
 
 	private decorateIfPossible() {
-		if (this.lastRender.map && this.lastRender.fileStates && this.lastRender.fileMeta && this.lastRender.metricData) {
+		if (this.lastRender.map && this.fileStateService.getFileStates() && this.lastRender.fileMeta && this.lastRender.metricData) {
 			this.lastRender.map = NodeDecorator.decorateMap(this.lastRender.map, this.lastRender.fileMeta, this.lastRender.metricData)
 			this.getEdgeMetricsForLeaves(this.lastRender.map)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
@@ -102,7 +99,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 				this.storeService.getState().fileSettings.blacklist,
 				this.lastRender.metricData,
 				this.edgeMetricDataService.getMetricData(),
-				FileStateHelper.isDeltaState(this.lastRender.fileStates)
+				FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 			)
 		}
 	}
@@ -119,7 +116,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}
 	}
 
-	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
+	private getSelectedFilesAsUnifiedMap(): CCFile {
+		const fileStates: FileState[] = this.fileStateService.getFileStates()
 		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 		visibleFileStates.forEach(fileState => {
 			fileState.file = NodeDecorator.preDecorateFile(fileState.file)
@@ -163,7 +161,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private allNecessaryRenderDataAvailable(): boolean {
-		return this.lastRender.fileStates !== null && this.lastRender.metricData !== null && this.lastRender.metricData.length > 1
+		return (
+			this.fileStateService.getFileStates() !== null && this.lastRender.metricData !== null && this.lastRender.metricData.length > 1
+		)
 	}
 
 	private notifyLoadingFileStatus() {
