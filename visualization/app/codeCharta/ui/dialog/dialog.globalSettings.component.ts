@@ -1,13 +1,24 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { Settings, RecursivePartial } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { StoreService } from "../../state/store.service"
 import { setHideFlatBuildings } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
 import { setResetCameraIfNewFileIsLoaded } from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { setIsWhiteBackground } from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import {
+	HideFlatBuildingsService,
+	HideFlatBuildingsSubscriber
+} from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
+import {
+	IsWhiteBackgroundService,
+	IsWhiteBackgroundSubscriber
+} from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
+import {
+	ResetCameraIfNewFileIsLoadedService,
+	ResetCameraIfNewFileIsLoadedSubscriber
+} from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 
-export class DialogGlobalSettingsController implements SettingsServiceSubscriber {
+export class DialogGlobalSettingsController
+	implements HideFlatBuildingsSubscriber, IsWhiteBackgroundSubscriber, ResetCameraIfNewFileIsLoadedSubscriber {
 	private _viewModel: {
 		hideFlatBuildings: boolean
 		isWhiteBackground: boolean
@@ -24,18 +35,29 @@ export class DialogGlobalSettingsController implements SettingsServiceSubscriber
 		private storeService: StoreService,
 		private settingsService: SettingsService
 	) {
-		SettingsService.subscribe(this.$rootScope, this)
-		this.updateSettingsFields()
+		HideFlatBuildingsService.subscribe(this.$rootScope, this)
+		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
+		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)
+		this.initDialogOnClick()
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this.updateSettingsFields(settings)
+	private initDialogOnClick() {
+		const appSettings = this.storeService.getState().appSettings
+		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)
+		this.onIsWhiteBackgroundChanged(appSettings.isWhiteBackground)
+		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
 	}
 
-	private updateSettingsFields(settings: Settings = this.settingsService.getSettings()) {
-		this._viewModel.hideFlatBuildings = settings.appSettings.hideFlatBuildings
-		this._viewModel.isWhiteBackground = settings.appSettings.isWhiteBackground
-		this._viewModel.resetCameraIfNewFileIsLoaded = settings.appSettings.resetCameraIfNewFileIsLoaded
+	public onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
+		this._viewModel.hideFlatBuildings = hideFlatBuildings
+	}
+
+	public onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
+		this._viewModel.isWhiteBackground = isWhiteBackground
+	}
+
+	public onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
+		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
 	}
 
 	public applySettingsHideFlatBuildings() {
