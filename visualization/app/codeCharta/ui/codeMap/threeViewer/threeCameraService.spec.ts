@@ -2,8 +2,6 @@ import "./threeViewer.module"
 import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { Settings } from "../../../codeCharta.model"
-import { SETTINGS } from "../../../util/dataMocks"
 import { PerspectiveCamera, Vector3 } from "three"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
@@ -14,7 +12,6 @@ describe("ThreeCameraService", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let storeService: StoreService
-	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
@@ -28,8 +25,6 @@ describe("ThreeCameraService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
-
-		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
 
 	function rebuildService() {
@@ -42,33 +37,6 @@ describe("ThreeCameraService", () => {
 			updateSettings: jest.fn()
 		})()
 	}
-
-	describe("onSettingsChanged", () => {
-		beforeEach(() => {
-			threeCameraService.setPosition = jest.fn()
-		})
-
-		it("should not call setPosition if camera and lastCameraVector are the same", () => {
-			const vector = new Vector3(0, 300, 1000)
-			threeCameraService["lastCameraVector"] = vector
-
-			threeCameraService.onSettingsChanged(settings, undefined)
-
-			expect(threeCameraService.setPosition).not.toHaveBeenCalled()
-		})
-
-		it("should call setPosition if camera and lastCameraVector are not the same", () => {
-			threeCameraService.onSettingsChanged(settings, undefined)
-
-			expect(threeCameraService.setPosition).toHaveBeenCalledWith(0, 300, 1000)
-		})
-
-		it("should set lastCameraVector if camera and lastCameraVector are not the same", () => {
-			threeCameraService.onSettingsChanged(settings, undefined)
-
-			expect(threeCameraService["lastCameraVector"]).toEqual(new Vector3(0, 300, 1000))
-		})
-	})
 
 	describe("onCameraChanged", () => {
 		it("should call updateSettings", () => {
@@ -109,12 +77,6 @@ describe("ThreeCameraService", () => {
 			threeCameraService.init(400, 200, 1, 2, 3)
 
 			expect(threeCameraService.setPosition).toHaveBeenCalledWith(1, 2, 3)
-		})
-
-		it("should subscribe to SettingsService", () => {
-			threeCameraService.init(400, 200, 1, 2, 3)
-
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, threeCameraService)
 		})
 
 		it("should subscribe to ThreeOrbitControlsService", () => {
