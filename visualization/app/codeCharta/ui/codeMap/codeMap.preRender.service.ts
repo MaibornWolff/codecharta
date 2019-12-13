@@ -66,10 +66,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
 		}
-
-		if (this.allNecessaryRenderDataAvailable()) {
-			this.renderAndNotify()
-		}
 	}
 
 	public onMetricDataRemoved() {}
