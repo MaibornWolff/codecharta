@@ -2,23 +2,17 @@ import "../state.module"
 import { SettingsService } from "./settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { LoadingStatusService } from "../loadingStatus.service"
-import { AttributeTypeValue, FileSelectionState, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
+import { AttributeTypeValue, RecursivePartial, Settings } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS, DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../../util/dataMocks"
-import { FileStateService } from "../fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
-import { SettingsMerger } from "../../util/settingsMerger"
-import { StoreService } from "../store.service"
+import { DEFAULT_SETTINGS, withMockedEventMethods } from "../../util/dataMocks"
 
 describe("settingService", () => {
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
-	let storeService: StoreService
 	let loadingStatusService: LoadingStatusService
 
 	let settings: Settings
-	let fileStates: FileState[]
 	const SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
@@ -33,18 +27,13 @@ describe("settingService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
-		storeService = getService<StoreService>("storeService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
-		fileStates = [
-			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
-			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_B)), selectedAs: FileSelectionState.Reference }
-		]
 	}
 
 	function rebuildService() {
-		settingsService = new SettingsService($rootScope, $timeout, storeService, loadingStatusService)
+		settingsService = new SettingsService($rootScope, $timeout, loadingStatusService)
 	}
 
 	function withMockedLoadingStatusService() {
@@ -58,56 +47,6 @@ describe("settingService", () => {
 			rebuildService()
 
 			expect(settingsService.getSettings()).toEqual(settings)
-		})
-
-		it("should subscribe to FileStateService", () => {
-			FileStateService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, settingsService)
-		})
-	})
-
-	describe("FileStateServiceSubscriber Methods", () => {
-		beforeEach(() => {
-			settingsService.updateSettings = jest.fn()
-			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
-			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
-			SettingsMerger.getMergedFileSettings = jest.fn().mockReturnValue(DEFAULT_SETTINGS)
-		})
-
-		describe("onFileSelectionStateChanged", () => {
-			it("should call updateSettings with newFileSettings", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates)
-
-				expect(settingsService.updateSettings).toHaveBeenCalledWith({ fileSettings: DEFAULT_SETTINGS })
-				expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
-				expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual([])
-				expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
-				expect(storeService.getState().dynamicSettings.margin).toBeNull()
-				expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: null, to: null })
-				expect(storeService.getState().fileSettings).toEqual(DEFAULT_STATE.fileSettings)
-			})
-
-			it("should call isPartialState with fileStates", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates)
-
-				expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
-			})
-
-			it("should call getVisibleFileStates with fileStates", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates)
-
-				expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
-			})
-
-			it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
-				settingsService.onFileSelectionStatesChanged(fileStates)
-				const visibleFiles = [fileStates[0].file, fileStates[1].file]
-
-				expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)
-			})
 		})
 	})
 

@@ -1,9 +1,6 @@
-import { ColorRange, DynamicSettings, FileSettings, FileState, MapColors, RecursivePartial, Settings } from "../../codeCharta.model"
+import { ColorRange, MapColors, RecursivePartial, Settings } from "../../codeCharta.model"
 import _ from "lodash"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "../fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
-import { SettingsMerger } from "../../util/settingsMerger"
 import { Vector3 } from "three"
 import { LoadingStatusService } from "../loadingStatus.service"
 import {
@@ -19,15 +16,8 @@ import {
 	FocusNodeSubscriber,
 	UnfocusNodeSubscriber
 } from "./settings.service.events"
-import { StoreService } from "../store.service"
-import { unfocusNode } from "../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { setSearchedNodePaths } from "../store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { setSearchPattern } from "../store/dynamicSettings/searchPattern/searchPattern.actions"
-import { setMargin } from "../store/dynamicSettings/margin/margin.actions"
-import { setColorRange } from "../store/dynamicSettings/colorRange/colorRange.actions"
-import { setFileSettings } from "../store/fileSettings/fileSettings.actions"
 
-export class SettingsService implements FileStateServiceSubscriber {
+export class SettingsService {
 	private static DEBOUNCE_TIME = 400
 
 	private settings: Settings
@@ -37,7 +27,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
-		private storeService: StoreService,
 		private loadingStatusService: LoadingStatusService
 	) {
 		this.settings = this.getDefaultSettings()
@@ -69,15 +58,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				this.$rootScope.$broadcast(eventName, data)
 			}, SettingsService.DEBOUNCE_TIME)
 		}
-
-		FileStateService.subscribe(this.$rootScope, this)
 	}
-
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.resetDynamicAndFileSettings(fileStates)
-	}
-
-	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public getSettings(): Settings {
 		return this.settings
@@ -198,23 +179,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 		return settings
 	}
 
-	private getDefaultDynamicSettingsWithoutMetrics(): RecursivePartial<DynamicSettings> {
-		const defaultSettings = this.getDefaultSettings()
-		return {
-			focusedNodePath: defaultSettings.dynamicSettings.focusedNodePath,
-			searchedNodePaths: defaultSettings.dynamicSettings.searchedNodePaths,
-			searchPattern: defaultSettings.dynamicSettings.searchPattern,
-			margin: defaultSettings.dynamicSettings.margin,
-			colorRange: defaultSettings.dynamicSettings.colorRange
-		}
-	}
-
-	private getNewFileSettings(fileStates: FileState[]): FileSettings {
-		let withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
-		let visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
-		return SettingsMerger.getMergedFileSettings(visibleFiles, withUpdatedPath)
-	}
-
 	private mergePartialSettings(
 		mergedSettings: RecursivePartial<Settings>,
 		newSettings: RecursivePartial<Settings>,
@@ -251,23 +215,6 @@ export class SettingsService implements FileStateServiceSubscriber {
 			}
 		}
 		return false
-	}
-
-	private resetDynamicAndFileSettings(fileStates: FileState[]) {
-		this.updateSettings({
-			dynamicSettings: this.getDefaultDynamicSettingsWithoutMetrics()
-		})
-		this.storeService.dispatch(unfocusNode())
-		this.storeService.dispatch(setSearchedNodePaths())
-		this.storeService.dispatch(setSearchPattern())
-		this.storeService.dispatch(setMargin())
-		this.storeService.dispatch(setColorRange())
-
-		const fileSettings = this.getNewFileSettings(fileStates)
-		this.updateSettings({
-			fileSettings
-		})
-		this.storeService.dispatch(setFileSettings(fileSettings))
 	}
 
 	private notifySettingsSubscribers() {
