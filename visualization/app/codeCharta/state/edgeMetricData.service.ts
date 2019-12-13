@@ -1,12 +1,10 @@
 import { MetricData, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount } from "../codeCharta.model"
-import _ from "lodash"
 import { FileStateServiceSubscriber, FileStateService } from "./fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { CodeMapHelper } from "../util/codeMapHelper"
-import { BlacklistSubscriber } from "./settingsService/settings.service.events"
 import { HierarchyNode } from "d3"
-import { SettingsService } from "./settingsService/settings.service"
+import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 
 export interface EdgeMetricDataServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
@@ -20,7 +18,7 @@ export class EdgeMetricDataService implements FileStateServiceSubscriber, Blackl
 
 	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
