@@ -42,9 +42,7 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
-		this.addUnaryMetric()
-		this.notifyMetricDataAdded()
+		this.setNewMetricData()
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[]) {
@@ -53,10 +51,7 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		const fileStates: FileState[] = this.fileStateService.getFileStates()
-		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), blacklist)
-		this.addUnaryMetric()
-		this.notifyMetricDataAdded()
+		this.setNewMetricData(blacklist)
 	}
 
 	public getMetrics(): string[] {
@@ -81,6 +76,13 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 			return attributeType[metricName]
 		}
 		return null
+	}
+
+	private setNewMetricData(blacklist: BlacklistItem[] = []) {
+		const fileStates: FileState[] = this.fileStateService.getFileStates()
+		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+		this.addUnaryMetric()
+		this.notifyMetricDataAdded()
 	}
 
 	private getMergedAttributeTypes(attributeTypes: AttributeTypes): AttributeType[] {
