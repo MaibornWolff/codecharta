@@ -25,9 +25,9 @@ export class GeometryGenerator {
 
 	private floorGradient: string[]
 
-	public build(nodes: Node[], material: THREE.Material, settings: State, isDeltaState: boolean): BuildResult {
+	public build(nodes: Node[], material: THREE.Material, state: State, isDeltaState: boolean): BuildResult {
 		let data: IntermediateVertexData = new IntermediateVertexData()
-		let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(settings.treeMap.mapSize)
+		let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(state.treeMap.mapSize)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 
@@ -37,7 +37,7 @@ export class GeometryGenerator {
 			if (!n.isLeaf) {
 				this.addFloor(data, n, i, desc)
 			} else {
-				this.addBuilding(data, n, i, desc, settings, isDeltaState)
+				this.addBuilding(data, n, i, desc, state, isDeltaState)
 			}
 		}
 
@@ -104,7 +104,7 @@ export class GeometryGenerator {
 		n: Node,
 		idx: number,
 		desc: CodeMapGeometricDescription,
-		settings: State,
+		state: State,
 		isDeltaState: boolean
 	): void {
 		let measures: BoxMeasures = this.mapNodeToLocalBox(n)
@@ -112,7 +112,7 @@ export class GeometryGenerator {
 
 		let renderDelta: number = 0.0
 
-		if (isDeltaState && n.deltas && n.deltas[settings.dynamicSettings.heightMetric] && n.heightDelta) {
+		if (isDeltaState && n.deltas && n.deltas[state.dynamicSettings.heightMetric] && n.heightDelta) {
 			renderDelta = n.heightDelta //set the transformed render delta
 
 			if (renderDelta < 0) {
