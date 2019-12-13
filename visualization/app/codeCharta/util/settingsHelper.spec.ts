@@ -13,7 +13,7 @@ describe("SettingsHelper", () => {
 
 			const expected: RecursivePartial<State> = {
 				appSettings: {
-					scaling: new Vector3(0, 27, 0)
+					scaling: new Vector3(1, 27, 1)
 				}
 			}
 
@@ -34,7 +34,7 @@ describe("SettingsHelper", () => {
 
 			const expected: RecursivePartial<State> = {
 				appSettings: {
-					scaling: new Vector3(0, 27, 0),
+					scaling: new Vector3(1, 27, 1),
 					invertHeight: false,
 					camera: new Vector3(10, 20, 30),
 					amountOfTopLabels: 23

@@ -3,7 +3,7 @@ import { RecursivePartial, Settings } from "../codeCharta.model"
 import { Vector3 } from "three"
 
 export function convertToVectors(settings: RecursivePartial<Settings>) {
-	const DEFAULT_VALUE = 0
+	const DEFAULT_VALUE = 1
 
 	for (let key of Object.keys(settings)) {
 		if (_.isObject(settings[key])) {
