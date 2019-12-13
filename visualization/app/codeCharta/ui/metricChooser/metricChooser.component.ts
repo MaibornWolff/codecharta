@@ -94,7 +94,7 @@ export class MetricChooserController
 		this._viewModel.metricData = metricData
 		this.originalMetricData = metricData
 		const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
-		if (availableMetrics.length > 1) {
+		if (metricData.length > 1 && availableMetrics.length > 0) {
 			this.potentiallyUpdateChosenMetrics(availableMetrics)
 		}
 	}
