@@ -6,8 +6,8 @@ import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods, STATE } fro
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"
 import { NodeDecorator } from "../util/nodeDecorator"
-import { SettingsService } from "./settingsService/settings.service"
 import _ from "lodash"
+import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 
 describe("MetricService", () => {
 	let metricService: MetricService
@@ -49,21 +49,20 @@ describe("MetricService", () => {
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			FileStateService.subscribe = jest.fn()
-			SettingsService.subscribeToBlacklist = jest.fn()
-		})
-
 		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
 			rebuildService()
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, metricService)
 		})
 
-		it("should subscribe to Blacklist-Events", () => {
+		it("should subscribe to BlacklistService", () => {
+			BlacklistService.subscribe = jest.fn()
+
 			rebuildService()
 
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, metricService)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, metricService)
 		})
 	})
 
