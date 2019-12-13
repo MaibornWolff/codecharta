@@ -4,9 +4,9 @@ import * as d3 from "d3"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 import { SettingsService } from "./settingsService/settings.service"
-import { SearchPatternSubscriber } from "./settingsService/settings.service.events"
 import { StoreService } from "./store.service"
 import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
+import { SearchPatternService, SearchPatternSubscriber } from "./store/dynamicSettings/searchPattern/searchPattern.service"
 
 export interface NodeSearchSubscriber {
 	onNodeSearchComplete(searchedNodes: CodeMapNode[])
@@ -24,7 +24,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 		private codeMapPreRenderService: CodeMapPreRenderService,
 		private settingsService: SettingsService
 	) {
-		SettingsService.subscribeToSearchPattern($rootScope, this)
+		SearchPatternService.subscribe($rootScope, this)
 	}
 
 	public onSearchPatternChanged(searchPattern: string) {

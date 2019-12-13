@@ -7,6 +7,7 @@ import { SettingsService } from "./settingsService/settings.service"
 import { TEST_FILE_WITH_PATHS } from "../util/dataMocks"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { StoreService } from "./store.service"
+import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
 
 describe("NodeSearchService", () => {
 	let nodeSearchService: NodeSearchService
@@ -34,14 +35,12 @@ describe("NodeSearchService", () => {
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			SettingsService.subscribeToSearchPattern = jest.fn()
-		})
+		it("should subscribe to SearchPatternService", () => {
+			SearchPatternService.subscribe = jest.fn()
 
-		it("should subscribe to SearchPattern", () => {
 			rebuildService()
 
-			expect(SettingsService.subscribeToSearchPattern).toHaveBeenCalledWith($rootScope, nodeSearchService)
+			expect(SearchPatternService.subscribe).toHaveBeenCalledWith($rootScope, nodeSearchService)
 		})
 	})
 
