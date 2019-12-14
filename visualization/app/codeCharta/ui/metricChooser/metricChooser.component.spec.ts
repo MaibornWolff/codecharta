@@ -182,8 +182,6 @@ describe("MetricChooserController", () => {
 
 	describe("applySettingsAreaMetric", () => {
 		it("should updateSettings with areaMetric and margin null, when dynamicMargin is enabled", () => {
-			settingsService.getSettings = jest.fn().mockReturnValue({ appSettings: { dynamicMargin: true } })
-
 			metricChooserController["_viewModel"].areaMetric = "mcc"
 
 			metricChooserController.applySettingsAreaMetric()

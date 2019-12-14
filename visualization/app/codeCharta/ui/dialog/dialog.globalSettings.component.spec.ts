@@ -2,9 +2,7 @@ import "./dialog.module"
 import "../codeMap/codeMap.module"
 import { DialogGlobalSettingsController } from "./dialog.globalSettings.component"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { Settings } from "../../codeCharta.model"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS } from "../../util/dataMocks"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
@@ -21,11 +19,9 @@ describe("DialogGlobalSettingsController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let settingsService: SettingsService
-	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
-		withMockedSettingsService()
 		rebuildController()
 	})
 
@@ -36,20 +32,10 @@ describe("DialogGlobalSettingsController", () => {
 		$mdDialog = getService("$mdDialog")
 		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
-
-		settings = _.cloneDeep(DEFAULT_SETTINGS)
 	}
 
 	function rebuildController() {
 		dialogGlobalSettingsController = new DialogGlobalSettingsController($mdDialog, $rootScope, storeService, settingsService)
-	}
-
-	function withMockedSettingsService(mockSettings: Settings = settings) {
-		settingsService = jest.fn<SettingsService>(() => {
-			return {
-				getSettings: jest.fn().mockReturnValue(mockSettings)
-			}
-		})()
 	}
 
 	describe("constructor", () => {

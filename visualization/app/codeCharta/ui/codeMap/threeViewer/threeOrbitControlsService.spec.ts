@@ -8,13 +8,14 @@ import * as THREE from "three"
 import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { LoadingStatusService } from "../../../state/loadingStatus.service"
+import { StoreService } from "../../../state/store.service"
 
 describe("ThreeOrbitControlsService", () => {
+	let threeOrbitControlsService: ThreeOrbitControlsService
+	let $rootScope: IRootScopeService
+	let storeService: StoreService
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
-	let $rootScope: IRootScopeService
-	let threeOrbitControlsService: ThreeOrbitControlsService
-	let settingsService: SettingsService
 	let loadingStatusService: LoadingStatusService
 
 	let vector: Vector3
@@ -34,10 +35,10 @@ describe("ThreeOrbitControlsService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
 
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		vector = new Vector3(4.4577067775672665, 4.4577067775672665, 4.4577067775672665)
@@ -74,10 +75,10 @@ describe("ThreeOrbitControlsService", () => {
 
 	function rebuildService() {
 		threeOrbitControlsService = new ThreeOrbitControlsService(
+			$rootScope,
+			storeService,
 			threeCameraService,
 			threeSceneService,
-			$rootScope,
-			settingsService,
 			loadingStatusService
 		)
 	}

@@ -74,8 +74,8 @@ export class ColorSettingsPanelController
 	}
 
 	public invertDeltaColors() {
-		const positiveDelta = this.settingsService.getSettings().appSettings.mapColors.positiveDelta
-		const negativeDelta = this.settingsService.getSettings().appSettings.mapColors.negativeDelta
+		const positiveDelta = this.storeService.getState().appSettings.mapColors.positiveDelta
+		const negativeDelta = this.storeService.getState().appSettings.mapColors.negativeDelta
 
 		this.settingsService.updateSettings({
 			appSettings: {
@@ -89,7 +89,7 @@ export class ColorSettingsPanelController
 		this.storeService.dispatch(setInvertDeltaColors(this._viewModel.invertDeltaColors))
 		this.storeService.dispatch(
 			setMapColors({
-				...this.settingsService.getSettings().appSettings.mapColors,
+				...this.storeService.getState().appSettings.mapColors,
 				negativeDelta: positiveDelta,
 				positiveDelta: negativeDelta
 			})

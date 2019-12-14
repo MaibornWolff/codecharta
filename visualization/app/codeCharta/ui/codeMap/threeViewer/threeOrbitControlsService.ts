@@ -3,9 +3,9 @@ import { IRootScopeService, IAngularEvent } from "angular"
 import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { SettingsService } from "../../../state/settingsService/settings.service"
-import _ from "lodash"
 import { FocusNodeSubscriber, UnfocusNodeSubscriber } from "../../../state/settingsService/settings.service.events"
 import { LoadingStatusService } from "../../../state/loadingStatus.service"
+import { StoreService } from "../../../state/store.service"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -19,10 +19,10 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 	/* ngInject */
 	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
 		private loadingStatusService: LoadingStatusService
 	) {
 		SettingsService.subscribeToFocusNode($rootScope, this)
@@ -46,7 +46,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public cameraActionWhenNewMapIsLoaded() {
-		if (this.settingsService.getSettings().appSettings.resetCameraIfNewFileIsLoaded) {
+		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}
 	}

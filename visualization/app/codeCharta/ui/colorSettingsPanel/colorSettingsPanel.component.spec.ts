@@ -171,8 +171,8 @@ describe("ColorSettingsPanelController", () => {
 				appSettings: {
 					invertDeltaColors: false,
 					mapColors: {
-						positiveDelta: settingsService.getSettings().appSettings.mapColors.negativeDelta,
-						negativeDelta: settingsService.getSettings().appSettings.mapColors.positiveDelta
+						positiveDelta: DEFAULT_STATE.appSettings.mapColors.negativeDelta,
+						negativeDelta: DEFAULT_STATE.appSettings.mapColors.positiveDelta
 					}
 				}
 			})

@@ -88,7 +88,7 @@ export class HeightSettingsPanelController
 	}
 
 	public applySettingsScaling() {
-		const oldScaling = this.settingsService.getSettings().appSettings.scaling
+		const oldScaling = this.storeService.getState().appSettings.scaling
 		const newScaling = new Vector3(oldScaling.x, this._viewModel.scalingY, oldScaling.z)
 		this.settingsService.updateSettings({
 			appSettings: {

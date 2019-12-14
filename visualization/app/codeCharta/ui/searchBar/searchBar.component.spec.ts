@@ -63,7 +63,6 @@ describe("SearchBarController", () => {
 			searchBarController.onFileSelectionStatesChanged(null)
 
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
-			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe("")
 
 			setTimeout(() => {
 				expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
@@ -77,7 +76,6 @@ describe("SearchBarController", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
 			searchBarController["applySettingsSearchPattern"]()
 
-			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(searchBarController["_viewModel"].searchPattern)
 			expect(storeService.getState().dynamicSettings.searchPattern).toEqual(searchBarController["_viewModel"].searchPattern)
 		})
 	})

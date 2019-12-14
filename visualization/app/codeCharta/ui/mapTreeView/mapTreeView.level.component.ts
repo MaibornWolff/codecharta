@@ -1,4 +1,3 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
@@ -33,7 +32,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	constructor(
 		private $rootScope: IRootScopeService,
 		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
 		private storeService: StoreService
 	) {
@@ -98,8 +96,8 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public isSearched(node: CodeMapNode): boolean {
-		if (node != null && this.settingsService.getSettings().dynamicSettings.searchedNodePaths) {
-			return this.settingsService.getSettings().dynamicSettings.searchedNodePaths.filter(path => path == node.path).length > 0
+		if (node != null && this.storeService.getState().dynamicSettings.searchedNodePaths) {
+			return this.storeService.getState().dynamicSettings.searchedNodePaths.filter(path => path == node.path).length > 0
 		}
 		return false
 	}

@@ -2,7 +2,6 @@ import "./mapTreeView.module"
 
 import { MapTreeViewLevelController } from "./mapTreeView.level.component"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
@@ -19,12 +18,12 @@ import _ from "lodash"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
 	let $rootScope: IRootScopeService
 	let codeMapActionsService: CodeMapActionsService
-	let settingsService: SettingsService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let storeService: StoreService
 	let $event
@@ -41,7 +40,6 @@ describe("MapTreeViewLevelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		settingsService = getService<SettingsService>("settingsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		storeService = getService<StoreService>("storeService")
 
@@ -55,7 +53,6 @@ describe("MapTreeViewLevelController", () => {
 		mapTreeViewLevelController = new MapTreeViewLevelController(
 			$rootScope,
 			codeMapActionsService,
-			settingsService,
 			codeMapPreRenderService,
 			storeService
 		)
@@ -270,10 +267,7 @@ describe("MapTreeViewLevelController", () => {
 				"Folder",
 				VALID_NODE_WITH_PATH
 			)
-			mapTreeViewLevelController["settingsService"]["settings"].dynamicSettings.searchedNodePaths = [
-				"/root/Parent Leaf/",
-				"/root/Parent Leaf/empty folder"
-			]
+			storeService.dispatch(setSearchedNodePaths(["/root/Parent Leaf/", "/root/Parent Leaf/empty folder"]))
 
 			const result = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
 
@@ -286,7 +280,7 @@ describe("MapTreeViewLevelController", () => {
 				"Folder",
 				VALID_NODE_WITH_PATH
 			)
-			mapTreeViewLevelController["settingsService"]["settings"].dynamicSettings.searchedNodePaths = ["/root/Parent Leaf"]
+			storeService.dispatch(setSearchedNodePaths(["/root/Parent Leaf"]))
 
 			const result = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
 
