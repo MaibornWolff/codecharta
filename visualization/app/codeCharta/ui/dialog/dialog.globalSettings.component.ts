@@ -1,4 +1,3 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setHideFlatBuildings } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
@@ -29,12 +28,7 @@ export class DialogGlobalSettingsController
 		resetCameraIfNewFileIsLoaded: null
 	}
 
-	constructor(
-		private $mdDialog,
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private settingsService: SettingsService
-	) {
+	constructor(private $mdDialog, private $rootScope: IRootScopeService, private storeService: StoreService) {
 		HideFlatBuildingsService.subscribe(this.$rootScope, this)
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		ResetCameraIfNewFileIsLoadedService.subscribe(this.$rootScope, this)
@@ -61,29 +55,14 @@ export class DialogGlobalSettingsController
 	}
 
 	public applySettingsHideFlatBuildings() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				hideFlatBuildings: this._viewModel.hideFlatBuildings
-			}
-		})
 		this.storeService.dispatch(setHideFlatBuildings(this._viewModel.hideFlatBuildings))
 	}
 
 	public applySettingsResetCamera() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				resetCameraIfNewFileIsLoaded: this._viewModel.resetCameraIfNewFileIsLoaded
-			}
-		})
 		this.storeService.dispatch(setResetCameraIfNewFileIsLoaded(this._viewModel.resetCameraIfNewFileIsLoaded))
 	}
 
 	public applySettingsIsWhiteBackground() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				isWhiteBackground: this._viewModel.isWhiteBackground
-			}
-		})
 		this.storeService.dispatch(setIsWhiteBackground(this._viewModel.isWhiteBackground))
 	}
 

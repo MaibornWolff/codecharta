@@ -18,7 +18,6 @@ describe("DialogGlobalSettingsController", () => {
 	let $mdDialog
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let settingsService: SettingsService
 
 	beforeEach(() => {
 		restartSystem()
@@ -30,12 +29,11 @@ describe("DialogGlobalSettingsController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$mdDialog = getService("$mdDialog")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		dialogGlobalSettingsController = new DialogGlobalSettingsController($mdDialog, $rootScope, storeService, settingsService)
+		dialogGlobalSettingsController = new DialogGlobalSettingsController($mdDialog, $rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -123,37 +121,31 @@ describe("DialogGlobalSettingsController", () => {
 	})
 
 	describe("applySettingsHideFlatBuildings", () => {
-		it("should call settingsService.updateSettings", () => {
-			settingsService.updateSettings = jest.fn()
+		it("should update hideFlatBuildings in store", () => {
 			dialogGlobalSettingsController["_viewModel"].hideFlatBuildings = false
 
 			dialogGlobalSettingsController.applySettingsHideFlatBuildings()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { hideFlatBuildings: false } })
 			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
 		})
 	})
 
 	describe("applySettingsResetCamera", () => {
-		it("should call settingsService.updateSettings", () => {
-			settingsService.updateSettings = jest.fn()
+		it("should update resetCameraIfNewFileIsLoaded in store", () => {
 			dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded = false
 
 			dialogGlobalSettingsController.applySettingsResetCamera()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { resetCameraIfNewFileIsLoaded: false } })
 			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeFalsy()
 		})
 	})
 
 	describe("applySettingsIsWhiteBackground", () => {
-		it("should call settingsService.updateSettings", () => {
-			settingsService.updateSettings = jest.fn()
+		it("should update isWhiteBackground in store", () => {
 			dialogGlobalSettingsController["_viewModel"].isWhiteBackground = false
 
 			dialogGlobalSettingsController.applySettingsIsWhiteBackground()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { isWhiteBackground: false } })
 			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
 		})
 	})
