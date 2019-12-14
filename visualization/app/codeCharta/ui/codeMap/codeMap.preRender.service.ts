@@ -15,6 +15,7 @@ import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import * as d3 from "d3"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
+import _ from "lodash"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -150,7 +151,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		return (
 			this.fileStateService.getFileStates().length > 0 &&
 			this.metricService.getMetricData() !== null &&
-			this.metricService.getMetricData().length > 1
+			this.metricService.getMetricData().length > 1 &&
+			_.values(this.storeService.getState().dynamicSettings).every(x => {
+				return x !== null && _.values(x).every(x => x !== null)
+			})
 		)
 	}
 

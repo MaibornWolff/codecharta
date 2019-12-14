@@ -7,7 +7,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
-import { TEST_FILE_WITH_PATHS, METRIC_DATA, withMockedEventMethods, FILE_STATES } from "../../util/dataMocks"
+import { TEST_FILE_WITH_PATHS, METRIC_DATA, withMockedEventMethods, FILE_STATES, STATE } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
@@ -15,6 +15,7 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
+import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -156,6 +157,7 @@ describe("codeMapPreRenderService", () => {
 	describe("onStoreChanged", () => {
 		it("should call codeMapRenderService.render", () => {
 			withLastRenderData()
+			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 
 			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
 
@@ -171,7 +173,7 @@ describe("codeMapPreRenderService", () => {
 		})
 	})
 
-	describe("on metric data added", () => {
+	describe("onMetricDataAdded", () => {
 		const originalDecorateMap = NodeDecorator.decorateMap
 
 		it("should call Node Decorator functions if all required data is available", () => {
