@@ -2,7 +2,6 @@ import "./edgeSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { StoreService } from "../../state/store.service"
 import {
 	defaultAmountOfEdgePreviews,
@@ -38,7 +37,6 @@ export class EdgeSettingsPanelController
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
 		private storeService: StoreService,
 		private edgeMetricDataService: EdgeMetricDataService,
 		private codeMapActionsService: CodeMapActionsService
@@ -77,17 +75,14 @@ export class EdgeSettingsPanelController
 	}
 
 	public applySettingsAmountOfEdgePreviews() {
-		this.settingsService.updateSettings({ appSettings: { amountOfEdgePreviews: this._viewModel.amountOfEdgePreviews } })
 		this.storeService.dispatch(setAmountOfEdgePreviews(this._viewModel.amountOfEdgePreviews))
 	}
 
 	public applySettingsEdgeHeight() {
-		this.settingsService.updateSettings({ appSettings: { edgeHeight: this._viewModel.edgeHeight } })
 		this.storeService.dispatch(setEdgeHeight(this._viewModel.edgeHeight))
 	}
 
 	public applyShowOnlyBuildingsWithEdges() {
-		this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: this._viewModel.showOnlyBuildingsWithEdges } })
 		this.storeService.dispatch(setShowOnlyBuildingsWithEdges(this._viewModel.showOnlyBuildingsWithEdges))
 	}
 }
