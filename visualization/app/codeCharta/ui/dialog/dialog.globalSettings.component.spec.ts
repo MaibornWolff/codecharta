@@ -1,7 +1,6 @@
 import "./dialog.module"
 import "../codeMap/codeMap.module"
 import { DialogGlobalSettingsController } from "./dialog.globalSettings.component"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
