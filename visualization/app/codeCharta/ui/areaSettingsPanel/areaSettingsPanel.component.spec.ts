@@ -2,34 +2,31 @@ import "./areaSettingsPanel.module"
 import "../codeMap/codeMap.module"
 import "../../codeCharta.module"
 import { AreaSettingsPanelController } from "./areaSettingsPanel.component"
-import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
+import { TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { Settings, CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { StoreService } from "../../state/store.service"
 import { DynamicMarginService } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService } from "../../state/store/dynamicSettings/margin/margin.service"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
+import _ from "lodash"
 
 describe("AreaSettingsPanelController", () => {
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let areaSettingsPanelController: AreaSettingsPanelController
 
-	let settings: Settings
 	let map: CodeMapNode
 	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
 		withMockedCodeMapPreRenderService()
 	})
 
@@ -37,23 +34,14 @@ describe("AreaSettingsPanelController", () => {
 		instantiateModule("app.codeCharta.ui.areaSettingsPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		map = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS.map))
+		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 	}
 
 	function rebuildController() {
-		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, settingsService, storeService, codeMapPreRenderService)
-	}
-
-	function withMockedSettingsService() {
-		settingsService = areaSettingsPanelController["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(settings),
-			updateSettings: jest.fn()
-		})()
+		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, storeService, codeMapPreRenderService)
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -129,10 +117,6 @@ describe("AreaSettingsPanelController", () => {
 	})
 
 	describe("onRenderFileChange", () => {
-		beforeEach(() => {
-			settings.appSettings.dynamicMargin = true
-		})
-
 		it("should not call dispatch if dynamicMargin is false", () => {
 			storeService.dispatch(setDynamicMargin(false))
 			storeService.dispatch = jest.fn()
@@ -183,9 +167,6 @@ describe("AreaSettingsPanelController", () => {
 		it("should update margin and dynamicMargin in settingsService", () => {
 			areaSettingsPanelController.onFileSelectionStatesChanged(undefined)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { dynamicMargin: true }
-			})
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 	})
@@ -202,11 +183,8 @@ describe("AreaSettingsPanelController", () => {
 		it("should call updateSettings", done => {
 			areaSettingsPanelController["_viewModel"].dynamicMargin = false
 			areaSettingsPanelController["_viewModel"].margin = 28
-			const expected = { dynamicSettings: { margin: 28 }, appSettings: { dynamicMargin: false } }
 
 			areaSettingsPanelController.onChangeMarginSlider()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 
 			setTimeout(() => {
 				expect(storeService.getState().dynamicSettings.margin).toEqual(28)

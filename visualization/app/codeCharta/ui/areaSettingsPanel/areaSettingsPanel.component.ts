@@ -1,6 +1,5 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapNode, FileState } from "../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
@@ -31,7 +30,6 @@ export class AreaSettingsPanelController
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
@@ -66,23 +64,10 @@ export class AreaSettingsPanelController
 	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	private applyDynamicMargin() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				dynamicMargin: this._viewModel.dynamicMargin
-			}
-		})
 		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
 	public onChangeMarginSlider() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				margin: this._viewModel.margin
-			},
-			appSettings: {
-				dynamicMargin: false
-			}
-		})
 		this.applyDebouncedMargin()
 		this.storeService.dispatch(setDynamicMargin(false))
 	}
@@ -91,11 +76,6 @@ export class AreaSettingsPanelController
 		if (this._viewModel.dynamicMargin && this.storeService.getState().dynamicSettings.areaMetric && map) {
 			const newMargin = this.computeMargin(this.storeService.getState().dynamicSettings.areaMetric, map)
 			if (this._viewModel.margin !== newMargin) {
-				this.settingsService.updateSettings({
-					dynamicSettings: {
-						margin: newMargin
-					}
-				})
 				this.storeService.dispatch(setMargin(newMargin))
 			}
 		}
