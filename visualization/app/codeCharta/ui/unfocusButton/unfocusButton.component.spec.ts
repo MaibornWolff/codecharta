@@ -41,7 +41,7 @@ describe("UnfocusButtonController", () => {
 		it("should set focusedNodePath in viewModel", () => {
 			unfocusButtonController.onFocusNode("/root")
 
-			expect(unfocusButtonController["_viewModel"].focusedNodePath).toBe("/root")
+			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeTruthy()
 		})
 	})
 
@@ -49,7 +49,7 @@ describe("UnfocusButtonController", () => {
 		it("should set empty focusedNodePath in viewModel", () => {
 			unfocusButtonController.onUnfocusNode()
 
-			expect(unfocusButtonController["_viewModel"].focusedNodePath).toBe("")
+			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeFalsy()
 		})
 	})
 
