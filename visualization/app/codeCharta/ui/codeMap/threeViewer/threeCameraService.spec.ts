@@ -6,6 +6,7 @@ import { PerspectiveCamera, Vector3 } from "three"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { StoreService } from "../../../state/store.service"
+import { setCamera } from "../../../state/store/appSettings/camera/camera.actions"
 
 describe("ThreeCameraService", () => {
 	let threeCameraService: ThreeCameraService
@@ -16,7 +17,6 @@ describe("ThreeCameraService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedSettingsService()
 	})
 
 	function restartSystem() {
@@ -32,15 +32,10 @@ describe("ThreeCameraService", () => {
 		threeCameraService.camera = new PerspectiveCamera()
 	}
 
-	function withMockedSettingsService() {
-		settingsService = threeCameraService["settingsService"] = jest.fn().mockReturnValue({
-			updateSettings: jest.fn()
-		})()
-	}
-
 	describe("onCameraChanged", () => {
 		it("should call updateSettings", () => {
 			const cameraPosition = threeCameraService.camera.position
+			settingsService.updateSettings = jest.fn()
 
 			threeCameraService.onCameraChanged(null)
 
@@ -68,19 +63,23 @@ describe("ThreeCameraService", () => {
 		})
 
 		it("should set camera with a new aspect", () => {
-			threeCameraService.init(400, 200, 1, 2, 3)
+			storeService.dispatch(setCamera(new Vector3(1, 2, 3)))
+
+			threeCameraService.init(400, 200)
 
 			expect(threeCameraService.camera.aspect).toBe(2)
 		})
 
 		it("should call setPosition with x, y and z", () => {
-			threeCameraService.init(400, 200, 1, 2, 3)
+			threeCameraService.init(400, 200)
 
-			expect(threeCameraService.setPosition).toHaveBeenCalledWith(1, 2, 3)
+			expect(threeCameraService.setPosition).toHaveBeenCalled()
 		})
 
 		it("should subscribe to ThreeOrbitControlsService", () => {
-			threeCameraService.init(400, 200, 1, 2, 3)
+			storeService.dispatch(setCamera(new Vector3(1, 2, 3)))
+
+			threeCameraService.init(400, 200)
 
 			expect(ThreeOrbitControlsService.subscribe).toHaveBeenCalledWith($rootScope, threeCameraService)
 		})
@@ -88,7 +87,9 @@ describe("ThreeCameraService", () => {
 
 	describe("setPosition", () => {
 		it("should set camera position correctly", () => {
-			threeCameraService.setPosition(1, 2, 3)
+			storeService.dispatch(setCamera(new Vector3(1, 2, 3)))
+
+			threeCameraService.setPosition()
 
 			expect(threeCameraService.camera.position).toEqual({ x: 1, y: 2, z: 3 })
 		})
