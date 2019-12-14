@@ -3,7 +3,6 @@ import { EdgeChooserController } from "./edgeChooser.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
@@ -16,7 +15,6 @@ describe("EdgeChooserController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let codeMapActionsService: CodeMapActionsService
-	let settingsService: SettingsService
 	let $timeout: ITimeoutService
 
 	beforeEach(() => {
@@ -31,12 +29,11 @@ describe("EdgeChooserController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		settingsService = getService<SettingsService>("settingsService")
 		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function rebuildController() {
-		edgeChooserController = new EdgeChooserController($rootScope, storeService, codeMapActionsService, settingsService, $timeout)
+		edgeChooserController = new EdgeChooserController($rootScope, storeService, codeMapActionsService, $timeout)
 	}
 
 	function withMockedCodeMapActionsService() {
@@ -112,11 +109,9 @@ describe("EdgeChooserController", () => {
 				{ name: "None", maxValue: 1, availableInVisibleMaps: false }
 			]
 			edgeChooserController["_viewModel"].edgeMetric = "metric1"
-			settingsService.updateSettings = jest.fn()
 
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ dynamicSettings: { edgeMetric: "None" } })
 			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("None")
 		})
 	})
@@ -184,14 +179,12 @@ describe("EdgeChooserController", () => {
 	})
 
 	describe("onEdgeMetricSelected", () => {
-		it("should update Settings", () => {
-			settingsService.updateSettings = jest.fn()
+		it("should update edgeMetric in store", () => {
 			codeMapActionsService.updateEdgePreviews = jest.fn()
 			edgeChooserController["_viewModel"].edgeMetric = "metric1"
 
 			edgeChooserController.onEdgeMetricSelected()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ dynamicSettings: { edgeMetric: "metric1" } })
 			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("metric1")
 		})
 	})

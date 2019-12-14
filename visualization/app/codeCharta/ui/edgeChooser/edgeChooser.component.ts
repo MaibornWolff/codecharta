@@ -3,7 +3,6 @@ import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import $ from "jquery"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -31,7 +30,6 @@ export class EdgeChooserController
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService,
 		private $timeout: ITimeoutService
 	) {
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
@@ -67,7 +65,6 @@ export class EdgeChooserController
 	}
 
 	public onEdgeMetricSelected() {
-		this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: this._viewModel.edgeMetric } })
 		this.storeService.dispatch(setEdgeMetric(this._viewModel.edgeMetric))
 	}
 
