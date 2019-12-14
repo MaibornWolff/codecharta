@@ -3,19 +3,7 @@ import _ from "lodash"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { Vector3 } from "three"
 import { LoadingStatusService } from "../loadingStatus.service"
-import {
-	AreaMetricSubscriber,
-	BlacklistSubscriber,
-	ColorMetricSubscriber,
-	DistributionMetricSubscriber,
-	EdgeMetricSubscriber,
-	HeightMetricSubscriber,
-	SearchPatternSubscriber,
-	SettingsEvents,
-	SettingsServiceSubscriber,
-	FocusNodeSubscriber,
-	UnfocusNodeSubscriber
-} from "./settings.service.events"
+import { SettingsEvents, FocusNodeSubscriber, UnfocusNodeSubscriber } from "./settings.service.events"
 
 export class SettingsService {
 	private static DEBOUNCE_TIME = 400
@@ -268,54 +256,6 @@ export class SettingsService {
 
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})
-	}
-
-	public static subscribe($rootScope: IRootScopeService, subscriber: SettingsServiceSubscriber) {
-		$rootScope.$on(SettingsEvents.SETTINGS_CHANGED_EVENT, (event, data) => {
-			subscriber.onSettingsChanged(data.settings, data.update)
-		})
-	}
-
-	public static subscribeToBlacklist($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
-		$rootScope.$on(SettingsEvents.BLACKLIST_CHANGED_EVENT, (event, data) => {
-			subscriber.onBlacklistChanged(data.blacklist)
-		})
-	}
-
-	public static subscribeToAreaMetric($rootScope: IRootScopeService, subscriber: AreaMetricSubscriber) {
-		$rootScope.$on(SettingsEvents.AREA_METRIC_CHANGED_EVENT, (event, data) => {
-			subscriber.onAreaMetricChanged(data.areaMetric)
-		})
-	}
-
-	public static subscribeToHeightMetric($rootScope: IRootScopeService, subscriber: HeightMetricSubscriber) {
-		$rootScope.$on(SettingsEvents.HEIGHT_METRIC_CHANGED_EVENT, (event, data) => {
-			subscriber.onHeightMetricChanged(data.heightMetric)
-		})
-	}
-
-	public static subscribeToColorMetric($rootScope: IRootScopeService, subscriber: ColorMetricSubscriber) {
-		$rootScope.$on(SettingsEvents.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
-			subscriber.onColorMetricChanged(data.colorMetric)
-		})
-	}
-
-	public static subscribeToEdgeMetric($rootScope: IRootScopeService, subscriber: EdgeMetricSubscriber) {
-		$rootScope.$on(SettingsEvents.EDGE_METRIC_CHANGED_EVENT, (event, data) => {
-			subscriber.onEdgeMetricChanged(data.edgeMetric)
-		})
-	}
-
-	public static subscribeToDistributionMetric($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
-		$rootScope.$on(SettingsEvents.DISTRIBUTION_METRIC_CHANGED_EVENT, (event, data) => {
-			subscriber.onDistributionMetricChanged(data.distributionMetric)
-		})
-	}
-
-	public static subscribeToSearchPattern($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
-		$rootScope.$on(SettingsEvents.SEARCH_PATTERN_CHANGED_EVENT, (event, data) => {
-			subscriber.onSearchPatternChanged(data.searchPattern)
-		})
 	}
 
 	public static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodeSubscriber) {

@@ -165,12 +165,4 @@ describe("settingService", () => {
 			expect(settingsService.getDefaultSettings()).toMatchSnapshot()
 		})
 	})
-
-	describe("subscribe", () => {
-		it("should setup one event listener", () => {
-			SettingsService.subscribe($rootScope, undefined)
-
-			expect($rootScope.$on).toHaveBeenCalledTimes(1)
-		})
-	})
 })
