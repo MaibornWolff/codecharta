@@ -48,10 +48,6 @@ export class SettingsService {
 		}
 	}
 
-	public getSettings(): Settings {
-		return this.settings
-	}
-
 	public updateSettings(update: RecursivePartial<Settings>, isSilent: boolean = false) {
 		this.settings = this.mergePartialSettings(this.settings, update, this.settings) as Settings
 		if (!isSilent) {

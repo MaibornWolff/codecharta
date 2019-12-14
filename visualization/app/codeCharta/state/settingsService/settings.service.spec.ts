@@ -46,7 +46,7 @@ describe("settingService", () => {
 		it("should set settings to default settings", () => {
 			rebuildService()
 
-			expect(settingsService.getSettings()).toEqual(settings)
+			expect(settingsService["settings"]).toEqual(settings)
 		})
 	})
 
@@ -59,7 +59,7 @@ describe("settingService", () => {
 
 			settingsService.updateSettings({ appSettings: { invertHeight: true } })
 
-			expect(settingsService.getSettings()).toEqual(expected)
+			expect(settingsService["settings"]).toEqual(expected)
 		})
 
 		it("should call updateLoadingMapFlag", () => {
@@ -83,7 +83,7 @@ describe("settingService", () => {
 				}
 			})
 
-			expect(settingsService.getSettings().fileSettings.attributeTypes.nodes).toEqual(nodeAttributeTypes)
+			expect(settingsService["settings"].fileSettings.attributeTypes.nodes).toEqual(nodeAttributeTypes)
 		})
 
 		it("should merge two objects with different root properties", () => {
