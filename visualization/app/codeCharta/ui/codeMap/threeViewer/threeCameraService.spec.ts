@@ -56,12 +56,6 @@ describe("ThreeCameraService", () => {
 	})
 
 	describe("init", () => {
-		beforeEach(() => {
-			threeCameraService.setPosition = jest.fn()
-			SettingsService.subscribe = jest.fn()
-			ThreeOrbitControlsService.subscribe = jest.fn()
-		})
-
 		it("should set camera with a new aspect", () => {
 			storeService.dispatch(setCamera(new Vector3(1, 2, 3)))
 
@@ -71,12 +65,14 @@ describe("ThreeCameraService", () => {
 		})
 
 		it("should call setPosition with x, y and z", () => {
+			threeCameraService.setPosition = jest.fn()
 			threeCameraService.init(400, 200)
 
 			expect(threeCameraService.setPosition).toHaveBeenCalled()
 		})
 
 		it("should subscribe to ThreeOrbitControlsService", () => {
+			ThreeOrbitControlsService.subscribe = jest.fn()
 			storeService.dispatch(setCamera(new Vector3(1, 2, 3)))
 
 			threeCameraService.init(400, 200)
