@@ -61,8 +61,6 @@ export class ColorSettingsPanelController
 
 	public onImportedFilesChanged(fileStates: FileState[]) {}
 
-	public onMetricDataRemoved() {}
-
 	public invertColorRange() {
 		this.storeService.dispatch(setInvertColorRange(this._viewModel.invertColorRange))
 	}
