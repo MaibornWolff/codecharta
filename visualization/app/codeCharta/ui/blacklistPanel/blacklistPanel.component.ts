@@ -16,9 +16,9 @@ export class BlacklistPanelController implements BlacklistSubscriber, SearchPane
 		searchPanelMode: null
 	}
 
-	constructor(private codeMapActionsService: CodeMapActionsService, $rootScope: IRootScopeService) {
-		BlacklistService.subscribe($rootScope, this)
-		SearchPanelService.subscribe($rootScope, this)
+	constructor(private codeMapActionsService: CodeMapActionsService, private $rootScope: IRootScopeService) {
+		BlacklistService.subscribe(this.$rootScope, this)
+		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
