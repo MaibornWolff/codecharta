@@ -3,7 +3,6 @@ import "./heightSettingsPanel.module"
 import { Vector3 } from "three"
 import { HeightSettingsPanelController } from "./heightSettingsPanel.component"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
@@ -15,7 +14,6 @@ import { InvertHeightService } from "../../state/store/appSettings/invertHeight/
 describe("HeightSettingsPanelController", () => {
 	let heightSettingsPanelController: HeightSettingsPanelController
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 	let storeService: StoreService
 
 	let SOME_EXTRA_TIME = 400
@@ -23,26 +21,17 @@ describe("HeightSettingsPanelController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.heightSettingsPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		heightSettingsPanelController = new HeightSettingsPanelController($rootScope, settingsService, storeService)
-	}
-
-	function withMockedSettingsService() {
-		settingsService = heightSettingsPanelController["settingsService"] = jest.fn().mockReturnValue({
-			updateSettings: jest.fn(),
-			getSettings: jest.fn().mockReturnValue({ appSettings: { scaling: new Vector3(1, 1, 1) } })
-		})()
+		heightSettingsPanelController = new HeightSettingsPanelController($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -122,17 +111,10 @@ describe("HeightSettingsPanelController", () => {
 	})
 
 	describe("applySettingsAmountOfTopLabels", () => {
-		it("should call updateSettings", done => {
+		it("should update amountOfTopLabels in store", done => {
 			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 12
-			const expected = {
-				appSettings: {
-					amountOfTopLabels: 12
-				}
-			}
 
 			heightSettingsPanelController.applySettingsAmountOfTopLabels()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 
 			setTimeout(() => {
 				expect(storeService.getState().appSettings.amountOfTopLabels).toBe(12)
@@ -142,33 +124,20 @@ describe("HeightSettingsPanelController", () => {
 	})
 
 	describe("applySettingsInvertHeight", () => {
-		it("should call updateSettings", () => {
+		it("should update invertHeight in store", () => {
 			heightSettingsPanelController["_viewModel"].invertHeight = true
-			const expected = {
-				appSettings: {
-					invertHeight: true
-				}
-			}
 
 			heightSettingsPanelController.applySettingsInvertHeight()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 			expect(storeService.getState().appSettings.invertHeight).toBeTruthy()
 		})
 	})
 
 	describe("applySettingsScaling", () => {
-		it("should call updateSettings", done => {
+		it("should update scaling in store", done => {
 			heightSettingsPanelController["_viewModel"].scalingY = 1.8
-			const expected = {
-				appSettings: {
-					scaling: new Vector3(1, 1.8, 1)
-				}
-			}
 
 			heightSettingsPanelController.applySettingsScaling()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 
 			setTimeout(() => {
 				expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1.8, 1))

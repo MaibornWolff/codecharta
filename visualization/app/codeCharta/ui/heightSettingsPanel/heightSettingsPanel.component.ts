@@ -1,7 +1,6 @@
 import "./heightSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { Vector3 } from "three"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileState } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
@@ -36,7 +35,7 @@ export class HeightSettingsPanelController
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		AmountOfTopLabelsService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		InvertHeightService.subscribe(this.$rootScope, this)
@@ -70,31 +69,17 @@ export class HeightSettingsPanelController
 	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public applySettingsAmountOfTopLabels() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				amountOfTopLabels: this._viewModel.amountOfTopLabels
-			}
-		})
 		this.applyDebouncedTopLabels()
 	}
 
 	public applySettingsInvertHeight() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				invertHeight: this._viewModel.invertHeight
-			}
-		})
 		this.storeService.dispatch(setInvertHeight(this._viewModel.invertHeight))
 	}
 
 	public applySettingsScaling() {
 		const oldScaling = this.storeService.getState().appSettings.scaling
 		const newScaling = new Vector3(oldScaling.x, this._viewModel.scalingY, oldScaling.z)
-		this.settingsService.updateSettings({
-			appSettings: {
-				scaling: newScaling
-			}
-		})
+
 		this.applyDebouncedScaling(newScaling)
 	}
 }
