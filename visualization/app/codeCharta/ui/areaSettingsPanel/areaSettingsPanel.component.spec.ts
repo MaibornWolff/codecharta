@@ -63,33 +63,33 @@ describe("AreaSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			SettingsService.subscribe = jest.fn()
-			CodeMapPreRenderService.subscribe = jest.fn()
-			FileStateService.subscribe = jest.fn()
-			DynamicMarginService.subscribe = jest.fn()
-			MarginService.subscribe = jest.fn()
-		})
-
 		it("should subscribe to DynamicMarginService", () => {
+			DynamicMarginService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(DynamicMarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
 		it("should subscribe to MarginService", () => {
+			MarginService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(MarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
 		it("should subscribe to CodeMapPreRenderService", () => {
+			CodeMapPreRenderService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
 		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
