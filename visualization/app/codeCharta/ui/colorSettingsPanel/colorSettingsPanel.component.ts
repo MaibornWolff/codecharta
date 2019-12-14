@@ -1,4 +1,3 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import "./colorSettingsPanel.component.scss"
 import { FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
@@ -37,7 +36,7 @@ export class ColorSettingsPanelController
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		FileStateService.subscribe(this.$rootScope, this)
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
@@ -65,11 +64,6 @@ export class ColorSettingsPanelController
 	public onMetricDataRemoved() {}
 
 	public invertColorRange() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				invertColorRange: this._viewModel.invertColorRange
-			}
-		})
 		this.storeService.dispatch(setInvertColorRange(this._viewModel.invertColorRange))
 	}
 
@@ -77,15 +71,6 @@ export class ColorSettingsPanelController
 		const positiveDelta = this.storeService.getState().appSettings.mapColors.positiveDelta
 		const negativeDelta = this.storeService.getState().appSettings.mapColors.negativeDelta
 
-		this.settingsService.updateSettings({
-			appSettings: {
-				invertDeltaColors: this._viewModel.invertDeltaColors,
-				mapColors: {
-					negativeDelta: positiveDelta,
-					positiveDelta: negativeDelta
-				}
-			}
-		})
 		this.storeService.dispatch(setInvertDeltaColors(this._viewModel.invertDeltaColors))
 		this.storeService.dispatch(
 			setMapColors({
@@ -97,11 +82,6 @@ export class ColorSettingsPanelController
 	}
 
 	public applyWhiteColorBuildings() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				whiteColorBuildings: this._viewModel.whiteColorBuildings
-			}
-		})
 		this.storeService.dispatch(setWhiteColorBuildings(this._viewModel.whiteColorBuildings))
 	}
 }

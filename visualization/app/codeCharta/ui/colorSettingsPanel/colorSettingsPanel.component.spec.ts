@@ -2,78 +2,64 @@ import "./colorSettingsPanel.module"
 
 import { ColorSettingsPanelController } from "./colorSettingsPanel.component"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_STATE, SETTINGS } from "../../util/dataMocks"
+import { DEFAULT_STATE } from "../../util/dataMocks"
 import { FileSelectionState, FileState } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
-import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.colorSettingsPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 	}
 
-	function withMockedSettingsService() {
-		settingsService = colorSettingsPanelController["settingsService"] = jest.fn(() => {
-			return {
-				updateSettings: jest.fn(),
-				getSettings: jest.fn().mockReturnValue(SETTINGS)
-			}
-		})()
-	}
-
 	function rebuildController() {
-		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, settingsService, storeService)
+		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			FileStateService.subscribe = jest.fn()
-			InvertDeltaColorsService.subscribe = jest.fn()
-			WhiteColorBuildingsService.subscribe = jest.fn()
-			InvertColorRangeService.subscribe = jest.fn()
-			ColorMetricService.subscribe = jest.fn()
-		})
-
 		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
 		it("should subscribe to InvertDeltaColorsService", () => {
+			InvertDeltaColorsService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
 		it("should subscribe to WhiteColorBuildingsService", () => {
+			WhiteColorBuildingsService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
 		it("should subscribe to InvertColorRangeService", () => {
+			InvertColorRangeService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
@@ -152,11 +138,6 @@ describe("ColorSettingsPanelController", () => {
 
 			colorSettingsPanelController.invertColorRange()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: {
-					invertColorRange: false
-				}
-			})
 			expect(storeService.getState().appSettings.invertColorRange).toBeFalsy()
 		})
 	})
@@ -167,15 +148,6 @@ describe("ColorSettingsPanelController", () => {
 
 			colorSettingsPanelController.invertDeltaColors()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: {
-					invertDeltaColors: false,
-					mapColors: {
-						positiveDelta: DEFAULT_STATE.appSettings.mapColors.negativeDelta,
-						negativeDelta: DEFAULT_STATE.appSettings.mapColors.positiveDelta
-					}
-				}
-			})
 			expect(storeService.getState().appSettings.invertDeltaColors).toBeFalsy()
 			expect(storeService.getState().appSettings.mapColors.positiveDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.negativeDelta)
 			expect(storeService.getState().appSettings.mapColors.negativeDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.positiveDelta)
@@ -188,11 +160,6 @@ describe("ColorSettingsPanelController", () => {
 
 			colorSettingsPanelController.applyWhiteColorBuildings()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: {
-					whiteColorBuildings: false
-				}
-			})
 			expect(storeService.getState().appSettings.whiteColorBuildings).toBeFalsy()
 		})
 	})
