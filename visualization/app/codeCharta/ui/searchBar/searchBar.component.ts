@@ -3,12 +3,11 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
-import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import _ from "lodash"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
 	private static DEBOUNCE_TIME = 400

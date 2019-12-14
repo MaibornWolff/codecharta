@@ -2,9 +2,8 @@ import "./searchPanelModeSelector.component.scss"
 import { SearchPanelMode, BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
-import { BlacklistSubscriber, SearchPatternSubscriber } from "../../state/settingsService/settings.service.events"
-import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {

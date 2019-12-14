@@ -2,11 +2,10 @@ import "./metricValueHovered.component.scss"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber } from "../../state/settingsService/settings.service.events"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
-import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
-import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 export class MetricValueHoveredController
 	implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber {

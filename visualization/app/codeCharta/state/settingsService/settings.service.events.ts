@@ -1,37 +1,3 @@
-import { BlacklistItem, RecursivePartial, Settings } from "../../codeCharta.model"
-
-export interface SettingsServiceSubscriber {
-	onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>)
-}
-
-export interface BlacklistSubscriber {
-	onBlacklistChanged(blacklist: BlacklistItem[])
-}
-
-export interface AreaMetricSubscriber {
-	onAreaMetricChanged(areaMetric: string)
-}
-
-export interface HeightMetricSubscriber {
-	onHeightMetricChanged(heightMetric: string)
-}
-
-export interface ColorMetricSubscriber {
-	onColorMetricChanged(colorMetric: string)
-}
-
-export interface EdgeMetricSubscriber {
-	onEdgeMetricChanged(edgeMetric: string)
-}
-
-export interface DistributionMetricSubscriber {
-	onDistributionMetricChanged(distributionMetric: string)
-}
-
-export interface SearchPatternSubscriber {
-	onSearchPatternChanged(searchPattern: string)
-}
-
 export interface FocusNodeSubscriber {
 	onFocusNode(focusedNodePath: string)
 }

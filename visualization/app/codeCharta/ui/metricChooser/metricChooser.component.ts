@@ -3,12 +3,6 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { MetricData, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import {
-	AreaMetricSubscriber,
-	ColorMetricSubscriber,
-	DistributionMetricSubscriber,
-	HeightMetricSubscriber
-} from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
@@ -18,10 +12,13 @@ import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actio
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
-import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
-import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
+import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import {
+	DistributionMetricService,
+	DistributionMetricSubscriber
+} from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
 
 export class MetricChooserController
 	implements MetricServiceSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
