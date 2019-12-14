@@ -1,14 +1,13 @@
 import "./codeCharta.module"
 import _ from "lodash"
-import { IHttpService, ILocationService, IRootScopeService } from "angular"
+import { IHttpService, ILocationService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
 import { SettingsService } from "./state/settingsService/settings.service"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { Settings } from "./codeCharta.model"
-import { SETTINGS, withMockedEventMethods } from "./util/dataMocks"
+import { SETTINGS } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
@@ -17,17 +16,14 @@ import { StoreService } from "./state/store.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
-	let $rootScope: IRootScopeService
 	let $location: ILocationService
 	let $http: IHttpService
 	let settingsService: SettingsService
 	let storeService: StoreService
 	let dialogService: DialogService
-	let codeMapActionsService: CodeMapActionsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
 	let injectorService: InjectorService
-
 	let loadingStatusService: LoadingStatusService
 
 	let settings: Settings
@@ -35,26 +31,22 @@ describe("codeChartaController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedCodeMapActionsService()
 		withMockedUrlUtils()
 		withMockedSettingsService()
 		withMockedCodeChartaService()
 		withMockedDialogService()
 		withMockedScenarioHelper()
 		withMockedLoadingStatusService()
-		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
 		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
@@ -65,13 +57,11 @@ describe("codeChartaController", () => {
 
 	function rebuildController() {
 		codeChartaController = new CodeChartaController(
-			$rootScope,
 			$location,
 			$http,
 			settingsService,
 			storeService,
 			dialogService,
-			codeMapActionsService,
 			codeChartaService,
 			fileStateService,
 			loadingStatusService,
@@ -82,12 +72,6 @@ describe("codeChartaController", () => {
 	afterEach(() => {
 		jest.resetAllMocks()
 	})
-
-	function withMockedCodeMapActionsService() {
-		codeMapActionsService = codeChartaController["codeMapActionsService"] = jest.fn().mockReturnValue({
-			removeFocusedNode: jest.fn()
-		})()
-	}
 
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
@@ -127,14 +111,6 @@ describe("codeChartaController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to SettingsService", () => {
-			SettingsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
-		})
-
 		it("should set urlUtils", () => {
 			rebuildController()
 
@@ -145,22 +121,6 @@ describe("codeChartaController", () => {
 			rebuildController()
 
 			expect(loadingStatusService.updateLoadingFileFlag).toHaveBeenCalledWith(true)
-		})
-	})
-
-	describe("onSettingsChanged", () => {
-		it("should set focusedNodePath in viewModel", () => {
-			codeChartaController.onSettingsChanged(settings, undefined)
-
-			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
-		})
-	})
-
-	describe("removeFocusedNode", () => {
-		it("should call removeFocusedNode", () => {
-			codeChartaController.removeFocusedNode()
-
-			expect(codeMapActionsService.removeFocusedNode).toHaveBeenCalled()
 		})
 	})
 
