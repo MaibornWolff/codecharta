@@ -3,7 +3,6 @@ import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { PerspectiveCamera, Vector3 } from "three"
-import { SettingsService } from "../../../state/settingsService/settings.service"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { StoreService } from "../../../state/store.service"
 import { setCamera } from "../../../state/store/appSettings/camera/camera.actions"
@@ -11,7 +10,6 @@ import { setCamera } from "../../../state/store/appSettings/camera/camera.action
 describe("ThreeCameraService", () => {
 	let threeCameraService: ThreeCameraService
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 	let storeService: StoreService
 
 	beforeEach(() => {
@@ -23,26 +21,20 @@ describe("ThreeCameraService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildService() {
-		threeCameraService = new ThreeCameraService($rootScope, storeService, settingsService)
+		threeCameraService = new ThreeCameraService($rootScope, storeService)
 		threeCameraService.camera = new PerspectiveCamera()
 	}
 
 	describe("onCameraChanged", () => {
 		it("should call updateSettings", () => {
 			const cameraPosition = threeCameraService.camera.position
-			settingsService.updateSettings = jest.fn()
 
 			threeCameraService.onCameraChanged(null)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(
-				{ appSettings: { camera: new Vector3(cameraPosition.x, cameraPosition.y, cameraPosition.z) } },
-				true
-			)
 			expect(storeService.getState().appSettings.camera).toEqual(cameraPosition)
 		})
 
