@@ -1,4 +1,3 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import "./rangeSlider.component.scss"
 import $ from "jquery"
 import { ColorRange, FileState } from "../../codeCharta.model"
@@ -49,7 +48,6 @@ export class RangeSliderController
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
 		private storeService: StoreService,
 		private fileStateService: FileStateService,
 		private metricService: MetricService
@@ -99,15 +97,6 @@ export class RangeSliderController
 	private applyAdaptedColorRange() {
 		const firstThird = Math.round((this.maxMetricValue / 3) * 100) / 100
 		const secondThird = Math.round(firstThird * 2 * 100) / 100
-
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				colorRange: {
-					from: firstThird,
-					to: secondThird
-				}
-			}
-		})
 		this.storeService.dispatch(setColorRange({ from: firstThird, to: secondThird }))
 	}
 
@@ -144,14 +133,6 @@ export class RangeSliderController
 	}
 
 	private applySettings() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				colorRange: {
-					to: this._viewModel.colorRangeTo,
-					from: this._viewModel.colorRangeFrom
-				}
-			}
-		})
 		this.applyDebouncedColorRange(
 			setColorRange({
 				to: this._viewModel.colorRangeTo,

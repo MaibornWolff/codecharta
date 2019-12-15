@@ -1,7 +1,6 @@
 import "./rangeSlider.module"
 
 import { RangeSliderController } from "./rangeSlider.component"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
@@ -18,7 +17,6 @@ import { TEST_FILE_DATA } from "../../util/dataMocks"
 
 describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 	let storeService: StoreService
 	let fileStateService: FileStateService
 	let metricService: MetricService
@@ -28,13 +26,12 @@ describe("RangeSliderController", () => {
 	let fileStates: FileState[]
 
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController($rootScope, settingsService, storeService, fileStateService, metricService)
+		rangeSliderController = new RangeSliderController($rootScope, storeService, fileStateService, metricService)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.rangeSlider")
 
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
@@ -207,13 +204,8 @@ describe("RangeSliderController", () => {
 		})
 
 		it("should set adapted ColorRange in thirds for given metricValues", () => {
-			settingsService.updateSettings = jest.fn()
-
 			rangeSliderController.onColorMetricChanged("rloc")
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
-			})
 			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})
 	})
