@@ -22,7 +22,7 @@ describe("SearchPanelModeSelectorController", () => {
 		instantiateModule("app.codeCharta.ui.searchPanelModeSelector")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		searchPanelService = getService<SearchPanelService>("settingsService")
+		searchPanelService = getService<SearchPanelService>("searchPanelService")
 	}
 
 	function rebuildController() {
