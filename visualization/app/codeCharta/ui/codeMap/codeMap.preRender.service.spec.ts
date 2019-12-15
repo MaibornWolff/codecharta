@@ -16,6 +16,8 @@ import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
+import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
+import { Vector3 } from "three"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -89,7 +91,8 @@ describe("codeMapPreRenderService", () => {
 
 	function withMockedCodeMapRenderService() {
 		codeMapRenderService = codeMapPreRenderService["codeMapRenderService"] = jest.fn().mockReturnValue({
-			render: jest.fn()
+			render: jest.fn(),
+			scaleMap: jest.fn()
 		})()
 	}
 
@@ -113,7 +116,7 @@ describe("codeMapPreRenderService", () => {
 		})()
 	}
 
-	function withLastRenderData() {
+	function withUnifiedMapAndFileMeta() {
 		codeMapPreRenderService["unifiedMap"] = map
 		codeMapPreRenderService["unifiedFileMeta"] = fileMeta
 	}
@@ -156,12 +159,32 @@ describe("codeMapPreRenderService", () => {
 
 	describe("onStoreChanged", () => {
 		it("should call codeMapRenderService.render", () => {
-			withLastRenderData()
+			withUnifiedMapAndFileMeta()
 			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 
 			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
 
 			expect(codeMapRenderService.render).toHaveBeenCalled()
+		})
+
+		it("should not call codeMapRenderService.render for scaling actions", () => {
+			withUnifiedMapAndFileMeta()
+			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
+
+			codeMapPreRenderService.onStoreChanged(ScalingActions.SET_SCALING)
+
+			expect(codeMapRenderService.render).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("onScalingChanged", () => {
+		it("should call codeMapRenderService.render", () => {
+			withUnifiedMapAndFileMeta()
+			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
+
+			codeMapPreRenderService.onScalingChanged(new Vector3(1, 2, 3))
+
+			expect(codeMapRenderService.scaleMap).toHaveBeenCalled()
 		})
 	})
 
@@ -179,7 +202,7 @@ describe("codeMapPreRenderService", () => {
 		it("should call Node Decorator functions if all required data is available", () => {
 			NodeDecorator.decorateMap = jest.fn()
 			NodeDecorator.decorateParentNodesWithSumAttributes = jest.fn()
-			withLastRenderData()
+			withUnifiedMapAndFileMeta()
 
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
@@ -196,7 +219,7 @@ describe("codeMapPreRenderService", () => {
 					return new Map()
 				}
 			})
-			withLastRenderData()
+			withUnifiedMapAndFileMeta()
 
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 

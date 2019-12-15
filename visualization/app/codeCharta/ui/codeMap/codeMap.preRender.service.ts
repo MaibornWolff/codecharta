@@ -16,6 +16,7 @@ import * as d3 from "d3"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import _ from "lodash"
+import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -51,7 +52,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (this.allNecessaryRenderDataAvailable()) {
+		if (this.allNecessaryRenderDataAvailable() && !_.values(ScalingActions).includes(actionType)) {
 			this.renderAndNotify()
 		}
 	}
