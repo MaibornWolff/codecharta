@@ -2,7 +2,6 @@ import { UrlExtractor } from "./util/urlExtractor"
 import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
-import { SettingsService } from "./state/settingsService/settings.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { NameDataPair } from "./codeCharta.model"
@@ -29,7 +28,6 @@ export class CodeChartaController {
 	constructor(
 		private $location: ILocationService,
 		private $http: IHttpService,
-		private settingsService: SettingsService,
 		private storeService: StoreService,
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
@@ -72,13 +70,11 @@ export class CodeChartaController {
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
-		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
 		this.storeService.dispatch(setState())
 
 		this.codeChartaService
 			.loadFiles(values)
 			.then(() => {
-				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
 				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenario().settings))
 			})
 			.catch(e => {

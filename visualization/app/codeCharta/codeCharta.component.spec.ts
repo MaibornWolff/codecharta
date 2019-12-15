@@ -2,7 +2,6 @@ import "./codeCharta.module"
 import _ from "lodash"
 import { IHttpService, ILocationService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { SettingsService } from "./state/settingsService/settings.service"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
@@ -13,12 +12,12 @@ import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
+import { setState } from "./state/store/state.actions"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
 	let $location: ILocationService
 	let $http: IHttpService
-	let settingsService: SettingsService
 	let storeService: StoreService
 	let dialogService: DialogService
 	let codeChartaService: CodeChartaService
@@ -32,7 +31,6 @@ describe("codeChartaController", () => {
 		restartSystem()
 		rebuildController()
 		withMockedUrlUtils()
-		withMockedSettingsService()
 		withMockedCodeChartaService()
 		withMockedDialogService()
 		withMockedScenarioHelper()
@@ -44,7 +42,6 @@ describe("codeChartaController", () => {
 
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
@@ -59,7 +56,6 @@ describe("codeChartaController", () => {
 		codeChartaController = new CodeChartaController(
 			$location,
 			$http,
-			settingsService,
 			storeService,
 			dialogService,
 			codeChartaService,
@@ -77,13 +73,6 @@ describe("codeChartaController", () => {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
 			getFileDataFromQueryParam: jest.fn().mockReturnValue(Promise.resolve([])),
 			getParameterByName: jest.fn().mockReturnValue(true)
-		})()
-	}
-
-	function withMockedSettingsService() {
-		settingsService = codeChartaController["settingsService"] = jest.fn().mockReturnValue({
-			updateSettings: jest.fn(),
-			getDefaultSettings: jest.fn().mockReturnValue(settings)
 		})()
 	}
 
@@ -145,11 +134,11 @@ describe("codeChartaController", () => {
 
 		it("should call updateSettings if loadFiles-Promise resolves", async () => {
 			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+			storeService.dispatch = jest.fn()
 
 			await codeChartaController.loadFileOrSample()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
-			//TODO: Add check once Settings are removed and replaced with STATE object
+			expect(storeService.dispatch).toHaveBeenCalledWith(setState())
 		})
 	})
 
