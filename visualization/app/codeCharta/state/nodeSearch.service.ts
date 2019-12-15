@@ -3,7 +3,6 @@ import { IRootScopeService } from "angular"
 import * as d3 from "d3"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
-import { SettingsService } from "./settingsService/settings.service"
 import { StoreService } from "./store.service"
 import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { SearchPatternService, SearchPatternSubscriber } from "./store/dynamicSettings/searchPattern/searchPattern.service"
@@ -21,8 +20,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private codeMapPreRenderService: CodeMapPreRenderService,
-		private settingsService: SettingsService
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		SearchPatternService.subscribe($rootScope, this)
 	}
@@ -47,11 +45,6 @@ export class NodeSearchService implements SearchPatternSubscriber {
 
 	private applySettingsSearchedNodePaths() {
 		const newSearchedNodePaths = this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				searchedNodePaths: newSearchedNodePaths
-			}
-		})
 		this.storeService.dispatch(setSearchedNodePaths(newSearchedNodePaths))
 	}
 
