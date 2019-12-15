@@ -9,14 +9,12 @@ import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { FileStateService } from "./fileState.service"
-import { SettingsService } from "./settingsService/settings.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 
 describe("StoreService", () => {
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 
 	let fileStates: FileState[]
 
@@ -29,7 +27,6 @@ describe("StoreService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 
 		fileStates = [
 			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
@@ -38,7 +35,7 @@ describe("StoreService", () => {
 	}
 
 	function rebuildService() {
-		storeService = new StoreService($rootScope, settingsService)
+		storeService = new StoreService($rootScope)
 	}
 
 	describe("constructor", () => {
@@ -59,43 +56,39 @@ describe("StoreService", () => {
 
 	describe("onFileSelectionStatesChanged", () => {
 		beforeEach(() => {
-			settingsService.updateSettings = jest.fn()
 			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
 			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
 			SettingsMerger.getMergedFileSettings = jest.fn().mockReturnValue(DEFAULT_SETTINGS)
 		})
 
-		describe("onFileSelectionStateChanged", () => {
-			it("should call updateSettings with newFileSettings", () => {
-				storeService.onFileSelectionStatesChanged(fileStates)
+		it("should call updateSettings with newFileSettings", () => {
+			storeService.onFileSelectionStatesChanged(fileStates)
 
-				expect(settingsService.updateSettings).toHaveBeenCalledWith({ fileSettings: DEFAULT_SETTINGS })
-				expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
-				expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual([])
-				expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
-				expect(storeService.getState().dynamicSettings.margin).toBeNull()
-				expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: null, to: null })
-				expect(storeService.getState().fileSettings).toEqual(DEFAULT_STATE.fileSettings)
-			})
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
+			expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual([])
+			expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
+			expect(storeService.getState().dynamicSettings.margin).toBeNull()
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: null, to: null })
+			expect(storeService.getState().fileSettings).toEqual(DEFAULT_STATE.fileSettings)
+		})
 
-			it("should call isPartialState with fileStates", () => {
-				storeService.onFileSelectionStatesChanged(fileStates)
+		it("should call isPartialState with fileStates", () => {
+			storeService.onFileSelectionStatesChanged(fileStates)
 
-				expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
-			})
+			expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
+		})
 
-			it("should call getVisibleFileStates with fileStates", () => {
-				storeService.onFileSelectionStatesChanged(fileStates)
+		it("should call getVisibleFileStates with fileStates", () => {
+			storeService.onFileSelectionStatesChanged(fileStates)
 
-				expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
-			})
+			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+		})
 
-			it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
-				storeService.onFileSelectionStatesChanged(fileStates)
-				const visibleFiles = [fileStates[0].file, fileStates[1].file]
+		it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
+			storeService.onFileSelectionStatesChanged(fileStates)
+			const visibleFiles = [fileStates[0].file, fileStates[1].file]
 
-				expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)
-			})
+			expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)
 		})
 	})
 

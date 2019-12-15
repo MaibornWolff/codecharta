@@ -1,6 +1,6 @@
 import { createStore, Store } from "redux"
 import rootReducer from "./store/reducer"
-import { CCAction, DynamicSettings, FileSettings, FileState, RecursivePartial, State } from "../codeCharta.model"
+import { CCAction, FileSettings, FileState, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
@@ -12,8 +12,6 @@ import { setColorRange } from "./store/dynamicSettings/colorRange/colorRange.act
 import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
-import { SettingsService } from "./settingsService/settings.service"
-import { defaultState } from "./store/state.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -24,7 +22,7 @@ export class StoreService implements FileStateServiceSubscriber {
 	private store: Store
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+	constructor(private $rootScope: IRootScopeService) {
 		this.store = createStore(rootReducer)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
@@ -49,30 +47,13 @@ export class StoreService implements FileStateServiceSubscriber {
 	}
 
 	private resetDynamicAndFileSettings(fileStates: FileState[]) {
-		this.settingsService.updateSettings({
-			dynamicSettings: this.getDefaultDynamicSettingsWithoutMetrics()
-		})
 		this.dispatch(unfocusNode())
 		this.dispatch(setSearchedNodePaths())
 		this.dispatch(setSearchPattern())
 		this.dispatch(setMargin())
 		this.dispatch(setColorRange())
 
-		const fileSettings = this.getNewFileSettings(fileStates)
-		this.settingsService.updateSettings({
-			fileSettings
-		})
-		this.dispatch(setFileSettings(fileSettings))
-	}
-
-	private getDefaultDynamicSettingsWithoutMetrics(): RecursivePartial<DynamicSettings> {
-		return {
-			focusedNodePath: defaultState.dynamicSettings.focusedNodePath,
-			searchedNodePaths: defaultState.dynamicSettings.searchedNodePaths,
-			searchPattern: defaultState.dynamicSettings.searchPattern,
-			margin: defaultState.dynamicSettings.margin,
-			colorRange: defaultState.dynamicSettings.colorRange
-		}
+		this.dispatch(setFileSettings(this.getNewFileSettings(fileStates)))
 	}
 
 	private getNewFileSettings(fileStates: FileState[]): FileSettings {
