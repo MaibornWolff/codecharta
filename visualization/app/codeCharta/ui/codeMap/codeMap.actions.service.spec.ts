@@ -182,7 +182,7 @@ describe("CodeMapActionService", () => {
 			expect(codeMapActionsService.removeFocusedNode).toHaveBeenCalled()
 		})
 
-		it("should call updateSettings if node-path does not equal root-path", () => {
+		it("should call update focusedNodePath if node-path does not equal root-path", () => {
 			CodeChartaService.ROOT_PATH = "/not/root"
 
 			codeMapActionsService.focusNode(nodeA)
@@ -192,7 +192,7 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("removeFocusedNode", () => {
-		it("should call updateSettings with focusedNodePath empty", () => {
+		it("should call update focusedNodePath", () => {
 			codeMapActionsService.removeFocusedNode()
 
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")

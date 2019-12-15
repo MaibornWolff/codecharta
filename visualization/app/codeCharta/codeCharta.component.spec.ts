@@ -132,7 +132,7 @@ describe("codeChartaController", () => {
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{}])
 		})
 
-		it("should call updateSettings if loadFiles-Promise resolves", async () => {
+		it("should call storeService.dispatch if loadFiles-Promise resolves", async () => {
 			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
 			storeService.dispatch = jest.fn()
 

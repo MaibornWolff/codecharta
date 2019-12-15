@@ -10,8 +10,6 @@ import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
-import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
-import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { MetricData } from "../../codeCharta.model"
 

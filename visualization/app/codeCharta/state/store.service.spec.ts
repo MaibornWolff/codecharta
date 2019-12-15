@@ -61,7 +61,7 @@ describe("StoreService", () => {
 			SettingsMerger.getMergedFileSettings = jest.fn().mockReturnValue(DEFAULT_SETTINGS)
 		})
 
-		it("should call updateSettings with newFileSettings", () => {
+		it("should update store with default dynamicSettings and newFileSettings", () => {
 			storeService.onFileSelectionStatesChanged(fileStates)
 
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")

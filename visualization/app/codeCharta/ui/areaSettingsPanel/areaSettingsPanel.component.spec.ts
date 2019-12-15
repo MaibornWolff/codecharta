@@ -199,7 +199,7 @@ describe("AreaSettingsPanelController", () => {
 			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 
-		it("should call updateSettings", done => {
+		it("should update margin and dynamicMargin in store", done => {
 			areaSettingsPanelController["_viewModel"].dynamicMargin = false
 			areaSettingsPanelController["_viewModel"].margin = 28
 

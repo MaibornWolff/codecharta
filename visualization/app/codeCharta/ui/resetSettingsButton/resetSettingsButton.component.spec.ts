@@ -27,7 +27,7 @@ describe("resetSettingsButtonController", () => {
 	}
 
 	describe("applyDefaultSettings", () => {
-		it("should call updateSettings with available default settings objects", () => {
+		it("should update store with available default settings objects", () => {
 			resetSettingsButtonController["settingsNames"] =
 				"appSettings.invertColorRange, appSettings.hideFlatBuildings, appSettings.notInAppSettings, notInSettings.something"
 			storeService.dispatch(setInvertColorRange(true))

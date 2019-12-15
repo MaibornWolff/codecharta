@@ -30,7 +30,7 @@ describe("ThreeCameraService", () => {
 	}
 
 	describe("onCameraChanged", () => {
-		it("should call updateSettings", () => {
+		it("should update camera", () => {
 			const cameraPosition = threeCameraService.camera.position
 
 			threeCameraService.onCameraChanged(null)
