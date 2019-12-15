@@ -1,5 +1,4 @@
 import "./searchBar.component.scss"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
@@ -26,7 +25,6 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
 		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
@@ -76,11 +74,6 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 	}
 
 	private applySettingsSearchPattern() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				searchPattern: this._viewModel.searchPattern
-			}
-		})
 		this.storeService.dispatch(setSearchPattern(this._viewModel.searchPattern))
 	}
 }

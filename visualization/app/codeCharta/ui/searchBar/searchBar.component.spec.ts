@@ -2,7 +2,6 @@ import "./searchBar.module"
 import { SearchBarController } from "./searchBar.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
@@ -15,7 +14,6 @@ describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
 
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 	let storeService: StoreService
 	let codeMapActionsService: CodeMapActionsService
 	let SOME_EXTRA_TIME = 100
@@ -30,13 +28,12 @@ describe("SearchBarController", () => {
 		instantiateModule("app.codeCharta.ui.searchBar")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 	}
 
 	function rebuildController() {
-		searchBarController = new SearchBarController($rootScope, settingsService, storeService, codeMapActionsService)
+		searchBarController = new SearchBarController($rootScope, storeService, codeMapActionsService)
 	}
 
 	describe("constructor", () => {
