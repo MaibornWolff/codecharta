@@ -1,12 +1,9 @@
 import "./metricChooser.component.scss"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { MetricData, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
+import { MetricData } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import $ from "jquery"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
-import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
@@ -44,8 +41,8 @@ export class MetricChooserController
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
-		private settingsService: SettingsService,
-		private storeService: StoreService
+		private storeService: StoreService,
+		private metricService: MetricService
 	) {
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
@@ -90,86 +87,68 @@ export class MetricChooserController
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.metricData = metricData
 		this.originalMetricData = metricData
-		const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps)
+		const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps && x.maxValue > 0)
 		if (metricData.length > 1 && availableMetrics.length > 0) {
-			this.potentiallyUpdateChosenMetrics(availableMetrics)
+			this.potentiallyUpdateAreaMetric()
+			this.potentiallyUpdateColorMetric()
+			this.potentiallyUpdateHeightMetric()
+			this.potentiallyUpdateDistributionMetric()
 		}
 	}
 
 	public onMetricDataRemoved() {}
 
-	private potentiallyUpdateChosenMetrics(availableMetrics: MetricData[]) {
-		let dynamicSettingsUpdate: RecursivePartial<DynamicSettings> = {}
-
-		if (this.isMetricUnavailable("areaMetric", availableMetrics)) {
-			dynamicSettingsUpdate["areaMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 0)
-		}
-
-		if (this.isMetricUnavailable("heightMetric", availableMetrics)) {
-			dynamicSettingsUpdate["heightMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 1)
-		}
-
-		if (this.isMetricUnavailable("colorMetric", availableMetrics)) {
-			dynamicSettingsUpdate["colorMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 2)
-		}
-
-		if (this.isMetricUnavailable("distributionMetric", availableMetrics)) {
-			dynamicSettingsUpdate["distributionMetric"] = this.getMetricNameFromIndexOrLast(availableMetrics, 0)
-		}
-
-		if (_.keys(dynamicSettingsUpdate).length !== 0) {
-			this.settingsService.updateSettings({ dynamicSettings: dynamicSettingsUpdate })
-			this.storeService.dispatch(setDynamicSettings(dynamicSettingsUpdate))
+	private potentiallyUpdateAreaMetric() {
+		if (this.isMetricUnavailable("areaMetric")) {
+			this.storeService.dispatch(setAreaMetric(this.getMetricNameFromIndexOrLast(0)))
 		}
 	}
 
-	private isMetricUnavailable(metricKey: string, availableMetrics: MetricData[]) {
+	private potentiallyUpdateHeightMetric() {
+		if (this.isMetricUnavailable("heightMetric")) {
+			this.storeService.dispatch(setHeightMetric(this.getMetricNameFromIndexOrLast(1)))
+		}
+	}
+
+	private potentiallyUpdateColorMetric() {
+		if (this.isMetricUnavailable("colorMetric")) {
+			this.storeService.dispatch(setColorMetric(this.getMetricNameFromIndexOrLast(2)))
+		}
+	}
+
+	private potentiallyUpdateDistributionMetric() {
+		if (this.isMetricUnavailable("distributionMetric")) {
+			this.storeService.dispatch(setDistributionMetric(this.getMetricNameFromIndexOrLast(0)))
+		}
+	}
+
+	private isMetricUnavailable(metricKey: string) {
 		const metricName: string = this.storeService.getState().dynamicSettings[metricKey]
-		return !availableMetrics.find(x => x.name == metricName)
+		return !this.metricService.getMetricData().find(x => x.availableInVisibleMaps && x.maxValue > 0 && x.name == metricName)
 	}
 
-	private getMetricNameFromIndexOrLast(metrics: MetricData[], index: number) {
-		return metrics[Math.min(index, metrics.length - 1)].name
+	private getMetricNameFromIndexOrLast(index: number) {
+		const availableMetrics = this.metricService.getMetricData().filter(x => x.availableInVisibleMaps && x.maxValue > 0)
+		return availableMetrics[Math.min(index, availableMetrics.length - 1)].name
 	}
 
 	public applySettingsAreaMetric() {
 		const state = this.storeService.getState()
 		const margin = state.appSettings.dynamicMargin ? null : state.dynamicSettings.margin
 
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				areaMetric: this._viewModel.areaMetric,
-				margin
-			}
-		})
 		this.storeService.dispatch(setAreaMetric(this._viewModel.areaMetric))
 		this.storeService.dispatch(setMargin(margin))
 	}
 
 	public applySettingsColorMetric() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				colorMetric: this._viewModel.colorMetric
-			}
-		})
 		this.storeService.dispatch(setColorMetric(this._viewModel.colorMetric))
 	}
 
 	public applySettingsHeightMetric() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				heightMetric: this._viewModel.heightMetric
-			}
-		})
 		this.storeService.dispatch(setHeightMetric(this._viewModel.heightMetric))
 	}
 
 	public applySettingsDistributionMetric() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				distributionMetric: this._viewModel.distributionMetric
-			}
-		})
 		this.storeService.dispatch(setDistributionMetric(this._viewModel.distributionMetric))
 	}
 }

@@ -1,10 +1,9 @@
 import "./metricChooser.module"
 
 import { MetricChooserController } from "./metricChooser.component"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { DEFAULT_SETTINGS, DEFAULT_STATE, SETTINGS, STATE } from "../../util/dataMocks"
+import { DEFAULT_STATE, STATE } from "../../util/dataMocks"
 import { MetricService } from "../../state/metric.service"
 import { StoreService } from "../../state/store.service"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
@@ -14,63 +13,80 @@ import { DistributionMetricService } from "../../state/store/dynamicSettings/dis
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
+import { MetricData } from "../../codeCharta.model"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
-	let settingsService: SettingsService
 	let storeService: StoreService
+	let metricService: MetricService
 
 	function rebuildController() {
-		metricChooserController = new MetricChooserController($rootScope, $timeout, settingsService, storeService)
+		metricChooserController = new MetricChooserController($rootScope, $timeout, storeService, metricService)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.metricChooser")
 
-		settingsService = getService<SettingsService>("settingsService")
-		storeService = getService<StoreService>("storeService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
-	}
-
-	function withMockedSettingsService() {
-		settingsService = metricChooserController["settingsService"] = jest.fn(() => {
-			return {
-				subscribe: jest.fn(),
-				updateSettings: jest.fn(),
-				getSettings: jest.fn().mockReturnValue(SETTINGS),
-				getDefaultSettings: jest.fn().mockReturnValue(DEFAULT_SETTINGS)
-			}
-		})()
+		storeService = getService<StoreService>("storeService")
+		metricService = getService<MetricService>("metricService")
 	}
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
 	})
 
-	describe("constructor", () => {
-		beforeEach(() => {
-			AreaMetricService.subscribe = jest.fn()
-			HeightMetricService.subscribe = jest.fn()
-			ColorMetricService.subscribe = jest.fn()
-			DistributionMetricService.subscribe = jest.fn()
-			MetricService.subscribe = jest.fn()
-		})
+	function withMockedMetricService(metricData) {
+		metricService = metricChooserController["metricService"] = jest.fn().mockReturnValue({
+			getMetricData: jest.fn().mockReturnValue(metricData)
+		})()
+	}
 
-		it("should subscribe to Metric-Events", () => {
+	function setMetricData(metricData: MetricData[]) {
+		metricChooserController["originalMetricData"] = metricData
+		metricChooserController["_viewModel"].metricData = metricData
+	}
+
+	describe("constructor", () => {
+		it("should subscribe to AreaMetricService", () => {
+			AreaMetricService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
+		})
+
+		it("should subscribe to HeightMetricService", () => {
+			HeightMetricService.subscribe = jest.fn()
+
+			rebuildController()
+
 			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
+		})
+
+		it("should subscribe to ColorMetricService", () => {
+			ColorMetricService.subscribe = jest.fn()
+
+			rebuildController()
+
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
+		})
+
+		it("should subscribe to DistributionMetricService", () => {
+			DistributionMetricService.subscribe = jest.fn()
+
+			rebuildController()
+
 			expect(DistributionMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
 		it("should subscribe to MetricService", () => {
+			MetricService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
@@ -115,25 +131,24 @@ describe("MetricChooserController", () => {
 				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "b", maxValue: 2, availableInVisibleMaps: false }
 			]
+			withMockedMetricService(metricData)
 
 			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})
 
-		it("settings are updated if selected metrics are not available", () => {
+		it("store is updated if selected metrics are not available", () => {
 			const metricData = [
 				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "b", maxValue: 2, availableInVisibleMaps: true },
 				{ name: "c", maxValue: 2, availableInVisibleMaps: true },
 				{ name: "d", maxValue: 2, availableInVisibleMaps: true }
 			]
+			withMockedMetricService(metricData)
 
 			metricChooserController.onMetricDataAdded(metricData)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "a" }
-			})
 			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("c")
 			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("b")
@@ -145,12 +160,10 @@ describe("MetricChooserController", () => {
 				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "b", maxValue: 1, availableInVisibleMaps: false }
 			]
+			withMockedMetricService(metricData)
 
 			metricChooserController.onMetricDataAdded(metricData)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				dynamicSettings: { areaMetric: "a", colorMetric: "a", heightMetric: "a", distributionMetric: "a" }
-			})
 			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("a")
 			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("a")
@@ -163,19 +176,19 @@ describe("MetricChooserController", () => {
 				{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
 			]
+			withMockedMetricService(metricData)
 
 			metricChooserController.onMetricDataAdded(metricData)
 
-			expect(settingsService.updateSettings).not.toBeCalled()
 			expect(storeService.getState().dynamicSettings).toEqual(STATE.dynamicSettings)
 		})
 
 		it("no metrics available, should not update settings", () => {
 			const metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
+			withMockedMetricService(metricData)
 
 			metricChooserController.onMetricDataAdded(metricData)
 
-			expect(settingsService.updateSettings).not.toBeCalled()
 			expect(storeService.getState()).toEqual(DEFAULT_STATE)
 		})
 	})
@@ -186,12 +199,6 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.applySettingsAreaMetric()
 
-			expect(settingsService.updateSettings).toBeCalledWith({
-				dynamicSettings: {
-					areaMetric: "mcc",
-					margin: null
-				}
-			})
 			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("mcc")
 			expect(storeService.getState().dynamicSettings.margin).toBeNull()
 		})
@@ -203,12 +210,6 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.applySettingsAreaMetric()
 
-			expect(settingsService.updateSettings).toBeCalledWith({
-				dynamicSettings: {
-					areaMetric: "mcc",
-					margin: 20
-				}
-			})
 			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("mcc")
 			expect(storeService.getState().dynamicSettings.margin).toBe(20)
 		})
@@ -220,9 +221,6 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.applySettingsColorMetric()
 
-			expect(settingsService.updateSettings).toBeCalledWith({
-				dynamicSettings: { colorMetric: "c" }
-			})
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("c")
 		})
 	})
@@ -233,7 +231,6 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.applySettingsHeightMetric()
 
-			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { heightMetric: "b" } })
 			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("b")
 		})
 	})
@@ -244,7 +241,6 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.applySettingsDistributionMetric()
 
-			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { distributionMetric: "d" } })
 			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("d")
 		})
 	})
@@ -255,8 +251,8 @@ describe("MetricChooserController", () => {
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
+			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = ""
-			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -267,8 +263,8 @@ describe("MetricChooserController", () => {
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
+			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "mcc"
-			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -280,8 +276,8 @@ describe("MetricChooserController", () => {
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
+			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rl"
-			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -294,8 +290,8 @@ describe("MetricChooserController", () => {
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false }
 			]
+			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "c"
-			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -312,8 +308,8 @@ describe("MetricChooserController", () => {
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
 				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
 			]
+			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "mc"
-			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -329,8 +325,8 @@ describe("MetricChooserController", () => {
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
 				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
 			]
+			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rla"
-			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.filterMetricData()
 
@@ -347,15 +343,15 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].searchTerm).toEqual("")
 		})
 
-		it("should return the the metricData Array with all Elements, when function is called", () => {
+		it("should return the metricData array with all elements, when function is called", () => {
 			const metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
 				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
 			]
+			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rlo"
-			metricChooserController.onMetricDataAdded(metricData)
 
 			metricChooserController.clearSearchTerm()
 
