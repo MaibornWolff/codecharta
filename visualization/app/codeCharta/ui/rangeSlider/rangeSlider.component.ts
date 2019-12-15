@@ -1,9 +1,9 @@
 import { SettingsService } from "../../state/settingsService/settings.service"
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import { ColorRange } from "../../codeCharta.model"
+import { ColorRange, FileState } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
-import { FileStateService } from "../../state/fileState.service"
+import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
@@ -21,7 +21,12 @@ import {
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 
 export class RangeSliderController
-	implements ColorMetricSubscriber, ColorRangeSubscriber, InvertColorRangeSubscriber, WhiteColorBuildingsSubscriber {
+	implements
+		ColorMetricSubscriber,
+		ColorRangeSubscriber,
+		InvertColorRangeSubscriber,
+		WhiteColorBuildingsSubscriber,
+		FileStateServiceSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
@@ -53,6 +58,7 @@ export class RangeSliderController
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
@@ -82,6 +88,13 @@ export class RangeSliderController
 	public onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
 		this.updateSliderColors()
 	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+		this.initSliderOptions()
+		this.updateSliderColors()
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	private applyAdaptedColorRange() {
 		const firstThird = Math.round((this.maxMetricValue / 3) * 100) / 100

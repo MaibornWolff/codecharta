@@ -10,10 +10,11 @@ import { StoreService } from "../../state/store.service"
 import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { setWhiteColorBuildings } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.actions"
 import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
-import { MapColors } from "../../codeCharta.model"
+import { FileSelectionState, FileState, MapColors } from "../../codeCharta.model"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
+import { TEST_FILE_DATA } from "../../util/dataMocks"
 
 describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
@@ -24,6 +25,7 @@ describe("RangeSliderController", () => {
 	let rangeSliderController: RangeSliderController
 
 	let mapColors: MapColors
+	let fileStates: FileState[]
 
 	function rebuildController() {
 		rangeSliderController = new RangeSliderController($rootScope, settingsService, storeService, fileStateService, metricService)
@@ -37,14 +39,18 @@ describe("RangeSliderController", () => {
 		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+
+		mapColors = storeService.getState().appSettings.mapColors
+		fileStates = [
+			{ file: TEST_FILE_DATA, selectedAs: FileSelectionState.Single },
+			{ file: TEST_FILE_DATA, selectedAs: FileSelectionState.None }
+		]
 	}
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
 		withMockedMetricService()
-
-		mapColors = storeService.getState().appSettings.mapColors
 	})
 
 	afterEach(() => {
@@ -89,6 +95,14 @@ describe("RangeSliderController", () => {
 			rebuildController()
 
 			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
+		})
+
+		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 	})
 
@@ -201,6 +215,54 @@ describe("RangeSliderController", () => {
 				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
 			})
 			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
+		})
+	})
+
+	describe("onFileSelectionStatesChanged", () => {
+		beforeEach(() => {
+			rangeSliderController["applyCssColors"] = jest.fn()
+			rangeSliderController["getColoredRangeColors"] = jest.fn()
+			rangeSliderController["getGreyRangeColors"] = jest.fn()
+		})
+
+		describe("single state", () => {
+			beforeEach(() => {
+				fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
+			})
+
+			it("should set sliderOptions.disabled to false", () => {
+				rangeSliderController.onFileSelectionStatesChanged(fileStates)
+
+				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeFalsy()
+			})
+
+			it("should set sliders with range colors", () => {
+				rangeSliderController.onFileSelectionStatesChanged(fileStates)
+
+				expect(rangeSliderController["getColoredRangeColors"]).toHaveBeenCalled()
+				expect(rangeSliderController["getGreyRangeColors"]).not.toHaveBeenCalled()
+			})
+		})
+
+		describe("delta state", () => {
+			beforeEach(() => {
+				fileStates[0].selectedAs = FileSelectionState.Reference
+				fileStates[1].selectedAs = FileSelectionState.Comparison
+				fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
+			})
+
+			it("should set sliderOptions.disabled to true", () => {
+				rangeSliderController.onFileSelectionStatesChanged(fileStates)
+
+				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeTruthy()
+			})
+
+			it("should set sliders with grey colors", () => {
+				rangeSliderController.onFileSelectionStatesChanged(fileStates)
+
+				expect(rangeSliderController["getColoredRangeColors"]).not.toHaveBeenCalled()
+				expect(rangeSliderController["getGreyRangeColors"]).toHaveBeenCalled()
+			})
 		})
 	})
 })
