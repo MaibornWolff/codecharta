@@ -112,7 +112,7 @@ export class RangeSliderController
 	private initSliderOptions() {
 		this._viewModel.sliderOptions = {
 			ceil: this.maxMetricValue,
-			onChange: () => this.applySettings(),
+			onChange: () => this.applyColorRange(),
 			pushRange: true,
 			onToChange: () => this.onToSliderChange(),
 			onFromChange: () => this.onFromSliderChange(),
@@ -123,16 +123,16 @@ export class RangeSliderController
 	private onFromSliderChange() {
 		this._viewModel.colorRangeFrom = Math.min(this.maxMetricValue - 1, this._viewModel.colorRangeFrom)
 		this._viewModel.colorRangeTo = Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1)
-		this.applySettings()
+		this.applyColorRange()
 	}
 
 	private onToSliderChange() {
 		this._viewModel.colorRangeFrom = Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
 		this._viewModel.colorRangeTo = Math.min(this.maxMetricValue, Math.max(1, this._viewModel.colorRangeTo))
-		this.applySettings()
+		this.applyColorRange()
 	}
 
-	private applySettings() {
+	private applyColorRange() {
 		this.applyDebouncedColorRange(
 			setColorRange({
 				to: this._viewModel.colorRangeTo,
