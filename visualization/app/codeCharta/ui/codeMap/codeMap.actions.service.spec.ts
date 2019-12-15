@@ -1,7 +1,6 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapActionsService } from "./codeMap.actions.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
@@ -14,7 +13,6 @@ import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/black
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
-	let settingsService: SettingsService
 	let edgeMetricDataService: EdgeMetricDataService
 	let storeService: StoreService
 
@@ -23,7 +21,6 @@ describe("CodeMapActionService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
-		settingsService = getService<SettingsService>("settingsService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		storeService = getService<StoreService>("storeService")
 
@@ -32,21 +29,12 @@ describe("CodeMapActionService", () => {
 	}
 
 	function rebuildService() {
-		codeMapActionsService = new CodeMapActionsService(settingsService, edgeMetricDataService, storeService)
-	}
-
-	function withMockedSettingsService() {
-		settingsService = codeMapActionsService["settingsService"] = jest.fn(() => {
-			return {
-				updateSettings: jest.fn()
-			}
-		})()
+		codeMapActionsService = new CodeMapActionsService(edgeMetricDataService, storeService)
 	}
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedSettingsService()
 	})
 
 	afterEach(() => {
@@ -88,12 +76,6 @@ describe("CodeMapActionService", () => {
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					markedPackages: expected
-				}
-			})
-
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(1)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
 		})
@@ -103,12 +85,6 @@ describe("CodeMapActionService", () => {
 
 			codeMapActionsService.markFolder(nodeA.children[0], "0x000000")
 			codeMapActionsService.markFolder(nodeA, "0x000000")
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					markedPackages: expected
-				}
-			})
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(1)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
@@ -122,12 +98,6 @@ describe("CodeMapActionService", () => {
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 			codeMapActionsService.markFolder(nodeA.children[0], "0x000001")
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					markedPackages: expected
-				}
-			})
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(2)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
@@ -145,12 +115,6 @@ describe("CodeMapActionService", () => {
 			codeMapActionsService.markFolder(nodeA.children[1], "0x000002")
 
 			codeMapActionsService.markFolder(nodeA, "0x000003")
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				fileSettings: {
-					markedPackages: expected
-				}
-			})
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(3)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
@@ -220,22 +184,17 @@ describe("CodeMapActionService", () => {
 
 		it("should call updateSettings if node-path does not equal root-path", () => {
 			CodeChartaService.ROOT_PATH = "/not/root"
-			const expected = { dynamicSettings: { focusedNodePath: nodeA.path } }
 
 			codeMapActionsService.focusNode(nodeA)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(nodeA.path)
 		})
 	})
 
 	describe("removeFocusedNode", () => {
 		it("should call updateSettings with focusedNodePath empty", () => {
-			const expected = { dynamicSettings: { focusedNodePath: "" } }
-
 			codeMapActionsService.removeFocusedNode()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
 		})
 	})

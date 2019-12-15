@@ -1,4 +1,3 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage } from "../../codeCharta.model"
@@ -11,11 +10,7 @@ import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { markPackage, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 export class CodeMapActionsService {
-	constructor(
-		private settingsService: SettingsService,
-		private edgeMetricDataService: EdgeMetricDataService,
-		private storeService: StoreService
-	) {}
+	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {}
 
 	public toggleNodeVisibility(node: CodeMapNode) {
 		if (node.visible) {
@@ -31,12 +26,6 @@ export class CodeMapActionsService {
 		const parentMP: MarkedPackage = this.getParentMP(newMP.path)
 
 		this.handleUpdatingMarkedPackages(newMP, clickedMP, parentMP)
-		// this settings update is dispatched in the store using separate actions inside handleUpdatingMarkedPackages
-		this.settingsService.updateSettings({
-			fileSettings: {
-				markedPackages: this.storeService.getState().fileSettings.markedPackages
-			}
-		})
 	}
 
 	private handleUpdatingMarkedPackages(newMP: MarkedPackage, clickedMP: MarkedPackage, parentMP: MarkedPackage): void {
@@ -65,12 +54,6 @@ export class CodeMapActionsService {
 			const parentMP: MarkedPackage = this.getParentMP(node.path)
 			this.removeMarkedPackage(parentMP)
 		}
-		// this settings update is dispatched in the store separately using the unmark action
-		this.settingsService.updateSettings({
-			fileSettings: {
-				markedPackages: this.storeService.getState().fileSettings.markedPackages
-			}
-		})
 	}
 
 	public flattenNode(node: CodeMapNode) {
@@ -85,13 +68,11 @@ export class CodeMapActionsService {
 		if (node.path === CodeChartaService.ROOT_PATH) {
 			this.removeFocusedNode()
 		} else {
-			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
 			this.storeService.dispatch(focusNode(node.path))
 		}
 	}
 
 	public removeFocusedNode() {
-		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: "" } })
 		this.storeService.dispatch(unfocusNode())
 	}
 
@@ -135,11 +116,6 @@ export class CodeMapActionsService {
 			}
 		})
 
-		this.settingsService.updateSettings({
-			fileSettings: {
-				edges: edges
-			}
-		})
 		this.storeService.dispatch(setEdges(edges))
 	}
 
@@ -176,11 +152,6 @@ export class CodeMapActionsService {
 
 	private addMarkedPackage(markedPackage: MarkedPackage) {
 		this.storeService.getState().fileSettings.markedPackages.push(markedPackage)
-		this.settingsService.updateSettings({
-			fileSettings: {
-				markedPackages: this.storeService.getState().fileSettings.markedPackages
-			}
-		})
 		this.storeService.dispatch(markPackage(markedPackage))
 	}
 
