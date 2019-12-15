@@ -5,7 +5,6 @@ import { MetricService, MetricServiceSubscriber } from "../../state/metric.servi
 import $ from "jquery"
 import { StoreService } from "../../state/store.service"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
-import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
@@ -133,11 +132,7 @@ export class MetricChooserController
 	}
 
 	public applySettingsAreaMetric() {
-		const state = this.storeService.getState()
-		const margin = state.appSettings.dynamicMargin ? null : state.dynamicSettings.margin
-
 		this.storeService.dispatch(setAreaMetric(this._viewModel.areaMetric))
-		this.storeService.dispatch(setMargin(margin))
 	}
 
 	public applySettingsColorMetric() {

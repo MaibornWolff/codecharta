@@ -10,9 +10,15 @@ import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actio
 import _ from "lodash"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
+import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 
 export class AreaSettingsPanelController
-	implements CodeMapPreRenderServiceSubscriber, FileStateServiceSubscriber, DynamicMarginSubscriber, MarginSubscriber {
+	implements
+		CodeMapPreRenderServiceSubscriber,
+		FileStateServiceSubscriber,
+		DynamicMarginSubscriber,
+		MarginSubscriber,
+		AreaMetricSubscriber {
 	private static MIN_MARGIN = 15
 	private static MAX_MARGIN = 100
 	private static MARGIN_FACTOR = 4
@@ -37,6 +43,7 @@ export class AreaSettingsPanelController
 		MarginService.subscribe(this.$rootScope, this)
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
+		AreaMetricService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedMargin = _.debounce(() => {
 			this.storeService.dispatch(setMargin(this._viewModel.margin))
@@ -70,6 +77,10 @@ export class AreaSettingsPanelController
 	public onChangeMarginSlider() {
 		this.applyDebouncedMargin()
 		this.storeService.dispatch(setDynamicMargin(false))
+	}
+
+	public onAreaMetricChanged(areaMetric: string) {
+		this.potentiallyUpdateMargin()
 	}
 
 	private potentiallyUpdateMargin(map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()) {

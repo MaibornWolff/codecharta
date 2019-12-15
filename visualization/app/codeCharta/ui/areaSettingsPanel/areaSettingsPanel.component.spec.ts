@@ -14,6 +14,7 @@ import { MarginService } from "../../state/store/dynamicSettings/margin/margin.s
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import _ from "lodash"
+import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 
 describe("AreaSettingsPanelController", () => {
 	let $rootScope: IRootScopeService
@@ -82,6 +83,14 @@ describe("AreaSettingsPanelController", () => {
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
+
+		it("should subscribe to AreaMetricService", () => {
+			AreaMetricService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+		})
 	})
 
 	describe("onDynamicMarginChanged", () => {
@@ -91,7 +100,7 @@ describe("AreaSettingsPanelController", () => {
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
 		})
 
-		it("should set margin from settings if dynamicMargin is false", () => {
+		it("should set given margin if dynamicMargin is false", () => {
 			areaSettingsPanelController["_viewModel"].margin = 48
 
 			areaSettingsPanelController.onDynamicMarginChanged(false)
@@ -99,7 +108,7 @@ describe("AreaSettingsPanelController", () => {
 			expect(areaSettingsPanelController["_viewModel"].margin).toEqual(48)
 		})
 
-		it("should set new calculated margin correctly", () => {
+		it("should set new calculated margin if dynamicMargin is true", () => {
 			storeService.dispatch(setAreaMetric("rloc"))
 
 			areaSettingsPanelController.onDynamicMarginChanged(true)
@@ -109,10 +118,20 @@ describe("AreaSettingsPanelController", () => {
 	})
 
 	describe("onMarginChanged", () => {
-		it("should not call applySettings if margin and new calculated margin are the same", () => {
+		it("should set margin in viewModel", () => {
 			areaSettingsPanelController.onMarginChanged(28)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
+		})
+	})
+
+	describe("onAreaMetricChanged", () => {
+		it("should call potentiallyUpdateMargin", () => {
+			areaSettingsPanelController["potentiallyUpdateMargin"] = jest.fn()
+
+			areaSettingsPanelController.onAreaMetricChanged("SOME_METRIC")
+
+			expect(areaSettingsPanelController["potentiallyUpdateMargin"]).toHaveBeenCalled()
 		})
 	})
 
