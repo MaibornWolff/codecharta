@@ -194,24 +194,12 @@ describe("MetricChooserController", () => {
 	})
 
 	describe("applySettingsAreaMetric", () => {
-		it("should updateSettings with areaMetric and margin null, when dynamicMargin is enabled", () => {
+		it("should update areaMetric", () => {
 			metricChooserController["_viewModel"].areaMetric = "mcc"
 
 			metricChooserController.applySettingsAreaMetric()
 
 			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("mcc")
-			expect(storeService.getState().dynamicSettings.margin).toBeNull()
-		})
-
-		it("should updateSettings with areaMetric and margin from settings, when dynamicMargin is disabled", () => {
-			storeService.dispatch(setDynamicMargin(false))
-			storeService.dispatch(setMargin(20))
-			metricChooserController["_viewModel"].areaMetric = "mcc"
-
-			metricChooserController.applySettingsAreaMetric()
-
-			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("mcc")
-			expect(storeService.getState().dynamicSettings.margin).toBe(20)
 		})
 	})
 
