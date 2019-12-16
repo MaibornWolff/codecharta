@@ -20,5 +20,6 @@ fi
 echo "- The branch must be named using following syntax, while the issue number is optional, in case there is no issue"
 echo "  <branch-type>/[<issue-number>/]<branch-name>"
 echo "  Example: feature/123/my-branch-name"
+echo "  Rename the current branch with: git branch -m <new-branch-name>"
 
 exit 1
