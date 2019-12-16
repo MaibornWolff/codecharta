@@ -587,7 +587,7 @@ export const SETTINGS: Settings = {
 			edges: []
 		},
 		blacklist: [],
-		edges: [],
+		edges: VALID_EDGES,
 		markedPackages: []
 	},
 	dynamicSettings: {
@@ -696,6 +696,60 @@ export const DEFAULT_SETTINGS: Settings = {
 	treeMapSettings: { mapSize: 250 }
 }
 
+export const MAP = {}
+export const SETTINGS_WITH_EDGES: Settings = {
+	appSettings: {
+		amountOfTopLabels: 1,
+		amountOfEdgePreviews: 1,
+		edgeHeight: 4,
+		camera: new Vector3(0, 300, 1000),
+		invertDeltaColors: false,
+		dynamicMargin: true,
+		hideFlatBuildings: true,
+		invertHeight: false,
+		invertColorRange: false,
+		isWhiteBackground: false,
+		mapColors: {
+			angularGreen: "#00BFA5",
+			base: "#666666",
+			defaultC: "#89ACB4",
+			flat: "#AAAAAA",
+			lightGrey: "#DDDDDD",
+			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
+			negative: "#820E0E",
+			negativeDelta: "#ff0E0E",
+			neutral: "#ddcc00",
+			positive: "#69AE40",
+			positiveDelta: "#69FF40",
+			selected: "#EB8319",
+			incomingEdge: "#00ffff",
+			outgoingEdge: "#ff00ff"
+		},
+		scaling: new Vector3(1, 1, 1),
+		whiteColorBuildings: false,
+		isPresentationMode: false,
+		showOnlyBuildingsWithEdges: false,
+		resetCameraIfNewFileIsLoaded: true
+	},
+	dynamicSettings: {
+		areaMetric: null,
+		colorMetric: null,
+		focusedNodePath: "",
+		heightMetric: null,
+		distributionMetric: null,
+		edgeMetric: null,
+		margin: null,
+		colorRange: {
+			from: null,
+			to: null
+		},
+		searchPattern: "",
+		searchedNodePaths: []
+	},
+	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: VALID_EDGES, markedPackages: [] },
+	treeMapSettings: { mapSize: 250 }
+}
+
 export const TEST_NODE_ROOT: Node = {
 	name: "root",
 	width: 1,
@@ -745,6 +799,54 @@ export const TEST_NODE_LEAF: Node = {
 }
 
 export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
+
+export const INCOMING_NODE: Node = {
+	name: "root/small leaf",
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: true,
+	deltas: { a: 1, b: 2 },
+	attributes: { a: 20, b: 15, mcc: 14 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root/big leaf",
+	link: "NO_LINK",
+	markingColor: "0xFFFFFF",
+	flat: false,
+	color: "#AABBCC",
+	incomingEdgePoint: new Vector3(1, 2, 3),
+	outgoingEdgePoint: new Vector3(1, 2, 3)
+}
+
+export const OUTGOING_NODE: Node = {
+	name: "root/big leaf",
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: true,
+	deltas: { a: 1, b: 2 },
+	attributes: { a: 20, b: 15, mcc: 14 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root/big leaf",
+	link: "NO_LINK",
+	markingColor: "0xFFFFFF",
+	flat: false,
+	color: "#AABBCC",
+	incomingEdgePoint: new Vector3(1, 2, 3),
+	outgoingEdgePoint: new Vector3(1, 2, 3)
+}
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,

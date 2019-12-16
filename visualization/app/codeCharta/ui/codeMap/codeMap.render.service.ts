@@ -62,7 +62,7 @@ export class CodeMapRenderService {
 	private setArrows(sortedNodes: Node[], s: Settings) {
 		this.codeMapArrowService.clearArrows()
 		if (s.fileSettings.edges.length > 0) {
-			this.codeMapArrowService.addEdgeArrows(sortedNodes, s.fileSettings.edges)
+			this.codeMapArrowService.addEdgePreview(sortedNodes, s.fileSettings.edges)
 		}
 	}
 
