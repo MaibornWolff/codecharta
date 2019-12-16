@@ -4,23 +4,26 @@ import { MetricChooserController } from "./metricChooser.component"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
+import { DEFAULT_SETTINGS, DEFAULT_STATE, SETTINGS } from "../../util/dataMocks"
 import { MetricService } from "../../state/metric.service"
+import { StoreService } from "../../state/store.service"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
-	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
+	let settingsService: SettingsService
+	let storeService: StoreService
 
 	function rebuildController() {
-		metricChooserController = new MetricChooserController(settingsService, $rootScope, $timeout)
+		metricChooserController = new MetricChooserController($rootScope, $timeout, settingsService, storeService)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.metricChooser")
 
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
 	}
@@ -101,7 +104,7 @@ describe("MetricChooserController", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("metric data should be updated", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "b", maxValue: 2, availableInVisibleMaps: false }
 			]
@@ -112,7 +115,7 @@ describe("MetricChooserController", () => {
 		})
 
 		it("settings are updated if selected metrics are not available", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "b", maxValue: 2, availableInVisibleMaps: true },
 				{ name: "c", maxValue: 2, availableInVisibleMaps: true },
@@ -124,10 +127,14 @@ describe("MetricChooserController", () => {
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { areaMetric: "a", colorMetric: "c", heightMetric: "b", distributionMetric: "a" }
 			})
+			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
+			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("c")
+			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("b")
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("a")
 		})
 
 		it("same metric is selected multiple times if less than 3 metrics available", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "b", maxValue: 1, availableInVisibleMaps: false }
 			]
@@ -137,10 +144,14 @@ describe("MetricChooserController", () => {
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { areaMetric: "a", colorMetric: "a", heightMetric: "a", distributionMetric: "a" }
 			})
+			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
+			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("a")
+			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("a")
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("a")
 		})
 
 		it("settings are not updated if selected metrics are available", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
 			]
@@ -148,14 +159,16 @@ describe("MetricChooserController", () => {
 			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).not.toBeCalled()
+			expect(storeService.getState()).toEqual(DEFAULT_STATE)
 		})
 
 		it("no metrics available, should not update settings", () => {
-			let metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
+			const metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
 
 			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(settingsService.updateSettings).not.toBeCalled()
+			expect(storeService.getState()).toEqual(DEFAULT_STATE)
 		})
 	})
 
@@ -173,6 +186,8 @@ describe("MetricChooserController", () => {
 					margin: null
 				}
 			})
+			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("mcc")
+			expect(storeService.getState().dynamicSettings.margin).toBeNull()
 		})
 
 		it("should updateSettings with areaMetric and margin from settings, when dynamicMargin is disabled", () => {
@@ -191,6 +206,8 @@ describe("MetricChooserController", () => {
 					margin: 20
 				}
 			})
+			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("mcc")
+			expect(storeService.getState().dynamicSettings.margin).toBe(20)
 		})
 	})
 
@@ -203,6 +220,8 @@ describe("MetricChooserController", () => {
 			expect(settingsService.updateSettings).toBeCalledWith({
 				dynamicSettings: { colorMetric: "c", colorRange: { from: null, to: null } }
 			})
+			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("c")
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual(DEFAULT_STATE.dynamicSettings.colorRange)
 		})
 	})
 
@@ -213,6 +232,7 @@ describe("MetricChooserController", () => {
 			metricChooserController.applySettingsHeightMetric()
 
 			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { heightMetric: "b" } })
+			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("b")
 		})
 	})
 
@@ -223,12 +243,13 @@ describe("MetricChooserController", () => {
 			metricChooserController.applySettingsDistributionMetric()
 
 			expect(settingsService.updateSettings).toBeCalledWith({ dynamicSettings: { distributionMetric: "d" } })
+			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("d")
 		})
 	})
 
 	describe("filterMetricData", () => {
 		it("should return the default MetricData list", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
@@ -240,7 +261,7 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})
 		it("should return only metric mcc from MetricData list, when its the searchTerm", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
@@ -253,7 +274,7 @@ describe("MetricChooserController", () => {
 		})
 
 		it("should return rloc metric when searchTerm is only 'rl'", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
 			]
@@ -266,7 +287,7 @@ describe("MetricChooserController", () => {
 		})
 
 		it("should return the metrics which contains the metrics with 'c' in it", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false }
@@ -283,7 +304,7 @@ describe("MetricChooserController", () => {
 		})
 
 		it("should return the metrics which contains substrings with 'mc' as prefix", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
@@ -300,7 +321,7 @@ describe("MetricChooserController", () => {
 			])
 		})
 		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
@@ -324,7 +345,7 @@ describe("MetricChooserController", () => {
 		})
 
 		it("should return the the metricData Array with all Elements, when function is called", () => {
-			let metricData = [
+			const metricData = [
 				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
 				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },

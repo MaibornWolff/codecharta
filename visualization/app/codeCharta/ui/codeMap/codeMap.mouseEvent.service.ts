@@ -11,7 +11,7 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 interface Coordinates {
 	x: number
@@ -60,7 +60,7 @@ export class CodeMapMouseEventService
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
-		BlacklistService.subscribe(this.$rootScope, this)
+		SettingsService.subscribeToBlacklist(this.$rootScope, this)
 	}
 
 	public start() {
@@ -127,10 +127,9 @@ export class CodeMapMouseEventService
 				}
 
 				if (from !== to) {
+					this.unhoverBuilding()
 					if (to) {
 						this.hoverBuilding(to)
-					} else {
-						this.unhoverBuilding()
 					}
 				}
 			}
@@ -205,7 +204,7 @@ export class CodeMapMouseEventService
 		}
 
 		if (hoveredBuilding) {
-			this.threeSceneService.highlightBuilding(hoveredBuilding)
+			this.threeSceneService.highlightSingleBuilding(hoveredBuilding)
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 		}
 	}

@@ -1,5 +1,6 @@
 "use strict"
 import { MetricData, RecursivePartial, Settings } from "../codeCharta.model"
+import { convertToVectors } from "./settingsHelper"
 
 export interface Scenario {
 	name: string
@@ -7,7 +8,8 @@ export interface Scenario {
 }
 
 export class ScenarioHelper {
-	private static scenarios: Scenario[] = require("../assets/scenarios.json")
+	//TODO: Move Scenarios to Redux Store
+	private static scenarios: Scenario[] = ScenarioHelper.importScenarios(require("../assets/scenarios.json"))
 
 	public static getScenarios(metricData: MetricData[]): Scenario[] {
 		return this.scenarios.filter(x => this.isScenarioPossible(x, metricData))
@@ -28,5 +30,12 @@ export class ScenarioHelper {
 
 	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
 		return this.scenarios.find(s => s.name == name).settings
+	}
+
+	public static importScenarios(scenarios: Scenario[]): Scenario[] {
+		scenarios.forEach(scenario => {
+			convertToVectors(scenario.settings)
+		})
+		return scenarios
 	}
 }

@@ -6,13 +6,15 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { SETTINGS } from "../../util/dataMocks"
+import { DEFAULT_STATE, SETTINGS } from "../../util/dataMocks"
 import { Settings, FileSelectionState, FileState } from "../../codeCharta.model"
+import { StoreService } from "../../state/store.service"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
+	let storeService: StoreService
 	let metricService: MetricService
 
 	beforeEach(() => {
@@ -27,6 +29,7 @@ describe("ColorSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		metricService = getService<MetricService>("metricService")
 	}
 
@@ -49,7 +52,7 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, settingsService, metricService)
+		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, settingsService, storeService, metricService)
 	}
 
 	describe("constructor", () => {
@@ -131,6 +134,7 @@ describe("ColorSettingsPanelController", () => {
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				dynamicSettings: { colorRange: { from: 33.33, to: 66.66 } }
 			})
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})
 	})
 
@@ -176,6 +180,7 @@ describe("ColorSettingsPanelController", () => {
 					}
 				}
 			})
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})
 
 		it("should not set lastMaxColorMetricValue if newMaxColorMetricValue is the same", () => {
@@ -198,6 +203,7 @@ describe("ColorSettingsPanelController", () => {
 					invertColorRange: false
 				}
 			})
+			expect(storeService.getState().appSettings.invertColorRange).toBeFalsy()
 		})
 	})
 
@@ -216,6 +222,9 @@ describe("ColorSettingsPanelController", () => {
 					}
 				}
 			})
+			expect(storeService.getState().appSettings.invertDeltaColors).toBeFalsy()
+			expect(storeService.getState().appSettings.mapColors.positiveDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.negativeDelta)
+			expect(storeService.getState().appSettings.mapColors.negativeDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.positiveDelta)
 		})
 	})
 
@@ -230,6 +239,7 @@ describe("ColorSettingsPanelController", () => {
 					whiteColorBuildings: false
 				}
 			})
+			expect(storeService.getState().appSettings.whiteColorBuildings).toBeFalsy()
 		})
 	})
 })

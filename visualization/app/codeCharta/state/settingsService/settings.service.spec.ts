@@ -4,15 +4,17 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { LoadingStatusService } from "../loadingStatus.service"
 import { AttributeTypeValue, FileSelectionState, FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { DEFAULT_SETTINGS, DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../../util/dataMocks"
 import { FileStateService } from "../fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { SettingsMerger } from "../../util/settingsMerger"
+import { StoreService } from "../store.service"
 
 describe("settingService", () => {
 	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
+	let storeService: StoreService
 	let loadingStatusService: LoadingStatusService
 
 	let settings: Settings
@@ -22,7 +24,7 @@ describe("settingService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 		withMockedLoadingStatusService()
 	})
 
@@ -31,6 +33,7 @@ describe("settingService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
+		storeService = getService<StoreService>("storeService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS))
@@ -41,12 +44,7 @@ describe("settingService", () => {
 	}
 
 	function rebuildService() {
-		settingsService = new SettingsService($rootScope, $timeout, loadingStatusService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$on = settingsService["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast = settingsService["$rootScope"].$on = jest.fn()
+		settingsService = new SettingsService($rootScope, $timeout, storeService, loadingStatusService)
 	}
 
 	function withMockedLoadingStatusService() {
@@ -84,6 +82,12 @@ describe("settingService", () => {
 				settingsService.onFileSelectionStatesChanged(fileStates)
 
 				expect(settingsService.updateSettings).toHaveBeenCalledWith({ fileSettings: DEFAULT_SETTINGS })
+				expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
+				expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual([])
+				expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
+				expect(storeService.getState().dynamicSettings.margin).toBeNull()
+				expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: null, to: null })
+				expect(storeService.getState().fileSettings).toEqual(DEFAULT_STATE.fileSettings)
 			})
 
 			it("should call isPartialState with fileStates", () => {

@@ -92,6 +92,7 @@ export class CodeMapArrowService
 				this.addArrow(targetNode, originNode, false)
 			}
 		}
+		this.threeSceneService.highlightBuildings()
 	}
 
 	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean): void {

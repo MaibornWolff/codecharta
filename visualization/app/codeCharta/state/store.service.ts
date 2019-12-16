@@ -1,7 +1,8 @@
-import { createStore, Store, Action } from "redux"
+import { createStore, Store } from "redux"
 import rootReducer from "./store/reducer"
-import { State } from "../codeCharta.model"
+import { CCAction, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { splitStateActions } from "./store/state.splitter"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -12,13 +13,20 @@ export class StoreService {
 	private store: Store
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(
+		// tslint:disable-next-line
+		private $rootScope: IRootScopeService
+	) {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: Action) {
-		this.store.dispatch(action)
-		this.notify(action.type)
+	public dispatch(action: CCAction, isSilent: boolean = false) {
+		splitStateActions(action).forEach(atomicAction => {
+			this.store.dispatch(atomicAction)
+			if (!isSilent) {
+				this.notify(atomicAction.type)
+			}
+		})
 	}
 
 	public getState(): State {
@@ -26,7 +34,8 @@ export class StoreService {
 	}
 
 	private notify(actionType: string) {
-		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType: actionType })
+		//TODO: Activate when settingsService is deleted
+		//this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType: actionType })
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {

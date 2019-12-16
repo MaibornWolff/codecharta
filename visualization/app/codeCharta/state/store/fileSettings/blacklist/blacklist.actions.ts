@@ -1,46 +1,47 @@
-import { BlacklistItem } from "../../../../codeCharta.model"
-import { Action } from "redux"
+import { BlacklistItem, CCAction } from "../../../../codeCharta.model"
 
 export enum BlacklistActions {
 	ADD_BLACKLIST_ITEM = "ADD_BLACKLIST_ITEM",
 	REMOVE_BLACKLIST_ITEM = "REMOVE_BLACKLIST_ITEM",
-	LOAD_BLACKLIST = "LOAD_BLACKLIST"
+	SET_BLACKLIST = "SET_BLACKLIST"
 }
 
-export interface AddBlacklistAction extends Action {
+export interface AddBlacklistAction extends CCAction {
 	type: BlacklistActions.ADD_BLACKLIST_ITEM
 	payload: BlacklistItem
 }
 
-export interface RemoveBlacklistAction extends Action {
+export interface RemoveBlacklistAction extends CCAction {
 	type: BlacklistActions.REMOVE_BLACKLIST_ITEM
 	payload: BlacklistItem
 }
 
-export interface LoadBlacklistAction extends Action {
-	type: BlacklistActions.LOAD_BLACKLIST
+export interface SetBlacklistAction extends CCAction {
+	type: BlacklistActions.SET_BLACKLIST
 	payload: BlacklistItem[]
 }
 
-export type BlacklistAction = AddBlacklistAction | RemoveBlacklistAction | LoadBlacklistAction
+export type BlacklistAction = AddBlacklistAction | RemoveBlacklistAction | SetBlacklistAction
 
-export function addBlacklistItem(item: BlacklistItem): BlacklistAction {
+export function addBlacklistItem(item: BlacklistItem): AddBlacklistAction {
 	return {
 		type: BlacklistActions.ADD_BLACKLIST_ITEM,
 		payload: item
 	}
 }
 
-export function removeBlacklistItem(item: BlacklistItem): BlacklistAction {
+export function removeBlacklistItem(item: BlacklistItem): RemoveBlacklistAction {
 	return {
 		type: BlacklistActions.REMOVE_BLACKLIST_ITEM,
 		payload: item
 	}
 }
 
-export function loadBlacklist(blacklist: BlacklistItem[]): BlacklistAction {
+export function setBlacklist(blacklist: BlacklistItem[] = defaultBlacklist): SetBlacklistAction {
 	return {
-		type: BlacklistActions.LOAD_BLACKLIST,
+		type: BlacklistActions.SET_BLACKLIST,
 		payload: blacklist
 	}
 }
+
+export const defaultBlacklist: BlacklistItem[] = []

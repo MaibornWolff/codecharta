@@ -3,6 +3,7 @@ import { SearchPanelService } from "./searchPanel.service"
 import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SearchPanelMode } from "../codeCharta.model"
+import { withMockedEventMethods } from "../util/dataMocks"
 
 describe("SearchPanelService", () => {
 	let searchPanelService: SearchPanelService
@@ -11,7 +12,7 @@ describe("SearchPanelService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -21,10 +22,6 @@ describe("SearchPanelService", () => {
 
 	function rebuildService() {
 		searchPanelService = new SearchPanelService($rootScope)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
 	}
 
 	describe("updateSearchPanelMode", () => {

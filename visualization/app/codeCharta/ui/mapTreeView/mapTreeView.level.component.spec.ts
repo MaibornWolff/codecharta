@@ -8,7 +8,13 @@ import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
-import { VALID_NODE_WITH_PATH, CODE_MAP_BUILDING, VALID_NODE_WITH_METRICS, VALID_NODE_WITH_ROOT_UNARY } from "../../util/dataMocks"
+import {
+	VALID_NODE_WITH_PATH,
+	CODE_MAP_BUILDING,
+	VALID_NODE_WITH_METRICS,
+	VALID_NODE_WITH_ROOT_UNARY,
+	withMockedEventMethods
+} from "../../util/dataMocks"
 import _ from "lodash"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
@@ -26,7 +32,7 @@ describe("MapTreeViewLevelController", () => {
 		restartSystem()
 		withMockedCodeMapPreRenderService()
 		rebuildController()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -52,12 +58,6 @@ describe("MapTreeViewLevelController", () => {
 			codeMapPreRenderService,
 			storeService
 		)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
-		$rootScope.$digest = jest.fn()
-		$rootScope.$on = jest.fn()
 	}
 
 	function withMockedCodeMapPreRenderService() {

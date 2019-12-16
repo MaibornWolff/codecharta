@@ -3,17 +3,19 @@ import { EdgeSettingsPanelController } from "./edgeSettingsPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SettingsService } from "../../state/settingsService/settings.service"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { DEFAULT_SETTINGS } from "../../util/dataMocks"
 import _ from "lodash"
 import { Settings } from "../../codeCharta.model"
+import { StoreService } from "../../state/store.service"
 
 describe("EdgeSettingsPanelController", () => {
 	let edgeSettingsPanelController: EdgeSettingsPanelController
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
-	let edgeMetricService: EdgeMetricService
+	let storeService: StoreService
+	let edgeMetricDataService: EdgeMetricDataService
 	let codeMapActionsService: CodeMapActionsService
 
 	let settings: Settings
@@ -29,14 +31,21 @@ describe("EdgeSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
-		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+		storeService = getService<StoreService>("storeService")
+		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 
 		settings = _.cloneDeep(DEFAULT_SETTINGS)
 	}
 
 	function rebuildController() {
-		edgeSettingsPanelController = new EdgeSettingsPanelController($rootScope, settingsService, edgeMetricService, codeMapActionsService)
+		edgeSettingsPanelController = new EdgeSettingsPanelController(
+			$rootScope,
+			settingsService,
+			storeService,
+			edgeMetricDataService,
+			codeMapActionsService
+		)
 	}
 
 	function withMockedEvents() {
@@ -53,8 +62,8 @@ describe("EdgeSettingsPanelController", () => {
 		})()
 	}
 
-	function withMockedEdgeMetricService(amountOfAffectedBuildings: number = 0) {
-		edgeMetricService = edgeSettingsPanelController["edgeMetricService"] = jest.fn<EdgeMetricService>(() => {
+	function withMockedEdgeMetricDataService(amountOfAffectedBuildings: number = 0) {
+		edgeMetricDataService = edgeSettingsPanelController["edgeMetricDataService"] = jest.fn<EdgeMetricDataService>(() => {
 			return {
 				getAmountOfAffectedBuildings: jest.fn().mockReturnValue(amountOfAffectedBuildings)
 			}
@@ -140,7 +149,7 @@ describe("EdgeSettingsPanelController", () => {
 
 	describe("onEdgeMetricChanged", () => {
 		beforeEach(() => {
-			withMockedEdgeMetricService()
+			withMockedEdgeMetricDataService()
 		})
 		it("should get 0 totalAffectedBuildings", () => {
 			rebuildController()
@@ -152,7 +161,7 @@ describe("EdgeSettingsPanelController", () => {
 
 		it("should get 42 totalAffectedBuildings", () => {
 			rebuildController()
-			withMockedEdgeMetricService(42)
+			withMockedEdgeMetricDataService(42)
 
 			edgeSettingsPanelController.onEdgeMetricChanged("anyMetricName")
 
@@ -196,6 +205,7 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.applySettingsAmountOfEdgePreviews()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { amountOfEdgePreviews: 42 } })
+			expect(storeService.getState().appSettings.amountOfEdgePreviews).toBe(42)
 		})
 	})
 
@@ -207,6 +217,7 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.applySettingsEdgeHeight()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { edgeHeight: 21 } })
+			expect(storeService.getState().appSettings.edgeHeight).toBe(21)
 		})
 	})
 
@@ -218,6 +229,7 @@ describe("EdgeSettingsPanelController", () => {
 			edgeSettingsPanelController.applyShowOnlyBuildingsWithEdges()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: { showOnlyBuildingsWithEdges: false } })
+			expect(storeService.getState().appSettings.showOnlyBuildingsWithEdges).toBeFalsy()
 		})
 	})
 })
