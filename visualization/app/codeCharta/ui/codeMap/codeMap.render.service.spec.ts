@@ -169,6 +169,8 @@ describe("codeMapRenderService", () => {
 
 		beforeEach(() => {
 			sortedNodes = TEST_NODES
+			codeMapArrowService.clearArrows = jest.fn()
+			codeMapArrowService["addEdgePreview"] = jest.fn()
 		})
 
 		it("should call codeMapArrowService.clearArrows", () => {
