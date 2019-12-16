@@ -2,6 +2,7 @@ import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { BlacklistType, CodeMapNode, Settings } from "../codeCharta.model"
 import { SETTINGS, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
+import { HSL } from "./color/hsl"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
@@ -21,7 +22,7 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "RLOC", [])
+			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc", [])
 
 			expect(result).toEqual(expected)
 		})
@@ -39,7 +40,7 @@ describe("FileExtensionCalculator", () => {
 
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
-				"RLOC",
+				"rloc",
 				settings.fileSettings.blacklist
 			)
 
@@ -59,7 +60,7 @@ describe("FileExtensionCalculator", () => {
 
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
-				"RLOC",
+				"rloc",
 				settings.fileSettings.blacklist
 			)
 
@@ -78,7 +79,7 @@ describe("FileExtensionCalculator", () => {
 
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
-				"RLOC",
+				"rloc",
 				settings.fileSettings.blacklist
 			)
 
@@ -87,13 +88,23 @@ describe("FileExtensionCalculator", () => {
 
 		it("should get correct relative distribution of file-extensions for given metric", () => {
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.97082228116711, color: null },
+				{
+					fileExtension: "java",
+					absoluteMetricValue: 162,
+					relativeMetricValue: 42.97082228116711,
+					color: null
+				},
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.48275862068966, color: null },
 				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.56763925729443, color: null },
-				{ fileExtension: "other", absoluteMetricValue: 15, relativeMetricValue: 3.978779840848806, color: "#676867" }
+				{
+					fileExtension: "other",
+					absoluteMetricValue: 15,
+					relativeMetricValue: 3.978779840848806,
+					color: "#676867"
+				}
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "RLOC", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
 
 			expect(result).toEqual(expected)
 		})
@@ -105,30 +116,50 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: null, relativeMetricValue: 100, color: "#676867" }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "RLOC", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should get correct distribution of file-extensions for given metric using other-grouping", () => {
 			const additionalChildren: CodeMapNode[] = [
-				{ name: "child1.txt", type: "File", path: "/root/child1.txt", attributes: { RLOC: 2 } },
-				{ name: "child2.kt", type: "File", path: "/root/child2.kt", attributes: { RLOC: 4 } },
-				{ name: "child3.ts", type: "File", path: "/root/child3.ts", attributes: { RLOC: 6 } },
-				{ name: "child4.xml", type: "File", path: "/root/child4.xml", attributes: { RLOC: 8 } }
+				{ name: "child1.txt", type: "File", path: "/root/child1.txt", attributes: { rloc: 2 } },
+				{ name: "child2.kt", type: "File", path: "/root/child2.kt", attributes: { rloc: 4 } },
+				{ name: "child3.ts", type: "File", path: "/root/child3.ts", attributes: { rloc: 6 } },
+				{ name: "child4.xml", type: "File", path: "/root/child4.xml", attributes: { rloc: 8 } }
 			]
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 40.80604534005038, color: null },
+				{
+					fileExtension: "java",
+					absoluteMetricValue: 162,
+					relativeMetricValue: 40.80604534005038,
+					color: null
+				},
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 32.7455919395466, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 17.632241813602015, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 3.7783375314861463, color: null },
+				{
+					fileExtension: "json",
+					absoluteMetricValue: 70,
+					relativeMetricValue: 17.632241813602015,
+					color: null
+				},
+				{
+					fileExtension: "None",
+					absoluteMetricValue: 15,
+					relativeMetricValue: 3.7783375314861463,
+					color: null
+				},
 				{ fileExtension: "xml", absoluteMetricValue: 8, relativeMetricValue: 2.0151133501259446, color: null },
-				{ fileExtension: "other", absoluteMetricValue: 12, relativeMetricValue: 3.0226700251889165, color: "#676867" }
+				{
+					fileExtension: "other",
+					absoluteMetricValue: 12,
+					relativeMetricValue: 3.0226700251889165,
+					color: "#676867"
+				}
 			]
 			map.children.push(...additionalChildren)
 			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 95
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "RLOC", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
 
 			expect(result).toEqual(expected)
 		})
@@ -151,6 +182,15 @@ describe("FileExtensionCalculator", () => {
 			const fileName: string = "name_without_extension"
 			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("None")
+		})
+	})
+
+	describe("hashCode => numberToHashCode", () => {
+		it("should generate a hsl-color for file extension", () => {
+			const hashCode = FileExtensionCalculator.hashCode("ts")
+			const result = FileExtensionCalculator.numberToHsl(hashCode)
+
+			expect(result).toEqual(new HSL(111, 40, 50))
 		})
 	})
 })

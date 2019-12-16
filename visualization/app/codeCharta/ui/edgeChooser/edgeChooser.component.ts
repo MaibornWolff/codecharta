@@ -1,16 +1,18 @@
 import "./edgeChooser.component.scss"
 import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { EdgeMetricService, EdgeMetricServiceSubscriber } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { EdgeMetricSubscriber } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { StoreService } from "../../state/store.service"
+import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 
 export class EdgeChooserController
-	implements EdgeMetricServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+	implements EdgeMetricDataServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private originalEdgeMetricData: MetricData[]
 
 	private _viewModel: {
@@ -27,11 +29,12 @@ export class EdgeChooserController
 
 	constructor(
 		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
 		private settingsService: SettingsService,
 		private $timeout: ITimeoutService
 	) {
-		EdgeMetricService.subscribe(this.$rootScope, this)
+		EdgeMetricDataService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
@@ -65,6 +68,7 @@ export class EdgeChooserController
 
 	public onEdgeMetricSelected() {
 		this.settingsService.updateSettings({ dynamicSettings: { edgeMetric: this._viewModel.edgeMetric } })
+		this.storeService.dispatch(setEdgeMetric(this._viewModel.edgeMetric))
 	}
 
 	public noEdgesAvailable() {

@@ -2,8 +2,8 @@ import "./nodePathPanel.component.scss"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 export class NodePathPanelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {

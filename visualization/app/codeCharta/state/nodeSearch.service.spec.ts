@@ -6,10 +6,12 @@ import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service
 import { SettingsService } from "./settingsService/settings.service"
 import { TEST_FILE_WITH_PATHS } from "../util/dataMocks"
 import { CodeMapHelper } from "../util/codeMapHelper"
+import { StoreService } from "./store.service"
 
 describe("NodeSearchService", () => {
 	let nodeSearchService: NodeSearchService
 	let $rootScope: IRootScopeService
+	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let settingsService: SettingsService
 
@@ -23,11 +25,12 @@ describe("NodeSearchService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 	}
 
 	function rebuildService() {
-		nodeSearchService = new NodeSearchService($rootScope, codeMapPreRenderService, settingsService)
+		nodeSearchService = new NodeSearchService($rootScope, storeService, codeMapPreRenderService, settingsService)
 	}
 
 	describe("constructor", () => {
@@ -75,6 +78,7 @@ describe("NodeSearchService", () => {
 			expect(settingsService.updateSettings).toBeCalledWith({
 				dynamicSettings: { searchedNodePaths: ["/root/Parent Leaf/small leaf"] }
 			})
+			expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual(["/root/Parent Leaf/small leaf"])
 		})
 	})
 })

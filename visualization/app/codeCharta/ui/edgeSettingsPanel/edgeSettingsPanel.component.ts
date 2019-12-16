@@ -1,10 +1,14 @@
 import "./edgeSettingsPanel.component.scss"
 import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { EdgeMetricSubscriber, SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
+import { setAmountOfEdgePreviews } from "../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
+import { setEdgeHeight } from "../../state/store/appSettings/edgeHeight/edgeHeight.actions"
+import { setShowOnlyBuildingsWithEdges } from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 
 export class EdgeSettingsPanelController implements SettingsServiceSubscriber, EdgeMetricSubscriber {
 	private _viewModel: {
@@ -23,7 +27,8 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	constructor(
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
-		private edgeMetricService: EdgeMetricService,
+		private storeService: StoreService,
+		private edgeMetricDataService: EdgeMetricDataService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
 		SettingsService.subscribe(this.$rootScope, this)
@@ -55,7 +60,7 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.totalAffectedBuildings = this.edgeMetricService.getAmountOfAffectedBuildings(edgeMetric)
+		this._viewModel.totalAffectedBuildings = this.edgeMetricDataService.getAmountOfAffectedBuildings(edgeMetric)
 		if (edgeMetric === "None") {
 			this._viewModel.amountOfEdgePreviews = 0
 			this._viewModel.showOnlyBuildingsWithEdges = false
@@ -68,14 +73,17 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 
 	public applySettingsAmountOfEdgePreviews() {
 		this.settingsService.updateSettings({ appSettings: { amountOfEdgePreviews: this._viewModel.amountOfEdgePreviews } })
+		this.storeService.dispatch(setAmountOfEdgePreviews(this._viewModel.amountOfEdgePreviews))
 	}
 
 	public applySettingsEdgeHeight() {
 		this.settingsService.updateSettings({ appSettings: { edgeHeight: this._viewModel.edgeHeight } })
+		this.storeService.dispatch(setEdgeHeight(this._viewModel.edgeHeight))
 	}
 
 	public applyShowOnlyBuildingsWithEdges() {
 		this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: this._viewModel.showOnlyBuildingsWithEdges } })
+		this.storeService.dispatch(setShowOnlyBuildingsWithEdges(this._viewModel.showOnlyBuildingsWithEdges))
 	}
 }
 

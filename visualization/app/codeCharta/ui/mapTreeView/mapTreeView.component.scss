@@ -21,13 +21,34 @@ map-tree-view-component {
 	.tree-element-label:hover,
 	.tree-element-label.hovered {
 		background-color: #efefef;
+		border-radius: 2px;
 	}
 
-	.cursor-pointer {
+	.node-type-icon {
+		display: inline-block;
+		width: 14px;
+		margin-left: 2px;
+	}
+
+	.node-type-icon,
+	.eye-icon,
+	.node-name {
 		cursor: pointer;
+
+		&:focus {
+			outline: none;
+		}
 	}
 
-	.no-outline:focus {
-		outline: none;
+	.unary-absolute,
+	.unary-relative {
+		color: #a3a3a3;
+		font-size: 0.8em;
+		margin-top: 1px;
+	}
+
+	.unary-absolute {
+		float: right;
+		margin-right: 5px;
 	}
 }

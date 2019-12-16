@@ -9,15 +9,18 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Settings, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
 
 describe("AreaSettingsPanelController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
+	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let areaSettingsPanelController: AreaSettingsPanelController
 
 	let settings: Settings
 	let map: CodeMapNode
+	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
@@ -31,6 +34,7 @@ describe("AreaSettingsPanelController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 
 		settings = JSON.parse(JSON.stringify(SETTINGS))
@@ -38,7 +42,7 @@ describe("AreaSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, settingsService, codeMapPreRenderService)
+		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, settingsService, storeService, codeMapPreRenderService)
 	}
 
 	function withMockedSettingsService() {
@@ -105,12 +109,6 @@ describe("AreaSettingsPanelController", () => {
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
 		})
 
-		it("should call applySettings after setting new margin", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
-		})
-
 		it("should not call applySettings if margin and new calculated margin are the same", () => {
 			settings.dynamicSettings.margin = 28
 
@@ -170,6 +168,7 @@ describe("AreaSettingsPanelController", () => {
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
 				appSettings: { dynamicMargin: true }
 			})
+			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 	})
 
@@ -186,10 +185,20 @@ describe("AreaSettingsPanelController", () => {
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeFalsy()
 		})
 
-		it("should call applySettings after updating viewModel", () => {
+		it("should call updateSettings", done => {
+			areaSettingsPanelController["_viewModel"].dynamicMargin = false
+			areaSettingsPanelController["_viewModel"].margin = 28
+			const expected = { dynamicSettings: { margin: 28 }, appSettings: { dynamicMargin: false } }
+
 			areaSettingsPanelController.onChangeMarginSlider()
 
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
+			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+				expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
+				done()
+			}, AreaSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 
@@ -200,6 +209,7 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.applySettingsDynamicMargin()
 
 			expect(settingsService.updateSettings).toBeCalledWith({ appSettings: { dynamicMargin: false } })
+			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 	})
 
@@ -212,6 +222,8 @@ describe("AreaSettingsPanelController", () => {
 			areaSettingsPanelController.applySettings()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
+			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 	})
 })

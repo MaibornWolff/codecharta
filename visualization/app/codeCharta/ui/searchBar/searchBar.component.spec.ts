@@ -6,6 +6,8 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
+import { StoreService } from "../../state/store.service"
+import { withMockedEventMethods } from "../../util/dataMocks"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
@@ -13,10 +15,13 @@ describe("SearchBarController", () => {
 	let $rootScope: IRootScopeService
 	let settingsService: SettingsService
 	let codeMapActionsService: CodeMapActionsService
+	let storeService: StoreService
+	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -25,22 +30,14 @@ describe("SearchBarController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		settingsService = getService<SettingsService>("settingsService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$on = searchBarController["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast = searchBarController["$rootScope"].$broadcast = jest.fn()
+		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService, storeService)
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			withMockedEventMethods()
-		})
-
 		it("subscribe to blacklist", () => {
 			SettingsService.subscribeToBlacklist = jest.fn()
 
@@ -59,12 +56,17 @@ describe("SearchBarController", () => {
 	})
 
 	describe("onFileSelectionStatesChanged", () => {
-		it("should set empty searchPattern", () => {
+		it("should set empty searchPattern", done => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
 			searchBarController.onFileSelectionStatesChanged(null)
 
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe("")
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
+				done()
+			}, SearchBarController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 
@@ -72,7 +74,9 @@ describe("SearchBarController", () => {
 		it("should set searchPattern in settings", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
 			searchBarController["applySettingsSearchPattern"]()
+
 			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(searchBarController["_viewModel"].searchPattern)
+			expect(storeService.getState().dynamicSettings.searchPattern).toEqual(searchBarController["_viewModel"].searchPattern)
 		})
 	})
 
@@ -83,7 +87,7 @@ describe("SearchBarController", () => {
 
 			searchBarController.onClickBlacklistPattern(blacklistItem.type)
 
-			expect(settingsService.getSettings().fileSettings.blacklist).toContainEqual(blacklistItem)
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItem)
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 		})
 	})
@@ -143,11 +147,11 @@ describe("SearchBarController", () => {
 
 	describe("onSearchPatternChanged", () => {
 		it("call applySettingsSearchPattern", () => {
-			searchBarController["applySettingsSearchPattern"] = jest.fn()
+			searchBarController["applyDebouncedSearchPattern"] = jest.fn()
 
 			searchBarController.onSearchPatternChanged()
 
-			expect(searchBarController["applySettingsSearchPattern"]).toHaveBeenCalled()
+			expect(searchBarController["applyDebouncedSearchPattern"]).toHaveBeenCalled()
 		})
 
 		it("call updateViewModel", () => {

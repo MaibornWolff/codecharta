@@ -1,4 +1,5 @@
 import "./codeCharta.module"
+import _ from "lodash"
 import { IHttpService, ILocationService, IRootScopeService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
@@ -7,23 +8,26 @@ import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { Settings } from "./codeCharta.model"
-import { SETTINGS } from "./util/dataMocks"
+import { SETTINGS, withMockedEventMethods } from "./util/dataMocks"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
-import { NodeSearchService } from "./state/nodeSearch.service"
+import { InjectorService } from "./state/injector.service"
+import { StoreService } from "./state/store.service"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
 	let $rootScope: IRootScopeService
-	let dialogService: DialogService
-	let codeMapActionsService: CodeMapActionsService
-	let settingsService: SettingsService
-	let codeChartaService: CodeChartaService
-	let fileStateService: FileStateService
-	let nodeSearchService: NodeSearchService
 	let $location: ILocationService
 	let $http: IHttpService
+	let settingsService: SettingsService
+	let storeService: StoreService
+	let dialogService: DialogService
+	let codeMapActionsService: CodeMapActionsService
+	let codeChartaService: CodeChartaService
+	let fileStateService: FileStateService
+	let injectorService: InjectorService
+
 	let loadingStatusService: LoadingStatusService
 
 	let settings: Settings
@@ -38,37 +42,40 @@ describe("codeChartaController", () => {
 		withMockedDialogService()
 		withMockedScenarioHelper()
 		withMockedLoadingStatusService()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		dialogService = getService<DialogService>("dialogService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		settingsService = getService<SettingsService>("settingsService")
-		codeChartaService = getService<CodeChartaService>("codeChartaService")
-		fileStateService = getService<FileStateService>("fileStateService")
-		nodeSearchService = getService<NodeSearchService>("nodeSearchService")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
+		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
+		dialogService = getService<DialogService>("dialogService")
+		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
+		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		fileStateService = getService<FileStateService>("fileStateService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
+		injectorService = getService<InjectorService>("injectorService")
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
+		settings = _.cloneDeep(SETTINGS)
 	}
 
 	function rebuildController() {
 		codeChartaController = new CodeChartaController(
 			$rootScope,
-			dialogService,
-			codeMapActionsService,
-			settingsService,
-			codeChartaService,
-			fileStateService,
-			nodeSearchService,
 			$location,
 			$http,
-			loadingStatusService
+			settingsService,
+			storeService,
+			dialogService,
+			codeMapActionsService,
+			codeChartaService,
+			fileStateService,
+			loadingStatusService,
+			injectorService
 		)
 	}
 
@@ -182,6 +189,7 @@ describe("codeChartaController", () => {
 			await codeChartaController.loadFileOrSample()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
+			//TODO: Add check once Settings are removed and replaced with STATE object
 		})
 	})
 
@@ -198,18 +206,6 @@ describe("codeChartaController", () => {
 			codeChartaController.tryLoadingSampleFiles()
 
 			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected)
-		})
-
-		it("should update settings with default settings", () => {
-			codeChartaController.tryLoadingSampleFiles()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
-		})
-
-		it("should update settings from default scenario", () => {
-			codeChartaController.tryLoadingSampleFiles()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
 		})
 
 		it("should call loadFiles with sample files", () => {

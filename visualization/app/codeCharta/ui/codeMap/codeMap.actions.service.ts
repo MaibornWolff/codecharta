@@ -3,10 +3,19 @@ import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../..
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage, Settings } from "../../codeCharta.model"
 import angular from "angular"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
+import { StoreService } from "../../state/store.service"
+import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
+import { markPackage, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 export class CodeMapActionsService {
-	constructor(private settingsService: SettingsService, private edgeMetricService: EdgeMetricService) {}
+	constructor(
+		private settingsService: SettingsService,
+		private edgeMetricDataService: EdgeMetricDataService,
+		private storeService: StoreService
+	) {}
 
 	public toggleNodeVisibility(node: CodeMapNode) {
 		if (node.visible) {
@@ -23,6 +32,7 @@ export class CodeMapActionsService {
 		const parentMP: MarkedPackage = this.getParentMP(newMP.path, s)
 
 		this.handleUpdatingMarkedPackages(s, newMP, clickedMP, parentMP)
+		// this settings update is dispatched in the store using separate actions inside handleUpdatingMarkedPackages
 		this.settingsService.updateSettings({
 			fileSettings: {
 				markedPackages: s.fileSettings.markedPackages
@@ -57,6 +67,7 @@ export class CodeMapActionsService {
 			const parentMP: MarkedPackage = this.getParentMP(node.path, s)
 			this.removeMarkedPackage(parentMP, s)
 		}
+		// this settings update is dispatched in the store separately using the unmark action
 		this.settingsService.updateSettings({
 			fileSettings: {
 				markedPackages: s.fileSettings.markedPackages
@@ -77,11 +88,13 @@ export class CodeMapActionsService {
 			this.removeFocusedNode()
 		} else {
 			this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: node.path } })
+			this.storeService.dispatch(focusNode(node.path))
 		}
 	}
 
 	public removeFocusedNode() {
 		this.settingsService.updateSettings({ dynamicSettings: { focusedNodePath: "" } })
+		this.storeService.dispatch(unfocusNode())
 	}
 
 	public excludeNode(node: CodeMapNode) {
@@ -89,23 +102,15 @@ export class CodeMapActionsService {
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
-		this.settingsService.updateSettings({
-			fileSettings: {
-				blacklist: this.settingsService.getSettings().fileSettings.blacklist.filter(obj => !this.isEqualObjects(obj, entry))
-			}
-		})
+		this.storeService.dispatch(removeBlacklistItem(entry))
 	}
 
 	public pushItemToBlacklist(item: BlacklistItem) {
-		const foundDuplicate = this.settingsService.getSettings().fileSettings.blacklist.filter(obj => {
+		const foundDuplicate = this.storeService.getState().fileSettings.blacklist.filter(obj => {
 			return this.isEqualObjects(obj, item)
 		})
 		if (foundDuplicate.length === 0) {
-			this.settingsService.updateSettings({
-				fileSettings: {
-					blacklist: [...this.settingsService.getSettings().fileSettings.blacklist, item]
-				}
-			})
+			this.storeService.dispatch(addBlacklistItem(item))
 		}
 	}
 
@@ -114,7 +119,7 @@ export class CodeMapActionsService {
 		const edges = settings.fileSettings.edges
 		const edgeMetric = settings.dynamicSettings.edgeMetric
 		const numberOfEdgesToDisplay = settings.appSettings.amountOfEdgePreviews
-		const edgePreviewNodes = this.edgeMetricService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
+		const edgePreviewNodes = this.edgeMetricDataService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
 
 		edges.forEach(edge => {
 			if (
@@ -137,6 +142,7 @@ export class CodeMapActionsService {
 				edges: edges
 			}
 		})
+		this.storeService.dispatch(setEdges(edges))
 	}
 
 	public getParentMP(path: string, s: Settings): MarkedPackage {
@@ -178,6 +184,7 @@ export class CodeMapActionsService {
 				markedPackages: s.fileSettings.markedPackages
 			}
 		})
+		this.storeService.dispatch(markPackage(markedPackage))
 	}
 
 	private removeMarkedPackage(markedPackage: MarkedPackage, s: Settings) {
@@ -185,6 +192,7 @@ export class CodeMapActionsService {
 		if (indexToRemove > -1) {
 			s.fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
+		this.storeService.dispatch(unmarkPackage(markedPackage))
 	}
 
 	private isEqualObjects(obj1, obj2): boolean {

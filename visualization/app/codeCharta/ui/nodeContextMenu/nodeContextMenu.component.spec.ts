@@ -6,7 +6,7 @@ import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
-import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 
 describe("nodeContextMenuController", () => {
@@ -73,12 +73,9 @@ describe("nodeContextMenuController", () => {
 		)
 	}
 
-	function withMockedEventMethods() {
+	function withMockedSubscribeMethods() {
 		NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
 		NodeContextMenuController.subscribeToHideNodeContextMenu = jest.fn()
-
-		$rootScope.$on = nodeContextMenuController["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast = nodeContextMenuController["$rootScope"].$broadcast = jest.fn()
 	}
 
 	function withMockedCodeMapActionService() {
@@ -111,19 +108,22 @@ describe("nodeContextMenuController", () => {
 
 	describe("event related behavior", () => {
 		it("should subscribe to 'show-node-context-menu' events", () => {
-			withMockedEventMethods()
+			withMockedSubscribeMethods()
+			withMockedEventMethods($rootScope)
 			rebuildController()
 			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
 		it("should subscribe to 'hide-node-context-menu' events", () => {
-			withMockedEventMethods()
+			withMockedSubscribeMethods()
+			withMockedEventMethods($rootScope)
 			rebuildController()
 			expect(NodeContextMenuController.subscribeToHideNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
 		it("should broadcast 'show-node-context-menu' when 'show' method is called", () => {
-			withMockedEventMethods()
+			withMockedSubscribeMethods()
+			withMockedEventMethods($rootScope)
 			NodeContextMenuController.broadcastShowEvent($rootScope, "somepath", "sometype", 42, 24)
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", {
 				path: "somepath",
@@ -134,7 +134,8 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should broadcast 'hide-node-context-menu' when 'hide' method is called", () => {
-			withMockedEventMethods()
+			withMockedSubscribeMethods()
+			withMockedEventMethods($rootScope)
 			NodeContextMenuController.broadcastHideEvent($rootScope)
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
 		})

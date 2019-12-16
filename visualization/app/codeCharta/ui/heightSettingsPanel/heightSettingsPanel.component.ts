@@ -6,8 +6,17 @@ import { FileState, RecursivePartial, Settings } from "../../codeCharta.model"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { StoreService } from "../../state/store.service"
+import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setInvertHeight } from "../../state/store/appSettings/invertHeight/invertHeight.actions"
+import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
+import _ from "lodash"
 
 export class HeightSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber {
+	private static DEBOUNCE_TIME = 400
+	private readonly applyDebouncedTopLabels: () => void
+	private readonly applyDebouncedScaling: (newScaling: Vector3) => void
+
 	private _viewModel: {
 		amountOfTopLabels: number
 		scalingY: number
@@ -21,9 +30,17 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private storeService: StoreService) {
 		SettingsService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
+
+		this.applyDebouncedTopLabels = _.debounce(() => {
+			this.storeService.dispatch(setAmountOfTopLabels(this._viewModel.amountOfTopLabels))
+		}, HeightSettingsPanelController.DEBOUNCE_TIME)
+
+		this.applyDebouncedScaling = _.debounce(newScaling => {
+			this.storeService.dispatch(setScaling(newScaling))
+		}, HeightSettingsPanelController.DEBOUNCE_TIME)
 	}
 
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
@@ -44,6 +61,7 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
 				amountOfTopLabels: this._viewModel.amountOfTopLabels
 			}
 		})
+		this.applyDebouncedTopLabels()
 	}
 
 	public applySettingsInvertHeight() {
@@ -52,15 +70,18 @@ export class HeightSettingsPanelController implements SettingsServiceSubscriber,
 				invertHeight: this._viewModel.invertHeight
 			}
 		})
+		this.storeService.dispatch(setInvertHeight(this._viewModel.invertHeight))
 	}
 
 	public applySettingsScaling() {
 		const oldScaling = this.settingsService.getSettings().appSettings.scaling
+		const newScaling = new Vector3(oldScaling.x, this._viewModel.scalingY, oldScaling.z)
 		this.settingsService.updateSettings({
 			appSettings: {
-				scaling: new Vector3(oldScaling.x, this._viewModel.scalingY, oldScaling.z)
+				scaling: newScaling
 			}
 		})
+		this.applyDebouncedScaling(newScaling)
 	}
 }
 

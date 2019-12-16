@@ -2,6 +2,7 @@ import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
 import { CodeMapHelper } from "./codeMapHelper"
 import { Settings, Node, CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model"
 import { Vector3 } from "three"
+import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 
 export class TreeMapHelper {
 	private static FOLDER_HEIGHT = 2
@@ -16,6 +17,15 @@ export class TreeMapHelper {
 			}
 		}
 		return count
+	}
+
+	public static buildingArrayToMap(highlighted: CodeMapBuilding[]): Map<number, CodeMapBuilding> {
+		const geomMap = new Map()
+		highlighted.forEach(building => {
+			geomMap.set(building.id, building)
+		})
+
+		return geomMap
 	}
 
 	private static getHeightValue(s: Settings, squaredNode: SquarifiedValuedCodeMapNode, maxHeight: number, flattened: boolean): number {

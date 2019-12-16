@@ -11,6 +11,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.0] - 2019-12-06
+
+### Added 🚀
+
+- Show the relative number of files a folder includes compared to the project in the TreeView #380
+- Show the number of files a folder includes in the TreeView when hovering #380
+- When the File Extension Bar is hovered, all buildings corresponding to that extension are highlighted #545
+- Toggle between percentage and absolute values when clicking the file extension details section #545
+- Sum hovered delta values for folders #781
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.40.0] - 2019-11-22
+
+### Added 🚀
+
+### Changed
+
 - Replaced Blacklist Hide with Flatten option #691
 - Flattened buildings are not hidden by default #691
 
@@ -23,6 +53,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Bump @types/three from 0.89.12 to 0.103.2 in /visualization #453
 - Bump angularjs-slider from 6.5.1 to 7.0.0 in /visualization #454
 - Bump webpack from 3.12.0 to 4.41.2 in /visualization #436
+- [Security] Bump angular from 1.7.7 to 1.7.9 in /visualization #800
 
 ## [1.39.0] - 2019-11-15
 

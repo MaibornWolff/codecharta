@@ -4,43 +4,45 @@
 	ng-init="$ctrl.openRootFolderByDefault($ctrl.depth)"
 >
 	<div
-		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label {{
-			$ctrl._viewModel.isHoveredInCodeMap ? 'hovered' : ''
-		}}"
+		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label"
+		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap }"
 		ng-mouseenter="$ctrl.onMouseEnter()"
 		ng-mouseleave="$ctrl.onMouseLeave()"
 		ng-right-click="$ctrl.onRightClick($event)"
 	>
-		<span class="no-outline" ng-click="$ctrl.onFolderClick()">
+		<span class="node-type-icon" ng-click="$ctrl.onFolderClick()">
 			<span
 				role="img"
 				ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.collapsed"
-				class="fa fa-folder cursor-pointer"
+				class="fa fa-folder"
 				ng-style="{'color': $ctrl.getMarkingColor() }"
 				aria-hidden="true"
 			></span>
 			<span
 				role="img"
 				ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.collapsed"
-				class="fa fa-folder-open cursor-pointer"
+				class="fa fa-folder-open"
 				ng-style="{'color': $ctrl.getMarkingColor() }"
 				aria-hidden="true"
 			></span>
 			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
 		</span>
 
-		<span class="cursor-pointer no-outline" ng-click="$ctrl.onEyeClick()">
+		<span class="eye-icon" ng-click="$ctrl.onEyeClick()">
 			<span role="img" ng-if="$ctrl.node.visible" class="fa fa-eye" aria-hidden="true"></span>
 			<span role="img" ng-if="!$ctrl.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
 		</span>
 
-		<span class="cursor-pointer no-outline {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}" ng-click="$ctrl.onLabelClick()">
-			{{::$ctrl.node.name}}
+		<span class="node-name {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}" ng-click="$ctrl.onLabelClick()"
+			>{{::$ctrl.node.name}}
 		</span>
+
+		<span class="unary-relative" ng-if="!$ctrl.isLeaf()">{{::$ctrl.getUnaryPercentage()}}%</span>
+		<span class="unary-absolute" ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.isHoveredInCodeMap">{{::$ctrl.getNodeUnary()}} files</span>
 	</div>
 
-	<div class="tree-element-children tree-element-children-{{::$ctr.depth?$ctrl.depth:0}}">
-		<div ng-if="!$ctrl._viewModel.collapsed" ng-repeat="node in $ctrl.node.children | orderBy: [$ctrl.sortByFolder,'name'] ">
+	<div class="tree-element-children tree-element-children-{{::$ctrl.depth?$ctrl.depth:0}}">
+		<div ng-if="!$ctrl._viewModel.collapsed" ng-repeat="node in $ctrl.node.children | orderBy: [$ctrl.sortByFolder,'name']">
 			<map-tree-view-level-component node="::node" depth="::$ctrl.depth+1"></map-tree-view-level-component>
 		</div>
 	</div>
