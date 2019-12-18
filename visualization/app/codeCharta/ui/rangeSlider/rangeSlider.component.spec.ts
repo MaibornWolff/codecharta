@@ -4,7 +4,7 @@ import { RangeSliderController } from "./rangeSlider.component"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { setWhiteColorBuildings } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.actions"
@@ -17,6 +17,7 @@ import { TEST_FILE_DATA } from "../../util/dataMocks"
 
 describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
+	let $timeout: ITimeoutService
 	let storeService: StoreService
 	let fileStateService: FileStateService
 	let metricService: MetricService
@@ -26,16 +27,17 @@ describe("RangeSliderController", () => {
 	let fileStates: FileState[]
 
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController($rootScope, storeService, fileStateService, metricService)
+		rangeSliderController = new RangeSliderController($rootScope, $timeout, storeService, fileStateService, metricService)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.rangeSlider")
 
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
-		$rootScope = getService<IRootScopeService>("$rootScope")
 
 		mapColors = storeService.getState().appSettings.mapColors
 		fileStates = [
@@ -104,10 +106,17 @@ describe("RangeSliderController", () => {
 	})
 
 	describe("onColorMetricChanged", () => {
-		it("should set the maxMetricValue", () => {
+		beforeEach(() => {
+			rangeSliderController["maxMetricValue"] = 100
+		})
+
+		it("should set the maxMetricValue", done => {
 			rangeSliderController.onColorMetricChanged("someMetric")
 
-			expect(rangeSliderController["maxMetricValue"]).toEqual(100)
+			setTimeout(() => {
+				expect(rangeSliderController["maxMetricValue"]).toEqual(100)
+				done()
+			})
 		})
 
 		it("should init the slider options when metric data is available", () => {
@@ -122,13 +131,17 @@ describe("RangeSliderController", () => {
 
 			rangeSliderController.onColorMetricChanged("mcc")
 
-			expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
+			setTimeout(() => {
+				expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
+			})
 		})
 
 		it("should apply adapted colorRange", () => {
 			rangeSliderController.onColorMetricChanged("someMetric")
 
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
+			})
 		})
 	})
 
@@ -201,12 +214,6 @@ describe("RangeSliderController", () => {
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
 			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
-		})
-
-		it("should set adapted ColorRange in thirds for given metricValues", () => {
-			rangeSliderController.onColorMetricChanged("rloc")
-
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})
 	})
 

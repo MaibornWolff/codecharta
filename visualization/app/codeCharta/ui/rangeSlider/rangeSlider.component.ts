@@ -3,7 +3,7 @@ import $ from "jquery"
 import { ColorRange, FileState } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
-import { IRootScopeService } from "angular"
+import { IRootScopeService, ITimeoutService } from "angular"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -48,6 +48,7 @@ export class RangeSliderController
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
 		private storeService: StoreService,
 		private fileStateService: FileStateService,
 		private metricService: MetricService
@@ -64,18 +65,22 @@ export class RangeSliderController
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		this.setMaxMetricValue()
-		this.initSliderOptions()
-		this.applyAdaptedColorRange()
+		if (colorMetric !== null) {
+			this.$timeout(() => {
+				this.setMaxMetricValue()
+				this.initSliderOptions()
+				this.applyAdaptedColorRange()
+			}, 0)
+		}
 	}
 
 	public onColorRangeChanged(colorRange: ColorRange) {
-		if (colorRange.from === null || colorRange.to === null) {
-			this.applyAdaptedColorRange()
-		} else {
+		if (colorRange.from !== null && colorRange.to !== null) {
 			this.updateViewModel(colorRange)
 			this.updateSliderColors()
 			this.updateInputFieldWidth()
+		} else if (this.maxMetricValue) {
+			this.applyAdaptedColorRange()
 		}
 	}
 
@@ -133,6 +138,7 @@ export class RangeSliderController
 	}
 
 	private applyColorRange() {
+		this.updateSliderColors()
 		this.applyDebouncedColorRange(
 			setColorRange({
 				to: this._viewModel.colorRangeTo,
