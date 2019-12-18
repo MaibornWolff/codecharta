@@ -5,6 +5,8 @@ import { CodeMapHelper } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 import { SettingsService } from "./settingsService/settings.service"
 import { SearchPatternSubscriber } from "./settingsService/settings.service.events"
+import { StoreService } from "./store.service"
+import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 
 export interface NodeSearchSubscriber {
 	onNodeSearchComplete(searchedNodes: CodeMapNode[])
@@ -18,6 +20,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
 		private settingsService: SettingsService
 	) {
@@ -43,11 +46,13 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	}
 
 	private applySettingsSearchedNodePaths() {
+		const newSearchedNodePaths = this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
 		this.settingsService.updateSettings({
 			dynamicSettings: {
-				searchedNodePaths: this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
+				searchedNodePaths: newSearchedNodePaths
 			}
 		})
+		this.storeService.dispatch(setSearchedNodePaths(newSearchedNodePaths))
 	}
 
 	private notifyNodeSearchComplete() {

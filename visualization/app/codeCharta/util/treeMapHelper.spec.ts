@@ -1,7 +1,7 @@
 import { TreeMapHelper } from "./treeMapHelper"
 import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
-import { CodeMapNode, EdgeVisibility, Settings } from "../codeCharta.model"
-import { SETTINGS } from "./dataMocks"
+import { CodeMapNode, EdgeVisibility, Settings, BlacklistType } from "../codeCharta.model"
+import { CODE_MAP_BUILDING, SETTINGS } from "./dataMocks"
 
 describe("treeMapHelper", () => {
 	describe("build node", () => {
@@ -201,6 +201,18 @@ describe("treeMapHelper", () => {
 			treeMapSettings.dynamicSettings.searchPattern = ""
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy()
 		})
+
+		it("should be flat if node is flattened in blacklist", () => {
+			treeMapSettings.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
+
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeTruthy()
+		})
+
+		it("should not be flat if node is not blacklisted", () => {
+			treeMapSettings.fileSettings.blacklist = []
+
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, treeMapSettings)).toBeFalsy()
+		})
 	})
 
 	describe("getBuildingColor", () => {
@@ -292,6 +304,14 @@ describe("treeMapHelper", () => {
 			node.attributes = { validMetircName: 7 }
 			const buildingColor = TreeMapHelper["getBuildingColor"](node, settings, false, false)
 			expect(buildingColor).toBe(settings.appSettings.mapColors.neutral)
+		})
+	})
+
+	describe("buildingArrayToMap", () => {
+		it("should convert a array of buildings to a map", () => {
+			const result = TreeMapHelper.buildingArrayToMap([CODE_MAP_BUILDING])
+
+			expect(result.get(CODE_MAP_BUILDING.id)).toEqual(CODE_MAP_BUILDING)
 		})
 	})
 })

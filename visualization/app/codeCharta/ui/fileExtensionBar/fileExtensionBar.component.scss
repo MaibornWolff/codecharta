@@ -37,11 +37,16 @@ file-extension-bar-component {
 		height: 0px;
 		overflow: hidden;
 		transition: all linear 0.2s;
+		outline: none;
 
 		&.expanded {
 			border-top: 1px solid #cdcdcd;
 			overflow: auto !important;
 			height: 25px !important;
+		}
+
+		&:hover {
+			cursor: pointer;
 		}
 
 		.bar-details-section {
@@ -62,9 +67,13 @@ file-extension-bar-component {
 					margin-right: 8px;
 				}
 
-				.percentage {
+				.metric-value {
 					color: gray;
 					font-size: 15px;
+
+					&.hidden {
+						display: none;
+					}
 				}
 			}
 		}

@@ -19,6 +19,13 @@ import {
 	FocusNodeSubscriber,
 	UnfocusNodeSubscriber
 } from "./settings.service.events"
+import { StoreService } from "../store.service"
+import { unfocusNode } from "../store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { setSearchedNodePaths } from "../store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
+import { setSearchPattern } from "../store/dynamicSettings/searchPattern/searchPattern.actions"
+import { setMargin } from "../store/dynamicSettings/margin/margin.actions"
+import { setColorRange } from "../store/dynamicSettings/colorRange/colorRange.actions"
+import { setFileSettings } from "../store/fileSettings/fileSettings.actions"
 
 export class SettingsService implements FileStateServiceSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -30,6 +37,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
+		private storeService: StoreService,
 		private loadingStatusService: LoadingStatusService
 	) {
 		this.settings = this.getDefaultSettings()
@@ -170,7 +178,7 @@ export class SettingsService implements FileStateServiceSubscriber {
 				edgeHeight: 4,
 				scaling: scaling,
 				camera: camera,
-				hideFlatBuildings: true,
+				hideFlatBuildings: false,
 				invertColorRange: false,
 				invertDeltaColors: false,
 				invertHeight: false,
@@ -249,9 +257,17 @@ export class SettingsService implements FileStateServiceSubscriber {
 		this.updateSettings({
 			dynamicSettings: this.getDefaultDynamicSettingsWithoutMetrics()
 		})
+		this.storeService.dispatch(unfocusNode())
+		this.storeService.dispatch(setSearchedNodePaths())
+		this.storeService.dispatch(setSearchPattern())
+		this.storeService.dispatch(setMargin())
+		this.storeService.dispatch(setColorRange())
+
+		const fileSettings = this.getNewFileSettings(fileStates)
 		this.updateSettings({
-			fileSettings: this.getNewFileSettings(fileStates)
+			fileSettings
 		})
+		this.storeService.dispatch(setFileSettings(fileSettings))
 	}
 
 	private notifySettingsSubscribers() {

@@ -1,7 +1,8 @@
 import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
 import { CodeMapHelper } from "./codeMapHelper"
-import { Settings, Node, CodeMapNode } from "../codeCharta.model"
+import { Settings, Node, CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model"
 import { Vector3 } from "three"
+import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 
 export class TreeMapHelper {
 	private static FOLDER_HEIGHT = 2
@@ -16,6 +17,15 @@ export class TreeMapHelper {
 			}
 		}
 		return count
+	}
+
+	public static buildingArrayToMap(highlighted: CodeMapBuilding[]): Map<number, CodeMapBuilding> {
+		const geomMap = new Map()
+		highlighted.forEach(building => {
+			geomMap.set(building.id, building)
+		})
+
+		return geomMap
 	}
 
 	private static getHeightValue(s: Settings, squaredNode: SquarifiedValuedCodeMapNode, maxHeight: number, flattened: boolean): number {
@@ -69,7 +79,6 @@ export class TreeMapHelper {
 					: 0,
 			visible: squaredNode.data.visible && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
 			path: squaredNode.data.path,
-			origin: squaredNode.data.origin,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
 			flat: flattened,
@@ -108,6 +117,10 @@ export class TreeMapHelper {
 		if (s.dynamicSettings.searchedNodePaths && s.dynamicSettings.searchPattern && s.dynamicSettings.searchPattern.length > 0) {
 			flattened = s.dynamicSettings.searchedNodePaths.length == 0 ? true : this.isNodeNonSearched(squaredNode, s)
 		}
+
+		let blacklistFlattened = this.isNodeOrParentFlattenedInBlacklist(squaredNode, s.fileSettings.blacklist)
+
+		flattened = blacklistFlattened || flattened
 		return flattened
 	}
 
@@ -121,6 +134,10 @@ export class TreeMapHelper {
 
 	private static isNodeNonSearched(squaredNode: SquarifiedValuedCodeMapNode, s: Settings): boolean {
 		return s.dynamicSettings.searchedNodePaths.filter(path => path == squaredNode.data.path).length == 0
+	}
+
+	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedValuedCodeMapNode, blacklist: BlacklistItem[]): boolean {
+		return CodeMapHelper.isBlacklisted(squaredNode.data, blacklist, BlacklistType.flatten)
 	}
 
 	private static getBuildingColor(node: CodeMapNode, s: Settings, isDeltaState: boolean, flattened: boolean): string {

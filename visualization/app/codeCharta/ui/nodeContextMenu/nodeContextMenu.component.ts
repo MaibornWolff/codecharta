@@ -76,9 +76,9 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 		angular.element(this.$element[0].children[0]).css("left", x + "px")
 	}
 
-	public hideNode() {
+	public flattenNode() {
 		this.onHideNodeContextMenu()
-		this.codeMapActionsService.hideNode(this._viewModel.contextMenuBuilding)
+		this.codeMapActionsService.flattenNode(this._viewModel.contextMenuBuilding)
 	}
 
 	public showNode() {

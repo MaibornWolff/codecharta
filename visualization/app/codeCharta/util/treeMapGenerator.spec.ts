@@ -50,10 +50,8 @@ describe("treeMapGenerator", () => {
 			map.deltas = {}
 			map.children[0].attributes = { myArea: 44, myHeight: 63 }
 			map.children[0].deltas = { myArea: 20, myHeight: 0 }
-			map.children[0].origin = "file.json"
 			map.children[1].attributes = { myArea: 0, myHeight: 0 }
 			map.children[1].deltas = { myArea: -40, myHeight: -80 }
-			map.children[1].origin = "notfile.json"
 
 			settings.dynamicSettings.areaMetric = "myArea"
 			settings.dynamicSettings.heightMetric = "myHeight"

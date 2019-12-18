@@ -13,10 +13,10 @@ import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "./settingsService/settings.service"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
 import { BlacklistSubscriber } from "./settingsService/settings.service.events"
+import { SettingsService } from "./settingsService/settings.service"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])

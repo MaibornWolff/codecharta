@@ -6,12 +6,15 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, Edge, BlacklistType, Settings } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { SETTINGS, VALID_EDGE, VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
+import { StoreService } from "../../state/store.service"
+import _ from "lodash"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
 	let settingsService: SettingsService
-	let edgeMetricService: EdgeMetricService
+	let edgeMetricDataService: EdgeMetricDataService
+	let storeService: StoreService
 
 	let nodeA: CodeMapNode
 	let settings: Settings
@@ -21,7 +24,8 @@ describe("CodeMapActionService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		settingsService = getService<SettingsService>("settingsService")
-		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
+		storeService = getService<StoreService>("storeService")
 
 		nodeA = JSON.parse(JSON.stringify(VALID_NODE_WITH_PATH))
 		settings = JSON.parse(JSON.stringify(SETTINGS))
@@ -30,7 +34,7 @@ describe("CodeMapActionService", () => {
 	}
 
 	function rebuildService() {
-		codeMapActionsService = new CodeMapActionsService(settingsService, edgeMetricService)
+		codeMapActionsService = new CodeMapActionsService(settingsService, edgeMetricDataService, storeService)
 	}
 
 	function withMockedSettingsService() {
@@ -58,15 +62,15 @@ describe("CodeMapActionService", () => {
 	describe("toggleNodeVisibility", () => {
 		beforeEach(() => {
 			codeMapActionsService.showNode = jest.fn()
-			codeMapActionsService.hideNode = jest.fn()
+			codeMapActionsService.flattenNode = jest.fn()
 		})
 
-		it("should call hideNode if node is visible", () => {
+		it("should call flattenNode if node is visible", () => {
 			nodeA.visible = true
 
 			codeMapActionsService.toggleNodeVisibility(nodeA)
 
-			expect(codeMapActionsService.hideNode).toHaveBeenCalled()
+			expect(codeMapActionsService.flattenNode).toHaveBeenCalled()
 		})
 
 		it("should call showNode if node is not visible", () => {
@@ -97,12 +101,15 @@ describe("CodeMapActionService", () => {
 			})
 			expect(settings.fileSettings.markedPackages.length).toBe(1)
 			expect(settings.fileSettings.markedPackages).toEqual(expected)
+
+			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(1)
+			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
 		})
 
 		it("should remove the children of a marked package if color is the same", () => {
-			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000000", path: "/root/leaf" })
 			const expected = [{ attributes: {}, color: "0x000000", path: "/root" }]
 
+			codeMapActionsService.markFolder(nodeA.children[0], "0x000000")
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith({
@@ -112,14 +119,18 @@ describe("CodeMapActionService", () => {
 			})
 			expect(settings.fileSettings.markedPackages.length).toBe(1)
 			expect(settings.fileSettings.markedPackages).toEqual(expected)
+
+			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(1)
+			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
 		})
 
 		it("should not remove the children of a marked package if color is different", () => {
-			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000001", path: "/root/leaf" })
 			const expected = [
-				{ attributes: {}, color: "0x000001", path: "/root/leaf" },
+				{ attributes: {}, color: "0x000001", path: "/root/big leaf" },
 				{ attributes: {}, color: "0x000000", path: "/root" }
 			]
+
+			codeMapActionsService.markFolder(nodeA.children[0], "0x000001")
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 
@@ -130,17 +141,21 @@ describe("CodeMapActionService", () => {
 			})
 			expect(settings.fileSettings.markedPackages.length).toBe(2)
 			expect(settings.fileSettings.markedPackages).toEqual(expected)
+
+			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(2)
+			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
 		})
 
 		it("should not mark with a new color if sub-nodes are already marked", () => {
-			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000000", path: "/root" })
-			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000001", path: "/root/big leaf" })
-			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000002", path: "/root/Parent Leaf" })
 			const expected = [
 				{ attributes: {}, color: "0x000001", path: "/root/big leaf" },
 				{ attributes: {}, color: "0x000002", path: "/root/Parent Leaf" },
 				{ attributes: {}, color: "0x000003", path: "/root" }
 			]
+
+			codeMapActionsService.markFolder(nodeA, "0x000000")
+			codeMapActionsService.markFolder(nodeA.children[0], "0x000001")
+			codeMapActionsService.markFolder(nodeA.children[1], "0x000002")
 
 			codeMapActionsService.markFolder(nodeA, "0x000003")
 
@@ -151,12 +166,15 @@ describe("CodeMapActionService", () => {
 			})
 			expect(settings.fileSettings.markedPackages.length).toBe(3)
 			expect(settings.fileSettings.markedPackages).toEqual(expected)
+
+			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(3)
+			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
 		})
 	})
 
 	describe("unmarkFolder", () => {
 		it("should unmark a folder that is marked and has no marked children packages", () => {
-			settings.fileSettings.markedPackages.push({ attributes: {}, color: "0x000000", path: "/root" })
+			codeMapActionsService.markFolder(nodeA, "0x000000")
 
 			codeMapActionsService.unmarkFolder(nodeA)
 
@@ -167,13 +185,19 @@ describe("CodeMapActionService", () => {
 			})
 			expect(settings.fileSettings.markedPackages.length).toBe(0)
 			expect(settings.fileSettings.markedPackages).toEqual([])
+
+			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(0)
+			expect(storeService.getState().fileSettings.markedPackages).toEqual([])
 		})
 
 		it("should not unmark marked children nodes", () => {
-			const mp1 = { attributes: {}, color: "0x000000", path: "/root/big leaf" }
-			const mp2 = { attributes: {}, color: "0x000000", path: "/root/Parent Leaf" }
-			settings.fileSettings.markedPackages.push(mp1)
-			settings.fileSettings.markedPackages.push(mp2)
+			const expected = [
+				{ attributes: {}, color: "0x000000", path: "/root/big leaf" },
+				{ attributes: {}, color: "0x000000", path: "/root/Parent Leaf" }
+			]
+
+			codeMapActionsService.markFolder(nodeA.children[0], "0x000000")
+			codeMapActionsService.markFolder(nodeA.children[1], "0x000000")
 
 			codeMapActionsService.unmarkFolder(nodeA)
 
@@ -183,17 +207,20 @@ describe("CodeMapActionService", () => {
 				}
 			})
 			expect(settings.fileSettings.markedPackages.length).toBe(2)
-			expect(settings.fileSettings.markedPackages).toEqual([mp1, mp2])
+			expect(settings.fileSettings.markedPackages).toEqual(expected)
+
+			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(2)
+			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
 		})
 	})
 
-	describe("hideNode", () => {
+	describe("flattenNode", () => {
 		it("should call pushItemToBlacklist with built BlackListItem", () => {
 			codeMapActionsService.pushItemToBlacklist = jest.fn()
 
-			const expected = { path: nodeA.path, type: BlacklistType.hide }
+			const expected = { path: nodeA.path, type: BlacklistType.flatten }
 
-			codeMapActionsService.hideNode(nodeA)
+			codeMapActionsService.flattenNode(nodeA)
 
 			expect(codeMapActionsService.pushItemToBlacklist).toHaveBeenCalledWith(expected)
 		})
@@ -203,7 +230,7 @@ describe("CodeMapActionService", () => {
 		it("should call removeBlackListEntry with built BlackListItem", () => {
 			codeMapActionsService.removeBlacklistEntry = jest.fn()
 
-			const expected = { path: nodeA.path, type: BlacklistType.hide }
+			const expected = { path: nodeA.path, type: BlacklistType.flatten }
 
 			codeMapActionsService.showNode(nodeA)
 
@@ -229,6 +256,7 @@ describe("CodeMapActionService", () => {
 			codeMapActionsService.focusNode(nodeA)
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(nodeA.path)
 		})
 	})
 
@@ -239,6 +267,7 @@ describe("CodeMapActionService", () => {
 			codeMapActionsService.removeFocusedNode()
 
 			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
 		})
 	})
 
@@ -258,11 +287,10 @@ describe("CodeMapActionService", () => {
 		it("should call pushItemToBlacklist with BlacklistType exclude", () => {
 			settings.fileSettings.blacklist.push({ path: nodeA.path + "/leaf", type: BlacklistType.exclude })
 			const entry = { path: nodeA.path, type: BlacklistType.exclude }
-			const expected = { fileSettings: { blacklist: settings.fileSettings.blacklist } }
 
 			codeMapActionsService.removeBlacklistEntry(entry)
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
+			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(entry)
 		})
 	})
 
@@ -272,8 +300,11 @@ describe("CodeMapActionService", () => {
 			settings.fileSettings.blacklist.push(blacklistItem)
 
 			codeMapActionsService.pushItemToBlacklist(blacklistItem)
+			codeMapActionsService.pushItemToBlacklist(_.cloneDeep(blacklistItem))
 
-			expect(settingsService.updateSettings).not.toHaveBeenCalled()
+			expect(
+				storeService.getState().fileSettings.blacklist.filter(x => JSON.stringify(x) === JSON.stringify(blacklistItem))
+			).toHaveLength(1)
 		})
 
 		it("should update settings if item is not blacklisted", () => {
@@ -281,7 +312,9 @@ describe("CodeMapActionService", () => {
 
 			codeMapActionsService.pushItemToBlacklist(blacklistItem)
 
-			expect(settingsService.updateSettings).toHaveBeenCalled()
+			expect(
+				storeService.getState().fileSettings.blacklist.find(x => JSON.stringify(x) === JSON.stringify(blacklistItem))
+			).toBeDefined()
 		})
 	})
 

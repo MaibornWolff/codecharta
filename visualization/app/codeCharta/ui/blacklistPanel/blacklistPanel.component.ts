@@ -1,18 +1,18 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import "./blacklistPanel.component.scss"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 export class BlacklistPanelController implements BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
-		hide: Array<BlacklistItem>
+		flatten: Array<BlacklistItem>
 		exclude: Array<BlacklistItem>
 		searchPanelMode: SearchPanelMode
 	} = {
-		hide: null,
+		flatten: null,
 		exclude: null,
 		searchPanelMode: null
 	}
@@ -23,7 +23,7 @@ export class BlacklistPanelController implements BlacklistSubscriber, SearchPane
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this._viewModel.hide = blacklist.filter(x => x.type === BlacklistType.hide)
+		this._viewModel.flatten = blacklist.filter(x => x.type === BlacklistType.flatten)
 		this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
 	}
 
@@ -36,8 +36,14 @@ export class BlacklistPanelController implements BlacklistSubscriber, SearchPane
 	}
 }
 
-export const blacklistPanelComponent = {
-	selector: "blacklistPanelComponent",
-	template: require("./blacklistPanel.component.html"),
+export const blacklistPanelFlattenComponent = {
+	selector: "blacklistPanelExcludeComponent",
+	template: require("./blacklistPanel.exclude.component.html"),
+	controller: BlacklistPanelController
+}
+
+export const blacklistPanelExcludeComponent = {
+	selector: "blacklistPanelFlattenComponent",
+	template: require("./blacklistPanel.flatten.component.html"),
 	controller: BlacklistPanelController
 }

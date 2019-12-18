@@ -7,11 +7,13 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
-import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE } from "../../util/dataMocks"
+import { SETTINGS, TEST_FILE_WITH_PATHS, METRIC_DATA, VALID_NODE, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
+import _ from "lodash"
+import { StoreService } from "../../state/store.service"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -19,7 +21,8 @@ describe("codeMapPreRenderService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
 	let loadingStatusService: LoadingStatusService
-	let edgeMetricService: EdgeMetricService
+	let edgeMetricDataService: EdgeMetricDataService
+	let storeService: StoreService
 
 	let settings: Settings
 	let file: CCFile
@@ -27,7 +30,7 @@ describe("codeMapPreRenderService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 		withMockedThreeOrbitControlsService()
 		withMockedLoadingStatusService()
 	})
@@ -42,10 +45,11 @@ describe("codeMapPreRenderService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
-		edgeMetricService = getService<EdgeMetricService>("edgeMetricService")
+		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
+		storeService = getService<StoreService>("storeService")
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		file = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS))
+		settings = _.cloneDeep(SETTINGS)
+		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
 	}
 
 	function rebuildService() {
@@ -54,18 +58,20 @@ describe("codeMapPreRenderService", () => {
 			threeOrbitControlsService,
 			codeMapRenderService,
 			loadingStatusService,
-			edgeMetricService
+			edgeMetricDataService,
+			storeService
 		)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$on = codeMapPreRenderService["$rootScope"].$on = jest.fn()
-		$rootScope.$broadcast = codeMapPreRenderService["$rootScope"].$broadcast = jest.fn()
 	}
 
 	function withMockedThreeOrbitControlsService() {
 		threeOrbitControlsService = codeMapPreRenderService["threeOrbitControlsService"] = jest.fn().mockReturnValue({
 			autoFitTo: jest.fn()
+		})()
+	}
+
+	function withMockedCodeMapRenderService() {
+		codeMapRenderService = codeMapPreRenderService["codeMapRenderService"] = jest.fn().mockReturnValue({
+			render: jest.fn()
 		})()
 	}
 
@@ -81,6 +87,7 @@ describe("codeMapPreRenderService", () => {
 		const fileMeta = { fileName: "foo", apiVersion: "1.0", projectName: "bar" }
 		codeMapPreRenderService["lastRender"].fileMeta = fileMeta
 		codeMapPreRenderService["lastRender"].map = VALID_NODE
+		codeMapPreRenderService["lastRender"].fileStates = []
 	}
 
 	describe("constructor", () => {
@@ -150,6 +157,7 @@ describe("codeMapPreRenderService", () => {
 			NodeDecorator.decorateParentNodesWithSumAttributes = jest.fn()
 			const fileMeta = { fileName: "foo", apiVersion: "1.0", projectName: "bar" }
 			withLastRenderData()
+			withMockedCodeMapRenderService()
 
 			codeMapPreRenderService.onMetricDataAdded(METRIC_DATA)
 
@@ -159,7 +167,7 @@ describe("codeMapPreRenderService", () => {
 
 		it("should retrieve correct edge metrics for leaves", () => {
 			NodeDecorator.decorateMap = originalDecorateMap
-			edgeMetricService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
+			edgeMetricDataService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
 				if (node.data.name === "big leaf") {
 					return new Map().set("metric1", { incoming: 1, outgoing: 2 })
 				} else {
@@ -167,6 +175,7 @@ describe("codeMapPreRenderService", () => {
 				}
 			})
 			withLastRenderData()
+			withMockedCodeMapRenderService()
 
 			codeMapPreRenderService.onMetricDataAdded(METRIC_DATA)
 

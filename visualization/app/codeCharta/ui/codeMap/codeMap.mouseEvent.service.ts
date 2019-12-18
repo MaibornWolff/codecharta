@@ -10,8 +10,8 @@ import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
 import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
+import { SettingsService } from "../../state/settingsService/settings.service"
 
 interface Coordinates {
 	x: number
@@ -127,10 +127,9 @@ export class CodeMapMouseEventService
 				}
 
 				if (from !== to) {
+					this.unhoverBuilding()
 					if (to) {
 						this.hoverBuilding(to)
-					} else {
-						this.unhoverBuilding()
 					}
 				}
 			}
@@ -205,7 +204,7 @@ export class CodeMapMouseEventService
 		}
 
 		if (hoveredBuilding) {
-			this.threeSceneService.highlightBuilding(hoveredBuilding)
+			this.threeSceneService.highlightSingleBuilding(hoveredBuilding)
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 		}
 	}

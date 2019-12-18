@@ -21,7 +21,6 @@ Array [
     "link": undefined,
     "markingColor": null,
     "name": "root",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 48,
       "y": 500,
@@ -58,7 +57,6 @@ Array [
     "link": undefined,
     "markingColor": null,
     "name": "root",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 83.13843876330611,
       "y": 2,
@@ -94,7 +92,6 @@ Array [
     "link": "http://www.google.de",
     "markingColor": null,
     "name": "big leaf",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 83.13843876330606,
       "y": 4,
@@ -126,7 +123,6 @@ Array [
     "link": undefined,
     "markingColor": null,
     "name": "Parent Leaf",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 406.6768775266122,
       "y": 502,
@@ -163,7 +159,6 @@ Array [
     "link": undefined,
     "markingColor": null,
     "name": "root",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 117.57550765359252,
       "y": 2,
@@ -199,7 +194,6 @@ Array [
     "link": "http://www.google.de",
     "markingColor": null,
     "name": "big leaf",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 291.76326148038873,
       "y": 4,
@@ -231,7 +225,6 @@ Array [
     "link": undefined,
     "markingColor": null,
     "name": "Parent Leaf",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 291.76326148038873,
       "y": 4,
@@ -267,7 +260,6 @@ Array [
     "link": undefined,
     "markingColor": null,
     "name": "small leaf",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": -119.56734770392222,
       "y": 6,
@@ -303,7 +295,6 @@ Array [
     "link": undefined,
     "markingColor": null,
     "name": "other small leaf",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 332.97958762842757,
       "y": 6,
@@ -335,7 +326,6 @@ Array [
     "link": undefined,
     "markingColor": null,
     "name": "empty folder",
-    "origin": undefined,
     "outgoingEdgePoint": Vector3 {
       "x": 456.351015307185,
       "y": 504,

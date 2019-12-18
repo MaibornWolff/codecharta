@@ -9,22 +9,27 @@ import { IRootScopeService } from "angular"
 import { Settings } from "../../codeCharta.model"
 import { SETTINGS } from "../../util/dataMocks"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { StoreService } from "../../state/store.service"
 
 describe("RangeSliderController", () => {
 	let settingsService: SettingsService
+	let storeService: StoreService
 	let fileStateService: FileStateService
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
 	let rangeSliderController: RangeSliderController
 
+	let SOME_EXTRA_TIME = 400
+
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController(settingsService, fileStateService, metricService, $rootScope)
+		rangeSliderController = new RangeSliderController(settingsService, storeService, fileStateService, metricService, $rootScope)
 	}
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.rangeSlider")
 
 		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
@@ -102,7 +107,7 @@ describe("RangeSliderController", () => {
 			expect(rangeSliderController["_viewModel"].sliderOptions.onFromChange).not.toBeUndefined()
 		})
 
-		it("should be able to call onFromChange and set the color range correctly", () => {
+		it("should be able to call onFromChange and set the color range correctly", done => {
 			settingsService.updateSettings = jest.fn()
 			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
@@ -115,9 +120,15 @@ describe("RangeSliderController", () => {
 			expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
 
 			expect(settingsService.updateSettings).toHaveBeenCalled()
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
+				expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
+				done()
+			}, RangeSliderController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 
-		it("should be able to call onToChange and set the color range correctly", () => {
+		it("should be able to call onToChange and set the color range correctly", done => {
 			settingsService.updateSettings = jest.fn()
 			metricService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 
@@ -130,6 +141,12 @@ describe("RangeSliderController", () => {
 			expect(metricService.getMaxMetricByMetricName).toBeCalledWith(SETTINGS.dynamicSettings.colorMetric)
 
 			expect(settingsService.updateSettings).toHaveBeenCalled()
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.colorRange.from).toEqual(19)
+				expect(storeService.getState().dynamicSettings.colorRange.to).toEqual(67)
+				done()
+			}, RangeSliderController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 })

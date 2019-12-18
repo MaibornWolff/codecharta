@@ -3,7 +3,7 @@ import { FileStateService } from "./fileState.service"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CCFile, FileSelectionState } from "../codeCharta.model"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../util/dataMocks"
 import { LoadingStatusService } from "./loadingStatus.service"
 
 describe("FileStateService", () => {
@@ -19,7 +19,7 @@ describe("FileStateService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 		withMockedLoadingStatusService()
 	})
 
@@ -37,11 +37,6 @@ describe("FileStateService", () => {
 
 	function rebuildService() {
 		fileStateService = new FileStateService($rootScope, loadingStatusService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = fileStateService["$rootScope"].$broadcast = jest.fn()
-		$rootScope.$on = fileStateService["$rootScope"].$on = jest.fn()
 	}
 
 	function withMockedLoadingStatusService() {

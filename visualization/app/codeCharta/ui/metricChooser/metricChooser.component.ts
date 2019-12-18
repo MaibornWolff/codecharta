@@ -1,8 +1,7 @@
+import "./metricChooser.component.scss"
 import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import "./metricChooser.component.scss"
-import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { MetricData, DynamicSettings, RecursivePartial, Node } from "../../codeCharta.model"
+import { MetricData, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import {
 	AreaMetricSubscriber,
@@ -12,22 +11,18 @@ import {
 } from "../../state/settingsService/settings.service.events"
 import $ from "jquery"
 import _ from "lodash"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { StoreService } from "../../state/store.service"
+import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
+import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
+import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 export class MetricChooserController
-	implements
-		MetricServiceSubscriber,
-		BuildingHoveredSubscriber,
-		BuildingUnhoveredSubscriber,
-		AreaMetricSubscriber,
-		HeightMetricSubscriber,
-		ColorMetricSubscriber,
-		DistributionMetricSubscriber {
+	implements MetricServiceSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
 	private originalMetricData: MetricData[]
-
-	private POSITIVE_COLOR = "#b1d8a8"
-	private NEGATIVE_COLOR = "#ffcccc"
-	private NEUTRAL_COLOR = "#e6e6e6"
 
 	private _viewModel: {
 		metricData: MetricData[]
@@ -35,8 +30,6 @@ export class MetricChooserController
 		colorMetric: string
 		heightMetric: string
 		distributionMetric: string
-		hoveredNode: Node
-		deltaColor: string
 		searchTerm: string
 	} = {
 		metricData: [],
@@ -44,21 +37,20 @@ export class MetricChooserController
 		colorMetric: null,
 		heightMetric: null,
 		distributionMetric: null,
-		hoveredNode: null,
-		deltaColor: null,
 		searchTerm: ""
 	}
 
 	/* @ngInject */
-	constructor(private settingsService: SettingsService, private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
+		private settingsService: SettingsService,
+		private storeService: StoreService
+	) {
 		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
 		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
 		SettingsService.subscribeToColorMetric(this.$rootScope, this)
 		SettingsService.subscribeToDistributionMetric(this.$rootScope, this)
-
-		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
@@ -127,6 +119,7 @@ export class MetricChooserController
 
 		if (_.keys(dynamicSettingsUpdate).length !== 0) {
 			this.settingsService.updateSettings({ dynamicSettings: dynamicSettingsUpdate })
+			this.storeService.dispatch(setDynamicSettings(dynamicSettingsUpdate))
 		}
 	}
 
@@ -149,6 +142,8 @@ export class MetricChooserController
 				margin
 			}
 		})
+		this.storeService.dispatch(setAreaMetric(this._viewModel.areaMetric))
+		this.storeService.dispatch(setMargin(margin))
 	}
 
 	public applySettingsColorMetric() {
@@ -158,6 +153,8 @@ export class MetricChooserController
 				colorRange: this.settingsService.getDefaultSettings().dynamicSettings.colorRange
 			}
 		})
+		this.storeService.dispatch(setColorMetric(this._viewModel.colorMetric))
+		this.storeService.dispatch(setColorRange())
 	}
 
 	public applySettingsHeightMetric() {
@@ -166,6 +163,7 @@ export class MetricChooserController
 				heightMetric: this._viewModel.heightMetric
 			}
 		})
+		this.storeService.dispatch(setHeightMetric(this._viewModel.heightMetric))
 	}
 
 	public applySettingsDistributionMetric() {
@@ -174,37 +172,7 @@ export class MetricChooserController
 				distributionMetric: this._viewModel.distributionMetric
 			}
 		})
-	}
-
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		if (hoveredBuilding.node) {
-			this._viewModel.hoveredNode = hoveredBuilding.node
-			if (hoveredBuilding.node.deltas) {
-				this._viewModel.deltaColor = this.getHoveredDeltaColor()
-			}
-		}
-		this.synchronizeAngularTwoWayBinding()
-	}
-
-	public onBuildingUnhovered() {
-		this._viewModel.hoveredNode = null
-		this.synchronizeAngularTwoWayBinding()
-	}
-
-	private getHoveredDeltaColor() {
-		const heightDelta: number = this._viewModel.hoveredNode.deltas[this._viewModel.heightMetric]
-
-		if (heightDelta > 0) {
-			return this.POSITIVE_COLOR
-		} else if (heightDelta < 0) {
-			return this.NEGATIVE_COLOR
-		} else {
-			return this.NEUTRAL_COLOR
-		}
-	}
-
-	private synchronizeAngularTwoWayBinding() {
-		this.$timeout(() => {})
+		this.storeService.dispatch(setDistributionMetric(this._viewModel.distributionMetric))
 	}
 }
 

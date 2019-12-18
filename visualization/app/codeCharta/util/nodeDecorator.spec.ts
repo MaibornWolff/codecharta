@@ -1,26 +1,29 @@
 import * as d3 from "d3"
-import { SETTINGS, TEST_DELTA_MAP_A } from "./dataMocks"
+import { SETTINGS, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
 import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { CodeMapHelper } from "./codeMapHelper"
+import _ from "lodash"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
 	let map: CodeMapNode
+	let deltaMap: CodeMapNode
 	let fileMeta: FileMeta
 	let metricData: MetricData[]
 	let blacklist: BlacklistItem[]
 
 	beforeEach(() => {
-		file = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A))
-		map = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A.map))
-		fileMeta = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A.fileMeta))
+		file = _.cloneDeep(TEST_DELTA_MAP_A)
+		map = _.cloneDeep(TEST_DELTA_MAP_A.map)
+		deltaMap = _.cloneDeep(VALID_NODE_WITH_PATH_AND_DELTAS)
+		fileMeta = _.cloneDeep(TEST_DELTA_MAP_A.fileMeta)
 		metricData = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
 		]
-		blacklist = JSON.parse(JSON.stringify(SETTINGS.fileSettings.blacklist))
+		blacklist = _.cloneDeep(SETTINGS.fileSettings.blacklist)
 	})
 
 	describe("decorateMap", () => {
@@ -30,7 +33,7 @@ describe("nodeDecorator", () => {
 
 		it("should aggregate given metrics correctly", () => {
 			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [])
+			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
 
 			expect(result.attributes["rloc"]).toBe(200)
 			expect(result.attributes["functions"]).toBe(1110)
@@ -40,7 +43,7 @@ describe("nodeDecorator", () => {
 		it("should aggregate missing metrics correctly", () => {
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
 			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [])
+			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
 
 			expect(result.attributes["rloc"]).toBe(200)
 			expect(result.attributes["some"]).toBe(0)
@@ -249,7 +252,7 @@ describe("nodeDecorator", () => {
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
 
 			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [])
+			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
 			let h = d3.hierarchy(result)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -259,7 +262,7 @@ describe("nodeDecorator", () => {
 
 		it("all nodes should have an attribute list with listed and available metrics", () => {
 			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [])
+			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
 			let h = d3.hierarchy(result)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
@@ -270,20 +273,21 @@ describe("nodeDecorator", () => {
 
 		it("folders should have sum attributes of children", () => {
 			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [])
+			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
 			let h = d3.hierarchy(result)
 			expect(h.data.attributes["rloc"]).toBe(200)
 			expect(h.children[0].data.attributes["rloc"]).toBe(100)
 			expect(h.data.attributes["functions"]).toBe(1110)
 		})
 
-		it("all nodes should have an origin", () => {
-			map.children[0].origin = undefined
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
+		it("folders should have sum delta values of children", () => {
+			let result = NodeDecorator.decorateMap(deltaMap, fileMeta, metricData)
+			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], true)
 			let h = d3.hierarchy(result)
-			h.each(node => {
-				expect(node.data.origin).toBeDefined()
-			})
+			expect(h.data.deltas["rloc"]).toBe(295)
+			expect(h.children[0].data.deltas["rloc"]).toBe(300)
+			expect(h.children[2].data.deltas["rloc"]).toBe(145)
+			expect(h.data.deltas["functions"]).toBe(5)
 		})
 
 		it("maps with no attribute nodes should be accepted and an attributes member added", () => {

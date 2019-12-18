@@ -1,4 +1,5 @@
 import { Vector3 } from "three"
+import { Action } from "redux"
 
 export interface NameDataPair {
 	fileName: string
@@ -20,7 +21,7 @@ export enum FileSelectionState {
 
 export enum SearchPanelMode {
 	treeView = "treeView",
-	hide = "hide",
+	flatten = "flatten",
 	exclude = "exclude",
 	minimized = "minimized"
 }
@@ -52,7 +53,6 @@ export interface CodeMapNode {
 		[key: string]: EdgeMetricCount
 	}
 	link?: string
-	origin?: string
 	path?: string
 	visible?: boolean
 	deltas?: {
@@ -177,7 +177,7 @@ export interface BlacklistItem {
 }
 
 export enum BlacklistType {
-	hide = "hide",
+	flatten = "flatten",
 	exclude = "exclude"
 }
 
@@ -229,11 +229,21 @@ export interface Node {
 	heightDelta: number
 	visible: boolean
 	path: string
-	origin: string
 	link: string
 	markingColor: string
 	flat: boolean
 	color: string
 	incomingEdgePoint: Vector3
 	outgoingEdgePoint: Vector3
+}
+
+export interface State {
+	fileSettings: FileSettings
+	dynamicSettings: DynamicSettings
+	appSettings: AppSettings
+	treeMap: TreeMapSettings
+}
+
+export interface CCAction extends Action {
+	payload: any
 }

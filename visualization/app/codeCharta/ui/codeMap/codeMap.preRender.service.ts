@@ -23,8 +23,9 @@ import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsServi
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import * as d3 from "d3"
+import { StoreService } from "../../state/store.service"
 
 export interface RenderData {
 	map: CodeMapNode
@@ -56,7 +57,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
 		private loadingStatusService: LoadingStatusService,
-		private edgeMetricService: EdgeMetricService
+		private edgeMetricDataService: EdgeMetricDataService,
+		private storeService: StoreService
 	) {
 		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
@@ -74,7 +76,14 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
 		this.lastRender.settings = settings
 
-		if (this.lastRender.fileStates && update.fileSettings && (update.fileSettings.blacklist || update.fileSettings.markedPackages)) {
+		//TODO: Remove when all settings are in the store
+		this.lastRender.settings.fileSettings.blacklist = this.storeService.getState().fileSettings.blacklist
+
+		if (
+			this.lastRender.fileStates &&
+			update.fileSettings &&
+			(this.storeService.getState().fileSettings.blacklist || update.fileSettings.markedPackages)
+		) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
 		}
@@ -117,6 +126,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	private decorateIfPossible() {
 		if (
 			this.lastRender.map &&
+			this.lastRender.fileStates &&
 			this.lastRender.fileMeta &&
 			this.lastRender.settings &&
 			this.lastRender.settings.fileSettings &&
@@ -129,16 +139,17 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 				this.lastRender.map,
 				this.lastRender.settings.fileSettings.blacklist,
 				this.lastRender.metricData,
-				this.edgeMetricService.getMetricData()
+				this.edgeMetricDataService.getMetricData(),
+				FileStateHelper.isDeltaState(this.lastRender.fileStates)
 			)
 		}
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
-		if (map && this.edgeMetricService.getMetricNames()) {
+		if (map && this.edgeMetricDataService.getMetricNames()) {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
-				const edgeMetrics = this.edgeMetricService.getMetricValuesForNode(node)
+				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
 				for (let edgeMetric of edgeMetrics.keys()) {
 					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
 				}

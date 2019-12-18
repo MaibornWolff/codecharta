@@ -33,7 +33,7 @@ describe("mapBuilder", () => {
 				type: "File",
 				path: "/root/big leaf",
 				children: [],
-				attributes: { RLOC: 100, Functions: 10, MCC: 1 },
+				attributes: { rloc: 100, functions: 10, mcc: 1 },
 				link: "http://www.google.de"
 			}
 			expect(MapBuilder["findNode"](rootNode, "/root/big leaf")).toEqual(expected)
@@ -45,7 +45,7 @@ describe("mapBuilder", () => {
 				type: "File",
 				path: "/root/Parent Leaf/other small leaf",
 				children: [],
-				attributes: { RLOC: 70, Functions: 1000, MCC: 10 }
+				attributes: { rloc: 70, functions: 1000, mcc: 10 }
 			}
 			expect(MapBuilder["findNode"](rootNode, "/root/Parent Leaf/other small leaf")).toEqual(expected)
 		})
