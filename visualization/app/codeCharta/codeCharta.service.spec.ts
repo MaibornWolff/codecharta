@@ -34,7 +34,7 @@ describe("codeChartaService", () => {
 				attributes: {},
 				children: [
 					{
-						attributes: { Functions: 10, MCC: 1, RLOC: 100 },
+						attributes: { functions: 10, mcc: 1, rloc: 100 },
 						link: "http://www.google.de",
 						name: "big leaf",
 						path: "/root/big leaf",
@@ -44,13 +44,13 @@ describe("codeChartaService", () => {
 						attributes: {},
 						children: [
 							{
-								attributes: { Functions: 100, MCC: 100, RLOC: 30 },
+								attributes: { functions: 100, mcc: 100, rloc: 30 },
 								name: "small leaf",
 								path: "/root/Parent Leaf/small leaf",
 								type: "File"
 							},
 							{
-								attributes: { Functions: 1000, MCC: 10, RLOC: 70 },
+								attributes: { functions: 1000, mcc: 10, rloc: 70 },
 								name: "other small leaf",
 								path: "/root/Parent Leaf/other small leaf",
 								type: "File"
