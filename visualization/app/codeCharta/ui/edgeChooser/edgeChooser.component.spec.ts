@@ -90,30 +90,6 @@ describe("EdgeChooserController", () => {
 			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("metric1")
 			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("metric2")
 		})
-
-		it("should keep selected metric if available in new map", () => {
-			const metricData = [
-				{ name: "metric1", maxValue: 22, availableInVisibleMaps: true },
-				{ name: "None", maxValue: 1, availableInVisibleMaps: false }
-			]
-			edgeChooserController["_viewModel"].edgeMetric = "metric1"
-
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
-
-			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("metric1")
-		})
-
-		it("should update edgeMetric to None if selected edgeMetric is no longer available", () => {
-			const metricData = [
-				{ name: "metric2", maxValue: 22, availableInVisibleMaps: true },
-				{ name: "None", maxValue: 1, availableInVisibleMaps: false }
-			]
-			edgeChooserController["_viewModel"].edgeMetric = "metric1"
-
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
-
-			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("None")
-		})
 	})
 
 	describe("onBuildingHovered", () => {

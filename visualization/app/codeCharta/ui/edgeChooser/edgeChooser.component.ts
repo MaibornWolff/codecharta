@@ -41,10 +41,6 @@ export class EdgeChooserController
 	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
 		this._viewModel.edgeMetricData = edgeMetrics
 		this.originalEdgeMetricData = edgeMetrics
-		if (!this.originalEdgeMetricData.map(x => x.name).includes(this._viewModel.edgeMetric)) {
-			this._viewModel.edgeMetric = "None"
-		}
-		this.onEdgeMetricSelected()
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
