@@ -157,7 +157,7 @@ describe("FileExtensionCalculator", () => {
 				}
 			]
 			map.children.push(...additionalChildren)
-			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 95
+			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 2.0
 
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
 
