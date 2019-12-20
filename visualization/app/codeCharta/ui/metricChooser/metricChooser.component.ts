@@ -37,12 +37,7 @@ export class MetricChooserController
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private $timeout: ITimeoutService,
-		private storeService: StoreService,
-		private metricService: MetricService
-	) {
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
@@ -66,6 +61,13 @@ export class MetricChooserController
 		this._viewModel.distributionMetric = distributionMetric
 	}
 
+	public onMetricDataAdded(metricData: MetricData[]) {
+		this._viewModel.metricData = metricData
+		this.originalMetricData = metricData
+	}
+
+	public onMetricDataRemoved() {}
+
 	public filterMetricData() {
 		this._viewModel.metricData = this.originalMetricData.filter(metric =>
 			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
@@ -81,54 +83,6 @@ export class MetricChooserController
 		this.$timeout(() => {
 			$(".metric-search." + idName).focus()
 		}, 200)
-	}
-
-	public onMetricDataAdded(metricData: MetricData[]) {
-		this._viewModel.metricData = metricData
-		this.originalMetricData = metricData
-		const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps && x.maxValue > 0)
-		if (metricData.length > 1 && availableMetrics.length > 0) {
-			this.potentiallyUpdateAreaMetric()
-			this.potentiallyUpdateColorMetric()
-			this.potentiallyUpdateHeightMetric()
-			this.potentiallyUpdateDistributionMetric()
-		}
-	}
-
-	public onMetricDataRemoved() {}
-
-	private potentiallyUpdateAreaMetric() {
-		if (this.isMetricUnavailable("areaMetric")) {
-			this.storeService.dispatch(setAreaMetric(this.getMetricNameFromIndexOrLast(0)))
-		}
-	}
-
-	private potentiallyUpdateHeightMetric() {
-		if (this.isMetricUnavailable("heightMetric")) {
-			this.storeService.dispatch(setHeightMetric(this.getMetricNameFromIndexOrLast(1)))
-		}
-	}
-
-	private potentiallyUpdateColorMetric() {
-		if (this.isMetricUnavailable("colorMetric")) {
-			this.storeService.dispatch(setColorMetric(this.getMetricNameFromIndexOrLast(2)))
-		}
-	}
-
-	private potentiallyUpdateDistributionMetric() {
-		if (this.isMetricUnavailable("distributionMetric")) {
-			this.storeService.dispatch(setDistributionMetric(this.getMetricNameFromIndexOrLast(0)))
-		}
-	}
-
-	private isMetricUnavailable(metricKey: string) {
-		const metricName: string = this.storeService.getState().dynamicSettings[metricKey]
-		return !this.metricService.getMetricData().find(x => x.availableInVisibleMaps && x.maxValue > 0 && x.name == metricName)
-	}
-
-	private getMetricNameFromIndexOrLast(index: number) {
-		const availableMetrics = this.metricService.getMetricData().filter(x => x.availableInVisibleMaps && x.maxValue > 0)
-		return availableMetrics[Math.min(index, availableMetrics.length - 1)].name
 	}
 
 	public applySettingsAreaMetric() {

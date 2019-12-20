@@ -3,14 +3,12 @@ import "./metricChooser.module"
 import { MetricChooserController } from "./metricChooser.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { DEFAULT_STATE, STATE } from "../../util/dataMocks"
 import { MetricService } from "../../state/metric.service"
 import { StoreService } from "../../state/store.service"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
-import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { MetricData } from "../../codeCharta.model"
 
 describe("MetricChooserController", () => {
@@ -18,10 +16,9 @@ describe("MetricChooserController", () => {
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
 	let storeService: StoreService
-	let metricService: MetricService
 
 	function rebuildController() {
-		metricChooserController = new MetricChooserController($rootScope, $timeout, storeService, metricService)
+		metricChooserController = new MetricChooserController($rootScope, $timeout, storeService)
 	}
 
 	function restartSystem() {
@@ -30,19 +27,12 @@ describe("MetricChooserController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
-		metricService = getService<MetricService>("metricService")
 	}
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
 	})
-
-	function withMockedMetricService(metricData) {
-		metricService = metricChooserController["metricService"] = jest.fn().mockReturnValue({
-			getMetricData: jest.fn().mockReturnValue(metricData)
-		})()
-	}
 
 	function setMetricData(metricData: MetricData[]) {
 		metricChooserController["originalMetricData"] = metricData
@@ -129,65 +119,10 @@ describe("MetricChooserController", () => {
 				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
 				{ name: "b", maxValue: 2, availableInVisibleMaps: false }
 			]
-			withMockedMetricService(metricData)
 
 			metricChooserController.onMetricDataAdded(metricData)
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
-		})
-
-		it("store is updated if selected metrics are not available", () => {
-			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "c", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "d", maxValue: 2, availableInVisibleMaps: true }
-			]
-			withMockedMetricService(metricData)
-
-			metricChooserController.onMetricDataAdded(metricData)
-
-			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
-			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("c")
-			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("b")
-			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("a")
-		})
-
-		it("same metric is selected multiple times if less than 3 metrics available", () => {
-			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 1, availableInVisibleMaps: false }
-			]
-			withMockedMetricService(metricData)
-
-			metricChooserController.onMetricDataAdded(metricData)
-
-			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
-			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("a")
-			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("a")
-			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("a")
-		})
-
-		it("settings are not updated if selected metrics are available", () => {
-			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
-			const metricData = [
-				{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
-			]
-			withMockedMetricService(metricData)
-
-			metricChooserController.onMetricDataAdded(metricData)
-
-			expect(storeService.getState().dynamicSettings).toEqual(STATE.dynamicSettings)
-		})
-
-		it("no metrics available, should not update settings", () => {
-			const metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
-			withMockedMetricService(metricData)
-
-			metricChooserController.onMetricDataAdded(metricData)
-
-			expect(storeService.getState()).toEqual(DEFAULT_STATE)
 		})
 	})
 
