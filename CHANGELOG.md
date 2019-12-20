@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Calculation of other Group for fileExtensionBar #768
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.41.0] - 2019-12-06
