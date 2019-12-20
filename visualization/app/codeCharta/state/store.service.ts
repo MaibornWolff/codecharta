@@ -12,6 +12,7 @@ import { setColorRange } from "./store/dynamicSettings/colorRange/colorRange.act
 import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
+import { LoadingStatusService } from "./loadingStatus.service"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -22,7 +23,7 @@ export class StoreService implements FileStateServiceSubscriber {
 	private store: Store
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(private $rootScope: IRootScopeService, private loadingStatusService: LoadingStatusService) {
 		this.store = createStore(rootReducer)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
@@ -34,6 +35,10 @@ export class StoreService implements FileStateServiceSubscriber {
 	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
+		if (!isSilent) {
+			this.loadingStatusService.updateLoadingMapFlag(true)
+		}
+
 		splitStateActions(action).forEach(atomicAction => {
 			this.store.dispatch(atomicAction)
 			if (!isSilent) {

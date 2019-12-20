@@ -11,10 +11,12 @@ import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { FileStateService } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
+import { LoadingStatusService } from "./loadingStatus.service"
 
 describe("StoreService", () => {
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
+	let loadingStatusService: LoadingStatusService
 
 	let fileStates: FileState[]
 
@@ -27,6 +29,7 @@ describe("StoreService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		fileStates = [
 			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
@@ -35,7 +38,7 @@ describe("StoreService", () => {
 	}
 
 	function rebuildService() {
-		storeService = new StoreService($rootScope)
+		storeService = new StoreService($rootScope, loadingStatusService)
 	}
 
 	describe("constructor", () => {
@@ -158,6 +161,22 @@ describe("StoreService", () => {
 			storeService.dispatch(setState(STATE))
 
 			expect(storeService.getState()).toEqual(STATE)
+		})
+
+		it("should show loading map gif", () => {
+			loadingStatusService.updateLoadingMapFlag = jest.fn()
+
+			storeService.dispatch(setState())
+
+			expect(loadingStatusService.updateLoadingMapFlag).toHaveBeenCalled()
+		})
+
+		it("should not show loading map gif for silent mode", () => {
+			loadingStatusService.updateLoadingMapFlag = jest.fn()
+
+			storeService.dispatch(setState(), true)
+
+			expect(loadingStatusService.updateLoadingMapFlag).not.toHaveBeenCalled()
 		})
 	})
 })
