@@ -16,7 +16,9 @@
 				ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
 				title="{{ item.relativeMetricValue.toFixed(2) }}%"
 			>
-				{{ item.fileExtension }}
+				<span ng-if="item.relativeMetricValue > 2">
+					{{ item.fileExtension }}
+				</span>
 			</p>
 		</div>
 	</div>
