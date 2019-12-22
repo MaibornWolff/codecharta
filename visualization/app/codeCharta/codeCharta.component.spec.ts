@@ -11,8 +11,8 @@ import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
-import { setState } from "./state/store/state.actions"
 import { STATE } from "./util/dataMocks"
+import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -138,7 +138,7 @@ describe("codeChartaController", () => {
 
 			await codeChartaController.loadFileOrSample()
 
-			expect(storeService.dispatch).toHaveBeenCalledWith(setState())
+			expect(storeService.dispatch).toHaveBeenCalledWith(setAppSettings())
 		})
 	})
 
