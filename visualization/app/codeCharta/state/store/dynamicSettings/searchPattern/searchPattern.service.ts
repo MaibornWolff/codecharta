@@ -13,7 +13,7 @@ export class SearchPatternService implements StoreSubscriber, FileStateServiceSu
 	private static SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 

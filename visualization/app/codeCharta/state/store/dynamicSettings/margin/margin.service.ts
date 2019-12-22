@@ -20,7 +20,7 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 		AreaMetricService.subscribe(this.$rootScope, this)
 		DynamicMarginService.subscribe(this.$rootScope, this)
 	}

@@ -13,7 +13,7 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataService
 	private static EDGE_METRIC_CHANGED_EVENT = "edge-metric-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
 	}
 

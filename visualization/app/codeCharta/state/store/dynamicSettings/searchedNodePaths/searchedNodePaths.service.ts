@@ -11,7 +11,7 @@ export class SearchedNodePathsService implements StoreSubscriber {
 	private static SEARCHED_NODE_PATHS_CHANGED_EVENT = "searched-node-paths-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {

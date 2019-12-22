@@ -17,7 +17,7 @@ export class FocusedNodePathService implements StoreSubscriber, FileStateService
 	private static UNFOCUS_NODE_EVENT = "unfocus-node"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
