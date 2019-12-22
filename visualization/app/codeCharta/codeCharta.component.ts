@@ -10,6 +10,7 @@ import { LoadingStatusService } from "./state/loadingStatus.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
+import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -70,7 +71,7 @@ export class CodeChartaController {
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
-		this.storeService.dispatch(setState())
+		this.storeService.dispatch(setAppSettings())
 
 		this.codeChartaService
 			.loadFiles(values)
