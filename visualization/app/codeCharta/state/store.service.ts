@@ -4,7 +4,6 @@ import { CCAction, FileSettings, FileState, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
-import { unfocusNode } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { setSearchPattern } from "./store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
@@ -50,7 +49,6 @@ export class StoreService implements FileStateServiceSubscriber {
 	}
 
 	private resetDynamicAndFileSettings(fileStates: FileState[]) {
-		this.dispatch(unfocusNode())
 		this.dispatch(setSearchedNodePaths())
 		this.dispatch(setSearchPattern())
 

@@ -2,9 +2,10 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { FocusedNodePathAction, FocusedNodePathActions } from "./focusedNodePath.actions"
+import { FocusedNodePathAction, FocusedNodePathActions, focusNode } from "./focusedNodePath.actions"
 import { FocusedNodePathService } from "./focusedNodePath.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
+import { FileStateService } from "../../../fileState.service"
 
 describe("FocusedNodePathService", () => {
 	let focusedNodePathService: FocusedNodePathService
@@ -35,6 +36,14 @@ describe("FocusedNodePathService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, focusedNodePathService)
+		})
+
+		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, focusedNodePathService)
 		})
 	})
 
@@ -67,6 +76,16 @@ describe("FocusedNodePathService", () => {
 			focusedNodePathService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("onFileSelectionStatesChanged", () => {
+		it("should reset and unfocus node", () => {
+			storeService.dispatch(focusNode("some/path"))
+
+			focusedNodePathService.onFileSelectionStatesChanged([])
+
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
 		})
 	})
 })

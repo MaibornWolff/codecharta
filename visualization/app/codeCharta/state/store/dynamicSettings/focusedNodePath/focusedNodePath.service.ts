@@ -1,7 +1,8 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { FocusedNodePathActions } from "./focusedNodePath.actions"
-import _ from "lodash"
+import { FocusedNodePathActions, unfocusNode } from "./focusedNodePath.actions"
+import { FileStateService, FileStateServiceSubscriber } from "../../../fileState.service"
+import { FileState } from "../../../../codeCharta.model"
 
 export interface FocusNodeSubscriber {
 	onFocusNode(focusedNodePath: string)
@@ -11,12 +12,13 @@ export interface UnfocusNodeSubscriber {
 	onUnfocusNode()
 }
 
-export class FocusedNodePathService implements StoreSubscriber {
+export class FocusedNodePathService implements StoreSubscriber, FileStateServiceSubscriber {
 	private static FOCUS_NODE_EVENT = "focus-node"
 	private static UNFOCUS_NODE_EVENT = "unfocus-node"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe($rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -25,6 +27,16 @@ export class FocusedNodePathService implements StoreSubscriber {
 		} else if (actionType === FocusedNodePathActions.UNFOCUS_NODE) {
 			this.notifyUnfocus()
 		}
+	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+		this.reset()
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[]) {}
+
+	public reset() {
+		this.storeService.dispatch(unfocusNode())
 	}
 
 	private select() {
