@@ -119,14 +119,12 @@ describe("CodeMapActionService", () => {
 	})
 
 	describe("focusNode", () => {
-		it("should call removeFocusedNode if node-path equals root-path", () => {
-			codeMapActionsService.removeFocusedNode = jest.fn()
-
+		it("should unfocus node if node-path equals root-path", () => {
 			CodeChartaService.ROOT_PATH = "/root"
 
 			codeMapActionsService.focusNode(nodeA)
 
-			expect(codeMapActionsService.removeFocusedNode).toHaveBeenCalled()
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
 		})
 
 		it("should call update focusedNodePath if node-path does not equal root-path", () => {
@@ -135,14 +133,6 @@ describe("CodeMapActionService", () => {
 			codeMapActionsService.focusNode(nodeA)
 
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(nodeA.path)
-		})
-	})
-
-	describe("removeFocusedNode", () => {
-		it("should call update focusedNodePath", () => {
-			codeMapActionsService.removeFocusedNode()
-
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
 		})
 	})
 

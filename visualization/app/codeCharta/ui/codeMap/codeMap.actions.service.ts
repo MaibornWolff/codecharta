@@ -50,14 +50,10 @@ export class CodeMapActionsService {
 
 	public focusNode(node: CodeMapNode) {
 		if (node.path === CodeChartaService.ROOT_PATH) {
-			this.removeFocusedNode()
+			this.storeService.dispatch(unfocusNode())
 		} else {
 			this.storeService.dispatch(focusNode(node.path))
 		}
-	}
-
-	public removeFocusedNode() {
-		this.storeService.dispatch(unfocusNode())
 	}
 
 	public excludeNode(node: CodeMapNode) {
