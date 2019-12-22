@@ -4,8 +4,6 @@ import { CCAction, FileSettings, FileState, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
-import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { setSearchPattern } from "./store/dynamicSettings/searchPattern/searchPattern.actions"
 import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
@@ -26,7 +24,7 @@ export class StoreService implements FileStateServiceSubscriber {
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.resetDynamicAndFileSettings(fileStates)
+		this.dispatch(setFileSettings(this.getNewFileSettings(fileStates)))
 	}
 
 	public onImportedFilesChanged(fileStates: FileState[]) {}
@@ -46,12 +44,6 @@ export class StoreService implements FileStateServiceSubscriber {
 
 	public getState(): State {
 		return this.store.getState()
-	}
-
-	private resetDynamicAndFileSettings(fileStates: FileState[]) {
-		this.dispatch(setSearchedNodePaths())
-
-		this.dispatch(setFileSettings(this.getNewFileSettings(fileStates)))
 	}
 
 	private getNewFileSettings(fileStates: FileState[]): FileSettings {
