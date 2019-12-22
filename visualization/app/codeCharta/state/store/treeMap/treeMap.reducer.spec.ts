@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS } from "../../../util/dataMocks"
+import { DEFAULT_STATE } from "../../../util/dataMocks"
 import fileSettings from "./treeMap.reducer"
 import { TreeMapSettingsAction } from "./treeMap.actions"
 
@@ -7,7 +7,7 @@ describe("treeMapSettings", () => {
 		it("should initialize the default state", () => {
 			const result = fileSettings(undefined, {} as TreeMapSettingsAction)
 
-			expect(result).toEqual(DEFAULT_SETTINGS.treeMapSettings)
+			expect(result).toEqual(DEFAULT_STATE.treeMap)
 		})
 	})
 })

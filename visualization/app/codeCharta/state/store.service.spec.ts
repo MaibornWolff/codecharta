@@ -4,7 +4,7 @@ import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType, FileSelectionState, FileState } from "../codeCharta.model"
 import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
-import { DEFAULT_SETTINGS, DEFAULT_STATE, STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
+import { DEFAULT_STATE, STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
 import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
@@ -61,7 +61,7 @@ describe("StoreService", () => {
 		beforeEach(() => {
 			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
 			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
-			SettingsMerger.getMergedFileSettings = jest.fn().mockReturnValue(DEFAULT_SETTINGS)
+			SettingsMerger.getMergedFileSettings = jest.fn().mockReturnValue(DEFAULT_STATE)
 		})
 
 		it("should update store with default dynamicSettings and newFileSettings", () => {
