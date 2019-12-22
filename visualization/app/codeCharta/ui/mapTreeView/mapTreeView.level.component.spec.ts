@@ -1,7 +1,6 @@
 import "./mapTreeView.module"
 
 import { MapTreeViewLevelController } from "./mapTreeView.level.component"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
@@ -24,7 +23,6 @@ import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
 	let $rootScope: IRootScopeService
-	let codeMapActionsService: CodeMapActionsService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let storeService: StoreService
 	let $event
@@ -40,7 +38,6 @@ describe("MapTreeViewLevelController", () => {
 		instantiateModule("app.codeCharta.ui.mapTreeView")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		storeService = getService<StoreService>("storeService")
 
@@ -51,12 +48,7 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	function rebuildController() {
-		mapTreeViewLevelController = new MapTreeViewLevelController(
-			$rootScope,
-			codeMapActionsService,
-			codeMapPreRenderService,
-			storeService
-		)
+		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapPreRenderService, storeService)
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -190,13 +182,11 @@ describe("MapTreeViewLevelController", () => {
 	})
 
 	describe("onLabelClick", () => {
-		it("should call codeMapActionsService.focusNode", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
-			mapTreeViewLevelController["codeMapActionsService"].focusNode = jest.fn()
-
+		it("should set new focused path", () => {
+			mapTreeViewLevelController["node"] = VALID_NODE_WITH_PATH.children[1]
 			mapTreeViewLevelController.onLabelClick()
 
-			expect(mapTreeViewLevelController["codeMapActionsService"].focusNode).toHaveBeenCalledWith(mapTreeViewLevelController["node"])
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(VALID_NODE_WITH_PATH.children[1].path)
 		})
 	})
 

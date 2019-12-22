@@ -3,7 +3,6 @@ import "../../codeCharta.module"
 import { CodeMapActionsService } from "./codeMap.actions.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode } from "../../codeCharta.model"
-import { CodeChartaService } from "../../codeCharta.service"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
@@ -114,24 +113,6 @@ describe("CodeMapActionService", () => {
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(2)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
-		})
-	})
-
-	describe("focusNode", () => {
-		it("should unfocus node if node-path equals root-path", () => {
-			CodeChartaService.ROOT_PATH = "/root"
-
-			codeMapActionsService.focusNode(nodeA)
-
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
-		})
-
-		it("should call update focusedNodePath if node-path does not equal root-path", () => {
-			CodeChartaService.ROOT_PATH = "/not/root"
-
-			codeMapActionsService.focusNode(nodeA)
-
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(nodeA.path)
 		})
 	})
 

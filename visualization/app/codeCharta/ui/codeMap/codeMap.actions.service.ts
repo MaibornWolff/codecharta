@@ -1,9 +1,7 @@
 import { CodeMapNode, EdgeVisibility } from "../../codeCharta.model"
-import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage } from "../../codeCharta.model"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
-import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { markPackage, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
@@ -43,14 +41,6 @@ export class CodeMapActionsService {
 		} else {
 			const parentMP: MarkedPackage = this.getParentMP(node.path)
 			this.removeMarkedPackage(parentMP)
-		}
-	}
-
-	public focusNode(node: CodeMapNode) {
-		if (node.path === CodeChartaService.ROOT_PATH) {
-			this.storeService.dispatch(unfocusNode())
-		} else {
-			this.storeService.dispatch(focusNode(node.path))
 		}
 	}
 

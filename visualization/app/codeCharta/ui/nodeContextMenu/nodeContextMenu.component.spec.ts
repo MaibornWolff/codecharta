@@ -87,8 +87,7 @@ describe("nodeContextMenuController", () => {
 				getParentMP: jest.fn(),
 				anyEdgeIsVisible: jest.fn(),
 				markFolder: jest.fn(),
-				unmarkFolder: jest.fn(),
-				focusNode: jest.fn()
+				unmarkFolder: jest.fn()
 			}
 		})()
 	}
@@ -353,7 +352,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("focusNode", () => {
 		beforeEach(() => {
-			codeMapActionsService.focusNode = jest.fn()
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
 		})
 
 		it("should hide contextMenu", () => {
@@ -364,10 +363,10 @@ describe("nodeContextMenuController", () => {
 			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 
-		it("should call hide and codeMapActionService.focusNode", () => {
+		it("should set new focused path", () => {
 			nodeContextMenuController.focusNode()
 
-			expect(codeMapActionsService.focusNode).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding)
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(VALID_NODE_WITH_PATH.children[1].path)
 		})
 	})
 

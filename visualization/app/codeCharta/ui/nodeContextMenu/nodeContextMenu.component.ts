@@ -6,6 +6,7 @@ import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.mode
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
@@ -138,7 +139,7 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 
 	public focusNode() {
 		this.onHideNodeContextMenu()
-		this.codeMapActionsService.focusNode(this._viewModel.contextMenuBuilding)
+		this.storeService.dispatch(focusNode(this._viewModel.contextMenuBuilding.path))
 	}
 
 	public excludeNode() {
