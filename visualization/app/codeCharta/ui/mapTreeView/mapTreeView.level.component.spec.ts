@@ -19,6 +19,7 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
+import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -200,15 +201,32 @@ describe("MapTreeViewLevelController", () => {
 	})
 
 	describe("onEyeClick", () => {
-		it("should call codeMapActionsService.toggleNodeVisibility", () => {
+		beforeEach(() => {
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", VALID_NODE_WITH_PATH)
-			mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility = jest.fn()
+		})
+
+		it("should add flattened blacklistItem", () => {
+			storeService.dispatch(setBlacklist([]))
+			mapTreeViewLevelController["node"].visible = true
 
 			mapTreeViewLevelController.onEyeClick()
 
-			expect(mapTreeViewLevelController["codeMapActionsService"].toggleNodeVisibility).toHaveBeenCalledWith(
-				mapTreeViewLevelController["node"]
-			)
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual({
+				path: "/root/Parent Leaf",
+				type: BlacklistType.flatten
+			})
+		})
+
+		it("should remove flattened blacklistItem", () => {
+			storeService.dispatch(setBlacklist([{ path: "/root/Parent Leaf", type: BlacklistType.flatten }]))
+			mapTreeViewLevelController["node"].visible = false
+
+			mapTreeViewLevelController.onEyeClick()
+
+			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual({
+				path: "/root/Parent Leaf",
+				type: BlacklistType.flatten
+			})
 		})
 	})
 

@@ -3,10 +3,11 @@ import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.co
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
+import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -81,7 +82,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public onEyeClick() {
-		this.codeMapActionsService.toggleNodeVisibility(this.node)
+		const blacklistItem: BlacklistItem = { path: this.node.path, type: BlacklistType.flatten }
+		if (this.node.visible) {
+			this.storeService.dispatch(addBlacklistItem(blacklistItem))
+		} else {
+			this.storeService.dispatch(removeBlacklistItem(blacklistItem))
+		}
 	}
 
 	public isLeaf(node: CodeMapNode = this.node): boolean {

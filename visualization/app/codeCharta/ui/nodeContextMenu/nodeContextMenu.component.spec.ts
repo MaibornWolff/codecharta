@@ -9,7 +9,8 @@ import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH, withMockedEventMethods } from "
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
-import { MarkedPackage } from "../../codeCharta.model"
+import { BlacklistType, MarkedPackage } from "../../codeCharta.model"
+import { addBlacklistItem, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -85,7 +86,6 @@ describe("nodeContextMenuController", () => {
 			return {
 				getParentMP: jest.fn(),
 				anyEdgeIsVisible: jest.fn(),
-				flattenNode: jest.fn(),
 				markFolder: jest.fn(),
 				unmarkFolder: jest.fn(),
 				focusNode: jest.fn(),
@@ -190,25 +190,33 @@ describe("nodeContextMenuController", () => {
 		})
 	})
 
-	describe("hideNode", () => {
-		it("should set _viewModel.contextMenuBuilding to null and call codeMapActionService.hideNode with null", () => {
-			codeMapActionsService.flattenNode = jest.fn()
+	describe("flattenNode", () => {
+		it("should add flattened blacklistItem", () => {
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
+			storeService.dispatch(setBlacklist([]))
 
 			nodeContextMenuController.flattenNode()
 			$timeout.flush()
 
-			expect(codeMapActionsService.flattenNode).toHaveBeenCalledWith(null)
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual({
+				path: "/root/Parent Leaf",
+				type: BlacklistType.flatten
+			})
 		})
 	})
 
 	describe("showNode", () => {
-		it("should set _viewModel.contextMenuBuilding to null and call codeMapActionService.showNode with null", () => {
-			codeMapActionsService.showNode = jest.fn()
+		it("should add flattened blacklistItem", () => {
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
+			storeService.dispatch(addBlacklistItem({ path: "/root/Parent Leaf", type: BlacklistType.flatten }))
 
 			nodeContextMenuController.showNode()
 			$timeout.flush()
 
-			expect(codeMapActionsService.showNode).toHaveBeenCalledWith(null)
+			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual({
+				path: "/root/Parent Leaf",
+				type: BlacklistType.flatten
+			})
 		})
 	})
 

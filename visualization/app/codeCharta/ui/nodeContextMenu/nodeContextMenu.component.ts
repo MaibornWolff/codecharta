@@ -2,9 +2,10 @@ import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { CodeMapNode } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
+import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
@@ -78,12 +79,14 @@ export class NodeContextMenuController implements ShowNodeContextMenuSubscriber,
 
 	public flattenNode() {
 		this.onHideNodeContextMenu()
-		this.codeMapActionsService.flattenNode(this._viewModel.contextMenuBuilding)
+		const blacklistItem: BlacklistItem = { path: this._viewModel.contextMenuBuilding.path, type: BlacklistType.flatten }
+		this.storeService.dispatch(addBlacklistItem(blacklistItem))
 	}
 
 	public showNode() {
 		this.onHideNodeContextMenu()
-		this.codeMapActionsService.showNode(this._viewModel.contextMenuBuilding)
+		const blacklistItem: BlacklistItem = { path: this._viewModel.contextMenuBuilding.path, type: BlacklistType.flatten }
+		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
 	}
 
 	public clickColor(color: string) {

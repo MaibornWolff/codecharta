@@ -41,35 +41,6 @@ describe("CodeMapActionService", () => {
 		jest.resetAllMocks()
 	})
 
-	describe("toggleNodeVisibility", () => {
-		beforeEach(() => {
-			codeMapActionsService.showNode = jest.fn()
-			codeMapActionsService.flattenNode = jest.fn()
-		})
-
-		it("should call flattenNode if node is visible", () => {
-			nodeA.visible = true
-
-			codeMapActionsService.toggleNodeVisibility(nodeA)
-
-			expect(codeMapActionsService.flattenNode).toHaveBeenCalled()
-		})
-
-		it("should call showNode if node is not visible", () => {
-			nodeA.visible = false
-
-			codeMapActionsService.toggleNodeVisibility(nodeA)
-
-			expect(codeMapActionsService.showNode).toHaveBeenCalled()
-		})
-
-		it("should call showNode if node.visible is undefined", () => {
-			codeMapActionsService.toggleNodeVisibility(nodeA)
-
-			expect(codeMapActionsService.showNode).toHaveBeenCalled()
-		})
-	})
-
 	describe("markFolder", () => {
 		it("should mark a folder that is not marked yet and has no marked children packages", () => {
 			const expected = [{ attributes: {}, color: "0x000000", path: "/root" }]
@@ -144,30 +115,6 @@ describe("CodeMapActionService", () => {
 
 			expect(storeService.getState().fileSettings.markedPackages).toHaveLength(2)
 			expect(storeService.getState().fileSettings.markedPackages).toEqual(expected)
-		})
-	})
-
-	describe("flattenNode", () => {
-		it("should call pushItemToBlacklist with built BlackListItem", () => {
-			codeMapActionsService.pushItemToBlacklist = jest.fn()
-
-			const expected = { path: nodeA.path, type: BlacklistType.flatten }
-
-			codeMapActionsService.flattenNode(nodeA)
-
-			expect(codeMapActionsService.pushItemToBlacklist).toHaveBeenCalledWith(expected)
-		})
-	})
-
-	describe("showNode", () => {
-		it("should call removeBlackListEntry with built BlackListItem", () => {
-			codeMapActionsService.removeBlacklistEntry = jest.fn()
-
-			const expected = { path: nodeA.path, type: BlacklistType.flatten }
-
-			codeMapActionsService.showNode(nodeA)
-
-			expect(codeMapActionsService.removeBlacklistEntry).toHaveBeenCalledWith(expected)
 		})
 	})
 

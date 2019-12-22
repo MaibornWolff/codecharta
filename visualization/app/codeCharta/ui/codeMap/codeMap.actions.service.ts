@@ -12,14 +12,6 @@ import { markPackage, unmarkPackage } from "../../state/store/fileSettings/marke
 export class CodeMapActionsService {
 	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {}
 
-	public toggleNodeVisibility(node: CodeMapNode) {
-		if (node.visible) {
-			this.flattenNode(node)
-		} else {
-			this.showNode(node)
-		}
-	}
-
 	public markFolder(node: CodeMapNode, color: string) {
 		const newMP: MarkedPackage = this.getNewMarkedPackage(node.path, color)
 		const clickedMP: MarkedPackage = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === newMP.path)
@@ -54,14 +46,6 @@ export class CodeMapActionsService {
 			const parentMP: MarkedPackage = this.getParentMP(node.path)
 			this.removeMarkedPackage(parentMP)
 		}
-	}
-
-	public flattenNode(node: CodeMapNode) {
-		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.flatten })
-	}
-
-	public showNode(node: CodeMapNode) {
-		this.removeBlacklistEntry({ path: node.path, type: BlacklistType.flatten })
 	}
 
 	public focusNode(node: CodeMapNode) {
