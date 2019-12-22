@@ -67,6 +67,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		if (this.fileStateService.getFileStates().length > 0) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
+			if (this.allNecessaryRenderDataAvailable()) {
+				this.renderAndNotify()
+			}
 		}
 	}
 
