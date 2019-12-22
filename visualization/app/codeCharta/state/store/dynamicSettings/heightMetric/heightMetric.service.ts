@@ -4,7 +4,7 @@ import { HeightMetricActions, setHeightMetric } from "./heightMetric.actions"
 import _ from "lodash"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
-import { getResetMetricName, isAnyMetricAvailable } from "../../../../util/metricHelper"
+import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
 
 export interface HeightMetricSubscriber {
 	onHeightMetricChanged(heightMetric: string)
@@ -35,9 +35,8 @@ export class HeightMetricService implements StoreSubscriber, MetricServiceSubscr
 	public reset(metricData: MetricData[]) {
 		const heightMetric = this.storeService.getState().dynamicSettings.heightMetric
 
-		const newHeightMetric = getResetMetricName(metricData, heightMetric, 1)
-
-		if (newHeightMetric) {
+		if (isMetricUnavailable(metricData, heightMetric)) {
+			const newHeightMetric = getMetricNameFromIndexOrLast(metricData, 1)
 			this.storeService.dispatch(setHeightMetric(newHeightMetric))
 		}
 	}

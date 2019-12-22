@@ -4,7 +4,7 @@ import { ColorMetricActions, setColorMetric } from "./colorMetric.actions"
 import _ from "lodash"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
-import { getResetMetricName, isAnyMetricAvailable } from "../../../../util/metricHelper"
+import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
 
 export interface ColorMetricSubscriber {
 	onColorMetricChanged(colorMetric: string)
@@ -35,9 +35,8 @@ export class ColorMetricService implements StoreSubscriber, MetricServiceSubscri
 	public reset(metricData: MetricData[]) {
 		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
 
-		const newColorMetric = getResetMetricName(metricData, colorMetric, 2)
-
-		if (newColorMetric) {
+		if (isMetricUnavailable(metricData, colorMetric)) {
+			const newColorMetric = getMetricNameFromIndexOrLast(metricData, 2)
 			this.storeService.dispatch(setColorMetric(newColorMetric))
 		}
 	}

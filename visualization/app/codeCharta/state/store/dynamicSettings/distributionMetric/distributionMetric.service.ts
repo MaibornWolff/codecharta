@@ -4,7 +4,7 @@ import { DistributionMetricActions, setDistributionMetric } from "./distribution
 import _ from "lodash"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
-import { getResetMetricName, isAnyMetricAvailable } from "../../../../util/metricHelper"
+import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
 
 export interface DistributionMetricSubscriber {
 	onDistributionMetricChanged(distributionMetric: string)
@@ -35,9 +35,8 @@ export class DistributionMetricService implements StoreSubscriber, MetricService
 	public reset(metricData: MetricData[]) {
 		const distributionMetric = this.storeService.getState().dynamicSettings.distributionMetric
 
-		const newDistributionMetric = getResetMetricName(metricData, distributionMetric, 0)
-
-		if (newDistributionMetric) {
+		if (isMetricUnavailable(metricData, distributionMetric)) {
+			const newDistributionMetric = getMetricNameFromIndexOrLast(metricData, 0)
 			this.storeService.dispatch(setDistributionMetric(newDistributionMetric))
 		}
 	}

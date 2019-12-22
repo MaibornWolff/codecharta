@@ -4,7 +4,7 @@ import { AreaMetricActions, setAreaMetric } from "./areaMetric.actions"
 import _ from "lodash"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
-import { getResetMetricName, isAnyMetricAvailable } from "../../../../util/metricHelper"
+import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
 
 export interface AreaMetricSubscriber {
 	onAreaMetricChanged(areaMetric: string)
@@ -35,9 +35,8 @@ export class AreaMetricService implements StoreSubscriber, MetricServiceSubscrib
 	public reset(metricData: MetricData[]) {
 		const areaMetric = this.storeService.getState().dynamicSettings.areaMetric
 
-		const newAreaMetric = getResetMetricName(metricData, areaMetric, 0)
-
-		if (newAreaMetric) {
+		if (isMetricUnavailable(metricData, areaMetric)) {
+			const newAreaMetric = getMetricNameFromIndexOrLast(metricData, 0)
 			this.storeService.dispatch(setAreaMetric(newAreaMetric))
 		}
 	}

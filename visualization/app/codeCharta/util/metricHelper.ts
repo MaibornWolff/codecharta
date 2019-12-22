@@ -5,12 +5,6 @@ export function isAnyMetricAvailable(metricData: MetricData[]) {
 	return metricData.length > 1 && availableMetrics.length > 0
 }
 
-export function getResetMetricName(metricData: MetricData[], metricName: string, index: number): string {
-	if (isMetricUnavailable(metricData, metricName)) {
-		return getMetricNameFromIndexOrLast(metricData, index)
-	}
-}
-
 export function isMetricUnavailable(metricData: MetricData[], metricName: string): boolean {
 	return !metricData.find(x => x.availableInVisibleMaps && x.maxValue > 0 && x.name == metricName)
 }
