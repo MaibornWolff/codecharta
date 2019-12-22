@@ -5,17 +5,17 @@
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="legend-block">
 			<img id="positive" alt="positive color" />
-			<span ng-if="!$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from }}</span>
-			<span ng-if="$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to }} to Infinite</span>
+			<span ng-if="!$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
+			<span ng-if="$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span>
 		</div>
 		<div class="legend-block">
 			<img id="neutral" alt="neutral color" />
-			&ge; {{ $ctrl._viewModel.colorRange.from }} to &le; {{ $ctrl._viewModel.colorRange.to }}
+			&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}
 		</div>
 		<div class="legend-block">
 			<img id="negative" alt="negative color" />
-			<span ng-if="!$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to }} to Infinite</span>
-			<span ng-if="$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from }}</span>
+			<span ng-if="!$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span>
+			<span ng-if="$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
 		</div>
 	</div>
 
