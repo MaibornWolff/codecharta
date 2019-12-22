@@ -46,10 +46,8 @@ export class LegendPanelController
 	}
 
 	public onColorRangeChanged(colorRange: ColorRange) {
-		if (colorRange.from !== null && colorRange.to !== null) {
-			this._viewModel.colorRange = colorRange
-			this.updatePixelColors()
-		}
+		this._viewModel.colorRange = colorRange
+		this.updatePixelColors()
 	}
 
 	public onInvertColorRangeChanged(invertColorRange: boolean) {
