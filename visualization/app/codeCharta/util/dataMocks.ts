@@ -745,13 +745,6 @@ export const DEFAULT_STATE: State = {
 	treeMap: { mapSize: 250 }
 }
 
-export const SETTINGS: Settings = {
-	...STATE,
-	treeMapSettings: {
-		mapSize: 250
-	}
-}
-
 export const DEFAULT_SETTINGS: Settings = {
 	appSettings: {
 		amountOfTopLabels: 1,

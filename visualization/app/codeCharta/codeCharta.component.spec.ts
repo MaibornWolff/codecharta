@@ -5,14 +5,14 @@ import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { Settings } from "./codeCharta.model"
-import { SETTINGS } from "./util/dataMocks"
+import { State } from "./codeCharta.model"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
+import { STATE } from "./util/dataMocks"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -25,7 +25,7 @@ describe("codeChartaController", () => {
 	let injectorService: InjectorService
 	let loadingStatusService: LoadingStatusService
 
-	let settings: Settings
+	let state: State
 
 	beforeEach(() => {
 		restartSystem()
@@ -49,7 +49,7 @@ describe("codeChartaController", () => {
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 		injectorService = getService<InjectorService>("injectorService")
 
-		settings = _.cloneDeep(SETTINGS)
+		state = _.cloneDeep(STATE)
 	}
 
 	function rebuildController() {
@@ -89,7 +89,7 @@ describe("codeChartaController", () => {
 	}
 
 	function withMockedScenarioHelper() {
-		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings })
+		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings: state })
 	}
 
 	function withMockedLoadingStatusService() {
