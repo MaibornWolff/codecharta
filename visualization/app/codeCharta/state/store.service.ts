@@ -50,7 +50,6 @@ export class StoreService implements FileStateServiceSubscriber {
 
 	private resetDynamicAndFileSettings(fileStates: FileState[]) {
 		this.dispatch(setSearchedNodePaths())
-		this.dispatch(setSearchPattern())
 
 		this.dispatch(setFileSettings(this.getNewFileSettings(fileStates)))
 	}
