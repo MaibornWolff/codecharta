@@ -3,7 +3,6 @@ import { SearchBarController } from "./searchBar.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { FileStateService } from "../../state/fileState.service"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { withMockedEventMethods } from "../../util/dataMocks"
@@ -15,7 +14,6 @@ describe("SearchBarController", () => {
 
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let codeMapActionsService: CodeMapActionsService
 	let SOME_EXTRA_TIME = 100
 
 	beforeEach(() => {
@@ -29,11 +27,10 @@ describe("SearchBarController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 	}
 
 	function rebuildController() {
-		searchBarController = new SearchBarController($rootScope, storeService, codeMapActionsService)
+		searchBarController = new SearchBarController($rootScope, storeService)
 	}
 
 	describe("constructor", () => {

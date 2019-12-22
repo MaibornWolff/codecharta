@@ -1,10 +1,8 @@
-import { CodeMapNode, BlacklistType, BlacklistItem, EdgeVisibility } from "../../codeCharta.model"
+import { CodeMapNode, EdgeVisibility } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { MarkedPackage } from "../../codeCharta.model"
-import angular from "angular"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
-import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { markPackage, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
@@ -53,23 +51,6 @@ export class CodeMapActionsService {
 			this.storeService.dispatch(unfocusNode())
 		} else {
 			this.storeService.dispatch(focusNode(node.path))
-		}
-	}
-
-	public excludeNode(node: CodeMapNode) {
-		this.pushItemToBlacklist({ path: node.path, type: BlacklistType.exclude })
-	}
-
-	public removeBlacklistEntry(entry: BlacklistItem) {
-		this.storeService.dispatch(removeBlacklistItem(entry))
-	}
-
-	public pushItemToBlacklist(item: BlacklistItem) {
-		const foundDuplicate = this.storeService.getState().fileSettings.blacklist.filter(obj => {
-			return this.isEqualObjects(obj, item)
-		})
-		if (foundDuplicate.length === 0) {
-			this.storeService.dispatch(addBlacklistItem(item))
 		}
 	}
 
@@ -141,9 +122,5 @@ export class CodeMapActionsService {
 			this.storeService.getState().fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
 		this.storeService.dispatch(unmarkPackage(markedPackage))
-	}
-
-	private isEqualObjects(obj1, obj2): boolean {
-		return JSON.stringify(angular.toJson(obj1)) === JSON.stringify(angular.toJson(obj2))
 	}
 }

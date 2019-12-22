@@ -1,42 +1,30 @@
 import "./blacklistPanel.module"
 import { BlacklistPanelController } from "./blacklistPanel.component"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { StoreService } from "../../state/store.service"
 
 describe("blacklistController", () => {
 	let blacklistPanelController: BlacklistPanelController
 	let $rootScope: IRootScopeService
-	let codeMapActionsService: CodeMapActionsService
-
-	let blacklistItem: BlacklistItem
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedCodeMapActionsService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.blacklistPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-
-		blacklistItem = { path: "/root", type: BlacklistType.exclude }
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		blacklistPanelController = new BlacklistPanelController(codeMapActionsService, $rootScope)
-	}
-
-	function withMockedCodeMapActionsService() {
-		codeMapActionsService = blacklistPanelController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
-			return {
-				removeBlacklistEntry: jest.fn()
-			}
-		})()
+		blacklistPanelController = new BlacklistPanelController($rootScope, storeService)
 	}
 
 	describe("onBlacklistChanged", () => {
@@ -72,10 +60,13 @@ describe("blacklistController", () => {
 	})
 
 	describe("removeBlacklistEntry", () => {
-		it("call codeMapActionsService.removeBlacklistEntry", () => {
-			blacklistPanelController.removeBlacklistEntry(blacklistItem)
+		it("should remove blacklist entry", () => {
+			storeService.dispatch(addBlacklistItem({ path: "/some/leaf", type: BlacklistType.exclude }))
+			const entry = { path: "/some/leaf", type: BlacklistType.exclude }
 
-			expect(codeMapActionsService.removeBlacklistEntry).toHaveBeenCalledWith({ path: "/root", type: "exclude" })
+			blacklistPanelController.removeBlacklistEntry(entry)
+
+			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(entry)
 		})
 	})
 })

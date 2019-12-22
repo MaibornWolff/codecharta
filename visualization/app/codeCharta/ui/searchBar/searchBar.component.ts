@@ -1,12 +1,12 @@
 import "./searchBar.component.scss"
 import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -23,11 +23,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private codeMapActionsService: CodeMapActionsService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		BlacklistService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 		this.applyDebouncedSearchPattern = _.debounce(() => {
@@ -51,7 +47,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
-		this.codeMapActionsService.pushItemToBlacklist({ path: this._viewModel.searchPattern, type: blacklistType })
+		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.searchPattern, type: blacklistType }))
 		this.resetSearchPattern()
 	}
 

@@ -88,8 +88,7 @@ describe("nodeContextMenuController", () => {
 				anyEdgeIsVisible: jest.fn(),
 				markFolder: jest.fn(),
 				unmarkFolder: jest.fn(),
-				focusNode: jest.fn(),
-				excludeNode: jest.fn()
+				focusNode: jest.fn()
 			}
 		})()
 	}
@@ -193,30 +192,32 @@ describe("nodeContextMenuController", () => {
 	describe("flattenNode", () => {
 		it("should add flattened blacklistItem", () => {
 			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
+			const expected = {
+				path: "/root/Parent Leaf",
+				type: BlacklistType.flatten
+			}
 			storeService.dispatch(setBlacklist([]))
 
 			nodeContextMenuController.flattenNode()
 			$timeout.flush()
 
-			expect(storeService.getState().fileSettings.blacklist).toContainEqual({
-				path: "/root/Parent Leaf",
-				type: BlacklistType.flatten
-			})
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
 		})
 	})
 
 	describe("showNode", () => {
 		it("should add flattened blacklistItem", () => {
 			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
-			storeService.dispatch(addBlacklistItem({ path: "/root/Parent Leaf", type: BlacklistType.flatten }))
+			const expected = {
+				path: "/root/Parent Leaf",
+				type: BlacklistType.flatten
+			}
+			storeService.dispatch(addBlacklistItem(expected))
 
 			nodeContextMenuController.showNode()
 			$timeout.flush()
 
-			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual({
-				path: "/root/Parent Leaf",
-				type: BlacklistType.flatten
-			})
+			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(expected)
 		})
 	})
 
@@ -308,13 +309,21 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("markFolder", () => {
-		it("should call hide and codeMapActionService.markFolder", () => {
-			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
+		beforeEach(() => {
 			codeMapActionsService.markFolder = jest.fn()
+		})
+
+		it("should hide contextMenu", () => {
+			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
 
 			nodeContextMenuController.markFolder("color")
 
 			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
+		})
+
+		it("should call hide and codeMapActionService.markFolder", () => {
+			nodeContextMenuController.markFolder("color")
+
 			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(
 				nodeContextMenuController["_viewModel"].contextMenuBuilding,
 				"color"
@@ -323,38 +332,64 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("unmarkFolder", () => {
-		it("should call hide and codeMapActionService.unmarkFolder", () => {
-			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
+		beforeEach(() => {
 			codeMapActionsService.unmarkFolder = jest.fn()
+		})
+
+		it("should hide contextMenu", () => {
+			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
 
 			nodeContextMenuController.unmarkFolder()
 
 			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
+		})
+
+		it("should call hide and codeMapActionService.unmarkFolder", () => {
+			nodeContextMenuController.unmarkFolder()
+
 			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding)
 		})
 	})
 
 	describe("focusNode", () => {
-		it("should call hide and codeMapActionService.focusNode", () => {
-			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
+		beforeEach(() => {
 			codeMapActionsService.focusNode = jest.fn()
+		})
+
+		it("should hide contextMenu", () => {
+			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
 
 			nodeContextMenuController.focusNode()
 
 			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
+		})
+
+		it("should call hide and codeMapActionService.focusNode", () => {
+			nodeContextMenuController.focusNode()
+
 			expect(codeMapActionsService.focusNode).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding)
 		})
 	})
 
 	describe("excludeNode", () => {
-		it("should call hide and codeMapActionService.excludeNode", () => {
+		beforeEach(() => {
+			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
+		})
+
+		it("should hide contextMenu", () => {
 			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
-			codeMapActionsService.excludeNode = jest.fn()
 
 			nodeContextMenuController.excludeNode()
 
 			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
-			expect(codeMapActionsService.excludeNode).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding)
+		})
+
+		it("should add exclude blacklistItem", () => {
+			const expected = { path: "/root/Parent Leaf", type: BlacklistType.exclude }
+
+			nodeContextMenuController.excludeNode()
+
+			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
 		})
 	})
 

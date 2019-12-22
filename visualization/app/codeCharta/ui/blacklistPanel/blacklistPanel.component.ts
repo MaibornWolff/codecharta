@@ -1,9 +1,10 @@
 import "./blacklistPanel.component.scss"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { StoreService } from "../../state/store.service"
 
 export class BlacklistPanelController implements BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
@@ -16,7 +17,7 @@ export class BlacklistPanelController implements BlacklistSubscriber, SearchPane
 		searchPanelMode: null
 	}
 
-	constructor(private codeMapActionsService: CodeMapActionsService, private $rootScope: IRootScopeService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPanelService.subscribe(this.$rootScope, this)
 	}
@@ -31,7 +32,7 @@ export class BlacklistPanelController implements BlacklistSubscriber, SearchPane
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {
-		this.codeMapActionsService.removeBlacklistEntry(entry)
+		this.storeService.dispatch(removeBlacklistItem(entry))
 	}
 }
 

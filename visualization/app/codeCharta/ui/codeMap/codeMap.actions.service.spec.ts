@@ -2,14 +2,13 @@ import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapActionsService } from "./codeMap.actions.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import _ from "lodash"
 import { markPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
-import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
@@ -133,53 +132,6 @@ describe("CodeMapActionService", () => {
 			codeMapActionsService.focusNode(nodeA)
 
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(nodeA.path)
-		})
-	})
-
-	describe("excludeNode", () => {
-		it("should call pushItemToBlacklist with BlacklistType exclude", () => {
-			codeMapActionsService.pushItemToBlacklist = jest.fn()
-
-			const expected = { path: nodeA.path, type: BlacklistType.exclude }
-
-			codeMapActionsService.excludeNode(nodeA)
-
-			expect(codeMapActionsService.pushItemToBlacklist).toHaveBeenCalledWith(expected)
-		})
-	})
-
-	describe("removeBlacklistEntry", () => {
-		it("should call pushItemToBlacklist with BlacklistType exclude", () => {
-			storeService.dispatch(addBlacklistItem({ path: nodeA.path + "/leaf", type: BlacklistType.exclude }))
-			const entry = { path: nodeA.path, type: BlacklistType.exclude }
-
-			codeMapActionsService.removeBlacklistEntry(entry)
-
-			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(entry)
-		})
-	})
-
-	describe("pushItemToBlacklist", () => {
-		it("should not update settings if item is already blacklisted", () => {
-			const blacklistItem = { path: nodeA.path, type: BlacklistType.exclude }
-			storeService.dispatch(addBlacklistItem(blacklistItem))
-
-			codeMapActionsService.pushItemToBlacklist(blacklistItem)
-			codeMapActionsService.pushItemToBlacklist(_.cloneDeep(blacklistItem))
-
-			expect(
-				storeService.getState().fileSettings.blacklist.filter(x => JSON.stringify(x) === JSON.stringify(blacklistItem))
-			).toHaveLength(1)
-		})
-
-		it("should update settings if item is not blacklisted", () => {
-			const blacklistItem = { path: nodeA.path, type: BlacklistType.exclude }
-
-			codeMapActionsService.pushItemToBlacklist(blacklistItem)
-
-			expect(
-				storeService.getState().fileSettings.blacklist.find(x => JSON.stringify(x) === JSON.stringify(blacklistItem))
-			).toBeDefined()
 		})
 	})
 
