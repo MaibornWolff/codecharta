@@ -7,7 +7,6 @@ import {
 	FileState,
 	MetricData,
 	Node,
-	Settings,
 	BlacklistType,
 	EdgeVisibility,
 	State
