@@ -14,6 +14,7 @@ import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetri
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { TEST_FILE_DATA } from "../../util/dataMocks"
+import { FileStateHelper } from "../../util/fileStateHelper"
 
 describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
@@ -106,42 +107,12 @@ describe("RangeSliderController", () => {
 	})
 
 	describe("onColorMetricChanged", () => {
-		beforeEach(() => {
-			rangeSliderController["maxMetricValue"] = 100
-		})
+		it("should set maxMetricValue", () => {
+			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
-		it("should set the maxMetricValue", done => {
-			rangeSliderController.onColorMetricChanged("someMetric")
+			rangeSliderController.onColorMetricChanged("myMetric")
 
-			setTimeout(() => {
-				expect(rangeSliderController["maxMetricValue"]).toEqual(100)
-				done()
-			})
-		})
-
-		it("should init the slider options when metric data is available", () => {
-			const expected = {
-				ceil: 100,
-				onChange: () => rangeSliderController["applySettings"],
-				pushRange: true,
-				onToChange: () => rangeSliderController["onToSliderChange"],
-				onFromChange: () => rangeSliderController["onFromSliderChange"],
-				disabled: false
-			}
-
-			rangeSliderController.onColorMetricChanged("mcc")
-
-			setTimeout(() => {
-				expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
-			})
-		})
-
-		it("should apply adapted colorRange", () => {
-			rangeSliderController.onColorMetricChanged("someMetric")
-
-			setTimeout(() => {
-				expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
-			})
+			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
 	})
 
@@ -166,10 +137,6 @@ describe("RangeSliderController", () => {
 	})
 
 	describe("onColorRangeChanged", () => {
-		beforeEach(() => {
-			rangeSliderController["maxMetricValue"] = 100
-		})
-
 		it("should update the viewModel", () => {
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
@@ -177,14 +144,31 @@ describe("RangeSliderController", () => {
 			expect(rangeSliderController["_viewModel"].colorRangeTo).toBe(30)
 		})
 
+		it("should init the slider options when metric data is available", () => {
+			const expected = {
+				ceil: 100,
+				onChange: () => rangeSliderController["updateSliderColors"],
+				pushRange: true,
+				disabled: false
+			}
+
+			rangeSliderController.onColorMetricChanged("mcc")
+
+			setTimeout(() => {
+				expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
+			})
+		})
+
 		it("should set grey colors when slider is disabled", () => {
 			rangeSliderController["applyCssColors"] = jest.fn()
-			rangeSliderController["_viewModel"].sliderOptions.disabled = true
+			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(true)
 			const expected = { left: mapColors.lightGrey, middle: mapColors.lightGrey, right: mapColors.lightGrey }
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+			setTimeout(() => {
+				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+			})
 		})
 
 		it("should set standard colors", () => {
@@ -193,7 +177,9 @@ describe("RangeSliderController", () => {
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+			setTimeout(() => {
+				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+			})
 		})
 
 		it("should set grey positive color when positive buildings are white", () => {
@@ -203,7 +189,9 @@ describe("RangeSliderController", () => {
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+			setTimeout(() => {
+				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+			})
 		})
 
 		it("should set inverted color slider", () => {
@@ -213,54 +201,84 @@ describe("RangeSliderController", () => {
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
-			expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+			setTimeout(() => {
+				expect(rangeSliderController["applyCssColors"]).toHaveBeenCalledWith(expected, 10)
+			})
+		})
+
+		describe("updateSliderColors", () => {
+			beforeEach(() => {
+				rangeSliderController["applyCssColors"] = jest.fn()
+				rangeSliderController["getColoredRangeColors"] = jest.fn()
+				rangeSliderController["getGreyRangeColors"] = jest.fn()
+			})
+
+			describe("single state", () => {
+				beforeEach(() => {
+					fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
+				})
+
+				it("should set sliderOptions.disabled to false", () => {
+					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+					setTimeout(() => {
+						expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeFalsy()
+					})
+				})
+
+				it("should set sliders with range colors", () => {
+					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+					setTimeout(() => {
+						expect(rangeSliderController["getColoredRangeColors"]).toHaveBeenCalled()
+						expect(rangeSliderController["getGreyRangeColors"]).not.toHaveBeenCalled()
+					})
+				})
+			})
+
+			describe("delta state", () => {
+				beforeEach(() => {
+					fileStates[0].selectedAs = FileSelectionState.Reference
+					fileStates[1].selectedAs = FileSelectionState.Comparison
+					fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
+				})
+
+				it("should set sliderOptions.disabled to true", () => {
+					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+					setTimeout(() => {
+						expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeTruthy()
+					})
+				})
+
+				it("should set sliders with grey colors", () => {
+					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
+
+					setTimeout(() => {
+						expect(rangeSliderController["getColoredRangeColors"]).not.toHaveBeenCalled()
+						expect(rangeSliderController["getGreyRangeColors"]).toHaveBeenCalled()
+					})
+				})
+			})
 		})
 	})
 
 	describe("onFileSelectionStatesChanged", () => {
-		beforeEach(() => {
-			rangeSliderController["applyCssColors"] = jest.fn()
-			rangeSliderController["getColoredRangeColors"] = jest.fn()
-			rangeSliderController["getGreyRangeColors"] = jest.fn()
+		it("should set maxMetricValue", () => {
+			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
+
+			rangeSliderController.onFileSelectionStatesChanged(fileStates)
+
+			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
 
-		describe("single state", () => {
-			beforeEach(() => {
-				fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
-			})
+		it("should set sliderOptions.disabled", () => {
+			rangeSliderController["_viewModel"].sliderOptions.disabled = undefined
 
-			it("should set sliderOptions.disabled to false", () => {
-				rangeSliderController.onFileSelectionStatesChanged(fileStates)
+			rangeSliderController.onFileSelectionStatesChanged(fileStates)
 
-				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeFalsy()
-			})
-
-			it("should set sliders with range colors", () => {
-				rangeSliderController.onFileSelectionStatesChanged(fileStates)
-
-				expect(rangeSliderController["getColoredRangeColors"]).toHaveBeenCalled()
-				expect(rangeSliderController["getGreyRangeColors"]).not.toHaveBeenCalled()
-			})
-		})
-
-		describe("delta state", () => {
-			beforeEach(() => {
-				fileStates[0].selectedAs = FileSelectionState.Reference
-				fileStates[1].selectedAs = FileSelectionState.Comparison
-				fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
-			})
-
-			it("should set sliderOptions.disabled to true", () => {
-				rangeSliderController.onFileSelectionStatesChanged(fileStates)
-
-				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toBeTruthy()
-			})
-
-			it("should set sliders with grey colors", () => {
-				rangeSliderController.onFileSelectionStatesChanged(fileStates)
-
-				expect(rangeSliderController["getColoredRangeColors"]).not.toHaveBeenCalled()
-				expect(rangeSliderController["getGreyRangeColors"]).toHaveBeenCalled()
+			setTimeout(() => {
+				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)
 			})
 		})
 	})

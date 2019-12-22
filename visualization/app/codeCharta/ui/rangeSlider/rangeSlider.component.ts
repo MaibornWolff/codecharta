@@ -29,7 +29,6 @@ export class RangeSliderController
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
-	private maxMetricValue: number
 	private DIGIT_WIDTH: number = 11
 	private MIN_DIGITS: number = 4
 	private MAX_DIGITS: number = 6
@@ -65,24 +64,25 @@ export class RangeSliderController
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		if (colorMetric !== null) {
-			this.$timeout(() => {
-				this.setMaxMetricValue()
-				this.initSliderOptions()
-				this.applyAdaptedColorRange()
-			}, 0)
-		}
+		this.updateMaxMetricValue()
 	}
 
 	public onColorRangeChanged(colorRange: ColorRange) {
-		if (colorRange.from !== null && colorRange.to !== null) {
-			this.updateViewModel(colorRange)
+		this.updateViewModel(colorRange)
+
+		this.$timeout(() => {
+			this.initSliderOptions()
 			this.updateSliderColors()
 			this.updateInputFieldWidth()
-		} else if (this.maxMetricValue) {
-			this.applyAdaptedColorRange()
-		}
+		}, 0)
 	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+		this.updateMaxMetricValue()
+		this.updateDisabledSliderOption()
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public onInvertColorRangeChanged(invertColorRange: boolean) {
 		this.updateSliderColors()
@@ -92,17 +92,16 @@ export class RangeSliderController
 		this.updateSliderColors()
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.initSliderOptions()
-		this.updateSliderColors()
+	public onFromSliderChange() {
+		this._viewModel.colorRangeFrom = Math.min(this._viewModel.sliderOptions.ceil - 1, this._viewModel.colorRangeFrom)
+		this._viewModel.colorRangeTo = Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1)
+		this.applyColorRange()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
-	private applyAdaptedColorRange() {
-		const firstThird = Math.round((this.maxMetricValue / 3) * 100) / 100
-		const secondThird = Math.round(firstThird * 2 * 100) / 100
-		this.storeService.dispatch(setColorRange({ from: firstThird, to: secondThird }))
+	public onToSliderChange() {
+		this._viewModel.colorRangeFrom = Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
+		this._viewModel.colorRangeTo = Math.min(this._viewModel.sliderOptions.ceil, Math.max(1, this._viewModel.colorRangeTo))
+		this.applyColorRange()
 	}
 
 	private updateViewModel(colorRange: ColorRange) {
@@ -110,35 +109,26 @@ export class RangeSliderController
 		this._viewModel.colorRangeTo = colorRange.to
 	}
 
-	private setMaxMetricValue() {
-		this.maxMetricValue = this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
+	private updateMaxMetricValue() {
+		this._viewModel.sliderOptions.ceil = this.metricService.getMaxMetricByMetricName(
+			this.storeService.getState().dynamicSettings.colorMetric
+		)
 	}
 
 	private initSliderOptions() {
 		this._viewModel.sliderOptions = {
-			ceil: this.maxMetricValue,
-			onChange: () => this.applyColorRange(),
+			ceil: this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
+			onChange: () => this.updateSliderColors(),
 			pushRange: true,
-			onToChange: () => this.onToSliderChange(),
-			onFromChange: () => this.onFromSliderChange(),
 			disabled: FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 		}
 	}
 
-	private onFromSliderChange() {
-		this._viewModel.colorRangeFrom = Math.min(this.maxMetricValue - 1, this._viewModel.colorRangeFrom)
-		this._viewModel.colorRangeTo = Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1)
-		this.applyColorRange()
-	}
-
-	private onToSliderChange() {
-		this._viewModel.colorRangeFrom = Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
-		this._viewModel.colorRangeTo = Math.min(this.maxMetricValue, Math.max(1, this._viewModel.colorRangeTo))
-		this.applyColorRange()
+	private updateDisabledSliderOption() {
+		this._viewModel.sliderOptions.disabled = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 	}
 
 	private applyColorRange() {
-		this.updateSliderColors()
 		this.applyDebouncedColorRange(
 			setColorRange({
 				to: this._viewModel.colorRangeTo,
@@ -159,7 +149,7 @@ export class RangeSliderController
 	}
 
 	private updateSliderColors() {
-		const rangeFromPercentage = (100 / this.maxMetricValue) * this._viewModel.colorRangeFrom
+		const rangeFromPercentage = (100 / this._viewModel.sliderOptions.ceil) * this._viewModel.colorRangeFrom
 		const rangeColors = this._viewModel.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors()
 		this.applyCssColors(rangeColors, rangeFromPercentage)
 	}

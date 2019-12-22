@@ -7,8 +7,6 @@ import { FileStateService, FileStateServiceSubscriber } from "./fileState.servic
 import { unfocusNode } from "./store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { setSearchPattern } from "./store/dynamicSettings/searchPattern/searchPattern.actions"
-import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
-import { setColorRange } from "./store/dynamicSettings/colorRange/colorRange.actions"
 import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
@@ -55,8 +53,6 @@ export class StoreService implements FileStateServiceSubscriber {
 		this.dispatch(unfocusNode())
 		this.dispatch(setSearchedNodePaths())
 		this.dispatch(setSearchPattern())
-		this.dispatch(setMargin())
-		this.dispatch(setColorRange())
 
 		this.dispatch(setFileSettings(this.getNewFileSettings(fileStates)))
 	}

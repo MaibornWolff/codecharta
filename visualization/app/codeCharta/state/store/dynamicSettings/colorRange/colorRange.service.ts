@@ -1,24 +1,48 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { ColorRangeActions } from "./colorRange.actions"
+import { ColorRangeActions, setColorRange } from "./colorRange.actions"
 import _ from "lodash"
-import { ColorRange } from "../../../../codeCharta.model"
+import { ColorRange, FileState } from "../../../../codeCharta.model"
+import { getResetColorRange } from "./colorRange.reset"
+import { MetricService } from "../../../metric.service"
+import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
+import { FileStateService, FileStateServiceSubscriber } from "../../../fileState.service"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)
 }
 
-export class ColorRangeService implements StoreSubscriber {
+export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FileStateServiceSubscriber {
 	private static COLOR_RANGE_CHANGED_EVENT = "color-range-changed"
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private metricService: MetricService) {
+		StoreService.subscribe(this.$rootScope, this)
+		ColorMetricService.subscribe(this.$rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
 		if (_.values(ColorRangeActions).includes(actionType)) {
 			this.notify(this.select())
 		}
+	}
+
+	public onColorMetricChanged(colorMetric: string) {
+		this.reset()
+	}
+
+	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+		this.reset()
+	}
+
+	public onImportedFilesChanged(fileStates: FileState[]) {}
+
+	public reset() {
+		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
+		const maxMetricValue: number = this.metricService.getMaxMetricByMetricName(colorMetric)
+
+		const newColorRange = getResetColorRange(maxMetricValue)
+		this.storeService.dispatch(setColorRange(newColorRange))
 	}
 
 	private select() {
