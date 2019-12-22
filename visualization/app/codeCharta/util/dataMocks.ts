@@ -644,7 +644,7 @@ export const STATE: State = {
 		colorMetric: "mcc",
 		distributionMetric: "mcc",
 		edgeMetric: "pairingRate",
-		focusedNodePath: "/root",
+		focusedNodePath: "/root/ParentLeaf",
 		searchedNodePaths: [],
 		searchPattern: "",
 		margin: 48,
