@@ -15,7 +15,7 @@ We will *NOT* accept any pull requests that don't follow the Contributor Covenan
 
 ## Naming conventions
 
-## Pull Requests
+### Pull Requests
 - Follow the given template when opening the PR
 - Name the PR like its branch name (e.x. `Tech/123/my branch name`). The name is usually created by GitHub automatically
 - Add the correct labels
