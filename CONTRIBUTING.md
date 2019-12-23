@@ -15,6 +15,13 @@ We will *NOT* accept any pull requests that don't follow the Contributor Covenan
 
 ## Naming conventions
 
+## Pull Requests
+- Follow the given template when opening the PR
+- Name the PR like its branch name (e.x. `Tech/123/my branch name`). The name is usually created by GitHub automatically
+- Add the correct labels
+- The tick list *Definition of Done* is not checked by the developer, but by the reviewer
+- The PR Assignee is only used by the reviewer to see who is reviewing it
+
 ### Branching
 
 Branch names consist of a type and the describing branch name itself, which is always **lowercase** separated by **dashes**. 
