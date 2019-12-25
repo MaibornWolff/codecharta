@@ -35,37 +35,43 @@ Examples:
 - `bugfix/124/solve-unecpected-settings-errors`
 
 ### Commit Messages
+To unify the appearance of all commit messages we only accept commit messages using the following principles:
 
-Commit messages usually are very different from each other, although similar words are used. 
-To unify the overview of all commit messages we would like to keep track of the following principles.
-For more detailed information check out the source [Commit Conventions by Chris Beams](https://chris.beams.io/posts/git-commit/).
-1. Separate subject from optional body with a blank line
-2. Limit the subject line to 50 characters and add the GitHub Issue Number (#123)
+- A commit contains the following, while the `<body-description>` is optional:
+  ```
+  <subject-line> #<issue-id>
+  
+  [<body-description>]
+  ```
+- Separate subject-line from optional body-description with a blank line
+- Use the body-description to explain what, why or how within max 72 characters
+- Limit the subject line to 50 characters and add the **GitHub Issue Number** with the `#`
+- **Capitalize** the subject line
+- Do not end the subject line with a full stop
+- The subject line always uses the **imperative mood** and is able to **complete the following sentence**:
+  > If applied, this commit will ...
 
-    If you’re having a hard time summarizing, you might be committing too many changes at once. Strive for atomic commits (a topic for a separate post).
-
-3. Capitalize the subject line
-4. Do not end the subject line with a full stop
-5. Use the imperative mood in the subject line
-
-    A properly formed Git commit subject line should always be able to complete the following sentence:
-    > If applied, this commit will `<your-subject-line>` #`<issue-id>`
+#### Correct commits
+- ... Add new function to do X #123
+- ... Add test for X #123
+- ... Refactor subsystem X for readability #123
+- ... Update getting started documentation #123
+- ... Remove deprecated methods #123
     
-    Correct Subject Examples:
-    - If applied, this commit will **refactor subsystem X for readability** #123
-    - If applied, this commit will **update getting started documentation** #123
-    - If applied, this commit will **remove deprecated methods** #123
-    - If applied, this commit will **release version 1.0.0** #123
-    - If applied, this commit will **merge pull request #123 from user/branch** #123
-    
-    Wrong Subject Examples:
-    - If applied, this commit will *fixed bug with Y* #123
-    - If applied, this commit will *changing behavior of Y* #123
-    - If applied, this commit will *more fixes for broken stuff* #123
-    - If applied, this commit will *sweet new API methods* #123
+#### Wrong commits
+- *adding new function to do X for Y* #123
+- *added service X* #123
+- *adds tests for X* #123
+- *fixed bug with Y* #123
+- *changing behavior of Y* #123
+- *more fixes for broken stuff* #123
+- *sweet new API methods* #123
 
-6. Wrap the body at 72 characters
-7. Use the body to explain what and why vs. how
-
+### Pull Requests
+- Follow the given template when opening the PR
+- Name the PR like its branch name (e.x. `Tech/123/my branch name`). The name is usually created by GitHub automatically
+- Add the correct labels
+- The tick list *Definition of Done* is not checked by the developer, but by the reviewer
+- The PR Assignee is only used by the reviewer to see who is reviewing it
 
 
