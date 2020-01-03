@@ -12,7 +12,7 @@ export class ScenarioHelper {
 	private static scenarios: Scenario[] = ScenarioHelper.importScenarios(require("../assets/scenarios.json"))
 
 	public static getScenarios(metricData: MetricData[]): Scenario[] {
-		return this.scenarios.filter(x => this.isScenarioPossible(x, metricData))
+		return this.scenarios
 	}
 
 	public static isScenarioPossible(scenario: Scenario, metricData: MetricData[]): boolean {
