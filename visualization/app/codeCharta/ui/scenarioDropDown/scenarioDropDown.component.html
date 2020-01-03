@@ -8,9 +8,53 @@
 				>Metric Scenario</md-button
 			>
 		</md-menu-item>
+
 		<md-divider></md-divider>
-		<md-menu-item ng-repeat="scenario in $ctrl._viewModel.scenarios">
+
+		<md-menu-item>
+			<label>Custom Scenario</label>
+			<md-button
+				ng-click="$ctrl.showAddScenarioSettings()"
+				style="width: 16px;min-width: 58px; text-align: center; margin-right:1px; background-color: #009688"
+				><i class="fa fa-plus" aria-hidden="true"></i
+			></md-button>
+		</md-menu-item>
+
+		<md-divider></md-divider>
+
+		<md-menu-item ng-repeat="scenario in $ctrl._viewModel.scenarios ">
 			<md-button ng-click="$ctrl.applyScenario(scenario.name)">{{::scenario.name}}</md-button>
+			<i
+				class="fa fa-video-camera"
+				ng-style="{'color' : $ctrl.getVisibility('view', scenario.name)}"
+				style="width: 16px;font-size:x-small"
+			></i>
+			<i
+				class="fa fa-arrows-alt"
+				ng-style="{'color' : $ctrl.getVisibility('area', scenario.name)}"
+				style="width: 16px;font-size:x-small"
+			></i>
+			<i
+				class="fa fa-paint-brush"
+				ng-style="{'color' : $ctrl.getVisibility('color', scenario.name)}"
+				style="width: 16px; font-size:x-small"
+			></i>
+			<i
+				class="fa fa-arrows-v"
+				ng-style="{'color' : $ctrl.getVisibility('height', scenario.name)}"
+				style="width: 16px; font-size:x-small"
+			></i>
+			<i
+				class="fa fa-exchange"
+				ng-style="{'color' : $ctrl.getVisibility('edges', scenario.name)}"
+				style="width: 16px; font-size:x-small"
+			></i>
+			<md-button
+				ng-click="$ctrl.removeScenario()"
+				style="width: 16px;min-width: 58px; text-align: center; margin-right:1px; background-color: #ffcccc"
+			>
+				<i class="fa fa-minus"></i>
+			</md-button>
 		</md-menu-item>
 	</md-menu-content>
 </md-menu>
