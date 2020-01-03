@@ -61,6 +61,10 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		return this.metricData
 	}
 
+	public isMetricAvailable(metricName: string) {
+		return this.metricData.find(x => x.name == metricName && x.availableInVisibleMaps)
+	}
+
 	public getMaxMetricByMetricName(metricName: string): number {
 		const metric: MetricData = this.metricData.find(x => x.name == metricName)
 		return metric ? metric.maxValue : undefined

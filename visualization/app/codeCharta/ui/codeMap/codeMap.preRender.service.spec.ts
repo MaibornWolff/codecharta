@@ -112,7 +112,8 @@ describe("codeMapPreRenderService", () => {
 
 	function withMockedMetricService() {
 		metricService = codeMapPreRenderService["metricService"] = jest.fn().mockReturnValue({
-			getMetricData: jest.fn().mockReturnValue(metricData)
+			getMetricData: jest.fn().mockReturnValue(metricData),
+			isMetricAvailable: jest.fn().mockReturnValue(true)
 		})()
 	}
 

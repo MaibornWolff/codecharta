@@ -155,10 +155,19 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		return (
 			this.fileStateService.getFileStates().length > 0 &&
 			this.metricService.getMetricData() !== null &&
-			this.metricService.getMetricData().length > 1 &&
+			this.areChosenMetricsInMetricData() &&
 			_.values(this.storeService.getState().dynamicSettings).every(x => {
 				return x !== null && _.values(x).every(x => x !== null)
 			})
+		)
+	}
+
+	private areChosenMetricsInMetricData() {
+		const dynamicSettings = this.storeService.getState().dynamicSettings
+		return (
+			this.metricService.isMetricAvailable(dynamicSettings.areaMetric) &&
+			this.metricService.isMetricAvailable(dynamicSettings.colorMetric) &&
+			this.metricService.isMetricAvailable(dynamicSettings.heightMetric)
 		)
 	}
 
