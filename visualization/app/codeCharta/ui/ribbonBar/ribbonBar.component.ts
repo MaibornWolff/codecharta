@@ -6,6 +6,7 @@ export class RibbonBarController {
 
 	public toggle(event) {
 		const boxElement = $(event.srcElement).closest("md-card")
+		$(document.activeElement).blur()
 
 		if (boxElement.hasClass(this.EXPANDED_CLASS)) {
 			boxElement.removeClass(this.EXPANDED_CLASS)
