@@ -2,6 +2,7 @@ import { FileValidator } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
+import { NodeDecorator } from "./util/nodeDecorator"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
@@ -15,7 +16,8 @@ export class CodeChartaService {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
 				const errors = FileValidator.validate(nameDataPair.content)
 				if (errors.length === 0) {
-					const ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
+					let ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
+					ccFile = NodeDecorator.preDecorateFile(ccFile)
 					this.fileStateService.addFile(ccFile)
 				} else {
 					reject(errors)
