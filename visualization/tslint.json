@@ -10,6 +10,7 @@
 		"new-parens": true,
 		"no-parameter-reassignment": true,
 		"no-reference": true,
+		"no-unused-variable": [true, { "ignore-pattern": "^_" }],
 		"only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
 		"member-access": true,
 		"member-ordering": [true, { "order": ["static-field", "instance-field", "constructor", "instance-method", "static-method"] }],
