@@ -159,6 +159,7 @@ export class CodeMapMouseEventService
 	}
 
 	public onDocumentMouseDown(event) {
+		$(document.activeElement).blur()
 		if (event.button === 0) {
 			this.onLeftClick()
 		} else if (event.button === 2) {
