@@ -52,6 +52,7 @@ export class FilePanelController implements FileStateServiceSubscriber {
 	}
 
 	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+		this._viewModel.fileStates = fileStates
 		this._viewModel.isSingleState = FileStateHelper.isSingleState(fileStates)
 		this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
@@ -90,9 +91,7 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		}
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {
-		this._viewModel.fileStates = fileStates
-	}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public onSingleFileChange(singleFileName: string) {
 		const singleFile: CCFile = FileStateHelper.getFileByFileName(singleFileName, this.fileStateService.getFileStates())

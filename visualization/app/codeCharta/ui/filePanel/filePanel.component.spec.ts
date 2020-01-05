@@ -74,6 +74,12 @@ describe("filePanelController", () => {
 			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
 		})
 
+		it("should update viewModel with new fileStates", () => {
+			filePanelController.onFileSelectionStatesChanged(fileStates)
+
+			expect(filePanelController["_viewModel"].fileStates).toEqual(fileStates)
+		})
+
 		it("should set the viewModel and lastRenderState correctly", () => {
 			filePanelController.onFileSelectionStatesChanged(fileStates)
 
@@ -154,14 +160,6 @@ describe("filePanelController", () => {
 			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
 			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(storeService.getState().appSettings.mapColors.negativeDelta)
 			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(storeService.getState().appSettings.mapColors.positiveDelta)
-		})
-	})
-
-	describe("onImportedFileChange", () => {
-		it("should update viewmodel with new fileStates", () => {
-			filePanelController.onImportedFilesChanged(fileStates)
-
-			expect(filePanelController["_viewModel"].fileStates).toEqual(fileStates)
 		})
 	})
 
