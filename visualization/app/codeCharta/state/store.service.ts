@@ -3,7 +3,7 @@ import rootReducer from "./store/reducer"
 import { CCAction, FileSettings, FileState, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
-import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
+import { FileStateService, FileStateSubscriber } from "./fileState.service"
 import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
@@ -13,7 +13,7 @@ export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
 }
 
-export class StoreService implements FileStateServiceSubscriber {
+export class StoreService implements FileStateSubscriber {
 	private static STORE_CHANGED_EVENT = "store-changed"
 	private store: Store
 

@@ -10,7 +10,7 @@ import {
 	State
 } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
-import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
+import { FileStateService, FileStateSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
@@ -27,7 +27,7 @@ interface MaxMetricValuePair {
 	availableInVisibleMaps: boolean
 }
 
-export class MetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
+export class MetricService implements FileStateSubscriber, BlacklistSubscriber {
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 
 	//TODO MetricData should contain attributeType

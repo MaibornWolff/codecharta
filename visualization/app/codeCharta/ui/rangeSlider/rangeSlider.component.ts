@@ -2,7 +2,7 @@ import "./rangeSlider.component.scss"
 import $ from "jquery"
 import { ColorRange, FileState } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
@@ -20,12 +20,7 @@ import {
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 
 export class RangeSliderController
-	implements
-		ColorMetricSubscriber,
-		ColorRangeSubscriber,
-		InvertColorRangeSubscriber,
-		WhiteColorBuildingsSubscriber,
-		FileStateServiceSubscriber {
+	implements ColorMetricSubscriber, ColorRangeSubscriber, InvertColorRangeSubscriber, WhiteColorBuildingsSubscriber, FileStateSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 

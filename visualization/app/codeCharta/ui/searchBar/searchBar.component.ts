@@ -1,14 +1,14 @@
 import "./searchBar.component.scss"
 import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
-export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
+export class SearchBarController implements BlacklistSubscriber, FileStateSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedSearchPattern: () => void
 

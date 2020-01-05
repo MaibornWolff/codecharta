@@ -2,7 +2,7 @@ import "./heightSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { Vector3 } from "three"
 import { FileState } from "../../codeCharta.model"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
@@ -17,7 +17,7 @@ import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings
 import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/appSettings/invertHeight/invertHeight.service"
 
 export class HeightSettingsPanelController
-	implements FileStateServiceSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
+	implements FileStateSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedTopLabels: () => void
 	private readonly applyDebouncedScaling: (newScaling: Vector3) => void

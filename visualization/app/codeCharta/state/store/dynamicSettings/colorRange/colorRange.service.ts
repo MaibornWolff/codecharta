@@ -6,13 +6,13 @@ import { ColorRange, FileState } from "../../../../codeCharta.model"
 import { getResetColorRange } from "./colorRange.reset"
 import { MetricService } from "../../../metric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
-import { FileStateService, FileStateServiceSubscriber } from "../../../fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)
 }
 
-export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FileStateServiceSubscriber {
+export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FileStateSubscriber {
 	private static COLOR_RANGE_CHANGED_EVENT = "color-range-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private metricService: MetricService) {

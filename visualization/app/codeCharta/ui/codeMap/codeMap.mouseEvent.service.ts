@@ -8,7 +8,7 @@ import { CodeMapNode, FileState, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
+import { FileStateSubscriber, FileStateService } from "../../state/fileState.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
@@ -36,7 +36,7 @@ export enum ClickType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber, BlacklistSubscriber {
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"

@@ -2,7 +2,7 @@ import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { LoadingStatusService } from "./loadingStatus.service"
 
-export interface FileStateServiceSubscriber {
+export interface FileStateSubscriber {
 	onFileStatesChanged(fileStates: FileState[])
 }
 
@@ -69,7 +69,7 @@ export class FileStateService {
 		this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: FileStateServiceSubscriber) {
+	public static subscribe($rootScope: IRootScopeService, subscriber: FileStateSubscriber) {
 		$rootScope.$on(FileStateService.FILE_STATE_CHANGED_EVENT, (event, data) => {
 			subscriber.onFileStatesChanged(data)
 		})

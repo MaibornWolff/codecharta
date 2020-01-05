@@ -1,7 +1,7 @@
 import "./filePanel.component.scss"
 import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 
@@ -14,7 +14,7 @@ interface SelectedFileNames {
 	partial: string[]
 }
 
-export class FilePanelController implements FileStateServiceSubscriber {
+export class FilePanelController implements FileStateSubscriber {
 	private lastRenderState: FileSelectionState
 
 	private _viewModel: {

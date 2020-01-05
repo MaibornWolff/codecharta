@@ -1,7 +1,7 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { FileState } from "../../codeCharta.model"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
@@ -9,7 +9,7 @@ import _ from "lodash"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
 
-export class AreaSettingsPanelController implements FileStateServiceSubscriber, DynamicMarginSubscriber, MarginSubscriber {
+export class AreaSettingsPanelController implements FileStateSubscriber, DynamicMarginSubscriber, MarginSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedMargin: () => void
 

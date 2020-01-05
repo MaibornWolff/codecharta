@@ -1,7 +1,7 @@
 import "./colorSettingsPanel.component.scss"
 import { FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
@@ -22,7 +22,7 @@ import {
 } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 
 export class ColorSettingsPanelController
-	implements FileStateServiceSubscriber, InvertDeltaColorsSubscriber, WhiteColorBuildingsSubscriber, InvertColorRangeSubscriber {
+	implements FileStateSubscriber, InvertDeltaColorsSubscriber, WhiteColorBuildingsSubscriber, InvertColorRangeSubscriber {
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean

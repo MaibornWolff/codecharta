@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FocusedNodePathActions, unfocusNode } from "./focusedNodePath.actions"
-import { FileStateService, FileStateServiceSubscriber } from "../../../fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
 import { FileState } from "../../../../codeCharta.model"
 
 export interface FocusNodeSubscriber {
@@ -12,7 +12,7 @@ export interface UnfocusNodeSubscriber {
 	onUnfocusNode()
 }
 
-export class FocusedNodePathService implements StoreSubscriber, FileStateServiceSubscriber {
+export class FocusedNodePathService implements StoreSubscriber, FileStateSubscriber {
 	private static FOCUS_NODE_EVENT = "focus-node"
 	private static UNFOCUS_NODE_EVENT = "unfocus-node"
 

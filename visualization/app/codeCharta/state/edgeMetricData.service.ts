@@ -1,5 +1,5 @@
 import { MetricData, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount } from "../codeCharta.model"
-import { FileStateServiceSubscriber, FileStateService } from "./fileState.service"
+import { FileStateSubscriber, FileStateService } from "./fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { CodeMapHelper } from "../util/codeMapHelper"
@@ -10,7 +10,7 @@ export interface EdgeMetricDataServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
 }
 
-export class EdgeMetricDataService implements FileStateServiceSubscriber, BlacklistSubscriber {
+export class EdgeMetricDataService implements FileStateSubscriber, BlacklistSubscriber {
 	private static EDGE_METRIC_DATA_UPDATED_EVENT = "edge-metric-data-updated"
 
 	private edgeMetricData: MetricData[] = []
