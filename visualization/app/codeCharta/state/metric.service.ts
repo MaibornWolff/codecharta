@@ -16,6 +16,7 @@ import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
+import { StoreService } from "./store.service"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -35,7 +36,7 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 	//TODO MetricData should contain attributeType
 	private metricData: MetricData[] = []
 
-	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
+	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService, private storeService: StoreService) {
 		FileStateService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
@@ -50,7 +51,7 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.setNewMetricData(blacklist)
+		this.setNewMetricData()
 	}
 
 	public getMetrics(): string[] {
@@ -81,9 +82,9 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		return null
 	}
 
-	private setNewMetricData(blacklist: BlacklistItem[] = []) {
+	private setNewMetricData() {
 		const fileStates: FileState[] = this.fileStateService.getFileStates()
-		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates))
 		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
 	}
@@ -102,24 +103,27 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		return mergedAttributeTypes
 	}
 
-	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {
+	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[]): MetricData[] {
 		if (fileStates.length <= 0) {
 			return []
 		} else {
 			//TODO: keep track of these metrics in service
 			const metricsFromVisibleMaps = this.getUniqueMetricNames(visibleFileStates)
-			const hashMap = this.buildHashMapFromMetrics(fileStates, blacklist, metricsFromVisibleMaps)
+			const hashMap = this.buildHashMapFromMetrics(fileStates, metricsFromVisibleMaps)
 			return this.getMetricDataFromHashMap(hashMap)
 		}
 	}
 
-	private buildHashMapFromMetrics(fileStates: FileState[], blacklist: BlacklistItem[], metricsFromVisibleMaps) {
+	private buildHashMapFromMetrics(fileStates: FileState[], metricsFromVisibleMaps) {
 		const hashMap: Map<string, MaxMetricValuePair> = new Map()
 
 		fileStates.forEach((fileState: FileState) => {
 			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 			nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
-				if (node.data.path && !CodeMapHelper.isBlacklisted(node.data, blacklist, BlacklistType.exclude)) {
+				if (
+					node.data.path &&
+					!CodeMapHelper.isBlacklisted(node.data, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
+				) {
 					this.addMaxMetricValuesToHashMap(node, hashMap, metricsFromVisibleMaps)
 				}
 			})

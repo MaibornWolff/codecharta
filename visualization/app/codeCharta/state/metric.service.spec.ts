@@ -8,11 +8,13 @@ import { FileStateService } from "./fileState.service"
 import { NodeDecorator } from "../util/nodeDecorator"
 import _ from "lodash"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
+import { StoreService } from "./store.service"
 
 describe("MetricService", () => {
 	let metricService: MetricService
 	let $rootScope: IRootScopeService
 	let fileStateService: FileStateService
+	let storeService: StoreService
 
 	let fileStates: FileState[]
 	let metricData: MetricData[]
@@ -29,6 +31,7 @@ describe("MetricService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		fileStateService = getService<FileStateService>("fileStateService")
+		storeService = getService<StoreService>("storeService")
 
 		fileStates = [
 			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A), selectedAs: FileSelectionState.None },
@@ -43,9 +46,8 @@ describe("MetricService", () => {
 	}
 
 	function rebuildService() {
-		metricService = new MetricService($rootScope, fileStateService)
+		metricService = new MetricService($rootScope, fileStateService, storeService)
 		metricService["metricData"] = metricData
-		metricService["fileStates"] = fileStates
 	}
 
 	describe("constructor", () => {
@@ -88,7 +90,7 @@ describe("MetricService", () => {
 		it("should call calculateMetrics", () => {
 			metricService.onBlacklistChanged([])
 
-			expect(metricService["calculateMetrics"]).toHaveBeenCalledWith(fileStates, [], [])
+			expect(metricService["calculateMetrics"]).toHaveBeenCalledWith(fileStates, [])
 		})
 
 		it("should set metricData to new calculated metricData", () => {
@@ -164,7 +166,7 @@ describe("MetricService", () => {
 
 	describe("calculateMetrics", () => {
 		it("should return an empty array if there are no fileStates", () => {
-			const result = metricService["calculateMetrics"]([], [], [])
+			const result = metricService["calculateMetrics"]([], [])
 
 			expect(result).toEqual([])
 			expect(result.length).toBe(0)
@@ -172,7 +174,7 @@ describe("MetricService", () => {
 
 		it("should return an array of metricData sorted by name calculated from fileStats and visibleFileStates", () => {
 			const visibleFileStates = [fileStates[0]]
-			const result = metricService["calculateMetrics"](fileStates, visibleFileStates, [])
+			const result = metricService["calculateMetrics"](fileStates, visibleFileStates)
 			const expected = [
 				{ availableInVisibleMaps: true, maxValue: 1000, name: "functions" },
 				{ availableInVisibleMaps: true, maxValue: 100, name: "mcc" },
@@ -185,7 +187,7 @@ describe("MetricService", () => {
 
 		it("should return an array of fileState metrics sorted by name", () => {
 			const visibleFileStates = []
-			const result = metricService["calculateMetrics"](fileStates, visibleFileStates, [])
+			const result = metricService["calculateMetrics"](fileStates, visibleFileStates)
 			const expected = [
 				{ availableInVisibleMaps: false, maxValue: 1000, name: "functions" },
 				{ availableInVisibleMaps: false, maxValue: 100, name: "mcc" },
