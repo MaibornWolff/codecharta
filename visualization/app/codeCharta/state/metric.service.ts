@@ -20,8 +20,6 @@ import { StoreService } from "./store.service"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
-
-	onMetricDataRemoved()
 }
 
 interface MaxMetricValuePair {
@@ -31,7 +29,6 @@ interface MaxMetricValuePair {
 
 export class MetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
-	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed"
 
 	//TODO MetricData should contain attributeType
 	private metricData: MetricData[] = []
@@ -45,10 +42,7 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		this.setNewMetricData()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {
-		this.metricData = null
-		this.notifyMetricDataRemoved()
-	}
+	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.setNewMetricData()
@@ -201,17 +195,9 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		this.$rootScope.$broadcast(MetricService.METRIC_DATA_ADDED_EVENT, this.metricData)
 	}
 
-	private notifyMetricDataRemoved() {
-		this.$rootScope.$broadcast(MetricService.METRIC_DATA_REMOVED_EVENT, this.metricData)
-	}
-
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
 		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (event, data) => {
 			subscriber.onMetricDataAdded(data)
-		})
-
-		$rootScope.$on(MetricService.METRIC_DATA_REMOVED_EVENT, (event, data) => {
-			subscriber.onMetricDataRemoved()
 		})
 	}
 }

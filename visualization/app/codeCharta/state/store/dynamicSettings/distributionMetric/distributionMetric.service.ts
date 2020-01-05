@@ -30,8 +30,6 @@ export class DistributionMetricService implements StoreSubscriber, MetricService
 		}
 	}
 
-	public onMetricDataRemoved() {}
-
 	public reset(metricData: MetricData[]) {
 		const distributionMetric = this.storeService.getState().dynamicSettings.distributionMetric
 

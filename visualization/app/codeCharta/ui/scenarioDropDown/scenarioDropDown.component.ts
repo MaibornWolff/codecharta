@@ -28,8 +28,6 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData)
 	}
 
-	public onMetricDataRemoved() {}
-
 	public applyScenario(scenarioName: string) {
 		this.storeService.dispatch(setState(ScenarioHelper.getScenarioSettingsByName(scenarioName)))
 		this.threeOrbitControlsService.autoFitTo()

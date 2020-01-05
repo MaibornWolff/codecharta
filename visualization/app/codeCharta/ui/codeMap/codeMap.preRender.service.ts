@@ -73,8 +73,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}
 	}
 
-	public onMetricDataRemoved() {}
-
 	private updateRenderMapAndFileMeta() {
 		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap()
 		this.unifiedMap = unifiedFile.map

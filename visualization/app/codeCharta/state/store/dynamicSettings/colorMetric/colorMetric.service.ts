@@ -30,8 +30,6 @@ export class ColorMetricService implements StoreSubscriber, MetricServiceSubscri
 		}
 	}
 
-	public onMetricDataRemoved() {}
-
 	public reset(metricData: MetricData[]) {
 		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
 

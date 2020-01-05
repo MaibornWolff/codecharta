@@ -66,8 +66,6 @@ export class MetricChooserController
 		this.originalMetricData = metricData
 	}
 
-	public onMetricDataRemoved() {}
-
 	public filterMetricData() {
 		this._viewModel.metricData = this.originalMetricData.filter(metric =>
 			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())

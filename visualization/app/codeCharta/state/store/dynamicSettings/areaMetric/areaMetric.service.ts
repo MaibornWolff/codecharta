@@ -30,8 +30,6 @@ export class AreaMetricService implements StoreSubscriber, MetricServiceSubscrib
 		}
 	}
 
-	public onMetricDataRemoved() {}
-
 	public reset(metricData: MetricData[]) {
 		const areaMetric = this.storeService.getState().dynamicSettings.areaMetric
 

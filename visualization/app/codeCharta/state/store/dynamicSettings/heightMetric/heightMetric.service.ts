@@ -30,8 +30,6 @@ export class HeightMetricService implements StoreSubscriber, MetricServiceSubscr
 		}
 	}
 
-	public onMetricDataRemoved() {}
-
 	public reset(metricData: MetricData[]) {
 		const heightMetric = this.storeService.getState().dynamicSettings.heightMetric
 
