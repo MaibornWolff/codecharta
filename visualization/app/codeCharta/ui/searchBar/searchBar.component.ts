@@ -35,8 +35,6 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 		this.resetSearchPattern()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.updateViewModel(blacklist)
 	}

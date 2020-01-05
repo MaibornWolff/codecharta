@@ -91,8 +91,6 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		}
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public onSingleFileChange(singleFileName: string) {
 		const singleFile: CCFile = FileStateHelper.getFileByFileName(singleFileName, this.fileStateService.getFileStates())
 		this.fileStateService.setSingle(singleFile)

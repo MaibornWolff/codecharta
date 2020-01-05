@@ -45,8 +45,6 @@ export class AreaSettingsPanelController implements FileStateServiceSubscriber, 
 		this.applyDynamicMargin()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	private applyDynamicMargin() {
 		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}

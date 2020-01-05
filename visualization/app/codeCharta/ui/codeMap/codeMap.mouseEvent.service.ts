@@ -102,8 +102,6 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public updateHovering() {
 		if (this.hasMouseMoved()) {
 			this.oldMouse.x = this.mouse.x

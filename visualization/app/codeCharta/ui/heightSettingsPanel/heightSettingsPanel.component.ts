@@ -66,8 +66,6 @@ export class HeightSettingsPanelController
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public applySettingsAmountOfTopLabels() {
 		this.applyDebouncedTopLabels()
 	}

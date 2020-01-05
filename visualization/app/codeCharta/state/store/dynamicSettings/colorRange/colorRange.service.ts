@@ -35,8 +35,6 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		this.reset()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public reset() {
 		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
 		const maxMetricValue: number = this.metricService.getMaxMetricByMetricName(colorMetric)

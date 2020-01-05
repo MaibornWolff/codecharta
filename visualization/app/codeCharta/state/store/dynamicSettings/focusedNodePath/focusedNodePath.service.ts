@@ -33,8 +33,6 @@ export class FocusedNodePathService implements StoreSubscriber, FileStateService
 		this.reset()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public reset() {
 		this.storeService.dispatch(unfocusNode())
 	}

@@ -42,8 +42,6 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		this.setNewMetricData()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.setNewMetricData()
 	}

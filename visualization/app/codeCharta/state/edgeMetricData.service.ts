@@ -30,8 +30,6 @@ export class EdgeMetricDataService implements FileStateServiceSubscriber, Blackl
 		this.updateEdgeMetrics(fileStates, [])
 	}
 
-	public onImportedFilesChanged(fileState: FileState[]) {}
-
 	private updateEdgeMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), blacklist)
 		this.addNoneMetric()

@@ -27,8 +27,6 @@ export class StoreService implements FileStateServiceSubscriber {
 		this.dispatch(setFileSettings(this.getNewFileSettings(fileStates)))
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public dispatch(action: CCAction, isSilent: boolean = false) {
 		if (!isSilent) {
 			this.loadingStatusService.updateLoadingMapFlag(true)

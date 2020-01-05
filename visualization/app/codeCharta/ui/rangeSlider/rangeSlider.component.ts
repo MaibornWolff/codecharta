@@ -82,8 +82,6 @@ export class RangeSliderController
 		this.updateDisabledSliderOption()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public onInvertColorRangeChanged(invertColorRange: boolean) {
 		this.updateSliderColors()
 	}

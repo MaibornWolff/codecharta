@@ -59,8 +59,6 @@ export class ColorSettingsPanelController
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
 	public invertColorRange() {
 		this.storeService.dispatch(setInvertColorRange(this._viewModel.invertColorRange))
 	}
