@@ -16,7 +16,7 @@ export interface CameraChangeSubscriber {
 
 export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
-	private static AUTO_FIT_TIMEOUT = 400
+	private static AUTO_FIT_TIMEOUT = 0
 
 	public controls: OrbitControls
 	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
