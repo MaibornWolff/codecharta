@@ -7,7 +7,7 @@ export interface FileStateSubscriber {
 }
 
 export class FileStateService {
-	private static FILE_STATE_CHANGED_EVENT = "file-selection-states-changed"
+	private static FILE_STATE_CHANGED_EVENT = "file-states-changed"
 
 	private fileStates: Array<FileState> = []
 
