@@ -51,10 +51,10 @@ describe("SearchBarController", () => {
 		})
 	})
 
-	describe("onFileSelectionStatesChanged", () => {
+	describe("onFileStatesChanged", () => {
 		it("should set empty searchPattern", done => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
-			searchBarController.onFileSelectionStatesChanged(null)
+			searchBarController.onFileStatesChanged(null)
 
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 

@@ -77,7 +77,7 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}

@@ -29,7 +29,7 @@ export class FocusedNodePathService implements StoreSubscriber, FileStateService
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.reset()
 	}
 

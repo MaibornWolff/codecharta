@@ -26,7 +26,7 @@ export class EdgeMetricDataService implements FileStateServiceSubscriber, Blackl
 		this.updateEdgeMetrics(fileStates, blacklist)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.updateEdgeMetrics(fileStates, [])
 	}
 

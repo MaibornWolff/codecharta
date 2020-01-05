@@ -98,13 +98,13 @@ describe("HeightSettingsPanelController", () => {
 		})
 
 		it("should set isDeltaState in viewModel", () => {
-			heightSettingsPanelController.onFileSelectionStatesChanged([])
+			heightSettingsPanelController.onFileStatesChanged([])
 
 			expect(heightSettingsPanelController["_viewModel"].isDeltaState).toBe(true)
 		})
 
 		it("should call isDeltaState with empty array", () => {
-			heightSettingsPanelController.onFileSelectionStatesChanged([])
+			heightSettingsPanelController.onFileStatesChanged([])
 
 			expect(FileStateHelper.isDeltaState).toHaveBeenCalledWith([])
 		})

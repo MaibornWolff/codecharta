@@ -55,7 +55,7 @@ export class ColorSettingsPanelController
 		this._viewModel.whiteColorBuildings = whiteColorBuildings
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 	}
 

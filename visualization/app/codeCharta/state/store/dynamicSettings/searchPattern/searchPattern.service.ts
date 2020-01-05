@@ -23,7 +23,7 @@ export class SearchPatternService implements StoreSubscriber, FileStateServiceSu
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.reset()
 	}
 

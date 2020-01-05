@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { LoadingStatusService } from "./loadingStatus.service"
 
 export interface FileStateServiceSubscriber {
-	onFileSelectionStatesChanged(fileStates: FileState[])
+	onFileStatesChanged(fileStates: FileState[])
 }
 
 export class FileStateService {
@@ -71,7 +71,7 @@ export class FileStateService {
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: FileStateServiceSubscriber) {
 		$rootScope.$on(FileStateService.FILE_STATE_CHANGED_EVENT, (event, data) => {
-			subscriber.onFileSelectionStatesChanged(data)
+			subscriber.onFileStatesChanged(data)
 		})
 	}
 }

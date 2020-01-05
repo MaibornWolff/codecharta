@@ -40,7 +40,7 @@ export class AreaSettingsPanelController implements FileStateServiceSubscriber, 
 		this._viewModel.margin = margin
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this._viewModel.dynamicMargin = true
 		this.applyDynamicMargin()
 	}

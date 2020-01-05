@@ -57,7 +57,7 @@ describe("StoreService", () => {
 		})
 	})
 
-	describe("onFileSelectionStatesChanged", () => {
+	describe("onFileStatesChanged", () => {
 		beforeEach(() => {
 			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
 			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
@@ -65,7 +65,7 @@ describe("StoreService", () => {
 		})
 
 		it("should update store with default dynamicSettings and newFileSettings", () => {
-			storeService.onFileSelectionStatesChanged(fileStates)
+			storeService.onFileStatesChanged(fileStates)
 
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
 			expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual([])
@@ -76,19 +76,19 @@ describe("StoreService", () => {
 		})
 
 		it("should call isPartialState with fileStates", () => {
-			storeService.onFileSelectionStatesChanged(fileStates)
+			storeService.onFileStatesChanged(fileStates)
 
 			expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
 		})
 
 		it("should call getVisibleFileStates with fileStates", () => {
-			storeService.onFileSelectionStatesChanged(fileStates)
+			storeService.onFileStatesChanged(fileStates)
 
 			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 		})
 
 		it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
-			storeService.onFileSelectionStatesChanged(fileStates)
+			storeService.onFileStatesChanged(fileStates)
 			const visibleFiles = [fileStates[0].file, fileStates[1].file]
 
 			expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)

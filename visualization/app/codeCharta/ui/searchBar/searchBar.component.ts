@@ -31,7 +31,7 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 		}, SearchBarController.DEBOUNCE_TIME)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.resetSearchPattern()
 	}
 

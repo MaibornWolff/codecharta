@@ -23,7 +23,7 @@ export class StoreService implements FileStateServiceSubscriber {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.dispatch(setFileSettings(this.getNewFileSettings(fileStates)))
 	}
 

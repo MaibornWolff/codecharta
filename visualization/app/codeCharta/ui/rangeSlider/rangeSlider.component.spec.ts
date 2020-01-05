@@ -263,11 +263,11 @@ describe("RangeSliderController", () => {
 		})
 	})
 
-	describe("onFileSelectionStatesChanged", () => {
+	describe("onFileStatesChanged", () => {
 		it("should set maxMetricValue", () => {
 			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
-			rangeSliderController.onFileSelectionStatesChanged(fileStates)
+			rangeSliderController.onFileStatesChanged(fileStates)
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
@@ -275,7 +275,7 @@ describe("RangeSliderController", () => {
 		it("should set sliderOptions.disabled", () => {
 			rangeSliderController["_viewModel"].sliderOptions.disabled = undefined
 
-			rangeSliderController.onFileSelectionStatesChanged(fileStates)
+			rangeSliderController.onFileStatesChanged(fileStates)
 
 			setTimeout(() => {
 				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)

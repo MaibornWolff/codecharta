@@ -68,13 +68,13 @@ describe("MetricService", () => {
 		})
 	})
 
-	describe("onFileSelectionStatesChanged", () => {
+	describe("onFileStatesChanged", () => {
 		beforeEach(() => {
 			metricService["calculateMetrics"] = jest.fn().mockReturnValue(metricData)
 		})
 
 		it("should trigger METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onFileSelectionStatesChanged(fileStates)
+			metricService.onFileStatesChanged(fileStates)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledTimes(1)
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricService["METRIC_DATA_ADDED_EVENT"], metricData)

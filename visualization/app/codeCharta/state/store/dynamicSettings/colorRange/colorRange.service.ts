@@ -31,7 +31,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		this.reset()
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.reset()
 	}
 

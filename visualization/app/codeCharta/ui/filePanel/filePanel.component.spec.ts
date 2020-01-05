@@ -66,7 +66,7 @@ describe("filePanelController", () => {
 		expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
 	})
 
-	describe("onFileSelectionStatesChanged", () => {
+	describe("onFileStatesChanged", () => {
 		beforeEach(() => {
 			FileStateHelper.isSingleState = jest.fn().mockReturnValue(true)
 			FileStateHelper.isPartialState = jest.fn().mockReturnValue(true)
@@ -75,13 +75,13 @@ describe("filePanelController", () => {
 		})
 
 		it("should update viewModel with new fileStates", () => {
-			filePanelController.onFileSelectionStatesChanged(fileStates)
+			filePanelController.onFileStatesChanged(fileStates)
 
 			expect(filePanelController["_viewModel"].fileStates).toEqual(fileStates)
 		})
 
 		it("should set the viewModel and lastRenderState correctly", () => {
-			filePanelController.onFileSelectionStatesChanged(fileStates)
+			filePanelController.onFileStatesChanged(fileStates)
 
 			expect(FileStateHelper.isSingleState).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].isSingleState).toBeTruthy()
@@ -93,7 +93,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should update selected filenames in viewModel correctly if single mode is active", () => {
-			filePanelController.onFileSelectionStatesChanged(fileStates)
+			filePanelController.onFileStatesChanged(fileStates)
 
 			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Single)
@@ -103,7 +103,7 @@ describe("filePanelController", () => {
 		it("should update selected filenames in viewModel correctly if partial mode is active", () => {
 			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
 
-			filePanelController.onFileSelectionStatesChanged(fileStates)
+			filePanelController.onFileStatesChanged(fileStates)
 
 			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Partial)
@@ -117,7 +117,7 @@ describe("filePanelController", () => {
 			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
 			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
 
-			filePanelController.onFileSelectionStatesChanged(fileStates)
+			filePanelController.onFileStatesChanged(fileStates)
 
 			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
@@ -131,7 +131,7 @@ describe("filePanelController", () => {
 
 			fileStates.pop()
 
-			filePanelController.onFileSelectionStatesChanged(fileStates)
+			filePanelController.onFileStatesChanged(fileStates)
 
 			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
@@ -144,7 +144,7 @@ describe("filePanelController", () => {
 			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
 			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(false)
 
-			filePanelController.onFileSelectionStatesChanged(fileStates)
+			filePanelController.onFileStatesChanged(fileStates)
 
 			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].renderState).toBeNull()
@@ -155,7 +155,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should set the pictogram colors in view model", () => {
-			filePanelController.onFileSelectionStatesChanged(fileStates)
+			filePanelController.onFileStatesChanged(fileStates)
 
 			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
 			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(storeService.getState().appSettings.mapColors.negativeDelta)

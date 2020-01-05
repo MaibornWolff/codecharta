@@ -87,7 +87,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.threeSceneService.clearSelection()
 	}
 

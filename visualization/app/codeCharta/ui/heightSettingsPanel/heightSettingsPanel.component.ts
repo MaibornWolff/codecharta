@@ -62,7 +62,7 @@ export class HeightSettingsPanelController
 		this._viewModel.scalingY = scaling.y
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 	}
 

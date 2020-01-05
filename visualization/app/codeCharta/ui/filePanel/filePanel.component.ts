@@ -51,7 +51,7 @@ export class FilePanelController implements FileStateServiceSubscriber {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this._viewModel.fileStates = fileStates
 		this._viewModel.isSingleState = FileStateHelper.isSingleState(fileStates)
 		this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)

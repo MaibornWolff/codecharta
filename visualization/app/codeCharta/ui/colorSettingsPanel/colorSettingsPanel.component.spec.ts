@@ -108,14 +108,14 @@ describe("ColorSettingsPanelController", () => {
 		})
 	})
 
-	describe("onFileSelectionStatesChanged", () => {
+	describe("onFileStatesChanged", () => {
 		it("should detect delta mode selection", () => {
 			const fileStates = [
 				{ file: {}, selectedAs: FileSelectionState.Comparison },
 				{ file: {}, selectedAs: FileSelectionState.Reference }
 			] as FileState[]
 
-			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates)
+			colorSettingsPanelController.onFileStatesChanged(fileStates)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeTruthy()
 		})
@@ -126,7 +126,7 @@ describe("ColorSettingsPanelController", () => {
 				{ file: {}, selectedAs: FileSelectionState.Partial }
 			] as FileState[]
 
-			colorSettingsPanelController.onFileSelectionStatesChanged(fileStates)
+			colorSettingsPanelController.onFileStatesChanged(fileStates)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
 		})
