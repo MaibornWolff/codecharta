@@ -97,10 +97,10 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.48275862068966, color: null },
 				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.56763925729443, color: null },
 				{
-					fileExtension: "other",
+					fileExtension: "None",
 					absoluteMetricValue: 15,
 					relativeMetricValue: 3.978779840848806,
-					color: "#676867"
+					color: null
 				}
 			]
 
