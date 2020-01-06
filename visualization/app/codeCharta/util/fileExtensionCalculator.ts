@@ -14,7 +14,7 @@ export interface MetricDistribution {
 export class FileExtensionCalculator {
 	private static readonly NO_EXTENSION = "None"
 	private static readonly OTHER_EXTENSION = "other"
-	private static OTHER_GROUP_THRESHOLD_VALUE = 5.0
+	private static OTHER_GROUP_THRESHOLD_VALUE = 3.0
 
 	public static getMetricDistribution(map: CodeMapNode, metric: string, blacklist: BlacklistItem[]): MetricDistribution[] {
 		let distribution: MetricDistribution[] = this.getAbsoluteDistribution(map, metric, blacklist)
