@@ -24,6 +24,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 	public onStoreChanged(actionType: string) {
 		if (_.values(ColorRangeActions).includes(actionType)) {
 			this.notify(this.select())
+			this.tryToResetIfNull()
 		}
 	}
 
@@ -33,6 +34,14 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 
 	public onFileStatesChanged(fileStates: FileState[]) {
 		this.reset()
+	}
+
+	private tryToResetIfNull() {
+		const colorRange = this.storeService.getState().dynamicSettings.colorRange
+		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
+		if (!colorRange.from && !colorRange.to && colorMetric) {
+			this.reset()
+		}
 	}
 
 	public reset() {
