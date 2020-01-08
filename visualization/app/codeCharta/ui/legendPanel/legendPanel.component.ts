@@ -1,7 +1,6 @@
-import $ from "jquery"
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
-import { ColorRange, MarkedPackage } from "../../codeCharta.model"
+import { ColorRange, MarkedPackage, MapColors } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
@@ -13,7 +12,9 @@ import {
 	InvertColorRangeSubscriber
 } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { StoreService } from "../../state/store.service"
-import { MarkedPackagesSubscriber } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
+import { MarkedPackagesSubscriber, MarkedPackagesService } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
+import _ from "lodash"
+import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 
 export interface PackageList {
 	colorPixel: string
@@ -21,7 +22,12 @@ export interface PackageList {
 }
 
 export class LegendPanelController
-	implements AttributeSideBarVisibilitySubscriber, ColorRangeSubscriber, InvertColorRangeSubscriber, MarkedPackagesSubscriber {
+	implements
+		AttributeSideBarVisibilitySubscriber,
+		ColorRangeSubscriber,
+		InvertColorRangeSubscriber,
+		MarkedPackagesSubscriber,
+		WhiteColorBuildingsService {
 	private _viewModel: {
 		isLegendVisible: boolean
 		isSideBarVisible: boolean
@@ -29,13 +35,15 @@ export class LegendPanelController
 		colorRange: ColorRange
 		invertColorRange: boolean
 		packageLists: PackageList[]
+		colorIcons: any
 	} = {
 		isLegendVisible: false,
 		isSideBarVisible: null,
 		isDeltaState: null,
 		colorRange: null,
 		invertColorRange: null,
-		packageLists: null
+		packageLists: null,
+		colorIcons: {}
 	}
 
 	/* @ngInject */
@@ -43,6 +51,8 @@ export class LegendPanelController
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		AttributeSideBarService.subscribe(this.$rootScope, this)
+		MarkedPackagesService.subscribe(this.$rootScope, this)
+		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 	}
 
 	public onColorRangeChanged(colorRange: ColorRange) {
@@ -63,43 +73,48 @@ export class LegendPanelController
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
+	public onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
+		this.updatePixelColors()
+	}
+
 	public toggle() {
 		this._viewModel.isLegendVisible = !this._viewModel.isLegendVisible
 	}
 
 	private updatePixelColors() {
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
-		this.setPixel("selected", this.storeService.getState().appSettings.mapColors.selected)
+
+		const mapColors = this.storeService.getState().appSettings.mapColors
+		this._viewModel.colorIcons.selected = this.getImage(mapColors.selected)
+		this._viewModel.colorIcons.incomingEdge = this.getImage(mapColors.incomingEdge)
+		this._viewModel.colorIcons.outgoingEdge = this.getImage(mapColors.outgoingEdge)
 
 		if (this._viewModel.isDeltaState) {
-			this.updateDeltaColors()
+			this.updateDeltaColors(mapColors)
 		} else {
-			this.updateNormalColors()
+			this.updateNormalColors(mapColors)
 		}
 	}
 
-	private updateNormalColors() {
-		const mapColors = this.storeService.getState().appSettings.mapColors
+	private updateNormalColors(mapColors: MapColors) {
 		const positive = this.storeService.getState().appSettings.whiteColorBuildings ? mapColors.lightGrey : mapColors.positive
 
-		this.setPixel("positive", positive)
-		this.setPixel("neutral", mapColors.neutral)
-		this.setPixel("negative", mapColors.negative)
-		this.setPixel("incomingEdge", mapColors.incomingEdge)
-		this.setPixel("outgoingEdge", mapColors.outgoingEdge)
+		this._viewModel.colorIcons.positive = this.getImage(positive)
+		this._viewModel.colorIcons.neutral = this.getImage(mapColors.neutral)
+		this._viewModel.colorIcons.negative = this.getImage(mapColors.negative)
 	}
 
-	private updateDeltaColors() {
-		const mapColors = this.storeService.getState().appSettings.mapColors
+	private updateDeltaColors(mapColors: MapColors) {
 		const positiveDelta = this.storeService.getState().appSettings.invertDeltaColors ? mapColors.negativeDelta : mapColors.positiveDelta
 		const negativeDelta = this.storeService.getState().appSettings.invertDeltaColors ? mapColors.positiveDelta : mapColors.negativeDelta
+		console.log(this.storeService.getState().appSettings.invertDeltaColors)
 
-		this.setPixel("positiveDelta", positiveDelta)
-		this.setPixel("negativeDelta", negativeDelta)
+		this._viewModel.colorIcons.positiveDelta = this.getImage(positiveDelta)
+		this._viewModel.colorIcons.negativeDelta = this.getImage(negativeDelta)
 	}
 
-	private setPixel(id: string, color: string) {
-		$("#" + id).attr("src", ColorConverter.getImageDataUri(color))
+	private getImage(color: string): string {
+		return ColorConverter.getImageDataUri(color)
 	}
 
 	private setMarkedPackageLists(markedPackages: MarkedPackage[]) {
