@@ -29,7 +29,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	private unifiedFileMeta: FileMeta
 
 	private readonly debounceRendering: () => void
-	private DEBOUNCE_TIME = 500
+	private DEBOUNCE_TIME = 0
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -140,6 +140,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private renderAndNotify() {
+		console.log("rendering")
 		this.codeMapRenderService.render(this.unifiedMap)
 
 		this.notifyLoadingMapStatus()
