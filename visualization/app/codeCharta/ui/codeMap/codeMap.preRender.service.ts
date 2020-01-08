@@ -36,7 +36,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		private storeService: StoreService,
 		private fileStateService: FileStateService,
 		private metricService: MetricService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
 		private loadingStatusService: LoadingStatusService,
 		private edgeMetricDataService: EdgeMetricDataService
@@ -146,7 +145,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		this.notifyMapChanged()
 		if (this.loadingStatusService.isLoadingNewFile()) {
 			this.notifyLoadingFileStatus()
-			this.threeOrbitControlsService.cameraActionWhenNewMapIsLoaded()
 		}
 	}
 

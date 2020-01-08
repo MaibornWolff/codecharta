@@ -59,12 +59,6 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.applyOldZoom(zoom)
 	}
 
-	public cameraActionWhenNewMapIsLoaded() {
-		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
-			this.autoFitTo()
-		}
-	}
-
 	public autoFitTo() {
 		this.$timeout(() => {
 			const boundingSphere = this.getBoundingSphere()
