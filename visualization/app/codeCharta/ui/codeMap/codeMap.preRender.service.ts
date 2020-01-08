@@ -140,7 +140,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private renderAndNotify() {
-		console.log("rendering")
 		this.codeMapRenderService.render(this.unifiedMap)
 
 		this.notifyLoadingMapStatus()
