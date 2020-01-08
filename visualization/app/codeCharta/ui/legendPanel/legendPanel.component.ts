@@ -14,7 +14,14 @@ import {
 import { StoreService } from "../../state/store.service"
 import { MarkedPackagesSubscriber, MarkedPackagesService } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
 import _ from "lodash"
-import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
+import {
+	WhiteColorBuildingsService,
+	WhiteColorBuildingsSubscriber
+} from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
+import {
+	InvertDeltaColorsSubscriber,
+	InvertDeltaColorsService
+} from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 
 export interface PackageList {
 	colorPixel: string
@@ -27,7 +34,8 @@ export class LegendPanelController
 		ColorRangeSubscriber,
 		InvertColorRangeSubscriber,
 		MarkedPackagesSubscriber,
-		WhiteColorBuildingsService {
+		WhiteColorBuildingsSubscriber,
+		InvertDeltaColorsSubscriber {
 	private _viewModel: {
 		isLegendVisible: boolean
 		isSideBarVisible: boolean
@@ -53,6 +61,7 @@ export class LegendPanelController
 		AttributeSideBarService.subscribe(this.$rootScope, this)
 		MarkedPackagesService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
+		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 	}
 
 	public onColorRangeChanged(colorRange: ColorRange) {
@@ -62,6 +71,10 @@ export class LegendPanelController
 
 	public onInvertColorRangeChanged(invertColorRange: boolean) {
 		this._viewModel.invertColorRange = invertColorRange
+		this.updatePixelColors()
+	}
+
+	public onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
 		this.updatePixelColors()
 	}
 
@@ -105,12 +118,8 @@ export class LegendPanelController
 	}
 
 	private updateDeltaColors(mapColors: MapColors) {
-		const positiveDelta = this.storeService.getState().appSettings.invertDeltaColors ? mapColors.negativeDelta : mapColors.positiveDelta
-		const negativeDelta = this.storeService.getState().appSettings.invertDeltaColors ? mapColors.positiveDelta : mapColors.negativeDelta
-		console.log(this.storeService.getState().appSettings.invertDeltaColors)
-
-		this._viewModel.colorIcons.positiveDelta = this.getImage(positiveDelta)
-		this._viewModel.colorIcons.negativeDelta = this.getImage(negativeDelta)
+		this._viewModel.colorIcons.positiveDelta = this.getImage(mapColors.positiveDelta)
+		this._viewModel.colorIcons.negativeDelta = this.getImage(mapColors.negativeDelta)
 	}
 
 	private getImage(color: string): string {
