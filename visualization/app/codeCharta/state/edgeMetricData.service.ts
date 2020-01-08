@@ -1,4 +1,13 @@
-import { MetricData, FileState, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount } from "../codeCharta.model"
+import {
+	MetricData,
+	FileState,
+	BlacklistItem,
+	Edge,
+	BlacklistType,
+	CodeMapNode,
+	EdgeMetricCount,
+	FileSelectionState
+} from "../codeCharta.model"
 import { FileStateSubscriber, FileStateService } from "./fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../util/fileStateHelper"
@@ -91,9 +100,13 @@ export class EdgeMetricDataService implements FileStateSubscriber, BlacklistSubs
 
 	private calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): Map<string, Map<string, EdgeMetricCount>> {
 		this.nodeEdgeMetricsMap = new Map()
+		const pathsPerFileState = fileStates
+			.filter(x => x.selectedAs != FileSelectionState.None)
+			.map(fileState => CodeMapHelper.getAllPaths(fileState.file.map))
+		const allFilePaths: string[] = [].concat(...pathsPerFileState)
 		fileStates.forEach(fileState => {
 			fileState.file.settings.fileSettings.edges.forEach(edge => {
-				if (this.bothNodesAssociatedAreVisible(edge, blacklist, fileStates)) {
+				if (this.bothNodesAssociatedAreVisible(edge, blacklist, allFilePaths)) {
 					this.addEdgeToCalculationMap(edge)
 				}
 			})
@@ -101,25 +114,14 @@ export class EdgeMetricDataService implements FileStateSubscriber, BlacklistSubs
 		return this.nodeEdgeMetricsMap
 	}
 
-	private bothNodesAssociatedAreVisible(edge: Edge, blacklist: BlacklistItem[], fileStates: FileState[]): boolean {
-		const fromNode = this.getMapNodeFromPath(edge.fromNodeName, fileStates)
-		const toNode = this.getMapNodeFromPath(edge.toNodeName, fileStates)
-		return fromNode && toNode && this.isNotBlacklisted(fromNode, blacklist) && this.isNotBlacklisted(toNode, blacklist)
+	private bothNodesAssociatedAreVisible(edge: Edge, blacklist: BlacklistItem[], filePaths: string[]): boolean {
+		const fromPath = filePaths.find(x => x === edge.fromNodeName)
+		const toPath = filePaths.find(x => x === edge.toNodeName)
+		return fromPath && toPath && this.isNotBlacklisted(fromPath, blacklist) && this.isNotBlacklisted(toPath, blacklist)
 	}
 
-	private getMapNodeFromPath(path: string, fileStates: FileState[]): CodeMapNode {
-		let mapNode = undefined
-		fileStates.forEach(fileState => {
-			const nodeFound = CodeMapHelper.getCodeMapNodeFromPath(path, "File", fileState.file.map)
-			if (nodeFound) {
-				mapNode = nodeFound
-			}
-		})
-		return mapNode
-	}
-
-	private isNotBlacklisted(node: CodeMapNode, blacklist: BlacklistItem[]): boolean {
-		return !CodeMapHelper.isBlacklisted(node, blacklist, BlacklistType.exclude)
+	private isNotBlacklisted(path: string, blacklist: BlacklistItem[]): boolean {
+		return !CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude)
 	}
 
 	private addEdgeToCalculationMap(edge: Edge) {
