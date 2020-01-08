@@ -111,7 +111,7 @@ export class RangeSliderController
 	private initSliderOptions() {
 		this._viewModel.sliderOptions = {
 			ceil: this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
-			onChange: () => this.updateSliderColors(),
+			onChange: () => this.applySliderChange(),
 			pushRange: true,
 			disabled: FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 		}
@@ -119,6 +119,11 @@ export class RangeSliderController
 
 	private updateDisabledSliderOption() {
 		this._viewModel.sliderOptions.disabled = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+	}
+
+	private applySliderChange() {
+		this.applyColorRange()
+		this.updateSliderColors()
 	}
 
 	private applyColorRange() {
