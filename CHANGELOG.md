@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Performance of loading maps with edges improved #823
+
 - Remove focus of UI elements when they are not visible anymore
 
 ### Chore 👨‍💻 👩‍💻
