@@ -28,6 +28,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	private unifiedMap: CodeMapNode
 	private unifiedFileMeta: FileMeta
 
+	private readonly debounceRendering: () => void
+	private DEBOUNCE_TIME = 500
+
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
@@ -41,6 +44,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		MetricService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
+		this.debounceRendering = _.debounce(() => {
+			this.renderAndNotify()
+		}, this.DEBOUNCE_TIME)
 	}
 
 	public getRenderMap(): CodeMapNode {
@@ -53,7 +59,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	public onStoreChanged(actionType: string) {
 		if (this.allNecessaryRenderDataAvailable() && !_.values(ScalingActions).includes(actionType)) {
-			this.renderAndNotify()
+			this.debounceRendering()
 		}
 	}
 
@@ -68,7 +74,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
 			if (this.allNecessaryRenderDataAvailable()) {
-				this.renderAndNotify()
+				this.debounceRendering()
 			}
 		}
 	}

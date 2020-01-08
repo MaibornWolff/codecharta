@@ -159,13 +159,16 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("onStoreChanged", () => {
-		it("should call codeMapRenderService.render", () => {
+		it("should call codeMapRenderService.render", done => {
 			withUnifiedMapAndFileMeta()
 			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 
 			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
 
-			expect(codeMapRenderService.render).toHaveBeenCalled()
+			setTimeout(() => {
+				expect(codeMapRenderService.render).toHaveBeenCalled()
+				done()
+			}, codeMapPreRenderService["DEBOUNCE_TIME"])
 		})
 
 		it("should not call codeMapRenderService.render for scaling actions", () => {
