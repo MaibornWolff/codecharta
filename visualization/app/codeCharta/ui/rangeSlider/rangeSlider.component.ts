@@ -4,7 +4,6 @@ import { ColorRange, FileState } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import _ from "lodash"
@@ -113,12 +112,12 @@ export class RangeSliderController
 			ceil: this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
 			pushRange: true,
-			disabled: FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+			disabled: this.fileStateService.isDeltaState()
 		}
 	}
 
 	private updateDisabledSliderOption() {
-		this._viewModel.sliderOptions.disabled = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+		this._viewModel.sliderOptions.disabled = this.fileStateService.isDeltaState()
 	}
 
 	private applySliderChange() {
