@@ -36,7 +36,6 @@ import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { SearchPanelService } from "./searchPanel.service"
 import { NodeSearchService } from "./nodeSearch.service"
 import { FileStateService } from "./fileState.service"
-import { SettingsService } from "./settingsService/settings.service"
 import { MetricService } from "./metric.service"
 import { LoadingStatusService } from "./loadingStatus.service"
 import "../codeCharta.module"
@@ -83,6 +82,5 @@ angular
 	.service(_.camelCase(SearchPanelService.name), SearchPanelService)
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
 	.service(_.camelCase(FileStateService.name), FileStateService)
-	.service(_.camelCase(SettingsService.name), SettingsService)
 	.service(_.camelCase(MetricService.name), MetricService)
 	.service(_.camelCase(LoadingStatusService.name), LoadingStatusService)

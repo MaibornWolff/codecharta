@@ -2,9 +2,10 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { EdgeMetricAction, EdgeMetricActions } from "./edgeMetric.actions"
+import { EdgeMetricAction, EdgeMetricActions, setEdgeMetric } from "./edgeMetric.actions"
 import { EdgeMetricService } from "./edgeMetric.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
+import { EdgeMetricDataService } from "../../../edgeMetricData.service"
 
 describe("EdgeMetricService", () => {
 	let edgeMetricService: EdgeMetricService
@@ -36,6 +37,14 @@ describe("EdgeMetricService", () => {
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricService)
 		})
+
+		it("should subscribe to EdgeMetricDataService", () => {
+			EdgeMetricDataService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(EdgeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricService)
+		})
 	})
 
 	describe("onStoreChanged", () => {
@@ -55,6 +64,31 @@ describe("EdgeMetricService", () => {
 			edgeMetricService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("onEdgeMetricDataUpdated", () => {
+		it("should not reset edgeMetric because current edgeMetric exists in metricData", () => {
+			const metricData = [
+				{ name: "validEdgeMetric", maxValue: 22, availableInVisibleMaps: true },
+				{ name: "None", maxValue: 1, availableInVisibleMaps: true }
+			]
+			storeService.dispatch(setEdgeMetric("validEdgeMetric"))
+
+			edgeMetricService.onEdgeMetricDataUpdated(metricData)
+
+			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("validEdgeMetric")
+		})
+		it("should reset edgeMetric because current edgeMetric does not exists in metricData", () => {
+			const metricData = [
+				{ name: "someNewMetric", maxValue: 22, availableInVisibleMaps: true },
+				{ name: "None", maxValue: 1, availableInVisibleMaps: true }
+			]
+			storeService.dispatch(setEdgeMetric("invalidEdgeMetric"))
+
+			edgeMetricService.onEdgeMetricDataUpdated(metricData)
+
+			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("None")
 		})
 	})
 })

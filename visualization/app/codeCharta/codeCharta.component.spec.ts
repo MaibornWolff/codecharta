@@ -1,77 +1,63 @@
 import "./codeCharta.module"
 import _ from "lodash"
-import { IHttpService, ILocationService, IRootScopeService } from "angular"
+import { IHttpService, ILocationService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
-import { SettingsService } from "./state/settingsService/settings.service"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { Settings } from "./codeCharta.model"
-import { SETTINGS, withMockedEventMethods } from "./util/dataMocks"
+import { State } from "./codeCharta.model"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
+import { STATE } from "./util/dataMocks"
+import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
-	let $rootScope: IRootScopeService
 	let $location: ILocationService
 	let $http: IHttpService
-	let settingsService: SettingsService
 	let storeService: StoreService
 	let dialogService: DialogService
-	let codeMapActionsService: CodeMapActionsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
 	let injectorService: InjectorService
-
 	let loadingStatusService: LoadingStatusService
 
-	let settings: Settings
+	let state: State
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedCodeMapActionsService()
 		withMockedUrlUtils()
-		withMockedSettingsService()
 		withMockedCodeChartaService()
 		withMockedDialogService()
 		withMockedScenarioHelper()
 		withMockedLoadingStatusService()
-		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 		injectorService = getService<InjectorService>("injectorService")
 
-		settings = _.cloneDeep(SETTINGS)
+		state = _.cloneDeep(STATE)
 	}
 
 	function rebuildController() {
 		codeChartaController = new CodeChartaController(
-			$rootScope,
 			$location,
 			$http,
-			settingsService,
 			storeService,
 			dialogService,
-			codeMapActionsService,
 			codeChartaService,
 			fileStateService,
 			loadingStatusService,
@@ -83,23 +69,10 @@ describe("codeChartaController", () => {
 		jest.resetAllMocks()
 	})
 
-	function withMockedCodeMapActionsService() {
-		codeMapActionsService = codeChartaController["codeMapActionsService"] = jest.fn().mockReturnValue({
-			removeFocusedNode: jest.fn()
-		})()
-	}
-
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
 			getFileDataFromQueryParam: jest.fn().mockReturnValue(Promise.resolve([])),
 			getParameterByName: jest.fn().mockReturnValue(true)
-		})()
-	}
-
-	function withMockedSettingsService() {
-		settingsService = codeChartaController["settingsService"] = jest.fn().mockReturnValue({
-			updateSettings: jest.fn(),
-			getDefaultSettings: jest.fn().mockReturnValue(settings)
 		})()
 	}
 
@@ -116,7 +89,7 @@ describe("codeChartaController", () => {
 	}
 
 	function withMockedScenarioHelper() {
-		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings })
+		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings: state })
 	}
 
 	function withMockedLoadingStatusService() {
@@ -127,14 +100,6 @@ describe("codeChartaController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to SettingsService", () => {
-			SettingsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
-		})
-
 		it("should set urlUtils", () => {
 			rebuildController()
 
@@ -145,22 +110,6 @@ describe("codeChartaController", () => {
 			rebuildController()
 
 			expect(loadingStatusService.updateLoadingFileFlag).toHaveBeenCalledWith(true)
-		})
-	})
-
-	describe("onSettingsChanged", () => {
-		it("should set focusedNodePath in viewModel", () => {
-			codeChartaController.onSettingsChanged(settings, undefined)
-
-			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
-		})
-	})
-
-	describe("removeFocusedNode", () => {
-		it("should call removeFocusedNode", () => {
-			codeChartaController.removeFocusedNode()
-
-			expect(codeMapActionsService.removeFocusedNode).toHaveBeenCalled()
 		})
 	})
 
@@ -183,13 +132,13 @@ describe("codeChartaController", () => {
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{}])
 		})
 
-		it("should call updateSettings if loadFiles-Promise resolves", async () => {
+		it("should call storeService.dispatch if loadFiles-Promise resolves", async () => {
 			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+			storeService.dispatch = jest.fn()
 
 			await codeChartaController.loadFileOrSample()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
-			//TODO: Add check once Settings are removed and replaced with STATE object
+			expect(storeService.dispatch).toHaveBeenCalledWith(setAppSettings())
 		})
 	})
 

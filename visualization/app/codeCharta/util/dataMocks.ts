@@ -7,7 +7,6 @@ import {
 	FileState,
 	MetricData,
 	Node,
-	Settings,
 	BlacklistType,
 	EdgeVisibility,
 	State
@@ -645,7 +644,7 @@ export const STATE: State = {
 		colorMetric: "mcc",
 		distributionMetric: "mcc",
 		edgeMetric: "pairingRate",
-		focusedNodePath: "/root",
+		focusedNodePath: "/root/ParentLeaf",
 		searchedNodePaths: [],
 		searchPattern: "",
 		margin: 48,
@@ -745,66 +744,6 @@ export const DEFAULT_STATE: State = {
 	treeMap: { mapSize: 250 }
 }
 
-export const SETTINGS: Settings = {
-	...STATE,
-	treeMapSettings: {
-		mapSize: 250
-	}
-}
-
-export const DEFAULT_SETTINGS: Settings = {
-	appSettings: {
-		amountOfTopLabels: 1,
-		amountOfEdgePreviews: 1,
-		edgeHeight: 4,
-		camera: new Vector3(0, 300, 1000),
-		invertDeltaColors: false,
-		dynamicMargin: true,
-		hideFlatBuildings: false,
-		invertHeight: false,
-		invertColorRange: false,
-		isWhiteBackground: false,
-		mapColors: {
-			angularGreen: "#00BFA5",
-			base: "#666666",
-			defaultC: "#89ACB4",
-			flat: "#AAAAAA",
-			lightGrey: "#DDDDDD",
-			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
-			negative: "#820E0E",
-			negativeDelta: "#ff0E0E",
-			neutral: "#ddcc00",
-			positive: "#69AE40",
-			positiveDelta: "#69FF40",
-			selected: "#EB8319",
-			incomingEdge: "#00ffff",
-			outgoingEdge: "#ff00ff"
-		},
-		scaling: new Vector3(1, 1, 1),
-		whiteColorBuildings: false,
-		isPresentationMode: false,
-		showOnlyBuildingsWithEdges: false,
-		resetCameraIfNewFileIsLoaded: true
-	},
-	dynamicSettings: {
-		areaMetric: null,
-		colorMetric: null,
-		focusedNodePath: "",
-		heightMetric: null,
-		distributionMetric: null,
-		edgeMetric: null,
-		margin: null,
-		colorRange: {
-			from: null,
-			to: null
-		},
-		searchPattern: "",
-		searchedNodePaths: []
-	},
-	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
-	treeMapSettings: { mapSize: 250 }
-}
-
 export const TEST_NODE_ROOT: Node = {
 	name: "root",
 	width: 1,
@@ -859,14 +798,14 @@ export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,
 	new Box3(),
 	TEST_NODE_ROOT,
-	DEFAULT_SETTINGS.appSettings.mapColors.neutral
+	DEFAULT_STATE.appSettings.mapColors.neutral
 )
 
 export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
 	1,
 	new Box3(),
 	TEST_NODE_LEAF,
-	DEFAULT_SETTINGS.appSettings.mapColors.neutral
+	DEFAULT_STATE.appSettings.mapColors.neutral
 )
 
 export const METRIC_DATA: MetricData[] = [

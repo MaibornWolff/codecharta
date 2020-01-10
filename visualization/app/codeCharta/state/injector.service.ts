@@ -30,6 +30,7 @@ import { ColorMetricService } from "./store/dynamicSettings/colorMetric/colorMet
 import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric.service"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { NodeSearchService } from "./nodeSearch.service"
+import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 
 export class InjectorService {
 	/* @ngInject */
@@ -67,6 +68,7 @@ export class InjectorService {
 		private colorMetricService: ColorMetricService,
 		private areaMetricService: AreaMetricService,
 		private blacklistService: BlacklistService,
-		private nodeSearchService: NodeSearchService
+		private nodeSearchService: NodeSearchService,
+		private isPresentationModeService: IsPresentationModeService
 	) {}
 }

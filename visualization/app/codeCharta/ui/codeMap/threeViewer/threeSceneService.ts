@@ -3,7 +3,6 @@ import { Scene, Vector3 } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { SettingsService } from "../../../state/settingsService/settings.service"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
@@ -31,7 +30,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding[] = []
 
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
 		this.scene = new THREE.Scene()
@@ -53,10 +52,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public highlightBuildings() {
-		const settings = this.settingsService.getSettings()
-		//TODO: Remove once all settings are in the store
-		settings.appSettings.isPresentationMode = this.storeService.getState().appSettings.isPresentationMode
-		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, settings)
+		const state = this.storeService.getState()
+		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state)
 	}
 
 	public highlightSingleBuilding(building: CodeMapBuilding) {
@@ -75,7 +72,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public selectBuilding(building: CodeMapBuilding) {
-		const color = this.settingsService.getSettings().appSettings.mapColors.selected
+		const color = this.storeService.getState().appSettings.mapColors.selected
 		this.getMapMesh().selectBuilding(building, this.selected, color)
 		this.selected = building
 		this.highlightBuildings()

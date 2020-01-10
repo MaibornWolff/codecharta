@@ -1,40 +1,54 @@
 import { ThreeCameraService } from "./threeCameraService"
-import { IRootScopeService, IAngularEvent } from "angular"
+import { IRootScopeService, IAngularEvent, ITimeoutService } from "angular"
 import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { ThreeSceneService } from "./threeSceneService"
-import { SettingsService } from "../../../state/settingsService/settings.service"
-import _ from "lodash"
-import { FocusNodeSubscriber, UnfocusNodeSubscriber } from "../../../state/settingsService/settings.service.events"
 import { LoadingStatusService } from "../../../state/loadingStatus.service"
+import { StoreService } from "../../../state/store.service"
+import {
+	FocusedNodePathService,
+	FocusNodeSubscriber,
+	UnfocusNodeSubscriber
+} from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
+import { FileStateService, FileStateSubscriber } from "../../../state/fileState.service"
+import { FileState } from "../../../codeCharta.model"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
-export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber {
+export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, FileStateSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
+	private static AUTO_FIT_TIMEOUT = 0
 
 	public controls: OrbitControls
 	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
 
 	/* ngInject */
 	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
+		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService,
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
 		private loadingStatusService: LoadingStatusService
 	) {
-		SettingsService.subscribeToFocusNode($rootScope, this)
-		SettingsService.subscribeToUnfocusNode($rootScope, this)
+		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
+		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onFocusNode(focusPath: string) {
+	public onFocusNode(focusedNodePath: string) {
 		this.autoFitTo()
 	}
 
 	public onUnfocusNode() {
 		if (!this.loadingStatusService.isLoadingNewFile() && !this.loadingStatusService.isLoadingNewMap()) {
+			this.autoFitTo()
+		}
+	}
+
+	public onFileStatesChanged(fileStates: FileState[]) {
+		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}
 	}
@@ -45,23 +59,19 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.applyOldZoom(zoom)
 	}
 
-	public cameraActionWhenNewMapIsLoaded() {
-		if (this.settingsService.getSettings().appSettings.resetCameraIfNewFileIsLoaded) {
-			this.autoFitTo()
-		}
-	}
-
 	public autoFitTo() {
-		const boundingSphere = this.getBoundingSphere()
+		this.$timeout(() => {
+			const boundingSphere = this.getBoundingSphere()
 
-		const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
-		const cameraReference = this.threeCameraService.camera
+			const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
+			const cameraReference = this.threeCameraService.camera
 
-		cameraReference.position.set(boundingSphere.center.x + len, len, boundingSphere.center.z + len)
-		this.defaultCameraPosition = cameraReference.position.clone()
-		this.controls.update()
+			cameraReference.position.set(boundingSphere.center.x + len, len, boundingSphere.center.z + len)
+			this.defaultCameraPosition = cameraReference.position.clone()
+			this.controls.update()
 
-		this.focusCameraViewToCenter(boundingSphere)
+			this.focusCameraViewToCenter(boundingSphere)
+		}, ThreeOrbitControlsService.AUTO_FIT_TIMEOUT)
 	}
 
 	private cameraPerspectiveLengthCalculation(boundingSphere) {

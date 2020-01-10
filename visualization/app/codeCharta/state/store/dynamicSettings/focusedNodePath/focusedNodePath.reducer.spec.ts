@@ -22,6 +22,12 @@ describe("focusedNodePath", () => {
 
 			expect(result).toEqual("")
 		})
+
+		it("should not allow to focus root folder", () => {
+			const result = focusedNodePath("/root", focusNode())
+
+			expect(result).toEqual("")
+		})
 	})
 
 	describe("Action: UNFOCUS_NODE", () => {

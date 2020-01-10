@@ -20,10 +20,12 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber 
 			return
 		}
 
-		this._viewModel.rootNode = null // To force the update of the root folder's name in the UI
-		this.$timeout(() => {
-			this._viewModel.rootNode = map
-		})
+		this._viewModel.rootNode = map
+		this.synchronizeAngularTwoWayBinding()
+	}
+
+	private synchronizeAngularTwoWayBinding() {
+		this.$timeout(() => {})
 	}
 }
 

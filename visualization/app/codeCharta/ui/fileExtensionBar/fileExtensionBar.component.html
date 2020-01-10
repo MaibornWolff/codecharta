@@ -12,8 +12,8 @@
 		>
 			<p
 				class="bar-section-text"
-				ng-mouseover="$ctrl.highlightBarHoveredBuildings(item.fileExtension)"
-				ng-mouseleave="$ctrl.clearHighlightedBarHoveredBuildings()"
+				ng-mouseover="$ctrl.onHoverFileExtensionBar(item.fileExtension)"
+				ng-mouseleave="$ctrl.onUnhoverFileExtensionBar()"
 				title="{{ item.relativeMetricValue.toFixed(2) }}%"
 			>
 				<span ng-if="item.relativeMetricValue >= item.fileExtension.length/2+1">

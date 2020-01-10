@@ -5,11 +5,13 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { ColorRangeService } from "./colorRange.service"
 import { ColorRangeAction, ColorRangeActions } from "./colorRange.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
+import { MetricService } from "../../../metric.service"
 
 describe("ColorRangeService", () => {
 	let colorRangeService: ColorRangeService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
+	let metricService: MetricService
 
 	beforeEach(() => {
 		restartSystem()
@@ -22,10 +24,17 @@ describe("ColorRangeService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		metricService = getService<MetricService>("metricService")
 	}
 
 	function rebuildService() {
-		colorRangeService = new ColorRangeService($rootScope, storeService)
+		colorRangeService = new ColorRangeService($rootScope, storeService, metricService)
+	}
+
+	function withMockedMetricService() {
+		metricService = colorRangeService["metricService"] = jest.fn().mockReturnValue({
+			getMaxMetricByMetricName: jest.fn().mockReturnValue(100)
+		})()
 	}
 
 	describe("constructor", () => {
@@ -55,6 +64,16 @@ describe("ColorRangeService", () => {
 			colorRangeService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("reset", () => {
+		it("should notify all subscribers with the new colorRange value", () => {
+			withMockedMetricService()
+
+			colorRangeService.reset()
+
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})
 	})
 })

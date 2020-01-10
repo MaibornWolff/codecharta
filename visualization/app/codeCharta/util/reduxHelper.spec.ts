@@ -28,14 +28,14 @@ describe("reduxHelper", () => {
 	})
 
 	describe("addItemToArray", () => {
-		it("should deepClone an array and push a cloned item to it", () => {
+		it("should shallow copy an array and push a cloned item to it", () => {
 			arr.push(obj1)
 
 			const result = addItemToArray(arr, obj2)
 			mutateObject(obj1)
-			mutateObject(obj1)
+			mutateObject(obj2)
 
-			expect(result).toEqual([{ x: 1, y: 2 }, { x: 3, y: 4 }])
+			expect(result).toEqual([{ x: 10000, y: 2 }, { x: 3, y: 4 }])
 		})
 	})
 })
