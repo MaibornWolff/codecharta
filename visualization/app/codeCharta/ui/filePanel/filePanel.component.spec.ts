@@ -37,9 +37,9 @@ describe("filePanelController", () => {
 		fileStateService = filePanelController["fileStateService"] = jest.fn<FileStateService>(() => {
 			return {
 				getFileStates: jest.fn().mockReturnValue([]),
-				setSingle: jest.fn(),
-				setDelta: jest.fn(),
-				setMultiple: jest.fn(),
+				setSingleByName: jest.fn(),
+				setDeltaByNames: jest.fn(),
+				setMultipleByNames: jest.fn(),
 				resetMaps: jest.fn(),
 				addFile: jest.fn(),
 				getCCFiles: jest.fn(),
@@ -164,18 +164,23 @@ describe("filePanelController", () => {
 	})
 
 	describe("onSingleFileChange", () => {
-		it("should set singleFile in fileStateService correctly", () => {
+		xit("should set singleFile in fileStateService correctly", () => {
 			FileStateHelper.getFileByFileName = jest.fn().mockReturnValue(TEST_DELTA_MAP_A)
 			filePanelController.onSingleFileChange("fileA")
 
-			expect(fileStateService.getFileStates).toHaveBeenCalled()
 			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileA", [])
 			expect(fileStateService.setSingle).toHaveBeenCalledWith(TEST_DELTA_MAP_A)
+		})
+
+		it("should set singleFile in fileStateService correctly", () => {
+			filePanelController.onSingleFileChange("fileA")
+
+			expect(fileStateService.setSingleByName).toHaveBeenCalledWith("fileA")
 		})
 	})
 
 	describe("onDeltaReferenceFileChange", () => {
-		it("should set referenceFile in fileStateService correctly", () => {
+		xit("should set referenceFile in fileStateService correctly", () => {
 			FileStateHelper.getFileByFileName = jest.fn().mockReturnValue(TEST_DELTA_MAP_A)
 
 			filePanelController["_viewModel"].selectedFileNames.delta.comparison = "fileB"
@@ -188,10 +193,17 @@ describe("filePanelController", () => {
 			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileB", [])
 			expect(fileStateService.setDelta).toHaveBeenCalledWith(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A)
 		})
+
+		it("should set referenceFile in fileStateService correctly", () => {
+			filePanelController["_viewModel"].selectedFileNames.delta.comparison = "fileB"
+			filePanelController.onDeltaReferenceFileChange("fileA")
+
+			expect(fileStateService.setDeltaByNames).toHaveBeenCalledWith("fileA", "fileB")
+		})
 	})
 
 	describe("onDeltaComparisonFileChange", () => {
-		it("should set comparisonFile in fileStateService correctly", () => {
+		xit("should set comparisonFile in fileStateService correctly", () => {
 			FileStateHelper.getFileByFileName = jest.fn().mockReturnValue(TEST_DELTA_MAP_A)
 
 			filePanelController["_viewModel"].selectedFileNames.delta.reference = "fileB"
@@ -204,10 +216,17 @@ describe("filePanelController", () => {
 			expect(FileStateHelper.getFileByFileName).toHaveBeenCalledWith("fileB", [])
 			expect(fileStateService.setDelta).toHaveBeenCalledWith(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A)
 		})
+
+		it("should set comparisonFile in fileStateService correctly", () => {
+			filePanelController["_viewModel"].selectedFileNames.delta.reference = "fileB"
+			filePanelController.onDeltaComparisonFileChange("fileA")
+
+			expect(fileStateService.setDeltaByNames).toHaveBeenCalledWith("fileB", "fileA")
+		})
 	})
 
 	describe("onPartialFileChange", () => {
-		it("should set fileStates in fileStateService correctly for multiple mode when filenames are given", () => {
+		xit("should set fileStates in fileStateService correctly for multiple mode when filenames are given", () => {
 			FileStateHelper.getFileByFileName = jest.fn().mockReturnValue(TEST_DELTA_MAP_A)
 
 			filePanelController.onPartialFilesChange(["fileA"])
@@ -218,10 +237,16 @@ describe("filePanelController", () => {
 			expect(fileStateService.setMultiple).toHaveBeenCalledWith([TEST_DELTA_MAP_A])
 		})
 
+		it("should set fileStates in fileStateService correctly for multiple mode when filenames are given", () => {
+			filePanelController.onPartialFilesChange(["fileA"])
+
+			expect(fileStateService.setMultipleByNames).toHaveBeenCalledWith(["fileA"])
+		})
+
 		it("should set fileStates in fileStateService to empty array for multiple mode when no filenames are given", () => {
 			filePanelController.onPartialFilesChange([])
 
-			expect(fileStateService.setMultiple).toHaveBeenCalledWith([])
+			expect(fileStateService.setMultipleByNames).toHaveBeenCalledWith([])
 		})
 	})
 
