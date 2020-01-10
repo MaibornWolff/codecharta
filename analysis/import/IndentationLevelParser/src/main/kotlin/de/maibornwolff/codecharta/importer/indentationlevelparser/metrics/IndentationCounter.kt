@@ -1,5 +1,6 @@
-package de.maibornwolff.codecharta.importer.indentationlevelparser
+package de.maibornwolff.codecharta.importer.indentationlevelparser.metrics
 
+import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
 import java.io.PrintStream
 import java.lang.Integer.min
 

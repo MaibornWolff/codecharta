@@ -1,15 +1,17 @@
 package de.maibornwolff.codecharta.importer.indentationlevelparser
 
+import de.maibornwolff.codecharta.importer.indentationlevelparser.metrics.IndentationCounter
+import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
 import java.io.File
 import java.io.PrintStream
 import java.nio.file.Paths
 
-class IndentationCollector(private var root: File,
-                           private val tabWidth: Int = 0,
-                           private val maxIndentationLevel: Int = 10,
-                           private val stderr: PrintStream = System.err,
-                           private val exclude: Array<String> = arrayOf(),
-                           private val verbose: Boolean = false) {
+class MetricCollector(private var root: File,
+                      private val tabWidth: Int = 0,
+                      private val maxIndentationLevel: Int = 10,
+                      private val stderr: PrintStream = System.err,
+                      private val exclude: Array<String> = arrayOf(),
+                      private val verbose: Boolean = false) {
 
     fun parse(): Map<String, FileMetrics> {
         val projectMetrics = mutableMapOf<String, FileMetrics>()

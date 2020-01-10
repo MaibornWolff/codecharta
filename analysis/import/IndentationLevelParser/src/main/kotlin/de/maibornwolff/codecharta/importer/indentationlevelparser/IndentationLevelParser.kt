@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.indentationlevelparser
 
+import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
 import picocli.CommandLine.call
@@ -54,7 +55,7 @@ class IndentationLevelParser(private val input: InputStream = System.`in`,
         }
 
         if (defaultExcludes) exclude += DEFAULT_EXCLUDES
-        val results: Map<String, FileMetrics> = IndentationCollector(file, tabWith, maxIndentLvl, error, exclude, verbose).parse()
+        val results: Map<String, FileMetrics> = MetricCollector(file, tabWith, maxIndentLvl, error, exclude, verbose).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         ProjectGenerator(getWriter()).generate(results, projectName, pipedProject)

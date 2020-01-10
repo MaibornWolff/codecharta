@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.indentationlevelparser
 
 import com.google.gson.JsonParser
-import de.maibornwolff.codecharta.importer.indentationlevelparser.FileMetrics
+import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
 import de.maibornwolff.codecharta.importer.indentationlevelparser.ProjectGenerator
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
