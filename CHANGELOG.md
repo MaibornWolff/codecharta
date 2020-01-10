@@ -17,6 +17,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.41.5] - 2020-01-10
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.41.4] - 2020-01-10
 
 ### Added 🚀
