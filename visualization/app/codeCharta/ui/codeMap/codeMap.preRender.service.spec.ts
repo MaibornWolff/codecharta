@@ -2,7 +2,6 @@ import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { CCFile, CodeMapNode, FileMeta, FileState, MetricData } from "../../codeCharta.model"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
@@ -25,7 +24,6 @@ describe("codeMapPreRenderService", () => {
 	let storeService: StoreService
 	let fileStateService: FileStateService
 	let metricService: MetricService
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let codeMapRenderService: CodeMapRenderService
 	let loadingStatusService: LoadingStatusService
 	let edgeMetricDataService: EdgeMetricDataService
@@ -41,7 +39,6 @@ describe("codeMapPreRenderService", () => {
 		rebuildService()
 		withMockedEventMethods($rootScope)
 		withMockedFileStateService()
-		withMockedThreeOrbitControlsService()
 		withMockedLoadingStatusService()
 		withMockedCodeMapRenderService()
 		withMockedMetricService()
@@ -58,7 +55,6 @@ describe("codeMapPreRenderService", () => {
 		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
@@ -77,17 +73,10 @@ describe("codeMapPreRenderService", () => {
 			storeService,
 			fileStateService,
 			metricService,
-			threeOrbitControlsService,
 			codeMapRenderService,
 			loadingStatusService,
 			edgeMetricDataService
 		)
-	}
-
-	function withMockedThreeOrbitControlsService() {
-		threeOrbitControlsService = codeMapPreRenderService["threeOrbitControlsService"] = jest.fn().mockReturnValue({
-			autoFitTo: jest.fn()
-		})()
 	}
 
 	function withMockedCodeMapRenderService() {

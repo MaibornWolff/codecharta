@@ -24,10 +24,6 @@ export class SearchPatternService implements StoreSubscriber, FileStateSubscribe
 	}
 
 	public onFileStatesChanged(fileStates: FileState[]) {
-		this.reset()
-	}
-
-	public reset() {
 		this.storeService.dispatch(setSearchPattern())
 	}
 

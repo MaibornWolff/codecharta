@@ -8,7 +8,6 @@ import { AggregationGenerator } from "../../util/aggregationGenerator"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { DeltaGenerator } from "../../util/deltaGenerator"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
@@ -36,7 +35,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		private storeService: StoreService,
 		private fileStateService: FileStateService,
 		private metricService: MetricService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private codeMapRenderService: CodeMapRenderService,
 		private loadingStatusService: LoadingStatusService,
 		private edgeMetricDataService: EdgeMetricDataService
@@ -143,7 +141,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		this.notifyMapChanged()
 		if (this.loadingStatusService.isLoadingNewFile()) {
 			this.notifyLoadingFileStatus()
-			this.threeOrbitControlsService.cameraActionWhenNewMapIsLoaded()
 		}
 	}
 
