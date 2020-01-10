@@ -25,4 +25,4 @@ $CCSH modify --setRoot /root/de.maibornwolff.codecharta/visualization -o codecha
 $CCSH merge -o ../visualization/app/codecharta_with_edges.cc.json -p CodeCharta codecharta_sonar_mod.cc.json codecharta_git_mod.cc.json
 
 cd ../..
-rmdir gh-pages/demo_files
+rmdir -r gh-pages/demo_files
