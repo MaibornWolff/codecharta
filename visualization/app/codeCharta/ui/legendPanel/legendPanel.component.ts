@@ -13,7 +13,6 @@ import {
 } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { StoreService } from "../../state/store.service"
 import { MarkedPackagesSubscriber, MarkedPackagesService } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
-import _ from "lodash"
 import {
 	WhiteColorBuildingsService,
 	WhiteColorBuildingsSubscriber
