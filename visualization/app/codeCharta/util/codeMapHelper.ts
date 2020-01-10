@@ -19,6 +19,12 @@ export class CodeMapHelper {
 		return matchingNode ? matchingNode.data : null
 	}
 
+	public static getAllPaths(node: CodeMapNode): Array<String> {
+		return hierarchy<CodeMapNode>(node)
+			.descendants()
+			.map(node => node.data.path)
+	}
+
 	public static transformPath(toTransform: string): string {
 		let removeNumberOfCharactersFromStart = 0
 

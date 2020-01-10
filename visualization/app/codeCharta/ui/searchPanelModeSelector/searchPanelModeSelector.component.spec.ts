@@ -4,7 +4,8 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
 import { SearchPanelService } from "../../state/searchPanel.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("SearchPanelModeSelectorController", () => {
 	let searchPanelModeSelectorController: SearchPanelModeSelectorController
@@ -14,21 +15,21 @@ describe("SearchPanelModeSelectorController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
+		withMockedSearchPanelService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.searchPanelModeSelector")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		searchPanelService = getService<SearchPanelService>("settingsService")
+		searchPanelService = getService<SearchPanelService>("searchPanelService")
 	}
 
 	function rebuildController() {
-		searchPanelModeSelectorController = new SearchPanelModeSelectorController(searchPanelService, $rootScope)
+		searchPanelModeSelectorController = new SearchPanelModeSelectorController($rootScope, searchPanelService)
 	}
 
-	function withMockedSettingsService() {
+	function withMockedSearchPanelService() {
 		searchPanelService = searchPanelModeSelectorController["searchPanelService"] = jest.fn().mockReturnValue({
 			updateSearchPanelMode: jest.fn()
 		})()
@@ -36,22 +37,21 @@ describe("SearchPanelModeSelectorController", () => {
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			SettingsService.subscribeToSearchPattern = jest.fn()
-			SettingsService.subscribeToBlacklist = jest.fn()
-
+			SearchPatternService.subscribe = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 			SearchPanelService.subscribe = jest.fn()
 		})
 
 		it("should subscribe to Search-Pattern-Event", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToSearchPattern).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+			expect(SearchPatternService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
 		it("should subscribe to Blacklist-Event", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
 		it("should subscribe to SearchPanelService", () => {
@@ -63,7 +63,7 @@ describe("SearchPanelModeSelectorController", () => {
 
 	describe("onSearchPanelModeChanged", () => {
 		it("should update searchPanelMode", () => {
-			let searchPanelMode = SearchPanelMode.flatten
+			const searchPanelMode = SearchPanelMode.flatten
 
 			searchPanelModeSelectorController.onSearchPanelModeChanged(searchPanelMode)
 

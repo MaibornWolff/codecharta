@@ -2,11 +2,13 @@ import "./metricValueHovered.module"
 import { MetricValueHoveredController } from "./metricValueHovered.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { Node } from "../../codeCharta.model"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import _ from "lodash"
+import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 describe("MetricValueHoveredController", () => {
 	let metricValueHoveredController: MetricValueHoveredController
@@ -43,9 +45,9 @@ describe("MetricValueHoveredController", () => {
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			SettingsService.subscribeToAreaMetric = jest.fn()
-			SettingsService.subscribeToHeightMetric = jest.fn()
-			SettingsService.subscribeToColorMetric = jest.fn()
+			AreaMetricService.subscribe = jest.fn()
+			HeightMetricService.subscribe = jest.fn()
+			ColorMetricService.subscribe = jest.fn()
 
 			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
@@ -54,9 +56,9 @@ describe("MetricValueHoveredController", () => {
 		it("should subscribe to Metric-Events", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
-			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
-			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
+			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
+			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
+			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
 		})
 
 		it("should subscribe to Building-Hovered-Event", () => {

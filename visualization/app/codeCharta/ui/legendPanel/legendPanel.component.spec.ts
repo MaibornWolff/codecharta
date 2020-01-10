@@ -4,14 +4,17 @@ import { LegendPanelController, PackageList } from "./legendPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
-import { CCFile, ColorRange, Settings } from "../../codeCharta.model"
-import { SETTINGS, TEST_FILE_DATA } from "../../util/dataMocks"
+import { CCFile, ColorRange } from "../../codeCharta.model"
+import { TEST_FILE_DATA } from "../../util/dataMocks"
+import _ from "lodash"
+import { StoreService } from "../../state/store.service"
 
 describe("LegendPanelController", () => {
 	let legendPanelController: LegendPanelController
 	let $rootScope: IRootScopeService
+	let storeService: StoreService
 	let fileStateService: FileStateService
-	let settings: Settings
+
 	let file: CCFile
 
 	beforeEach(() => {
@@ -23,23 +26,23 @@ describe("LegendPanelController", () => {
 		instantiateModule("app.codeCharta.ui.legendPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		file = JSON.parse(JSON.stringify(TEST_FILE_DATA))
+		file = _.cloneDeep(TEST_FILE_DATA)
 	}
 
 	function rebuildController() {
-		legendPanelController = new LegendPanelController($rootScope, fileStateService)
+		legendPanelController = new LegendPanelController($rootScope, storeService, fileStateService)
 	}
 
-	describe("MarkingColor in Legend", () => {
+	describe("onMarkedPackagesChanged", () => {
 		beforeEach(() => {
 			fileStateService["fileStates"].push({ file, selectedAs: null })
 		})
 
 		it("set correct markingPackage in Legend", () => {
-			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root", attributes: {} }]
+			const markedPackages = [{ color: "#FF0000", path: "/root", attributes: {} }]
 			const expectedPackageLists: PackageList[] = [
 				{
 					colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
@@ -47,46 +50,40 @@ describe("LegendPanelController", () => {
 				}
 			]
 
-			legendPanelController.onSettingsChanged(settings, undefined)
-
-			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
-		})
-
-		it("set correct markingPackage in Legend", () => {
-			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root", attributes: {} }]
-			const expectedPackageLists: PackageList[] = [
-				{
-					colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-					markedPackages: [{ color: "#FF0000", path: "/root", attributes: { name: "/root" } }]
-				}
-			]
-
-			legendPanelController.onSettingsChanged(settings, undefined)
+			legendPanelController.onMarkedPackagesChanged(markedPackages)
 
 			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
 		})
 
 		it("shorten too long pathName in middle of the string for legendPanel", () => {
-			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }]
+			const markedPackages = [{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }]
 			const shortenedPathname = "longNameToBe...enedInLegend"
 
-			legendPanelController.onSettingsChanged(settings, undefined)
+			legendPanelController.onMarkedPackagesChanged(markedPackages)
 			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
 		})
 
 		it("shorten too long pathName at beginning of the string for legendPanel", () => {
-			settings.fileSettings.markedPackages = [{ color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {} }]
+			const markedPackages = [{ color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {} }]
 			const shortenedPathname = ".../andAnotherLongNameToShorten"
 
-			legendPanelController.onSettingsChanged(settings, undefined)
+			legendPanelController.onMarkedPackagesChanged(markedPackages)
 			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
 		})
 		it("should update the ColorRange when it is changed", () => {
 			const newColorRange: ColorRange = { from: 13, to: 33 }
 
-			settings.dynamicSettings.colorRange.from = 13
-			settings.dynamicSettings.colorRange.to = 33
-			legendPanelController.onSettingsChanged(settings, undefined)
+			legendPanelController.onColorRangeChanged(newColorRange)
+
+			expect(legendPanelController["_viewModel"].colorRange).toEqual(newColorRange)
+		})
+	})
+
+	describe("onColorRangeChanged", () => {
+		it("should update the ColorRange when it is changed", () => {
+			const newColorRange: ColorRange = { from: 13, to: 33 }
+
+			legendPanelController.onColorRangeChanged(newColorRange)
 
 			expect(legendPanelController["_viewModel"].colorRange).toEqual(newColorRange)
 		})

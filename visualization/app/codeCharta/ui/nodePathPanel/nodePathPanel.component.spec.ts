@@ -4,6 +4,7 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("NodePathPanelController", () => {
 	let nodePathPanelController: NodePathPanelController
@@ -39,6 +40,14 @@ describe("NodePathPanelController", () => {
 			rebuildController()
 
 			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
+		})
+
+		it("should subscribe to Blacklist-Change", () => {
+			BlacklistService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, nodePathPanelController)
 		})
 	})
 

@@ -2,16 +2,23 @@ import "./state.module"
 import { StoreService } from "./store.service"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { BlacklistItem, BlacklistType } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, FileSelectionState, FileState } from "../codeCharta.model"
 import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
-import { DEFAULT_STATE, STATE } from "../util/dataMocks"
+import { DEFAULT_STATE, STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
 import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
+import { FileStateService } from "./fileState.service"
+import { FileStateHelper } from "../util/fileStateHelper"
+import { SettingsMerger } from "../util/settingsMerger"
+import { LoadingStatusService } from "./loadingStatus.service"
 
 describe("StoreService", () => {
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
+	let loadingStatusService: LoadingStatusService
+
+	let fileStates: FileState[]
 
 	beforeEach(() => {
 		restartSystem()
@@ -22,10 +29,16 @@ describe("StoreService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
+
+		fileStates = [
+			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
+			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_B)), selectedAs: FileSelectionState.Reference }
+		]
 	}
 
 	function rebuildService() {
-		storeService = new StoreService($rootScope)
+		storeService = new StoreService($rootScope, loadingStatusService)
 	}
 
 	describe("constructor", () => {
@@ -33,6 +46,52 @@ describe("StoreService", () => {
 			rebuildService()
 
 			expect(storeService["store"]).not.toBeNull()
+		})
+
+		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, storeService)
+		})
+	})
+
+	describe("onFileStatesChanged", () => {
+		beforeEach(() => {
+			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
+			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
+			SettingsMerger.getMergedFileSettings = jest.fn().mockReturnValue(DEFAULT_STATE)
+		})
+
+		it("should update store with default dynamicSettings and newFileSettings", () => {
+			storeService.onFileStatesChanged(fileStates)
+
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
+			expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual([])
+			expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
+			expect(storeService.getState().dynamicSettings.margin).toBeNull()
+			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: null, to: null })
+			expect(storeService.getState().fileSettings).toEqual(DEFAULT_STATE.fileSettings)
+		})
+
+		it("should call isPartialState with fileStates", () => {
+			storeService.onFileStatesChanged(fileStates)
+
+			expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
+		})
+
+		it("should call getVisibleFileStates with fileStates", () => {
+			storeService.onFileStatesChanged(fileStates)
+
+			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+		})
+
+		it("should call getMergedFileStates with visibleFiles and withUpdatedPath", () => {
+			storeService.onFileStatesChanged(fileStates)
+			const visibleFiles = [fileStates[0].file, fileStates[1].file]
+
+			expect(SettingsMerger.getMergedFileSettings).toHaveBeenCalledWith(visibleFiles, false)
 		})
 	})
 
@@ -43,8 +102,7 @@ describe("StoreService", () => {
 			expect(storeService.getState()).toEqual(STATE)
 		})
 
-		//TODO: activate again once events are activated again
-		xit("should notify store change and update the store", () => {
+		it("should notify store change and update the store", () => {
 			$rootScope.$broadcast = jest.fn()
 
 			const item: BlacklistItem = { type: BlacklistType.exclude, path: "foo/bar" }
@@ -103,6 +161,22 @@ describe("StoreService", () => {
 			storeService.dispatch(setState(STATE))
 
 			expect(storeService.getState()).toEqual(STATE)
+		})
+
+		it("should show loading map gif", () => {
+			loadingStatusService.updateLoadingMapFlag = jest.fn()
+
+			storeService.dispatch(setState())
+
+			expect(loadingStatusService.updateLoadingMapFlag).toHaveBeenCalled()
+		})
+
+		it("should not show loading map gif for silent mode", () => {
+			loadingStatusService.updateLoadingMapFlag = jest.fn()
+
+			storeService.dispatch(setState(), true)
+
+			expect(loadingStatusService.updateLoadingMapFlag).not.toHaveBeenCalled()
 		})
 	})
 })

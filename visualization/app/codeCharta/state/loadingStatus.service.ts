@@ -21,8 +21,10 @@ export class LoadingStatusService {
 	}
 
 	public updateLoadingMapFlag(isLoadingMap: boolean) {
-		this.isLoadingMap = isLoadingMap
-		this.notifyLoadingMapFlagChange()
+		if (isLoadingMap !== this.isLoadingMap) {
+			this.isLoadingMap = isLoadingMap
+			this.notifyLoadingMapFlagChange()
+		}
 	}
 
 	public isLoadingNewFile(): boolean {

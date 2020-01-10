@@ -2,21 +2,19 @@ import "./searchBar.module"
 import { SearchBarController } from "./searchBar.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { withMockedEventMethods } from "../../util/dataMocks"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { addBlacklistItem, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
 
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
-	let codeMapActionsService: CodeMapActionsService
 	let storeService: StoreService
-	let SOME_EXTRA_TIME = 400
+	let SOME_EXTRA_TIME = 100
 
 	beforeEach(() => {
 		restartSystem()
@@ -28,22 +26,20 @@ describe("SearchBarController", () => {
 		instantiateModule("app.codeCharta.ui.searchBar")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		searchBarController = new SearchBarController($rootScope, settingsService, codeMapActionsService, storeService)
+		searchBarController = new SearchBarController($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
 		it("subscribe to blacklist", () => {
-			SettingsService.subscribeToBlacklist = jest.fn()
+			BlacklistService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, searchBarController)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchBarController)
 		})
 
 		it("subscribe to fileStateService", () => {
@@ -55,13 +51,12 @@ describe("SearchBarController", () => {
 		})
 	})
 
-	describe("onFileSelectionStatesChanged", () => {
+	describe("onFileStatesChanged", () => {
 		it("should set empty searchPattern", done => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
-			searchBarController.onFileSelectionStatesChanged(null)
+			searchBarController.onFileStatesChanged(null)
 
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
-			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe("")
 
 			setTimeout(() => {
 				expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
@@ -75,7 +70,6 @@ describe("SearchBarController", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
 			searchBarController["applySettingsSearchPattern"]()
 
-			expect(settingsService.getSettings().dynamicSettings.searchPattern).toBe(searchBarController["_viewModel"].searchPattern)
 			expect(storeService.getState().dynamicSettings.searchPattern).toEqual(searchBarController["_viewModel"].searchPattern)
 		})
 	})
@@ -146,63 +140,63 @@ describe("SearchBarController", () => {
 	})
 
 	describe("onSearchPatternChanged", () => {
-		it("call applySettingsSearchPattern", () => {
-			searchBarController["applyDebouncedSearchPattern"] = jest.fn()
-
-			searchBarController.onSearchPatternChanged()
-
-			expect(searchBarController["applyDebouncedSearchPattern"]).toHaveBeenCalled()
-		})
-
-		it("call updateViewModel", () => {
-			searchBarController["updateViewModel"] = jest.fn()
-
-			searchBarController.onSearchPatternChanged()
-
-			expect(searchBarController["updateViewModel"]).toHaveBeenCalled()
-		})
-	})
-
-	describe("updateViewModel", () => {
-		let blacklist: BlacklistItem[]
+		let flatten: BlacklistItem
+		let excluded: BlacklistItem
+		let flattenNotInPattern: BlacklistItem
+		let excludedNotInPattern: BlacklistItem
 
 		beforeEach(() => {
-			blacklist = [{ path: "/root/another/node/path", type: BlacklistType.exclude }]
-			searchBarController["_viewModel"].searchPattern = "/root/node/path"
+			const path = "/root/node/path"
+			const notInPattern = "/root/foo/node/path"
+			flatten = { path, type: BlacklistType.flatten }
+			excluded = { path, type: BlacklistType.exclude }
+			flattenNotInPattern = { path: notInPattern, type: BlacklistType.flatten }
+			excludedNotInPattern = { path: notInPattern, type: BlacklistType.exclude }
+
+			searchBarController["_viewModel"].searchPattern = path
+
+			storeService.dispatch(setBlacklist())
 		})
 
 		it("should set the isPatternHidden to true, when the pattern is already in Blacklist", () => {
-			blacklist.push({ path: "/root/node/path", type: BlacklistType.flatten })
-			searchBarController["_viewModel"].isPatternHidden = false
+			storeService.dispatch(addBlacklistItem(flatten))
 
-			searchBarController["updateViewModel"](blacklist)
+			searchBarController.onSearchPatternChanged()
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeTruthy()
 		})
 
 		it("should set the isPatternHidden to false, when the pattern is not in Blacklist", () => {
-			searchBarController["_viewModel"].isPatternHidden = true
+			storeService.dispatch(addBlacklistItem(flattenNotInPattern))
 
-			searchBarController["updateViewModel"](blacklist)
+			searchBarController.onSearchPatternChanged()
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
 		})
 
 		it("should set the isPatternExcluded to true, when the pattern is in Blacklist", () => {
-			blacklist.push({ path: "/root/node/path", type: BlacklistType.exclude })
-			searchBarController["_viewModel"].isPatternExcluded = false
+			storeService.dispatch(addBlacklistItem(excluded))
 
-			searchBarController["updateViewModel"](blacklist)
+			searchBarController.onSearchPatternChanged()
 
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
 		})
 
 		it("should set the isPatternExcluded to false, when the pattern is not in Blacklist", () => {
-			searchBarController["_viewModel"].isPatternExcluded = true
+			storeService.dispatch(addBlacklistItem(excludedNotInPattern))
 
-			searchBarController["updateViewModel"](blacklist)
+			searchBarController.onSearchPatternChanged()
 
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeFalsy()
+		})
+
+		it("should set the searchPattern in store", done => {
+			searchBarController.onSearchPatternChanged()
+
+			setTimeout(() => {
+				expect(storeService.getState().dynamicSettings.searchPattern).toEqual("/root/node/path")
+				done()
+			}, SearchBarController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
 		})
 	})
 })

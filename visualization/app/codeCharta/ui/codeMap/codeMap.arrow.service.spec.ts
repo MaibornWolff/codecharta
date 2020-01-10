@@ -4,27 +4,28 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Object3D, Vector3 } from "three"
-import { Edge, EdgeVisibility, Node, Settings } from "../../codeCharta.model"
-import { SETTINGS, TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
+import { Edge, EdgeVisibility, Node } from "../../codeCharta.model"
+import { TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
+import _ from "lodash"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
+	let storeService: StoreService
 	let threeSceneService: ThreeSceneService
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 
 	let nodes: Node[]
 	let edges: Edge[]
-	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		withMockedThreeSceneService()
-		withMockedSettingsService()
 	})
 
 	afterEach(() => {
@@ -34,17 +35,16 @@ describe("CodeMapArrowService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		settingsService = getService<SettingsService>("settingsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
+		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 
-		nodes = JSON.parse(JSON.stringify([TEST_NODE_ROOT, TEST_NODE_LEAF]))
-		edges = JSON.parse(JSON.stringify(VALID_EDGES))
-		settings = JSON.parse(JSON.stringify(SETTINGS))
+		nodes = _.cloneDeep([TEST_NODE_ROOT, TEST_NODE_LEAF])
+		edges = _.cloneDeep(VALID_EDGES)
 	}
 
 	function rebuildService() {
-		codeMapArrowService = new CodeMapArrowService($rootScope, threeSceneService, settingsService)
+		codeMapArrowService = new CodeMapArrowService($rootScope, storeService, threeSceneService)
 	}
 
 	function withMockedThreeSceneService() {
@@ -53,12 +53,6 @@ describe("CodeMapArrowService", () => {
 				children: [],
 				add: jest.fn()
 			}
-		})()
-	}
-
-	function withMockedSettingsService() {
-		settingsService = codeMapArrowService["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(settings)
 		})()
 	}
 
@@ -134,9 +128,7 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should add outgoing and incoming arrow if node has a height attribute mentioned in renderSettings", () => {
-			settings.dynamicSettings.heightMetric = "a"
-
-			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+			storeService.dispatch(setHeightMetric("a"))
 
 			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.both)
 
@@ -144,9 +136,7 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should insert one arrow, if we set the EdgeVisibility to from", () => {
-			settings.dynamicSettings.heightMetric = "a"
-
-			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+			storeService.dispatch(setHeightMetric("a"))
 
 			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.from)
 
@@ -154,9 +144,7 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should insert one arrow, if we set the EdgeVisibility to to", () => {
-			settings.dynamicSettings.heightMetric = "a"
-
-			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+			storeService.dispatch(setHeightMetric("a"))
 
 			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.to)
 
@@ -164,9 +152,7 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should't insert arrow, if we set the EdgeVisibility to none", () => {
-			settings.dynamicSettings.heightMetric = "a"
-
-			settingsService.getSettings = jest.fn().mockReturnValue(settings)
+			storeService.dispatch(setHeightMetric("a"))
 
 			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.none)
 
@@ -174,10 +160,8 @@ describe("CodeMapArrowService", () => {
 		})
 
 		it("should not add arrows if node has not a height attribute mentioned in renderSettings", () => {
+			storeService.dispatch(setHeightMetric("some"))
 			nodes[0].attributes = { notsome: 0 }
-			settings.dynamicSettings.heightMetric = "some"
-
-			settingsService.getSettings = jest.fn().mockReturnValue(settings)
 
 			codeMapArrowService.addArrow(nodes[0], nodes[0])
 
@@ -187,9 +171,10 @@ describe("CodeMapArrowService", () => {
 
 	describe("scale", () => {
 		it("should set the scale of all arrows to x, y and z", () => {
+			storeService.dispatch(setScaling(new Vector3(1, 2, 3)))
 			setupArrows()
 
-			codeMapArrowService.scale(new Vector3(1, 2, 3))
+			codeMapArrowService.scale()
 
 			expect(codeMapArrowService["arrows"][0].scale.x).toBe(1)
 			expect(codeMapArrowService["arrows"][0].scale.y).toBe(2)

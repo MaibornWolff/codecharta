@@ -14,7 +14,7 @@ export interface MetricDistribution {
 export class FileExtensionCalculator {
 	private static readonly NO_EXTENSION = "None"
 	private static readonly OTHER_EXTENSION = "other"
-	private static OTHER_GROUP_THRESHOLD_VALUE = 90
+	private static OTHER_GROUP_THRESHOLD_VALUE = 3.0
 
 	public static getMetricDistribution(map: CodeMapNode, metric: string, blacklist: BlacklistItem[]): MetricDistribution[] {
 		let distribution: MetricDistribution[] = this.getAbsoluteDistribution(map, metric, blacklist)
@@ -60,14 +60,12 @@ export class FileExtensionCalculator {
 	}
 
 	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]): MetricDistribution[] {
-		let cummulativeRelativeSum: number = 0
 		let otherExtension: MetricDistribution = this.getOtherExtension()
 		let visibleDistributions: MetricDistribution[] = []
 
 		distribution.forEach((x: MetricDistribution) => {
-			if (cummulativeRelativeSum < FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
+			if (x.relativeMetricValue > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
 				visibleDistributions.push(x)
-				cummulativeRelativeSum += x.relativeMetricValue
 			} else {
 				otherExtension.absoluteMetricValue += x.absoluteMetricValue
 				otherExtension.relativeMetricValue += x.relativeMetricValue

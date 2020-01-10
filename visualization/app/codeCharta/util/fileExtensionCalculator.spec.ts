@@ -1,16 +1,16 @@
 import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
-import { BlacklistType, CodeMapNode, Settings } from "../codeCharta.model"
-import { SETTINGS, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
+import { BlacklistType, CodeMapNode, State } from "../codeCharta.model"
+import { STATE, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
 import { HSL } from "./color/hsl"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
-	let settings: Settings
+	let state: State
 
 	beforeEach(() => {
 		map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
-		settings = _.cloneDeep(SETTINGS)
+		state = _.cloneDeep(STATE)
 	})
 
 	describe("getFileExtensionDistribution", () => {
@@ -29,7 +29,7 @@ describe("FileExtensionCalculator", () => {
 
 		it("should get correct absolute distribution of file-extensions for given metric with hidden node", () => {
 			const blacklistItem = { path: map.children[0].path, type: BlacklistType.flatten }
-			settings.fileSettings.blacklist.push(blacklistItem)
+			state.fileSettings.blacklist.push(blacklistItem)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
@@ -41,7 +41,7 @@ describe("FileExtensionCalculator", () => {
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
 				"rloc",
-				settings.fileSettings.blacklist
+				state.fileSettings.blacklist
 			)
 
 			expect(result).toEqual(expected)
@@ -49,7 +49,7 @@ describe("FileExtensionCalculator", () => {
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded node", () => {
 			const blacklistItem = { path: map.children[0].path, type: BlacklistType.exclude }
-			settings.fileSettings.blacklist.push(blacklistItem)
+			state.fileSettings.blacklist.push(blacklistItem)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
@@ -61,7 +61,7 @@ describe("FileExtensionCalculator", () => {
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
 				"rloc",
-				settings.fileSettings.blacklist
+				state.fileSettings.blacklist
 			)
 
 			expect(result).toEqual(expected)
@@ -69,7 +69,7 @@ describe("FileExtensionCalculator", () => {
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded path", () => {
 			const blacklistItem = { path: "*.java", type: BlacklistType.exclude }
-			settings.fileSettings.blacklist.push(blacklistItem)
+			state.fileSettings.blacklist.push(blacklistItem)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
@@ -80,7 +80,7 @@ describe("FileExtensionCalculator", () => {
 			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
 				map,
 				"rloc",
-				settings.fileSettings.blacklist
+				state.fileSettings.blacklist
 			)
 
 			expect(result).toEqual(expected)
@@ -97,10 +97,10 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.48275862068966, color: null },
 				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.56763925729443, color: null },
 				{
-					fileExtension: "other",
+					fileExtension: "None",
 					absoluteMetricValue: 15,
 					relativeMetricValue: 3.978779840848806,
-					color: "#676867"
+					color: null
 				}
 			]
 
@@ -157,7 +157,7 @@ describe("FileExtensionCalculator", () => {
 				}
 			]
 			map.children.push(...additionalChildren)
-			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 95
+			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 2.0
 
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
 

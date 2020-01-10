@@ -1,13 +1,13 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
+import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -32,8 +32,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
 		private storeService: StoreService
 	) {
@@ -44,7 +42,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	public getMarkingColor() {
 		// TODO: set a 'black' color in settings.mapColors ?
 		let defaultColor = "#000000"
-		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.settingsService.getSettings().fileSettings.markedPackages)
+		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
 	}
 
@@ -79,11 +77,16 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public onLabelClick() {
-		this.codeMapActionsService.focusNode(this.node)
+		this.storeService.dispatch(focusNode(this.node.path))
 	}
 
 	public onEyeClick() {
-		this.codeMapActionsService.toggleNodeVisibility(this.node)
+		const blacklistItem: BlacklistItem = { path: this.node.path, type: BlacklistType.flatten }
+		if (this.node.visible) {
+			this.storeService.dispatch(addBlacklistItem(blacklistItem))
+		} else {
+			this.storeService.dispatch(removeBlacklistItem(blacklistItem))
+		}
 	}
 
 	public isLeaf(node: CodeMapNode = this.node): boolean {
@@ -98,8 +101,8 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public isSearched(node: CodeMapNode): boolean {
-		if (node != null && this.settingsService.getSettings().dynamicSettings.searchedNodePaths) {
-			return this.settingsService.getSettings().dynamicSettings.searchedNodePaths.filter(path => path == node.path).length > 0
+		if (node != null && this.storeService.getState().dynamicSettings.searchedNodePaths) {
+			return this.storeService.getState().dynamicSettings.searchedNodePaths.filter(path => path == node.path).length > 0
 		}
 		return false
 	}
@@ -114,14 +117,13 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return node && node.children && node.children.length > 0 ? 1 : 0
 	}
 
-	public getNodeUnary() {
+	public getNodeUnaryValue() {
 		return this.node.attributes["unary"]
 	}
 
 	public getUnaryPercentage() {
 		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes["unary"]
-		const nodeUnary = this.node.attributes["unary"]
-		return ((100 * nodeUnary) / rootUnary).toFixed(0)
+		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
 	}
 
 	public isRoot() {
