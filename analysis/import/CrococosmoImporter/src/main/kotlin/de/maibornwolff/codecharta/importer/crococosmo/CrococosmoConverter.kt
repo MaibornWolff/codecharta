@@ -71,7 +71,7 @@ class CrococosmoConverter {
         return when {
             origin.name.isNullOrEmpty() -> convertToNodeList(origin.children.orEmpty(), version)
             else                        -> listOf(
-                    Node(origin.name!!, getNodeType(origin), createAttributeListForNode(origin.versions, version), "",
+                    Node(origin.name, getNodeType(origin), createAttributeListForNode(origin.versions, version), "",
                             convertToNodeList(origin.children.orEmpty(), version)))
         }
     }

@@ -22,7 +22,7 @@ class NodeRemoverTest {
 
         val result = subProjectExtractor.remove(arrayOf("/root/somethig"))
 
-        Assertions.assertThat(result).isEqualToComparingFieldByFieldRecursively(sampleProject)
+        Assertions.assertThat(result).usingRecursiveComparison().isEqualTo(sampleProject)
     }
 
     @Test
@@ -74,7 +74,7 @@ class NodeRemoverTest {
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
         Assertions.assertThat(result.edges.size).isEqualTo(1)
-        Assertions.assertThat(result.edges.first()).isEqualToComparingFieldByFieldRecursively(sampleProject.edges.last())
+        Assertions.assertThat(result.edges.first()).usingRecursiveComparison().isEqualTo(sampleProject.edges.last())
         Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContain("/root/foo")
         Assertions.assertThat(result.edges.map { it.toNodeName }).doesNotContain("/root/foo")
     }

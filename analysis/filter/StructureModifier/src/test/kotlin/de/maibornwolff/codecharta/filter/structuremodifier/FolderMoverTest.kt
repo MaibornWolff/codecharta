@@ -35,7 +35,7 @@ class FolderMoverTest {
 
         val result = folderMover.move("/does/not/exist", "/something")
 
-        Assertions.assertThat(result).isEqualToComparingFieldByFieldRecursively(sampleProject)
+        Assertions.assertThat(result).usingRecursiveComparison().isEqualTo(sampleProject)
     }
 
     @Test
