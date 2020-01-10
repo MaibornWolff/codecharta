@@ -1,14 +1,14 @@
 import "./searchBar.component.scss"
-import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
+import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 
-export class SearchBarController implements BlacklistSubscriber, FileStateSubscriber {
+export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedSearchPattern: () => void
 
@@ -25,23 +25,23 @@ export class SearchBarController implements BlacklistSubscriber, FileStateSubscr
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		BlacklistService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		SearchPatternService.subscribe(this.$rootScope, this)
 		this.applyDebouncedSearchPattern = _.debounce(() => {
-			this.applySettingsSearchPattern()
+			this.updateSearchPattern()
 		}, SearchBarController.DEBOUNCE_TIME)
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
-		this.resetSearchPattern()
-	}
-
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.updateViewModel(blacklist)
+		this.updateViewModel()
 	}
 
-	public onSearchPatternChanged() {
+	public onSearchPatternChanged(searchPattern: string) {
+		this._viewModel.searchPattern = searchPattern
+		this.updateViewModel()
+	}
+
+	public handleSearchPatternChange() {
 		this.applyDebouncedSearchPattern()
-		this.updateViewModel(this.storeService.getState().fileSettings.blacklist)
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
@@ -53,7 +53,8 @@ export class SearchBarController implements BlacklistSubscriber, FileStateSubscr
 		return this._viewModel.searchPattern === ""
 	}
 
-	private updateViewModel(blacklist: BlacklistItem[]) {
+	private updateViewModel() {
+		const blacklist = this.storeService.getState().fileSettings.blacklist
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
 	}
@@ -64,10 +65,10 @@ export class SearchBarController implements BlacklistSubscriber, FileStateSubscr
 
 	private resetSearchPattern() {
 		this._viewModel.searchPattern = ""
-		this.applyDebouncedSearchPattern()
+		this.updateSearchPattern()
 	}
 
-	private applySettingsSearchPattern() {
+	private updateSearchPattern() {
 		this.storeService.dispatch(setSearchPattern(this._viewModel.searchPattern))
 	}
 }
