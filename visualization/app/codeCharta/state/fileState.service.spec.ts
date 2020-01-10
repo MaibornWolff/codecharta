@@ -144,6 +144,20 @@ describe("FileStateService", () => {
 		})
 	})
 
+	describe("setSingleByName", () => {
+		it("should set FileSelectionStates correctly", () => {
+			fileStateService["fileStates"] = [
+				{ file: file1, selectedAs: FileSelectionState.None },
+				{ file: file2, selectedAs: FileSelectionState.Single }
+			]
+
+			fileStateService.setSingleByName("fileA")
+
+			expect(fileStateService.getFileStates()[0].selectedAs).toEqual(FileSelectionState.Single)
+			expect(fileStateService.getFileStates()[1].selectedAs).toEqual(FileSelectionState.None)
+		})
+	})
+
 	describe("setDelta", () => {
 		it("should set FileSelectionState of the first found file to Reference", () => {
 			fileStateService["fileStates"] = [
@@ -186,6 +200,22 @@ describe("FileStateService", () => {
 		})
 	})
 
+	describe("setDeltaByNames", () => {
+		it("should set FileSelectionStates correctly", () => {
+			fileStateService["fileStates"] = [
+				{ file: file1, selectedAs: FileSelectionState.None },
+				{ file: file2, selectedAs: FileSelectionState.Single },
+				{ file: file2, selectedAs: FileSelectionState.None }
+			]
+
+			fileStateService.setDeltaByNames("fileB", "fileA")
+
+			expect(fileStateService.getFileStates()[0].selectedAs).toEqual(FileSelectionState.Comparison)
+			expect(fileStateService.getFileStates()[1].selectedAs).toEqual(FileSelectionState.Reference)
+			expect(fileStateService.getFileStates()[2].selectedAs).toEqual(FileSelectionState.None)
+		})
+	})
+
 	describe("setMultiple", () => {
 		it("should set FileSelectionState of the first found file to Partial", () => {
 			fileStateService["fileStates"] = [
@@ -215,6 +245,51 @@ describe("FileStateService", () => {
 			fileStateService.setMultiple([file1, file2])
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
+		})
+	})
+
+	describe("setMultipleByNames", () => {
+		it("should set FileSelectionStates correctly", () => {
+			fileStateService["fileStates"] = [
+				{ file: file1, selectedAs: FileSelectionState.None },
+				{ file: file2, selectedAs: FileSelectionState.Single }
+			]
+
+			fileStateService.setMultipleByNames(["fileB", "fileA"])
+
+			expect(fileStateService.getFileStates()[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(fileStateService.getFileStates()[1].selectedAs).toEqual(FileSelectionState.Partial)
+		})
+	})
+
+	describe("fileStatesAvailable", () => {
+		it("should be false if no file states available", () => {
+			fileStateService["fileStates"] = []
+
+			expect(fileStateService.fileStatesAvailable()).toBeFalsy()
+		})
+
+		it("should be true if file states are available", () => {
+			fileStateService["fileStates"] = [{ file: file1, selectedAs: FileSelectionState.None }]
+
+			expect(fileStateService.fileStatesAvailable()).toBeTruthy()
+		})
+	})
+
+	describe("isDeltaState", () => {
+		it("should be false if not delta state", () => {
+			fileStateService["fileStates"] = [{ file: file1, selectedAs: FileSelectionState.None }]
+
+			expect(fileStateService.isDeltaState()).toBeFalsy()
+		})
+
+		it("should be true if delta state", () => {
+			fileStateService["fileStates"] = [
+				{ file: file1, selectedAs: FileSelectionState.Reference },
+				{ file: file1, selectedAs: FileSelectionState.Comparison }
+			]
+
+			expect(fileStateService.isDeltaState()).toBeTruthy()
 		})
 	})
 
