@@ -29,7 +29,7 @@ export class FileStateService {
 	}
 
 	public getFileStates(): FileState[] {
-		return _.cloneDeep(this.fileStates)
+		return this.fileStates
 	}
 
 	public setSingleByName(fileName: string) {

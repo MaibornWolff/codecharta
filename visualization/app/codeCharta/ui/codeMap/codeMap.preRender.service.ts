@@ -110,7 +110,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private getSelectedFilesAsUnifiedMap(): CCFile {
-		const fileStates: FileState[] = this.fileStateService.getFileStates()
+		const fileStates: FileState[] = _.cloneDeep(this.fileStateService.getFileStates())
 		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 
 		if (FileStateHelper.isSingleState(fileStates)) {
