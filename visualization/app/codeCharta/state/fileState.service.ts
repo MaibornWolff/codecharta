@@ -84,7 +84,7 @@ export class FileStateService {
 	}
 
 	public isDeltaState(): boolean {
-		return !!this.fileStates.find(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
+		return FileStateHelper.isDeltaState(this.fileStates)
 	}
 
 	private resetSelectionStates() {
