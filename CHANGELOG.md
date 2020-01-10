@@ -17,66 +17,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
-## [1.41.6] - 2020-01-10
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
-## [1.41.5] - 2020-01-10
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
-## [1.41.4] - 2020-01-10
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
-## [1.41.3] - 2020-01-10
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
-## [1.41.2] - 2020-01-10
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
-
-### Chore 👨‍💻 👩‍💻
-
 ## [1.41.1] - 2020-01-10
 
 ### Added 🚀
