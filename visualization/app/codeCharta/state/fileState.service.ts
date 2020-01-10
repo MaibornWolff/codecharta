@@ -1,6 +1,8 @@
 import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { LoadingStatusService } from "./loadingStatus.service"
+import _ from "lodash"
+import { FileStateHelper } from "../util/fileStateHelper"
 
 export interface FileStateSubscriber {
 	onFileStatesChanged(fileStates: FileState[])
@@ -27,7 +29,12 @@ export class FileStateService {
 	}
 
 	public getFileStates(): FileState[] {
-		return this.fileStates
+		return _.cloneDeep(this.fileStates)
+	}
+
+	public setSingleByName(fileName: string) {
+		const singleFile: CCFile = FileStateHelper.getFileByFileName(fileName, this.fileStates)
+		this.setSingle(singleFile)
 	}
 
 	public setSingle(file: CCFile) {
@@ -37,6 +44,12 @@ export class FileStateService {
 			matchedFile.selectedAs = FileSelectionState.Single
 		}
 		this.notifySelectionChange()
+	}
+
+	public setDeltaByNames(referenceFileName: string, comparisonFileName: string) {
+		const referenceFile: CCFile = FileStateHelper.getFileByFileName(referenceFileName, this.fileStates)
+		const comparisonFile: CCFile = FileStateHelper.getFileByFileName(comparisonFileName, this.fileStates)
+		this.setDelta(referenceFile, comparisonFile)
 	}
 
 	public setDelta(reference: CCFile, comparison: CCFile) {
@@ -54,10 +67,24 @@ export class FileStateService {
 		this.notifySelectionChange()
 	}
 
+	public setMultipleByNames(partialFileNames: string[]) {
+		const partialFiles: CCFile[] = []
+		partialFileNames.forEach(fileName => partialFiles.push(FileStateHelper.getFileByFileName(fileName, this.fileStates)))
+		this.setMultiple(partialFiles)
+	}
+
 	public setMultiple(multipleFiles: CCFile[]) {
 		this.resetSelectionStates()
 		this.fileStates.filter(x => multipleFiles.indexOf(x.file) !== -1).forEach(x => (x.selectedAs = FileSelectionState.Partial))
 		this.notifySelectionChange()
+	}
+
+	public fileStatesAvailable(): boolean {
+		return this.fileStates.length > 0
+	}
+
+	public isDeltaState(): boolean {
+		return !!this.fileStates.find(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
 	}
 
 	private resetSelectionStates() {

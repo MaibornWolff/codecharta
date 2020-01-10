@@ -92,35 +92,19 @@ export class FilePanelController implements FileStateSubscriber {
 	}
 
 	public onSingleFileChange(singleFileName: string) {
-		const singleFile: CCFile = FileStateHelper.getFileByFileName(singleFileName, this.fileStateService.getFileStates())
-		this.fileStateService.setSingle(singleFile)
+		this.fileStateService.setSingleByName(singleFileName)
 	}
 
 	public onDeltaReferenceFileChange(referenceFileName: string) {
-		const referenceFile: CCFile = FileStateHelper.getFileByFileName(referenceFileName, this.fileStateService.getFileStates())
-		const comparisonFile: CCFile = FileStateHelper.getFileByFileName(
-			this._viewModel.selectedFileNames.delta.comparison,
-			this.fileStateService.getFileStates()
-		)
-		this.fileStateService.setDelta(referenceFile, comparisonFile)
+		this.fileStateService.setDeltaByNames(referenceFileName, this._viewModel.selectedFileNames.delta.comparison)
 	}
 
 	public onDeltaComparisonFileChange(comparisonFileName: string) {
-		const referenceFile: CCFile = FileStateHelper.getFileByFileName(
-			this._viewModel.selectedFileNames.delta.reference,
-			this.fileStateService.getFileStates()
-		)
-		const comparisonFile: CCFile = FileStateHelper.getFileByFileName(comparisonFileName, this.fileStateService.getFileStates())
-		this.fileStateService.setDelta(referenceFile, comparisonFile)
+		this.fileStateService.setDeltaByNames(this._viewModel.selectedFileNames.delta.reference, comparisonFileName)
 	}
 
 	public onPartialFilesChange(partialFileNames: string[]) {
-		const partialFiles: CCFile[] = []
-
-		partialFileNames.forEach(fileName => {
-			partialFiles.push(FileStateHelper.getFileByFileName(fileName, this.fileStateService.getFileStates()))
-		})
-		this.fileStateService.setMultiple(partialFiles)
+		this.fileStateService.setMultipleByNames(partialFileNames)
 	}
 
 	public onSingleStateSelected() {
