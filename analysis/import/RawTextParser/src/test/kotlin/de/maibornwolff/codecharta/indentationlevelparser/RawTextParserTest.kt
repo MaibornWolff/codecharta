@@ -1,23 +1,23 @@
-package de.maibornwolff.codecharta.indentationlevelparser
+package de.maibornwolff.codecharta.rawtextparser
 
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.importer.indentationlevelparser.IndentationLevelParser
-import de.maibornwolff.codecharta.importer.indentationlevelparser.IndentationLevelParser.Companion.mainWithInOut
+import de.maibornwolff.codecharta.importer.rawtextparser.RawTextParser
+import de.maibornwolff.codecharta.importer.rawtextparser.RawTextParser.Companion.mainWithInOut
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.*
 
-class IndentationLevelParserTest {
+class RawTextParserTest {
 
     @Test
     fun `should be able to process single file`() {
         val result = ByteArrayOutputStream()
         val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
 
-        IndentationLevelParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/tabs.xyz"))
+        RawTextParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/tabs.xyz"))
 
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())
@@ -29,7 +29,7 @@ class IndentationLevelParserTest {
         val result = ByteArrayOutputStream()
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
-        IndentationLevelParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/", "-p=foo", "--tabWidth=2", "--maxIndentationLevel=2", "-e=tabs*."))
+        RawTextParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/", "-p=foo", "--tabWidth=2", "--maxIndentationLevel=2", "-e=tabs*."))
 
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())

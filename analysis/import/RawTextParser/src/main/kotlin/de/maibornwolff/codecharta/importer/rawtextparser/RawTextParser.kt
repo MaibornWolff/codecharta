@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.indentationlevelparser
+package de.maibornwolff.codecharta.importer.rawtextparser
 
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.toInt
+import de.maibornwolff.codecharta.importer.rawtextparser.model.FileMetrics
+import de.maibornwolff.codecharta.importer.rawtextparser.model.toInt
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
 import picocli.CommandLine.call
@@ -14,9 +14,9 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from projects or source code files"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class IndentationLevelParser(private val input: InputStream = System.`in`,
-                             private val output: PrintStream = System.out,
-                             private val error: PrintStream = System.err) : Callable<Void> {
+class RawTextParser(private val input: InputStream = System.`in`,
+                    private val output: PrintStream = System.out,
+                    private val error: PrintStream = System.err) : Callable<Void> {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
@@ -98,12 +98,12 @@ class IndentationLevelParser(private val input: InputStream = System.`in`,
 
         @JvmStatic
         fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
-            call(IndentationLevelParser(System.`in`, outputStream), System.out, *args)
+            call(RawTextParser(System.`in`, outputStream), System.out, *args)
         }
 
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
-            call(IndentationLevelParser(input, outputStream, error), outputStream, *args)
+            call(RawTextParser(input, outputStream, error), outputStream, *args)
         }
     }
 }
