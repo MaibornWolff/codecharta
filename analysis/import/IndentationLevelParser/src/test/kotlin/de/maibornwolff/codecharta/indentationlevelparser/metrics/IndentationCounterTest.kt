@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.indentationlevelparser
+package de.maibornwolff.codecharta.indentationlevelparser.metrics
 
 import de.maibornwolff.codecharta.importer.indentationlevelparser.metrics.IndentationCounter
 import org.assertj.core.api.Assertions
@@ -9,21 +9,21 @@ import java.io.PrintStream
 class IndentationCounterTest {
 
     private fun addDoubleSpacedLines(indentationCounter: IndentationCounter) {
-        indentationCounter.addIndentationForLine("    foo")
-        indentationCounter.addIndentationForLine("  foo")
-        indentationCounter.addIndentationForLine("  foo")
-        indentationCounter.addIndentationForLine("foo")
+        indentationCounter.parseLine("    foo")
+        indentationCounter.parseLine("  foo")
+        indentationCounter.parseLine("  foo")
+        indentationCounter.parseLine("foo")
     }
 
     @Test
     fun `should register indentation with tabs`() {
         val indentationCounter = IndentationCounter()
 
-        indentationCounter.addIndentationForLine("\t\tfoo")
-        indentationCounter.addIndentationForLine("\tfoo")
-        indentationCounter.addIndentationForLine("\tfoo")
-        indentationCounter.addIndentationForLine("foo")
-        val result = indentationCounter.getIndentationLevels().metricMap
+        indentationCounter.parseLine("\t\tfoo")
+        indentationCounter.parseLine("\tfoo")
+        indentationCounter.parseLine("\tfoo")
+        indentationCounter.parseLine("foo")
+        val result = indentationCounter.getValue().metricMap
 
         Assertions.assertThat(result["indentation_level_0+"]).isEqualTo(4.0)
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
@@ -34,11 +34,11 @@ class IndentationCounterTest {
     fun `should register indentation with spaces`() {
         val indentationCounter = IndentationCounter()
 
-        indentationCounter.addIndentationForLine("  foo")
-        indentationCounter.addIndentationForLine(" foo")
-        indentationCounter.addIndentationForLine(" foo")
-        indentationCounter.addIndentationForLine("foo")
-        val result = indentationCounter.getIndentationLevels().metricMap
+        indentationCounter.parseLine("  foo")
+        indentationCounter.parseLine(" foo")
+        indentationCounter.parseLine(" foo")
+        indentationCounter.parseLine("foo")
+        val result = indentationCounter.getValue().metricMap
 
         Assertions.assertThat(result["indentation_level_0+"]).isEqualTo(4.0)
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
@@ -52,7 +52,7 @@ class IndentationCounterTest {
         val indentationCounter = IndentationCounter(stderr = writer, verbose = true)
 
         addDoubleSpacedLines(indentationCounter)
-        val result = indentationCounter.getIndentationLevels().metricMap
+        val result = indentationCounter.getValue().metricMap
 
         Assertions.assertThat(result["indentation_level_0+"]).isEqualTo(4.0)
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
@@ -64,8 +64,9 @@ class IndentationCounterTest {
     fun `should calculate indentations based on given tabWidth`() {
         val indentationCounter = IndentationCounter()
 
+        indentationCounter.setParameters(mapOf("tabWidth" to 1))
         addDoubleSpacedLines(indentationCounter)
-        val result = indentationCounter.getIndentationLevels(1).metricMap
+        val result = indentationCounter.getValue().metricMap
 
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(3.0)
         Assertions.assertThat(result["indentation_level_4+"]).isEqualTo(1.0)
@@ -77,8 +78,9 @@ class IndentationCounterTest {
         val writer = PrintStream(printContent)
         val indentationCounter = IndentationCounter(stderr = writer)
 
+        indentationCounter.setParameters(mapOf("tabWidth" to 3))
         addDoubleSpacedLines(indentationCounter)
-        val result = indentationCounter.getIndentationLevels(3).metricMap
+        val result = indentationCounter.getValue().metricMap
 
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
         Assertions.assertThat(result["indentation_level_1+"]).isEqualTo(3.0)
@@ -90,9 +92,9 @@ class IndentationCounterTest {
     fun `should consider maximum indentation levels`() {
         val indentationCounter = IndentationCounter(maxIndentation = 2)
 
-        indentationCounter.addIndentationForLine("\t\tfoo")
-        indentationCounter.addIndentationForLine("\t\t\tfoo")
-        val result = indentationCounter.getIndentationLevels().metricMap
+        indentationCounter.parseLine("\t\tfoo")
+        indentationCounter.parseLine("\t\t\tfoo")
+        val result = indentationCounter.getValue().metricMap
 
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(2.0)
         Assertions.assertThat(result).doesNotContainKey("indentation_level_3+")
@@ -102,10 +104,10 @@ class IndentationCounterTest {
     fun `should ignore lines that contain only spaces or tabs`() {
         val indentationCounter = IndentationCounter()
 
-        indentationCounter.addIndentationForLine("\t\t")
-        indentationCounter.addIndentationForLine("      ")
-        indentationCounter.addIndentationForLine("     foo")
-        val result = indentationCounter.getIndentationLevels().metricMap
+        indentationCounter.parseLine("\t\t")
+        indentationCounter.parseLine("      ")
+        indentationCounter.parseLine("     foo")
+        val result = indentationCounter.getValue().metricMap
 
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(0.0)
         Assertions.assertThat(result["indentation_level_1+"]).isEqualTo(1.0)

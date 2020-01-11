@@ -1,0 +1,22 @@
+package de.maibornwolff.codecharta.importer.indentationlevelparser.metrics
+
+object MetricsFactory {
+
+    fun create(metricList: List<String>, parameters: Map<String, Int>): List<Metric> {
+        val metrics: List<Metric>
+        metrics = if (metricList.isEmpty()) {
+            instantiateAllMetrics()
+        } else {
+            instantiateAllMetrics().filter { metricList.contains(it.name) }
+        }
+
+        metrics.forEach { it.setParameters(parameters) }
+        return metrics
+    }
+
+    private fun instantiateAllMetrics(): List<Metric> {
+        return listOf(
+                IndentationCounter()
+        )
+    }
+}

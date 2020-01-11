@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class MetricCollectorTest {
+class ProjectParserTest {
     @Test
     fun `Should collect information about a single file`() {
         val result = MetricCollector(File("src/test/resources/sampleproject/tabs.xyz").absoluteFile).parse()

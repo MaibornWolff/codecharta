@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.indentationlevelparser
+package de.maibornwolff.codecharta.indentationlevelparser.model
 
 import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
 import org.assertj.core.api.Assertions

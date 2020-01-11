@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.indentationlevelparser
 
 import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
+import de.maibornwolff.codecharta.importer.indentationlevelparser.model.toInt
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
 import picocli.CommandLine.call
@@ -28,17 +29,20 @@ class IndentationLevelParser(private val input: InputStream = System.`in`,
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
     private var file: File = File("")
 
+    @CommandLine.Option(arity = "0..", names = ["-m", "--metrics"], description = ["metrics to be computed (select all if not specified)"])
+    private var metrics: List<String> = listOf()
+
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
     @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
     private var projectName = ""
 
-    @CommandLine.Option(names = ["-w", "--tabWidth"], description = ["tab width used (estimated if not provided)"])
-    private var tabWith = 0
+    @CommandLine.Option(names = ["--tabWidth"], description = ["tab width used (estimated if not provided)"])
+    private var tabWith: Int? = null
 
-    @CommandLine.Option(names = ["-m", "--maxLevel"], description = ["maximum Indentation Level (default 10)"])
-    private var maxIndentLvl = 10
+    @CommandLine.Option(names = ["--maxIndentationLevel"], description = ["maximum Indentation Level (default 10)"])
+    private var maxIndentLvl: Int? = null
 
     @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
@@ -55,7 +59,9 @@ class IndentationLevelParser(private val input: InputStream = System.`in`,
         }
 
         if (defaultExcludes) exclude += DEFAULT_EXCLUDES
-        val results: Map<String, FileMetrics> = MetricCollector(file, tabWith, maxIndentLvl, error, exclude, verbose).parse()
+
+        val parameterMap = assembleParameterMap()
+        val results: Map<String, FileMetrics> = MetricCollector(file, exclude, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         ProjectGenerator(getWriter()).generate(results, projectName, pipedProject)
@@ -74,6 +80,14 @@ class IndentationLevelParser(private val input: InputStream = System.`in`,
         } else {
             OutputStreamWriter(output)
         }
+    }
+
+    private fun assembleParameterMap(): Map<String, Int> {
+        return mapOf(
+                "verbose" to verbose.toInt(),
+                "maxIndentationLevel" to maxIndentLvl,
+                "tabWidth" to tabWith
+        ).filterValues { it != null }.mapValues { it.value as Int }
     }
 
     companion object {

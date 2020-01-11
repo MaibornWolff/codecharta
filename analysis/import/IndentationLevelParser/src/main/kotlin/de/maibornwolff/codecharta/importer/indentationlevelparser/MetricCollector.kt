@@ -1,17 +1,14 @@
 package de.maibornwolff.codecharta.importer.indentationlevelparser
 
-import de.maibornwolff.codecharta.importer.indentationlevelparser.metrics.IndentationCounter
+import de.maibornwolff.codecharta.importer.indentationlevelparser.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
 import java.io.File
-import java.io.PrintStream
 import java.nio.file.Paths
 
 class MetricCollector(private var root: File,
-                      private val tabWidth: Int = 0,
-                      private val maxIndentationLevel: Int = 10,
-                      private val stderr: PrintStream = System.err,
                       private val exclude: Array<String> = arrayOf(),
-                      private val verbose: Boolean = false) {
+                      private val parameters: Map<String, Int> = mapOf(),
+                      private val metrics: List<String> = listOf()) {
 
     fun parse(): Map<String, FileMetrics> {
         val projectMetrics = mutableMapOf<String, FileMetrics>()
@@ -29,9 +26,12 @@ class MetricCollector(private var root: File,
     }
 
     private fun parseFile(file: File): FileMetrics {
-        val indentationCounter = IndentationCounter(maxIndentationLevel, stderr, verbose)
-        file.readLines().forEach { indentationCounter.addIndentationForLine(it) }
-        return indentationCounter.getIndentationLevels(tabWidth)
+        val metrics = MetricsFactory.create(metrics, parameters)
+        file.readLines().forEach { line -> metrics.forEach { it.parseLine(line) } }
+        return metrics.map { it.getValue() }.reduceRight { current, acc ->
+            acc.metricMap.putAll(current.metricMap)
+            acc
+        }
     }
 
     private fun getRelativeFileName(fileName: String): String {

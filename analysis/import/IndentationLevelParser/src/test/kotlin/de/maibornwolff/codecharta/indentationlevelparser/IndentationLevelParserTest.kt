@@ -29,7 +29,7 @@ class IndentationLevelParserTest {
         val result = ByteArrayOutputStream()
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
-        IndentationLevelParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/", "-p=foo", "-w=2", "-m=2", "-e=tabs*."))
+        IndentationLevelParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/", "-p=foo", "--tabWidth=2", "--maxIndentationLevel=2", "-e=tabs*."))
 
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())

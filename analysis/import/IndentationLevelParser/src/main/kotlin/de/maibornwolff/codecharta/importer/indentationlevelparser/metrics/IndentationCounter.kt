@@ -1,18 +1,22 @@
 package de.maibornwolff.codecharta.importer.indentationlevelparser.metrics
 
 import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
+import de.maibornwolff.codecharta.importer.indentationlevelparser.model.toBool
 import java.io.PrintStream
 import java.lang.Integer.min
 
-class IndentationCounter(private val maxIndentation: Int = 10,
-                         private val stderr: PrintStream = System.err,
-                         private val verbose: Boolean = false) {
+class IndentationCounter(private var maxIndentation: Int = 10,
+                         private var stderr: PrintStream = System.err,
+                         private var verbose: Boolean = false,
+                         private var tabWidth: Int = 0) : Metric {
 
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
-    private var tabWidth = 1
 
-    fun addIndentationForLine(line: String) {
+    override val name = "IndentationLevel"
+    override val description = "Number of lines with an indentation level of at least x"
+
+    override fun parseLine(line: String) {
         var tabIndent = line.length - line.trimStart('\t').length
         var spaceIndent = line.length - line.trimStart(' ').length
         if (spaceIndent == line.length || tabIndent == line.length) return
@@ -26,7 +30,14 @@ class IndentationCounter(private val maxIndentation: Int = 10,
         }
     }
 
+    override fun setParameters(parameters: Map<String, Int>) {
+        maxIndentation = parameters["maxIndentationLevel"] ?: maxIndentation
+        tabWidth = parameters["tabWidth"] ?: tabWidth
+        verbose = parameters["verbose"]?.toBool() ?: verbose
+    }
+
     private fun guessTabWidth(): Int {
+        tabWidth = 1
         if (spaceIndentations.sum() == 0) return tabWidth
 
         val candidates = 2..8
@@ -56,11 +67,9 @@ class IndentationCounter(private val maxIndentation: Int = 10,
         }
     }
 
-    fun getIndentationLevels(providedTabWidth: Int = 0): FileMetrics {
-        tabWidth = if (providedTabWidth == 0) {
+    override fun getValue(): FileMetrics {
+        if (tabWidth == 0) {
             guessTabWidth()
-        } else {
-            providedTabWidth
         }
         correctMismatchingIndents(tabWidth)
 
