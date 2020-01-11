@@ -10,7 +10,7 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "intendationlevelparser",
+        name = "rawtextparser",
         description = ["generates cc.json from projects or source code files"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
