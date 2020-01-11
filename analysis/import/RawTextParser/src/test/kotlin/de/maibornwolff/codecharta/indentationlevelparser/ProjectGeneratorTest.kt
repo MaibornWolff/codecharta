@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.indentationlevelparser
+package de.maibornwolff.codecharta.rawtextparser
 
 import com.google.gson.JsonParser
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
-import de.maibornwolff.codecharta.importer.indentationlevelparser.ProjectGenerator
+import de.maibornwolff.codecharta.importer.rawtextparser.ProjectGenerator
+import de.maibornwolff.codecharta.importer.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test

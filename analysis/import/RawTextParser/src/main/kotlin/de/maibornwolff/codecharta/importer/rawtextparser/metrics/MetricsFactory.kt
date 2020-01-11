@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.indentationlevelparser.metrics
+package de.maibornwolff.codecharta.importer.rawtextparser.metrics
 
 object MetricsFactory {
 

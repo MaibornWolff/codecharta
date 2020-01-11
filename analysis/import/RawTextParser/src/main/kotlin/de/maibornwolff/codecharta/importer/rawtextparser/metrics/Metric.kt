@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.importer.indentationlevelparser.metrics
+package de.maibornwolff.codecharta.importer.rawtextparser.metrics
 
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
+import de.maibornwolff.codecharta.importer.rawtextparser.model.FileMetrics
 
 interface Metric {
 

@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.indentationlevelparser.metrics
+package de.maibornwolff.codecharta.importer.rawtextparser.metrics
 
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.toBool
+import de.maibornwolff.codecharta.importer.rawtextparser.model.FileMetrics
+import de.maibornwolff.codecharta.importer.rawtextparser.model.toBool
 import java.io.PrintStream
 import java.lang.Integer.min
 

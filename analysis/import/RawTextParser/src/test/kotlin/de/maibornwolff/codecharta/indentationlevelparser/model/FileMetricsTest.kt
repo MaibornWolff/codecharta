@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.indentationlevelparser.model
+package de.maibornwolff.codecharta.rawtextparser.model
 
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
+import de.maibornwolff.codecharta.importer.rawtextparser.model.FileMetrics
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 

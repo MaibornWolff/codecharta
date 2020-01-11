@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.indentationlevelparser.metrics
+package de.maibornwolff.codecharta.rawtextparser.metrics
 
-import de.maibornwolff.codecharta.importer.indentationlevelparser.metrics.IndentationCounter
+import de.maibornwolff.codecharta.importer.rawtextparser.metrics.IndentationCounter
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream

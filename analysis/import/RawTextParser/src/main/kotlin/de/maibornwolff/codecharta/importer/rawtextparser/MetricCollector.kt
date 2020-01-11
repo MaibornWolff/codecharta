@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.indentationlevelparser
+package de.maibornwolff.codecharta.importer.rawtextparser
 
-import de.maibornwolff.codecharta.importer.indentationlevelparser.metrics.MetricsFactory
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
+import de.maibornwolff.codecharta.importer.rawtextparser.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.rawtextparser.model.FileMetrics
 import java.io.File
 import java.nio.file.Paths
 
@@ -28,7 +28,7 @@ class MetricCollector(private var root: File,
     private fun parseFile(file: File): FileMetrics {
         val metrics = MetricsFactory.create(metrics, parameters)
         file.readLines().forEach { line -> metrics.forEach { it.parseLine(line) } }
-        return metrics.map { it.getValue() }.reduceRight { current, acc ->
+        return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricMap.putAll(current.metricMap)
             acc
         }

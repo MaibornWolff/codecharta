@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.indentationlevelparser.model
+package de.maibornwolff.codecharta.importer.rawtextparser.model
 
 class FileMetrics {
     val metricMap = mutableMapOf<String, Double>()

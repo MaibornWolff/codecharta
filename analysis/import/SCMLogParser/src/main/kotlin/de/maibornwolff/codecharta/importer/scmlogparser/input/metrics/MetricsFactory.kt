@@ -1,7 +1,5 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
-import java.util.*
-
 class MetricsFactory {
 
     private val metricClasses: List<Class<out Metric>>
@@ -19,7 +17,7 @@ class MetricsFactory {
 
     private fun createMetric(clazz: Class<out Metric>): Metric {
         try {
-            return clazz.newInstance()
+            return clazz.getDeclaredConstructor().newInstance()
         } catch (e: InstantiationException) {
             throw IllegalArgumentException("metric $clazz not found.")
         } catch (e: IllegalAccessException) {
@@ -28,7 +26,7 @@ class MetricsFactory {
     }
 
     private fun createAllMetrics(): List<Metric> {
-        return Arrays.asList(
+        return listOf(
                 AbsoluteCodeChurn(),
                 AddedLines(),
                 DeletedLines(),

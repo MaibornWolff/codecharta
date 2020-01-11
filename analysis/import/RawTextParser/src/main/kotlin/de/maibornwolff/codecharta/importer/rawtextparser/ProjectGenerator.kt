@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.indentationlevelparser
+package de.maibornwolff.codecharta.importer.rawtextparser
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.importer.indentationlevelparser.model.FileMetrics
+import de.maibornwolff.codecharta.importer.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.Project

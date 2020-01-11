@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.indentationlevelparser
+package de.maibornwolff.codecharta.rawtextparser
 
-import de.maibornwolff.codecharta.importer.indentationlevelparser.MetricCollector
+import de.maibornwolff.codecharta.importer.rawtextparser.MetricCollector
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.File
