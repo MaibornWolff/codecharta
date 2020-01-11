@@ -48,7 +48,7 @@ class RawTextParser(private val input: InputStream = System.`in`,
     private var exclude: Array<String> = arrayOf()
 
     @CommandLine.Option(names = ["--withoutDefaultExcludes"], description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "])
-    private var defaultExcludes = false
+    private var withoutDefaultExcludes = false
 
     @Throws(IOException::class)
     override fun call(): Void? {
@@ -58,7 +58,7 @@ class RawTextParser(private val input: InputStream = System.`in`,
             return null
         }
 
-        if (defaultExcludes) exclude += DEFAULT_EXCLUDES
+        if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val parameterMap = assembleParameterMap()
         val results: Map<String, FileMetrics> = MetricCollector(file, exclude, parameterMap, metrics).parse()
