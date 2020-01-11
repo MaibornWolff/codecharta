@@ -3,8 +3,7 @@ package de.maibornwolff.codecharta.importer.rawtextparser.metrics
 object MetricsFactory {
 
     fun create(metricList: List<String>, parameters: Map<String, Int>): List<Metric> {
-        val metrics: List<Metric>
-        metrics = if (metricList.isEmpty()) {
+        val metrics = if (metricList.isEmpty()) {
             instantiateAllMetrics()
         } else {
             instantiateAllMetrics().filter { metricList.contains(it.name) }
