@@ -1,6 +1,8 @@
+#!/usr/bin/env bash
+
 BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ $BRANCH_NAME =~ ^[a-z]+\/([0-9]+\/)?[a-z-]+$ ]]
+if [[ $BRANCH_NAME =~ ^[a-z]+\/([0-9]+\/)?[a-z-]+$ || $BRANCH_NAME = "master" || $BRANCH_NAME = "gh-pages" ]]
 then
     exit 0
 fi

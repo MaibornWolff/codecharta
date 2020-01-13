@@ -1,9 +1,9 @@
 import "./filePanel.component.scss"
 import { CCFile, FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
+import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
 
 interface SelectedFileNames {
 	single: string
@@ -14,7 +14,7 @@ interface SelectedFileNames {
 	partial: string[]
 }
 
-export class FilePanelController implements FileStateServiceSubscriber {
+export class FilePanelController implements FileStateSubscriber {
 	private lastRenderState: FileSelectionState
 
 	private _viewModel: {
@@ -47,15 +47,12 @@ export class FilePanelController implements FileStateServiceSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private fileStateService: FileStateService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private fileStateService: FileStateService) {
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
+		this._viewModel.fileStates = fileStates
 		this._viewModel.isSingleState = FileStateHelper.isSingleState(fileStates)
 		this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
@@ -66,8 +63,8 @@ export class FilePanelController implements FileStateServiceSubscriber {
 
 	private setPictogramColor() {
 		this._viewModel.pictogramFirstFileColor = "#808080"
-		this._viewModel.pictogramUpperColor = this.settingsService.getSettings().appSettings.mapColors.positiveDelta
-		this._viewModel.pictogramLowerColor = this.settingsService.getSettings().appSettings.mapColors.negativeDelta
+		this._viewModel.pictogramUpperColor = this.storeService.getState().appSettings.mapColors.positiveDelta
+		this._viewModel.pictogramLowerColor = this.storeService.getState().appSettings.mapColors.negativeDelta
 	}
 
 	private updateSelectedFileNamesInViewModel(fileStates: FileState[]) {
@@ -92,10 +89,6 @@ export class FilePanelController implements FileStateServiceSubscriber {
 					? visibleFileStates.find(x => x.selectedAs === FileSelectionState.Comparison).file.fileMeta.fileName
 					: visibleFileStates[0].file.fileMeta.fileName
 		}
-	}
-
-	public onImportedFilesChanged(fileStates: FileState[]) {
-		this._viewModel.fileStates = fileStates
 	}
 
 	public onSingleFileChange(singleFileName: string) {

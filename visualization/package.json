@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.41.0",
+	"version": "1.41.6",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -123,8 +123,8 @@
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "npm run format:quick",
-			"pre-push": "npm run lint && ./script/pre-push.sh"
+			"pre-commit": "npm run lint:fix && npm run format:quick",
+			"pre-push": "sh ./script/pre-push.sh"
 		}
 	},
 	"dependencies": {

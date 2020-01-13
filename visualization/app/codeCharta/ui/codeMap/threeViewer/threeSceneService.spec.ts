@@ -1,6 +1,5 @@
 import "./threeViewer.module"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { SettingsService } from "../../../state/settingsService/settings.service"
 import { VALID_NODE, CODE_MAP_BUILDING, TEST_NODES } from "../../../util/dataMocks"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap.preRender.service"
@@ -14,8 +13,8 @@ import { CodeMapMesh } from "../rendering/codeMapMesh"
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
 	let storeService: StoreService
+
 	let map: CodeMapNode
 	let codeMapBuilding: CodeMapBuilding
 
@@ -28,7 +27,6 @@ describe("ThreeSceneService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap.threeViewer")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
 
 		map = _.cloneDeep(VALID_NODE)
@@ -36,11 +34,11 @@ describe("ThreeSceneService", () => {
 	}
 
 	function rebuildService() {
-		threeSceneService = new ThreeSceneService($rootScope, settingsService, storeService)
+		threeSceneService = new ThreeSceneService($rootScope, storeService)
 	}
 
 	beforeEach(() => {
-		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, settingsService.getSettings(), false)
+		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 		threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
 	})
 
@@ -74,7 +72,7 @@ describe("ThreeSceneService", () => {
 			expect(threeSceneService["mapMesh"].highlightBuilding).toHaveBeenCalledWith(
 				threeSceneService["highlighted"],
 				null,
-				settingsService.getSettings()
+				storeService.getState()
 			)
 		})
 	})

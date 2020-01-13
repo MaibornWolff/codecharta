@@ -1,15 +1,14 @@
 import "./searchBar.component.scss"
-import { SettingsService } from "../../state/settingsService/settings.service"
-import { BlacklistType, BlacklistItem, FileState } from "../../codeCharta.model"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
+import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
 import _ from "lodash"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 
-export class SearchBarController implements BlacklistSubscriber, FileStateServiceSubscriber {
+export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedSearchPattern: () => void
 
@@ -24,31 +23,29 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private codeMapActionsService: CodeMapActionsService,
-		private storeService: StoreService
-	) {
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		BlacklistService.subscribe(this.$rootScope, this)
+		SearchPatternService.subscribe(this.$rootScope, this)
 		this.applyDebouncedSearchPattern = _.debounce(() => {
-			this.applySettingsSearchPattern()
+			this.updateSearchPattern()
 		}, SearchBarController.DEBOUNCE_TIME)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.resetSearchPattern()
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.updateViewModel()
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
+	public onSearchPatternChanged(searchPattern: string) {
+		this._viewModel.searchPattern = searchPattern
+		this.updateViewModel()
+	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.updateViewModel(blacklist)
+	public handleSearchPatternChange() {
+		this.applyDebouncedSearchPattern()
 	}
 
 	public onClickBlacklistPattern(blacklistType: BlacklistType) {
-		this.codeMapActionsService.pushItemToBlacklist({ path: this._viewModel.searchPattern, type: blacklistType })
+		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.searchPattern, type: blacklistType }))
 		this.resetSearchPattern()
 	}
 
@@ -56,12 +53,8 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 		return this._viewModel.searchPattern === ""
 	}
 
-	public onSearchPatternChanged() {
-		this.applyDebouncedSearchPattern()
-		this.updateViewModel(this.storeService.getState().fileSettings.blacklist)
-	}
-
-	private updateViewModel(blacklist: BlacklistItem[]) {
+	private updateViewModel() {
+		const blacklist = this.storeService.getState().fileSettings.blacklist
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
 	}
@@ -72,15 +65,10 @@ export class SearchBarController implements BlacklistSubscriber, FileStateServic
 
 	private resetSearchPattern() {
 		this._viewModel.searchPattern = ""
-		this.applyDebouncedSearchPattern()
+		this.updateSearchPattern()
 	}
 
-	private applySettingsSearchPattern() {
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				searchPattern: this._viewModel.searchPattern
-			}
-		})
+	private updateSearchPattern() {
 		this.storeService.dispatch(setSearchPattern(this._viewModel.searchPattern))
 	}
 }
