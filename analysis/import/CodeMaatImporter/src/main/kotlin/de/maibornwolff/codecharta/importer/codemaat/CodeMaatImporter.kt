@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
-import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
@@ -59,14 +59,14 @@ class CodeMaatImporter: Callable<Void> {
             attributeTypes["pairingRate"] = AttributeType.relative
             attributeTypes["avgCommits"] = AttributeType.absolute
 
-            return AttributeTypes(attributeTypes.toMap(), type)
+            return AttributeTypes(attributeTypes.toMutableMap(), type)
         }
 
     private fun writer(): Writer {
         return if (outputFile == null) {
             OutputStreamWriter(System.out)
         } else {
-            BufferedWriter(FileWriter(outputFile))
+            BufferedWriter(FileWriter(outputFile!!))
         }
     }
 

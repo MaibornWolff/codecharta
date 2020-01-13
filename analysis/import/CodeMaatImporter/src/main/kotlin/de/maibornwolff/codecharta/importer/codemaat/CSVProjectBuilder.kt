@@ -31,7 +31,7 @@ package de.maibornwolff.codecharta.importer.codemaat
 
 import com.univocity.parsers.csv.CsvParser
 import com.univocity.parsers.csv.CsvParserSettings
-import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
+import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder

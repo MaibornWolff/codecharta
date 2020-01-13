@@ -29,7 +29,6 @@
 
 package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import mu.KotlinLogging
 
@@ -112,7 +111,7 @@ open class ProjectBuilder(
 
     fun addAttributeTypes(attributeTypesToAdd: AttributeTypes): ProjectBuilder {
         if (!attributeTypes.containsKey(attributeTypesToAdd.type)) {
-            attributeTypes[attributeTypesToAdd.type] = mutableListOf(attributeTypesToAdd.attributeTypes)
+            attributeTypes[attributeTypesToAdd.type] = mutableListOf(attributeTypesToAdd.attributeTypes.toMap())
         } else {
             attributeTypes[attributeTypesToAdd.type]!!.add(attributeTypesToAdd.attributeTypes)
         }
