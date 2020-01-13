@@ -1,0 +1,38 @@
+import { StoreService, StoreSubscriber } from "../../../store.service"
+import { IRootScopeService } from "angular"
+import { CameraActions } from "./camera.actions"
+import _ from "lodash"
+import { Vector3 } from "three"
+
+export interface CameraSubscriber {
+	onCameraChanged(camera: Vector3)
+}
+
+export class CameraService implements StoreSubscriber {
+	private static CAMERA_CHANGED_EVENT = "camera-changed"
+
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		StoreService.subscribe(this.$rootScope, this)
+	}
+
+	public onStoreChanged(actionType: string) {
+		if (_.values(CameraActions).includes(actionType)) {
+			this.notify(this.select())
+		}
+	}
+
+	private select() {
+		return this.storeService.getState().appSettings.camera
+	}
+
+	private notify(newState: Vector3) {
+		//TODO: Move camera out of the state and persist it in a service
+		//this.$rootScope.$broadcast(CameraService.CAMERA_CHANGED_EVENT, { camera: newState })
+	}
+
+	public static subscribe($rootScope: IRootScopeService, subscriber: CameraSubscriber) {
+		$rootScope.$on(CameraService.CAMERA_CHANGED_EVENT, (event, data) => {
+			subscriber.onCameraChanged(data.camera)
+		})
+	}
+}

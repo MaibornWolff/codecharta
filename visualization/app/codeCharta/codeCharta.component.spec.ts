@@ -1,39 +1,36 @@
 import "./codeCharta.module"
-import { IHttpService, ILocationService, IRootScopeService } from "angular"
+import _ from "lodash"
+import { IHttpService, ILocationService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
-import { SettingsService } from "./state/settingsService/settings.service"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { Settings } from "./codeCharta.model"
-import { SETTINGS } from "./util/dataMocks"
+import { State } from "./codeCharta.model"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
-import { NodeSearchService } from "./state/nodeSearch.service"
+import { InjectorService } from "./state/injector.service"
+import { StoreService } from "./state/store.service"
+import { STATE } from "./util/dataMocks"
+import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
-	let $rootScope: IRootScopeService
-	let dialogService: DialogService
-	let codeMapActionsService: CodeMapActionsService
-	let settingsService: SettingsService
-	let codeChartaService: CodeChartaService
-	let fileStateService: FileStateService
-	let nodeSearchService: NodeSearchService
 	let $location: ILocationService
 	let $http: IHttpService
+	let storeService: StoreService
+	let dialogService: DialogService
+	let codeChartaService: CodeChartaService
+	let fileStateService: FileStateService
+	let injectorService: InjectorService
 	let loadingStatusService: LoadingStatusService
 
-	let settings: Settings
+	let state: State
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedCodeMapActionsService()
 		withMockedUrlUtils()
-		withMockedSettingsService()
 		withMockedCodeChartaService()
 		withMockedDialogService()
 		withMockedScenarioHelper()
@@ -43,32 +40,28 @@ describe("codeChartaController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		dialogService = getService<DialogService>("dialogService")
-		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		settingsService = getService<SettingsService>("settingsService")
-		codeChartaService = getService<CodeChartaService>("codeChartaService")
-		fileStateService = getService<FileStateService>("fileStateService")
-		nodeSearchService = getService<NodeSearchService>("nodeSearchService")
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
+		storeService = getService<StoreService>("storeService")
+		dialogService = getService<DialogService>("dialogService")
+		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		fileStateService = getService<FileStateService>("fileStateService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
+		injectorService = getService<InjectorService>("injectorService")
 
-		settings = JSON.parse(JSON.stringify(SETTINGS))
+		state = _.cloneDeep(STATE)
 	}
 
 	function rebuildController() {
 		codeChartaController = new CodeChartaController(
-			$rootScope,
-			dialogService,
-			codeMapActionsService,
-			settingsService,
-			codeChartaService,
-			fileStateService,
-			nodeSearchService,
 			$location,
 			$http,
-			loadingStatusService
+			storeService,
+			dialogService,
+			codeChartaService,
+			fileStateService,
+			loadingStatusService,
+			injectorService
 		)
 	}
 
@@ -76,23 +69,10 @@ describe("codeChartaController", () => {
 		jest.resetAllMocks()
 	})
 
-	function withMockedCodeMapActionsService() {
-		codeMapActionsService = codeChartaController["codeMapActionsService"] = jest.fn().mockReturnValue({
-			removeFocusedNode: jest.fn()
-		})()
-	}
-
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
 			getFileDataFromQueryParam: jest.fn().mockReturnValue(Promise.resolve([])),
 			getParameterByName: jest.fn().mockReturnValue(true)
-		})()
-	}
-
-	function withMockedSettingsService() {
-		settingsService = codeChartaController["settingsService"] = jest.fn().mockReturnValue({
-			updateSettings: jest.fn(),
-			getDefaultSettings: jest.fn().mockReturnValue(settings)
 		})()
 	}
 
@@ -109,7 +89,7 @@ describe("codeChartaController", () => {
 	}
 
 	function withMockedScenarioHelper() {
-		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings })
+		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings: state })
 	}
 
 	function withMockedLoadingStatusService() {
@@ -120,14 +100,6 @@ describe("codeChartaController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to SettingsService", () => {
-			SettingsService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, codeChartaController)
-		})
-
 		it("should set urlUtils", () => {
 			rebuildController()
 
@@ -138,22 +110,6 @@ describe("codeChartaController", () => {
 			rebuildController()
 
 			expect(loadingStatusService.updateLoadingFileFlag).toHaveBeenCalledWith(true)
-		})
-	})
-
-	describe("onSettingsChanged", () => {
-		it("should set focusedNodePath in viewModel", () => {
-			codeChartaController.onSettingsChanged(settings, undefined)
-
-			expect(codeChartaController["_viewModel"].focusedNodePath).toBe("/root")
-		})
-	})
-
-	describe("removeFocusedNode", () => {
-		it("should call removeFocusedNode", () => {
-			codeChartaController.removeFocusedNode()
-
-			expect(codeMapActionsService.removeFocusedNode).toHaveBeenCalled()
 		})
 	})
 
@@ -176,12 +132,13 @@ describe("codeChartaController", () => {
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([{}])
 		})
 
-		it("should call updateSettings if loadFiles-Promise resolves", async () => {
+		it("should call storeService.dispatch if loadFiles-Promise resolves", async () => {
 			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
+			storeService.dispatch = jest.fn()
 
 			await codeChartaController.loadFileOrSample()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
+			expect(storeService.dispatch).toHaveBeenCalledWith(setAppSettings())
 		})
 	})
 
@@ -198,18 +155,6 @@ describe("codeChartaController", () => {
 			codeChartaController.tryLoadingSampleFiles()
 
 			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected)
-		})
-
-		it("should update settings with default settings", () => {
-			codeChartaController.tryLoadingSampleFiles()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
-		})
-
-		it("should update settings from default scenario", () => {
-			codeChartaController.tryLoadingSampleFiles()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(settings)
 		})
 
 		it("should call loadFiles with sample files", () => {

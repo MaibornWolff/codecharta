@@ -17,6 +17,54 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.41.6] - 2020-01-10
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Deployment
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.1] - 2020-01-10
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Performance of loading maps with edges improved #823
+- Calculation of other Group for fileExtensionBar #768
+- Remove focus of UI elements when they are not visible anymore
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.0] - 2019-12-06
+
+### Added 🚀
+
+- Show the relative number of files a folder includes compared to the project in the TreeView #380
+- Show the number of files a folder includes in the TreeView when hovering #380
+- When the File Extension Bar is hovered, all buildings corresponding to that extension are highlighted #545
+- Toggle between percentage and absolute values when clicking the file extension details section #545
+- Sum hovered delta values for folders #781
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.40.0] - 2019-11-22
 
 ### Added 🚀

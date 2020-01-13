@@ -8,10 +8,9 @@ import { CodeMapNode, FileState, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { FileStateServiceSubscriber, FileStateService } from "../../state/fileState.service"
-import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { FileStateSubscriber, FileStateService } from "../../state/fileState.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 interface Coordinates {
 	x: number
@@ -37,7 +36,7 @@ export enum ClickType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateServiceSubscriber, BlacklistSubscriber {
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -60,7 +59,7 @@ export class CodeMapMouseEventService
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
 	public start() {
@@ -88,7 +87,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this.threeSceneService.clearSelection()
 	}
 
@@ -102,8 +101,6 @@ export class CodeMapMouseEventService
 			}
 		}
 	}
-
-	public onImportedFilesChanged(fileStates: FileState[]) {}
 
 	public updateHovering() {
 		if (this.hasMouseMoved()) {
@@ -127,10 +124,9 @@ export class CodeMapMouseEventService
 				}
 
 				if (from !== to) {
+					this.unhoverBuilding()
 					if (to) {
 						this.hoverBuilding(to)
-					} else {
-						this.unhoverBuilding()
 					}
 				}
 			}
@@ -161,6 +157,7 @@ export class CodeMapMouseEventService
 	}
 
 	public onDocumentMouseDown(event) {
+		$(document.activeElement).blur()
 		if (event.button === 0) {
 			this.onLeftClick()
 		} else if (event.button === 2) {
@@ -205,7 +202,7 @@ export class CodeMapMouseEventService
 		}
 
 		if (hoveredBuilding) {
-			this.threeSceneService.highlightBuilding(hoveredBuilding)
+			this.threeSceneService.highlightSingleBuilding(hoveredBuilding)
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 		}
 	}

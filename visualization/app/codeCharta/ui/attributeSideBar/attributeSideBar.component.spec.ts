@@ -3,12 +3,15 @@ import { AttributeSideBarController, PrimaryMetrics } from "./attributeSideBar.c
 import { AttributeSideBarService } from "./attributeSideBar.service"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CODE_MAP_BUILDING, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import _ from "lodash"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
@@ -50,36 +53,36 @@ describe("AttributeSideBarController", () => {
 			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to AreaMetric Events", () => {
-			SettingsService.subscribeToAreaMetric = jest.fn()
+		it("should subscribe to AreaMetricService", () => {
+			AreaMetricService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to HeightMetric Events", () => {
-			SettingsService.subscribeToHeightMetric = jest.fn()
+		it("should subscribe to HeightMetricService", () => {
+			HeightMetricService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to ColorMetric Events", () => {
-			SettingsService.subscribeToColorMetric = jest.fn()
+		it("should subscribe to ColorMetricService", () => {
+			ColorMetricService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to EdgeMetric Events", () => {
-			SettingsService.subscribeToEdgeMetric = jest.fn()
+		it("should subscribe to EdgeMetricService", () => {
+			EdgeMetricService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SettingsService.subscribeToEdgeMetric).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
 		it("should subscribe to AttributeSideBarService Events", () => {

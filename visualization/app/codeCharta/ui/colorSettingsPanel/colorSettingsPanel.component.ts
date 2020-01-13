@@ -1,17 +1,28 @@
-import { SettingsService } from "../../state/settingsService/settings.service"
 import "./colorSettingsPanel.component.scss"
-import { FileState, MetricData, RecursivePartial, Settings } from "../../codeCharta.model"
+import { FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
-import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
-import _ from "lodash"
-import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
+import { StoreService } from "../../state/store.service"
+import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
+import { setInvertDeltaColors } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.actions"
+import { setMapColors } from "../../state/store/appSettings/mapColors/mapColors.actions"
+import { setWhiteColorBuildings } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.actions"
+import {
+	InvertDeltaColorsService,
+	InvertDeltaColorsSubscriber
+} from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
+import {
+	WhiteColorBuildingsService,
+	WhiteColorBuildingsSubscriber
+} from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
+import {
+	InvertColorRangeService,
+	InvertColorRangeSubscriber
+} from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 
-export class ColorSettingsPanelController implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
-	private lastColorMetric: string = null
-	private lastMaxColorMetricValue: number = null
-
+export class ColorSettingsPanelController
+	implements FileStateSubscriber, InvertDeltaColorsSubscriber, WhiteColorBuildingsSubscriber, InvertColorRangeSubscriber {
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean
@@ -25,92 +36,49 @@ export class ColorSettingsPanelController implements SettingsServiceSubscriber, 
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService, private metricService: MetricService) {
-		SettingsService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		MetricService.subscribe(this.$rootScope, this)
+		InvertDeltaColorsService.subscribe(this.$rootScope, this)
+		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
+		InvertColorRangeService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this._viewModel.invertDeltaColors = settings.appSettings.invertDeltaColors
-		this._viewModel.whiteColorBuildings = settings.appSettings.whiteColorBuildings
-		this._viewModel.invertColorRange = settings.appSettings.invertColorRange
-
-		if (
-			(this.lastColorMetric !== settings.dynamicSettings.colorMetric || !this.containsColorRangeValues(settings)) &&
-			this.metricService.getMetricData()
-		) {
-			this.lastColorMetric = settings.dynamicSettings.colorMetric
-			const maxMetricValue = this.metricService.getMaxMetricByMetricName(settings.dynamicSettings.colorMetric)
-			this.adaptColorRange(settings, maxMetricValue)
-		}
+	public onInvertColorRangeChanged(invertColorRange: boolean) {
+		this._viewModel.invertColorRange = invertColorRange
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
+	public onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
+		this._viewModel.invertDeltaColors = invertDeltaColors
+	}
+
+	public onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
+		this._viewModel.whiteColorBuildings = whiteColorBuildings
+	}
+
+	public onFileStatesChanged(fileStates: FileState[]) {
 		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
 	}
 
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
-	public onMetricDataAdded(metricData: MetricData[]) {
-		const newMaxColorMetricValue: number = this.metricService.getMaxMetricByMetricName(
-			this.settingsService.getSettings().dynamicSettings.colorMetric
-		)
-		if (this.lastMaxColorMetricValue !== newMaxColorMetricValue) {
-			this.lastMaxColorMetricValue = newMaxColorMetricValue
-			this.adaptColorRange(this.settingsService.getSettings(), newMaxColorMetricValue)
-		}
-	}
-
-	public onMetricDataRemoved() {}
-
 	public invertColorRange() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				invertColorRange: this._viewModel.invertColorRange
-			}
-		})
+		this.storeService.dispatch(setInvertColorRange(this._viewModel.invertColorRange))
 	}
 
 	public invertDeltaColors() {
-		const positiveDelta = this.settingsService.getSettings().appSettings.mapColors.positiveDelta
-		const negativeDelta = this.settingsService.getSettings().appSettings.mapColors.negativeDelta
+		const positiveDelta = this.storeService.getState().appSettings.mapColors.positiveDelta
+		const negativeDelta = this.storeService.getState().appSettings.mapColors.negativeDelta
 
-		this.settingsService.updateSettings({
-			appSettings: {
-				invertDeltaColors: this._viewModel.invertDeltaColors,
-				mapColors: {
-					negativeDelta: positiveDelta,
-					positiveDelta: negativeDelta
-				}
-			}
-		})
+		this.storeService.dispatch(setInvertDeltaColors(this._viewModel.invertDeltaColors))
+		this.storeService.dispatch(
+			setMapColors({
+				...this.storeService.getState().appSettings.mapColors,
+				negativeDelta: positiveDelta,
+				positiveDelta: negativeDelta
+			})
+		)
 	}
 
 	public applyWhiteColorBuildings() {
-		this.settingsService.updateSettings({
-			appSettings: {
-				whiteColorBuildings: this._viewModel.whiteColorBuildings
-			}
-		})
-	}
-
-	private containsColorRangeValues(settings): boolean {
-		return _.values(settings.dynamicSettings.colorRange).every(x => x != null)
-	}
-
-	private adaptColorRange(s: Settings, maxMetricValue: number) {
-		const firstThird = Math.round((maxMetricValue / 3) * 100) / 100
-		const secondThird = Math.round(firstThird * 2 * 100) / 100
-
-		this.settingsService.updateSettings({
-			dynamicSettings: {
-				colorRange: {
-					from: firstThird,
-					to: secondThird
-				}
-			}
-		})
+		this.storeService.dispatch(setWhiteColorBuildings(this._viewModel.whiteColorBuildings))
 	}
 }
 

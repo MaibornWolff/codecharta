@@ -6,9 +6,9 @@ Object {
   "children": Array [
     Object {
       "attributes": Object {
-        "Functions": 10,
-        "MCC": 1,
-        "RLOC": 100,
+        "functions": 10,
+        "mcc": 1,
+        "rloc": 100,
       },
       "children": Array [],
       "link": "http://www.google.de",
@@ -21,9 +21,9 @@ Object {
       "children": Array [
         Object {
           "attributes": Object {
-            "Functions": 100,
-            "MCC": 100,
-            "RLOC": 30,
+            "functions": 100,
+            "mcc": 100,
+            "rloc": 30,
           },
           "children": Array [],
           "name": "small leaf",
@@ -39,9 +39,9 @@ Object {
         },
         Object {
           "attributes": Object {
-            "Functions": 1000,
-            "MCC": 10,
-            "RLOC": 70,
+            "functions": 1000,
+            "mcc": 10,
+            "rloc": 70,
           },
           "children": Array [],
           "name": "other small leaf",

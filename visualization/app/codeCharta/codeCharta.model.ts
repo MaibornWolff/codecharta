@@ -1,4 +1,5 @@
 import { Vector3 } from "three"
+import { Action } from "redux"
 
 export interface NameDataPair {
 	fileName: string
@@ -234,4 +235,15 @@ export interface Node {
 	color: string
 	incomingEdgePoint: Vector3
 	outgoingEdgePoint: Vector3
+}
+
+export interface State {
+	fileSettings: FileSettings
+	dynamicSettings: DynamicSettings
+	appSettings: AppSettings
+	treeMap: TreeMapSettings
+}
+
+export interface CCAction extends Action {
+	payload: any
 }

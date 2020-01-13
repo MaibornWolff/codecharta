@@ -2,42 +2,59 @@ import "./fileExtensionBar.module"
 import _ from "lodash"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
-import { METRIC_DISTRIBUTION, NONE_METRIC_DISTRIBUTION, SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
+import {
+	METRIC_DISTRIBUTION,
+	NONE_METRIC_DISTRIBUTION,
+	TEST_FILE_WITH_PATHS,
+	CODE_MAP_BUILDING_TS_NODE,
+	VALID_NODE_WITH_PATH_AND_EXTENSION
+} from "../../util/dataMocks"
 import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
-import { BlacklistType, Settings } from "../../codeCharta.model"
+import { BlacklistType } from "../../codeCharta.model"
+import { StoreService } from "../../state/store.service"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
+import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
+	let storeService: StoreService
+	let threeSceneService: ThreeSceneService
 
 	let distribution: MetricDistribution[] = METRIC_DISTRIBUTION
-	let settings: Settings
+	let codeMapBuilding: CodeMapBuilding
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
+		withMockedThreeSceneService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.fileExtensionBar")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 
-		settings = _.cloneDeep(SETTINGS)
+		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING_TS_NODE)
 	}
 
 	function rebuildController() {
-		fileExtensionBarController = new FileExtensionBarController($rootScope, settingsService)
+		fileExtensionBarController = new FileExtensionBarController($rootScope, storeService, threeSceneService)
 	}
 
-	function withMockedSettingsService() {
-		settingsService = fileExtensionBarController["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(settings)
+	function withMockedThreeSceneService() {
+		threeSceneService = fileExtensionBarController["threeSceneService"] = jest.fn().mockReturnValue({
+			getMapMesh: jest.fn().mockReturnValue({
+				getMeshDescription: jest.fn().mockReturnValue({
+					buildings: [codeMapBuilding]
+				})
+			}),
+			addBuildingToHighlightingList: jest.fn(),
+			highlightBuildings: jest.fn()
 		})()
 	}
 
@@ -52,6 +69,8 @@ describe("FileExtensionBarController", () => {
 		})
 
 		it("should call getMetricDistribution with mcc", () => {
+			storeService.dispatch(setDistributionMetric("mcc"))
+
 			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
 			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(TEST_FILE_WITH_PATHS.map, "mcc", [])
@@ -59,14 +78,15 @@ describe("FileExtensionBarController", () => {
 
 		it("should call getMetricDistribution with a blacklist", () => {
 			const blacklistEntry = { path: "a/path", type: BlacklistType.exclude }
-			settings.fileSettings.blacklist.push(blacklistEntry)
+			storeService.dispatch(addBlacklistItem(blacklistEntry))
+			storeService.dispatch(setDistributionMetric("mcc"))
 
 			fileExtensionBarController.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
 			expect(FileExtensionCalculator.getMetricDistribution).toHaveBeenCalledWith(
 				TEST_FILE_WITH_PATHS.map,
 				"mcc",
-				settings.fileSettings.blacklist
+				storeService.getState().fileSettings.blacklist
 			)
 		})
 
@@ -108,6 +128,59 @@ describe("FileExtensionBarController", () => {
 			fileExtensionBarController.toggleExtensiveMode()
 
 			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeTruthy
+		})
+	})
+
+	describe("togglePercentageAbsoluteValues", () => {
+		it("should set viewModel.isAbsoluteValueVisible to false", () => {
+			fileExtensionBarController["_viewModel"].isAbsoluteValueVisible = true
+
+			fileExtensionBarController.togglePercentageAbsoluteValues()
+
+			expect(fileExtensionBarController["_viewModel"].isAbsoluteValueVisible).toBeFalsy()
+		})
+
+		it("should set viewModel.isAbsoluteValueVisible to true", () => {
+			fileExtensionBarController["_viewModel"].isAbsoluteValueVisible = false
+
+			fileExtensionBarController.togglePercentageAbsoluteValues()
+
+			expect(fileExtensionBarController["_viewModel"].isAbsoluteValueVisible).toBeTruthy()
+		})
+	})
+
+	describe("highlightBarHoveredBuildings", () => {
+		beforeEach(() => {
+			const map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
+			map.children.push({
+				name: "README.md",
+				type: "File",
+				path: "/root/README.md",
+				attributes: { rloc: 120, functions: 20, mcc: 2 }
+			})
+			fileExtensionBarController.onRenderMapChanged(map)
+		})
+
+		it("should highlight all buildings with 'other' extension", () => {
+			fileExtensionBarController.onHoverFileExtensionBar("other")
+
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledTimes(1)
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+		})
+
+		it("should call addBuilding to addBuildingToHighlightingList, when a Building with the given file Extension exists ", () => {
+			fileExtensionBarController.onHoverFileExtensionBar("ts")
+
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+		})
+
+		it("should not call addBuilding to addBuildingToHighlightingList, when Building with the given file Extension does not exists ", () => {
+			fileExtensionBarController.onHoverFileExtensionBar("ne")
+
+			expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 		})
 	})
 })

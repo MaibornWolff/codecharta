@@ -1,33 +1,34 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapLabelService } from "./codeMap.label.service"
-import { Node, Settings } from "../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { Vector3 } from "three"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS, SETTINGS } from "../../util/dataMocks"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { withMockedEventMethods } from "../../util/dataMocks"
 import * as THREE from "three"
+import { StoreService } from "../../state/store.service"
+import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
+import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 
 describe("CodeMapLabelService", () => {
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
+	let storeService: StoreService
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
 	let createElementOrigin
-	let sampleSettings: Settings
 	let sampleLeaf: Node
 	let canvasCtxMock
 
 	beforeEach(() => {
 		restartSystem()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
-		withMockedSettingsService()
 		rebuild()
 		setCanvasRenderSettings()
 	})
@@ -36,19 +37,13 @@ describe("CodeMapLabelService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 	}
 
 	function rebuild() {
-		codeMapLabelService = new CodeMapLabelService($rootScope, settingsService, threeCameraService, threeSceneService)
-	}
-
-	function withMockedEventMethods() {
-		$rootScope.$on = jest.fn()
-
-		$rootScope.$broadcast = jest.fn()
+		codeMapLabelService = new CodeMapLabelService($rootScope, storeService, threeCameraService, threeSceneService)
 	}
 
 	function withMockedThreeCameraService() {
@@ -75,17 +70,7 @@ describe("CodeMapLabelService", () => {
 		})()
 	}
 
-	function withMockedSettingsService() {
-		settingsService = jest.fn<SettingsService>(() => {
-			return {
-				getSettings: jest.fn().mockReturnValue(DEFAULT_SETTINGS)
-			}
-		})()
-	}
-
 	function setCanvasRenderSettings() {
-		sampleSettings = SETTINGS
-
 		sampleLeaf = ({
 			name: "sample",
 			width: 1,
@@ -126,58 +111,75 @@ describe("CodeMapLabelService", () => {
 		document.createElement = createElementOrigin
 	})
 
-	it("should have no labels stored after construction", () => {
-		expect(codeMapLabelService["labels"].length).toBe(0)
+	describe("constructor", () => {
+		it("should not have any labels", () => {
+			expect(codeMapLabelService["labels"].length).toBe(0)
+		})
 	})
 
-	it("addLabel should add label if node has a height attribute mentioned in renderSettings", () => {
-		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
-		expect(codeMapLabelService["labels"].length).toBe(1)
+	describe("addLabel", () => {
+		beforeEach(() => {
+			storeService.dispatch(setAmountOfTopLabels(1))
+			storeService.dispatch(setHeightMetric("mcc"))
+		})
+
+		it("should add label if node has a height attribute mentioned in renderSettings", () => {
+			codeMapLabelService.addLabel(sampleLeaf)
+
+			expect(codeMapLabelService["labels"].length).toBe(1)
+		})
+
+		it("should not add label if node has not a height attribute mentioned in renderSettings", () => {
+			sampleLeaf.attributes = { notsome: 0 }
+
+			codeMapLabelService.addLabel(sampleLeaf)
+
+			expect(codeMapLabelService["labels"].length).toBe(0)
+		})
+
+		it("should calculate correct height without delta", () => {
+			codeMapLabelService.addLabel(sampleLeaf)
+
+			let positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			expect(positionWithoutDelta.y).toBe(93)
+		})
+
+		it("scaling existing labels should scale their position correctly", () => {
+			const SX = 1
+			const SY = 2
+			const SZ = 3
+
+			codeMapLabelService.addLabel(sampleLeaf)
+			codeMapLabelService.addLabel(sampleLeaf)
+
+			const scaleBeforeA: Vector3 = new Vector3(
+				codeMapLabelService["labels"][0].sprite.position.x,
+				codeMapLabelService["labels"][0].sprite.position.y,
+				codeMapLabelService["labels"][0].sprite.position.z
+			)
+			storeService.dispatch(setScaling(new Vector3(SX, SY, SZ)))
+
+			codeMapLabelService.scale()
+
+			const scaleAfterA: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position
+
+			expect(scaleAfterA.x).toBe(scaleBeforeA.x * SX)
+			expect(scaleAfterA.y).toBe((scaleBeforeA.y - 60) * SY + 60)
+			expect(scaleAfterA.z).toBe(scaleBeforeA.z * SZ)
+
+			expect(scaleAfterB.x).toBe(scaleBeforeA.x * SX)
+			expect(scaleAfterB.y).toBe((scaleBeforeA.y - 60) * SY + 60)
+			expect(scaleAfterB.z).toBe(scaleBeforeA.z * SZ)
+		})
 	})
 
-	it("addLabel should not add label if node has not a height attribute mentioned in renderSettings", () => {
-		sampleLeaf.attributes = { notsome: 0 }
-		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
-		expect(codeMapLabelService["labels"].length).toBe(0)
-	})
+	describe("clearLabels", () => {
+		it("should clear parent in scene and internal labels", () => {
+			codeMapLabelService.clearLabels()
 
-	it("addLabel should calculate correct height without delta", () => {
-		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
-		let positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
-		expect(positionWithoutDelta.y).toBe(93)
-	})
-
-	it("clearLabel should clear parent in scene and internal labels", () => {
-		codeMapLabelService.clearLabels()
-		expect(codeMapLabelService["threeSceneService"].labels.children.length).toBe(0)
-		expect(codeMapLabelService["labels"].length).toBe(0)
-	})
-
-	it("scaling existing labels should scale their position correctly", () => {
-		const SX = 1
-		const SY = 2
-		const SZ = 3
-
-		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
-		codeMapLabelService.addLabel(sampleLeaf, sampleSettings)
-
-		const scaleBeforeA: Vector3 = new Vector3(
-			codeMapLabelService["labels"][0].sprite.position.x,
-			codeMapLabelService["labels"][0].sprite.position.y,
-			codeMapLabelService["labels"][0].sprite.position.z
-		)
-
-		codeMapLabelService.scale(new Vector3(SX, SY, SZ))
-
-		const scaleAfterA: Vector3 = codeMapLabelService["labels"][0].sprite.position
-		const scaleAfterB: Vector3 = codeMapLabelService["labels"][1].sprite.position
-
-		expect(scaleAfterA.x).toBe(scaleBeforeA.x * SX)
-		expect(scaleAfterA.y).toBe((scaleBeforeA.y - 60) * SY + 60)
-		expect(scaleAfterA.z).toBe(scaleBeforeA.z * SZ)
-
-		expect(scaleAfterB.x).toBe(scaleBeforeA.x * SX)
-		expect(scaleAfterB.y).toBe((scaleBeforeA.y - 60) * SY + 60)
-		expect(scaleAfterB.z).toBe(scaleBeforeA.z * SZ)
+			expect(codeMapLabelService["threeSceneService"].labels.children.length).toBe(0)
+			expect(codeMapLabelService["labels"].length).toBe(0)
+		})
 	})
 })

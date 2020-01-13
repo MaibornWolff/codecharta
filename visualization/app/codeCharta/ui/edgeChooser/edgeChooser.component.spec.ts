@@ -1,19 +1,20 @@
 import "./edgeChooser.module"
 import { EdgeChooserController } from "./edgeChooser.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import _ from "lodash"
+import { StoreService } from "../../state/store.service"
+import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
 	let $rootScope: IRootScopeService
+	let storeService: StoreService
 	let codeMapActionsService: CodeMapActionsService
-	let settingsService: SettingsService
 	let $timeout: ITimeoutService
 
 	beforeEach(() => {
@@ -26,13 +27,13 @@ describe("EdgeChooserController", () => {
 		instantiateModule("app.codeCharta.ui.edgeChooser")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
-		settingsService = getService<SettingsService>("settingsService")
 		$timeout = getService<ITimeoutService>("$timeout")
 	}
 
 	function rebuildController() {
-		edgeChooserController = new EdgeChooserController($rootScope, codeMapActionsService, settingsService, $timeout)
+		edgeChooserController = new EdgeChooserController($rootScope, storeService, codeMapActionsService, $timeout)
 	}
 
 	function withMockedCodeMapActionsService() {
@@ -44,12 +45,12 @@ describe("EdgeChooserController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to EdgeMetricService", () => {
-			EdgeMetricService.subscribe = jest.fn()
+		it("should subscribe to EdgeMetricDataService", () => {
+			EdgeMetricDataService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
+			expect(EdgeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 
 		it("should subscribe to hovered buildings", () => {
@@ -67,6 +68,14 @@ describe("EdgeChooserController", () => {
 
 			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
+
+		it("should subscribe to EdgeMetricService", () => {
+			EdgeMetricService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
+		})
 	})
 
 	describe("onEdgeMetricDataUpdated", () => {
@@ -80,31 +89,6 @@ describe("EdgeChooserController", () => {
 
 			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("metric1")
 			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("metric2")
-		})
-
-		it("should keep selected metric if available in new map", () => {
-			const metricData = [
-				{ name: "metric1", maxValue: 22, availableInVisibleMaps: true },
-				{ name: "None", maxValue: 1, availableInVisibleMaps: false }
-			]
-			edgeChooserController["_viewModel"].edgeMetric = "metric1"
-
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
-
-			expect(edgeChooserController["_viewModel"].edgeMetric).toEqual("metric1")
-		})
-
-		it("should update edgeMetric to None if selected edgeMetric is no longer available", () => {
-			const metricData = [
-				{ name: "metric2", maxValue: 22, availableInVisibleMaps: true },
-				{ name: "None", maxValue: 1, availableInVisibleMaps: false }
-			]
-			edgeChooserController["_viewModel"].edgeMetric = "metric1"
-			settingsService.updateSettings = jest.fn()
-
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ dynamicSettings: { edgeMetric: "None" } })
 		})
 	})
 
@@ -171,14 +155,13 @@ describe("EdgeChooserController", () => {
 	})
 
 	describe("onEdgeMetricSelected", () => {
-		it("should update Settings", () => {
-			settingsService.updateSettings = jest.fn()
+		it("should update edgeMetric in store", () => {
 			codeMapActionsService.updateEdgePreviews = jest.fn()
 			edgeChooserController["_viewModel"].edgeMetric = "metric1"
 
 			edgeChooserController.onEdgeMetricSelected()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ dynamicSettings: { edgeMetric: "metric1" } })
+			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("metric1")
 		})
 	})
 

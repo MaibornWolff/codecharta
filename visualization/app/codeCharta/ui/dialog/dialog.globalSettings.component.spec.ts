@@ -1,101 +1,151 @@
 import "./dialog.module"
 import "../codeMap/codeMap.module"
 import { DialogGlobalSettingsController } from "./dialog.globalSettings.component"
-import { SettingsService } from "../../state/settingsService/settings.service"
-import { Settings } from "../../codeCharta.model"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_SETTINGS } from "../../util/dataMocks"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
+import { StoreService } from "../../state/store.service"
+import { setHideFlatBuildings } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.actions"
+import { setIsWhiteBackground } from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.actions"
+import { setResetCameraIfNewFileIsLoaded } from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { HideFlatBuildingsService } from "../../state/store/appSettings/hideFlatBuildings/hideFlatBuildings.service"
+import { IsWhiteBackgroundService } from "../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
+import { ResetCameraIfNewFileIsLoadedService } from "../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
 
 describe("DialogGlobalSettingsController", () => {
 	let dialogGlobalSettingsController: DialogGlobalSettingsController
 	let $mdDialog
-	let settingsService: SettingsService
 	let $rootScope: IRootScopeService
-	let settings: Settings
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
-		withMockedSettingsService()
 		rebuildController()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.dialog")
 
-		$mdDialog = getService("$mdDialog")
-		settingsService = getService<SettingsService>("settingsService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
-
-		settings = _.cloneDeep(DEFAULT_SETTINGS)
+		$mdDialog = getService("$mdDialog")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		dialogGlobalSettingsController = new DialogGlobalSettingsController($mdDialog, $rootScope, settingsService)
-	}
-
-	function withMockedSettingsService(mockSettings: Settings = settings) {
-		settingsService = jest.fn<SettingsService>(() => {
-			return {
-				getSettings: jest.fn().mockReturnValue(mockSettings)
-			}
-		})()
+		dialogGlobalSettingsController = new DialogGlobalSettingsController($mdDialog, $rootScope, storeService)
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to SettingsService Events", () => {
-			SettingsService.subscribe = jest.fn()
+		it("should subscribe to HideFlatBuildingsService", () => {
+			HideFlatBuildingsService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
+			expect(HideFlatBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
-		it("should call updateSettingsFields", () => {
-			jest.spyOn(DialogGlobalSettingsController.prototype as any, "updateSettingsFields")
+		it("should subscribe to IsWhiteBackgroundService", () => {
+			IsWhiteBackgroundService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(dialogGlobalSettingsController["updateSettingsFields"]).toHaveBeenCalled()
+			expect(IsWhiteBackgroundService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
+		})
+
+		it("should subscribe to ResetCameraIfNewFileIsLoadedService", () => {
+			ResetCameraIfNewFileIsLoadedService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ResetCameraIfNewFileIsLoadedService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
+		})
+
+		it("should call initDialogOnClick", () => {
+			jest.spyOn(DialogGlobalSettingsController.prototype as any, "initDialogOnClick")
+
+			rebuildController()
+
+			expect(dialogGlobalSettingsController["initDialogOnClick"]).toHaveBeenCalled()
 		})
 	})
 
-	describe("updateSettingsFields", () => {
-		it("should update viewModel.hideFlatBuildings with appSettings", () => {
-			settings.appSettings.hideFlatBuildings = false
+	describe("initDialogOnClick", () => {
+		it("should update viewModel.hideFlatBuildings", () => {
+			storeService.dispatch(setHideFlatBuildings(false))
 
-			dialogGlobalSettingsController["updateSettingsFields"](settings)
+			dialogGlobalSettingsController["initDialogOnClick"]()
 
 			expect(dialogGlobalSettingsController["_viewModel"].hideFlatBuildings).toBeFalsy()
 		})
 
-		it("should update viewModel.isWhiteBackground with appSettings", () => {
-			settings.appSettings.isWhiteBackground = true
+		it("should update viewModel.isWhiteBackground", () => {
+			storeService.dispatch(setIsWhiteBackground(true))
 
-			dialogGlobalSettingsController["updateSettingsFields"](settings)
+			dialogGlobalSettingsController["initDialogOnClick"]()
 
 			expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBeTruthy()
 		})
 
-		it("should update viewModel.resetCameraIfNewFileIsLoaded with appSettings", () => {
-			settings.appSettings.resetCameraIfNewFileIsLoaded = false
+		it("should update viewModel.resetCameraIfNewFileIsLoaded", () => {
+			storeService.dispatch(setResetCameraIfNewFileIsLoaded(false))
 
-			dialogGlobalSettingsController["updateSettingsFields"](settings)
+			dialogGlobalSettingsController["initDialogOnClick"]()
 
 			expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBeFalsy()
 		})
 	})
 
-	describe("applySettings", () => {
-		it("should call settingsService.updateSettings", () => {
-			settingsService.updateSettings = jest.fn()
+	describe("onHideFlatBuildingsChanged", () => {
+		it("should update viewModel.hideFlatBuildings", () => {
+			dialogGlobalSettingsController.onHideFlatBuildingsChanged(false)
+
+			expect(dialogGlobalSettingsController["_viewModel"].hideFlatBuildings).toBeFalsy()
+		})
+	})
+
+	describe("onIsWhiteBackgroundChanged", () => {
+		it("should update viewModel.isWhiteBackground", () => {
+			dialogGlobalSettingsController.onIsWhiteBackgroundChanged(true)
+
+			expect(dialogGlobalSettingsController["_viewModel"].isWhiteBackground).toBeTruthy()
+		})
+	})
+
+	describe("onResetCameraIfNewFileIsLoadedChanged", () => {
+		it("should update viewModel.resetCameraIfNewFileIsLoaded", () => {
+			dialogGlobalSettingsController.onResetCameraIfNewFileIsLoadedChanged(false)
+
+			expect(dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded).toBeFalsy()
+		})
+	})
+
+	describe("applySettingsHideFlatBuildings", () => {
+		it("should update hideFlatBuildings in store", () => {
 			dialogGlobalSettingsController["_viewModel"].hideFlatBuildings = false
+
+			dialogGlobalSettingsController.applySettingsHideFlatBuildings()
+
+			expect(storeService.getState().appSettings.hideFlatBuildings).toBeFalsy()
+		})
+	})
+
+	describe("applySettingsResetCamera", () => {
+		it("should update resetCameraIfNewFileIsLoaded in store", () => {
 			dialogGlobalSettingsController["_viewModel"].resetCameraIfNewFileIsLoaded = false
 
-			dialogGlobalSettingsController.applySettings()
+			dialogGlobalSettingsController.applySettingsResetCamera()
 
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({ appSettings: dialogGlobalSettingsController["_viewModel"] })
+			expect(storeService.getState().appSettings.resetCameraIfNewFileIsLoaded).toBeFalsy()
+		})
+	})
+
+	describe("applySettingsIsWhiteBackground", () => {
+		it("should update isWhiteBackground in store", () => {
+			dialogGlobalSettingsController["_viewModel"].isWhiteBackground = false
+
+			dialogGlobalSettingsController.applySettingsIsWhiteBackground()
+
+			expect(storeService.getState().appSettings.isWhiteBackground).toBeFalsy()
 		})
 	})
 

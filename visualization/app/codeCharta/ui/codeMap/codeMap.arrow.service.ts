@@ -4,9 +4,9 @@ import { Edge } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
+import { StoreService } from "../../state/store.service"
 
 export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private VERTICES_PER_LINE = 5
@@ -15,35 +15,31 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 	private isHovered: boolean = false
 	private hoveredNode: Node
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private threeSceneService: ThreeSceneService,
-		private settingsService: SettingsService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
 		this.arrows = new Array<Object3D>()
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		const settings = this.settingsService.getSettings()
-		if (settings.dynamicSettings.edgeMetric !== "None" && !hoveredBuilding.node.flat) {
+		const state = this.storeService.getState()
+		if (state.dynamicSettings.edgeMetric !== "None" && !hoveredBuilding.node.flat) {
 			this.isHovered = true
 			this.hoveredNode = hoveredBuilding.node
 			this.clearArrows()
-			this.showEdgesOfHoveredBuilding(hoveredBuilding.node, settings.fileSettings.edges)
+			this.showEdgesOfHoveredBuilding(hoveredBuilding.node, state.fileSettings.edges)
 		}
-		this.scale(this.settingsService.getSettings().appSettings.scaling)
+		this.scale()
 	}
 
 	public onBuildingUnhovered() {
-		const settings = this.settingsService.getSettings()
-		if (settings.dynamicSettings.edgeMetric !== "None") {
+		const state = this.storeService.getState()
+		if (state.dynamicSettings.edgeMetric !== "None") {
 			this.isHovered = false
 			this.clearArrows()
-			this.addEdgeArrows(null, settings.fileSettings.edges.filter(x => x.visible != EdgeVisibility.none))
+			this.addEdgeArrows(null, state.fileSettings.edges.filter(x => x.visible != EdgeVisibility.none))
 		}
-		this.scale(this.settingsService.getSettings().appSettings.scaling)
+		this.scale()
 	}
 
 	public clearArrows() {
@@ -77,17 +73,18 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 				this.addArrow(targetNode, originNode)
 			}
 		}
+		this.threeSceneService.highlightBuildings()
 	}
 
 	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, edgeVisibility?: EdgeVisibility): void {
-		const settings = this.settingsService.getSettings()
-		const curveScale = 100 * settings.appSettings.edgeHeight
+		const state = this.storeService.getState()
+		const curveScale = 100 * state.appSettings.edgeHeight
 
 		if (
 			arrowTargetNode.attributes &&
-			arrowTargetNode.attributes[this.settingsService.getSettings().dynamicSettings.heightMetric] &&
+			arrowTargetNode.attributes[this.storeService.getState().dynamicSettings.heightMetric] &&
 			arrowOriginNode.attributes &&
-			arrowOriginNode.attributes[this.settingsService.getSettings().dynamicSettings.heightMetric]
+			arrowOriginNode.attributes[this.storeService.getState().dynamicSettings.heightMetric]
 		) {
 			const bezierPoint2 = arrowOriginNode.outgoingEdgePoint.clone()
 			const bezierPoint3 = arrowTargetNode.incomingEdgePoint.clone()
@@ -122,7 +119,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 
 			const curveObject = this.buildLine(
 				points,
-				ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.outgoingEdge)
+				ColorConverter.convertHexToNumber(this.storeService.getState().appSettings.mapColors.outgoingEdge)
 			)
 			curveObject.add(this.buildArrow(points))
 
@@ -136,7 +133,7 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 			this.threeSceneService.addBuildingToHighlightingList(building)
 			const curveObject = this.buildLine(
 				points,
-				ColorConverter.convertHexToNumber(this.settingsService.getSettings().appSettings.mapColors.incomingEdge)
+				ColorConverter.convertHexToNumber(this.storeService.getState().appSettings.mapColors.incomingEdge)
 			)
 			curveObject.add(this.buildArrow(points))
 
@@ -159,11 +156,12 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 		}
 	}
 
-	public scale(scale: Vector3) {
+	public scale() {
+		const scaling = this.storeService.getState().appSettings.scaling
 		for (const arrow of this.arrows) {
-			arrow.scale.x = scale.x
-			arrow.scale.y = scale.y
-			arrow.scale.z = scale.z
+			arrow.scale.x = scaling.x
+			arrow.scale.y = scaling.y
+			arrow.scale.z = scaling.z
 		}
 	}
 
@@ -180,13 +178,13 @@ export class CodeMapArrowService implements BuildingHoveredSubscriber, BuildingU
 
 		if (incoming) {
 			pointsPrevies = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
-			arrowColor = this.settingsService.getSettings().appSettings.mapColors.incomingEdge
+			arrowColor = this.storeService.getState().appSettings.mapColors.incomingEdge
 		} else {
 			pointsPrevies = points
 				.reverse()
 				.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
 				.reverse()
-			arrowColor = this.settingsService.getSettings().appSettings.mapColors.outgoingEdge
+			arrowColor = this.storeService.getState().appSettings.mapColors.outgoingEdge
 		}
 
 		return this.buildEdge(pointsPrevies, ColorConverter.convertHexToNumber(arrowColor))

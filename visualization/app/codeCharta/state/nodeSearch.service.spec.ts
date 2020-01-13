@@ -3,15 +3,16 @@ import { NodeSearchService } from "./nodeSearch.service"
 import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
-import { SettingsService } from "./settingsService/settings.service"
 import { TEST_FILE_WITH_PATHS } from "../util/dataMocks"
 import { CodeMapHelper } from "../util/codeMapHelper"
+import { StoreService } from "./store.service"
+import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
 
 describe("NodeSearchService", () => {
 	let nodeSearchService: NodeSearchService
 	let $rootScope: IRootScopeService
+	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
-	let settingsService: SettingsService
 
 	beforeEach(() => {
 		restartSystem()
@@ -22,23 +23,21 @@ describe("NodeSearchService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 	}
 
 	function rebuildService() {
-		nodeSearchService = new NodeSearchService($rootScope, codeMapPreRenderService, settingsService)
+		nodeSearchService = new NodeSearchService($rootScope, storeService, codeMapPreRenderService)
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			SettingsService.subscribeToSearchPattern = jest.fn()
-		})
+		it("should subscribe to SearchPatternService", () => {
+			SearchPatternService.subscribe = jest.fn()
 
-		it("should subscribe to SearchPattern", () => {
 			rebuildService()
 
-			expect(SettingsService.subscribeToSearchPattern).toHaveBeenCalledWith($rootScope, nodeSearchService)
+			expect(SearchPatternService.subscribe).toHaveBeenCalledWith($rootScope, nodeSearchService)
 		})
 	})
 
@@ -52,8 +51,6 @@ describe("NodeSearchService", () => {
 			CodeMapHelper.getNodesByGitignorePath = jest.fn((nodes, pattern) => {
 				return nodes.filter(it => it.name === pattern)
 			})
-
-			settingsService.updateSettings, (nodeSearchService["settingsService"].updateSettings = jest.fn())
 		})
 
 		it("node should be retrieved based on query", () => {
@@ -72,9 +69,7 @@ describe("NodeSearchService", () => {
 		it("should update searched paths", () => {
 			nodeSearchService.onSearchPatternChanged("small leaf")
 
-			expect(settingsService.updateSettings).toBeCalledWith({
-				dynamicSettings: { searchedNodePaths: ["/root/Parent Leaf/small leaf"] }
-			})
+			expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual(["/root/Parent Leaf/small leaf"])
 		})
 	})
 })

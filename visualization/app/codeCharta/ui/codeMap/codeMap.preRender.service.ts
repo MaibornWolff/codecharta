@@ -1,144 +1,107 @@
 "use strict"
 
-import {
-	CCFile,
-	FileSelectionState,
-	FileState,
-	MetricData,
-	RecursivePartial,
-	Settings,
-	CodeMapNode,
-	FileMeta
-} from "../../codeCharta.model"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService, FileStateServiceSubscriber } from "../../state/fileState.service"
-import _ from "lodash"
+import { FileStateService } from "../../state/fileState.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { DeltaGenerator } from "../../util/deltaGenerator"
-import { ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
-import { SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import * as d3 from "d3"
-
-export interface RenderData {
-	map: CodeMapNode
-	fileMeta: FileMeta
-	fileStates: FileState[]
-	settings: Settings
-	metricData: MetricData[]
-}
+import { StoreService, StoreSubscriber } from "../../state/store.service"
+import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
+import _ from "lodash"
+import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileStateServiceSubscriber, MetricServiceSubscriber {
+export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
-	private newFileLoaded: boolean = false
+	private unifiedMap: CodeMapNode
+	private unifiedFileMeta: FileMeta
 
-	private lastRender: RenderData = {
-		map: null,
-		fileMeta: null,
-		fileStates: null,
-		settings: null,
-		metricData: null
-	}
+	private readonly debounceRendering: () => void
+	private DEBOUNCE_TIME = 0
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private threeOrbitControlsService: ThreeOrbitControlsService,
+		private storeService: StoreService,
+		private fileStateService: FileStateService,
+		private metricService: MetricService,
 		private codeMapRenderService: CodeMapRenderService,
 		private loadingStatusService: LoadingStatusService,
-		private edgeMetricService: EdgeMetricService
+		private edgeMetricDataService: EdgeMetricDataService
 	) {
-		FileStateService.subscribe(this.$rootScope, this)
 		MetricService.subscribe(this.$rootScope, this)
-		SettingsService.subscribe(this.$rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
+		ScalingService.subscribe(this.$rootScope, this)
+		this.debounceRendering = _.debounce(() => {
+			this.renderAndNotify()
+		}, this.DEBOUNCE_TIME)
 	}
 
 	public getRenderMap(): CodeMapNode {
-		return this.lastRender.map
+		return this.unifiedMap
 	}
 
 	public getRenderFileMeta(): FileMeta {
-		return this.lastRender.fileMeta
+		return this.unifiedFileMeta
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this.lastRender.settings = settings
+	public onStoreChanged(actionType: string) {
+		if (this.allNecessaryRenderDataAvailable() && !_.values(ScalingActions).includes(actionType)) {
+			this.debounceRendering()
+		}
+	}
 
-		if (this.lastRender.fileStates && update.fileSettings && (update.fileSettings.blacklist || update.fileSettings.markedPackages)) {
+	public onScalingChanged(scaling) {
+		if (this.allNecessaryRenderDataAvailable()) {
+			this.scaleMapAndNotify()
+		}
+	}
+
+	public onMetricDataAdded(metricData: MetricData[]) {
+		if (this.fileStateService.getFileStates().length > 0) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
-		}
-
-		if (this.allNecessaryRenderDataAvailable()) {
-			if (this.settingsOnlyContainNewScaling(update)) {
-				this.scaleMapAndNotify()
-			} else {
-				this.renderAndNotify()
+			if (this.allNecessaryRenderDataAvailable()) {
+				this.debounceRendering()
 			}
 		}
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.lastRender.fileStates = fileStates
-		this.newFileLoaded = true
-		this.updateRenderMapAndFileMeta()
-	}
-
-	public onImportedFilesChanged(fileStates: FileState[]) {}
-
-	public onMetricDataAdded(metricData: MetricData[]) {
-		this.lastRender.metricData = metricData
-		this.decorateIfPossible()
-		if (this.allNecessaryRenderDataAvailable()) {
-			this.renderAndNotify()
-		}
-	}
-
-	public onMetricDataRemoved() {
-		this.lastRender.metricData = null
-	}
-
 	private updateRenderMapAndFileMeta() {
-		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap(this.lastRender.fileStates)
-		this.lastRender.map = unifiedFile.map
-		this.lastRender.fileMeta = unifiedFile.fileMeta
+		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap()
+		this.unifiedMap = unifiedFile.map
+		this.unifiedFileMeta = unifiedFile.fileMeta
 	}
 
 	private decorateIfPossible() {
-		if (
-			this.lastRender.map &&
-			this.lastRender.fileMeta &&
-			this.lastRender.settings &&
-			this.lastRender.settings.fileSettings &&
-			this.lastRender.settings.fileSettings.blacklist &&
-			this.lastRender.metricData
-		) {
-			this.lastRender.map = NodeDecorator.decorateMap(this.lastRender.map, this.lastRender.fileMeta, this.lastRender.metricData)
-			this.getEdgeMetricsForLeaves(this.lastRender.map)
+		if (this.unifiedMap && this.fileStateService.getFileStates() && this.unifiedFileMeta && this.metricService.getMetricData()) {
+			this.unifiedMap = NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
+			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
-				this.lastRender.map,
-				this.lastRender.settings.fileSettings.blacklist,
-				this.lastRender.metricData,
-				this.edgeMetricService.getMetricData()
+				this.unifiedMap,
+				this.storeService.getState().fileSettings.blacklist,
+				this.metricService.getMetricData(),
+				this.edgeMetricDataService.getMetricData(),
+				FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
 			)
 		}
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
-		if (map && this.edgeMetricService.getMetricNames()) {
+		if (map && this.edgeMetricDataService.getMetricNames()) {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
-				const edgeMetrics = this.edgeMetricService.getMetricValuesForNode(node)
+				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
 				for (let edgeMetric of edgeMetrics.keys()) {
 					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
 				}
@@ -146,7 +109,8 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
-	private getSelectedFilesAsUnifiedMap(fileStates: FileState[]): CCFile {
+	private getSelectedFilesAsUnifiedMap(): CCFile {
+		const fileStates: FileState[] = this.fileStateService.getFileStates()
 		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 		visibleFileStates.forEach(fileState => {
 			fileState.file = NodeDecorator.preDecorateFile(fileState.file)
@@ -173,36 +137,38 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 		}
 	}
 
-	private settingsOnlyContainNewScaling(update: RecursivePartial<Settings>): boolean {
-		return _.keys(update).length == 1 && update.appSettings && _.keys(update.appSettings).length == 1 && !!update.appSettings.scaling
-	}
-
 	private renderAndNotify() {
-		this.codeMapRenderService.render(this.lastRender)
+		this.codeMapRenderService.render(this.unifiedMap)
 
 		this.notifyLoadingMapStatus()
 		this.notifyMapChanged()
-		if (this.newFileLoaded) {
+		if (this.loadingStatusService.isLoadingNewFile()) {
 			this.notifyLoadingFileStatus()
-			this.threeOrbitControlsService.cameraActionWhenNewMapIsLoaded()
-			this.newFileLoaded = false
 		}
 	}
 
 	private scaleMapAndNotify() {
-		const s: Settings = this.lastRender.settings
-		this.codeMapRenderService.scaleMap(s.appSettings.scaling, s.treeMapSettings.mapSize)
+		this.codeMapRenderService.scaleMap()
 		this.notifyLoadingMapStatus()
 	}
 
 	private allNecessaryRenderDataAvailable(): boolean {
 		return (
-			this.lastRender.fileStates !== null &&
-			this.lastRender.settings !== null &&
-			this.lastRender.metricData !== null &&
-			_.values(this.lastRender.settings.dynamicSettings).every(x => {
+			this.fileStateService.getFileStates().length > 0 &&
+			this.metricService.getMetricData() !== null &&
+			this.areChosenMetricsInMetricData() &&
+			_.values(this.storeService.getState().dynamicSettings).every(x => {
 				return x !== null && _.values(x).every(x => x !== null)
 			})
+		)
+	}
+
+	private areChosenMetricsInMetricData() {
+		const dynamicSettings = this.storeService.getState().dynamicSettings
+		return (
+			this.metricService.isMetricAvailable(dynamicSettings.areaMetric) &&
+			this.metricService.isMetricAvailable(dynamicSettings.colorMetric) &&
+			this.metricService.isMetricAvailable(dynamicSettings.heightMetric)
 		)
 	}
 
@@ -215,7 +181,7 @@ export class CodeMapPreRenderService implements SettingsServiceSubscriber, FileS
 	}
 
 	private notifyMapChanged() {
-		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.lastRender.map)
+		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.unifiedMap)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {

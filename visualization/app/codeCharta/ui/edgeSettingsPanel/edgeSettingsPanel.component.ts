@@ -1,12 +1,27 @@
 import "./edgeSettingsPanel.component.scss"
-import { RecursivePartial, Settings } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { EdgeMetricService } from "../../state/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { EdgeMetricSubscriber, SettingsServiceSubscriber } from "../../state/settingsService/settings.service.events"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { StoreService } from "../../state/store.service"
+import {
+	defaultAmountOfEdgePreviews,
+	setAmountOfEdgePreviews
+} from "../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.actions"
+import { setEdgeHeight } from "../../state/store/appSettings/edgeHeight/edgeHeight.actions"
+import { setShowOnlyBuildingsWithEdges } from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
+import {
+	AmountOfEdgePreviewsService,
+	AmountOfEdgePreviewsSubscriber
+} from "../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
+import { EdgeHeightService, EdgeHeightSubscriber } from "../../state/store/appSettings/edgeHeight/edgeHeight.service"
+import {
+	ShowOnlyBuildingsWithEdgesService,
+	ShowOnlyBuildingsWithEdgesSubscriber
+} from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
+import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 
-export class EdgeSettingsPanelController implements SettingsServiceSubscriber, EdgeMetricSubscriber {
+export class EdgeSettingsPanelController
+	implements EdgeMetricSubscriber, AmountOfEdgePreviewsSubscriber, EdgeHeightSubscriber, ShowOnlyBuildingsWithEdgesSubscriber {
 	private _viewModel: {
 		amountOfEdgePreviews: number
 		totalAffectedBuildings: number
@@ -22,60 +37,53 @@ export class EdgeSettingsPanelController implements SettingsServiceSubscriber, E
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private edgeMetricService: EdgeMetricService,
+		private storeService: StoreService,
+		private edgeMetricDataService: EdgeMetricDataService,
 		private codeMapActionsService: CodeMapActionsService
 	) {
-		SettingsService.subscribe(this.$rootScope, this)
-		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
+		AmountOfEdgePreviewsService.subscribe(this.$rootScope, this)
+		EdgeHeightService.subscribe(this.$rootScope, this)
+		ShowOnlyBuildingsWithEdgesService.subscribe(this.$rootScope, this)
+		EdgeMetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		if (update.appSettings) {
-			if (update.appSettings.amountOfEdgePreviews !== undefined) {
-				this._viewModel.amountOfEdgePreviews = update.appSettings.amountOfEdgePreviews
-			}
+	public onAmountOfEdgePreviewsChanged(amountOfEdgePreviews: number) {
+		this._viewModel.amountOfEdgePreviews = amountOfEdgePreviews
+		this.codeMapActionsService.updateEdgePreviews()
+	}
 
-			if (update.appSettings.edgeHeight !== undefined) {
-				this._viewModel.edgeHeight = update.appSettings.edgeHeight
-			}
+	public onEdgeHeightChanged(edgeHeight: number) {
+		this._viewModel.edgeHeight = edgeHeight
+		this.codeMapActionsService.updateEdgePreviews()
+	}
 
-			if (update.appSettings.showOnlyBuildingsWithEdges !== undefined) {
-				this._viewModel.showOnlyBuildingsWithEdges = update.appSettings.showOnlyBuildingsWithEdges
-			}
-
-			if (
-				update.appSettings.amountOfEdgePreviews !== undefined ||
-				update.appSettings.edgeHeight !== undefined ||
-				update.appSettings.showOnlyBuildingsWithEdges !== undefined
-			) {
-				this.codeMapActionsService.updateEdgePreviews()
-			}
-		}
+	public onShowOnlyBuildingsWithEdgesChanged(showOnlyBuildingsWithEdges: boolean) {
+		this._viewModel.showOnlyBuildingsWithEdges = showOnlyBuildingsWithEdges
+		this.codeMapActionsService.updateEdgePreviews()
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.totalAffectedBuildings = this.edgeMetricService.getAmountOfAffectedBuildings(edgeMetric)
+		this._viewModel.totalAffectedBuildings = this.edgeMetricDataService.getAmountOfAffectedBuildings(edgeMetric)
 		if (edgeMetric === "None") {
 			this._viewModel.amountOfEdgePreviews = 0
 			this._viewModel.showOnlyBuildingsWithEdges = false
 		} else {
-			this._viewModel.amountOfEdgePreviews = this.settingsService.getDefaultSettings().appSettings.amountOfEdgePreviews
+			this._viewModel.amountOfEdgePreviews = defaultAmountOfEdgePreviews
 		}
 		this.applySettingsAmountOfEdgePreviews()
 		this.applyShowOnlyBuildingsWithEdges()
 	}
 
 	public applySettingsAmountOfEdgePreviews() {
-		this.settingsService.updateSettings({ appSettings: { amountOfEdgePreviews: this._viewModel.amountOfEdgePreviews } })
+		this.storeService.dispatch(setAmountOfEdgePreviews(this._viewModel.amountOfEdgePreviews))
 	}
 
 	public applySettingsEdgeHeight() {
-		this.settingsService.updateSettings({ appSettings: { edgeHeight: this._viewModel.edgeHeight } })
+		this.storeService.dispatch(setEdgeHeight(this._viewModel.edgeHeight))
 	}
 
 	public applyShowOnlyBuildingsWithEdges() {
-		this.settingsService.updateSettings({ appSettings: { showOnlyBuildingsWithEdges: this._viewModel.showOnlyBuildingsWithEdges } })
+		this.storeService.dispatch(setShowOnlyBuildingsWithEdges(this._viewModel.showOnlyBuildingsWithEdges))
 	}
 }
 

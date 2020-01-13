@@ -3,11 +3,10 @@ import { FileDownloader } from "../../util/fileDownloader"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { BlacklistType, FileSettings, AttributeTypes, FileMeta, CodeMapNode } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
-import _ from "lodash"
 import { FileNameHelper } from "../../util/fileNameHelper"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
+import { StoreService } from "../../state/store.service"
 
 interface FileDownloadContent {
 	name: string
@@ -39,7 +38,7 @@ export class DialogDownloadController {
 	constructor(
 		private $mdDialog,
 		private codeMapPreRenderService: CodeMapPreRenderService,
-		private settingsService: SettingsService,
+		private storeService: StoreService,
 		private fileStateService: FileStateService
 	) {
 		this.initDialogFields()
@@ -53,7 +52,7 @@ export class DialogDownloadController {
 		FileDownloader.downloadCurrentMap(
 			this.codeMapPreRenderService.getRenderMap(),
 			this.codeMapPreRenderService.getRenderFileMeta(),
-			this.settingsService.getSettings().fileSettings,
+			this.storeService.getState().fileSettings,
 			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
 			this._viewModel.fileName
 		)
@@ -69,7 +68,7 @@ export class DialogDownloadController {
 	}
 
 	private setFileContentList() {
-		const fileSettings: FileSettings = this.settingsService.getSettings().fileSettings
+		const fileSettings: FileSettings = this.storeService.getState().fileSettings
 		this.pushFileContent(DownloadCheckboxNames.edges, fileSettings.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(fileSettings, BlacklistType.exclude))
@@ -101,11 +100,11 @@ export class DialogDownloadController {
 	}
 
 	private setAmountOfAttributeTypes() {
-		const attributeTypes: AttributeTypes = this.settingsService.getSettings().fileSettings.attributeTypes
-		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes(attributeTypes)
+		this._viewModel.amountOfAttributeTypes = this.getAmountOfAttributeTypes()
 	}
 
-	private getAmountOfAttributeTypes(attributeTypes: AttributeTypes) {
+	private getAmountOfAttributeTypes() {
+		const attributeTypes: AttributeTypes = this.storeService.getState().fileSettings.attributeTypes
 		let sum: number = 0
 		sum += attributeTypes.nodes ? attributeTypes.nodes.length : 0
 		sum += attributeTypes.edges ? attributeTypes.edges.length : 0

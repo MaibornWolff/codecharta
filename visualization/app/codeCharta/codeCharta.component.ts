@@ -1,59 +1,45 @@
 import { UrlExtractor } from "./util/urlExtractor"
-import { IHttpService, ILocationService, IRootScopeService } from "angular"
+import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
-import { SettingsService } from "./state/settingsService/settings.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { CodeMapActionsService } from "./ui/codeMap/codeMap.actions.service"
-import { NameDataPair, RecursivePartial, Settings } from "./codeCharta.model"
+import { NameDataPair } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import { LoadingStatusService } from "./state/loadingStatus.service"
-import { NodeSearchService } from "./state/nodeSearch.service"
-import { SettingsServiceSubscriber } from "./state/settingsService/settings.service.events"
+import { InjectorService } from "./state/injector.service"
+import { StoreService } from "./state/store.service"
+import { setState } from "./state/store/state.actions"
+import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 
-export class CodeChartaController implements SettingsServiceSubscriber {
+export class CodeChartaController {
 	private _viewModel: {
 		version: string
 		isLoadingFile: boolean
 		isLoadingMap: boolean
-		focusedNodePath: string
 	} = {
 		version: require("../../package.json").version,
 		isLoadingFile: true,
-		isLoadingMap: true,
-		focusedNodePath: ""
+		isLoadingMap: true
 	}
 
 	private urlUtils: UrlExtractor
 
 	/* @ngInject */
 	constructor(
-		private $rootScope: IRootScopeService,
-		private dialogService: DialogService,
-		private codeMapActionsService: CodeMapActionsService,
-		private settingsService: SettingsService,
-		private codeChartaService: CodeChartaService,
-		private fileStateService: FileStateService,
-		// tslint:disable-next-line
-		private nodeSearchService: NodeSearchService, // We have to inject it somewhere
 		private $location: ILocationService,
 		private $http: IHttpService,
-		private loadingStatusService: LoadingStatusService
+		private storeService: StoreService,
+		private dialogService: DialogService,
+		private codeChartaService: CodeChartaService,
+		private fileStateService: FileStateService,
+		private loadingStatusService: LoadingStatusService,
+		// tslint:disable-next-line
+		private injectorService: InjectorService // We have to inject it somewhere
 	) {
-		SettingsService.subscribe(this.$rootScope, this)
-
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.loadingStatusService.updateLoadingFileFlag(true)
 		this.loadFileOrSample()
-	}
-
-	public onSettingsChanged(settings: Settings, update: RecursivePartial<Settings>) {
-		this._viewModel.focusedNodePath = settings.dynamicSettings.focusedNodePath
-	}
-
-	public removeFocusedNode() {
-		this.codeMapActionsService.removeFocusedNode()
 	}
 
 	public loadFileOrSample() {
@@ -85,12 +71,12 @@ export class CodeChartaController implements SettingsServiceSubscriber {
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
-		this.settingsService.updateSettings(this.settingsService.getDefaultSettings())
+		this.storeService.dispatch(setAppSettings())
 
 		this.codeChartaService
 			.loadFiles(values)
 			.then(() => {
-				this.settingsService.updateSettings(ScenarioHelper.getDefaultScenario().settings)
+				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenario().settings))
 			})
 			.catch(e => {
 				this.loadingStatusService.updateLoadingFileFlag(false)

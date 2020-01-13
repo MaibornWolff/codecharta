@@ -3,10 +3,10 @@ import { Scene, Vector3 } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
-import { SettingsService } from "../../../state/settingsService/settings.service"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { StoreService } from "../../../state/store.service"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding: CodeMapBuilding)
@@ -28,10 +28,9 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private mapMesh: CodeMapMesh
 
 	private selected: CodeMapBuilding = null
-	private highlighted: CodeMapBuilding = null
-	private highlightedBuildings: CodeMapBuilding[] = []
+	private highlighted: CodeMapBuilding[] = []
 
-	constructor(private $rootScope: IRootScopeService, private settingsService: SettingsService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
 		this.scene = new THREE.Scene()
@@ -52,29 +51,31 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.reselectBuilding()
 	}
 
-	public highlightBuilding(building: CodeMapBuilding) {
-		const settings = this.settingsService.getSettings()
-		this.getMapMesh().highlightBuilding(building, this.selected, settings)
-		this.highlightedBuildings = []
-		this.highlighted = building
+	public highlightBuildings() {
+		const state = this.storeService.getState()
+		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state)
+	}
+
+	public highlightSingleBuilding(building: CodeMapBuilding) {
+		this.highlighted = []
+		this.addBuildingToHighlightingList(building)
+		this.highlightBuildings()
 	}
 
 	public addBuildingToHighlightingList(building: CodeMapBuilding) {
-		const settings = this.settingsService.getSettings()
-		this.highlightedBuildings.push(building)
-		this.getMapMesh().highlightBuildings(this.highlightedBuildings, this.selected, settings)
+		this.highlighted.push(building)
 	}
 
 	public clearHighlight() {
 		this.getMapMesh().clearHighlight(this.selected)
-		this.highlighted = null
-		this.highlightedBuildings = []
+		this.highlighted = []
 	}
 
 	public selectBuilding(building: CodeMapBuilding) {
-		const color = this.settingsService.getSettings().appSettings.mapColors.selected
+		const color = this.storeService.getState().appSettings.mapColors.selected
 		this.getMapMesh().selectBuilding(building, this.selected, color)
 		this.selected = building
+		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
 	}
 
@@ -83,8 +84,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 			this.getMapMesh().clearSelection(this.selected)
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
 		}
-		if (this.highlighted) {
-			this.getMapMesh().highlightBuilding(this.highlighted, null, this.settingsService.getSettings())
+		if (this.highlighted.length > 0) {
+			this.highlightBuildings()
 		}
 		this.selected = null
 	}
@@ -145,7 +146,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public getHighlightedBuilding(): CodeMapBuilding {
-		return this.highlighted
+		return this.highlighted[0]
 	}
 
 	private reselectBuilding() {

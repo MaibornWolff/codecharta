@@ -1,6 +1,7 @@
 import { LoadingStatusService } from "./loadingStatus.service"
 import { IRootScopeService } from "angular"
 import { getService } from "../../../mocks/ng.mockhelper"
+import { withMockedEventMethods } from "../util/dataMocks"
 
 describe("LoadingStatusService", () => {
 	let loadingStatusService: LoadingStatusService
@@ -9,12 +10,8 @@ describe("LoadingStatusService", () => {
 	beforeEach(() => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		loadingStatusService = new LoadingStatusService($rootScope)
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 	})
-
-	function withMockedEventMethods() {
-		$rootScope.$broadcast = jest.fn()
-	}
 
 	describe("updateLoadingFileFlag", () => {
 		it("should set isLoadingFile to true", () => {
@@ -53,6 +50,12 @@ describe("LoadingStatusService", () => {
 			loadingStatusService.updateLoadingMapFlag(false)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("loading-map-status-changed", false)
+		})
+
+		it("should only update and notify when the value actually changes", () => {
+			loadingStatusService.updateLoadingMapFlag(true)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 	})
 	describe("isLoadingNewFile", () => {

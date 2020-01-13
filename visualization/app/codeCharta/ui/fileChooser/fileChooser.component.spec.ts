@@ -1,21 +1,19 @@
 import "./fileChooser.module"
 import "../../codeCharta.module"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
-import { TEST_FILE_CONTENT } from "../../util/dataMocks"
+import { TEST_FILE_CONTENT, withMockedEventMethods } from "../../util/dataMocks"
 import _ from "lodash"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
-	let $scope: IRootScopeService
+	let $rootScope: IRootScopeService
 	let dialogService: DialogService
-	let settingsService: SettingsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
 	let loadingStatusService: LoadingStatusService
@@ -26,7 +24,7 @@ describe("fileChooserController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedEventMethods()
+		withMockedEventMethods($rootScope)
 		withMockedFileStateService()
 		withMockedDialogService()
 		withMockedCodeChartaService()
@@ -40,9 +38,8 @@ describe("fileChooserController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.fileChooser")
 
-		$scope = getService<IRootScopeService>("$rootScope")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
-		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
@@ -52,13 +49,13 @@ describe("fileChooserController", () => {
 	}
 
 	function rebuildController() {
-		fileChooserController = new FileChooserController($scope, dialogService, codeChartaService, fileStateService, loadingStatusService)
-	}
-
-	function withMockedEventMethods() {
-		$scope.$broadcast = fileChooserController["$scope"].$broadcast = jest.fn()
-		$scope.$on = fileChooserController["$scope"].$on = jest.fn()
-		$scope.$apply = fileChooserController["$scope"].$apply = jest.fn()
+		fileChooserController = new FileChooserController(
+			$rootScope,
+			dialogService,
+			codeChartaService,
+			fileStateService,
+			loadingStatusService
+		)
 	}
 
 	function withMockedFileStateService() {
@@ -81,7 +78,7 @@ describe("fileChooserController", () => {
 	}
 
 	function withMockedLoadingStatusService() {
-		loadingStatusService = settingsService["loadingStatusService"] = jest.fn().mockReturnValue({
+		loadingStatusService = fileChooserController["loadingStatusService"] = jest.fn().mockReturnValue({
 			updateLoadingMapFlag: jest.fn(),
 			updateLoadingFileFlag: jest.fn()
 		})()
@@ -91,7 +88,7 @@ describe("fileChooserController", () => {
 		it("should call $apply", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
 
-			expect($scope.$apply).toHaveBeenCalled()
+			expect($rootScope.$apply).toHaveBeenCalled()
 		})
 
 		it("should not call updateLoadingFileFlag if no file loaded", () => {
