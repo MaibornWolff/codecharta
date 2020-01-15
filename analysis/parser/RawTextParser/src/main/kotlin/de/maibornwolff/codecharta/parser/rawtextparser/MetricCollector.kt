@@ -11,6 +11,8 @@ class MetricCollector(private var root: File,
                       private val parameters: Map<String, Int> = mapOf(),
                       private val metrics: List<String> = listOf()) {
 
+    val MAX_FILE_NAME_PRINT_LENGTH = 30
+
     fun parse(): Map<String, FileMetrics> {
         val projectMetrics = mutableMapOf<String, FileMetrics>()
         val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
@@ -21,6 +23,7 @@ class MetricCollector(private var root: File,
                 val isMatchingFileExtension = fileExtensions.isEmpty() || fileExtensions.contains(standardizedPath.substringAfterLast("."))
                 val isNotExcluded = !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))
                 if (it.isFile && isNotExcluded && isMatchingFileExtension) {
+                    logProgress(it.name)
                     projectMetrics[standardizedPath] = parseFile(it)
                 }
             }
@@ -44,5 +47,14 @@ class MetricCollector(private var root: File,
                 .relativize(Paths.get(fileName).toAbsolutePath())
                 .toString()
                 .replace('\\', '/')
+    }
+
+    private fun logProgress(fileName: String) {
+        val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) {
+            ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH)
+        } else {
+            fileName.padEnd(MAX_FILE_NAME_PRINT_LENGTH + 2)
+        }
+        System.err.print("\rParsing file: $currentFile")
     }
 }
