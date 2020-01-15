@@ -47,6 +47,9 @@ class RawTextParser(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
+    @CommandLine.Option(names = ["-f", "--fileExtensions"], description = ["parse only files with specified extensions (defualt: any)"])
+    private var fileExtensions: Array<String> = arrayOf()
+
     @CommandLine.Option(names = ["--withoutDefaultExcludes"], description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "])
     private var withoutDefaultExcludes = false
 
@@ -61,7 +64,7 @@ class RawTextParser(private val input: InputStream = System.`in`,
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
 
         val parameterMap = assembleParameterMap()
-        val results: Map<String, FileMetrics> = MetricCollector(file, exclude, parameterMap, metrics).parse()
+        val results: Map<String, FileMetrics> = MetricCollector(file, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         ProjectGenerator(getWriter()).generate(results, projectName, pipedProject)

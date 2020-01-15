@@ -7,6 +7,7 @@ import java.nio.file.Paths
 
 class MetricCollector(private var root: File,
                       private val exclude: Array<String> = arrayOf(),
+                      private val fileExtensions: Array<String> = arrayOf(),
                       private val parameters: Map<String, Int> = mapOf(),
                       private val metrics: List<String> = listOf()) {
 
@@ -17,7 +18,9 @@ class MetricCollector(private var root: File,
         root.walk().forEach {
             if (it.isFile) {
                 val standardizedPath = "/" + getRelativeFileName(it.toString())
-                if (it.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))) {
+                val isMatchingFileExtension = fileExtensions.isEmpty() || fileExtensions.contains(standardizedPath.substringAfterLast("."))
+                val isNotExcluded = !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))
+                if (it.isFile && isNotExcluded && isMatchingFileExtension) {
                     projectMetrics[standardizedPath] = parseFile(it)
                 }
             }

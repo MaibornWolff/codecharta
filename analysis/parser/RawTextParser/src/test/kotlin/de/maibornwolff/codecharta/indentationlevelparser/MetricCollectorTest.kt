@@ -40,4 +40,12 @@ class MetricCollectorTest {
         Assertions.assertThat(result.size).isEqualTo(1)
         Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
     }
+
+    @Test
+    fun `Should include only spedified File extensions`() {
+        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("wrong")).parse()
+
+        Assertions.assertThat(result.size).isEqualTo(1)
+        Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
+    }
 }
