@@ -63,7 +63,6 @@ object ProjectMatcher {
 
     fun matchUpToVersion(p1: Project, p2: Project): Boolean {
         return NodeMatcher.match(p1.rootNode, p2.rootNode)
-               && p1.projectName == p2.projectName
                && match(p1.edges, p2.edges)
     }
 
