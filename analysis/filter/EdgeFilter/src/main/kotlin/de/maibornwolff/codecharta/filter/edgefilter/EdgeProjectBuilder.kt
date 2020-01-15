@@ -37,7 +37,6 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     private val logger = KotlinLogging.logger {}
 
     private val projectBuilder = ProjectBuilder(
-            getProjectName(),
             listOf(MutableNode("root", NodeType.Folder)),
             mutableListOf(),
             getAttributeTypes())
@@ -48,10 +47,6 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             newAttributetypes[it.key] = it.value.toMutableList()
         }
         return newAttributetypes
-    }
-
-    fun getProjectName(): String {
-        return project.projectName
     }
 
     fun merge(): Project {
