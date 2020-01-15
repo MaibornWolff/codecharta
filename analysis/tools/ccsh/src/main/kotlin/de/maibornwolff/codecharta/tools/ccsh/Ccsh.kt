@@ -70,7 +70,7 @@ class Ccsh: Callable<Void?> {
             return arrayOf(
                     Ccsh::class.java.`package`.implementationTitle + "\n"
                     + "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n"
-                    + "Copyright(c) 2018, MaibornWolff GmbH"
+                            + "Copyright(c) 2020, MaibornWolff GmbH"
             )
         }
     }
