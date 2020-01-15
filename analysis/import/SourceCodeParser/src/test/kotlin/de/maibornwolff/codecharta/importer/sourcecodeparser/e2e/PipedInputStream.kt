@@ -33,16 +33,8 @@ class PipedInputStream {
     }
 
     @Test
-    fun `json output does have project name of current project`() {
-        assertThat(output).contains(
-                """"projectName":"DefaultProjectName""""
-        )
-    }
-
-    @Test
     fun `node attributes of piped input and result nodes are merged`() {
         assertThat(output).contains(
-                """"projectName":"DefaultProjectName"""",
                 """"myMetric":42.0""",
                 """"rloc":31"""
         )
