@@ -50,15 +50,6 @@ class SubProjectExtractorTest {
     }
 
     @Test
-    fun `Project name is kept if not provided`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject)
-
-        val result = subProjectExtractor.extract("/root/something")
-
-        Assertions.assertThat(result.projectName).isEqualTo(sampleProject.projectName)
-    }
-
-    @Test
     fun `Only edges part of sub-project are kept`() {
         val subProjectExtractor = SubProjectExtractor(sampleProject)
 

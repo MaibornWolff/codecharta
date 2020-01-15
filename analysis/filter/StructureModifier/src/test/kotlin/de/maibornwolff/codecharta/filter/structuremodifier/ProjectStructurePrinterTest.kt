@@ -23,15 +23,6 @@ class ProjectStructurePrinterTest {
     }
 
     @Test
-    fun `ProjectName is printed`() {
-        val projectStructurePrinter = ProjectStructurePrinter(sampleProject)
-
-        projectStructurePrinter.printProjectStructure(0)
-
-        Assertions.assertThat(outContent.toString()).contains(sampleProject.projectName)
-    }
-
-    @Test
     fun `Nodes on desired max hierarchy level are printed`() {
         val projectStructurePrinter = ProjectStructurePrinter(sampleProject)
 
