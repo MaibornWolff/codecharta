@@ -43,6 +43,7 @@ import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
+import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.CommandLine
 import java.util.concurrent.Callable
@@ -66,10 +67,11 @@ import java.util.concurrent.Callable
             UnderstandImporter::class,
             CodeMaatImporter::class,
             JasomeImporter::class,
-            TokeiImporter::class
+            TokeiImporter::class,
+            RawTextParser::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
-        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class Ccsh: Callable<Void?> {
 
