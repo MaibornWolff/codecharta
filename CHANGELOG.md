@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- RawTextParser for analysis #660
+- IndentationLevel as metric for RawTextParser #660
+
 ### Changed
 
 ### Removed 🗑
