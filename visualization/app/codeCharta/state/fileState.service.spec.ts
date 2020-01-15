@@ -71,7 +71,6 @@ describe("FileStateService", () => {
 
 			expect(result).toEqual([{ file: file1, selectedAs: FileSelectionState.None }])
 			expect(result.length).toBe(1)
-			expect(fileStateService["$rootScope"].$broadcast).toBeCalledWith(FileStateService["IMPORTED_FILES_CHANGED_EVENT"], result)
 		})
 	})
 
@@ -135,7 +134,7 @@ describe("FileStateService", () => {
 		it("should broadcast a FILE_STATE_CHANGED_EVENT", () => {
 			fileStateService.setSingle(file1)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-selection-states-changed", fileStateService.getFileStates())
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
 		})
 
 		it("should call updateLoadingMapFlag", () => {
@@ -183,7 +182,7 @@ describe("FileStateService", () => {
 		it("should broadcast a FILE_STATE_CHANGED_EVENT", () => {
 			fileStateService.setDelta(file1, file2)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-selection-states-changed", fileStateService.getFileStates())
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
 		})
 	})
 
@@ -215,7 +214,7 @@ describe("FileStateService", () => {
 		it("should broadcast a FILE_STATE_CHANGED_EVENT", () => {
 			fileStateService.setMultiple([file1, file2])
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-selection-states-changed", fileStateService.getFileStates())
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
 		})
 	})
 
@@ -223,7 +222,7 @@ describe("FileStateService", () => {
 		it("should setup two event listeners", () => {
 			FileStateService.subscribe($rootScope, undefined)
 
-			expect($rootScope.$on).toHaveBeenCalledTimes(2)
+			expect($rootScope.$on).toHaveBeenCalledTimes(1)
 		})
 	})
 })

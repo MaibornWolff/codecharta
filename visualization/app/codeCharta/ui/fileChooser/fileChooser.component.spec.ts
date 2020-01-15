@@ -1,6 +1,5 @@
 import "./fileChooser.module"
 import "../../codeCharta.module"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeChartaService } from "../../codeCharta.service"
@@ -15,7 +14,6 @@ describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
 	let $rootScope: IRootScopeService
 	let dialogService: DialogService
-	let settingsService: SettingsService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
 	let loadingStatusService: LoadingStatusService
@@ -42,7 +40,6 @@ describe("fileChooserController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
-		settingsService = getService<SettingsService>("settingsService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
@@ -81,7 +78,7 @@ describe("fileChooserController", () => {
 	}
 
 	function withMockedLoadingStatusService() {
-		loadingStatusService = settingsService["loadingStatusService"] = jest.fn().mockReturnValue({
+		loadingStatusService = fileChooserController["loadingStatusService"] = jest.fn().mockReturnValue({
 			updateLoadingMapFlag: jest.fn(),
 			updateLoadingFileFlag: jest.fn()
 		})()

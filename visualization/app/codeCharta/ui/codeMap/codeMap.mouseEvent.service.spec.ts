@@ -13,6 +13,7 @@ import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEventMethods } from "../../util/dataMocks"
 import _ from "lodash"
 import { BlacklistType, Node } from "../../codeCharta.model"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -31,7 +32,6 @@ describe("codeMapMouseEventService", () => {
 		rebuildService()
 		withMockedWindow()
 		withMockedThreeUpdateCycleService()
-		withMockedMapTreeViewLevelController()
 		withMockedThreeRendererService()
 		withMockedViewCubeMouseEventsService()
 		withMockedThreeCameraService()
@@ -80,10 +80,6 @@ describe("codeMapMouseEventService", () => {
 		})()
 	}
 
-	function withMockedMapTreeViewLevelController() {
-		MapTreeViewLevelController.subscribeToHoverEvents = jest.fn()
-	}
-
 	function withMockedThreeRendererService() {
 		threeRendererService = codeMapMouseEventService["threeRendererService"] = jest.fn().mockReturnValue({
 			renderer: {
@@ -128,6 +124,8 @@ describe("codeMapMouseEventService", () => {
 
 	describe("constructor", () => {
 		it("should subscribe to hoverEvents", () => {
+			MapTreeViewLevelController.subscribeToHoverEvents = jest.fn()
+
 			rebuildService()
 
 			expect(MapTreeViewLevelController.subscribeToHoverEvents).toHaveBeenCalled()
@@ -137,6 +135,14 @@ describe("codeMapMouseEventService", () => {
 			rebuildService()
 
 			expect(threeUpdateCycleService.register).toHaveBeenCalled()
+		})
+
+		it("should subscribe to BlacklistService", () => {
+			BlacklistService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
 		})
 	})
 
@@ -148,6 +154,8 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should subscribe to event propagation", () => {
+			ViewCubeMouseEventsService.subscribeToEventPropagation = jest.fn()
+
 			codeMapMouseEventService.start()
 
 			expect(ViewCubeMouseEventsService.subscribeToEventPropagation).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)

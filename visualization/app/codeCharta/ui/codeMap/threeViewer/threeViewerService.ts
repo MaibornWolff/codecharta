@@ -4,7 +4,6 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
-import { SettingsService } from "../../../state/settingsService/settings.service"
 
 export class ThreeViewerService {
 	/* ngInject */
@@ -13,14 +12,11 @@ export class ThreeViewerService {
 		private threeCameraService: ThreeCameraService,
 		private threeOrbitControlsService: ThreeOrbitControlsService,
 		private threeRendererService: ThreeRendererService,
-		private threeUpdateCycleService: ThreeUpdateCycleService,
-		private settingsService: SettingsService
+		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {}
 
 	public init(canvasElement: Element) {
-		const camera = this.settingsService.getSettings().appSettings.camera
-
-		this.threeCameraService.init(window.innerWidth, window.innerHeight, camera.x, camera.y, camera.z)
+		this.threeCameraService.init(window.innerWidth, window.innerHeight)
 
 		this.threeCameraService.camera.lookAt(this.threeSceneService.scene.position)
 

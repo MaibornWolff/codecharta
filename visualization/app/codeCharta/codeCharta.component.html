@@ -5,16 +5,7 @@
 	<ribbon-bar-component class="ribbon-bar-component"></ribbon-bar-component>
 </div>
 
-<div class="action-buttons">
-	<md-button
-		ng-if="$ctrl._viewModel.focusedNodePath.length > 0"
-		class="md-fab md-primary cc-shadow long-button"
-		aria-label="Remove Focus on node"
-		ng-click="$ctrl.removeFocusedNode()"
-	>
-		Show complete map
-	</md-button>
-</div>
+<unfocus-button-component></unfocus-button-component>
 
 <code-map-component></code-map-component>
 

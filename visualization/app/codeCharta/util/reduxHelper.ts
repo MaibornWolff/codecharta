@@ -1,14 +1,15 @@
 import _ from "lodash"
+import angular from "angular"
 
 export function removeItemFromArray(array: any[], item: any): any[] {
-	return _.cloneDeep(array).filter(x => {
+	return array.filter(x => {
 		return !isEqualObject(x, item)
 	})
 }
 
 export function addItemToArray(array: any[], item: any): any[] {
 	if (!arrayContainsItem(array, item)) {
-		const copy = _.cloneDeep(array)
+		const copy = [...array]
 		copy.push(_.cloneDeep(item))
 		return copy
 	}
@@ -20,5 +21,5 @@ function arrayContainsItem(array: any[], item: any): boolean {
 }
 
 function isEqualObject(obj1: any, obj2: any): boolean {
-	return JSON.stringify(obj1) === JSON.stringify(obj2)
+	return angular.toJson(obj1) === angular.toJson(obj2)
 }

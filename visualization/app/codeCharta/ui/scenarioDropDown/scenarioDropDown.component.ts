@@ -2,7 +2,6 @@
 
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper, Scenario } from "../../util/scenarioHelper"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { MetricData } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
@@ -19,7 +18,6 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
 		private storeService: StoreService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
@@ -30,10 +28,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData)
 	}
 
-	public onMetricDataRemoved() {}
-
 	public applyScenario(scenarioName: string) {
-		this.settingsService.updateSettings(ScenarioHelper.getScenarioSettingsByName(scenarioName))
 		this.storeService.dispatch(setState(ScenarioHelper.getScenarioSettingsByName(scenarioName)))
 		this.threeOrbitControlsService.autoFitTo()
 	}

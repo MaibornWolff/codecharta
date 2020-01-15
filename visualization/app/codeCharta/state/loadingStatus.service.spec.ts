@@ -51,6 +51,12 @@ describe("LoadingStatusService", () => {
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("loading-map-status-changed", false)
 		})
+
+		it("should only update and notify when the value actually changes", () => {
+			loadingStatusService.updateLoadingMapFlag(true)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
 	})
 	describe("isLoadingNewFile", () => {
 		it("should return true, when isLoadingFile is true", () => {
