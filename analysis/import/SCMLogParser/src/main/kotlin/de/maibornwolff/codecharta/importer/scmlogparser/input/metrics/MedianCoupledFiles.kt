@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import de.maibornwolff.codecharta.model.AttributeType
 
 class MedianCoupledFiles: Metric {
     private val numberCommitedFiles = mutableListOf<Int>()
@@ -31,5 +32,9 @@ class MedianCoupledFiles: Metric {
 
     override fun registerCommit(commit: Commit) {
         numberCommitedFiles.add(commit.modifications.size - 1)
+    }
+
+    override fun attributeType(): AttributeType {
+        return AttributeType.relative
     }
 }
