@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
-class FolderMover(private val project: Project, private val projectName: String?) {
+class FolderMover(private val project: Project) {
 
     private val logger = KotlinLogging.logger { }
     private var toMove: List<MutableNode>? = null
@@ -15,7 +15,6 @@ class FolderMover(private val project: Project, private val projectName: String?
         }
 
         return ProjectBuilder(
-                projectName ?: project.projectName,
                 moveNodes(moveFrom, moveTo),
                 extractEdges(moveFrom, moveTo),
                 copyAttributeTypes(),

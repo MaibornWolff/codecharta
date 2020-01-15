@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
-class NodeRemover(private val project: Project, private val projectName: String?) {
+class NodeRemover(private val project: Project) {
     private val logger = KotlinLogging.logger {}
 
     fun remove(paths: Array<String>): Project {
@@ -15,7 +15,6 @@ class NodeRemover(private val project: Project, private val projectName: String?
         }
 
         return ProjectBuilder(
-                projectName ?: project.projectName,
                 removeNodes(pathSegments),
                 removeEdges(paths),
                 copyAttributeTypes(),
