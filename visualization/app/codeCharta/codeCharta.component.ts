@@ -43,7 +43,6 @@ export class CodeChartaController {
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.loadingStatusService.updateLoadingFileFlag(true)
 		this.loadFileOrSample()
-		console.log("INIT CC COMPONENT")
 		this._viewModel.isNode = EnvDetector.isNodeJs()
 	}
 

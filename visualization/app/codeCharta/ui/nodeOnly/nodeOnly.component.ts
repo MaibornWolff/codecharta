@@ -1,9 +1,9 @@
 import "./nodeOnly.component.scss"
+import "path"
 
 export class NodeOnlyController {
 	constructor() {
-		console.log("hello")
-		//require("path")
+		console.log("Component initialized")
 	}
 }
 
