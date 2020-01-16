@@ -31,7 +31,7 @@ module.exports = env => {
 			extensions: [".ts", ".tsx", ".js"]
 		}
 	}
-	if (env.STANDALONE) {
+	if (env.STANDALONE === "true") {
 		exports.target = "node"
 	}
 	return exports

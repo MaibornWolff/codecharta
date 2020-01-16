@@ -1,6 +1,11 @@
 import "./nodeOnly.component.scss"
 
-export class NodeOnlyController {}
+export class NodeOnlyController {
+	constructor() {
+		console.log("hello")
+		//require("path")
+	}
+}
 
 export const nodeOnlyComponent = {
 	selector: "nodeOnlyComponent",
