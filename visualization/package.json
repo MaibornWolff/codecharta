@@ -58,8 +58,8 @@
 	},
 	"scripts": {
 		"start": "run --mirror https://dl.nwjs.io/ .",
-		"build": "webpack --config ./conf/webpack.config.js",
-		"dev": "webpack-dev-server --config ./conf/webpack.config.js --open",
+		"build": "webpack --config ./conf/webpack.config.js --env.STANDALONE=true",
+		"dev": "webpack-dev-server --config ./conf/webpack.config.js --open --env.STANDALONE=false",
 		"test": "jest .*\\.spec\\.ts --runInBand",
 		"test:auto": "jest .*\\.spec\\.ts --watch",
 		"test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",
