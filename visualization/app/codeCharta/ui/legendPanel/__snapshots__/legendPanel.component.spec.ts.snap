@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LegendPanelController onColorRangeChanged should update the color range and pixels in viewModel when it is changed 1`] = `
+Object {
+  "incomingEdge": "data:image/gif;base64,R0lGODlhAQABAPAAAAD//////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "negative": "data:image/gif;base64,R0lGODlhAQABAPAAAIIODv///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "neutral": "data:image/gif;base64,R0lGODlhAQABAPAAAN3MAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "outgoingEdge": "data:image/gif;base64,R0lGODlhAQABAPAAAP8A/////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "positive": "data:image/gif;base64,R0lGODlhAQABAPAAAGmuQP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "selected": "data:image/gif;base64,R0lGODlhAQABAPAAAOuDGf///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+}
+`;
+
+exports[`LegendPanelController onInvertColorRangeChanged should update the invertColorRange and pixels in viewModel when it is changed 1`] = `
+Object {
+  "incomingEdge": "data:image/gif;base64,R0lGODlhAQABAPAAAAD//////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "negative": "data:image/gif;base64,R0lGODlhAQABAPAAAIIODv///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "neutral": "data:image/gif;base64,R0lGODlhAQABAPAAAN3MAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "outgoingEdge": "data:image/gif;base64,R0lGODlhAQABAPAAAP8A/////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "positive": "data:image/gif;base64,R0lGODlhAQABAPAAAGmuQP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "selected": "data:image/gif;base64,R0lGODlhAQABAPAAAOuDGf///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+}
+`;
+
+exports[`LegendPanelController onInvertDeltaColors should update the pixels in viewModel when it is changed 1`] = `
+Object {
+  "incomingEdge": "data:image/gif;base64,R0lGODlhAQABAPAAAAD//////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "negative": "data:image/gif;base64,R0lGODlhAQABAPAAAIIODv///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "neutral": "data:image/gif;base64,R0lGODlhAQABAPAAAN3MAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "outgoingEdge": "data:image/gif;base64,R0lGODlhAQABAPAAAP8A/////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "positive": "data:image/gif;base64,R0lGODlhAQABAPAAAGmuQP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "selected": "data:image/gif;base64,R0lGODlhAQABAPAAAOuDGf///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+}
+`;
+
+exports[`LegendPanelController onWhiteColorBuildings should update the pixels in viewModel when it is changed 1`] = `
+Object {
+  "incomingEdge": "data:image/gif;base64,R0lGODlhAQABAPAAAAD//////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "negative": "data:image/gif;base64,R0lGODlhAQABAPAAAIIODv///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "neutral": "data:image/gif;base64,R0lGODlhAQABAPAAAN3MAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "outgoingEdge": "data:image/gif;base64,R0lGODlhAQABAPAAAP8A/////yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "positive": "data:image/gif;base64,R0lGODlhAQABAPAAAGmuQP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+  "selected": "data:image/gif;base64,R0lGODlhAQABAPAAAOuDGf///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
+}
+`;
