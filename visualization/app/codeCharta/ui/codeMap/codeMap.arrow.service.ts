@@ -37,8 +37,8 @@ export class CodeMapArrowService
 	}
 
 	public onBuildingDeselected() {
-		const settings = this.settingsService.getSettings()
 		this.clearArrows()
+		const settings = this.settingsService.getSettings()
 		this.addEdgePreview(null, settings.fileSettings.edges.filter(x => x.visible != EdgeVisibility.none))
 	}
 
