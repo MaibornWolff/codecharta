@@ -13,7 +13,6 @@ export class CodeMapArrowService
 	private VERTICES_PER_LINE = 5
 	private map: Map<String, Node>
 	private arrows: Object3D[]
-	private hoveredNode: Node
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -45,7 +44,6 @@ export class CodeMapArrowService
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		const settings = this.settingsService.getSettings()
 		if (settings.dynamicSettings.edgeMetric !== "None" && !hoveredBuilding.node.flat) {
-			this.hoveredNode = hoveredBuilding.node
 			this.clearArrows()
 			this.showEdgesOfBuildings(settings.fileSettings.edges)
 		}
@@ -55,7 +53,6 @@ export class CodeMapArrowService
 	public onBuildingUnhovered() {
 		const settings = this.settingsService.getSettings()
 		if (settings.dynamicSettings.edgeMetric !== "None") {
-			this.hoveredNode = null
 			this.clearArrows()
 			this.showEdgesOfBuildings(settings.fileSettings.edges)
 		}
@@ -70,11 +67,12 @@ export class CodeMapArrowService
 	}
 
 	private showEdgesOfBuildings(edges: Edge[]) {
-		if (this.threeSceneService.getSelectedBuilding() && this.hoveredNode) {
+		const node = this.threeSceneService.getHighlightedNode()
+		if (this.threeSceneService.getSelectedBuilding() && node) {
 			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
-			this.buildPairingEdges(this.hoveredNode, edges)
-		} else if (this.hoveredNode) {
-			this.buildPairingEdges(this.hoveredNode, edges)
+			this.buildPairingEdges(node, edges)
+		} else if (node) {
+			this.buildPairingEdges(node, edges)
 		} else if (this.threeSceneService.getSelectedBuilding()) {
 			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
 		} else {

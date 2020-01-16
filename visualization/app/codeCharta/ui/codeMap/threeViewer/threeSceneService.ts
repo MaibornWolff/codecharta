@@ -5,7 +5,7 @@ import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { SettingsService } from "../../../state/settingsService/settings.service"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode, Node } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 
@@ -150,6 +150,14 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	public getHighlightedBuilding(): CodeMapBuilding {
 		return this.highlighted[0]
+	}
+
+	public getHighlightedNode(): Node {
+		if (this.getHighlightedBuilding()) {
+			return this.getHighlightedBuilding().node
+		} else {
+			return null
+		}
 	}
 
 	private reselectBuilding() {
