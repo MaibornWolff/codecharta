@@ -5,12 +5,12 @@ file-panel-component {
 
 	.delta-chooser {
 		position: absolute;
-		display: inline-block;
+		display: inline-flex;
 		min-width: 70%;
 	}
 
 	.mode-chooser {
-		display: inline-block;
+		display: inline-flex;
 		vertical-align: middle;
 		margin-left: 10px;
 		margin-right: 10px;
@@ -47,13 +47,13 @@ file-panel-component {
 	}
 
 	.pictogram {
-		display: inline-block;
+		display: inline-flex;
 		width: 10px;
 		margin-right: 5px;
 		padding-left: 5px;
-		min-height: 22px;
+		height: 22px;
 		border-radius: 2px;
-		vertical-align: middle;
+		align-self: center;
 	}
 
 	md-input-container {
