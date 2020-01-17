@@ -85,7 +85,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private decorateIfPossible() {
 		if (this.unifiedMap && this.fileStateService.fileStatesAvailable() && this.unifiedFileMeta && this.metricService.getMetricData()) {
-			this.unifiedMap = NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
+			NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
 				this.unifiedMap,

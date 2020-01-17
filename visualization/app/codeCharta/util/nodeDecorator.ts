@@ -6,18 +6,14 @@ import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 
 export class NodeDecorator {
-	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, metricData: MetricData[]): CodeMapNode {
-		let decoratedMap: CodeMapNode = _.cloneDeep(map)
-		this.decorateMapWithMissingObjects(decoratedMap, fileMeta)
-		this.decorateMapWithCompactMiddlePackages(decoratedMap)
-		this.decorateLeavesWithMissingMetrics(decoratedMap, metricData)
-		return decoratedMap
+	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, metricData: MetricData[]) {
+		this.decorateMapWithMissingObjects(map, fileMeta)
+		this.decorateMapWithCompactMiddlePackages(map)
+		this.decorateLeavesWithMissingMetrics(map, metricData)
 	}
 
-	public static preDecorateFile(file: CCFile): CCFile {
-		let decoratedFile: CCFile = _.cloneDeep(file)
-		this.decorateMapWithPathAttribute(decoratedFile)
-		return decoratedFile
+	public static preDecorateFile(file: CCFile) {
+		this.decorateMapWithPathAttribute(file)
 	}
 
 	private static decorateMapWithCompactMiddlePackages(map: CodeMapNode) {
