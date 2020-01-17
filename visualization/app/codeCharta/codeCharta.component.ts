@@ -3,7 +3,6 @@ import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
-import { EnvDetector } from "./util/envDetector"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { NameDataPair } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
@@ -18,12 +17,10 @@ export class CodeChartaController {
 		version: string
 		isLoadingFile: boolean
 		isLoadingMap: boolean
-		isNode: boolean
 	} = {
 		version: require("../../package.json").version,
 		isLoadingFile: true,
-		isLoadingMap: true,
-		isNode: false
+		isLoadingMap: true
 	}
 
 	private urlUtils: UrlExtractor
@@ -43,7 +40,6 @@ export class CodeChartaController {
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.loadingStatusService.updateLoadingFileFlag(true)
 		this.loadFileOrSample()
-		this._viewModel.isNode = EnvDetector.isNodeJs()
 	}
 
 	public loadFileOrSample() {
