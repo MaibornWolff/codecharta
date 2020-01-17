@@ -39,8 +39,6 @@ class SCMLogProjectCreatorGoldenMasterTest(
         }
     }
 
-    private val PROJECT_NAME = "SCMLogParser"
-
     private val metricsFactory = MetricsFactory(Arrays.asList(
             "number_of_authors",
             "number_of_commits",
@@ -53,7 +51,7 @@ class SCMLogProjectCreatorGoldenMasterTest(
     @Throws(Exception::class)
     fun logParserGoldenMasterTest() {
         // given
-        val projectConverter = ProjectConverter(containsAuthors, PROJECT_NAME)
+        val projectConverter = ProjectConverter(containsAuthors)
 
         val svnSCMLogProjectCreator = SCMLogProjectCreator(strategy, metricsFactory, projectConverter, silent = true)
         val ccjsonReader = InputStreamReader(this.javaClass.classLoader.getResourceAsStream(expectedProjectFilename)!!)

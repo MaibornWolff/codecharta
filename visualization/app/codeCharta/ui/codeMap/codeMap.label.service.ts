@@ -1,12 +1,12 @@
 import * as THREE from "three"
 import { PerspectiveCamera, Sprite, Vector3, Box3 } from "three"
-import { Node, Settings } from "../../codeCharta.model"
+import { Node, State } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
+import { StoreService } from "../../state/store.service"
 
 interface InternalLabel {
 	sprite: THREE.Sprite
@@ -24,7 +24,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	constructor(
 		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
+		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
 		private threeSceneService: ThreeSceneService
 	) {
@@ -32,17 +32,18 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	public addLabel(node: Node, settings: Settings): void {
-		if (node.attributes && node.attributes[settings.dynamicSettings.heightMetric]) {
-			const x: number = node.x0 - settings.treeMapSettings.mapSize
+	public addLabel(node: Node): void {
+		const state: State = this.storeService.getState()
+		if (node.attributes && node.attributes[state.dynamicSettings.heightMetric]) {
+			const x: number = node.x0 - state.treeMap.mapSize
 			const y: number = node.z0
-			const z: number = node.y0 - settings.treeMapSettings.mapSize
+			const z: number = node.y0 - state.treeMap.mapSize
 
 			const labelX: number = x + node.width / 2
 			const labelY: number = y + node.height
 			const labelZ: number = z + node.length / 2
 
-			let label: InternalLabel = this.makeText(node.name + ": " + node.attributes[settings.dynamicSettings.heightMetric], 30)
+			let label: InternalLabel = this.makeText(node.name + ": " + node.attributes[state.dynamicSettings.heightMetric], 30)
 			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelZ)
 
@@ -61,7 +62,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		}
 	}
 
-	public scale(scale: Vector3) {
+	public scale() {
+		const scaling: Vector3 = this.storeService.getState().appSettings.scaling
 		if (this.resetScale) {
 			this.resetScale = false
 			this.currentScale = new THREE.Vector3(1, 1, 1)
@@ -72,16 +74,16 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			label.sprite.position
 				.sub(labelHeightDifference.clone())
 				.divide(this.currentScale.clone())
-				.multiply(scale.clone())
+				.multiply(scaling.clone())
 				.add(labelHeightDifference.clone())
 
 			//cast is a workaround for the compiler. Attribute vertices does exist on geometry
 			//but it is missing in the mapping file for TypeScript.
-			;(<any>label.line.geometry).vertices[0].divide(this.currentScale.clone()).multiply(scale.clone())
+			;(<any>label.line.geometry).vertices[0].divide(this.currentScale.clone()).multiply(scaling.clone())
 			;(<any>label.line.geometry).vertices[1].copy(label.sprite.position)
 			label.line.geometry.translate(0, 0, 0)
 		}
-		this.currentScale.copy(scale)
+		this.currentScale.copy(scaling)
 	}
 
 	public onCameraChanged(camera: PerspectiveCamera) {
@@ -103,7 +105,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		//bg
 		ctx!.fillStyle = "rgba(255,255,255,1)"
-		ctx!.strokeStyle = ColorConverter.convertHexToRgba(this.settingsService.getSettings().appSettings.mapColors.angularGreen)
+		ctx!.strokeStyle = ColorConverter.convertHexToRgba(this.storeService.getState().appSettings.mapColors.angularGreen)
 		ctx!.lineJoin = "round"
 		ctx!.lineCap = "round"
 		ctx!.lineWidth = 5
@@ -141,7 +143,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	private makeLine(x: number, y: number, z: number): THREE.Line {
 		const material = new THREE.LineBasicMaterial({
-			color: this.settingsService.getSettings().appSettings.mapColors.angularGreen,
+			color: this.storeService.getState().appSettings.mapColors.angularGreen,
 			linewidth: 2
 		})
 

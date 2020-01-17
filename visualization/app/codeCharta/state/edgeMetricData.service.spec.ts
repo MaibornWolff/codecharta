@@ -6,7 +6,7 @@ import { FileStateService } from "./fileState.service"
 import { MetricData, CodeMapNode } from "../codeCharta.model"
 import { FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../util/dataMocks"
 import { HierarchyNode } from "d3"
-import { SettingsService } from "./settingsService/settings.service"
+import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 
 describe("EdgeMetricDataService", () => {
 	let edgeMetricDataService: EdgeMetricDataService
@@ -36,21 +36,20 @@ describe("EdgeMetricDataService", () => {
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			FileStateService.subscribe = jest.fn()
-			SettingsService.subscribeToBlacklist = jest.fn()
-		})
-
 		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
 			rebuildService()
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
 		})
 
-		it("should subscribe to Blacklist-Events", () => {
+		it("should subscribe to BlacklistService", () => {
+			BlacklistService.subscribe = jest.fn()
+
 			rebuildService()
 
-			expect(SettingsService.subscribeToBlacklist).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
 		})
 	})
 
@@ -120,7 +119,7 @@ describe("EdgeMetricDataService", () => {
 		it("should create correct edge Metrics", () => {
 			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
 
-			edgeMetricDataService.onFileSelectionStatesChanged(FILE_STATES)
+			edgeMetricDataService.onFileStatesChanged(FILE_STATES)
 
 			expect(edgeMetricDataService.getMetricData().map(x => x.name)).toContain("pairingRate")
 			expect(edgeMetricDataService.getMetricData().map(x => x.name)).toContain("otherMetric")
@@ -129,7 +128,7 @@ describe("EdgeMetricDataService", () => {
 		it("should calculate correct maximum value for edge Metrics", () => {
 			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
 
-			edgeMetricDataService.onFileSelectionStatesChanged(FILE_STATES)
+			edgeMetricDataService.onFileStatesChanged(FILE_STATES)
 
 			expect(edgeMetricDataService.getMetricData().find(x => x.name === "pairingRate").maxValue).toEqual(2)
 			expect(edgeMetricDataService.getMetricData().find(x => x.name === "otherMetric").maxValue).toEqual(1)
@@ -137,7 +136,7 @@ describe("EdgeMetricDataService", () => {
 
 		it("metrics Map should contain correct entries entries", () => {
 			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
-			edgeMetricDataService.onFileSelectionStatesChanged(FILE_STATES)
+			edgeMetricDataService.onFileStatesChanged(FILE_STATES)
 
 			const pairingRateMapKeys = edgeMetricDataService["nodeEdgeMetricsMap"].get("pairingRate").keys()
 			expect(pairingRateMapKeys.next().value).toEqual("/root/Parent Leaf/small leaf")
@@ -147,7 +146,7 @@ describe("EdgeMetricDataService", () => {
 
 		it("metrics Map should be sorted entries", () => {
 			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
-			edgeMetricDataService.onFileSelectionStatesChanged(FILE_STATES)
+			edgeMetricDataService.onFileStatesChanged(FILE_STATES)
 
 			const pairingRateMap = edgeMetricDataService["nodeEdgeMetricsMap"].get("pairingRate")
 			expect(pairingRateMap.get("/root/Parent Leaf/small leaf")).toEqual({ incoming: 2, outgoing: 0 })
@@ -159,7 +158,7 @@ describe("EdgeMetricDataService", () => {
 	describe("getMetricValuesForNode", () => {
 		it("should return Edge Metric counts for node", () => {
 			FILE_STATES[0].file.map = VALID_NODE_WITH_PATH
-			edgeMetricDataService.onFileSelectionStatesChanged(FILE_STATES)
+			edgeMetricDataService.onFileStatesChanged(FILE_STATES)
 			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
 
 			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node)

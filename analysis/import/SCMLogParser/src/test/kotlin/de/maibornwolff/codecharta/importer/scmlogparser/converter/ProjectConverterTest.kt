@@ -29,21 +29,19 @@ class ProjectConverterTest {
     @Throws(Exception::class)
     fun canCreateAnEmptyProject() {
         // given
-        val projectname = "Projectname"
-        val projectConverter = ProjectConverter(true, projectname)
+        val projectConverter = ProjectConverter(true)
 
         // when
         val project = projectConverter.convert(emptyList())
 
         //then
         assertThat(project.rootNode.leaves).hasSize(1)
-        assertThat(project.projectName).isEqualTo(projectname)
     }
 
     @Test
     fun canConvertProjectWithAuthors() {
         //given
-        val projectConverter = ProjectConverter(true, "ProjectWithAuthors")
+        val projectConverter = ProjectConverter(true)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
 
@@ -57,7 +55,7 @@ class ProjectConverterTest {
     @Test
     fun canConvertProjectWithoutAuthors() {
         //given
-        val projectConverter = ProjectConverter(false, "ProjectWithoutAuthors")
+        val projectConverter = ProjectConverter(false)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
 
@@ -71,7 +69,7 @@ class ProjectConverterTest {
     @Test
     fun edgesAreRegisteredInProject() {
         //given
-        val projectConverter = ProjectConverter(true, "ProjectWithAuthors")
+        val projectConverter = ProjectConverter(true)
         val metricsFactory = MetricsFactory().createMetrics()
         val file1 = VersionControlledFile("File 1", metricsFactory)
         val commit = Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now())

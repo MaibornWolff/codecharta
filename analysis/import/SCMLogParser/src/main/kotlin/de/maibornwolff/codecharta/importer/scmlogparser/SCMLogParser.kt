@@ -26,7 +26,7 @@ import java.util.stream.Stream
 @CommandLine.Command(
         name = "scmlogparser",
         description = ["generates cc.json from scm log file (git or svn)"],
-        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class SCMLogParser(private val input: InputStream = System.`in`,
                    private val output: PrintStream = System.out,
@@ -40,9 +40,6 @@ class SCMLogParser(private val input: InputStream = System.`in`,
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
-
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = "SCMLogParser"
 
     @CommandLine.Option(names = ["--git"], hidden = true,
             description = ["analysis of git log, equivalent --input-format GIT_LOG"])
@@ -96,13 +93,12 @@ class SCMLogParser(private val input: InputStream = System.`in`,
                 file!!,
                 logParserStrategy,
                 metricsFactory,
-                projectName,
                 addAuthor,
                 silent)
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
-            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectName)
+            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         if (outputFile.isNotEmpty()) {
             ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
@@ -139,7 +135,6 @@ class SCMLogParser(private val input: InputStream = System.`in`,
             pathToLog: File,
             parserStrategy: LogParserStrategy,
             metricsFactory: MetricsFactory,
-            projectName: String,
             containsAuthors: Boolean,
             silent: Boolean = false
     ): Project {
@@ -147,7 +142,7 @@ class SCMLogParser(private val input: InputStream = System.`in`,
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
 
-        val projectConverter = ProjectConverter(containsAuthors, projectName)
+        val projectConverter = ProjectConverter(containsAuthors)
         return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
     }
 

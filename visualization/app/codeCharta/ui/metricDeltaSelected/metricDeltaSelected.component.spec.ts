@@ -3,25 +3,25 @@ import { MetricDeltaSelectedController } from "./metricDeltaSelected.component"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
-import { SETTINGS, CODE_MAP_BUILDING } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { Settings, RecursivePartial } from "../../codeCharta.model"
 import _ from "lodash"
+import { StoreService } from "../../state/store.service"
+import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
+import { setInvertDeltaColors } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.actions"
 
 describe("MetricDeltaSelectedController", () => {
 	let metricDeltaSelectedController: MetricDeltaSelectedController
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
+	let storeService: StoreService
 	let threeSceneService: ThreeSceneService
-	let settingsService: SettingsService
 	let codeMapBuilding: CodeMapBuilding
 
 	beforeEach(() => {
 		restartSystem()
-		withMockedThreeSceneService()
-		withMockedSettingsService()
 		rebuildController()
+		withMockedThreeSceneService()
 	})
 
 	function restartSystem() {
@@ -29,25 +29,19 @@ describe("MetricDeltaSelectedController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
+		storeService = getService<StoreService>("storeService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		settingsService = getService<SettingsService>("settingsService")
 
 		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 	}
 
 	function rebuildController() {
-		metricDeltaSelectedController = new MetricDeltaSelectedController($rootScope, $timeout, threeSceneService, settingsService)
+		metricDeltaSelectedController = new MetricDeltaSelectedController($rootScope, $timeout, threeSceneService, storeService)
 	}
 
 	function withMockedThreeSceneService() {
 		threeSceneService = jest.fn().mockReturnValue({
 			getSelectedBuilding: jest.fn()
-		})()
-	}
-
-	function withMockedSettingsService() {
-		settingsService = jest.fn().mockReturnValue({
-			getSettings: jest.fn()
 		})()
 	}
 
@@ -60,97 +54,56 @@ describe("MetricDeltaSelectedController", () => {
 			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, metricDeltaSelectedController)
 		})
 
-		it("should subscribe to SettingsService", () => {
-			SettingsService.subscribe = jest.fn()
+		it("should subscribe to InvertDeltaColorsService", () => {
+			InvertDeltaColorsService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, metricDeltaSelectedController)
+			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, metricDeltaSelectedController)
 		})
 	})
 
 	describe("onBuildingSelected", () => {
-		beforeEach(() => {
-			metricDeltaSelectedController["setDeltaColorClass"] = jest.fn()
-			metricDeltaSelectedController["setDeltaValue"] = jest.fn()
-		})
-		it("should call function setDeltaValue", () => {
-			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
+		it("should set colorClass to red with inverted deltaColor and positive deltaValue", () => {
+			storeService.dispatch(setInvertDeltaColors(true))
+			metricDeltaSelectedController["_viewModel"].deltaValue = 1
 
-			expect(metricDeltaSelectedController["setDeltaValue"]).toHaveBeenCalledWith(codeMapBuilding)
-		})
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
-		it("should call function setDeltaColorClass", () => {
-			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
-
-			expect(metricDeltaSelectedController["setDeltaColorClass"]).toHaveBeenCalled()
-		})
-	})
-
-	describe("onSettingsChanged", () => {
-		let settings: Settings
-
-		beforeEach(() => {
-			metricDeltaSelectedController["setDeltaColorClass"] = jest.fn()
-			settings = _.cloneDeep(SETTINGS)
+			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("red")
 		})
 
-		it("should call function setDeltaColorClass with invertDeltaColors is false", () => {
-			const update = {
-				appSettings: {
-					invertDeltaColors: false
-				}
-			}
+		it("should set colorClass to green with inverted deltaColor and negative deltaValue", () => {
+			storeService.dispatch(setInvertDeltaColors(true))
+			metricDeltaSelectedController["_viewModel"].deltaValue = -1
 
-			metricDeltaSelectedController.onSettingsChanged(settings, update)
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
-			expect(metricDeltaSelectedController["setDeltaColorClass"]).toHaveBeenCalledWith(settings)
+			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("green")
 		})
 
-		it("should call function setDeltaColorClass with invertDeltaColors is true", () => {
-			const update = {
-				appSettings: {
-					invertDeltaColors: true
-				}
-			}
+		it("should set colorClass to green without inverted deltaColor and positive deltaValue", () => {
+			storeService.dispatch(setInvertDeltaColors(false))
+			metricDeltaSelectedController["_viewModel"].deltaValue = 1
 
-			metricDeltaSelectedController.onSettingsChanged(settings, update)
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
-			expect(metricDeltaSelectedController["setDeltaColorClass"]).toHaveBeenCalledWith(settings)
+			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("green")
 		})
 
-		it("should not call function setDeltaColorClass when invertDeltaColors is not in update object", () => {
-			const update = {
-				appSettings: {}
-			}
+		it("should set colorClass to red without inverted deltaColor and negative deltaValue", () => {
+			storeService.dispatch(setInvertDeltaColors(false))
+			metricDeltaSelectedController["_viewModel"].deltaValue = -1
 
-			metricDeltaSelectedController.onSettingsChanged(settings, update)
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
-			expect(metricDeltaSelectedController["setDeltaColorClass"]).not.toHaveBeenCalled()
-		})
-
-		it("should not call function setDeltaColorClass when appSettings is not in update object", () => {
-			const update = { somethingelse: true } as RecursivePartial<Settings>
-
-			metricDeltaSelectedController.onSettingsChanged(settings, update)
-
-			expect(metricDeltaSelectedController["setDeltaColorClass"]).not.toHaveBeenCalled()
-		})
-	})
-
-	describe("setDeltaValue", () => {
-		beforeEach(() => {
-			metricDeltaSelectedController["_viewModel"] = {
-				deltaValue: null,
-				colorClass: null,
-				attributekey: null
-			}
+			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("red")
 		})
 
 		it("should set deltaValue to null", () => {
 			codeMapBuilding.node.deltas = undefined
 
-			metricDeltaSelectedController["setDeltaValue"](codeMapBuilding)
+			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
 
 			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(null)
 		})
@@ -159,60 +112,53 @@ describe("MetricDeltaSelectedController", () => {
 			codeMapBuilding.node.deltas = { rloc: 42 }
 			metricDeltaSelectedController["attributekey"] = "rloc"
 
-			metricDeltaSelectedController["setDeltaValue"](codeMapBuilding)
+			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
 
 			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(42)
 		})
 
 		it("should not change viewModel", () => {
-			codeMapBuilding = undefined
 			metricDeltaSelectedController["_viewModel"].deltaValue = 17
 
-			metricDeltaSelectedController["setDeltaValue"](codeMapBuilding)
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
 			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(17)
 		})
 	})
 
-	describe("setDeltaColorClass", () => {
-		let settings: Settings
-
-		beforeEach(() => {
-			settings = _.cloneDeep(SETTINGS)
-		})
-
+	describe("onInvertDeltaColorsChanged", () => {
 		it("should set colorClass to red with inverted deltaColor and positive deltaValue", () => {
-			settings.appSettings.invertDeltaColors = true
+			storeService.dispatch(setInvertDeltaColors(true))
 			metricDeltaSelectedController["_viewModel"].deltaValue = 1
 
-			metricDeltaSelectedController["setDeltaColorClass"](settings)
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("red")
 		})
 
 		it("should set colorClass to green with inverted deltaColor and negative deltaValue", () => {
-			settings.appSettings.invertDeltaColors = true
+			storeService.dispatch(setInvertDeltaColors(true))
 			metricDeltaSelectedController["_viewModel"].deltaValue = -1
 
-			metricDeltaSelectedController["setDeltaColorClass"](settings)
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("green")
 		})
 
 		it("should set colorClass to green without inverted deltaColor and positive deltaValue", () => {
-			settings.appSettings.invertDeltaColors = false
+			storeService.dispatch(setInvertDeltaColors(false))
 			metricDeltaSelectedController["_viewModel"].deltaValue = 1
 
-			metricDeltaSelectedController["setDeltaColorClass"](settings)
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("green")
 		})
 
 		it("should set colorClass to red without inverted deltaColor and negative deltaValue", () => {
-			settings.appSettings.invertDeltaColors = false
+			storeService.dispatch(setInvertDeltaColors(false))
 			metricDeltaSelectedController["_viewModel"].deltaValue = -1
 
-			metricDeltaSelectedController["setDeltaColorClass"](settings)
+			metricDeltaSelectedController.onBuildingSelected(undefined)
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("red")
 		})

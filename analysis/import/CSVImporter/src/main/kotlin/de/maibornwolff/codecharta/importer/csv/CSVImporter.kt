@@ -8,7 +8,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = "csvimport",
         description = ["generates cc.json from csv with header"],
-        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class CSVImporter: Callable<Void> {
 
@@ -17,9 +17,6 @@ class CSVImporter: Callable<Void> {
 
     @CommandLine.Option(names = ["-d", "--delimeter"], description = ["delimeter in csv file"])
     private var csvDelimiter = ','
-
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = "SCMLogParser"
 
     @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
@@ -32,7 +29,7 @@ class CSVImporter: Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-        val csvProjectBuilder = CSVProjectBuilder(projectName, pathSeparator, csvDelimiter)
+        val csvProjectBuilder = CSVProjectBuilder(pathSeparator, csvDelimiter)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())

@@ -16,7 +16,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = "tokeiimporter",
         description = ["generates cc.json from tokei json"],
-        footer = ["Copyright(c) 2019, MaibornWolff GmbH"]
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class TokeiImporter(private val input: InputStream = System.`in`,
                     private val output: PrintStream = System.out,
@@ -28,9 +28,6 @@ class TokeiImporter(private val input: InputStream = System.`in`,
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
-
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = "TokeiImporter"
 
     @CommandLine.Option(names = ["-r", "--rootName"], description = ["root folder as specified when executing tokei"])
     private var rootName = "."
@@ -47,7 +44,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        projectBuilder = ProjectBuilder(projectName)
+        projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
 
         val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject

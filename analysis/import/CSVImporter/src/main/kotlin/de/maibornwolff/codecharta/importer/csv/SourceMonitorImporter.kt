@@ -7,14 +7,11 @@ import java.io.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "sourcemonitorimport", description = ["generates cc.json from sourcemonitor csv"],
-        footer = ["Copyright(c) 2018, MaibornWolff GmbH"])
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
 class SourceMonitorImporter: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
-
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = "testProject"
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
@@ -29,7 +26,7 @@ class SourceMonitorImporter: Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-                CSVProjectBuilder(projectName, pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
+                CSVProjectBuilder(pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())

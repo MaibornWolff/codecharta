@@ -17,6 +17,45 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.7] - 2020-01-17
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.6] - 2020-01-10
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Deployment
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.1] - 2020-01-10
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Performance of loading maps with edges improved #823
 - Calculation of other Group for fileExtensionBar #768
 - Remove focus of UI elements when they are not visible anymore
 

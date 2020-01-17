@@ -5,23 +5,21 @@ import {
 	CodeMapNode,
 	FileState,
 	MetricData,
-	Settings,
 	AttributeType,
-	AttributeTypeValue
+	AttributeTypeValue,
+	State
 } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
-import { FileStateService, FileStateServiceSubscriber } from "./fileState.service"
+import { FileStateService, FileStateSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
-import { BlacklistSubscriber } from "./settingsService/settings.service.events"
-import { SettingsService } from "./settingsService/settings.service"
+import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
+import { StoreService } from "./store.service"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
-
-	onMetricDataRemoved()
 }
 
 interface MaxMetricValuePair {
@@ -29,33 +27,23 @@ interface MaxMetricValuePair {
 	availableInVisibleMaps: boolean
 }
 
-export class MetricService implements FileStateServiceSubscriber, BlacklistSubscriber {
+export class MetricService implements FileStateSubscriber, BlacklistSubscriber {
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
-	private static METRIC_DATA_REMOVED_EVENT = "metric-data-removed"
 
 	//TODO MetricData should contain attributeType
 	private metricData: MetricData[] = []
 
-	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
+	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService, private storeService: StoreService) {
 		FileStateService.subscribe(this.$rootScope, this)
-		SettingsService.subscribeToBlacklist(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileSelectionStatesChanged(fileStates: FileState[]) {
-		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), [])
-		this.notifyMetricDataAdded()
-	}
-
-	public onImportedFilesChanged(fileStates: FileState[]) {
-		this.metricData = null
-		this.notifyMetricDataRemoved()
+	public onFileStatesChanged(fileStates: FileState[]) {
+		this.setNewMetricData()
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		const fileStates: FileState[] = this.fileStateService.getFileStates()
-		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates), blacklist)
-		this.addUnaryMetric()
-		this.notifyMetricDataAdded()
+		this.setNewMetricData()
 	}
 
 	public getMetrics(): string[] {
@@ -66,15 +54,17 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		return this.metricData
 	}
 
+	public isMetricAvailable(metricName: string) {
+		return this.metricData.find(x => x.name == metricName && x.availableInVisibleMaps)
+	}
+
 	public getMaxMetricByMetricName(metricName: string): number {
 		const metric: MetricData = this.metricData.find(x => x.name == metricName)
 		return metric ? metric.maxValue : undefined
 	}
 
-	public getAttributeTypeByMetric(metricName: string, settings: Settings): AttributeTypeValue {
-		const attributeTypes = settings.fileSettings.attributeTypes
-
-		const attributeType = this.getMergedAttributeTypes(attributeTypes).find(x => {
+	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
+		const attributeType = this.getMergedAttributeTypes(state.fileSettings.attributeTypes).find(x => {
 			return _.findKey(x) === metricName
 		})
 
@@ -82,6 +72,13 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 			return attributeType[metricName]
 		}
 		return null
+	}
+
+	private setNewMetricData() {
+		const fileStates: FileState[] = this.fileStateService.getFileStates()
+		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates))
+		this.addUnaryMetric()
+		this.notifyMetricDataAdded()
 	}
 
 	private getMergedAttributeTypes(attributeTypes: AttributeTypes): AttributeType[] {
@@ -98,24 +95,27 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		return mergedAttributeTypes
 	}
 
-	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {
+	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[]): MetricData[] {
 		if (fileStates.length <= 0) {
 			return []
 		} else {
 			//TODO: keep track of these metrics in service
 			const metricsFromVisibleMaps = this.getUniqueMetricNames(visibleFileStates)
-			const hashMap = this.buildHashMapFromMetrics(fileStates, blacklist, metricsFromVisibleMaps)
+			const hashMap = this.buildHashMapFromMetrics(fileStates, metricsFromVisibleMaps)
 			return this.getMetricDataFromHashMap(hashMap)
 		}
 	}
 
-	private buildHashMapFromMetrics(fileStates: FileState[], blacklist: BlacklistItem[], metricsFromVisibleMaps) {
+	private buildHashMapFromMetrics(fileStates: FileState[], metricsFromVisibleMaps) {
 		const hashMap: Map<string, MaxMetricValuePair> = new Map()
 
 		fileStates.forEach((fileState: FileState) => {
 			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 			nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
-				if (node.data.path && !CodeMapHelper.isBlacklisted(node.data, blacklist, BlacklistType.exclude)) {
+				if (
+					node.data.path &&
+					!CodeMapHelper.isBlacklisted(node.data, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
+				) {
 					this.addMaxMetricValuesToHashMap(node, hashMap, metricsFromVisibleMaps)
 				}
 			})
@@ -193,17 +193,9 @@ export class MetricService implements FileStateServiceSubscriber, BlacklistSubsc
 		this.$rootScope.$broadcast(MetricService.METRIC_DATA_ADDED_EVENT, this.metricData)
 	}
 
-	private notifyMetricDataRemoved() {
-		this.$rootScope.$broadcast(MetricService.METRIC_DATA_REMOVED_EVENT, this.metricData)
-	}
-
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
 		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (event, data) => {
 			subscriber.onMetricDataAdded(data)
-		})
-
-		$rootScope.$on(MetricService.METRIC_DATA_REMOVED_EVENT, (event, data) => {
-			subscriber.onMetricDataRemoved()
 		})
 	}
 }

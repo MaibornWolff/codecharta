@@ -10,7 +10,7 @@ import org.spekframework.spek2.style.specification.describe
 class CSVCodeMaatTest: Spek({
 
     describe("CSVProjectBuilder for CodeMaat") {
-        val csvProjectBuilder = CSVProjectBuilder("test", '\\', ',',
+        val csvProjectBuilder = CSVProjectBuilder('\\', ',',
                 MetricNameTranslator(mapOf(Pair("File Name", "path"))))
 
         context("reading csv lines from CodeMaat") {

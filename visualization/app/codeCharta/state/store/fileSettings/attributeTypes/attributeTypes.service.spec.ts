@@ -4,7 +4,7 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { AttributeTypesAction, AttributeTypesActions } from "./attributeTypes.actions"
 import { AttributeTypesService } from "./attributeTypes.service"
-import { SETTINGS, withMockedEventMethods } from "../../../../util/dataMocks"
+import { STATE, withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("AttributeTypesService", () => {
 	let attributeTypesService: AttributeTypesService
@@ -42,14 +42,14 @@ describe("AttributeTypesService", () => {
 		it("should notify all subscribers with the new attributeTypes value", () => {
 			const action: AttributeTypesAction = {
 				type: AttributeTypesActions.SET_ATTRIBUTE_TYPES,
-				payload: SETTINGS.fileSettings.attributeTypes
+				payload: STATE.fileSettings.attributeTypes
 			}
 			storeService["store"].dispatch(action)
 
 			attributeTypesService.onStoreChanged(AttributeTypesActions.SET_ATTRIBUTE_TYPES)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("attribute-types-changed", {
-				attributeTypes: SETTINGS.fileSettings.attributeTypes
+				attributeTypes: STATE.fileSettings.attributeTypes
 			})
 		})
 

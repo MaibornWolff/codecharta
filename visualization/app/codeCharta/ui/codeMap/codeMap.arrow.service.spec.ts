@@ -4,25 +4,24 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Object3D, Vector3 } from "three"
-import { Edge, EdgeVisibility, Node, Settings } from "../../codeCharta.model"
-import { SETTINGS, CODE_MAP_BUILDING, DEFAULT_SETTINGS, OUTGOING_NODE, INCOMING_NODE } from "../../util/dataMocks"
+import { Edge, EdgeVisibility, Node, State } from "../../codeCharta.model"
+import { CODE_MAP_BUILDING, OUTGOING_NODE, INCOMING_NODE, STATE } from "../../util/dataMocks"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { ColorConverter } from "../../util/color/colorConverter"
+import { StoreService } from "../../state/store.service"
+import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
 	let threeSceneService: ThreeSceneService
 	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
-	let settings: Settings
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		withMockedThreeSceneService()
-		withMockedSettingsService()
 	})
 
 	afterEach(() => {
@@ -33,14 +32,12 @@ describe("CodeMapArrowService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		$rootScope = getService<IRootScopeService>("$rootScope")
-
-		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
 
 	function rebuildService() {
-		codeMapArrowService = new CodeMapArrowService($rootScope, threeSceneService, settingsService)
+		codeMapArrowService = new CodeMapArrowService($rootScope, storeService, threeSceneService)
 	}
 
 	function withMockedThreeSceneService() {
@@ -62,16 +59,6 @@ describe("CodeMapArrowService", () => {
 				value: "value"
 			})
 		})()
-	}
-
-	function withMockedSettingsService() {
-		settingsService = codeMapArrowService["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(settings)
-		})()
-	}
-
-	function withSettingsService() {
-		settings = DEFAULT_SETTINGS
 	}
 
 	function setupEdgeArrowsWithChildren() {
@@ -108,7 +95,6 @@ describe("CodeMapArrowService", () => {
 
 	describe("SelectionMethods", () => {
 		beforeEach(() => {
-			withMockedSettingsService()
 			codeMapArrowService.clearArrows = jest.fn()
 			codeMapArrowService["showEdgesOfBuildings"] = jest.fn()
 			codeMapArrowService.addEdgePreview = jest.fn()
@@ -175,14 +161,14 @@ describe("CodeMapArrowService", () => {
 		it("should", () => {
 			const originNode: Node = OUTGOING_NODE
 			const nodes: Node[] = [originNode]
-			const edges: Edge[] = settingsService.getSettings().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
+			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
 
 			codeMapArrowService.addEdgePreview(nodes, edges)
 
 			expect(codeMapArrowService["map"].size).toEqual(1)
 		})
 		it("should", () => {
-			const edges: Edge[] = settingsService.getSettings().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
+			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
 
 			codeMapArrowService.addEdgePreview(null, edges)
 
@@ -195,9 +181,7 @@ describe("CodeMapArrowService", () => {
 			threeSceneService.edgeArrows["add"] = jest.fn()
 			codeMapArrowService["arrows"].push = jest.fn()
 		})
-		beforeEach(() => {
-			withSettingsService()
-		})
+
 		it("calls an outgoing Arrow, which should then call the last subfuncions in curveColoring", () => {
 			const originNode: Node = OUTGOING_NODE
 			const targetNode: Node = INCOMING_NODE
@@ -254,8 +238,9 @@ describe("CodeMapArrowService", () => {
 	describe("scale", () => {
 		it("should set the scale of all arrows to x, y and z", () => {
 			setupArrows()
+			storeService.dispatch(setScaling(new Vector3(1, 2, 3)))
 
-			codeMapArrowService.scale(new Vector3(1, 2, 3))
+			codeMapArrowService.scale()
 
 			expect(codeMapArrowService["arrows"][0].scale.x).toBe(1)
 			expect(codeMapArrowService["arrows"][0].scale.y).toBe(2)

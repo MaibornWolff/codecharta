@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-import { SETTINGS, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
+import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
 import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { CodeMapHelper } from "./codeMapHelper"
@@ -23,7 +23,7 @@ describe("nodeDecorator", () => {
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
 		]
-		blacklist = _.cloneDeep(SETTINGS.fileSettings.blacklist)
+		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
 	})
 
 	describe("decorateMap", () => {

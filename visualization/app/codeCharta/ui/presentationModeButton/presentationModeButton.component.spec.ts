@@ -3,6 +3,8 @@ import { PresentationModeButtonController } from "./presentationModeButton.compo
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { IRootScopeService } from "angular"
+import { IsPresentationModeService } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.service"
+import { setPresentationMode } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 
 describe("PresentationModeButtonController", () => {
 	let presentationModeButtonController: PresentationModeButtonController
@@ -25,25 +27,29 @@ describe("PresentationModeButtonController", () => {
 		presentationModeButtonController = new PresentationModeButtonController($rootScope, storeService)
 	}
 
+	describe("constructor", () => {
+		it("should subscribe to Presentation-Mode-Changed", () => {
+			IsPresentationModeService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(IsPresentationModeService.subscribe).toHaveBeenCalledWith($rootScope, presentationModeButtonController)
+		})
+	})
+
 	describe("toggleMode", () => {
 		it("should change isEnabled from true to false", () => {
 			presentationModeButtonController["_viewModel"].isEnabled = true
+			storeService.dispatch(setPresentationMode(true))
 
 			presentationModeButtonController.toggleMode()
 
-			expect(presentationModeButtonController["_viewModel"].isEnabled).toBeFalsy()
+			expect(storeService.getState().appSettings.isPresentationMode).toBeFalsy()
 		})
 
 		it("should change isEnabled from false to true", () => {
 			presentationModeButtonController["_viewModel"].isEnabled = false
-
-			presentationModeButtonController.toggleMode()
-
-			expect(presentationModeButtonController["_viewModel"].isEnabled).toBeTruthy()
-		})
-
-		it("should update isPresentationMode in SettingsService", () => {
-			presentationModeButtonController["_viewModel"].isEnabled = false
+			storeService.dispatch(setPresentationMode(false))
 
 			presentationModeButtonController.toggleMode()
 

@@ -1,6 +1,7 @@
 # StructureModifier
 
 The StructureModifier is used to modify the structure of .cc.json files. It enables to ...
+
 - remove nodes from a project. The resulting project will not include these nodes and their children.
 - declare a node as root. This means that the chosen node will become the root node of the resulting sub-project.
 - move nodes within the project. All children of the source node will be transferred to the destination node.
@@ -11,7 +12,7 @@ The edges and blacklist entries associated with moved/removed nodes will be alte
 ## Usage
 
 ```
-ccsh modify [-h] [-f=<moveFrom>] [-n=<projectName>] [-o=<outputFile>]
+ccsh modify [-h] [-f=<moveFrom>] [-o=<outputFile>]
                    [-p=<printLevels>] [-s=<setRoot>] [-t=<moveTo>]
                    [-r=<remove>...]... [FILE]
 ```
@@ -22,8 +23,6 @@ ccsh modify [-h] [-f=<moveFrom>] [-n=<projectName>] [-o=<outputFile>]
       [FILE]                 input project file
   -f, --moveFrom=<moveFrom>  move nodes in project folder...
   -h, --help                 displays this help and exits
-  -n, --projectName=<projectName>
-                             project name of new file
   -o, --outputFile=<outputFile>
                              output File (or empty for stdout)
   -p, --printLevels=<printLevels>
@@ -33,7 +32,6 @@ ccsh modify [-h] [-f=<moveFrom>] [-n=<projectName>] [-o=<outputFile>]
   -t, --moveTo=<moveTo>      ... move nodes to destination folder
 ```
 
-
 ## Examples
 
 > sh ccsh modify foo.cc.json -p=2
@@ -42,11 +40,12 @@ ccsh modify [-h] [-f=<moveFrom>] [-n=<projectName>] [-o=<outputFile>]
 
 > sh ccsh modify foo.cc.json --moveFrom=/root/foo --moveTo=/root/bar -outputFile=project.cc.json
 
-> sh ccsh modify foo.cc.json --setRoot=/root/foo/ --projectName=NewName
+> sh ccsh modify foo.cc.json --setRoot=/root/foo/
 
- ## Piped input
+## Piped input
 
- Instead of providing a cc.json file as input, a project can also be piped to the filter:
- ```
- cat demo.cc.json | sh ccsh modify -p=2
- ```
+Instead of providing a cc.json file as input, a project can also be piped to the filter:
+
+```
+cat demo.cc.json | sh ccsh modify -p=2
+```
