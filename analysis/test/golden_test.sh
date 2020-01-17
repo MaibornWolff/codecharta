@@ -107,9 +107,9 @@ check_tokei() {
 check_pipe() {
    echo " -- expect pipes to work"
    sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --pathSeparator \\ \
-        | sh "${CCSH}" sourcecodeparser data/codecharta/ -p projectName1 \
+        | sh "${CCSH}" sourcecodeparser data/codecharta/ \
         | sh "${CCSH}" scmlogparser --svn data/codecharta/SVNTestLog.txt \
-        | sh "${CCSH}" modify --moveFrom=root/src --moveTo=root/bar -n projectName2 \
+        | sh "${CCSH}" modify --moveFrom=root/src --moveTo=root/bar \
             -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
     validate ${INSTALL_DIR}/piped_out.json
     if ! grep -q "Created Project with 9 leaves." ${INSTALL_DIR}/piped_out_log.json; then

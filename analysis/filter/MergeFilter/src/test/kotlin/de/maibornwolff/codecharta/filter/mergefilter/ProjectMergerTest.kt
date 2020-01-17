@@ -53,33 +53,6 @@ class ProjectMergerTest: Spek({
             }
         }
 
-        context("merging project with different names") {
-            val projects = listOf(
-                    Project("test1"),
-                    Project("test2")
-            )
-
-            it("should throw a exception") {
-                assertFailsWith(MergeException::class) {
-                    ProjectMerger(projects, nodeMergerStrategy).merge()
-                }
-            }
-        }
-
-        context("merging project providing a project name") {
-            val projectName = "arbitraryString"
-            val projects = listOf(
-                    Project("test1"),
-                    Project("test2")
-            )
-
-            it("project should have provided project name") {
-                val projectNameMerge = ProjectMerger(projects, nodeMergerStrategy, projectName).extractProjectName()
-                assertThat(projectNameMerge, CoreMatchers.`is`(projectName))
-            }
-
-        }
-
         context("merging project with same API major versions") {
             val projectName = "test"
             val projects = listOf(
@@ -89,7 +62,7 @@ class ProjectMergerTest: Spek({
 
             it("should merge projects") {
                 val project = ProjectMerger(projects, nodeMergerStrategy).merge()
-                assertThat(project.projectName, CoreMatchers.`is`(projectName))
+                assertThat(project.projectName, CoreMatchers.`is`(""))
             }
         }
 
@@ -103,19 +76,6 @@ class ProjectMergerTest: Spek({
                 assertFailsWith(MergeException::class) {
                     ProjectMerger(projects, nodeMergerStrategy).merge()
                 }
-            }
-        }
-
-        context("merging projects with same name and API version") {
-            val projectName = "test"
-            val projects = listOf(
-                    Project(projectName, apiVersion = "1.1"),
-                    Project(projectName, apiVersion = "1.1")
-            )
-
-            it("should extract project name") {
-                val name = ProjectMerger(projects, nodeMergerStrategy).extractProjectName()
-                assertThat(name, CoreMatchers.`is`(projectName))
             }
         }
 

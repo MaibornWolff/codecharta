@@ -43,8 +43,6 @@ generates cc.json from tokei json
   -h, --help   displays this help and exits
   -o, --outputFile=<outputFile>
                output File (or empty for stdout)
-  -p, --projectName=<projectName>
-               project name
   -r, --rootName=<rootName>
                root folder as specified when executing tokei
 ```
