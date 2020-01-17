@@ -3,7 +3,6 @@
 import angular from "angular"
 
 // Plop: Append module import here
-import "./nodeOnly/nodeOnly.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"
 import "./downloadButton/downloadButton.module"
@@ -43,7 +42,6 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
-	"app.codeCharta.ui.nodeOnly",
 	"app.codeCharta.ui.unfocusButton",
 	"app.codeCharta.ui.metricValueHovered",
 	"app.codeCharta.ui.downloadButton",
