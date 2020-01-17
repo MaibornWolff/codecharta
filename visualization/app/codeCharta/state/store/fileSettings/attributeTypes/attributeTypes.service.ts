@@ -1,24 +1,41 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { AttributeTypesActions } from "./attributeTypes.actions"
+import { AttributeTypesActions, setAttributeTypes } from "./attributeTypes.actions"
 import _ from "lodash"
-import { AttributeTypes } from "../../../../codeCharta.model"
+import { AttributeTypes, FileState } from "../../../../codeCharta.model"
+import { getMergedAttributeTypes } from "./attributeTypes.reset"
+import { FileStateHelper } from "../../../../util/fileStateHelper"
+import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
 
 export interface AttributeTypesSubscriber {
 	onAttributeTypesChanged(attributeTypes: AttributeTypes)
 }
 
-export class AttributeTypesService implements StoreSubscriber {
+export class AttributeTypesService implements StoreSubscriber, FileStateSubscriber {
 	private static ATTRIBUTE_TYPES_CHANGED_EVENT = "attribute-types-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe($rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
 		if (_.values(AttributeTypesActions).includes(actionType)) {
 			this.notify(this.select())
 		}
+	}
+
+	public onFileStatesChanged(fileStates: FileState[]) {
+		this.reset(fileStates)
+	}
+
+	public reset(fileStates: FileState[]) {
+		const allAttributeTypes: AttributeTypes[] = FileStateHelper.getVisibleFileStates(fileStates)
+			.map(x => x.file)
+			.map(x => x.settings.fileSettings.attributeTypes)
+
+		const newAttributeTypes = getMergedAttributeTypes(allAttributeTypes)
+		this.storeService.dispatch(setAttributeTypes(newAttributeTypes))
 	}
 
 	private select() {

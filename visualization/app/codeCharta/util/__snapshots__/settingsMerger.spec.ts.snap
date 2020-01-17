@@ -1,56 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SettingsMerger AttributeTypes merge should merge attributeTypes if one file does not contain attributeTypes 1`] = `
-Object {
-  "edges": Array [
-    Object {
-      "attribute2": "relative",
-    },
-  ],
-  "nodes": Array [
-    Object {
-      "attribute1": "absolute",
-    },
-  ],
-}
-`;
-
-exports[`SettingsMerger AttributeTypes merge should merge different attributeTypes 1`] = `
-Object {
-  "edges": Array [
-    Object {
-      "attribute2": "relative",
-    },
-    Object {
-      "attribute4": "relative",
-    },
-  ],
-  "nodes": Array [
-    Object {
-      "attribute1": "absolute",
-    },
-    Object {
-      "attribute3": "absolute",
-    },
-  ],
-}
-`;
-
-exports[`SettingsMerger AttributeTypes merge should only contain unique attributeType keys 1`] = `
-Object {
-  "edges": Array [
-    Object {
-      "attribute2": "relative",
-    },
-  ],
-  "nodes": Array [
-    Object {
-      "attribute1": "absolute",
-    },
-  ],
-}
-`;
-
 exports[`SettingsMerger Blacklist merge should merge blacklist for different paths 1`] = `
 Array [
   Object {
