@@ -1,5 +1,3 @@
-export class EnvDetector {
-	public static isNodeJs(): boolean {
-		return typeof process === "object" && typeof process.versions === "object" && typeof process.versions.node !== "undefined"
-	}
+export function isStandalone(): boolean {
+	return JSON.parse(process.env.STANDALONE)
 }
