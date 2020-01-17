@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.filter.structuremodifier
 import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
-class SubProjectExtractor(private val project: Project, private val projectName: String?) {
+class SubProjectExtractor(private val project: Project) {
 
     private val logger = KotlinLogging.logger { }
     private lateinit var path: String
@@ -12,7 +12,6 @@ class SubProjectExtractor(private val project: Project, private val projectName:
         this.path = path
         val pathSegments = path.removePrefix("/").split("/").filter { it.isNotEmpty() }
         return ProjectBuilder(
-                projectName ?: project.projectName,
                 addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
                 extractEdges(path),
                 copyAttributeTypes(),

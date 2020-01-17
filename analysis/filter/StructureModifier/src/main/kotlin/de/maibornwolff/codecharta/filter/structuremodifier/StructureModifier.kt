@@ -12,7 +12,7 @@ import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "modify",
         description = ["changes the structure of cc.json files"],
-        footer = ["Copyright(c) 2019, MaibornWolff GmbH"])
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
 class StructureModifier(private val input: InputStream = System.`in`,
                         private val output: PrintStream = System.out,
                         private val error: PrintStream = System.err) : Callable<Void?> {
@@ -31,9 +31,6 @@ class StructureModifier(private val input: InputStream = System.`in`,
 
     @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
-
-    @CommandLine.Option(names = ["-n", "--projectName"], description = ["project name of new file"])
-    private var projectName: String? = null
 
     @CommandLine.Option(names = ["-f", "--moveFrom"], description = ["move nodes in project folder..."])
     private var moveFrom: String? = null
@@ -56,9 +53,9 @@ class StructureModifier(private val input: InputStream = System.`in`,
                 ProjectStructurePrinter(project, output).printProjectStructure(printLevels)
                 return null
             }
-            setRoot != null -> project = SubProjectExtractor(project, projectName).extract(setRoot!!)
-            remove.isNotEmpty() -> project = NodeRemover(project, projectName).remove(remove)
-            moveFrom != null -> project = FolderMover(project, projectName).move(moveFrom, moveTo) ?: return null
+            setRoot != null -> project = SubProjectExtractor(project).extract(setRoot!!)
+            remove.isNotEmpty() -> project = NodeRemover(project).remove(remove)
+            moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
         }
 
         val writer = outputFile?.bufferedWriter() ?: output.bufferedWriter()

@@ -12,7 +12,7 @@ class StructureModifierTest {
     fun `reads project from file`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/does/not/exist"))
 
-        Assertions.assertThat(cliResult).contains(listOf("MyProject", "otherFile.java"))
+        Assertions.assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
@@ -21,7 +21,7 @@ class StructureModifierTest {
 
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
-        Assertions.assertThat(cliResult).contains(listOf("MyProject", "otherFile.java"))
+        Assertions.assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
@@ -42,7 +42,7 @@ class StructureModifierTest {
         val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
-        Assertions.assertThat(cliResult).contains(listOf("MyProject", "otherFile.java"))
+        Assertions.assertThat(cliResult).contains(listOf("otherFile.java"))
     }
 
     @Test
@@ -71,7 +71,7 @@ class StructureModifierTest {
     fun `removes nodes`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-r=/root/src"))
 
-        Assertions.assertThat(cliResult).contains(listOf("MyProject", "root"))
+        Assertions.assertThat(cliResult).contains(listOf("root"))
         Assertions.assertThat(cliResult).doesNotContain(listOf("src", "otherFile.java"))
     }
 
@@ -87,6 +87,6 @@ class StructureModifierTest {
     fun `prints structure`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-p=2"))
 
-        Assertions.assertThat(cliResult).contains(listOf("MyProject", "folder3", "- - "))
+        Assertions.assertThat(cliResult).contains(listOf("folder3", "- - "))
     }
 }

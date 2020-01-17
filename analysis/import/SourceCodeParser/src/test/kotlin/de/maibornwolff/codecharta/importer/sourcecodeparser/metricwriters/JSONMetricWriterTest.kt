@@ -15,18 +15,6 @@ import java.io.PrintStream
 class JSONMetricWriterTest {
 
     @Test
-    fun `project name is set correctly`() {
-        val metrics = ProjectMetrics()
-        val result = ByteArrayOutputStream()
-        val projectName = "foo"
-
-        val metricWriter = JSONMetricWriter(projectName, OutputStreamWriter(PrintStream(result)))
-        metricWriter.generate(metrics, setOf())
-
-        Assertions.assertThat(result.toString()).contains("\"projectName\":\"foo\"")
-    }
-
-    @Test
     fun `file hierarchy and names are correct`() {
         val expectedResultFile = File("src/test/resources/jsonMetricHierarchy.json").absoluteFile
         val metrics = ProjectMetrics()
@@ -35,7 +23,7 @@ class JSONMetricWriterTest {
         metrics.addFile("foo3/bar.java")
         val result = ByteArrayOutputStream()
 
-        JSONMetricWriter("", OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+        JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
 
         val resultJSON = JSONObject(result.toString()).toString()
 
@@ -54,9 +42,8 @@ class JSONMetricWriterTest {
         metrics.addFileMetricMap("foo.java", fileMetrics1)
         metrics.addFileMetricMap("bar.kt", fileMetrics2)
         val result = ByteArrayOutputStream()
-        val projectName = "foo"
 
-        JSONMetricWriter(projectName, OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+        JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
 
         val resultJSON = JSONObject(result.toString()).toString()
 
@@ -74,7 +61,7 @@ class JSONMetricWriterTest {
         metrics.addFileMetricMap("foo.java", fileMetrics)
         val result = ByteArrayOutputStream()
 
-        JSONMetricWriter("project", OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+        JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
 
         val resultJSON = JSONObject(result.toString())
         val leaf = resultJSON.getJSONArray("nodes").getJSONObject(0).getJSONArray("children").getJSONObject(0)

@@ -15,7 +15,7 @@ class CSVProjectBuilderTest: Spek({
     }
 
     describe("a CSVProjectBuilder") {
-        val csvProjectBuilder = CSVProjectBuilder("test", '\\', ',')
+        val csvProjectBuilder = CSVProjectBuilder('\\', ',')
 
         context("adding invalid csv") {
 
@@ -56,7 +56,7 @@ class CSVProjectBuilderTest: Spek({
     }
 
     describe("a CSVProjectBuilder") {
-        val csvProjectBuilder = CSVProjectBuilder("test", '\\', ',')
+        val csvProjectBuilder = CSVProjectBuilder('\\', ',')
 
         context("adding line with metric values") {
             val attribName = "attname"
@@ -79,7 +79,7 @@ class CSVProjectBuilderTest: Spek({
     }
 
     describe("a CSVProjectBuilder") {
-        val csvProjectBuilder = CSVProjectBuilder("test", '\\', ',')
+        val csvProjectBuilder = CSVProjectBuilder('\\', ',')
 
         context("adding file with subdirectory") {
             val directoryName = "someNodeName"
@@ -97,7 +97,7 @@ class CSVProjectBuilderTest: Spek({
     }
 
     describe("CSVProjectBuilder for Sourcemonitor") {
-        val csvProjectBuilder = CSVProjectBuilder("test", '\\', ',',
+        val csvProjectBuilder = CSVProjectBuilder('\\', ',',
                 metricNameTranslator = MetricNameTranslator(mapOf(Pair("File Name", "path"))))
 
         context("reading csv lines from Sourcemonitor") {

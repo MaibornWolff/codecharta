@@ -1,32 +1,3 @@
-/*
- * Copyright (c) 2017, MaibornWolff GmbH
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *  * Neither the name of  nor the names of its contributors may be used to
- *    endorse or promote products derived from this software without specific
- *    prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
 package de.maibornwolff.codecharta.importer.sonar
 
 import de.maibornwolff.codecharta.importer.sonar.model.Component
@@ -47,7 +18,7 @@ class SonarComponentProjectBuilderTest {
         val measure = Measure("metric", "50.0")
         val name = "name"
         val component = Component("id", null, name, "path", Qualifier.FIL, listOf(measure).toMutableList())
-        val projectBuilder = SonarComponentProjectBuilder("project")
+        val projectBuilder = SonarComponentProjectBuilder()
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
@@ -64,7 +35,7 @@ class SonarComponentProjectBuilderTest {
         val measure = Measure("metric", "50.0")
         val id = "id"
         val component = Component(id, null, null, null, Qualifier.FIL, listOf(measure).toMutableList())
-        val projectBuilder = SonarComponentProjectBuilder("project")
+        val projectBuilder = SonarComponentProjectBuilder()
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
@@ -86,7 +57,7 @@ class SonarComponentProjectBuilderTest {
         val name = "name"
         val path = "someFileName"
         val component = Component(id, key, name, path, Qualifier.FIL, listOf(measure).toMutableList())
-        val projectBuilder = SonarComponentProjectBuilder("project")
+        val projectBuilder = SonarComponentProjectBuilder()
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
@@ -106,7 +77,7 @@ class SonarComponentProjectBuilderTest {
         // given
         val measure = Measure("metric", "bla")
         val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf(measure).toMutableList())
-        val projectBuilder = SonarComponentProjectBuilder("project")
+        val projectBuilder = SonarComponentProjectBuilder()
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
@@ -121,7 +92,7 @@ class SonarComponentProjectBuilderTest {
     fun should_insert_a_file_node_from_uts_component() {
         // given
         val component = Component("id", "key", "name", "path", Qualifier.UTS)
-        val projectBuilder = SonarComponentProjectBuilder("project")
+        val projectBuilder = SonarComponentProjectBuilder()
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
@@ -136,7 +107,7 @@ class SonarComponentProjectBuilderTest {
     fun should_insert_a_folder_node_from_dir_component() {
         // given
         val component = Component("id", "key", "name", "path", Qualifier.DIR)
-        val projectBuilder = SonarComponentProjectBuilder("project")
+        val projectBuilder = SonarComponentProjectBuilder()
 
         // when
         val project = projectBuilder.addComponentAsNode(component)
@@ -151,7 +122,7 @@ class SonarComponentProjectBuilderTest {
         val component = Component("id", "key", "name", "path", Qualifier.FIL)
         val components = ComponentMap()
         components.updateComponent(component)
-        val projectBuilder = SonarComponentProjectBuilder("project")
+        val projectBuilder = SonarComponentProjectBuilder()
 
         // when
         val project = projectBuilder.addComponentAsNode(component)
@@ -166,7 +137,7 @@ class SonarComponentProjectBuilderTest {
         val path = "someFileName"
         val component = Component("id", "key", "name", path, Qualifier.FIL)
         val projectBuilder =
-                SonarComponentProjectBuilder("project", SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
+                SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
