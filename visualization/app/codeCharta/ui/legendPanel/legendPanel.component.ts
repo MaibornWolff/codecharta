@@ -3,7 +3,6 @@ import "./legendPanel.component.scss"
 import { ColorRange, MarkedPackage, MapColors } from "../../codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
@@ -94,7 +93,7 @@ export class LegendPanelController
 	}
 
 	private updatePixelColors() {
-		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+		this._viewModel.isDeltaState = this.fileStateService.isDeltaState()
 
 		const mapColors = this.storeService.getState().appSettings.mapColors
 		this._viewModel.colorIcons.selected = this.getImage(mapColors.selected)

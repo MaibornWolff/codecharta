@@ -107,7 +107,8 @@ describe("codeMapRenderService", () => {
 
 	function withMockedFileStateService() {
 		fileStateService = codeMapRenderService["fileStateService"] = jest.fn().mockReturnValue({
-			getFileStates: jest.fn().mockReturnValue(fileStates)
+			getFileStates: jest.fn().mockReturnValue(fileStates),
+			isDeltaState: jest.fn().mockReturnValue(false)
 		})()
 	}
 
