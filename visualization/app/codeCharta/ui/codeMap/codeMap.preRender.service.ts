@@ -68,7 +68,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
-		if (this.fileStateService.getFileStates().length > 0) {
+		if (this.fileStateService.fileStatesAvailable()) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
 			if (this.allNecessaryRenderDataAvailable()) {
@@ -84,7 +84,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private decorateIfPossible() {
-		if (this.unifiedMap && this.fileStateService.getFileStates() && this.unifiedFileMeta && this.metricService.getMetricData()) {
+		if (this.unifiedMap && this.fileStateService.fileStatesAvailable() && this.unifiedFileMeta && this.metricService.getMetricData()) {
 			this.unifiedMap = NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
@@ -92,7 +92,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 				this.storeService.getState().fileSettings.blacklist,
 				this.metricService.getMetricData(),
 				this.edgeMetricDataService.getMetricData(),
-				FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+				this.fileStateService.isDeltaState()
 			)
 		}
 	}
@@ -110,11 +110,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private getSelectedFilesAsUnifiedMap(): CCFile {
-		const fileStates: FileState[] = this.fileStateService.getFileStates()
+		const fileStates: FileState[] = _.cloneDeep(this.fileStateService.getFileStates())
 		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
-		visibleFileStates.forEach(fileState => {
-			fileState.file = NodeDecorator.preDecorateFile(fileState.file)
-		})
 
 		if (FileStateHelper.isSingleState(fileStates)) {
 			return visibleFileStates[0].file
@@ -154,7 +151,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private allNecessaryRenderDataAvailable(): boolean {
 		return (
-			this.fileStateService.getFileStates().length > 0 &&
+			this.fileStateService.fileStatesAvailable() &&
 			this.metricService.getMetricData() !== null &&
 			this.areChosenMetricsInMetricData() &&
 			_.values(this.storeService.getState().dynamicSettings).every(x => {

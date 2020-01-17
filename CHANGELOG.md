@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed 🗑
 
+- Project name parameters in the ccsh #773
+
 ### Fixed 🐞
 
 ### Chore 👨‍💻 👩‍💻
