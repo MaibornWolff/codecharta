@@ -1,24 +1,39 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { BlacklistItem } from "../../../../codeCharta.model"
-import { BlacklistActions } from "./blacklist.actions"
+import { BlacklistItem, FileState } from "../../../../codeCharta.model"
+import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import _ from "lodash"
+import { getMergedBlacklist } from "./blacklist.reset"
+import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
+import { FileStateHelper } from "../../../../util/fileStateHelper"
 
 export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
 }
 
-export class BlacklistService implements StoreSubscriber {
+export class BlacklistService implements StoreSubscriber, FileStateSubscriber {
 	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe($rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType) {
 		if (_.values(BlacklistActions).includes(actionType)) {
 			this.notify(this.select())
 		}
+	}
+
+	public onFileStatesChanged(fileStates: FileState[]) {
+		this.reset(fileStates)
+	}
+
+	public reset(fileStates: FileState[]) {
+		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
+		const withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
+		const newBlacklist = getMergedBlacklist(visibleFiles, withUpdatedPath)
+		this.storeService.dispatch(setBlacklist(newBlacklist))
 	}
 
 	private select() {

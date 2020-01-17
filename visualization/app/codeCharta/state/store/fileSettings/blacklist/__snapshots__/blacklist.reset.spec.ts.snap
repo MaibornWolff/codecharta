@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+
+exports[`BlacklistReset getMergedBlacklist should merge blacklist for different paths 1`] = `
+Array [
+  Object {
+    "path": "/root/nodeA",
+    "type": "exclude",
+  },
+  Object {
+    "path": "/another/nodeB",
+    "type": "flatten",
+  },
+  Object {
+    "path": "/another/nodeC",
+    "type": "exclude",
+  },
+  Object {
+    "path": "*prefix/nodeD",
+    "type": "flatten",
+  },
+]
+`;
+
+exports[`BlacklistReset getMergedBlacklist should only contain unique paths+type 1`] = `
+Array [
+  Object {
+    "path": "/root/nodeA",
+    "type": "exclude",
+  },
+  Object {
+    "path": "/another/nodeB",
+    "type": "flatten",
+  },
+  Object {
+    "path": "*prefix/nodeD",
+    "type": "flatten",
+  },
+]
+`;

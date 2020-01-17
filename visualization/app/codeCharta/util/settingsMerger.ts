@@ -1,11 +1,9 @@
-import { Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
+import { Edge, CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
-import _ from "lodash"
 
 export class SettingsMerger {
 	private static edges: Edge[] = []
 	private static markedPackages: MarkedPackage[] = []
-	private static blacklist: BlacklistItem[] = []
 
 	public static getMergedFileSettings(inputFiles: CCFile[], withUpdatedPath: boolean = false): FileSettings {
 		if (inputFiles.length == 1) {
@@ -17,7 +15,6 @@ export class SettingsMerger {
 		for (let inputFile of inputFiles) {
 			this.setEdges(inputFile, withUpdatedPath)
 			this.setMarkedPackage(inputFile, withUpdatedPath)
-			this.setBlacklist(inputFile, withUpdatedPath)
 		}
 		return this.getNewFileSettings()
 	}
@@ -69,25 +66,7 @@ export class SettingsMerger {
 		}
 	}
 
-	private static setBlacklist(inputFile: CCFile, withUpdatedPath: boolean) {
-		if (inputFile.settings.fileSettings.blacklist) {
-			for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist) {
-				let blacklistItem: BlacklistItem = {
-					path: withUpdatedPath
-						? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path)
-						: oldBlacklistItem.path,
-					type: oldBlacklistItem.type
-				}
-				const equalBlacklistItems = this.blacklist.find(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
-
-				if (!equalBlacklistItems) {
-					this.blacklist.push(blacklistItem)
-				}
-			}
-		}
-	}
-
-	private static getUpdatedBlacklistItemPath(fileName: string, path: string): string {
+	public static getUpdatedBlacklistItemPath(fileName: string, path: string): string {
 		if (this.isAbsoluteRootPath(path)) {
 			return this.getUpdatedPath(fileName, path)
 		}
@@ -101,7 +80,6 @@ export class SettingsMerger {
 	private static getNewFileSettings(): FileSettings {
 		return {
 			edges: this.edges,
-			blacklist: this.blacklist,
 			markedPackages: this.markedPackages
 		} as FileSettings
 	}
@@ -115,6 +93,5 @@ export class SettingsMerger {
 	private static resetVariables() {
 		this.edges = []
 		this.markedPackages = []
-		this.blacklist = []
 	}
 }
