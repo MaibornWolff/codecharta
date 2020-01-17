@@ -17,6 +17,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Calculation of other Group for fileExtensionBar #768
+- Remove focus of UI elements when they are not visible anymore
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.41.0] - 2019-12-06
