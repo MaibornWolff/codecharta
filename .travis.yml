@@ -9,10 +9,13 @@ services:
   - docker
 
 jdk:
-   - oraclejdk9
+  - oraclejdk9
 
 env:
   - TRAVIS_NODE_VERSION="9"
+
+git:
+  depth: false
 
 addons:
   sonarcloud:
@@ -23,11 +26,11 @@ addons:
       - master
 
 before_install:
- - chmod +x ./analysis/gradlew
- - chmod -R +x ./analysis/script/
- - chmod -R +x ./visualization/script/
- - sudo apt-get -qq update
- - sudo apt-get install -y wine
+  - chmod +x ./analysis/gradlew
+  - chmod -R +x ./analysis/script/
+  - chmod -R +x ./visualization/script/
+  - sudo apt-get -qq update
+  - sudo apt-get install -y wine
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
