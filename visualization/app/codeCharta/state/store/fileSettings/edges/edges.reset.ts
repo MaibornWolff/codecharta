@@ -1,7 +1,7 @@
 import { CCFile, Edge } from "../../../../codeCharta.model"
 import { SettingsMerger } from "../../../../util/settingsMerger"
 
-export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean = false): Edge[] {
+export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): Edge[] {
 	let edges: Edge[] = []
 
 	if (inputFiles.length == 1) {

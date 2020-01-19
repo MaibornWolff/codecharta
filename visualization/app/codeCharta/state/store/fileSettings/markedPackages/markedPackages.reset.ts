@@ -1,7 +1,7 @@
 import { CCFile, MarkedPackage } from "../../../../codeCharta.model"
 import { SettingsMerger } from "../../../../util/settingsMerger"
 
-export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: boolean = false): MarkedPackage[] {
+export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: boolean): MarkedPackage[] {
 	let markedPackages: MarkedPackage[] = []
 
 	if (inputFiles.length == 1) {
