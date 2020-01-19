@@ -1,7 +1,7 @@
 import { CodeMapNode, CCFile } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import { FileNameHelper } from "./fileNameHelper"
-import { getUpdatedPath } from "./settingsMerger"
+import { getUpdatedPath } from "./nodePathHelper"
 
 export class AggregationGenerator {
 	private static projectNameArray: string[] = []
