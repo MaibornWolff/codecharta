@@ -110,22 +110,15 @@ export class CodeMapMouseEventService
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
 			if (this.threeSceneService.getMapMesh()) {
-				let intersectionResult = this.threeSceneService
+				let intersectedBuilding: CodeMapBuilding = this.threeSceneService
 					.getMapMesh()
 					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
-
 				const from = this.threeSceneService.getHighlightedBuilding()
-				let to = null
-
-				if (intersectionResult.intersectionFound) {
-					to = intersectionResult.building
-				} else {
-					to = this.highlightedInTreeView
-				}
+				const to = intersectedBuilding ? intersectedBuilding : this.highlightedInTreeView
 
 				if (from !== to) {
 					this.unhoverBuilding()
-					if (to) {
+					if (to !== null) {
 						this.hoverBuilding(to)
 					}
 				}

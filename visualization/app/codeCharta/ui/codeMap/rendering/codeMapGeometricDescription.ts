@@ -32,8 +32,8 @@ export class CodeMapGeometricDescription {
 		return this.buildings.find(x => x.node.path === path)
 	}
 
-	public intersect(ray: THREE.Ray): IntersectionResult {
-		let intersectedBuilding: CodeMapBuilding | null = null
+	public intersect(ray: THREE.Ray): CodeMapBuilding {
+		let intersectedBuilding: CodeMapBuilding = null
 		let leastIntersectedDistance: number = Infinity
 
 		let boxTranslation = new THREE.Vector3(-this.mapSize * this.scales.x, 0.0, -this.mapSize * this.scales.z)
@@ -66,16 +66,7 @@ export class CodeMapGeometricDescription {
 			}
 		}
 
-		if (intersectedBuilding) {
-			return {
-				intersectionFound: true,
-				building: intersectedBuilding
-			}
-		} else {
-			return {
-				intersectionFound: false
-			}
-		}
+		return intersectedBuilding
 	}
 
 	private rayIntersectsAxisAlignedBoundingBox(ray: THREE.Ray, box: THREE.Box3): boolean {
