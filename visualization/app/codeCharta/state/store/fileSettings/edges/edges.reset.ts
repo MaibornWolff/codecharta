@@ -1,5 +1,5 @@
 import { CCFile, Edge } from "../../../../codeCharta.model"
-import { SettingsMerger } from "../../../../util/settingsMerger"
+import { getUpdatedPath } from "../../../../util/settingsMerger"
 
 export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): Edge[] {
 	let edges: Edge[] = []
@@ -13,11 +13,9 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): 
 			for (let oldEdge of inputFile.settings.fileSettings.edges) {
 				let edge: Edge = {
 					fromNodeName: withUpdatedPath
-						? SettingsMerger.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
+						? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
 						: oldEdge.fromNodeName,
-					toNodeName: withUpdatedPath
-						? SettingsMerger.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName)
-						: oldEdge.toNodeName,
+					toNodeName: withUpdatedPath ? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
 					attributes: oldEdge.attributes,
 					visible: oldEdge.visible
 				}

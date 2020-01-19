@@ -1,5 +1,5 @@
 import { CCFile, MarkedPackage } from "../../../../codeCharta.model"
-import { SettingsMerger } from "../../../../util/settingsMerger"
+import { getUpdatedBlacklistItemPath } from "../../../../util/settingsMerger"
 
 export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: boolean): MarkedPackage[] {
 	let markedPackages: MarkedPackage[] = []
@@ -13,7 +13,7 @@ export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: b
 			for (let oldMarkedPackages of inputFile.settings.fileSettings.markedPackages) {
 				let markedPackage: MarkedPackage = {
 					path: withUpdatedPath
-						? SettingsMerger.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path)
+						? getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path)
 						: oldMarkedPackages.path,
 					color: oldMarkedPackages.color,
 					attributes: oldMarkedPackages.attributes

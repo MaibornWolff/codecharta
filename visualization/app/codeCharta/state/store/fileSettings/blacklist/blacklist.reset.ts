@@ -1,5 +1,5 @@
 import { BlacklistItem, CCFile } from "../../../../codeCharta.model"
-import { SettingsMerger } from "../../../../util/settingsMerger"
+import { getUpdatedBlacklistItemPath } from "../../../../util/settingsMerger"
 
 export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolean): BlacklistItem[] {
 	let blacklist: BlacklistItem[] = []
@@ -13,7 +13,7 @@ export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolea
 			for (let oldBlacklistItem of inputFile.settings.fileSettings.blacklist) {
 				let blacklistItem: BlacklistItem = {
 					path: withUpdatedPath
-						? SettingsMerger.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path)
+						? getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path)
 						: oldBlacklistItem.path,
 					type: oldBlacklistItem.type
 				}
