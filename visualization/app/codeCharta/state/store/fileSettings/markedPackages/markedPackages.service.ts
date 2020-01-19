@@ -1,24 +1,39 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { MarkedPackagesActions } from "./markedPackages.actions"
+import { MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actions"
 import _ from "lodash"
-import { MarkedPackage } from "../../../../codeCharta.model"
+import { FileState, MarkedPackage } from "../../../../codeCharta.model"
+import { FileStateHelper } from "../../../../util/fileStateHelper"
+import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
+import { getMergedMarkedPackages } from "./markedPackages.reset"
 
 export interface MarkedPackagesSubscriber {
 	onMarkedPackagesChanged(markedPackages: MarkedPackage[])
 }
 
-export class MarkedPackagesService implements StoreSubscriber {
+export class MarkedPackagesService implements StoreSubscriber, FileStateSubscriber {
 	private static MARKED_PACKAGES_CHANGED_EVENT = "marked-packages-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe($rootScope, this)
+		FileStateService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
 		if (_.values(MarkedPackagesActions).includes(actionType)) {
 			this.notify(this.select())
 		}
+	}
+
+	public onFileStatesChanged(fileStates: FileState[]) {
+		this.reset(fileStates)
+	}
+
+	public reset(fileStates: FileState[]) {
+		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
+		const withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
+		const newMarkedPackages = getMergedMarkedPackages(visibleFiles, withUpdatedPath)
+		this.storeService.dispatch(setMarkedPackages(newMarkedPackages))
 	}
 
 	private select() {
