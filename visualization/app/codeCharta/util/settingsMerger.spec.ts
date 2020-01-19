@@ -1,4 +1,4 @@
-import { CCFile, Edge, FileSettings, MarkedPackage } from "../codeCharta.model"
+import { CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
 import { SettingsMerger } from "./settingsMerger"
 
 describe("SettingsMerger", () => {
@@ -119,86 +119,6 @@ describe("SettingsMerger", () => {
 			file2.settings.fileSettings.markedPackages = [mp4]
 			const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
 			expect(fileSettings.markedPackages).toMatchSnapshot()
-		})
-	})
-
-	describe("Edges merge", () => {
-		let edge1: Edge
-		let edge2: Edge
-		let edge3: Edge
-		let edge4: Edge
-
-		beforeEach(() => {
-			edge1 = {
-				fromNodeName: "/root/nodeA",
-				toNodeName: "/root/nodeB",
-				attributes: {
-					attribute1: 10,
-					attribute2: 20
-				}
-			}
-
-			edge2 = {
-				fromNodeName: "/root/nodeA",
-				toNodeName: "/root/nodeC",
-				attributes: {
-					attribute1: 10,
-					attribute2: 20
-				}
-			}
-
-			edge3 = {
-				fromNodeName: "/root/nodeA",
-				toNodeName: "/root/nodeB",
-				attributes: {
-					attribute3: 30,
-					attribute4: 40
-				}
-			}
-
-			edge4 = {
-				fromNodeName: "/root/nodeA",
-				toNodeName: "/root/nodeB",
-				attributes: {
-					attribute1: 70,
-					attribute2: 80
-				}
-			}
-		})
-
-		it("should merge empty edges-arrays", () => {
-			file1.settings.fileSettings.edges = []
-			file2.settings.fileSettings.edges = []
-			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
-			expect(fileSettings.edges).toEqual([])
-		})
-
-		it("should merge different edges", () => {
-			file1.settings.fileSettings.edges = [edge1]
-			file2.settings.fileSettings.edges = [edge2]
-			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
-			expect(fileSettings.edges).toMatchSnapshot()
-		})
-
-		it("should merge all edges if one file does not contain edges", () => {
-			file1.settings.fileSettings.edges = [edge1, edge2]
-			file2.settings.fileSettings.edges = null
-			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
-			expect(fileSettings.edges).toMatchSnapshot()
-		})
-
-		it("should merge edge-attributes for the same edge paths", () => {
-			file1.settings.fileSettings.edges = [edge1]
-			file2.settings.fileSettings.edges = [edge3]
-			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
-			expect(fileSettings.edges).toMatchSnapshot()
-		})
-
-		it("should overwrite duplicated edge-attributes for the same edge", () => {
-			file1.settings.fileSettings.edges = [edge1]
-			file2.settings.fileSettings.edges = [edge4]
-			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
-			expect(fileSettings.edges).toMatchSnapshot()
 		})
 	})
 })

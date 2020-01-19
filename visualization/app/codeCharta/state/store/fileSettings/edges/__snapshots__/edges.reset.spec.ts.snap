@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AttributeTypesReset getMergedEdges should merge all edges if one file does not contain edges 1`] = `
+Array [
+  Object {
+    "attributes": Object {
+      "attribute1": 10,
+      "attribute2": 20,
+    },
+    "fromNodeName": "/root/nodeA",
+    "toNodeName": "/root/nodeB",
+    "visible": undefined,
+  },
+  Object {
+    "attributes": Object {
+      "attribute1": 10,
+      "attribute2": 20,
+    },
+    "fromNodeName": "/root/nodeA",
+    "toNodeName": "/root/nodeC",
+    "visible": undefined,
+  },
+]
+`;
+
+exports[`AttributeTypesReset getMergedEdges should merge different edges 1`] = `
+Array [
+  Object {
+    "attributes": Object {
+      "attribute1": 10,
+      "attribute2": 20,
+    },
+    "fromNodeName": "/root/nodeA",
+    "toNodeName": "/root/nodeB",
+    "visible": undefined,
+  },
+  Object {
+    "attributes": Object {
+      "attribute1": 10,
+      "attribute2": 20,
+    },
+    "fromNodeName": "/root/nodeA",
+    "toNodeName": "/root/nodeC",
+    "visible": undefined,
+  },
+]
+`;
+
+exports[`AttributeTypesReset getMergedEdges should merge edge-attributes for the same edge paths 1`] = `
+Array [
+  Object {
+    "attributes": Object {
+      "attribute1": 10,
+      "attribute2": 20,
+      "attribute3": 30,
+      "attribute4": 40,
+    },
+    "fromNodeName": "/root/nodeA",
+    "toNodeName": "/root/nodeB",
+    "visible": undefined,
+  },
+]
+`;
+
+exports[`AttributeTypesReset getMergedEdges should overwrite duplicated edge-attributes for the same edge 1`] = `
+Array [
+  Object {
+    "attributes": Object {
+      "attribute1": 70,
+      "attribute2": 80,
+    },
+    "fromNodeName": "/root/nodeA",
+    "toNodeName": "/root/nodeB",
+    "visible": undefined,
+  },
+]
+`;

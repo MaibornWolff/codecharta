@@ -1,8 +1,7 @@
-import { Edge, CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
+import { CCFile, FileSettings, MarkedPackage } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 
 export class SettingsMerger {
-	private static edges: Edge[] = []
 	private static markedPackages: MarkedPackage[] = []
 
 	public static getMergedFileSettings(inputFiles: CCFile[], withUpdatedPath: boolean = false): FileSettings {
@@ -13,34 +12,9 @@ export class SettingsMerger {
 		this.resetVariables()
 
 		for (let inputFile of inputFiles) {
-			this.setEdges(inputFile, withUpdatedPath)
 			this.setMarkedPackage(inputFile, withUpdatedPath)
 		}
 		return this.getNewFileSettings()
-	}
-
-	private static setEdges(inputFile: CCFile, withUpdatedPath: boolean) {
-		if (inputFile.settings.fileSettings.edges) {
-			for (let oldEdge of inputFile.settings.fileSettings.edges) {
-				let edge: Edge = {
-					fromNodeName: withUpdatedPath
-						? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
-						: oldEdge.fromNodeName,
-					toNodeName: withUpdatedPath ? this.getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
-					attributes: oldEdge.attributes,
-					visible: oldEdge.visible
-				}
-				const equalEdgeItem = this.edges.find(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
-
-				if (equalEdgeItem) {
-					for (let key in edge.attributes) {
-						equalEdgeItem.attributes[key] = edge.attributes[key]
-					}
-				} else {
-					this.edges.push(edge)
-				}
-			}
-		}
 	}
 
 	private static setMarkedPackage(inputFile: CCFile, withUpdatedPath: boolean) {
@@ -79,19 +53,17 @@ export class SettingsMerger {
 
 	private static getNewFileSettings(): FileSettings {
 		return {
-			edges: this.edges,
 			markedPackages: this.markedPackages
 		} as FileSettings
 	}
 
-	private static getUpdatedPath(fileName: string, path: string): string {
+	public static getUpdatedPath(fileName: string, path: string): string {
 		const folderArray = path.split("/")
 		folderArray.splice(2, 0, fileName)
 		return folderArray.join("/")
 	}
 
 	private static resetVariables() {
-		this.edges = []
 		this.markedPackages = []
 	}
 }
