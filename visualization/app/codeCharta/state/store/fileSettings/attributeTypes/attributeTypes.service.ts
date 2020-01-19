@@ -12,7 +12,7 @@ export class AttributeTypesService implements StoreSubscriber {
 	private static ATTRIBUTE_TYPES_CHANGED_EVENT = "attribute-types-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {

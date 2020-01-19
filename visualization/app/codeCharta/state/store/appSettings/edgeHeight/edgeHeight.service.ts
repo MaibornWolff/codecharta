@@ -11,7 +11,7 @@ export class EdgeHeightService implements StoreSubscriber {
 	private static EDGE_HEIGHT_CHANGED_EVENT = "edge-height-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {

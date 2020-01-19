@@ -22,9 +22,9 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	private searchedNodeLeaves: CodeMapNode[] = []
 
-	constructor($rootScope: IRootScopeService) {
-		NodeSearchService.subscribe($rootScope, this)
-		BlacklistService.subscribe($rootScope, this)
+	constructor(private $rootScope: IRootScopeService) {
+		NodeSearchService.subscribe(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
 	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {

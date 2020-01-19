@@ -11,7 +11,7 @@ export class AmountOfEdgePreviewsService implements StoreSubscriber {
 	private static AMOUNT_OF_EDGE_PREVIEWS_CHANGED_EVENT = "amount-of-edge-previews-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
