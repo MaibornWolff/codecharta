@@ -3,16 +3,13 @@ import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
 import _ from "lodash"
-import {
-	AreaMetricSubscriber,
-	HeightMetricSubscriber,
-	ColorMetricSubscriber,
-	EdgeMetricSubscriber
-} from "../../state/settingsService/settings.service.events"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "./attributeSideBar.service"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
+import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 
 export interface PrimaryMetrics {
 	node: {
@@ -54,10 +51,10 @@ export class AttributeSideBarController
 		private attributeSideBarService: AttributeSideBarService
 	) {
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
-		SettingsService.subscribeToAreaMetric(this.$rootScope, this)
-		SettingsService.subscribeToHeightMetric(this.$rootScope, this)
-		SettingsService.subscribeToColorMetric(this.$rootScope, this)
-		SettingsService.subscribeToEdgeMetric(this.$rootScope, this)
+		AreaMetricService.subscribe(this.$rootScope, this)
+		HeightMetricService.subscribe(this.$rootScope, this)
+		ColorMetricService.subscribe(this.$rootScope, this)
+		EdgeMetricService.subscribe(this.$rootScope, this)
 		AttributeSideBarService.subscribe(this.$rootScope, this)
 	}
 

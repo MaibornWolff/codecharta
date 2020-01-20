@@ -1,22 +1,17 @@
 import "./dialog.module"
 import "../codeMap/codeMap.module"
 import { DialogDownloadController, DownloadCheckboxNames } from "./dialog.download.component"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { FileStateService } from "../../state/fileState.service"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { Settings, AttributeTypes, AttributeTypeValue } from "../../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue } from "../../codeCharta.model"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { stubDate } from "../../../../mocks/dateMock.helper"
-import {
-	DEFAULT_SETTINGS,
-	FILE_STATES,
-	VALID_NODE_WITH_PATH_AND_EXTENSION,
-	FILE_META,
-	VALID_EDGES,
-	BLACKLIST,
-	MARKED_PACKAGES
-} from "../../util/dataMocks"
-import _ from "lodash"
+import { FILE_STATES, VALID_NODE_WITH_PATH_AND_EXTENSION, FILE_META, VALID_EDGES, BLACKLIST, MARKED_PACKAGES } from "../../util/dataMocks"
+import { StoreService } from "../../state/store.service"
+import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
+import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 
 describe("DialogDownloadController", () => {
 	stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
@@ -25,13 +20,11 @@ describe("DialogDownloadController", () => {
 	let dialogDownloadController: DialogDownloadController
 	let $mdDialog
 	let codeMapPreRenderService: CodeMapPreRenderService
-	let settingsService: SettingsService
+	let storeService: StoreService
 	let fileStateService: FileStateService
-	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
-		withMockedSettingsService()
 		withMockedFileStateService()
 		withMockedCodeMapPreRenderService()
 		rebuildController()
@@ -42,14 +35,12 @@ describe("DialogDownloadController", () => {
 
 		$mdDialog = getService("$mdDialog")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-		settingsService = getService<SettingsService>("settingsService")
+		storeService = getService<StoreService>("storeService")
 		fileStateService = getService<FileStateService>("fileStateService")
-
-		settings = _.cloneDeep(DEFAULT_SETTINGS)
 	}
 
 	function rebuildController() {
-		dialogDownloadController = new DialogDownloadController($mdDialog, codeMapPreRenderService, settingsService, fileStateService)
+		dialogDownloadController = new DialogDownloadController($mdDialog, codeMapPreRenderService, storeService, fileStateService)
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -61,18 +52,11 @@ describe("DialogDownloadController", () => {
 		})()
 	}
 
-	function withMockedSettingsService(mockSettings: Settings = settings) {
-		settingsService = jest.fn<SettingsService>(() => {
-			return {
-				getSettings: jest.fn().mockReturnValue(mockSettings)
-			}
-		})()
-	}
-
 	function withMockedFileStateService() {
 		fileStateService = jest.fn<FileStateService>(() => {
 			return {
-				getFileStates: jest.fn().mockReturnValue(FILE_STATES)
+				getFileStates: jest.fn().mockReturnValue(FILE_STATES),
+				isDeltaState: jest.fn().mockReturnValue(false)
 			}
 		})()
 	}
@@ -96,8 +80,7 @@ describe("DialogDownloadController", () => {
 
 		describe("amountOfAttributeTypes", () => {
 			it("should set correct amountOfAttributeTypes with no attributeTypes available", () => {
-				settings.fileSettings.attributeTypes = {} as AttributeTypes
-				withMockedSettingsService(settings)
+				storeService.dispatch(setAttributeTypes())
 
 				rebuildController()
 
@@ -105,7 +88,7 @@ describe("DialogDownloadController", () => {
 			})
 
 			it("should set correct amountOfAttributeTypes with attributeTypes available", () => {
-				settings.fileSettings.attributeTypes = {
+				const attributeTypes: AttributeTypes = {
 					nodes: [
 						{ metric1: AttributeTypeValue.relative },
 						{ metric2: AttributeTypeValue.absolute },
@@ -113,7 +96,7 @@ describe("DialogDownloadController", () => {
 					],
 					edges: [{ metric4: AttributeTypeValue.absolute }, { metric5: AttributeTypeValue.relative }]
 				}
-				withMockedSettingsService(settings)
+				storeService.dispatch(setAttributeTypes(attributeTypes))
 
 				rebuildController()
 
@@ -124,9 +107,7 @@ describe("DialogDownloadController", () => {
 		describe("fileContent edges", () => {
 			describe("no edge available", () => {
 				beforeEach(() => {
-					settings.fileSettings.edges = []
-					withMockedSettingsService(settings)
-
+					storeService.dispatch(setEdges())
 					rebuildController()
 				})
 
@@ -145,9 +126,7 @@ describe("DialogDownloadController", () => {
 
 			describe("with edges available", () => {
 				beforeEach(() => {
-					settings.fileSettings.edges = VALID_EDGES
-					withMockedSettingsService(settings)
-
+					storeService.dispatch(setEdges(VALID_EDGES))
 					rebuildController()
 				})
 
@@ -168,9 +147,7 @@ describe("DialogDownloadController", () => {
 		describe("fileContent excludes", () => {
 			describe("no excludes available", () => {
 				beforeEach(() => {
-					settings.fileSettings.blacklist = []
-					withMockedSettingsService(settings)
-
+					storeService.dispatch(setBlacklist())
 					rebuildController()
 				})
 
@@ -189,9 +166,7 @@ describe("DialogDownloadController", () => {
 
 			describe("with excludes available", () => {
 				beforeEach(() => {
-					settings.fileSettings.blacklist = BLACKLIST
-					withMockedSettingsService(settings)
-
+					storeService.dispatch(setBlacklist(BLACKLIST))
 					rebuildController()
 				})
 
@@ -212,9 +187,7 @@ describe("DialogDownloadController", () => {
 		describe("fileContent hides", () => {
 			describe("no flattens available", () => {
 				beforeEach(() => {
-					settings.fileSettings.blacklist = []
-					withMockedSettingsService(settings)
-
+					storeService.dispatch(setBlacklist())
 					rebuildController()
 				})
 
@@ -233,8 +206,7 @@ describe("DialogDownloadController", () => {
 
 			describe("with flattens available", () => {
 				beforeEach(() => {
-					settings.fileSettings.blacklist = BLACKLIST
-					withMockedSettingsService(settings)
+					storeService.dispatch(setBlacklist(BLACKLIST))
 
 					rebuildController()
 				})
@@ -256,9 +228,7 @@ describe("DialogDownloadController", () => {
 		describe("fileContent markedPackages", () => {
 			describe("no markedPackages available", () => {
 				beforeEach(() => {
-					settings.fileSettings.markedPackages = []
-					withMockedSettingsService(settings)
-
+					storeService.dispatch(setMarkedPackages())
 					rebuildController()
 				})
 
@@ -277,9 +247,7 @@ describe("DialogDownloadController", () => {
 
 			describe("with markedPackages available", () => {
 				beforeEach(() => {
-					settings.fileSettings.markedPackages = MARKED_PACKAGES
-					withMockedSettingsService(settings)
-
+					storeService.dispatch(setMarkedPackages(MARKED_PACKAGES))
 					rebuildController()
 				})
 

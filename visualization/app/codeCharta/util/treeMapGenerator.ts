@@ -2,7 +2,7 @@ import * as d3 from "d3"
 import { hierarchy, HierarchyNode, TreemapLayout } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
-import { CodeMapNode, BlacklistType, Settings, MetricData, Node } from "../codeCharta.model"
+import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
 
 export interface SquarifiedValuedCodeMapNode {
 	data: CodeMapNode
@@ -19,22 +19,22 @@ export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
 	private static HEIGHT_DIVISOR = 1
 
-	public static createTreemapNodes(map: CodeMapNode, s: Settings, metricData: MetricData[], isDeltaState: boolean): Node[] {
+	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
 		const squarifiedTreeMap: SquarifiedValuedCodeMapNode = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
-		const heightScale = (s.treeMapSettings.mapSize * 2) / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
+		const heightScale = (s.treeMap.mapSize * 2) / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
 		const nodesAsArray: SquarifiedValuedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
 			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState)
 		})
 	}
 
-	private static getSquarifiedTreeMap(map: CodeMapNode, s: Settings): SquarifiedValuedCodeMapNode {
+	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedValuedCodeMapNode {
 		let hierarchy: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(map)
 		const nodeLeafs: CodeMapNode[] = hierarchy.descendants().map(d => d.data)
 		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs, s.fileSettings.blacklist)
 		const nodesPerSide: number = 2 * Math.sqrt(hierarchy.descendants().length - blacklisted)
-		const mapLength: number = s.treeMapSettings.mapSize * 2 + nodesPerSide * s.dynamicSettings.margin
+		const mapLength: number = s.treeMap.mapSize * 2 + nodesPerSide * s.dynamicSettings.margin
 		const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
 		let treeMap: TreemapLayout<CodeMapNode> = d3
 			.treemap<CodeMapNode>()
@@ -61,11 +61,11 @@ export class TreeMapGenerator {
 		return node
 	}
 
-	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: Settings): boolean {
+	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State): boolean {
 		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
 
-	private static calculateValue(node: CodeMapNode, s: Settings): number {
+	private static calculateValue(node: CodeMapNode, s: State): number {
 		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
 			return 0
 		}

@@ -4,11 +4,8 @@ import { ThreeCameraService } from "./threeCameraService"
 import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
-import { SettingsService } from "../../../state/settingsService/settings.service"
 import { ThreeViewerService } from "./threeViewerService"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { Settings } from "../../../codeCharta.model"
-import { SETTINGS } from "../../../util/dataMocks"
 import * as THREE from "three"
 import { OrbitControls, Scene } from "three"
 
@@ -19,17 +16,14 @@ describe("ThreeViewerService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let threeRendererService: ThreeRendererService
 	let threeUpdateCycleService: ThreeUpdateCycleService
-	let settingsService: SettingsService
 
 	let element: Element
-	let settings: Settings
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		withMockedElement()
 		withMockedThreeCameraService()
-		withMockedSettingsService()
 		withMockedThreeRendererService()
 		withMockedThreeOrbitControlsService()
 	})
@@ -42,9 +36,6 @@ describe("ThreeViewerService", () => {
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 		threeRendererService = getService<ThreeRendererService>("threeRendererService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
-		settingsService = getService<SettingsService>("settingsService")
-
-		settings = JSON.parse(JSON.stringify(SETTINGS))
 	}
 
 	function rebuildService() {
@@ -53,8 +44,7 @@ describe("ThreeViewerService", () => {
 			threeCameraService,
 			threeOrbitControlsService,
 			threeRendererService,
-			threeUpdateCycleService,
-			settingsService
+			threeUpdateCycleService
 		)
 	}
 
@@ -82,12 +72,6 @@ describe("ThreeViewerService", () => {
 		threeCameraService = threeViewerService["threeCameraService"] = jest.fn().mockReturnValue({ init: jest.fn() })()
 	}
 
-	function withMockedSettingsService() {
-		settingsService = threeViewerService["settingsService"] = jest
-			.fn()
-			.mockReturnValue({ getSettings: jest.fn().mockReturnValue(settings) })()
-	}
-
 	function withMockedThreeRendererService() {
 		threeRendererService = threeViewerService["threeRendererService"] = jest.fn().mockReturnValue({ init: jest.fn() })()
 	}
@@ -108,13 +92,13 @@ describe("ThreeViewerService", () => {
 		it("should init threeCameraService", () => {
 			threeViewerService.init(element)
 
-			expect(threeCameraService.init).toHaveBeenCalledWith(1024, 768, 0, 300, 1000)
+			expect(threeCameraService.init).toHaveBeenCalledWith(1024, 768)
 		})
 
 		it("should init threeCameraService", () => {
 			threeViewerService.init(element)
 
-			expect(threeCameraService.init).toHaveBeenCalledWith(1024, 768, 0, 300, 1000)
+			expect(threeCameraService.init).toHaveBeenCalledWith(1024, 768)
 		})
 
 		it("should call camera.lookAt", () => {

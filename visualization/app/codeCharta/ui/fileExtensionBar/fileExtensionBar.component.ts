@@ -1,12 +1,10 @@
 import "./fileExtensionBar.component.scss"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class FileExtensionBarController implements CodeMapPreRenderServiceSubscriber {
 	private _viewModel: {
@@ -20,12 +18,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	/* @ngInject */
-	constructor(
-		private $rootScope: IRootScopeService,
-		private settingsService: SettingsService,
-		private storeService: StoreService,
-		private threeSceneService: ThreeSceneService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
@@ -35,37 +28,29 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.potentiallyAddNoneExtension()
 	}
 
-	public highlightBarHoveredBuildings(extension: string) {
+	public onHoverFileExtensionBar(hoveredExtension: string) {
 		const buildings = this.threeSceneService
 			.getMapMesh()
 			.getMeshDescription()
 			.buildings.filter(building => building.node.isLeaf)
-		if (extension === "other") {
-			this.highlightBuildingsSummarizedInOtherDistribution(buildings)
-		} else {
-			buildings.forEach(building => {
-				if (FileExtensionCalculator.estimateFileExtension(building.node.name) === extension) {
-					this.threeSceneService.addBuildingToHighlightingList(building)
-				}
-			})
-		}
 
-		this.threeSceneService.highlightBuildings()
-	}
-
-	private highlightBuildingsSummarizedInOtherDistribution(mapBuildings: CodeMapBuilding[]) {
-		const visibleDistributionEndings: string[] = this._viewModel.distribution
+		const visibleFileExtensions: string[] = this._viewModel.distribution
 			.filter(metric => metric.fileExtension !== "other")
 			.map(metric => metric.fileExtension)
 
-		mapBuildings.forEach(building => {
-			if (!visibleDistributionEndings.includes(FileExtensionCalculator.estimateFileExtension(building.node.name))) {
+		buildings.forEach(building => {
+			const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
+			if (
+				buildingExtension === hoveredExtension ||
+				(hoveredExtension === "other" && !visibleFileExtensions.includes(buildingExtension))
+			) {
 				this.threeSceneService.addBuildingToHighlightingList(building)
 			}
 		})
+		this.threeSceneService.highlightBuildings()
 	}
 
-	public clearHighlightedBarHoveredBuildings() {
+	public onUnhoverFileExtensionBar() {
 		this.threeSceneService.clearHighlight()
 	}
 
@@ -78,7 +63,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	private setNewDistribution(map: CodeMapNode) {
-		const distributionMetric = this.settingsService.getSettings().dynamicSettings.distributionMetric
+		const distributionMetric = this.storeService.getState().dynamicSettings.distributionMetric
 		const blacklist = this.storeService.getState().fileSettings.blacklist
 		this._viewModel.distribution = FileExtensionCalculator.getMetricDistribution(map, distributionMetric, blacklist)
 	}

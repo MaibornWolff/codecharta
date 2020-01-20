@@ -71,7 +71,6 @@ describe("FileStateService", () => {
 
 			expect(result).toEqual([{ file: file1, selectedAs: FileSelectionState.None }])
 			expect(result.length).toBe(1)
-			expect(fileStateService["$rootScope"].$broadcast).toBeCalledWith(FileStateService["IMPORTED_FILES_CHANGED_EVENT"], result)
 		})
 	})
 
@@ -135,13 +134,27 @@ describe("FileStateService", () => {
 		it("should broadcast a FILE_STATE_CHANGED_EVENT", () => {
 			fileStateService.setSingle(file1)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-selection-states-changed", fileStateService.getFileStates())
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
 		})
 
 		it("should call updateLoadingMapFlag", () => {
 			fileStateService.setSingle(file1)
 
 			expect(loadingStatusService.updateLoadingMapFlag).toHaveBeenCalledWith(true)
+		})
+	})
+
+	describe("setSingleByName", () => {
+		it("should set FileSelectionStates correctly", () => {
+			fileStateService["fileStates"] = [
+				{ file: file1, selectedAs: FileSelectionState.None },
+				{ file: file2, selectedAs: FileSelectionState.Single }
+			]
+
+			fileStateService.setSingleByName("fileA")
+
+			expect(fileStateService.getFileStates()[0].selectedAs).toEqual(FileSelectionState.Single)
+			expect(fileStateService.getFileStates()[1].selectedAs).toEqual(FileSelectionState.None)
 		})
 	})
 
@@ -183,7 +196,23 @@ describe("FileStateService", () => {
 		it("should broadcast a FILE_STATE_CHANGED_EVENT", () => {
 			fileStateService.setDelta(file1, file2)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-selection-states-changed", fileStateService.getFileStates())
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
+		})
+	})
+
+	describe("setDeltaByNames", () => {
+		it("should set FileSelectionStates correctly", () => {
+			fileStateService["fileStates"] = [
+				{ file: file1, selectedAs: FileSelectionState.None },
+				{ file: file2, selectedAs: FileSelectionState.Single },
+				{ file: file2, selectedAs: FileSelectionState.None }
+			]
+
+			fileStateService.setDeltaByNames("fileB", "fileA")
+
+			expect(fileStateService.getFileStates()[0].selectedAs).toEqual(FileSelectionState.Comparison)
+			expect(fileStateService.getFileStates()[1].selectedAs).toEqual(FileSelectionState.Reference)
+			expect(fileStateService.getFileStates()[2].selectedAs).toEqual(FileSelectionState.None)
 		})
 	})
 
@@ -215,7 +244,52 @@ describe("FileStateService", () => {
 		it("should broadcast a FILE_STATE_CHANGED_EVENT", () => {
 			fileStateService.setMultiple([file1, file2])
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-selection-states-changed", fileStateService.getFileStates())
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
+		})
+	})
+
+	describe("setMultipleByNames", () => {
+		it("should set FileSelectionStates correctly", () => {
+			fileStateService["fileStates"] = [
+				{ file: file1, selectedAs: FileSelectionState.None },
+				{ file: file2, selectedAs: FileSelectionState.Single }
+			]
+
+			fileStateService.setMultipleByNames(["fileB", "fileA"])
+
+			expect(fileStateService.getFileStates()[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(fileStateService.getFileStates()[1].selectedAs).toEqual(FileSelectionState.Partial)
+		})
+	})
+
+	describe("fileStatesAvailable", () => {
+		it("should be false if no file states available", () => {
+			fileStateService["fileStates"] = []
+
+			expect(fileStateService.fileStatesAvailable()).toBeFalsy()
+		})
+
+		it("should be true if file states are available", () => {
+			fileStateService["fileStates"] = [{ file: file1, selectedAs: FileSelectionState.None }]
+
+			expect(fileStateService.fileStatesAvailable()).toBeTruthy()
+		})
+	})
+
+	describe("isDeltaState", () => {
+		it("should be false if not delta state", () => {
+			fileStateService["fileStates"] = [{ file: file1, selectedAs: FileSelectionState.None }]
+
+			expect(fileStateService.isDeltaState()).toBeFalsy()
+		})
+
+		it("should be true if delta state", () => {
+			fileStateService["fileStates"] = [
+				{ file: file1, selectedAs: FileSelectionState.Reference },
+				{ file: file1, selectedAs: FileSelectionState.Comparison }
+			]
+
+			expect(fileStateService.isDeltaState()).toBeTruthy()
 		})
 	})
 
@@ -223,7 +297,7 @@ describe("FileStateService", () => {
 		it("should setup two event listeners", () => {
 			FileStateService.subscribe($rootScope, undefined)
 
-			expect($rootScope.$on).toHaveBeenCalledTimes(2)
+			expect($rootScope.$on).toHaveBeenCalledTimes(1)
 		})
 	})
 })

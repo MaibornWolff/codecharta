@@ -24,8 +24,7 @@ export class PresentationModeButtonController implements IsPresentationModeSubsc
 	}
 
 	public toggleMode() {
-		this._viewModel.isEnabled = !this._viewModel.isEnabled
-		this.storeService.dispatch(setPresentationMode(this._viewModel.isEnabled))
+		this.storeService.dispatch(setPresentationMode(!this._viewModel.isEnabled))
 	}
 }
 

@@ -37,7 +37,7 @@ import java.util.*
 /**
  * creates Projects from List of VersionControlledFiles
  */
-class ProjectConverter(private val containsAuthors: Boolean, private val projectName: String) {
+class ProjectConverter(private val containsAuthors: Boolean) {
 
     private val ROOT_PREFIX = "/root/"
 
@@ -67,7 +67,7 @@ class ProjectConverter(private val containsAuthors: Boolean, private val project
     }
 
     fun convert(versionControlledFiles: List<VersionControlledFile>): Project {
-        val projectBuilder = ProjectBuilder(projectName)
+        val projectBuilder = ProjectBuilder()
 
         versionControlledFiles
                 .filter { vc -> !vc.markedDeleted() }

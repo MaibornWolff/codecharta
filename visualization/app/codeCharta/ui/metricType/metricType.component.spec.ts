@@ -3,24 +3,24 @@ import { MetricTypeController } from "./metricType.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { IRootScopeService } from "angular"
-import { SettingsService } from "../../state/settingsService/settings.service"
-import { AttributeTypeValue, Settings } from "../../codeCharta.model"
-import { SETTINGS } from "../../util/dataMocks"
+import { AttributeTypeValue } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { StoreService } from "../../state/store.service"
+import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 
 describe("MetricTypeController", () => {
 	let metricTypeController: MetricTypeController
 	let $rootScope: IRootScopeService
 	let metricService: MetricService
-	let settingsService: SettingsService
-
-	let settings: Settings
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
 	})
 
 	function restartSystem() {
@@ -28,47 +28,42 @@ describe("MetricTypeController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		metricService = getService<MetricService>("metricService")
-		settingsService = getService<SettingsService>("settingsService")
-
-		settings = JSON.parse(JSON.stringify(SETTINGS))
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		metricTypeController = new MetricTypeController($rootScope, metricService, settingsService)
-	}
-
-	function withMockedSettingsService() {
-		settingsService = metricTypeController["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(settings)
-		})()
+		metricTypeController = new MetricTypeController($rootScope, metricService, storeService)
 	}
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			SettingsService.subscribeToAreaMetric = jest.fn()
-			SettingsService.subscribeToHeightMetric = jest.fn()
-			SettingsService.subscribeToColorMetric = jest.fn()
-			SettingsService.subscribeToEdgeMetric = jest.fn()
+			AreaMetricService.subscribe = jest.fn()
+			HeightMetricService.subscribe = jest.fn()
+			ColorMetricService.subscribe = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 		})
 
 		it("should subscribe to Metric-Events", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribeToAreaMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
-			expect(SettingsService.subscribeToHeightMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
-			expect(SettingsService.subscribeToColorMetric).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 
 		it("should subscribe to CodeMapMouseEventService", () => {
 			rebuildController()
 
 			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 	})
 
 	describe("onAreaMetricChanged", () => {
 		it("should set the areaMetricType to absolute", () => {
+			storeService.dispatch(setAttributeTypes({ nodes: [{ rloc: AttributeTypeValue.absolute }], edges: [] }))
+
 			metricTypeController.onAreaMetricChanged("rloc")
 
 			expect(metricTypeController["_viewModel"].areaMetricType).toBe(AttributeTypeValue.absolute)
@@ -77,6 +72,8 @@ describe("MetricTypeController", () => {
 
 	describe("onHeightMetricChanged", () => {
 		it("should set the heightMetricType to absolute", () => {
+			storeService.dispatch(setAttributeTypes({ nodes: [{ mcc: AttributeTypeValue.absolute }], edges: [] }))
+
 			metricTypeController.onHeightMetricChanged("mcc")
 
 			expect(metricTypeController["_viewModel"].heightMetricType).toBe(AttributeTypeValue.absolute)
@@ -85,6 +82,8 @@ describe("MetricTypeController", () => {
 
 	describe("onColorMetricChanged", () => {
 		it("should set the colorMetricType to relative", () => {
+			storeService.dispatch(setAttributeTypes({ nodes: [{ coverage: AttributeTypeValue.relative }], edges: [] }))
+
 			metricTypeController.onColorMetricChanged("coverage")
 
 			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeTypeValue.relative)

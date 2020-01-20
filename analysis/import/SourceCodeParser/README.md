@@ -60,7 +60,6 @@ The resulting project has the project name specified for the SourceCodeParser.
 - -h, --help
 - -i, --noIssues (do not search for sonar issues)
 - -o, --outputFile=\<outputFile> (file to write output to, if empty stdout is used)
-- -p, --projectName=\<projectName>
 - -v, --verbose
 
 ## Sonar Plugins

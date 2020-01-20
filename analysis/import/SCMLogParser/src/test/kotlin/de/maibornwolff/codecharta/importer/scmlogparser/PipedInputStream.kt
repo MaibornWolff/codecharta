@@ -12,7 +12,7 @@ class PipedInputStream {
 
     private fun getResultString(): String {
         val input = File("src/test/resources/cc_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
-        return executeForOutput(input, arrayOf(resource, "--input-format=GIT_LOG_NUMSTAT", "-p=FooProject"))
+        return executeForOutput(input, arrayOf(resource, "--input-format=GIT_LOG_NUMSTAT"))
     }
 
 
@@ -29,13 +29,6 @@ class PipedInputStream {
         assertThat(output).contains(
                 """"name":"FooBar.java"""",
                 """"coverage":0.0"""
-        )
-    }
-
-    @Test
-    fun `json output does have project name of current project`() {
-        assertThat(output).contains(
-                """"projectName":"FooProject""""
         )
     }
 

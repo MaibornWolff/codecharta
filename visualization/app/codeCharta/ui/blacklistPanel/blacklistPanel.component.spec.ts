@@ -1,76 +1,72 @@
 import "./blacklistPanel.module"
-
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { BlacklistPanelController } from "./blacklistPanel.component"
-import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { BlacklistType, BlacklistItem, SearchPanelMode } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { StoreService } from "../../state/store.service"
 
 describe("blacklistController", () => {
 	let blacklistPanelController: BlacklistPanelController
-	let blacklistItem: BlacklistItem
-
-	let services
+	let $rootScope: IRootScopeService
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
-		mockBlacklistElement()
 		rebuildController()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.blacklistPanel")
 
-		const CodeMapActionsServiceMock = jest.fn<CodeMapActionsService>(() => ({
-			removeBlacklistEntry: jest.fn()
-		}))
-
-		services = {
-			$rootScope: getService<IRootScopeService>("$rootScope"),
-			settingsService: getService<SettingsService>("settingsService"),
-			codeMapActionsService: new CodeMapActionsServiceMock()
-		}
-	}
-
-	function mockBlacklistElement() {
-		blacklistItem = { path: "/root", type: BlacklistType.exclude }
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		blacklistPanelController = new BlacklistPanelController(services.codeMapActionsService, services.$rootScope)
+		blacklistPanelController = new BlacklistPanelController($rootScope, storeService)
 	}
 
-	function getFilteredBlacklistBy(blacklistItem) {
-		if (services.settingsService.settings.fileSettings.blacklist) {
-			return services.settingsService.settings.fileSettings.blacklist.filter(item => {
-				return item.path == blacklistItem.path && item.type == blacklistItem.type
-			})
-		} else {
-			return []
-		}
-	}
+	describe("onBlacklistChanged", () => {
+		it("should set new excluded nodes", () => {
+			const blacklist: BlacklistItem[] = [
+				{ path: "/root", type: BlacklistType.exclude },
+				{ path: "/root/file", type: BlacklistType.flatten }
+			]
 
-	it("add and call includingNode function when removing blacklist entry", () => {
-		services.settingsService.settings.fileSettings.blacklist.push(blacklistItem)
-		expect(getFilteredBlacklistBy({ path: "/root", type: BlacklistType.exclude })).toHaveLength(1)
+			blacklistPanelController.onBlacklistChanged(blacklist)
 
-		blacklistPanelController.removeBlacklistEntry(blacklistItem)
-		expect(services.codeMapActionsService.removeBlacklistEntry).toHaveBeenCalledWith({ path: "/root", type: "exclude" })
+			expect(blacklistPanelController["_viewModel"].exclude).toEqual([blacklist[0]])
+		})
+
+		it("should set new flattened nodes", () => {
+			const blacklist: BlacklistItem[] = [
+				{ path: "/root", type: BlacklistType.exclude },
+				{ path: "/root/file", type: BlacklistType.flatten }
+			]
+
+			blacklistPanelController.onBlacklistChanged(blacklist)
+
+			expect(blacklistPanelController["_viewModel"].flatten).toEqual([blacklist[1]])
+		})
 	})
 
-	it("update local blacklist with settingsService onBlacklistChanged", () => {
-		blacklistPanelController.onBlacklistChanged([blacklistItem])
+	describe("onSearchPanelModeChanged", () => {
+		it("should set new searchPanelMode", () => {
+			blacklistPanelController.onSearchPanelModeChanged(SearchPanelMode.minimized)
 
-		expect(blacklistPanelController["_viewModel"].exclude).toEqual([blacklistItem])
-		expect(blacklistPanelController["_viewModel"].flatten).toEqual([])
+			expect(blacklistPanelController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.minimized)
+		})
 	})
 
-	it("update local searchPanelMode onSearchPanelModeChanged", () => {
-		let searchPanelMode = SearchPanelMode.flatten
+	describe("removeBlacklistEntry", () => {
+		it("should remove blacklist entry", () => {
+			storeService.dispatch(addBlacklistItem({ path: "/some/leaf", type: BlacklistType.exclude }))
+			const entry = { path: "/some/leaf", type: BlacklistType.exclude }
 
-		blacklistPanelController.onSearchPanelModeChanged(searchPanelMode)
+			blacklistPanelController.removeBlacklistEntry(entry)
 
-		expect(blacklistPanelController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.flatten)
+			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(entry)
+		})
 	})
 })

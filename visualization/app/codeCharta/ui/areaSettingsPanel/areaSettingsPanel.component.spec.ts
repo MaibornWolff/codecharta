@@ -2,228 +2,113 @@ import "./areaSettingsPanel.module"
 import "../codeMap/codeMap.module"
 import "../../codeCharta.module"
 import { AreaSettingsPanelController } from "./areaSettingsPanel.component"
-import { SETTINGS, TEST_FILE_WITH_PATHS } from "../../util/dataMocks"
 import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { Settings, CodeMapNode } from "../../codeCharta.model"
-import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { SettingsService } from "../../state/settingsService/settings.service"
 import { StoreService } from "../../state/store.service"
+import { DynamicMarginService } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
+import { MarginService } from "../../state/store/dynamicSettings/margin/margin.service"
+import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 
 describe("AreaSettingsPanelController", () => {
-	let $rootScope: IRootScopeService
-	let settingsService: SettingsService
-	let storeService: StoreService
-	let codeMapPreRenderService: CodeMapPreRenderService
 	let areaSettingsPanelController: AreaSettingsPanelController
+	let $rootScope: IRootScopeService
+	let storeService: StoreService
 
-	let settings: Settings
-	let map: CodeMapNode
 	let SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedSettingsService()
-		withMockedCodeMapPreRenderService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.areaSettingsPanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		settingsService = getService<SettingsService>("settingsService")
 		storeService = getService<StoreService>("storeService")
-		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-
-		settings = JSON.parse(JSON.stringify(SETTINGS))
-		map = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS.map))
 	}
 
 	function rebuildController() {
-		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, settingsService, storeService, codeMapPreRenderService)
-	}
-
-	function withMockedSettingsService() {
-		settingsService = areaSettingsPanelController["settingsService"] = jest.fn().mockReturnValue({
-			getSettings: jest.fn().mockReturnValue(settings),
-			updateSettings: jest.fn()
-		})()
-	}
-
-	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = areaSettingsPanelController["codeMapPreRenderService"] = jest.fn().mockReturnValue({
-			getRenderMap: jest.fn().mockReturnValue(map)
-		})()
+		areaSettingsPanelController = new AreaSettingsPanelController($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
-		beforeEach(() => {
-			SettingsService.subscribe = jest.fn()
-			CodeMapPreRenderService.subscribe = jest.fn()
-			FileStateService.subscribe = jest.fn()
-		})
+		it("should subscribe to DynamicMarginService", () => {
+			DynamicMarginService.subscribe = jest.fn()
 
-		it("should subscribe to SettingsService", () => {
 			rebuildController()
 
-			expect(SettingsService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(DynamicMarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
-		it("should subscribe to CodeMapPreRenderService", () => {
+		it("should subscribe to MarginService", () => {
+			MarginService.subscribe = jest.fn()
+
 			rebuildController()
 
-			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(MarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
 		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
 			rebuildController()
 
 			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 	})
 
-	describe("onSettingsChanged", () => {
-		beforeEach(() => {
-			areaSettingsPanelController.applySettings = jest.fn()
-		})
-
+	describe("onDynamicMarginChanged", () => {
 		it("should set the dynamicMargin in viewModel", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+			areaSettingsPanelController.onDynamicMarginChanged(true)
 
 			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
 		})
+	})
 
-		it("should set margin from settings if dynamicMargin is false", () => {
-			settings.appSettings.dynamicMargin = false
-
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(areaSettingsPanelController["_viewModel"].margin).toBe(48)
-		})
-
-		it("should set new calculated margin correctly", () => {
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
+	describe("onMarginChanged", () => {
+		it("should set margin in viewModel", () => {
+			areaSettingsPanelController.onMarginChanged(28)
 
 			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
 		})
-
-		it("should not call applySettings if margin and new calculated margin are the same", () => {
-			settings.dynamicSettings.margin = 28
-
-			areaSettingsPanelController.onSettingsChanged(settings, undefined)
-
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
-		})
 	})
 
-	describe("onRenderFileChange", () => {
-		beforeEach(() => {
-			areaSettingsPanelController.applySettings = jest.fn()
+	describe("onFileStatesChanged", () => {
+		it("should set dynamicMargin to true", () => {
+			areaSettingsPanelController.onFileStatesChanged(undefined)
 
-			areaSettingsPanelController["makeAutoFit"] = true
-			settings.appSettings.dynamicMargin = true
+			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 
-		it("should not call applySettings if dynamicMargin is false", () => {
-			settings.appSettings.dynamicMargin = false
+		it("should update margin and dynamicMargin in store", () => {
+			areaSettingsPanelController.onFileStatesChanged(undefined)
 
-			areaSettingsPanelController.onRenderMapChanged(map)
-
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
-		})
-
-		it("should set new calculated margin correctly", () => {
-			areaSettingsPanelController.onRenderMapChanged(map)
-
-			expect(areaSettingsPanelController["_viewModel"].margin).toBe(28)
-		})
-
-		it("should call applySettings after setting new margin", () => {
-			areaSettingsPanelController.onRenderMapChanged(map)
-
-			expect(areaSettingsPanelController.applySettings).toHaveBeenCalled()
-		})
-
-		it("should not call applySettings if margin and new calculated margin are the same", () => {
-			areaSettingsPanelController["_viewModel"].margin = 28
-
-			areaSettingsPanelController.onRenderMapChanged(map)
-
-			expect(areaSettingsPanelController.applySettings).not.toHaveBeenCalled()
-		})
-	})
-
-	describe("onFileSelectionStatesChanged", () => {
-		it("should set dynamicMargin in viewModel to true", () => {
-			areaSettingsPanelController.onFileSelectionStatesChanged(undefined)
-
-			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeTruthy()
-		})
-
-		it("should update margin and dynamicMargin in settingsService", () => {
-			areaSettingsPanelController.onFileSelectionStatesChanged(undefined)
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith({
-				appSettings: { dynamicMargin: true }
-			})
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 	})
 
 	describe("onChangeMarginSlider", () => {
-		beforeEach(() => {
-			areaSettingsPanelController.applySettings = jest.fn()
-		})
-
-		it("should set dynamicMargin in viewModel to false", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = true
+		it("should set dynamicMargin to false", () => {
+			storeService.dispatch(setDynamicMargin(true))
 
 			areaSettingsPanelController.onChangeMarginSlider()
 
-			expect(areaSettingsPanelController["_viewModel"].dynamicMargin).toBeFalsy()
+			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 
-		it("should call updateSettings", done => {
+		it("should update margin and dynamicMargin in store", done => {
 			areaSettingsPanelController["_viewModel"].dynamicMargin = false
 			areaSettingsPanelController["_viewModel"].margin = 28
-			const expected = { dynamicSettings: { margin: 28 }, appSettings: { dynamicMargin: false } }
 
 			areaSettingsPanelController.onChangeMarginSlider()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
 
 			setTimeout(() => {
 				expect(storeService.getState().dynamicSettings.margin).toEqual(28)
 				expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 				done()
 			}, AreaSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
-		})
-	})
-
-	describe("applySettingsDynamicMargin", () => {
-		it("should call updateSettings with new dynamicMargin value", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = false
-
-			areaSettingsPanelController.applySettingsDynamicMargin()
-
-			expect(settingsService.updateSettings).toBeCalledWith({ appSettings: { dynamicMargin: false } })
-			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
-		})
-	})
-
-	describe("applySettings", () => {
-		it("should call updateSettings", () => {
-			areaSettingsPanelController["_viewModel"].dynamicMargin = false
-			areaSettingsPanelController["_viewModel"].margin = 28
-			const expected = { dynamicSettings: { margin: 28 }, appSettings: { dynamicMargin: false } }
-
-			areaSettingsPanelController.applySettings()
-
-			expect(settingsService.updateSettings).toHaveBeenCalledWith(expected)
-			expect(storeService.getState().dynamicSettings.margin).toEqual(28)
-			expect(storeService.getState().appSettings.dynamicMargin).toBeFalsy()
 		})
 	})
 })

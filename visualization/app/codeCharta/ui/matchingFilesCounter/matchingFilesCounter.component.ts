@@ -3,8 +3,7 @@ import { BlacklistType, BlacklistItem, CodeMapNode } from "../../codeCharta.mode
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
-import { BlacklistSubscriber } from "../../state/settingsService/settings.service.events"
-import { SettingsService } from "../../state/settingsService/settings.service"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class MatchingFilesCounterController implements NodeSearchSubscriber, BlacklistSubscriber {
 	private _viewModel: {
@@ -25,7 +24,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	constructor($rootScope: IRootScopeService) {
 		NodeSearchService.subscribe($rootScope, this)
-		SettingsService.subscribeToBlacklist($rootScope, this)
+		BlacklistService.subscribe($rootScope, this)
 	}
 
 	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
