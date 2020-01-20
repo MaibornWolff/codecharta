@@ -57,34 +57,38 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public getVisibility(icon: String, scenarioName: string) {
+		const lightGray = "#d3d3d3"
 		// TODO: Function to Check if attributes are withing the Scenario
 
 		switch (icon) {
 			case "view": {
-				// TODO: Implement if perspective is saved within the scenario
-				return "black"
+				// TODO: Still Implement if perspective is saved within the scenario
+				if (!this._viewModel.scenarios.find(scenario => scenario.name === scenarioName).settings.appSettings.camera) {
+					return lightGray
+				}
+				break
 			}
 			case "area": {
 				if (!this._viewModel.scenarios.find(scenario => scenario.name === scenarioName).settings.dynamicSettings.areaMetric) {
-					return "#d3d3d3"
+					return lightGray
 				}
 				break
 			}
 			case "color": {
 				if (!this._viewModel.scenarios.find(scenario => scenario.name === scenarioName).settings.dynamicSettings.colorMetric) {
-					return "#d3d3d3"
+					return lightGray
 				}
 				break
 			}
 			case "height": {
 				if (!this._viewModel.scenarios.find(scenario => scenario.name === scenarioName).settings.dynamicSettings.heightMetric) {
-					return "#d3d3d3"
+					return lightGray
 				}
 				break
 			}
 			case "edges": {
 				if (!this._viewModel.scenarios.find(scenario => scenario.name === scenarioName).settings.dynamicSettings.edgeMetric) {
-					return "#d3d3d3"
+					return lightGray
 				}
 				break
 			}
