@@ -9,6 +9,7 @@ import { IRootScopeService } from "angular"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
+import { DialogService } from "../dialog/dialog.service"
 
 export class ScenarioDropDownController implements MetricServiceSubscriber {
 	private _viewModel: {
@@ -23,6 +24,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		private $rootScope: IRootScopeService,
 		private settingsService: SettingsService,
 		private storeService: StoreService,
+		private dialogService: DialogService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		MetricService.subscribe(this.$rootScope, this)
@@ -41,7 +43,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 			this.storeService.dispatch(setState(ScenarioHelper.getScenarioSettingsByName(scenarioName)))
 			this.threeOrbitControlsService.autoFitTo()
 		} else {
-			// TODO: POPUP WITH MESSAGE NOT AVAILABLE METRIC
+			this.dialogService.showErrorDialog("This metric is not appliable, because not all metrics are available for this map.")
 		}
 	}
 
