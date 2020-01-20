@@ -19,7 +19,7 @@ class SubProjectExtractorTest {
 
     @Test
     fun `Non existent path leads to empty project`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject, null)
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
 
         val result = subProjectExtractor.extract("/root/something")
 
@@ -28,7 +28,7 @@ class SubProjectExtractorTest {
 
     @Test
     fun `Single path is extracted`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject, null)
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
 
         val result = subProjectExtractor.extract("root/src/test")
         println(result)
@@ -41,7 +41,7 @@ class SubProjectExtractorTest {
 
     @Test
     fun `Attributes of extracted nodes are kept`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject, null)
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
 
         val result = subProjectExtractor.extract("/root/src/test")
 
@@ -50,26 +50,8 @@ class SubProjectExtractorTest {
     }
 
     @Test
-    fun `Project name is changed if provided`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject, "foo")
-
-        val result = subProjectExtractor.extract("/root/something")
-
-        Assertions.assertThat(result.projectName).isEqualTo("foo")
-    }
-
-    @Test
-    fun `Project name is kept if not provided`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject, null)
-
-        val result = subProjectExtractor.extract("/root/something")
-
-        Assertions.assertThat(result.projectName).isEqualTo(sampleProject.projectName)
-    }
-
-    @Test
     fun `Only edges part of sub-project are kept`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject, null)
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
 
         val result = subProjectExtractor.extract("/root/foo")
 
@@ -79,7 +61,7 @@ class SubProjectExtractorTest {
 
     @Test
     fun `Edges of selected sub-project renamed`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject, null)
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
 
         val result = subProjectExtractor.extract("/root/foo")
 
@@ -91,7 +73,7 @@ class SubProjectExtractorTest {
 
     @Test
     fun `Subproject with no matching edges has no edges`() {
-        val subProjectExtractor = SubProjectExtractor(sampleProject, null)
+        val subProjectExtractor = SubProjectExtractor(sampleProject)
 
         val result = subProjectExtractor.extract("/root/something")
 

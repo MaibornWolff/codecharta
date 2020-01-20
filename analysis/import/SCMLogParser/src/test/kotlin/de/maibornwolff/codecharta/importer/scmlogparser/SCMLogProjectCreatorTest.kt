@@ -36,7 +36,7 @@ class SCMLogProjectCreatorTest(
     }
 
     private val metricsFactory = MetricsFactory()
-    private val projectConverter = ProjectConverter(false, "")
+    private val projectConverter = ProjectConverter(false)
 
     @Test
     @Throws(Exception::class)

@@ -5,7 +5,6 @@ import { BlacklistType, FileSettings, AttributeTypes, FileMeta, CodeMapNode } fr
 import { hierarchy } from "d3-hierarchy"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { FileStateService } from "../../state/fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 
 interface FileDownloadContent {
@@ -90,7 +89,7 @@ export class DialogDownloadController {
 
 	private setFileName() {
 		const fileMeta: FileMeta = this.codeMapPreRenderService.getRenderFileMeta()
-		const isDeltaState: boolean = FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+		const isDeltaState: boolean = this.fileStateService.isDeltaState()
 		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState)
 	}
 

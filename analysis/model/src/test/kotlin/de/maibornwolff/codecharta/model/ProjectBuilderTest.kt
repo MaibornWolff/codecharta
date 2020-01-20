@@ -38,7 +38,7 @@ import org.spekframework.spek2.style.specification.describe
 class ProjectBuilderTest: Spek({
 
     describe("ProjectBuilder without root node") {
-        val projectBuilder = ProjectBuilder("someName")
+        val projectBuilder = ProjectBuilder()
 
         context("inserting new node") {
             val nodeForInsertion = MutableNode("someNode", NodeType.File)
@@ -54,7 +54,7 @@ class ProjectBuilderTest: Spek({
 
     describe("ProjectBuilder with root node") {
         val root = MutableNode("root", NodeType.Folder)
-        val projectBuilder = ProjectBuilder("someName", listOf(root))
+        val projectBuilder = ProjectBuilder(listOf(root))
 
         context("inserting new node") {
             val nodeForInsertion = MutableNode("someNode", NodeType.File)
@@ -70,7 +70,7 @@ class ProjectBuilderTest: Spek({
     }
 
     describe("ProjectBuilder with empty folders") {
-        val projectBuilder = ProjectBuilder("someName")
+        val projectBuilder = ProjectBuilder()
         val nodeForInsertion = MutableNode("someNode", NodeType.Folder)
         projectBuilder.insertByPath(Path.trivialPath(), nodeForInsertion)
 

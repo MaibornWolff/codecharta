@@ -22,7 +22,7 @@ $CCSH modify --setRoot /root/visualization -o codecharta_git_mod.cc.json codecha
 $CCSH sonarimport -o codecharta_sonar.cc.json https://sonarcloud.io de.maibornwolff.codecharta:visualization
 $CCSH modify --setRoot /root/de.maibornwolff.codecharta/visualization -o codecharta_sonar_mod.cc.json codecharta_sonar.cc.json
 
-$CCSH merge -o ../visualization/app/codecharta_with_edges.cc.json -p CodeCharta codecharta_sonar_mod.cc.json codecharta_git_mod.cc.json
+$CCSH merge -o ../visualization/app/codecharta_with_edges.cc.json codecharta_sonar_mod.cc.json codecharta_git_mod.cc.json
 
 cd ../..
 rm -r gh-pages/demo_files
