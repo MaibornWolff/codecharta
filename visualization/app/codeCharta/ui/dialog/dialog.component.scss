@@ -12,6 +12,11 @@
 
 	.dialog-list {
 		margin: 5px 0 5px 0;
+
+		&.md-block {
+			display: block;
+			margin-top: 8px;
+		}
 	}
 
 	.filename-input {

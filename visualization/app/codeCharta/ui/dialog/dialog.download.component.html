@@ -11,8 +11,10 @@
 		</md-input-container>
 
 		<p>The file includes:</p>
-		<p class="dialog-list">Nodes ({{ $ctrl._viewModel.amountOfNodes }})</p>
-		<p class="dialog-list">AttributeTypes ({{ $ctrl._viewModel.amountOfAttributeTypes }})</p>
+		<md-checkbox ng-disabled="true" class="dialog-list md-block md-checked ">Nodes ({{ $ctrl._viewModel.amountOfNodes }})</md-checkbox>
+		<md-checkbox ng-disabled="true" class="dialog-list md-block md-checked "
+			>AttributeTypes ({{ $ctrl._viewModel.amountOfAttributeTypes }})</md-checkbox
+		>
 
 		<md-input-container class="input-container md-block" ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
 			<md-checkbox class="dialog-list md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
