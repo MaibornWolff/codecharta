@@ -36,7 +36,7 @@ import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "check",
         description = ["validates cc.json files"],
-        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class ValidationTool: Callable<Void?> {
 
