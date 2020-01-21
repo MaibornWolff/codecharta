@@ -11,7 +11,7 @@ export class IsWhiteBackgroundService implements StoreSubscriber {
 	private static IS_WHITE_BACKGROUND_CHANGED_EVENT = "is-white-background-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
