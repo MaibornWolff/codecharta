@@ -46,10 +46,10 @@ class EdgeFilter: Callable<Void?> {
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["files to filter"])
     private var source: String = ""
 
-    @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
+    @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
     override fun call(): Void? {
