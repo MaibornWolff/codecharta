@@ -11,7 +11,7 @@ export class DownloadButtonStandaloneController {
 }
 
 export const downloadButtonStandaloneComponent = {
-	selector: "downloadButtonStandaloneComponent",
+	selector: "downloadButtonComponent",
 	template: require("./downloadButton.standalone.component.html"),
 	controller: DownloadButtonStandaloneController
 }
