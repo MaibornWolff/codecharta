@@ -78,6 +78,7 @@ export interface FileSettings {
 	blacklist: Array<BlacklistItem>
 	edges: Edge[]
 	markedPackages: MarkedPackage[]
+	files: FileState[]
 }
 
 export interface DynamicSettings {

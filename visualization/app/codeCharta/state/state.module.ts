@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { FilesService } from "./store/fileSettings/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
@@ -45,6 +46,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(FilesService.name), FilesService)
 	.service(_.camelCase(MapSizeService.name), MapSizeService)
 	.service(_.camelCase(MapColorsService.name), MapColorsService)
 	.service(_.camelCase(ResetCameraIfNewFileIsLoadedService.name), ResetCameraIfNewFileIsLoadedService)
