@@ -6,11 +6,9 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 
 const dist = path.resolve(__dirname, "../dist/webpack")
 
-const target = isStandalone() ? "node" : "web"
-
 module.exports = {
 	mode: "development",
-	target,
+	target: isStandalone() ? "node" : "web",
 	entry: "./app/app.ts",
 	output: {
 		filename: "bundle.js",
