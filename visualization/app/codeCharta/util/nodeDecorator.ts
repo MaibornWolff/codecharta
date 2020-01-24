@@ -3,7 +3,6 @@ import * as d3 from "d3"
 import { HierarchyNode } from "d3"
 import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta, EdgeMetricCount, KeyValuePair } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
-import _ from "lodash"
 
 export class NodeDecorator {
 	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, metricData: MetricData[]) {
