@@ -1,26 +1,114 @@
 import { files } from "./files.reducer"
-import { FilesAction, setFiles } from "./files.actions"
+import {
+	addFile,
+	FilesAction,
+	resetFiles,
+	setDelta,
+	setDeltaByName,
+	setFiles,
+	setMultiple,
+	setMultipleByName,
+	setSingle,
+	setSingleByName
+} from "./files.actions"
+import { Files } from "../../../../model/files"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../../util/dataMocks"
 
 describe("files", () => {
+	let state = new Files()
+
+	beforeEach(() => {
+		files(state, resetFiles())
+		files(state, addFile(TEST_DELTA_MAP_A))
+		files(state, addFile(TEST_DELTA_MAP_B))
+	})
+
 	describe("Default State", () => {
 		it("should initialize the default state", () => {
 			const result = files(undefined, {} as FilesAction)
 
-			expect(result).toEqual([])
+			expect(result).toEqual(state)
 		})
 	})
 
 	describe("Action: SET_FILES", () => {
 		it("should set new files", () => {
-			const result = files([], setFiles([]))
+			const newFiles = new Files()
+			newFiles.addFile(TEST_DELTA_MAP_A)
 
-			expect(result).toEqual([])
+			const result = files(state, setFiles(newFiles))
+
+			expect(result).toEqual(newFiles)
 		})
 
 		it("should set default files", () => {
-			const result = files([], setFiles())
+			const result = files(state, setFiles())
 
-			expect(result).toEqual([])
+			expect(result).toEqual(new Files())
+		})
+	})
+
+	describe("Action: RESET_FILES", () => {
+		it("should clear and reset the state", () => {
+			const result = files(state, resetFiles())
+
+			expect(result.getFiles().length).toBe(0)
+		})
+	})
+
+	describe("Action: RESET_SELECTION", () => {
+		it("should clear and reset the state", () => {
+			const result = files(state, resetFiles())
+
+			expect(result.getFiles().length).toBe(0)
+		})
+	})
+
+	describe("Action: SET_SINGLE", () => {
+		it("should select a file to view in single mode", () => {
+			const result = files(state, setSingle(TEST_DELTA_MAP_A))
+
+			expect(result.isSingleState()).toBeTruthy()
+		})
+	})
+
+	describe("Action: SET_SINGLE_BY_NAME", () => {
+		it("should select a file by name to view in single mode", () => {
+			const result = files(state, setSingleByName(TEST_DELTA_MAP_A.fileMeta.fileName))
+
+			expect(result.isSingleState()).toBeTruthy()
+		})
+	})
+
+	describe("Action: SET_DELTA", () => {
+		it("should select a file a file as reference and another as comparison", () => {
+			const result = files(state, setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
+
+			expect(result.isDeltaState()).toBeTruthy()
+		})
+	})
+
+	describe("Action: SET_DELTA_BY_NAME", () => {
+		it("should select a file a file as reference and another as comparison by name", () => {
+			const result = files(state, setDeltaByName(TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName))
+
+			expect(result.isDeltaState()).toBeTruthy()
+		})
+	})
+
+	describe("Action: SET_MULTIPLE", () => {
+		it("should select a file a file as reference and another as comparison", () => {
+			const result = files(state, setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
+
+			expect(result.isPartialState()).toBeTruthy()
+		})
+	})
+
+	describe("Action: SET_MULTIPLE_BY_NAME", () => {
+		it("should select two files by name to view in multiple mode", () => {
+			const result = files(state, setMultipleByName([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]))
+
+			expect(result.isPartialState()).toBeTruthy()
 		})
 	})
 })
