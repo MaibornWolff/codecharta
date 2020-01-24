@@ -186,6 +186,7 @@
 		"pretty-quick": "^1.10.0",
 		"puppeteer": "^1.6.0",
 		"redux": "^4.0.4",
+		"rfdc": "^1.1.4",
 		"rimraf": "^2.6.2",
 		"roboto-fontface": "^0.10.0",
 		"sass-loader": "^7.1.0",

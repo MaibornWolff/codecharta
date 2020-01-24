@@ -16,6 +16,7 @@ import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import _ from "lodash"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
+const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -110,7 +111,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private getSelectedFilesAsUnifiedMap(): CCFile {
-		const fileStates: FileState[] = _.cloneDeep(this.fileStateService.getFileStates())
+		const fileStates: FileState[] = clone(this.fileStateService.getFileStates())
 		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 
 		if (FileStateHelper.isSingleState(fileStates)) {
