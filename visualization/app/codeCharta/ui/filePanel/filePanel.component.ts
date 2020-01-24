@@ -1,5 +1,5 @@
 import "./filePanel.component.scss"
-import { FileSelectionState, FileState } from "../../codeCharta.model"
+import { FileSelectionState, FileState } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"

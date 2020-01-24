@@ -1,5 +1,5 @@
 import { Vector3 } from "three"
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum ScalingActions {
 	SET_SCALING = "SET_SCALING"

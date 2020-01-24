@@ -1,6 +1,6 @@
 import { createStore, Store } from "redux"
 import rootReducer from "./store/reducer"
-import { CCAction, FileSettings, FileState, State } from "../codeCharta.model"
+import { CCAction, FileSettings, FileState, State } from "../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { FileStateService, FileStateSubscriber } from "./fileState.service"

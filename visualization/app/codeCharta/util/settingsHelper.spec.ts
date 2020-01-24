@@ -1,4 +1,4 @@
-import { RecursivePartial, State } from "../codeCharta.model"
+import { RecursivePartial, State } from "../model/codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { Vector3 } from "three"
 

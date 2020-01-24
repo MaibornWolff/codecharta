@@ -1,7 +1,7 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { CCFile, CodeMapNode, FileMeta, FileState, MetricData } from "../../codeCharta.model"
+import { CCFile, CodeMapNode, FileMeta, FileState, MetricData } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FileStateService } from "../../state/fileState.service"

@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../codeCharta.model"
+import { CodeMapNode } from "../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import * as d3 from "d3"
 import { CodeMapHelper } from "../util/codeMapHelper"

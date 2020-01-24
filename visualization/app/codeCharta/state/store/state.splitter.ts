@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { CCAction } from "../../codeCharta.model"
+import { CCAction } from "../../model/codeCharta.model"
 import { StateActions } from "./state.actions"
 import { DynamicSettingsActions } from "./dynamicSettings/dynamicSettings.actions"
 import { FileSettingsActions } from "./fileSettings/fileSettings.actions"

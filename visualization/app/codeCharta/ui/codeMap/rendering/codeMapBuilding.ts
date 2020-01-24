@@ -1,4 +1,4 @@
-import { Node } from "../../../codeCharta.model"
+import { Node } from "../../../model/codeCharta.model"
 import { Box3, Vector3 } from "three"
 import { ColorConverter } from "../../../util/color/colorConverter"
 

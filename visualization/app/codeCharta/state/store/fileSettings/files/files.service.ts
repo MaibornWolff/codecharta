@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FilesActions } from "./files.actions"
 import _ from "lodash"
-import { FileState } from "../../../../codeCharta.model"
+import { FileState } from "../../../../model/codeCharta.model"
 
 export interface FilesSubscriber {
 	onFilesChanged(files: FileState[])

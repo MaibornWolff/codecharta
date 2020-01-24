@@ -1,7 +1,7 @@
 import "./attributeSideBar.component.scss"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { Node } from "../../codeCharta.model"
+import { Node } from "../../model/codeCharta.model"
 import _ from "lodash"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "./attributeSideBar.service"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"

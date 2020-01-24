@@ -1,5 +1,5 @@
 import "./searchPanelModeSelector.component.scss"
-import { SearchPanelMode, BlacklistType, BlacklistItem } from "../../codeCharta.model"
+import { SearchPanelMode, BlacklistType, BlacklistItem } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"

@@ -7,7 +7,7 @@ import {
 	CodeMapNode,
 	EdgeMetricCount,
 	FileSelectionState
-} from "../codeCharta.model"
+} from "../model/codeCharta.model"
 import { FileStateSubscriber, FileStateService } from "./fileState.service"
 import { IRootScopeService } from "angular"
 import { FileStateHelper } from "../util/fileStateHelper"

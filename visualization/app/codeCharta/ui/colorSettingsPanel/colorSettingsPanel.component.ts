@@ -1,5 +1,5 @@
 import "./colorSettingsPanel.component.scss"
-import { FileState } from "../../codeCharta.model"
+import { FileState } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"

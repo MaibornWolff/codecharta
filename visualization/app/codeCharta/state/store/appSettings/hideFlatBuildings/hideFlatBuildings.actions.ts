@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum HideFlatBuildingsActions {
 	SET_HIDE_FLAT_BUILDINGS = "SET_HIDE_FLAT_BUILDINGS"

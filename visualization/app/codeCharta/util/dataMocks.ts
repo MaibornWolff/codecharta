@@ -10,11 +10,11 @@ import {
 	BlacklistType,
 	EdgeVisibility,
 	State
-} from "../codeCharta.model"
+} from "../model/codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
-import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
+import { BlacklistItem, MarkedPackage } from "../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 
 export const VALID_NODE: CodeMapNode = {

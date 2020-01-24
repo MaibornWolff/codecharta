@@ -1,6 +1,6 @@
 import { setState } from "./state.actions"
 import { splitStateActions } from "./state.splitter"
-import { BlacklistType, CCAction, DynamicSettings, FileSettings, RecursivePartial, State } from "../../codeCharta.model"
+import { BlacklistType, CCAction, DynamicSettings, FileSettings, RecursivePartial, State } from "../../model/codeCharta.model"
 import { AreaMetricActions } from "./dynamicSettings/areaMetric/areaMetric.actions"
 import { HeightMetricActions } from "./dynamicSettings/heightMetric/heightMetric.actions"
 import { ColorMetricActions } from "./dynamicSettings/colorMetric/colorMetric.actions"

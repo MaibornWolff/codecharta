@@ -1,4 +1,4 @@
-import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
+import { CCFile, FileSelectionState, FileState } from "../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { LoadingStatusService } from "./loadingStatus.service"
 import _ from "lodash"

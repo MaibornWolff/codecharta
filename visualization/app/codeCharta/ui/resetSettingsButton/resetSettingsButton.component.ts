@@ -1,5 +1,5 @@
 import "./resetSettingsButton.component.scss"
-import { RecursivePartial, Settings } from "../../codeCharta.model"
+import { RecursivePartial, Settings } from "../../model/codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { defaultState, setState } from "../../state/store/state.actions"
 import { convertToVectors } from "../../util/settingsHelper"

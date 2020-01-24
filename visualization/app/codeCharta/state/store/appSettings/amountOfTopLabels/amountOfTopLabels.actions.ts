@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum AmountOfTopLabelsActions {
 	SET_AMOUNT_OF_TOP_LABELS = "SET_AMOUNT_OF_TOP_LABELS"

@@ -1,7 +1,7 @@
 import "./threeViewer.module"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { VALID_NODE, CODE_MAP_BUILDING, TEST_NODES } from "../../../util/dataMocks"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../model/codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"

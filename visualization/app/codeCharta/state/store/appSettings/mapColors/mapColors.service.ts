@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MapColorsActions } from "./mapColors.actions"
 import _ from "lodash"
-import { MapColors } from "../../../../codeCharta.model"
+import { MapColors } from "../../../../model/codeCharta.model"
 
 export interface MapColorsSubscriber {
 	onMapColorsChanged(mapColors: MapColors)

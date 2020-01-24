@@ -1,4 +1,4 @@
-import { CCAction, RecursivePartial, State } from "../../codeCharta.model"
+import { CCAction, RecursivePartial, State } from "../../model/codeCharta.model"
 import { defaultAppSettings } from "./appSettings/appSettings.actions"
 import { defaultFileSettings } from "./fileSettings/fileSettings.actions"
 import { defaultDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"

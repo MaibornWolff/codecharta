@@ -1,5 +1,5 @@
 import { ColorRangeAction, ColorRangeActions, setColorRange } from "./colorRange.actions"
-import { ColorRange } from "../../../../codeCharta.model"
+import { ColorRange } from "../../../../model/codeCharta.model"
 import _ from "lodash"
 
 export function colorRange(state: ColorRange = setColorRange().payload, action: ColorRangeAction): ColorRange {

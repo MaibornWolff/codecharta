@@ -1,4 +1,4 @@
-import { CCAction, MarkedPackage } from "../../../../codeCharta.model"
+import { CCAction, MarkedPackage } from "../../../../model/codeCharta.model"
 
 export enum MarkedPackagesActions {
 	SET_MARKED_PACKAGES = "SET_MARKED_PACKAGES",

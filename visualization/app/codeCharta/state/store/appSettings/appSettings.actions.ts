@@ -1,4 +1,4 @@
-import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
+import { AppSettings, CCAction, RecursivePartial } from "../../../model/codeCharta.model"
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"

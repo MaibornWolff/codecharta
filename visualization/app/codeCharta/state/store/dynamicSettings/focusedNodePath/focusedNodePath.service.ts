@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FocusedNodePathActions, unfocusNode } from "./focusedNodePath.actions"
 import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
-import { FileState } from "../../../../codeCharta.model"
+import { FileState } from "../../../../model/codeCharta.model"
 
 export interface FocusNodeSubscriber {
 	onFocusNode(focusedNodePath: string)

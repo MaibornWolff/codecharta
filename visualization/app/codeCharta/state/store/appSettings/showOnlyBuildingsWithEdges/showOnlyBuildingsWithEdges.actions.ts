@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum ShowOnlyBuildingsWithEdgesActions {
 	SET_SHOW_ONLY_BUILDINGS_WITH_EDGES = "SET_SHOW_ONLY_BUILDINGS_WITH_EDGES"

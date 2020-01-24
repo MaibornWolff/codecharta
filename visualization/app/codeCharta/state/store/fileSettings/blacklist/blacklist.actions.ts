@@ -1,4 +1,4 @@
-import { BlacklistItem, CCAction } from "../../../../codeCharta.model"
+import { BlacklistItem, CCAction } from "../../../../model/codeCharta.model"
 
 export enum BlacklistActions {
 	ADD_BLACKLIST_ITEM = "ADD_BLACKLIST_ITEM",

@@ -1,6 +1,6 @@
 import * as THREE from "three"
 import { PerspectiveCamera, Sprite, Vector3, Box3 } from "three"
-import { Node, State } from "../../codeCharta.model"
+import { Node, State } from "../../model/codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"

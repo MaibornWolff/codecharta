@@ -4,7 +4,7 @@ import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CodeMapNode } from "../../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 

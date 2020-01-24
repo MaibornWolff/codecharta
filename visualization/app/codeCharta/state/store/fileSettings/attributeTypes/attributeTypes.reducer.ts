@@ -1,5 +1,5 @@
 import { AttributeTypesAction, AttributeTypesActions, setAttributeTypes } from "./attributeTypes.actions"
-import { AttributeTypes } from "../../../../codeCharta.model"
+import { AttributeTypes } from "../../../../model/codeCharta.model"
 import _ from "lodash"
 
 export function attributeTypes(state: AttributeTypes = setAttributeTypes().payload, action: AttributeTypesAction): AttributeTypes {

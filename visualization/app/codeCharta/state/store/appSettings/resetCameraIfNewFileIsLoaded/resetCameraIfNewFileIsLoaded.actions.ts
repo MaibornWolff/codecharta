@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum ResetCameraIfNewFileIsLoadedActions {
 	SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED = "SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED"

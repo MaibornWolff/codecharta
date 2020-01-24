@@ -3,7 +3,7 @@ import { MapTreeViewController } from "./mapTreeView.component"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../model/codeCharta.model"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import _ from "lodash"
 

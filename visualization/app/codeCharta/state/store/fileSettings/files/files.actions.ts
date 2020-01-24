@@ -1,5 +1,5 @@
 import { Action } from "redux"
-import { FileState } from "../../../../codeCharta.model"
+import { FileState } from "../../../../model/codeCharta.model"
 
 export enum FilesActions {
 	SET_FILES = "SET_FILES"

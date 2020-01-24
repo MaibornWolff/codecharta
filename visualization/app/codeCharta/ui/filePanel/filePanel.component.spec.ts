@@ -4,7 +4,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
-import { FileState, FileSelectionState } from "../../codeCharta.model"
+import { FileState, FileSelectionState } from "../../model/codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 

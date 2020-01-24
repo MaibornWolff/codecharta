@@ -9,7 +9,7 @@ import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
-import { MetricData } from "../../codeCharta.model"
+import { MetricData } from "../../model/codeCharta.model"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController

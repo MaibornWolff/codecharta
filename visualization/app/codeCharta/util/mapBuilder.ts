@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../codeCharta.model"
+import { CodeMapNode } from "../model/codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 
 export class MapBuilder {

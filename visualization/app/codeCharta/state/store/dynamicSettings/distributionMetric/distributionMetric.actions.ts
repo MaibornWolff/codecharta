@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum DistributionMetricActions {
 	SET_DISTRIBUTION_METRIC = "SET_DISTRIBUTION_METRIC"

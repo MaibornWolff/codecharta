@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
-import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta } from "../codeCharta.model"
+import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta } from "../model/codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"

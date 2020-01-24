@@ -2,7 +2,7 @@ import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { SearchPanelMode } from "../../codeCharta.model"
+import { SearchPanelMode } from "../../model/codeCharta.model"
 import { SearchPanelService } from "../../state/searchPanel.service"
 
 describe("SearchPanelController", () => {

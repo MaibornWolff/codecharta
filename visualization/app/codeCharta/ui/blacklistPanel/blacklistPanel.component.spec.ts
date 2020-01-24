@@ -1,6 +1,6 @@
 import "./blacklistPanel.module"
 import { BlacklistPanelController } from "./blacklistPanel.component"
-import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"

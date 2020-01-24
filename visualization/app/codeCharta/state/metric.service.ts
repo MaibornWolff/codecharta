@@ -8,7 +8,7 @@ import {
 	AttributeType,
 	AttributeTypeValue,
 	State
-} from "../codeCharta.model"
+} from "../model/codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { FileStateService, FileStateSubscriber } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"

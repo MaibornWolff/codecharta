@@ -4,7 +4,7 @@ import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { CCFile, BlacklistType } from "./codeCharta.model"
+import { CCFile, BlacklistType } from "./model/codeCharta.model"
 import _ from "lodash"
 
 describe("codeChartaService", () => {

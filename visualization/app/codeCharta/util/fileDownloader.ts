@@ -1,7 +1,16 @@
 import angular from "angular"
 import * as d3 from "d3"
 import _ from "lodash"
-import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, FileMeta, AttributeTypes, Edge } from "../codeCharta.model"
+import {
+	CodeMapNode,
+	BlacklistType,
+	BlacklistItem,
+	FileSettings,
+	ExportCCFile,
+	FileMeta,
+	AttributeTypes,
+	Edge
+} from "../model/codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { stringify } from "querystring"

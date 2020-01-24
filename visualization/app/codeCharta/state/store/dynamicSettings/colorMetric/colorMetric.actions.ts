@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum ColorMetricActions {
 	SET_COLOR_METRIC = "SET_COLOR_METRIC"

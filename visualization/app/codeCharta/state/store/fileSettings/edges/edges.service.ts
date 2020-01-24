@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgesActions } from "./edges.actions"
 import _ from "lodash"
-import { Edge } from "../../../../codeCharta.model"
+import { Edge } from "../../../../model/codeCharta.model"
 
 export interface EdgesSubscriber {
 	onEdgesChanged(edges: Edge[])

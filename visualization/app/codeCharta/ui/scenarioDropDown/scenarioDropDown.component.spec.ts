@@ -6,7 +6,7 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
-import { MetricData } from "../../codeCharta.model"
+import { MetricData } from "../../model/codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 

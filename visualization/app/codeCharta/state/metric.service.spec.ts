@@ -1,7 +1,7 @@
 import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { FileState, FileSelectionState, MetricData, AttributeTypeValue, State } from "../codeCharta.model"
+import { FileState, FileSelectionState, MetricData, AttributeTypeValue, State } from "../model/codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods, STATE } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { FileStateService } from "./fileState.service"

@@ -1,5 +1,5 @@
 import "./matchingFilesCounter.component.scss"
-import { BlacklistType, BlacklistItem, CodeMapNode } from "../../codeCharta.model"
+import { BlacklistType, BlacklistItem, CodeMapNode } from "../../model/codeCharta.model"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"

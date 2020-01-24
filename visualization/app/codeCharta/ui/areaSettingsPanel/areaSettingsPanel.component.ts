@@ -1,6 +1,6 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
-import { FileState } from "../../codeCharta.model"
+import { FileState } from "../../model/codeCharta.model"
 import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"

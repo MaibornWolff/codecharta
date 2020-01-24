@@ -1,4 +1,4 @@
-import { RecursivePartial, DynamicSettings, CCAction, ColorRange } from "../../../codeCharta.model"
+import { RecursivePartial, DynamicSettings, CCAction, ColorRange } from "../../../model/codeCharta.model"
 
 // Plop: Append action splitter import here
 import { splitEdgeMetricAction } from "./edgeMetric/edgeMetric.splitter"

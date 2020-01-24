@@ -1,6 +1,6 @@
 "use strict"
 import { ILocationService, IHttpService, IHttpResponse } from "angular"
-import { NameDataPair } from "../codeCharta.model"
+import { NameDataPair } from "../model/codeCharta.model"
 
 export class UrlExtractor {
 	private static OK_CODE = 200

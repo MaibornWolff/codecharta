@@ -1,7 +1,7 @@
 import "./heightSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { Vector3 } from "three"
-import { FileState } from "../../codeCharta.model"
+import { FileState } from "../../model/codeCharta.model"
 import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"

@@ -1,4 +1,4 @@
-import { CCFile, Settings } from "../codeCharta.model"
+import { CCFile, Settings } from "../model/codeCharta.model"
 import { AggregationGenerator } from "./aggregationGenerator"
 
 describe("AggregationGenerator", () => {

@@ -1,5 +1,5 @@
-import { CodeMapNode, EdgeVisibility } from "../../codeCharta.model"
-import { MarkedPackage } from "../../codeCharta.model"
+import { CodeMapNode, EdgeVisibility } from "../../model/codeCharta.model"
+import { MarkedPackage } from "../../model/codeCharta.model"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"

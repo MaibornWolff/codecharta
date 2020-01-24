@@ -1,4 +1,4 @@
-import { ColorRange } from "../../../../codeCharta.model"
+import { ColorRange } from "../../../../model/codeCharta.model"
 
 export function getResetColorRange(maxMetricValue: number): ColorRange {
 	const firstThird = Math.round((maxMetricValue / 3) * 100) / 100

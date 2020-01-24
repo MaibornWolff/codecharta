@@ -1,7 +1,7 @@
 import { hierarchy } from "d3-hierarchy"
-import { MarkedPackage } from "../codeCharta.model"
+import { MarkedPackage } from "../model/codeCharta.model"
 import ignore from "ignore"
-import { CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model"
+import { CodeMapNode, BlacklistItem, BlacklistType } from "../model/codeCharta.model"
 
 export class CodeMapHelper {
 	public static getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode): CodeMapNode {

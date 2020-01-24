@@ -2,7 +2,7 @@ import { CodeMapShaderStrings } from "./codeMapShaderStrings"
 import { BuildResult, GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription, IntersectionResult } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
-import { Node, State } from "../../../codeCharta.model"
+import { Node, State } from "../../../model/codeCharta.model"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
 import { TreeMapHelper } from "../../../util/treeMapHelper"
 

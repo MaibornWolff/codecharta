@@ -1,4 +1,4 @@
-import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
+import { CCFile, FileSelectionState, FileState } from "../model/codeCharta.model"
 
 export class FileStateHelper {
 	public static getVisibleFiles(fileStates: FileState[]): CCFile[] {

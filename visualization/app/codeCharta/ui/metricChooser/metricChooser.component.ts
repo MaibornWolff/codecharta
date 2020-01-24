@@ -1,6 +1,6 @@
 import "./metricChooser.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { MetricData } from "../../codeCharta.model"
+import { MetricData } from "../../model/codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import $ from "jquery"
 import { StoreService } from "../../state/store.service"

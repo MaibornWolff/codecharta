@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
-import { BlacklistType, CodeMapNode, State } from "../codeCharta.model"
+import { BlacklistType, CodeMapNode, State } from "../model/codeCharta.model"
 import { STATE, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
 import { HSL } from "./color/hsl"
 

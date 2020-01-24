@@ -1,6 +1,6 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import { ColorRange, FileState } from "../../codeCharta.model"
+import { ColorRange, FileState } from "../../model/codeCharta.model"
 import { MetricService } from "../../state/metric.service"
 import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { IRootScopeService, ITimeoutService } from "angular"

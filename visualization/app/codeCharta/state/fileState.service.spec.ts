@@ -2,7 +2,7 @@ import "./state.module"
 import { FileStateService } from "./fileState.service"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { CCFile, FileSelectionState } from "../codeCharta.model"
+import { CCFile, FileSelectionState } from "../model/codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../util/dataMocks"
 import { LoadingStatusService } from "./loadingStatus.service"
 

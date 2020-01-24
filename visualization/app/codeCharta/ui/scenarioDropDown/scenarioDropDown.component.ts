@@ -3,7 +3,7 @@
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper, Scenario } from "../../util/scenarioHelper"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import { MetricData } from "../../codeCharta.model"
+import { MetricData } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { StoreService } from "../../state/store.service"

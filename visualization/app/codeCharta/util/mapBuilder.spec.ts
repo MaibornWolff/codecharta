@@ -1,5 +1,5 @@
 import { VALID_NODE_WITH_PATH } from "./dataMocks"
-import { CodeMapNode } from "../codeCharta.model"
+import { CodeMapNode } from "../model/codeCharta.model"
 import { MapBuilder } from "./mapBuilder"
 
 describe("mapBuilder", () => {

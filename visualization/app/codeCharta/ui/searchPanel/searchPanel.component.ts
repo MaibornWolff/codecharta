@@ -1,6 +1,6 @@
 import "./searchPanel.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { SearchPanelMode } from "../../codeCharta.model"
+import { SearchPanelMode } from "../../model/codeCharta.model"
 import $ from "jquery"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 

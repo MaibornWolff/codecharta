@@ -1,5 +1,5 @@
 import { IRootScopeService, ITimeoutService } from "angular"
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../model/codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber {

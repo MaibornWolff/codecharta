@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum DynamicMarginActions {
 	SET_DYNAMIC_MARGIN = "SET_DYNAMIC_MARGIN"

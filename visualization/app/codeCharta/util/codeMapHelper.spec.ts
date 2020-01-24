@@ -1,5 +1,5 @@
 import { CodeMapHelper } from "./codeMapHelper"
-import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../model/codeCharta.model"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
 import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH_AND_EXTENSION } from "./dataMocks"
 

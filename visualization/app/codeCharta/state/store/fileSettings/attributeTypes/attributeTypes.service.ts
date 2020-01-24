@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AttributeTypesActions } from "./attributeTypes.actions"
 import _ from "lodash"
-import { AttributeTypes } from "../../../../codeCharta.model"
+import { AttributeTypes } from "../../../../model/codeCharta.model"
 
 export interface AttributeTypesSubscriber {
 	onAttributeTypesChanged(attributeTypes: AttributeTypes)

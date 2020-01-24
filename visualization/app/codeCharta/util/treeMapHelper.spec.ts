@@ -1,6 +1,6 @@
 import { TreeMapHelper } from "./treeMapHelper"
 import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
-import { CodeMapNode, EdgeVisibility, BlacklistType, State } from "../codeCharta.model"
+import { CodeMapNode, EdgeVisibility, BlacklistType, State } from "../model/codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
 
 describe("treeMapHelper", () => {

@@ -2,7 +2,7 @@ import "./state.module"
 import { SearchPanelService } from "./searchPanel.service"
 import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { SearchPanelMode } from "../codeCharta.model"
+import { SearchPanelMode } from "../model/codeCharta.model"
 import { withMockedEventMethods } from "../util/dataMocks"
 
 describe("SearchPanelService", () => {

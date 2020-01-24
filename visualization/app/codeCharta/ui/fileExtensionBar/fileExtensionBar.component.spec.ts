@@ -11,7 +11,7 @@ import {
 } from "../../util/dataMocks"
 import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
-import { BlacklistType } from "../../codeCharta.model"
+import { BlacklistType } from "../../model/codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"

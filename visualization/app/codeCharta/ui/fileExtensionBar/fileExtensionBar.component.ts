@@ -1,6 +1,6 @@
 import "./fileExtensionBar.component.scss"
 import { MetricDistribution, FileExtensionCalculator } from "../../util/fileExtensionCalculator"
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../model/codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"

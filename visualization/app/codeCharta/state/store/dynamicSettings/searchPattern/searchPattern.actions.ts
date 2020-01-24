@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum SearchPatternActions {
 	SET_SEARCH_PATTERN = "SET_SEARCH_PATTERN"

@@ -1,6 +1,6 @@
-import { Node, EdgeVisibility } from "../../codeCharta.model"
+import { Node, EdgeVisibility } from "../../model/codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
-import { Edge } from "../../codeCharta.model"
+import { Edge } from "../../model/codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"

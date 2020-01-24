@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { RecursivePartial, Settings } from "../codeCharta.model"
+import { RecursivePartial, Settings } from "../model/codeCharta.model"
 import { Vector3 } from "three"
 
 export function convertToVectors(settings: RecursivePartial<Settings>) {

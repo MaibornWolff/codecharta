@@ -1,4 +1,4 @@
-import { BlacklistItem, BlacklistType, CodeMapNode } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode } from "../model/codeCharta.model"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
 import { CodeMapHelper } from "./codeMapHelper"

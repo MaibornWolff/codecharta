@@ -1,5 +1,5 @@
 import { EdgesAction, EdgesActions, setEdges } from "./edges.actions"
-import { Edge } from "../../../../codeCharta.model"
+import { Edge } from "../../../../model/codeCharta.model"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 import _ from "lodash"
 

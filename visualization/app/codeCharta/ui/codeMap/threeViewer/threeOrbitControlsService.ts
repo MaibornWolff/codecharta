@@ -10,7 +10,7 @@ import {
 	UnfocusNodeSubscriber
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FileStateService, FileStateSubscriber } from "../../../state/fileState.service"
-import { FileState } from "../../../codeCharta.model"
+import { FileState } from "../../../model/codeCharta.model"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)

@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../codeCharta.model"
+import { CCAction } from "../../../../model/codeCharta.model"
 
 export enum SearchedNodePathsActions {
 	SET_SEARCHED_NODE_PATHS = "SET_SEARCHED_NODE_PATHS"

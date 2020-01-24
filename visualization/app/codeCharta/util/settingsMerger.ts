@@ -1,4 +1,4 @@
-import { Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage, AttributeType } from "../codeCharta.model"
+import { Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage, AttributeType } from "../model/codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import _ from "lodash"
 

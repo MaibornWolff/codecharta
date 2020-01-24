@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { SearchPatternActions, setSearchPattern } from "./searchPattern.actions"
 import _ from "lodash"
 import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
-import { FileState } from "../../../../codeCharta.model"
+import { FileState } from "../../../../model/codeCharta.model"
 
 export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)

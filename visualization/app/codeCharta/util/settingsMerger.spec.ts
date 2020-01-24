@@ -7,7 +7,7 @@ import {
 	FileSettings,
 	MarkedPackage,
 	AttributeTypes
-} from "../codeCharta.model"
+} from "../model/codeCharta.model"
 import { SettingsMerger } from "./settingsMerger"
 
 describe("SettingsMerger", () => {
