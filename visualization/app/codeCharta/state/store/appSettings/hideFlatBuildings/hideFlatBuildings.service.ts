@@ -11,7 +11,7 @@ export class HideFlatBuildingsService implements StoreSubscriber {
 	private static HIDE_FLAT_BUILDINGS_CHANGED_EVENT = "hide-flat-buildings-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
