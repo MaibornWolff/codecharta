@@ -9,10 +9,13 @@ services:
   - docker
 
 jdk:
-   - oraclejdk9
+  - oraclejdk9
 
 env:
   - TRAVIS_NODE_VERSION="9"
+
+git:
+  depth: false
 
 addons:
   sonarcloud:
@@ -23,11 +26,11 @@ addons:
       - master
 
 before_install:
- - chmod +x ./analysis/gradlew
- - chmod -R +x ./analysis/script/
- - chmod -R +x ./visualization/script/
- - sudo apt-get -qq update
- - sudo apt-get install -y wine
+  - chmod +x ./analysis/gradlew
+  - chmod -R +x ./analysis/script/
+  - chmod -R +x ./visualization/script/
+  - sudo apt-get -qq update
+  - sudo apt-get install -y wine
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
@@ -35,6 +38,7 @@ install:
 script:
   - ./visualization/script/travis-build.sh
   - ./analysis/script/travis-build.sh
+  - ./script/build_gh_pages.sh
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -45,10 +49,6 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - ./visualization/node_modules/nwjs-builder-phoenix/caches/
-
-# runs the script which copies all needed ressources into the gh-pages directory
-before_deploy:
-  - ./script/build_gh_pages.sh
 
 deploy:
   # releases the built packages on github when a commit is tagged

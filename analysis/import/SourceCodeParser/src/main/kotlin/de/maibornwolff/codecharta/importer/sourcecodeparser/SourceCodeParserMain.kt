@@ -12,7 +12,7 @@ import java.util.concurrent.Callable
 @Command(
         name = "sourcecodeparser",
         description = ["generates cc.json from source code"],
-        footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2019, MaibornWolff GmbH"]
+        footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2020, MaibornWolff GmbH"]
 )
 class SourceCodeParserMain(
         private val outputStream: PrintStream,
@@ -35,9 +35,6 @@ class SourceCodeParserMain(
 
     @Option(names = ["--defaultExcludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
     private var defaultExcludes = false
-
-    @Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = "DefaultProjectName"
 
     @Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
     private var outputFormat = OutputFormat.JSON
@@ -78,7 +75,7 @@ class SourceCodeParserMain(
 
     private fun getMetricWriter(): MetricWriter {
         return when (outputFormat) {
-            OutputFormat.JSON -> JSONMetricWriter(projectName, getOutputWriter())
+            OutputFormat.JSON -> JSONMetricWriter(getOutputWriter())
             OutputFormat.TABLE -> CSVMetricWriter(getOutputWriter())
         }
     }

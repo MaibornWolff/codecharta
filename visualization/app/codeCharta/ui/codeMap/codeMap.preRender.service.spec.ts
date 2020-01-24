@@ -63,6 +63,7 @@ describe("codeMapPreRenderService", () => {
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 		map.children[1].children = _.slice(map.children[1].children, 0, 2)
 		fileStates = _.cloneDeep(FILE_STATES)
+		fileStates[0].file = NodeDecorator.preDecorateFile(fileStates[0].file)
 		metricData = _.cloneDeep(METRIC_DATA)
 	}
 
@@ -95,7 +96,9 @@ describe("codeMapPreRenderService", () => {
 
 	function withMockedFileStateService() {
 		fileStateService = codeMapPreRenderService["fileStateService"] = jest.fn().mockReturnValue({
-			getFileStates: jest.fn().mockReturnValue(fileStates)
+			getFileStates: jest.fn().mockReturnValue(fileStates),
+			fileStatesAvailable: jest.fn().mockReturnValue(true),
+			isDeltaState: jest.fn().mockReturnValue(false)
 		})()
 	}
 

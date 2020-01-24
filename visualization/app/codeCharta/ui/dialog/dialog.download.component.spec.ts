@@ -55,7 +55,8 @@ describe("DialogDownloadController", () => {
 	function withMockedFileStateService() {
 		fileStateService = jest.fn<FileStateService>(() => {
 			return {
-				getFileStates: jest.fn().mockReturnValue(FILE_STATES)
+				getFileStates: jest.fn().mockReturnValue(FILE_STATES),
+				isDeltaState: jest.fn().mockReturnValue(false)
 			}
 		})()
 	}
