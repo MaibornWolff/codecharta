@@ -11,7 +11,7 @@ export class IsPresentationModeService implements StoreSubscriber {
 	private static PRESENTATION_MODE_CHANGED_EVENT = "presentation-mode-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType) {
