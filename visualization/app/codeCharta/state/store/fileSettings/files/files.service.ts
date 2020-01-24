@@ -2,10 +2,10 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FilesActions } from "./files.actions"
 import _ from "lodash"
-import { FileState } from "../../../../model/codeCharta.model"
+import { Files } from "../../../../model/files"
 
 export interface FilesSubscriber {
-	onFilesChanged(files: FileState[])
+	onFilesChanged(files: Files)
 }
 
 export class FilesService implements StoreSubscriber {
@@ -25,7 +25,7 @@ export class FilesService implements StoreSubscriber {
 		return this.storeService.getState().fileSettings.files
 	}
 
-	private notify(newState: FileState[]) {
+	private notify(newState: Files) {
 		this.$rootScope.$broadcast(FilesService.FILES_CHANGED_EVENT, { files: newState })
 	}
 

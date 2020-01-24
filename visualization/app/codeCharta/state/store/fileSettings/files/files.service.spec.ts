@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { FilesAction, FilesActions } from "./files.actions"
 import { FilesService } from "./files.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
+import { Files } from "../../../../model/files"
 
 describe("FilesService", () => {
 	let filesService: FilesService
@@ -40,15 +41,16 @@ describe("FilesService", () => {
 
 	describe("onStoreChanged", () => {
 		it("should notify all subscribers with the new files value", () => {
+			const files = new Files()
 			const action: FilesAction = {
 				type: FilesActions.SET_FILES,
-				payload: []
+				payload: files
 			}
 			storeService["store"].dispatch(action)
 
 			filesService.onStoreChanged(FilesActions.SET_FILES)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("files-changed", { files: [] })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("files-changed", { files })
 		})
 
 		it("should not notify anything on non-files-events", () => {

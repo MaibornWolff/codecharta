@@ -1,5 +1,6 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
+import { Files } from "./files"
 
 export interface NameDataPair {
 	fileName: string
@@ -78,7 +79,7 @@ export interface FileSettings {
 	blacklist: Array<BlacklistItem>
 	edges: Edge[]
 	markedPackages: MarkedPackage[]
-	files: FileState[]
+	files: Files
 }
 
 export interface DynamicSettings {

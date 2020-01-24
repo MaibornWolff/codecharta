@@ -12,8 +12,8 @@ export class Files {
 	}
 
 	public resetSelection() {
-		this.files.map(file => {
-			file.selectedAs = FileSelectionState.None
+		this.files = this.files.map(file => {
+			return { ...file, selectedAs: FileSelectionState.None }
 		})
 	}
 
@@ -22,51 +22,75 @@ export class Files {
 	}
 
 	public addFile(file: CCFile) {
-		this.files.push({ file: file, selectedAs: FileSelectionState.None })
+		this.files = [...this.files, { file: file, selectedAs: FileSelectionState.None }]
+	}
+
+	public setFiles(files: Files) {
+		this.files = [...files.getFiles()]
 	}
 
 	public setSingleByName(fileName: string) {
-		const singleFile: CCFile = this.getFileByFileName(fileName)
-		this.setSingle(singleFile)
+		this.files = this.files.map(file => {
+			if (file.file.fileMeta.fileName === fileName) {
+				return { ...file, selectedAs: FileSelectionState.Single }
+			} else {
+				return { ...file, selectedAs: FileSelectionState.None }
+			}
+		})
 	}
 
 	public setSingle(file: CCFile) {
-		this.resetSelection()
-		const matchedFile = this.files.find(x => x.file === file)
-		if (matchedFile) {
-			matchedFile.selectedAs = FileSelectionState.Single
-		}
+		this.files = this.files.map(elem => {
+			if (elem.file === file) {
+				return { ...elem, selectedAs: FileSelectionState.Single }
+			} else {
+				return { ...elem, selectedAs: FileSelectionState.None }
+			}
+		})
 	}
 
 	public setDeltaByNames(referenceFileName: string, comparisonFileName: string) {
-		const referenceFile: CCFile = this.getFileByFileName(referenceFileName)
-		const comparisonFile: CCFile = this.getFileByFileName(comparisonFileName)
-		this.setDelta(referenceFile, comparisonFile)
+		this.files = this.files.map(elem => {
+			if (elem.file.fileMeta.fileName === referenceFileName) {
+				return { ...elem, selectedAs: FileSelectionState.Reference }
+			} else if (elem.file.fileMeta.fileName === comparisonFileName) {
+				return { ...elem, selectedAs: FileSelectionState.Comparison }
+			} else {
+				return { ...elem, selectedAs: FileSelectionState.None }
+			}
+		})
 	}
 
 	public setDelta(reference: CCFile, comparison: CCFile) {
-		this.resetSelection()
-		const matchedReferenceFile = this.files.find(x => x.file === reference)
-		const matchedComparisonFile = this.files.find(x => x.file === comparison)
-
-		if (matchedReferenceFile) {
-			matchedReferenceFile.selectedAs = FileSelectionState.Reference
-		}
-
-		if (matchedComparisonFile) {
-			matchedComparisonFile.selectedAs = FileSelectionState.Comparison
-		}
+		this.files = this.files.map(elem => {
+			if (elem.file === reference) {
+				return { ...elem, selectedAs: FileSelectionState.Reference }
+			} else if (elem.file === comparison) {
+				return { ...elem, selectedAs: FileSelectionState.Comparison }
+			} else {
+				return { ...elem, selectedAs: FileSelectionState.None }
+			}
+		})
 	}
 
 	public setMultipleByNames(partialFileNames: string[]) {
-		const partialFiles: CCFile[] = []
-		partialFileNames.forEach(fileName => partialFiles.push(this.getFileByFileName(fileName)))
-		this.setMultiple(partialFiles)
+		this.files = this.files.map(elem => {
+			if (partialFileNames.indexOf(elem.file.fileMeta.fileName) !== -1) {
+				return { ...elem, selectedAs: FileSelectionState.Partial }
+			} else {
+				return { ...elem, selectedAs: FileSelectionState.None }
+			}
+		})
 	}
 
 	public setMultiple(multipleFiles: CCFile[]) {
-		this.resetSelection()
-		this.files.filter(x => multipleFiles.indexOf(x.file) !== -1).forEach(x => (x.selectedAs = FileSelectionState.Partial))
+		this.files = this.files.map(elem => {
+			if (multipleFiles.indexOf(elem.file) !== -1) {
+				return { ...elem, selectedAs: FileSelectionState.Partial }
+			} else {
+				return { ...elem, selectedAs: FileSelectionState.None }
+			}
+		})
 	}
 
 	public fileStatesAvailable(): boolean {
