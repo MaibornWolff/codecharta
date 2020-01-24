@@ -15,7 +15,7 @@ export class EdgesService implements StoreSubscriber, FileStateSubscriber {
 	private static EDGES_CHANGED_EVENT = "edges-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 

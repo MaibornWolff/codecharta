@@ -11,7 +11,7 @@ export class ResetCameraIfNewFileIsLoadedService implements StoreSubscriber {
 	private static RESET_CAMERA_IF_NEW_FILE_IS_LOADED_CHANGED_EVENT = "reset-camera-if-new-file-is-loaded-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {

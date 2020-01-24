@@ -15,7 +15,7 @@ export class MarkedPackagesService implements StoreSubscriber, FileStateSubscrib
 	private static MARKED_PACKAGES_CHANGED_EVENT = "marked-packages-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 	}
 
