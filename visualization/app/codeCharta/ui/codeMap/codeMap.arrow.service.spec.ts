@@ -4,8 +4,8 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Object3D, Vector3 } from "three"
-import { Edge, EdgeVisibility, Node, State } from "../../codeCharta.model"
-import { CODE_MAP_BUILDING, OUTGOING_NODE, INCOMING_NODE, STATE } from "../../util/dataMocks"
+import { Edge, EdgeVisibility, Node } from "../../codeCharta.model"
+import { CODE_MAP_BUILDING, OUTGOING_NODE, INCOMING_NODE } from "../../util/dataMocks"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ColorConverter } from "../../util/color/colorConverter"
@@ -158,16 +158,15 @@ describe("CodeMapArrowService", () => {
 			})
 			codeMapArrowService["previewMode"] = jest.fn()
 		})
-		it("should", () => {
-			const originNode: Node = OUTGOING_NODE
-			const nodes: Node[] = [originNode]
+		it("should create and edge Preview of one", () => {
+			const nodes: Node[] = [OUTGOING_NODE]
 			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
 
 			codeMapArrowService.addEdgePreview(nodes, edges)
 
 			expect(codeMapArrowService["map"].size).toEqual(1)
 		})
-		it("should", () => {
+		it("should create and no edge Preview at all", () => {
 			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
 
 			codeMapArrowService.addEdgePreview(null, edges)
@@ -176,28 +175,11 @@ describe("CodeMapArrowService", () => {
 		})
 	})
 
-	describe("addArrow", () => {
-		beforeEach(() => {
-			threeSceneService.edgeArrows["add"] = jest.fn()
-			codeMapArrowService["arrows"].push = jest.fn()
-		})
-
-		it("calls an outgoing Arrow, which should then call the last subfuncions in curveColoring", () => {
-			const originNode: Node = OUTGOING_NODE
-			const targetNode: Node = INCOMING_NODE
-
-			codeMapArrowService.addArrow(originNode, targetNode, true)
-
-			expect(threeSceneService.edgeArrows["add"]).toHaveBeenCalled()
-			expect(codeMapArrowService["arrows"].push).toHaveBeenCalled()
-		})
-	})
-
 	describe("createCurve", () => {
 		it("should create a curve out of the 2 Nodes", () => {
 			const originNode: Node = OUTGOING_NODE
 			const targetNode: Node = INCOMING_NODE
-			const curveScale = 100 * codeMapArrowService["settingsService"].getSettings().appSettings.edgeHeight
+			const curveScale = 100 * storeService.getState().appSettings.edgeHeight
 
 			const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
 
@@ -207,8 +189,7 @@ describe("CodeMapArrowService", () => {
 
 	describe("lightNodeBuilding", () => {
 		it("should Highlight certain Buildings", () => {
-			const originNode: Node = OUTGOING_NODE
-			codeMapArrowService["lightNodeBuilding"](originNode)
+			codeMapArrowService["lightNodeBuilding"](OUTGOING_NODE)
 			expect(threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath).toHaveBeenCalled()
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 		})
@@ -222,11 +203,9 @@ describe("CodeMapArrowService", () => {
 		it("should run through the funcion with mocked subfuncions", () => {
 			const originNode: Node = OUTGOING_NODE
 			const targetNode: Node = INCOMING_NODE
-			const curveScale = 100 * codeMapArrowService["settingsService"].getSettings().appSettings.edgeHeight
+			const curveScale = 100 * storeService.getState().appSettings.edgeHeight
 			const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
-			const color = ColorConverter.convertHexToNumber(
-				codeMapArrowService["settingsService"].getSettings().appSettings.mapColors.outgoingEdge
-			)
+			const color = ColorConverter.convertHexToNumber(storeService.getState().appSettings.mapColors.outgoingEdge)
 
 			codeMapArrowService["curveColoring"](curve, color)
 
