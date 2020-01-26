@@ -19,13 +19,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
-## [1.41.7] - 2020-01-17
+## [1.41.9] - 2020-01-17
 
 ### Added 🚀
 
 ### Changed
 
 ### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.8] - 2020-01-17
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+- Project name parameters in the ccsh #773
 
 ### Fixed 🐞
 

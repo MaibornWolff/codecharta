@@ -11,7 +11,7 @@ export class WhiteColorBuildingsService implements StoreSubscriber {
 	private static WHITE_COLOR_BUILDINGS_CHANGED_EVENT = "white-color-buildings-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
