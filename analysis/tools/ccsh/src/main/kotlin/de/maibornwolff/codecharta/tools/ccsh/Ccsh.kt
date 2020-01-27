@@ -61,7 +61,24 @@ class Ccsh: Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
-            commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *args)
+            commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
+        }
+
+        private fun sanitizeArgs(args: Array<String>): Array<String> {
+            return args.map { argument ->
+                var sanitizedArg = ""
+                if (argument.length > 1 && argument.substring(0, 2) == ("--")) {
+                    var skip = false
+                    argument.forEach {
+                        if (it == '=') skip = true
+                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.toLowerCase()
+                        else sanitizedArg += it
+                    }
+                } else {
+                    sanitizedArg = argument
+                }
+                return@map sanitizedArg
+            }.toTypedArray()
         }
     }
 
