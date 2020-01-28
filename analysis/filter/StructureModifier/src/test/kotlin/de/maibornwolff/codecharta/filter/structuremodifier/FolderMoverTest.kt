@@ -19,7 +19,7 @@ class FolderMoverTest {
 
     @Test
     fun `should remove the source node`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/src/folder3", "/root/foo")
 
@@ -31,7 +31,7 @@ class FolderMoverTest {
 
     @Test
     fun `should move nothing if source node is not found`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/does/not/exist", "/something")
 
@@ -40,7 +40,7 @@ class FolderMoverTest {
 
     @Test
     fun `should return nothing if destination folder is null`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/src/folder3", null)
 
@@ -50,7 +50,7 @@ class FolderMoverTest {
     @Test
     fun `should merge content of source folder into existing folder, if existent`() {
         serializeProject()
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/src/folder3", "/root/src/test")
 
@@ -61,7 +61,7 @@ class FolderMoverTest {
 
     @Test
     fun `should place content in newly created node, if destination does not exist`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/src/folder3", "/root/foo")
 
@@ -73,7 +73,7 @@ class FolderMoverTest {
 
     @Test
     fun `should copy unaffected edges`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
         val unaffectedEdge = sampleProject.edges[3]
 
         val result = folderMover.move("/root/foo/", "/root/bar")
@@ -84,7 +84,7 @@ class FolderMoverTest {
 
     @Test
     fun `should alter from and to node of affected edges`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/foo", "root/bar/")!!
 
@@ -99,7 +99,7 @@ class FolderMoverTest {
 
     @Test
     fun `should only alter to node of affected edges`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/foo", "/root/bar")!!
 
@@ -111,7 +111,7 @@ class FolderMoverTest {
 
     @Test
     fun `should change path of relevant blacklist items`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/foo", "/root/bar")!!
 
@@ -123,7 +123,7 @@ class FolderMoverTest {
 
     @Test
     fun `should be able to move from root`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root", "/root/new")
 
@@ -135,7 +135,7 @@ class FolderMoverTest {
 
     @Test
     fun `should be able to move to root`() {
-        val folderMover = FolderMover(sampleProject, null)
+        val folderMover = FolderMover(sampleProject)
 
         val result = folderMover.move("/root/src", "/root")
 
