@@ -1,5 +1,7 @@
 import angular from "angular"
 // Plop: Append module import here
+import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
+import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
@@ -37,7 +39,6 @@ import { SearchPanelService } from "./searchPanel.service"
 import { NodeSearchService } from "./nodeSearch.service"
 import { FileStateService } from "./fileState.service"
 import { MetricService } from "./metric.service"
-import { LoadingStatusService } from "./loadingStatus.service"
 import "../codeCharta.module"
 import _ from "lodash"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
@@ -45,6 +46,8 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(IsLoadingFileService.name), IsLoadingFileService)
+	.service(_.camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(_.camelCase(MapSizeService.name), MapSizeService)
 	.service(_.camelCase(MapColorsService.name), MapColorsService)
 	.service(_.camelCase(ResetCameraIfNewFileIsLoadedService.name), ResetCameraIfNewFileIsLoadedService)
@@ -83,4 +86,3 @@ angular
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
 	.service(_.camelCase(FileStateService.name), FileStateService)
 	.service(_.camelCase(MetricService.name), MetricService)
-	.service(_.camelCase(LoadingStatusService.name), LoadingStatusService)
