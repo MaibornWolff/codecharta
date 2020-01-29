@@ -31,7 +31,7 @@ export class EdgesService implements StoreSubscriber, FileStateSubscriber {
 
 	public reset(fileStates: FileState[]) {
 		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
-		const withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
+		const withUpdatedPath = FileStateHelper.isPartialState(fileStates)
 		const newEdges = getMergedEdges(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setEdges(newEdges))
 	}

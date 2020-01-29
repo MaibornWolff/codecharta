@@ -31,7 +31,7 @@ export class MarkedPackagesService implements StoreSubscriber, FileStateSubscrib
 
 	public reset(fileStates: FileState[]) {
 		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
-		const withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
+		const withUpdatedPath = FileStateHelper.isPartialState(fileStates)
 		const newMarkedPackages = getMergedMarkedPackages(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setMarkedPackages(newMarkedPackages))
 	}
