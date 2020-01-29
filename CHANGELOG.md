@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Path prefix handling in tokeiimporter #841
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.41.9] - 2020-01-17
