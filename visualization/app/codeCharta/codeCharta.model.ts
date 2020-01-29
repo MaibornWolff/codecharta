@@ -111,6 +111,7 @@ export interface AppSettings {
 	showOnlyBuildingsWithEdges: boolean
 	resetCameraIfNewFileIsLoaded: boolean
 	isLoadingMap: boolean
+	isLoadingFile: boolean
 }
 
 export interface TreeMapSettings {
