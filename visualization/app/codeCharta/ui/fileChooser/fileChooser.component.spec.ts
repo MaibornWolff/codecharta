@@ -8,7 +8,7 @@ import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT, withMockedEventMethods } from "../../util/dataMocks"
 import _ from "lodash"
-import { LoadingStatusService } from "../../state/loadingStatus.service"
+import { StoreService } from "../../state/store.service"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
@@ -16,7 +16,7 @@ describe("fileChooserController", () => {
 	let dialogService: DialogService
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
-	let loadingStatusService: LoadingStatusService
+	let storeSevice: StoreService
 
 	let fileName: string
 	let content: any
@@ -28,7 +28,6 @@ describe("fileChooserController", () => {
 		withMockedFileStateService()
 		withMockedDialogService()
 		withMockedCodeChartaService()
-		withMockedLoadingStatusService()
 	})
 
 	afterEach(() => {
@@ -42,20 +41,14 @@ describe("fileChooserController", () => {
 		dialogService = getService<DialogService>("dialogService")
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
-		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
+		storeSevice = getService<StoreService>("storeService")
 
 		fileName = "someFile.json"
 		content = _.cloneDeep(TEST_FILE_CONTENT)
 	}
 
 	function rebuildController() {
-		fileChooserController = new FileChooserController(
-			$rootScope,
-			dialogService,
-			codeChartaService,
-			fileStateService,
-			loadingStatusService
-		)
+		fileChooserController = new FileChooserController($rootScope, dialogService, codeChartaService, fileStateService, storeSevice)
 	}
 
 	function withMockedFileStateService() {
@@ -77,13 +70,6 @@ describe("fileChooserController", () => {
 		})()
 	}
 
-	function withMockedLoadingStatusService() {
-		loadingStatusService = fileChooserController["loadingStatusService"] = jest.fn().mockReturnValue({
-			updateLoadingMapFlag: jest.fn(),
-			updateLoadingFileFlag: jest.fn()
-		})()
-	}
-
 	describe("onImportNewFiles", () => {
 		it("should call $apply", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
@@ -91,10 +77,10 @@ describe("fileChooserController", () => {
 			expect($rootScope.$apply).toHaveBeenCalled()
 		})
 
-		it("should not call updateLoadingFileFlag if no file loaded", () => {
+		it("should not set state if no file loaded", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
 
-			expect(loadingStatusService.updateLoadingFileFlag).not.toHaveBeenCalled()
+			expect(storeSevice.getState().appSettings.isLoadingFile).toBeTruthy()
 		})
 	})
 

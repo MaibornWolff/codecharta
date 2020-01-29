@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapController } from "./codeMap.component"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
-import { LoadingStatusService } from "../../state/loadingStatus.service"
+import { IsLoadingFileService } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 
 describe("ColorSettingsPanelController", () => {
 	let codeMapController: CodeMapController
@@ -58,12 +58,12 @@ describe("ColorSettingsPanelController", () => {
 			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith($rootScope, codeMapController)
 		})
 
-		it("should subscribe to LoadingStatusService", () => {
-			LoadingStatusService.subscribe = jest.fn()
+		it("should subscribe to IsLoadingFileService", () => {
+			IsLoadingFileService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(LoadingStatusService.subscribe).toHaveBeenCalledWith($rootScope, codeMapController)
+			expect(IsLoadingFileService.subscribe).toHaveBeenCalledWith($rootScope, codeMapController)
 		})
 
 		it("should set attribute isLoadingFile to true", () => {
@@ -73,15 +73,15 @@ describe("ColorSettingsPanelController", () => {
 		})
 	})
 
-	describe("onLoadingFileStatusChanged", () => {
+	describe("onIsLoadingFileChanged", () => {
 		it("should set isLoadingFile in viewModel to true", () => {
-			codeMapController.onLoadingFileStatusChanged(true)
+			codeMapController.onIsLoadingFileChanged(true)
 
 			expect(codeMapController["_viewModel"].isLoadingFile).toBe(true)
 		})
 
 		it("should set isLoadingFile in viewModel to false", () => {
-			codeMapController.onLoadingFileStatusChanged(false)
+			codeMapController.onIsLoadingFileChanged(false)
 
 			expect(codeMapController["_viewModel"].isLoadingFile).toBe(false)
 		})

@@ -684,7 +684,9 @@ export const STATE: State = {
 		},
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
-		resetCameraIfNewFileIsLoaded: true
+		resetCameraIfNewFileIsLoaded: true,
+		isLoadingMap: true,
+		isLoadingFile: true
 	},
 	treeMap: {
 		mapSize: 250
@@ -723,7 +725,9 @@ export const DEFAULT_STATE: State = {
 		whiteColorBuildings: false,
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
-		resetCameraIfNewFileIsLoaded: true
+		resetCameraIfNewFileIsLoaded: true,
+		isLoadingMap: true,
+		isLoadingFile: true
 	},
 	dynamicSettings: {
 		areaMetric: null,
