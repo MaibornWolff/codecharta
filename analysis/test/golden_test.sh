@@ -72,7 +72,7 @@ check_jasome() {
 check_scmlog() {
   echo " -- expect SCMLogParser gives valid cc.json"
   ACTUAL_SCMLOG_JSON="${INSTALL_DIR}/actual_scmlog.json"
-  "${CCSH}" scmlogparser --svn data/codecharta/SVNTestLog.txt --silent > "${ACTUAL_SCMLOG_JSON}"
+  "${CCSH}" scmlogparser --input-format=SVN_LOG data/codecharta/SVNTestLog.txt --silent > "${ACTUAL_SCMLOG_JSON}"
   validate "${ACTUAL_SCMLOG_JSON}"
 }
 
@@ -86,7 +86,7 @@ check_merge() {
 check_modify() {
     echo " -- expect StructureModifier gives valid cc.json"
     ACTUAL_MODIFY_JSON="${INSTALL_DIR}/actual_modify.json"
-    "${CCSH}" modify data/codecharta/tomerge.json --moveFrom=root/src --moveTo=root/bar > "${ACTUAL_MODIFY_JSON}"
+    "${CCSH}" modify data/codecharta/tomerge.json --move-from=root/src --move-to=root/bar > "${ACTUAL_MODIFY_JSON}"
     validate "${ACTUAL_MODIFY_JSON}"
 }
 
@@ -100,16 +100,16 @@ check_sourcecodeparser() {
 check_tokei() {
     echo " -- expect TokeiImporter gives valid cc.json"
     ACTUAL_TOKEI_JSON="${INSTALL_DIR}/actual_tokei.json"
-    "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --pathSeparator \\ > "${ACTUAL_TOKEI_JSON}"
+    "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ > "${ACTUAL_TOKEI_JSON}"
     validate "${ACTUAL_TOKEI_JSON}"
 }
 
 check_pipe() {
    echo " -- expect pipes to work"
-   sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --pathSeparator \\ \
+   sh "${CCSH}" tokeiimporter data/codecharta/tokei_results.json --path-separator \\ \
         | sh "${CCSH}" sourcecodeparser data/codecharta/ \
-        | sh "${CCSH}" scmlogparser --svn data/codecharta/SVNTestLog.txt \
-        | sh "${CCSH}" modify --moveFrom=root/src --moveTo=root/bar \
+        | sh "${CCSH}" scmlogparser --input-format=SVN_LOG data/codecharta/SVNTestLog.txt \
+        | sh "${CCSH}" modify --move-from=root/src --move-to=root/bar \
             -o ${INSTALL_DIR}/piped_out.json 2> ${INSTALL_DIR}/piped_out_log.json
     validate ${INSTALL_DIR}/piped_out.json
     if ! grep -q "Created Project with 9 leaves." ${INSTALL_DIR}/piped_out_log.json; then

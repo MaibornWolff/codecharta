@@ -3,7 +3,8 @@ import rootReducer from "./store/reducer"
 import { CCAction, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
-import { LoadingStatusService } from "./loadingStatus.service"
+import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
+import _ from "lodash"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -14,13 +15,13 @@ export class StoreService {
 	private store: Store
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private loadingStatusService: LoadingStatusService) {
+	constructor(private $rootScope: IRootScopeService) {
 		this.store = createStore(rootReducer)
 	}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
-		if (!isSilent) {
-			this.loadingStatusService.updateLoadingMapFlag(true)
+		if (!isSilent && !_.values(IsLoadingMapActions).includes(action.type)) {
+			this.store.dispatch(setIsLoadingMap(true))
 		}
 
 		splitStateActions(action).forEach(atomicAction => {

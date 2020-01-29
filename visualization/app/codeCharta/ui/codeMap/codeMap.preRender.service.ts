@@ -9,13 +9,14 @@ import { MetricService, MetricServiceSubscriber } from "../../state/metric.servi
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import * as d3 from "d3"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import _ from "lodash"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
+import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -36,7 +37,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		private fileStateService: FileStateService,
 		private metricService: MetricService,
 		private codeMapRenderService: CodeMapRenderService,
-		private loadingStatusService: LoadingStatusService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
 		MetricService.subscribe(this.$rootScope, this)
@@ -56,7 +56,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (this.allNecessaryRenderDataAvailable() && !_.values(ScalingActions).includes(actionType)) {
+		if (
+			this.allNecessaryRenderDataAvailable() &&
+			!_.values(ScalingActions).includes(actionType) &&
+			!_.values(IsLoadingMapActions).includes(actionType)
+		) {
 			this.debounceRendering()
 		}
 	}
@@ -137,11 +141,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	private renderAndNotify() {
 		this.codeMapRenderService.render(this.unifiedMap)
 
-		this.notifyLoadingMapStatus()
-		this.notifyMapChanged()
-		if (this.loadingStatusService.isLoadingNewFile()) {
+		if (this.storeService.getState().appSettings.isLoadingFile) {
 			this.notifyLoadingFileStatus()
 		}
+		this.notifyLoadingMapStatus()
+		this.notifyMapChanged()
 	}
 
 	private scaleMapAndNotify() {
@@ -170,11 +174,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private notifyLoadingFileStatus() {
-		this.loadingStatusService.updateLoadingFileFlag(false)
+		this.storeService.dispatch(setIsLoadingFile(false))
 	}
 
 	private notifyLoadingMapStatus() {
-		this.loadingStatusService.updateLoadingMapFlag(false)
+		this.storeService.dispatch(setIsLoadingMap(false))
 	}
 
 	private notifyMapChanged() {

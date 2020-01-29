@@ -17,9 +17,9 @@ class TokeiImporterTest {
 
     @Test
     fun `reads tokei piped input`() {
-        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "") { it }
+        val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines().joinToString(separator = "") { it }
 
-        val cliResult = executeForOutput(input, arrayOf("--pathSeparator=\\"))
+        val cliResult = executeForOutput(input, arrayOf())
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }
