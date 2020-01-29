@@ -62,7 +62,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     }
 
     private fun addAsNode(analysisObject: AnalysisObject) {
-        val sanitizedName = analysisObject.name!!.replaceFirst(rootName, "").replace(pathSeparator, "/")
+        val sanitizedName = analysisObject.name!!.removePrefix(rootName).replace(pathSeparator, "/")
         val directory = sanitizedName.substringBeforeLast("/")
         val fileName = sanitizedName.substringAfterLast("/")
 
