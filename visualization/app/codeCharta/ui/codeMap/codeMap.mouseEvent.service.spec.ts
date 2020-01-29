@@ -228,7 +228,7 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
-	describe("update", () => {
+	describe("updateHovering", () => {
 		beforeEach(() => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue({
@@ -283,6 +283,7 @@ describe("codeMapMouseEventService", () => {
 	describe("onDocumentMouseUp", () => {
 		beforeEach(() => {
 			codeMapMouseEventService["clickType"] = ClickType.LeftClick
+			codeMapMouseEventService["intersectionResult"] = { intersectionFound: true, building: undefined }
 		})
 
 		it("should not do anything when no building is hovered and nothing is selected", () => {

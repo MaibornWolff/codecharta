@@ -635,7 +635,7 @@ export const STATE: State = {
 			edges: []
 		},
 		blacklist: [],
-		edges: [],
+		edges: VALID_EDGES,
 		markedPackages: []
 	},
 	dynamicSettings: {
@@ -797,6 +797,54 @@ export const TEST_NODE_LEAF: Node = {
 }
 
 export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
+
+export const INCOMING_NODE: Node = {
+	name: "root/small leaf",
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: true,
+	deltas: { a: 1, b: 2 },
+	attributes: { a: 20, b: 15, mcc: 14 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root/big leaf",
+	link: "NO_LINK",
+	markingColor: "0xFFFFFF",
+	flat: false,
+	color: "#AABBCC",
+	incomingEdgePoint: new Vector3(1, 2, 3),
+	outgoingEdgePoint: new Vector3(1, 2, 3)
+}
+
+export const OUTGOING_NODE: Node = {
+	name: "root/big leaf",
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: true,
+	deltas: { a: 1, b: 2 },
+	attributes: { a: 20, b: 15, mcc: 14 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root/big leaf",
+	link: "NO_LINK",
+	markingColor: "0xFFFFFF",
+	flat: false,
+	color: "#AABBCC",
+	incomingEdgePoint: new Vector3(1, 2, 3),
+	outgoingEdgePoint: new Vector3(1, 2, 3)
+}
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,
