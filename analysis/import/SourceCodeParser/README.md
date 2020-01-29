@@ -40,7 +40,7 @@ or
 or
 
 ```
-./ccsh sourcecodeparser src/test/resources -o foo.cc.json --default-excludes -e=something -e=/.*\.foo --f=table
+./ccsh sourcecodeparser src/test/resources -o foo.cc.json --default-excludes -e=something -e=/.*\.foo -f=table
 ```
 
 or
