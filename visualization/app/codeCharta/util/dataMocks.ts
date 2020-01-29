@@ -685,7 +685,7 @@ export const STATE: State = {
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
-		isLoadingMap: false,
+		isLoadingMap: true,
 		isLoadingFile: true
 	},
 	treeMap: {
@@ -726,7 +726,7 @@ export const DEFAULT_STATE: State = {
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
-		isLoadingMap: false,
+		isLoadingMap: true,
 		isLoadingFile: true
 	},
 	dynamicSettings: {
