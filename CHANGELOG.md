@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Show additional Pairing Rate of Selected Building, simultaneously to the currently hovered Buildings
+- Show additional Pairing Rate of Selected Building, simultaneously to the currently hovered Buildings #736
 
 ### Changed
 
