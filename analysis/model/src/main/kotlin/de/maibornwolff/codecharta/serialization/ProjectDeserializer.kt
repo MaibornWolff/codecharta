@@ -30,8 +30,8 @@ object ProjectDeserializer {
         return try {
             deserializeProject(projectString)
         } catch (e: Exception) {
-            logger.error("Piped input: $projectString")
-            logger.error("The piped input is not a valid project.")
+            logger.error { "Piped input: $projectString" }
+            logger.error { "The piped input is not a valid project." }
             null
         }
     }
