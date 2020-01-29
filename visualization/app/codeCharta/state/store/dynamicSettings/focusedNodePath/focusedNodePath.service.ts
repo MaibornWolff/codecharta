@@ -30,7 +30,9 @@ export class FocusedNodePathService implements StoreSubscriber, FileStateSubscri
 	}
 
 	public onFileStatesChanged(fileStates: FileState[]) {
-		this.reset()
+		if (this.storeService.getState().dynamicSettings.focusedNodePath) {
+			this.reset()
+		}
 	}
 
 	public reset() {

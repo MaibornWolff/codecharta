@@ -1,4 +1,6 @@
 // Plop: Append service import here
+import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
+import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
@@ -38,6 +40,8 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private isLoadingFileService: IsLoadingFileService,
+		private isLoadingMapService: IsLoadingMapService,
 		private mapSizeService: MapSizeService,
 		private mapColorsService: MapColorsService,
 		private resetCameraIfNewFileIsLoadedService: ResetCameraIfNewFileIsLoadedService,
