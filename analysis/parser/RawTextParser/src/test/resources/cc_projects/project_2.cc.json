@@ -1,0 +1,43 @@
+{
+  "projectName": "",
+  "apiVersion": "1.1",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "children": [
+        {
+          "name": "bar",
+          "type": "Folder",
+          "attributes": {},
+          "link": "",
+          "children": [
+            {
+              "name": "FooBar.java",
+              "type": "File",
+              "attributes": {
+                "foo": 0.0,
+                "bar": 18.0
+              },
+              "link": "",
+              "children": []
+            }
+          ]
+        },
+        {
+          "name": "foo.java",
+          "type": "File",
+          "attributes": {
+            "barx": 42.0,
+            "bar": 18.0
+          },
+          "children": []
+        }
+      ]
+    }
+  ],
+  "edges": [],
+  "attributeTypes": {},
+  "blacklist": []
+}
