@@ -74,13 +74,13 @@ export class CodeMapArrowService
 			const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
 
 			if (buildingIsOriginNode) {
-				this.lightNodeBuilding(arrowTargetNode)
+				this.highlightBuilding(arrowTargetNode)
 				const color = ColorConverter.convertHexToNumber(state.appSettings.mapColors.outgoingEdge)
-				this.curveColoring(curve, color)
+				this.setCurveColor(curve, color)
 			} else {
-				this.lightNodeBuilding(arrowOriginNode)
+				this.highlightBuilding(arrowOriginNode)
 				const color = ColorConverter.convertHexToNumber(state.appSettings.mapColors.incomingEdge)
-				this.curveColoring(curve, color)
+				this.setCurveColor(curve, color)
 			}
 		}
 	}
@@ -146,7 +146,7 @@ export class CodeMapArrowService
 		return new CubicBezierCurve3(arrowOriginNode.outgoingEdgePoint, bezierPoint2, bezierPoint3, arrowTargetNode.incomingEdgePoint)
 	}
 
-	private lightNodeBuilding(node: Node) {
+	private highlightBuilding(node: Node) {
 		const building: CodeMapBuilding = this.threeSceneService
 			.getMapMesh()
 			.getMeshDescription()
@@ -154,7 +154,7 @@ export class CodeMapArrowService
 		this.threeSceneService.addBuildingToHighlightingList(building)
 	}
 
-	private curveColoring(bezier: CubicBezierCurve3, color: number, bezierPoints: number = 50) {
+	private setCurveColor(bezier: CubicBezierCurve3, color: number, bezierPoints: number = 50) {
 		const points = bezier.getPoints(bezierPoints)
 		const curveObject = this.buildLine(points, color)
 		curveObject.add(this.buildArrow(points))

@@ -187,27 +187,27 @@ describe("CodeMapArrowService", () => {
 		})
 	})
 
-	describe("lightNodeBuilding", () => {
-		it("should Highlight certain Buildings", () => {
-			codeMapArrowService["lightNodeBuilding"](OUTGOING_NODE)
+	describe("highlightBuilding", () => {
+		it("should highlight certain buildings", () => {
+			codeMapArrowService["highlightBuilding"](OUTGOING_NODE)
 			expect(threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath).toHaveBeenCalled()
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 		})
 	})
 
-	describe("curveColoring", () => {
+	describe("setCurveColor", () => {
 		beforeEach(() => {
 			threeSceneService.edgeArrows["add"] = jest.fn()
 			codeMapArrowService["arrows"].push = jest.fn()
 		})
-		it("should run through the funcion with mocked subfuncions", () => {
+		it("should run through the function with mocked subfunctions", () => {
 			const originNode: Node = OUTGOING_NODE
 			const targetNode: Node = INCOMING_NODE
 			const curveScale = 100 * storeService.getState().appSettings.edgeHeight
 			const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
 			const color = ColorConverter.convertHexToNumber(storeService.getState().appSettings.mapColors.outgoingEdge)
 
-			codeMapArrowService["curveColoring"](curve, color)
+			codeMapArrowService["setCurveColor"](curve, color)
 
 			expect(threeSceneService.edgeArrows["add"]).toHaveBeenCalled()
 			expect(codeMapArrowService["arrows"].push).toHaveBeenCalled()
