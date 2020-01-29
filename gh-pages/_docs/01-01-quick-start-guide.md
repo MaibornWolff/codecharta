@@ -102,7 +102,7 @@ A simple comparison you can do is to check that the `<project>.source.cc.json` h
 ccsh modify junit4.source.cc.json -p 1
 # Print the first level of the <project>.git.cc.json
 ccsh modify junit4.git.cc.json -p 1
-# Use (--moveFrom and --moveTo) or --setRoot to correct wrong structure
+# Use (--move-from and --move-to) or --set-root to correct wrong structure
 ```
 
 # CodeCharta in a Tweet Quickstart
