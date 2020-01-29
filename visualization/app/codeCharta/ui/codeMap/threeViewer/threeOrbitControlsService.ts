@@ -40,10 +40,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public onUnfocusNode() {
-		const appSettings = this.storeService.getState().appSettings
-		if (!appSettings.isLoadingFile && !appSettings.isLoadingMap) {
-			this.autoFitTo()
-		}
+		this.autoFitTo()
 	}
 
 	public onFileStatesChanged(fileStates: FileState[]) {

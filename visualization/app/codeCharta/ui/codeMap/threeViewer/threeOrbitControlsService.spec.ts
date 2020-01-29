@@ -9,8 +9,6 @@ import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { StoreService } from "../../../state/store.service"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { setResetCameraIfNewFileIsLoaded } from "../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
-import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -143,26 +141,12 @@ describe("ThreeOrbitControlsService", () => {
 	})
 
 	describe("onUnfocusNode", () => {
-		beforeEach(() => {
+		it("should call resetCamera", () => {
 			threeOrbitControlsService.autoFitTo = jest.fn()
-		})
-
-		it("should call resetCamera, when map is not loading ", () => {
-			storeService.dispatch(setIsLoadingFile(false))
-			storeService.dispatch(setIsLoadingMap(false))
 
 			threeOrbitControlsService.onUnfocusNode()
 
 			expect(threeOrbitControlsService.autoFitTo).toBeCalled()
-		})
-
-		it("should not call resetCamera, when map is loading ", () => {
-			storeService.dispatch(setIsLoadingFile(true))
-			storeService.dispatch(setIsLoadingMap(false))
-
-			threeOrbitControlsService.onUnfocusNode()
-
-			expect(threeOrbitControlsService.autoFitTo).not.toHaveBeenCalled()
 		})
 	})
 
