@@ -14,18 +14,6 @@ import java.io.PrintStream
 class ProjectGeneratorTest {
 
     @Test
-    fun `project name is set correctly`() {
-        val metricsMap = mapOf<String, FileMetrics>()
-        val result = ByteArrayOutputStream()
-        val projectName = "foo"
-
-        val metricWriter = ProjectGenerator(OutputStreamWriter(PrintStream(result)))
-        metricWriter.generate(metricsMap, projectName, null)
-
-        Assertions.assertThat(result.toString()).contains("\"projectName\":\"foo\"")
-    }
-
-    @Test
     fun `file hierarchy and metrics are stored correctly`() {
         val expectedResultFile = File("src/test/resources/cc_projects/project_1.cc.json").absoluteFile
         val metricsMap = mutableMapOf<String, FileMetrics>()
@@ -33,7 +21,7 @@ class ProjectGeneratorTest {
         metricsMap["foo.java"] = FileMetrics().addMetric("barx", 42)
         val result = ByteArrayOutputStream()
 
-        ProjectGenerator(OutputStreamWriter(PrintStream(result))).generate(metricsMap, "", null)
+        ProjectGenerator(OutputStreamWriter(PrintStream(result))).generate(metricsMap, null)
 
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())
@@ -48,7 +36,7 @@ class ProjectGeneratorTest {
         metricsMap["foo.java"] = FileMetrics().addMetric("bar", 18)
         val result = ByteArrayOutputStream()
 
-        ProjectGenerator(OutputStreamWriter(PrintStream(result))).generate(metricsMap, "", pipedProject)
+        ProjectGenerator(OutputStreamWriter(PrintStream(result))).generate(metricsMap, pipedProject)
 
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())

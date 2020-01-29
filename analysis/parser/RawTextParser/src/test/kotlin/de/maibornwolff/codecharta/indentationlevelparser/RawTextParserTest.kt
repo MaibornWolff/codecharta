@@ -45,7 +45,7 @@ class RawTextParserTest {
         val partialProject1 = ProjectDeserializer.deserializeProject(File(partialResult).inputStream())!!
         val partialProject2 = ProjectDeserializer.deserializeProject(File(pipedProject).inputStream())!!
         val expected = ByteArrayOutputStream()
-        ProjectSerializer.serializeProject(MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1, ""), OutputStreamWriter(PrintStream(expected)))
+        ProjectSerializer.serializeProject(MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1), OutputStreamWriter(PrintStream(expected)))
 
         val result = executeForOutput(input, arrayOf(fileToParse, "-p="))
 

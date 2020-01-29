@@ -12,13 +12,13 @@ import java.io.Writer
 class ProjectGenerator(private val writer: Writer) {
     private lateinit var projectBuilder: ProjectBuilder
 
-    fun generate(metricMap: Map<String, FileMetrics>, projectName: String = "", pipedProject: Project?) {
-        projectBuilder = ProjectBuilder(projectName)
+    fun generate(metricMap: Map<String, FileMetrics>, pipedProject: Project?) {
+        projectBuilder = ProjectBuilder()
         metricMap.forEach { addAsNode(it) }
 
         var project = projectBuilder.build()
         if (pipedProject != null) {
-            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectName)
+            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
 
         ProjectSerializer.serializeProject(project, writer)

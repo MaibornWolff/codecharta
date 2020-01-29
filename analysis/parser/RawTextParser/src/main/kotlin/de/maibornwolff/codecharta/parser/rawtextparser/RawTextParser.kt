@@ -32,25 +32,22 @@ class RawTextParser(private val input: InputStream = System.`in`,
     @CommandLine.Option(arity = "0..", names = ["-m", "--metrics"], description = ["metrics to be computed (select all if not specified)"])
     private var metrics: List<String> = listOf()
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = ""
-
-    @CommandLine.Option(names = ["--tabWidth"], description = ["tab width used (estimated if not provided)"])
+    @CommandLine.Option(names = ["--tab-width"], description = ["tab width used (estimated if not provided)"])
     private var tabWith: Int? = null
 
-    @CommandLine.Option(names = ["--maxIndentationLevel"], description = ["maximum Indentation Level (default 10)"])
+    @CommandLine.Option(names = ["--max-indentation-level"], description = ["maximum Indentation Level (default 10)"])
     private var maxIndentLvl: Int? = null
 
     @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["-f", "--fileExtensions"], description = ["parse only files with specified extensions (defualt: any)"])
+    @CommandLine.Option(names = ["-f", "--file-extensions"], description = ["parse only files with specified extensions (defualt: any)"])
     private var fileExtensions: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["--withoutDefaultExcludes"], description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "])
+    @CommandLine.Option(names = ["--without-default-excludes"], description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "])
     private var withoutDefaultExcludes = false
 
     @Throws(IOException::class)
@@ -67,7 +64,7 @@ class RawTextParser(private val input: InputStream = System.`in`,
         val results: Map<String, FileMetrics> = MetricCollector(file, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
-        ProjectGenerator(getWriter()).generate(results, projectName, pipedProject)
+        ProjectGenerator(getWriter()).generate(results, pipedProject)
         return null
     }
 
