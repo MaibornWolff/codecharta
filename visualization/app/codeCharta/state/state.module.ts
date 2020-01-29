@@ -39,7 +39,6 @@ import { SearchPanelService } from "./searchPanel.service"
 import { NodeSearchService } from "./nodeSearch.service"
 import { FileStateService } from "./fileState.service"
 import { MetricService } from "./metric.service"
-import { LoadingStatusService } from "./loadingStatus.service"
 import "../codeCharta.module"
 import _ from "lodash"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
@@ -87,4 +86,3 @@ angular
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
 	.service(_.camelCase(FileStateService.name), FileStateService)
 	.service(_.camelCase(MetricService.name), MetricService)
-	.service(_.camelCase(LoadingStatusService.name), LoadingStatusService)

@@ -6,10 +6,11 @@ import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService, ITimeoutService } from "angular"
 import * as THREE from "three"
 import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
-import { LoadingStatusService } from "../../../state/loadingStatus.service"
 import { StoreService } from "../../../state/store.service"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { setResetCameraIfNewFileIsLoaded } from "../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { setIsLoadingFile } from "../../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingMap } from "../../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -18,7 +19,6 @@ describe("ThreeOrbitControlsService", () => {
 	let storeService: StoreService
 	let threeCameraService: ThreeCameraService
 	let threeSceneService: ThreeSceneService
-	let loadingStatusService: LoadingStatusService
 
 	let vector: Vector3
 
@@ -42,7 +42,6 @@ describe("ThreeOrbitControlsService", () => {
 		storeService = getService<StoreService>("storeService")
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		vector = new Vector3(4.4577067775672665, 4.4577067775672665, 4.4577067775672665)
 	}
@@ -77,14 +76,7 @@ describe("ThreeOrbitControlsService", () => {
 	}
 
 	function rebuildService() {
-		threeOrbitControlsService = new ThreeOrbitControlsService(
-			$rootScope,
-			$timeout,
-			storeService,
-			threeCameraService,
-			threeSceneService,
-			loadingStatusService
-		)
+		threeOrbitControlsService = new ThreeOrbitControlsService($rootScope, $timeout, storeService, threeCameraService, threeSceneService)
 	}
 
 	describe("constructor", () => {
@@ -156,8 +148,8 @@ describe("ThreeOrbitControlsService", () => {
 		})
 
 		it("should call resetCamera, when map is not loading ", () => {
-			loadingStatusService["isLoadingFile"] = false
-			loadingStatusService["isLoadingMap"] = false
+			storeService.dispatch(setIsLoadingFile(false))
+			storeService.dispatch(setIsLoadingMap(false))
 
 			threeOrbitControlsService.onUnfocusNode()
 
@@ -165,8 +157,8 @@ describe("ThreeOrbitControlsService", () => {
 		})
 
 		it("should not call resetCamera, when map is loading ", () => {
-			loadingStatusService["isLoadingFile"] = true
-			loadingStatusService["isLoadingMap"] = false
+			storeService.dispatch(setIsLoadingFile(true))
+			storeService.dispatch(setIsLoadingMap(false))
 
 			threeOrbitControlsService.onUnfocusNode()
 

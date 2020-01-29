@@ -8,7 +8,6 @@ import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { TEST_FILE_WITH_PATHS, METRIC_DATA, withMockedEventMethods, FILE_STATES, STATE } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
-import { LoadingStatusService } from "../../state/loadingStatus.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import _ from "lodash"
@@ -26,7 +25,6 @@ describe("codeMapPreRenderService", () => {
 	let fileStateService: FileStateService
 	let metricService: MetricService
 	let codeMapRenderService: CodeMapRenderService
-	let loadingStatusService: LoadingStatusService
 	let edgeMetricDataService: EdgeMetricDataService
 
 	let file: CCFile
@@ -40,7 +38,6 @@ describe("codeMapPreRenderService", () => {
 		rebuildService()
 		withMockedEventMethods($rootScope)
 		withMockedFileStateService()
-		withMockedLoadingStatusService()
 		withMockedCodeMapRenderService()
 		withMockedMetricService()
 		withUnifiedMapAndFileMeta()
@@ -77,7 +74,6 @@ describe("codeMapPreRenderService", () => {
 			fileStateService,
 			metricService,
 			codeMapRenderService,
-			loadingStatusService,
 			edgeMetricDataService
 		)
 	}
@@ -86,14 +82,6 @@ describe("codeMapPreRenderService", () => {
 		codeMapRenderService = codeMapPreRenderService["codeMapRenderService"] = jest.fn().mockReturnValue({
 			render: jest.fn(),
 			scaleMap: jest.fn()
-		})()
-	}
-
-	function withMockedLoadingStatusService() {
-		loadingStatusService = codeMapPreRenderService["loadingStatusService"] = jest.fn().mockReturnValue({
-			updateLoadingMapFlag: jest.fn(),
-			updateLoadingFileFlag: jest.fn(),
-			isLoadingNewFile: jest.fn().mockReturnValue(true)
 		})()
 	}
 
