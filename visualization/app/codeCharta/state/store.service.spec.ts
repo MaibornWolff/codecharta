@@ -12,6 +12,7 @@ import { FileStateService } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 import { LoadingStatusService } from "./loadingStatus.service"
+import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -171,12 +172,27 @@ describe("StoreService", () => {
 			expect(loadingStatusService.updateLoadingMapFlag).toHaveBeenCalled()
 		})
 
+		it("should set state", () => {
+			storeService.dispatch(setIsLoadingMap(false))
+
+			storeService.dispatch(setState())
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
+		})
+
 		it("should not show loading map gif for silent mode", () => {
 			loadingStatusService.updateLoadingMapFlag = jest.fn()
 
 			storeService.dispatch(setState(), true)
 
 			expect(loadingStatusService.updateLoadingMapFlag).not.toHaveBeenCalled()
+		})
+		it("should not set state", () => {
+			storeService.dispatch(setIsLoadingMap(false))
+
+			storeService.dispatch(setState(), true)
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 	})
 })

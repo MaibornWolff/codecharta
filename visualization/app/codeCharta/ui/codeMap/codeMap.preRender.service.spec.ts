@@ -159,6 +159,7 @@ describe("codeMapPreRenderService", () => {
 
 			setTimeout(() => {
 				expect(codeMapRenderService.render).toHaveBeenCalled()
+				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 				done()
 			}, codeMapPreRenderService["DEBOUNCE_TIME"])
 		})
@@ -171,34 +172,47 @@ describe("codeMapPreRenderService", () => {
 
 			expect(codeMapRenderService.render).not.toHaveBeenCalled()
 		})
+
+		it("should update loading map flag in store", () => {
+			codeMapPreRenderService.onStoreChanged(ScalingActions.SET_SCALING)
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
+		})
 	})
 
 	describe("onScalingChanged", () => {
-		it("should call codeMapRenderService.render", () => {
+		beforeEach(() => {
 			withUnifiedMapAndFileMeta()
 			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
-
+		})
+		it("should call codeMapRenderService.render", () => {
 			codeMapPreRenderService.onScalingChanged(new Vector3(1, 2, 3))
 
 			expect(codeMapRenderService.scaleMap).toHaveBeenCalled()
 		})
-	})
+		it("should update loading map flag in store", () => {
+			codeMapPreRenderService.onScalingChanged(new Vector3(1, 2, 3))
 
-	describe("subscribe", () => {
-		it("should call $on", () => {
-			CodeMapPreRenderService.subscribe($rootScope, undefined)
-
-			expect($rootScope.$on).toHaveBeenCalled()
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 	})
 
 	describe("onMetricDataAdded", () => {
 		const originalDecorateMap = NodeDecorator.decorateMap
+		beforeEach(() => {
+			withUnifiedMapAndFileMeta()
+			edgeMetricDataService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
+				if (node.data.name === "big leaf") {
+					return new Map().set("metric1", { incoming: 1, outgoing: 2 })
+				} else {
+					return new Map()
+				}
+			})
+		})
 
 		it("should call Node Decorator functions if all required data is available", () => {
 			NodeDecorator.decorateMap = jest.fn()
 			NodeDecorator.decorateParentNodesWithSumAttributes = jest.fn()
-			withUnifiedMapAndFileMeta()
 
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
@@ -208,14 +222,6 @@ describe("codeMapPreRenderService", () => {
 
 		it("should retrieve correct edge metrics for leaves", () => {
 			NodeDecorator.decorateMap = originalDecorateMap
-			edgeMetricDataService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
-				if (node.data.name === "big leaf") {
-					return new Map().set("metric1", { incoming: 1, outgoing: 2 })
-				} else {
-					return new Map()
-				}
-			})
-			withUnifiedMapAndFileMeta()
 
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 

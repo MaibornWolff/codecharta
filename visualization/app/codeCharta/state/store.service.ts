@@ -8,6 +8,7 @@ import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 import { LoadingStatusService } from "./loadingStatus.service"
+import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -30,6 +31,7 @@ export class StoreService implements FileStateSubscriber {
 	public dispatch(action: CCAction, isSilent: boolean = false) {
 		if (!isSilent) {
 			this.loadingStatusService.updateLoadingMapFlag(true)
+			this.store.dispatch(setIsLoadingMap(true))
 		}
 
 		splitStateActions(action).forEach(atomicAction => {
@@ -45,8 +47,8 @@ export class StoreService implements FileStateSubscriber {
 	}
 
 	private getNewFileSettings(fileStates: FileState[]): FileSettings {
-		let withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
-		let visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
+		const withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
+		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
 		return SettingsMerger.getMergedFileSettings(visibleFiles, withUpdatedPath)
 	}
 

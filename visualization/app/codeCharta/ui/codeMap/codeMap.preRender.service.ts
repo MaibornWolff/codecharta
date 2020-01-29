@@ -16,6 +16,7 @@ import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import _ from "lodash"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
+import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -175,6 +176,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private notifyLoadingMapStatus() {
 		this.loadingStatusService.updateLoadingMapFlag(false)
+		this.storeService.dispatch(setIsLoadingMap(false))
 	}
 
 	private notifyMapChanged() {
