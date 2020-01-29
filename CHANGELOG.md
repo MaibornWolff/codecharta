@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Options of the ccsh are now consistently in kebab-case #772
+
 ### Removed 🗑
 
 ### Fixed 🐞
