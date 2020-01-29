@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - RawTextParser for analysis #660
 - IndentationLevel as metric for RawTextParser #660
+- Show additional Pairing Rate of Selected Building, simultaneously to the currently hovered Buildings #736
 
 ### Changed
 

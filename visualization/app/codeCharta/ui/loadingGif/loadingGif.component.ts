@@ -1,8 +1,9 @@
 import "./loadingGif.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { LoadingStatusServiceSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
+import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import { IsLoadingMapService, IsLoadingMapSubscriber } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.service"
 
-export class LoadingGifController implements LoadingStatusServiceSubscriber {
+export class LoadingGifController implements IsLoadingFileSubscriber, IsLoadingMapSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isLoadingMap: boolean
@@ -13,15 +14,16 @@ export class LoadingGifController implements LoadingStatusServiceSubscriber {
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService) {
-		LoadingStatusService.subscribe(this.$rootScope, this)
+		IsLoadingFileService.subscribe(this.$rootScope, this)
+		IsLoadingMapService.subscribe(this.$rootScope, this)
 	}
 
-	public onLoadingFileStatusChanged(isLoadingFile: boolean) {
+	public onIsLoadingFileChanged(isLoadingFile: boolean) {
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
 	}
 
-	public onLoadingMapStatusChanged(isLoadingMap: boolean) {
+	public onIsLoadingMapChanged(isLoadingMap: boolean) {
 		this._viewModel.isLoadingMap = isLoadingMap
 		this.synchronizeAngularTwoWayBinding()
 	}
