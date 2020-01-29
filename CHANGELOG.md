@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Support for camel and kebab-case for ccsh arguments #772
+
 ### Changed
 
 - Options of the ccsh are now consistently in kebab-case #772
