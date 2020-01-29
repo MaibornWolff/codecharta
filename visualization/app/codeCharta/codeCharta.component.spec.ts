@@ -111,6 +111,11 @@ describe("codeChartaController", () => {
 
 			expect(loadingStatusService.updateLoadingFileFlag).toHaveBeenCalledWith(true)
 		})
+		it("should show loading file gif", () => {
+			rebuildController()
+
+			expect(storeService.getState().appSettings.isLoadingFile).toBeTruthy()
+		})
 	})
 
 	describe("loadFileOrSample", () => {

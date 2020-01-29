@@ -9,6 +9,7 @@ import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT, withMockedEventMethods } from "../../util/dataMocks"
 import _ from "lodash"
 import { LoadingStatusService } from "../../state/loadingStatus.service"
+import { StoreService } from "../../state/store.service"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
@@ -17,6 +18,7 @@ describe("fileChooserController", () => {
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
 	let loadingStatusService: LoadingStatusService
+	let storeSevice: StoreService
 
 	let fileName: string
 	let content: any
@@ -43,6 +45,7 @@ describe("fileChooserController", () => {
 		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
+		storeSevice = getService<StoreService>("storeService")
 
 		fileName = "someFile.json"
 		content = _.cloneDeep(TEST_FILE_CONTENT)
@@ -54,7 +57,8 @@ describe("fileChooserController", () => {
 			dialogService,
 			codeChartaService,
 			fileStateService,
-			loadingStatusService
+			loadingStatusService,
+			storeSevice
 		)
 	}
 
@@ -95,6 +99,12 @@ describe("fileChooserController", () => {
 			fileChooserController.onImportNewFiles({ files: [] })
 
 			expect(loadingStatusService.updateLoadingFileFlag).not.toHaveBeenCalled()
+		})
+
+		it("should not set state if no file loaded", () => {
+			fileChooserController.onImportNewFiles({ files: [] })
+
+			expect(storeSevice.getState().appSettings.isLoadingFile).toBeTruthy()
 		})
 	})
 

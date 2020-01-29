@@ -17,6 +17,7 @@ import { ScalingService } from "../../state/store/appSettings/scaling/scaling.se
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { Vector3 } from "three"
+import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -42,6 +43,8 @@ describe("codeMapPreRenderService", () => {
 		withMockedLoadingStatusService()
 		withMockedCodeMapRenderService()
 		withMockedMetricService()
+		withUnifiedMapAndFileMeta()
+		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 	})
 
 	afterEach(() => {
@@ -90,7 +93,7 @@ describe("codeMapPreRenderService", () => {
 		loadingStatusService = codeMapPreRenderService["loadingStatusService"] = jest.fn().mockReturnValue({
 			updateLoadingMapFlag: jest.fn(),
 			updateLoadingFileFlag: jest.fn(),
-			isLoadingNewFile: jest.fn()
+			isLoadingNewFile: jest.fn().mockReturnValue(true)
 		})()
 	}
 
@@ -152,45 +155,36 @@ describe("codeMapPreRenderService", () => {
 
 	describe("onStoreChanged", () => {
 		it("should call codeMapRenderService.render", done => {
-			withUnifiedMapAndFileMeta()
-			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
-
 			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
 
 			setTimeout(() => {
 				expect(codeMapRenderService.render).toHaveBeenCalled()
+				expect(storeService.getState().appSettings.isLoadingFile).toBeFalsy()
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 				done()
-			}, codeMapPreRenderService["DEBOUNCE_TIME"])
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
 		})
 
 		it("should not call codeMapRenderService.render for scaling actions", () => {
-			withUnifiedMapAndFileMeta()
-			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
-
 			codeMapPreRenderService.onStoreChanged(ScalingActions.SET_SCALING)
 
 			expect(codeMapRenderService.render).not.toHaveBeenCalled()
 		})
 
-		it("should update loading map flag in store", () => {
-			codeMapPreRenderService.onStoreChanged(ScalingActions.SET_SCALING)
+		it("should not call codeMapRenderService.render for scaling actions", () => {
+			codeMapPreRenderService.onStoreChanged(IsLoadingMapActions.SET_IS_LOADING_MAP)
 
-			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
+			expect(codeMapRenderService.render).not.toHaveBeenCalled()
 		})
 	})
 
 	describe("onScalingChanged", () => {
-		beforeEach(() => {
-			withUnifiedMapAndFileMeta()
-			storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
-		})
 		it("should call codeMapRenderService.render", () => {
 			codeMapPreRenderService.onScalingChanged(new Vector3(1, 2, 3))
 
 			expect(codeMapRenderService.scaleMap).toHaveBeenCalled()
 		})
-		it("should update loading map flag in store", () => {
+		it("should stop the loading map gif", () => {
 			codeMapPreRenderService.onScalingChanged(new Vector3(1, 2, 3))
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
@@ -200,7 +194,6 @@ describe("codeMapPreRenderService", () => {
 	describe("onMetricDataAdded", () => {
 		const originalDecorateMap = NodeDecorator.decorateMap
 		beforeEach(() => {
-			withUnifiedMapAndFileMeta()
 			edgeMetricDataService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
 				if (node.data.name === "big leaf") {
 					return new Map().set("metric1", { incoming: 1, outgoing: 2 })

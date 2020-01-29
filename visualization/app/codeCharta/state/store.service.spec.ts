@@ -13,6 +13,7 @@ import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 import { LoadingStatusService } from "./loadingStatus.service"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setDynamicMargin } from "./store/appSettings/dynamicMargin/dynamicMargin.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -172,7 +173,7 @@ describe("StoreService", () => {
 			expect(loadingStatusService.updateLoadingMapFlag).toHaveBeenCalled()
 		})
 
-		it("should set state", () => {
+		it("should show loading map gif when state changes", () => {
 			storeService.dispatch(setIsLoadingMap(false))
 
 			storeService.dispatch(setState())
@@ -187,10 +188,10 @@ describe("StoreService", () => {
 
 			expect(loadingStatusService.updateLoadingMapFlag).not.toHaveBeenCalled()
 		})
-		it("should not set state", () => {
+		it("should not set state, if triggered silently", () => {
 			storeService.dispatch(setIsLoadingMap(false))
 
-			storeService.dispatch(setState(), true)
+			storeService.dispatch(setDynamicMargin(true), true)
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})

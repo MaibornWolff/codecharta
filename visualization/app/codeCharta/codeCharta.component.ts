@@ -11,6 +11,7 @@ import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
+import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -39,6 +40,7 @@ export class CodeChartaController {
 	) {
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.loadingStatusService.updateLoadingFileFlag(true)
+		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
 	}
 
@@ -80,6 +82,7 @@ export class CodeChartaController {
 			})
 			.catch(e => {
 				this.loadingStatusService.updateLoadingFileFlag(false)
+				this.storeService.dispatch(setIsLoadingFile(false))
 				console.error(e)
 				this.printErrors(e)
 			})
