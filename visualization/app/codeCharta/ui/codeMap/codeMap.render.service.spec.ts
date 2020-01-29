@@ -195,6 +195,8 @@ describe("codeMapRenderService", () => {
 
 		beforeEach(() => {
 			sortedNodes = TEST_NODES
+			codeMapArrowService.clearArrows = jest.fn()
+			codeMapArrowService["addEdgePreview"] = jest.fn()
 		})
 
 		it("should call codeMapArrowService.clearArrows", () => {
@@ -208,7 +210,7 @@ describe("codeMapRenderService", () => {
 
 			codeMapRenderService["setArrows"](sortedNodes)
 
-			expect(codeMapArrowService["addEdgeArrows"]).toHaveBeenCalledWith(sortedNodes, storeService.getState().fileSettings.edges)
+			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalledWith(sortedNodes, storeService.getState().fileSettings.edges)
 		})
 	})
 
