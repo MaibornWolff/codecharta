@@ -22,24 +22,24 @@ class SourceCodeParserMain(
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
-    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/\\..*")
+    private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
     @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @Option(names = ["-i", "--noIssues"], description = ["do not search for sonar issues"])
+    @Option(names = ["-i", "--no-issues"], description = ["do not search for sonar issues"])
     private var findNoIssues = false
 
     @Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
-    @Option(names = ["--defaultExcludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
+    @Option(names = ["--default-excludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
     private var defaultExcludes = false
 
     @Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
     private var outputFormat = OutputFormat.JSON
 
-    @Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
     @Option(names = ["-v", "--verbose"], description = ["display info messages from sonar plugins"])

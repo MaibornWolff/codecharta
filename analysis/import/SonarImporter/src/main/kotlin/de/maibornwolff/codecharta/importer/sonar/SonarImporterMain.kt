@@ -29,7 +29,7 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
             description = ["sonarqube project id"])
     private var projectId = ""
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
 
     @CommandLine.Option(names = ["-m", "--metrics"], description = ["comma-separated list of metrics to import"])
