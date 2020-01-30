@@ -183,7 +183,7 @@ describe("codeMapPreRenderService", () => {
 		it("should decorate and set a new render map", () => {
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
-			expect(this.unifiedMap).toMatchSnapshot()
+			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
 	})
 })
