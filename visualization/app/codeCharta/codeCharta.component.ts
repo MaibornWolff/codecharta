@@ -6,11 +6,11 @@ import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { NameDataPair } from "./model/codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
-import { LoadingStatusService } from "./state/loadingStatus.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
+import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -33,12 +33,11 @@ export class CodeChartaController {
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
 		private fileStateService: FileStateService,
-		private loadingStatusService: LoadingStatusService,
 		// tslint:disable-next-line
 		private injectorService: InjectorService // We have to inject it somewhere
 	) {
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
-		this.loadingStatusService.updateLoadingFileFlag(true)
+		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
 	}
 
@@ -79,7 +78,7 @@ export class CodeChartaController {
 				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenario().settings))
 			})
 			.catch(e => {
-				this.loadingStatusService.updateLoadingFileFlag(false)
+				this.storeService.dispatch(setIsLoadingFile(false))
 				console.error(e)
 				this.printErrors(e)
 			})

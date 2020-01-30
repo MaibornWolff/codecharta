@@ -40,7 +40,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.startAnimation()
 		this.viewCubeMouseEventsService.init(this.cubeGroup, this.camera, this.renderer)
 
-		ThreeOrbitControlsService.subscribe($rootScope, this)
+		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 		ViewCubeMouseEventsService.subscribeToViewCubeMouseEvents(this.$rootScope, this)
 	}
 

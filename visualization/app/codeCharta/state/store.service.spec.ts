@@ -11,12 +11,12 @@ import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { FileStateService } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
-import { LoadingStatusService } from "./loadingStatus.service"
+import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setDynamicMargin } from "./store/appSettings/dynamicMargin/dynamicMargin.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
-	let loadingStatusService: LoadingStatusService
 
 	let fileStates: FileState[]
 
@@ -29,7 +29,6 @@ describe("StoreService", () => {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 
 		fileStates = [
 			{ file: JSON.parse(JSON.stringify(TEST_DELTA_MAP_A)), selectedAs: FileSelectionState.Comparison },
@@ -38,7 +37,7 @@ describe("StoreService", () => {
 	}
 
 	function rebuildService() {
-		storeService = new StoreService($rootScope, loadingStatusService)
+		storeService = new StoreService($rootScope)
 	}
 
 	describe("constructor", () => {
@@ -163,20 +162,20 @@ describe("StoreService", () => {
 			expect(storeService.getState()).toEqual(STATE)
 		})
 
-		it("should show loading map gif", () => {
-			loadingStatusService.updateLoadingMapFlag = jest.fn()
+		it("should show loading map gif when state changes", () => {
+			storeService.dispatch(setIsLoadingMap(false))
 
 			storeService.dispatch(setState())
 
-			expect(loadingStatusService.updateLoadingMapFlag).toHaveBeenCalled()
+			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
 		})
 
-		it("should not show loading map gif for silent mode", () => {
-			loadingStatusService.updateLoadingMapFlag = jest.fn()
+		it("should not set state, if triggered silently", () => {
+			storeService.dispatch(setIsLoadingMap(false))
 
-			storeService.dispatch(setState(), true)
+			storeService.dispatch(setDynamicMargin(true), true)
 
-			expect(loadingStatusService.updateLoadingMapFlag).not.toHaveBeenCalled()
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 	})
 })

@@ -12,7 +12,7 @@ export class ScalingService implements StoreSubscriber {
 	private static SCALING_CHANGED_EVENT = "scaling-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		StoreService.subscribe($rootScope, this)
+		StoreService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {

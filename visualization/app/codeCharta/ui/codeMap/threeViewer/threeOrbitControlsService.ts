@@ -2,7 +2,6 @@ import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService, IAngularEvent, ITimeoutService } from "angular"
 import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { ThreeSceneService } from "./threeSceneService"
-import { LoadingStatusService } from "../../../state/loadingStatus.service"
 import { StoreService } from "../../../state/store.service"
 import {
 	FocusedNodePathService,
@@ -29,8 +28,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		private $timeout: ITimeoutService,
 		private storeService: StoreService,
 		private threeCameraService: ThreeCameraService,
-		private threeSceneService: ThreeSceneService,
-		private loadingStatusService: LoadingStatusService
+		private threeSceneService: ThreeSceneService
 	) {
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
@@ -42,9 +40,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public onUnfocusNode() {
-		if (!this.loadingStatusService.isLoadingNewFile() && !this.loadingStatusService.isLoadingNewMap()) {
-			this.autoFitTo()
-		}
+		this.autoFitTo()
 	}
 
 	public onFileStatesChanged(fileStates: FileState[]) {

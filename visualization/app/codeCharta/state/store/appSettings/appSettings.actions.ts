@@ -15,6 +15,8 @@ import { defaultMapColors } from "./mapColors/mapColors.actions"
 import { defaultIsPresentationMode } from "./isPresentationMode/isPresentationMode.actions"
 import { defaultShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.actions"
 import { defaultResetIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
+import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -50,5 +52,7 @@ export const defaultAppSettings: AppSettings = {
 	mapColors: defaultMapColors,
 	isPresentationMode: defaultIsPresentationMode,
 	showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,
-	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded
+	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded,
+	isLoadingMap: defaultIsLoadingMap,
+	isLoadingFile: defaultIsLoadingFile
 }

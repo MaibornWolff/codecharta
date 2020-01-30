@@ -109,7 +109,7 @@ describe("state.splitter", () => {
 	describe("setAppSettings", () => {
 		it("should return 1 SET_SCALING action", () => {
 			const partialAppSettings = {
-				scaling: { x: 2, y: 3, z: 4 }
+				scaling: new Vector3(2, 3, 4)
 			}
 
 			const result: CCAction[] = splitStateActions(setAppSettings(partialAppSettings))

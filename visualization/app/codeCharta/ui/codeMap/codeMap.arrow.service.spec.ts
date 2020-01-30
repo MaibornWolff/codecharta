@@ -4,23 +4,19 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { Object3D, Vector3 } from "three"
+import { CODE_MAP_BUILDING, OUTGOING_NODE, INCOMING_NODE } from "../../util/dataMocks"
 import { Edge, EdgeVisibility, Node } from "../../model/codeCharta.model"
-import { TEST_NODE_LEAF, TEST_NODE_ROOT, VALID_EDGES } from "../../util/dataMocks"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { ColorConverter } from "../../util/color/colorConverter"
 import { StoreService } from "../../state/store.service"
-import _ from "lodash"
-import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 
 describe("CodeMapArrowService", () => {
 	let codeMapArrowService: CodeMapArrowService
-	let storeService: StoreService
 	let threeSceneService: ThreeSceneService
 	let $rootScope: IRootScopeService
-
-	let nodes: Node[]
-	let edges: Edge[]
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
@@ -35,12 +31,9 @@ describe("CodeMapArrowService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
-		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
-
-		nodes = _.cloneDeep([TEST_NODE_ROOT, TEST_NODE_LEAF])
-		edges = _.cloneDeep(VALID_EDGES)
+		storeService = getService<StoreService>("storeService")
+		$rootScope = getService<IRootScopeService>("$rootScope")
 	}
 
 	function rebuildService() {
@@ -52,7 +45,19 @@ describe("CodeMapArrowService", () => {
 			edgeArrows: {
 				children: [],
 				add: jest.fn()
-			}
+			},
+			highlightedBuildings: [],
+			getMapMesh: jest.fn().mockReturnValue({
+				getMeshDescription: jest.fn().mockReturnValue({ getBuildingByPath: jest.fn() }),
+				clearHighlight: jest.fn(),
+				highlightBuilding: jest.fn(),
+				clearSelection: jest.fn(),
+				selectBuilding: jest.fn()
+			}),
+			addBuildingToHighlightingList: jest.fn(),
+			getSelectedBuilding: jest.fn().mockReturnValue({
+				value: "value"
+			})
 		})()
 	}
 
@@ -88,6 +93,45 @@ describe("CodeMapArrowService", () => {
 		})
 	})
 
+	describe("SelectionMethods", () => {
+		beforeEach(() => {
+			codeMapArrowService.clearArrows = jest.fn()
+			codeMapArrowService["showEdgesOfBuildings"] = jest.fn()
+			codeMapArrowService.addEdgePreview = jest.fn()
+		})
+		it("should call clearArrows and showEdgesOfBuildings through BuildingSelected", () => {
+			codeMapArrowService.onBuildingSelected(CODE_MAP_BUILDING)
+
+			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()
+			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalledTimes(0)
+		})
+
+		it("should call clearArrows and showEdgesOfBuildings through BuildingHovered", () => {
+			codeMapArrowService.onBuildingHovered(CODE_MAP_BUILDING)
+
+			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()
+			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalledTimes(0)
+		})
+
+		it("should call clearArrows and showEdgesOfBuildings through BuildingUnHovered", () => {
+			codeMapArrowService.onBuildingUnhovered()
+
+			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalled()
+			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalledTimes(0)
+		})
+
+		it("should call clearArrows and showEdgesOfBuildings through BuildingDeselcted", () => {
+			codeMapArrowService.onBuildingDeselected()
+
+			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
+			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalled()
+		})
+	})
+
 	describe("clearArrows", () => {
 		it("should remove all array entries of field arrows", () => {
 			setupEdgeArrowsWithChildren()
@@ -106,73 +150,74 @@ describe("CodeMapArrowService", () => {
 		})
 	})
 
-	describe("addEdgeArrows", () => {
+	describe("addEdgePreview", () => {
 		beforeEach(() => {
-			codeMapArrowService.addArrow = jest.fn()
+			codeMapArrowService["map"] = new Map<String, Node>()
+			codeMapArrowService["map"].get = jest.fn(() => {
+				return INCOMING_NODE
+			})
+			codeMapArrowService["previewMode"] = jest.fn()
 		})
+		it("should create and edge Preview of one", () => {
+			const nodes: Node[] = [OUTGOING_NODE]
+			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
 
-		it("should call addArrow with origin and target node", () => {
-			edges[0].toNodeName = "/root"
-			edges[0].visible = EdgeVisibility.both
+			codeMapArrowService.addEdgePreview(nodes, edges)
 
-			codeMapArrowService.addEdgeArrows(nodes, edges)
+			expect(codeMapArrowService["map"].size).toEqual(1)
+		})
+		it("should create and no edge Preview at all", () => {
+			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
 
-			expect(codeMapArrowService.addArrow).toHaveBeenCalledWith(nodes[0], nodes[1], EdgeVisibility.both)
+			codeMapArrowService.addEdgePreview(null, edges)
+
+			expect(codeMapArrowService["map"].size).toEqual(0)
 		})
 	})
 
-	describe("addArrow", () => {
+	describe("createCurve", () => {
+		it("should create a curve out of the 2 Nodes", () => {
+			const originNode: Node = OUTGOING_NODE
+			const targetNode: Node = INCOMING_NODE
+			const curveScale = 100 * storeService.getState().appSettings.edgeHeight
+
+			const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
+
+			expect(curve).toBeDefined()
+		})
+	})
+
+	describe("highlightBuilding", () => {
+		it("should highlight certain buildings", () => {
+			codeMapArrowService["highlightBuilding"](OUTGOING_NODE)
+			expect(threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath).toHaveBeenCalled()
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
+		})
+	})
+
+	describe("setCurveColor", () => {
 		beforeEach(() => {
-			nodes[0].incomingEdgePoint = new Vector3()
-			nodes[0].outgoingEdgePoint = new Vector3()
+			threeSceneService.edgeArrows["add"] = jest.fn()
+			codeMapArrowService["arrows"].push = jest.fn()
 		})
+		it("should run through the function with mocked subfunctions", () => {
+			const originNode: Node = OUTGOING_NODE
+			const targetNode: Node = INCOMING_NODE
+			const curveScale = 100 * storeService.getState().appSettings.edgeHeight
+			const curve = codeMapArrowService["createCurve"](originNode, targetNode, curveScale)
+			const color = ColorConverter.convertHexToNumber(storeService.getState().appSettings.mapColors.outgoingEdge)
 
-		it("should add outgoing and incoming arrow if node has a height attribute mentioned in renderSettings", () => {
-			storeService.dispatch(setHeightMetric("a"))
+			codeMapArrowService["setCurveColor"](curve, color)
 
-			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.both)
-
-			expect(codeMapArrowService["arrows"].length).toBe(2)
-		})
-
-		it("should insert one arrow, if we set the EdgeVisibility to from", () => {
-			storeService.dispatch(setHeightMetric("a"))
-
-			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.from)
-
-			expect(codeMapArrowService["arrows"].length).toBe(1)
-		})
-
-		it("should insert one arrow, if we set the EdgeVisibility to to", () => {
-			storeService.dispatch(setHeightMetric("a"))
-
-			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.to)
-
-			expect(codeMapArrowService["arrows"].length).toBe(1)
-		})
-
-		it("should't insert arrow, if we set the EdgeVisibility to none", () => {
-			storeService.dispatch(setHeightMetric("a"))
-
-			codeMapArrowService.addArrow(nodes[0], nodes[0], EdgeVisibility.none)
-
-			expect(codeMapArrowService["arrows"].length).toBe(0)
-		})
-
-		it("should not add arrows if node has not a height attribute mentioned in renderSettings", () => {
-			storeService.dispatch(setHeightMetric("some"))
-			nodes[0].attributes = { notsome: 0 }
-
-			codeMapArrowService.addArrow(nodes[0], nodes[0])
-
-			expect(codeMapArrowService["arrows"].length).toBe(0)
+			expect(threeSceneService.edgeArrows["add"]).toHaveBeenCalled()
+			expect(codeMapArrowService["arrows"].push).toHaveBeenCalled()
 		})
 	})
 
 	describe("scale", () => {
 		it("should set the scale of all arrows to x, y and z", () => {
-			storeService.dispatch(setScaling(new Vector3(1, 2, 3)))
 			setupArrows()
+			storeService.dispatch(setScaling(new Vector3(1, 2, 3)))
 
 			codeMapArrowService.scale()
 

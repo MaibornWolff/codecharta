@@ -22,7 +22,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 		private storeService: StoreService,
 		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
-		SearchPatternService.subscribe($rootScope, this)
+		SearchPatternService.subscribe(this.$rootScope, this)
 	}
 
 	public onSearchPatternChanged(searchPattern: string) {

@@ -1,8 +1,9 @@
 import { CCFile, FileSelectionState, FileState } from "../model/codeCharta.model"
 import { IRootScopeService } from "angular"
-import { LoadingStatusService } from "./loadingStatus.service"
-import _ from "lodash"
+
 import { FileStateHelper } from "../util/fileStateHelper"
+import { StoreService } from "./store.service"
+import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 export interface FileStateSubscriber {
 	onFileStatesChanged(fileStates: FileState[])
@@ -14,7 +15,7 @@ export class FileStateService {
 	private fileStates: Array<FileState> = []
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private loadingStatusService: LoadingStatusService) {}
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {}
 
 	public resetMaps() {
 		this.fileStates = []
@@ -92,7 +93,7 @@ export class FileStateService {
 	}
 
 	private notifySelectionChange() {
-		this.loadingStatusService.updateLoadingMapFlag(true)
+		this.storeService.dispatch(setIsLoadingMap(true))
 		this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
 	}
 

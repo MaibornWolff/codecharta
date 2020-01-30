@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, MaibornWolff GmbH
+ * Copyright (c) 2020, MaibornWolff GmbH
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,8 +59,8 @@ object ProjectDeserializer {
         return try {
             deserializeProject(projectString)
         } catch (e: Exception) {
-            logger.error("Piped input: $projectString")
-            logger.error("The piped input is not a valid project.")
+            logger.error { "Piped input: $projectString" }
+            logger.error { "The piped input is not a valid project." }
             null
         }
     }
