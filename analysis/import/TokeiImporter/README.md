@@ -33,24 +33,24 @@ Run `tokei . --output json > tokei_results.json` in the project's root folder.
 ## Usage of the Tokei Importer
 
 ```
-Usage: ccsh tokeiimporter [-h] [--pathSeparator=<pathSeparator>]
+Usage: ccsh tokeiimporter [-h] [--path-separator=<pathSeparator>]
                           [-o=<outputFile>] [-p=<projectName>] [-r=<rootName>]
                           [FILE]
 generates cc.json from tokei json
       [FILE]   sourcemonitor csv file
-      --pathSeparator=<pathSeparator>
+      --path-separator=<pathSeparator>
                path separator (default = '/')
   -h, --help   displays this help and exits
-  -o, --outputFile=<outputFile>
+  -o, --output-file=<outputFile>
                output File (or empty for stdout)
-  -r, --rootName=<rootName>
+  -r, --root-name=<rootName>
                root folder as specified when executing tokei
 ```
 
 Examples:
 
 ```
-sh ./ccsh tokeiimporter tokei_results.json --pathSeparator \\ -p myProject
+sh ./ccsh tokeiimporter tokei_results.json --path-separator \\
 ```
 
 ```
