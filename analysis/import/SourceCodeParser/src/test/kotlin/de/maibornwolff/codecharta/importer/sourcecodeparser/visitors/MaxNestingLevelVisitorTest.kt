@@ -1,10 +1,9 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.visitors
 
-import junit.framework.Assert.assertEquals
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder
-
 import org.sonar.java.ast.parser.JavaParser
 import org.sonar.java.model.DefaultJavaFileScannerContext
 import org.sonar.java.model.JavaVersionImpl
@@ -39,27 +38,27 @@ class MaxNestingLevelVisitorTest {
     fun getMaxNestingLevelOfNestedIfs() {
         val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("nested_ifs.java"))
 
-        assertEquals(2, maxNestingLevel)
+        Assertions.assertThat(maxNestingLevel).isEqualTo(2)
     }
 
     @Test
     fun getMaxNestingLevelOfIfElse() {
         val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("if_else.java"))
 
-        assertEquals(1, maxNestingLevel)
+        Assertions.assertThat(maxNestingLevel).isEqualTo(1)
     }
 
     @Test
     fun getMaxNestingLevelOfGoldenTest() {
         val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("golden_test.java"))
 
-        assertEquals(7, maxNestingLevel)
+        Assertions.assertThat(maxNestingLevel).isEqualTo(7)
     }
 
     @Test
     fun getMaxNestingLevelOfLambdaFunctions() {
         val maxNestingLevel = MaxNestingLevelVisitor().getMaxNestingLevel(getTree("lambda_function.java"))
 
-        assertEquals(2, maxNestingLevel)
+        Assertions.assertThat(maxNestingLevel).isEqualTo(2)
     }
 }

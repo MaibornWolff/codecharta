@@ -23,10 +23,10 @@ class CSVExporter: Callable<Void> {
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["json files"])
     private var sources: Array<File> = arrayOf()
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
 
-    @CommandLine.Option(names = ["--depthOfHierarchy"], description = ["depth of the hierarchy"])
+    @CommandLine.Option(names = ["--depth-of-hierarchy"], description = ["depth of the hierarchy"])
     private var maxHierarchy: Int = 10
 
     private fun writer(): Writer {
@@ -40,7 +40,7 @@ class CSVExporter: Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
         if (maxHierarchy < 0) {
-            throw IllegalArgumentException("depthOfHierarchy must not be negative")
+            throw IllegalArgumentException("depth-of-hierarchy must not be negative")
         }
 
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.reader()) }

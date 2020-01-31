@@ -10,7 +10,7 @@ class ParseFolderToTable {
     private val resource = "src/test/resources/sampleproject"
 
     private val output = retrieveStreamAsString {
-        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=table", "--defaultExcludes"))
+        SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=table", "--default-excludes"))
     }
 
     @Test
