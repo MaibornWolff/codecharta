@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.41.9",
+	"version": "1.42.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -58,8 +58,9 @@
 	},
 	"scripts": {
 		"start": "run --mirror https://dl.nwjs.io/ .",
-		"build": "webpack --config ./conf/webpack.config.js",
-		"dev": "webpack-dev-server --config ./conf/webpack.config.js --open",
+		"build": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='true' --env.STANDALONE=true",
+		"build:web": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='false' --env.STANDALONE=false",
+		"dev": "webpack-dev-server --config ./conf/webpack.config.js --open --define process.env.STANDALONE='false' --env.STANDALONE=false",
 		"test": "jest .*\\.spec\\.ts --runInBand",
 		"test:auto": "jest .*\\.spec\\.ts --watch",
 		"test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",

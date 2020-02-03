@@ -13,13 +13,13 @@ class UnderstandImporter: Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["Understand csv files"])
     private var files: List<File> = mutableListOf()
 
-    @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
+    @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
 
     private val logger = KotlinLogging.logger {}

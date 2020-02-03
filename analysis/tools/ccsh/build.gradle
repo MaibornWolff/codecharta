@@ -31,6 +31,7 @@ dependencies {
     def edgeFilter = project(':filter:EdgeFilter')
     def validationTool = project(':tools:ValidationTool')
     def csvExporter = project(':export:CSVExporter')
+    def rawTextParser = project(':parser:RawTextParser')
 
     // first compile is for dependency in main, testCompile is so our test suite can find all other tests
     compile codeMaatImporter; testCompile codeMaatImporter.sourceSets.test.output
@@ -47,8 +48,12 @@ dependencies {
     compile validationTool; testCompile validationTool.sourceSets.test.output
     compile csvExporter; testCompile csvExporter.sourceSets.test.output
     compile structureModifier; testCompile structureModifier.sourceSets.test.output
+    compile rawTextParser; testCompile rawTextParser.sourceSets.test.output
 
     compile group: 'info.picocli', name: 'picocli', version: picocli_version
+
+    testImplementation group: 'junit', name: 'junit', version: junit4_version
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
 
     testCompile("org.junit.platform:junit-platform-runner:$junit_platform_version")
 }

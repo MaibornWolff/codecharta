@@ -14,6 +14,7 @@ import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
+import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.CommandLine
 import java.util.concurrent.Callable
@@ -37,7 +38,8 @@ import java.util.concurrent.Callable
             UnderstandImporter::class,
             CodeMaatImporter::class,
             JasomeImporter::class,
-            TokeiImporter::class
+            TokeiImporter::class,
+            RawTextParser::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
@@ -61,7 +63,24 @@ class Ccsh: Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
-            commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *args)
+            commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
+        }
+
+        private fun sanitizeArgs(args: Array<String>): Array<String> {
+            return args.map { argument ->
+                var sanitizedArg = ""
+                if (argument.length > 1 && argument.substring(0, 2) == ("--")) {
+                    var skip = false
+                    argument.forEach {
+                        if (it == '=') skip = true
+                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.toLowerCase()
+                        else sanitizedArg += it
+                    }
+                } else {
+                    sanitizedArg = argument
+                }
+                return@map sanitizedArg
+            }.toTypedArray()
         }
     }
 

@@ -4,12 +4,13 @@ import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CCFile, FileSelectionState } from "../codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../util/dataMocks"
-import { LoadingStatusService } from "./loadingStatus.service"
+import { StoreService } from "./store.service"
+import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 describe("FileStateService", () => {
 	let fileStateService: FileStateService
 	let $rootScope: IRootScopeService
-	let loadingStatusService: LoadingStatusService
+	let storeService: StoreService
 
 	let file1: CCFile
 	let file2: CCFile
@@ -20,14 +21,13 @@ describe("FileStateService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
-		withMockedLoadingStatusService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.state")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
+		storeService = getService<StoreService>("storeService")
 
 		file1 = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A))
 		file2 = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B))
@@ -36,13 +36,7 @@ describe("FileStateService", () => {
 	}
 
 	function rebuildService() {
-		fileStateService = new FileStateService($rootScope, loadingStatusService)
-	}
-
-	function withMockedLoadingStatusService() {
-		loadingStatusService = fileStateService["loadingStatusService"] = jest.fn().mockReturnValue({
-			updateLoadingMapFlag: jest.fn()
-		})()
+		fileStateService = new FileStateService($rootScope, storeService)
 	}
 
 	describe("resetMaps", () => {
@@ -137,10 +131,12 @@ describe("FileStateService", () => {
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
 		})
 
-		it("should call updateLoadingMapFlag", () => {
+		it("should update state", () => {
+			storeService.dispatch(setIsLoadingMap(false))
+
 			fileStateService.setSingle(file1)
 
-			expect(loadingStatusService.updateLoadingMapFlag).toHaveBeenCalledWith(true)
+			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
 		})
 	})
 
@@ -198,6 +194,13 @@ describe("FileStateService", () => {
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
 		})
+		it("should update state", () => {
+			storeService.dispatch(setIsLoadingMap(false))
+
+			fileStateService.setDelta(file1, file2)
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
+		})
 	})
 
 	describe("setDeltaByNames", () => {
@@ -245,6 +248,13 @@ describe("FileStateService", () => {
 			fileStateService.setMultiple([file1, file2])
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("file-states-changed", fileStateService.getFileStates())
+		})
+		it("should update state", () => {
+			storeService.dispatch(setIsLoadingMap(false))
+
+			fileStateService.setMultiple([file1, file2])
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
 		})
 	})
 

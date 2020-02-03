@@ -5,10 +5,10 @@ import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from ".
 import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
-import { LoadingStatusServiceSubscriber, LoadingStatusService } from "../../state/loadingStatus.service"
+import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 
 export class CodeMapController
-	implements BuildingRightClickedEventSubscriber, LoadingStatusServiceSubscriber, AttributeSideBarVisibilitySubscriber {
+	implements BuildingRightClickedEventSubscriber, AttributeSideBarVisibilitySubscriber, IsLoadingFileSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isSideBarVisible: boolean
@@ -27,7 +27,7 @@ export class CodeMapController
 	) {
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		AttributeSideBarService.subscribe(this.$rootScope, this)
-		LoadingStatusService.subscribe(this.$rootScope, this)
+		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
 
 	public $postLink() {
@@ -48,12 +48,10 @@ export class CodeMapController
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
-	public onLoadingFileStatusChanged(isLoadingFile: boolean) {
+	public onIsLoadingFileChanged(isLoadingFile: boolean) {
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
 	}
-
-	public onLoadingMapStatusChanged(isLoadingMap: boolean) {}
 
 	private synchronizeAngularTwoWayBinding() {
 		this.$timeout(() => {})
