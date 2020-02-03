@@ -28,6 +28,10 @@ export class ScenarioHelper {
 		this.scenarios.push(newScenary)
 	}
 
+	public static getNumberOfScenarios() {
+		return this.scenarios.length
+	}
+
 	public static deleteScenario(scenarioName: String) {
 		const indexOfScenario = this.scenarios.indexOf(this.scenarios.find(x => x.name === scenarioName))
 		this.scenarios.splice(indexOfScenario, 1)
@@ -55,5 +59,9 @@ export class ScenarioHelper {
 			convertToVectors(scenario.settings)
 		})
 		return scenarios
+	}
+
+	public static isScenarioExisting(scenarioName: string) {
+		return this.scenarios.find(x => x.name == scenarioName)
 	}
 }

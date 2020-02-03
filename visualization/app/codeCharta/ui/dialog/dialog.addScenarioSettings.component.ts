@@ -2,6 +2,7 @@ import "./dialog.component.scss"
 import { DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
+import { DialogService } from "./dialog.service"
 
 interface AddAttributeContent {
 	metricName: string
@@ -29,7 +30,7 @@ export class DialogAddScenarioSettingsComponent {
 		fileContent: []
 	}
 
-	constructor(private $mdDialog, private storeService: StoreService) {
+	constructor(private $mdDialog, private storeService: StoreService, private dialogService: DialogService) {
 		this.initDialogFields()
 	}
 
@@ -38,10 +39,14 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	public addScenario() {
-		const chosenMetrics: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
-		const scenarioDynamicSettings: RecursivePartial<DynamicSettings> = this.createNewScenario(chosenMetrics)
-		ScenarioHelper.addScenario(this._viewModel.scenarioName, scenarioDynamicSettings)
-		this.hide()
+		if (ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName)) {
+			this.dialogService.showErrorDialog("The Scenario Name is already taken, please chose another Scenario Name.")
+		} else {
+			const chosenMetrics: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
+			const scenarioDynamicSettings: RecursivePartial<DynamicSettings> = this.createNewScenario(chosenMetrics)
+			ScenarioHelper.addScenario(this._viewModel.scenarioName, scenarioDynamicSettings)
+			this.hide()
+		}
 	}
 
 	private initDialogFields() {
@@ -93,8 +98,7 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	private setFileName() {
-		// TODO: Change default value for scenarioName
-		this._viewModel.scenarioName = "ScenarioDefault"
+		this._viewModel.scenarioName = "ScenarioDefault" + ScenarioHelper.getNumberOfScenarios()
 	}
 }
 
