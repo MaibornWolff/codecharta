@@ -1,12 +1,12 @@
+import { NodePlopAPI } from "plop"
+const promptDirectory = require("inquirer-directory")
+const promptFile = require("inquirer-file")
 import { PLOP_STATE_FILE_ACTIONS, PLOP_STATE_VARIABLE_PROMPTS } from "./plop/state"
 import { PLOP_UI_FILE_ACTIONS, PLOP_UI_VARIABLE_PROMPTS } from "./plop/ui"
 import { PLOP_UTIL_FILE_ACTIONS, PLOP_UTIL_VARIABLE_PROMPTS } from "./plop/util"
 import { PLOP_REDUX_FILE_ACTIONS, PLOP_REDUX_VARIABLE_PROMPTS } from "./plop/redux"
 
-const promptDirectory = require("inquirer-directory")
-const promptFile = require("inquirer-file")
-
-module.exports = plop => {
+export default function(plop: NodePlopAPI) {
 	plop.setPrompt("directory", promptDirectory)
 	plop.setPrompt("file", promptFile)
 
