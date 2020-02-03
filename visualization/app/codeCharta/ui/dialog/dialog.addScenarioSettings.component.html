@@ -1,0 +1,29 @@
+<md-dialog class="download-dialog">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<h2>Add Scenario</h2>
+		</div>
+	</md-toolbar>
+
+	<md-dialog-content>
+		<div class="md-dialog-content">
+			<md-input-container class="md-block">
+				<label>FileName</label>
+				<input class="filename-input" type="text" ng-model="$ctrl._viewModel.fileName" />
+				<span class="cc-file-extension">.Scenario</span>
+			</md-input-container>
+
+			<p class="">The file includes:</p>
+
+			<md-input-container ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
+				<md-checkbox class="dialog-list md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
+					<span>{{::item.metricName}} ({{::item.currentMetric}})</span>
+				</md-checkbox>
+			</md-input-container>
+		</div>
+	</md-dialog-content>
+
+	<md-dialog-actions>
+		<md-button ng-click="$ctrl.addScenario()" class="md-primary">Add</md-button>
+	</md-dialog-actions>
+</md-dialog>
