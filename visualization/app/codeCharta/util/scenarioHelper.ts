@@ -1,5 +1,5 @@
 "use strict"
-import { MetricData, RecursivePartial, Settings } from "../codeCharta.model"
+import { DynamicSettings, MetricData, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 
 export interface Scenario {
@@ -15,18 +15,14 @@ export class ScenarioHelper {
 		return this.scenarios
 	}
 
-	public static addScenario() {
+	public static addScenario(scenarioName: string, dynamicSettingPartial: RecursivePartial<DynamicSettings>) {
 		let newScenary: Scenario = {
-			name: "anewScenario",
+			name: scenarioName,
 			settings: {
 				appSettings: {
 					invertColorRange: false
 				},
-				dynamicSettings: {
-					areaMetric: "rloc",
-					heightMetric: "mcc",
-					distributionMetric: "rloc"
-				}
+				dynamicSettings: dynamicSettingPartial
 			}
 		}
 		this.scenarios.push(newScenary)

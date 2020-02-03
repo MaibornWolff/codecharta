@@ -1,6 +1,7 @@
 import "./dialog.component.scss"
-import { DynamicSettings } from "../../codeCharta.model"
+import { DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
+import { ScenarioHelper } from "../../util/scenarioHelper"
 
 interface AddAttributeContent {
 	metricName: string
@@ -9,7 +10,7 @@ interface AddAttributeContent {
 	isDisabled: boolean
 }
 
-export enum DownloadCheckboxNames {
+export enum ScenarioCheckboxNames {
 	cameraPosition = "CameraPosition",
 	edgeMetric = "Edge",
 	areaMetric = "Area",
@@ -19,20 +20,16 @@ export enum DownloadCheckboxNames {
 
 export class DialogAddScenarioSettingsComponent {
 	private _viewModel: {
-		fileName: string
+		scenarioName: string
 		currentAttribute: string
 		fileContent: AddAttributeContent[]
 	} = {
-		fileName: null,
+		scenarioName: null,
 		currentAttribute: null,
 		fileContent: []
 	}
 
-	constructor(
-		private $mdDialog,
-		//private codeMapPreRenderService: CodeMapPreRenderService,
-		private storeService: StoreService
-	) {
+	constructor(private $mdDialog, private storeService: StoreService) {
 		this.initDialogFields()
 	}
 
@@ -41,31 +38,49 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	public addScenario() {
-		/*
-        FileDownloader.downloadCurrentMap(
-            this.codeMapPreRenderService.getRenderMap(),
-            this.codeMapPreRenderService.getRenderFileMeta(),
-            this.storeService.getState().fileSettings,
-            this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.metricName),
-            this._viewModel.fileName
-        )*/
 		const chosenMetrics: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
-		console.log("selected values: ", chosenMetrics)
+		const scenarioDynamicSettings: RecursivePartial<DynamicSettings> = this.createNewScenario(chosenMetrics)
+		ScenarioHelper.addScenario(this._viewModel.scenarioName, scenarioDynamicSettings)
 		this.hide()
 	}
 
 	private initDialogFields() {
 		this.setFileContentList()
 		this.setFileName()
-		this.setSortedDownloadableFileSettings()
+	}
+
+	private createNewScenario(attributes: AddAttributeContent[]) {
+		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
+		attributes.forEach(x => {
+			switch (x.metricName) {
+				case "Area": {
+					partialDynamicSettings.areaMetric = x.currentMetric
+					break
+				}
+				case "Height": {
+					partialDynamicSettings.heightMetric = x.currentMetric
+					break
+				}
+				case "Color": {
+					partialDynamicSettings.colorMetric = x.currentMetric
+					break
+				}
+				case "Edge": {
+					partialDynamicSettings.edgeMetric = x.currentMetric
+					break
+				}
+			}
+		})
+
+		return partialDynamicSettings
 	}
 
 	private setFileContentList() {
 		const dynamicSettings: DynamicSettings = this.storeService.getState().dynamicSettings
-		this.pushFileContent(DownloadCheckboxNames.areaMetric, dynamicSettings.areaMetric)
-		this.pushFileContent(DownloadCheckboxNames.ColorMetric, dynamicSettings.colorMetric)
-		this.pushFileContent(DownloadCheckboxNames.edgeMetric, dynamicSettings.edgeMetric)
-		this.pushFileContent(DownloadCheckboxNames.HeightMetric, dynamicSettings.heightMetric)
+		this.pushFileContent(ScenarioCheckboxNames.areaMetric, dynamicSettings.areaMetric)
+		this.pushFileContent(ScenarioCheckboxNames.HeightMetric, dynamicSettings.heightMetric)
+		this.pushFileContent(ScenarioCheckboxNames.ColorMetric, dynamicSettings.colorMetric)
+		this.pushFileContent(ScenarioCheckboxNames.edgeMetric, dynamicSettings.edgeMetric)
 	}
 
 	private pushFileContent(name: string, currentAttribute: string) {
@@ -79,15 +94,7 @@ export class DialogAddScenarioSettingsComponent {
 
 	private setFileName() {
 		// TODO: Change default value for scenarioName
-		this._viewModel.fileName = "ScenarioDefault"
-	}
-
-	private setSortedDownloadableFileSettings() {
-		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
-	}
-
-	private sortByDisabled(a: AddAttributeContent, b: AddAttributeContent) {
-		return a.isDisabled === b.isDisabled ? 0 : a.isDisabled ? 1 : -1
+		this._viewModel.scenarioName = "ScenarioDefault"
 	}
 }
 
