@@ -26,10 +26,10 @@ export class BlacklistService implements StoreSubscriber, FileStateSubscriber {
 	}
 
 	public onFileStatesChanged(fileStates: FileState[]) {
-		this.reset(fileStates)
+		this.merge(fileStates)
 	}
 
-	public reset(fileStates: FileState[]) {
+	public merge(fileStates: FileState[]) {
 		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
 		const withUpdatedPath = FileStateHelper.isPartialState(fileStates)
 		const newBlacklist = getMergedBlacklist(visibleFiles, withUpdatedPath)
