@@ -3,7 +3,7 @@ import { getMergedEdges } from "./edges.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
 import _ from "lodash"
 
-describe("AttributeTypesReset", () => {
+describe("EdgesMerger", () => {
 	describe("getMergedEdges", () => {
 		let edge1: Edge
 		let edge2: Edge
@@ -62,31 +62,31 @@ describe("AttributeTypesReset", () => {
 		it("should merge empty edges-arrays", () => {
 			file1.settings.fileSettings.edges = []
 			file2.settings.fileSettings.edges = []
-			expect(getMergedEdges([file1, file2])).toEqual([])
+			expect(getMergedEdges([file1, file2], false)).toEqual([])
 		})
 
 		it("should merge different edges", () => {
 			file1.settings.fileSettings.edges = [edge1]
 			file2.settings.fileSettings.edges = [edge2]
-			expect(getMergedEdges([file1, file2])).toMatchSnapshot()
+			expect(getMergedEdges([file1, file2], false)).toMatchSnapshot()
 		})
 
 		it("should merge all edges if one file does not contain edges", () => {
 			file1.settings.fileSettings.edges = [edge1, edge2]
 			file2.settings.fileSettings.edges = null
-			expect(getMergedEdges([file1, file2])).toMatchSnapshot()
+			expect(getMergedEdges([file1, file2], false)).toMatchSnapshot()
 		})
 
 		it("should merge edge-attributes for the same edge paths", () => {
 			file1.settings.fileSettings.edges = [edge1]
 			file2.settings.fileSettings.edges = [edge3]
-			expect(getMergedEdges([file1, file2])).toMatchSnapshot()
+			expect(getMergedEdges([file1, file2], false)).toMatchSnapshot()
 		})
 
 		it("should overwrite duplicated edge-attributes for the same edge", () => {
 			file1.settings.fileSettings.edges = [edge1]
 			file2.settings.fileSettings.edges = [edge4]
-			expect(getMergedEdges([file1, file2])).toMatchSnapshot()
+			expect(getMergedEdges([file1, file2], false)).toMatchSnapshot()
 		})
 	})
 })

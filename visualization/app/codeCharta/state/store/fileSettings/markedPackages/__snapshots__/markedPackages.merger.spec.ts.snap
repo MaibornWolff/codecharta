@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`MarkedPackagesReset getMergedMarkedPackages should merge all markedPackages if one file does not contain markedPackages 1`] = `
+exports[`MarkedPackagesMerger getMergedMarkedPackages should merge all markedPackages if one file does not contain markedPackages 1`] = `
 Array [
   Object {
     "attributes": Object {
@@ -19,7 +19,7 @@ Array [
 ]
 `;
 
-exports[`MarkedPackagesReset getMergedMarkedPackages should merge different markedPackages 1`] = `
+exports[`MarkedPackagesMerger getMergedMarkedPackages should merge different markedPackages 1`] = `
 Array [
   Object {
     "attributes": Object {
@@ -38,7 +38,7 @@ Array [
 ]
 `;
 
-exports[`MarkedPackagesReset getMergedMarkedPackages should merge markedPackage-attributes for the same markedPackage paths 1`] = `
+exports[`MarkedPackagesMerger getMergedMarkedPackages should merge markedPackage-attributes for the same markedPackage paths 1`] = `
 Array [
   Object {
     "attributes": Object {
@@ -51,7 +51,7 @@ Array [
 ]
 `;
 
-exports[`MarkedPackagesReset getMergedMarkedPackages should overwrite duplicated markedPackage-attributes for the same markedPackage 1`] = `
+exports[`MarkedPackagesMerger getMergedMarkedPackages should overwrite duplicated markedPackage-attributes for the same markedPackage 1`] = `
 Array [
   Object {
     "attributes": Object {

@@ -3,7 +3,7 @@ import { getMergedBlacklist } from "./blacklist.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
 import _ from "lodash"
 
-describe("BlacklistReset", () => {
+describe("BlacklistMerger", () => {
 	let file1: CCFile
 	let file2: CCFile
 
@@ -25,13 +25,13 @@ describe("BlacklistReset", () => {
 		it("should merge blacklist for different paths", () => {
 			file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2]
 			file2.settings.fileSettings.blacklist = [blacklistItem3, blacklistItem4]
-			expect(getMergedBlacklist([file1, file2])).toMatchSnapshot()
+			expect(getMergedBlacklist([file1, file2], false)).toMatchSnapshot()
 		})
 
 		it("should only contain unique paths+type", () => {
 			file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2]
 			file2.settings.fileSettings.blacklist = [blacklistItem1Duplicate, blacklistItem4]
-			expect(getMergedBlacklist([file1, file2])).toMatchSnapshot()
+			expect(getMergedBlacklist([file1, file2], false)).toMatchSnapshot()
 		})
 	})
 })
