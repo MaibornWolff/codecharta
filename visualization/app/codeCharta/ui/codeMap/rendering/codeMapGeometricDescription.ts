@@ -1,11 +1,6 @@
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Vector3, Ray, Box3 } from "three"
 
-export interface IntersectionResult {
-	intersectionFound: boolean
-	building?: CodeMapBuilding
-}
-
 export class CodeMapGeometricDescription {
 	get buildings(): CodeMapBuilding[] {
 		return this._buildings
