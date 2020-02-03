@@ -1,10 +1,10 @@
 import "./dialog.component.scss"
-import { DynamicSettings, RecursivePartial } from "../../codeCharta.model"
+import { DynamicSettings } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
 import { DialogService } from "./dialog.service"
 
-interface AddAttributeContent {
+export interface AddAttributeContent {
 	metricName: string
 	currentMetric: string
 	isSelected: boolean
@@ -43,8 +43,7 @@ export class DialogAddScenarioSettingsComponent {
 			this.dialogService.showErrorDialog("The Scenario Name is already taken, please chose another Scenario Name.")
 		} else {
 			const chosenMetrics: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
-			const scenarioDynamicSettings: RecursivePartial<DynamicSettings> = this.createNewScenario(chosenMetrics)
-			ScenarioHelper.addScenario(this._viewModel.scenarioName, scenarioDynamicSettings)
+			ScenarioHelper.addScenario(this._viewModel.scenarioName, ScenarioHelper.createNewScenario(chosenMetrics))
 			this.hide()
 		}
 	}
@@ -52,32 +51,6 @@ export class DialogAddScenarioSettingsComponent {
 	private initDialogFields() {
 		this.setFileContentList()
 		this.setFileName()
-	}
-
-	private createNewScenario(attributes: AddAttributeContent[]) {
-		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
-		attributes.forEach(x => {
-			switch (x.metricName) {
-				case "Area": {
-					partialDynamicSettings.areaMetric = x.currentMetric
-					break
-				}
-				case "Height": {
-					partialDynamicSettings.heightMetric = x.currentMetric
-					break
-				}
-				case "Color": {
-					partialDynamicSettings.colorMetric = x.currentMetric
-					break
-				}
-				case "Edge": {
-					partialDynamicSettings.edgeMetric = x.currentMetric
-					break
-				}
-			}
-		})
-
-		return partialDynamicSettings
 	}
 
 	private setFileContentList() {
