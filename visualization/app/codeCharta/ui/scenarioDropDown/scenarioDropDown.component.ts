@@ -44,7 +44,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
 	private isScenarioAppliable(scenario) {
 		for (let attribute in scenario) {
-			if (this.isMetricNotAvailable(scenario[attribute]) === true) {
+			if (this.isMetricNotAvailable(scenario[attribute]) === true && scenario[attribute] !== "None") {
 				return false
 			}
 		}
