@@ -1,5 +1,5 @@
 import { CCFile, Edge } from "../../../../codeCharta.model"
-import { getMergedEdges } from "./edges.reset"
+import { getMergedEdges } from "./edges.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
 import _ from "lodash"
 

@@ -5,7 +5,7 @@ import _ from "lodash"
 import { FileState, MarkedPackage } from "../../../../codeCharta.model"
 import { FileStateHelper } from "../../../../util/fileStateHelper"
 import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
-import { getMergedMarkedPackages } from "./markedPackages.reset"
+import { getMergedMarkedPackages } from "./markedPackages.merger"
 
 export interface MarkedPackagesSubscriber {
 	onMarkedPackagesChanged(markedPackages: MarkedPackage[])

@@ -1,5 +1,5 @@
 import { BlacklistItem, BlacklistType, CCFile } from "../../../../codeCharta.model"
-import { getMergedBlacklist } from "./blacklist.reset"
+import { getMergedBlacklist } from "./blacklist.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
 import _ from "lodash"
 

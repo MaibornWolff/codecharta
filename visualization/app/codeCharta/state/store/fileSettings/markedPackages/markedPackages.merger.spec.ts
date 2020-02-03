@@ -1,7 +1,7 @@
 import { CCFile, MarkedPackage } from "../../../../codeCharta.model"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
 import _ from "lodash"
-import { getMergedMarkedPackages } from "./markedPackages.reset"
+import { getMergedMarkedPackages } from "./markedPackages.merger"
 
 describe("MarkedPackagesReset", () => {
 	describe("getMergedMarkedPackages", () => {

@@ -4,7 +4,7 @@ import { EdgesActions, setEdges } from "./edges.actions"
 import _ from "lodash"
 import { Edge, FileState } from "../../../../codeCharta.model"
 import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
-import { getMergedEdges } from "./edges.reset"
+import { getMergedEdges } from "./edges.merger"
 import { FileStateHelper } from "../../../../util/fileStateHelper"
 
 export interface EdgesSubscriber {

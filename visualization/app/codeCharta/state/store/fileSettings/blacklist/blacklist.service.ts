@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { BlacklistItem, FileState } from "../../../../codeCharta.model"
 import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import _ from "lodash"
-import { getMergedBlacklist } from "./blacklist.reset"
+import { getMergedBlacklist } from "./blacklist.merger"
 import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
 import { FileStateHelper } from "../../../../util/fileStateHelper"
 
