@@ -31,20 +31,15 @@ export class CodeMapGeometricDescription {
 		let intersectedBuilding: CodeMapBuilding
 		let leastIntersectedDistance: number = Infinity
 
-		let boxTranslation = new Vector3(-this.mapSize * this.scales.x, 0.0, -this.mapSize * this.scales.z)
+		let boxTranslation = this.scales
+			.clone()
+			.multiplyScalar(this.mapSize)
+			.multiply(new Vector3(-1, 0, -1))
 
 		for (let building of this._buildings) {
-			//Pre Transformation
 			let box: Box3 = building.boundingBox.clone()
-
-			box.min.x *= this.scales.x
-			box.min.y *= this.scales.y
-			box.min.z *= this.scales.z
-
-			box.max.x *= this.scales.x
-			box.max.y *= this.scales.y
-			box.max.z *= this.scales.z
-
+			box.min.multiply(this.scales)
+			box.max.multiply(this.scales)
 			box.translate(boxTranslation)
 
 			if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) {
