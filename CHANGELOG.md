@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.42.0] - 2020-01-31
+
+### Added 🚀
+
 - Support for camel and kebab-case for ccsh arguments #772
 - RawTextParser for analysis #660
 - IndentationLevel as metric for RawTextParser #660
@@ -23,18 +35,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Path prefix handling in tokeiimporter #841
-
-### Chore 👨‍💻 👩‍💻
-
-## [1.41.9] - 2020-01-17
-
-### Added 🚀
-
-### Changed
-
-### Removed 🗑
-
-### Fixed 🐞
 
 ### Chore 👨‍💻 👩‍💻
 
