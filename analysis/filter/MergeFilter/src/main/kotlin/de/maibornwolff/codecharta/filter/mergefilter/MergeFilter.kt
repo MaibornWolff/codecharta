@@ -28,7 +28,7 @@ class MergeFilter: Callable<Void?> {
     @CommandLine.Option(names = ["--leaf"], description = ["leaf merging strategy"])
     private var leafStrategySet = false
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])

@@ -1,0 +1,11 @@
+dependencies {
+    implementation project(':model')
+    implementation project(':filter:MergeFilter')
+
+    implementation group: 'info.picocli', name: 'picocli', version: picocli_version
+    implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
+    implementation group: 'org.json', name: 'json', version: json_version
+    implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
+
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
+}

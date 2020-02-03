@@ -38,7 +38,7 @@ You are free to use your own java code base if you want. In this example we'll a
 # Download code base of your choice
 git clone https://github.com/junit-team/junit4
 # parse sources
-ccsh sourcecodeparser junit4 -p junit4 -o junit4.source.cc.json
+ccsh sourcecodeparser junit4 -o junit4.source.cc.json
 # done :)
 ```
 
@@ -60,7 +60,7 @@ git clone https://github.com/apache/httpd.git
 # Parse code with tokei
 cd httpd; tokei -o json . > ../httpd.tokei.json; cd ..
 # Parse sources
-ccsh tokeiimporter httpd.tokei.json -p httpd -o httpd.tokei.cc.json
+ccsh tokeiimporter httpd.tokei.json -o httpd.tokei.cc.json
 # Done :)
 ```
 
@@ -80,7 +80,7 @@ Please make sure you have [Git](https://git-scm.com/downloads) installed and tha
 # Generate <project>.git.log
 cd junit4; git log --numstat --raw --topo-order > ../junit4.git.log; cd ..
 # Parse git.log
-ccsh scmlogparser junit4.git.log -p junit4 -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
+ccsh scmlogparser junit4.git.log -o junit4.git.cc.json --input-format GIT_LOG_NUMSTAT_RAW
 ```
 
 We can now merge the files.
@@ -102,7 +102,7 @@ A simple comparison you can do is to check that the `<project>.source.cc.json` h
 ccsh modify junit4.source.cc.json -p 1
 # Print the first level of the <project>.git.cc.json
 ccsh modify junit4.git.cc.json -p 1
-# Use (--moveFrom and --moveTo) or --setRoot to correct wrong structure
+# Use (--move-from and --move-to) or --set-root to correct wrong structure
 ```
 
 # CodeCharta in a Tweet Quickstart
@@ -112,8 +112,8 @@ ccsh modify junit4.git.cc.json -p 1
 ```bash
 npm i -g codecharta-analysis
 cd junit4; git log --numstat --raw --topo-order > ../junit4.git.log; cd ..
-ccsh sourcecodeparser junit4 -p junit4 \
-  | ccsh scmlogparser junit4.git.log -p junit4 --input-format GIT_LOG_NUMSTAT_RAW \
+ccsh sourcecodeparser junit4 \
+  | ccsh scmlogparser junit4.git.log --input-format GIT_LOG_NUMSTAT_RAW \
   > junit4.cc.json
 ```
 

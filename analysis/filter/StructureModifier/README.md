@@ -21,15 +21,15 @@ ccsh modify [-h] [-f=<moveFrom>] [-o=<outputFile>]
 
 ```
       [FILE]                 input project file
-  -f, --moveFrom=<moveFrom>  move nodes in project folder...
+  -f, --move-from=<moveFrom>  move nodes in project folder...
   -h, --help                 displays this help and exits
-  -o, --outputFile=<outputFile>
+  -o, --output-file=<outputFile>
                              output File (or empty for stdout)
-  -p, --printLevels=<printLevels>
+  -p, --print-levels=<printLevels>
                              show first x layers of project hierarchy
   -r, --remove=<remove>...   node(s) to be removed
-  -s, --setRoot=<setRoot>    path within project to be extracted
-  -t, --moveTo=<moveTo>      ... move nodes to destination folder
+  -s, --set-root=<setRoot>    path within project to be extracted
+  -t, --move-to=<moveTo>      ... move nodes to destination folder
 ```
 
 ## Examples
@@ -38,9 +38,9 @@ ccsh modify [-h] [-f=<moveFrom>] [-o=<outputFile>]
 
 > sh ccsh modify foo.cc.json --remove=/root/foo --remove=/root/bar/
 
-> sh ccsh modify foo.cc.json --moveFrom=/root/foo --moveTo=/root/bar -outputFile=project.cc.json
+> sh ccsh modify foo.cc.json --move-from=/root/foo --move-to=/root/bar -output-file=project.cc.json
 
-> sh ccsh modify foo.cc.json --setRoot=/root/foo/
+> sh ccsh modify foo.cc.json --set-root=/root/foo/
 
 ## Piped input
 
