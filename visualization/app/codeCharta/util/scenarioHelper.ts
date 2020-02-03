@@ -15,6 +15,28 @@ export class ScenarioHelper {
 		return this.scenarios
 	}
 
+	public static addScenario() {
+		let newScenary: Scenario = {
+			name: "anewScenario",
+			settings: {
+				appSettings: {
+					invertColorRange: false
+				},
+				dynamicSettings: {
+					areaMetric: "rloc",
+					heightMetric: "mcc",
+					distributionMetric: "rloc"
+				}
+			}
+		}
+		this.scenarios.push(newScenary)
+	}
+
+	public static deleteScenario(scenarioName: String) {
+		const indexOfScenario = this.scenarios.indexOf(this.scenarios.find(x => x.name === scenarioName))
+		this.scenarios.splice(indexOfScenario, 1)
+	}
+
 	public static isScenarioPossible(scenario: Scenario, metricData: MetricData[]): boolean {
 		const metrics = metricData.map(x => x.name)
 		return (

@@ -44,21 +44,20 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
 	private isScenarioAppliable(scenario) {
 		for (let attribute in scenario) {
-			let isAppliable: boolean = this.isMetricAvailable(scenario[attribute])
-			if (isAppliable === true) {
+			if (this.isMetricNotAvailable(scenario[attribute]) === true) {
 				return false
 			}
 		}
 		return true
 	}
 
-	private isMetricAvailable(metricName: string) {
+	private isMetricNotAvailable(metricName: string) {
 		return !this.availableMetrics.find(x => x.name == metricName)
 	}
 
 	public getVisibility(icon: String, scenarioName: string) {
 		const lightGray = "#d3d3d3"
-		// TODO: Function to Check if attributes are withing the Scenario
+		// TODO: Function to Check if attributes are within the Scenario
 
 		switch (icon) {
 			case "view": {
@@ -99,10 +98,13 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
 	public showAddScenarioSettings() {
 		// TODO: show Scenario Save Settings
+		this.dialogService.showAddScenarioSettings()
+		//ScenarioHelper.addScenario()
 	}
 
-	public removeScenario() {
-		//TODO: Delete Scenario
+	public removeScenario(scenarioName) {
+		//TODO: Delete Scenario - Get a better attribute than name for excluding
+		ScenarioHelper.deleteScenario(scenarioName)
 	}
 }
 

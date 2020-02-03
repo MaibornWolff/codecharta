@@ -9,16 +9,18 @@ import { ScenarioHelper } from "../../util/scenarioHelper"
 import { MetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
+import { DialogService } from "../dialog/dialog.service"
 
 describe("ScenarioDropDownController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
+	let dialogService: DialogService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let scenarioButtonsController: ScenarioDropDownController
 	let metricData: MetricData[]
 
 	function rebuildController() {
-		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, threeOrbitControlsService)
+		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, dialogService, threeOrbitControlsService)
 	}
 
 	function restartSystem() {
