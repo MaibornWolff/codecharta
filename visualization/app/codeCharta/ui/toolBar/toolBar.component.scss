@@ -19,6 +19,10 @@ tool-bar-component {
 		&:hover {
 			background-color: rgb(0, 124, 112) !important;
 		}
+
+		.folder-icon {
+			margin-right: -2px;
+		}
 	}
 
 	.md-focused {
