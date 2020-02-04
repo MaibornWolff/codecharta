@@ -7,8 +7,6 @@ import java.io.PrintStream
 class ProjectStructurePrinter(private val project: Project, private val output: PrintStream = System.out) {
 
     fun printProjectStructure(maxDepth: Int) {
-        output.println("${project.projectName}:")
-        output.println("-".repeat(project.projectName.length + 1))
         printNodeRecursively(maxDepth, 0, project.rootNode.toMutableNode())
     }
 

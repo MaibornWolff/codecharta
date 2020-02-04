@@ -50,7 +50,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
     private fun combineForParallelExecution(firstCommits: MutableList<VersionControlledFile>,
                                             secondCommits: MutableList<VersionControlledFile>): MutableList<VersionControlledFile> {
-        throw UnsupportedOperationException("parallel collection of commits not supported")
+        firstCommits.addAll(secondCommits)
+        return firstCommits
     }
 
     companion object {

@@ -1,6 +1,8 @@
 import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
+import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
+import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
 import { splitMapColorsAction } from "./mapColors/mapColors.splitter"
 import { splitResetCameraIfNewFileIsLoadedAction } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.splitter"
 import { splitShowOnlyBuildingsWithEdgesAction } from "./showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.splitter"
@@ -22,6 +24,14 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.isLoadingFile !== undefined) {
+		actions.push(splitIsLoadingFileAction(payload.isLoadingFile))
+	}
+
+	if (payload.isLoadingMap !== undefined) {
+		actions.push(splitIsLoadingMapAction(payload.isLoadingMap))
+	}
+
 	if (payload.mapColors !== undefined) {
 		actions.push(splitMapColorsAction(payload.mapColors as MapColors))
 	}

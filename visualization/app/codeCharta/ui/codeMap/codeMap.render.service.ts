@@ -7,7 +7,6 @@ import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Node } from "../../codeCharta.model"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
@@ -32,11 +31,7 @@ export class CodeMapRenderService {
 	}
 
 	private setNewMapMesh(sortedNodes) {
-		const mapMesh: CodeMapMesh = new CodeMapMesh(
-			sortedNodes,
-			this.storeService.getState(),
-			FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
-		)
+		const mapMesh: CodeMapMesh = new CodeMapMesh(sortedNodes, this.storeService.getState(), this.fileStateService.isDeltaState())
 		this.threeSceneService.setMapMesh(mapMesh, this.storeService.getState().treeMap.mapSize)
 	}
 
@@ -53,7 +48,7 @@ export class CodeMapRenderService {
 			map,
 			this.storeService.getState(),
 			this.metricService.getMetricData(),
-			FileStateHelper.isDeltaState(this.fileStateService.getFileStates())
+			this.fileStateService.isDeltaState()
 		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)
@@ -75,8 +70,9 @@ export class CodeMapRenderService {
 
 	private setArrows(sortedNodes: Node[]) {
 		this.codeMapArrowService.clearArrows()
-		if (this.storeService.getState().fileSettings.edges.length > 0) {
-			this.codeMapArrowService.addEdgeArrows(sortedNodes, this.storeService.getState().fileSettings.edges)
+		const edges = this.storeService.getState().fileSettings.edges
+		if (edges.length > 0) {
+			this.codeMapArrowService.addEdgePreview(sortedNodes, edges)
 		}
 	}
 

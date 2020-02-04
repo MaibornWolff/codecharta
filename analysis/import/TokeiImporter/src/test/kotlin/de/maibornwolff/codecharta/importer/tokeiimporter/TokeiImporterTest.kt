@@ -12,16 +12,16 @@ class TokeiImporterTest {
     fun `reads tokei from file`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--pathSeparator=\\"))
 
-        Assertions.assertThat(cliResult).contains(listOf("TokeiImporter", "CHANGELOG.md", "\"loc\":450"))
+        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }
 
     @Test
     fun `reads tokei piped input`() {
-        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "") { it }
+        val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines().joinToString(separator = "") { it }
 
-        val cliResult = executeForOutput(input, arrayOf("--pathSeparator=\\"))
+        val cliResult = executeForOutput(input, arrayOf())
 
-        Assertions.assertThat(cliResult).contains(listOf("TokeiImporter", "CHANGELOG.md", "\"loc\":450"))
+        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }
 
     @Test
@@ -44,15 +44,7 @@ class TokeiImporterTest {
         val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
-        Assertions.assertThat(cliResult).contains(listOf("TokeiImporter", "CHANGELOG.md", "\"loc\":450"))
-    }
-
-    @Test
-    fun `sets project name`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-p=myProject"))
-
-        val project = ProjectDeserializer.deserializeProject(cliResult)
-        Assertions.assertThat(project.projectName).isEqualTo("myProject")
+        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }
 
     @Test

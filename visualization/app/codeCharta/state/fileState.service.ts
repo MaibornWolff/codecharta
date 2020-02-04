@@ -1,6 +1,9 @@
 import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { LoadingStatusService } from "./loadingStatus.service"
+
+import { FileStateHelper } from "../util/fileStateHelper"
+import { StoreService } from "./store.service"
+import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 export interface FileStateSubscriber {
 	onFileStatesChanged(fileStates: FileState[])
@@ -12,7 +15,7 @@ export class FileStateService {
 	private fileStates: Array<FileState> = []
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private loadingStatusService: LoadingStatusService) {}
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {}
 
 	public resetMaps() {
 		this.fileStates = []
@@ -30,6 +33,11 @@ export class FileStateService {
 		return this.fileStates
 	}
 
+	public setSingleByName(fileName: string) {
+		const singleFile: CCFile = FileStateHelper.getFileByFileName(fileName, this.fileStates)
+		this.setSingle(singleFile)
+	}
+
 	public setSingle(file: CCFile) {
 		this.resetSelectionStates()
 		const matchedFile = this.fileStates.find(x => x.file === file)
@@ -37,6 +45,12 @@ export class FileStateService {
 			matchedFile.selectedAs = FileSelectionState.Single
 		}
 		this.notifySelectionChange()
+	}
+
+	public setDeltaByNames(referenceFileName: string, comparisonFileName: string) {
+		const referenceFile: CCFile = FileStateHelper.getFileByFileName(referenceFileName, this.fileStates)
+		const comparisonFile: CCFile = FileStateHelper.getFileByFileName(comparisonFileName, this.fileStates)
+		this.setDelta(referenceFile, comparisonFile)
 	}
 
 	public setDelta(reference: CCFile, comparison: CCFile) {
@@ -54,10 +68,24 @@ export class FileStateService {
 		this.notifySelectionChange()
 	}
 
+	public setMultipleByNames(partialFileNames: string[]) {
+		const partialFiles: CCFile[] = []
+		partialFileNames.forEach(fileName => partialFiles.push(FileStateHelper.getFileByFileName(fileName, this.fileStates)))
+		this.setMultiple(partialFiles)
+	}
+
 	public setMultiple(multipleFiles: CCFile[]) {
 		this.resetSelectionStates()
 		this.fileStates.filter(x => multipleFiles.indexOf(x.file) !== -1).forEach(x => (x.selectedAs = FileSelectionState.Partial))
 		this.notifySelectionChange()
+	}
+
+	public fileStatesAvailable(): boolean {
+		return this.fileStates.length > 0
+	}
+
+	public isDeltaState(): boolean {
+		return FileStateHelper.isDeltaState(this.fileStates)
 	}
 
 	private resetSelectionStates() {
@@ -65,7 +93,7 @@ export class FileStateService {
 	}
 
 	private notifySelectionChange() {
-		this.loadingStatusService.updateLoadingMapFlag(true)
+		this.storeService.dispatch(setIsLoadingMap(true))
 		this.$rootScope.$broadcast(FileStateService.FILE_STATE_CHANGED_EVENT, this.fileStates)
 	}
 

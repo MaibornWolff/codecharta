@@ -16,7 +16,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(
         name = "tokeiimporter",
         description = ["generates cc.json from tokei json"],
-        footer = ["Copyright(c) 2019, MaibornWolff GmbH"]
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class TokeiImporter(private val input: InputStream = System.`in`,
                     private val output: PrintStream = System.out,
@@ -29,16 +29,13 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = "TokeiImporter"
-
-    @CommandLine.Option(names = ["-r", "--rootName"], description = ["root folder as specified when executing tokei"])
+    @CommandLine.Option(names = ["-r", "--root-name"], description = ["root folder as specified when executing tokei"])
     private var rootName = "."
 
-    @CommandLine.Option(names = ["--pathSeparator"], description = ["path separator (default = '/')"])
+    @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = "/"
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["sourcemonitor csv file"])
@@ -47,7 +44,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
-        projectBuilder = ProjectBuilder(projectName)
+        projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
 
         val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
@@ -65,7 +62,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     }
 
     private fun addAsNode(analysisObject: AnalysisObject) {
-        val sanitizedName = analysisObject.name!!.replaceFirst(rootName, "").replace(pathSeparator, "/")
+        val sanitizedName = analysisObject.name!!.removePrefix(rootName).replace(pathSeparator, "/")
         val directory = sanitizedName.substringBeforeLast("/")
         val fileName = sanitizedName.substringAfterLast("/")
 

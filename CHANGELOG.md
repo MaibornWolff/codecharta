@@ -17,6 +17,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.42.0] - 2020-01-31
+
+### Added 🚀
+
+- Support for camel and kebab-case for ccsh arguments #772
+- RawTextParser for analysis #660
+- IndentationLevel as metric for RawTextParser #660
+- Show additional Pairing Rate of Selected Building, simultaneously to the currently hovered Buildings #736
+
+### Changed
+
+- Options of the ccsh are now consistently in kebab-case #772
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Path prefix handling in tokeiimporter #841
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.41.8] - 2020-01-17
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+- Project name parameters in the ccsh #773
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.41.6] - 2020-01-10
 
 ### Added 🚀

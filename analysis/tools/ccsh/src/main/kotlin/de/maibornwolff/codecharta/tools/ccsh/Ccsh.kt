@@ -1,32 +1,3 @@
-/*
- * Copyright (c) 2018, MaibornWolff GmbH
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- *  * Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- *  * Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- *  * Neither the name of  nor the names of its contributors may be used to
- *    endorse or promote products derived from this software without specific
- *    prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
 package de.maibornwolff.codecharta.tools.ccsh
 
 import de.maibornwolff.codecharta.exporter.csv.CSVExporter
@@ -43,6 +14,7 @@ import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
+import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
 import picocli.CommandLine
 import java.util.concurrent.Callable
@@ -66,10 +38,11 @@ import java.util.concurrent.Callable
             UnderstandImporter::class,
             CodeMaatImporter::class,
             JasomeImporter::class,
-            TokeiImporter::class
+            TokeiImporter::class,
+            RawTextParser::class
         ],
         versionProvider = Ccsh.ManifestVersionProvider::class,
-        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class Ccsh: Callable<Void?> {
 
@@ -90,7 +63,24 @@ class Ccsh: Callable<Void?> {
         @JvmStatic
         fun main(args: Array<String>) {
             val commandLine = CommandLine(Ccsh())
-            commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *args)
+            commandLine.parseWithHandler(CommandLine.RunAll(), System.out, *sanitizeArgs(args))
+        }
+
+        private fun sanitizeArgs(args: Array<String>): Array<String> {
+            return args.map { argument ->
+                var sanitizedArg = ""
+                if (argument.length > 1 && argument.substring(0, 2) == ("--")) {
+                    var skip = false
+                    argument.forEach {
+                        if (it == '=') skip = true
+                        if (it.isUpperCase() && !skip) sanitizedArg += "-" + it.toLowerCase()
+                        else sanitizedArg += it
+                    }
+                } else {
+                    sanitizedArg = argument
+                }
+                return@map sanitizedArg
+            }.toTypedArray()
         }
     }
 
@@ -99,7 +89,7 @@ class Ccsh: Callable<Void?> {
             return arrayOf(
                     Ccsh::class.java.`package`.implementationTitle + "\n"
                     + "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n"
-                    + "Copyright(c) 2018, MaibornWolff GmbH"
+                            + "Copyright(c) 2020, MaibornWolff GmbH"
             )
         }
     }

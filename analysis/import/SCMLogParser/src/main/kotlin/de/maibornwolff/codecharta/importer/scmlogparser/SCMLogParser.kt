@@ -26,7 +26,7 @@ import java.util.stream.Stream
 @CommandLine.Command(
         name = "scmlogparser",
         description = ["generates cc.json from scm log file (git or svn)"],
-        footer = ["Copyright(c) 2018, MaibornWolff GmbH"]
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class SCMLogParser(private val input: InputStream = System.`in`,
                    private val output: PrintStream = System.out,
@@ -38,19 +38,8 @@ class SCMLogParser(private val input: InputStream = System.`in`,
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
-
-    @CommandLine.Option(names = ["-p", "--projectName"], description = ["project name"])
-    private var projectName = "SCMLogParser"
-
-    @CommandLine.Option(names = ["--git"], hidden = true,
-            description = ["analysis of git log, equivalent --input-format GIT_LOG"])
-    private var gitLog = false
-
-    @CommandLine.Option(names = ["--svn"], hidden = true,
-            description = ["analysis of svn log, equivalent --input-format SVN_LOG"])
-    private var svnLog = false
 
     @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
     private var silent = false
@@ -62,7 +51,7 @@ class SCMLogParser(private val input: InputStream = System.`in`,
     private var addAuthor = false
 
     private val logParserStrategy: LogParserStrategy
-        get() = getLogParserStrategyByInputFormat(getInputFormatNames()!!)
+        get() = getLogParserStrategyByInputFormat(inputFormatNames)
 
     private val metricsFactory: MetricsFactory
         get() {
@@ -78,11 +67,7 @@ class SCMLogParser(private val input: InputStream = System.`in`,
                     "median_coupled_files"
             )
 
-            if (getInputFormatNames() == null) {
-                return MetricsFactory()
-            }
-
-            return when (getInputFormatNames()) {
+            return when (inputFormatNames) {
                 GIT_LOG, InputFormatNames.GIT_LOG_RAW, SVN_LOG -> MetricsFactory(nonChurnMetrics)
                 else                                           -> MetricsFactory()
             }
@@ -96,13 +81,12 @@ class SCMLogParser(private val input: InputStream = System.`in`,
                 file!!,
                 logParserStrategy,
                 metricsFactory,
-                projectName,
                 addAuthor,
                 silent)
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
-            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectName)
+            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         if (outputFile.isNotEmpty()) {
             ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
@@ -111,18 +95,6 @@ class SCMLogParser(private val input: InputStream = System.`in`,
         }
 
         return null
-    }
-
-    private fun getInputFormatNames(): InputFormatNames? {
-        if (gitLog && !svnLog) {
-            return GIT_LOG
-        } else if (svnLog && !gitLog) {
-            return SVN_LOG
-        } else if (svnLog && gitLog) {
-            throw IllegalArgumentException("only one of --git or --svn must be set")
-        }
-
-        return inputFormatNames
     }
 
     private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy {
@@ -139,7 +111,6 @@ class SCMLogParser(private val input: InputStream = System.`in`,
             pathToLog: File,
             parserStrategy: LogParserStrategy,
             metricsFactory: MetricsFactory,
-            projectName: String,
             containsAuthors: Boolean,
             silent: Boolean = false
     ): Project {
@@ -147,7 +118,7 @@ class SCMLogParser(private val input: InputStream = System.`in`,
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
 
-        val projectConverter = ProjectConverter(containsAuthors, projectName)
+        val projectConverter = ProjectConverter(containsAuthors)
         return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
     }
 
@@ -163,12 +134,7 @@ class SCMLogParser(private val input: InputStream = System.`in`,
     private fun printLogCreation() {
         println("  Log creation via:")
 
-        if (getInputFormatNames() != null) {
-            printLogCreationByInputFormatNames(getInputFormatNames())
-        } else {
-            Stream.of<InputFormatNames>(*InputFormatNames::class.java.enumConstants)
-                    .forEach { this.printLogCreationByInputFormatNames(it) }
-        }
+        printLogCreationByInputFormatNames(inputFormatNames)
     }
 
     private fun printLogCreationByInputFormatNames(actualInfoFormatName: InputFormatNames?) {

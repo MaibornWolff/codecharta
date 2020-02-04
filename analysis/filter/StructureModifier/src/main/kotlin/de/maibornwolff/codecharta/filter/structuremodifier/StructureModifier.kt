@@ -12,7 +12,7 @@ import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "modify",
         description = ["changes the structure of cc.json files"],
-        footer = ["Copyright(c) 2019, MaibornWolff GmbH"])
+        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
 class StructureModifier(private val input: InputStream = System.`in`,
                         private val output: PrintStream = System.out,
                         private val error: PrintStream = System.err) : Callable<Void?> {
@@ -23,25 +23,22 @@ class StructureModifier(private val input: InputStream = System.`in`,
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["input project file"])
     private var source: File? = null
 
-    @CommandLine.Option(names = ["-s", "--setRoot"], description = ["path within project to be extracted"])
+    @CommandLine.Option(names = ["-s", "--set-root"], description = ["path within project to be extracted"])
     private var setRoot: String? = null
 
-    @CommandLine.Option(arity = "1", names = ["-p", "--printLevels"], description = ["show first x layers of project hierarchy"])
+    @CommandLine.Option(arity = "1", names = ["-p", "--print-levels"], description = ["show first x layers of project hierarchy"])
     private var printLevels: Int = 0
 
-    @CommandLine.Option(names = ["-o", "--outputFile"], description = ["output File (or empty for stdout)"])
+    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Option(names = ["-n", "--projectName"], description = ["project name of new file"])
-    private var projectName: String? = null
-
-    @CommandLine.Option(names = ["-f", "--moveFrom"], description = ["move nodes in project folder..."])
+    @CommandLine.Option(names = ["-f", "--move-from"], description = ["move nodes in project folder..."])
     private var moveFrom: String? = null
 
     @CommandLine.Option(arity = "1..*", names = ["-r", "--remove"], description = ["node(s) to be removed"])
     private var remove: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["-t", "--moveTo"], description = ["... move nodes to destination folder"])
+    @CommandLine.Option(names = ["-t", "--move-to"], description = ["... move nodes to destination folder"])
     private var moveTo: String? = null
 
     private lateinit var project: Project
@@ -56,9 +53,9 @@ class StructureModifier(private val input: InputStream = System.`in`,
                 ProjectStructurePrinter(project, output).printProjectStructure(printLevels)
                 return null
             }
-            setRoot != null -> project = SubProjectExtractor(project, projectName).extract(setRoot!!)
-            remove.isNotEmpty() -> project = NodeRemover(project, projectName).remove(remove)
-            moveFrom != null -> project = FolderMover(project, projectName).move(moveFrom, moveTo) ?: return null
+            setRoot != null -> project = SubProjectExtractor(project).extract(setRoot!!)
+            remove.isNotEmpty() -> project = NodeRemover(project).remove(remove)
+            moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
         }
 
         val writer = outputFile?.bufferedWriter() ?: output.bufferedWriter()

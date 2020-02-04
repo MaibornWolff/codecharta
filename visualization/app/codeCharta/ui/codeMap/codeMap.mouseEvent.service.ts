@@ -11,6 +11,7 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { FileStateSubscriber, FileStateService } from "../../state/fileState.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { IntersectionResult } from "./rendering/codeMapGeometricDescription"
 
 interface Coordinates {
 	x: number
@@ -45,6 +46,7 @@ export class CodeMapMouseEventService
 
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private oldMouse: Coordinates = { x: 0, y: 0 }
+	private intersectionResult: IntersectionResult
 	private clickType: ClickType = null
 
 	/* @ngInject */
@@ -57,7 +59,7 @@ export class CodeMapMouseEventService
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {
 		this.threeUpdateCycleService.register(() => this.updateHovering())
-		MapTreeViewLevelController.subscribeToHoverEvents($rootScope, this)
+		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
 		FileStateService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
@@ -110,15 +112,15 @@ export class CodeMapMouseEventService
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
 			if (this.threeSceneService.getMapMesh()) {
-				let intersectionResult = this.threeSceneService
+				this.intersectionResult = this.threeSceneService
 					.getMapMesh()
 					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 
 				const from = this.threeSceneService.getHighlightedBuilding()
 				let to = null
 
-				if (intersectionResult.intersectionFound) {
-					to = intersectionResult.building
+				if (this.intersectionResult.intersectionFound) {
+					to = this.intersectionResult.building
 				} else {
 					to = this.highlightedInTreeView
 				}
@@ -147,7 +149,7 @@ export class CodeMapMouseEventService
 	public onDocumentMouseUp() {
 		if (this.clickType === ClickType.LeftClick) {
 			const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
-			if (highlightedBuilding) {
+			if (highlightedBuilding && this.intersectionResult.intersectionFound) {
 				this.threeSceneService.clearSelection()
 				this.threeSceneService.selectBuilding(highlightedBuilding)
 			} else {

@@ -10,8 +10,8 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.Writer
 
-class JSONMetricWriter(private val projectName: String, private val writer: Writer) : MetricWriter {
-  private val projectBuilder = ProjectBuilder(this.projectName)
+class JSONMetricWriter(private val writer: Writer) : MetricWriter {
+    private val projectBuilder = ProjectBuilder()
 
   override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
 
@@ -19,7 +19,7 @@ class JSONMetricWriter(private val projectName: String, private val writer: Writ
 
     var project = projectBuilder.build()
     if (pipedProject != null) {
-      project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project, projectName)
+        project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
     }
     ProjectSerializer.serializeProject(project, writer)
   }

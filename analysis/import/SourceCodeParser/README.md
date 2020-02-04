@@ -40,13 +40,13 @@ or
 or
 
 ```
-./ccsh sourcecodeparser src/test/resources -o foo.cc.json --defaultExcludes -e=something -e=/.*\.foo --f=table
+./ccsh sourcecodeparser src/test/resources -o foo.cc.json --default-excludes -e=something -e=/.*\.foo -f=table
 ```
 
 or
 
 ```
-./ccsh sourcecodeparser src/test/resources -o foo.cc.json --f=table -i
+./ccsh sourcecodeparser src/test/resources -o foo.cc.json -f=table -i
 ```
 
 If a project is piped into the SourceCodeParser, the results and the piped project are merged.
@@ -54,13 +54,12 @@ The resulting project has the project name specified for the SourceCodeParser.
 
 ## Parameters
 
-- --defaultExcludes (exclude build, target, dist and out folders as well as files/folders starting with '.')
+- --default-excludes (exclude build, target, dist and out folders as well as files/folders starting with '.')
 - -e, --exclude=\<excludePattern> (exclude file/folder from scan according to regex pattern)
 - -f, --format=\<outputFormat> (table or json)
 - -h, --help
-- -i, --noIssues (do not search for sonar issues)
-- -o, --outputFile=\<outputFile> (file to write output to, if empty stdout is used)
-- -p, --projectName=\<projectName>
+- -i, --no-issues (do not search for sonar issues)
+- -o, --output-file=\<outputFile> (file to write output to, if empty stdout is used)
 - -v, --verbose
 
 ## Sonar Plugins

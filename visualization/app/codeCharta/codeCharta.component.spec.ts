@@ -8,7 +8,6 @@ import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { State } from "./codeCharta.model"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { FileStateService } from "./state/fileState.service"
-import { LoadingStatusService } from "./state/loadingStatus.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { STATE } from "./util/dataMocks"
@@ -23,8 +22,6 @@ describe("codeChartaController", () => {
 	let codeChartaService: CodeChartaService
 	let fileStateService: FileStateService
 	let injectorService: InjectorService
-	let loadingStatusService: LoadingStatusService
-
 	let state: State
 
 	beforeEach(() => {
@@ -34,7 +31,6 @@ describe("codeChartaController", () => {
 		withMockedCodeChartaService()
 		withMockedDialogService()
 		withMockedScenarioHelper()
-		withMockedLoadingStatusService()
 	})
 
 	function restartSystem() {
@@ -46,7 +42,6 @@ describe("codeChartaController", () => {
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		fileStateService = getService<FileStateService>("fileStateService")
-		loadingStatusService = getService<LoadingStatusService>("loadingStatusService")
 		injectorService = getService<InjectorService>("injectorService")
 
 		state = _.cloneDeep(STATE)
@@ -60,7 +55,6 @@ describe("codeChartaController", () => {
 			dialogService,
 			codeChartaService,
 			fileStateService,
-			loadingStatusService,
 			injectorService
 		)
 	}
@@ -92,13 +86,6 @@ describe("codeChartaController", () => {
 		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings: state })
 	}
 
-	function withMockedLoadingStatusService() {
-		loadingStatusService = codeChartaController["loadingStatusService"] = jest.fn().mockReturnValue({
-			updateLoadingFileFlag: jest.fn(),
-			updateLoadingMapFlag: jest.fn()
-		})()
-	}
-
 	describe("constructor", () => {
 		it("should set urlUtils", () => {
 			rebuildController()
@@ -106,10 +93,10 @@ describe("codeChartaController", () => {
 			expect(codeChartaController["urlUtils"]).toBeDefined()
 		})
 
-		it("should call updateLoadingFileFlag with true", () => {
+		it("should show loading file gif", () => {
 			rebuildController()
 
-			expect(loadingStatusService.updateLoadingFileFlag).toHaveBeenCalledWith(true)
+			expect(storeService.getState().appSettings.isLoadingFile).toBeTruthy()
 		})
 	})
 
