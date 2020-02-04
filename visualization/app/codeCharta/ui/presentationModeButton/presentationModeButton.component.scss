@@ -5,6 +5,7 @@ presentation-mode-button-component {
 		display: inline-block;
 		width: 50px;
 		height: 24px;
+		margin-right: 10px;
 	}
 
 	/* Hide default HTML checkbox */
@@ -64,9 +65,8 @@ presentation-mode-button-component {
 	}
 
 	.presentation-mode-icon {
-		float: right;
+		display: inline-block;
+		vertical-align: middle;
 		font-size: 18px;
-		margin-top: 5px;
-		margin-right: 8px;
 	}
 }
