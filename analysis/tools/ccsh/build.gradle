@@ -7,9 +7,9 @@ applicationName = 'ccsh'
 // In order to avoid this, the JVM_OPTS need to be adjusted to suppress the warning
 def UNIX_JVM_ARGS_SWITCH = '''#!/usr/bin/env sh
 DEFAULT_JVM_OPTS=''
-if [[ java ]]; then
+if [ java ]; then
     version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}') 
-    if [[ "$version" > "1.9" ]]; then
+    if [ "$version" > "1.9" ]; then
         DEFAULT_JVM_OPTS='"--add-opens=java.base/java.lang=ALL-UNNAMED"'
     fi
 fi'''
