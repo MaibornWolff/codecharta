@@ -9,7 +9,8 @@ def UNIX_JVM_ARGS_SWITCH = '''#!/usr/bin/env sh
 DEFAULT_JVM_OPTS=''
 if [ java ]; then
     version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}') 
-    if [ "$version" > "1.9" ]; then
+    version1=$(echo "$version" | awk -F. '{printf("%03d%03d",$1,$2);}')
+    if [ $version1 -ge 001009 ]; then
         DEFAULT_JVM_OPTS='"--add-opens=java.base/java.lang=ALL-UNNAMED"'
     fi
 fi'''
