@@ -168,16 +168,10 @@ Array [
 exports[`SettingsMerger MarkedPackages merge should merge all markedPackages if one file does not contain markedPackages 1`] = `
 Array [
   Object {
-    "attributes": Object {
-      "name": "nodeA",
-    },
     "color": "#ABABAB",
     "path": "/root/nodeA",
   },
   Object {
-    "attributes": Object {
-      "name": "nodeB",
-    },
     "color": "#FFFFFF",
     "path": "/root/nodeB",
   },
@@ -187,41 +181,19 @@ Array [
 exports[`SettingsMerger MarkedPackages merge should merge different markedPackages 1`] = `
 Array [
   Object {
-    "attributes": Object {
-      "name": "nodeA",
-    },
     "color": "#ABABAB",
     "path": "/root/nodeA",
   },
   Object {
-    "attributes": Object {
-      "name": "nodeB",
-    },
     "color": "#FFFFFF",
     "path": "/root/nodeB",
   },
 ]
 `;
 
-exports[`SettingsMerger MarkedPackages merge should merge markedPackage-attributes for the same markedPackage paths 1`] = `
+exports[`SettingsMerger MarkedPackages merge should not store duplicate marked packages 1`] = `
 Array [
   Object {
-    "attributes": Object {
-      "another": "nodeA",
-      "name": "nodeA",
-    },
-    "color": "#ABABAB",
-    "path": "/root/nodeA",
-  },
-]
-`;
-
-exports[`SettingsMerger MarkedPackages merge should overwrite duplicated markedPackage-attributes for the same markedPackage 1`] = `
-Array [
-  Object {
-    "attributes": Object {
-      "name": "overwrite nodeA",
-    },
     "color": "#ABABAB",
     "path": "/root/nodeA",
   },

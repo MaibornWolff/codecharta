@@ -58,40 +58,27 @@ describe("SettingsMerger", () => {
 	describe("MarkedPackages merge", () => {
 		let mp1: MarkedPackage
 		let mp2: MarkedPackage
-		let mp3: MarkedPackage
 		let mp4: MarkedPackage
 
 		beforeEach(() => {
 			mp1 = {
 				path: "/root/nodeA",
-				color: "#ABABAB",
-				attributes: {
-					name: "nodeA"
-				}
+				color: "#ABABAB"
 			}
 
 			mp2 = {
 				path: "/root/nodeB",
-				color: "#FFFFFF",
-				attributes: {
-					name: "nodeB"
-				}
+				color: "#FFFFFF"
 			}
 
 			mp3 = {
 				path: "/root/nodeA",
-				color: "#ABABAB",
-				attributes: {
-					another: "nodeA"
-				}
+				color: "#ABABAB"
 			}
 
 			mp4 = {
 				path: "/root/nodeA",
-				color: "#ABABAB",
-				attributes: {
-					name: "overwrite nodeA"
-				}
+				color: "#ABABAB"
 			}
 		})
 
@@ -116,14 +103,7 @@ describe("SettingsMerger", () => {
 			expect(fileSettings.markedPackages).toMatchSnapshot()
 		})
 
-		it("should merge markedPackage-attributes for the same markedPackage paths", () => {
-			file1.settings.fileSettings.markedPackages = [mp1]
-			file2.settings.fileSettings.markedPackages = [mp3]
-			const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
-			expect(fileSettings.markedPackages).toMatchSnapshot()
-		})
-
-		it("should overwrite duplicated markedPackage-attributes for the same markedPackage", () => {
+		it("should not store duplicate marked packages", () => {
 			file1.settings.fileSettings.markedPackages = [mp1]
 			file2.settings.fileSettings.markedPackages = [mp4]
 			const fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
