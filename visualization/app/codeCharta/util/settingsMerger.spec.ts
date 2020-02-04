@@ -71,11 +71,6 @@ describe("SettingsMerger", () => {
 				color: "#FFFFFF"
 			}
 
-			mp3 = {
-				path: "/root/nodeA",
-				color: "#ABABAB"
-			}
-
 			mp4 = {
 				path: "/root/nodeA",
 				color: "#ABABAB"
