@@ -86,7 +86,7 @@ class VersionControlledFile internal constructor(
         return metrics.first { it.metricName() == metricName }.value()
     }
 
-    fun freeMemory() {
+    fun removeMetricsToFreeMemory() {
         metrics = listOf()
     }
 }
