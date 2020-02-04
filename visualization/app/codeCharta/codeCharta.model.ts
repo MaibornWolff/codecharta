@@ -186,9 +186,6 @@ export enum BlacklistType {
 export interface MarkedPackage {
 	path: string
 	color: string
-	attributes: {
-		[key: string]: any
-	}
 }
 
 export interface MetricData {

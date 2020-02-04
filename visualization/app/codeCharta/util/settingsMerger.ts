@@ -56,16 +56,11 @@ export class SettingsMerger {
 					path: withUpdatedPath
 						? this.getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path)
 						: oldMarkedPackages.path,
-					color: oldMarkedPackages.color,
-					attributes: oldMarkedPackages.attributes
+					color: oldMarkedPackages.color
 				}
 				const equalMarkedPackages = this.markedPackages.find(x => x.path == markedPackage.path && x.color == markedPackage.color)
 
-				if (equalMarkedPackages) {
-					for (let key in markedPackage.attributes) {
-						equalMarkedPackages.attributes[key] = markedPackage.attributes[key]
-					}
-				} else {
+				if (!equalMarkedPackages) {
 					this.markedPackages.push(markedPackage)
 				}
 			}
