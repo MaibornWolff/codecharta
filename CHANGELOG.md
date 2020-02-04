@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- GC Overhead Limit (OutOfMemory Exception) during analysis of large SCMLogs fixed #845
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.42.0] - 2020-01-31
