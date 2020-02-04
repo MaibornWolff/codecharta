@@ -1,7 +1,6 @@
 import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
 import { ColorRange, MarkedPackage, MapColors } from "../../codeCharta.model"
-import { CodeChartaService } from "../../codeCharta.service"
 import { FileStateService } from "../../state/fileState.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
