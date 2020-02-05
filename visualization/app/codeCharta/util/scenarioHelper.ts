@@ -1,7 +1,7 @@
 "use strict"
 import { AppSettings, DynamicSettings, MetricData, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
-import { AddAttributeContent } from "../ui/dialog/dialog.addScenarioSettings.component"
+import { AddAttributeContent, ScenarioCheckboxNames } from "../ui/dialog/dialog.addScenarioSettings.component"
 
 export interface Scenario {
 	name: string
@@ -10,9 +10,23 @@ export interface Scenario {
 
 export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
-	private static scenarios: Scenario[] = ScenarioHelper.importScenarios(require("../assets/scenarios.json"))
+	private static scenarios: Scenario[] = ScenarioHelper.loadScenarios()
 
-	public static getScenarios(metricData: MetricData[]): Scenario[] {
+	private static loadScenarios(): Scenario[] {
+		const scenarios = JSON.parse(localStorage.getItem("scenarios"))
+		if (scenarios) {
+			return scenarios
+		} else {
+			localStorage.setItem("scenarios", JSON.stringify(this.getPreLoadScenarios()))
+			return this.getPreLoadScenarios()
+		}
+	}
+
+	private static getPreLoadScenarios(): Scenario[] {
+		return ScenarioHelper.importScenarios(require("../assets/scenarios.json"))
+	}
+
+	public static getScenarios(): Scenario[] {
 		return this.scenarios
 	}
 
@@ -29,6 +43,7 @@ export class ScenarioHelper {
 			}
 		}
 		this.scenarios.push(newScenario)
+		localStorage.setItem("scenarios", JSON.stringify(this.scenarios))
 	}
 
 	public static createNewScenario(scenarioName: string, attributes: AddAttributeContent[]) {
@@ -36,6 +51,10 @@ export class ScenarioHelper {
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
 		attributes.forEach(x => {
 			switch (x.metricName) {
+				case ScenarioCheckboxNames.cameraPosition: {
+					partialAppSettings.camera = x.metricAttributeValue
+					break
+				}
 				case "Area": {
 					partialDynamicSettings.areaMetric = x.currentMetric
 					partialDynamicSettings.margin = x.metricAttributeValue
@@ -49,6 +68,7 @@ export class ScenarioHelper {
 				}
 				case "Color": {
 					partialDynamicSettings.colorMetric = x.currentMetric
+					partialDynamicSettings.colorRange = x.metricAttributeValue
 					break
 				}
 				case "Edge": {
@@ -67,8 +87,10 @@ export class ScenarioHelper {
 	}
 
 	public static deleteScenario(scenarioName: String) {
-		const indexOfScenario = this.scenarios.indexOf(this.scenarios.find(x => x.name === scenarioName))
-		this.scenarios.splice(indexOfScenario, 1)
+		this.scenarios = this.scenarios.filter(item => {
+			return item.name !== scenarioName
+		})
+		localStorage.setItem("scenarios", JSON.stringify(this.scenarios))
 	}
 
 	public static isScenarioPossible(scenario: Scenario, metricData: MetricData[]): boolean {

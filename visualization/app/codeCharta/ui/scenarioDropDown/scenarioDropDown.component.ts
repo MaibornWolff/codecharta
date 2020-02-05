@@ -3,12 +3,12 @@
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper, Scenario } from "../../util/scenarioHelper"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import { MetricData } from "../../codeCharta.model"
+import { ColorRange, MetricData } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 export class ScenarioDropDownController implements MetricServiceSubscriber {
 	private _viewModel: {
@@ -19,24 +19,24 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
 	private availableMetrics: MetricData[]
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private dialogService: DialogService,
-		private threeOrbitControlsService: ThreeOrbitControlsService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private dialogService: DialogService) {
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
+	public loadScenarios() {
+		this._viewModel.scenarios = ScenarioHelper.getScenarios()
+	}
+
 	public onMetricDataAdded(metricData: MetricData[]) {
-		this._viewModel.scenarios = ScenarioHelper.getScenarios(metricData)
+		this._viewModel.scenarios = ScenarioHelper.getScenarios()
 		this.availableMetrics = metricData
 	}
 
 	public applyScenario(scenarioName: string) {
-		if (this.isScenarioAppliable(ScenarioHelper.getScenarioSettingsByName(scenarioName).dynamicSettings)) {
-			this.storeService.dispatch(setState(ScenarioHelper.getScenarioSettingsByName(scenarioName)))
-			this.threeOrbitControlsService.autoFitTo()
+		const scenario = ScenarioHelper.getScenarioSettingsByName(scenarioName)
+		if (this.isScenarioAppliable(scenario.dynamicSettings)) {
+			this.storeService.dispatch(setState(scenario))
+			this.storeService.dispatch(setColorRange(scenario.dynamicSettings.colorRange as ColorRange))
 		} else {
 			this.dialogService.showErrorDialog("This metric is not appliable, because not all metrics are available for this map.")
 		}
@@ -102,13 +102,11 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public showAddScenarioSettings() {
-		// TODO: show Scenario Save Settings
 		this.dialogService.showAddScenarioSettings()
-		//ScenarioHelper.addScenario()
 	}
 
 	public removeScenario(scenarioName) {
-		//TODO: Delete Scenario - Get a better attribute than name for excluding
+		//TODO: Delete Scenario
 		ScenarioHelper.deleteScenario(scenarioName)
 	}
 }
