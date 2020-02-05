@@ -1,5 +1,5 @@
 import "./dialog.component.scss"
-import { DynamicSettings } from "../../codeCharta.model"
+import { AppSettings, DynamicSettings } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
 import { DialogService } from "./dialog.service"
@@ -9,6 +9,7 @@ export interface AddAttributeContent {
 	currentMetric: string
 	isSelected: boolean
 	isDisabled: boolean
+	metricAttributeValue: any
 }
 
 export enum ScenarioCheckboxNames {
@@ -43,7 +44,7 @@ export class DialogAddScenarioSettingsComponent {
 			this.dialogService.showErrorDialog("The Scenario Name is already taken, please chose another Scenario Name.")
 		} else {
 			const chosenMetrics: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
-			ScenarioHelper.addScenario(this._viewModel.scenarioName, ScenarioHelper.createNewScenario(chosenMetrics))
+			ScenarioHelper.createNewScenario(this._viewModel.scenarioName, chosenMetrics)
 			this.hide()
 		}
 	}
@@ -55,16 +56,24 @@ export class DialogAddScenarioSettingsComponent {
 
 	private setFileContentList() {
 		const dynamicSettings: DynamicSettings = this.storeService.getState().dynamicSettings
-		this.pushFileContent(ScenarioCheckboxNames.areaMetric, dynamicSettings.areaMetric)
-		this.pushFileContent(ScenarioCheckboxNames.HeightMetric, dynamicSettings.heightMetric)
+		const appSettings: AppSettings = this.storeService.getState().appSettings
+		this.pushFileContent(ScenarioCheckboxNames.areaMetric, dynamicSettings.areaMetric, dynamicSettings.margin)
+		this.pushFileContent(ScenarioCheckboxNames.HeightMetric, dynamicSettings.heightMetric, {
+			heightSlider: appSettings.scaling,
+			labelSlider: appSettings.amountOfTopLabels
+		})
 		this.pushFileContent(ScenarioCheckboxNames.ColorMetric, dynamicSettings.colorMetric)
-		this.pushFileContent(ScenarioCheckboxNames.edgeMetric, dynamicSettings.edgeMetric)
+		this.pushFileContent(ScenarioCheckboxNames.edgeMetric, dynamicSettings.edgeMetric, {
+			edgePreview: appSettings.amountOfEdgePreviews,
+			edgeHeight: appSettings.edgeHeight
+		})
 	}
 
-	private pushFileContent(name: string, currentAttribute: string) {
+	private pushFileContent(name: string, currentAttribute: string, metricSliderValues?: any) {
 		this._viewModel.fileContent.push({
 			metricName: name,
 			currentMetric: currentAttribute,
+			metricAttributeValue: metricSliderValues,
 			isSelected: true,
 			isDisabled: name === "Edge" && this.storeService.getState().fileSettings.edges.length === 0
 		})

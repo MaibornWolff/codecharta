@@ -1,5 +1,5 @@
 "use strict"
-import { DynamicSettings, MetricData, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
+import { AppSettings, DynamicSettings, MetricData, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddAttributeContent } from "../ui/dialog/dialog.addScenarioSettings.component"
 
@@ -16,29 +16,35 @@ export class ScenarioHelper {
 		return this.scenarios
 	}
 
-	public static addScenario(scenarioName: string, dynamicSettingPartial: RecursivePartial<DynamicSettings>) {
+	public static addScenario(
+		scenarioName: string,
+		dynamicSettingPartial: RecursivePartial<DynamicSettings>,
+		appSettingsPartial: RecursivePartial<AppSettings>
+	) {
 		const newScenario: Scenario = {
 			name: scenarioName,
 			settings: {
-				appSettings: {
-					invertColorRange: false
-				},
+				appSettings: appSettingsPartial,
 				dynamicSettings: dynamicSettingPartial
 			}
 		}
 		this.scenarios.push(newScenario)
 	}
 
-	public static createNewScenario(attributes: AddAttributeContent[]) {
+	public static createNewScenario(scenarioName: string, attributes: AddAttributeContent[]) {
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
+		const partialAppSettings: RecursivePartial<AppSettings> = {}
 		attributes.forEach(x => {
 			switch (x.metricName) {
 				case "Area": {
 					partialDynamicSettings.areaMetric = x.currentMetric
+					partialDynamicSettings.margin = x.metricAttributeValue
 					break
 				}
 				case "Height": {
 					partialDynamicSettings.heightMetric = x.currentMetric
+					partialAppSettings.scaling = x.metricAttributeValue["heightSlider"]
+					partialAppSettings.amountOfTopLabels = x.metricAttributeValue["labelSlider"]
 					break
 				}
 				case "Color": {
@@ -47,12 +53,13 @@ export class ScenarioHelper {
 				}
 				case "Edge": {
 					partialDynamicSettings.edgeMetric = x.currentMetric
+					partialAppSettings.amountOfEdgePreviews = x.metricAttributeValue["edgePreview"]
+					partialAppSettings.edgeHeight = x.metricAttributeValue["edgeHeight"]
 					break
 				}
 			}
 		})
-
-		return partialDynamicSettings
+		this.addScenario(scenarioName, partialDynamicSettings, partialAppSettings)
 	}
 
 	public static getNumberOfScenarios() {

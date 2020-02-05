@@ -43,8 +43,13 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	private isScenarioAppliable(scenario) {
+		// Todo: Better solution, to find out if the dynamicValue is a slider oder a metric
 		for (let attribute in scenario) {
-			if (this.isMetricNotAvailable(scenario[attribute]) === true && scenario[attribute] !== "None") {
+			if (
+				typeof scenario[attribute] === "string" &&
+				this.isMetricNotAvailable(scenario[attribute]) === true &&
+				scenario[attribute] !== "None"
+			) {
 				return false
 			}
 		}
