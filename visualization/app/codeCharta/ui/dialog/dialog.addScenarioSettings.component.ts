@@ -13,6 +13,7 @@ export interface AddAttributeContent {
 }
 
 export enum ScenarioCheckboxNames {
+	//TODO: CAPS ALLES
 	cameraPosition = "CameraPosition",
 	edgeMetric = "Edge",
 	areaMetric = "Area",
@@ -45,6 +46,7 @@ export class DialogAddScenarioSettingsComponent {
 		} else {
 			const chosenMetrics: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
 			ScenarioHelper.createNewScenario(this._viewModel.scenarioName, chosenMetrics)
+
 			this.hide()
 		}
 	}
@@ -57,12 +59,13 @@ export class DialogAddScenarioSettingsComponent {
 	private setFileContentList() {
 		const dynamicSettings: DynamicSettings = this.storeService.getState().dynamicSettings
 		const appSettings: AppSettings = this.storeService.getState().appSettings
+		this.pushFileContent(ScenarioCheckboxNames.cameraPosition, null, appSettings.camera)
 		this.pushFileContent(ScenarioCheckboxNames.areaMetric, dynamicSettings.areaMetric, dynamicSettings.margin)
 		this.pushFileContent(ScenarioCheckboxNames.HeightMetric, dynamicSettings.heightMetric, {
 			heightSlider: appSettings.scaling,
 			labelSlider: appSettings.amountOfTopLabels
 		})
-		this.pushFileContent(ScenarioCheckboxNames.ColorMetric, dynamicSettings.colorMetric)
+		this.pushFileContent(ScenarioCheckboxNames.ColorMetric, dynamicSettings.colorMetric, dynamicSettings.colorRange)
 		this.pushFileContent(ScenarioCheckboxNames.edgeMetric, dynamicSettings.edgeMetric, {
 			edgePreview: appSettings.amountOfEdgePreviews,
 			edgeHeight: appSettings.edgeHeight
