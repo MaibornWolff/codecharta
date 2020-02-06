@@ -1,0 +1,184 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"additionalProperties": false,
+	"definitions": {
+		"AttributeType": {
+			"additionalProperties": {
+				"enum": ["absolute", "relative"],
+				"type": "string"
+			},
+			"type": "object"
+		},
+		"AttributeTypes": {
+			"additionalProperties": false,
+			"properties": {
+				"edges": {
+					"items": {
+						"$ref": "#/definitions/AttributeType"
+					},
+					"type": "array"
+				},
+				"nodes": {
+					"items": {
+						"$ref": "#/definitions/AttributeType"
+					},
+					"type": "array"
+				}
+			},
+			"type": "object"
+		},
+		"BlacklistItem": {
+			"additionalProperties": false,
+			"properties": {
+				"path": {
+					"type": "string"
+				},
+				"type": {
+					"$ref": "#/definitions/BlacklistType"
+				}
+			},
+			"required": ["path", "type"],
+			"type": "object"
+		},
+		"BlacklistType": {
+			"enum": ["exclude", "flatten"],
+			"type": "string"
+		},
+		"CodeMapNode": {
+			"additionalProperties": false,
+			"properties": {
+				"attributes": {
+					"$ref": "#/definitions/KeyValuePair"
+				},
+				"children": {
+					"items": {
+						"$ref": "#/definitions/CodeMapNode"
+					},
+					"type": "array"
+				},
+				"deltas": {
+					"additionalProperties": {
+						"type": "number"
+					},
+					"type": "object"
+				},
+				"edgeAttributes": {
+					"additionalProperties": {
+						"$ref": "#/definitions/EdgeMetricCount"
+					},
+					"type": "object"
+				},
+				"link": {
+					"type": "string"
+				},
+				"name": {
+					"type": "string"
+				},
+				"path": {
+					"type": "string"
+				},
+				"type": {
+					"type": "string"
+				},
+				"visible": {
+					"type": "boolean"
+				}
+			},
+			"required": ["attributes", "name", "type"],
+			"type": "object"
+		},
+		"Edge": {
+			"additionalProperties": false,
+			"properties": {
+				"attributes": {
+					"$ref": "#/definitions/KeyValuePair"
+				},
+				"fromNodeName": {
+					"type": "string"
+				},
+				"toNodeName": {
+					"type": "string"
+				},
+				"visible": {
+					"enum": ["both", "from", "none", "to"],
+					"type": "string"
+				}
+			},
+			"required": ["attributes", "fromNodeName", "toNodeName"],
+			"type": "object"
+		},
+		"EdgeMetricCount": {
+			"additionalProperties": false,
+			"properties": {
+				"incoming": {
+					"type": "number"
+				},
+				"outgoing": {
+					"type": "number"
+				}
+			},
+			"required": ["incoming", "outgoing"],
+			"type": "object"
+		},
+		"KeyValuePair": {
+			"additionalProperties": {
+				"type": "number"
+			},
+			"type": "object"
+		},
+		"MarkedPackage": {
+			"additionalProperties": false,
+			"properties": {
+				"attributes": {
+					"additionalProperties": {},
+					"type": "object"
+				},
+				"color": {
+					"type": "string"
+				},
+				"path": {
+					"type": "string"
+				}
+			},
+			"required": ["attributes", "color", "path"],
+			"type": "object"
+		}
+	},
+	"properties": {
+		"apiVersion": {
+			"type": "string"
+		},
+		"attributeTypes": {
+			"$ref": "#/definitions/AttributeTypes"
+		},
+		"blacklist": {
+			"items": {
+				"$ref": "#/definitions/BlacklistItem"
+			},
+			"type": "array"
+		},
+		"edges": {
+			"items": {
+				"$ref": "#/definitions/Edge"
+			},
+			"type": "array"
+		},
+		"markedPackages": {
+			"items": {
+				"$ref": "#/definitions/MarkedPackage"
+			},
+			"type": "array"
+		},
+		"nodes": {
+			"items": {
+				"$ref": "#/definitions/CodeMapNode"
+			},
+			"type": "array"
+		},
+		"projectName": {
+			"type": "string"
+		}
+	},
+	"required": ["apiVersion", "nodes", "projectName"],
+	"type": "object"
+}

@@ -27,7 +27,7 @@ export class FileValidator {
 			return [{ message: "file is empty or invalid", dataPath: "empty or invalid file" }]
 		}
 		let ajv = require("ajv")()
-		let compare = ajv.compile(require("./schema.json"))
+		let compare = ajv.compile(require("./generatedSchema.json"))
 		let valid = compare(file)
 
 		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
