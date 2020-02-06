@@ -132,7 +132,8 @@
 		"angularjs-nouislider": "^1.0.1",
 		"nouislider": "^13.1.1",
 		"nwjs-builder-phoenix": "^1.14.6",
-		"shelljs": "^0.8.1"
+		"shelljs": "^0.8.1",
+		"typescript-json-schema": "^0.42.0"
 	},
 	"devDependencies": {
 		"@types/angular": "^1.6.43",
