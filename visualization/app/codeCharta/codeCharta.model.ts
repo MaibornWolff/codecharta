@@ -30,10 +30,10 @@ export interface ExportCCFile {
 	projectName: string
 	apiVersion: string
 	nodes: CodeMapNode[]
-	attributeTypes: AttributeTypes | {}
-	edges: Edge[]
-	markedPackages: MarkedPackage[]
-	blacklist: BlacklistItem[]
+	attributeTypes?: AttributeTypes
+	edges?: Edge[]
+	markedPackages?: MarkedPackage[]
+	blacklist?: BlacklistItem[]
 }
 
 export interface CCFile {
@@ -141,8 +141,8 @@ export interface ColorRange {
 }
 
 export interface AttributeTypes {
-	nodes: AttributeType[]
-	edges: AttributeType[]
+	nodes?: AttributeType[]
+	edges?: AttributeType[]
 }
 
 export interface AttributeType {
