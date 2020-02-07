@@ -74,7 +74,7 @@
 		"lint:fix": "tslint -c \"tslint.json\" \"app/**/*.ts\" --fix --project tsconfig.json",
 		"format": "prettier --write \"./**/*\"",
 		"format:quick": "pretty-quick --staged",
-		"schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --strictNullChecks --noExtraProps --out app/codeCharta/util/generatedSchema.json"
+		"schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --noExtraProps --out app/codeCharta/util/generatedSchema.json;"
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
