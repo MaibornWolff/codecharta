@@ -80,7 +80,7 @@ describe("codeChartaService", () => {
 		it("should load a file without edges", done => {
 			validFileContent.edges = undefined
 
-			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
+			codeChartaService.loadFiles([{ fileName: "noFileName", content: validFileContent }]).then(() => {
 				expect(fileStateService.addFile).toHaveBeenCalledWith(expected)
 				expect(fileStateService.setSingle).toHaveBeenCalled()
 				done()
@@ -88,7 +88,7 @@ describe("codeChartaService", () => {
 		})
 
 		it("should resolve valid file", done => {
-			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
+			codeChartaService.loadFiles([{ fileName: "noFileName", content: validFileContent }]).then(() => {
 				expect(fileStateService.addFile).toHaveBeenCalledWith(expected)
 				expect(fileStateService.setSingle).toHaveBeenCalled()
 				done()
@@ -97,7 +97,7 @@ describe("codeChartaService", () => {
 
 		it("should reject null", done => {
 			codeChartaService
-				.loadFiles([{ fileName: validFileContent.fileName, content: null }])
+				.loadFiles([{ fileName: "noFileName", content: null }])
 				.then(() => {
 					letTestFail()
 				})
@@ -109,7 +109,7 @@ describe("codeChartaService", () => {
 
 		it("should reject string", done => {
 			codeChartaService
-				.loadFiles([{ fileName: validFileContent.fileName, content: "string" }])
+				.loadFiles([{ fileName: "noFileName", content: "string" }])
 				.then(() => {
 					letTestFail()
 				})
@@ -122,7 +122,7 @@ describe("codeChartaService", () => {
 			let invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 			codeChartaService
-				.loadFiles([{ fileName: validFileContent.fileName, content: null }])
+				.loadFiles([{ fileName: "noFileName", content: null }])
 				.then(() => {
 					letTestFail()
 				})
@@ -135,7 +135,7 @@ describe("codeChartaService", () => {
 		it("should convert old blacklist type", done => {
 			validFileContent.blacklist = [{ path: "foo", type: "hide" }]
 
-			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
+			codeChartaService.loadFiles([{ fileName: "noFileName", content: validFileContent }]).then(() => {
 				const expectedWithBlacklist = _.cloneDeep(expected)
 				expectedWithBlacklist.settings.fileSettings.blacklist = [{ path: "foo", type: BlacklistType.flatten }]
 				expect(fileStateService.addFile).toHaveBeenLastCalledWith(expectedWithBlacklist)
