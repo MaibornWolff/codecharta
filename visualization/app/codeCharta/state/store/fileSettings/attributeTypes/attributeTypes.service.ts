@@ -26,10 +26,10 @@ export class AttributeTypesService implements StoreSubscriber, FileStateSubscrib
 	}
 
 	public onFileStatesChanged(fileStates: FileState[]) {
-		this.reset(fileStates)
+		this.merge(fileStates)
 	}
 
-	public reset(fileStates: FileState[]) {
+	public merge(fileStates: FileState[]) {
 		const allAttributeTypes: AttributeTypes[] = FileStateHelper.getVisibleFileStates(fileStates)
 			.map(x => x.file)
 			.map(x => x.settings.fileSettings.attributeTypes)
