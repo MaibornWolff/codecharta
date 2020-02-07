@@ -161,21 +161,5 @@ describe("StoreService", () => {
 
 			expect(storeService.getState()).toEqual(STATE)
 		})
-
-		it("should show loading map gif when state changes", () => {
-			storeService.dispatch(setIsLoadingMap(false))
-
-			storeService.dispatch(setState())
-
-			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
-		})
-
-		it("should not set state, if triggered silently", () => {
-			storeService.dispatch(setIsLoadingMap(false))
-
-			storeService.dispatch(setDynamicMargin(true), true)
-
-			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
-		})
 	})
 })

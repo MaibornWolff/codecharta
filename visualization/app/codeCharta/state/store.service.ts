@@ -7,8 +7,6 @@ import { FileStateService, FileStateSubscriber } from "./fileState.service"
 import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
-import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
-import _ from "lodash"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -29,10 +27,6 @@ export class StoreService implements FileStateSubscriber {
 	}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
-		if (!isSilent && !_.values(IsLoadingMapActions).includes(action.type)) {
-			this.store.dispatch(setIsLoadingMap(true))
-		}
-
 		splitStateActions(action).forEach(atomicAction => {
 			this.store.dispatch(atomicAction)
 			if (!isSilent) {
