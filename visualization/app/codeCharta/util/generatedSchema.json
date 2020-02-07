@@ -1,6 +1,6 @@
 {
+	"$ref": "#/definitions/ExportCCFile",
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"additionalProperties": false,
 	"definitions": {
 		"AttributeType": {
 			"additionalProperties": {
@@ -100,8 +100,7 @@
 					"type": "string"
 				},
 				"visible": {
-					"enum": ["both", "from", "none", "to"],
-					"type": "string"
+					"$ref": "#/definitions/EdgeVisibility"
 				}
 			},
 			"required": ["attributes", "fromNodeName", "toNodeName"],
@@ -118,6 +117,50 @@
 				}
 			},
 			"required": ["incoming", "outgoing"],
+			"type": "object"
+		},
+		"EdgeVisibility": {
+			"enum": ["both", "from", "none", "to"],
+			"type": "string"
+		},
+		"ExportCCFile": {
+			"additionalProperties": false,
+			"properties": {
+				"apiVersion": {
+					"type": "string"
+				},
+				"attributeTypes": {
+					"$ref": "#/definitions/AttributeTypes"
+				},
+				"blacklist": {
+					"items": {
+						"$ref": "#/definitions/BlacklistItem"
+					},
+					"type": "array"
+				},
+				"edges": {
+					"items": {
+						"$ref": "#/definitions/Edge"
+					},
+					"type": "array"
+				},
+				"markedPackages": {
+					"items": {
+						"$ref": "#/definitions/MarkedPackage"
+					},
+					"type": "array"
+				},
+				"nodes": {
+					"items": {
+						"$ref": "#/definitions/CodeMapNode"
+					},
+					"type": "array"
+				},
+				"projectName": {
+					"type": "string"
+				}
+			},
+			"required": ["apiVersion", "nodes", "projectName"],
 			"type": "object"
 		},
 		"KeyValuePair": {
@@ -143,42 +186,5 @@
 			"required": ["attributes", "color", "path"],
 			"type": "object"
 		}
-	},
-	"properties": {
-		"apiVersion": {
-			"type": "string"
-		},
-		"attributeTypes": {
-			"$ref": "#/definitions/AttributeTypes"
-		},
-		"blacklist": {
-			"items": {
-				"$ref": "#/definitions/BlacklistItem"
-			},
-			"type": "array"
-		},
-		"edges": {
-			"items": {
-				"$ref": "#/definitions/Edge"
-			},
-			"type": "array"
-		},
-		"markedPackages": {
-			"items": {
-				"$ref": "#/definitions/MarkedPackage"
-			},
-			"type": "array"
-		},
-		"nodes": {
-			"items": {
-				"$ref": "#/definitions/CodeMapNode"
-			},
-			"type": "array"
-		},
-		"projectName": {
-			"type": "string"
-		}
-	},
-	"required": ["apiVersion", "nodes", "projectName"],
-	"type": "object"
+	}
 }
