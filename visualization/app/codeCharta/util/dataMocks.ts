@@ -9,7 +9,9 @@ import {
 	Node,
 	BlacklistType,
 	EdgeVisibility,
-	State
+	State,
+	ExportCCFile,
+	FileMeta
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -213,13 +215,13 @@ export const VALID_EDGE: Edge = {
 	}
 }
 
-export const TEST_FILE_CONTENT = {
+export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
 	apiVersion: "1.1",
 	nodes: [VALID_NODE]
 }
 
-export const FILE_META = {
+export const FILE_META: FileMeta = {
 	fileName: "fileA",
 	projectName: "Sample Project",
 	apiVersion: "1.1"
