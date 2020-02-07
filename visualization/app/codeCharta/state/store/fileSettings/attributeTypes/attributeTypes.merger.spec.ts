@@ -1,8 +1,8 @@
 import { AttributeTypes, AttributeTypeValue } from "../../../../codeCharta.model"
-import { getMergedAttributeTypes } from "./attributeTypes.reset"
+import { getMergedAttributeTypes } from "./attributeTypes.merger"
 
-describe("AttributeTypesReset", () => {
-	describe("getResetAttributeTypes", () => {
+describe("AttributeTypesMerger", () => {
+	describe("getMergedAttributeTypes", () => {
 		let attributes1: AttributeTypes
 		let attributes2: AttributeTypes
 		let attributes3: AttributeTypes

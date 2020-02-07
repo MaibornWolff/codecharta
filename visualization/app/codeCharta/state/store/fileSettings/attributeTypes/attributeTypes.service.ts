@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { AttributeTypesActions, setAttributeTypes } from "./attributeTypes.actions"
 import _ from "lodash"
 import { AttributeTypes, FileState } from "../../../../codeCharta.model"
-import { getMergedAttributeTypes } from "./attributeTypes.reset"
+import { getMergedAttributeTypes } from "./attributeTypes.merger"
 import { FileStateHelper } from "../../../../util/fileStateHelper"
 import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
 
