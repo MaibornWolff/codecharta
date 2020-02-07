@@ -1,7 +1,5 @@
-<div class="small-action-button">
-	<md-button class="md-fab md-primary cc-shadow" onclick="document.getElementById('input-file-id').click();">
-		<i class="fa fa-folder-open"></i>
-	</md-button>
-</div>
+<md-button class="toolbar-button" onclick="document.getElementById('input-file-id').click();">
+	<i class="fa fa-folder-open folder-icon"></i>
+</md-button>
 
 <input ng-show="false" id="input-file-id" multiple type="file" onchange="angular.element(this).scope().ctrl.onImportNewFiles(this)" />

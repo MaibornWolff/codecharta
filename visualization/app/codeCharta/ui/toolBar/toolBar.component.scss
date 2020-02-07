@@ -1,39 +1,51 @@
 tool-bar-component {
 	.tool-bar {
+		display: flex;
+		align-items: center;
 		background-color: #f0f0f0;
 		height: 35px;
-		font-size: 0px;
 		border-bottom: 1px solid #cdcdcd;
+	}
 
-		file-panel-component,
-		node-path-panel-component {
-			&.hidden {
-				display: none;
-			}
+	.toolbar-button {
+		min-width: 24px;
+		min-height: 24px;
+		border-radius: 100%;
+		padding: 5px;
+		line-height: 0%;
+		margin-right: 0;
+		background-color: rgb(0, 150, 136);
+		color: white;
+		&:hover {
+			background-color: rgb(0, 124, 112) !important;
 		}
 
-		.small-action-button {
-			margin: 5px;
+		.folder-icon {
+			margin-right: -2px;
 		}
+	}
 
-		.right-aligned {
-			right: 10px;
-			position: fixed;
+	.md-focused {
+		background-color: rgb(0, 150, 136) !important;
+	}
 
-			> * {
-				float: left;
-			}
+	.right-aligned {
+		position: absolute;
+		right: 10px;
+		display: inline-flex;
+		align-items: center;
+		width: 150px;
+	}
 
-			loading-gif-map-component {
-				margin-top: 5px;
-				margin-right: 10px;
-				margin-left: 10px;
-			}
+	loading-gif-map-component {
+		margin-right: 15px;
+		width: 15px;
+	}
+}
 
-			.presentation-mode-button {
-				float: right;
-				margin-top: 5px;
-			}
-		}
+file-panel-component,
+node-path-panel-component {
+	&.hidden {
+		display: none;
 	}
 }
