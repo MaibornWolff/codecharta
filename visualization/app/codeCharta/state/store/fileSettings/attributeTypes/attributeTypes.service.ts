@@ -29,7 +29,7 @@ export class AttributeTypesService implements StoreSubscriber, FileStateSubscrib
 		this.reset(fileStates)
 	}
 
-	public reset(fileStates: FileState[]) {
+	private reset(fileStates: FileState[]) {
 		const allAttributeTypes: AttributeTypes[] = FileStateHelper.getVisibleFileStates(fileStates)
 			.map(x => x.file)
 			.map(x => x.settings.fileSettings.attributeTypes)

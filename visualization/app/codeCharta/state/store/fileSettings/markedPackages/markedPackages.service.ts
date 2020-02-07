@@ -29,7 +29,7 @@ export class MarkedPackagesService implements StoreSubscriber, FileStateSubscrib
 		this.merge(fileStates)
 	}
 
-	public merge(fileStates: FileState[]) {
+	private merge(fileStates: FileState[]) {
 		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
 		const withUpdatedPath = FileStateHelper.isPartialState(fileStates)
 		const newMarkedPackages = getMergedMarkedPackages(visibleFiles, withUpdatedPath)
