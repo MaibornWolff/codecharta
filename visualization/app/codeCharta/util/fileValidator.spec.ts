@@ -34,8 +34,7 @@ describe("FileValidator", () => {
 				attributes: {
 					avgCommits: 42,
 					pairingRate: 80
-				},
-				visible: false
+				}
 			}
 		]
 		const errors = FileValidator.validate(file)

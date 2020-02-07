@@ -214,7 +214,6 @@ export const VALID_EDGE: Edge = {
 }
 
 export const TEST_FILE_CONTENT = {
-	fileName: "noFileName",
 	projectName: "Sample Map",
 	apiVersion: "1.1",
 	nodes: [VALID_NODE]
