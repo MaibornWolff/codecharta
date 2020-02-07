@@ -2,8 +2,8 @@ import { AttributeTypes } from "../../../../codeCharta.model"
 import _ from "lodash"
 
 export function getMergedAttributeTypes(allAttributeTypes: AttributeTypes[]): AttributeTypes {
-	let attributeTypesNodes = []
-	let attributeTypesEdges = []
+	const attributeTypesNodes = []
+	const attributeTypesEdges = []
 
 	if (allAttributeTypes.length == 1) {
 		return { nodes: [], edges: [] }
