@@ -212,11 +212,6 @@ export interface Scenario {
 	settings: RecursivePartial<Settings>
 }
 
-export interface UrlData {
-	filenames: string[]
-	settings: Partial<Settings>
-}
-
 export type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> }
 
 export interface KeyValuePair {
