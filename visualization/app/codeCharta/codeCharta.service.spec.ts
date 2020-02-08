@@ -4,13 +4,14 @@ import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { CCFile, BlacklistType } from "./codeCharta.model"
+import { BlacklistType, CCFile, ExportBlacklistType, ExportCCFile } from "./codeCharta.model"
 import _ from "lodash"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
-	let validFileContent
+	let validFileContent: ExportCCFile
 	let fileStateService: FileStateService
+	const fileName: string = "someFileName"
 
 	beforeEach(() => {
 		restartSystem()
@@ -29,7 +30,7 @@ describe("codeChartaService", () => {
 
 	describe("loadFiles", () => {
 		const expected: CCFile = {
-			fileMeta: { apiVersion: "1.1", fileName: "noFileName", projectName: "Sample Map" },
+			fileMeta: { apiVersion: "1.1", fileName: fileName, projectName: "Sample Map" },
 			map: {
 				attributes: {},
 				children: [
@@ -80,7 +81,7 @@ describe("codeChartaService", () => {
 		it("should load a file without edges", done => {
 			validFileContent.edges = undefined
 
-			codeChartaService.loadFiles([{ fileName: "noFileName", content: validFileContent }]).then(() => {
+			codeChartaService.loadFiles([{ fileName: fileName, content: validFileContent }]).then(() => {
 				expect(fileStateService.addFile).toHaveBeenCalledWith(expected)
 				expect(fileStateService.setSingle).toHaveBeenCalled()
 				done()
@@ -88,7 +89,7 @@ describe("codeChartaService", () => {
 		})
 
 		it("should resolve valid file", done => {
-			codeChartaService.loadFiles([{ fileName: "noFileName", content: validFileContent }]).then(() => {
+			codeChartaService.loadFiles([{ fileName: fileName, content: validFileContent }]).then(() => {
 				expect(fileStateService.addFile).toHaveBeenCalledWith(expected)
 				expect(fileStateService.setSingle).toHaveBeenCalled()
 				done()
@@ -97,7 +98,7 @@ describe("codeChartaService", () => {
 
 		it("should reject null", done => {
 			codeChartaService
-				.loadFiles([{ fileName: "noFileName", content: null }])
+				.loadFiles([{ fileName: fileName, content: null }])
 				.then(() => {
 					letTestFail()
 				})
@@ -109,7 +110,7 @@ describe("codeChartaService", () => {
 
 		it("should reject string", done => {
 			codeChartaService
-				.loadFiles([{ fileName: "noFileName", content: "string" }])
+				.loadFiles([{ fileName: fileName, content: ("string" as any) as ExportCCFile }])
 				.then(() => {
 					letTestFail()
 				})
@@ -119,23 +120,31 @@ describe("codeChartaService", () => {
 		})
 
 		it("should reject or catch invalid file", done => {
-			let invalidFileContent = validFileContent
+			let invalidFileContent: ExportCCFile = validFileContent
 			delete invalidFileContent.projectName
 			codeChartaService
-				.loadFiles([{ fileName: "noFileName", content: null }])
+				.loadFiles([{ fileName: fileName, content: invalidFileContent }])
 				.then(() => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
+					expect(err).toEqual([
+						{
+							dataPath: "",
+							keyword: "required",
+							message: "should have required property 'projectName'",
+							params: { missingProperty: "projectName" },
+							schemaPath: "#/required"
+						}
+					])
 					done()
 				})
 		})
 
 		it("should convert old blacklist type", done => {
-			validFileContent.blacklist = [{ path: "foo", type: "hide" }]
+			validFileContent.blacklist = [{ path: "foo", type: ExportBlacklistType.hide }]
 
-			codeChartaService.loadFiles([{ fileName: "noFileName", content: validFileContent }]).then(() => {
+			codeChartaService.loadFiles([{ fileName: fileName, content: validFileContent }]).then(() => {
 				const expectedWithBlacklist = _.cloneDeep(expected)
 				expectedWithBlacklist.settings.fileSettings.blacklist = [{ path: "foo", type: BlacklistType.flatten }]
 				expect(fileStateService.addFile).toHaveBeenLastCalledWith(expectedWithBlacklist)
