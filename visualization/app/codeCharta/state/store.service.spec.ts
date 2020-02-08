@@ -11,8 +11,6 @@ import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { FileStateService } from "./fileState.service"
 import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
-import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { setDynamicMargin } from "./store/appSettings/dynamicMargin/dynamicMargin.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
