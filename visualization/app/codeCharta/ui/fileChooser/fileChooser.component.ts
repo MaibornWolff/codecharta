@@ -12,6 +12,7 @@ import { FileStateService } from "../../state/fileState.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -47,6 +48,7 @@ export class FileChooserController {
 
 		this.codeChartaService.loadFiles([nameDataPair]).catch(e => {
 			this.storeService.dispatch(setIsLoadingFile(false))
+			this.storeService.dispatch(setIsLoadingMap(false))
 			console.error(e)
 			this.printErrors(e)
 		})
