@@ -99,7 +99,7 @@ export class CodeChartaController {
 	}
 
 	private printErrors(errors: ErrorObject[]) {
-		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
+		this.dialogService.showImportErrorDialog(errors)
 	}
 }
 

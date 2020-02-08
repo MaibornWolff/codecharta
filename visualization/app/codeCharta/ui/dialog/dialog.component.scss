@@ -7,9 +7,24 @@
 	}
 }
 
-.download-dialog {
+.import-error-dialog,
+.download-dialog,
+.global-settings {
 	min-width: 50%;
+}
 
+.import-error-dialog {
+	md-toolbar {
+		background: rgb(255, 158, 128);
+	}
+
+	i.fa {
+		text-align: center;
+		min-width: 20px;
+	}
+}
+
+.download-dialog {
 	.dialog-list {
 		margin: 5px 0 5px 0;
 
@@ -30,8 +45,6 @@
 }
 
 .global-settings {
-	min-width: 50%;
-
 	.weblink {
 		display: block;
 		margin: 0 0 10px 0;
