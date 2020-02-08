@@ -1,6 +1,6 @@
-import { files } from "./files.reducer"
 import {
 	addFile,
+	defaultFiles,
 	FilesAction,
 	resetFiles,
 	setDelta,
@@ -11,8 +11,9 @@ import {
 	setSingle,
 	setSingleByName
 } from "./files.actions"
-import { Files } from "../../../../model/files"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../../util/dataMocks"
+import { Files } from "../../../model/files"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
+import files from "./files.reducer"
 
 describe("files", () => {
 	let state = new Files()
@@ -27,7 +28,7 @@ describe("files", () => {
 		it("should initialize the default state", () => {
 			const result = files(undefined, {} as FilesAction)
 
-			expect(result).toEqual(state)
+			expect(result).toEqual(defaultFiles)
 		})
 	})
 

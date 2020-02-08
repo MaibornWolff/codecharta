@@ -1,11 +1,11 @@
-import "../../../state.module"
+import "../../state.module"
 import { IRootScopeService } from "angular"
-import { StoreService } from "../../../store.service"
-import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { FilesAction, FilesActions } from "./files.actions"
 import { FilesService } from "./files.service"
-import { withMockedEventMethods } from "../../../../util/dataMocks"
-import { Files } from "../../../../model/files"
+import { withMockedEventMethods } from "../../../util/dataMocks"
+import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
+import { StoreService } from "../../store.service"
+import { Files } from "../../../model/files"
 
 describe("FilesService", () => {
 	let filesService: FilesService

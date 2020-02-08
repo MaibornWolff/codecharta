@@ -1,5 +1,5 @@
 // Plop: Append service import here
-import { FilesService } from "./store/fileSettings/files/files.service"
+import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"

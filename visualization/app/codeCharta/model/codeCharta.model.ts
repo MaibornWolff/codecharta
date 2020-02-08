@@ -79,7 +79,6 @@ export interface FileSettings {
 	blacklist: Array<BlacklistItem>
 	edges: Edge[]
 	markedPackages: MarkedPackage[]
-	files: Files
 }
 
 export interface DynamicSettings {
@@ -246,6 +245,7 @@ export interface State {
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
+	files: Files
 }
 
 export interface CCAction extends Action {

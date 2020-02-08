@@ -1,8 +1,8 @@
-import { StoreService, StoreSubscriber } from "../../../store.service"
+import { StoreService, StoreSubscriber } from "../../store.service"
 import { IRootScopeService } from "angular"
 import { FilesActions } from "./files.actions"
 import _ from "lodash"
-import { Files } from "../../../../model/files"
+import { Files } from "../../../model/files"
 
 export interface FilesSubscriber {
 	onFilesChanged(files: Files)
@@ -22,7 +22,7 @@ export class FilesService implements StoreSubscriber {
 	}
 
 	private select() {
-		return this.storeService.getState().fileSettings.files
+		return this.storeService.getState().files
 	}
 
 	private notify(newState: Files) {

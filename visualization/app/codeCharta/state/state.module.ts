@@ -2,7 +2,7 @@ import angular from "angular"
 // Plop: Append module import here
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
-import { FilesService } from "./store/fileSettings/files/files.service"
+import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"

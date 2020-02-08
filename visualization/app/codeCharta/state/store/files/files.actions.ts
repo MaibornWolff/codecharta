@@ -1,6 +1,6 @@
 import { Action } from "redux"
-import { Files } from "../../../../model/files"
-import { CCFile } from "../../../../model/codeCharta.model"
+import { Files } from "../../../model/files"
+import { CCFile } from "../../../model/codeCharta.model"
 
 export enum FilesActions {
 	SET_FILES = "SET_FILES",

@@ -9,7 +9,6 @@ import {
 } from "../../../model/codeCharta.model"
 
 // Plop: Append action splitter import here
-import { splitFilesAction } from "./files/files.splitter"
 import { splitMarkedPackagesAction } from "./markedPackages/markedPackages.splitter"
 import { splitEdgesAction } from "./edges/edges.splitter"
 import { splitAttributeTypesAction } from "./attributeTypes/attributeTypes.splitter"
@@ -19,10 +18,6 @@ export function splitFileSettingsActions(payload: RecursivePartial<FileSettings>
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
-	if (payload.files !== undefined) {
-		actions.push(splitFilesAction(payload.files))
-	}
-
 	if (payload.markedPackages !== undefined) {
 		actions.push(splitMarkedPackagesAction(payload.markedPackages as MarkedPackage[]))
 	}

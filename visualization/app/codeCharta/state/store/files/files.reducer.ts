@@ -1,10 +1,14 @@
 import { FilesAction, FilesActions, setFiles } from "./files.actions"
-import { Files } from "../../../../model/files"
+import { Files } from "../../../model/files"
 
-export function files(state: Files = setFiles().payload, action: FilesAction): Files {
+export default function files(state: Files = setFiles().payload, action: FilesAction): Files {
 	switch (action.type) {
 		case FilesActions.SET_FILES: {
 			state.setFiles(action.payload)
+			return state
+		}
+		case FilesActions.ADD_FILE: {
+			state.addFile(action.payload)
 			return state
 		}
 		case FilesActions.RESET_FILES: {
