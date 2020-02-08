@@ -1,5 +1,5 @@
 import { FileValidator } from "./util/fileValidator"
-import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
+import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem, ExportCCFile } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
@@ -29,7 +29,7 @@ export class CodeChartaService {
 		})
 	}
 
-	private getCCFile(fileName: string, fileContent: any): CCFile {
+	private getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
 		return {
 			fileMeta: {
 				fileName: fileName,

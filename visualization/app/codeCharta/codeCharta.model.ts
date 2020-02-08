@@ -3,7 +3,7 @@ import { Action } from "redux"
 
 export interface NameDataPair {
 	fileName: string
-	content: any
+	content: ExportCCFile
 }
 
 export interface FileState {
