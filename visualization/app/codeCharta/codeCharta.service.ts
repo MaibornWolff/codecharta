@@ -1,5 +1,5 @@
 import { FileValidator } from "./util/fileValidator"
-import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem, ExportCCFile } from "./codeCharta.model"
+import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem, ExportCCFile, ExportBlacklistType } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
@@ -63,7 +63,7 @@ export class CodeChartaService {
 
 	private potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
 		blacklist.forEach(x => {
-			if (x.type === "hide") {
+			if (x.type === ExportBlacklistType.hide) {
 				x.type = BlacklistType.flatten
 			}
 		})
