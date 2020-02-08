@@ -1,4 +1,5 @@
 import { CodeMapNode } from "../codeCharta.model"
+import { ErrorObject } from "ajv"
 
 export class FileValidator {
 	private static hasUniqueChildren(node: CodeMapNode) {
@@ -22,7 +23,7 @@ export class FileValidator {
 		return true
 	}
 
-	public static validate(file: { nodes: CodeMapNode[] }): Array<{ message: string; dataPath: string }> {
+	public static validate(file: { nodes: CodeMapNode[] }): Array<{ message: string; dataPath: string }> | ErrorObject[] {
 		if (!file) {
 			return [{ message: "file is empty or invalid", dataPath: "empty or invalid file" }]
 		}

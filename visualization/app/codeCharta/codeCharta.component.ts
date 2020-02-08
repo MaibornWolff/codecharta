@@ -11,6 +11,7 @@ import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { ErrorObject } from "ajv"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -77,10 +78,10 @@ export class CodeChartaController {
 			.then(() => {
 				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenario().settings))
 			})
-			.catch(e => {
+			.catch((errors: ErrorObject[]) => {
 				this.storeService.dispatch(setIsLoadingFile(false))
-				console.error(e)
-				this.printErrors(e)
+				console.error(errors)
+				this.printErrors(errors)
 			})
 	}
 
@@ -97,7 +98,7 @@ export class CodeChartaController {
 		}
 	}
 
-	private printErrors(errors: Object) {
+	private printErrors(errors: ErrorObject[]) {
 		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
 	}
 }

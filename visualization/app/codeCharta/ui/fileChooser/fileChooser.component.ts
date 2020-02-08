@@ -13,6 +13,7 @@ import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { ErrorObject } from "ajv"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -46,11 +47,11 @@ export class FileChooserController {
 			content: this.getParsedContent(content)
 		}
 
-		this.codeChartaService.loadFiles([nameDataPair]).catch(e => {
+		this.codeChartaService.loadFiles([nameDataPair]).catch((errors: ErrorObject[]) => {
 			this.storeService.dispatch(setIsLoadingFile(false))
 			this.storeService.dispatch(setIsLoadingMap(false))
-			console.error(e)
-			this.printErrors(e)
+			console.error(errors)
+			this.printErrors(errors)
 		})
 	}
 
@@ -62,7 +63,7 @@ export class FileChooserController {
 		}
 	}
 
-	private printErrors(errors: Object) {
+	private printErrors(errors: ErrorObject[]) {
 		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
 	}
 }
