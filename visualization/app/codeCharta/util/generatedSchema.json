@@ -27,23 +27,6 @@
 			},
 			"type": "object"
 		},
-		"BlacklistItem": {
-			"additionalProperties": false,
-			"properties": {
-				"path": {
-					"type": "string"
-				},
-				"type": {
-					"$ref": "#/definitions/BlacklistType"
-				}
-			},
-			"required": ["path", "type"],
-			"type": "object"
-		},
-		"BlacklistType": {
-			"enum": ["exclude", "flatten"],
-			"type": "string"
-		},
 		"CodeMapNode": {
 			"additionalProperties": false,
 			"properties": {
@@ -123,6 +106,23 @@
 			"enum": ["both", "from", "none", "to"],
 			"type": "string"
 		},
+		"ExportBlacklistItem": {
+			"additionalProperties": false,
+			"properties": {
+				"path": {
+					"type": "string"
+				},
+				"type": {
+					"$ref": "#/definitions/ExportBlacklistType"
+				}
+			},
+			"required": ["path", "type"],
+			"type": "object"
+		},
+		"ExportBlacklistType": {
+			"enum": ["exclude", "hide"],
+			"type": "string"
+		},
 		"ExportCCFile": {
 			"additionalProperties": false,
 			"properties": {
@@ -134,7 +134,7 @@
 				},
 				"blacklist": {
 					"items": {
-						"$ref": "#/definitions/BlacklistItem"
+						"$ref": "#/definitions/ExportBlacklistItem"
 					},
 					"type": "array"
 				},

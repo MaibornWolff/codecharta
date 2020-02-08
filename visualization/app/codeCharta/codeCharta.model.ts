@@ -33,7 +33,7 @@ export interface ExportCCFile {
 	attributeTypes?: AttributeTypes
 	edges?: Edge[]
 	markedPackages?: MarkedPackage[]
-	blacklist?: BlacklistItem[]
+	blacklist?: ExportBlacklistItem[]
 }
 
 export interface CCFile {
@@ -180,6 +180,16 @@ export interface BlacklistItem {
 
 export enum BlacklistType {
 	flatten = "flatten",
+	exclude = "exclude"
+}
+
+export interface ExportBlacklistItem {
+	path: string
+	type: ExportBlacklistType
+}
+
+export enum ExportBlacklistType {
+	hide = "hide",
 	exclude = "exclude"
 }
 
