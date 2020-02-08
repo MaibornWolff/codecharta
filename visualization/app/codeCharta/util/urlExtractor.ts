@@ -1,6 +1,6 @@
 "use strict"
 import { ILocationService, IHttpService, IHttpResponse } from "angular"
-import { NameDataPair } from "../codeCharta.model"
+import { ExportCCFile, NameDataPair } from "../codeCharta.model"
 
 export class UrlExtractor {
 	private static OK_CODE = 200
@@ -51,7 +51,7 @@ export class UrlExtractor {
 				this.$http.get(file).then((response: IHttpResponse<Object>) => {
 					if (response.status === UrlExtractor.OK_CODE) {
 						Object.assign(response.data, { fileName: file })
-						resolve({ fileName: file, content: response.data })
+						resolve({ fileName: file, content: response.data as ExportCCFile })
 					} else {
 						reject()
 					}
