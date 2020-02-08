@@ -49,27 +49,16 @@ export class CodeChartaService {
 	}
 
 	private getAttributeTypes(attributeTypes: AttributeTypes): AttributeTypes {
-		let newAttributeTypes: any = {}
-
 		if (_.isEmpty(attributeTypes) || !attributeTypes) {
 			return {
 				nodes: [],
 				edges: []
 			}
-		} else {
-			if (!attributeTypes.nodes) {
-				newAttributeTypes.nodes = []
-			} else {
-				newAttributeTypes.nodes = attributeTypes.nodes
-			}
-
-			if (!attributeTypes.edges) {
-				newAttributeTypes.edges = []
-			} else {
-				newAttributeTypes.edges = attributeTypes.edges
-			}
 		}
-		return newAttributeTypes
+		return {
+			nodes: !attributeTypes.nodes ? [] : attributeTypes.nodes,
+			edges: !attributeTypes.edges ? [] : attributeTypes.edges
+		}
 	}
 
 	private potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
