@@ -18,7 +18,7 @@ export class CodeChartaService {
 				const errors = FileValidator.validate(nameDataPair.content)
 				if (errors.length === 0) {
 					let ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
-					ccFile = NodeDecorator.preDecorateFile(ccFile)
+					NodeDecorator.preDecorateFile(ccFile)
 					this.storeService.dispatch(addFile(ccFile))
 				} else {
 					reject(errors)

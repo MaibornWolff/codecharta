@@ -1,6 +1,7 @@
 import { CodeMapNode, CCFile } from "../model/codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import { FileNameHelper } from "./fileNameHelper"
+import { getUpdatedPath } from "./nodePathHelper"
 
 export class AggregationGenerator {
 	private static projectNameArray: string[] = []
@@ -72,7 +73,7 @@ export class AggregationGenerator {
 		} as CodeMapNode
 
 		if (inputMap.map.path) {
-			outputNode.path = this.getUpdatedPath(inputMap.fileMeta.fileName, inputMap.map.path)
+			outputNode.path = getUpdatedPath(inputMap.fileMeta.fileName, inputMap.map.path)
 		}
 
 		for (let key in inputMap.map) {
@@ -87,19 +88,13 @@ export class AggregationGenerator {
 	private static updatePathOfAllChildren(fileName: string, children: CodeMapNode[]) {
 		for (let i = 0; i < children.length; i++) {
 			if (children[i].path) {
-				children[i].path = this.getUpdatedPath(fileName, children[i].path)
+				children[i].path = getUpdatedPath(fileName, children[i].path)
 			}
 
 			if (children[i].children) {
 				this.updatePathOfAllChildren(fileName, children[i].children)
 			}
 		}
-	}
-
-	private static getUpdatedPath(fileName: string, path: string): string {
-		const folderArray = path.split("/")
-		folderArray.splice(2, 0, fileName)
-		return folderArray.join("/")
 	}
 
 	private static resetVariables() {

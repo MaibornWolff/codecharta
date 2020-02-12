@@ -4,15 +4,12 @@ import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType } from "../model/codeCharta.model"
 import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
-import { DEFAULT_STATE, STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
+import { DEFAULT_STATE, STATE } from "../util/dataMocks"
 import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
-import { SettingsMerger } from "../util/settingsMerger"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { setDynamicMargin } from "./store/appSettings/dynamicMargin/dynamicMargin.actions"
-import { FilesService } from "./store/files/files.service"
-import { addFile, resetFiles, setDeltaByNames } from "./store/files/files.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -38,35 +35,6 @@ describe("StoreService", () => {
 			rebuildService()
 
 			expect(storeService["store"]).not.toBeNull()
-		})
-
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, storeService)
-		})
-	})
-
-	describe("onFilesChanged", () => {
-		beforeEach(() => {
-			SettingsMerger.getMergedFileSettings = jest.fn().mockReturnValue(DEFAULT_STATE)
-			storeService.dispatch(resetFiles())
-			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
-			storeService.dispatch(addFile(TEST_DELTA_MAP_B))
-			storeService.dispatch(setDeltaByNames(TEST_DELTA_MAP_B.fileMeta.fileName, TEST_DELTA_MAP_A.fileMeta.fileName))
-		})
-
-		it("should update store with default dynamicSettings and newFileSettings", () => {
-			storeService.onFilesChanged(storeService.getState().files)
-
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
-			expect(storeService.getState().dynamicSettings.searchedNodePaths).toEqual([])
-			expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
-			expect(storeService.getState().dynamicSettings.margin).toBeNull()
-			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: null, to: null })
-			expect(storeService.getState().fileSettings).toEqual(DEFAULT_STATE.fileSettings)
 		})
 	})
 

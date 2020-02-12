@@ -1,24 +1,39 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { BlacklistItem } from "../../../../model/codeCharta.model"
-import { BlacklistActions } from "./blacklist.actions"
+import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import _ from "lodash"
+import { getMergedBlacklist } from "./blacklist.merger"
+import { FilesService, FilesSubscriber } from "../../files/files.service"
+import { Files } from "../../../../model/files"
 
 export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
 }
 
-export class BlacklistService implements StoreSubscriber {
+export class BlacklistService implements StoreSubscriber, FilesSubscriber {
 	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType) {
 		if (_.values(BlacklistActions).includes(actionType)) {
 			this.notify(this.select())
 		}
+	}
+
+	public onFilesChanged(files: Files) {
+		this.merge(files)
+	}
+
+	private merge(files: Files) {
+		const visibleFiles = files.getVisibleFileStates().map(x => x.file)
+		const withUpdatedPath = files.isPartialState()
+		const newBlacklist = getMergedBlacklist(visibleFiles, withUpdatedPath)
+		this.storeService.dispatch(setBlacklist(newBlacklist))
 	}
 
 	private select() {

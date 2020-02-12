@@ -15,6 +15,7 @@ import _ from "lodash"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -91,7 +92,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			this.unifiedFileMeta &&
 			this.metricService.getMetricData()
 		) {
-			this.unifiedMap = NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
+			NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
 				this.unifiedMap,
@@ -116,8 +117,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private getSelectedFilesAsUnifiedMap(): CCFile {
-		const files = _.cloneDeep(this.storeService.getState().files)
-		const visibleFileStates = files.getVisibleFileStates()
+		const files = this.storeService.getState().files
+		const visibleFileStates = clone(files.getVisibleFileStates())
 
 		if (files.isSingleState()) {
 			return visibleFileStates[0].file

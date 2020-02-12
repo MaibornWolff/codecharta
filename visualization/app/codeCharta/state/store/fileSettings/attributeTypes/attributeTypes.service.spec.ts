@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { AttributeTypesAction, AttributeTypesActions } from "./attributeTypes.actions"
 import { AttributeTypesService } from "./attributeTypes.service"
 import { STATE, withMockedEventMethods } from "../../../../util/dataMocks"
+import { FilesService } from "../../files/files.service"
 
 describe("AttributeTypesService", () => {
 	let attributeTypesService: AttributeTypesService
@@ -35,6 +36,14 @@ describe("AttributeTypesService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, attributeTypesService)
+		})
+
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, attributeTypesService)
 		})
 	})
 

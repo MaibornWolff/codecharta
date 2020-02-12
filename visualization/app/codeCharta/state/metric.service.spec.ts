@@ -23,7 +23,6 @@ describe("MetricService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
-		initFiles()
 	})
 
 	function restartSystem() {
@@ -31,6 +30,16 @@ describe("MetricService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+
+		const deltaA = _.cloneDeep(TEST_DELTA_MAP_A)
+		const deltaB = _.cloneDeep(TEST_DELTA_MAP_B)
+
+		NodeDecorator.preDecorateFile(deltaA)
+		NodeDecorator.preDecorateFile(deltaB)
+
+		storeService.dispatch(resetFiles())
+		storeService.dispatch(addFile(deltaA))
+		storeService.dispatch(addFile(deltaB))
 
 		metricData = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
@@ -43,12 +52,6 @@ describe("MetricService", () => {
 	function rebuildService() {
 		metricService = new MetricService($rootScope, storeService)
 		metricService["metricData"] = metricData
-	}
-
-	function initFiles() {
-		storeService.dispatch(resetFiles())
-		storeService.dispatch(addFile(NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)))
-		storeService.dispatch(addFile(NodeDecorator.preDecorateFile(TEST_DELTA_MAP_B)))
 	}
 
 	describe("constructor", () => {

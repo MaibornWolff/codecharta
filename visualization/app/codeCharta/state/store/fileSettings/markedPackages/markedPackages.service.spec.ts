@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { MarkedPackagesAction, MarkedPackagesActions } from "./markedPackages.actions"
 import { MarkedPackagesService } from "./markedPackages.service"
 import { MARKED_PACKAGES, withMockedEventMethods } from "../../../../util/dataMocks"
+import { FilesService } from "../../files/files.service"
 
 describe("MarkedPackagesService", () => {
 	let markedPackagesService: MarkedPackagesService
@@ -36,6 +37,14 @@ describe("MarkedPackagesService", () => {
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, markedPackagesService)
 		})
+
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, markedPackagesService)
+		})
 	})
 
 	describe("onStoreChanged", () => {
@@ -57,4 +66,6 @@ describe("MarkedPackagesService", () => {
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 	})
+
+	describe("onFilesChanged", () => {})
 })

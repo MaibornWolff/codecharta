@@ -1,31 +1,22 @@
 import { createStore, Store } from "redux"
 import rootReducer from "./store/reducer"
-import { CCAction, FileSettings, State } from "../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
-import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
-import { SettingsMerger } from "../util/settingsMerger"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import _ from "lodash"
-import { FilesService, FilesSubscriber } from "./store/files/files.service"
-import { Files } from "../model/files"
+import { CCAction, State } from "../model/codeCharta.model"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
 }
 
-export class StoreService implements FilesSubscriber {
+export class StoreService {
 	private static STORE_CHANGED_EVENT = "store-changed"
 	private store: Store
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService) {
 		this.store = createStore(rootReducer)
-		FilesService.subscribe(this.$rootScope, this)
-	}
-
-	public onFilesChanged(files: Files) {
-		this.dispatch(setFileSettings(this.getNewFileSettings(files)))
 	}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
@@ -43,12 +34,6 @@ export class StoreService implements FilesSubscriber {
 
 	public getState(): State {
 		return this.store.getState()
-	}
-
-	private getNewFileSettings(files: Files): FileSettings {
-		const withUpdatedPath = files.isPartialState()
-		const visibleFiles = files.getVisibleFileStates().map(x => x.file)
-		return SettingsMerger.getMergedFileSettings(visibleFiles, withUpdatedPath)
 	}
 
 	private notify(actionType: string) {
