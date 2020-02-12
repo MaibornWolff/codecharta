@@ -1,6 +1,6 @@
 import { Action } from "redux"
 import { Files } from "../../../model/files"
-import { CCFile } from "../../../model/codeCharta.model"
+import { CCAction, CCFile } from "../../../model/codeCharta.model"
 
 export enum FilesActions {
 	SET_FILES = "SET_FILES",
@@ -15,50 +15,50 @@ export enum FilesActions {
 	SET_DELTA_BY_NAMES = "SET_DELTA_BY_NAMES"
 }
 
-export interface SetFilesAction extends Action {
+export interface SetFilesAction extends CCAction {
 	type: FilesActions.SET_FILES
 	payload: Files
 }
 
-export interface ResetFilesAction extends Action {
+export interface ResetFilesAction extends CCAction {
 	type: FilesActions.RESET_FILES
 }
 
-export interface ResetSelectionAction extends Action {
+export interface ResetSelectionAction extends CCAction {
 	type: FilesActions.RESET_SELECTION
 }
 
-export interface AddFileAction extends Action {
+export interface AddFileAction extends CCAction {
 	type: FilesActions.ADD_FILE
 	payload: CCFile
 }
 
-export interface SetSingleAction extends Action {
+export interface SetSingleAction extends CCAction {
 	type: FilesActions.SET_SINGLE
 	payload: CCFile
 }
 
-export interface SetSingleByNameAction extends Action {
+export interface SetSingleByNameAction extends CCAction {
 	type: FilesActions.SET_SINGLE_BY_NAME
 	payload: string
 }
 
-export interface SetMultipleAction extends Action {
+export interface SetMultipleAction extends CCAction {
 	type: FilesActions.SET_MULTIPLE
 	payload: CCFile[]
 }
 
-export interface SetMultipleByNamesAction extends Action {
+export interface SetMultipleByNamesAction extends CCAction {
 	type: FilesActions.SET_MULTIPLE_BY_NAMES
 	payload: string[]
 }
 
-export interface SetDeltaAction extends Action {
+export interface SetDeltaAction extends CCAction {
 	type: FilesActions.SET_DELTA
 	payload: { referenceFile: CCFile; comparisonFile: CCFile }
 }
 
-export interface SetDeltaByNamesAction extends Action {
+export interface SetDeltaByNamesAction extends CCAction {
 	type: FilesActions.SET_DELTA_BY_NAMES
 	payload: { referenceFileName: string; comparisonFileName: string }
 }

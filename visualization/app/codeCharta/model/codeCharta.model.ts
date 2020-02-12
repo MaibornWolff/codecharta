@@ -249,5 +249,5 @@ export interface State {
 }
 
 export interface CCAction extends Action {
-	payload: any
+	payload?: any
 }
