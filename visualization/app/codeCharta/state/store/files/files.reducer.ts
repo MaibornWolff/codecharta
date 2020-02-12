@@ -31,7 +31,7 @@ export default function files(state: Files = setFiles().payload, action: FilesAc
 			state.setDelta(action.payload.referenceFile, action.payload.comparisonFile)
 			return state
 		}
-		case FilesActions.SET_DELTA_BY_NAME: {
+		case FilesActions.SET_DELTA_BY_NAMES: {
 			state.setDeltaByNames(action.payload.referenceFileName, action.payload.comparisonFileName)
 			return state
 		}
@@ -39,7 +39,7 @@ export default function files(state: Files = setFiles().payload, action: FilesAc
 			state.setMultiple(action.payload)
 			return state
 		}
-		case FilesActions.SET_MULTIPLE_BY_NAME: {
+		case FilesActions.SET_MULTIPLE_BY_NAMES: {
 			state.setMultipleByNames(action.payload)
 			return state
 		}

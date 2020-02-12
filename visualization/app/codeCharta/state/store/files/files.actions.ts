@@ -10,9 +10,9 @@ export enum FilesActions {
 	SET_SINGLE = "SET_SINGLE",
 	SET_SINGLE_BY_NAME = "SET_SINGLE_BY_NAME",
 	SET_MULTIPLE = "SET_MULTIPLE",
-	SET_MULTIPLE_BY_NAME = "SET_MULTIPLE_BY_NAME",
+	SET_MULTIPLE_BY_NAMES = "SET_MULTIPLE_BY_NAMES",
 	SET_DELTA = "SET_DELTA",
-	SET_DELTA_BY_NAME = "SET_DELTA_BY_NAME"
+	SET_DELTA_BY_NAMES = "SET_DELTA_BY_NAMES"
 }
 
 export interface SetFilesAction extends Action {
@@ -48,8 +48,8 @@ export interface SetMultipleAction extends Action {
 	payload: CCFile[]
 }
 
-export interface SetMultipleByNameAction extends Action {
-	type: FilesActions.SET_MULTIPLE_BY_NAME
+export interface SetMultipleByNamesAction extends Action {
+	type: FilesActions.SET_MULTIPLE_BY_NAMES
 	payload: string[]
 }
 
@@ -58,8 +58,8 @@ export interface SetDeltaAction extends Action {
 	payload: { referenceFile: CCFile; comparisonFile: CCFile }
 }
 
-export interface SetDeltaByNameAction extends Action {
-	type: FilesActions.SET_DELTA_BY_NAME
+export interface SetDeltaByNamesAction extends Action {
+	type: FilesActions.SET_DELTA_BY_NAMES
 	payload: { referenceFileName: string; comparisonFileName: string }
 }
 
@@ -71,9 +71,9 @@ export type FilesAction =
 	| SetSingleAction
 	| SetSingleByNameAction
 	| SetMultipleAction
-	| SetMultipleByNameAction
+	| SetMultipleByNamesAction
 	| SetDeltaAction
-	| SetDeltaByNameAction
+	| SetDeltaByNamesAction
 
 export function setFiles(files: Files = defaultFiles): SetFilesAction {
 	return {
@@ -122,9 +122,9 @@ export function setMultiple(files: CCFile[]): SetMultipleAction {
 	}
 }
 
-export function setMultipleByName(fileNames: string[]): SetMultipleByNameAction {
+export function setMultipleByNames(fileNames: string[]): SetMultipleByNamesAction {
 	return {
-		type: FilesActions.SET_MULTIPLE_BY_NAME,
+		type: FilesActions.SET_MULTIPLE_BY_NAMES,
 		payload: fileNames
 	}
 }
@@ -136,9 +136,9 @@ export function setDelta(referenceFile: CCFile, comparisonFile: CCFile): SetDelt
 	}
 }
 
-export function setDeltaByName(referenceFileName: string, comparisonFileName: string): SetDeltaByNameAction {
+export function setDeltaByNames(referenceFileName: string, comparisonFileName: string): SetDeltaByNamesAction {
 	return {
-		type: FilesActions.SET_DELTA_BY_NAME,
+		type: FilesActions.SET_DELTA_BY_NAMES,
 		payload: { referenceFileName, comparisonFileName }
 	}
 }

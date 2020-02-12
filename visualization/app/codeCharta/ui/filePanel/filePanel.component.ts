@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
-import { setDeltaByName, setMultipleByName, setSingleByName } from "../../state/store/files/files.actions"
+import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
 
 interface SelectedFileNames {
 	single: string
@@ -99,17 +99,17 @@ export class FilePanelController implements FileStateSubscriber {
 
 	public onDeltaReferenceFileChange(referenceFileName: string) {
 		this.fileStateService.setDeltaByNames(referenceFileName, this._viewModel.selectedFileNames.delta.comparison)
-		this.storeService.dispatch(setDeltaByName(referenceFileName, this._viewModel.selectedFileNames.delta.comparison))
+		this.storeService.dispatch(setDeltaByNames(referenceFileName, this._viewModel.selectedFileNames.delta.comparison))
 	}
 
 	public onDeltaComparisonFileChange(comparisonFileName: string) {
 		this.fileStateService.setDeltaByNames(this._viewModel.selectedFileNames.delta.reference, comparisonFileName)
-		this.storeService.dispatch(setDeltaByName(this._viewModel.selectedFileNames.delta.reference, comparisonFileName))
+		this.storeService.dispatch(setDeltaByNames(this._viewModel.selectedFileNames.delta.reference, comparisonFileName))
 	}
 
 	public onPartialFilesChange(partialFileNames: string[]) {
 		this.fileStateService.setMultipleByNames(partialFileNames)
-		this.storeService.dispatch(setMultipleByName(partialFileNames))
+		this.storeService.dispatch(setMultipleByNames(partialFileNames))
 	}
 
 	public onSingleStateSelected() {

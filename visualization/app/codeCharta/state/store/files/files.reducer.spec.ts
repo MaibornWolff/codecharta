@@ -4,10 +4,10 @@ import {
 	FilesAction,
 	resetFiles,
 	setDelta,
-	setDeltaByName,
+	setDeltaByNames,
 	setFiles,
 	setMultiple,
-	setMultipleByName,
+	setMultipleByNames,
 	setSingle,
 	setSingleByName
 } from "./files.actions"
@@ -89,9 +89,9 @@ describe("files", () => {
 		})
 	})
 
-	describe("Action: SET_DELTA_BY_NAME", () => {
+	describe("Action: SET_DELTA_BY_NAMES", () => {
 		it("should select a file a file as reference and another as comparison by name", () => {
-			const result = files(state, setDeltaByName(TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName))
+			const result = files(state, setDeltaByNames(TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName))
 
 			expect(result.isDeltaState()).toBeTruthy()
 		})
@@ -105,9 +105,9 @@ describe("files", () => {
 		})
 	})
 
-	describe("Action: SET_MULTIPLE_BY_NAME", () => {
+	describe("Action: SET_MULTIPLE_BY_NAMES", () => {
 		it("should select two files by name to view in multiple mode", () => {
-			const result = files(state, setMultipleByName([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]))
+			const result = files(state, setMultipleByNames([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]))
 
 			expect(result.isPartialState()).toBeTruthy()
 		})
