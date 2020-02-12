@@ -33,10 +33,13 @@ describe("MetricService", () => {
 		fileStateService = getService<FileStateService>("fileStateService")
 		storeService = getService<StoreService>("storeService")
 
-		fileStates = [
-			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A), selectedAs: FileSelectionState.None },
-			{ file: NodeDecorator.preDecorateFile(TEST_DELTA_MAP_B), selectedAs: FileSelectionState.None }
-		]
+		const deltaA = _.cloneDeep(TEST_DELTA_MAP_A)
+		const deltaB = _.cloneDeep(TEST_DELTA_MAP_B)
+
+		NodeDecorator.preDecorateFile(deltaA)
+		NodeDecorator.preDecorateFile(deltaB)
+
+		fileStates = [{ file: deltaA, selectedAs: FileSelectionState.None }, { file: deltaB, selectedAs: FileSelectionState.None }]
 		metricData = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
 			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
