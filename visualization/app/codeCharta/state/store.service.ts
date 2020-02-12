@@ -1,31 +1,31 @@
 import { createStore, Store } from "redux"
 import rootReducer from "./store/reducer"
-import { CCAction, FileSettings, FileState, State } from "../model/codeCharta.model"
+import { CCAction, FileSettings, State } from "../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
-import { FileStateService, FileStateSubscriber } from "./fileState.service"
 import { setFileSettings } from "./store/fileSettings/fileSettings.actions"
-import { FileStateHelper } from "../util/fileStateHelper"
 import { SettingsMerger } from "../util/settingsMerger"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import _ from "lodash"
+import { FilesService, FilesSubscriber } from "./store/files/files.service"
+import { Files } from "../model/files"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
 }
 
-export class StoreService implements FileStateSubscriber {
+export class StoreService implements FilesSubscriber {
 	private static STORE_CHANGED_EVENT = "store-changed"
 	private store: Store
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService) {
 		this.store = createStore(rootReducer)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
-		this.dispatch(setFileSettings(this.getNewFileSettings(fileStates)))
+	public onFilesChanged(files: Files) {
+		this.dispatch(setFileSettings(this.getNewFileSettings(files)))
 	}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
@@ -45,9 +45,9 @@ export class StoreService implements FileStateSubscriber {
 		return this.store.getState()
 	}
 
-	private getNewFileSettings(fileStates: FileState[]): FileSettings {
-		const withUpdatedPath = !!FileStateHelper.isPartialState(fileStates)
-		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
+	private getNewFileSettings(files: Files): FileSettings {
+		const withUpdatedPath = files.isPartialState()
+		const visibleFiles = files.getVisibleFileStates().map(x => x.file)
 		return SettingsMerger.getMergedFileSettings(visibleFiles, withUpdatedPath)
 	}
 

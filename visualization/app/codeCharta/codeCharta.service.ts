@@ -1,15 +1,16 @@
 import { FileValidator } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./model/codeCharta.model"
-import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
+import { StoreService } from "./state/store.service"
+import { addFile, setSingle } from "./state/store/files/files.actions"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 
-	constructor(private fileStateService: FileStateService) {}
+	constructor(private storeService: StoreService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
@@ -18,13 +19,12 @@ export class CodeChartaService {
 				if (errors.length === 0) {
 					let ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
 					ccFile = NodeDecorator.preDecorateFile(ccFile)
-					this.fileStateService.addFile(ccFile)
+					this.storeService.dispatch(addFile(ccFile))
 				} else {
 					reject(errors)
 				}
 			})
-
-			this.fileStateService.setSingle(this.fileStateService.getCCFiles()[0])
+			this.storeService.dispatch(setSingle(this.storeService.getState().files.getCCFiles()[0]))
 			resolve()
 		})
 	}

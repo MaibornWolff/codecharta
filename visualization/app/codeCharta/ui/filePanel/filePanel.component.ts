@@ -1,10 +1,10 @@
 import "./filePanel.component.scss"
 import { FileSelectionState, FileState } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
+import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { Files } from "../../model/files"
 
 interface SelectedFileNames {
 	single: string
@@ -15,9 +15,10 @@ interface SelectedFileNames {
 	partial: string[]
 }
 
-export class FilePanelController implements FileStateSubscriber {
+export class FilePanelController implements FilesSubscriber {
 	private lastRenderState: FileSelectionState
 
+	//TODO: try to use Files instead of FileStates
 	private _viewModel: {
 		isSingleState: boolean
 		isPartialState: boolean
@@ -48,17 +49,17 @@ export class FilePanelController implements FileStateSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private fileStateService: FileStateService) {
-		FileStateService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
-		this._viewModel.fileStates = fileStates
-		this._viewModel.isSingleState = FileStateHelper.isSingleState(fileStates)
-		this._viewModel.isPartialState = FileStateHelper.isPartialState(fileStates)
-		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+	public onFilesChanged(files: Files) {
+		this._viewModel.fileStates = files.getFiles()
+		this._viewModel.isSingleState = files.isSingleState()
+		this._viewModel.isPartialState = files.isPartialState()
+		this._viewModel.isDeltaState = files.isDeltaState()
 		this.setPictogramColor()
-		this.updateSelectedFileNamesInViewModel(fileStates)
+		this.updateSelectedFileNamesInViewModel()
 		this.lastRenderState = this._viewModel.renderState
 	}
 
@@ -68,8 +69,8 @@ export class FilePanelController implements FileStateSubscriber {
 		this._viewModel.pictogramLowerColor = this.storeService.getState().appSettings.mapColors.negativeDelta
 	}
 
-	private updateSelectedFileNamesInViewModel(fileStates: FileState[]) {
-		const visibleFileStates = FileStateHelper.getVisibleFileStates(fileStates)
+	private updateSelectedFileNamesInViewModel() {
+		const visibleFileStates = this.storeService.getState().files.getVisibleFileStates()
 
 		if (this._viewModel.isSingleState) {
 			this._viewModel.renderState = FileSelectionState.Single
@@ -93,22 +94,18 @@ export class FilePanelController implements FileStateSubscriber {
 	}
 
 	public onSingleFileChange(singleFileName: string) {
-		this.fileStateService.setSingleByName(singleFileName)
 		this.storeService.dispatch(setSingleByName(singleFileName))
 	}
 
 	public onDeltaReferenceFileChange(referenceFileName: string) {
-		this.fileStateService.setDeltaByNames(referenceFileName, this._viewModel.selectedFileNames.delta.comparison)
 		this.storeService.dispatch(setDeltaByNames(referenceFileName, this._viewModel.selectedFileNames.delta.comparison))
 	}
 
 	public onDeltaComparisonFileChange(comparisonFileName: string) {
-		this.fileStateService.setDeltaByNames(this._viewModel.selectedFileNames.delta.reference, comparisonFileName)
 		this.storeService.dispatch(setDeltaByNames(this._viewModel.selectedFileNames.delta.reference, comparisonFileName))
 	}
 
 	public onPartialFilesChange(partialFileNames: string[]) {
-		this.fileStateService.setMultipleByNames(partialFileNames)
 		this.storeService.dispatch(setMultipleByNames(partialFileNames))
 	}
 
@@ -127,17 +124,22 @@ export class FilePanelController implements FileStateSubscriber {
 	}
 
 	public selectAllPartialFiles() {
-		const allFileNames = this.fileStateService.getFileStates().map(x => x.file.fileMeta.fileName)
+		const allFileNames = this.storeService
+			.getState()
+			.files.getFiles()
+			.map(x => x.file.fileMeta.fileName)
 		this.onPartialFilesChange(allFileNames)
 	}
 
+	//TODO: Check if this method does something
 	public selectZeroPartialFiles() {
 		this.onPartialFilesChange([])
 	}
 
 	public invertPartialFileSelection() {
-		const invertedFileNames: string[] = this.fileStateService
-			.getFileStates()
+		const invertedFileNames: string[] = this.storeService
+			.getState()
+			.files.getFiles()
 			.filter(x => x.selectedAs === FileSelectionState.None)
 			.map(x => x.file.fileMeta.fileName)
 
@@ -148,8 +150,8 @@ export class FilePanelController implements FileStateSubscriber {
 		if (this.lastRenderState === FileSelectionState.Single) {
 			return this._viewModel.selectedFileNames.single
 		} else if (this.lastRenderState === FileSelectionState.Partial) {
-			const visibleFileStates = FileStateHelper.getVisibleFileStates(this._viewModel.fileStates)
-			if (FileStateHelper.getVisibleFileStates(this._viewModel.fileStates).length > 0) {
+			const visibleFileStates = this.storeService.getState().files.getVisibleFileStates()
+			if (visibleFileStates.length > 0) {
 				return visibleFileStates[0].file.fileMeta.fileName
 			} else {
 				return this._viewModel.fileStates[0].file.fileMeta.fileName

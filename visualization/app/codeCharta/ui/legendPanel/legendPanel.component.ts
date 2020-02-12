@@ -2,7 +2,6 @@ import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
 import { ColorRange, MarkedPackage, MapColors } from "../../model/codeCharta.model"
 import { CodeChartaService } from "../../codeCharta.service"
-import { FileStateService } from "../../state/fileState.service"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
@@ -53,7 +52,7 @@ export class LegendPanelController
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private fileStateService: FileStateService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		AttributeSideBarService.subscribe(this.$rootScope, this)
@@ -93,7 +92,7 @@ export class LegendPanelController
 	}
 
 	private updatePixelColors() {
-		this._viewModel.isDeltaState = this.fileStateService.isDeltaState()
+		this._viewModel.isDeltaState = this.storeService.getState().files.isDeltaState()
 
 		const mapColors = this.storeService.getState().appSettings.mapColors
 		this._viewModel.colorIcons.selected = this.getImage(mapColors.selected)

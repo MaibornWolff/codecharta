@@ -1,4 +1,3 @@
-import { Action } from "redux"
 import { Files } from "../../../model/files"
 import { CCAction, CCFile } from "../../../model/codeCharta.model"
 

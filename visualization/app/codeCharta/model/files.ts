@@ -77,7 +77,7 @@ export class Files {
 	}
 
 	public fileStatesAvailable(): boolean {
-		return this.files.length > 0
+		return this.getVisibleFileStates().length > 0
 	}
 
 	public getFileByFileName(fileName: string): CCFile {

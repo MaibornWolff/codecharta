@@ -1,10 +1,9 @@
 import "./dialog.component.scss"
 import { FileDownloader } from "../../util/fileDownloader"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { BlacklistType, FileSettings, AttributeTypes, FileMeta, CodeMapNode } from "../../model/codeCharta.model"
+import { BlacklistType } from "../../model/codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { FileNameHelper } from "../../util/fileNameHelper"
-import { FileStateService } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 
 interface FileDownloadContent {
@@ -34,12 +33,7 @@ export class DialogDownloadController {
 		fileContent: []
 	}
 
-	constructor(
-		private $mdDialog,
-		private codeMapPreRenderService: CodeMapPreRenderService,
-		private storeService: StoreService,
-		private fileStateService: FileStateService
-	) {
+	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private storeService: StoreService) {
 		this.initDialogFields()
 	}
 
@@ -67,15 +61,15 @@ export class DialogDownloadController {
 	}
 
 	private setFileContentList() {
-		const fileSettings: FileSettings = this.storeService.getState().fileSettings
+		const fileSettings = this.storeService.getState().fileSettings
 		this.pushFileContent(DownloadCheckboxNames.edges, fileSettings.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
-		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(fileSettings, BlacklistType.exclude))
-		this.pushFileContent(DownloadCheckboxNames.flattens, this.getFilteredBlacklistLength(fileSettings, BlacklistType.flatten))
+		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(BlacklistType.exclude))
+		this.pushFileContent(DownloadCheckboxNames.flattens, this.getFilteredBlacklistLength(BlacklistType.flatten))
 	}
 
-	private getFilteredBlacklistLength(fileSettings: FileSettings, blacklistType: BlacklistType) {
-		return fileSettings.blacklist.filter(x => x.type == blacklistType).length
+	private getFilteredBlacklistLength(blacklistType: BlacklistType) {
+		return this.storeService.getState().fileSettings.blacklist.filter(x => x.type == blacklistType).length
 	}
 
 	private pushFileContent(name: string, numberOfListItems: number) {
@@ -88,13 +82,13 @@ export class DialogDownloadController {
 	}
 
 	private setFileName() {
-		const fileMeta: FileMeta = this.codeMapPreRenderService.getRenderFileMeta()
-		const isDeltaState: boolean = this.fileStateService.isDeltaState()
+		const fileMeta = this.codeMapPreRenderService.getRenderFileMeta()
+		const isDeltaState = this.storeService.getState().files.isDeltaState()
 		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState)
 	}
 
 	private setAmountOfNodes() {
-		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
+		const map = this.codeMapPreRenderService.getRenderMap()
 		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
 	}
 
@@ -103,7 +97,7 @@ export class DialogDownloadController {
 	}
 
 	private getAmountOfAttributeTypes() {
-		const attributeTypes: AttributeTypes = this.storeService.getState().fileSettings.attributeTypes
+		const attributeTypes = this.storeService.getState().fileSettings.attributeTypes
 		let sum: number = 0
 		sum += attributeTypes.nodes ? attributeTypes.nodes.length : 0
 		sum += attributeTypes.edges ? attributeTypes.edges.length : 0

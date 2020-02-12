@@ -78,7 +78,7 @@ describe("files", () => {
 		})
 
 		it("should return the fileState if a file matches the fileName", () => {
-			const result = files.getFileByFileName("fileA")
+			const result = files.getFileByFileName(TEST_DELTA_MAP_A.fileMeta.fileName)
 
 			expect(result).toEqual(TEST_DELTA_MAP_A)
 		})
@@ -86,7 +86,7 @@ describe("files", () => {
 		it("should return the first fileState found if multiple files match the fileName", () => {
 			files.addFile(TEST_DELTA_MAP_A)
 
-			const result = files.getFileByFileName("fileA")
+			const result = files.getFileByFileName(TEST_DELTA_MAP_A.fileMeta.fileName)
 
 			expect(result).toEqual(TEST_DELTA_MAP_A)
 		})
@@ -186,7 +186,7 @@ describe("files", () => {
 
 	describe("setSingleByName", () => {
 		it("should set FileSelectionStates correctly", () => {
-			files.setSingleByName("fileA")
+			files.setSingleByName(TEST_DELTA_MAP_A.fileMeta.fileName)
 
 			expect(files.isSingleState()).toBeTruthy()
 		})
@@ -194,7 +194,7 @@ describe("files", () => {
 
 	describe("setDeltaByNames", () => {
 		it("should set FileSelectionStates correctly", () => {
-			files.setDeltaByNames("fileA", "fileB")
+			files.setDeltaByNames(TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName)
 
 			expect(files.isDeltaState()).toBeTruthy()
 		})
@@ -202,7 +202,7 @@ describe("files", () => {
 
 	describe("setMultipleByNames", () => {
 		it("should set FileSelectionStates correctly", () => {
-			files.setMultipleByNames(["fileA", "fileB"])
+			files.setMultipleByNames([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName])
 
 			expect(files.isPartialState()).toBeTruthy()
 		})
@@ -215,7 +215,13 @@ describe("files", () => {
 			expect(files.fileStatesAvailable()).toBeFalsy()
 		})
 
-		it("should be true if file states are available", () => {
+		it("should be false if file states are available, but non are visible", () => {
+			expect(files.fileStatesAvailable()).toBeFalsy()
+		})
+
+		it("should be true if visible file states are available", () => {
+			files.setSingle(TEST_DELTA_MAP_A)
+
 			expect(files.fileStatesAvailable()).toBeTruthy()
 		})
 	})

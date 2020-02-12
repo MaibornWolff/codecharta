@@ -7,7 +7,6 @@ import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { State } from "./model/codeCharta.model"
 import { ScenarioHelper } from "./util/scenarioHelper"
-import { FileStateService } from "./state/fileState.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { STATE } from "./util/dataMocks"
@@ -20,7 +19,6 @@ describe("codeChartaController", () => {
 	let storeService: StoreService
 	let dialogService: DialogService
 	let codeChartaService: CodeChartaService
-	let fileStateService: FileStateService
 	let injectorService: InjectorService
 	let state: State
 
@@ -41,22 +39,13 @@ describe("codeChartaController", () => {
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
-		fileStateService = getService<FileStateService>("fileStateService")
 		injectorService = getService<InjectorService>("injectorService")
 
 		state = _.cloneDeep(STATE)
 	}
 
 	function rebuildController() {
-		codeChartaController = new CodeChartaController(
-			$location,
-			$http,
-			storeService,
-			dialogService,
-			codeChartaService,
-			fileStateService,
-			injectorService
-		)
+		codeChartaController = new CodeChartaController($location, $http, storeService, dialogService, codeChartaService, injectorService)
 	}
 
 	afterEach(() => {

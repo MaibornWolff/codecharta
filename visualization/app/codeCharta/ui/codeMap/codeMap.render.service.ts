@@ -8,13 +8,11 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Node } from "../../model/codeCharta.model"
 import { StoreService } from "../../state/store.service"
-import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 
 export class CodeMapRenderService {
 	constructor(
 		private storeService: StoreService,
-		private fileStateService: FileStateService,
 		private metricService: MetricService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
@@ -31,14 +29,16 @@ export class CodeMapRenderService {
 	}
 
 	private setNewMapMesh(sortedNodes) {
-		const mapMesh: CodeMapMesh = new CodeMapMesh(sortedNodes, this.storeService.getState(), this.fileStateService.isDeltaState())
-		this.threeSceneService.setMapMesh(mapMesh, this.storeService.getState().treeMap.mapSize)
+		const mapMesh: CodeMapMesh = new CodeMapMesh(
+			sortedNodes,
+			this.storeService.getState(),
+			this.storeService.getState().files.isDeltaState()
+		)
+		this.threeSceneService.setMapMesh(mapMesh)
 	}
 
 	public scaleMap() {
-		const scale = this.storeService.getState().appSettings.scaling
-		const mapSize = this.storeService.getState().treeMap.mapSize
-		this.threeSceneService.scale(scale, mapSize)
+		this.threeSceneService.scale()
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()
 	}
@@ -48,7 +48,7 @@ export class CodeMapRenderService {
 			map,
 			this.storeService.getState(),
 			this.metricService.getMetricData(),
-			this.fileStateService.isDeltaState()
+			this.storeService.getState().files.isDeltaState()
 		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)

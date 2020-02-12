@@ -8,7 +8,6 @@ with the additional ones */
 
 import { DialogService } from "../dialog/dialog.service"
 import { CodeChartaService } from "../../codeCharta.service"
-import { FileStateService } from "../../state/fileState.service"
 import { NameDataPair } from "../../model/codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -19,13 +18,12 @@ export class FileChooserController {
 		private $scope,
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
-		private fileStateService: FileStateService,
 		private storeService: StoreService
 	) {}
 
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
-			this.fileStateService.resetMaps()
+			this.storeService.getState().files.reset()
 			for (let file of element.files) {
 				let reader = new FileReader()
 				reader.onloadstart = () => {

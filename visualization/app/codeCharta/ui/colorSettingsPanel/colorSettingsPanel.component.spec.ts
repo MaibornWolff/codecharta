@@ -2,14 +2,14 @@ import "./colorSettingsPanel.module"
 
 import { ColorSettingsPanelController } from "./colorSettingsPanel.component"
 import { IRootScopeService } from "angular"
-import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DEFAULT_STATE } from "../../util/dataMocks"
-import { FileSelectionState, FileState } from "../../model/codeCharta.model"
+import { DEFAULT_STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
+import { FilesService } from "../../state/store/files/files.service"
+import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
 
 describe("ColorSettingsPanelController", () => {
 	let colorSettingsPanelController: ColorSettingsPanelController
@@ -19,6 +19,7 @@ describe("ColorSettingsPanelController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		initFiles()
 	})
 
 	function restartSystem() {
@@ -32,13 +33,19 @@ describe("ColorSettingsPanelController", () => {
 		colorSettingsPanelController = new ColorSettingsPanelController($rootScope, storeService)
 	}
 
+	function initFiles() {
+		storeService.dispatch(resetFiles())
+		storeService.dispatch(addFile(TEST_DELTA_MAP_A))
+		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
+	}
+
 	describe("constructor", () => {
-		it("should subscribe to FileStateService", () => {
-			FileStateService.subscribe = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
 		it("should subscribe to InvertDeltaColorsService", () => {
@@ -108,25 +115,19 @@ describe("ColorSettingsPanelController", () => {
 		})
 	})
 
-	describe("onFileStatesChanged", () => {
+	describe("onFilesChanged", () => {
 		it("should detect delta mode selection", () => {
-			const fileStates = [
-				{ file: {}, selectedAs: FileSelectionState.Comparison },
-				{ file: {}, selectedAs: FileSelectionState.Reference }
-			] as FileState[]
+			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
-			colorSettingsPanelController.onFileStatesChanged(fileStates)
+			colorSettingsPanelController.onFilesChanged(storeService.getState().files)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeTruthy()
 		})
 
 		it("should detect not delta mode selection", () => {
-			const fileStates = [
-				{ file: {}, selectedAs: FileSelectionState.None },
-				{ file: {}, selectedAs: FileSelectionState.Partial }
-			] as FileState[]
+			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 
-			colorSettingsPanelController.onFileStatesChanged(fileStates)
+			colorSettingsPanelController.onFilesChanged(storeService.getState().files)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
 		})

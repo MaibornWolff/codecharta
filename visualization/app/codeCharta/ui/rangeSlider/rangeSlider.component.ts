@@ -1,8 +1,7 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import { ColorRange, FileState } from "../../model/codeCharta.model"
+import { ColorRange } from "../../model/codeCharta.model"
 import { MetricService } from "../../state/metric.service"
-import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -17,9 +16,11 @@ import {
 	WhiteColorBuildingsService,
 	WhiteColorBuildingsSubscriber
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
+import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { Files } from "../../model/files"
 
 export class RangeSliderController
-	implements ColorMetricSubscriber, ColorRangeSubscriber, InvertColorRangeSubscriber, WhiteColorBuildingsSubscriber, FileStateSubscriber {
+	implements ColorMetricSubscriber, ColorRangeSubscriber, InvertColorRangeSubscriber, WhiteColorBuildingsSubscriber, FilesSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
@@ -43,14 +44,13 @@ export class RangeSliderController
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
 		private storeService: StoreService,
-		private fileStateService: FileStateService,
 		private metricService: MetricService
 	) {
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
@@ -71,7 +71,7 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesChanged(files: Files) {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}
@@ -112,12 +112,12 @@ export class RangeSliderController
 			ceil: this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
 			pushRange: true,
-			disabled: this.fileStateService.isDeltaState()
+			disabled: this.storeService.getState().files.isDeltaState()
 		}
 	}
 
 	private updateDisabledSliderOption() {
-		this._viewModel.sliderOptions.disabled = this.fileStateService.isDeltaState()
+		this._viewModel.sliderOptions.disabled = this.storeService.getState().files.isDeltaState()
 	}
 
 	private applySliderChange() {

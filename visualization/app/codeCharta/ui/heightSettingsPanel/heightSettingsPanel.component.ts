@@ -1,9 +1,6 @@
 import "./heightSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { Vector3 } from "three"
-import { FileState } from "../../model/codeCharta.model"
-import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setInvertHeight } from "../../state/store/appSettings/invertHeight/invertHeight.actions"
@@ -15,9 +12,11 @@ import {
 } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/appSettings/invertHeight/invertHeight.service"
+import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { Files } from "../../model/files"
 
 export class HeightSettingsPanelController
-	implements FileStateSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
+	implements FilesSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedTopLabels: () => void
 	private readonly applyDebouncedScaling: (newScaling: Vector3) => void
@@ -39,7 +38,7 @@ export class HeightSettingsPanelController
 		AmountOfTopLabelsService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		InvertHeightService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedTopLabels = _.debounce(() => {
 			this.storeService.dispatch(setAmountOfTopLabels(this._viewModel.amountOfTopLabels))
@@ -62,8 +61,8 @@ export class HeightSettingsPanelController
 		this._viewModel.scalingY = scaling.y
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
-		this._viewModel.isDeltaState = FileStateHelper.isDeltaState(fileStates)
+	public onFilesChanged(files: Files) {
+		this._viewModel.isDeltaState = files.isDeltaState()
 	}
 
 	public applySettingsAmountOfTopLabels() {

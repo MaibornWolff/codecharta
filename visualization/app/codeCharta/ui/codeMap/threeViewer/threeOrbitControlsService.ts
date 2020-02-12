@@ -8,14 +8,14 @@ import {
 	FocusNodeSubscriber,
 	UnfocusNodeSubscriber
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { FileStateService, FileStateSubscriber } from "../../../state/fileState.service"
-import { FileState } from "../../../model/codeCharta.model"
+import { FilesService, FilesSubscriber } from "../../../state/store/files/files.service"
+import { Files } from "../../../model/files"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
-export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, FileStateSubscriber {
+export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 	private static AUTO_FIT_TIMEOUT = 0
 
@@ -32,7 +32,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	) {
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onFocusNode(focusedNodePath: string) {
@@ -43,7 +43,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.autoFitTo()
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesChanged(files: Files) {
 		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}

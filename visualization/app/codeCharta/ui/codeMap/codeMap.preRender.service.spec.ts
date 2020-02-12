@@ -1,10 +1,9 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { CCFile, CodeMapNode, FileMeta, FileState, MetricData } from "../../model/codeCharta.model"
+import { CCFile, CodeMapNode, FileMeta, MetricData } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { FileStateService } from "../../state/fileState.service"
 import { MetricService } from "../../state/metric.service"
 import { TEST_FILE_WITH_PATHS, METRIC_DATA, withMockedEventMethods, FILE_STATES, STATE } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
@@ -17,12 +16,12 @@ import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSet
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { Vector3 } from "three"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let fileStateService: FileStateService
 	let metricService: MetricService
 	let codeMapRenderService: CodeMapRenderService
 	let edgeMetricDataService: EdgeMetricDataService
@@ -30,18 +29,17 @@ describe("codeMapPreRenderService", () => {
 	let file: CCFile
 	let fileMeta: FileMeta
 	let map: CodeMapNode
-	let fileStates: FileState[]
 	let metricData: MetricData[]
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
-		withMockedFileStateService()
 		withMockedCodeMapRenderService()
 		withMockedMetricService()
 		withUnifiedMapAndFileMeta()
 		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
+		initFiles()
 	})
 
 	afterEach(() => {
@@ -53,7 +51,6 @@ describe("codeMapPreRenderService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
@@ -62,8 +59,6 @@ describe("codeMapPreRenderService", () => {
 		fileMeta = _.cloneDeep(FILE_STATES[0].file.fileMeta)
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 		map.children[1].children = _.slice(map.children[1].children, 0, 2)
-		fileStates = _.cloneDeep(FILE_STATES)
-		fileStates[0].file = NodeDecorator.preDecorateFile(fileStates[0].file)
 		metricData = _.cloneDeep(METRIC_DATA)
 	}
 
@@ -71,7 +66,6 @@ describe("codeMapPreRenderService", () => {
 		codeMapPreRenderService = new CodeMapPreRenderService(
 			$rootScope,
 			storeService,
-			fileStateService,
 			metricService,
 			codeMapRenderService,
 			edgeMetricDataService
@@ -85,14 +79,6 @@ describe("codeMapPreRenderService", () => {
 		})()
 	}
 
-	function withMockedFileStateService() {
-		fileStateService = codeMapPreRenderService["fileStateService"] = jest.fn().mockReturnValue({
-			getFileStates: jest.fn().mockReturnValue(fileStates),
-			fileStatesAvailable: jest.fn().mockReturnValue(true),
-			isDeltaState: jest.fn().mockReturnValue(false)
-		})()
-	}
-
 	function withMockedMetricService() {
 		metricService = codeMapPreRenderService["metricService"] = jest.fn().mockReturnValue({
 			getMetricData: jest.fn().mockReturnValue(metricData),
@@ -103,6 +89,12 @@ describe("codeMapPreRenderService", () => {
 	function withUnifiedMapAndFileMeta() {
 		codeMapPreRenderService["unifiedMap"] = map
 		codeMapPreRenderService["unifiedFileMeta"] = fileMeta
+	}
+
+	function initFiles() {
+		storeService.dispatch(resetFiles())
+		storeService.dispatch(addFile(NodeDecorator.preDecorateFile(_.cloneDeep(FILE_STATES[0].file))))
+		storeService.dispatch(setSingleByName(FILE_STATES[0].file.fileMeta.fileName))
 	}
 
 	describe("constructor", () => {

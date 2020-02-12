@@ -5,7 +5,8 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { SearchPatternAction, SearchPatternActions, setSearchPattern } from "./searchPattern.actions"
 import { SearchPatternService } from "./searchPattern.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
-import { FileStateService } from "../../../fileState.service"
+import { Files } from "../../../../model/files"
+import { FilesService } from "../../files/files.service"
 
 describe("SearchPatternService", () => {
 	let searchPatternService: SearchPatternService
@@ -38,12 +39,12 @@ describe("SearchPatternService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, searchPatternService)
 		})
 
-		it("should subscribe to FileStateService", () => {
-			FileStateService.subscribe = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, searchPatternService)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, searchPatternService)
 		})
 	})
 
@@ -67,11 +68,11 @@ describe("SearchPatternService", () => {
 		})
 	})
 
-	describe("onFileStatesChanged", () => {
+	describe("onFilesChanged", () => {
 		it("should reset and set empty searchPattern", () => {
 			storeService.dispatch(setSearchPattern("some/search.pattern*"))
 
-			searchPatternService.onFileStatesChanged([])
+			searchPatternService.onFilesChanged(new Files())
 
 			expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
 		})

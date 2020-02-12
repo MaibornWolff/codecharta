@@ -5,7 +5,6 @@ import { CodeChartaService } from "./codeCharta.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { NameDataPair } from "./model/codeCharta.model"
-import { FileStateService } from "./state/fileState.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
@@ -32,7 +31,6 @@ export class CodeChartaController {
 		private storeService: StoreService,
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
-		private fileStateService: FileStateService,
 		// tslint:disable-next-line
 		private injectorService: InjectorService // We have to inject it somewhere
 	) {
@@ -86,14 +84,14 @@ export class CodeChartaController {
 
 	private setRenderStateFromUrl() {
 		const renderState: string = this.urlUtils.getParameterByName("mode")
-		const files = this.fileStateService.getCCFiles()
+		const files = this.storeService.getState().files.getCCFiles()
 
 		if (renderState === "Delta" && files.length >= 2) {
-			this.fileStateService.setDelta(files[0], files[1])
+			this.storeService.getState().files.setDelta(files[0], files[1])
 		} else if (renderState === "Multiple") {
-			this.fileStateService.setMultiple(files)
+			this.storeService.getState().files.setMultiple(files)
 		} else {
-			this.fileStateService.setSingle(files[0])
+			this.storeService.getState().files.setSingle(files[0])
 		}
 	}
 

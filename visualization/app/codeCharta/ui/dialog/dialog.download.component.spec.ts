@@ -1,12 +1,11 @@
 import "./dialog.module"
 import "../codeMap/codeMap.module"
 import { DialogDownloadController, DownloadCheckboxNames } from "./dialog.download.component"
-import { FileStateService } from "../../state/fileState.service"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { AttributeTypes, AttributeTypeValue } from "../../model/codeCharta.model"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { stubDate } from "../../../../mocks/dateMock.helper"
-import { FILE_STATES, VALID_NODE_WITH_PATH_AND_EXTENSION, FILE_META, VALID_EDGES, BLACKLIST, MARKED_PACKAGES } from "../../util/dataMocks"
+import { VALID_NODE_WITH_PATH_AND_EXTENSION, FILE_META, VALID_EDGES, BLACKLIST, MARKED_PACKAGES } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
@@ -21,11 +20,9 @@ describe("DialogDownloadController", () => {
 	let $mdDialog
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let storeService: StoreService
-	let fileStateService: FileStateService
 
 	beforeEach(() => {
 		restartSystem()
-		withMockedFileStateService()
 		withMockedCodeMapPreRenderService()
 		rebuildController()
 	})
@@ -36,11 +33,10 @@ describe("DialogDownloadController", () => {
 		$mdDialog = getService("$mdDialog")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		storeService = getService<StoreService>("storeService")
-		fileStateService = getService<FileStateService>("fileStateService")
 	}
 
 	function rebuildController() {
-		dialogDownloadController = new DialogDownloadController($mdDialog, codeMapPreRenderService, storeService, fileStateService)
+		dialogDownloadController = new DialogDownloadController($mdDialog, codeMapPreRenderService, storeService)
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -48,15 +44,6 @@ describe("DialogDownloadController", () => {
 			return {
 				getRenderMap: jest.fn().mockReturnValue(VALID_NODE_WITH_PATH_AND_EXTENSION),
 				getRenderFileMeta: jest.fn().mockReturnValue(FILE_META)
-			}
-		})()
-	}
-
-	function withMockedFileStateService() {
-		fileStateService = jest.fn<FileStateService>(() => {
-			return {
-				getFileStates: jest.fn().mockReturnValue(FILE_STATES),
-				isDeltaState: jest.fn().mockReturnValue(false)
 			}
 		})()
 	}

@@ -1,46 +1,37 @@
-import {
-	MetricData,
-	FileState,
-	BlacklistItem,
-	Edge,
-	BlacklistType,
-	CodeMapNode,
-	EdgeMetricCount,
-	FileSelectionState
-} from "../model/codeCharta.model"
-import { FileStateSubscriber, FileStateService } from "./fileState.service"
+import { MetricData, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount, FileSelectionState } from "../model/codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateHelper } from "../util/fileStateHelper"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { HierarchyNode } from "d3"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
+import { FilesService, FilesSubscriber } from "./store/files/files.service"
+import { Files } from "../model/files"
+import { StoreService } from "./store.service"
 
 export interface EdgeMetricDataServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
 }
 
-export class EdgeMetricDataService implements FileStateSubscriber, BlacklistSubscriber {
+export class EdgeMetricDataService implements FilesSubscriber, BlacklistSubscriber {
 	private static EDGE_METRIC_DATA_UPDATED_EVENT = "edge-metric-data-updated"
 
 	private edgeMetricData: MetricData[] = []
 	private nodeEdgeMetricsMap: Map<string, Map<string, EdgeMetricCount>>
 
-	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService) {
-		FileStateService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		const fileStates: FileState[] = this.fileStateService.getFileStates()
-		this.updateEdgeMetrics(fileStates, blacklist)
+		this.updateEdgeMetrics()
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
-		this.updateEdgeMetrics(fileStates, [])
+	public onFilesChanged(files: Files) {
+		this.updateEdgeMetrics()
 	}
 
-	private updateEdgeMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
-		this.edgeMetricData = this.calculateMetrics(FileStateHelper.getVisibleFileStates(fileStates), blacklist)
+	private updateEdgeMetrics() {
+		this.edgeMetricData = this.calculateMetrics()
 		this.addNoneMetric()
 		this.sortNodeEdgeMetricsMap()
 		this.notifyEdgeMetricDataUpdated()
@@ -89,38 +80,44 @@ export class EdgeMetricDataService implements FileStateSubscriber, BlacklistSubs
 		return this.edgeMetricData
 	}
 
-	private calculateMetrics(visibleFileStates: FileState[], blacklist: BlacklistItem[]): MetricData[] {
-		if (visibleFileStates.length <= 0) {
+	private calculateMetrics(): MetricData[] {
+		if (this.storeService.getState().files.getVisibleFileStates().length <= 0) {
 			return []
 		} else {
-			const hashMap = this.calculateEdgeMetricData(visibleFileStates, blacklist)
+			const hashMap = this.calculateEdgeMetricData()
 			return this.getMetricDataFromMap(hashMap)
 		}
 	}
 
-	private calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): Map<string, Map<string, EdgeMetricCount>> {
+	private calculateEdgeMetricData(): Map<string, Map<string, EdgeMetricCount>> {
 		this.nodeEdgeMetricsMap = new Map()
-		const pathsPerFileState = fileStates
+		const pathsPerFileState = this.storeService
+			.getState()
+			.files.getVisibleFileStates()
 			.filter(x => x.selectedAs != FileSelectionState.None)
 			.map(fileState => CodeMapHelper.getAllPaths(fileState.file.map))
 		const allFilePaths: string[] = [].concat(...pathsPerFileState)
-		fileStates.forEach(fileState => {
-			fileState.file.settings.fileSettings.edges.forEach(edge => {
-				if (this.bothNodesAssociatedAreVisible(edge, blacklist, allFilePaths)) {
-					this.addEdgeToCalculationMap(edge)
-				}
+		this.storeService
+			.getState()
+			.files.getFiles()
+			.forEach(fileState => {
+				fileState.file.settings.fileSettings.edges.forEach(edge => {
+					if (this.bothNodesAssociatedAreVisible(edge, allFilePaths)) {
+						this.addEdgeToCalculationMap(edge)
+					}
+				})
 			})
-		})
 		return this.nodeEdgeMetricsMap
 	}
 
-	private bothNodesAssociatedAreVisible(edge: Edge, blacklist: BlacklistItem[], filePaths: string[]): boolean {
+	private bothNodesAssociatedAreVisible(edge: Edge, filePaths: string[]): boolean {
 		const fromPath = filePaths.find(x => x === edge.fromNodeName)
 		const toPath = filePaths.find(x => x === edge.toNodeName)
-		return fromPath && toPath && this.isNotBlacklisted(fromPath, blacklist) && this.isNotBlacklisted(toPath, blacklist)
+		return fromPath && toPath && this.isNotBlacklisted(fromPath) && this.isNotBlacklisted(toPath)
 	}
 
-	private isNotBlacklisted(path: string, blacklist: BlacklistItem[]): boolean {
+	private isNotBlacklisted(path: string): boolean {
+		const blacklist = this.storeService.getState().fileSettings.blacklist
 		return !CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude)
 	}
 

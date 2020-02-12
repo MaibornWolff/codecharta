@@ -2,13 +2,13 @@ import "./areaSettingsPanel.module"
 import "../codeMap/codeMap.module"
 import "../../codeCharta.module"
 import { AreaSettingsPanelController } from "./areaSettingsPanel.component"
-import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { DynamicMarginService } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService } from "../../state/store/dynamicSettings/margin/margin.service"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
+import { FilesService } from "../../state/store/files/files.service"
 
 describe("AreaSettingsPanelController", () => {
 	let areaSettingsPanelController: AreaSettingsPanelController
@@ -50,12 +50,12 @@ describe("AreaSettingsPanelController", () => {
 			expect(MarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
-		it("should subscribe to FileStateService", () => {
-			FileStateService.subscribe = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 	})
 
@@ -75,15 +75,15 @@ describe("AreaSettingsPanelController", () => {
 		})
 	})
 
-	describe("onFileStatesChanged", () => {
+	describe("onFilesChanged", () => {
 		it("should set dynamicMargin to true", () => {
-			areaSettingsPanelController.onFileStatesChanged(undefined)
+			areaSettingsPanelController.onFilesChanged(undefined)
 
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 
 		it("should update margin and dynamicMargin in store", () => {
-			areaSettingsPanelController.onFileStatesChanged(undefined)
+			areaSettingsPanelController.onFilesChanged(undefined)
 
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
