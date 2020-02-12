@@ -7,6 +7,7 @@ import { BlacklistAction, BlacklistActions } from "./blacklist.actions"
 import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 import { PresentationModeActions } from "../../appSettings/isPresentationMode/isPresentationMode.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
+import { FileStateService } from "../../../fileState.service"
 
 describe("BlacklistService", () => {
 	let blacklistService: BlacklistService
@@ -37,6 +38,14 @@ describe("BlacklistService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, blacklistService)
+		})
+
+		it("should subscribe to FileStateService", () => {
+			FileStateService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, blacklistService)
 		})
 	})
 
