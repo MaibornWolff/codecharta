@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Replaced non standard `[[` in sh scripts #849 
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.42.1] - 2020-02-07
