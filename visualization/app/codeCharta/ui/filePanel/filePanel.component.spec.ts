@@ -7,6 +7,7 @@ import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { FileState, FileSelectionState } from "../../model/codeCharta.model"
 import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
+import { addFile, setSingle } from "../../state/store/files/files.actions"
 
 describe("filePanelController", () => {
 	let filePanelController: FilePanelController
@@ -52,11 +53,18 @@ describe("filePanelController", () => {
 		restartSystem()
 		buildController()
 		withMockedFileStateService()
+		initFiles()
 	})
 
 	afterEach(() => {
 		jest.resetAllMocks()
 	})
+
+	function initFiles() {
+		storeService.dispatch(addFile(TEST_DELTA_MAP_A))
+		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
+		storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
+	}
 
 	it("should subscribe to FileStateService on construction", () => {
 		FileStateService.subscribe = jest.fn()
@@ -169,6 +177,13 @@ describe("filePanelController", () => {
 
 			expect(fileStateService.setSingleByName).toHaveBeenCalledWith("fileA")
 		})
+
+		it("should set a single file in state", () => {
+			filePanelController.onSingleFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
+
+			expect(storeService.getState().files.isSingleState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[0].file).toEqual(TEST_DELTA_MAP_B)
+		})
 	})
 
 	describe("onDeltaReferenceFileChange", () => {
@@ -178,6 +193,13 @@ describe("filePanelController", () => {
 
 			expect(fileStateService.setDeltaByNames).toHaveBeenCalledWith("fileA", "fileB")
 		})
+
+		it("should set referenceFile in delta mode", () => {
+			filePanelController.onDeltaReferenceFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
+
+			expect(storeService.getState().files.isDeltaState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[1].selectedAs).toEqual(FileSelectionState.Reference)
+		})
 	})
 
 	describe("onDeltaComparisonFileChange", () => {
@@ -186,6 +208,13 @@ describe("filePanelController", () => {
 			filePanelController.onDeltaComparisonFileChange("fileA")
 
 			expect(fileStateService.setDeltaByNames).toHaveBeenCalledWith("fileB", "fileA")
+		})
+
+		it("should set comparisonFile in delta mode", () => {
+			filePanelController.onDeltaComparisonFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
+
+			expect(storeService.getState().files.isDeltaState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[1].selectedAs).toEqual(FileSelectionState.Comparison)
 		})
 	})
 
@@ -200,6 +229,14 @@ describe("filePanelController", () => {
 			filePanelController.onPartialFilesChange([])
 
 			expect(fileStateService.setMultipleByNames).toHaveBeenCalledWith([])
+		})
+
+		it("should set multiple files in multiple mode", () => {
+			filePanelController.onPartialFilesChange([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName])
+
+			expect(storeService.getState().files.isPartialState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(storeService.getState().files.getVisibleFileStates()[1].selectedAs).toEqual(FileSelectionState.Partial)
 		})
 	})
 
