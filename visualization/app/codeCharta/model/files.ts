@@ -43,13 +43,7 @@ export class Files {
 	}
 
 	public setSingle(file: CCFile) {
-		this.files = this.files.map(elem => {
-			if (elem.file === file) {
-				return { ...elem, selectedAs: FileSelectionState.Single }
-			} else {
-				return { ...elem, selectedAs: FileSelectionState.None }
-			}
-		})
+		this.setSingleByName(file.fileMeta.fileName)
 	}
 
 	public setDeltaByNames(referenceFileName: string, comparisonFileName: string) {
@@ -65,15 +59,7 @@ export class Files {
 	}
 
 	public setDelta(reference: CCFile, comparison: CCFile) {
-		this.files = this.files.map(elem => {
-			if (elem.file === reference) {
-				return { ...elem, selectedAs: FileSelectionState.Reference }
-			} else if (elem.file === comparison) {
-				return { ...elem, selectedAs: FileSelectionState.Comparison }
-			} else {
-				return { ...elem, selectedAs: FileSelectionState.None }
-			}
-		})
+		this.setDeltaByNames(reference.fileMeta.fileName, comparison.fileMeta.fileName)
 	}
 
 	public setMultipleByNames(partialFileNames: string[]) {
@@ -87,13 +73,7 @@ export class Files {
 	}
 
 	public setMultiple(multipleFiles: CCFile[]) {
-		this.files = this.files.map(elem => {
-			if (multipleFiles.indexOf(elem.file) !== -1) {
-				return { ...elem, selectedAs: FileSelectionState.Partial }
-			} else {
-				return { ...elem, selectedAs: FileSelectionState.None }
-			}
-		})
+		this.setMultipleByNames(multipleFiles.map(file => file.fileMeta.fileName))
 	}
 
 	public fileStatesAvailable(): boolean {
