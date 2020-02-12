@@ -38,7 +38,6 @@ import { StoreService } from "./store.service"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { SearchPanelService } from "./searchPanel.service"
 import { NodeSearchService } from "./nodeSearch.service"
-import { FileStateService } from "./fileState.service"
 import { MetricService } from "./metric.service"
 import "../codeCharta.module"
 import _ from "lodash"
@@ -86,5 +85,4 @@ angular
 	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(_.camelCase(SearchPanelService.name), SearchPanelService)
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
-	.service(_.camelCase(FileStateService.name), FileStateService)
 	.service(_.camelCase(MetricService.name), MetricService)

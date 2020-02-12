@@ -13,7 +13,6 @@ import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetri
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
 
@@ -162,8 +161,9 @@ describe("RangeSliderController", () => {
 		})
 
 		it("should set grey colors when slider is disabled", () => {
+			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
+
 			rangeSliderController["applyCssColors"] = jest.fn()
-			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(true)
 			const expected = { left: mapColors.lightGrey, middle: mapColors.lightGrey, right: mapColors.lightGrey }
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
