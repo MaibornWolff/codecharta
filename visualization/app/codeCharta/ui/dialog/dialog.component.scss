@@ -1,28 +1,37 @@
-md-dialog {
-	min-width: 50% !important;
-}
+.input-container {
+	margin: 0;
+	padding: 0;
 
-md-input-container {
-	margin: 0 !important;
-	padding: 0 !important;
+	&.md-block {
+		display: block;
+	}
 }
 
 .download-dialog {
+	min-width: 50%;
+
 	.dialog-list {
 		margin: 5px 0 5px 0;
+
+		&.md-block {
+			display: block;
+			margin-top: 8px;
+		}
 	}
 
 	.filename-input {
-		width: 80% !important;
+		width: 80%;
 	}
 
 	.cc-file-extension {
 		color: grey;
-		vertical-align: -webkit-baseline-middle !important;
+		vertical-align: -webkit-baseline-middle;
 	}
 }
 
 .global-settings {
+	min-width: 50%;
+
 	.weblink {
 		display: block;
 		margin: 0 0 10px 0;
@@ -41,7 +50,7 @@ md-input-container {
 
 	reset-settings-button-component button {
 		top: 10px;
-		bottom: initial !important;
+		bottom: initial;
 		right: 0;
 	}
 }
