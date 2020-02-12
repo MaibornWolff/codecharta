@@ -22,34 +22,22 @@ describe("MarkedPackagesMerger", () => {
 
 			mp1 = {
 				path: "/root/nodeA",
-				color: "#ABABAB",
-				attributes: {
-					name: "nodeA"
-				}
+				color: "#ABABAB"
 			}
 
 			mp2 = {
 				path: "/root/nodeB",
-				color: "#FFFFFF",
-				attributes: {
-					name: "nodeB"
-				}
+				color: "#FFFFFF"
 			}
 
 			mp3 = {
 				path: "/root/nodeA",
-				color: "#ABABAB",
-				attributes: {
-					another: "nodeA"
-				}
+				color: "#ABABAB"
 			}
 
 			mp4 = {
 				path: "/root/nodeA",
-				color: "#ABABAB",
-				attributes: {
-					name: "overwrite nodeA"
-				}
+				color: "#ABABAB"
 			}
 		})
 
