@@ -10,87 +10,99 @@ export interface Scenario {
 
 export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
-	private static scenarios: Scenario[] = ScenarioHelper.loadScenarios()
+	private static scenarioList: Scenario[] = ScenarioHelper.loadScenarios()
 
-	private static loadScenarios(): Scenario[] {
-		const scenarios = JSON.parse(localStorage.getItem("scenarios"))
-		if (scenarios) {
-			return scenarios
-		} else {
-			localStorage.setItem("scenarios", JSON.stringify(this.getPreLoadScenarios()))
-			return this.getPreLoadScenarios()
-		}
+	public static getScenarios() {
+		return this.scenarioList
 	}
 
 	private static getPreLoadScenarios(): Scenario[] {
 		return ScenarioHelper.importScenarios(require("../assets/scenarios.json"))
 	}
 
-	public static getScenarios(): Scenario[] {
-		return this.scenarios
+	private static setScenariosToLocalStorage(scenarios: Scenario[]) {
+		localStorage.setItem("scenarios", JSON.stringify(scenarios))
 	}
 
-	public static addScenario(
-		scenarioName: string,
-		dynamicSettingPartial: RecursivePartial<DynamicSettings>,
-		appSettingsPartial: RecursivePartial<AppSettings>
+	private static loadScenarios(): Scenario[] {
+		const defaultScenarios: Scenario[] = JSON.parse(localStorage.getItem("scenarios"))
+		if (defaultScenarios) {
+			return defaultScenarios
+		} else {
+			this.setScenariosToLocalStorage(this.getPreLoadScenarios())
+			return this.getPreLoadScenarios()
+		}
+	}
+
+	private static createScenarioObjectWithPartialSettings(
+		partialAppSettings: RecursivePartial<AppSettings>,
+		partialDynamicSettings: RecursivePartial<DynamicSettings>
 	) {
 		const newScenario: Scenario = {
-			name: scenarioName,
+			name,
 			settings: {
-				appSettings: appSettingsPartial,
-				dynamicSettings: dynamicSettingPartial
+				appSettings: partialAppSettings,
+				dynamicSettings: partialDynamicSettings
 			}
 		}
-		this.scenarios.push(newScenario)
-		localStorage.setItem("scenarios", JSON.stringify(this.scenarios))
+		return newScenario
 	}
 
-	public static createNewScenario(scenarioName: string, attributes: AddAttributeContent[]) {
+	public static addScenario(newScenario: Scenario) {
+		this.scenarioList.push(newScenario)
+		this.setScenariosToLocalStorage(this.scenarioList)
+	}
+
+	public static createNewScenario(scenarioName: string, scenarioAttributes: AddAttributeContent[]) {
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
-		attributes.forEach(x => {
-			switch (x.metricName) {
-				case ScenarioCheckboxNames.cameraPosition: {
-					partialAppSettings.camera = x.metricAttributeValue
+
+		scenarioAttributes.forEach(attribute => {
+			switch (attribute.metricName) {
+				case ScenarioCheckboxNames.CAMERAPOSITION: {
+					partialAppSettings.camera = attribute.metricAttributeValue
 					break
 				}
-				case "Area": {
-					partialDynamicSettings.areaMetric = x.currentMetric
-					partialDynamicSettings.margin = x.metricAttributeValue
+				case ScenarioCheckboxNames.AREAMETRIC: {
+					partialDynamicSettings.areaMetric = attribute.currentMetric
+					partialDynamicSettings.margin = attribute.metricAttributeValue
 					break
 				}
-				case "Height": {
-					partialDynamicSettings.heightMetric = x.currentMetric
-					partialAppSettings.scaling = x.metricAttributeValue["heightSlider"]
-					partialAppSettings.amountOfTopLabels = x.metricAttributeValue["labelSlider"]
+				case ScenarioCheckboxNames.HEIGHTMETRIC: {
+					partialDynamicSettings.heightMetric = attribute.currentMetric
+					partialAppSettings.scaling = attribute.metricAttributeValue["heightSlider"]
+					partialAppSettings.amountOfTopLabels = attribute.metricAttributeValue["labelSlider"]
 					break
 				}
-				case "Color": {
-					partialDynamicSettings.colorMetric = x.currentMetric
-					partialDynamicSettings.colorRange = x.metricAttributeValue
+				case ScenarioCheckboxNames.COLORMETRIC: {
+					partialDynamicSettings.colorMetric = attribute.currentMetric
+					partialDynamicSettings.colorRange = attribute.metricAttributeValue
 					break
 				}
-				case "Edge": {
-					partialDynamicSettings.edgeMetric = x.currentMetric
-					partialAppSettings.amountOfEdgePreviews = x.metricAttributeValue["edgePreview"]
-					partialAppSettings.edgeHeight = x.metricAttributeValue["edgeHeight"]
+				case ScenarioCheckboxNames.EDGEMETRIC: {
+					partialDynamicSettings.edgeMetric = attribute.currentMetric
+					partialAppSettings.amountOfEdgePreviews = attribute.metricAttributeValue["edgePreview"]
+					partialAppSettings.edgeHeight = attribute.metricAttributeValue["edgeHeight"]
 					break
 				}
 			}
 		})
-		this.addScenario(scenarioName, partialDynamicSettings, partialAppSettings)
+
+		const newScenarioObject: Scenario = this.createScenarioObjectWithPartialSettings(partialAppSettings, partialDynamicSettings)
+		newScenarioObject.name = scenarioName
+
+		return newScenarioObject
 	}
 
 	public static getNumberOfScenarios() {
-		return this.scenarios.length
+		return this.scenarioList.length
 	}
 
 	public static deleteScenario(scenarioName: String) {
-		this.scenarios = this.scenarios.filter(item => {
+		this.scenarioList = this.scenarioList.filter(item => {
 			return item.name !== scenarioName
 		})
-		localStorage.setItem("scenarios", JSON.stringify(this.scenarios))
+		this.setScenariosToLocalStorage(this.scenarioList)
 	}
 
 	public static isScenarioPossible(scenario: Scenario, metricData: MetricData[]): boolean {
@@ -103,11 +115,11 @@ export class ScenarioHelper {
 	}
 
 	public static getDefaultScenario(): Scenario {
-		return this.scenarios.find(s => s.name == "Complexity")
+		return this.scenarioList.find(s => s.name == "Complexity")
 	}
 
 	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
-		return this.scenarios.find(s => s.name == name).settings
+		return this.scenarioList.find(s => s.name == name).settings
 	}
 
 	public static importScenarios(scenarios: Scenario[]): Scenario[] {
@@ -118,6 +130,6 @@ export class ScenarioHelper {
 	}
 
 	public static isScenarioExisting(scenarioName: string) {
-		return this.scenarios.find(x => x.name == scenarioName)
+		return this.scenarioList.find(x => x.name == scenarioName)
 	}
 }

@@ -1,7 +1,7 @@
 import "./dialog.component.scss"
 import { AppSettings, DynamicSettings } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
-import { ScenarioHelper } from "../../util/scenarioHelper"
+import { Scenario, ScenarioHelper } from "../../util/scenarioHelper"
 import { DialogService } from "./dialog.service"
 
 export interface AddAttributeContent {
@@ -13,12 +13,11 @@ export interface AddAttributeContent {
 }
 
 export enum ScenarioCheckboxNames {
-	//TODO: CAPS ALLES
-	cameraPosition = "CameraPosition",
-	edgeMetric = "Edge",
-	areaMetric = "Area",
-	HeightMetric = "Height",
-	ColorMetric = "Color"
+	CAMERAPOSITION = "CameraPosition",
+	EDGEMETRIC = "Edge",
+	AREAMETRIC = "Area",
+	HEIGHTMETRIC = "Height",
+	COLORMETRIC = "Color"
 }
 
 export class DialogAddScenarioSettingsComponent {
@@ -44,9 +43,9 @@ export class DialogAddScenarioSettingsComponent {
 		if (ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName)) {
 			this.dialogService.showErrorDialog("The Scenario Name is already taken, please chose another Scenario Name.")
 		} else {
-			const chosenMetrics: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
-			ScenarioHelper.createNewScenario(this._viewModel.scenarioName, chosenMetrics)
-
+			const selectedScenarioAttributes: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
+			const newScenario: Scenario = ScenarioHelper.createNewScenario(this._viewModel.scenarioName, selectedScenarioAttributes)
+			ScenarioHelper.addScenario(newScenario)
 			this.hide()
 		}
 	}
@@ -59,14 +58,14 @@ export class DialogAddScenarioSettingsComponent {
 	private setFileContentList() {
 		const dynamicSettings: DynamicSettings = this.storeService.getState().dynamicSettings
 		const appSettings: AppSettings = this.storeService.getState().appSettings
-		this.pushFileContent(ScenarioCheckboxNames.cameraPosition, null, appSettings.camera)
-		this.pushFileContent(ScenarioCheckboxNames.areaMetric, dynamicSettings.areaMetric, dynamicSettings.margin)
-		this.pushFileContent(ScenarioCheckboxNames.HeightMetric, dynamicSettings.heightMetric, {
+		this.pushFileContent(ScenarioCheckboxNames.CAMERAPOSITION, null, appSettings.camera)
+		this.pushFileContent(ScenarioCheckboxNames.AREAMETRIC, dynamicSettings.areaMetric, dynamicSettings.margin)
+		this.pushFileContent(ScenarioCheckboxNames.HEIGHTMETRIC, dynamicSettings.heightMetric, {
 			heightSlider: appSettings.scaling,
 			labelSlider: appSettings.amountOfTopLabels
 		})
-		this.pushFileContent(ScenarioCheckboxNames.ColorMetric, dynamicSettings.colorMetric, dynamicSettings.colorRange)
-		this.pushFileContent(ScenarioCheckboxNames.edgeMetric, dynamicSettings.edgeMetric, {
+		this.pushFileContent(ScenarioCheckboxNames.COLORMETRIC, dynamicSettings.colorMetric, dynamicSettings.colorRange)
+		this.pushFileContent(ScenarioCheckboxNames.EDGEMETRIC, dynamicSettings.edgeMetric, {
 			edgePreview: appSettings.amountOfEdgePreviews,
 			edgeHeight: appSettings.edgeHeight
 		})
