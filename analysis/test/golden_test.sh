@@ -9,7 +9,7 @@ exit_with_err(){
   exit 1
 }
 
-if [[ -z $1 ]]; then
+if [ -z "$1" ]; then
   exit_with_err "No CodeCharta version specified"
 fi
 
@@ -36,7 +36,7 @@ deinstall_codecharta() {
 
 validate() {
   "${CCSH}" check "$1"
-  if [[ $? -ne 0 ]]; then
+  if [ "$?" -ne 0 ]; then
     exit_with_err "$1 no valid cc.json"
   fi
 }
