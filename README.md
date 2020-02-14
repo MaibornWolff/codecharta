@@ -17,7 +17,7 @@ CodeCharta is a beautiful tool to help you visualize and understand code. It can
 
 ## Usage
 
-You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json) without any installation and explore the CodeCharta code (shown by default).
+You can try the [web visualization](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json) without any installation and explore the CodeCharta code (shown by default).
 
 The visualization takes a `.json` file and to generate a new one you need to install the CodeCharta shell (ccsh). The are [multiple ways](https://maibornwolff.github.io/codecharta/docs/installation/) to do so including non-global install. We'll use npm here because it is the most convenient:
 
