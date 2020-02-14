@@ -1,7 +1,5 @@
 import { CCFile, FileSelectionState, FileState } from "./codeCharta.model"
-import _ from "lodash"
-
-//TODO: replace _.deepClone with rfdc()
+const clone = require("rfdc")()
 
 export class Files {
 	constructor(private files: FileState[] = []) {}
@@ -25,11 +23,11 @@ export class Files {
 	}
 
 	public addFile(file: CCFile) {
-		this.files = [...this.files, { file: _.cloneDeep(file), selectedAs: FileSelectionState.None }]
+		this.files = [...this.files, { file: clone(file), selectedAs: FileSelectionState.None }]
 	}
 
 	public setFiles(files: Files) {
-		this.files = _.cloneDeep(files.getFiles())
+		this.files = clone(files.getFiles())
 	}
 
 	public setSingleByName(fileName: string) {
