@@ -74,9 +74,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		if (this._viewModel.isSingleState) {
 			this._viewModel.renderState = FileSelectionState.Single
 			this._viewModel.selectedFileNames.single = visibleFileStates[0].file.fileMeta.fileName
-		} else if (this._viewModel.isPartialState) {
-			this._viewModel.renderState = FileSelectionState.Partial
-			this._viewModel.selectedFileNames.partial = visibleFileStates.map(x => x.file.fileMeta.fileName)
 		} else if (this._viewModel.isDeltaState) {
 			this._viewModel.renderState = FileSelectionState.Comparison
 
@@ -89,6 +86,9 @@ export class FilePanelController implements FilesSelectionSubscriber {
 				visibleFileStates.length == 2
 					? visibleFileStates.find(x => x.selectedAs === FileSelectionState.Comparison).file.fileMeta.fileName
 					: visibleFileStates[0].file.fileMeta.fileName
+		} else {
+			this._viewModel.renderState = FileSelectionState.Partial
+			this._viewModel.selectedFileNames.partial = visibleFileStates.map(x => x.file.fileMeta.fileName)
 		}
 	}
 
@@ -127,7 +127,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		this.onPartialFilesChange(allFileNames)
 	}
 
-	//TODO: Check if this method does something
 	public selectZeroPartialFiles() {
 		this.onPartialFilesChange([])
 	}

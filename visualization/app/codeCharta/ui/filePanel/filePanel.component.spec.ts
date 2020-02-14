@@ -34,6 +34,7 @@ describe("filePanelController", () => {
 		storeService.dispatch(resetFiles())
 		storeService.dispatch(addFile(TEST_DELTA_MAP_A))
 		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
+		storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 	}
 
 	it("should subscribe to FilesService on construction", () => {
@@ -48,7 +49,7 @@ describe("filePanelController", () => {
 		it("should update viewModel with new fileStates", () => {
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			expect(filePanelController["_viewModel"].fileStates).toEqual(storeService.getState().files.getFiles())
+			expect(filePanelController["_viewModel"].files.getFiles()).toEqual(storeService.getState().files.getFiles())
 		})
 
 		it("should set the viewModel and lastRenderState correctly", () => {
@@ -105,15 +106,15 @@ describe("filePanelController", () => {
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
 		})
 
-		it("should not set anything if no mode is active", () => {
+		it("should assume that mode is partial, when no mode is active", () => {
 			storeService.dispatch(resetSelection())
 
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			expect(filePanelController["_viewModel"].renderState).toBeNull()
+			expect(filePanelController["_viewModel"].renderState).toBe(FileSelectionState.Partial)
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toBeNull()
-			expect(filePanelController["_viewModel"].selectedFileNames.partial).toBeNull()
+			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([])
 			expect(filePanelController["_viewModel"].selectedFileNames.single).toBeNull()
 		})
 
@@ -203,6 +204,9 @@ describe("filePanelController", () => {
 
 	describe("selectAllPartialFiles", () => {
 		it("should select all files and enable multiple mode", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
+
 			filePanelController.selectAllPartialFiles()
 
 			expect(storeService.getState().files.getVisibleFileStates()[0].selectedAs).toEqual(FileSelectionState.Partial)
@@ -211,18 +215,20 @@ describe("filePanelController", () => {
 	})
 
 	describe("selectZeroPartialFiles", () => {
-		it("should call onPartialFilesChange with an empty array", () => {
-			filePanelController.onPartialFilesChange = jest.fn()
+		it("should should set the viewModel mode to multiple and deselect all files", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			filePanelController.selectZeroPartialFiles()
 
-			expect(filePanelController.onPartialFilesChange).toHaveBeenCalledWith([])
+			expect(storeService.getState().files.getVisibleFileStates().length).toBe(0)
 		})
 	})
 
 	describe("invertPartialFileSelection", () => {
 		it("should invert the partially selected files", () => {
 			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B]))
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			filePanelController.invertPartialFileSelection()
 
