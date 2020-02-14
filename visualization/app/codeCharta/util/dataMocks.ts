@@ -16,6 +16,7 @@ import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { Scenario } from "./scenarioHelper"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -310,6 +311,102 @@ export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 		color: "#676867"
 	}
 ]
+
+export const DEFAULT_SCENARIO: Scenario[] = [
+	{
+		name: "Complexity",
+		settings: {
+			appSettings: {
+				invertColorRange: false
+			},
+			dynamicSettings: {
+				areaMetric: "rloc",
+				heightMetric: "mcc",
+				colorMetric: "mcc",
+				distributionMetric: "rloc"
+			}
+		}
+	},
+	{
+		name: "Average Complexity*",
+		settings: {
+			appSettings: {
+				invertColorRange: false
+			},
+			dynamicSettings: {
+				areaMetric: "unary",
+				heightMetric: "Average Complexity*",
+				colorMetric: "Average Complexity*",
+				distributionMetric: "unary"
+			}
+		}
+	},
+	{
+		name: "Coverage",
+		settings: {
+			appSettings: {
+				invertColorRange: true
+			},
+			dynamicSettings: {
+				areaMetric: "rloc",
+				heightMetric: "mcc",
+				colorMetric: "line_coverage",
+				distributionMetric: "rloc"
+			}
+		}
+	},
+	{
+		name: "Code Churn",
+		settings: {
+			appSettings: {
+				invertColorRange: false
+			},
+			dynamicSettings: {
+				areaMetric: "rloc",
+				heightMetric: "abs_code_churn",
+				colorMetric: "weeks_with_commits",
+				distributionMetric: "rloc"
+			}
+		}
+	}
+]
+
+export const SCENARIO: Scenario = {
+	name: "Scenario1",
+	settings: {
+		dynamicSettings: {
+			areaMetric: "rloc",
+			heightMetric: "mcc",
+			colorMetric: "mcc",
+			edgeMetric: "pairingRate",
+			margin: 48,
+			colorRange: {
+				from: 19,
+				to: 67
+			}
+		},
+		appSettings: {
+			amountOfTopLabels: 31,
+			amountOfEdgePreviews: 5,
+			edgeHeight: 4,
+			scaling: new Vector3(1, 1.8, 1),
+			camera: new Vector3(0, 300, 1000)
+		}
+	}
+}
+
+export const SCENARIO_WITH_ONLY_HEIGHT: Scenario = {
+	name: "Scenario2",
+	settings: {
+		dynamicSettings: {
+			heightMetric: "mcc"
+		},
+		appSettings: {
+			amountOfTopLabels: 31,
+			scaling: new Vector3(1, 1.8, 1)
+		}
+	}
+}
 
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	name: "root",

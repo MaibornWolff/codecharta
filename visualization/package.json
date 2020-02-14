@@ -115,6 +115,9 @@
 			"node_modules",
 			"<rootDir>/app"
 		],
+		"setupFiles": [
+			"<rootDir>/mocks/localStorageMock.js"
+		],
 		"globals": {
 			"ts-jest": {
 				"tsConfigFile": "tsconfig.json",

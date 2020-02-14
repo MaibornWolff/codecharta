@@ -1,5 +1,5 @@
 "use strict"
-import { AppSettings, DynamicSettings, MetricData, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
+import { AppSettings, DynamicSettings, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddAttributeContent, ScenarioCheckboxNames } from "../ui/dialog/dialog.addScenarioSettings.component"
 
@@ -103,15 +103,6 @@ export class ScenarioHelper {
 			return item.name !== scenarioName
 		})
 		this.setScenariosToLocalStorage(this.scenarioList)
-	}
-
-	public static isScenarioPossible(scenario: Scenario, metricData: MetricData[]): boolean {
-		const metrics = metricData.map(x => x.name)
-		return (
-			metrics.includes(scenario.settings.dynamicSettings.areaMetric) &&
-			metrics.includes(scenario.settings.dynamicSettings.heightMetric) &&
-			metrics.includes(scenario.settings.dynamicSettings.colorMetric)
-		)
 	}
 
 	public static getDefaultScenario(): Scenario {

@@ -1,8 +1,10 @@
 import { ScenarioHelper } from "./scenarioHelper"
-import { MetricData, Scenario } from "../codeCharta.model"
+import { Scenario } from "../codeCharta.model"
+import { DEFAULT_SCENARIO, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
+import { Vector3 } from "three"
+import { ScenarioCheckboxNames } from "../ui/dialog/dialog.addScenarioSettings.component"
 
 describe("scenarioHelper", () => {
-	let metricData: MetricData[]
 	const scenarios: Scenario[] = require("../assets/scenarios.json")
 
 	afterEach(() => {
@@ -10,11 +12,7 @@ describe("scenarioHelper", () => {
 	})
 
 	beforeEach(() => {
-		metricData = [
-			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
-		]
+		ScenarioHelper["scenarioList"] = DEFAULT_SCENARIO
 	})
 
 	describe("importScenarios", () => {
@@ -40,66 +38,192 @@ describe("scenarioHelper", () => {
 		})
 	})
 
-	describe("isScenarioPossible", () => {
-		it("should return true for a possible scenario", () => {
-			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return false for an impossible scenario", () => {
-			metricData = [
-				{ name: "some", maxValue: 999999, availableInVisibleMaps: true },
-				{ name: "weird", maxValue: 999999, availableInVisibleMaps: true },
-				{ name: "metrics", maxValue: 999999, availableInVisibleMaps: true }
-			]
-			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)
-
-			expect(result).toBeFalsy()
-		})
-	})
-
 	describe("getScenarios", () => {
 		it("should get all scenarios", () => {
-			ScenarioHelper.isScenarioPossible = jest.fn().mockReturnValue(true)
+			const result = ScenarioHelper.getScenarios()
 
-			const result = ScenarioHelper.getScenarios(metricData)
-			const expected = scenarios
-
-			expect(result).toEqual(expected)
-			scenarios.forEach((scenario: Scenario) => {
-				expect(ScenarioHelper.isScenarioPossible).toBeCalledWith(scenario, metricData)
-			})
-			expect(ScenarioHelper.isScenarioPossible).toHaveBeenCalledTimes(scenarios.length)
-		})
-
-		it("should get no scenarios", () => {
-			ScenarioHelper.isScenarioPossible = jest.fn().mockReturnValue(false)
-
-			const result = ScenarioHelper.getScenarios(metricData)
-			const expected = []
-
-			expect(result).toEqual(expected)
-			scenarios.forEach((scenario: Scenario) => {
-				expect(ScenarioHelper.isScenarioPossible).toBeCalledWith(scenario, metricData)
-			})
-			expect(ScenarioHelper.isScenarioPossible).toHaveBeenCalledTimes(scenarios.length)
+			expect(result).toEqual(DEFAULT_SCENARIO)
 		})
 	})
 
 	describe("getDefaultScenario", () => {
-		it("should get the first scenario in scenario.json", () => {
+		it("should return Complexity Scenario", () => {
 			const result = ScenarioHelper.getDefaultScenario()
 
-			expect(result).toEqual(scenarios[0])
+			expect(result.name).toEqual("Complexity")
+		})
+		it("should return undefined, when Complexity is not in scenarioList", () => {
+			ScenarioHelper["scenarioList"] = DEFAULT_SCENARIO.filter(s => s.name != "Complexity")
+
+			const result = ScenarioHelper.getDefaultScenario()
+
+			expect(result).toBeUndefined()
 		})
 	})
 
 	describe("getScenarioSettingsByName", () => {
-		it("should get the first scenario in scenario.json", () => {
-			const result = ScenarioHelper.getScenarioSettingsByName("Complexity")
+		it("should return Settings for Coverage Scenario", () => {
+			const result = ScenarioHelper.getScenarioSettingsByName("Coverage")
+			const expected = scenarios.find(scenario => scenario.name === "Coverage")
 
-			expect(result).toEqual(scenarios[0].settings)
+			expect(result).toEqual(expected.settings)
+		})
+	})
+
+	describe("addScenario", () => {
+		afterEach(() => {
+			ScenarioHelper["scenarioList"].pop()
+		})
+		it("should add the new Scenario into the scenarioList", () => {
+			ScenarioHelper.addScenario(SCENARIO)
+			const lastScenarioOfScenarioList: Scenario = ScenarioHelper["scenarioList"][ScenarioHelper["scenarioList"].length - 1]
+
+			expect(lastScenarioOfScenarioList).toEqual(SCENARIO)
+		})
+		it("should call setScenariosToLocalStorage with scenarioList", () => {
+			ScenarioHelper["setScenariosToLocalStorage"] = jest.fn()
+
+			ScenarioHelper.addScenario(SCENARIO)
+
+			expect(ScenarioHelper["setScenariosToLocalStorage"]).toHaveBeenCalledWith(ScenarioHelper["scenarioList"])
+		})
+	})
+
+	describe("createNewScenario", () => {
+		const fileAttributeContent = [
+			{
+				metricName: ScenarioCheckboxNames.CAMERAPOSITION,
+				currentMetric: null,
+				metricAttributeValue: new Vector3(0, 300, 1000),
+				isSelected: true,
+				isDisabled: false
+			},
+			{
+				metricName: ScenarioCheckboxNames.AREAMETRIC,
+				currentMetric: "rloc",
+				metricAttributeValue: 48,
+				isSelected: true,
+				isDisabled: false
+			},
+			{
+				metricName: ScenarioCheckboxNames.COLORMETRIC,
+				currentMetric: "mcc",
+				metricAttributeValue: { from: 19, to: 67 },
+				isSelected: true,
+				isDisabled: false
+			},
+			{
+				metricName: ScenarioCheckboxNames.HEIGHTMETRIC,
+				currentMetric: "mcc",
+				metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+				isSelected: true,
+				isDisabled: false
+			},
+			{
+				metricName: ScenarioCheckboxNames.EDGEMETRIC,
+				currentMetric: "pairingRate",
+				metricAttributeValue: { edgePreview: 5, edgeHeight: 4 },
+				isSelected: true,
+				isDisabled: false
+			}
+		]
+
+		it("should create a Scenario according to the given fileAttributeContent ", () => {
+			const result: Scenario = ScenarioHelper.createNewScenario("Scenario1", fileAttributeContent)
+			const expected: Scenario = SCENARIO
+
+			expect(result).toEqual(expected)
+		})
+
+		it("should create a Scenario only with height attributes", () => {
+			const fileAttributeConentWithOnlyHeight = [
+				{
+					metricName: ScenarioCheckboxNames.HEIGHTMETRIC,
+					currentMetric: "mcc",
+					metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+					isSelected: true,
+					isDisabled: false
+				}
+			]
+
+			const result: Scenario = ScenarioHelper.createNewScenario("Scenario2", fileAttributeConentWithOnlyHeight)
+			const expected: Scenario = SCENARIO_WITH_ONLY_HEIGHT
+
+			expect(result).toEqual(expected)
+		})
+
+		it("should call createScenarioObjectWithPartialSettings function ", () => {
+			ScenarioHelper["createScenarioObjectWithPartialSettings"] = jest.fn().mockReturnValue(SCENARIO)
+
+			ScenarioHelper.createNewScenario("Scenario1", fileAttributeContent)
+
+			expect(ScenarioHelper["createScenarioObjectWithPartialSettings"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("getNumberOfScenarios", () => {
+		it("should return the length 4 as there are 4 elements in the scnearioList ", () => {
+			const result = ScenarioHelper.getNumberOfScenarios()
+			const expected = 4
+
+			expect(result).toEqual(expected)
+		})
+	})
+	describe("deleteScenario", () => {
+		it("should remove the Scenario from ScenarioList ", () => {
+			ScenarioHelper["scenarioList"] = [{ name: "Scenario", settings: { dynamicSettings: { areaMetric: "rloc" } } }]
+
+			ScenarioHelper.deleteScenario("Scenario")
+
+			expect(ScenarioHelper["scenarioList"]).toEqual([])
+		})
+
+		it("should not delete an Element when it doesn't exist ", () => {
+			ScenarioHelper["scenarioList"] = [{ name: "Scenario", settings: { dynamicSettings: { areaMetric: "rloc" } } }]
+
+			ScenarioHelper.deleteScenario("UnknownScenario")
+			const expected = [{ name: "Scenario", settings: { dynamicSettings: { areaMetric: "rloc" } } }]
+
+			expect(ScenarioHelper["scenarioList"]).toEqual(expected)
+		})
+
+		it("should find the specific Scenario and delete it ", () => {
+			ScenarioHelper["scenarioList"] = [
+				{ name: "Scenario1", settings: { dynamicSettings: { areaMetric: "rloc" } } },
+				{ name: "Scenario2", settings: { dynamicSettings: { heightMetric: "mcc" } } },
+				{ name: "Scenario3", settings: { dynamicSettings: { colorMetric: "mcc" } } }
+			]
+
+			ScenarioHelper.deleteScenario("Scenario2")
+			const expected = [
+				{ name: "Scenario1", settings: { dynamicSettings: { areaMetric: "rloc" } } },
+				{ name: "Scenario3", settings: { dynamicSettings: { colorMetric: "mcc" } } }
+			]
+
+			expect(ScenarioHelper["scenarioList"]).toEqual(expected)
+		})
+
+		it("should call setScenariosToLocalStorage", () => {
+			ScenarioHelper["setScenariosToLocalStorage"] = jest.fn()
+
+			ScenarioHelper.deleteScenario("Complexity")
+
+			expect(ScenarioHelper["setScenariosToLocalStorage"]).toHaveBeenCalled()
+		})
+	})
+
+	describe("isScenarioExisting ", () => {
+		it("should return the Scenario if it is existing", () => {
+			const result: Scenario = ScenarioHelper.isScenarioExisting("Complexity")
+			const expected: Scenario = {
+				name: "Complexity",
+				settings: {
+					appSettings: { invertColorRange: false },
+					dynamicSettings: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", distributionMetric: "rloc" }
+				}
+			}
+
+			expect(result).toEqual(expected)
 		})
 	})
 })
