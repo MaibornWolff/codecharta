@@ -23,7 +23,7 @@
 		<md-divider></md-divider>
 
 		<md-menu-item ng-repeat="scenario in $ctrl._viewModel.scenarios track by $index">
-			<md-button ng-click="$ctrl.applyScenario(scenario.name)">{{::scenario.name}}</md-button>
+			<md-button ng-click="$ctrl.applyScenario(scenario.name)">{{ scenario.name }}</md-button>
 			<i
 				class="fa fa-video-camera"
 				ng-style="{'color' : $ctrl.getVisibility('view', scenario.name)}"
