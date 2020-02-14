@@ -64,7 +64,7 @@ describe("codeMapPreRenderService", () => {
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 		map.children[1].children = _.slice(map.children[1].children, 0, 2)
 		fileStates = _.cloneDeep(FILE_STATES)
-		fileStates[0].file = NodeDecorator.preDecorateFile(fileStates[0].file)
+		NodeDecorator.preDecorateFile(fileStates[0].file)
 		metricData = _.cloneDeep(METRIC_DATA)
 	}
 
@@ -197,34 +197,10 @@ describe("codeMapPreRenderService", () => {
 	})
 
 	describe("onMetricDataAdded", () => {
-		const originalDecorateMap = NodeDecorator.decorateMap
-		beforeEach(() => {
-			edgeMetricDataService.getMetricValuesForNode = jest.fn((node: d3.HierarchyNode<CodeMapNode>) => {
-				if (node.data.name === "big leaf") {
-					return new Map().set("metric1", { incoming: 1, outgoing: 2 })
-				} else {
-					return new Map()
-				}
-			})
-		})
-
-		it("should call Node Decorator functions if all required data is available", () => {
-			NodeDecorator.decorateMap = jest.fn()
-			NodeDecorator.decorateParentNodesWithSumAttributes = jest.fn()
-
+		it("should decorate and set a new render map", () => {
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
-			expect(NodeDecorator.decorateMap).toHaveBeenCalledWith(map, fileMeta, metricData)
-			expect(NodeDecorator.decorateParentNodesWithSumAttributes).toHaveBeenCalled()
-		})
-
-		it("should retrieve correct edge metrics for leaves", () => {
-			NodeDecorator.decorateMap = originalDecorateMap
-
-			codeMapPreRenderService.onMetricDataAdded(metricData)
-
-			const rootChildren = codeMapPreRenderService["unifiedMap"].children
-			expect(rootChildren.find(x => x.name == "big leaf").edgeAttributes).toEqual({ metric1: { incoming: 1, outgoing: 2 } })
+			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
 	})
 })

@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { DeltaGenerator } from "./deltaGenerator"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "./dataMocks"
 import { CCFile } from "../codeCharta.model"
@@ -8,13 +9,13 @@ describe("deltaGenerator", () => {
 	let fileB: CCFile
 
 	beforeEach(() => {
-		fileA = JSON.parse(JSON.stringify(TEST_DELTA_MAP_A))
-		fileB = JSON.parse(JSON.stringify(TEST_DELTA_MAP_B))
+		fileA = _.cloneDeep(TEST_DELTA_MAP_A)
+		fileB = _.cloneDeep(TEST_DELTA_MAP_B)
 	})
 
 	it("golden test", () => {
-		fileA = NodeDecorator.preDecorateFile(fileA)
-		fileB = NodeDecorator.preDecorateFile(fileB)
+		NodeDecorator.preDecorateFile(fileA)
+		NodeDecorator.preDecorateFile(fileB)
 
 		fileA.map.children.push({
 			name: "onlyA",
@@ -71,8 +72,8 @@ describe("deltaGenerator", () => {
 	})
 
 	it("additionalLeaf from fileB should exist in a after calling getDeltaFile, metrics should be 0", () => {
-		fileA = NodeDecorator.preDecorateFile(fileA)
-		fileB = NodeDecorator.preDecorateFile(fileB)
+		NodeDecorator.preDecorateFile(fileA)
+		NodeDecorator.preDecorateFile(fileB)
 
 		const result = DeltaGenerator.getDeltaFile(fileA, fileB)
 
@@ -82,8 +83,8 @@ describe("deltaGenerator", () => {
 	})
 
 	it("getDeltaFile should result in expected deltaFiles", () => {
-		fileA = NodeDecorator.preDecorateFile(fileA)
-		fileB = NodeDecorator.preDecorateFile(fileB)
+		NodeDecorator.preDecorateFile(fileA)
+		NodeDecorator.preDecorateFile(fileB)
 
 		const result = DeltaGenerator.getDeltaFile(fileA, fileB)
 

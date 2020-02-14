@@ -1,5 +1,5 @@
-import _ from "lodash"
 import angular from "angular"
+const clone = require("rfdc")()
 
 export function removeItemFromArray(array: any[], item: any): any[] {
 	return array.filter(x => {
@@ -10,7 +10,7 @@ export function removeItemFromArray(array: any[], item: any): any[] {
 export function addItemToArray(array: any[], item: any): any[] {
 	if (!arrayContainsItem(array, item)) {
 		const copy = [...array]
-		copy.push(_.cloneDeep(item))
+		copy.push(clone(item))
 		return copy
 	}
 	return array
