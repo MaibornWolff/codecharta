@@ -18,5 +18,8 @@
 			"severity": "warning",
 			"options": ["debug", "info", "log", "time", "timeEnd", "trace"]
 		}
+	},
+	"linterOptions": {
+		"exclude": ["app/codeCharta/codeCharta.api.model.ts"]
 	}
 }

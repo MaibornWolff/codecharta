@@ -1,8 +1,10 @@
 import { FileValidator } from "./util/fileValidator"
-import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem, ExportCCFile, ExportBlacklistType } from "./codeCharta.model"
+import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
+import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
+import { migrate } from "./util/migration/migration"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
@@ -14,9 +16,10 @@ export class CodeChartaService {
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
-				const errors = FileValidator.validate(nameDataPair.content)
+				const migratedFile = migrate(nameDataPair.content)
+				const errors = FileValidator.validate(migratedFile)
 				if (errors.length === 0) {
-					const ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
+					const ccFile = this.getCCFile(nameDataPair.fileName, migratedFile)
 					NodeDecorator.preDecorateFile(ccFile)
 					this.fileStateService.addFile(ccFile)
 				} else {
@@ -61,6 +64,7 @@ export class CodeChartaService {
 		}
 	}
 
+	//TODO: Move this to migration after we found out what version this refers to
 	private potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
 		blacklist.forEach(x => {
 			if (x.type === ExportBlacklistType.hide) {

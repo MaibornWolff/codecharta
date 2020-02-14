@@ -1,23 +1,24 @@
 import {
 	AttributeTypeValue,
+	BlacklistItem,
+	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	Edge,
+	EdgeVisibility,
+	FileMeta,
 	FileSelectionState,
 	FileState,
+	MarkedPackage,
 	MetricData,
 	Node,
-	BlacklistType,
-	EdgeVisibility,
-	State,
-	ExportCCFile,
-	FileMeta
+	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
-import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { APIVersions, ExportCCFile, ExportCCFile_0_1 } from "../codeCharta.api.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -217,7 +218,14 @@ export const VALID_EDGE: Edge = {
 
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
-	apiVersion: "1.1",
+	apiVersion: APIVersions.ONE_POINT_ZERO,
+	nodes: [VALID_NODE]
+}
+
+export const TEST_FILE_CONTENT_0_1: ExportCCFile_0_1 = {
+	fileName: "Sample File",
+	projectName: "Sample Map",
+	apiVersion: APIVersions.ZERO_POINT_ONE,
 	nodes: [VALID_NODE]
 }
 

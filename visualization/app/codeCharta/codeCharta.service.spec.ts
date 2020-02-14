@@ -4,12 +4,13 @@ import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { BlacklistType, CCFile, ExportBlacklistType, ExportCCFile } from "./codeCharta.model"
+import { BlacklistType, CCFile } from "./codeCharta.model"
 import _ from "lodash"
+import { ExportBlacklistType } from "./codeCharta.api.model"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
-	let validFileContent: ExportCCFile
+	let validFileContent: ExportCCFile_1_0
 	let fileStateService: FileStateService
 	const fileName: string = "someFileName"
 
@@ -110,7 +111,7 @@ describe("codeChartaService", () => {
 
 		it("should reject string", done => {
 			codeChartaService
-				.loadFiles([{ fileName: fileName, content: ("string" as any) as ExportCCFile }])
+				.loadFiles([{ fileName: fileName, content: ("string" as any) as ExportCCFile_1_0 }])
 				.then(() => {
 					letTestFail()
 				})
@@ -120,7 +121,7 @@ describe("codeChartaService", () => {
 		})
 
 		it("should reject or catch invalid file", done => {
-			let invalidFileContent: ExportCCFile = validFileContent
+			let invalidFileContent: ExportCCFile_1_0 = validFileContent
 			delete invalidFileContent.projectName
 			codeChartaService
 				.loadFiles([{ fileName: fileName, content: invalidFileContent }])

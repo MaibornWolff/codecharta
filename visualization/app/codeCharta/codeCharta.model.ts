@@ -1,5 +1,6 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
+import { ExportCCFile } from "./codeCharta.api.model"
 
 export interface NameDataPair {
 	fileName: string
@@ -24,16 +25,6 @@ export enum SearchPanelMode {
 	flatten = "flatten",
 	exclude = "exclude",
 	minimized = "minimized"
-}
-
-export interface ExportCCFile {
-	projectName: string
-	apiVersion: string
-	nodes: CodeMapNode[]
-	attributeTypes?: AttributeTypes
-	edges?: Edge[]
-	markedPackages?: MarkedPackage[]
-	blacklist?: ExportBlacklistItem[]
 }
 
 export interface CCFile {
@@ -180,16 +171,6 @@ export interface BlacklistItem {
 
 export enum BlacklistType {
 	flatten = "flatten",
-	exclude = "exclude"
-}
-
-export interface ExportBlacklistItem {
-	path: string
-	type: ExportBlacklistType
-}
-
-export enum ExportBlacklistType {
-	hide = "hide",
 	exclude = "exclude"
 }
 
