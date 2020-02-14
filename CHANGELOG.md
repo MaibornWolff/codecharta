@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- Replaced non standard `[[` in sh scripts #849 
+- Replaced non standard `[[` in sh scripts #849
+- Improved performance for loading a new file #836
 
 ### Chore 👨‍💻 👩‍💻
 
