@@ -33,10 +33,11 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public applyScenario(scenarioName: string) {
-		const scenario = ScenarioHelper.getScenarioSettingsByName(scenarioName)
-		if (this.isScenarioAppliable(scenario.dynamicSettings)) {
-			this.storeService.dispatch(setState(scenario))
-			this.storeService.dispatch(setColorRange(scenario.dynamicSettings.colorRange as ColorRange))
+		const scenarioSettings = ScenarioHelper.getScenarioSettingsByName(scenarioName)
+
+		if (this.isScenarioAppliable(scenarioSettings.dynamicSettings)) {
+			this.storeService.dispatch(setState(scenarioSettings))
+			this.storeService.dispatch(setColorRange(scenarioSettings.dynamicSettings.colorRange as ColorRange))
 		} else {
 			this.dialogService.showErrorDialog("This metric is not appliable, because not all metrics are available for this map.")
 		}
@@ -66,7 +67,6 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
 		switch (icon) {
 			case "view": {
-				// TODO: Still Implement if perspective is saved within the scenario
 				if (!this._viewModel.scenarios.find(scenario => scenario.name === scenarioName).settings.appSettings.camera) {
 					return lightGray
 				}
@@ -106,7 +106,6 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public removeScenario(scenarioName) {
-		//TODO: Delete Scenario
 		ScenarioHelper.deleteScenario(scenarioName)
 	}
 }

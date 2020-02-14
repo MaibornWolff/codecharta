@@ -2,7 +2,6 @@ import "./scenarioDropDown.module"
 import "../codeMap/threeViewer/threeViewer.module"
 import { ScenarioDropDownController } from "./scenarioDropDown.component"
 import { IRootScopeService } from "angular"
-import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
@@ -10,17 +9,18 @@ import { MetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
+import { DEFAULT_SCENARIO, STATE } from "../../util/dataMocks"
+import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 
 describe("ScenarioDropDownController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let dialogService: DialogService
-	let threeOrbitControlsService: ThreeOrbitControlsService
 	let scenarioButtonsController: ScenarioDropDownController
 	let metricData: MetricData[]
 
 	function rebuildController() {
-		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, dialogService, threeOrbitControlsService)
+		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, dialogService)
 	}
 
 	function restartSystem() {
@@ -28,7 +28,7 @@ describe("ScenarioDropDownController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+		dialogService = getService<DialogService>("dialogService")
 
 		metricData = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
@@ -37,18 +37,9 @@ describe("ScenarioDropDownController", () => {
 		]
 	}
 
-	function withMockedThreeOrbitControlsService() {
-		threeOrbitControlsService = scenarioButtonsController["threeOrbitControlsService"] = jest.fn(() => {
-			return {
-				autoFitTo: jest.fn()
-			}
-		})()
-	}
-
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedThreeOrbitControlsService()
 	})
 
 	afterEach(() => {
@@ -71,21 +62,73 @@ describe("ScenarioDropDownController", () => {
 
 			scenarioButtonsController.onMetricDataAdded(metricData)
 
-			expect(ScenarioHelper.getScenarios).toHaveBeenCalledWith(metricData)
 			expect(scenarioButtonsController["_viewModel"].scenarios).toEqual([{ name: "scenario", settings: {} }])
 		})
 	})
 
 	describe("applyScenario", () => {
 		it("should call getScenarioSettingsByName and call store.dispatch with scenarioSettings", () => {
-			const mockScenarioSettings = {}
-			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(mockScenarioSettings)
+			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(STATE)
+			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
 
-			scenarioButtonsController.applyScenario("scenario")
+			scenarioButtonsController.applyScenario("Scenario1")
 
-			expect(storeService.dispatch).toHaveBeenCalledWith(setState({}))
-			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
+			expect(storeService.dispatch).toHaveBeenCalledWith(setState(STATE))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange(STATE.dynamicSettings.colorRange))
+		})
+		it("should not apply the Scenario when isScenarioAppliable returns false", () => {
+			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(STATE)
+			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(false)
+			dialogService.showErrorDialog = jest.fn()
+
+			scenarioButtonsController.applyScenario("Scenario1")
+
+			expect(dialogService.showErrorDialog).toHaveBeenCalled()
+		})
+	})
+
+	describe("getVisibility", () => {
+		beforeEach(() => {
+			scenarioButtonsController["_viewModel"].scenarios = DEFAULT_SCENARIO
+		})
+
+		it("should set the visibility of the camera icon to light gray if the scenario does not contain camera", () => {
+			const result = scenarioButtonsController.getVisibility("view", "Complexity")
+			const lightGray = "#d3d3d3"
+
+			expect(result).toEqual(lightGray)
+		})
+		it("should not set the visibility of the area icon to light gray if the scenario contains areaMetric", () => {
+			const result = scenarioButtonsController.getVisibility("area", "Complexity")
+			const lightGray = "#d3d3d3"
+
+			expect(result).not.toEqual(lightGray)
+		})
+		it("should return an empty String when the icon parameter is unknown", () => {
+			const result = scenarioButtonsController.getVisibility("notAnIcon", "Complexity")
+
+			expect(result).toEqual("")
+		})
+	})
+
+	describe("showAddScenarioSettings", () => {
+		it("should call showAddScenarioSettings", () => {
+			dialogService.showAddScenarioSettings = jest.fn()
+
+			scenarioButtonsController.showAddScenarioSettings()
+
+			expect(dialogService.showAddScenarioSettings).toHaveBeenCalled()
+		})
+	})
+
+	describe("removeScenario", () => {
+		it("should call deleteScenario", () => {
+			ScenarioHelper.deleteScenario = jest.fn()
+
+			scenarioButtonsController.removeScenario("Scenario1")
+
+			expect(ScenarioHelper.deleteScenario).toHaveBeenCalled()
 		})
 	})
 })
