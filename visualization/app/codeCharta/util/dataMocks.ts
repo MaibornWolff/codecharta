@@ -17,6 +17,7 @@ import { Box3, Vector3 } from "three"
 import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { Scenario } from "./scenarioHelper"
+import { AddAttributeContent } from "../ui/dialog/dialog.addScenarioSettings.component"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -868,6 +869,77 @@ export const TEST_NODE_ROOT: Node = {
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }
+
+export const FILE_ATTRIBUTE_CONTENT: AddAttributeContent[] = [
+	{
+		metricName: "CameraPosition",
+		currentMetric: null,
+		metricAttributeValue: new Vector3(0, 300, 1000),
+		isSelected: true,
+		isDisabled: false
+	},
+	{ metricName: "Area", currentMetric: "rloc", metricAttributeValue: 48, isSelected: true, isDisabled: false },
+	{
+		metricName: "Height",
+		currentMetric: "mcc",
+		metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{ metricName: "Color", currentMetric: "mcc", metricAttributeValue: { from: 19, to: 67 }, isSelected: true, isDisabled: false },
+	{
+		metricName: "Edge",
+		currentMetric: "pairingRate",
+		metricAttributeValue: { edgePreview: 5, edgeHeight: 4 },
+		isSelected: true,
+		isDisabled: false
+	}
+]
+
+export const FILE_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED: AddAttributeContent[] = [
+	{
+		metricName: "CameraPosition",
+		currentMetric: null,
+		metricAttributeValue: new Vector3(0, 300, 1000),
+		isSelected: false,
+		isDisabled: false
+	},
+	{ metricName: "Area", currentMetric: "rloc", metricAttributeValue: 48, isSelected: true, isDisabled: false },
+	{
+		metricName: "Height",
+		currentMetric: "mcc",
+		metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{ metricName: "Color", currentMetric: "mcc", metricAttributeValue: { from: 19, to: 67 }, isSelected: true, isDisabled: false },
+	{
+		metricName: "Edge",
+		currentMetric: "pairingRate",
+		metricAttributeValue: { edgePreview: 5, edgeHeight: 4 },
+		isSelected: true,
+		isDisabled: false
+	}
+]
+
+export const FILE_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddAttributeContent[] = [
+	{ metricName: "Area", currentMetric: "rloc", metricAttributeValue: 48, isSelected: true, isDisabled: false },
+	{
+		metricName: "Height",
+		currentMetric: "mcc",
+		metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{ metricName: "Color", currentMetric: "mcc", metricAttributeValue: { from: 19, to: 67 }, isSelected: true, isDisabled: false },
+	{
+		metricName: "Edge",
+		currentMetric: "pairingRate",
+		metricAttributeValue: { edgePreview: 5, edgeHeight: 4 },
+		isSelected: true,
+		isDisabled: false
+	}
+]
 
 export const TEST_NODE_LEAF: Node = {
 	name: "root/big leaf.ts",
