@@ -26,7 +26,7 @@ describe("NodePathPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to Building-Hovered", () => {
+		it("should subscribeToFilesSelection to Building-Hovered", () => {
 			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 
 			rebuildController()
@@ -34,7 +34,7 @@ describe("NodePathPanelController", () => {
 			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
 		})
 
-		it("should subscribe to Building-Unhovered", () => {
+		it("should subscribeToFilesSelection to Building-Unhovered", () => {
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 
 			rebuildController()
@@ -42,7 +42,7 @@ describe("NodePathPanelController", () => {
 			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
 		})
 
-		it("should subscribe to Blacklist-Change", () => {
+		it("should subscribeToFilesSelection to Blacklist-Change", () => {
 			BlacklistService.subscribe = jest.fn()
 
 			rebuildController()

@@ -79,7 +79,7 @@ describe("ThreeOrbitControlsService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to FocusedNodePathService focus", () => {
+		it("should subscribeToFilesSelection to FocusedNodePathService focus", () => {
 			FocusedNodePathService.subscribeToFocusNode = jest.fn()
 
 			rebuildService()
@@ -87,7 +87,7 @@ describe("ThreeOrbitControlsService", () => {
 			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
 		})
 
-		it("should subscribe to FocusedNodePathService unfocus", () => {
+		it("should subscribeToFilesSelection to FocusedNodePathService unfocus", () => {
 			FocusedNodePathService.subscribeToUnfocusNode = jest.fn()
 
 			rebuildService()
@@ -95,12 +95,12 @@ describe("ThreeOrbitControlsService", () => {
 			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
 		})
 
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
 		})
 	})
 
@@ -110,7 +110,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			storeService.dispatch(setResetCameraIfNewFileIsLoaded(true))
 
-			threeOrbitControlsService.onFilesChanged(undefined)
+			threeOrbitControlsService.onFilesSelectionChanged(undefined)
 
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 		})
@@ -120,7 +120,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			storeService.dispatch(setResetCameraIfNewFileIsLoaded(false))
 
-			threeOrbitControlsService.onFilesChanged(undefined)
+			threeOrbitControlsService.onFilesSelectionChanged(undefined)
 
 			expect(threeOrbitControlsService.autoFitTo).not.toHaveBeenCalled()
 		})

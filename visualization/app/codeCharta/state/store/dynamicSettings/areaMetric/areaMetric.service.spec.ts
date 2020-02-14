@@ -30,7 +30,7 @@ describe("AreaMetricService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
+		it("should subscribeToFilesSelection to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()
@@ -38,7 +38,7 @@ describe("AreaMetricService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, areaMetricService)
 		})
 
-		it("should subscribe to MetricService", () => {
+		it("should subscribeToFilesSelection to MetricService", () => {
 			MetricService.subscribe = jest.fn()
 
 			rebuildService()

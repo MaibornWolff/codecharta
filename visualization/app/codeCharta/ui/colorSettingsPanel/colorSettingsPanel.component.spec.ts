@@ -40,15 +40,15 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildController()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
-		it("should subscribe to InvertDeltaColorsService", () => {
+		it("should subscribeToFilesSelection to InvertDeltaColorsService", () => {
 			InvertDeltaColorsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -56,7 +56,7 @@ describe("ColorSettingsPanelController", () => {
 			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
-		it("should subscribe to WhiteColorBuildingsService", () => {
+		it("should subscribeToFilesSelection to WhiteColorBuildingsService", () => {
 			WhiteColorBuildingsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -64,7 +64,7 @@ describe("ColorSettingsPanelController", () => {
 			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
-		it("should subscribe to InvertColorRangeService", () => {
+		it("should subscribeToFilesSelection to InvertColorRangeService", () => {
 			InvertColorRangeService.subscribe = jest.fn()
 
 			rebuildController()
@@ -119,7 +119,7 @@ describe("ColorSettingsPanelController", () => {
 		it("should detect delta mode selection", () => {
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
-			colorSettingsPanelController.onFilesChanged(storeService.getState().files)
+			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeTruthy()
 		})
@@ -127,7 +127,7 @@ describe("ColorSettingsPanelController", () => {
 		it("should detect not delta mode selection", () => {
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 
-			colorSettingsPanelController.onFilesChanged(storeService.getState().files)
+			colorSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(colorSettingsPanelController["_viewModel"].isDeltaState).toBeFalsy()
 		})

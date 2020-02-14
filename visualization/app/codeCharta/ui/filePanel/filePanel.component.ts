@@ -3,7 +3,7 @@ import { FileSelectionState, FileState } from "../../model/codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
-import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 
 interface SelectedFileNames {
@@ -15,7 +15,7 @@ interface SelectedFileNames {
 	partial: string[]
 }
 
-export class FilePanelController implements FilesSubscriber {
+export class FilePanelController implements FilesSelectionSubscriber {
 	private lastRenderState: FileSelectionState
 
 	//TODO: try to use Files instead of FileStates
@@ -50,10 +50,10 @@ export class FilePanelController implements FilesSubscriber {
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this._viewModel.fileStates = files.getFiles()
 		this._viewModel.isSingleState = files.isSingleState()
 		this._viewModel.isPartialState = files.isPartialState()

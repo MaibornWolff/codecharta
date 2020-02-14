@@ -1,45 +1,45 @@
-import { FilesAction, FilesActions, setFiles } from "./files.actions"
+import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles } from "./files.actions"
 import { Files } from "../../../model/files"
 
 export default function files(state: Files = setFiles().payload, action: FilesAction): Files {
 	switch (action.type) {
-		case FilesActions.SET_FILES: {
+		case NewFilesImportedActions.SET_FILES: {
 			state.setFiles(action.payload)
 			return state
 		}
-		case FilesActions.ADD_FILE: {
+		case NewFilesImportedActions.ADD_FILE: {
 			state.addFile(action.payload)
 			return state
 		}
-		case FilesActions.RESET_FILES: {
+		case NewFilesImportedActions.RESET_FILES: {
 			state.reset()
 			return state
 		}
-		case FilesActions.RESET_SELECTION: {
+		case FilesSelectionActions.RESET_SELECTION: {
 			state.resetSelection()
 			return state
 		}
-		case FilesActions.SET_SINGLE: {
+		case FilesSelectionActions.SET_SINGLE: {
 			state.setSingle(action.payload)
 			return state
 		}
-		case FilesActions.SET_SINGLE_BY_NAME: {
+		case FilesSelectionActions.SET_SINGLE_BY_NAME: {
 			state.setSingleByName(action.payload)
 			return state
 		}
-		case FilesActions.SET_DELTA: {
+		case FilesSelectionActions.SET_DELTA: {
 			state.setDelta(action.payload.referenceFile, action.payload.comparisonFile)
 			return state
 		}
-		case FilesActions.SET_DELTA_BY_NAMES: {
+		case FilesSelectionActions.SET_DELTA_BY_NAMES: {
 			state.setDeltaByNames(action.payload.referenceFileName, action.payload.comparisonFileName)
 			return state
 		}
-		case FilesActions.SET_MULTIPLE: {
+		case FilesSelectionActions.SET_MULTIPLE: {
 			state.setMultiple(action.payload)
 			return state
 		}
-		case FilesActions.SET_MULTIPLE_BY_NAMES: {
+		case FilesSelectionActions.SET_MULTIPLE_BY_NAMES: {
 			state.setMultipleByNames(action.payload)
 			return state
 		}

@@ -42,15 +42,15 @@ describe("EdgeMetricDataService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, edgeMetricDataService)
 		})
 
-		it("should subscribe to BlacklistService", () => {
+		it("should subscribeToFilesSelection to BlacklistService", () => {
 			BlacklistService.subscribe = jest.fn()
 
 			rebuildService()
@@ -123,21 +123,21 @@ describe("EdgeMetricDataService", () => {
 		})
 
 		it("should create correct edge Metrics", () => {
-			edgeMetricDataService.onFilesChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged(files)
 
 			expect(edgeMetricDataService.getMetricData().map(x => x.name)).toContain("pairingRate")
 			expect(edgeMetricDataService.getMetricData().map(x => x.name)).toContain("otherMetric")
 		})
 
 		it("should calculate correct maximum value for edge Metrics", () => {
-			edgeMetricDataService.onFilesChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged(files)
 
 			expect(edgeMetricDataService.getMetricData().find(x => x.name === "pairingRate").maxValue).toEqual(2)
 			expect(edgeMetricDataService.getMetricData().find(x => x.name === "otherMetric").maxValue).toEqual(1)
 		})
 
 		it("metrics Map should contain correct entries entries", () => {
-			edgeMetricDataService.onFilesChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged(files)
 
 			const pairingRateMapKeys = edgeMetricDataService["nodeEdgeMetricsMap"].get("pairingRate").keys()
 			expect(pairingRateMapKeys.next().value).toEqual("/root/Parent Leaf/small leaf")
@@ -146,7 +146,7 @@ describe("EdgeMetricDataService", () => {
 		})
 
 		it("metrics Map should be sorted entries", () => {
-			edgeMetricDataService.onFilesChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged(files)
 
 			const pairingRateMap = edgeMetricDataService["nodeEdgeMetricsMap"].get("pairingRate")
 			expect(pairingRateMap.get("/root/Parent Leaf/small leaf")).toEqual({ incoming: 2, outgoing: 0 })
@@ -157,7 +157,7 @@ describe("EdgeMetricDataService", () => {
 
 	describe("getMetricValuesForNode", () => {
 		it("should return Edge Metric counts for node", () => {
-			edgeMetricDataService.onFilesChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged(files)
 			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
 
 			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node)

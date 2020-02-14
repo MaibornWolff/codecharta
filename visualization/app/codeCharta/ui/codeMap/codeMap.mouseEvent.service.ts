@@ -11,7 +11,7 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { IntersectionResult } from "./rendering/codeMapGeometricDescription"
-import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 
 interface Coordinates {
@@ -38,7 +38,7 @@ export enum ClickType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSubscriber, BlacklistSubscriber {
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -61,7 +61,7 @@ export class CodeMapMouseEventService
 	) {
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
@@ -90,7 +90,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.threeSceneService.clearSelection()
 	}
 

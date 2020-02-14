@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { HierarchyNode } from "d3"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
-import { FilesService, FilesSubscriber } from "./store/files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
 import { Files } from "../model/files"
 import { StoreService } from "./store.service"
 
@@ -11,14 +11,14 @@ export interface EdgeMetricDataServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
 }
 
-export class EdgeMetricDataService implements FilesSubscriber, BlacklistSubscriber {
+export class EdgeMetricDataService implements FilesSelectionSubscriber, BlacklistSubscriber {
 	private static EDGE_METRIC_DATA_UPDATED_EVENT = "edge-metric-data-updated"
 
 	private edgeMetricData: MetricData[] = []
 	private nodeEdgeMetricsMap: Map<string, Map<string, EdgeMetricCount>>
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
@@ -26,7 +26,7 @@ export class EdgeMetricDataService implements FilesSubscriber, BlacklistSubscrib
 		this.updateEdgeMetrics()
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.updateEdgeMetrics()
 	}
 

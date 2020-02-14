@@ -34,7 +34,7 @@ describe("AreaSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to DynamicMarginService", () => {
+		it("should subscribeToFilesSelection to DynamicMarginService", () => {
 			DynamicMarginService.subscribe = jest.fn()
 
 			rebuildController()
@@ -42,7 +42,7 @@ describe("AreaSettingsPanelController", () => {
 			expect(DynamicMarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
-		it("should subscribe to MarginService", () => {
+		it("should subscribeToFilesSelection to MarginService", () => {
 			MarginService.subscribe = jest.fn()
 
 			rebuildController()
@@ -50,12 +50,12 @@ describe("AreaSettingsPanelController", () => {
 			expect(MarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildController()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 	})
 
@@ -77,13 +77,13 @@ describe("AreaSettingsPanelController", () => {
 
 	describe("onFilesChanged", () => {
 		it("should set dynamicMargin to true", () => {
-			areaSettingsPanelController.onFilesChanged(undefined)
+			areaSettingsPanelController.onFilesSelectionChanged(undefined)
 
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 
 		it("should update margin and dynamicMargin in store", () => {
-			areaSettingsPanelController.onFilesChanged(undefined)
+			areaSettingsPanelController.onFilesSelectionChanged(undefined)
 
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})

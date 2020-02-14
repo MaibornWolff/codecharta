@@ -6,10 +6,10 @@ import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actio
 import _ from "lodash"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
-import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 
-export class AreaSettingsPanelController implements FilesSubscriber, DynamicMarginSubscriber, MarginSubscriber {
+export class AreaSettingsPanelController implements FilesSelectionSubscriber, DynamicMarginSubscriber, MarginSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedMargin: () => void
 
@@ -25,7 +25,7 @@ export class AreaSettingsPanelController implements FilesSubscriber, DynamicMarg
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		DynamicMarginService.subscribe(this.$rootScope, this)
 		MarginService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 
 		this.applyDebouncedMargin = _.debounce(() => {
 			this.storeService.dispatch(setMargin(this._viewModel.margin))
@@ -40,7 +40,7 @@ export class AreaSettingsPanelController implements FilesSubscriber, DynamicMarg
 		this._viewModel.margin = margin
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this._viewModel.dynamicMargin = true
 		this.applyDynamicMargin()
 	}

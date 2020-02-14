@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FocusedNodePathActions, unfocusNode } from "./focusedNodePath.actions"
-import { FilesService, FilesSubscriber } from "../../files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
 
 export interface FocusNodeSubscriber {
@@ -12,13 +12,13 @@ export interface UnfocusNodeSubscriber {
 	onUnfocusNode()
 }
 
-export class FocusedNodePathService implements StoreSubscriber, FilesSubscriber {
+export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static FOCUS_NODE_EVENT = "focus-node"
 	private static UNFOCUS_NODE_EVENT = "unfocus-node"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -29,7 +29,7 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSubscriber 
 		}
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		if (this.storeService.getState().dynamicSettings.focusedNodePath) {
 			this.reset()
 		}

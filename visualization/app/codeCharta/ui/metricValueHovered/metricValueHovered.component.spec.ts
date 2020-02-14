@@ -53,7 +53,7 @@ describe("MetricValueHoveredController", () => {
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 		})
 
-		it("should subscribe to Metric-Events", () => {
+		it("should subscribeToFilesSelection to Metric-Events", () => {
 			rebuildController()
 
 			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
@@ -61,13 +61,13 @@ describe("MetricValueHoveredController", () => {
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
 		})
 
-		it("should subscribe to Building-Hovered-Event", () => {
+		it("should subscribeToFilesSelection to Building-Hovered-Event", () => {
 			rebuildController()
 
 			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
 		})
 
-		it("should subscribe to Building-Unhovered-Event", () => {
+		it("should subscribeToFilesSelection to Building-Unhovered-Event", () => {
 			rebuildController()
 
 			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, metricValueHoveredController)

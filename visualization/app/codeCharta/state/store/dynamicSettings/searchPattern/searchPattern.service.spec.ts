@@ -31,7 +31,7 @@ describe("SearchPatternService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
+		it("should subscribeToFilesSelection to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()
@@ -39,12 +39,12 @@ describe("SearchPatternService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, searchPatternService)
 		})
 
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, searchPatternService)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, searchPatternService)
 		})
 	})
 
@@ -72,7 +72,7 @@ describe("SearchPatternService", () => {
 		it("should reset and set empty searchPattern", () => {
 			storeService.dispatch(setSearchPattern("some/search.pattern*"))
 
-			searchPatternService.onFilesChanged(new Files())
+			searchPatternService.onFilesSelectionChanged(new Files())
 
 			expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
 		})

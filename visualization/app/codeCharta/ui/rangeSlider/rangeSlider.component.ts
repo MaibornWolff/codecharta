@@ -16,11 +16,16 @@ import {
 	WhiteColorBuildingsService,
 	WhiteColorBuildingsSubscriber
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
-import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 
 export class RangeSliderController
-	implements ColorMetricSubscriber, ColorRangeSubscriber, InvertColorRangeSubscriber, WhiteColorBuildingsSubscriber, FilesSubscriber {
+	implements
+		ColorMetricSubscriber,
+		ColorRangeSubscriber,
+		InvertColorRangeSubscriber,
+		WhiteColorBuildingsSubscriber,
+		FilesSelectionSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
@@ -50,7 +55,7 @@ export class RangeSliderController
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 
 		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
@@ -71,7 +76,7 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}

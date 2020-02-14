@@ -45,7 +45,7 @@ describe("AttributeSideBarController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to Node Selected Events", () => {
+		it("should subscribeToFilesSelection to Node Selected Events", () => {
 			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
 
 			rebuildController()
@@ -53,7 +53,7 @@ describe("AttributeSideBarController", () => {
 			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to AreaMetricService", () => {
+		it("should subscribeToFilesSelection to AreaMetricService", () => {
 			AreaMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -61,7 +61,7 @@ describe("AttributeSideBarController", () => {
 			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to HeightMetricService", () => {
+		it("should subscribeToFilesSelection to HeightMetricService", () => {
 			HeightMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -69,7 +69,7 @@ describe("AttributeSideBarController", () => {
 			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to ColorMetricService", () => {
+		it("should subscribeToFilesSelection to ColorMetricService", () => {
 			ColorMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -77,7 +77,7 @@ describe("AttributeSideBarController", () => {
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to EdgeMetricService", () => {
+		it("should subscribeToFilesSelection to EdgeMetricService", () => {
 			EdgeMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -85,7 +85,7 @@ describe("AttributeSideBarController", () => {
 			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to AttributeSideBarService Events", () => {
+		it("should subscribeToFilesSelection to AttributeSideBarService Events", () => {
 			AttributeSideBarService.subscribe = jest.fn()
 
 			rebuildController()

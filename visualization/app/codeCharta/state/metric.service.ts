@@ -15,7 +15,7 @@ import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
-import { FilesService, FilesSubscriber } from "./store/files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
 import { Files } from "../model/files"
 
 export interface MetricServiceSubscriber {
@@ -27,18 +27,18 @@ interface MaxMetricValuePair {
 	availableInVisibleMaps: boolean
 }
 
-export class MetricService implements FilesSubscriber, BlacklistSubscriber {
+export class MetricService implements FilesSelectionSubscriber, BlacklistSubscriber {
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 
 	//TODO MetricData should contain attributeType
 	private metricData: MetricData[] = []
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.setNewMetricData()
 	}
 

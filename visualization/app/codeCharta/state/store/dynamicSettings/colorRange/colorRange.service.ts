@@ -6,20 +6,20 @@ import { ColorRange } from "../../../../model/codeCharta.model"
 import { getResetColorRange } from "./colorRange.reset"
 import { MetricService } from "../../../metric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
-import { FilesService, FilesSubscriber } from "../../files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)
 }
 
-export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FilesSubscriber {
+export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FilesSelectionSubscriber {
 	private static COLOR_RANGE_CHANGED_EVENT = "color-range-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private metricService: MetricService) {
 		StoreService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -33,7 +33,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		this.reset()
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.reset()
 	}
 

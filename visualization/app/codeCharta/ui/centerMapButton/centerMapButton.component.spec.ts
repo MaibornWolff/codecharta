@@ -34,7 +34,7 @@ describe("CenterMapButtonController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to ThreeOrbitControlsService", () => {
+		it("should subscribeToFilesSelection to ThreeOrbitControlsService", () => {
 			ThreeOrbitControlsService.subscribe = jest.fn()
 
 			rebuildController()

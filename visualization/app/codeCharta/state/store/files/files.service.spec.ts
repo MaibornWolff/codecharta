@@ -1,8 +1,8 @@
 import "../../state.module"
 import { IRootScopeService } from "angular"
-import { FilesAction, FilesActions } from "./files.actions"
+import { addFile, FilesAction, FilesSelectionActions, NewFilesImportedActions } from "./files.actions"
 import { FilesService } from "./files.service"
-import { withMockedEventMethods } from "../../../util/dataMocks"
+import { TEST_DELTA_MAP_A, withMockedEventMethods } from "../../../util/dataMocks"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../store.service"
 import { Files } from "../../../model/files"
@@ -30,7 +30,7 @@ describe("FilesService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
+		it("should subscribeToFilesSelection to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()
@@ -40,17 +40,16 @@ describe("FilesService", () => {
 	})
 
 	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new files value", () => {
-			const files = new Files()
+		it("should notify all subscribers that the selection changed", () => {
 			const action: FilesAction = {
-				type: FilesActions.SET_FILES,
-				payload: files
+				type: FilesSelectionActions.SET_SINGLE,
+				payload: TEST_DELTA_MAP_A
 			}
 			storeService["store"].dispatch(action)
 
-			filesService.onStoreChanged(FilesActions.SET_FILES)
+			filesService.onStoreChanged(FilesSelectionActions.SET_SINGLE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("files-changed", { files })
+			expect($rootScope.$broadcast).toBeCalledWith("files-selection-changed", { files: storeService.getState().files })
 		})
 
 		it("should not notify anything on non-files-events", () => {

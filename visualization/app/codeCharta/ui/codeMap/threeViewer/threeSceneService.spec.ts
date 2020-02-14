@@ -43,7 +43,7 @@ describe("ThreeSceneService", () => {
 	})
 
 	describe("constructor", () => {
-		it("should subscribe renderMap", () => {
+		it("should subscribeToFilesSelection renderMap", () => {
 			CodeMapPreRenderService.subscribe = jest.fn()
 
 			rebuildService()

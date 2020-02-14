@@ -30,7 +30,7 @@ describe("EdgeMetricService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
+		it("should subscribeToFilesSelection to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()
@@ -38,7 +38,7 @@ describe("EdgeMetricService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, edgeMetricService)
 		})
 
-		it("should subscribe to EdgeMetricDataService", () => {
+		it("should subscribeToFilesSelection to EdgeMetricDataService", () => {
 			EdgeMetricDataService.subscribe = jest.fn()
 
 			rebuildService()

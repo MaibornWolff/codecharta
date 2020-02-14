@@ -4,19 +4,19 @@ import { AttributeTypesActions, setAttributeTypes } from "./attributeTypes.actio
 import _ from "lodash"
 import { getMergedAttributeTypes } from "./attributeTypes.merger"
 import { Files } from "../../../../model/files"
-import { FilesService, FilesSubscriber } from "../../files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { AttributeTypes } from "../../../../model/codeCharta.model"
 
 export interface AttributeTypesSubscriber {
 	onAttributeTypesChanged(attributeTypes: AttributeTypes)
 }
 
-export class AttributeTypesService implements StoreSubscriber, FilesSubscriber {
+export class AttributeTypesService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static ATTRIBUTE_TYPES_CHANGED_EVENT = "attribute-types-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -25,7 +25,7 @@ export class AttributeTypesService implements StoreSubscriber, FilesSubscriber {
 		}
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.merge(files)
 	}
 

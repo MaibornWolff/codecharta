@@ -35,7 +35,7 @@ describe("SearchBarController", () => {
 	}
 
 	describe("constructor", () => {
-		it("subscribe to blacklist", () => {
+		it("subscribeToFilesSelection to blacklist", () => {
 			BlacklistService.subscribe = jest.fn()
 
 			rebuildController()
@@ -43,7 +43,7 @@ describe("SearchBarController", () => {
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchBarController)
 		})
 
-		it("subscribe to searchPattern", () => {
+		it("subscribeToFilesSelection to searchPattern", () => {
 			SearchPatternService.subscribe = jest.fn()
 
 			rebuildController()

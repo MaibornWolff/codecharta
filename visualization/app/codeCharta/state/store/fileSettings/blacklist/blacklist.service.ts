@@ -4,19 +4,19 @@ import { BlacklistItem } from "../../../../model/codeCharta.model"
 import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import _ from "lodash"
 import { getMergedBlacklist } from "./blacklist.merger"
-import { FilesService, FilesSubscriber } from "../../files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
 
 export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
 }
 
-export class BlacklistService implements StoreSubscriber, FilesSubscriber {
+export class BlacklistService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType) {
@@ -25,7 +25,7 @@ export class BlacklistService implements StoreSubscriber, FilesSubscriber {
 		}
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.merge(files)
 	}
 

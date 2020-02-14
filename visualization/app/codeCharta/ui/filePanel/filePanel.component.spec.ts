@@ -36,17 +36,17 @@ describe("filePanelController", () => {
 		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
 	}
 
-	it("should subscribe to FilesService on construction", () => {
-		FilesService.subscribe = jest.fn()
+	it("should subscribeToFilesSelection to FilesService on construction", () => {
+		FilesService.subscribeToFilesSelection = jest.fn()
 
 		buildController()
 
-		expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
+		expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, filePanelController)
 	})
 
 	describe("onFilesChanged", () => {
 		it("should update viewModel with new fileStates", () => {
-			filePanelController.onFilesChanged(storeService.getState().files)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].fileStates).toEqual(storeService.getState().files.getFiles())
 		})
@@ -54,7 +54,7 @@ describe("filePanelController", () => {
 		it("should set the viewModel and lastRenderState correctly", () => {
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
-			filePanelController.onFilesChanged(storeService.getState().files)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].isSingleState).toBeFalsy()
 			expect(filePanelController["_viewModel"].isPartialState).toBeFalsy()
@@ -65,7 +65,7 @@ describe("filePanelController", () => {
 		it("should update selected filenames in viewModel correctly if single mode is active", () => {
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 
-			filePanelController.onFilesChanged(storeService.getState().files)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Single)
 			expect(filePanelController["_viewModel"].selectedFileNames.single).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
@@ -74,7 +74,7 @@ describe("filePanelController", () => {
 		it("should update selected filenames in viewModel correctly if partial mode is active", () => {
 			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 
-			filePanelController.onFilesChanged(storeService.getState().files)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Partial)
 			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([
@@ -86,7 +86,7 @@ describe("filePanelController", () => {
 		it("should update selected filenames in viewModel correctly if delta mode is active with two files", () => {
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
-			filePanelController.onFilesChanged(storeService.getState().files)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
@@ -98,7 +98,7 @@ describe("filePanelController", () => {
 			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A))
 
-			filePanelController.onFilesChanged(storeService.getState().files)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
@@ -108,7 +108,7 @@ describe("filePanelController", () => {
 		it("should not set anything if no mode is active", () => {
 			storeService.dispatch(resetSelection())
 
-			filePanelController.onFilesChanged(storeService.getState().files)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].renderState).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toBeNull()
@@ -118,7 +118,7 @@ describe("filePanelController", () => {
 		})
 
 		it("should set the pictogram colors in view model", () => {
-			filePanelController.onFilesChanged(storeService.getState().files)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
 			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(storeService.getState().appSettings.mapColors.negativeDelta)

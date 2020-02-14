@@ -36,7 +36,7 @@ describe("HeightSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to AmountOfTopLabelsService", () => {
+		it("should subscribeToFilesSelection to AmountOfTopLabelsService", () => {
 			AmountOfTopLabelsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -44,7 +44,7 @@ describe("HeightSettingsPanelController", () => {
 			expect(AmountOfTopLabelsService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribe to ScalingService", () => {
+		it("should subscribeToFilesSelection to ScalingService", () => {
 			ScalingService.subscribe = jest.fn()
 
 			rebuildController()
@@ -52,7 +52,7 @@ describe("HeightSettingsPanelController", () => {
 			expect(ScalingService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribe to InvertHeightService", () => {
+		it("should subscribeToFilesSelection to InvertHeightService", () => {
 			InvertHeightService.subscribe = jest.fn()
 
 			rebuildController()
@@ -60,12 +60,12 @@ describe("HeightSettingsPanelController", () => {
 			expect(InvertHeightService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildController()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 	})
 
@@ -98,7 +98,7 @@ describe("HeightSettingsPanelController", () => {
 			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A))
 
-			heightSettingsPanelController.onFilesChanged(storeService.getState().files)
+			heightSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(heightSettingsPanelController["_viewModel"].isDeltaState).toBe(true)
 		})

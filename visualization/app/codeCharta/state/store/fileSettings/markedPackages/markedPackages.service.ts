@@ -4,19 +4,19 @@ import { MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actio
 import _ from "lodash"
 import { MarkedPackage } from "../../../../model/codeCharta.model"
 import { getMergedMarkedPackages } from "./markedPackages.merger"
-import { FilesService, FilesSubscriber } from "../../files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
 
 export interface MarkedPackagesSubscriber {
 	onMarkedPackagesChanged(markedPackages: MarkedPackage[])
 }
 
-export class MarkedPackagesService implements StoreSubscriber, FilesSubscriber {
+export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static MARKED_PACKAGES_CHANGED_EVENT = "marked-packages-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -25,7 +25,7 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSubscriber {
 		}
 	}
 
-	public onFilesChanged(fileStates: Files) {
+	public onFilesSelectionChanged(fileStates: Files) {
 		this.merge(fileStates)
 	}
 

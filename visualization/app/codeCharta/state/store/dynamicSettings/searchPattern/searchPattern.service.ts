@@ -2,19 +2,19 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SearchPatternActions, setSearchPattern } from "./searchPattern.actions"
 import _ from "lodash"
-import { FilesService, FilesSubscriber } from "../../files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
 
 export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)
 }
 
-export class SearchPatternService implements StoreSubscriber, FilesSubscriber {
+export class SearchPatternService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -23,7 +23,7 @@ export class SearchPatternService implements StoreSubscriber, FilesSubscriber {
 		}
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.storeService.dispatch(setSearchPattern())
 	}
 

@@ -17,11 +17,11 @@ import {
 	InvertColorRangeService,
 	InvertColorRangeSubscriber
 } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
-import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 
 export class ColorSettingsPanelController
-	implements FilesSubscriber, InvertDeltaColorsSubscriber, WhiteColorBuildingsSubscriber, InvertColorRangeSubscriber {
+	implements FilesSelectionSubscriber, InvertDeltaColorsSubscriber, WhiteColorBuildingsSubscriber, InvertColorRangeSubscriber {
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean
@@ -36,7 +36,7 @@ export class ColorSettingsPanelController
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
@@ -54,7 +54,7 @@ export class ColorSettingsPanelController
 		this._viewModel.whiteColorBuildings = whiteColorBuildings
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this._viewModel.isDeltaState = files.isDeltaState()
 	}
 

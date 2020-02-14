@@ -39,7 +39,7 @@ describe("ColorRangeService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
+		it("should subscribeToFilesSelection to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()
@@ -47,12 +47,12 @@ describe("ColorRangeService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, colorRangeService)
 		})
 
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, colorRangeService)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, colorRangeService)
 		})
 	})
 
@@ -80,7 +80,7 @@ describe("ColorRangeService", () => {
 		it("should reset the color range", () => {
 			withMockedMetricService()
 
-			colorRangeService.onFilesChanged(undefined)
+			colorRangeService.onFilesSelectionChanged(undefined)
 
 			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})

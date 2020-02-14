@@ -17,7 +17,7 @@ export class CodeChartaService {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
 				const errors = FileValidator.validate(nameDataPair.content)
 				if (errors.length === 0) {
-					let ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
+					const ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
 					NodeDecorator.preDecorateFile(ccFile)
 					this.storeService.dispatch(addFile(ccFile))
 				} else {

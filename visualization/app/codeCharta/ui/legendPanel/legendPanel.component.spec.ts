@@ -35,7 +35,7 @@ describe("LegendPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to colorRange", () => {
+		it("should subscribeToFilesSelection to colorRange", () => {
 			ColorRangeService.subscribe = jest.fn()
 
 			rebuildController()
@@ -43,7 +43,7 @@ describe("LegendPanelController", () => {
 			expect(ColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
 		})
 
-		it("should subscribe to invertColorRange", () => {
+		it("should subscribeToFilesSelection to invertColorRange", () => {
 			InvertColorRangeService.subscribe = jest.fn()
 
 			rebuildController()
@@ -51,7 +51,7 @@ describe("LegendPanelController", () => {
 			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
 		})
 
-		it("should subscribe to attributeSideBar", () => {
+		it("should subscribeToFilesSelection to attributeSideBar", () => {
 			AttributeSideBarService.subscribe = jest.fn()
 
 			rebuildController()
@@ -59,7 +59,7 @@ describe("LegendPanelController", () => {
 			expect(AttributeSideBarService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
 		})
 
-		it("should subscribe to markedPackages", () => {
+		it("should subscribeToFilesSelection to markedPackages", () => {
 			MarkedPackagesService.subscribe = jest.fn()
 
 			rebuildController()
@@ -67,7 +67,7 @@ describe("LegendPanelController", () => {
 			expect(MarkedPackagesService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
 		})
 
-		it("should subscribe to whiteColorBuildings", () => {
+		it("should subscribeToFilesSelection to whiteColorBuildings", () => {
 			WhiteColorBuildingsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -75,7 +75,7 @@ describe("LegendPanelController", () => {
 			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
 		})
 
-		it("should subscribe to invertDeltaColors", () => {
+		it("should subscribeToFilesSelection to invertDeltaColors", () => {
 			InvertDeltaColorsService.subscribe = jest.fn()
 
 			rebuildController()

@@ -55,15 +55,15 @@ describe("MetricService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, metricService)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, metricService)
 		})
 
-		it("should subscribe to BlacklistService", () => {
+		it("should subscribeToFilesSelection to BlacklistService", () => {
 			BlacklistService.subscribe = jest.fn()
 
 			rebuildService()
@@ -78,19 +78,19 @@ describe("MetricService", () => {
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onFilesChanged(undefined)
+			metricService.onFilesSelectionChanged(undefined)
 
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
 		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onFilesChanged(undefined)
+			metricService.onFilesSelectionChanged(undefined)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
-			metricService.onFilesChanged(undefined)
+			metricService.onFilesSelectionChanged(undefined)
 
 			expect(metricService.getMetricData().filter(x => x.name === "unary").length).toBeGreaterThan(0)
 		})

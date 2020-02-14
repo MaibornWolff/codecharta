@@ -30,7 +30,7 @@ describe("FocusedNodePathService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
+		it("should subscribeToFilesSelection to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()
@@ -38,12 +38,12 @@ describe("FocusedNodePathService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, focusedNodePathService)
 		})
 
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, focusedNodePathService)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, focusedNodePathService)
 		})
 	})
 
@@ -83,7 +83,7 @@ describe("FocusedNodePathService", () => {
 		it("should reset and unfocus node", () => {
 			storeService.dispatch(focusNode("some/path"))
 
-			focusedNodePathService.onFilesChanged(undefined)
+			focusedNodePathService.onFilesSelectionChanged(undefined)
 
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
 		})

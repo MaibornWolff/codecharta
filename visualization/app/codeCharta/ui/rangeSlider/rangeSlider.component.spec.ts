@@ -66,7 +66,7 @@ describe("RangeSliderController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to ColorMetricService", () => {
+		it("should subscribeToFilesSelection to ColorMetricService", () => {
 			ColorMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -74,7 +74,7 @@ describe("RangeSliderController", () => {
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribe to ColorRangeService", () => {
+		it("should subscribeToFilesSelection to ColorRangeService", () => {
 			ColorRangeService.subscribe = jest.fn()
 
 			rebuildController()
@@ -82,7 +82,7 @@ describe("RangeSliderController", () => {
 			expect(ColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribe to InvertColorRangeService", () => {
+		it("should subscribeToFilesSelection to InvertColorRangeService", () => {
 			InvertColorRangeService.subscribe = jest.fn()
 
 			rebuildController()
@@ -90,7 +90,7 @@ describe("RangeSliderController", () => {
 			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribe to WhiteColorBuildingsService", () => {
+		it("should subscribeToFilesSelection to WhiteColorBuildingsService", () => {
 			WhiteColorBuildingsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -98,12 +98,12 @@ describe("RangeSliderController", () => {
 			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribe to FilesService", () => {
-			FilesService.subscribe = jest.fn()
+		it("should subscribeToFilesSelection to FilesService", () => {
+			FilesService.subscribeToFilesSelection = jest.fn()
 
 			rebuildController()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
+			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 	})
 
@@ -263,7 +263,7 @@ describe("RangeSliderController", () => {
 		it("should set maxMetricValue", () => {
 			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
-			rangeSliderController.onFilesChanged(storeService.getState().files)
+			rangeSliderController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
@@ -271,7 +271,7 @@ describe("RangeSliderController", () => {
 		it("should set sliderOptions.disabled", () => {
 			rangeSliderController["_viewModel"].sliderOptions.disabled = undefined
 
-			rangeSliderController.onFilesChanged(storeService.getState().files)
+			rangeSliderController.onFilesSelectionChanged(storeService.getState().files)
 
 			setTimeout(() => {
 				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)

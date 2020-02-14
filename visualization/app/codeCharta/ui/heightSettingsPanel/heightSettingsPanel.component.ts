@@ -12,11 +12,11 @@ import {
 } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/appSettings/invertHeight/invertHeight.service"
-import { FilesService, FilesSubscriber } from "../../state/store/files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 
 export class HeightSettingsPanelController
-	implements FilesSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
+	implements FilesSelectionSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedTopLabels: () => void
 	private readonly applyDebouncedScaling: (newScaling: Vector3) => void
@@ -38,7 +38,7 @@ export class HeightSettingsPanelController
 		AmountOfTopLabelsService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		InvertHeightService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 
 		this.applyDebouncedTopLabels = _.debounce(() => {
 			this.storeService.dispatch(setAmountOfTopLabels(this._viewModel.amountOfTopLabels))
@@ -61,7 +61,7 @@ export class HeightSettingsPanelController
 		this._viewModel.scalingY = scaling.y
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this._viewModel.isDeltaState = files.isDeltaState()
 	}
 

@@ -4,19 +4,19 @@ import { EdgesActions, setEdges } from "./edges.actions"
 import _ from "lodash"
 import { Edge } from "../../../../model/codeCharta.model"
 import { getMergedEdges } from "./edges.merger"
-import { FilesService, FilesSubscriber } from "../../files/files.service"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
 
 export interface EdgesSubscriber {
 	onEdgesChanged(edges: Edge[])
 }
 
-export class EdgesService implements StoreSubscriber, FilesSubscriber {
+export class EdgesService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static EDGES_CHANGED_EVENT = "edges-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FilesService.subscribe(this.$rootScope, this)
+		FilesService.subscribeToFilesSelection(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -25,7 +25,7 @@ export class EdgesService implements StoreSubscriber, FilesSubscriber {
 		}
 	}
 
-	public onFilesChanged(files: Files) {
+	public onFilesSelectionChanged(files: Files) {
 		this.merge(files)
 	}
 
