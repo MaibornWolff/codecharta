@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Replaced non standard `[[` in sh scripts #849
+- Loading Gif not displayed when preparing to render a new map #857
+- Improved performance for loading a new file #836
 
 ### Chore 👨‍💻 👩‍💻
 
