@@ -1,10 +1,10 @@
 import angular from "angular"
 import * as d3 from "d3"
-import _ from "lodash"
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, ExportCCFile, FileMeta, AttributeTypes, Edge } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { stringify } from "querystring"
+const clone = require("rfdc")()
 
 export class FileDownloader {
 	public static downloadCurrentMap(
@@ -66,7 +66,7 @@ export class FileDownloader {
 	}
 
 	private static undecorateMap(map: CodeMapNode): CodeMapNode {
-		let copy: CodeMapNode = _.cloneDeep(map)
+		let copy: CodeMapNode = clone(map)
 		d3.hierarchy(copy).each(node => {
 			delete node.data.visible
 			delete node.data.edgeAttributes
@@ -81,7 +81,7 @@ export class FileDownloader {
 	}
 
 	private static undecorateEdges(edges: Edge[]): Edge[] {
-		const copy: Edge[] = _.cloneDeep(edges)
+		const copy: Edge[] = clone(edges)
 		for (let edge of copy) {
 			delete edge.visible
 		}
