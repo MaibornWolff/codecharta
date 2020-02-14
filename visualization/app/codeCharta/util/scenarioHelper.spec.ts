@@ -92,35 +92,35 @@ describe("scenarioHelper", () => {
 	describe("createNewScenario", () => {
 		const fileAttributeContent = [
 			{
-				metricName: ScenarioCheckboxNames.CAMERAPOSITION,
+				metricName: ScenarioCheckboxNames.CAMERA_POSITION,
 				currentMetric: null,
 				metricAttributeValue: new Vector3(0, 300, 1000),
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricName: ScenarioCheckboxNames.AREAMETRIC,
+				metricName: ScenarioCheckboxNames.AREA_METRIC,
 				currentMetric: "rloc",
 				metricAttributeValue: 48,
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricName: ScenarioCheckboxNames.COLORMETRIC,
+				metricName: ScenarioCheckboxNames.COLOR_METRIC,
 				currentMetric: "mcc",
 				metricAttributeValue: { from: 19, to: 67 },
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricName: ScenarioCheckboxNames.HEIGHTMETRIC,
+				metricName: ScenarioCheckboxNames.HEIGHT_METRIC,
 				currentMetric: "mcc",
 				metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricName: ScenarioCheckboxNames.EDGEMETRIC,
+				metricName: ScenarioCheckboxNames.EDGE_METRIC,
 				currentMetric: "pairingRate",
 				metricAttributeValue: { edgePreview: 5, edgeHeight: 4 },
 				isSelected: true,
@@ -138,7 +138,7 @@ describe("scenarioHelper", () => {
 		it("should create a Scenario only with height attributes", () => {
 			const fileAttributeConentWithOnlyHeight = [
 				{
-					metricName: ScenarioCheckboxNames.HEIGHTMETRIC,
+					metricName: ScenarioCheckboxNames.HEIGHT_METRIC,
 					currentMetric: "mcc",
 					metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 					isSelected: true,
@@ -162,11 +162,10 @@ describe("scenarioHelper", () => {
 	})
 
 	describe("getNumberOfScenarios", () => {
-		it("should return the length 4 as there are 4 elements in the scnearioList ", () => {
+		it("should return the length 4 as there are 4 elements in the scenarioList ", () => {
 			const result = ScenarioHelper.getNumberOfScenarios()
-			const expected = 4
 
-			expect(result).toEqual(expected)
+			expect(result).toEqual(4)
 		})
 	})
 	describe("deleteScenario", () => {

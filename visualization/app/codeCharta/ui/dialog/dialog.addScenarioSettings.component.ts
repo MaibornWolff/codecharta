@@ -13,11 +13,11 @@ export interface AddAttributeContent {
 }
 
 export enum ScenarioCheckboxNames {
-	CAMERAPOSITION = "CameraPosition",
-	EDGEMETRIC = "Edge",
-	AREAMETRIC = "Area",
-	HEIGHTMETRIC = "Height",
-	COLORMETRIC = "Color"
+	CAMERA_POSITION = "CameraPosition",
+	EDGE_METRIC = "Edge",
+	AREA_METRIC = "Area",
+	HEIGHT_METRIC = "Height",
+	COLOR_METRIC = "Color"
 }
 
 export class DialogAddScenarioSettingsComponent {
@@ -52,20 +52,19 @@ export class DialogAddScenarioSettingsComponent {
 
 	private initDialogFields() {
 		this.setFileContentList()
-		this.setFileName()
 	}
 
 	private setFileContentList() {
 		const dynamicSettings: DynamicSettings = this.storeService.getState().dynamicSettings
 		const appSettings: AppSettings = this.storeService.getState().appSettings
-		this.pushFileContent(ScenarioCheckboxNames.CAMERAPOSITION, null, appSettings.camera)
-		this.pushFileContent(ScenarioCheckboxNames.AREAMETRIC, dynamicSettings.areaMetric, dynamicSettings.margin)
-		this.pushFileContent(ScenarioCheckboxNames.HEIGHTMETRIC, dynamicSettings.heightMetric, {
+		this.pushFileContent(ScenarioCheckboxNames.CAMERA_POSITION, null, appSettings.camera)
+		this.pushFileContent(ScenarioCheckboxNames.AREA_METRIC, dynamicSettings.areaMetric, dynamicSettings.margin)
+		this.pushFileContent(ScenarioCheckboxNames.HEIGHT_METRIC, dynamicSettings.heightMetric, {
 			heightSlider: appSettings.scaling,
 			labelSlider: appSettings.amountOfTopLabels
 		})
-		this.pushFileContent(ScenarioCheckboxNames.COLORMETRIC, dynamicSettings.colorMetric, dynamicSettings.colorRange)
-		this.pushFileContent(ScenarioCheckboxNames.EDGEMETRIC, dynamicSettings.edgeMetric, {
+		this.pushFileContent(ScenarioCheckboxNames.COLOR_METRIC, dynamicSettings.colorMetric, dynamicSettings.colorRange)
+		this.pushFileContent(ScenarioCheckboxNames.EDGE_METRIC, dynamicSettings.edgeMetric, {
 			edgePreview: appSettings.amountOfEdgePreviews,
 			edgeHeight: appSettings.edgeHeight
 		})
@@ -79,10 +78,6 @@ export class DialogAddScenarioSettingsComponent {
 			isSelected: true,
 			isDisabled: name === "Edge" && this.storeService.getState().fileSettings.edges.length === 0
 		})
-	}
-
-	private setFileName() {
-		this._viewModel.scenarioName = "ScenarioDefault" + ScenarioHelper.getNumberOfScenarios()
 	}
 }
 

@@ -25,9 +25,9 @@ export class ScenarioHelper {
 	}
 
 	private static loadScenarios(): Scenario[] {
-		const defaultScenarios: Scenario[] = JSON.parse(localStorage.getItem("scenarios"))
-		if (defaultScenarios) {
-			return defaultScenarios
+		const localStorageScenarios: Scenario[] = JSON.parse(localStorage.getItem("scenarios"))
+		if (localStorageScenarios) {
+			return localStorageScenarios
 		} else {
 			this.setScenariosToLocalStorage(this.getPreLoadScenarios())
 			return this.getPreLoadScenarios()
@@ -59,27 +59,27 @@ export class ScenarioHelper {
 
 		scenarioAttributes.forEach(attribute => {
 			switch (attribute.metricName) {
-				case ScenarioCheckboxNames.CAMERAPOSITION: {
+				case ScenarioCheckboxNames.CAMERA_POSITION: {
 					partialAppSettings.camera = attribute.metricAttributeValue
 					break
 				}
-				case ScenarioCheckboxNames.AREAMETRIC: {
+				case ScenarioCheckboxNames.AREA_METRIC: {
 					partialDynamicSettings.areaMetric = attribute.currentMetric
 					partialDynamicSettings.margin = attribute.metricAttributeValue
 					break
 				}
-				case ScenarioCheckboxNames.HEIGHTMETRIC: {
+				case ScenarioCheckboxNames.HEIGHT_METRIC: {
 					partialDynamicSettings.heightMetric = attribute.currentMetric
 					partialAppSettings.scaling = attribute.metricAttributeValue["heightSlider"]
 					partialAppSettings.amountOfTopLabels = attribute.metricAttributeValue["labelSlider"]
 					break
 				}
-				case ScenarioCheckboxNames.COLORMETRIC: {
+				case ScenarioCheckboxNames.COLOR_METRIC: {
 					partialDynamicSettings.colorMetric = attribute.currentMetric
 					partialDynamicSettings.colorRange = attribute.metricAttributeValue
 					break
 				}
-				case ScenarioCheckboxNames.EDGEMETRIC: {
+				case ScenarioCheckboxNames.EDGE_METRIC: {
 					partialDynamicSettings.edgeMetric = attribute.currentMetric
 					partialAppSettings.amountOfEdgePreviews = attribute.metricAttributeValue["edgePreview"]
 					partialAppSettings.edgeHeight = attribute.metricAttributeValue["edgeHeight"]
