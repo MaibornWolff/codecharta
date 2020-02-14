@@ -4,7 +4,7 @@ import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType } from "../codeCharta.model"
 import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
-import { DEFAULT_STATE, STATE } from "../util/dataMocks"
+import { DEFAULT_STATE, STATE, withMockedEventMethods } from "../util/dataMocks"
 import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
@@ -19,6 +19,7 @@ describe("StoreService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -47,8 +48,6 @@ describe("StoreService", () => {
 		})
 
 		it("should notify store change and update the store", () => {
-			$rootScope.$broadcast = jest.fn()
-
 			const item: BlacklistItem = { type: BlacklistType.exclude, path: "foo/bar" }
 			const action: BlacklistAction = { type: BlacklistActions.ADD_BLACKLIST_ITEM, payload: item }
 
