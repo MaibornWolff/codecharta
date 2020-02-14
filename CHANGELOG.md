@@ -15,7 +15,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Chore 👨‍💻 👩‍💻
+
+## [1.42.2] - 2020-02-14
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
 - Replaced non standard `[[` in sh scripts #849
+- Improved performance for loading a new file #836
 
 ### Chore 👨‍💻 👩‍💻
 
