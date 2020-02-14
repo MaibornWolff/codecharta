@@ -36,7 +36,7 @@ export class ColorSettingsPanelController
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)

@@ -55,15 +55,15 @@ describe("MetricService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to FilesService", () => {
-			FilesService.subscribeToFilesSelection = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, metricService)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, metricService)
 		})
 
-		it("should subscribeToFilesSelection to BlacklistService", () => {
+		it("should subscribe to BlacklistService", () => {
 			BlacklistService.subscribe = jest.fn()
 
 			rebuildService()

@@ -16,7 +16,7 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSub
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {

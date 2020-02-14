@@ -79,7 +79,7 @@ describe("ThreeOrbitControlsService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to FocusedNodePathService focus", () => {
+		it("should subscribe to FocusedNodePathService focus", () => {
 			FocusedNodePathService.subscribeToFocusNode = jest.fn()
 
 			rebuildService()
@@ -87,7 +87,7 @@ describe("ThreeOrbitControlsService", () => {
 			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
 		})
 
-		it("should subscribeToFilesSelection to FocusedNodePathService unfocus", () => {
+		it("should subscribe to FocusedNodePathService unfocus", () => {
 			FocusedNodePathService.subscribeToUnfocusNode = jest.fn()
 
 			rebuildService()
@@ -95,12 +95,12 @@ describe("ThreeOrbitControlsService", () => {
 			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
 		})
 
-		it("should subscribeToFilesSelection to FilesService", () => {
-			FilesService.subscribeToFilesSelection = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
 		})
 	})
 

@@ -63,7 +63,7 @@ describe("ThreeCameraService", () => {
 			expect(threeCameraService.setPosition).toHaveBeenCalled()
 		})
 
-		it("should subscribeToFilesSelection to ThreeOrbitControlsService", () => {
+		it("should subscribe to ThreeOrbitControlsService", () => {
 			ThreeOrbitControlsService.subscribe = jest.fn()
 			storeService.dispatch(setCamera(new Vector3(1, 2, 3)))
 

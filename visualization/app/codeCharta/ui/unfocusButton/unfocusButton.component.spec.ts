@@ -28,7 +28,7 @@ describe("UnfocusButtonController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to FocusedNodePathService focus", () => {
+		it("should subscribe to FocusedNodePathService focus", () => {
 			FocusedNodePathService.subscribeToFocusNode = jest.fn()
 
 			rebuildController()

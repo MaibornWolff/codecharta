@@ -45,7 +45,7 @@ describe("EdgeChooserController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to EdgeMetricDataService", () => {
+		it("should subscribe to EdgeMetricDataService", () => {
 			EdgeMetricDataService.subscribe = jest.fn()
 
 			rebuildController()
@@ -53,7 +53,7 @@ describe("EdgeChooserController", () => {
 			expect(EdgeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 
-		it("should subscribeToFilesSelection to hovered buildings", () => {
+		it("should subscribe to hovered buildings", () => {
 			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 
 			rebuildController()
@@ -61,7 +61,7 @@ describe("EdgeChooserController", () => {
 			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 
-		it("should subscribeToFilesSelection to unhovered buildings", () => {
+		it("should subscribe to unhovered buildings", () => {
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 
 			rebuildController()
@@ -69,7 +69,7 @@ describe("EdgeChooserController", () => {
 			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 
-		it("should subscribeToFilesSelection to EdgeMetricService", () => {
+		it("should subscribe to EdgeMetricService", () => {
 			EdgeMetricService.subscribe = jest.fn()
 
 			rebuildController()

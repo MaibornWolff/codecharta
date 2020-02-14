@@ -61,7 +61,7 @@ export class CodeMapMouseEventService
 	) {
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 

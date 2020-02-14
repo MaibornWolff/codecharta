@@ -17,7 +17,7 @@ export class FilesService implements StoreSubscriber {
 
 	public onStoreChanged(actionType: string) {
 		if (_.values(FilesSelectionActions).includes(actionType)) {
-			this.notifyFilesSelectionChanged(this.select())
+			this.notify(this.select())
 		}
 	}
 
@@ -25,11 +25,11 @@ export class FilesService implements StoreSubscriber {
 		return this.storeService.getState().files
 	}
 
-	private notifyFilesSelectionChanged(newState: Files) {
+	private notify(newState: Files) {
 		this.$rootScope.$broadcast(FilesService.FILES_SELECTION_CHANGED_EVENT, { files: newState })
 	}
 
-	public static subscribeToFilesSelection($rootScope: IRootScopeService, subscriber: FilesSelectionSubscriber) {
+	public static subscribe($rootScope: IRootScopeService, subscriber: FilesSelectionSubscriber) {
 		$rootScope.$on(FilesService.FILES_SELECTION_CHANGED_EVENT, (event, data) => {
 			subscriber.onFilesSelectionChanged(data.files)
 		})

@@ -42,19 +42,19 @@ describe("SearchPanelModeSelectorController", () => {
 			SearchPanelService.subscribe = jest.fn()
 		})
 
-		it("should subscribeToFilesSelection to Search-Pattern-Event", () => {
+		it("should subscribe to Search-Pattern-Event", () => {
 			rebuildController()
 
 			expect(SearchPatternService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
-		it("should subscribeToFilesSelection to Blacklist-Event", () => {
+		it("should subscribe to Blacklist-Event", () => {
 			rebuildController()
 
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
-		it("should subscribeToFilesSelection to SearchPanelService", () => {
+		it("should subscribe to SearchPanelService", () => {
 			rebuildController()
 
 			expect(SearchPanelService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)

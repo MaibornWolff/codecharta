@@ -28,7 +28,7 @@ describe("CameraService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to store", () => {
+		it("should subscribe to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()

@@ -19,7 +19,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private metricService: MetricService) {
 		StoreService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {

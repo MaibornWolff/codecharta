@@ -34,7 +34,7 @@ describe("AreaSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to DynamicMarginService", () => {
+		it("should subscribe to DynamicMarginService", () => {
 			DynamicMarginService.subscribe = jest.fn()
 
 			rebuildController()
@@ -42,7 +42,7 @@ describe("AreaSettingsPanelController", () => {
 			expect(DynamicMarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to MarginService", () => {
+		it("should subscribe to MarginService", () => {
 			MarginService.subscribe = jest.fn()
 
 			rebuildController()
@@ -50,12 +50,12 @@ describe("AreaSettingsPanelController", () => {
 			expect(MarginService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to FilesService", () => {
-			FilesService.subscribeToFilesSelection = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, areaSettingsPanelController)
 		})
 	})
 

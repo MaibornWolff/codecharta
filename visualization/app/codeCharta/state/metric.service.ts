@@ -34,7 +34,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	private metricData: MetricData[] = []
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 

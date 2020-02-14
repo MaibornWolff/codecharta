@@ -124,7 +124,7 @@ describe("codeMapMouseEventService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to hoverEvents", () => {
+		it("should subscribe to hoverEvents", () => {
 			MapTreeViewLevelController.subscribeToHoverEvents = jest.fn()
 
 			rebuildService()
@@ -138,7 +138,7 @@ describe("codeMapMouseEventService", () => {
 			expect(threeUpdateCycleService.register).toHaveBeenCalled()
 		})
 
-		it("should subscribeToFilesSelection to BlacklistService", () => {
+		it("should subscribe to BlacklistService", () => {
 			BlacklistService.subscribe = jest.fn()
 
 			rebuildService()
@@ -146,12 +146,12 @@ describe("codeMapMouseEventService", () => {
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
 		})
 
-		it("should subscribeToFilesSelection to FilesService", () => {
-			FilesService.subscribeToFilesSelection = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
 		})
 	})
 
@@ -162,7 +162,7 @@ describe("codeMapMouseEventService", () => {
 			expect(threeRendererService.renderer.domElement.addEventListener).toHaveBeenCalledTimes(4)
 		})
 
-		it("should subscribeToFilesSelection to event propagation", () => {
+		it("should subscribe to event propagation", () => {
 			ViewCubeMouseEventsService.subscribeToEventPropagation = jest.fn()
 
 			codeMapMouseEventService.start()

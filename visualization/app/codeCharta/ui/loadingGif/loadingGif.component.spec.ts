@@ -32,13 +32,13 @@ describe("LoadingGifController", () => {
 			IsLoadingMapService.subscribe = jest.fn()
 		})
 
-		it("should subscribeToFilesSelection to LoadingFileService", () => {
+		it("should subscribe to LoadingFileService", () => {
 			rebuildController()
 
 			expect(IsLoadingFileService.subscribe).toHaveBeenCalledWith($rootScope, loadingGifController)
 		})
 
-		it("should subscribeToFilesSelection to LoadingMapService", () => {
+		it("should subscribe to LoadingMapService", () => {
 			rebuildController()
 
 			expect(IsLoadingMapService.subscribe).toHaveBeenCalledWith($rootScope, loadingGifController)

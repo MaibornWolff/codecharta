@@ -48,7 +48,7 @@ describe("MarginService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to store", () => {
+		it("should subscribe to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()
@@ -56,7 +56,7 @@ describe("MarginService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, marginService)
 		})
 
-		it("should subscribeToFilesSelection to AreaMetricService", () => {
+		it("should subscribe to AreaMetricService", () => {
 			AreaMetricService.subscribe = jest.fn()
 
 			rebuildService()
@@ -64,7 +64,7 @@ describe("MarginService", () => {
 			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, marginService)
 		})
 
-		it("should subscribeToFilesSelection to DynamicMarginService", () => {
+		it("should subscribe to DynamicMarginService", () => {
 			DynamicMarginService.subscribe = jest.fn()
 
 			rebuildService()

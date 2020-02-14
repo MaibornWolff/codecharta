@@ -36,7 +36,7 @@ describe("HeightSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to AmountOfTopLabelsService", () => {
+		it("should subscribe to AmountOfTopLabelsService", () => {
 			AmountOfTopLabelsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -44,7 +44,7 @@ describe("HeightSettingsPanelController", () => {
 			expect(AmountOfTopLabelsService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to ScalingService", () => {
+		it("should subscribe to ScalingService", () => {
 			ScalingService.subscribe = jest.fn()
 
 			rebuildController()
@@ -52,7 +52,7 @@ describe("HeightSettingsPanelController", () => {
 			expect(ScalingService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to InvertHeightService", () => {
+		it("should subscribe to InvertHeightService", () => {
 			InvertHeightService.subscribe = jest.fn()
 
 			rebuildController()
@@ -60,12 +60,12 @@ describe("HeightSettingsPanelController", () => {
 			expect(InvertHeightService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to FilesService", () => {
-			FilesService.subscribeToFilesSelection = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 	})
 

@@ -60,7 +60,7 @@ describe("EdgeSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to AmountOfEdgePreviewsService", () => {
+		it("should subscribe to AmountOfEdgePreviewsService", () => {
 			AmountOfEdgePreviewsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -68,7 +68,7 @@ describe("EdgeSettingsPanelController", () => {
 			expect(AmountOfEdgePreviewsService.subscribe).toHaveBeenCalledWith($rootScope, edgeSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to EdgeHeightService", () => {
+		it("should subscribe to EdgeHeightService", () => {
 			EdgeHeightService.subscribe = jest.fn()
 
 			rebuildController()
@@ -76,7 +76,7 @@ describe("EdgeSettingsPanelController", () => {
 			expect(EdgeHeightService.subscribe).toHaveBeenCalledWith($rootScope, edgeSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to ShowOnlyBuildingsWithEdgesService", () => {
+		it("should subscribe to ShowOnlyBuildingsWithEdgesService", () => {
 			ShowOnlyBuildingsWithEdgesService.subscribe = jest.fn()
 
 			rebuildController()
@@ -84,7 +84,7 @@ describe("EdgeSettingsPanelController", () => {
 			expect(ShowOnlyBuildingsWithEdgesService.subscribe).toHaveBeenCalledWith($rootScope, edgeSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to EdgeMetricService", () => {
+		it("should subscribe to EdgeMetricService", () => {
 			EdgeMetricService.subscribe = jest.fn()
 
 			rebuildController()

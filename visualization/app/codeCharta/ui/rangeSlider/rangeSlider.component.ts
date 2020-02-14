@@ -55,7 +55,7 @@ export class RangeSliderController
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)

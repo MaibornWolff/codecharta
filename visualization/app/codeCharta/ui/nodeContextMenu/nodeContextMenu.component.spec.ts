@@ -107,14 +107,14 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("event related behavior", () => {
-		it("should subscribeToFilesSelection to 'show-node-context-menu' events", () => {
+		it("should subscribe to 'show-node-context-menu' events", () => {
 			withMockedSubscribeMethods()
 			withMockedEventMethods($rootScope)
 			rebuildController()
 			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
-		it("should subscribeToFilesSelection to 'hide-node-context-menu' events", () => {
+		it("should subscribe to 'hide-node-context-menu' events", () => {
 			withMockedSubscribeMethods()
 			withMockedEventMethods($rootScope)
 			rebuildController()

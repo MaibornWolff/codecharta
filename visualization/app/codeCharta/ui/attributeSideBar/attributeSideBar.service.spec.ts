@@ -26,7 +26,7 @@ describe("AttributeSideBarService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to Node Selected Events", () => {
+		it("should subscribe to Node Selected Events", () => {
 			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
 
 			rebuildService()
@@ -34,7 +34,7 @@ describe("AttributeSideBarService", () => {
 			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarService)
 		})
 
-		it("should subscribeToFilesSelection to Node Deselected Events", () => {
+		it("should subscribe to Node Deselected Events", () => {
 			ThreeSceneService.subscribeToBuildingDeselectedEvents = jest.fn()
 
 			rebuildService()

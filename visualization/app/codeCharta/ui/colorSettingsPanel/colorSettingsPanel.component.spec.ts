@@ -40,15 +40,15 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to FilesService", () => {
-			FilesService.subscribeToFilesSelection = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to InvertDeltaColorsService", () => {
+		it("should subscribe to InvertDeltaColorsService", () => {
 			InvertDeltaColorsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -56,7 +56,7 @@ describe("ColorSettingsPanelController", () => {
 			expect(InvertDeltaColorsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to WhiteColorBuildingsService", () => {
+		it("should subscribe to WhiteColorBuildingsService", () => {
 			WhiteColorBuildingsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -64,7 +64,7 @@ describe("ColorSettingsPanelController", () => {
 			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, colorSettingsPanelController)
 		})
 
-		it("should subscribeToFilesSelection to InvertColorRangeService", () => {
+		it("should subscribe to InvertColorRangeService", () => {
 			InvertColorRangeService.subscribe = jest.fn()
 
 			rebuildController()

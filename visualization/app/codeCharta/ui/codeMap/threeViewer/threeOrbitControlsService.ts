@@ -32,7 +32,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	) {
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onFocusNode(focusedNodePath: string) {

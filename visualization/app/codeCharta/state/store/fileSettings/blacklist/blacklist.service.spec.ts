@@ -32,7 +32,7 @@ describe("BlacklistService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to store", () => {
+		it("should subscribe to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()
@@ -40,12 +40,12 @@ describe("BlacklistService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, blacklistService)
 		})
 
-		it("should subscribeToFilesSelection to FilesService", () => {
-			FilesService.subscribeToFilesSelection = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, blacklistService)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, blacklistService)
 		})
 	})
 

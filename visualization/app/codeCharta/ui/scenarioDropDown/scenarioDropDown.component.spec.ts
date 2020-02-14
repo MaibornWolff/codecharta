@@ -54,7 +54,7 @@ describe("ScenarioDropDownController", () => {
 	})
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to MetricService on construction", () => {
+		it("should subscribe to MetricService on construction", () => {
 			MetricService.subscribe = jest.fn()
 
 			rebuildController()

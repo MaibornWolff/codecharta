@@ -103,19 +103,19 @@ describe("codeMapPreRenderService", () => {
 			ScalingService.subscribe = jest.fn()
 		})
 
-		it("should call subscribeToFilesSelection for MetricService", () => {
+		it("should call subscribe for MetricService", () => {
 			rebuildService()
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
-		it("should call subscribeToFilesSelection for StoreService", () => {
+		it("should call subscribe for StoreService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
-		it("should call subscribeToFilesSelection for ScalingService", () => {
+		it("should call subscribe for ScalingService", () => {
 			rebuildService()
 
 			expect(ScalingService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)

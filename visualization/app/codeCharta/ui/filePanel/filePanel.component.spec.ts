@@ -36,12 +36,12 @@ describe("filePanelController", () => {
 		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
 	}
 
-	it("should subscribeToFilesSelection to FilesService on construction", () => {
-		FilesService.subscribeToFilesSelection = jest.fn()
+	it("should subscribe to FilesService on construction", () => {
+		FilesService.subscribe = jest.fn()
 
 		buildController()
 
-		expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, filePanelController)
+		expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
 	})
 
 	describe("onFilesChanged", () => {

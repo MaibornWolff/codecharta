@@ -66,7 +66,7 @@ describe("RangeSliderController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to ColorMetricService", () => {
+		it("should subscribe to ColorMetricService", () => {
 			ColorMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -74,7 +74,7 @@ describe("RangeSliderController", () => {
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribeToFilesSelection to ColorRangeService", () => {
+		it("should subscribe to ColorRangeService", () => {
 			ColorRangeService.subscribe = jest.fn()
 
 			rebuildController()
@@ -82,7 +82,7 @@ describe("RangeSliderController", () => {
 			expect(ColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribeToFilesSelection to InvertColorRangeService", () => {
+		it("should subscribe to InvertColorRangeService", () => {
 			InvertColorRangeService.subscribe = jest.fn()
 
 			rebuildController()
@@ -90,7 +90,7 @@ describe("RangeSliderController", () => {
 			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribeToFilesSelection to WhiteColorBuildingsService", () => {
+		it("should subscribe to WhiteColorBuildingsService", () => {
 			WhiteColorBuildingsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -98,12 +98,12 @@ describe("RangeSliderController", () => {
 			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribeToFilesSelection to FilesService", () => {
-			FilesService.subscribeToFilesSelection = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(FilesService.subscribeToFilesSelection).toHaveBeenCalledWith($rootScope, rangeSliderController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 	})
 

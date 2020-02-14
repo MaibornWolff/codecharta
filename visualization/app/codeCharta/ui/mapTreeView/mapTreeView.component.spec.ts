@@ -32,7 +32,7 @@ describe("MapTreeViewController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to CodeMapPreRenderService", () => {
+		it("should subscribe to CodeMapPreRenderService", () => {
 			CodeMapPreRenderService.subscribe = jest.fn()
 
 			rebuildController()

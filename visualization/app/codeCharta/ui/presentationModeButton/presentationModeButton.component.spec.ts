@@ -28,7 +28,7 @@ describe("PresentationModeButtonController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to Presentation-Mode-Changed", () => {
+		it("should subscribe to Presentation-Mode-Changed", () => {
 			IsPresentationModeService.subscribe = jest.fn()
 
 			rebuildController()

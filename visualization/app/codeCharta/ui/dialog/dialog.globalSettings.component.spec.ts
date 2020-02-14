@@ -36,7 +36,7 @@ describe("DialogGlobalSettingsController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to HideFlatBuildingsService", () => {
+		it("should subscribe to HideFlatBuildingsService", () => {
 			HideFlatBuildingsService.subscribe = jest.fn()
 
 			rebuildController()
@@ -44,7 +44,7 @@ describe("DialogGlobalSettingsController", () => {
 			expect(HideFlatBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
-		it("should subscribeToFilesSelection to IsWhiteBackgroundService", () => {
+		it("should subscribe to IsWhiteBackgroundService", () => {
 			IsWhiteBackgroundService.subscribe = jest.fn()
 
 			rebuildController()
@@ -52,7 +52,7 @@ describe("DialogGlobalSettingsController", () => {
 			expect(IsWhiteBackgroundService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
 		})
 
-		it("should subscribeToFilesSelection to ResetCameraIfNewFileIsLoadedService", () => {
+		it("should subscribe to ResetCameraIfNewFileIsLoadedService", () => {
 			ResetCameraIfNewFileIsLoadedService.subscribe = jest.fn()
 
 			rebuildController()

@@ -32,7 +32,7 @@ describe("NodeSearchService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to SearchPatternService", () => {
+		it("should subscribe to SearchPatternService", () => {
 			SearchPatternService.subscribe = jest.fn()
 
 			rebuildService()

@@ -1,11 +1,10 @@
 import "../../state.module"
 import { IRootScopeService } from "angular"
-import { addFile, FilesAction, FilesSelectionActions, NewFilesImportedActions } from "./files.actions"
+import { FilesAction, FilesSelectionActions } from "./files.actions"
 import { FilesService } from "./files.service"
 import { TEST_DELTA_MAP_A, withMockedEventMethods } from "../../../util/dataMocks"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../store.service"
-import { Files } from "../../../model/files"
 
 describe("FilesService", () => {
 	let filesService: FilesService
@@ -30,7 +29,7 @@ describe("FilesService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to store", () => {
+		it("should subscribe to store", () => {
 			StoreService.subscribe = jest.fn()
 
 			rebuildService()

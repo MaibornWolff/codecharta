@@ -46,7 +46,7 @@ describe("MetricDeltaSelectedController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to Node Selected Events", () => {
+		it("should subscribe to Node Selected Events", () => {
 			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
 
 			rebuildController()
@@ -54,7 +54,7 @@ describe("MetricDeltaSelectedController", () => {
 			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, metricDeltaSelectedController)
 		})
 
-		it("should subscribeToFilesSelection to InvertDeltaColorsService", () => {
+		it("should subscribe to InvertDeltaColorsService", () => {
 			InvertDeltaColorsService.subscribe = jest.fn()
 
 			rebuildController()

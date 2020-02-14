@@ -38,7 +38,7 @@ export class HeightSettingsPanelController
 		AmountOfTopLabelsService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		InvertHeightService.subscribe(this.$rootScope, this)
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedTopLabels = _.debounce(() => {
 			this.storeService.dispatch(setAmountOfTopLabels(this._viewModel.amountOfTopLabels))

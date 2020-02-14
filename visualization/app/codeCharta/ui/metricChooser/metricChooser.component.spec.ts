@@ -40,7 +40,7 @@ describe("MetricChooserController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribeToFilesSelection to AreaMetricService", () => {
+		it("should subscribe to AreaMetricService", () => {
 			AreaMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -48,7 +48,7 @@ describe("MetricChooserController", () => {
 			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
-		it("should subscribeToFilesSelection to HeightMetricService", () => {
+		it("should subscribe to HeightMetricService", () => {
 			HeightMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -56,7 +56,7 @@ describe("MetricChooserController", () => {
 			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
-		it("should subscribeToFilesSelection to ColorMetricService", () => {
+		it("should subscribe to ColorMetricService", () => {
 			ColorMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -64,7 +64,7 @@ describe("MetricChooserController", () => {
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
-		it("should subscribeToFilesSelection to DistributionMetricService", () => {
+		it("should subscribe to DistributionMetricService", () => {
 			DistributionMetricService.subscribe = jest.fn()
 
 			rebuildController()
@@ -72,7 +72,7 @@ describe("MetricChooserController", () => {
 			expect(DistributionMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
-		it("should subscribeToFilesSelection to MetricService", () => {
+		it("should subscribe to MetricService", () => {
 			MetricService.subscribe = jest.fn()
 
 			rebuildController()

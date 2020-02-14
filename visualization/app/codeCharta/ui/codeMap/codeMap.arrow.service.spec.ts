@@ -76,7 +76,7 @@ describe("CodeMapArrowService", () => {
 			expect(codeMapArrowService["arrows"].length).toBe(0)
 		})
 
-		it("should subscribeToFilesSelection to Building-Hovered-Events", () => {
+		it("should subscribe to Building-Hovered-Events", () => {
 			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 
 			rebuildService()
@@ -84,7 +84,7 @@ describe("CodeMapArrowService", () => {
 			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, codeMapArrowService)
 		})
 
-		it("should subscribeToFilesSelection to Building-Unhovered-Events", () => {
+		it("should subscribe to Building-Unhovered-Events", () => {
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 
 			rebuildService()

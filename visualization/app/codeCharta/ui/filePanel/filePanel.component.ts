@@ -50,7 +50,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		FilesService.subscribeToFilesSelection(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onFilesSelectionChanged(files: Files) {
