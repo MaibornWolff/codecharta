@@ -8,6 +8,9 @@ import { DEFAULT_STATE, STATE } from "../util/dataMocks"
 import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
+import { setCamera } from "./store/appSettings/camera/camera.actions"
+import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { setIsLoadingFile } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -63,6 +66,7 @@ describe("StoreService", () => {
 			}
 
 			storeService.dispatch(setState({ dynamicSettings: partialState }))
+
 			const result = storeService.getState()
 
 			expect(result.appSettings).toEqual(DEFAULT_STATE.appSettings)
@@ -81,6 +85,7 @@ describe("StoreService", () => {
 			}
 
 			storeService.dispatch(setDynamicSettings(partialState))
+
 			const result = storeService.getState()
 
 			expect(result.appSettings).toEqual(DEFAULT_STATE.appSettings)
@@ -102,6 +107,27 @@ describe("StoreService", () => {
 			storeService.dispatch(setState(STATE))
 
 			expect(storeService.getState()).toEqual(STATE)
+		})
+
+		it("should dispatch an action silently and not notify subscribers", () => {
+			storeService.dispatch(setCamera(), true)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+
+		it("should dispatch an action silently and not show the loading-gif", () => {
+			storeService.dispatch(setIsLoadingMap(false))
+
+			storeService.dispatch(setCamera(), true)
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+		})
+
+		it("should show not the loading-gif when an action is triggered, that changes the loading-gif state", () => {
+			storeService.dispatch(setIsLoadingMap(false))
+			storeService.dispatch(setIsLoadingFile(false))
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 	})
 })

@@ -3,6 +3,9 @@ import rootReducer from "./store/reducer"
 import { CCAction, State } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
+import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
+import _ from "lodash"
+import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -18,6 +21,10 @@ export class StoreService {
 	}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
+		if (!(_.values(IsLoadingMapActions).includes(action.type) || _.values(IsLoadingFileActions).includes(action.type) || isSilent)) {
+			this.dispatch(setIsLoadingMap(true))
+		}
+
 		splitStateActions(action).forEach(atomicAction => {
 			this.store.dispatch(atomicAction)
 			if (!isSilent) {

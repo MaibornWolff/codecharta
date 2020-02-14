@@ -141,7 +141,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private renderAndNotify() {
-		this.showLoadingMapGif()
 		this.codeMapRenderService.render(this.unifiedMap)
 		this.removeLoadingGifs()
 		this.notifyMapChanged()

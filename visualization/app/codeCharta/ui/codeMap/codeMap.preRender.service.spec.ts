@@ -172,7 +172,6 @@ describe("codeMapPreRenderService", () => {
 			codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
 
 			setTimeout(() => {
-				expect(codeMapPreRenderService["showLoadingMapGif"]).toHaveBeenCalled()
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 				done()
 			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
