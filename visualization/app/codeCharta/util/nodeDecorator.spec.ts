@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
-import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta } from "../codeCharta.model"
+import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
@@ -83,17 +83,17 @@ describe("nodeDecorator", () => {
 			map.children = [
 				{
 					name: "middle",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
 							name: "a",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						},
 						{
 							name: "b",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						}
 					]
@@ -111,18 +111,18 @@ describe("nodeDecorator", () => {
 			map.children = [
 				{
 					name: "middle",
-					type: "File",
+					type: NodeType.FILE,
 					attributes: {},
 					link: "link1",
 					children: [
 						{
 							name: "a",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						},
 						{
 							name: "b",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						}
 					]
@@ -138,18 +138,18 @@ describe("nodeDecorator", () => {
 				{
 					name: "middle",
 					path: "/root/middle",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
 							name: "a",
-							type: "File",
+							type: NodeType.FILE,
 							path: "/root/middle/a",
 							attributes: {}
 						},
 						{
 							name: "b",
-							type: "File",
+							type: NodeType.FILE,
 							path: "/root/middle/b",
 							attributes: {}
 						}
@@ -164,12 +164,12 @@ describe("nodeDecorator", () => {
 			map.children = [
 				{
 					name: "middle",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
 							name: "singleLeaf",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						}
 					]
@@ -185,27 +185,27 @@ describe("nodeDecorator", () => {
 			map.children = [
 				{
 					name: "start",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
 							name: "middle",
-							type: "Folder",
+							type: NodeType.FOLDER,
 							attributes: {},
 							children: [
 								{
 									name: "middle2",
-									type: "Folder",
+									type: NodeType.FOLDER,
 									attributes: {},
 									children: [
 										{
 											name: "a",
-											type: "File",
+											type: NodeType.FILE,
 											attributes: {}
 										},
 										{
 											name: "b",
-											type: "File",
+											type: NodeType.FILE,
 											attributes: {}
 										}
 									]
@@ -214,7 +214,7 @@ describe("nodeDecorator", () => {
 						},
 						{
 							name: "c",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						}
 					]

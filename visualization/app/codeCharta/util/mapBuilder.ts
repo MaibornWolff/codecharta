@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../codeCharta.model"
+import { CodeMapNode, NodeType } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 
 export class MapBuilder {
@@ -21,7 +21,7 @@ export class MapBuilder {
 		return {
 			name: CodeChartaService.ROOT_NAME,
 			path: CodeChartaService.ROOT_PATH,
-			type: "Folder",
+			type: NodeType.FOLDER,
 			children: [],
 			attributes: {}
 		}
