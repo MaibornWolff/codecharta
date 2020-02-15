@@ -67,7 +67,7 @@
 					"type": "boolean"
 				}
 			},
-			"required": ["attributes", "name", "type"],
+			"required": ["name", "type"],
 			"type": "object"
 		},
 		"Edge": {

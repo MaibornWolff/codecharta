@@ -39,7 +39,7 @@ export interface CodeMapNode {
 	name: string
 	type: string
 	children?: CodeMapNode[]
-	attributes: KeyValuePair
+	attributes?: KeyValuePair
 	edgeAttributes?: {
 		[key: string]: EdgeMetricCount
 	}
