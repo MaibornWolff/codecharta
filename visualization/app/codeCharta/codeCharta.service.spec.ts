@@ -6,11 +6,11 @@ import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
 import { BlacklistType, CCFile } from "./codeCharta.model"
 import _ from "lodash"
-import { ExportBlacklistType } from "./codeCharta.api.model"
+import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
-	let validFileContent: ExportCCFile_1_0
+	let validFileContent: ExportCCFile
 	let fileStateService: FileStateService
 	const fileName: string = "someFileName"
 
@@ -111,7 +111,7 @@ describe("codeChartaService", () => {
 
 		it("should reject string", done => {
 			codeChartaService
-				.loadFiles([{ fileName: fileName, content: ("string" as any) as ExportCCFile_1_0 }])
+				.loadFiles([{ fileName: fileName, content: ("string" as any) as ExportCCFile }])
 				.then(() => {
 					letTestFail()
 				})
@@ -121,7 +121,7 @@ describe("codeChartaService", () => {
 		})
 
 		it("should reject or catch invalid file", done => {
-			let invalidFileContent: ExportCCFile_1_0 = validFileContent
+			let invalidFileContent: ExportCCFile = validFileContent
 			delete invalidFileContent.projectName
 			codeChartaService
 				.loadFiles([{ fileName: fileName, content: invalidFileContent }])

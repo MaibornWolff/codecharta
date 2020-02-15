@@ -218,7 +218,7 @@ export const VALID_EDGE: Edge = {
 
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
-	apiVersion: APIVersions.ONE_POINT_ZERO,
+	apiVersion: APIVersions.ONE_POINT_ONE,
 	nodes: [VALID_NODE]
 }
 
