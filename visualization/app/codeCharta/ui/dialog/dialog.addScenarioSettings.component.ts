@@ -40,8 +40,10 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	public addScenario() {
-		if (ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName)) {
-			this.dialogService.showErrorDialog("The Scenario Name is already taken, please chose another Scenario Name.")
+		if (ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName) || this._viewModel.scenarioName == null) {
+			this.dialogService.showErrorDialog(
+				"The Scenario Name is already taken or no scenario Name was chosen.  Please chose another Scenario Name."
+			)
 		} else {
 			const selectedScenarioAttributes: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
 			const newScenario: Scenario = ScenarioHelper.createNewScenario(this._viewModel.scenarioName, selectedScenarioAttributes)

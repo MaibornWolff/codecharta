@@ -55,6 +55,15 @@ describe("DialogAddScenarioSettingsComponent", () => {
 			expect(dialogService.showErrorDialog).toHaveBeenCalled()
 		})
 
+		it("should return an error Message, when the filename is null", () => {
+			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(false)
+			dialogService.showErrorDialog = jest.fn()
+
+			dialogAddScenarioSettings.addScenario()
+
+			expect(dialogService.showErrorDialog).toHaveBeenCalled()
+		})
+
 		it("should call createNewScenario Function with the selected fileAttributes", () => {
 			dialogAddScenarioSettings["_viewModel"].fileContent = FILE_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED
 			dialogAddScenarioSettings["_viewModel"].scenarioName = "scenario1"
