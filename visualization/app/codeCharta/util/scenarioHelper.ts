@@ -94,10 +94,6 @@ export class ScenarioHelper {
 		return newScenarioObject
 	}
 
-	public static getNumberOfScenarios() {
-		return this.scenarioList.length
-	}
-
 	public static deleteScenario(scenarioName: String) {
 		this.scenarioList = this.scenarioList.filter(item => {
 			return item.name !== scenarioName

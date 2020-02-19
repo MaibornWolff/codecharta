@@ -161,13 +161,6 @@ describe("scenarioHelper", () => {
 		})
 	})
 
-	describe("getNumberOfScenarios", () => {
-		it("should return the length 4 as there are 4 elements in the scenarioList ", () => {
-			const result = ScenarioHelper.getNumberOfScenarios()
-
-			expect(result).toEqual(4)
-		})
-	})
 	describe("deleteScenario", () => {
 		it("should remove the Scenario from ScenarioList ", () => {
 			ScenarioHelper["scenarioList"] = [{ name: "Scenario", settings: { dynamicSettings: { areaMetric: "rloc" } } }]
