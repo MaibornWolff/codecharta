@@ -6,6 +6,7 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import { NodeType } from "../../codeCharta.model"
 
 export class CodeMapController
 	implements BuildingRightClickedEventSubscriber, AttributeSideBarVisibilitySubscriber, IsLoadingFileSubscriber {
@@ -39,7 +40,7 @@ export class CodeMapController
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 		if (building) {
-			const nodeType = building.node.isLeaf ? "File" : "Folder"
+			const nodeType = building.node.isLeaf ? NodeType.FILE : NodeType.FOLDER
 			NodeContextMenuController.broadcastShowEvent(this.$rootScope, building.node.path, nodeType, x, y)
 		}
 	}

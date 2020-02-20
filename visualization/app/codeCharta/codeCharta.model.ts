@@ -47,7 +47,7 @@ export interface CCFile {
 
 export interface CodeMapNode {
 	name: string
-	type: string
+	type: NodeType
 	children?: CodeMapNode[]
 	attributes: KeyValuePair
 	edgeAttributes?: {
@@ -59,6 +59,11 @@ export interface CodeMapNode {
 	deltas?: {
 		[key: string]: number
 	}
+}
+
+export enum NodeType {
+	FILE = "File",
+	FOLDER = "Folder"
 }
 
 export interface FileMeta {
