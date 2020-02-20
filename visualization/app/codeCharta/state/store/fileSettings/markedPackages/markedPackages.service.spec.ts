@@ -66,6 +66,4 @@ describe("MarkedPackagesService", () => {
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 	})
-
-	describe("onFilesChanged", () => {})
 })
