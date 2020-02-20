@@ -1,7 +1,7 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapLabelService } from "./codeMap.label.service"
-import { Node } from "../../model/codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { Vector3 } from "three"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"

@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum IsWhiteBackgroundActions {
 	SET_IS_WHITE_BACKGROUND = "SET_IS_WHITE_BACKGROUND"

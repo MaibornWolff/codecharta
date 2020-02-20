@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum EdgeHeightActions {
 	SET_EDGE_HEIGHT = "SET_EDGE_HEIGHT"

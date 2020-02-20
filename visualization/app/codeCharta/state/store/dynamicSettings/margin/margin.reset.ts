@@ -1,4 +1,4 @@
-import { CodeMapNode } from "../../../../model/codeCharta.model"
+import { CodeMapNode } from "../../../../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3-hierarchy"
 
 const MIN_MARGIN = 15

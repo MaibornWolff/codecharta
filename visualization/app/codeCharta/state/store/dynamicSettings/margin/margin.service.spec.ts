@@ -10,7 +10,7 @@ import { AreaMetricService } from "../areaMetric/areaMetric.service"
 import { DynamicMarginService } from "../../appSettings/dynamicMargin/dynamicMargin.service"
 import { setDynamicMargin } from "../../appSettings/dynamicMargin/dynamicMargin.actions"
 import { setAreaMetric } from "../areaMetric/areaMetric.actions"
-import { CodeMapNode } from "../../../../model/codeCharta.model"
+import { CodeMapNode } from "../../../../codeCharta.model"
 import _ from "lodash"
 
 describe("MarginService", () => {

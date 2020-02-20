@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { DeltaGenerator } from "./deltaGenerator"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "./dataMocks"
-import { CCFile } from "../model/codeCharta.model"
+import { CCFile } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 
 describe("deltaGenerator", () => {

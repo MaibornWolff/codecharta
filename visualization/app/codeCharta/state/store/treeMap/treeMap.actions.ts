@@ -1,4 +1,4 @@
-import { CCAction, RecursivePartial, TreeMapSettings } from "../../../model/codeCharta.model"
+import { CCAction, RecursivePartial, TreeMapSettings } from "../../../codeCharta.model"
 import { defaultMapSize } from "./mapSize/mapSize.actions"
 
 export enum TreeMapSettingsActions {

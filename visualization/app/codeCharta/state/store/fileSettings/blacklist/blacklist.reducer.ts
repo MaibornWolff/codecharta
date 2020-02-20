@@ -1,4 +1,4 @@
-import { BlacklistItem } from "../../../../model/codeCharta.model"
+import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistAction, BlacklistActions, setBlacklist } from "./blacklist.actions"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 const clone = require("rfdc")()

@@ -5,7 +5,7 @@ import _ from "lodash"
 import { getMergedAttributeTypes } from "./attributeTypes.merger"
 import { Files } from "../../../../model/files"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
-import { AttributeTypes } from "../../../../model/codeCharta.model"
+import { AttributeTypes } from "../../../../codeCharta.model"
 
 export interface AttributeTypesSubscriber {
 	onAttributeTypesChanged(attributeTypes: AttributeTypes)

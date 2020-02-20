@@ -1,4 +1,4 @@
-import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../model/codeCharta.model"
+import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"

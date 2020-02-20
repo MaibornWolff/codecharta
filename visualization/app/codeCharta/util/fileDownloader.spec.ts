@@ -1,6 +1,6 @@
 import { stubDate } from "../../../mocks/dateMock.helper"
 import { FileDownloader } from "./fileDownloader"
-import { FileMeta, CodeMapNode, FileSettings, BlacklistType } from "../model/codeCharta.model"
+import { FileMeta, CodeMapNode, FileSettings, BlacklistType } from "../codeCharta.model"
 import { TEST_FILE_DATA, TEST_FILE_DATA_DOWNLOADED, VALID_NODE_DECORATED, VALID_EDGES_DECORATED } from "./dataMocks"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 

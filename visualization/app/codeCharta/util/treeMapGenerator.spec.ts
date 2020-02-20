@@ -1,5 +1,5 @@
-import { MetricData, State } from "../model/codeCharta.model"
-import { CodeMapNode, Node } from "../model/codeCharta.model"
+import { MetricData, State } from "../codeCharta.model"
+import { CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES, STATE } from "./dataMocks"
 import _ from "lodash"

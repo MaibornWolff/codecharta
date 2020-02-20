@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum InvertColorRangeActions {
 	SET_INVERT_COLOR_RANGE = "SET_INVERT_COLOR_RANGE"

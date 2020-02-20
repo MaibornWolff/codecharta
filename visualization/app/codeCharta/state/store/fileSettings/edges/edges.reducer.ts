@@ -1,5 +1,5 @@
 import { EdgesAction, EdgesActions, setEdges } from "./edges.actions"
-import { Edge } from "../../../../model/codeCharta.model"
+import { Edge } from "../../../../codeCharta.model"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 const clone = require("rfdc")()
 

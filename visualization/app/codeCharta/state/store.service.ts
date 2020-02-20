@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import _ from "lodash"
-import { CCAction, State } from "../model/codeCharta.model"
+import { CCAction, State } from "../codeCharta.model"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)

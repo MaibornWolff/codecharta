@@ -1,6 +1,6 @@
 import "./metricValueHovered.component.scss"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { Node } from "../../model/codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"

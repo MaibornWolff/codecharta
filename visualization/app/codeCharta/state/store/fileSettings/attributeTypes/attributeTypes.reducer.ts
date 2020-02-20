@@ -1,5 +1,5 @@
 import { AttributeTypesAction, AttributeTypesActions, setAttributeTypes } from "./attributeTypes.actions"
-import { AttributeTypes } from "../../../../model/codeCharta.model"
+import { AttributeTypes } from "../../../../codeCharta.model"
 const clone = require("rfdc")()
 
 export function attributeTypes(state: AttributeTypes = setAttributeTypes().payload, action: AttributeTypesAction): AttributeTypes {

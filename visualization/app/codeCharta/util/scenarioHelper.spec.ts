@@ -1,5 +1,5 @@
 import { ScenarioHelper } from "./scenarioHelper"
-import { MetricData, Scenario } from "../model/codeCharta.model"
+import { MetricData, Scenario } from "../codeCharta.model"
 
 describe("scenarioHelper", () => {
 	let metricData: MetricData[]

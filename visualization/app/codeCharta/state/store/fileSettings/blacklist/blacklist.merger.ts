@@ -1,5 +1,5 @@
 import { getUpdatedBlacklistItemPath } from "../../../../util/nodePathHelper"
-import { BlacklistItem, CCFile } from "../../../../model/codeCharta.model"
+import { BlacklistItem, CCFile } from "../../../../codeCharta.model"
 
 export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolean): BlacklistItem[] {
 	let blacklist: BlacklistItem[] = []

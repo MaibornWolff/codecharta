@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum FocusedNodePathActions {
 	FOCUS_NODE = "FOCUS_NODE",

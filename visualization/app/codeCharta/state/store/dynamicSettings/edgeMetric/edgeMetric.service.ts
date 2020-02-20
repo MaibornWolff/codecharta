@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { EdgeMetricActions, setEdgeMetric } from "./edgeMetric.actions"
 import _ from "lodash"
 import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../../edgeMetricData.service"
-import { MetricData } from "../../../../model/codeCharta.model"
+import { MetricData } from "../../../../codeCharta.model"
 
 export interface EdgeMetricSubscriber {
 	onEdgeMetricChanged(edgeMetric: string)

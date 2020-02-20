@@ -9,7 +9,7 @@ import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH, withMockedEventMethods } from "
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
-import { BlacklistType, MarkedPackage } from "../../model/codeCharta.model"
+import { BlacklistType, MarkedPackage } from "../../codeCharta.model"
 import { addBlacklistItem, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("nodeContextMenuController", () => {

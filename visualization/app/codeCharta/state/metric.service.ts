@@ -8,7 +8,7 @@ import {
 	AttributeType,
 	AttributeTypeValue,
 	State
-} from "../model/codeCharta.model"
+} from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"

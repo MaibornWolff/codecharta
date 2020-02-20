@@ -1,5 +1,5 @@
 import { getUpdatedPath } from "../../../../util/nodePathHelper"
-import { CCFile, Edge } from "../../../../model/codeCharta.model"
+import { CCFile, Edge } from "../../../../codeCharta.model"
 
 export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): Edge[] {
 	const edges: Edge[] = []

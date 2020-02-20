@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum InvertHeightActions {
 	SET_INVERT_HEIGHT = "SET_INVERT_HEIGHT"

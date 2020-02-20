@@ -12,7 +12,7 @@ import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.ser
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEventMethods } from "../../util/dataMocks"
 import _ from "lodash"
-import { BlacklistType, Node } from "../../model/codeCharta.model"
+import { BlacklistType, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
 

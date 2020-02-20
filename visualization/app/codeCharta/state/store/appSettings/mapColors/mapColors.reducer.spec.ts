@@ -1,7 +1,7 @@
 import { mapColors } from "./mapColors.reducer"
 import { defaultMapColors, MapColorsAction, setMapColors } from "./mapColors.actions"
 import _ from "lodash"
-import { MapColors } from "../../../../model/codeCharta.model"
+import { MapColors } from "../../../../codeCharta.model"
 
 describe("mapColors", () => {
 	describe("Default State", () => {

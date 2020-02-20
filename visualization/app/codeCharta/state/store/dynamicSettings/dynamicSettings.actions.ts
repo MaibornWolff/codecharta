@@ -1,4 +1,4 @@
-import { CCAction, DynamicSettings, RecursivePartial } from "../../../model/codeCharta.model"
+import { CCAction, DynamicSettings, RecursivePartial } from "../../../codeCharta.model"
 import { defaultAreaMetric } from "./areaMetric/areaMetric.actions"
 import { defaultColorMetric } from "./colorMetric/colorMetric.actions"
 import { defaultColorRange } from "./colorRange/colorRange.actions"

@@ -1,6 +1,6 @@
 import "./metricType.component.scss"
 import { MetricService } from "../../state/metric.service"
-import { AttributeTypeValue } from "../../model/codeCharta.model"
+import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"

@@ -1,5 +1,5 @@
 import "./searchBar.component.scss"
-import { BlacklistType, BlacklistItem } from "../../model/codeCharta.model"
+import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"

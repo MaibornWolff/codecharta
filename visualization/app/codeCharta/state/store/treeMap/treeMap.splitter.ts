@@ -1,4 +1,4 @@
-import { RecursivePartial, CCAction, TreeMapSettings } from "../../../model/codeCharta.model"
+import { RecursivePartial, CCAction, TreeMapSettings } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
 import { splitMapSizeAction } from "./mapSize/mapSize.splitter"

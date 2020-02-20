@@ -1,7 +1,7 @@
 import "./dialog.component.scss"
 import { FileDownloader } from "../../util/fileDownloader"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import { BlacklistType } from "../../model/codeCharta.model"
+import { BlacklistType } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { StoreService } from "../../state/store.service"

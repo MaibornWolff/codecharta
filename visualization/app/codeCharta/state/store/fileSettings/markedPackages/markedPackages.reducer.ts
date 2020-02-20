@@ -1,5 +1,5 @@
 import { MarkedPackagesAction, MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actions"
-import { MarkedPackage } from "../../../../model/codeCharta.model"
+import { MarkedPackage } from "../../../../codeCharta.model"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 const clone = require("rfdc")()
 

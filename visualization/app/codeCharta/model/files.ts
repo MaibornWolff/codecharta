@@ -1,4 +1,4 @@
-import { CCFile, FileSelectionState, FileState } from "./codeCharta.model"
+import { CCFile, FileSelectionState, FileState } from "../codeCharta.model"
 const clone = require("rfdc")()
 
 export class Files {

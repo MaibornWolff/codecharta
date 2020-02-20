@@ -1,5 +1,5 @@
 import "./blacklistPanel.component.scss"
-import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../model/codeCharta.model"
+import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"

@@ -1,4 +1,4 @@
-import { MetricData } from "../model/codeCharta.model"
+import { MetricData } from "../codeCharta.model"
 
 export function isAnyMetricAvailable(metricData: MetricData[]) {
 	const availableMetrics: MetricData[] = metricData.filter(x => x.availableInVisibleMaps && x.maxValue > 0)

@@ -1,4 +1,4 @@
-import { CCAction, ColorRange } from "../../../../model/codeCharta.model"
+import { CCAction, ColorRange } from "../../../../codeCharta.model"
 
 export enum ColorRangeActions {
 	SET_COLOR_RANGE = "SET_COLOR_RANGE"

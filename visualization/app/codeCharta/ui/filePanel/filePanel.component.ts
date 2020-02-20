@@ -1,5 +1,5 @@
 import "./filePanel.component.scss"
-import { FileSelectionState } from "../../model/codeCharta.model"
+import { FileSelectionState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"

@@ -1,5 +1,5 @@
 import { IRootScopeService } from "angular"
-import { SearchPanelMode } from "../model/codeCharta.model"
+import { SearchPanelMode } from "../codeCharta.model"
 
 export interface SearchPanelServiceSubscriber {
 	onSearchPanelModeChanged(searchPanelMode: SearchPanelMode)

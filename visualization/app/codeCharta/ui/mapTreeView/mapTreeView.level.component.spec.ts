@@ -5,7 +5,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { CodeMapNode, BlacklistType, MarkedPackage } from "../../model/codeCharta.model"
+import { CodeMapNode, BlacklistType, MarkedPackage } from "../../codeCharta.model"
 import {
 	VALID_NODE_WITH_PATH,
 	CODE_MAP_BUILDING,

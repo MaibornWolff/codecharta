@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../model/codeCharta.model"
+import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model"
 import _ from "lodash"
 import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"

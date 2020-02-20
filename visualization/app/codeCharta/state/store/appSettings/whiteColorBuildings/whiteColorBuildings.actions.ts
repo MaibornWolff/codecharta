@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum WhiteColorBuildingsActions {
 	SET_WHITE_COLOR_BUILDINGS = "SET_WHITE_COLOR_BUILDINGS"

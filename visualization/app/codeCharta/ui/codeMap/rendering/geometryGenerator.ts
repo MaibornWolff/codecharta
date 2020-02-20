@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { Node, State } from "../../../model/codeCharta.model"
+import { Node, State } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { IntermediateVertexData } from "./intermediateVertexData"

@@ -1,6 +1,6 @@
 import "./nodePathPanel.component.scss"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { BlacklistItem } from "../../model/codeCharta.model"
+import { BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"

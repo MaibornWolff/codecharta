@@ -1,6 +1,6 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { BlacklistItem } from "../../../../model/codeCharta.model"
+import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import _ from "lodash"
 import { getMergedBlacklist } from "./blacklist.merger"

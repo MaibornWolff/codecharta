@@ -1,5 +1,5 @@
 import { FileValidator } from "./util/fileValidator"
-import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./model/codeCharta.model"
+import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"

@@ -1,5 +1,5 @@
 import "./edgeChooser.component.scss"
-import { MetricData, EdgeMetricCount } from "../../model/codeCharta.model"
+import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"

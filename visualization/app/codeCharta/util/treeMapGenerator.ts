@@ -2,7 +2,7 @@ import * as d3 from "d3"
 import { hierarchy, HierarchyNode, TreemapLayout } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
-import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../model/codeCharta.model"
+import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
 
 export interface SquarifiedValuedCodeMapNode {
 	data: CodeMapNode

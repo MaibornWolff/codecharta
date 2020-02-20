@@ -1,6 +1,6 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import { ColorRange } from "../../model/codeCharta.model"
+import { ColorRange } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"

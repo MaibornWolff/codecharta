@@ -1,4 +1,4 @@
-import { FileSelectionState } from "./codeCharta.model"
+import { FileSelectionState } from "../codeCharta.model"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../util/dataMocks"
 import { Files } from "./files"
 

@@ -1,4 +1,4 @@
-import { CCAction, MapColors } from "../../../../model/codeCharta.model"
+import { CCAction, MapColors } from "../../../../codeCharta.model"
 
 export enum MapColorsActions {
 	SET_MAP_COLORS = "SET_MAP_COLORS"

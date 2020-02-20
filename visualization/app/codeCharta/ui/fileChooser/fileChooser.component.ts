@@ -8,7 +8,7 @@ with the additional ones */
 
 import { DialogService } from "../dialog/dialog.service"
 import { CodeChartaService } from "../../codeCharta.service"
-import { NameDataPair } from "../../model/codeCharta.model"
+import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 

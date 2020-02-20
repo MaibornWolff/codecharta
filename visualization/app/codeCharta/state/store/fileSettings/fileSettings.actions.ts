@@ -1,4 +1,4 @@
-import { CCAction, FileSettings, RecursivePartial } from "../../../model/codeCharta.model"
+import { CCAction, FileSettings, RecursivePartial } from "../../../codeCharta.model"
 import { defaultAttributeTypes } from "./attributeTypes/attributeTypes.actions"
 import { defaultBlacklist } from "./blacklist/blacklist.actions"
 import { defaultEdges } from "./edges/edges.actions"

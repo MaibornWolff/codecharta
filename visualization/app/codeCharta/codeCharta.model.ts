@@ -1,6 +1,6 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
-import { Files } from "./files"
+import { Files } from "./model/files"
 
 export interface NameDataPair {
 	fileName: string

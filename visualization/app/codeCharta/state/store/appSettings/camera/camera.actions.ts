@@ -1,5 +1,5 @@
 import { Vector3 } from "three"
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum CameraActions {
 	SET_CAMERA = "SET_CAMERA"

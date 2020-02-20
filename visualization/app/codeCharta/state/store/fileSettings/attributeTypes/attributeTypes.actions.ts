@@ -1,4 +1,4 @@
-import { AttributeTypes, CCAction } from "../../../../model/codeCharta.model"
+import { AttributeTypes, CCAction } from "../../../../codeCharta.model"
 
 export enum AttributeTypesActions {
 	SET_ATTRIBUTE_TYPES = "SET_ATTRIBUTE_TYPES"

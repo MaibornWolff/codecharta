@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum PresentationModeActions {
 	SET_PRESENTATION_MODE = "SET_PRESENTATION_MODE"

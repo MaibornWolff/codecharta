@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum EdgeMetricActions {
 	SET_EDGE_METRIC = "SET_EDGE_METRIC"

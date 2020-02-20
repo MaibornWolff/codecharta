@@ -1,6 +1,6 @@
 "use strict"
 
-import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../model/codeCharta.model"
+import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"

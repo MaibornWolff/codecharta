@@ -1,5 +1,5 @@
 import { Files } from "../../../model/files"
-import { CCAction, CCFile } from "../../../model/codeCharta.model"
+import { CCAction, CCFile } from "../../../codeCharta.model"
 
 export enum FilesSelectionActions {
 	SET_SINGLE = "SET_SINGLE",

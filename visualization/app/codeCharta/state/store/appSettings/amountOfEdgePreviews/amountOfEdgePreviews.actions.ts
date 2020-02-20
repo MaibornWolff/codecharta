@@ -1,4 +1,4 @@
-import { CCAction } from "../../../../model/codeCharta.model"
+import { CCAction } from "../../../../codeCharta.model"
 
 export enum AmountOfEdgePreviewsActions {
 	SET_AMOUNT_OF_EDGE_PREVIEWS = "SET_AMOUNT_OF_EDGE_PREVIEWS"
