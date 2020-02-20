@@ -1,13 +1,13 @@
 import { hierarchy } from "d3-hierarchy"
-import { MarkedPackage } from "../codeCharta.model"
+import { MarkedPackage, NodeType } from "../codeCharta.model"
 import ignore from "ignore"
 import { CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model"
 
 export class CodeMapHelper {
 	public static getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode): CodeMapNode {
-		const firstTryNode = this.getCodeMapNodeFromPath(path, "File", root)
+		const firstTryNode = this.getCodeMapNodeFromPath(path, NodeType.FILE, root)
 		if (!firstTryNode) {
-			return this.getCodeMapNodeFromPath(path, "Folder", root)
+			return this.getCodeMapNodeFromPath(path, NodeType.FOLDER, root)
 		}
 		return firstTryNode
 	}

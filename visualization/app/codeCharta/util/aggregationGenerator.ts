@@ -1,4 +1,4 @@
-import { CodeMapNode, CCFile } from "../codeCharta.model"
+import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
@@ -30,7 +30,7 @@ export class AggregationGenerator {
 			},
 			map: {
 				name: CodeChartaService.ROOT_NAME,
-				type: "Folder",
+				type: NodeType.FOLDER,
 				children: [],
 				attributes: {},
 				path: CodeChartaService.ROOT_PATH,

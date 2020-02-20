@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { DeltaGenerator } from "./deltaGenerator"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "./dataMocks"
-import { CCFile } from "../codeCharta.model"
+import { CCFile, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 
 describe("deltaGenerator", () => {
@@ -19,19 +19,19 @@ describe("deltaGenerator", () => {
 
 		fileA.map.children.push({
 			name: "onlyA",
-			type: "Folder",
+			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/onlyA",
 			children: [
 				{
 					name: "special",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					path: "/root/onlyA/special",
 					children: [
 						{
 							name: "unicorn",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: { special: 42 },
 							path: "/root/onlyA/special/unicorn"
 						}
@@ -42,19 +42,19 @@ describe("deltaGenerator", () => {
 
 		fileB.map.children.push({
 			name: "onlyA",
-			type: "Folder",
+			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/onlyA",
 			children: [
 				{
 					name: "special",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					path: "/root/onlyA/special",
 					children: [
 						{
 							name: "Narwal",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: { monster: 666 },
 							path: "/root/onlyA/special/Narwal"
 						}
