@@ -9,7 +9,7 @@ import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH, withMockedEventMethods } from "
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
-import { BlacklistType, MarkedPackage } from "../../codeCharta.model"
+import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
 import { addBlacklistItem, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("nodeContextMenuController", () => {
@@ -152,9 +152,9 @@ describe("nodeContextMenuController", () => {
 
 		it("should set the correct building after some timeout", () => {
 			const path = "/root"
-			const nodeType = "Folder"
+			const nodeType = NodeType.FOLDER
 
-			nodeContextMenuController.onShowNodeContextMenu("/root", "Folder", 42, 24)
+			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 			$timeout.flush(100)
 			expect(nodeContextMenuController["_viewModel"].contextMenuBuilding).toEqual(TEST_DELTA_MAP_A.map)
 			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith(path, nodeType, TEST_DELTA_MAP_A.map)
