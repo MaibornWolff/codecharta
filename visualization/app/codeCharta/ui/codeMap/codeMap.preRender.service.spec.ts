@@ -17,6 +17,7 @@ import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSet
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { Vector3 } from "three"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
+import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -164,6 +165,17 @@ describe("codeMapPreRenderService", () => {
 
 			expect(codeMapRenderService.render).not.toHaveBeenCalled()
 		})
+
+		it("should show and stop the loadingMapGif", done => {
+			codeMapPreRenderService["showLoadingMapGif"] = jest.fn()
+
+			codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
+
+			setTimeout(() => {
+				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+		})
 	})
 
 	describe("onScalingChanged", () => {
@@ -172,9 +184,13 @@ describe("codeMapPreRenderService", () => {
 
 			expect(codeMapRenderService.scaleMap).toHaveBeenCalled()
 		})
-		it("should stop the loading map gif", () => {
+
+		it("should show and stop the loadingMapGif", () => {
+			codeMapPreRenderService["showLoadingMapGif"] = jest.fn()
+
 			codeMapPreRenderService.onScalingChanged(new Vector3(1, 2, 3))
 
+			expect(codeMapPreRenderService["showLoadingMapGif"]).toHaveBeenCalled()
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 	})
