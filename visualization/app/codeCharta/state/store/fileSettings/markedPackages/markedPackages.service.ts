@@ -30,7 +30,7 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	private merge(files: Files) {
-		const visibleFiles = files.getVisibleFileStates().map(x => x.file)
+		const visibleFiles = files.getVisibleFiles()
 		const withUpdatedPath = files.isPartialState()
 		const newMarkedPackages = getMergedMarkedPackages(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setMarkedPackages(newMarkedPackages))

@@ -45,7 +45,7 @@ describe("files", () => {
 		it("should set default files", () => {
 			const result = files(state, setFiles())
 
-			expect(result).toEqual(new Files())
+			expect(result).toEqual(defaultFiles)
 		})
 	})
 
@@ -82,7 +82,7 @@ describe("files", () => {
 	})
 
 	describe("Action: SET_DELTA", () => {
-		it("should select a file a file as reference and another as comparison", () => {
+		it("should select a file as reference and another as comparison", () => {
 			const result = files(state, setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
 			expect(result.isDeltaState()).toBeTruthy()
@@ -90,7 +90,7 @@ describe("files", () => {
 	})
 
 	describe("Action: SET_DELTA_BY_NAMES", () => {
-		it("should select a file a file as reference and another as comparison by name", () => {
+		it("should select a file as reference and another as comparison by name", () => {
 			const result = files(state, setDeltaByNames(TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName))
 
 			expect(result.isDeltaState()).toBeTruthy()
@@ -98,7 +98,7 @@ describe("files", () => {
 	})
 
 	describe("Action: SET_MULTIPLE", () => {
-		it("should select a file a file as reference and another as comparison", () => {
+		it("should select two files to view in multiple mode", () => {
 			const result = files(state, setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 
 			expect(result.isPartialState()).toBeTruthy()
