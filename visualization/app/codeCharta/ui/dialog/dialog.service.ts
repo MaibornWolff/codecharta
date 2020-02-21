@@ -79,7 +79,7 @@ export class DialogService {
 			const object = " " + JSON.stringify(error.params[key])
 
 			html += "<p><b>Error #" + (index + 1) + "</b> " + key + " <i>" + object + "</i></p>"
-			html += '<p><i class="fa fa-comment-o" title="Message"></i> ' + _.lowerCase(error.message) + "</p>"
+			html += '<p><i class="fa fa-comment-o" title="Message"></i> ' + error.message + "</p>"
 			html += '<p><i class="fa fa-sitemap" title="Data Path"></i> ' + error.dataPath + "</p>"
 			html += '<p><i class="fa fa-info" title="Schema Path"></i> ' + error.schemaPath + "</p>"
 		})
