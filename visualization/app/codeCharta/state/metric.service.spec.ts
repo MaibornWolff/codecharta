@@ -173,7 +173,7 @@ describe("MetricService", () => {
 	})
 
 	describe("calculateMetrics", () => {
-		it("should return an empty array if there are no fileStates", () => {
+		it("should return an empty array if there are no visible fileStates", () => {
 			storeService.dispatch(resetFiles())
 
 			const result = metricService["calculateMetrics"]()
@@ -184,8 +184,6 @@ describe("MetricService", () => {
 
 		it("should return an array of metricData sorted by name calculated from fileStats and visibleFileStates", () => {
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
-
-			const result = metricService["calculateMetrics"]()
 			const expected = [
 				{ availableInVisibleMaps: true, maxValue: 1000, name: "functions" },
 				{ availableInVisibleMaps: true, maxValue: 100, name: "mcc" },
@@ -193,17 +191,7 @@ describe("MetricService", () => {
 				{ availableInVisibleMaps: true, maxValue: 100, name: "rloc" }
 			]
 
-			expect(result).toEqual(expected)
-		})
-
-		it("should return an array of fileState metrics sorted by name", () => {
 			const result = metricService["calculateMetrics"]()
-			const expected = [
-				{ availableInVisibleMaps: false, maxValue: 1000, name: "functions" },
-				{ availableInVisibleMaps: false, maxValue: 100, name: "mcc" },
-				{ availableInVisibleMaps: false, maxValue: 20, name: "more" },
-				{ availableInVisibleMaps: false, maxValue: 100, name: "rloc" }
-			]
 
 			expect(result).toEqual(expected)
 		})
