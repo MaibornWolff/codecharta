@@ -259,7 +259,7 @@ describe("RangeSliderController", () => {
 		})
 	})
 
-	describe("onFileStatesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should set maxMetricValue", () => {
 			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
