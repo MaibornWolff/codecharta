@@ -13,8 +13,8 @@ export class Files {
 	}
 
 	public resetSelection() {
-		this.files = this.files.map(file => {
-			return { ...file, selectedAs: FileSelectionState.None }
+		this.files = this.files.map(x => {
+			return { ...x, selectedAs: FileSelectionState.None }
 		})
 	}
 
@@ -31,11 +31,11 @@ export class Files {
 	}
 
 	public setSingleByName(fileName: string) {
-		this.files = this.files.map(file => {
-			if (file.file.fileMeta.fileName === fileName) {
-				return { ...file, selectedAs: FileSelectionState.Single }
+		this.files = this.files.map(x => {
+			if (x.file.fileMeta.fileName === fileName) {
+				return { ...x, selectedAs: FileSelectionState.Single }
 			} else {
-				return { ...file, selectedAs: FileSelectionState.None }
+				return { ...x, selectedAs: FileSelectionState.None }
 			}
 		})
 	}
@@ -45,13 +45,13 @@ export class Files {
 	}
 
 	public setDeltaByNames(referenceFileName: string, comparisonFileName: string) {
-		this.files = this.files.map(elem => {
-			if (elem.file.fileMeta.fileName === referenceFileName) {
-				return { ...elem, selectedAs: FileSelectionState.Reference }
-			} else if (elem.file.fileMeta.fileName === comparisonFileName) {
-				return { ...elem, selectedAs: FileSelectionState.Comparison }
+		this.files = this.files.map(x => {
+			if (x.file.fileMeta.fileName === referenceFileName) {
+				return { ...x, selectedAs: FileSelectionState.Reference }
+			} else if (x.file.fileMeta.fileName === comparisonFileName) {
+				return { ...x, selectedAs: FileSelectionState.Comparison }
 			} else {
-				return { ...elem, selectedAs: FileSelectionState.None }
+				return { ...x, selectedAs: FileSelectionState.None }
 			}
 		})
 	}
@@ -61,17 +61,17 @@ export class Files {
 	}
 
 	public setMultipleByNames(partialFileNames: string[]) {
-		this.files = this.files.map(elem => {
-			if (partialFileNames.indexOf(elem.file.fileMeta.fileName) !== -1) {
-				return { ...elem, selectedAs: FileSelectionState.Partial }
+		this.files = this.files.map(x => {
+			if (partialFileNames.indexOf(x.file.fileMeta.fileName) !== -1) {
+				return { ...x, selectedAs: FileSelectionState.Partial }
 			} else {
-				return { ...elem, selectedAs: FileSelectionState.None }
+				return { ...x, selectedAs: FileSelectionState.None }
 			}
 		})
 	}
 
 	public setMultiple(multipleFiles: CCFile[]) {
-		this.setMultipleByNames(multipleFiles.map(file => file.fileMeta.fileName))
+		this.setMultipleByNames(multipleFiles.map(x => x.fileMeta.fileName))
 	}
 
 	public fileStatesAvailable(): boolean {
