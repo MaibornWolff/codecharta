@@ -45,7 +45,7 @@ describe("files", () => {
 		it("should set default files", () => {
 			const result = files(state, setFiles())
 
-			expect(result).toEqual(new Files())
+			expect(result).toEqual(defaultFiles)
 		})
 	})
 
