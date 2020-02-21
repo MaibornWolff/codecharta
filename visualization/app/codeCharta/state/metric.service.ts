@@ -160,22 +160,22 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private getUniqueMetricNames(): string[] {
-		const visibleFileStates = this.storeService.getState().files.getVisibleFileStates()
-		if (visibleFileStates.length === 0) {
+		const files = this.storeService.getState().files
+		if (!files.fileStatesAvailable()) {
 			return []
-		} else {
-			let leaves: HierarchyNode<CodeMapNode>[] = []
-			visibleFileStates.forEach((fileState: FileState) => {
-				leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves())
-			})
-			let attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
-				return d.data.attributes ? Object.keys(d.data.attributes) : []
-			})
-			let attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
-				return left.concat(right.filter(el => left.indexOf(el) === -1))
-			})
-			return attributes.sort()
 		}
+
+		let leaves: HierarchyNode<CodeMapNode>[] = []
+		files.getVisibleFileStates().forEach((fileState: FileState) => {
+			leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves())
+		})
+		const attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
+			return d.data.attributes ? Object.keys(d.data.attributes) : []
+		})
+		const attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
+			return left.concat(right.filter(el => left.indexOf(el) === -1))
+		})
+		return attributes.sort()
 	}
 
 	private sortByAttributeName(metricData: MetricData[]): MetricData[] {
