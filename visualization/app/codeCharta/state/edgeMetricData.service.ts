@@ -81,7 +81,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	private calculateMetrics(): MetricData[] {
-		if (this.storeService.getState().files.getVisibleFileStates().length <= 0) {
+		if (!this.storeService.getState().files.fileStatesAvailable()) {
 			return []
 		} else {
 			const hashMap = this.calculateEdgeMetricData()
