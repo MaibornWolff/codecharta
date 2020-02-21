@@ -61,8 +61,9 @@ describe("codeMapRenderService", () => {
 		fileMeta = _.cloneDeep(TEST_FILE_WITH_PATHS.fileMeta)
 		state = _.cloneDeep(STATE)
 		metricData = _.cloneDeep(METRIC_DATA)
-		fileStates = FILE_STATES
-		map = NodeDecorator.decorateMap(_.cloneDeep(TEST_FILE_WITH_PATHS.map), fileMeta, metricData)
+		fileStates = _.cloneDeep(FILE_STATES)
+		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		NodeDecorator.decorateMap(map, fileMeta, metricData)
 		storeService.dispatch(setState(state))
 	}
 
