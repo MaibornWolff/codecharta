@@ -3,6 +3,7 @@ import {
 	defaultFiles,
 	FilesAction,
 	resetFiles,
+	resetSelection,
 	setDelta,
 	setDeltaByNames,
 	setFiles,
@@ -58,10 +59,12 @@ describe("files", () => {
 	})
 
 	describe("Action: RESET_SELECTION", () => {
-		it("should clear and reset the state", () => {
-			const result = files(state, resetFiles())
+		it("should unselect all files", () => {
+			files(state, setSingle(TEST_DELTA_MAP_A))
 
-			expect(result.getFiles().length).toBe(0)
+			const result = files(state, resetSelection())
+
+			expect(result.fileStatesAvailable()).toBeFalsy()
 		})
 	})
 
