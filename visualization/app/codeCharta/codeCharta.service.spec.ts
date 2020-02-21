@@ -4,7 +4,7 @@ import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { BlacklistType, CCFile } from "./codeCharta.model"
+import { CCFile, BlacklistType, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 
@@ -40,7 +40,7 @@ describe("codeChartaService", () => {
 						link: "http://www.google.de",
 						name: "big leaf",
 						path: "/root/big leaf",
-						type: "File"
+						type: NodeType.FILE
 					},
 					{
 						attributes: {},
@@ -49,23 +49,23 @@ describe("codeChartaService", () => {
 								attributes: { functions: 100, mcc: 100, rloc: 30 },
 								name: "small leaf",
 								path: "/root/Parent Leaf/small leaf",
-								type: "File"
+								type: NodeType.FILE
 							},
 							{
 								attributes: { functions: 1000, mcc: 10, rloc: 70 },
 								name: "other small leaf",
 								path: "/root/Parent Leaf/other small leaf",
-								type: "File"
+								type: NodeType.FILE
 							}
 						],
 						name: "Parent Leaf",
 						path: "/root/Parent Leaf",
-						type: "Folder"
+						type: NodeType.FOLDER
 					}
 				],
 				name: "root",
 				path: "/root",
-				type: "Folder"
+				type: NodeType.FOLDER
 			},
 			settings: { fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] } }
 		}

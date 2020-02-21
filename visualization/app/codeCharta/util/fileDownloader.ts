@@ -1,6 +1,6 @@
 import angular from "angular"
 import * as d3 from "d3"
-import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge } from "../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { stringify } from "querystring"
@@ -72,7 +72,7 @@ export class FileDownloader {
 			delete node.data.visible
 			delete node.data.edgeAttributes
 			delete node.data.path
-			if (node.data.type === "Folder") {
+			if (node.data.type === NodeType.FOLDER) {
 				node.data.attributes = {}
 			} else {
 				delete node.data.attributes["unary"]
