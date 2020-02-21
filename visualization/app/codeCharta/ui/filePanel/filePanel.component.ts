@@ -145,7 +145,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 			return this._viewModel.selectedFileNames.single
 		} else if (this.lastRenderState === FileSelectionState.Partial) {
 			const visibleFileStates = this._viewModel.files.getVisibleFileStates()
-			if (visibleFileStates.length > 0) {
+			if (this._viewModel.files.fileStatesAvailable()) {
 				return visibleFileStates[0].file.fileMeta.fileName
 			} else {
 				return this._viewModel.files.getFiles()[0].file.fileMeta.fileName
