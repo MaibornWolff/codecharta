@@ -942,6 +942,25 @@ export const FILE_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddAttributeContent[] = [
 	}
 ]
 
+export const FILE_ATTRIBUTE_CONTENT_NONE_SELECTED: AddAttributeContent[] = [
+	{ metricName: "Area", currentMetric: "rloc", metricAttributeValue: 48, isSelected: false, isDisabled: false },
+	{
+		metricName: "Height",
+		currentMetric: "mcc",
+		metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+		isSelected: false,
+		isDisabled: false
+	},
+	{ metricName: "Color", currentMetric: "mcc", metricAttributeValue: { from: 19, to: 67 }, isSelected: false, isDisabled: false },
+	{
+		metricName: "Edge",
+		currentMetric: "pairingRate",
+		metricAttributeValue: { edgePreview: 5, edgeHeight: 4 },
+		isSelected: false,
+		isDisabled: false
+	}
+]
+
 export const TEST_NODE_LEAF: Node = {
 	name: "root/big leaf.ts",
 	width: 1,

@@ -40,9 +40,13 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	public addScenario() {
-		if (ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName) || this._viewModel.scenarioName == null) {
+		if (
+			ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName) ||
+			this.isScenarioNameEmpty() ||
+			!this.isFileContentSelected()
+		) {
 			this.dialogService.showErrorDialog(
-				"The Scenario Name is already taken or no scenario Name was chosen.  Please chose another Scenario Name."
+				"Please select a non existing Scenario Name and select at least one attribute to be saved in the Scenario."
 			)
 		} else {
 			const selectedScenarioAttributes: AddAttributeContent[] = this._viewModel.fileContent.filter(x => x.isSelected == true)
@@ -50,6 +54,14 @@ export class DialogAddScenarioSettingsComponent {
 			ScenarioHelper.addScenario(newScenario)
 			this.hide()
 		}
+	}
+
+	private isFileContentSelected() {
+		return this._viewModel.fileContent.filter(x => x.isSelected).length > 0
+	}
+
+	private isScenarioNameEmpty() {
+		return this._viewModel.scenarioName == null
 	}
 
 	private initDialogFields() {

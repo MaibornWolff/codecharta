@@ -7,6 +7,7 @@ import { setState } from "../../state/store/state.actions"
 import {
 	FILE_ATTRIBUTE_CONTENT,
 	FILE_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED,
+	FILE_ATTRIBUTE_CONTENT_NONE_SELECTED,
 	FILE_ATTRIBUTE_CONTENT_WITHOUT_CAMERA,
 	STATE
 } from "../../util/dataMocks"
@@ -56,6 +57,17 @@ describe("DialogAddScenarioSettingsComponent", () => {
 		})
 
 		it("should return an error Message, when the filename is null", () => {
+			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(false)
+			dialogService.showErrorDialog = jest.fn()
+
+			dialogAddScenarioSettings.addScenario()
+
+			expect(dialogService.showErrorDialog).toHaveBeenCalled()
+		})
+
+		it("should return an error Message, when none of the FileConent is selected", () => {
+			dialogAddScenarioSettings["_viewModel"].fileContent = FILE_ATTRIBUTE_CONTENT_NONE_SELECTED
+			dialogAddScenarioSettings["_viewModel"].scenarioName = "scenario1"
 			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(false)
 			dialogService.showErrorDialog = jest.fn()
 
