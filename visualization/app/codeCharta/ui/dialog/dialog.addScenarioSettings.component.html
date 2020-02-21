@@ -1,4 +1,4 @@
-<md-dialog class="download-dialog">
+<md-dialog class="scenario-dialog">
 	<md-toolbar>
 		<div class="md-toolbar-tools">
 			<h2>Add Scenario</h2>
@@ -14,7 +14,7 @@
 
 			<p class="">The file includes:</p>
 
-			<md-input-container ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
+			<md-input-container class="input-container md-block" ng-repeat="item in $ctrl._viewModel.fileContent" class="md-block">
 				<md-checkbox class="dialog-list md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
 					<span>{{::item.metricName}} ({{::item.currentMetric}})</span>
 				</md-checkbox>

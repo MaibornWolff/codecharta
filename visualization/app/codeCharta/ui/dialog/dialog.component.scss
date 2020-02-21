@@ -1,5 +1,5 @@
 .input-container {
-	margin: 0;
+	margin: 0 !important;
 	padding: 0;
 
 	&.md-block {
@@ -52,5 +52,19 @@
 		top: 10px;
 		bottom: initial;
 		right: 0;
+	}
+}
+
+.scenario-dialog {
+	min-width: 50%;
+	.dialog-list {
+		margin: 5px 0 5px 0;
+
+		&.md-block {
+			display: block;
+		}
+	}
+	.filename-input {
+		width: 80%;
 	}
 }
