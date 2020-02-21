@@ -94,7 +94,6 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 		const pathsPerFileState = this.storeService
 			.getState()
 			.files.getVisibleFileStates()
-			.filter(x => x.selectedAs != FileSelectionState.None)
 			.map(fileState => CodeMapHelper.getAllPaths(fileState.file.map))
 		const allFilePaths: string[] = [].concat(...pathsPerFileState)
 		this.storeService
