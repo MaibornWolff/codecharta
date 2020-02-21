@@ -104,7 +104,7 @@ describe("ThreeOrbitControlsService", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should autoFit when the option to do so is enabled", () => {
 			threeOrbitControlsService.autoFitTo = jest.fn()
 

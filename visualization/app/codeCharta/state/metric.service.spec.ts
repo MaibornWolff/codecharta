@@ -72,7 +72,7 @@ describe("MetricService", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		beforeEach(() => {
 			metricService["calculateMetrics"] = jest.fn().mockReturnValue(metricData)
 		})

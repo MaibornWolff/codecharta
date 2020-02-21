@@ -93,7 +93,7 @@ describe("HeightSettingsPanelController", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should set isDeltaState in viewModel", () => {
 			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A))

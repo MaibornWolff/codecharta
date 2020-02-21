@@ -68,7 +68,7 @@ describe("SearchPatternService", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should reset and set empty searchPattern", () => {
 			storeService.dispatch(setSearchPattern("some/search.pattern*"))
 

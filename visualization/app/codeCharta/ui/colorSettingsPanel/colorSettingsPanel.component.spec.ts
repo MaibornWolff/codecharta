@@ -115,7 +115,7 @@ describe("ColorSettingsPanelController", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should detect delta mode selection", () => {
 			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 

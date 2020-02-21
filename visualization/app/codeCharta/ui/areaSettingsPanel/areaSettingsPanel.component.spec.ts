@@ -75,7 +75,7 @@ describe("AreaSettingsPanelController", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should set dynamicMargin to true", () => {
 			areaSettingsPanelController.onFilesSelectionChanged(undefined)
 

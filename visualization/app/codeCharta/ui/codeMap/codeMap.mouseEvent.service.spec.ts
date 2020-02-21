@@ -205,7 +205,7 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should deselect the building", () => {
 			codeMapMouseEventService.onFilesSelectionChanged(undefined)
 

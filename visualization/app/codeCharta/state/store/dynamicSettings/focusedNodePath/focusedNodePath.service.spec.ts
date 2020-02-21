@@ -79,7 +79,7 @@ describe("FocusedNodePathService", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should reset and unfocus node", () => {
 			storeService.dispatch(focusNode("some/path"))
 

@@ -76,7 +76,7 @@ describe("ColorRangeService", () => {
 		})
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should reset the color range", () => {
 			withMockedMetricService()
 

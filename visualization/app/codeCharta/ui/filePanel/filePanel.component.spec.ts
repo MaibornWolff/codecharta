@@ -45,7 +45,7 @@ describe("filePanelController", () => {
 		expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
 	})
 
-	describe("onFilesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should update viewModel with new fileStates", () => {
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
