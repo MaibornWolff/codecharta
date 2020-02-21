@@ -84,7 +84,7 @@ export class Files {
 	}
 
 	public getVisibleFiles(): CCFile[] {
-		return this.files.filter(x => x.selectedAs !== FileSelectionState.None).map(x => x.file)
+		return this.getVisibleFileStates().map(x => x.file)
 	}
 
 	public getVisibleFileStates(): FileState[] {
