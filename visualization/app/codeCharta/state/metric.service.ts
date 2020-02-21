@@ -95,8 +95,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private calculateMetrics(): MetricData[] {
-		const fileStates = this.storeService.getState().files.getFiles()
-		if (fileStates.length <= 0) {
+		if (!this.storeService.getState().files.fileStatesAvailable()) {
 			return []
 		} else {
 			//TODO: keep track of these metrics in service
