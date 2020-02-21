@@ -62,7 +62,7 @@ export class Files {
 
 	public setMultipleByNames(partialFileNames: string[]) {
 		this.files = this.files.map(x => {
-			if (partialFileNames.indexOf(x.file.fileMeta.fileName) !== -1) {
+			if (partialFileNames.includes(x.file.fileMeta.fileName)) {
 				return { ...x, selectedAs: FileSelectionState.Partial }
 			} else {
 				return { ...x, selectedAs: FileSelectionState.None }
