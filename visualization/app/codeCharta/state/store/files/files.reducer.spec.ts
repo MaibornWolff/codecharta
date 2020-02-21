@@ -82,7 +82,7 @@ describe("files", () => {
 	})
 
 	describe("Action: SET_DELTA", () => {
-		it("should select a file a file as reference and another as comparison", () => {
+		it("should select a file as reference and another as comparison", () => {
 			const result = files(state, setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
 			expect(result.isDeltaState()).toBeTruthy()
