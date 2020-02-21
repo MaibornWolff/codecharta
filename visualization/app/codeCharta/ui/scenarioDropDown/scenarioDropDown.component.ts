@@ -107,6 +107,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
 	public removeScenario(scenarioName) {
 		ScenarioHelper.deleteScenario(scenarioName)
+		this.dialogService.showErrorDialog(scenarioName + " deleted.", "Info")
 	}
 }
 
