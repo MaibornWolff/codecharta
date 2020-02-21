@@ -98,7 +98,7 @@ describe("files", () => {
 	})
 
 	describe("Action: SET_MULTIPLE", () => {
-		it("should select a file a file as reference and another as comparison", () => {
+		it("should select two files to view in multiple mode", () => {
 			const result = files(state, setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 
 			expect(result.isPartialState()).toBeTruthy()
