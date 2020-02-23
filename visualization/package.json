@@ -189,7 +189,6 @@
 		"redux": "^4.0.4",
 		"rfdc": "^1.1.4",
 		"rimraf": "^2.6.2",
-		"roboto-fontface": "^0.10.0",
 		"sass-loader": "^7.1.0",
 		"style-loader": "^0.23.1",
 		"three": "^0.89.0",
