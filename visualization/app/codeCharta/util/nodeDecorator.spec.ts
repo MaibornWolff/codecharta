@@ -1,6 +1,6 @@
 import * as d3 from "d3"
 import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
-import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta } from "../codeCharta.model"
+import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
@@ -32,29 +32,29 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should aggregate given metrics correctly", () => {
-			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			NodeDecorator.decorateParentNodesWithSumAttributes(map, blacklist, metricData, [], false)
 
-			expect(result.attributes["rloc"]).toBe(200)
-			expect(result.attributes["functions"]).toBe(1110)
-			expect(result.attributes["mcc"]).toBe(111)
+			expect(map.attributes["rloc"]).toBe(200)
+			expect(map.attributes["functions"]).toBe(1110)
+			expect(map.attributes["mcc"]).toBe(111)
 		})
 
 		it("should aggregate missing metrics correctly", () => {
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
-			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			NodeDecorator.decorateParentNodesWithSumAttributes(map, blacklist, metricData, [], false)
 
-			expect(result.attributes["rloc"]).toBe(200)
-			expect(result.attributes["some"]).toBe(0)
-			expect(result.attributes["some other attribute"]).not.toBeDefined()
+			expect(map.attributes["rloc"]).toBe(200)
+			expect(map.attributes["some"]).toBe(0)
+			expect(map.attributes["some other attribute"]).not.toBeDefined()
 		})
 
 		it("leaves should have all metrics", () => {
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
 
-			let h = d3.hierarchy(result)
+			const h = d3.hierarchy(map)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBe(0)
@@ -68,8 +68,8 @@ describe("nodeDecorator", () => {
 			map.children[0].attributes = undefined
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
 
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			let h = d3.hierarchy(result)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			const h = d3.hierarchy(map)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBe(0)
@@ -83,27 +83,27 @@ describe("nodeDecorator", () => {
 			map.children = [
 				{
 					name: "middle",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
 							name: "a",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						},
 						{
 							name: "b",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						}
 					]
 				}
 			]
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			expect(result.name).toBe("root/middle")
-			expect(result.children.length).toBe(2)
-			expect(result.children[0].name).toBe("a")
-			expect(result.children[1].name).toBe("b")
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			expect(map.name).toBe("root/middle")
+			expect(map.children.length).toBe(2)
+			expect(map.children[0].name).toBe("a")
+			expect(map.children[1].name).toBe("b")
 		})
 
 		it("should collect links correctly", () => {
@@ -111,25 +111,25 @@ describe("nodeDecorator", () => {
 			map.children = [
 				{
 					name: "middle",
-					type: "File",
+					type: NodeType.FILE,
 					attributes: {},
 					link: "link1",
 					children: [
 						{
 							name: "a",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						},
 						{
 							name: "b",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						}
 					]
 				}
 			]
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			expect(result.link).toBe("link1")
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			expect(map.link).toBe("link1")
 		})
 
 		it("should collect paths correctly", () => {
@@ -138,74 +138,74 @@ describe("nodeDecorator", () => {
 				{
 					name: "middle",
 					path: "/root/middle",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
 							name: "a",
-							type: "File",
+							type: NodeType.FILE,
 							path: "/root/middle/a",
 							attributes: {}
 						},
 						{
 							name: "b",
-							type: "File",
+							type: NodeType.FILE,
 							path: "/root/middle/b",
 							attributes: {}
 						}
 					]
 				}
 			]
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			expect(result.path).toBe("/root/middle")
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			expect(map.path).toBe("/root/middle")
 		})
 
 		it("should not compact with single leaves", () => {
 			map.children = [
 				{
 					name: "middle",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
 							name: "singleLeaf",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						}
 					]
 				}
 			]
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			expect(result.name).toBe("root/middle")
-			expect(result.children.length).toBe(1)
-			expect(result.children[0].name).toBe("singleLeaf")
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			expect(map.name).toBe("root/middle")
+			expect(map.children.length).toBe(1)
+			expect(map.children[0].name).toBe("singleLeaf")
 		})
 
 		it("should compact intermediate middle packages", () => {
 			map.children = [
 				{
 					name: "start",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					attributes: {},
 					children: [
 						{
 							name: "middle",
-							type: "Folder",
+							type: NodeType.FOLDER,
 							attributes: {},
 							children: [
 								{
 									name: "middle2",
-									type: "Folder",
+									type: NodeType.FOLDER,
 									attributes: {},
 									children: [
 										{
 											name: "a",
-											type: "File",
+											type: NodeType.FILE,
 											attributes: {}
 										},
 										{
 											name: "b",
-											type: "File",
+											type: NodeType.FILE,
 											attributes: {}
 										}
 									]
@@ -214,34 +214,34 @@ describe("nodeDecorator", () => {
 						},
 						{
 							name: "c",
-							type: "File",
+							type: NodeType.FILE,
 							attributes: {}
 						}
 					]
 				}
 			]
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			expect(result.name).toBe("root/start")
-			expect(result.children.length).toBe(2)
-			expect(result.children[0].name).toBe("middle/middle2")
-			expect(result.children[1].name).toBe("c")
-			expect(result.children[0].children.length).toBe(2)
-			expect(result.children[0].children[0].name).toBe("a")
-			expect(result.children[0].children[1].name).toBe("b")
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			expect(map.name).toBe("root/start")
+			expect(map.children.length).toBe(2)
+			expect(map.children[0].name).toBe("middle/middle2")
+			expect(map.children[1].name).toBe("c")
+			expect(map.children[0].children.length).toBe(2)
+			expect(map.children[0].children[0].name).toBe("a")
+			expect(map.children[0].children[1].name).toBe("b")
 		})
 	})
 
 	describe("preDecorateFile", () => {
 		it("should decorate nodes with the correct path", () => {
-			const result = NodeDecorator.preDecorateFile(file)
+			NodeDecorator.preDecorateFile(file)
 
-			let h = d3.hierarchy(result.map)
+			const h = d3.hierarchy(file.map)
 			h.each(node => {
 				expect(node.data.path).toBeDefined()
 			})
 
-			expect(result.map.path).toBe("/root")
-			expect(result.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
+			expect(file.map.path).toBe("/root")
+			expect(file.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
 		})
 	})
 
@@ -251,9 +251,9 @@ describe("nodeDecorator", () => {
 			map.children[1].attributes = { some: 1 }
 			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
 
-			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
-			let h = d3.hierarchy(result)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			NodeDecorator.decorateParentNodesWithSumAttributes(map, blacklist, metricData, [], false)
+			const h = d3.hierarchy(map)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBeDefined()
@@ -261,9 +261,9 @@ describe("nodeDecorator", () => {
 		})
 
 		it("all nodes should have an attribute list with listed and available metrics", () => {
-			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
-			let h = d3.hierarchy(result)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			NodeDecorator.decorateParentNodesWithSumAttributes(map, blacklist, metricData, [], false)
+			const h = d3.hierarchy(map)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes["rloc"]).toBeDefined()
@@ -272,18 +272,18 @@ describe("nodeDecorator", () => {
 		})
 
 		it("folders should have sum attributes of children", () => {
-			let result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], false)
-			let h = d3.hierarchy(result)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			NodeDecorator.decorateParentNodesWithSumAttributes(map, blacklist, metricData, [], false)
+			const h = d3.hierarchy(map)
 			expect(h.data.attributes["rloc"]).toBe(200)
 			expect(h.children[0].data.attributes["rloc"]).toBe(100)
 			expect(h.data.attributes["functions"]).toBe(1110)
 		})
 
 		it("folders should have sum delta values of children", () => {
-			let result = NodeDecorator.decorateMap(deltaMap, fileMeta, metricData)
-			result = NodeDecorator.decorateParentNodesWithSumAttributes(result, blacklist, metricData, [], true)
-			let h = d3.hierarchy(result)
+			NodeDecorator.decorateMap(deltaMap, fileMeta, metricData)
+			NodeDecorator.decorateParentNodesWithSumAttributes(deltaMap, blacklist, metricData, [], true)
+			const h = d3.hierarchy(deltaMap)
 			expect(h.data.deltas["rloc"]).toBe(295)
 			expect(h.children[0].data.deltas["rloc"]).toBe(300)
 			expect(h.children[2].data.deltas["rloc"]).toBe(145)
@@ -291,9 +291,9 @@ describe("nodeDecorator", () => {
 		})
 
 		it("maps with no attribute nodes should be accepted and an attributes member added", () => {
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
 
-			let h = d3.hierarchy(result)
+			const h = d3.hierarchy(map)
 
 			h.each(node => {
 				expect(node.data.attributes["unary"]).toBeDefined()
@@ -302,8 +302,8 @@ describe("nodeDecorator", () => {
 
 		it("all nodes should have a unary attribute", () => {
 			map.children[0].attributes = {}
-			const result = NodeDecorator.decorateMap(map, fileMeta, metricData)
-			let h = d3.hierarchy(result)
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+			const h = d3.hierarchy(map)
 			h.each(node => {
 				expect(node.data.attributes["unary"]).toBeDefined()
 			})

@@ -1,5 +1,6 @@
 import { FileValidator } from "./fileValidator"
 import { TEST_FILE_CONTENT } from "./dataMocks"
+import { NodeType } from "../codeCharta.model"
 
 describe("FileValidator", () => {
 	let file
@@ -56,9 +57,9 @@ describe("FileValidator", () => {
 
 	it("should reject when children are not unique in name+type", () => {
 		file.nodes[0].children[0].name = "same"
-		file.nodes[0].children[0].type = "File"
+		file.nodes[0].children[0].type = NodeType.FILE
 		file.nodes[0].children[1].name = "same"
-		file.nodes[0].children[1].type = "File"
+		file.nodes[0].children[1].type = NodeType.FILE
 		const errors = FileValidator.validate(file)
 		expectFileToBeInvalid(errors)
 	})

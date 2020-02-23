@@ -63,9 +63,10 @@ code-charta-component {
 	}
 
 	.small-action-button {
+		display: inline-block;
 		height: 24px;
 		width: 24px;
-		float: left;
+		vertical-align: top;
 
 		.md-fab {
 			min-height: 0;
