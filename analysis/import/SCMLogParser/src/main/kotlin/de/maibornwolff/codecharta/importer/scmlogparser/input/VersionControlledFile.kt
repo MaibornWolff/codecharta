@@ -7,7 +7,7 @@ import java.util.*
 
 class VersionControlledFile internal constructor(
         filename: String,
-        private val metrics: List<Metric>
+        private var metrics: List<Metric>
 ) {
 
     // actual filename
@@ -84,5 +84,9 @@ class VersionControlledFile internal constructor(
 
     fun getMetricValue(metricName: String): Number {
         return metrics.first { it.metricName() == metricName }.value()
+    }
+
+    fun removeMetricsToFreeMemory() {
+        metrics = listOf()
     }
 }

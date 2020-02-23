@@ -1,5 +1,5 @@
 import { VALID_NODE_WITH_PATH } from "./dataMocks"
-import { CodeMapNode } from "../codeCharta.model"
+import { CodeMapNode, NodeType } from "../codeCharta.model"
 import { MapBuilder } from "./mapBuilder"
 
 describe("mapBuilder", () => {
@@ -30,7 +30,7 @@ describe("mapBuilder", () => {
 		it("should find child node", () => {
 			const expected: CodeMapNode = {
 				name: "big leaf",
-				type: "File",
+				type: NodeType.FILE,
 				path: "/root/big leaf",
 				children: [],
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
@@ -42,7 +42,7 @@ describe("mapBuilder", () => {
 		it("should find grand-child node", () => {
 			const expected: CodeMapNode = {
 				name: "other small leaf",
-				type: "File",
+				type: NodeType.FILE,
 				path: "/root/Parent Leaf/other small leaf",
 				children: [],
 				attributes: { rloc: 70, functions: 1000, mcc: 10 }

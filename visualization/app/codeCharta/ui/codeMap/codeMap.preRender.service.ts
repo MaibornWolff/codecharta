@@ -16,7 +16,8 @@ import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings
 import _ from "lodash"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -59,7 +60,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!_.values(ScalingActions).includes(actionType) &&
-			!_.values(IsLoadingMapActions).includes(actionType)
+			!_.values(IsLoadingMapActions).includes(actionType) &&
+			!_.values(IsLoadingFileActions).includes(actionType)
 		) {
 			this.debounceRendering()
 		}
@@ -89,7 +91,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private decorateIfPossible() {
 		if (this.unifiedMap && this.fileStateService.fileStatesAvailable() && this.unifiedFileMeta && this.metricService.getMetricData()) {
-			this.unifiedMap = NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
+			NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
 				this.unifiedMap,
@@ -114,7 +116,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private getSelectedFilesAsUnifiedMap(): CCFile {
-		const fileStates: FileState[] = _.cloneDeep(this.fileStateService.getFileStates())
+		const fileStates: FileState[] = clone(this.fileStateService.getFileStates())
 		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
 
 		if (FileStateHelper.isSingleState(fileStates)) {
@@ -140,17 +142,14 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private renderAndNotify() {
 		this.codeMapRenderService.render(this.unifiedMap)
-
-		if (this.storeService.getState().appSettings.isLoadingFile) {
-			this.notifyLoadingFileStatus()
-		}
-		this.notifyLoadingMapStatus()
+		this.removeLoadingGifs()
 		this.notifyMapChanged()
 	}
 
 	private scaleMapAndNotify() {
+		this.showLoadingMapGif()
 		this.codeMapRenderService.scaleMap()
-		this.notifyLoadingMapStatus()
+		this.removeLoadingGifs()
 	}
 
 	private allNecessaryRenderDataAvailable(): boolean {
@@ -173,12 +172,15 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		)
 	}
 
-	private notifyLoadingFileStatus() {
-		this.storeService.dispatch(setIsLoadingFile(false))
+	private removeLoadingGifs() {
+		if (this.storeService.getState().appSettings.isLoadingFile) {
+			this.storeService.dispatch(setIsLoadingFile(false))
+		}
+		this.storeService.dispatch(setIsLoadingMap(false))
 	}
 
-	private notifyLoadingMapStatus() {
-		this.storeService.dispatch(setIsLoadingMap(false))
+	private showLoadingMapGif() {
+		this.storeService.dispatch(setIsLoadingMap(true))
 	}
 
 	private notifyMapChanged() {

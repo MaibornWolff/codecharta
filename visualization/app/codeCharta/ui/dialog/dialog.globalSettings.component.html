@@ -1,13 +1,11 @@
 <md-dialog class="global-settings">
 	<md-toolbar>
-		<div class="md-toolbar-tools">
-			<h2>Global Settings</h2>
-		</div>
+		<h2 class="md-toolbar-tools">Global Settings</h2>
 	</md-toolbar>
 
 	<md-dialog-content>
 		<div class="md-dialog-content">
-			<md-input-container class="md-block">
+			<md-input-container class="input-container md-block">
 				<md-checkbox
 					class="md-primary"
 					ng-model="$ctrl._viewModel.hideFlatBuildings"
@@ -17,7 +15,7 @@
 				</md-checkbox>
 			</md-input-container>
 
-			<md-input-container class="md-block">
+			<md-input-container class="input-container md-block">
 				<md-checkbox
 					class="md-primary"
 					ng-model="$ctrl._viewModel.resetCameraIfNewFileIsLoaded"
@@ -27,7 +25,7 @@
 				</md-checkbox>
 			</md-input-container>
 
-			<md-input-container class="md-block">
+			<md-input-container class="input-container md-block">
 				<md-checkbox
 					class="md-primary"
 					ng-model="$ctrl._viewModel.isWhiteBackground"
