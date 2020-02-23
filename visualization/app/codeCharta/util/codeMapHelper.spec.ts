@@ -1,5 +1,5 @@
 import { CodeMapHelper } from "./codeMapHelper"
-import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
 import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH_AND_EXTENSION } from "./dataMocks"
 
@@ -33,7 +33,7 @@ describe("codeMapHelper", () => {
 		it("should return the root if path matches path of root", () => {
 			const expected = testRoot
 
-			const result = CodeMapHelper.getCodeMapNodeFromPath("/root", "Folder", testRoot)
+			const result = CodeMapHelper.getCodeMapNodeFromPath("/root", NodeType.FOLDER, testRoot)
 
 			expect(result).toEqual(expected)
 		})
@@ -41,19 +41,19 @@ describe("codeMapHelper", () => {
 		it("should return the node that matches path and type", () => {
 			const expected = testRoot.children[1]
 
-			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "Folder", testRoot)
+			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FOLDER, testRoot)
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should return null if no node matches path and type", () => {
-			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Uncle Leaf", "Folder", testRoot)
+			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Uncle Leaf", NodeType.FOLDER, testRoot)
 
 			expect(result).toBeNull()
 		})
 
 		it("should return null if a node only matches path", () => {
-			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", "File", testRoot)
+			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FILE, testRoot)
 
 			expect(result).toBeNull()
 		})
@@ -65,7 +65,7 @@ describe("codeMapHelper", () => {
 
 			CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
 
-			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "File", testRoot)
+			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", NodeType.FILE, testRoot)
 		})
 
 		it("should call getCodeMapNodeFromPath with type Folder when no file was found and return null", () => {
@@ -73,7 +73,7 @@ describe("codeMapHelper", () => {
 
 			const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
 
-			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", "Folder", testRoot)
+			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", NodeType.FOLDER, testRoot)
 			expect(result).toBeNull()
 		})
 

@@ -5,6 +5,7 @@ import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import _ from "lodash"
+import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -20,8 +21,8 @@ export class StoreService {
 	}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
-		if (!isSilent && !_.values(IsLoadingMapActions).includes(action.type)) {
-			this.store.dispatch(setIsLoadingMap(true))
+		if (!(_.values(IsLoadingMapActions).includes(action.type) || _.values(IsLoadingFileActions).includes(action.type) || isSilent)) {
+			this.dispatch(setIsLoadingMap(true))
 		}
 
 		splitStateActions(action).forEach(atomicAction => {
