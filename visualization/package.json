@@ -180,7 +180,6 @@
 		"makeshift": "^1.1.0",
 		"ng-annotate-loader": "^0.6.1",
 		"node-sass": "^4.11.0",
-		"path": "^0.12.7",
 		"plop": "^2.1.0",
 		"prettier": "^1.16.4",
 		"pretty-quick": "^1.10.0",
