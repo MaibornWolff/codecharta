@@ -140,6 +140,8 @@ describe("ThreeOrbitControlsService", () => {
 		})
 	})
 
+	describe("set")
+
 	describe("onUnfocusNode", () => {
 		it("should call resetCamera", () => {
 			threeOrbitControlsService.autoFitTo = jest.fn()

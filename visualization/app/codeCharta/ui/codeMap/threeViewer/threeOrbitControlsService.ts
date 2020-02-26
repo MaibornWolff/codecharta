@@ -10,6 +10,7 @@ import {
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FileStateService, FileStateSubscriber } from "../../../state/fileState.service"
 import { FileState } from "../../../codeCharta.model"
+import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -47,6 +48,11 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}
+	}
+
+	public setControlTarget() {
+		const cameraTarget: Vector3 = this.storeService.getState().appSettings.cameraTarget
+		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
 	}
 
 	public rotateCameraInVectorDirection(x: number, y: number, z: number) {
@@ -131,6 +137,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public onInput(camera: PerspectiveCamera) {
+		this.storeService.dispatch(setCameraTarget(this.controls.target), true)
 		this.$rootScope.$broadcast(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, camera)
 	}
 
