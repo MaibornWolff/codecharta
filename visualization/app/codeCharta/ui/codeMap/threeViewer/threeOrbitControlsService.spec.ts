@@ -9,6 +9,7 @@ import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { StoreService } from "../../../state/store.service"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { setResetCameraIfNewFileIsLoaded } from "../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -140,7 +141,16 @@ describe("ThreeOrbitControlsService", () => {
 		})
 	})
 
-	describe("set")
+	describe("setControlTarget", () => {
+		it("should set the controlTarget to the store cameraTarget", () => {
+			const result: Vector3 = new Vector3(1, 1, 1)
+			storeService.dispatch(setCameraTarget(result))
+
+			threeOrbitControlsService.setControlTarget()
+
+			expect(threeOrbitControlsService.controls.target).toEqual(result)
+		})
+	})
 
 	describe("onUnfocusNode", () => {
 		it("should call resetCamera", () => {
