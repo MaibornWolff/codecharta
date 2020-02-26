@@ -4,12 +4,13 @@ import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType } from "../codeCharta.model"
 import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
-import { DEFAULT_STATE, STATE } from "../util/dataMocks"
+import { DEFAULT_STATE, STATE, withMockedEventMethods } from "../util/dataMocks"
 import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
 import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
+import { setCamera } from "./store/appSettings/camera/camera.actions"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { setDynamicMargin } from "./store/appSettings/dynamicMargin/dynamicMargin.actions"
+import { setIsLoadingFile } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -18,6 +19,7 @@ describe("StoreService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
+		withMockedEventMethods($rootScope)
 	})
 
 	function restartSystem() {
@@ -46,8 +48,6 @@ describe("StoreService", () => {
 		})
 
 		it("should notify store change and update the store", () => {
-			$rootScope.$broadcast = jest.fn()
-
 			const item: BlacklistItem = { type: BlacklistType.exclude, path: "foo/bar" }
 			const action: BlacklistAction = { type: BlacklistActions.ADD_BLACKLIST_ITEM, payload: item }
 
@@ -65,6 +65,7 @@ describe("StoreService", () => {
 			}
 
 			storeService.dispatch(setState({ dynamicSettings: partialState }))
+
 			const result = storeService.getState()
 
 			expect(result.appSettings).toEqual(DEFAULT_STATE.appSettings)
@@ -83,6 +84,7 @@ describe("StoreService", () => {
 			}
 
 			storeService.dispatch(setDynamicSettings(partialState))
+
 			const result = storeService.getState()
 
 			expect(result.appSettings).toEqual(DEFAULT_STATE.appSettings)
@@ -106,18 +108,23 @@ describe("StoreService", () => {
 			expect(storeService.getState()).toEqual(STATE)
 		})
 
-		it("should show loading map gif when state changes", () => {
-			storeService.dispatch(setIsLoadingMap(false))
+		it("should dispatch an action silently and not notify subscribers", () => {
+			storeService.dispatch(setCamera(), true)
 
-			storeService.dispatch(setState())
-
-			expect(storeService.getState().appSettings.isLoadingMap).toBeTruthy()
+			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 
-		it("should not set state, if triggered silently", () => {
+		it("should dispatch an action silently and not show the loading-gif", () => {
 			storeService.dispatch(setIsLoadingMap(false))
 
-			storeService.dispatch(setDynamicMargin(true), true)
+			storeService.dispatch(setCamera(), true)
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+		})
+
+		it("should show not the loading-gif when an action is triggered, that changes the loading-gif state", () => {
+			storeService.dispatch(setIsLoadingMap(false))
+			storeService.dispatch(setIsLoadingFile(false))
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
