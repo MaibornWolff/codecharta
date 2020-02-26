@@ -150,7 +150,6 @@
 		"angular-animate": "^1.6.9",
 		"angular-aria": "^1.6.9",
 		"angular-material": "^1.1.7",
-		"angular-messages": "^1.6.9",
 		"angular-mocks": "^1.6.9",
 		"angularjs-slider": "^7.0.0",
 		"babel-cli": "^6.18.0",
