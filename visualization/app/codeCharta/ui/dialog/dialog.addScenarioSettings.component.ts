@@ -71,7 +71,10 @@ export class DialogAddScenarioSettingsComponent {
 	private setFileContentList() {
 		const dynamicSettings: DynamicSettings = this.storeService.getState().dynamicSettings
 		const appSettings: AppSettings = this.storeService.getState().appSettings
-		this.pushFileContent(ScenarioCheckboxNames.CAMERA_POSITION, null, appSettings.camera)
+		this.pushFileContent(ScenarioCheckboxNames.CAMERA_POSITION, null, {
+			camera: appSettings.camera,
+			cameraTarget: appSettings.cameraTarget
+		})
 		this.pushFileContent(ScenarioCheckboxNames.AREA_METRIC, dynamicSettings.areaMetric, dynamicSettings.margin)
 		this.pushFileContent(ScenarioCheckboxNames.HEIGHT_METRIC, dynamicSettings.heightMetric, {
 			heightSlider: appSettings.scaling,

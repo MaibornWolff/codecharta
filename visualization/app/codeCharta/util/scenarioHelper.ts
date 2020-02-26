@@ -60,7 +60,8 @@ export class ScenarioHelper {
 		scenarioAttributes.forEach(attribute => {
 			switch (attribute.metricName) {
 				case ScenarioCheckboxNames.CAMERA_POSITION: {
-					partialAppSettings.camera = attribute.metricAttributeValue
+					partialAppSettings.camera = attribute.metricAttributeValue["camera"]
+					partialAppSettings.cameraTarget = attribute.metricAttributeValue["cameraTarget"]
 					break
 				}
 				case ScenarioCheckboxNames.AREA_METRIC: {

@@ -392,7 +392,8 @@ export const SCENARIO: Scenario = {
 			amountOfEdgePreviews: 5,
 			edgeHeight: 4,
 			scaling: new Vector3(1, 1.8, 1),
-			camera: new Vector3(0, 300, 1000)
+			camera: new Vector3(0, 300, 1000),
+			cameraTarget: new Vector3(1, 1, 1)
 		}
 	}
 }
@@ -758,6 +759,7 @@ export const STATE: State = {
 		edgeHeight: 4,
 		scaling: new Vector3(1, 1.8, 1),
 		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(177, 0, 299),
 		invertDeltaColors: false,
 		hideFlatBuildings: true,
 		invertHeight: true,
@@ -798,6 +800,7 @@ export const DEFAULT_STATE: State = {
 		amountOfEdgePreviews: 1,
 		edgeHeight: 4,
 		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(177, 0, 299),
 		invertDeltaColors: false,
 		dynamicMargin: true,
 		hideFlatBuildings: false,
@@ -875,7 +878,7 @@ export const FILE_ATTRIBUTE_CONTENT: AddAttributeContent[] = [
 	{
 		metricName: "CameraPosition",
 		currentMetric: null,
-		metricAttributeValue: new Vector3(0, 300, 1000),
+		metricAttributeValue: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(177, 0, 299) },
 		isSelected: true,
 		isDisabled: false
 	},

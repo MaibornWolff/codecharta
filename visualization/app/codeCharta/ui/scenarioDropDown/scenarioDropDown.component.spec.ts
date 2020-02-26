@@ -11,16 +11,18 @@ import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
 import { DEFAULT_SCENARIO, STATE } from "../../util/dataMocks"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 describe("ScenarioDropDownController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let dialogService: DialogService
+	let threeOrbitControlsService: ThreeOrbitControlsService
 	let scenarioButtonsController: ScenarioDropDownController
 	let metricData: MetricData[]
 
 	function rebuildController() {
-		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, dialogService)
+		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, dialogService, threeOrbitControlsService)
 	}
 
 	function restartSystem() {
@@ -29,6 +31,7 @@ describe("ScenarioDropDownController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
+		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
 		metricData = [
 			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
@@ -67,15 +70,17 @@ describe("ScenarioDropDownController", () => {
 	})
 
 	describe("applyScenario", () => {
-		it("should call getScenarioSettingsByName and call store.dispatch with scenarioSettings", () => {
+		it("should call getScenarioSettingsByName, setControl and call store.dispatch with scenarioSettings", () => {
 			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(STATE)
 			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
+			threeOrbitControlsService.setControlTarget = jest.fn()
 
 			scenarioButtonsController.applyScenario("Scenario1")
 
 			expect(storeService.dispatch).toHaveBeenCalledWith(setState(STATE))
 			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange(STATE.dynamicSettings.colorRange))
+			expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalled()
 		})
 		it("should not apply the Scenario when isScenarioAppliable returns false", () => {
 			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(STATE)

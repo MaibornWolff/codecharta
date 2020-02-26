@@ -9,6 +9,7 @@ import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
+import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 export class ScenarioDropDownController implements MetricServiceSubscriber {
 	private _viewModel: {
@@ -19,7 +20,12 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 
 	private availableMetrics: MetricData[]
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private dialogService: DialogService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private dialogService: DialogService,
+		private threeOrbitControlsService: ThreeOrbitControlsService
+	) {
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
@@ -38,6 +44,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		if (this.isScenarioAppliable(scenarioSettings.dynamicSettings)) {
 			this.storeService.dispatch(setState(scenarioSettings))
 			this.storeService.dispatch(setColorRange(scenarioSettings.dynamicSettings.colorRange as ColorRange))
+			this.threeOrbitControlsService.setControlTarget()
 		} else {
 			this.dialogService.showErrorDialog("This metric is not appliable, because not all metrics are available for this map.")
 		}

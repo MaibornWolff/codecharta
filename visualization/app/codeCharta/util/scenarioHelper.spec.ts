@@ -94,7 +94,7 @@ describe("scenarioHelper", () => {
 			{
 				metricName: ScenarioCheckboxNames.CAMERA_POSITION,
 				currentMetric: null,
-				metricAttributeValue: new Vector3(0, 300, 1000),
+				metricAttributeValue: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(1, 1, 1) },
 				isSelected: true,
 				isDisabled: false
 			},
