@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
@@ -46,6 +47,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(CameraTargetService.name), CameraTargetService)
 	.service(_.camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(_.camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(_.camelCase(MapSizeService.name), MapSizeService)

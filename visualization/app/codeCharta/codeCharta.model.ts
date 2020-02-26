@@ -104,6 +104,7 @@ export interface AppSettings {
 	edgeHeight: number
 	scaling: Vector3
 	camera: Vector3
+	cameraTarget: Vector3
 	hideFlatBuildings: boolean
 	invertColorRange: boolean
 	invertDeltaColors: boolean
