@@ -14,11 +14,11 @@ import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colo
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
 describe("ScenarioDropDownController", () => {
+	let scenarioButtonsController: ScenarioDropDownController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let dialogService: DialogService
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let scenarioButtonsController: ScenarioDropDownController
 	let metricData: MetricData[]
 
 	function rebuildController() {
@@ -114,6 +114,23 @@ describe("ScenarioDropDownController", () => {
 			const result = scenarioButtonsController.getVisibility("notAnIcon", "Complexity")
 
 			expect(result).toEqual("")
+		})
+	})
+
+	describe("getButtonColor", () => {
+		it("should return black if map has been changed", () => {
+			scenarioButtonsController["_viewModel"].isScenarioChanged = true
+
+			const result = scenarioButtonsController.getButtonColor()
+
+			expect(result).toEqual("black")
+		})
+		it("should return gray if map has not been changed", () => {
+			scenarioButtonsController["_viewModel"].isScenarioChanged = false
+
+			const result = scenarioButtonsController.getButtonColor()
+
+			expect(result).toEqual("gray")
 		})
 	})
 

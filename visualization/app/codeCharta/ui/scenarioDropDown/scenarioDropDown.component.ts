@@ -14,8 +14,10 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 export class ScenarioDropDownController implements MetricServiceSubscriber {
 	private _viewModel: {
 		scenarios: Scenario[]
+		isScenarioChanged: boolean
 	} = {
-		scenarios: null
+		scenarios: null,
+		isScenarioChanged: false
 	}
 
 	private availableMetrics: MetricData[]
@@ -36,6 +38,10 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this._viewModel.scenarios = ScenarioHelper.getScenarios()
 		this.availableMetrics = metricData
+	}
+
+	public getButtonColor() {
+		return this._viewModel.isScenarioChanged ? "black" : "gray"
 	}
 
 	public applyScenario(scenarioName: string) {

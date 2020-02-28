@@ -1,5 +1,5 @@
 <md-menu>
-	<md-button class="scenario-button" ng-click="$ctrl.loadScenarios(); $mdMenu.open($event)">
+	<md-button class="scenario-button" ng-style="{'color': $ctrl.getButtonColor()}" ng-click="$ctrl.loadScenarios(); $mdMenu.open($event)">
 		<i class="fa fa-star"></i>
 	</md-button>
 	<md-menu-content width="2">
@@ -11,7 +11,7 @@
 
 		<md-divider></md-divider>
 
-		<md-menu-item>
+		<md-menu-item ng-hide="!$ctrl._viewModel.isScenarioChanged">
 			<label>Custom Scenario</label>
 			<md-button
 				ng-click="$ctrl.showAddScenarioSettings()"
