@@ -15,25 +15,35 @@ export class CodeChartaService {
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
+			let isFirstValidFile = true
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
 				let errors = validateApiVersion(nameDataPair.content)
 				if (errors.length > 0) {
 					reject(errors)
 				}
+
 				const migratedFile = migrate(nameDataPair.content)
 				errors = validate(migratedFile)
-				if (errors.length === 0) {
-					const ccFile = this.getCCFile(nameDataPair.fileName, migratedFile)
-					NodeDecorator.preDecorateFile(ccFile)
-					this.fileStateService.addFile(ccFile)
-				} else {
+				if (errors.length > 0) {
 					reject(errors)
 				}
+
+				if (isFirstValidFile) {
+					this.fileStateService.resetMaps()
+					isFirstValidFile = false
+				}
+				this.addFile(nameDataPair.fileName, migratedFile)
 			})
 
 			this.fileStateService.setSingle(this.fileStateService.getCCFiles()[0])
 			resolve()
 		})
+	}
+
+	private addFile(fileName: string, migratedFile: ExportCCFile) {
+		const ccFile = this.getCCFile(fileName, migratedFile)
+		NodeDecorator.preDecorateFile(ccFile)
+		this.fileStateService.addFile(ccFile)
 	}
 
 	private getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
