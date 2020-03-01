@@ -1,6 +1,6 @@
-import { FileValidator } from "./fileValidator"
 import { TEST_FILE_CONTENT } from "./dataMocks"
 import { NodeType } from "../codeCharta.model"
+import { validate } from "./fileValidator"
 
 describe("FileValidator", () => {
 	let file
@@ -18,12 +18,12 @@ describe("FileValidator", () => {
 	}
 
 	it("should reject null", () => {
-		const errors = FileValidator.validate(null)
+		const errors = validate(null)
 		expectFileToBeInvalid(errors)
 	})
 
 	it("should reject string", () => {
-		const errors = FileValidator.validate("" as any)
+		const errors = validate("" as any)
 		expectFileToBeInvalid(errors)
 	})
 
@@ -38,19 +38,19 @@ describe("FileValidator", () => {
 				}
 			}
 		]
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 		expectFileToBeValid(errors)
 	})
 
 	it("should not reject a file without edges", () => {
 		file.edges = undefined
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 		expectFileToBeValid(errors)
 	})
 
 	it("should not reject a file when numbers are floating point values", () => {
 		file.nodes[0].children[0].attributes["rloc"] = 333.4
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 		expectFileToBeValid(errors)
 	})
 
@@ -59,13 +59,13 @@ describe("FileValidator", () => {
 		file.nodes[0].children[0].type = NodeType.FILE
 		file.nodes[0].children[1].name = "same"
 		file.nodes[0].children[1].type = NodeType.FILE
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 		expectFileToBeInvalid(errors)
 	})
 
 	it("should reject when nodes are empty", () => {
 		file.nodes[0] = []
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 		expectFileToBeInvalid(errors)
 	})
 
@@ -73,7 +73,7 @@ describe("FileValidator", () => {
 		file.nodes[0] = {
 			something: "something"
 		}
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 		expectFileToBeInvalid(errors)
 	})
 
@@ -81,7 +81,7 @@ describe("FileValidator", () => {
 		file.nodes[0].attributes = {
 			"tes t1": 0
 		}
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 		expectFileToBeInvalid(errors)
 	})
 
@@ -90,7 +90,7 @@ describe("FileValidator", () => {
 			"tes)t1": 0
 		}
 
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 		expectFileToBeInvalid(errors)
 	})
 })
