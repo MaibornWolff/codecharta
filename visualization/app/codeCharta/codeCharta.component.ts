@@ -16,12 +16,8 @@ import { ErrorObject } from "ajv"
 export class CodeChartaController {
 	private _viewModel: {
 		version: string
-		isLoadingFile: boolean
-		isLoadingMap: boolean
 	} = {
-		version: require("../../package.json").version,
-		isLoadingFile: true,
-		isLoadingMap: true
+		version: require("../../package.json").version
 	}
 
 	private urlUtils: UrlExtractor
