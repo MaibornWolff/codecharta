@@ -81,7 +81,7 @@ export class CodeChartaController {
 			.catch((errors: ErrorObject[]) => {
 				this.storeService.dispatch(setIsLoadingFile(false))
 				console.error(errors)
-				this.printErrors(errors)
+				this.dialogService.showImportErrorDialog(errors)
 			})
 	}
 
@@ -96,10 +96,6 @@ export class CodeChartaController {
 		} else {
 			this.fileStateService.setSingle(files[0])
 		}
-	}
-
-	private printErrors(errors: ErrorObject[]) {
-		this.dialogService.showImportErrorDialog(errors)
 	}
 }
 

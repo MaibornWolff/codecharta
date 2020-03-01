@@ -51,7 +51,7 @@ export class FileChooserController {
 			this.storeService.dispatch(setIsLoadingFile(false))
 			this.storeService.dispatch(setIsLoadingMap(false))
 			console.error(errors)
-			this.printErrors(errors)
+			this.dialogService.showImportErrorDialog(errors)
 		})
 	}
 
@@ -61,10 +61,6 @@ export class FileChooserController {
 		} catch (error) {
 			this.dialogService.showErrorDialog("Error parsing JSON!" + error)
 		}
-	}
-
-	private printErrors(errors: ErrorObject[]) {
-		this.dialogService.showImportErrorDialog(errors)
 	}
 }
 
