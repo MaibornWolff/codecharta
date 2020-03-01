@@ -1,5 +1,6 @@
-import { CodeMapNode } from "../codeCharta.model"
+import { CodeMapNode, RecursivePartial } from "../codeCharta.model"
 import { ErrorObject } from "ajv"
+import { ExportCCFile } from "../codeCharta.api.model"
 
 function hasUniqueChildren(node: CodeMapNode) {
 	if (!node.children || node.children.length === 0) {
@@ -22,22 +23,29 @@ function hasUniqueChildren(node: CodeMapNode) {
 	return true
 }
 
-export function validate(file: { nodes: CodeMapNode[] }): Array<{ message: string; dataPath: string }> | ErrorObject[] {
+export function validate(file: RecursivePartial<ExportCCFile>): ErrorObject[] {
 	if (!file) {
-		return [{ message: "file is empty or invalid", dataPath: "empty or invalid file" }]
+		return getErrorObject("root", { emptyFile: "n/a" }, "file should not be empty or invalid")
 	}
 	let ajv = require("ajv")()
 	let compare = ajv.compile(require("./generatedSchema.json"))
 	let isValid = compare(file)
 
-	if (!hasUniqueChildren(file.nodes[0])) {
-		return [
-			{
-				message: "node names with node types are not unique",
-				dataPath: "uniqueness"
-			}
-		]
+	if (!isValid) {
+		return compare.errors
 	}
 
-	return isValid ? [] : compare.errors
+	if (!hasUniqueChildren(file.nodes[0])) {
+		return getErrorObject("n/a", { uniqueness: "n/a" }, "node children should be unique by name and nodeType")
+	}
+	return []
+}
+
+export function validateApiVersion(file: RecursivePartial<ExportCCFile>): ErrorObject[] {
+	const errorObject = getErrorObject("root", { missingProperty: "apiVersion" }, "file should contain property 'apiVersion'")
+	return !file || !file.apiVersion ? errorObject : []
+}
+
+function getErrorObject(dataPath: string, params: { [key: string]: string }, message: string): ErrorObject[] {
+	return [{ keyword: "n/a", dataPath, schemaPath: "n/a", params, message }]
 }

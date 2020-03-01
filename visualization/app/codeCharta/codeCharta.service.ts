@@ -1,4 +1,4 @@
-import { validate } from "./util/fileValidator"
+import { validateApiVersion, validate } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
@@ -16,8 +16,12 @@ export class CodeChartaService {
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
+				let errors = validateApiVersion(nameDataPair.content)
+				if (errors.length > 0) {
+					reject(errors)
+				}
 				const migratedFile = migrate(nameDataPair.content)
-				const errors = validate(migratedFile)
+				errors = validate(migratedFile)
 				if (errors.length === 0) {
 					const ccFile = this.getCCFile(nameDataPair.fileName, migratedFile)
 					NodeDecorator.preDecorateFile(ccFile)

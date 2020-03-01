@@ -104,7 +104,15 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
+					expect(err).toEqual([
+						{
+							dataPath: "root",
+							keyword: "n/a",
+							message: "file should contain property 'apiVersion'",
+							params: { missingProperty: "apiVersion" },
+							schemaPath: "n/a"
+						}
+					])
 					done()
 				})
 		})

@@ -78,7 +78,8 @@ describe("codeChartaController", () => {
 
 	function withMockedDialogService() {
 		dialogService = codeChartaController["dialogService"] = jest.fn().mockReturnValue({
-			showErrorDialog: jest.fn()
+			showErrorDialog: jest.fn(),
+			showImportErrorDialog: jest.fn()
 		})()
 	}
 
