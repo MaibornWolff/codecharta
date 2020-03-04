@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Loading Gif not displayed when preparing to render a new map #857
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.42.2] - 2020-02-14
