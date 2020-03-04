@@ -77,7 +77,7 @@ export class CodeChartaController {
 			.catch((errors: ErrorObject[]) => {
 				this.storeService.dispatch(setIsLoadingFile(false))
 				console.error(errors)
-				this.dialogService.showImportErrorDialog(errors)
+				this.dialogService.showErrorDialog(JSON.stringify(errors))
 			})
 	}
 

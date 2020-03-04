@@ -48,7 +48,7 @@ export class FileChooserController {
 			this.storeService.dispatch(setIsLoadingFile(false))
 			this.storeService.dispatch(setIsLoadingMap(false))
 			console.error(errors)
-			this.dialogService.showImportErrorDialog(errors)
+			this.dialogService.showErrorDialog(JSON.stringify(errors))
 		})
 	}
 
