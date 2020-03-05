@@ -5,7 +5,7 @@ class Project(
         private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
         val apiVersion: String = API_VERSION,
         val edges: List<Edge> = listOf(),
-        val attributeTypes: Map<String, List<Map<String, AttributeType>>> = mapOf(),
+        val attributeTypes: Map<String, Map<String, AttributeType>> = mapOf(),
         var blacklist: List<BlacklistItem> = listOf()
 ) {
 

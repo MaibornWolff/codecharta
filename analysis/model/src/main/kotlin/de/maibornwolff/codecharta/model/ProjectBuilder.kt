@@ -6,7 +6,7 @@ import mu.KotlinLogging
 open class ProjectBuilder(
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
         private var edges: MutableList<Edge> = mutableListOf(),
-        private var attributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf(),
+        private var attributeTypes: MutableMap<String, Map<String, AttributeType>> = mutableMapOf(),
         private var blacklist: MutableList<BlacklistItem> = mutableListOf()
 ) {
 
@@ -77,9 +77,9 @@ open class ProjectBuilder(
 
     fun addAttributeTypes(attributeTypesToAdd: AttributeTypes): ProjectBuilder {
         if (!attributeTypes.containsKey(attributeTypesToAdd.type)) {
-            attributeTypes[attributeTypesToAdd.type] = mutableListOf(attributeTypesToAdd.attributeTypes.toMap())
+            attributeTypes[attributeTypesToAdd.type] = attributeTypesToAdd.attributeTypes.toMap()
         } else {
-            attributeTypes[attributeTypesToAdd.type]!!.add(attributeTypesToAdd.attributeTypes)
+            attributeTypes[attributeTypesToAdd.type]!!.plus(attributeTypesToAdd.attributeTypes)
         }
         return this
     }
