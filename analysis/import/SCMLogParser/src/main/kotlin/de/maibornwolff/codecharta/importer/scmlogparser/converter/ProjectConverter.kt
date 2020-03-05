@@ -46,8 +46,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
                 .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
-        projectBuilder.addAttributeTypes(AttributeTypeBuilder.createNodeAttributeTypes(metrics))
-        projectBuilder.addAttributeTypes(AttributeTypeBuilder.createEdgeAttributeTypes(metrics))
+        projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))
+        projectBuilder.addAttributeTypes(AttributeTypesFactory.createEdgeAttributeTypes(metrics))
 
         return projectBuilder.build()
     }

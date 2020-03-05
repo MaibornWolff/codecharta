@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.converter
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metric
 import de.maibornwolff.codecharta.model.AttributeTypes
 
-object AttributeTypeBuilder {
+object AttributeTypesFactory {
 
     fun createNodeAttributeTypes(metricList: List<Metric>): AttributeTypes {
         val attributeTypes = AttributeTypes(type = "nodes")
