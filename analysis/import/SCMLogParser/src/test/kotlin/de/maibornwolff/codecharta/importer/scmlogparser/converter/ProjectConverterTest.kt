@@ -85,4 +85,12 @@ class ProjectConverterTest {
         assertThat(project.edges[0].toNodeName).isEqualTo("/root/File 2")
         assertThat(project.edges[0].fromNodeName).isEqualTo("/root/File 1")
     }
+
+    @Test
+    fun attributeTypesAreCreated() {
+        val projectConverter = ProjectConverter(false)
+        val project = projectConverter.convert(listOf(), MetricsFactory())
+
+        assertThat(project.attributeTypes).containsKeys("edges", "nodes")
+    }
 }
