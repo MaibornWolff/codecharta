@@ -1,4 +1,6 @@
 import { CCAction, RecursivePartial, State } from "../../codeCharta.model"
+
+// Plop: Import sub-reducer here
 import { defaultAppSettings } from "./appSettings/appSettings.actions"
 import { defaultFileSettings } from "./fileSettings/fileSettings.actions"
 import { defaultDynamicSettings } from "./dynamicSettings/dynamicSettings.actions"
@@ -23,6 +25,7 @@ export function setState(state: RecursivePartial<State> = defaultState): StateAc
 }
 
 export const defaultState: State = {
+	// Plop: Append sub-reducer here
 	appSettings: defaultAppSettings,
 	fileSettings: defaultFileSettings,
 	dynamicSettings: defaultDynamicSettings,

@@ -1,16 +1,21 @@
 import _ from "lodash"
 import { CCAction } from "../../codeCharta.model"
 import { StateActions } from "./state.actions"
+
+// Plop: Import sub-reducer action here
 import { DynamicSettingsActions } from "./dynamicSettings/dynamicSettings.actions"
 import { FileSettingsActions } from "./fileSettings/fileSettings.actions"
 import { AppSettingsActions } from "./appSettings/appSettings.actions"
+import { TreeMapSettingsActions } from "./treeMap/treeMap.actions"
+
+// Plop: Import sub-reducer splitter here
 import { splitDynamicSettingsActions } from "./dynamicSettings/dynamicSettings.splitter"
 import { splitFileSettingsActions } from "./fileSettings/fileSettings.splitter"
 import { splitAppSettingsActions } from "./appSettings/appSettings.splitter"
 import { splitTreeMapSettingsActions } from "./treeMap/treeMap.splitter"
-import { TreeMapSettingsActions } from "./treeMap/treeMap.actions"
 
 export function splitStateActions(action: CCAction): CCAction[] {
+	// Plop: Propagate sub-reducer here
 	if (_.values(DynamicSettingsActions).includes(action.type)) {
 		return splitDynamicSettingsActions(action.payload)
 	}
@@ -30,6 +35,7 @@ export function splitStateActions(action: CCAction): CCAction[] {
 	if (_.values(StateActions).includes(action.type)) {
 		let actions: CCAction[] = []
 
+		// Plop: Split into sub-reducer here
 		if (action.payload.dynamicSettings !== undefined) {
 			actions = actions.concat(...splitDynamicSettingsActions(action.payload.dynamicSettings))
 		}
