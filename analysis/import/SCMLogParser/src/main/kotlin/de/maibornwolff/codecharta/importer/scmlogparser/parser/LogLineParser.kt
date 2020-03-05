@@ -15,7 +15,7 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
 
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
         return logLines.collect(parserStrategy.createLogLineCollector())
-                .parallel().map { this.parseCommit(it) }.filter { !it.isEmpty }
+                .map { this.parseCommit(it) }.filter { !it.isEmpty }
                 .collect(CommitCollector.create(metricsFactory))
     }
 

@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.converter
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.AttributeTypeBuilder
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.model.*
 
