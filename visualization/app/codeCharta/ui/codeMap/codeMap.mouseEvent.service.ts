@@ -118,7 +118,7 @@ export class CodeMapMouseEventService
 
 				if (from !== to) {
 					this.unhoverBuilding()
-					if (to !== null) {
+					if (to) {
 						this.hoverBuilding(to)
 					}
 				}
