@@ -177,7 +177,7 @@ module.exports = function(plop) {
 				type: "modify",
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
 				pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
-				template: "$1\r\n{{camelCase name}},"
+				template: "$1\r\n\t{{camelCase name}},"
 			},
 			{
 				type: "modify",
