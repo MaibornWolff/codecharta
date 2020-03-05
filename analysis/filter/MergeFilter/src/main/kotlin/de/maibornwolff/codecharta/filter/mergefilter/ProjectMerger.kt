@@ -54,20 +54,20 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return mergedEdges.distinctBy { listOf(it.fromNodeName, it.toNodeName) }.toMutableList()
     }
 
-    private fun mergeAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
-        val mergedAttributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
+    private fun mergeAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
+        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
 
         projects.forEach {
-            it.attributeTypes.forEach {
-                val key: String = it.key
+            it.attributeTypes.forEach { attributeTypes ->
+                val key: String = attributeTypes.key
                 if (mergedAttributeTypes.containsKey(key)) {
-                    it.value.forEach {
-                        if (!mergedAttributeTypes[key]!!.contains(it)) {
-                            mergedAttributeTypes[key]!!.add(it)
+                    attributeTypes.value.forEach { attribute ->
+                        if (!mergedAttributeTypes[key]!!.containsKey(attribute.key)) {
+                            mergedAttributeTypes[key]!!.put(attribute.key, attribute.value)
                         }
                     }
                 } else {
-                    mergedAttributeTypes[key] = it.value.toMutableList()
+                    mergedAttributeTypes[key] = attributeTypes.value
                 }
             }
         }
