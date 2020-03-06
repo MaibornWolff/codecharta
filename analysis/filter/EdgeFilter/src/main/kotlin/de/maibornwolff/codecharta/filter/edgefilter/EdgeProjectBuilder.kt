@@ -12,10 +12,10 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
             mutableListOf(),
             getAttributeTypes())
 
-    private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val newAttributetypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
+    private fun getAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
+        val newAttributetypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
         project.attributeTypes.forEach {
-            newAttributetypes[it.key] = it.value
+            newAttributetypes[it.key] = it.value.toMutableList()
         }
         return newAttributetypes
     }
@@ -125,13 +125,13 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     }
 
     private fun getAttributeTypeByKey(key: String): AttributeType {
-        val edgeAttributeTypes: MutableMap<String, AttributeType> = project.attributeTypes["edges"] ?: mutableMapOf()
-
-        if (edgeAttributeTypes.containsKey(key)) {
-            // Returning it[key] directly may cause a ClassCastException
-            when (edgeAttributeTypes[key].toString()) {
-                "relative" -> return AttributeType.relative
-                "absolute" -> return AttributeType.absolute
+        project.attributeTypes["edges"]?.forEach {
+            if (it.containsKey(key)) {
+                // Returning it[key] directly may cause a ClassCastException
+                when (it[key].toString()) {
+                    "relative" -> return AttributeType.relative
+                    "absolute" -> return AttributeType.absolute
+                }
             }
         }
         return AttributeType.absolute
