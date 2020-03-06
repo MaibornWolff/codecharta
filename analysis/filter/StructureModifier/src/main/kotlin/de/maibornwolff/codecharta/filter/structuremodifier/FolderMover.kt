@@ -90,10 +90,10 @@ class FolderMover(private val project: Project) {
         }.toMutableList()
     }
 
-    private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
-        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
+    private fun copyAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
+        val mergedAttributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
         project.attributeTypes.forEach {
-            mergedAttributeTypes[it.key] = it.value
+            mergedAttributeTypes[it.key] = it.value.toMutableList()
         }
         return mergedAttributeTypes.toMutableMap()
     }
