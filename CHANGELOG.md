@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Loading Gif not displayed when preparing to render a new map #857
+- Merging attributeTypes from imported files when one file is visible
 
 ### Chore 👨‍💻 👩‍💻
 

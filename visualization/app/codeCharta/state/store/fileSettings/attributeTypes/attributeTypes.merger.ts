@@ -5,8 +5,12 @@ export function getMergedAttributeTypes(allAttributeTypes: AttributeTypes[]): At
 	const attributeTypesNodes = []
 	const attributeTypesEdges = []
 
-	if (allAttributeTypes.length == 1) {
+	if (allAttributeTypes.length == 0) {
 		return { nodes: [], edges: [] }
+	}
+
+	if (allAttributeTypes.length == 1) {
+		return allAttributeTypes[0]
 	}
 
 	for (let attributeTypes of allAttributeTypes) {

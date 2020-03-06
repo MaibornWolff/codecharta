@@ -36,6 +36,20 @@ describe("AttributeTypesMerger", () => {
 			}
 		})
 
+		it("should get empty attributeTypes if no file is visible", () => {
+			const attributeTypes = getMergedAttributeTypes([])
+
+			const expected: AttributeTypes = { nodes: [], edges: [] }
+
+			expect(attributeTypes).toEqual(expected)
+		})
+
+		it("should get same attributeTypes if only one file is visible", () => {
+			const attributeTypes = getMergedAttributeTypes([attributes1])
+
+			expect(attributeTypes).toEqual(attributes1)
+		})
+
 		it("should merge different attributeTypes and only contain unique attributeType keys", () => {
 			const attributeTypes = getMergedAttributeTypes([attributes1, attributes2])
 
