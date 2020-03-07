@@ -35,6 +35,7 @@
 		ng-model="$ctrl._viewModel.selectedFileNames.partial"
 		multiple="{{ true }}"
 		ng-change="$ctrl.onPartialFilesChange($ctrl._viewModel.selectedFileNames.partial)"
+		md-on-close="$ctrl.onPartialSelectionClosed()"
 	>
 		<md-button ng-click="$ctrl.selectAllPartialFiles()">All</md-button>
 		<md-button ng-click="$ctrl.selectZeroPartialFiles()">None</md-button>

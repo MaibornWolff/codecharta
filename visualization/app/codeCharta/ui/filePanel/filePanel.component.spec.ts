@@ -220,10 +220,12 @@ describe("filePanelController", () => {
 		it("should should set the viewModel mode to multiple and deselect all files", () => {
 			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
+			storeService.dispatch = jest.fn()
 
 			filePanelController.selectZeroPartialFiles()
 
-			expect(storeService.getState().files.getVisibleFileStates().length).toBe(0)
+			expect(filePanelController["_viewModel"].selectedFileNames.partial).toHaveLength(0)
+			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
 	})
 
