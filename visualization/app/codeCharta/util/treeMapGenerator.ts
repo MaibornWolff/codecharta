@@ -33,7 +33,7 @@ export class TreeMapGenerator {
 			.paddingOuter(padding)
 			.paddingInner(padding)
 
-		return treeMap(hierarchy.sum(node => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode
+		return treeMap(hierarchy.sum(node => this.calculateAreaValue(node, s)))
 	}
 
 	private static getNodesAsArray(node: SquarifiedCodeMapNode): SquarifiedCodeMapNode[] {
@@ -56,7 +56,7 @@ export class TreeMapGenerator {
 		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
 
-	private static calculateValue(node: CodeMapNode, s: State): number {
+	private static calculateAreaValue(node: CodeMapNode, s: State): number {
 		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
 			return 0
 		}
