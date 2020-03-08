@@ -1,5 +1,4 @@
 // Plop: Append reducer import here
-import { searchPanelMode } from "./searchPanelMode/searchPanelMode.reducer"
 import { isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
 import { isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
 import { mapColors } from "./mapColors/mapColors.reducer"
@@ -22,7 +21,6 @@ import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
-	searchPanelMode,
 	isLoadingFile,
 	isLoadingMap,
 	mapColors,

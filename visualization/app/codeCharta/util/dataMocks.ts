@@ -1,23 +1,21 @@
 import {
 	AttributeTypeValue,
-	BlacklistItem,
-	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	Edge,
-	EdgeVisibility,
 	FileSelectionState,
 	FileState,
-	MarkedPackage,
 	MetricData,
 	Node,
-	NodeType,
-	SearchPanelMode,
-	State
+	BlacklistType,
+	EdgeVisibility,
+	State,
+	NodeType
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
+import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 
 export const VALID_NODE: CodeMapNode = {
@@ -689,8 +687,7 @@ export const STATE: State = {
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
-		isLoadingFile: true,
-		searchPanelMode: SearchPanelMode.treeView
+		isLoadingFile: true
 	},
 	treeMap: {
 		mapSize: 250
@@ -731,8 +728,7 @@ export const DEFAULT_STATE: State = {
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
-		isLoadingFile: true,
-		searchPanelMode: SearchPanelMode.minimized
+		isLoadingFile: true
 	},
 	dynamicSettings: {
 		areaMetric: null,

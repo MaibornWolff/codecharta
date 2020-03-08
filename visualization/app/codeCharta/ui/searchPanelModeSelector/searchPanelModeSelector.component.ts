@@ -1,13 +1,11 @@
 import "./searchPanelModeSelector.component.scss"
-import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
+import { SearchPanelMode, BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
 import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { StoreService } from "../../state/store.service"
-import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
-import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
-export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelModeSubscriber {
+export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelServiceSubscriber {
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
 		flattenListLength: number
@@ -21,10 +19,10 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private searchPanelService: SearchPanelService) {
 		SearchPatternService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
-		SearchPanelModeService.subscribe(this.$rootScope, this)
+		SearchPanelService.subscribe(this.$rootScope, this)
 	}
 
 	public onSearchPatternChanged(searchPattern: string) {
@@ -40,12 +38,14 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 		this._viewModel.searchPanelMode = searchPanelMode
 	}
 
-	public onToggleSearchPanelMode(searchPanelMode: SearchPanelMode) {
-		if (searchPanelMode === this._viewModel.searchPanelMode) {
-			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
+	public onToggleSearchPanelMode(toggleView: SearchPanelMode) {
+		if (toggleView === this._viewModel.searchPanelMode) {
+			this._viewModel.searchPanelMode = SearchPanelMode.minimized
 		} else {
-			this.storeService.dispatch(setSearchPanelMode(searchPanelMode))
+			this._viewModel.searchPanelMode = toggleView
 		}
+
+		this.searchPanelService.updateSearchPanelMode(this._viewModel.searchPanelMode)
 	}
 }
 

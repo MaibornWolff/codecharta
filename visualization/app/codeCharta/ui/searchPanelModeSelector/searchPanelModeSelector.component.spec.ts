@@ -3,55 +3,61 @@ import { SearchPanelModeSelectorController } from "./searchPanelModeSelector.com
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { SearchPanelMode, BlacklistType } from "../../codeCharta.model"
+import { SearchPanelService } from "../../state/searchPanel.service"
 import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { StoreService } from "../../state/store.service"
-import { SearchPanelModeService } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
 describe("SearchPanelModeSelectorController", () => {
 	let searchPanelModeSelectorController: SearchPanelModeSelectorController
 	let $rootScope: IRootScopeService
-	let storeService: StoreService
+	let searchPanelService: SearchPanelService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		withMockedSearchPanelService()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.searchPanelModeSelector")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("storeService")
+		searchPanelService = getService<SearchPanelService>("searchPanelService")
 	}
 
 	function rebuildController() {
-		searchPanelModeSelectorController = new SearchPanelModeSelectorController($rootScope, storeService)
+		searchPanelModeSelectorController = new SearchPanelModeSelectorController($rootScope, searchPanelService)
+	}
+
+	function withMockedSearchPanelService() {
+		searchPanelService = searchPanelModeSelectorController["searchPanelService"] = jest.fn().mockReturnValue({
+			updateSearchPanelMode: jest.fn()
+		})()
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to Search-Pattern-Event", () => {
+		beforeEach(() => {
 			SearchPatternService.subscribe = jest.fn()
+			BlacklistService.subscribe = jest.fn()
+			SearchPanelService.subscribe = jest.fn()
+		})
 
+		it("should subscribe to Search-Pattern-Event", () => {
 			rebuildController()
 
 			expect(SearchPatternService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
 		it("should subscribe to Blacklist-Event", () => {
-			BlacklistService.subscribe = jest.fn()
-
 			rebuildController()
 
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 
 		it("should subscribe to SearchPanelService", () => {
-			SearchPanelModeService.subscribe = jest.fn()
-
 			rebuildController()
 
-			expect(SearchPanelModeService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
+			expect(SearchPanelService.subscribe).toHaveBeenCalledWith($rootScope, searchPanelModeSelectorController)
 		})
 	})
 
@@ -97,15 +103,15 @@ describe("SearchPanelModeSelectorController", () => {
 		it("should select if not already selected", () => {
 			searchPanelModeSelectorController.onToggleSearchPanelMode(SearchPanelMode.treeView)
 
-			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
+			expect(searchPanelService.updateSearchPanelMode).toBeCalledWith(SearchPanelMode.treeView)
 		})
 
 		it("should unselect if already selected", () => {
-			searchPanelModeSelectorController["_viewModel"].searchPanelMode = SearchPanelMode.treeView
+			searchPanelModeSelectorController.onToggleSearchPanelMode(SearchPanelMode.treeView)
 
 			searchPanelModeSelectorController.onToggleSearchPanelMode(SearchPanelMode.treeView)
 
-			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
+			expect(searchPanelService.updateSearchPanelMode).toBeCalledWith(SearchPanelMode.minimized)
 		})
 	})
 })
