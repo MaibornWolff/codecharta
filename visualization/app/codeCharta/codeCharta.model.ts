@@ -117,6 +117,7 @@ export interface AppSettings {
 	resetCameraIfNewFileIsLoaded: boolean
 	isLoadingMap: boolean
 	isLoadingFile: boolean
+	searchPanelMode: SearchPanelMode
 }
 
 export interface TreeMapSettings {
