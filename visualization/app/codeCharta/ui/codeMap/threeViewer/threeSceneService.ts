@@ -67,8 +67,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public clearHighlight() {
-		this.getMapMesh().clearHighlight(this.selected)
-		this.highlighted = []
+		if (this.getMapMesh()) {
+			this.getMapMesh().clearHighlight(this.selected)
+			this.highlighted = []
+		}
 	}
 
 	public selectBuilding(building: CodeMapBuilding) {
