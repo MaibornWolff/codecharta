@@ -8,12 +8,11 @@ export interface SquarifiedCodeMapNode extends HierarchyRectangularNode<CodeMapN
 
 export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
-	private static HEIGHT_DIVISOR = 1
 
 	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
 		const squarifiedTreeMap: SquarifiedCodeMapNode = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
-		const heightScale = (s.treeMap.mapSize * 2) / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
+		const heightScale = (s.treeMap.mapSize * 2) / maxHeight
 		const nodesAsArray: SquarifiedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
 			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState)
