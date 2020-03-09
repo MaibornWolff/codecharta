@@ -288,10 +288,6 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("markFolder", () => {
-		beforeEach(() => {
-			codeMapActionsService.markFolder = jest.fn()
-		})
-
 		it("should hide contextMenu", () => {
 			nodeContextMenuController.hideNodeContextMenu = jest.fn()
 
@@ -308,10 +304,6 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("unmarkFolder", () => {
-		beforeEach(() => {
-			codeMapActionsService.unmarkFolder = jest.fn()
-		})
-
 		it("should hide contextMenu", () => {
 			nodeContextMenuController.hideNodeContextMenu = jest.fn()
 
