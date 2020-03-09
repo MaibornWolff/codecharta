@@ -4,12 +4,14 @@ module.exports = {
         "es6": true,
         "node": true
     },
+    "extends": ["prettier"],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "project": "tsconfig.json",
         "sourceType": "module"
     },
     "plugins": [
+        "prettier",
         "@typescript-eslint"
     ],
     "rules": {
@@ -55,6 +57,7 @@ module.exports = {
         ],
         "no-empty": "error",
         "no-eval": "error",
-        "no-var": "error"
+        "no-var": "error",
+        "prettier/prettier": "warn"
     }
 };
