@@ -138,7 +138,7 @@ describe("nodeContextMenuController", () => {
 
 			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 
-			expect(nodeContextMenuController["_viewModel"].contextMenuBuilding).toEqual(TEST_DELTA_MAP_A.map)
+			expect(nodeContextMenuController["_viewModel"].codeMapNode).toEqual(TEST_DELTA_MAP_A.map)
 			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith(path, nodeType, TEST_DELTA_MAP_A.map)
 			expect(nodeContextMenuController.calculatePosition).toHaveBeenCalledWith(42, 24)
 			expect(nodeContextMenuController.setPosition).toHaveBeenCalledTimes(1)
@@ -172,7 +172,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("flattenNode", () => {
 		it("should add flattened blacklistItem", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
 			const expected = {
 				path: "/root/Parent Leaf",
 				type: BlacklistType.flatten
@@ -187,7 +187,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("showNode", () => {
 		it("should add flattened blacklistItem", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
 			const expected = {
 				path: "/root/Parent Leaf",
 				type: BlacklistType.flatten
@@ -202,51 +202,51 @@ describe("nodeContextMenuController", () => {
 
 	describe("clickColor", () => {
 		it("should call unmarkFolder, if current folder is marked with color ", () => {
-			nodeContextMenuController.currentFolderIsMarkedWithColor = jest.fn().mockReturnValue(true)
+			nodeContextMenuController.isNodeOrParentMarked = jest.fn().mockReturnValue(true)
 			nodeContextMenuController.unmarkFolder = jest.fn()
 
 			nodeContextMenuController.clickColor("color")
 
-			expect(nodeContextMenuController.currentFolderIsMarkedWithColor).toHaveBeenCalledWith("color")
+			expect(nodeContextMenuController.isNodeOrParentMarked).toHaveBeenCalledWith("color")
 			expect(nodeContextMenuController.unmarkFolder).toHaveBeenCalled()
 		})
 
 		it("should call markFolder, if current folder is not marked with color ", () => {
-			nodeContextMenuController.currentFolderIsMarkedWithColor = jest.fn().mockReturnValue(false)
+			nodeContextMenuController.isNodeOrParentMarked = jest.fn().mockReturnValue(false)
 			nodeContextMenuController.markFolder = jest.fn()
 
 			nodeContextMenuController.clickColor("color")
 
-			expect(nodeContextMenuController.currentFolderIsMarkedWithColor).toHaveBeenCalledWith("color")
+			expect(nodeContextMenuController.isNodeOrParentMarked).toHaveBeenCalledWith("color")
 			expect(nodeContextMenuController.markFolder).toHaveBeenCalled()
 		})
 	})
 
 	describe("currentFolderIsMarkedWithColor", () => {
 		it("should return false, if color is undefined", () => {
-			const result = nodeContextMenuController.currentFolderIsMarkedWithColor(undefined)
+			const result = nodeContextMenuController.isNodeOrParentMarked(undefined)
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if color is null", () => {
-			const result = nodeContextMenuController.currentFolderIsMarkedWithColor(null)
+			const result = nodeContextMenuController.isNodeOrParentMarked(null)
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if _viewModel.contextMenuBuilding is undefined", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = undefined
+			nodeContextMenuController["_viewModel"].codeMapNode = undefined
 
-			const result = nodeContextMenuController.currentFolderIsMarkedWithColor("color")
+			const result = nodeContextMenuController.isNodeOrParentMarked("color")
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if _viewModel.contextMenuBuilding is null", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = null
+			nodeContextMenuController["_viewModel"].codeMapNode = null
 
-			const result = nodeContextMenuController.currentFolderIsMarkedWithColor("color")
+			const result = nodeContextMenuController.isNodeOrParentMarked("color")
 
 			expect(result).toBeFalsy()
 		})
@@ -255,9 +255,9 @@ describe("nodeContextMenuController", () => {
 			const markedPackages: MarkedPackage[] = [{ path: "/root", color: "color", attributes: [] }]
 			storeService.dispatch(setMarkedPackages(markedPackages))
 
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
 
-			const result = nodeContextMenuController.currentFolderIsMarkedWithColor("color")
+			const result = nodeContextMenuController.isNodeOrParentMarked("color")
 
 			expect(result).toBeTruthy()
 		})
@@ -266,9 +266,9 @@ describe("nodeContextMenuController", () => {
 			const markedPackages: MarkedPackage[] = [{ path: "/root", color: "color", attributes: [] }]
 			storeService.dispatch(setMarkedPackages(markedPackages))
 
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
 
-			const result = nodeContextMenuController.currentFolderIsMarkedWithColor("another color")
+			const result = nodeContextMenuController.isNodeOrParentMarked("another color")
 
 			expect(result).toBeFalsy()
 		})
@@ -278,12 +278,12 @@ describe("nodeContextMenuController", () => {
 			storeService.dispatch(setMarkedPackages(markedPackages))
 			codeMapActionsService.getParentMP = jest.fn().mockReturnValue({ path: "/another root", color: "color" })
 
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
 
-			const result = nodeContextMenuController.currentFolderIsMarkedWithColor("color")
+			const result = nodeContextMenuController.isNodeOrParentMarked("color")
 
 			expect(result).toBeTruthy()
-			expect(codeMapActionsService.getParentMP).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding.path)
+			expect(codeMapActionsService.getParentMP).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode.path)
 		})
 	})
 
@@ -303,10 +303,7 @@ describe("nodeContextMenuController", () => {
 		it("should call hide and codeMapActionService.markFolder", () => {
 			nodeContextMenuController.markFolder("color")
 
-			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(
-				nodeContextMenuController["_viewModel"].contextMenuBuilding,
-				"color"
-			)
+			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode, "color")
 		})
 	})
 
@@ -326,13 +323,13 @@ describe("nodeContextMenuController", () => {
 		it("should call hide and codeMapActionService.unmarkFolder", () => {
 			nodeContextMenuController.unmarkFolder()
 
-			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].contextMenuBuilding)
+			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode)
 		})
 	})
 
 	describe("focusNode", () => {
 		beforeEach(() => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
 		})
 
 		it("should hide contextMenu", () => {
@@ -352,7 +349,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("excludeNode", () => {
 		beforeEach(() => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[1]
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
 		})
 
 		it("should hide contextMenu", () => {
@@ -374,28 +371,28 @@ describe("nodeContextMenuController", () => {
 
 	describe("nodeIsFolder", () => {
 		it("should return true, if contextMenuBuilding is a folder", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
 			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeTruthy()
 		})
 
 		it("should return false, if contextMenuBuilding is null", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = null
+			nodeContextMenuController["_viewModel"].codeMapNode = null
 			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if contextMenuBuilding is undefined", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = undefined
+			nodeContextMenuController["_viewModel"].codeMapNode = undefined
 			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should return false, if contextMenuBuilding has no children property", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH.children[0]
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[0]
 			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
@@ -405,7 +402,7 @@ describe("nodeContextMenuController", () => {
 			const VALID_NODE_WITHOUT_CHILDREN = VALID_NODE_WITH_PATH
 			VALID_NODE_WITHOUT_CHILDREN.children[0].children = []
 
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITHOUT_CHILDREN[0]
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITHOUT_CHILDREN[0]
 			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
@@ -414,11 +411,11 @@ describe("nodeContextMenuController", () => {
 
 	describe("hide", () => {
 		it("should set contextMenuBuilding to null", () => {
-			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
+			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
 
 			nodeContextMenuController.hideNodeContextMenu()
 
-			expect(nodeContextMenuController["_viewModel"].contextMenuBuilding).toBe(null)
+			expect(nodeContextMenuController["_viewModel"].codeMapNode).toBe(null)
 		})
 	})
 })

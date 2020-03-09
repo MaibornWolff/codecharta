@@ -19,10 +19,10 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
 
 	private _viewModel: {
-		contextMenuBuilding: CodeMapNode
+		codeMapNode: CodeMapNode
 		markingColors: string[]
 	} = {
-		contextMenuBuilding: null,
+		codeMapNode: null,
 		markingColors: null
 	}
 
@@ -53,11 +53,7 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	public onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
-		this._viewModel.contextMenuBuilding = CodeMapHelper.getCodeMapNodeFromPath(
-			path,
-			nodeType,
-			this.codeMapPreRenderService.getRenderMap()
-		)
+		this._viewModel.codeMapNode = CodeMapHelper.getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
 		this.synchronizeAngularTwoWayBinding()
@@ -78,85 +74,81 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	public hideNodeContextMenu() {
-		this._viewModel.contextMenuBuilding = null
+		this._viewModel.codeMapNode = null
 		this.synchronizeAngularTwoWayBinding()
 	}
 
 	public flattenNode() {
-		const blacklistItem: BlacklistItem = { path: this._viewModel.contextMenuBuilding.path, type: BlacklistType.flatten }
+		const blacklistItem: BlacklistItem = { path: this._viewModel.codeMapNode.path, type: BlacklistType.flatten }
 		this.storeService.dispatch(addBlacklistItem(blacklistItem))
 		this.hideNodeContextMenu()
 	}
 
 	public showNode() {
-		const blacklistItem: BlacklistItem = { path: this._viewModel.contextMenuBuilding.path, type: BlacklistType.flatten }
+		const blacklistItem: BlacklistItem = { path: this._viewModel.codeMapNode.path, type: BlacklistType.flatten }
 		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
 		this.hideNodeContextMenu()
 	}
 
 	public clickColor(color: string) {
-		if (this.currentFolderIsMarkedWithColor(color)) {
+		if (this.isNodeOrParentMarked(color)) {
 			this.unmarkFolder()
 		} else {
 			this.markFolder(color)
 		}
 	}
 
-	public currentFolderIsMarkedWithColor(color: string): boolean {
-		if (!color || !this._viewModel.contextMenuBuilding) {
+	public isNodeOrParentMarked(color: string): boolean {
+		if (!color || !this._viewModel.codeMapNode) {
 			return false
 		}
 
-		if (this.packageIsMarked()) {
+		if (this.isNodeMarked()) {
 			return this.packageMatchesColor(color)
 		} else {
 			return this.packageMatchesColorOfParentMP(color)
 		}
 	}
 
-	private packageIsMarked(): boolean {
-		return !!this.storeService.getState().fileSettings.markedPackages.find(mp => mp.path == this._viewModel.contextMenuBuilding.path)
+	private isNodeMarked(): boolean {
+		return !!this.storeService.getState().fileSettings.markedPackages.find(mp => mp.path == this._viewModel.codeMapNode.path)
 	}
 
 	private packageMatchesColor(color: string): boolean {
 		return !!this.storeService
 			.getState()
-			.fileSettings.markedPackages.find(mp => mp.path == this._viewModel.contextMenuBuilding.path && mp.color == color)
+			.fileSettings.markedPackages.find(mp => mp.path == this._viewModel.codeMapNode.path && mp.color == color)
 	}
 
 	private packageMatchesColorOfParentMP(color: string): boolean {
-		const parentMP = this.codeMapActionsService.getParentMP(this._viewModel.contextMenuBuilding.path)
+		const parentMP = this.codeMapActionsService.getParentMP(this._viewModel.codeMapNode.path)
 		return !!this.storeService
 			.getState()
 			.fileSettings.markedPackages.find(mp => parentMP && mp.path == parentMP.path && mp.color == color)
 	}
 
 	public markFolder(color: string) {
-		this.codeMapActionsService.markFolder(this._viewModel.contextMenuBuilding, color)
+		this.codeMapActionsService.markFolder(this._viewModel.codeMapNode, color)
 		this.hideNodeContextMenu()
 	}
 
 	public unmarkFolder() {
-		this.codeMapActionsService.unmarkFolder(this._viewModel.contextMenuBuilding)
+		this.codeMapActionsService.unmarkFolder(this._viewModel.codeMapNode)
 		this.hideNodeContextMenu()
 	}
 
 	public focusNode() {
-		this.storeService.dispatch(focusNode(this._viewModel.contextMenuBuilding.path))
+		this.storeService.dispatch(focusNode(this._viewModel.codeMapNode.path))
 		this.hideNodeContextMenu()
 	}
 
 	public excludeNode() {
-		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.contextMenuBuilding.path, type: BlacklistType.exclude }))
+		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.codeMapNode.path, type: BlacklistType.exclude }))
 		this.hideNodeContextMenu()
 	}
 
 	public nodeIsFolder() {
-		return (
-			this._viewModel.contextMenuBuilding &&
-			this._viewModel.contextMenuBuilding.children &&
-			this._viewModel.contextMenuBuilding.children.length > 0
-		)
+		return this._viewModel.codeMapNode && this._viewModel.codeMapNode.children && this._viewModel.codeMapNode.children.length > 0
 	}
 
 	private synchronizeAngularTwoWayBinding() {
