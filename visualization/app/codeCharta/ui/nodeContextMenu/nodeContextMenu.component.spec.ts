@@ -27,6 +27,9 @@ describe("nodeContextMenuController", () => {
 		mockElement()
 		mockWindow()
 		rebuildController()
+		withMockedEventMethods($rootScope)
+		withMockedCodeMapActionService()
+		withMockedCodeMapPreRenderService()
 	})
 
 	function restartSystem() {
@@ -76,11 +79,6 @@ describe("nodeContextMenuController", () => {
 		)
 	}
 
-	function withMockedSubscribeMethods() {
-		NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-		NodeContextMenuController.subscribeToHideNodeContextMenu = jest.fn()
-	}
-
 	function withMockedCodeMapActionService() {
 		codeMapActionsService = nodeContextMenuController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
 			return {
@@ -106,25 +104,18 @@ describe("nodeContextMenuController", () => {
 		jest.resetAllMocks()
 	})
 
-	describe("event related behavior", () => {
+	describe("constructor", () => {
 		it("should subscribe to 'show-node-context-menu' events", () => {
-			withMockedSubscribeMethods()
-			withMockedEventMethods($rootScope)
+			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
+
 			rebuildController()
+
 			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
-		it("should subscribe to 'hide-node-context-menu' events", () => {
-			withMockedSubscribeMethods()
-			withMockedEventMethods($rootScope)
-			rebuildController()
-			expect(NodeContextMenuController.subscribeToHideNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
-		})
-
 		it("should broadcast 'show-node-context-menu' when 'show' method is called", () => {
-			withMockedSubscribeMethods()
-			withMockedEventMethods($rootScope)
 			NodeContextMenuController.broadcastShowEvent($rootScope, "somepath", "sometype", 42, 24)
+
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", {
 				path: "somepath",
 				type: "sometype",
@@ -132,19 +123,10 @@ describe("nodeContextMenuController", () => {
 				y: 24
 			})
 		})
-
-		it("should broadcast 'hide-node-context-menu' when 'hide' method is called", () => {
-			withMockedSubscribeMethods()
-			withMockedEventMethods($rootScope)
-			NodeContextMenuController.broadcastHideEvent($rootScope)
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
-		})
 	})
 
-	describe("show", () => {
+	describe("onShowNodeContextMenu", () => {
 		beforeEach(() => {
-			withMockedCodeMapActionService()
-			withMockedCodeMapPreRenderService()
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
 			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
@@ -155,7 +137,7 @@ describe("nodeContextMenuController", () => {
 			const nodeType = NodeType.FOLDER
 
 			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
-			$timeout.flush(100)
+
 			expect(nodeContextMenuController["_viewModel"].contextMenuBuilding).toEqual(TEST_DELTA_MAP_A.map)
 			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith(path, nodeType, TEST_DELTA_MAP_A.map)
 			expect(nodeContextMenuController.calculatePosition).toHaveBeenCalledWith(42, 24)
@@ -198,7 +180,6 @@ describe("nodeContextMenuController", () => {
 			storeService.dispatch(setBlacklist([]))
 
 			nodeContextMenuController.flattenNode()
-			$timeout.flush()
 
 			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
 		})
@@ -214,7 +195,6 @@ describe("nodeContextMenuController", () => {
 			storeService.dispatch(addBlacklistItem(expected))
 
 			nodeContextMenuController.showNode()
-			$timeout.flush()
 
 			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(expected)
 		})
@@ -313,11 +293,11 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should hide contextMenu", () => {
-			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
+			nodeContextMenuController.hideNodeContextMenu = jest.fn()
 
 			nodeContextMenuController.markFolder("color")
 
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
 		})
 
 		it("should call hide and codeMapActionService.markFolder", () => {
@@ -336,11 +316,11 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should hide contextMenu", () => {
-			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
+			nodeContextMenuController.hideNodeContextMenu = jest.fn()
 
 			nodeContextMenuController.unmarkFolder()
 
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
 		})
 
 		it("should call hide and codeMapActionService.unmarkFolder", () => {
@@ -356,11 +336,11 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should hide contextMenu", () => {
-			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
+			nodeContextMenuController.hideNodeContextMenu = jest.fn()
 
 			nodeContextMenuController.focusNode()
 
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
 		})
 
 		it("should set new focused path", () => {
@@ -376,11 +356,11 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should hide contextMenu", () => {
-			nodeContextMenuController.onHideNodeContextMenu = jest.fn()
+			nodeContextMenuController.hideNodeContextMenu = jest.fn()
 
 			nodeContextMenuController.excludeNode()
 
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
 		})
 
 		it("should add exclude blacklistItem", () => {
@@ -433,10 +413,10 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("hide", () => {
-		it("should set contextMenuBuilding to null after flush", () => {
+		it("should set contextMenuBuilding to null", () => {
 			nodeContextMenuController["_viewModel"].contextMenuBuilding = VALID_NODE_WITH_PATH
-			nodeContextMenuController.onHideNodeContextMenu()
-			$timeout.flush()
+
+			nodeContextMenuController.hideNodeContextMenu()
 
 			expect(nodeContextMenuController["_viewModel"].contextMenuBuilding).toBe(null)
 		})
