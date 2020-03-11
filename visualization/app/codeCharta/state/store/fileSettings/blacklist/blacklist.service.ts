@@ -1,22 +1,22 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { BlacklistItem, FileState } from "../../../../codeCharta.model"
+import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import _ from "lodash"
 import { getMergedBlacklist } from "./blacklist.merger"
-import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
-import { FileStateHelper } from "../../../../util/fileStateHelper"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
+import { Files } from "../../../../model/files"
 
 export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
 }
 
-export class BlacklistService implements StoreSubscriber, FileStateSubscriber {
+export class BlacklistService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static BLACKLIST_CHANGED_EVENT = "blacklist-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType) {
@@ -25,13 +25,13 @@ export class BlacklistService implements StoreSubscriber, FileStateSubscriber {
 		}
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
-		this.merge(fileStates)
+	public onFilesSelectionChanged(files: Files) {
+		this.merge(files)
 	}
 
-	private merge(fileStates: FileState[]) {
-		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
-		const withUpdatedPath = FileStateHelper.isPartialState(fileStates)
+	private merge(files: Files) {
+		const visibleFiles = files.getVisibleFileStates().map(x => x.file)
+		const withUpdatedPath = files.isPartialState()
 		const newBlacklist = getMergedBlacklist(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setBlacklist(newBlacklist))
 	}
