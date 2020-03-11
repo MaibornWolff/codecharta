@@ -1,5 +1,5 @@
-import { AttributeTypes, AttributeTypeValue } from "../../../../codeCharta.model"
 import { getMergedAttributeTypes } from "./attributeTypes.merger"
+import { AttributeTypes, AttributeTypeValue } from "../../../../codeCharta.model"
 
 describe("AttributeTypesMerger", () => {
 	describe("getMergedAttributeTypes", () => {

@@ -2,33 +2,31 @@ import "./rangeSlider.module"
 
 import { RangeSliderController } from "./rangeSlider.component"
 import { MetricService } from "../../state/metric.service"
-import { FileStateService } from "../../state/fileState.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { setWhiteColorBuildings } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.actions"
 import { setInvertColorRange } from "../../state/store/appSettings/invertColorRange/invertColorRange.actions"
-import { FileSelectionState, FileState, MapColors } from "../../codeCharta.model"
+import { MapColors } from "../../codeCharta.model"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
-import { TEST_FILE_DATA } from "../../util/dataMocks"
-import { FileStateHelper } from "../../util/fileStateHelper"
+import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
+import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
+import { FilesService } from "../../state/store/files/files.service"
 
 describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
 	let storeService: StoreService
-	let fileStateService: FileStateService
 	let metricService: MetricService
 	let rangeSliderController: RangeSliderController
 
 	let mapColors: MapColors
-	let fileStates: FileState[]
 
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController($rootScope, $timeout, storeService, fileStateService, metricService)
+		rangeSliderController = new RangeSliderController($rootScope, $timeout, storeService, metricService)
 	}
 
 	function restartSystem() {
@@ -37,20 +35,16 @@ describe("RangeSliderController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
-		fileStateService = getService<FileStateService>("fileStateService")
 		metricService = getService<MetricService>("metricService")
 
 		mapColors = storeService.getState().appSettings.mapColors
-		fileStates = [
-			{ file: TEST_FILE_DATA, selectedAs: FileSelectionState.Single },
-			{ file: TEST_FILE_DATA, selectedAs: FileSelectionState.None }
-		]
 	}
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
 		withMockedMetricService()
+		initFiles()
 	})
 
 	afterEach(() => {
@@ -62,6 +56,13 @@ describe("RangeSliderController", () => {
 			getMaxMetricByMetricName: jest.fn().mockReturnValue(100),
 			getMetricData: jest.fn().mockReturnValue({})
 		})()
+	}
+
+	function initFiles() {
+		storeService.dispatch(resetFiles())
+		storeService.dispatch(addFile(TEST_DELTA_MAP_A))
+		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
+		storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 	}
 
 	describe("constructor", () => {
@@ -97,12 +98,12 @@ describe("RangeSliderController", () => {
 			expect(WhiteColorBuildingsService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 
-		it("should subscribe to FileStateService", () => {
-			FileStateService.subscribe = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
 		})
 	})
 
@@ -160,8 +161,9 @@ describe("RangeSliderController", () => {
 		})
 
 		it("should set grey colors when slider is disabled", () => {
+			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
+
 			rangeSliderController["applyCssColors"] = jest.fn()
-			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(true)
 			const expected = { left: mapColors.lightGrey, middle: mapColors.lightGrey, right: mapColors.lightGrey }
 
 			rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
@@ -214,10 +216,6 @@ describe("RangeSliderController", () => {
 			})
 
 			describe("single state", () => {
-				beforeEach(() => {
-					fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
-				})
-
 				it("should set sliderOptions.disabled to false", () => {
 					rangeSliderController.onColorRangeChanged({ from: 10, to: 30 })
 
@@ -238,9 +236,7 @@ describe("RangeSliderController", () => {
 
 			describe("delta state", () => {
 				beforeEach(() => {
-					fileStates[0].selectedAs = FileSelectionState.Reference
-					fileStates[1].selectedAs = FileSelectionState.Comparison
-					fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
+					storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 				})
 
 				it("should set sliderOptions.disabled to true", () => {
@@ -263,11 +259,11 @@ describe("RangeSliderController", () => {
 		})
 	})
 
-	describe("onFileStatesChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should set maxMetricValue", () => {
 			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
-			rangeSliderController.onFileStatesChanged(fileStates)
+			rangeSliderController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
@@ -275,7 +271,7 @@ describe("RangeSliderController", () => {
 		it("should set sliderOptions.disabled", () => {
 			rangeSliderController["_viewModel"].sliderOptions.disabled = undefined
 
-			rangeSliderController.onFileStatesChanged(fileStates)
+			rangeSliderController.onFilesSelectionChanged(storeService.getState().files)
 
 			setTimeout(() => {
 				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)
