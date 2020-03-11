@@ -1,7 +1,7 @@
-import { BlacklistItem, BlacklistType, CCFile } from "../../../../codeCharta.model"
 import { getMergedBlacklist } from "./blacklist.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
 import _ from "lodash"
+import { BlacklistItem, BlacklistType, CCFile } from "../../../../codeCharta.model"
 
 describe("BlacklistMerger", () => {
 	let file1: CCFile

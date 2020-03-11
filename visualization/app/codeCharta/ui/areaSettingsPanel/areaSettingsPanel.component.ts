@@ -1,15 +1,15 @@
 import "./areaSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
-import { FileState } from "../../codeCharta.model"
-import { FileStateService, FileStateSubscriber } from "../../state/fileState.service"
 import { StoreService } from "../../state/store.service"
 import { setDynamicMargin } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.actions"
 import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actions"
 import _ from "lodash"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
+import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
+import { Files } from "../../model/files"
 
-export class AreaSettingsPanelController implements FileStateSubscriber, DynamicMarginSubscriber, MarginSubscriber {
+export class AreaSettingsPanelController implements FilesSelectionSubscriber, DynamicMarginSubscriber, MarginSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedMargin: () => void
 
@@ -25,7 +25,7 @@ export class AreaSettingsPanelController implements FileStateSubscriber, Dynamic
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		DynamicMarginService.subscribe(this.$rootScope, this)
 		MarginService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedMargin = _.debounce(() => {
 			this.storeService.dispatch(setMargin(this._viewModel.margin))
@@ -40,7 +40,7 @@ export class AreaSettingsPanelController implements FileStateSubscriber, Dynamic
 		this._viewModel.margin = margin
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesSelectionChanged(files: Files) {
 		this._viewModel.dynamicMargin = true
 		this.applyDynamicMargin()
 	}
