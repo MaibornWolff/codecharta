@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Replaced non standard `[[` in sh scripts #849
 - Improved performance for loading a new file #836
+- Marked Packages are loaded from files #798
 
 ### Chore 👨‍💻 👩‍💻
 

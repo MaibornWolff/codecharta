@@ -86,11 +86,11 @@ describe("LegendPanelController", () => {
 
 	describe("onMarkedPackagesChanged", () => {
 		it("set correct markingPackage in Legend", () => {
-			const markedPackages = [{ color: "#FF0000", path: "/root", attributes: {} }]
+			const markedPackages = [{ color: "#FF0000", path: "/root" }]
 			const expectedPackageLists: PackageList[] = [
 				{
 					colorPixel: "data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-					markedPackages: [{ color: "#FF0000", path: "/root", attributes: { name: "/root" } }]
+					markedPackages: [{ color: "#FF0000", path: "/root" }]
 				}
 			]
 
@@ -99,21 +99,6 @@ describe("LegendPanelController", () => {
 			expect(legendPanelController["_viewModel"].packageLists).toEqual(expectedPackageLists)
 		})
 
-		it("shorten too long pathName in middle of the string for legendPanel", () => {
-			const markedPackages = [{ color: "#FF0000", path: "/root/a/longNameToBeShortenedInLegend", attributes: {} }]
-			const shortenedPathname = "longNameToBe...enedInLegend"
-
-			legendPanelController.onMarkedPackagesChanged(markedPackages)
-			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
-		})
-
-		it("shorten too long pathName at beginning of the string for legendPanel", () => {
-			const markedPackages = [{ color: "#FF0000", path: "/root/a/andAnotherLongNameToShorten", attributes: {} }]
-			const shortenedPathname = ".../andAnotherLongNameToShorten"
-
-			legendPanelController.onMarkedPackagesChanged(markedPackages)
-			expect(legendPanelController["_viewModel"].packageLists[0].markedPackages[0].attributes["name"]).toEqual(shortenedPathname)
-		})
 		it("should update the ColorRange when it is changed", () => {
 			const newColorRange: ColorRange = { from: 13, to: 33 }
 
