@@ -17,6 +17,7 @@ import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { Files } from "../model/files"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -691,7 +692,8 @@ export const STATE: State = {
 	},
 	treeMap: {
 		mapSize: 250
-	}
+	},
+	files: new Files()
 }
 
 export const DEFAULT_STATE: State = {
@@ -746,7 +748,8 @@ export const DEFAULT_STATE: State = {
 		searchedNodePaths: []
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
-	treeMap: { mapSize: 250 }
+	treeMap: { mapSize: 250 },
+	files: new Files()
 }
 
 export const TEST_NODE_ROOT: Node = {
@@ -884,23 +887,19 @@ export const BLACKLIST: BlacklistItem[] = [
 export const MARKED_PACKAGES: MarkedPackage[] = [
 	{
 		path: "/my/path",
-		color: "#AABBCC",
-		attributes: {}
+		color: "#AABBCC"
 	},
 	{
 		path: "/my/different/path",
-		color: "#DDEEFF",
-		attributes: {}
+		color: "#DDEEFF"
 	},
 	{
 		path: "/my/first/path",
-		color: "#123456",
-		attributes: {}
+		color: "#123456"
 	},
 	{
 		path: "/my/last/path",
-		color: "#345678",
-		attributes: {}
+		color: "#345678"
 	}
 ]
 

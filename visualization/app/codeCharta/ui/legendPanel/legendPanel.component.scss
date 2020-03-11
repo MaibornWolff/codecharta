@@ -42,6 +42,7 @@ legend-panel-component {
 			min-height: 25px;
 			margin-bottom: 5px;
 			max-width: 250px;
+			overflow: hidden;
 
 			i,
 			img {
@@ -64,6 +65,16 @@ legend-panel-component {
 
 			.set-left-margin {
 				margin-left: 18px;
+			}
+
+			.marked-package {
+				overflow: hidden;
+				vertical-align: middle;
+				direction: rtl;
+				text-overflow: ellipsis;
+				max-width: 220px;
+				white-space: nowrap;
+				margin-top: -2px;
 			}
 		}
 	}
