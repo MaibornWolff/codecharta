@@ -887,23 +887,19 @@ export const BLACKLIST: BlacklistItem[] = [
 export const MARKED_PACKAGES: MarkedPackage[] = [
 	{
 		path: "/my/path",
-		color: "#AABBCC",
-		attributes: {}
+		color: "#AABBCC"
 	},
 	{
 		path: "/my/different/path",
-		color: "#DDEEFF",
-		attributes: {}
+		color: "#DDEEFF"
 	},
 	{
 		path: "/my/first/path",
-		color: "#123456",
-		attributes: {}
+		color: "#123456"
 	},
 	{
 		path: "/my/last/path",
-		color: "#345678",
-		attributes: {}
+		color: "#345678"
 	}
 ]
 
