@@ -2,11 +2,9 @@
 
 import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { FileStateService } from "../../state/fileState.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
@@ -35,7 +33,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private fileStateService: FileStateService,
 		private metricService: MetricService,
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
@@ -74,7 +71,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
-		if (this.fileStateService.fileStatesAvailable()) {
+		if (this.storeService.getState().files.fileStatesAvailable()) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
 			if (this.allNecessaryRenderDataAvailable()) {
@@ -84,13 +81,18 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private updateRenderMapAndFileMeta() {
-		const unifiedFile: CCFile = this.getSelectedFilesAsUnifiedMap()
+		const unifiedFile = this.getSelectedFilesAsUnifiedMap()
 		this.unifiedMap = unifiedFile.map
 		this.unifiedFileMeta = unifiedFile.fileMeta
 	}
 
 	private decorateIfPossible() {
-		if (this.unifiedMap && this.fileStateService.fileStatesAvailable() && this.unifiedFileMeta && this.metricService.getMetricData()) {
+		if (
+			this.unifiedMap &&
+			this.storeService.getState().files.fileStatesAvailable() &&
+			this.unifiedFileMeta &&
+			this.metricService.getMetricData()
+		) {
 			NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithSumAttributes(
@@ -98,7 +100,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 				this.storeService.getState().fileSettings.blacklist,
 				this.metricService.getMetricData(),
 				this.edgeMetricDataService.getMetricData(),
-				this.fileStateService.isDeltaState()
+				this.storeService.getState().files.isDeltaState()
 			)
 		}
 	}
@@ -116,14 +118,14 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private getSelectedFilesAsUnifiedMap(): CCFile {
-		const fileStates: FileState[] = clone(this.fileStateService.getFileStates())
-		let visibleFileStates: FileState[] = FileStateHelper.getVisibleFileStates(fileStates)
+		const files = this.storeService.getState().files
+		const visibleFileStates = clone(files.getVisibleFileStates())
 
-		if (FileStateHelper.isSingleState(fileStates)) {
+		if (files.isSingleState()) {
 			return visibleFileStates[0].file
-		} else if (FileStateHelper.isPartialState(fileStates)) {
+		} else if (files.isPartialState()) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
-		} else if (FileStateHelper.isDeltaState(fileStates)) {
+		} else if (files.isDeltaState()) {
 			return this.getDeltaFile(visibleFileStates)
 		}
 	}
@@ -154,7 +156,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private allNecessaryRenderDataAvailable(): boolean {
 		return (
-			this.fileStateService.fileStatesAvailable() &&
+			this.storeService.getState().files.fileStatesAvailable() &&
 			this.metricService.getMetricData() !== null &&
 			this.areChosenMetricsInMetricData() &&
 			_.values(this.storeService.getState().dynamicSettings).every(x => {

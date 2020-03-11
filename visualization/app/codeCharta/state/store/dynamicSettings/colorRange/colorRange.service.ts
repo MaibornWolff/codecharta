@@ -2,23 +2,24 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ColorRangeActions, setColorRange } from "./colorRange.actions"
 import _ from "lodash"
-import { ColorRange, FileState } from "../../../../codeCharta.model"
+import { ColorRange } from "../../../../codeCharta.model"
 import { getResetColorRange } from "./colorRange.reset"
 import { MetricService } from "../../../metric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
-import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
+import { Files } from "../../../../model/files"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)
 }
 
-export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FileStateSubscriber {
+export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FilesSelectionSubscriber {
 	private static COLOR_RANGE_CHANGED_EVENT = "color-range-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private metricService: MetricService) {
 		StoreService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -32,7 +33,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		this.reset()
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesSelectionChanged(files: Files) {
 		this.reset()
 	}
 
