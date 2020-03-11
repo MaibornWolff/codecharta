@@ -3,6 +3,7 @@ import angular from "angular"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
+import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
@@ -38,7 +39,6 @@ import { StoreService } from "./store.service"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { SearchPanelService } from "./searchPanel.service"
 import { NodeSearchService } from "./nodeSearch.service"
-import { FileStateService } from "./fileState.service"
 import { MetricService } from "./metric.service"
 import "../codeCharta.module"
 import _ from "lodash"
@@ -50,6 +50,7 @@ angular
 	.service(_.camelCase(CameraTargetService.name), CameraTargetService)
 	.service(_.camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(_.camelCase(IsLoadingMapService.name), IsLoadingMapService)
+	.service(_.camelCase(FilesService.name), FilesService)
 	.service(_.camelCase(MapSizeService.name), MapSizeService)
 	.service(_.camelCase(MapColorsService.name), MapColorsService)
 	.service(_.camelCase(ResetCameraIfNewFileIsLoadedService.name), ResetCameraIfNewFileIsLoadedService)
@@ -86,5 +87,4 @@ angular
 	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(_.camelCase(SearchPanelService.name), SearchPanelService)
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
-	.service(_.camelCase(FileStateService.name), FileStateService)
 	.service(_.camelCase(MetricService.name), MetricService)

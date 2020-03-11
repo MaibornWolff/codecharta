@@ -1,111 +1,84 @@
 import "./filePanel.module"
 import { FilePanelController } from "./filePanel.component"
-import { FileStateService } from "../../state/fileState.service"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
-import { FileState, FileSelectionState } from "../../codeCharta.model"
-import { FileStateHelper } from "../../util/fileStateHelper"
+import { FileSelectionState } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
+import { addFile, resetFiles, resetSelection, setDelta, setMultiple, setSingle } from "../../state/store/files/files.actions"
+import { FilesService } from "../../state/store/files/files.service"
 
 describe("filePanelController", () => {
 	let filePanelController: FilePanelController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let fileStateService: FileStateService
-
-	let fileStates: FileState[]
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.filePanel")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		fileStateService = getService<FileStateService>("fileStateService")
-
-		fileStates = [
-			{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Reference },
-			{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.Comparison }
-		]
 	}
 
 	function buildController() {
-		filePanelController = new FilePanelController($rootScope, storeService, fileStateService)
-	}
-
-	function withMockedFileStateService() {
-		fileStateService = filePanelController["fileStateService"] = jest.fn<FileStateService>(() => {
-			return {
-				getFileStates: jest.fn().mockReturnValue([]),
-				setSingleByName: jest.fn(),
-				setDeltaByNames: jest.fn(),
-				setMultipleByNames: jest.fn(),
-				resetMaps: jest.fn(),
-				addFile: jest.fn(),
-				getCCFiles: jest.fn(),
-				subscribe: jest.fn()
-			}
-		})()
+		filePanelController = new FilePanelController($rootScope, storeService)
 	}
 
 	beforeEach(() => {
 		restartSystem()
 		buildController()
-		withMockedFileStateService()
+		initFiles()
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
+	function initFiles() {
+		storeService.dispatch(resetFiles())
+		storeService.dispatch(addFile(TEST_DELTA_MAP_A))
+		storeService.dispatch(addFile(TEST_DELTA_MAP_B))
+		storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
+	}
 
-	it("should subscribe to FileStateService on construction", () => {
-		FileStateService.subscribe = jest.fn()
+	describe("constructor", () => {
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
-		buildController()
+			buildController()
 
-		expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
-	})
-
-	describe("onFileStatesChanged", () => {
-		beforeEach(() => {
-			FileStateHelper.isSingleState = jest.fn().mockReturnValue(true)
-			FileStateHelper.isPartialState = jest.fn().mockReturnValue(true)
-			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(true)
-			FileStateHelper.getVisibleFileStates = jest.fn().mockReturnValue(fileStates)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, filePanelController)
 		})
+	})
 
+	describe("onFilesSelectionChanged", () => {
 		it("should update viewModel with new fileStates", () => {
-			filePanelController.onFileStatesChanged(fileStates)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			expect(filePanelController["_viewModel"].fileStates).toEqual(fileStates)
+			expect(filePanelController["_viewModel"].files.getFiles()).toEqual(storeService.getState().files.getFiles())
 		})
 
 		it("should set the viewModel and lastRenderState correctly", () => {
-			filePanelController.onFileStatesChanged(fileStates)
+			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
-			expect(FileStateHelper.isSingleState).toHaveBeenCalledWith(fileStates)
-			expect(filePanelController["_viewModel"].isSingleState).toBeTruthy()
-			expect(FileStateHelper.isPartialState).toHaveBeenCalledWith(fileStates)
-			expect(filePanelController["_viewModel"].isPartialState).toBeTruthy()
-			expect(FileStateHelper.isDeltaState).toHaveBeenCalledWith(fileStates)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
+
+			expect(filePanelController["_viewModel"].isSingleState).toBeFalsy()
+			expect(filePanelController["_viewModel"].isPartialState).toBeFalsy()
 			expect(filePanelController["_viewModel"].isDeltaState).toBeTruthy()
 			expect(filePanelController["lastRenderState"]).toEqual(filePanelController["_viewModel"].renderState)
 		})
 
 		it("should update selected filenames in viewModel correctly if single mode is active", () => {
-			filePanelController.onFileStatesChanged(fileStates)
+			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
 
-			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
+
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Single)
-			expect(filePanelController["_viewModel"].selectedFileNames.single).toEqual(fileStates[0].file.fileMeta.fileName)
+			expect(filePanelController["_viewModel"].selectedFileNames.single).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
 		})
 
 		it("should update selected filenames in viewModel correctly if partial mode is active", () => {
-			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 
-			filePanelController.onFileStatesChanged(fileStates)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Partial)
 			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([
 				TEST_DELTA_MAP_A.fileMeta.fileName,
@@ -114,48 +87,41 @@ describe("filePanelController", () => {
 		})
 
 		it("should update selected filenames in viewModel correctly if delta mode is active with two files", () => {
-			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
-			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
+			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
-			filePanelController.onFileStatesChanged(fileStates)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
-			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(fileStates[0].file.fileMeta.fileName)
-			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(fileStates[1].file.fileMeta.fileName)
+			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
+			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(TEST_DELTA_MAP_B.fileMeta.fileName)
 		})
 
 		it("should update selected filenames in viewModel correctly if delta mode is active with only one file", () => {
-			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
-			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
+			storeService.dispatch(resetFiles())
+			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
+			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A))
 
-			fileStates.pop()
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			filePanelController.onFileStatesChanged(fileStates)
-
-			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
-			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(fileStates[0].file.fileMeta.fileName)
-			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(fileStates[0].file.fileMeta.fileName)
+			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
+			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
 		})
 
-		it("should not set anything if no mode is active", () => {
-			FileStateHelper.isSingleState = jest.fn().mockReturnValue(false)
-			FileStateHelper.isPartialState = jest.fn().mockReturnValue(false)
-			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(false)
+		it("should assume that mode is partial, when no mode is active", () => {
+			storeService.dispatch(resetSelection())
 
-			filePanelController.onFileStatesChanged(fileStates)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			expect(FileStateHelper.getVisibleFileStates).toHaveBeenCalledWith(fileStates)
-			expect(filePanelController["_viewModel"].renderState).toBeNull()
+			expect(filePanelController["_viewModel"].renderState).toBe(FileSelectionState.Partial)
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toBeNull()
 			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toBeNull()
-			expect(filePanelController["_viewModel"].selectedFileNames.partial).toBeNull()
+			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([])
 			expect(filePanelController["_viewModel"].selectedFileNames.single).toBeNull()
 		})
 
 		it("should set the pictogram colors in view model", () => {
-			filePanelController.onFileStatesChanged(fileStates)
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
 			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(storeService.getState().appSettings.mapColors.negativeDelta)
@@ -164,47 +130,48 @@ describe("filePanelController", () => {
 	})
 
 	describe("onSingleFileChange", () => {
-		it("should set singleFile in fileStateService correctly", () => {
-			filePanelController.onSingleFileChange("fileA")
+		it("should set a single file in state", () => {
+			filePanelController.onSingleFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
 
-			expect(fileStateService.setSingleByName).toHaveBeenCalledWith("fileA")
+			expect(storeService.getState().files.isSingleState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[0].selectedAs).toEqual(FileSelectionState.Single)
 		})
 	})
 
 	describe("onDeltaReferenceFileChange", () => {
-		it("should set referenceFile in fileStateService correctly", () => {
-			filePanelController["_viewModel"].selectedFileNames.delta.comparison = "fileB"
-			filePanelController.onDeltaReferenceFileChange("fileA")
+		it("should set referenceFile in delta mode", () => {
+			filePanelController["_viewModel"].selectedFileNames.delta.comparison = TEST_DELTA_MAP_A.fileMeta.fileName
 
-			expect(fileStateService.setDeltaByNames).toHaveBeenCalledWith("fileA", "fileB")
+			filePanelController.onDeltaReferenceFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
+
+			expect(storeService.getState().files.isDeltaState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[1].selectedAs).toEqual(FileSelectionState.Reference)
 		})
 	})
 
 	describe("onDeltaComparisonFileChange", () => {
-		it("should set comparisonFile in fileStateService correctly", () => {
-			filePanelController["_viewModel"].selectedFileNames.delta.reference = "fileB"
-			filePanelController.onDeltaComparisonFileChange("fileA")
+		it("should set comparisonFile in delta mode", () => {
+			filePanelController["_viewModel"].selectedFileNames.delta.reference = TEST_DELTA_MAP_A.fileMeta.fileName
 
-			expect(fileStateService.setDeltaByNames).toHaveBeenCalledWith("fileB", "fileA")
+			filePanelController.onDeltaComparisonFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
+
+			expect(storeService.getState().files.isDeltaState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[1].selectedAs).toEqual(FileSelectionState.Comparison)
 		})
 	})
 
 	describe("onPartialFileChange", () => {
-		it("should set fileStates in fileStateService correctly for multiple mode when filenames are given", () => {
-			filePanelController.onPartialFilesChange(["fileA"])
+		it("should set multiple files in multiple mode", () => {
+			filePanelController.onPartialFilesChange([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName])
 
-			expect(fileStateService.setMultipleByNames).toHaveBeenCalledWith(["fileA"])
-		})
-
-		it("should set fileStates in fileStateService to empty array for multiple mode when no filenames are given", () => {
-			filePanelController.onPartialFilesChange([])
-
-			expect(fileStateService.setMultipleByNames).toHaveBeenCalledWith([])
+			expect(storeService.getState().files.isPartialState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(storeService.getState().files.getVisibleFileStates()[1].selectedAs).toEqual(FileSelectionState.Partial)
 		})
 	})
 
 	describe("onRenderStateChange", () => {
-		it("should update the viewmodel with the last visible filename and call onSingleFileChange if single mode is active", () => {
+		it("should update the viewModel with the last visible filename and call onSingleFileChange if single mode is active", () => {
 			filePanelController.onSingleFileChange = jest.fn()
 
 			filePanelController["lastRenderState"] = FileSelectionState.Single
@@ -216,7 +183,7 @@ describe("filePanelController", () => {
 			expect(filePanelController.onSingleFileChange).toHaveBeenCalledWith("fileA")
 		})
 
-		it("should update the viewmodel with the last visible filename and call selectAllPartialFiles if partial mode is active", () => {
+		it("should update the viewModel with the last visible filename and call selectAllPartialFiles if partial mode is active", () => {
 			filePanelController.selectAllPartialFiles = jest.fn()
 
 			filePanelController.onPartialStateSelected()
@@ -224,7 +191,7 @@ describe("filePanelController", () => {
 			expect(filePanelController.selectAllPartialFiles).toHaveBeenCalled()
 		})
 
-		it("should update the viewmodel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
+		it("should update the viewModel with the last visible filename and call onDeltaComparisonFileChange with null if comparison mode is active", () => {
 			filePanelController.onDeltaComparisonFileChange = jest.fn()
 
 			filePanelController["lastRenderState"] = FileSelectionState.Comparison
@@ -238,38 +205,39 @@ describe("filePanelController", () => {
 	})
 
 	describe("selectAllPartialFiles", () => {
-		it("should call onPartialFilesChange with an array of fileNames", () => {
-			filePanelController.onPartialFilesChange = jest.fn()
-			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
-
-			const expected = [TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]
+		it("should select all files and enable multiple mode", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			filePanelController.selectAllPartialFiles()
 
-			expect(filePanelController.onPartialFilesChange).toHaveBeenCalledWith(expected)
+			expect(storeService.getState().files.getVisibleFileStates()[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(storeService.getState().files.getVisibleFileStates()[1].selectedAs).toEqual(FileSelectionState.Partial)
 		})
 	})
 
 	describe("selectZeroPartialFiles", () => {
-		it("should call onPartialFilesChange with an empty array", () => {
-			filePanelController.onPartialFilesChange = jest.fn()
+		it("should should set the viewModel mode to multiple and deselect all files", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
+			storeService.dispatch = jest.fn()
 
 			filePanelController.selectZeroPartialFiles()
 
-			expect(filePanelController.onPartialFilesChange).toHaveBeenCalledWith([])
+			expect(filePanelController["_viewModel"].selectedFileNames.partial).toHaveLength(0)
+			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
 	})
 
 	describe("invertPartialFileSelection", () => {
-		it("should call onPartialFilesChange with an array of fileNames", () => {
-			filePanelController.onPartialFilesChange = jest.fn()
-			fileStates[0].selectedAs = FileSelectionState.None
-			fileStateService.getFileStates = jest.fn().mockReturnValue(fileStates)
+		it("should invert the partially selected files", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_B]))
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
-			const expected = [fileStates[0].file.fileMeta.fileName]
 			filePanelController.invertPartialFileSelection()
 
-			expect(filePanelController.onPartialFilesChange).toHaveBeenCalledWith(expected)
+			expect(storeService.getState().files.getFiles()[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(storeService.getState().files.getFiles()[1].selectedAs).toEqual(FileSelectionState.None)
 		})
 	})
 })

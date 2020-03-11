@@ -8,15 +8,15 @@ import {
 	FocusNodeSubscriber,
 	UnfocusNodeSubscriber
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { FileStateService, FileStateSubscriber } from "../../../state/fileState.service"
-import { FileState } from "../../../codeCharta.model"
+import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
+import { Files } from "../../../model/files"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
-export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, FileStateSubscriber {
+export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 	private static AUTO_FIT_TIMEOUT = 0
 
@@ -33,7 +33,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	) {
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onFocusNode(focusedNodePath: string) {
@@ -44,7 +44,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.autoFitTo()
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesSelectionChanged(files: Files) {
 		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}
@@ -82,9 +82,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		const scale = 1.4 // object size / display size
 		const objectAngularSize = ((cameraReference.fov * Math.PI) / 180) * scale
 		const distanceToCamera = boundingSphere.radius / Math.tan(objectAngularSize / 2)
-		const len = Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
-
-		return len
+		return Math.sqrt(Math.pow(distanceToCamera, 2) + Math.pow(distanceToCamera, 2))
 	}
 
 	private focusCameraViewToCenter(boundingSphere) {

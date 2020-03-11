@@ -1,5 +1,6 @@
 // Plop: Append service import here
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
+import { FilesService } from "./store/files/files.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
@@ -44,6 +45,7 @@ export class InjectorService {
 		private cameraTargetService: CameraTargetService,
 		private isLoadingFileService: IsLoadingFileService,
 		private isLoadingMapService: IsLoadingMapService,
+		private filesService: FilesService,
 		private mapSizeService: MapSizeService,
 		private mapColorsService: MapColorsService,
 		private resetCameraIfNewFileIsLoadedService: ResetCameraIfNewFileIsLoadedService,

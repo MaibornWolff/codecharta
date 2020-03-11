@@ -19,6 +19,7 @@ import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { Scenario } from "./scenarioHelper"
 import { AddAttributeContent } from "../ui/dialog/dialog.addScenarioSettings.component"
+import { Files } from "../model/files"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -791,7 +792,8 @@ export const STATE: State = {
 	},
 	treeMap: {
 		mapSize: 250
-	}
+	},
+	files: new Files()
 }
 
 export const DEFAULT_STATE: State = {
@@ -847,7 +849,8 @@ export const DEFAULT_STATE: State = {
 		searchedNodePaths: []
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
-	treeMap: { mapSize: 250 }
+	treeMap: { mapSize: 250 },
+	files: new Files()
 }
 
 export const TEST_NODE_ROOT: Node = {
