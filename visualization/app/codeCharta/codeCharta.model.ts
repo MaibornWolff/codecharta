@@ -1,5 +1,6 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
+import { Files } from "./model/files"
 
 export interface NameDataPair {
 	fileName: string
@@ -192,9 +193,6 @@ export enum BlacklistType {
 export interface MarkedPackage {
 	path: string
 	color: string
-	attributes: {
-		[key: string]: any
-	}
 }
 
 export interface MetricData {
@@ -250,8 +248,9 @@ export interface State {
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
+	files: Files
 }
 
 export interface CCAction extends Action {
-	payload: any
+	payload?: any
 }
