@@ -167,6 +167,7 @@
 		"d3": "^5.9.2",
 		"es6-shim": "^0.35.3",
 		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.10.0",
 		"file-loader": "^4.2.0",
 		"font-awesome": "^4.7.0",
 		"html-loader": "^0.5.5",
