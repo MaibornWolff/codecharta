@@ -17,7 +17,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		isScenarioChanged: boolean
 	} = {
 		scenarios: null,
-		isScenarioChanged: false
+		isScenarioChanged: true //TODO: When Method implemented to detect that codemap has changed set it to false at first
 	}
 
 	private availableMetrics: MetricData[]
