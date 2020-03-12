@@ -10,6 +10,7 @@ import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/foc
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
+import { Vector2 } from "three"
 
 export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
@@ -40,7 +41,7 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
 
-		document.body.addEventListener("click", () => this.hideNodeContextMenu(), true)
+		document.body.addEventListener("mousedown", event => this.hideNodeContextMenu(event), true)
 	}
 
 	public onMapColorsChanged(mapColors: MapColors) {
@@ -48,6 +49,7 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
+		console.log("building right clicked: ", building)
 		const nodeType = building.node.isLeaf ? NodeType.FILE : NodeType.FOLDER
 		this.onShowNodeContextMenu(building.node.path, nodeType, x, y)
 	}
@@ -73,9 +75,18 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 		angular.element(this.$element[0].children[0]).css("left", x + "px")
 	}
 
-	public hideNodeContextMenu() {
-		this._viewModel.codeMapNode = null
-		this.synchronizeAngularTwoWayBinding()
+	public hideNodeContextMenu(mousePosition = new Vector2(-1, -1)) {
+		const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = document.getElementById("codemap-context-menu")
+
+		if (
+			mousePosition.x < offsetLeft ||
+			mousePosition.x > offsetLeft + offsetWidth ||
+			mousePosition.y < offsetTop ||
+			mousePosition.y > offsetTop + offsetHeight
+		) {
+			this._viewModel.codeMapNode = null
+			this.synchronizeAngularTwoWayBinding()
+		}
 	}
 
 	public flattenNode() {
@@ -143,7 +154,12 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	public excludeNode() {
-		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.codeMapNode.path, type: BlacklistType.exclude }))
+		this.storeService.dispatch(
+			addBlacklistItem({
+				path: this._viewModel.codeMapNode.path,
+				type: BlacklistType.exclude
+			})
+		)
 		this.hideNodeContextMenu()
 	}
 

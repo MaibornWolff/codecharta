@@ -30,6 +30,7 @@ describe("nodeContextMenuController", () => {
 		withMockedEventMethods($rootScope)
 		withMockedCodeMapActionService()
 		withMockedCodeMapPreRenderService()
+		withMockedHideNodeContextMenuMethod()
 	})
 
 	function restartSystem() {
@@ -98,6 +99,10 @@ describe("nodeContextMenuController", () => {
 				})
 			}
 		})()
+	}
+
+	function withMockedHideNodeContextMenuMethod() {
+		nodeContextMenuController.hideNodeContextMenu = jest.fn()
 	}
 
 	afterEach(() => {
@@ -177,8 +182,6 @@ describe("nodeContextMenuController", () => {
 				path: "/root/Parent Leaf",
 				type: BlacklistType.flatten
 			}
-			storeService.dispatch(setBlacklist([]))
-
 			nodeContextMenuController.flattenNode()
 
 			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
@@ -252,7 +255,7 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should return true, if package is marked and matches the color", () => {
-			const markedPackages: MarkedPackage[] = [{ path: "/root", color: "color", attributes: [] }]
+			const markedPackages: MarkedPackage[] = [{ path: "/root", color: "color" }]
 			storeService.dispatch(setMarkedPackages(markedPackages))
 
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
@@ -263,7 +266,7 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should return false, if package is not marked and doesn't match the color of parent folder", () => {
-			const markedPackages: MarkedPackage[] = [{ path: "/root", color: "color", attributes: [] }]
+			const markedPackages: MarkedPackage[] = [{ path: "/root", color: "color" }]
 			storeService.dispatch(setMarkedPackages(markedPackages))
 
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
@@ -274,7 +277,7 @@ describe("nodeContextMenuController", () => {
 		})
 
 		it("should return true, if package is marked and matches the color", () => {
-			const markedPackages: MarkedPackage[] = [{ path: "/another root", color: "color", attributes: [] }]
+			const markedPackages: MarkedPackage[] = [{ path: "/another root", color: "color" }]
 			storeService.dispatch(setMarkedPackages(markedPackages))
 			codeMapActionsService.getParentMP = jest.fn().mockReturnValue({ path: "/another root", color: "color" })
 
@@ -398,16 +401,6 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
-		})
-	})
-
-	describe("hide", () => {
-		it("should set contextMenuBuilding to null", () => {
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
-
-			nodeContextMenuController.hideNodeContextMenu()
-
-			expect(nodeContextMenuController["_viewModel"].codeMapNode).toBe(null)
 		})
 	})
 })
