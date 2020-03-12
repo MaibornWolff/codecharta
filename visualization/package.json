@@ -61,7 +61,7 @@
 		"build": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='true' --env.STANDALONE=true",
 		"build:web": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='false' --env.STANDALONE=false",
 		"dev": "webpack-dev-server --config ./conf/webpack.config.js --open --define process.env.STANDALONE='false' --env.STANDALONE=false",
-		"test": "jest .*\\.spec\\.ts --runInBand",
+		"test": "jest --config ./jest.config.json .*\\.spec\\.ts",
 		"test:auto": "jest .*\\.spec\\.ts --watch",
 		"test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",
 		"test:updateSnaps": "jest .*\\.spec\\.ts --updateSnapshot",
@@ -79,49 +79,6 @@
 		"codecharta-visualization": "cli.js"
 	},
 	"license": "BSD-3-Clause",
-	"jest": {
-		"collectCoverage": true,
-		"coverageDirectory": "<rootDir>/dist/coverage",
-		"collectCoverageFrom": [
-			"<rootDir>/app/**/*.{ts,tsx}",
-			"!**/node_modules/**"
-		],
-		"coveragePathIgnorePatterns": [
-			"(/__tests__/.*|\\.(spec|e2e|po))\\.(ts|tsx)$",
-			"<rootDir>/app/puppeteer.helper.ts"
-		],
-		"snapshotSerializers": [
-			"jest-serializer-html"
-		],
-		"transform": {
-			"\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js",
-			"\\.(html|glsl)$": "<rootDir>/mocks/fileTransformer.js"
-		},
-		"moduleNameMapper": {
-			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
-			"\\.(css|less|scss)$": "<rootDir>/mocks/styleMock.js"
-		},
-		"roots": [
-			"<rootDir>/app"
-		],
-		"testRegex": "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
-		"moduleFileExtensions": [
-			"ts",
-			"tsx",
-			"js",
-			"json"
-		],
-		"moduleDirectories": [
-			"node_modules",
-			"<rootDir>/app"
-		],
-		"globals": {
-			"ts-jest": {
-				"tsConfigFile": "tsconfig.json",
-				"skipBabel": false
-			}
-		}
-	},
 	"husky": {
 		"hooks": {
 			"pre-commit": "npm run lint:fix && npm run format:quick",
