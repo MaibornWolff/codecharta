@@ -201,7 +201,7 @@ describe("codeMapMouseEventService", () => {
 		it("should call onDocumentDoubleClick", () => {
 			codeMapMouseEventService.onViewCubeEventPropagation("dblclick", null)
 
-			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalledWith(null)
+			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalled()
 		})
 	})
 
@@ -403,7 +403,7 @@ describe("codeMapMouseEventService", () => {
 		it("should return if hovered is null", () => {
 			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
-			codeMapMouseEventService.onDocumentDoubleClick(undefined)
+			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).not.toHaveBeenCalled()
 		})
@@ -415,7 +415,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
 
-			codeMapMouseEventService.onDocumentDoubleClick(undefined)
+			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).not.toHaveBeenCalled()
 		})
@@ -423,7 +423,7 @@ describe("codeMapMouseEventService", () => {
 		it("should call open with link if hovered.node.link is defined", () => {
 			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
 
-			codeMapMouseEventService.onDocumentDoubleClick(undefined)
+			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
 		})
