@@ -4,12 +4,13 @@ import { Vector3 } from "three"
 import { HeightSettingsPanelController } from "./heightSettingsPanel.component"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { FileStateService } from "../../state/fileState.service"
-import { FileStateHelper } from "../../util/fileStateHelper"
 import { StoreService } from "../../state/store.service"
 import { AmountOfTopLabelsService } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
 import { InvertHeightService } from "../../state/store/appSettings/invertHeight/invertHeight.service"
+import { FilesService } from "../../state/store/files/files.service"
+import { TEST_DELTA_MAP_A } from "../../util/dataMocks"
+import { addFile, setDelta } from "../../state/store/files/files.actions"
 
 describe("HeightSettingsPanelController", () => {
 	let heightSettingsPanelController: HeightSettingsPanelController
@@ -59,12 +60,12 @@ describe("HeightSettingsPanelController", () => {
 			expect(InvertHeightService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribe to FileStateService", () => {
-			FileStateService.subscribe = jest.fn()
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(FileStateService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 	})
 
@@ -92,21 +93,14 @@ describe("HeightSettingsPanelController", () => {
 		})
 	})
 
-	describe("onFileSelectionStateChanged", () => {
-		beforeEach(() => {
-			FileStateHelper.isDeltaState = jest.fn().mockReturnValue(true)
-		})
-
+	describe("onFilesSelectionChanged", () => {
 		it("should set isDeltaState in viewModel", () => {
-			heightSettingsPanelController.onFileStatesChanged([])
+			storeService.dispatch(addFile(TEST_DELTA_MAP_A))
+			storeService.dispatch(setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_A))
+
+			heightSettingsPanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(heightSettingsPanelController["_viewModel"].isDeltaState).toBe(true)
-		})
-
-		it("should call isDeltaState with empty array", () => {
-			heightSettingsPanelController.onFileStatesChanged([])
-
-			expect(FileStateHelper.isDeltaState).toHaveBeenCalledWith([])
 		})
 	})
 

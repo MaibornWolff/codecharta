@@ -2,21 +2,21 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgesActions, setEdges } from "./edges.actions"
 import _ from "lodash"
-import { Edge, FileState } from "../../../../codeCharta.model"
-import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
+import { Edge } from "../../../../codeCharta.model"
 import { getMergedEdges } from "./edges.merger"
-import { FileStateHelper } from "../../../../util/fileStateHelper"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
+import { Files } from "../../../../model/files"
 
 export interface EdgesSubscriber {
 	onEdgesChanged(edges: Edge[])
 }
 
-export class EdgesService implements StoreSubscriber, FileStateSubscriber {
+export class EdgesService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static EDGES_CHANGED_EVENT = "edges-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -25,13 +25,13 @@ export class EdgesService implements StoreSubscriber, FileStateSubscriber {
 		}
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
-		this.merge(fileStates)
+	public onFilesSelectionChanged(files: Files) {
+		this.merge(files)
 	}
 
-	private merge(fileStates: FileState[]) {
-		const visibleFiles = FileStateHelper.getVisibleFileStates(fileStates).map(x => x.file)
-		const withUpdatedPath = FileStateHelper.isPartialState(fileStates)
+	private merge(files: Files) {
+		const visibleFiles = files.getVisibleFileStates().map(x => x.file)
+		const withUpdatedPath = files.isPartialState()
 		const newEdges = getMergedEdges(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setEdges(newEdges))
 	}

@@ -1,7 +1,7 @@
-import { CCFile, Edge } from "../../../../codeCharta.model"
 import { getMergedEdges } from "./edges.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
 import _ from "lodash"
+import { CCFile, Edge } from "../../../../codeCharta.model"
 
 describe("EdgesMerger", () => {
 	describe("getMergedEdges", () => {
