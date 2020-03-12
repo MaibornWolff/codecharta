@@ -22,6 +22,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
                 versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
         projectBuilder.insertByPath(path, newNode)
         edges.forEach { projectBuilder.insertEdge(addRootToEdgePaths(it)) }
+        versionControlledFile.removeMetricsToFreeMemory()
     }
 
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {

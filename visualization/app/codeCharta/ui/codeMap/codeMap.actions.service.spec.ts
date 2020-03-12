@@ -41,7 +41,7 @@ describe("CodeMapActionService", () => {
 
 	describe("markFolder", () => {
 		it("should mark a folder that is not marked yet and has no marked children packages", () => {
-			const expected = [{ attributes: {}, color: "0x000000", path: "/root" }]
+			const expected = [{ color: "0x000000", path: "/root" }]
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 
@@ -50,7 +50,7 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should remove the children of a marked package if color is the same", () => {
-			const expected = [{ attributes: {}, color: "0x000000", path: "/root" }]
+			const expected = [{ color: "0x000000", path: "/root" }]
 
 			codeMapActionsService.markFolder(nodeA.children[0], "0x000000")
 			codeMapActionsService.markFolder(nodeA, "0x000000")
@@ -60,10 +60,7 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should not remove the children of a marked package if color is different", () => {
-			const expected = [
-				{ attributes: {}, color: "0x000000", path: "/root" },
-				{ attributes: {}, color: "0x000001", path: "/root/big leaf" }
-			]
+			const expected = [{ color: "0x000000", path: "/root" }, { color: "0x000001", path: "/root/big leaf" }]
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 			codeMapActionsService.markFolder(nodeA.children[0], "0x000001")
@@ -74,9 +71,9 @@ describe("CodeMapActionService", () => {
 
 		it("should not mark with a new color if sub-nodes are already marked", () => {
 			const expected = [
-				{ attributes: {}, color: "0x000001", path: "/root/big leaf" },
-				{ attributes: {}, color: "0x000002", path: "/root/Parent Leaf" },
-				{ attributes: {}, color: "0x000003", path: "/root" }
+				{ color: "0x000001", path: "/root/big leaf" },
+				{ color: "0x000002", path: "/root/Parent Leaf" },
+				{ color: "0x000003", path: "/root" }
 			]
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
@@ -101,10 +98,7 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should not unmark marked children nodes", () => {
-			const expected = [
-				{ attributes: {}, color: "0x000000", path: "/root/big leaf" },
-				{ attributes: {}, color: "0x000000", path: "/root/Parent Leaf" }
-			]
+			const expected = [{ color: "0x000000", path: "/root/big leaf" }, { color: "0x000000", path: "/root/Parent Leaf" }]
 
 			codeMapActionsService.markFolder(nodeA.children[0], "0x000000")
 			codeMapActionsService.markFolder(nodeA.children[1], "0x000000")
@@ -124,7 +118,7 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should return null if node is a marked package", () => {
-			storeService.dispatch(markPackage({ attributes: {}, color: "0x000000", path: "/root" }))
+			storeService.dispatch(markPackage({ color: "0x000000", path: "/root" }))
 
 			const result = codeMapActionsService.getParentMP(nodeA.path)
 
@@ -132,7 +126,7 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should return marked package of root", () => {
-			const expected = { attributes: {}, color: "0x000000", path: "/root" }
+			const expected = { color: "0x000000", path: "/root" }
 			storeService.dispatch(markPackage(expected))
 
 			const result = codeMapActionsService.getParentMP(nodeA.children[0].path)
@@ -141,14 +135,14 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should return the first marked package found in sorted list", () => {
-			const mp1 = { attributes: {}, color: "0x000000", path: "/root" }
-			const mp2 = { attributes: {}, color: "0x000000", path: "/root/Parent Leaf" }
+			const mp1 = { color: "0x000000", path: "/root" }
+			const mp2 = { color: "0x000000", path: "/root/Parent Leaf" }
 			storeService.dispatch(markPackage(mp1))
 			storeService.dispatch(markPackage(mp2))
 
 			const result = codeMapActionsService.getParentMP(nodeA.children[1].children[0].path)
 
-			expect(result).toEqual({ attributes: {}, color: "0x000000", path: "/root/Parent Leaf" })
+			expect(result).toEqual({ color: "0x000000", path: "/root/Parent Leaf" })
 		})
 	})
 })

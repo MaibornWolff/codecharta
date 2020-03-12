@@ -15,6 +15,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Loading Gif not displayed when preparing to render a new map #857
+- Selecting zero files in Multiple mode will not trigger the 3D CodeMap creation
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.42.2] - 2020-02-14
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Replaced non standard `[[` in sh scripts #849
+- Improved performance for loading a new file #836
+- Marked Packages are loaded from files #798
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.42.1] - 2020-02-07
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- GC Overhead Limit (OutOfMemory Exception) during analysis of large SCMLogs fixed #845
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.42.0] - 2020-01-31

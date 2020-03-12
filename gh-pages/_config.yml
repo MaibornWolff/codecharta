@@ -28,7 +28,7 @@ social:
   links: # An array of links to social media profiles
 
 # Custom site variables, reference them in liquid like this: {{site.web_visualization_link}}
-web_visualization_link: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json
+web_visualization_link: https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json
 
 # Site Footer
 footer:

@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { EdgesAction, EdgesActions } from "./edges.actions"
 import { EdgesService } from "./edges.service"
 import { VALID_EDGE, withMockedEventMethods } from "../../../../util/dataMocks"
+import { FilesService } from "../../files/files.service"
 
 describe("EdgesService", () => {
 	let edgesService: EdgesService
@@ -35,6 +36,14 @@ describe("EdgesService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, edgesService)
+		})
+
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, edgesService)
 		})
 	})
 

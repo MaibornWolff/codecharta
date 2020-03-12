@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
-import { BlacklistType, CodeMapNode, State } from "../codeCharta.model"
+import { BlacklistType, CodeMapNode, NodeType, State } from "../codeCharta.model"
 import { STATE, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
 import { HSL } from "./color/hsl"
 
@@ -123,10 +123,10 @@ describe("FileExtensionCalculator", () => {
 
 		it("should get correct distribution of file-extensions for given metric using other-grouping", () => {
 			const additionalChildren: CodeMapNode[] = [
-				{ name: "child1.txt", type: "File", path: "/root/child1.txt", attributes: { rloc: 2 } },
-				{ name: "child2.kt", type: "File", path: "/root/child2.kt", attributes: { rloc: 4 } },
-				{ name: "child3.ts", type: "File", path: "/root/child3.ts", attributes: { rloc: 6 } },
-				{ name: "child4.xml", type: "File", path: "/root/child4.xml", attributes: { rloc: 8 } }
+				{ name: "child1.txt", type: NodeType.FILE, path: "/root/child1.txt", attributes: { rloc: 2 } },
+				{ name: "child2.kt", type: NodeType.FILE, path: "/root/child2.kt", attributes: { rloc: 4 } },
+				{ name: "child3.ts", type: NodeType.FILE, path: "/root/child3.ts", attributes: { rloc: 6 } },
+				{ name: "child4.xml", type: NodeType.FILE, path: "/root/child4.xml", attributes: { rloc: 8 } }
 			]
 			const expected: MetricDistribution[] = [
 				{

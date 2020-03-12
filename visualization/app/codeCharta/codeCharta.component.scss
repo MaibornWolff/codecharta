@@ -21,7 +21,6 @@ code-charta-component {
 		h2 {
 			text-transform: uppercase;
 			color: #5a585a;
-			font-family: Roboto, sans-serif;
 			font-weight: 500;
 			font-size: 9pt;
 			text-align: center;
@@ -63,9 +62,10 @@ code-charta-component {
 	}
 
 	.small-action-button {
+		display: inline-block;
 		height: 24px;
 		width: 24px;
-		float: left;
+		vertical-align: top;
 
 		.md-fab {
 			min-height: 0;
