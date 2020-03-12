@@ -148,8 +148,8 @@ export interface ColorRange {
 }
 
 export interface AttributeTypes {
-	nodes: { [metric: string]: AttributeTypeValue }
-	edges: { [metric: string]: AttributeTypeValue }
+	nodes: { [key: string]: AttributeTypeValue }
+	edges: { [key: string]: AttributeTypeValue }
 }
 
 export enum AttributeTypeValue {
