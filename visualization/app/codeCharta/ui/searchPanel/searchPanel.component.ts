@@ -2,20 +2,22 @@ import "./searchPanel.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
 import $ from "jquery"
-import { SearchPanelServiceSubscriber, SearchPanelService } from "../../state/searchPanel.service"
+import { StoreService } from "../../state/store.service"
+import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
-export class SearchPanelController implements SearchPanelServiceSubscriber {
+export class SearchPanelController implements SearchPanelModeSubscriber {
 	private collapsingElements = $("search-panel-component md-card")
 
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
 	} = {
-		searchPanelMode: SearchPanelMode.minimized
+		searchPanelMode: null
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private searchPanelService: SearchPanelService) {
-		SearchPanelService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
+		SearchPanelModeService.subscribe(this.$rootScope, this)
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
@@ -26,9 +28,9 @@ export class SearchPanelController implements SearchPanelServiceSubscriber {
 
 	public toggle() {
 		if (this._viewModel.searchPanelMode != SearchPanelMode.minimized) {
-			this.searchPanelService.updateSearchPanelMode(SearchPanelMode.minimized)
+			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
 		} else {
-			this.searchPanelService.updateSearchPanelMode(SearchPanelMode.treeView)
+			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
 		}
 	}
 }

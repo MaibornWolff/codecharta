@@ -1,15 +1,15 @@
 import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
-import { SearchPanelService } from "../../state/searchPanel.service"
+import { StoreService } from "../../state/store.service"
 
 describe("SearchPanelController", () => {
 	let searchPanelModeController: SearchPanelController
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
-	let searchPanelService: SearchPanelService
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
@@ -20,19 +20,11 @@ describe("SearchPanelController", () => {
 		instantiateModule("app.codeCharta.ui.searchPanel")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
-		searchPanelService = getService<SearchPanelService>("searchPanelService")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		searchPanelModeController = new SearchPanelController($rootScope, $timeout, searchPanelService)
-	}
-
-	function withMockedSearchPanelService() {
-		searchPanelService = searchPanelModeController["searchPanelService"] = jest.fn(() => {
-			return {
-				updateSearchPanelMode: jest.fn()
-			}
-		})()
+		searchPanelModeController = new SearchPanelController($rootScope, $timeout, storeService)
 	}
 
 	describe("Show components selected", () => {
@@ -54,14 +46,12 @@ describe("SearchPanelController", () => {
 	})
 
 	describe("toggle", () => {
-		beforeEach(() => {
-			withMockedSearchPanelService()
-		})
-
 		it("should switch to treeView if minimized", () => {
+			searchPanelModeController["_viewModel"].searchPanelMode = SearchPanelMode.minimized
+
 			searchPanelModeController.toggle()
 
-			expect(searchPanelService.updateSearchPanelMode).toBeCalledWith(SearchPanelMode.treeView)
+			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
 		})
 
 		it("should minimize when opened & clicked", () => {
@@ -69,7 +59,7 @@ describe("SearchPanelController", () => {
 
 			searchPanelModeController.toggle()
 
-			expect(searchPanelService.updateSearchPanelMode).toBeCalledWith(SearchPanelMode.minimized)
+			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 		})
 	})
 })
