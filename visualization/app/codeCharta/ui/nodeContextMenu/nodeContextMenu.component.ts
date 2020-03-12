@@ -49,7 +49,6 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
-		console.log("building right clicked: ", building)
 		const nodeType = building.node.isLeaf ? NodeType.FILE : NodeType.FOLDER
 		this.onShowNodeContextMenu(building.node.path, nodeType, x, y)
 	}
