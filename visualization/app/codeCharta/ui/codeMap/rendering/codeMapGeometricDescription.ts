@@ -2,9 +2,6 @@ import { CodeMapBuilding } from "./codeMapBuilding"
 import { Vector3, Ray, Box3 } from "three"
 
 export class CodeMapGeometricDescription {
-	get buildings(): CodeMapBuilding[] {
-		return this._buildings
-	}
 	private _buildings: CodeMapBuilding[]
 	private mapSize: number
 	private scales: Vector3
@@ -17,6 +14,10 @@ export class CodeMapGeometricDescription {
 
 	public add(building: CodeMapBuilding): void {
 		this._buildings.push(building)
+	}
+
+	public get buildings(): CodeMapBuilding[] {
+		return this._buildings
 	}
 
 	public setScales(scales: Vector3) {
