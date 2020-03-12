@@ -173,12 +173,16 @@ export class CodeMapMouseEventService
 	}
 
 	public onRightClick(event) {
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
-			building: this.threeSceneService.getHighlightedBuilding(),
-			x: event.clientX,
-			y: event.clientY,
-			event: event
-		})
+		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+
+		if (highlightedBuilding && this.intersectionResult.intersectionFound) {
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
+				building: this.threeSceneService.getHighlightedBuilding(),
+				x: event.clientX,
+				y: event.clientY,
+				event: event
+			})
+		}
 	}
 
 	public onDocumentDoubleClick(event) {

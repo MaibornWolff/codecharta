@@ -361,6 +361,10 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onRightClick", () => {
+		beforeEach(() => {
+			codeMapMouseEventService["intersectionResult"] = { intersectionFound: true }
+		})
+
 		it("should $broadcast a building-right-clicked event with data", () => {
 			const event = { clientX: 0, clientY: 1 }
 			codeMapMouseEventService["clickType"] = ClickType.RightClick
@@ -373,6 +377,17 @@ describe("codeMapMouseEventService", () => {
 				y: 1,
 				event
 			})
+		})
+
+		it("should not $broadcast a building-right-clicked event when no building is highlighted", () => {
+			threeSceneService.getHighlightedBuilding = jest.fn()
+
+			const event = { clientX: 0, clientY: 1 }
+			codeMapMouseEventService["clickType"] = ClickType.RightClick
+
+			codeMapMouseEventService.onRightClick(event)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 	})
 
