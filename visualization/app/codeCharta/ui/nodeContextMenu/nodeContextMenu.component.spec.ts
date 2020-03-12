@@ -10,7 +10,7 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
-import { addBlacklistItem, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("nodeContextMenuController", () => {
 	let element: Element

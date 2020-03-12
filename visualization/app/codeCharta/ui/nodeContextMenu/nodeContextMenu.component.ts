@@ -75,14 +75,7 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	public hideNodeContextMenu(mousePosition = new Vector2(-1, -1)) {
-		const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = document.getElementById("codemap-context-menu")
-
-		if (
-			mousePosition.x < offsetLeft ||
-			mousePosition.x > offsetLeft + offsetWidth ||
-			mousePosition.y < offsetTop ||
-			mousePosition.y > offsetTop + offsetHeight
-		) {
+		if (this.isClickInsideNodeContextMenu(mousePosition)) {
 			this._viewModel.codeMapNode = null
 			this.synchronizeAngularTwoWayBinding()
 		}
@@ -118,6 +111,16 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 		} else {
 			return this.packageMatchesColorOfParentMP(color)
 		}
+	}
+
+	private isClickInsideNodeContextMenu(mousePosition: Vector2) {
+		const { offsetTop, offsetLeft, offsetWidth, offsetHeight } = document.getElementById("codemap-context-menu")
+		return (
+			mousePosition.x < offsetLeft ||
+			mousePosition.x > offsetLeft + offsetWidth ||
+			mousePosition.y < offsetTop ||
+			mousePosition.y > offsetTop + offsetHeight
+		)
 	}
 
 	private isNodeMarked(): boolean {
