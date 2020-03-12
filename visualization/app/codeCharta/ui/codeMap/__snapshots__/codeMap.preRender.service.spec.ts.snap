@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`codeMapPreRenderService onMetricDataAdded should decorate and set a new render map 1`] = `
+Object {
+  "attributes": Object {
+    "mcc": 111,
+    "rloc": 200,
+    "unary": 1,
+  },
+  "children": Array [
+    Object {
+      "attributes": Object {
+        "functions": 10,
+        "mcc": 1,
+        "rloc": 100,
+        "unary": 1,
+      },
+      "edgeAttributes": Object {},
+      "link": "http://www.google.de",
+      "name": "big leaf",
+      "path": "/root/big leaf",
+      "type": "File",
+      "visible": true,
+    },
+    Object {
+      "attributes": Object {
+        "mcc": 110,
+        "rloc": 100,
+        "unary": 1,
+      },
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "functions": 100,
+            "mcc": 100,
+            "rloc": 30,
+            "unary": 1,
+          },
+          "edgeAttributes": Object {},
+          "name": "small leaf",
+          "path": "/root/Parent Leaf/small leaf",
+          "type": "File",
+          "visible": true,
+        },
+        Object {
+          "attributes": Object {
+            "functions": 1000,
+            "mcc": 10,
+            "rloc": 70,
+            "unary": 1,
+          },
+          "edgeAttributes": Object {},
+          "name": "other small leaf",
+          "path": "/root/Parent Leaf/other small leaf",
+          "type": "File",
+          "visible": true,
+        },
+      ],
+      "edgeAttributes": Object {},
+      "name": "Parent Leaf",
+      "path": "/root/Parent Leaf",
+      "type": "Folder",
+      "visible": true,
+    },
+  ],
+  "edgeAttributes": Object {},
+  "name": "root",
+  "path": "/root",
+  "type": "Folder",
+  "visible": true,
+}
+`;

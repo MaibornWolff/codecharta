@@ -1,4 +1,6 @@
 loading-gif-map-component {
+	display: inline-block;
+	vertical-align: middle;
 }
 
 loading-gif-file-component {
@@ -10,11 +12,11 @@ loading-gif-file-component {
 		height: 100%;
 		z-index: 2000;
 		background-color: rgba(255, 255, 255, 0.8);
-		display: block;
+		display: inline-block;
 		text-align: center;
 
 		md-progress-circular {
-			display: block;
+			display: inline-block;
 			margin: 0 auto;
 			margin-top: 22%;
 		}

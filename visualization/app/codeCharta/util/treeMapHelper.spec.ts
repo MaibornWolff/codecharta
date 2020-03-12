@@ -1,6 +1,6 @@
 import { TreeMapHelper } from "./treeMapHelper"
 import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
-import { CodeMapNode, EdgeVisibility, BlacklistType, State } from "../codeCharta.model"
+import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
 
 describe("treeMapHelper", () => {
@@ -17,7 +17,7 @@ describe("treeMapHelper", () => {
 			codeMapNode = {
 				name: "Anode",
 				path: "/root/Anode",
-				type: "File",
+				type: NodeType.FILE,
 				attributes: { theHeight: 100 }
 			} as CodeMapNode
 
@@ -136,7 +136,7 @@ describe("treeMapHelper", () => {
 			codeMapNode = {
 				name: "Anode",
 				path: "/root/Anode",
-				type: "File",
+				type: NodeType.FILE,
 				attributes: {},
 				edgeAttributes: { pairingRate: { incoming: 42, outgoing: 23 } }
 			}
@@ -223,7 +223,7 @@ describe("treeMapHelper", () => {
 			node = {
 				name: "Anode",
 				path: "/root/Anode",
-				type: "File",
+				type: NodeType.FILE,
 				attributes: {}
 			} as CodeMapNode
 

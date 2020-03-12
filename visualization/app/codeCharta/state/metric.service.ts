@@ -10,13 +10,13 @@ import {
 	State
 } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
-import { FileStateService, FileStateSubscriber } from "./fileState.service"
-import { FileStateHelper } from "../util/fileStateHelper"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
+import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
+import { Files } from "../model/files"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -27,18 +27,18 @@ interface MaxMetricValuePair {
 	availableInVisibleMaps: boolean
 }
 
-export class MetricService implements FileStateSubscriber, BlacklistSubscriber {
+export class MetricService implements FilesSelectionSubscriber, BlacklistSubscriber {
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 
 	//TODO MetricData should contain attributeType
 	private metricData: MetricData[] = []
 
-	constructor(private $rootScope: IRootScopeService, private fileStateService: FileStateService, private storeService: StoreService) {
-		FileStateService.subscribe(this.$rootScope, this)
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesSelectionChanged(files: Files) {
 		this.setNewMetricData()
 	}
 
@@ -75,8 +75,7 @@ export class MetricService implements FileStateSubscriber, BlacklistSubscriber {
 	}
 
 	private setNewMetricData() {
-		const fileStates: FileState[] = this.fileStateService.getFileStates()
-		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates))
+		this.metricData = this.calculateMetrics()
 		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
 	}
@@ -95,31 +94,34 @@ export class MetricService implements FileStateSubscriber, BlacklistSubscriber {
 		return mergedAttributeTypes
 	}
 
-	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[]): MetricData[] {
-		if (fileStates.length <= 0) {
+	private calculateMetrics(): MetricData[] {
+		if (!this.storeService.getState().files.fileStatesAvailable()) {
 			return []
 		} else {
 			//TODO: keep track of these metrics in service
-			const metricsFromVisibleMaps = this.getUniqueMetricNames(visibleFileStates)
-			const hashMap = this.buildHashMapFromMetrics(fileStates, metricsFromVisibleMaps)
+			const metricsFromVisibleMaps = this.getUniqueMetricNames()
+			const hashMap = this.buildHashMapFromMetrics(metricsFromVisibleMaps)
 			return this.getMetricDataFromHashMap(hashMap)
 		}
 	}
 
-	private buildHashMapFromMetrics(fileStates: FileState[], metricsFromVisibleMaps) {
+	private buildHashMapFromMetrics(metricsFromVisibleMaps) {
 		const hashMap: Map<string, MaxMetricValuePair> = new Map()
 
-		fileStates.forEach((fileState: FileState) => {
-			let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
-			nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
-				if (
-					node.data.path &&
-					!CodeMapHelper.isBlacklisted(node.data, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
-				) {
-					this.addMaxMetricValuesToHashMap(node, hashMap, metricsFromVisibleMaps)
-				}
+		this.storeService
+			.getState()
+			.files.getFiles()
+			.forEach((fileState: FileState) => {
+				let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
+				nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
+					if (
+						node.data.path &&
+						!CodeMapHelper.isBlacklisted(node.data, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
+					) {
+						this.addMaxMetricValuesToHashMap(node, hashMap, metricsFromVisibleMaps)
+					}
+				})
 			})
-		})
 		return hashMap
 	}
 
@@ -157,22 +159,23 @@ export class MetricService implements FileStateSubscriber, BlacklistSubscriber {
 		return !!metricsFromVisibleMaps.find(metricName => metricName === metric)
 	}
 
-	private getUniqueMetricNames(fileStates: FileState[]): string[] {
-		if (fileStates.length === 0) {
+	private getUniqueMetricNames(): string[] {
+		const files = this.storeService.getState().files
+		if (!files.fileStatesAvailable()) {
 			return []
-		} else {
-			let leaves: HierarchyNode<CodeMapNode>[] = []
-			fileStates.forEach((fileState: FileState) => {
-				leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves())
-			})
-			let attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
-				return d.data.attributes ? Object.keys(d.data.attributes) : []
-			})
-			let attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
-				return left.concat(right.filter(el => left.indexOf(el) === -1))
-			})
-			return attributes.sort()
 		}
+
+		let leaves: HierarchyNode<CodeMapNode>[] = []
+		files.getVisibleFileStates().forEach((fileState: FileState) => {
+			leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves())
+		})
+		const attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
+			return d.data.attributes ? Object.keys(d.data.attributes) : []
+		})
+		const attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
+			return left.concat(right.filter(el => left.indexOf(el) === -1))
+		})
+		return attributes.sort()
 	}
 
 	private sortByAttributeName(metricData: MetricData[]): MetricData[] {

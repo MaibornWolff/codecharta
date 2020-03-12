@@ -1,46 +1,50 @@
 import {
 	AttributeTypeValue,
+	BlacklistItem,
+	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	Edge,
+	EdgeVisibility,
 	FileSelectionState,
 	FileState,
+	MarkedPackage,
 	MetricData,
 	Node,
-	BlacklistType,
-	EdgeVisibility,
+	NodeType,
+	SearchPanelMode,
 	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
-import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
+import { Files } from "../model/files"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
 	attributes: {},
-	type: "Folder",
+	type: NodeType.FOLDER,
 	children: [
 		{
 			name: "big leaf",
-			type: "File",
+			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			link: "http://www.google.de"
 		},
 		{
 			name: "Parent Leaf",
-			type: "Folder",
+			type: NodeType.FOLDER,
 			attributes: {},
 			children: [
 				{
 					name: "small leaf",
-					type: "File",
+					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100 }
 				},
 				{
 					name: "other small leaf",
-					type: "File",
+					type: NodeType.FILE,
 					attributes: { rloc: 70, functions: 1000, mcc: 10 }
 				}
 			]
@@ -51,37 +55,37 @@ export const VALID_NODE: CodeMapNode = {
 export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	name: "root",
 	attributes: {},
-	type: "Folder",
+	type: NodeType.FOLDER,
 	path: "/root",
 	children: [
 		{
 			name: "big leaf",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/big leaf",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			link: "http://www.google.de"
 		},
 		{
 			name: "Parent Leaf",
-			type: "Folder",
+			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/Parent Leaf",
 			children: [
 				{
 					name: "small leaf",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf",
 					attributes: { rloc: 30, functions: 100, mcc: 100 }
 				},
 				{
 					name: "other small leaf",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/other small leaf",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 }
 				},
 				{
 					name: "empty folder",
-					type: "Folder",
+					type: NodeType.FOLDER,
 					path: "/root/Parent Leaf/empty folder",
 					attributes: {},
 					children: []
@@ -94,18 +98,18 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
 	attributes: { unary: 200 },
-	type: "Folder",
+	type: NodeType.FOLDER,
 	path: "/root",
 	children: [
 		{
 			name: "first leaf",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/first leaf",
 			attributes: { unary: 100, functions: 10, mcc: 1 }
 		},
 		{
 			name: "second leaf",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/second leaf",
 			attributes: { unary: 100, functions: 5, mcc: 1 }
 		}
@@ -115,31 +119,31 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 export const VALID_NODE_DECORATED: CodeMapNode = {
 	name: "root",
 	attributes: { rloc: 100, functions: 10, mcc: 1, unary: 5 },
-	type: "Folder",
+	type: NodeType.FOLDER,
 	path: "/root",
 	children: [
 		{
 			name: "big leaf",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/big leaf",
 			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
 			link: "http://www.google.de"
 		},
 		{
 			name: "Parent Leaf",
-			type: "Folder",
+			type: NodeType.FOLDER,
 			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
 			path: "/root/Parent Leaf",
 			children: [
 				{
 					name: "small leaf",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf",
 					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
 				},
 				{
 					name: "other small leaf",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/other small leaf",
 					attributes: { rloc: 70, functions: 1000, mcc: 10, unary: 1 },
 					edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
@@ -152,7 +156,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 
 export const VALID_NODE_WITH_METRICS: CodeMapNode = {
 	name: "root",
-	type: "Folder",
+	type: NodeType.FOLDER,
 	attributes: { rloc: 100, functions: 10, mcc: 1 }
 }
 
@@ -243,38 +247,38 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	fileMeta: FILE_META,
 	map: {
 		name: "root",
-		type: "Folder",
+		type: NodeType.FOLDER,
 		path: "/root",
 		attributes: {},
 		children: [
 			{
 				name: "big leaf",
-				type: "File",
+				type: NodeType.FILE,
 				path: "/root/big leaf",
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
 				link: "http://www.google.de"
 			},
 			{
 				name: "Parent Leaf",
-				type: "Folder",
+				type: NodeType.FOLDER,
 				attributes: {},
 				path: "/root/Parent Leaf",
 				children: [
 					{
 						name: "small leaf",
-						type: "File",
+						type: NodeType.FILE,
 						path: "/root/Parent Leaf/small leaf",
 						attributes: { rloc: 30, functions: 100, mcc: 100 }
 					},
 					{
 						name: "other small leaf",
-						type: "File",
+						type: NodeType.FILE,
 						path: "/root/Parent Leaf/other small leaf",
 						attributes: { rloc: 70, functions: 1000, mcc: 10 }
 					},
 					{
 						name: "empty folder",
-						type: "Folder",
+						type: NodeType.FOLDER,
 						path: "/root/Parent Leaf/empty folder",
 						attributes: {},
 						children: []
@@ -314,49 +318,49 @@ export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	name: "root",
 	attributes: {},
-	type: "Folder",
+	type: NodeType.FOLDER,
 	path: "/root",
 	children: [
 		{
 			name: "big leaf.jpg",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 100, functions: 10, mcc: 1 }
 		},
 		{
 			name: "another big leaf.java",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 120, functions: 20, mcc: 2 }
 		},
 		{
 			name: "Parent Leaf",
-			type: "Folder",
+			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/Parent Leaf",
 			children: [
 				{
 					name: "small leaf.jpg",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf.json",
 					attributes: { rloc: 30, functions: 100, mcc: 100 }
 				},
 				{
 					name: "other small leaf.json",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/other small leaf.json",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 }
 				},
 				{
 					name: "another leaf.java",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/another leaf.java",
 					attributes: { rloc: 42, functions: 330, mcc: 45 },
 					children: []
 				},
 				{
 					name: "leaf without extension",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/leaf without extension",
 					attributes: { rloc: 15, functions: 23, mcc: 33 },
 					children: []
@@ -370,40 +374,40 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 	name: "root",
 	attributes: {},
 	deltas: {},
-	type: "Folder",
+	type: NodeType.FOLDER,
 	path: "/root",
 	children: [
 		{
 			name: "big leaf.jpg",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			deltas: { rloc: 300, functions: -15, mcc: 12 }
 		},
 		{
 			name: "another big leaf.java",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 120, functions: 20, mcc: 2 },
 			deltas: { rloc: -150, functions: 9, mcc: 33 }
 		},
 		{
 			name: "Parent Leaf",
-			type: "Folder",
+			type: NodeType.FOLDER,
 			attributes: {},
 			deltas: {},
 			path: "/root/Parent Leaf",
 			children: [
 				{
 					name: "small leaf.jpg",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf.json",
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
 					deltas: { rloc: -55, functions: 38, mcc: -40 }
 				},
 				{
 					name: "other small leaf.json",
-					type: "File",
+					type: NodeType.FILE,
 					path: "/root/Parent Leaf/other small leaf.json",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
 					deltas: { rloc: 200, functions: -27, mcc: 65 }
@@ -416,18 +420,18 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 	name: "root",
 	attributes: {},
-	type: "Folder",
+	type: NodeType.FOLDER,
 	path: "/root",
 	children: [
 		{
 			name: "big leaf.jpg",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 0, functions: 10, mcc: 1 }
 		},
 		{
 			name: "another big leaf.java",
-			type: "File",
+			type: NodeType.FILE,
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 0, functions: 20, mcc: 2 }
 		}
@@ -442,28 +446,28 @@ export const TEST_DELTA_MAP_A: CCFile = {
 	},
 	map: {
 		name: "root",
-		type: "Folder",
+		type: NodeType.FOLDER,
 		attributes: {},
 		children: [
 			{
 				name: "big leaf",
-				type: "File",
+				type: NodeType.FILE,
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
 				link: "http://www.google.de"
 			},
 			{
 				name: "Parent Leaf",
-				type: "Folder",
+				type: NodeType.FOLDER,
 				attributes: {},
 				children: [
 					{
 						name: "small leaf",
-						type: "File",
+						type: NodeType.FILE,
 						attributes: { rloc: 30, functions: 100, mcc: 100 }
 					},
 					{
 						name: "other small leaf",
-						type: "File",
+						type: NodeType.FILE,
 						attributes: { rloc: 70, functions: 1000, mcc: 10 }
 					}
 				]
@@ -488,39 +492,39 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	},
 	map: {
 		name: "root",
-		type: "Folder",
+		type: NodeType.FOLDER,
 		attributes: {},
 		children: [
 			{
 				name: "big leaf",
-				type: "File",
+				type: NodeType.FILE,
 				attributes: { rloc: 20, functions: 10, mcc: 1 },
 				link: "http://www.google.de"
 			},
 			{
 				name: "additional leaf",
-				type: "File",
+				type: NodeType.FILE,
 				attributes: { rloc: 10, functions: 11, mcc: 5 },
 				link: "http://www.google.de"
 			},
 			{
 				name: "Parent Leaf",
-				type: "Folder",
+				type: NodeType.FOLDER,
 				attributes: {},
 				children: [
 					{
 						name: "small leaf",
-						type: "File",
+						type: NodeType.FILE,
 						attributes: { rloc: 30, functions: 100, mcc: 100, more: 20 }
 					},
 					{
 						name: "other small leaf",
-						type: "File",
+						type: NodeType.FILE,
 						attributes: { rloc: 70, functions: 1000 }
 					},
 					{
 						name: "big leaf",
-						type: "File",
+						type: NodeType.FILE,
 						attributes: { rloc: 20, functions: 10, mcc: 1 },
 						link: "http://www.google.de"
 					}
@@ -573,7 +577,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 					},
 					link: "http://www.google.de",
 					name: "big leaf",
-					type: "File"
+					type: NodeType.FILE
 				},
 				{
 					attributes: {},
@@ -585,7 +589,7 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 								rloc: 30
 							},
 							name: "small leaf",
-							type: "File"
+							type: NodeType.FILE
 						},
 						{
 							attributes: {
@@ -594,15 +598,15 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 								rloc: 70
 							},
 							name: "other small leaf",
-							type: "File"
+							type: NodeType.FILE
 						}
 					],
 					name: "Parent Leaf",
-					type: "Folder"
+					type: NodeType.FOLDER
 				}
 			],
 			name: "root",
-			type: "Folder"
+			type: NodeType.FOLDER
 		}
 	],
 	projectName: "Sample Project"
@@ -686,11 +690,13 @@ export const STATE: State = {
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
-		isLoadingFile: true
+		isLoadingFile: true,
+		searchPanelMode: SearchPanelMode.treeView
 	},
 	treeMap: {
 		mapSize: 250
-	}
+	},
+	files: new Files()
 }
 
 export const DEFAULT_STATE: State = {
@@ -727,7 +733,8 @@ export const DEFAULT_STATE: State = {
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
-		isLoadingFile: true
+		isLoadingFile: true,
+		searchPanelMode: SearchPanelMode.minimized
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -745,7 +752,8 @@ export const DEFAULT_STATE: State = {
 		searchedNodePaths: []
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
-	treeMap: { mapSize: 250 }
+	treeMap: { mapSize: 250 },
+	files: new Files()
 }
 
 export const TEST_NODE_ROOT: Node = {
@@ -883,23 +891,19 @@ export const BLACKLIST: BlacklistItem[] = [
 export const MARKED_PACKAGES: MarkedPackage[] = [
 	{
 		path: "/my/path",
-		color: "#AABBCC",
-		attributes: {}
+		color: "#AABBCC"
 	},
 	{
 		path: "/my/different/path",
-		color: "#DDEEFF",
-		attributes: {}
+		color: "#DDEEFF"
 	},
 	{
 		path: "/my/first/path",
-		color: "#123456",
-		attributes: {}
+		color: "#123456"
 	},
 	{
 		path: "/my/last/path",
-		color: "#345678",
-		attributes: {}
+		color: "#345678"
 	}
 ]
 

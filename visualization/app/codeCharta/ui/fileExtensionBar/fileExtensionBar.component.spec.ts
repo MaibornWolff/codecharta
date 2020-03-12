@@ -11,7 +11,7 @@ import {
 } from "../../util/dataMocks"
 import { FileExtensionCalculator, MetricDistribution } from "../../util/fileExtensionCalculator"
 import { FileExtensionBarController } from "./fileExtensionBar.component"
-import { BlacklistType } from "../../codeCharta.model"
+import { BlacklistType, NodeType } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -154,7 +154,7 @@ describe("FileExtensionBarController", () => {
 			const map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
 			map.children.push({
 				name: "README.md",
-				type: "File",
+				type: NodeType.FILE,
 				path: "/root/README.md",
 				attributes: { rloc: 120, functions: 20, mcc: 2 }
 			})

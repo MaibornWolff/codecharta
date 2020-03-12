@@ -2,29 +2,31 @@ import "./codeCharta.module"
 
 import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { FileStateService } from "./state/fileState.service"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { CCFile, BlacklistType } from "./codeCharta.model"
+import { CCFile, BlacklistType, NodeType } from "./codeCharta.model"
 import _ from "lodash"
+import { StoreService } from "./state/store.service"
+import { resetFiles } from "./state/store/files/files.actions"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
+	let storeService: StoreService
 	let validFileContent
-	let fileStateService: FileStateService
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
 		validFileContent = _.cloneDeep(TEST_FILE_CONTENT)
+		storeService.dispatch(resetFiles())
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
-		fileStateService = getService<FileStateService>("fileStateService")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(fileStateService)
+		codeChartaService = new CodeChartaService(storeService)
 	}
 
 	describe("loadFiles", () => {
@@ -38,7 +40,7 @@ describe("codeChartaService", () => {
 						link: "http://www.google.de",
 						name: "big leaf",
 						path: "/root/big leaf",
-						type: "File"
+						type: NodeType.FILE
 					},
 					{
 						attributes: {},
@@ -47,31 +49,33 @@ describe("codeChartaService", () => {
 								attributes: { functions: 100, mcc: 100, rloc: 30 },
 								name: "small leaf",
 								path: "/root/Parent Leaf/small leaf",
-								type: "File"
+								type: NodeType.FILE
 							},
 							{
 								attributes: { functions: 1000, mcc: 10, rloc: 70 },
 								name: "other small leaf",
 								path: "/root/Parent Leaf/other small leaf",
-								type: "File"
+								type: NodeType.FILE
 							}
 						],
 						name: "Parent Leaf",
 						path: "/root/Parent Leaf",
-						type: "Folder"
+						type: NodeType.FOLDER
 					}
 				],
 				name: "root",
 				path: "/root",
-				type: "Folder"
+				type: NodeType.FOLDER
 			},
-			settings: { fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] } }
+			settings: {
+				fileSettings: {
+					attributeTypes: { nodes: [], edges: [] },
+					blacklist: [],
+					edges: [],
+					markedPackages: []
+				}
+			}
 		}
-
-		beforeEach(() => {
-			fileStateService.addFile = jest.fn()
-			fileStateService.setSingle = jest.fn()
-		})
 
 		function letTestFail() {
 			expect(true).toBeFalsy()
@@ -80,19 +84,33 @@ describe("codeChartaService", () => {
 		it("should load a file without edges", done => {
 			validFileContent.edges = undefined
 
-			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
-				expect(fileStateService.addFile).toHaveBeenCalledWith(expected)
-				expect(fileStateService.setSingle).toHaveBeenCalled()
-				done()
-			})
+			codeChartaService
+				.loadFiles([
+					{
+						fileName: validFileContent.fileName,
+						content: validFileContent
+					}
+				])
+				.then(() => {
+					expect(storeService.getState().files.getCCFiles()[0]).toEqual(expected)
+					expect(storeService.getState().files.isSingleState()).toBeTruthy()
+					done()
+				})
 		})
 
 		it("should resolve valid file", done => {
-			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
-				expect(fileStateService.addFile).toHaveBeenCalledWith(expected)
-				expect(fileStateService.setSingle).toHaveBeenCalled()
-				done()
-			})
+			codeChartaService
+				.loadFiles([
+					{
+						fileName: validFileContent.fileName,
+						content: validFileContent
+					}
+				])
+				.then(() => {
+					expect(storeService.getState().files.getCCFiles()[0]).toEqual(expected)
+					expect(storeService.getState().files.isSingleState()).toBeTruthy()
+					done()
+				})
 		})
 
 		it("should reject null", done => {
@@ -135,12 +153,18 @@ describe("codeChartaService", () => {
 		it("should convert old blacklist type", done => {
 			validFileContent.blacklist = [{ path: "foo", type: "hide" }]
 
-			codeChartaService.loadFiles([{ fileName: validFileContent.fileName, content: validFileContent }]).then(() => {
-				const expectedWithBlacklist = _.cloneDeep(expected)
-				expectedWithBlacklist.settings.fileSettings.blacklist = [{ path: "foo", type: BlacklistType.flatten }]
-				expect(fileStateService.addFile).toHaveBeenLastCalledWith(expectedWithBlacklist)
-				done()
-			})
+			codeChartaService
+				.loadFiles([
+					{
+						fileName: validFileContent.fileName,
+						content: validFileContent
+					}
+				])
+				.then(() => {
+					const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
+					expect(storeService.getState().files.getCCFiles()[0].settings.fileSettings.blacklist).toEqual(blacklist)
+					done()
+				})
 		})
 	})
 })
