@@ -1,21 +1,23 @@
 import {
 	AttributeTypeValue,
+	BlacklistItem,
+	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	Edge,
+	EdgeVisibility,
 	FileSelectionState,
 	FileState,
+	MarkedPackage,
 	MetricData,
 	Node,
-	BlacklistType,
-	EdgeVisibility,
-	State,
-	NodeType
+	NodeType,
+	SearchPanelMode,
+	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
-import { BlacklistItem, MarkedPackage } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { Scenario } from "./scenarioHelper"
 import { AddAttributeContent } from "../ui/dialog/dialog.addScenarioSettings.component"
@@ -788,7 +790,8 @@ export const STATE: State = {
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
-		isLoadingFile: true
+		isLoadingFile: true,
+		searchPanelMode: SearchPanelMode.treeView
 	},
 	treeMap: {
 		mapSize: 250
@@ -831,7 +834,8 @@ export const DEFAULT_STATE: State = {
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
-		isLoadingFile: true
+		isLoadingFile: true,
+		searchPanelMode: SearchPanelMode.minimized
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -1078,23 +1082,19 @@ export const BLACKLIST: BlacklistItem[] = [
 export const MARKED_PACKAGES: MarkedPackage[] = [
 	{
 		path: "/my/path",
-		color: "#AABBCC",
-		attributes: {}
+		color: "#AABBCC"
 	},
 	{
 		path: "/my/different/path",
-		color: "#DDEEFF",
-		attributes: {}
+		color: "#DDEEFF"
 	},
 	{
 		path: "/my/first/path",
-		color: "#123456",
-		attributes: {}
+		color: "#123456"
 	},
 	{
 		path: "/my/last/path",
-		color: "#345678",
-		attributes: {}
+		color: "#345678"
 	}
 ]
 

@@ -119,6 +119,7 @@ export interface AppSettings {
 	resetCameraIfNewFileIsLoaded: boolean
 	isLoadingMap: boolean
 	isLoadingFile: boolean
+	searchPanelMode: SearchPanelMode
 }
 
 export interface TreeMapSettings {
@@ -193,9 +194,6 @@ export enum BlacklistType {
 export interface MarkedPackage {
 	path: string
 	color: string
-	attributes: {
-		[key: string]: any
-	}
 }
 
 export interface MetricData {

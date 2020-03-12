@@ -17,6 +17,7 @@ import { defaultShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/
 import { defaultResetIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
+import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
 import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
 
 export enum AppSettingsActions {
@@ -56,5 +57,6 @@ export const defaultAppSettings: AppSettings = {
 	showOnlyBuildingsWithEdges: defaultShowOnlyBuildingsWithEdges,
 	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded,
 	isLoadingMap: defaultIsLoadingMap,
-	isLoadingFile: defaultIsLoadingFile
+	isLoadingFile: defaultIsLoadingFile,
+	searchPanelMode: defaultSearchPanelMode
 }
