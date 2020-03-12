@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { FilesService } from "./store/files/files.service"
@@ -36,7 +37,6 @@ import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.servi
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
-import { SearchPanelService } from "./searchPanel.service"
 import { NodeSearchService } from "./nodeSearch.service"
 import { MetricService } from "./metric.service"
 import "../codeCharta.module"
@@ -46,6 +46,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(SearchPanelModeService.name), SearchPanelModeService)
 	.service(_.camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(_.camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(_.camelCase(FilesService.name), FilesService)
@@ -83,6 +84,5 @@ angular
 	.service(_.camelCase(InjectorService.name), InjectorService)
 	.service(_.camelCase(StoreService.name), StoreService)
 	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
-	.service(_.camelCase(SearchPanelService.name), SearchPanelService)
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
 	.service(_.camelCase(MetricService.name), MetricService)
