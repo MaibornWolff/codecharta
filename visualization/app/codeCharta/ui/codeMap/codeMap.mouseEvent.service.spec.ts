@@ -14,6 +14,7 @@ import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEven
 import _ from "lodash"
 import { BlacklistType, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { FilesService } from "../../state/store/files/files.service"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -144,6 +145,14 @@ describe("codeMapMouseEventService", () => {
 
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
 		})
+
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
+		})
 	})
 
 	describe("start", () => {
@@ -193,6 +202,14 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onViewCubeEventPropagation("dblclick", null)
 
 			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalledWith(null)
+		})
+	})
+
+	describe("onFilesSelectionChanged", () => {
+		it("should deselect the building", () => {
+			codeMapMouseEventService.onFilesSelectionChanged(undefined)
+
+			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 		})
 	})
 

@@ -1,6 +1,6 @@
 import "./blacklistPanel.module"
 import { BlacklistPanelController } from "./blacklistPanel.component"
-import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
@@ -48,14 +48,6 @@ describe("blacklistController", () => {
 			blacklistPanelController.onBlacklistChanged(blacklist)
 
 			expect(blacklistPanelController["_viewModel"].flatten).toEqual([blacklist[1]])
-		})
-	})
-
-	describe("onSearchPanelModeChanged", () => {
-		it("should set new searchPanelMode", () => {
-			blacklistPanelController.onSearchPanelModeChanged(SearchPanelMode.minimized)
-
-			expect(blacklistPanelController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.minimized)
 		})
 	})
 
