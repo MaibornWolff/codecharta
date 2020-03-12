@@ -10,6 +10,7 @@ export interface ExportCCFile {
 	blacklist?: ExportBlacklistItem[]
 }
 
+// eslint-disable-next-line @typescript-eslint/class-name-casing
 export interface ExportCCFile_0_1 extends ExportCCFile {
 	fileName: string
 	apiVersion: APIVersions.ZERO_POINT_ONE

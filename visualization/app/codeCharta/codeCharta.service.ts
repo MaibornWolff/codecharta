@@ -1,17 +1,18 @@
 import { validateApiVersion, validate } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
-import { FileStateService } from "./state/fileState.service"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { migrate } from "./util/migration/migration"
+import { StoreService } from "./state/store.service"
+import { addFile, resetFiles, setSingle } from "./state/store/files/files.actions"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 
-	constructor(private fileStateService: FileStateService) {}
+	constructor(private storeService: StoreService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
@@ -29,13 +30,12 @@ export class CodeChartaService {
 				}
 
 				if (isFirstValidFile) {
-					this.fileStateService.resetMaps()
+					this.storeService.dispatch(resetFiles())
 					isFirstValidFile = false
 				}
 				this.addFile(nameDataPair.fileName, migratedFile)
 			})
-
-			this.fileStateService.setSingle(this.fileStateService.getCCFiles()[0])
+			this.storeService.dispatch(setSingle(this.storeService.getState().files.getCCFiles()[0]))
 			resolve()
 		})
 	}
@@ -43,7 +43,7 @@ export class CodeChartaService {
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
 		const ccFile = this.getCCFile(fileName, migratedFile)
 		NodeDecorator.preDecorateFile(ccFile)
-		this.fileStateService.addFile(ccFile)
+		this.storeService.dispatch(addFile(ccFile))
 	}
 
 	private getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
@@ -58,7 +58,7 @@ export class CodeChartaService {
 					edges: fileContent.edges || [],
 					attributeTypes: this.getAttributeTypes(fileContent.attributeTypes),
 					blacklist: this.potentiallyUpdateBlacklistTypes(fileContent.blacklist || []),
-					markedPackages: []
+					markedPackages: fileContent.markedPackages || []
 				}
 			},
 			map: fileContent.nodes[0]
