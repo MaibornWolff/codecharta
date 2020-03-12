@@ -1,4 +1,4 @@
-import { Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage, AttributeType } from "../codeCharta.model"
+import { Edge, BlacklistItem, CCFile, FileSettings, MarkedPackage, AttributeTypeValue } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import _ from "lodash"
 
@@ -6,8 +6,8 @@ export class SettingsMerger {
 	private static edges: Edge[] = []
 	private static markedPackages: MarkedPackage[] = []
 	private static blacklist: BlacklistItem[] = []
-	private static attributeTypesEdge: AttributeType[] = []
-	private static attributeTypesNode: AttributeType[] = []
+	private static attributeTypesEdge: { [key: string]: AttributeTypeValue } = {}
+	private static attributeTypesNode: { [key: string]: AttributeTypeValue } = {}
 
 	public static getMergedFileSettings(inputFiles: CCFile[], withUpdatedPath: boolean = false): FileSettings {
 		if (inputFiles.length == 1) {
@@ -103,18 +103,12 @@ export class SettingsMerger {
 
 	private static setAttributeTypesByUniqueKey(inputFile: CCFile) {
 		const types = inputFile.settings.fileSettings.attributeTypes
-		for (let i = 0; i < types.nodes.length; i++) {
-			const key = _.findKey(types.nodes[i])
-			if (!this.attributeTypesNode.find(x => _.findKey(x) === key)) {
-				this.attributeTypesNode.push({ [key]: types.nodes[i][key] })
-			}
+		for (let key in types.nodes) {
+			if (!this.attributeTypesNode[key]) this.attributeTypesNode[key] = types.nodes[key]
 		}
 
-		for (let i = 0; i < types.edges.length; i++) {
-			const key = _.findKey(types.edges[i])
-			if (!this.attributeTypesEdge.find(x => _.findKey(x) === key)) {
-				this.attributeTypesEdge.push({ [key]: types.edges[i][key] })
-			}
+		for (let key in types.edges) {
+			if (!this.attributeTypesEdge[key]) this.attributeTypesEdge[key] = types.edges[key]
 		}
 	}
 
@@ -140,7 +134,7 @@ export class SettingsMerger {
 		this.edges = []
 		this.markedPackages = []
 		this.blacklist = []
-		this.attributeTypesEdge = []
-		this.attributeTypesNode = []
+		this.attributeTypesEdge = {}
+		this.attributeTypesNode = {}
 	}
 }

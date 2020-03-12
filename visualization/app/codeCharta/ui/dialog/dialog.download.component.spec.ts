@@ -89,12 +89,12 @@ describe("DialogDownloadController", () => {
 
 			it("should set correct amountOfAttributeTypes with attributeTypes available", () => {
 				const attributeTypes: AttributeTypes = {
-					nodes: [
-						{ metric1: AttributeTypeValue.relative },
-						{ metric2: AttributeTypeValue.absolute },
-						{ metric3: AttributeTypeValue.absolute }
-					],
-					edges: [{ metric4: AttributeTypeValue.absolute }, { metric5: AttributeTypeValue.relative }]
+					nodes: {
+						metric1: AttributeTypeValue.relative,
+						metric2: AttributeTypeValue.absolute,
+						metric3: AttributeTypeValue.absolute
+					},
+					edges: { metric4: AttributeTypeValue.absolute, metric5: AttributeTypeValue.relative }
 				}
 				storeService.dispatch(setAttributeTypes(attributeTypes))
 

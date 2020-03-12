@@ -5,7 +5,6 @@ import {
 	CodeMapNode,
 	FileState,
 	MetricData,
-	AttributeType,
 	AttributeTypeValue,
 	State
 } from "../codeCharta.model"
@@ -64,9 +63,7 @@ export class MetricService implements FileStateSubscriber, BlacklistSubscriber {
 	}
 
 	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
-		const attributeType = this.getMergedAttributeTypes(state.fileSettings.attributeTypes).find(x => {
-			return _.findKey(x) === metricName
-		})
+		const attributeType = state.fileSettings.attributeTypes.nodes[metricName]
 
 		if (attributeType) {
 			return attributeType[metricName]
@@ -79,20 +76,6 @@ export class MetricService implements FileStateSubscriber, BlacklistSubscriber {
 		this.metricData = this.calculateMetrics(fileStates, FileStateHelper.getVisibleFileStates(fileStates))
 		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
-	}
-
-	private getMergedAttributeTypes(attributeTypes: AttributeTypes): AttributeType[] {
-		const mergedAttributeTypes = [...attributeTypes.nodes]
-
-		mergedAttributeTypes.forEach(nodeAttribute => {
-			attributeTypes.edges.forEach(edgeAttribute => {
-				if (_.findKey(nodeAttribute) !== _.findKey(edgeAttribute)) {
-					mergedAttributeTypes.push(edgeAttribute)
-				}
-			})
-		})
-
-		return mergedAttributeTypes
 	}
 
 	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[]): MetricData[] {

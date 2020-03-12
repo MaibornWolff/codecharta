@@ -65,7 +65,7 @@ describe("codeChartaService", () => {
 				path: "/root",
 				type: "Folder"
 			},
-			settings: { fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] } }
+			settings: { fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] } }
 		}
 
 		beforeEach(() => {

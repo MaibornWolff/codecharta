@@ -28,7 +28,7 @@ describe("SettingsMerger", () => {
 				edges: [],
 				blacklist: [],
 				markedPackages: [],
-				attributeTypes: { nodes: [], edges: [] }
+				attributeTypes: { nodes: {}, edges: {} }
 			}
 		}
 	}
@@ -50,7 +50,7 @@ describe("SettingsMerger", () => {
 				edges: [],
 				blacklist: [],
 				markedPackages: [],
-				attributeTypes: { nodes: [], edges: [] }
+				attributeTypes: { nodes: {}, edges: {} }
 			}
 		}
 	}
@@ -218,38 +218,28 @@ describe("SettingsMerger", () => {
 
 		beforeEach(() => {
 			attributes1 = {
-				nodes: [
-					{
-						attribute1: AttributeTypeValue.absolute
-					}
-				],
-				edges: [
-					{
-						attribute2: AttributeTypeValue.relative
-					}
-				]
+				nodes: {
+					attribute1: AttributeTypeValue.absolute
+				},
+				edges: {
+					attribute2: AttributeTypeValue.relative
+				}
 			}
 
 			attributes2 = {
-				nodes: [
-					{
-						attribute3: AttributeTypeValue.absolute
-					}
-				],
-				edges: [
-					{
-						attribute4: AttributeTypeValue.relative
-					}
-				]
+				nodes: {
+					attribute3: AttributeTypeValue.absolute
+				},
+				edges: {
+					attribute4: AttributeTypeValue.relative
+				}
 			}
 
 			attributes3 = {
-				nodes: [
-					{
-						attribute1: AttributeTypeValue.relative
-					}
-				],
-				edges: []
+				nodes: {
+					attribute1: AttributeTypeValue.relative
+				},
+				edges: {}
 			}
 		})
 
@@ -262,7 +252,7 @@ describe("SettingsMerger", () => {
 
 		it("should merge attributeTypes if one file does not contain attributeTypes", () => {
 			file1.settings.fileSettings.attributeTypes = attributes1
-			file2.settings.fileSettings.attributeTypes = { nodes: [], edges: [] }
+			file2.settings.fileSettings.attributeTypes = { nodes: {}, edges: {} }
 			let fileSettings: FileSettings = SettingsMerger.getMergedFileSettings([file1, file2])
 			expect(fileSettings.attributeTypes).toMatchSnapshot()
 		})

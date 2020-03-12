@@ -105,8 +105,8 @@ export class DialogDownloadController {
 	private getAmountOfAttributeTypes() {
 		const attributeTypes: AttributeTypes = this.storeService.getState().fileSettings.attributeTypes
 		let sum: number = 0
-		sum += attributeTypes.nodes ? attributeTypes.nodes.length : 0
-		sum += attributeTypes.edges ? attributeTypes.edges.length : 0
+		sum += attributeTypes.nodes ? Object.keys(attributeTypes.nodes).length : 0
+		sum += attributeTypes.edges ? Object.keys(attributeTypes.edges).length : 0
 		return sum
 	}
 
