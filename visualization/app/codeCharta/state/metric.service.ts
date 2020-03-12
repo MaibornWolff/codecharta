@@ -64,11 +64,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 
 	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
 		const attributeType = state.fileSettings.attributeTypes.nodes[metricName]
-
-		if (attributeType) {
-			return attributeType[metricName]
-		}
-		return null
+		return !!attributeType ? attributeType : null
 	}
 
 	private setNewMetricData() {
@@ -77,8 +73,8 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		this.notifyMetricDataAdded()
 	}
 
-	private calculateMetrics(fileStates: FileState[], visibleFileStates: FileState[]): MetricData[] {
-		if (fileStates.length <= 0) {
+	private calculateMetrics(): MetricData[] {
+		if (!this.storeService.getState().files.fileStatesAvailable()) {
 			return []
 		} else {
 			//TODO: keep track of these metrics in service
