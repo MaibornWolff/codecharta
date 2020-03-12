@@ -105,25 +105,15 @@
     }
   ],
   "attributeTypes": {
-    "nodes": [
-      {
-        "attributeA": "absolute"
-      },
-      {
-        "attributeB": "absolute"
-      },
-      {
-        "attributeZ": "absolute"
-      }
-    ],
-    "edges": [
-      {
-        "attributeD": "absolute"
-      },
-      {
-        "attributeE": "relative"
-      }
-    ]
+    "nodes": {
+      "attributeA": "absolute",
+      "attributeB": "absolute",
+      "attributeZ": "absolute"
+    },
+    "edges": {
+      "attributeD": "absolute",
+      "attributeE": "relative"
+    }
   },
   "blacklist": [
     {
