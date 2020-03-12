@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { {{properCase name}}Actions } from "./{{camelCase name}}.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface {{properCase name}}Subscriber {
 	on{{properCase name}}Changed({{camelCase name}}: {{type}})
@@ -15,7 +15,7 @@ export class {{properCase name}}Service implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values({{properCase name}}Actions).includes(actionType)) {
+		if (isActionOfType(actionType, {{properName}}Actions)) {
 			this.notify(this.select())
 		}
 	}
