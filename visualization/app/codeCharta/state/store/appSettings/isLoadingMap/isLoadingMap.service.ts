@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { IsLoadingMapActions } from "./isLoadingMap.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface IsLoadingMapSubscriber {
 	onIsLoadingMapChanged(isLoadingMap: boolean)
@@ -15,7 +15,7 @@ export class IsLoadingMapService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(IsLoadingMapActions).includes(actionType)) {
+		if (isActionOfType(actionType, IsLoadingMapActions)) {
 			this.notify(this.select())
 		}
 	}

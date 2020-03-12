@@ -1,3 +1,5 @@
+//@ts-nocheck
+
 // Plop: Append service import here
 import { FilesService } from "./store/files/files.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
@@ -39,7 +41,6 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 export class InjectorService {
 	/* @ngInject */
 	constructor(
-		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
 		private searchPanelModeService: SearchPanelModeService,

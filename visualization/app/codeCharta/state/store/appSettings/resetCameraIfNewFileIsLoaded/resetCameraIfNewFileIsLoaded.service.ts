@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ResetCameraIfNewFileIsLoadedActions } from "./resetCameraIfNewFileIsLoaded.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface ResetCameraIfNewFileIsLoadedSubscriber {
 	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean)
@@ -15,7 +15,7 @@ export class ResetCameraIfNewFileIsLoadedService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(ResetCameraIfNewFileIsLoadedActions).includes(actionType)) {
+		if (isActionOfType(actionType, ResetCameraIfNewFileIsLoadedActions)) {
 			this.notify(this.select())
 		}
 	}

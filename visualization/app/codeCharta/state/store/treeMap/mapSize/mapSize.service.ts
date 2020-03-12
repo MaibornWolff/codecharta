@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MapSizeActions } from "./mapSize.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface MapSizeSubscriber {
 	onMapSizeChanged(mapSize: number)
@@ -15,7 +15,7 @@ export class MapSizeService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(MapSizeActions).includes(actionType)) {
+		if (isActionOfType(actionType, MapSizeActions)) {
 			this.notify(this.select())
 		}
 	}

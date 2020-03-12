@@ -1,9 +1,9 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgeMetricActions, setEdgeMetric } from "./edgeMetric.actions"
-import _ from "lodash"
 import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../../edgeMetricData.service"
 import { MetricData } from "../../../../codeCharta.model"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface EdgeMetricSubscriber {
 	onEdgeMetricChanged(edgeMetric: string)
@@ -18,7 +18,7 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataService
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(EdgeMetricActions).includes(actionType)) {
+		if (isActionOfType(actionType,EdgeMetricActions)) {
 			this.notify(this.select())
 		}
 	}

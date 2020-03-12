@@ -1,8 +1,8 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { CameraActions } from "./camera.actions"
-import _ from "lodash"
 import { Vector3 } from "three"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface CameraSubscriber {
 	onCameraChanged(camera: Vector3)
@@ -16,7 +16,7 @@ export class CameraService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(CameraActions).includes(actionType)) {
+		if (isActionOfType(actionType, CameraActions)) {
 			this.notify(this.select())
 		}
 	}

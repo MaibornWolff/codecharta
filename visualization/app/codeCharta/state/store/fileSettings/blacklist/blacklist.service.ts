@@ -6,6 +6,7 @@ import _ from "lodash"
 import { getMergedBlacklist } from "./blacklist.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
@@ -19,8 +20,8 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType) {
-		if (_.values(BlacklistActions).includes(actionType)) {
+	public onStoreChanged(actionType: string) {
+		if (isActionOfType(actionType, BlacklistActions)) {
 			this.notify(this.select())
 		}
 	}

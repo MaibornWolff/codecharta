@@ -1,10 +1,10 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ColorMetricActions, setColorMetric } from "./colorMetric.actions"
-import _ from "lodash"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
 import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface ColorMetricSubscriber {
 	onColorMetricChanged(colorMetric: string)
@@ -19,7 +19,7 @@ export class ColorMetricService implements StoreSubscriber, MetricServiceSubscri
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(ColorMetricActions).includes(actionType)) {
+		if (isActionOfType(actionType, ColorMetricActions)) {
 			this.notify(this.select())
 		}
 	}

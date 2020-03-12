@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { IsWhiteBackgroundActions } from "./isWhiteBackground.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface IsWhiteBackgroundSubscriber {
 	onIsWhiteBackgroundChanged(isWhiteBackground: boolean)
@@ -15,7 +15,7 @@ export class IsWhiteBackgroundService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(IsWhiteBackgroundActions).includes(actionType)) {
+		if (isActionOfType(actionType, IsWhiteBackgroundActions)) {
 			this.notify(this.select())
 		}
 	}

@@ -1,12 +1,12 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MarginActions, setMargin } from "./margin.actions"
-import _ from "lodash"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { getResetMargin } from "./margin.reset"
 import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../appSettings/dynamicMargin/dynamicMargin.service"
 import { AreaMetricService, AreaMetricSubscriber } from "../areaMetric/areaMetric.service"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface MarginSubscriber {
 	onMarginChanged(margin: number)
@@ -26,7 +26,7 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(MarginActions).includes(actionType)) {
+		if (isActionOfType(actionType,MarginActions)) {
 			this.notify(this.select())
 		}
 	}

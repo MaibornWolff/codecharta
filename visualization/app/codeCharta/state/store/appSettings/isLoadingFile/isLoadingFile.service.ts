@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { IsLoadingFileActions } from "./isLoadingFile.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface IsLoadingFileSubscriber {
 	onIsLoadingFileChanged(isLoadingFile: boolean)
@@ -15,7 +15,7 @@ export class IsLoadingFileService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(IsLoadingFileActions).includes(actionType)) {
+		if (isActionOfType(actionType, IsLoadingFileActions)) {
 			this.notify(this.select())
 		}
 	}

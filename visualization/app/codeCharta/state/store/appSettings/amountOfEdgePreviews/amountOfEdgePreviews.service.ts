@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AmountOfEdgePreviewsActions } from "./amountOfEdgePreviews.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface AmountOfEdgePreviewsSubscriber {
 	onAmountOfEdgePreviewsChanged(amountOfEdgePreviews: number)
@@ -15,7 +15,7 @@ export class AmountOfEdgePreviewsService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(AmountOfEdgePreviewsActions).includes(actionType)) {
+		if (isActionOfType(actionType, AmountOfEdgePreviewsActions)) {
 			this.notify(this.select())
 		}
 	}

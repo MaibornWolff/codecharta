@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AmountOfTopLabelsActions } from "./amountOfTopLabels.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface AmountOfTopLabelsSubscriber {
 	onAmountOfTopLabelsChanged(amountOfTopLabels: number)
@@ -15,7 +15,7 @@ export class AmountOfTopLabelsService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(AmountOfTopLabelsActions).includes(actionType)) {
+		if (isActionOfType(actionType, AmountOfTopLabelsActions)) {
 			this.notify(this.select())
 		}
 	}

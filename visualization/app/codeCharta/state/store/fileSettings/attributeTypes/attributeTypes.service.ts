@@ -1,11 +1,11 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AttributeTypesActions, setAttributeTypes } from "./attributeTypes.actions"
-import _ from "lodash"
 import { getMergedAttributeTypes } from "./attributeTypes.merger"
 import { Files } from "../../../../model/files"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { AttributeTypes } from "../../../../codeCharta.model"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface AttributeTypesSubscriber {
 	onAttributeTypesChanged(attributeTypes: AttributeTypes)
@@ -20,7 +20,7 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(AttributeTypesActions).includes(actionType)) {
+		if (isActionOfType(actionType, AttributeTypesActions)) {
 			this.notify(this.select())
 		}
 	}

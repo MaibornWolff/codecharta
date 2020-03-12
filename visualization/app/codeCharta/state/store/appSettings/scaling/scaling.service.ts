@@ -1,8 +1,8 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ScalingActions } from "./scaling.actions"
-import _ from "lodash"
 import { Vector3 } from "three"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface ScalingSubscriber {
 	onScalingChanged(scaling: Vector3)
@@ -16,7 +16,7 @@ export class ScalingService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(ScalingActions).includes(actionType)) {
+		if (isActionOfType(actionType, ScalingActions)) {
 			this.notify(this.select())
 		}
 	}

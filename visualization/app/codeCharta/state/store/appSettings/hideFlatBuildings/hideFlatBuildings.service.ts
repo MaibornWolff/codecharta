@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { HideFlatBuildingsActions } from "./hideFlatBuildings.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface HideFlatBuildingsSubscriber {
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean)
@@ -15,7 +15,7 @@ export class HideFlatBuildingsService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(HideFlatBuildingsActions).includes(actionType)) {
+		if (isActionOfType(actionType, HideFlatBuildingsActions)) {
 			this.notify(this.select())
 		}
 	}

@@ -1,9 +1,9 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SearchPatternActions, setSearchPattern } from "./searchPattern.actions"
-import _ from "lodash"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
+import { isActionOfType } from "../../../../util/actionHelper"
 
 export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)
@@ -18,7 +18,7 @@ export class SearchPatternService implements StoreSubscriber, FilesSelectionSubs
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(SearchPatternActions).includes(actionType)) {
+		if (isActionOfType(actionType, SearchPatternActions)) {
 			this.notify(this.select())
 		}
 	}
