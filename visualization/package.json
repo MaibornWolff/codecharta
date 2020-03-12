@@ -164,7 +164,6 @@
 		"@types/lodash": "^4.14.123",
 		"@types/node": "^11.11.3",
 		"@types/puppeteer": "^1.12.4",
-		"@types/three": "^0.103.2",
 		"@typescript-eslint/eslint-plugin": "^2.23.0",
 		"@typescript-eslint/parser": "^2.23.0",
 		"babel-cli": "^6.18.0",
