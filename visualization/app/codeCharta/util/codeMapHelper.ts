@@ -40,9 +40,7 @@ export class CodeMapHelper {
 		const ignoredNodePaths = ignore()
 			.add(CodeMapHelper.transformPath(gitignorePath))
 			.filter(nodes.map(n => CodeMapHelper.transformPath(n.path)))
-		//TODO: Review again once we use a isBlacklisted attribute in our CodeMapNodes
-		const set = new Set(ignoredNodePaths)
-		return nodes.filter(n => !set.has(CodeMapHelper.transformPath(n.path)))
+		return nodes.filter(n => !ignoredNodePaths.includes(CodeMapHelper.transformPath(n.path)))
 	}
 
 	public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<BlacklistItem>): number {
