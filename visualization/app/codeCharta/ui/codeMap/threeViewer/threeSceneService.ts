@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { Scene, Vector3 } from "three"
+import { Scene } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
@@ -119,7 +119,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.lights.add(light2)
 	}
 
-	public setMapMesh(mesh: CodeMapMesh, mapSize: number) {
+	public setMapMesh(mesh: CodeMapMesh) {
+		const mapSize = this.storeService.getState().treeMap.mapSize
 		this.mapMesh = mesh
 
 		while (this.mapGeometry.children.length > 0) {
@@ -137,7 +138,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		return this.mapMesh
 	}
 
-	public scale(scale: Vector3, mapSize: number) {
+	public scale() {
+		const mapSize = this.storeService.getState().treeMap.mapSize
+		const scale = this.storeService.getState().appSettings.scaling
+
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
 		this.mapGeometry.position.set(-mapSize * scale.x, 0.0, -mapSize * scale.z)
 		this.mapMesh.setScale(scale)

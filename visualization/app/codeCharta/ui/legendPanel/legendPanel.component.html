@@ -48,8 +48,12 @@
 	<hr ng-show="$ctrl._viewModel.packageLists[0]" />
 	<div class="legend-block" ng-show="$ctrl._viewModel.packageLists" ng-repeat="packageList in $ctrl._viewModel.packageLists">
 		<img ng-src="{{::packageList.colorPixel}}" />
-		<span class="{{ $first ? '' : 'set-left-margin' }}" ng-repeat="item in packageList.markedPackages" title="{{::item.path}}">
-			{{::item.attributes.name}}{{ $last ? "" : ",&nbsp;" }}
+		<span
+			class="marked-package {{ $first ? '' : 'set-left-margin' }}"
+			ng-repeat="item in packageList.markedPackages"
+			title="{{::item.path}}"
+		>
+			{{::item.path}}{{ $last ? "" : ",&nbsp;" }}
 		</span>
 	</div>
 </div>

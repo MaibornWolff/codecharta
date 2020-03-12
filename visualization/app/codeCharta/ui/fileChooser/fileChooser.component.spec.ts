@@ -3,7 +3,6 @@ import "../../codeCharta.module"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeChartaService } from "../../codeCharta.service"
-import { FileStateService } from "../../state/fileState.service"
 import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT, withMockedEventMethods } from "../../util/dataMocks"
@@ -15,7 +14,6 @@ describe("fileChooserController", () => {
 	let $rootScope: IRootScopeService
 	let dialogService: DialogService
 	let codeChartaService: CodeChartaService
-	let fileStateService: FileStateService
 	let storeSevice: StoreService
 
 	let fileName: string
@@ -25,7 +23,6 @@ describe("fileChooserController", () => {
 		restartSystem()
 		rebuildController()
 		withMockedEventMethods($rootScope)
-		withMockedFileStateService()
 		withMockedDialogService()
 		withMockedCodeChartaService()
 	})
@@ -39,7 +36,6 @@ describe("fileChooserController", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		dialogService = getService<DialogService>("dialogService")
-		fileStateService = getService<FileStateService>("fileStateService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		storeSevice = getService<StoreService>("storeService")
 
@@ -48,14 +44,7 @@ describe("fileChooserController", () => {
 	}
 
 	function rebuildController() {
-		fileChooserController = new FileChooserController($rootScope, dialogService, codeChartaService, fileStateService, storeSevice)
-	}
-
-	function withMockedFileStateService() {
-		fileStateService = fileChooserController["fileStateService"] = jest.fn().mockReturnValue({
-			resetMaps: jest.fn(),
-			setSingle: jest.fn()
-		})()
+		fileChooserController = new FileChooserController($rootScope, dialogService, codeChartaService, storeSevice)
 	}
 
 	function withMockedDialogService() {

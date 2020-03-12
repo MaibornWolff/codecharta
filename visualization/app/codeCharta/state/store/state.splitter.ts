@@ -9,6 +9,7 @@ import { splitFileSettingsActions } from "./fileSettings/fileSettings.splitter"
 import { splitAppSettingsActions } from "./appSettings/appSettings.splitter"
 import { splitTreeMapSettingsActions } from "./treeMap/treeMap.splitter"
 import { TreeMapSettingsActions } from "./treeMap/treeMap.actions"
+import { splitFilesAction } from "./files/files.splitter"
 
 export function splitStateActions(action: CCAction): CCAction[] {
 	if (_.values(DynamicSettingsActions).includes(action.type)) {
@@ -44,6 +45,10 @@ export function splitStateActions(action: CCAction): CCAction[] {
 
 		if (action.payload.treeMap !== undefined) {
 			actions = actions.concat(splitTreeMapSettingsActions(action.payload.treeMap))
+		}
+
+		if (action.payload.files !== undefined) {
+			actions = actions.concat(splitFilesAction(action.payload.files))
 		}
 		return actions
 	}
