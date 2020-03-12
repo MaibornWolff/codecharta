@@ -1,13 +1,7 @@
 package de.maibornwolff.codecharta.model
 
-class AttributeTypes{
-
-    val attributeTypes = mutableListOf<Map<String, AttributeType>>()
-
-    constructor(attributeTypes: MutableMap<String, AttributeType> = mutableMapOf(),
-                       type: String) {
-
-    }
+class AttributeTypes(val attributeTypes: MutableMap<String, AttributeType> = mutableMapOf(),
+                     val type: String) {
 
     fun add(metricName: String, attributeType: AttributeType): AttributeTypes {
         attributeTypes[metricName] = attributeType

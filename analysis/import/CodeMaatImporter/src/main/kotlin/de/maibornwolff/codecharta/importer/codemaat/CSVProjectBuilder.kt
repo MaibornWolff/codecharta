@@ -16,7 +16,7 @@ class CSVProjectBuilder(
         private val pathSeparator: Char,
         private val csvDelimiter: Char,
         metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf())
+        attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges")
 ) {
 
     private val logger = KotlinLogging.logger {}
