@@ -6,6 +6,7 @@ import { ColorRangeService } from "./colorRange.service"
 import { ColorRangeAction, ColorRangeActions } from "./colorRange.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { MetricService } from "../../../metric.service"
+import { FilesService } from "../../files/files.service"
 
 describe("ColorRangeService", () => {
 	let colorRangeService: ColorRangeService
@@ -45,6 +46,14 @@ describe("ColorRangeService", () => {
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, colorRangeService)
 		})
+
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, colorRangeService)
+		})
 	})
 
 	describe("onStoreChanged", () => {
@@ -67,11 +76,11 @@ describe("ColorRangeService", () => {
 		})
 	})
 
-	describe("reset", () => {
-		it("should notify all subscribers with the new colorRange value", () => {
+	describe("onFilesSelectionChanged", () => {
+		it("should reset the color range", () => {
 			withMockedMetricService()
 
-			colorRangeService.reset()
+			colorRangeService.onFilesSelectionChanged(undefined)
 
 			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})
