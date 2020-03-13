@@ -70,10 +70,10 @@ describe("AreaMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update areaMetric if current areaMetric is not available", () => {
 			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "c", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "d", maxValue: 2, availableInVisibleMaps: true }
+				{ name: "a", maxValue: 1 },
+				{ name: "b", maxValue: 2 },
+				{ name: "c", maxValue: 2 },
+				{ name: "d", maxValue: 2 }
 			]
 
 			areaMetricService.onMetricDataAdded(metricData)
@@ -84,10 +84,7 @@ describe("AreaMetricService", () => {
 		it("should not update if current areaMetric is available", () => {
 			storeService.dispatch(setAreaMetric("rloc"))
 			storeService.dispatch = jest.fn()
-			const metricData = [
-				{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
-			]
+			const metricData = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
 
 			areaMetricService.onMetricDataAdded(metricData)
 
@@ -96,7 +93,7 @@ describe("AreaMetricService", () => {
 
 		it("should not update areaMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()
-			const metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
+			const metricData = []
 
 			areaMetricService.onMetricDataAdded(metricData)
 
