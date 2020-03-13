@@ -129,6 +129,21 @@ describe("filePanelController", () => {
 		})
 	})
 
+	describe("onPartialSelectionClosed", () => {
+		it("should set the filenames of the maps that are visible again", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
+			filePanelController.onFilesSelectionChanged(storeService.getState().files)
+			filePanelController["_viewModel"].selectedFileNames.partial = []
+
+			filePanelController.onPartialSelectionClosed()
+
+			expect(filePanelController["_viewModel"].selectedFileNames.partial).toEqual([
+				TEST_DELTA_MAP_A.fileMeta.fileName,
+				TEST_DELTA_MAP_B.fileMeta.fileName
+			])
+		})
+	})
+
 	describe("onSingleFileChange", () => {
 		it("should set a single file in state", () => {
 			filePanelController.onSingleFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
@@ -160,8 +175,8 @@ describe("filePanelController", () => {
 		})
 	})
 
-	describe("onPartialFileChange", () => {
-		it("should set multiple files in multiple mode", () => {
+	describe("onPartialFilesChange", () => {
+		it("should set multiple files in multiple mode when at least one is selected", () => {
 			filePanelController.onPartialFilesChange([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName])
 
 			expect(storeService.getState().files.isPartialState()).toBeTruthy()
@@ -183,7 +198,7 @@ describe("filePanelController", () => {
 			expect(filePanelController.onSingleFileChange).toHaveBeenCalledWith("fileA")
 		})
 
-		it("should update the viewModel with the last visible filename and call selectAllPartialFiles if partial mode is active", () => {
+		it("should update the viewModel with the last visible filename and call Files if partial mode is active", () => {
 			filePanelController.selectAllPartialFiles = jest.fn()
 
 			filePanelController.onPartialStateSelected()
@@ -217,15 +232,16 @@ describe("filePanelController", () => {
 	})
 
 	describe("selectZeroPartialFiles", () => {
-		it("should should set the viewModel mode to multiple and deselect all files", () => {
-			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A]))
+		it("should only set the viewModel to prevent rendering of an empty map when nothing is selected", () => {
+			storeService.dispatch(setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
-			storeService.dispatch = jest.fn()
 
 			filePanelController.selectZeroPartialFiles()
 
+			expect(storeService.getState().files.isPartialState()).toBeTruthy()
+			expect(storeService.getState().files.getVisibleFileStates()[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(storeService.getState().files.getVisibleFileStates()[1].selectedAs).toEqual(FileSelectionState.Partial)
 			expect(filePanelController["_viewModel"].selectedFileNames.partial).toHaveLength(0)
-			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
 	})
 

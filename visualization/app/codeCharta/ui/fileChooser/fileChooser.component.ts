@@ -11,6 +11,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { resetFiles } from "../../state/store/files/files.actions"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -23,7 +24,7 @@ export class FileChooserController {
 
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
-			this.storeService.getState().files.reset()
+			this.storeService.dispatch(resetFiles())
 			for (let file of element.files) {
 				let reader = new FileReader()
 				reader.onloadstart = () => {
