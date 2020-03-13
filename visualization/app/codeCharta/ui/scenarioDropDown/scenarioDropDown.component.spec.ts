@@ -145,12 +145,20 @@ describe("ScenarioDropDownController", () => {
 	})
 
 	describe("removeScenario", () => {
-		it("should call deleteScenario", () => {
+		beforeEach(() => {
 			ScenarioHelper.deleteScenario = jest.fn()
+		})
 
+		it("should call deleteScenario", () => {
 			scenarioButtonsController.removeScenario("Scenario1")
 
-			expect(ScenarioHelper.deleteScenario).toHaveBeenCalled()
+			expect(ScenarioHelper.deleteScenario).toHaveBeenCalledWith("Scenario1")
+		})
+
+		it("should not call deleteScenario, when the scenario selected is Complexity", () => {
+			scenarioButtonsController.removeScenario("Complexity")
+
+			expect(ScenarioHelper.deleteScenario).not.toHaveBeenCalled()
 		})
 	})
 })
