@@ -1,3 +1,3 @@
 export function isActionOfType(actionType: string, actions) {
-	return Object.keys(actions).includes(actionType)
+	return Object.values(actions).includes(actionType)
 }
