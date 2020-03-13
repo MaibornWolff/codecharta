@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Search-panel opening for a short duration when importing a new file
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.42.3] - 2020-03-13
