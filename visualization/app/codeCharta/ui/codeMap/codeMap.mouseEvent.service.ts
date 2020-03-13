@@ -67,7 +67,7 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mousemove", () => this.onDocumentMouseMove(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", () => this.onDocumentMouseUp())
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", () => this.onDocumentMouseDown(event))
-		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick(event))
+		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -83,7 +83,7 @@ export class CodeMapMouseEventService
 				this.onDocumentMouseDown(event)
 				break
 			case "dblclick":
-				this.onDocumentDoubleClick(event)
+				this.onDocumentDoubleClick()
 				break
 		}
 	}
@@ -164,15 +164,19 @@ export class CodeMapMouseEventService
 	}
 
 	public onRightClick(event) {
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
-			building: this.threeSceneService.getHighlightedBuilding(),
-			x: event.clientX,
-			y: event.clientY,
-			event: event
-		})
+		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+
+		if (highlightedBuilding) {
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
+				building: highlightedBuilding,
+				x: event.clientX,
+				y: event.clientY,
+				event: event
+			})
+		}
 	}
 
-	public onDocumentDoubleClick(event) {
+	public onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
 		if (highlightedBuilding) {
 			let fileSourceLink = highlightedBuilding.node.link
