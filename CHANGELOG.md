@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Loading Gif not displayed when preparing to render a new map #857
 - Selecting zero files in Multiple mode will not trigger the 3D CodeMap creation
+- Metrics in the dropdown menu now show the correct max value for the visible maps #876
 
 ### Chore 👨‍💻 👩‍💻
 
