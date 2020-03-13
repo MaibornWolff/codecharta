@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgeHeightActions } from "./edgeHeight.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface EdgeHeightSubscriber {
 	onEdgeHeightChanged(edgeHeight: number)

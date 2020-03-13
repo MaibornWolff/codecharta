@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { InvertDeltaColorsActions } from "./invertDeltaColors.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface InvertDeltaColorsSubscriber {
 	onInvertDeltaColorsChanged(invertDeltaColors: boolean)

@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { EdgeMetricActions, setEdgeMetric } from "./edgeMetric.actions"
 import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../../edgeMetricData.service"
 import { MetricData } from "../../../../codeCharta.model"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface EdgeMetricSubscriber {
 	onEdgeMetricChanged(edgeMetric: string)
@@ -18,7 +18,7 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataService
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType,EdgeMetricActions)) {
+		if (isActionOfType(actionType, EdgeMetricActions)) {
 			this.notify(this.select())
 		}
 	}

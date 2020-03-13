@@ -7,7 +7,7 @@ import { MetricService } from "../../../metric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)

@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AmountOfEdgePreviewsActions } from "./amountOfEdgePreviews.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface AmountOfEdgePreviewsSubscriber {
 	onAmountOfEdgePreviewsChanged(amountOfEdgePreviews: number)

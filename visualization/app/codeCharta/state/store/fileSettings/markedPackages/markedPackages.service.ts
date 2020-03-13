@@ -5,7 +5,7 @@ import { MarkedPackage } from "../../../../codeCharta.model"
 import { getMergedMarkedPackages } from "./markedPackages.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface MarkedPackagesSubscriber {
 	onMarkedPackagesChanged(markedPackages: MarkedPackage[])

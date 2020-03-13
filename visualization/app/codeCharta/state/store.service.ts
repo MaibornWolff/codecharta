@@ -5,7 +5,7 @@ import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { CCAction, State } from "../codeCharta.model"
-import { isActionOfType } from "../util/actionHelper"
+import { isActionOfType } from "../util/reduxHelper"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)

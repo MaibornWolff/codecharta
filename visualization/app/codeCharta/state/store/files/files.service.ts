@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../store.service"
 import { IRootScopeService } from "angular"
 import { FilesSelectionActions } from "./files.actions"
 import { Files } from "../../../model/files"
-import { isActionOfType } from "../../../util/actionHelper"
+import { isActionOfType } from "../../../util/reduxHelper"
 
 export interface FilesSelectionSubscriber {
 	onFilesSelectionChanged(files: Files)

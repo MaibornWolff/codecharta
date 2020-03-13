@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SearchPanelModeActions } from "./searchPanelMode.actions"
 import { SearchPanelMode } from "../../../../codeCharta.model"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface SearchPanelModeSubscriber {
 	onSearchPanelModeChanged(searchPanelMode: SearchPanelMode)

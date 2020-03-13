@@ -4,7 +4,7 @@ import { HeightMetricActions, setHeightMetric } from "./heightMetric.actions"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
 import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface HeightMetricSubscriber {
 	onHeightMetricChanged(heightMetric: string)
@@ -19,7 +19,7 @@ export class HeightMetricService implements StoreSubscriber, MetricServiceSubscr
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType,HeightMetricActions)) {
+		if (isActionOfType(actionType, HeightMetricActions)) {
 			this.notify(this.select())
 		}
 	}

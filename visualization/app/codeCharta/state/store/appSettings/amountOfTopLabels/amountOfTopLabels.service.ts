@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AmountOfTopLabelsActions } from "./amountOfTopLabels.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface AmountOfTopLabelsSubscriber {
 	onAmountOfTopLabelsChanged(amountOfTopLabels: number)

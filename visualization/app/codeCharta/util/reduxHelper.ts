@@ -1,4 +1,5 @@
 import angular from "angular"
+
 const clone = require("rfdc")()
 
 export function removeItemFromArray(array: any[], item: any): any[] {
@@ -14,6 +15,10 @@ export function addItemToArray(array: any[], item: any): any[] {
 		return copy
 	}
 	return array
+}
+
+export function isActionOfType(actionType: string, actions) {
+	return Object.values(actions).includes(actionType)
 }
 
 function arrayContainsItem(array: any[], item: any): boolean {

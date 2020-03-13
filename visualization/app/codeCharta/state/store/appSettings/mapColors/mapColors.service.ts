@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MapColorsActions } from "./mapColors.actions"
 import { MapColors } from "../../../../codeCharta.model"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface MapColorsSubscriber {
 	onMapColorsChanged(mapColors: MapColors)

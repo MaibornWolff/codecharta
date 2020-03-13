@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { HideFlatBuildingsActions } from "./hideFlatBuildings.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface HideFlatBuildingsSubscriber {
 	onHideFlatBuildingsChanged(hideFlatBuildings: boolean)

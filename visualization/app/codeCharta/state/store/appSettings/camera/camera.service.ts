@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { CameraActions } from "./camera.actions"
 import { Vector3 } from "three"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface CameraSubscriber {
 	onCameraChanged(camera: Vector3)

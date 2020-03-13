@@ -6,7 +6,7 @@ import { getResetMargin } from "./margin.reset"
 import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../appSettings/dynamicMargin/dynamicMargin.service"
 import { AreaMetricService, AreaMetricSubscriber } from "../areaMetric/areaMetric.service"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface MarginSubscriber {
 	onMarginChanged(margin: number)
@@ -26,7 +26,7 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType,MarginActions)) {
+		if (isActionOfType(actionType, MarginActions)) {
 			this.notify(this.select())
 		}
 	}

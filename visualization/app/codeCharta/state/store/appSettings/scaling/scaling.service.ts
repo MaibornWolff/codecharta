@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ScalingActions } from "./scaling.actions"
 import { Vector3 } from "three"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface ScalingSubscriber {
 	onScalingChanged(scaling: Vector3)

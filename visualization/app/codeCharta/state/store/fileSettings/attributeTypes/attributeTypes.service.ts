@@ -5,7 +5,7 @@ import { getMergedAttributeTypes } from "./attributeTypes.merger"
 import { Files } from "../../../../model/files"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { AttributeTypes } from "../../../../codeCharta.model"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface AttributeTypesSubscriber {
 	onAttributeTypesChanged(attributeTypes: AttributeTypes)

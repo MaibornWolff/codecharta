@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { IsLoadingFileActions } from "./isLoadingFile.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface IsLoadingFileSubscriber {
 	onIsLoadingFileChanged(isLoadingFile: boolean)

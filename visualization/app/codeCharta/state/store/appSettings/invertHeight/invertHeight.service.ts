@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { InvertHeightActions } from "./invertHeight.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface InvertHeightSubscriber {
 	onInvertHeightChanged(invertHeight: boolean)

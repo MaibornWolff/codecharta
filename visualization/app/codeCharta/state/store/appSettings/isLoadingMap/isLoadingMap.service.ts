@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { IsLoadingMapActions } from "./isLoadingMap.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface IsLoadingMapSubscriber {
 	onIsLoadingMapChanged(isLoadingMap: boolean)

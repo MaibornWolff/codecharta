@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ShowOnlyBuildingsWithEdgesActions } from "./showOnlyBuildingsWithEdges.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface ShowOnlyBuildingsWithEdgesSubscriber {
 	onShowOnlyBuildingsWithEdgesChanged(showOnlyBuildingsWithEdges: boolean)

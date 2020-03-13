@@ -4,7 +4,7 @@ import { ColorMetricActions, setColorMetric } from "./colorMetric.actions"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
 import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface ColorMetricSubscriber {
 	onColorMetricChanged(colorMetric: string)

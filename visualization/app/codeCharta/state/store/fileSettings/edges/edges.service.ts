@@ -5,7 +5,7 @@ import { Edge } from "../../../../codeCharta.model"
 import { getMergedEdges } from "./edges.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface EdgesSubscriber {
 	onEdgesChanged(edges: Edge[])
