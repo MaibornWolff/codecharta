@@ -1,14 +1,13 @@
 import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 
 describe("SearchPanelController", () => {
 	let searchPanelModeController: SearchPanelController
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let storeService: StoreService
 
 	beforeEach(() => {
@@ -19,12 +18,11 @@ describe("SearchPanelController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.searchPanel")
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		searchPanelModeController = new SearchPanelController($rootScope, $timeout, storeService)
+		searchPanelModeController = new SearchPanelController($rootScope, storeService)
 	}
 
 	describe("Show components selected", () => {

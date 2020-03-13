@@ -7,8 +7,6 @@ import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMod
 import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
 export class SearchPanelController implements SearchPanelModeSubscriber {
-	private collapsingElements = $("search-panel-component md-card")
-
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
 	} = {
@@ -16,14 +14,12 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		SearchPanelModeService.subscribe(this.$rootScope, this)
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
 		this._viewModel.searchPanelMode = searchPanelMode
-		this.collapsingElements.attr("id", "")
-		this.$timeout(() => this.collapsingElements.attr("id", "search-panel"), 300)
 	}
 
 	public toggle() {
