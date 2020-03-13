@@ -110,7 +110,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 
 		this.storeService
 			.getState()
-			.files.getFiles()
+			.files.getVisibleFileStates()
 			.forEach((fileState: FileState) => {
 				let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 				nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
