@@ -1,8 +1,8 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SearchPanelModeActions } from "./searchPanelMode.actions"
-import _ from "lodash"
 import { SearchPanelMode } from "../../../../codeCharta.model"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface SearchPanelModeSubscriber {
 	onSearchPanelModeChanged(searchPanelMode: SearchPanelMode)
@@ -16,7 +16,7 @@ export class SearchPanelModeService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(SearchPanelModeActions).includes(actionType)) {
+		if (isActionOfType(actionType, SearchPanelModeActions)) {
 			this.notify(this.select())
 		}
 	}

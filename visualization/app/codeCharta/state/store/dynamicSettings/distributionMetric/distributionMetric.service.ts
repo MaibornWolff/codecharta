@@ -1,10 +1,10 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { DistributionMetricActions, setDistributionMetric } from "./distributionMetric.actions"
-import _ from "lodash"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
 import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface DistributionMetricSubscriber {
 	onDistributionMetricChanged(distributionMetric: string)
@@ -19,7 +19,7 @@ export class DistributionMetricService implements StoreSubscriber, MetricService
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(DistributionMetricActions).includes(actionType)) {
+		if (isActionOfType(actionType, DistributionMetricActions)) {
 			this.notify(this.select())
 		}
 	}
