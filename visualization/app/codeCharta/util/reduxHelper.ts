@@ -18,7 +18,7 @@ export function addItemToArray(array: any[], item: any): any[] {
 }
 
 export function isActionOfType(actionType: string, actions) {
-	return Object.values(actions).includes(actionType)
+   return actions[actionType] !== undefined
 }
 
 function arrayContainsItem(array: any[], item: any): boolean {
