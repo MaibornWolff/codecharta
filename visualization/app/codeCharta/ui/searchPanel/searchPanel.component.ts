@@ -1,14 +1,11 @@
 import "./searchPanel.component.scss"
 import { IRootScopeService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
-import $ from "jquery"
 import { StoreService } from "../../state/store.service"
 import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
 export class SearchPanelController implements SearchPanelModeSubscriber {
-	private readonly EXPANDED_CLASS = "expanded"
-
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
 	} = {
@@ -18,15 +15,10 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		SearchPanelModeService.subscribe(this.$rootScope, this)
+		this.onSearchPanelModeChanged(SearchPanelMode.minimized)
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
-		const boxElement = $(event.srcElement).closest("md-card")
-		if (searchPanelMode === SearchPanelMode.minimized) {
-			boxElement.removeClass(this.EXPANDED_CLASS)
-		} else {
-			boxElement.addClass(this.EXPANDED_CLASS)
-		}
 		this._viewModel.searchPanelMode = searchPanelMode
 	}
 
