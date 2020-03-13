@@ -15,7 +15,7 @@ export class {{properCase name}}Service implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (isActionOfType(actionType, {{properName}}Actions)) {
+		if (isActionOfType(actionType, {{properCase name}}Actions)) {
 			this.notify(this.select())
 		}
 	}
