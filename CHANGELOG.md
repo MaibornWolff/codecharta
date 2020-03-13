@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+- Fix vulnerability with nokogiri <1.10.8
+
 ## [1.42.3] - 2020-03-13
 
 ### Added 🚀
