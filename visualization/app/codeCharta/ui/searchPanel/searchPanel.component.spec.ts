@@ -25,7 +25,7 @@ describe("SearchPanelController", () => {
 		searchPanelModeController = new SearchPanelController($rootScope, storeService)
 	}
 
-	describe("Show components selected", () => {
+	describe("onSearchPanelModeChanged", () => {
 		it("should set searchPanelMode correctly", () => {
 			let searchPanelMode = SearchPanelMode.treeView
 
