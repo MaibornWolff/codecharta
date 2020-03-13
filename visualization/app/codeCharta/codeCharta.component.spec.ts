@@ -11,9 +11,11 @@ import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { STATE } from "./util/dataMocks"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
+import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
+	let threeCameraService: ThreeCameraService
 	let $location: ILocationService
 	let $http: IHttpService
 	let storeService: StoreService
@@ -25,6 +27,7 @@ describe("codeChartaController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
+		initThreeCameraService()
 		withMockedUrlUtils()
 		withMockedCodeChartaService()
 		withMockedDialogService()
@@ -37,6 +40,7 @@ describe("codeChartaController", () => {
 		$location = getService<ILocationService>("$location")
 		$http = getService<IHttpService>("$http")
 		storeService = getService<StoreService>("storeService")
+		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		injectorService = getService<InjectorService>("injectorService")
@@ -69,6 +73,11 @@ describe("codeChartaController", () => {
 		dialogService = codeChartaController["dialogService"] = jest.fn().mockReturnValue({
 			showErrorDialog: jest.fn()
 		})()
+	}
+
+	function initThreeCameraService() {
+		// Has to be called, to initialize the camera
+		threeCameraService.init(1536, 754)
 	}
 
 	function withMockedScenarioHelper() {
