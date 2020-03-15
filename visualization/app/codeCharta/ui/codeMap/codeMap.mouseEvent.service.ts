@@ -4,14 +4,15 @@ import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode, FileState, BlacklistItem } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { FileStateSubscriber, FileStateService } from "../../state/fileState.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { IntersectionResult } from "./rendering/codeMapGeometricDescription"
+import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
+import { Files } from "../../model/files"
 
 interface Coordinates {
 	x: number
@@ -37,7 +38,7 @@ export enum ClickType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FileStateSubscriber, BlacklistSubscriber {
+	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -60,7 +61,7 @@ export class CodeMapMouseEventService
 	) {
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
@@ -68,7 +69,7 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mousemove", () => this.onDocumentMouseMove(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", () => this.onDocumentMouseUp())
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", () => this.onDocumentMouseDown(event))
-		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick(event))
+		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -84,12 +85,12 @@ export class CodeMapMouseEventService
 				this.onDocumentMouseDown(event)
 				break
 			case "dblclick":
-				this.onDocumentDoubleClick(event)
+				this.onDocumentDoubleClick()
 				break
 		}
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesSelectionChanged(files: Files) {
 		this.threeSceneService.clearSelection()
 	}
 
@@ -172,15 +173,19 @@ export class CodeMapMouseEventService
 	}
 
 	public onRightClick(event) {
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
-			building: this.threeSceneService.getHighlightedBuilding(),
-			x: event.clientX,
-			y: event.clientY,
-			event: event
-		})
+		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+
+		if (highlightedBuilding) {
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
+				building: highlightedBuilding,
+				x: event.clientX,
+				y: event.clientY,
+				event: event
+			})
+		}
 	}
 
-	public onDocumentDoubleClick(event) {
+	public onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
 		if (highlightedBuilding) {
 			let fileSourceLink = highlightedBuilding.node.link

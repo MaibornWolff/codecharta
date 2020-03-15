@@ -1,6 +1,7 @@
 import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
+import { splitSearchPanelModeAction } from "./searchPanelMode/searchPanelMode.splitter"
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
 import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
 import { splitMapColorsAction } from "./mapColors/mapColors.splitter"
@@ -24,6 +25,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.searchPanelMode !== undefined) {
+		actions.push(splitSearchPanelModeAction(payload.searchPanelMode))
+	}
+
 	if (payload.isLoadingFile !== undefined) {
 		actions.push(splitIsLoadingFileAction(payload.isLoadingFile))
 	}
