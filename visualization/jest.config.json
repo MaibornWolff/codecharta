@@ -13,7 +13,7 @@
 		"\\.(css|less|scss)$": "<rootDir>/mocks/styleMock.js"
 	},
 	"roots": ["<rootDir>/app"],
-	"testRegex": "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
+	"testMatch": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|e2e).[jt]s?(x)"],
 	"moduleFileExtensions": ["ts", "tsx", "js", "json"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],

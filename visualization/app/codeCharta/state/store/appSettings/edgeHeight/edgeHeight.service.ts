@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgeHeightActions } from "./edgeHeight.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface EdgeHeightSubscriber {
 	onEdgeHeightChanged(edgeHeight: number)
@@ -15,7 +15,7 @@ export class EdgeHeightService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(EdgeHeightActions).includes(actionType)) {
+		if (isActionOfType(actionType, EdgeHeightActions)) {
 			this.notify(this.select())
 		}
 	}

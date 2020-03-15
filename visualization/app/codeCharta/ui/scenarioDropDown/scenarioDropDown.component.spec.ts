@@ -33,11 +33,7 @@ describe("ScenarioDropDownController", () => {
 		dialogService = getService<DialogService>("dialogService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
-		metricData = [
-			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
-		]
+		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
 	}
 
 	beforeEach(() => {
