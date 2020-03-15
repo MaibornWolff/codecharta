@@ -42,7 +42,8 @@ export class CodeMapMouseEventService
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
-	private highlightedInTreeView: CodeMapBuilding = null
+	private highlightedInTreeView: CodeMapBuilding
+	private intersectedBuilding: CodeMapBuilding
 
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private oldMouse: Coordinates = { x: 0, y: 0 }
@@ -111,11 +112,11 @@ export class CodeMapMouseEventService
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
 			if (this.threeSceneService.getMapMesh()) {
-				let intersectedBuilding: CodeMapBuilding = this.threeSceneService
+				this.intersectedBuilding = this.threeSceneService
 					.getMapMesh()
 					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
 				const from = this.threeSceneService.getHighlightedBuilding()
-				const to = intersectedBuilding ? intersectedBuilding : this.highlightedInTreeView
+				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
 				if (from !== to) {
 					this.unhoverBuilding()
@@ -140,12 +141,9 @@ export class CodeMapMouseEventService
 
 	public onDocumentMouseUp() {
 		if (this.clickType === ClickType.LeftClick) {
-			const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
-			if (highlightedBuilding) {
-				this.threeSceneService.clearSelection()
-				this.threeSceneService.selectBuilding(highlightedBuilding)
-			} else {
-				this.threeSceneService.clearSelection()
+			this.threeSceneService.clearSelection()
+			if (this.intersectedBuilding) {
+				this.threeSceneService.selectBuilding(this.intersectedBuilding)
 			}
 		}
 	}

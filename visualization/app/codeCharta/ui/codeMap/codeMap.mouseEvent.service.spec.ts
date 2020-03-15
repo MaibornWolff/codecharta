@@ -304,6 +304,7 @@ describe("codeMapMouseEventService", () => {
 
 		it("should call selectBuilding when no building is selected", () => {
 			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
+			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
@@ -312,6 +313,7 @@ describe("codeMapMouseEventService", () => {
 
 		it("should call selectBuilding when a new building is selected", () => {
 			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, null, null))
+			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
