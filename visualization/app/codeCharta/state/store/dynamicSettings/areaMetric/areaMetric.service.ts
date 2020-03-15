@@ -1,10 +1,10 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AreaMetricActions, setAreaMetric } from "./areaMetric.actions"
-import _ from "lodash"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
 import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface AreaMetricSubscriber {
 	onAreaMetricChanged(areaMetric: string)
@@ -19,7 +19,7 @@ export class AreaMetricService implements StoreSubscriber, MetricServiceSubscrib
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(AreaMetricActions).includes(actionType)) {
+		if (isActionOfType(actionType, AreaMetricActions)) {
 			this.notify(this.select())
 		}
 	}

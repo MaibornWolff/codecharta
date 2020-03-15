@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Selectable metrics will only contain metrics from the visible maps
+
 ### Removed 🗑
 
 ### Fixed 🐞
@@ -18,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Search-panel opening for a short duration when importing a new file
 
 ### Chore 👨‍💻 👩‍💻
+
+- Fix vulnerability with nokogiri <1.10.8
 
 ## [1.42.3] - 2020-03-13
 
