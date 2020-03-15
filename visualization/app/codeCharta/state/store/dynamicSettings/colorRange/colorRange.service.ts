@@ -1,13 +1,13 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ColorRangeActions, setColorRange } from "./colorRange.actions"
-import _ from "lodash"
 import { ColorRange } from "../../../../codeCharta.model"
 import { getResetColorRange } from "./colorRange.reset"
 import { MetricService } from "../../../metric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)
@@ -23,7 +23,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(ColorRangeActions).includes(actionType)) {
+		if (isActionOfType(actionType, ColorRangeActions)) {
 			this.notify(this.select())
 			this.tryToResetIfNull()
 		}

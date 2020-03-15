@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import _ from "lodash"
 import { PresentationModeActions } from "./isPresentationMode.actions"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface IsPresentationModeSubscriber {
 	onPresentationModeChanged(isPresentationMode: boolean)
@@ -14,8 +14,8 @@ export class IsPresentationModeService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType) {
-		if (_.values(PresentationModeActions).includes(actionType)) {
+	public onStoreChanged(actionType: string) {
+		if (isActionOfType(actionType, PresentationModeActions)) {
 			this.notify(this.select())
 		}
 	}
