@@ -16,11 +16,11 @@
 	"testMatch": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|e2e).[jt]s?(x)"],
 	"moduleFileExtensions": ["ts", "tsx", "js", "json"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
-	"setupFiles": ["<rootDir>/mocks/localStorageMock.js"],
 	"globals": {
 		"ts-jest": {
 			"tsConfigFile": "tsconfig.json",
 			"skipBabel": false
 		}
-	}
+	},
+	"testURL": "http://localhost:3000"
 }

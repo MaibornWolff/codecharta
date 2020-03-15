@@ -1,58 +1,31 @@
-<md-menu>
+<md-menu class="scenario-drop-down">
 	<md-button class="scenario-button" ng-style="{'color': $ctrl.getButtonColor()}" ng-click="$ctrl.loadScenarios(); $mdMenu.open($event)">
 		<i class="fa fa-star"></i>
 	</md-button>
 	<md-menu-content width="2">
-		<md-menu-item style="min-height: 20px; height: 20px;">
-			<md-button style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; text-align: center;" ng-disabled="true"
-				>Metric Scenario</md-button
-			>
+		<md-menu-item class="scenario-title">
+			<md-button class="title-button" ng-disabled="true">Metric Scenario</md-button>
 		</md-menu-item>
 
 		<md-divider></md-divider>
 
-		<md-menu-item ng-hide="!$ctrl._viewModel.isScenarioChanged">
-			<label>Custom Scenario</label>
-			<md-button
-				ng-click="$ctrl.showAddScenarioSettings()"
-				style="width: 16px;min-width: 58px; text-align: center; margin-right:1px; background-color: #009688"
+		<md-menu-item class="custom-item" ng-hide="!$ctrl._viewModel.isScenarioChanged">
+			<md-button class="scenario-items" ng-click="$ctrl.showAddScenarioSettings()">Add Custom Scenario</md-button>
+			<md-button ng-click="$ctrl.showAddScenarioSettings()" class="add-scenario-button"
 				><i class="fa fa-plus" aria-hidden="true"></i
 			></md-button>
 		</md-menu-item>
 
 		<md-divider></md-divider>
 
-		<md-menu-item ng-repeat="scenario in $ctrl._viewModel.scenarios track by $index">
-			<md-button ng-click="$ctrl.applyScenario(scenario.name)">{{ scenario.name }}</md-button>
-			<i
-				class="fa fa-video-camera"
-				ng-style="{'color' : $ctrl.getVisibility('view', scenario.name)}"
-				style="width: 16px;font-size:x-small"
-			></i>
-			<i
-				class="fa fa-arrows-alt"
-				ng-style="{'color' : $ctrl.getVisibility('area', scenario.name)}"
-				style="width: 16px;font-size:x-small"
-			></i>
-			<i
-				class="fa fa-paint-brush"
-				ng-style="{'color' : $ctrl.getVisibility('color', scenario.name)}"
-				style="width: 16px; font-size:x-small"
-			></i>
-			<i
-				class="fa fa-arrows-v"
-				ng-style="{'color' : $ctrl.getVisibility('height', scenario.name)}"
-				style="width: 16px; font-size:x-small"
-			></i>
-			<i
-				class="fa fa-exchange"
-				ng-style="{'color' : $ctrl.getVisibility('edges', scenario.name)}"
-				style="width: 16px; font-size:x-small"
-			></i>
-			<md-button
-				ng-click="$ctrl.removeScenario(scenario.name)"
-				style="width: 16px;min-width: 58px; text-align: center; margin-right:1px; background-color: #ffcccc"
-			>
+		<md-menu-item class="scenarios" ng-repeat="scenario in $ctrl._viewModel.scenarios track by $index">
+			<md-button class="scenario-items" ng-click="$ctrl.applyScenario(scenario.name)">{{ scenario.name }}</md-button>
+			<i class="fa fa-video-camera" ng-style="{'color' : $ctrl.getVisibility('view', scenario.name)}"></i>
+			<i class="fa fa-arrows-alt" ng-style="{'color' : $ctrl.getVisibility('area', scenario.name)}"></i>
+			<i class="fa fa-paint-brush" ng-style="{'color' : $ctrl.getVisibility('color', scenario.name)}"></i>
+			<i class="fa fa-arrows-v" ng-style="{'color' : $ctrl.getVisibility('height', scenario.name)}"></i>
+			<i class="fa fa-exchange" ng-style="{'color' : $ctrl.getVisibility('edges', scenario.name)}"></i>
+			<md-button ng-click="$ctrl.removeScenario(scenario.name)" class="remove-scenario-button">
 				<i class="fa fa-minus"></i>
 			</md-button>
 		</md-menu-item>
