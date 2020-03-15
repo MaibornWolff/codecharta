@@ -92,14 +92,14 @@ export class Files {
 	}
 
 	public isSingleState(): boolean {
-		return !!this.files.find(x => x.selectedAs === FileSelectionState.Single)
+		return this.files.some(x => x.selectedAs === FileSelectionState.Single)
 	}
 
 	public isDeltaState(): boolean {
-		return !!this.files.find(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
+		return this.files.some(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
 	}
 
 	public isPartialState(): boolean {
-		return !!this.files.find(x => x.selectedAs === FileSelectionState.Partial)
+		return this.files.some(x => x.selectedAs === FileSelectionState.Partial)
 	}
 }
