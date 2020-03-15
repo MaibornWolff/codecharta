@@ -115,10 +115,7 @@ describe("MetricChooserController", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("metric data should be updated", () => {
-			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 2, availableInVisibleMaps: false }
-			]
+			const metricData = [{ name: "a", maxValue: 1 }, { name: "b", maxValue: 2 }]
 
 			metricChooserController.onMetricDataAdded(metricData)
 
@@ -168,10 +165,7 @@ describe("MetricChooserController", () => {
 
 	describe("filterMetricData", () => {
 		it("should return the default MetricData list", () => {
-			const metricData = [
-				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
-			]
+			const metricData = [{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = ""
 
@@ -180,71 +174,65 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})
 		it("should return only metric mcc from MetricData list, when its the searchTerm", () => {
-			const metricData = [
-				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
-			]
+			const metricData = [{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "mcc"
 
 			metricChooserController.filterMetricData()
 
-			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }])
+			expect(metricChooserController["_viewModel"].metricData).toEqual([
+				{
+					name: "mcc",
+					maxValue: 2
+				}
+			])
 		})
 
 		it("should return rloc metric when searchTerm is only 'rl'", () => {
-			const metricData = [
-				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
-			]
+			const metricData = [{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rl"
 
 			metricChooserController.filterMetricData()
 
-			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "rloc", maxValue: 1, availableInVisibleMaps: true }])
+			expect(metricChooserController["_viewModel"].metricData).toEqual([
+				{
+					name: "rloc",
+					maxValue: 1
+				}
+			])
 		})
 
 		it("should return the metrics which contains the metrics with 'c' in it", () => {
-			const metricData = [
-				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
-				{ name: "avg", maxValue: 3, availableInVisibleMaps: false }
-			]
+			const metricData = [{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }, { name: "avg", maxValue: 3 }]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "c"
 
 			metricChooserController.filterMetricData()
 
-			expect(metricChooserController["_viewModel"].metricData).toEqual([
-				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false }
-			])
+			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }])
 		})
 
 		it("should return the metrics which contains substrings with 'mc' as prefix", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
-				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
-				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+				{ name: "rloc", maxValue: 1 },
+				{ name: "mcc", maxValue: 2 },
+				{ name: "avg", maxValue: 3 },
+				{ name: "cmc", maxValue: 4 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "mc"
 
 			metricChooserController.filterMetricData()
 
-			expect(metricChooserController["_viewModel"].metricData).toEqual([
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
-				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
-			])
+			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "mcc", maxValue: 2 }, { name: "cmc", maxValue: 4 }])
 		})
 		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
-				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
-				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+				{ name: "rloc", maxValue: 1 },
+				{ name: "mcc", maxValue: 2 },
+				{ name: "avg", maxValue: 3 },
+				{ name: "cmc", maxValue: 4 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rla"
@@ -266,10 +254,10 @@ describe("MetricChooserController", () => {
 
 		it("should return the metricData array with all elements, when function is called", () => {
 			const metricData = [
-				{ name: "rloc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "mcc", maxValue: 2, availableInVisibleMaps: false },
-				{ name: "avg", maxValue: 3, availableInVisibleMaps: false },
-				{ name: "cmc", maxValue: 4, availableInVisibleMaps: true }
+				{ name: "rloc", maxValue: 1 },
+				{ name: "mcc", maxValue: 2 },
+				{ name: "avg", maxValue: 3 },
+				{ name: "cmc", maxValue: 4 }
 			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rlo"
