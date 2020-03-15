@@ -1,8 +1,8 @@
 import { StoreService, StoreSubscriber } from "../../store.service"
 import { IRootScopeService } from "angular"
 import { FilesSelectionActions } from "./files.actions"
-import _ from "lodash"
 import { Files } from "../../../model/files"
+import { isActionOfType } from "../../../util/reduxHelper"
 
 export interface FilesSelectionSubscriber {
 	onFilesSelectionChanged(files: Files)
@@ -16,7 +16,7 @@ export class FilesService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(FilesSelectionActions).includes(actionType)) {
+		if (isActionOfType(actionType, FilesSelectionActions)) {
 			this.notify(this.select())
 		}
 	}

@@ -41,11 +41,7 @@ describe("MetricService", () => {
 		storeService.dispatch(addFile(deltaA))
 		storeService.dispatch(addFile(deltaB))
 
-		metricData = [
-			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
-		]
+		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
 		state = _.cloneDeep(STATE)
 	}
 
@@ -182,14 +178,9 @@ describe("MetricService", () => {
 			expect(result.length).toBe(0)
 		})
 
-		it("should return an array of metricData sorted by name calculated from fileStats and visibleFileStates", () => {
+		it("should return an array of metricData sorted by name calculated from visibleFileStates", () => {
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
-			const expected = [
-				{ availableInVisibleMaps: true, maxValue: 1000, name: "functions" },
-				{ availableInVisibleMaps: true, maxValue: 100, name: "mcc" },
-				{ availableInVisibleMaps: false, maxValue: 20, name: "more" },
-				{ availableInVisibleMaps: true, maxValue: 100, name: "rloc" }
-			]
+			const expected = [{ maxValue: 1000, name: "functions" }, { maxValue: 100, name: "mcc" }, { maxValue: 100, name: "rloc" }]
 
 			const result = metricService["calculateMetrics"]()
 
