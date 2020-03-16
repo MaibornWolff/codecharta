@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ShowOnlyBuildingsWithEdgesActions } from "./showOnlyBuildingsWithEdges.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface ShowOnlyBuildingsWithEdgesSubscriber {
 	onShowOnlyBuildingsWithEdgesChanged(showOnlyBuildingsWithEdges: boolean)
@@ -15,7 +15,7 @@ export class ShowOnlyBuildingsWithEdgesService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(ShowOnlyBuildingsWithEdgesActions).includes(actionType)) {
+		if (isActionOfType(actionType, ShowOnlyBuildingsWithEdgesActions)) {
 			this.notify(this.select())
 		}
 	}

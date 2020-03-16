@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.42.2",
+	"version": "1.42.3",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -61,13 +61,12 @@
 		"build": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='true' --env.STANDALONE=true",
 		"build:web": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='false' --env.STANDALONE=false",
 		"dev": "webpack-dev-server --config ./conf/webpack.config.js --open --define process.env.STANDALONE='false' --env.STANDALONE=false",
-		"test": "jest .*\\.spec\\.ts --runInBand",
-		"test:auto": "jest .*\\.spec\\.ts --watch",
-		"test:autoNoCoverage": "jest .*\\.spec\\.ts --watch --coverage false",
-		"test:updateSnaps": "jest .*\\.spec\\.ts --updateSnapshot",
-		"e2e": "jest .*\\.e2e\\.ts --coverage false",
-		"e2e:auto": "jest .*\\.e2e\\.ts --watch --coverage false",
-		"doc": "rimraf dist/docs && typedoc --module es2015 --target ES6 --exclude **/*.spec.ts --out dist/docs/ --name CodeCharta app/**/*.ts",
+		"test": "jest --config ./jest.config.json .*\\.spec\\.ts",
+		"test:auto": "jest --config ./jest.config.json .*\\.spec\\.ts --watch",
+		"test:autoNoCoverage": "jest --config ./jest.config.json .*\\.spec\\.ts --watch --coverage false",
+		"test:updateSnaps": "jest --config ./jest.config.json .*\\.spec\\.ts --updateSnapshot",
+		"e2e": "jest --config ./jest.config.json .*\\.e2e\\.ts --coverage false",
+		"e2e:auto": "jest --config ./jest.config.json .*\\.e2e\\.ts --watch --coverage false",
 		"package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
 		"g": "plop",
 		"lint": "eslint \"app/**/*.ts\"",
@@ -79,49 +78,6 @@
 		"codecharta-visualization": "cli.js"
 	},
 	"license": "BSD-3-Clause",
-	"jest": {
-		"collectCoverage": true,
-		"coverageDirectory": "<rootDir>/dist/coverage",
-		"collectCoverageFrom": [
-			"<rootDir>/app/**/*.{ts,tsx}",
-			"!**/node_modules/**"
-		],
-		"coveragePathIgnorePatterns": [
-			"(/__tests__/.*|\\.(spec|e2e|po))\\.(ts|tsx)$",
-			"<rootDir>/app/puppeteer.helper.ts"
-		],
-		"snapshotSerializers": [
-			"jest-serializer-html"
-		],
-		"transform": {
-			"\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js",
-			"\\.(html|glsl)$": "<rootDir>/mocks/fileTransformer.js"
-		},
-		"moduleNameMapper": {
-			"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
-			"\\.(css|less|scss)$": "<rootDir>/mocks/styleMock.js"
-		},
-		"roots": [
-			"<rootDir>/app"
-		],
-		"testRegex": "(/__tests__/.*|\\.(spec|e2e))\\.(ts|tsx)$",
-		"moduleFileExtensions": [
-			"ts",
-			"tsx",
-			"js",
-			"json"
-		],
-		"moduleDirectories": [
-			"node_modules",
-			"<rootDir>/app"
-		],
-		"globals": {
-			"ts-jest": {
-				"tsConfigFile": "tsconfig.json",
-				"skipBabel": false
-			}
-		}
-	},
 	"husky": {
 		"hooks": {
 			"pre-commit": "npm run lint:fix && npm run format:quick",
@@ -130,9 +86,29 @@
 	},
 	"dependencies": {
 		"angularjs-nouislider": "^1.0.1",
+		"ajv": "^6.10.0",
+		"angular": "^1.6.9",
+		"angular-animate": "^1.6.9",
+		"angular-aria": "^1.6.9",
+		"angular-material": "^1.1.7",
+		"angular-mocks": "^1.6.9",
+		"angularjs-slider": "^7.0.0",
+		"color-convert": "^2.0.0",
+		"d3": "^5.9.2",
+		"file-loader": "^4.2.0",
+		"font-awesome": "^4.7.0",
+		"ignore": "^5.0.2",
+		"inquirer-directory": "^2.2.0",
+		"inquirer-file": "^1.0.1",
+		"jquery": "^3.3.1",
+		"lodash": "^4.17.11",
 		"nouislider": "^13.1.1",
 		"nwjs-builder-phoenix": "^1.14.6",
-		"shelljs": "^0.8.1"
+		"redux": "^4.0.4",
+		"rfdc": "^1.1.4",
+		"shelljs": "^0.8.1",
+		"three": "^0.89.0",
+		"three-orbit-controls": "^82.1.0"
 	},
 	"devDependencies": {
 		"@types/angular": "^1.6.43",
@@ -144,16 +120,8 @@
 		"@types/lodash": "^4.14.123",
 		"@types/node": "^11.11.3",
 		"@types/puppeteer": "^1.12.4",
-		"@types/three": "^0.103.2",
 		"@typescript-eslint/eslint-plugin": "^2.23.0",
 		"@typescript-eslint/parser": "^2.23.0",
-		"ajv": "^6.10.0",
-		"angular": "^1.6.9",
-		"angular-animate": "^1.6.9",
-		"angular-aria": "^1.6.9",
-		"angular-material": "^1.1.7",
-		"angular-mocks": "^1.6.9",
-		"angularjs-slider": "^7.0.0",
 		"babel-cli": "^6.18.0",
 		"babel-core": "^6.24.0",
 		"babel-loader": "^7.1.4",
@@ -162,42 +130,28 @@
 		"babel-register": "^6.18.0",
 		"bestzip": "^2.1.2",
 		"clean-webpack-plugin": "^3.0.0",
-		"color-convert": "^2.0.0",
 		"css-loader": "^0.28.10",
-		"d3": "^5.9.2",
 		"es6-shim": "^0.35.3",
 		"eslint": "^6.8.0",
 		"eslint-config-prettier": "^6.10.0",
-		"file-loader": "^4.2.0",
-		"font-awesome": "^4.7.0",
 		"html-loader": "^0.5.5",
 		"html-webpack-plugin": "^3.2.0",
 		"husky": "^2.2.0",
-		"ignore": "^5.0.2",
-		"inquirer-directory": "^2.2.0",
-		"inquirer-file": "^1.0.1",
 		"jest": "^22.4.3",
 		"jest-serializer-html": "^6.0.0",
-		"jquery": "^3.3.1",
-		"lodash": "^4.17.11",
 		"makeshift": "^1.1.0",
 		"ng-annotate-loader": "^0.6.1",
-		"node-sass": "^4.11.0",
+		"node-sass": "^4.13.1",
 		"plop": "^2.1.0",
 		"prettier": "^1.16.4",
 		"pretty-quick": "^1.10.0",
 		"puppeteer": "^1.6.0",
-		"redux": "^4.0.4",
-		"rfdc": "^1.1.4",
 		"rimraf": "^2.6.2",
 		"sass-loader": "^7.1.0",
 		"style-loader": "^0.23.1",
-		"three": "^0.89.0",
-		"three-orbit-controls": "^82.1.0",
 		"ts-jest": "^21.1.3",
 		"ts-loader": "^6.2.1",
-		"typedoc": "^0.15.0",
-		"typescript": "^3.3.3333",
+		"typescript": "^3.8.3",
 		"webpack": "^4.41.2",
 		"webpack-cli": "^3.3.10",
 		"webpack-dev-server": "^3.9.0",

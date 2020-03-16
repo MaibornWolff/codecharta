@@ -80,10 +80,7 @@ describe("EdgeChooserController", () => {
 
 	describe("onEdgeMetricDataUpdated", () => {
 		it("should store edge data", () => {
-			const metricData = [
-				{ name: "metric1", maxValue: 22, availableInVisibleMaps: true },
-				{ name: "metric2", maxValue: 1, availableInVisibleMaps: false }
-			]
+			const metricData = [{ name: "metric1", maxValue: 22 }, { name: "metric2", maxValue: 1 }]
 
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
@@ -167,10 +164,7 @@ describe("EdgeChooserController", () => {
 
 	describe("filterMetricData()", () => {
 		it("should return the all entries if search term is empty", () => {
-			let metricData = [
-				{ name: "metric1", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "metric2", maxValue: 2, availableInVisibleMaps: false }
-			]
+			let metricData = [{ name: "metric1", maxValue: 1 }, { name: "metric2", maxValue: 2 }]
 			edgeChooserController["_viewModel"].searchTerm = ""
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
@@ -180,25 +174,17 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should return only metrics that include search term", () => {
-			let metricData = [
-				{ name: "metric1", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "metric2", maxValue: 2, availableInVisibleMaps: false }
-			]
+			let metricData = [{ name: "metric1", maxValue: 1 }, { name: "metric2", maxValue: 2 }]
 			edgeChooserController["_viewModel"].searchTerm = "ic2"
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
 			edgeChooserController.filterMetricData()
 
-			expect(edgeChooserController["_viewModel"].edgeMetricData).toEqual([
-				{ name: "metric2", maxValue: 2, availableInVisibleMaps: false }
-			])
+			expect(edgeChooserController["_viewModel"].edgeMetricData).toEqual([{ name: "metric2", maxValue: 2 }])
 		})
 
 		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
-			let metricData = [
-				{ name: "metric1", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "metric2", maxValue: 2, availableInVisibleMaps: false }
-			]
+			let metricData = [{ name: "metric1", maxValue: 1 }, { name: "metric2", maxValue: 2 }]
 			edgeChooserController["_viewModel"].searchTerm = "fooBar"
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
@@ -217,7 +203,7 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should return the the metricData Array with all Elements, when function is called", () => {
-			let metricData = [{ name: "metric1", maxValue: 1, availableInVisibleMaps: true }]
+			let metricData = [{ name: "metric1", maxValue: 1 }]
 			edgeChooserController["_viewModel"].searchTerm = "rlo"
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 

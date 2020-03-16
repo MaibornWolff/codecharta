@@ -1,11 +1,11 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgesActions, setEdges } from "./edges.actions"
-import _ from "lodash"
 import { Edge } from "../../../../codeCharta.model"
 import { getMergedEdges } from "./edges.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface EdgesSubscriber {
 	onEdgesChanged(edges: Edge[])
@@ -20,7 +20,7 @@ export class EdgesService implements StoreSubscriber, FilesSelectionSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(EdgesActions).includes(actionType)) {
+		if (isActionOfType(actionType, EdgesActions)) {
 			this.notify(this.select())
 		}
 	}

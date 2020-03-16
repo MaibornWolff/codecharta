@@ -158,7 +158,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 					maximumMetricValue = combinedValue
 				}
 			})
-			metricData.push({ name: edgeMetric, maxValue: maximumMetricValue, availableInVisibleMaps: true })
+			metricData.push({ name: edgeMetric, maxValue: maximumMetricValue })
 		})
 
 		return metricData
@@ -178,7 +178,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	private addNoneMetric() {
-		this.edgeMetricData.push({ name: "None", maxValue: 0, availableInVisibleMaps: false })
+		this.edgeMetricData.push({ name: "None", maxValue: 0 })
 	}
 
 	private notifyEdgeMetricDataUpdated() {
