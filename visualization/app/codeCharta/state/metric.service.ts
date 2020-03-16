@@ -1,13 +1,4 @@
-import {
-	AttributeTypes,
-	BlacklistItem,
-	BlacklistType,
-	CodeMapNode,
-	FileState,
-	MetricData,
-	AttributeTypeValue,
-	State
-} from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, FileState, MetricData, AttributeTypeValue, State } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"

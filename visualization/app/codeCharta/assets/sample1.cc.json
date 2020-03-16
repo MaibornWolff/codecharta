@@ -90,7 +90,7 @@
 		}
 	],
 	"attributeTypes": {
-		"nodes": { "rloc": "absolute", "functions": "absolute", "mcc": "absolute" },
+		"nodes": { "rloc": "absolute", "functions": "absolute", "mcc": "absolute", "pairingRate": "relative" },
 		"edges": { "pairingRate": "relative", "avgCommits": "absolute" }
 	}
 }
