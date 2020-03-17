@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Selectable metrics will only contain metrics from the visible maps
+
 ### Removed 🗑
 
 ### Fixed 🐞

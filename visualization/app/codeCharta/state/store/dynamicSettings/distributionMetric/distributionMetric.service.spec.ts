@@ -72,10 +72,10 @@ describe("DistributionMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update distributionMetric if current distributionMetric is not available", () => {
 			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "c", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "d", maxValue: 2, availableInVisibleMaps: true }
+				{ name: "a", maxValue: 1 },
+				{ name: "b", maxValue: 2 },
+				{ name: "c", maxValue: 2 },
+				{ name: "d", maxValue: 2 }
 			]
 
 			distributionMetricService.onMetricDataAdded(metricData)
@@ -86,10 +86,7 @@ describe("DistributionMetricService", () => {
 		it("should not update if current distributionMetric is available", () => {
 			storeService.dispatch(setDistributionMetric("mcc"))
 			storeService.dispatch = jest.fn()
-			const metricData = [
-				{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
-			]
+			const metricData = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
 
 			distributionMetricService.onMetricDataAdded(metricData)
 
@@ -98,7 +95,7 @@ describe("DistributionMetricService", () => {
 
 		it("should not update distributionMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()
-			const metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
+			const metricData = []
 
 			distributionMetricService.onMetricDataAdded(metricData)
 

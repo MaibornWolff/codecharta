@@ -70,10 +70,10 @@ describe("HeightMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update heightMetric if current heightMetric is not available", () => {
 			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "c", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "d", maxValue: 2, availableInVisibleMaps: true }
+				{ name: "a", maxValue: 1 },
+				{ name: "b", maxValue: 2 },
+				{ name: "c", maxValue: 2 },
+				{ name: "d", maxValue: 2 }
 			]
 
 			heightMetricService.onMetricDataAdded(metricData)
@@ -82,10 +82,7 @@ describe("HeightMetricService", () => {
 		})
 
 		it("should use first available metric, if less than 3 metrics are available", () => {
-			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 1, availableInVisibleMaps: false }
-			]
+			const metricData = [{ name: "a", maxValue: 1 }]
 
 			heightMetricService.onMetricDataAdded(metricData)
 
@@ -95,10 +92,7 @@ describe("HeightMetricService", () => {
 		it("should not update if current heightMetric is available", () => {
 			storeService.dispatch(setHeightMetric("mcc"))
 			storeService.dispatch = jest.fn()
-			const metricData = [
-				{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
-			]
+			const metricData = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
 
 			heightMetricService.onMetricDataAdded(metricData)
 
@@ -107,7 +101,7 @@ describe("HeightMetricService", () => {
 
 		it("should not update heightMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()
-			const metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
+			const metricData = []
 
 			heightMetricService.onMetricDataAdded(metricData)
 
