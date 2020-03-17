@@ -1,4 +1,13 @@
-import { MetricData, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount } from "../codeCharta.model"
+import {
+	MetricData,
+	BlacklistItem,
+	Edge,
+	BlacklistType,
+	CodeMapNode,
+	EdgeMetricCount,
+	AttributeTypeValue,
+	State
+} from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { HierarchyNode } from "d3"
@@ -78,6 +87,11 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 
 	public getMetricData(): MetricData[] {
 		return this.edgeMetricData
+	}
+
+	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
+		const attributeType = state.fileSettings.attributeTypes.edges[metricName]
+		return !!attributeType ? attributeType : null
 	}
 
 	private calculateMetrics(): MetricData[] {

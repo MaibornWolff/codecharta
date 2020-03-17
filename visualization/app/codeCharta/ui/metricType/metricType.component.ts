@@ -8,26 +8,42 @@ import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynam
 import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { StoreService } from "../../state/store.service"
+import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 
 export class MetricTypeController
-	implements AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+	implements
+		AreaMetricSubscriber,
+		HeightMetricSubscriber,
+		ColorMetricSubscriber,
+		EdgeMetricSubscriber,
+		BuildingHoveredSubscriber,
+		BuildingUnhoveredSubscriber {
 	private _viewModel: {
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
 		colorMetricType: AttributeTypeValue
+		edageMetricType: AttributeTypeValue
 		isBuildingHovered: boolean
 	} = {
 		areaMetricType: null,
 		heightMetricType: null,
 		colorMetricType: null,
+		edageMetricType: null,
 		isBuildingHovered: false
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private metricService: MetricService, private storeService: StoreService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private metricService: MetricService,
+		private edgeMetricDataService: EdgeMetricDataService,
+		private storeService: StoreService
+	) {
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
+		EdgeMetricService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
@@ -42,6 +58,10 @@ export class MetricTypeController
 
 	public onColorMetricChanged(colorMetric: string) {
 		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric, this.storeService.getState())
+	}
+
+	public onEdgeMetricChanged(edgeMetric: string) {
+		this._viewModel.edageMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric, this.storeService.getState())
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -62,6 +82,10 @@ export class MetricTypeController
 
 	public isColorMetricAbsolute(): boolean {
 		return this._viewModel.colorMetricType === AttributeTypeValue.absolute || !this._viewModel.colorMetricType
+	}
+
+	public isEdgeMetricAbsolute(): boolean {
+		return this._viewModel.edageMetricType === AttributeTypeValue.absolute || !this._viewModel.colorMetricType
 	}
 }
 
