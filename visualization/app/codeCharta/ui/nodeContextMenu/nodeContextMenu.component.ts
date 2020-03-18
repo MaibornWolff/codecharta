@@ -41,7 +41,7 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
 
-		document.body.addEventListener("mousedown", event => this.hideNodeContextMenu(event), true)
+		document.body.addEventListener("click", event => this.hideNodeContextMenu(event), true)
 	}
 
 	public onMapColorsChanged(mapColors: MapColors) {
