@@ -24,13 +24,13 @@ export class MetricTypeController
 		heightMetricType: AttributeTypeValue
 		colorMetricType: AttributeTypeValue
 		edageMetricType: AttributeTypeValue
-		isBuildingHovered: boolean
+		isFolderHovered: boolean
 	} = {
 		areaMetricType: null,
 		heightMetricType: null,
 		colorMetricType: null,
 		edageMetricType: null,
-		isBuildingHovered: false
+		isFolderHovered: false
 	}
 
 	/* @ngInject */
@@ -65,11 +65,11 @@ export class MetricTypeController
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		this._viewModel.isBuildingHovered = hoveredBuilding.node && !hoveredBuilding.node.isLeaf
+		this._viewModel.isFolderHovered = hoveredBuilding.node && !hoveredBuilding.node.isLeaf
 	}
 
 	public onBuildingUnhovered() {
-		this._viewModel.isBuildingHovered = false
+		this._viewModel.isFolderHovered = false
 	}
 }
 
