@@ -1,5 +1,5 @@
 "use strict"
-import { AppSettings, DynamicSettings, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
+import { AppSettings, DynamicSettings, RecursivePartial, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddAttributeContent, ScenarioCheckboxNames } from "../ui/dialog/dialog.addScenarioSettings.component"
 
@@ -118,6 +118,6 @@ export class ScenarioHelper {
 	}
 
 	public static isScenarioExisting(scenarioName: string) {
-		return this.scenarioList.find(x => x.name == scenarioName)
+		return this.scenarioList.some(x => x.name == scenarioName)
 	}
 }

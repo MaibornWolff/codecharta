@@ -205,17 +205,12 @@ describe("scenarioHelper", () => {
 	})
 
 	describe("isScenarioExisting ", () => {
-		it("should return the Scenario if it is existing", () => {
-			const result: Scenario = ScenarioHelper.isScenarioExisting("Complexity")
-			const expected: Scenario = {
-				name: "Complexity",
-				settings: {
-					appSettings: { invertColorRange: false },
-					dynamicSettings: { areaMetric: "rloc", heightMetric: "mcc", colorMetric: "mcc", distributionMetric: "rloc" }
-				}
-			}
+		it("should return true if Scenario is existing", () => {
+			expect(ScenarioHelper.isScenarioExisting("Complexity")).toBeTruthy()
+		})
 
-			expect(result).toEqual(expected)
+		it("should return true if Scenario is existing", () => {
+			expect(ScenarioHelper.isScenarioExisting("someScenario")).toBeFalsy()
 		})
 	})
 })

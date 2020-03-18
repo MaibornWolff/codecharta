@@ -2,7 +2,7 @@ import { Vector3 } from "three"
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { CameraTargetActions } from "./cameraTarget.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface CameraTargetSubscriber {
 	onStoreCameraTargetChanged(cameraTarget: Vector3)
@@ -16,7 +16,7 @@ export class CameraTargetService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(CameraTargetActions).includes(actionType)) {
+		if (isActionOfType(actionType, CameraTargetActions)) {
 			this.notify(this.select())
 		}
 	}
