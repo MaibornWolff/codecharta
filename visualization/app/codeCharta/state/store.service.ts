@@ -6,6 +6,7 @@ import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoad
 import _ from "lodash"
 import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { CCAction, State } from "../codeCharta.model"
+import { SearchPanelModeActions } from "./store/appSettings/searchPanelMode/searchPanelMode.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -21,7 +22,14 @@ export class StoreService {
 	}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
-		if (!(_.values(IsLoadingMapActions).includes(action.type) || _.values(IsLoadingFileActions).includes(action.type) || isSilent)) {
+		if (
+			!(
+				_.values(IsLoadingMapActions).includes(action.type) ||
+				_.values(IsLoadingFileActions).includes(action.type) ||
+				_.values(SearchPanelModeActions).includes(action.type) ||
+				isSilent
+			)
+		) {
 			this.dispatch(setIsLoadingMap(true))
 		}
 

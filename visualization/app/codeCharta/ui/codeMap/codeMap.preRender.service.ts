@@ -15,6 +15,7 @@ import _ from "lodash"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { SearchPanelModeActions } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
@@ -58,7 +59,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			this.allNecessaryRenderDataAvailable() &&
 			!_.values(ScalingActions).includes(actionType) &&
 			!_.values(IsLoadingMapActions).includes(actionType) &&
-			!_.values(IsLoadingFileActions).includes(actionType)
+			!_.values(IsLoadingFileActions).includes(actionType) &&
+			!_.values(SearchPanelModeActions).includes(actionType)
 		) {
 			this.debounceRendering()
 		}
