@@ -1,7 +1,7 @@
 "use strict"
 import { AppSettings, DynamicSettings, RecursivePartial, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
-import { AddAttributeContent, ScenarioCheckboxNames } from "../ui/dialog/dialog.addScenarioSettings.component"
+import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 
 export interface Scenario {
 	name: string
@@ -53,37 +53,37 @@ export class ScenarioHelper {
 		this.setScenariosToLocalStorage(this.scenarioList)
 	}
 
-	public static createNewScenario(scenarioName: string, scenarioAttributes: AddAttributeContent[]) {
+	public static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
 
 		scenarioAttributes.forEach(attribute => {
-			switch (attribute.metricName) {
-				case ScenarioCheckboxNames.CAMERA_POSITION: {
-					partialAppSettings.camera = attribute.metricAttributeValue["camera"]
-					partialAppSettings.cameraTarget = attribute.metricAttributeValue["cameraTarget"]
+			switch (attribute.metricType) {
+				case ScenarioMetricType.CAMERA_POSITION: {
+					partialAppSettings.camera = attribute.savedValues["camera"]
+					partialAppSettings.cameraTarget = attribute.savedValues["cameraTarget"]
 					break
 				}
-				case ScenarioCheckboxNames.AREA_METRIC: {
-					partialDynamicSettings.areaMetric = attribute.currentMetric
-					partialDynamicSettings.margin = attribute.metricAttributeValue
+				case ScenarioMetricType.AREA_METRIC: {
+					partialDynamicSettings.areaMetric = attribute.metricName
+					partialDynamicSettings.margin = attribute.savedValues
 					break
 				}
-				case ScenarioCheckboxNames.HEIGHT_METRIC: {
-					partialDynamicSettings.heightMetric = attribute.currentMetric
-					partialAppSettings.scaling = attribute.metricAttributeValue["heightSlider"]
-					partialAppSettings.amountOfTopLabels = attribute.metricAttributeValue["labelSlider"]
+				case ScenarioMetricType.HEIGHT_METRIC: {
+					partialDynamicSettings.heightMetric = attribute.metricName
+					partialAppSettings.scaling = attribute.savedValues["heightSlider"]
+					partialAppSettings.amountOfTopLabels = attribute.savedValues["labelSlider"]
 					break
 				}
-				case ScenarioCheckboxNames.COLOR_METRIC: {
-					partialDynamicSettings.colorMetric = attribute.currentMetric
-					partialDynamicSettings.colorRange = attribute.metricAttributeValue
+				case ScenarioMetricType.COLOR_METRIC: {
+					partialDynamicSettings.colorMetric = attribute.metricName
+					partialDynamicSettings.colorRange = attribute.savedValues
 					break
 				}
-				case ScenarioCheckboxNames.EDGE_METRIC: {
-					partialDynamicSettings.edgeMetric = attribute.currentMetric
-					partialAppSettings.amountOfEdgePreviews = attribute.metricAttributeValue["edgePreview"]
-					partialAppSettings.edgeHeight = attribute.metricAttributeValue["edgeHeight"]
+				case ScenarioMetricType.EDGE_METRIC: {
+					partialDynamicSettings.edgeMetric = attribute.metricName
+					partialAppSettings.amountOfEdgePreviews = attribute.savedValues["edgePreview"]
+					partialAppSettings.edgeHeight = attribute.savedValues["edgeHeight"]
 					break
 				}
 			}

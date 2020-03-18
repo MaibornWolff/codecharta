@@ -5,10 +5,10 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { DialogService } from "./dialog.service"
 import { setState } from "../../state/store/state.actions"
 import {
-	FILE_ATTRIBUTE_CONTENT,
-	FILE_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED,
-	FILE_ATTRIBUTE_CONTENT_NONE_SELECTED,
-	FILE_ATTRIBUTE_CONTENT_WITHOUT_CAMERA,
+	SCENARIO_ATTRIBUTE_CONTENT,
+	SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED,
+	SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED,
+	SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA,
 	STATE
 } from "../../util/dataMocks"
 import { ScenarioHelper } from "../../util/scenarioHelper"
@@ -42,7 +42,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 			rebuildController()
 
-			expect(dialogAddScenarioSettings["_viewModel"].fileContent).toEqual(FILE_ATTRIBUTE_CONTENT)
+			expect(dialogAddScenarioSettings["_viewModel"].scenarioContent).toEqual(SCENARIO_ATTRIBUTE_CONTENT)
 		})
 	})
 
@@ -66,7 +66,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 		})
 
 		it("should return an error Message, when none of the FileConent is selected", () => {
-			dialogAddScenarioSettings["_viewModel"].fileContent = FILE_ATTRIBUTE_CONTENT_NONE_SELECTED
+			dialogAddScenarioSettings["_viewModel"].scenarioContent = SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED
 			dialogAddScenarioSettings["_viewModel"].scenarioName = "scenario1"
 			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(false)
 			dialogService.showErrorDialog = jest.fn()
@@ -77,14 +77,14 @@ describe("DialogAddScenarioSettingsComponent", () => {
 		})
 
 		it("should call createNewScenario Function with the selected fileAttributes", () => {
-			dialogAddScenarioSettings["_viewModel"].fileContent = FILE_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED
+			dialogAddScenarioSettings["_viewModel"].scenarioContent = SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED
 			dialogAddScenarioSettings["_viewModel"].scenarioName = "scenario1"
 			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(false)
 			ScenarioHelper.createNewScenario = jest.fn()
 
 			dialogAddScenarioSettings.addScenario()
 
-			expect(ScenarioHelper.createNewScenario).toHaveBeenCalledWith("scenario1", FILE_ATTRIBUTE_CONTENT_WITHOUT_CAMERA)
+			expect(ScenarioHelper.createNewScenario).toHaveBeenCalledWith("scenario1", SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA)
 		})
 	})
 })

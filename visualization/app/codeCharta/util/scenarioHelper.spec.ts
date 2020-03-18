@@ -2,7 +2,7 @@ import { ScenarioHelper } from "./scenarioHelper"
 import { Scenario } from "../codeCharta.model"
 import { DEFAULT_SCENARIO, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
-import { ScenarioCheckboxNames } from "../ui/dialog/dialog.addScenarioSettings.component"
+import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 
 describe("scenarioHelper", () => {
 	const scenarios: Scenario[] = require("../assets/scenarios.json")
@@ -90,63 +90,63 @@ describe("scenarioHelper", () => {
 	})
 
 	describe("createNewScenario", () => {
-		const fileAttributeContent = [
+		const scenarioAttributeContent = [
 			{
-				metricName: ScenarioCheckboxNames.CAMERA_POSITION,
-				currentMetric: null,
-				metricAttributeValue: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(1, 1, 1) },
+				metricType: ScenarioMetricType.CAMERA_POSITION,
+				metricName: null,
+				savedValues: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(1, 1, 1) },
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricName: ScenarioCheckboxNames.AREA_METRIC,
-				currentMetric: "rloc",
-				metricAttributeValue: 48,
+				metricType: ScenarioMetricType.AREA_METRIC,
+				metricName: "rloc",
+				savedValues: 48,
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricName: ScenarioCheckboxNames.COLOR_METRIC,
-				currentMetric: "mcc",
-				metricAttributeValue: { from: 19, to: 67 },
+				metricType: ScenarioMetricType.COLOR_METRIC,
+				metricName: "mcc",
+				savedValues: { from: 19, to: 67 },
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricName: ScenarioCheckboxNames.HEIGHT_METRIC,
-				currentMetric: "mcc",
-				metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+				metricType: ScenarioMetricType.HEIGHT_METRIC,
+				metricName: "mcc",
+				savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 				isSelected: true,
 				isDisabled: false
 			},
 			{
-				metricName: ScenarioCheckboxNames.EDGE_METRIC,
-				currentMetric: "pairingRate",
-				metricAttributeValue: { edgePreview: 5, edgeHeight: 4 },
+				metricType: ScenarioMetricType.EDGE_METRIC,
+				metricName: "pairingRate",
+				savedValues: { edgePreview: 5, edgeHeight: 4 },
 				isSelected: true,
 				isDisabled: false
 			}
 		]
 
-		it("should create a Scenario according to the given fileAttributeContent ", () => {
-			const result: Scenario = ScenarioHelper.createNewScenario("Scenario1", fileAttributeContent)
+		it("should create a Scenario according to the given scenarioAttributeContent ", () => {
+			const result: Scenario = ScenarioHelper.createNewScenario("Scenario1", scenarioAttributeContent)
 			const expected: Scenario = SCENARIO
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should create a Scenario only with height attributes", () => {
-			const fileAttributeConentWithOnlyHeight = [
+			const scenarioAttributeContentWithOnlyHeight = [
 				{
-					metricName: ScenarioCheckboxNames.HEIGHT_METRIC,
-					currentMetric: "mcc",
-					metricAttributeValue: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+					metricType: ScenarioMetricType.HEIGHT_METRIC,
+					metricName: "mcc",
+					savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
 					isSelected: true,
 					isDisabled: false
 				}
 			]
 
-			const result: Scenario = ScenarioHelper.createNewScenario("Scenario2", fileAttributeConentWithOnlyHeight)
+			const result: Scenario = ScenarioHelper.createNewScenario("Scenario2", scenarioAttributeContentWithOnlyHeight)
 			const expected: Scenario = SCENARIO_WITH_ONLY_HEIGHT
 
 			expect(result).toEqual(expected)
@@ -155,7 +155,7 @@ describe("scenarioHelper", () => {
 		it("should call createScenarioObjectWithPartialSettings function ", () => {
 			ScenarioHelper["createScenarioObjectWithPartialSettings"] = jest.fn().mockReturnValue(SCENARIO)
 
-			ScenarioHelper.createNewScenario("Scenario1", fileAttributeContent)
+			ScenarioHelper.createNewScenario("Scenario1", scenarioAttributeContent)
 
 			expect(ScenarioHelper["createScenarioObjectWithPartialSettings"]).toHaveBeenCalled()
 		})
