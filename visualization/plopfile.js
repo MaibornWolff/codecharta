@@ -177,7 +177,7 @@ module.exports = function(plop) {
 				type: "modify",
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
 				pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
-				template: "$1\r\n{{camelCase name}},"
+				template: "$1\r\n\t{{camelCase name}},"
 			},
 			{
 				type: "modify",
@@ -197,6 +197,77 @@ module.exports = function(plop) {
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
 				pattern: /(\/\/ Plop: Append action forwarding here)/gi,
 				template: "$1\r\n\t\t{{camelCase name}}: {{camelCase name}}(state.{{camelCase name}}, {{camelCase name}}Action),"
+			}
+		]
+	})
+
+	plop.setGenerator("redux subreducer", {
+		description: "creates a subreducer like dynamicSettings",
+		prompts: [
+			{
+				type: "input",
+				name: "name",
+				message: "Name (e.x. dynamicSettings):"
+			}
+		],
+		actions: [
+			buildAddAction("redux-subreducer", ["{{camelCase name}}", "actions", "ts"], "codeCharta/state/store/{{camelCase name}}"),
+			buildAddAction(
+				"redux-subreducer",
+				["{{camelCase name}}", "reducer", "spec", "ts"],
+				"codeCharta/state/store/{{camelCase name}}"
+			),
+			buildAddAction("redux-subreducer", ["{{camelCase name}}", "reducer", "ts"], "codeCharta/state/store/{{camelCase name}}"),
+			buildAddAction("redux-subreducer", ["{{camelCase name}}", "splitter", "ts"], "codeCharta/state/store/{{camelCase name}}"),
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/reducer.ts",
+				pattern: /(\/\/ Plop: Import sub-reducer here)/gi,
+				template: '$1\r\nimport {{camelCase name}} from "./{{camelCase name}}/{{camelCase name}}.reducer"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/reducer.ts",
+				pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
+				template: "$1\r\n\t{{camelCase name}},"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/state.actions.ts",
+				pattern: /(\/\/ Plop: Import sub-reducer here)/gi,
+				template: '$1\r\nimport { default{{properCase name}} } from "./{{camelCase name}}/{{camelCase name}}.actions"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/state.actions.ts",
+				pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
+				template: "$1\r\n\t{{camelCase name}}: default{{properCase name}},"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/state.splitter.ts",
+				pattern: /(\/\/ Plop: Import sub-reducer action here)/gi,
+				template: '$1\r\nimport { {{properCase name}}Actions } from "./{{camelCase name}}/{{camelCase name}}.actions"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/state.splitter.ts",
+				pattern: /(\/\/ Plop: Import sub-reducer splitter here)/gi,
+				template: '$1\r\nimport { split{{properCase name}}Actions } from "./{{camelCase name}}/{{camelCase name}}.splitter"'
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/state.splitter.ts",
+				pattern: /(\/\/ Plop: Propagate sub-reducer here)/gi,
+				template:
+					"$1\r\n\tif (_.values({{properCase name}}Actions).includes(action.type)) {\n\t\treturn split{{properCase name}}Actions(action.payload)\n\t}\n"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/state.splitter.ts",
+				pattern: /(\/\/ Plop: Split into sub-reducer here)/gi,
+				template:
+					"$1\r\n\t\tif (action.payload.{{camelCase name}} !== undefined) {\n\t\t\tactions = actions.concat(...split{{properCase name}}Actions(action.payload.{{camelCase name}}))\n\t\t}\n"
 			}
 		]
 	})
