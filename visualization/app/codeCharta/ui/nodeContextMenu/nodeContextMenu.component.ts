@@ -124,13 +124,13 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	private isNodeMarked(): boolean {
-		return !!this.storeService.getState().fileSettings.markedPackages.find(mp => mp.path == this._viewModel.codeMapNode.path)
+		return this.storeService.getState().fileSettings.markedPackages.some(mp => mp.path == this._viewModel.codeMapNode.path)
 	}
 
 	private packageMatchesColor(color: string): boolean {
-		return !!this.storeService
+		return this.storeService
 			.getState()
-			.fileSettings.markedPackages.find(mp => mp.path == this._viewModel.codeMapNode.path && mp.color == color)
+			.fileSettings.markedPackages.some(mp => mp.path == this._viewModel.codeMapNode.path && mp.color == color)
 	}
 
 	private packageMatchesColorOfParentMP(color: string): boolean {

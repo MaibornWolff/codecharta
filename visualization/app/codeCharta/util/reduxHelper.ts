@@ -22,7 +22,7 @@ export function isActionOfType(actionType: string, actions) {
 }
 
 function arrayContainsItem(array: any[], item: any): boolean {
-	return !!array.find(x => isEqualObject(x, item))
+	return array.some(x => isEqualObject(x, item))
 }
 
 function isEqualObject(obj1: any, obj2: any): boolean {
