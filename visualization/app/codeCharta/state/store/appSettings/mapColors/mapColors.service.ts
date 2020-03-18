@@ -1,8 +1,8 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MapColorsActions } from "./mapColors.actions"
-import _ from "lodash"
 import { MapColors } from "../../../../codeCharta.model"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface MapColorsSubscriber {
 	onMapColorsChanged(mapColors: MapColors)
@@ -16,7 +16,7 @@ export class MapColorsService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(MapColorsActions).includes(actionType)) {
+		if (isActionOfType(actionType, MapColorsActions)) {
 			this.notify(this.select())
 		}
 	}

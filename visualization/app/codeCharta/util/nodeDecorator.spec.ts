@@ -18,11 +18,7 @@ describe("nodeDecorator", () => {
 		map = _.cloneDeep(TEST_DELTA_MAP_A.map)
 		deltaMap = _.cloneDeep(VALID_NODE_WITH_PATH_AND_DELTAS)
 		fileMeta = _.cloneDeep(TEST_DELTA_MAP_A.fileMeta)
-		metricData = [
-			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
-		]
+		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
 		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
 	})
 
@@ -41,7 +37,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should aggregate missing metrics correctly", () => {
-			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
+			metricData.push({ name: "some", maxValue: 999999 })
 			NodeDecorator.decorateMap(map, fileMeta, metricData)
 			NodeDecorator.decorateParentNodesWithSumAttributes(map, blacklist, metricData, [], false)
 
@@ -51,7 +47,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("leaves should have all metrics", () => {
-			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
+			metricData.push({ name: "some", maxValue: 999999 })
 			NodeDecorator.decorateMap(map, fileMeta, metricData)
 
 			const h = d3.hierarchy(map)
@@ -66,7 +62,7 @@ describe("nodeDecorator", () => {
 
 		it("leaves should have all metrics even if some attributesLists are undefined", () => {
 			map.children[0].attributes = undefined
-			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
+			metricData.push({ name: "some", maxValue: 999999 })
 
 			NodeDecorator.decorateMap(map, fileMeta, metricData)
 			const h = d3.hierarchy(map)
@@ -249,7 +245,7 @@ describe("nodeDecorator", () => {
 		it("all nodes should have an attribute list with all possible metrics", () => {
 			map.children[0].attributes = undefined
 			map.children[1].attributes = { some: 1 }
-			metricData.push({ name: "some", maxValue: 999999, availableInVisibleMaps: true })
+			metricData.push({ name: "some", maxValue: 999999 })
 
 			NodeDecorator.decorateMap(map, fileMeta, metricData)
 			NodeDecorator.decorateParentNodesWithSumAttributes(map, blacklist, metricData, [], false)

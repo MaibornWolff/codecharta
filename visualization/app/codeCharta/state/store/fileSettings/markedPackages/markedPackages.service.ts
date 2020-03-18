@@ -1,11 +1,11 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actions"
-import _ from "lodash"
 import { MarkedPackage } from "../../../../codeCharta.model"
 import { getMergedMarkedPackages } from "./markedPackages.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface MarkedPackagesSubscriber {
 	onMarkedPackagesChanged(markedPackages: MarkedPackage[])
@@ -20,7 +20,7 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(MarkedPackagesActions).includes(actionType)) {
+		if (isActionOfType(actionType, MarkedPackagesActions)) {
 			this.notify(this.select())
 		}
 	}

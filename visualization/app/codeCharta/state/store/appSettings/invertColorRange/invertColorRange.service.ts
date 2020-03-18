@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { InvertColorRangeActions } from "./invertColorRange.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface InvertColorRangeSubscriber {
 	onInvertColorRangeChanged(invertColorRange: boolean)
@@ -15,7 +15,7 @@ export class InvertColorRangeService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(InvertColorRangeActions).includes(actionType)) {
+		if (isActionOfType(actionType, InvertColorRangeActions)) {
 			this.notify(this.select())
 		}
 	}
