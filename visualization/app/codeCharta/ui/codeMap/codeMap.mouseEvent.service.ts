@@ -46,7 +46,6 @@ export class CodeMapMouseEventService
 	private intersectedBuilding: CodeMapBuilding
 
 	private mouse: Coordinates = { x: 0, y: 0 }
-	private oldMouse: Coordinates = { x: 0, y: 0 }
 	private clickType: ClickType = null
 
 	/* @ngInject */
@@ -105,31 +104,22 @@ export class CodeMapMouseEventService
 	}
 
 	public updateHovering() {
-		if (this.hasMouseMoved()) {
-			this.oldMouse.x = this.mouse.x
-			this.oldMouse.y = this.mouse.y
+		this.threeCameraService.camera.updateMatrixWorld(false)
 
-			this.threeCameraService.camera.updateMatrixWorld(false)
+		if (this.threeSceneService.getMapMesh()) {
+			this.intersectedBuilding = this.threeSceneService
+				.getMapMesh()
+				.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
+			const from = this.threeSceneService.getHighlightedBuilding()
+			const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
-			if (this.threeSceneService.getMapMesh()) {
-				this.intersectedBuilding = this.threeSceneService
-					.getMapMesh()
-					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
-				const from = this.threeSceneService.getHighlightedBuilding()
-				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
-
-				if (from !== to) {
-					this.unhoverBuilding()
-					if (to) {
-						this.hoverBuilding(to)
-					}
+			if (from !== to) {
+				this.unhoverBuilding()
+				if (to) {
+					this.hoverBuilding(to)
 				}
 			}
 		}
-	}
-
-	private hasMouseMoved(): boolean {
-		return this.mouse.x !== this.oldMouse.x || this.mouse.y !== this.oldMouse.y
 	}
 
 	public onDocumentMouseMove(event) {
