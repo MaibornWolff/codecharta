@@ -1,1 +1,4 @@
-<span ng-show="$ctrl.isEdgeMetricAbsolute() && $ctrl._viewModel.isBuildingHovered" class="sum-icon">Σ</span>
+<span ng-show="$ctrl._viewModel.isBuildingHovered">
+	<span ng-show="$ctrl._viewModel.edageMetricType === 'absolute' || !$ctrl._viewModel.edageMetricType">Σ</span>
+	<span ng-show="$ctrl._viewModel.edageMetricType === 'relative'">x͂</span>
+</span>

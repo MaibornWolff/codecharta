@@ -71,22 +71,6 @@ export class MetricTypeController
 	public onBuildingUnhovered() {
 		this._viewModel.isBuildingHovered = false
 	}
-
-	public isAreaMetricAbsolute(): boolean {
-		return this._viewModel.areaMetricType === AttributeTypeValue.absolute || !this._viewModel.areaMetricType
-	}
-
-	public isHeightMetricAbsolute(): boolean {
-		return this._viewModel.heightMetricType === AttributeTypeValue.absolute || !this._viewModel.heightMetricType
-	}
-
-	public isColorMetricAbsolute(): boolean {
-		return this._viewModel.colorMetricType === AttributeTypeValue.absolute || !this._viewModel.colorMetricType
-	}
-
-	public isEdgeMetricAbsolute(): boolean {
-		return this._viewModel.edageMetricType === AttributeTypeValue.absolute || !this._viewModel.colorMetricType
-	}
 }
 
 export const areaMetricTypeComponent = {

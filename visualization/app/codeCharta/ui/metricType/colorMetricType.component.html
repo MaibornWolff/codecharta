@@ -1,1 +1,4 @@
-<span ng-show="$ctrl.isColorMetricAbsolute() && $ctrl._viewModel.isBuildingHovered" class="sum-icon">Σ</span>
+<span ng-show="$ctrl._viewModel.isBuildingHovered">
+	<span ng-show="$ctrl._viewModel.colorMetricType === 'absolute' || !$ctrl._viewModel.colorMetricType">Σ</span>
+	<span ng-show="$ctrl._viewModel.colorMetricType === 'relative'">x͂</span>
+</span>

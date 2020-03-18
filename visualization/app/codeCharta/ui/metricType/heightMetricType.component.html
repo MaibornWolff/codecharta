@@ -1,1 +1,4 @@
-<span ng-show="$ctrl.isHeightMetricAbsolute() && $ctrl._viewModel.isBuildingHovered" class="sum-icon">Σ</span>
+<span ng-show="$ctrl._viewModel.isBuildingHovered">
+	<span ng-show="$ctrl._viewModel.heightMetricType === 'absolute' || !$ctrl._viewModel.heightMetricType">Σ</span>
+	<span ng-show="$ctrl._viewModel.heightMetricType === 'relative'">x͂</span>
+</span>
