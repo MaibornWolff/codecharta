@@ -8,8 +8,10 @@ import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/s
 export class SearchPanelController implements SearchPanelModeSubscriber {
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
+		isExpanded: boolean
 	} = {
-		searchPanelMode: null
+		searchPanelMode: null,
+		isExpanded: false
 	}
 
 	/* @ngInject */
@@ -19,11 +21,16 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
-		this._viewModel.searchPanelMode = searchPanelMode
+		if (searchPanelMode === SearchPanelMode.minimized) {
+			this._viewModel.isExpanded = false
+		} else {
+			this._viewModel.searchPanelMode = searchPanelMode
+			this._viewModel.isExpanded = true
+		}
 	}
 
 	public toggle() {
-		if (this._viewModel.searchPanelMode !== SearchPanelMode.minimized) {
+		if (this._viewModel.isExpanded) {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
 		} else {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))

@@ -1,4 +1,4 @@
-<md-card ng-class="{expanded: $ctrl._viewModel.searchPanelMode !== 'minimized'}" ng-attr-id="search-panel-card">
+<md-card ng-class="{expanded: $ctrl._viewModel.isExpanded}" ng-attr-id="search-panel-card">
 	<div class="section">
 		<div class="section-header">
 			<search-bar-component></search-bar-component>
@@ -9,9 +9,7 @@
 			<blacklist-panel-flatten-component ng-show="$ctrl._viewModel.searchPanelMode === 'flatten'"></blacklist-panel-flatten-component>
 			<blacklist-panel-exclude-component ng-show="$ctrl._viewModel.searchPanelMode === 'exclude'"></blacklist-panel-exclude-component>
 			<matching-files-counter-component ng-show="$ctrl._viewModel.searchPanelMode === 'treeView'"></matching-files-counter-component>
-			<map-tree-view-component
-				ng-show="$ctrl._viewModel.searchPanelMode === 'treeView' || $ctrl._viewModel.searchPanelMode === 'minimized'"
-			></map-tree-view-component>
+			<map-tree-view-component ng-show="$ctrl._viewModel.searchPanelMode === 'treeView'"></map-tree-view-component>
 		</div>
 	</div>
 </md-card>
