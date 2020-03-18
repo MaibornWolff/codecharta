@@ -68,7 +68,6 @@ describe("codeMapMouseEventService", () => {
 		)
 
 		codeMapMouseEventService["mouse"] = { x: 0, y: 0 }
-		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
 	}
 
 	function withMockedWindow() {
