@@ -29,6 +29,7 @@ export function setDynamicSettings(dynamicSettings: RecursivePartial<DynamicSett
 }
 
 export const defaultDynamicSettings: DynamicSettings = {
+	// Plop: Append default property here
 	areaMetric: defaultAreaMetric,
 	heightMetric: defaultHeightMetric,
 	colorMetric: defaultColorMetric,
