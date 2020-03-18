@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { DynamicMarginActions } from "./dynamicMargin.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface DynamicMarginSubscriber {
 	onDynamicMarginChanged(dynamicMargin: boolean)
@@ -15,7 +15,7 @@ export class DynamicMarginService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(DynamicMarginActions).includes(actionType)) {
+		if (isActionOfType(actionType, DynamicMarginActions)) {
 			this.notify(this.select())
 		}
 	}

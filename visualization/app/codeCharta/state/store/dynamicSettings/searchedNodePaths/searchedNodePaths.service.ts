@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SearchedNodePathsActions } from "./searchedNodePaths.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface SearchedNodePathsSubscriber {
 	onSearchedNodePathsChanged(searchedNodePaths: string[])
@@ -15,7 +15,7 @@ export class SearchedNodePathsService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(SearchedNodePathsActions).includes(actionType)) {
+		if (isActionOfType(actionType, SearchedNodePathsActions)) {
 			this.notify(this.select())
 		}
 	}

@@ -3,10 +3,10 @@ import rootReducer from "./store/reducer"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
-import _ from "lodash"
 import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { CCAction, State } from "../codeCharta.model"
 import { SearchPanelModeActions } from "./store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { isActionOfType } from "../util/reduxHelper"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -24,9 +24,9 @@ export class StoreService {
 	public dispatch(action: CCAction, isSilent: boolean = false) {
 		if (
 			!(
-				_.values(IsLoadingMapActions).includes(action.type) ||
-				_.values(IsLoadingFileActions).includes(action.type) ||
-				_.values(SearchPanelModeActions).includes(action.type) ||
+				isActionOfType(action.type, IsLoadingMapActions) ||
+				isActionOfType(action.type, IsLoadingFileActions) ||
+				isActionOfType(action.type, SearchPanelModeActions) ||
 				isSilent
 			)
 		) {

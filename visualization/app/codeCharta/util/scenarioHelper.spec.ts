@@ -10,11 +10,7 @@ describe("scenarioHelper", () => {
 	})
 
 	beforeEach(() => {
-		metricData = [
-			{ name: "rloc", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "functions", maxValue: 999999, availableInVisibleMaps: true },
-			{ name: "mcc", maxValue: 999999, availableInVisibleMaps: true }
-		]
+		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
 	})
 
 	describe("importScenarios", () => {
@@ -48,11 +44,7 @@ describe("scenarioHelper", () => {
 		})
 
 		it("should return false for an impossible scenario", () => {
-			metricData = [
-				{ name: "some", maxValue: 999999, availableInVisibleMaps: true },
-				{ name: "weird", maxValue: 999999, availableInVisibleMaps: true },
-				{ name: "metrics", maxValue: 999999, availableInVisibleMaps: true }
-			]
+			metricData = [{ name: "some", maxValue: 999999 }, { name: "weird", maxValue: 999999 }, { name: "metrics", maxValue: 999999 }]
 			const result = ScenarioHelper.isScenarioPossible(scenarios[0], metricData)
 
 			expect(result).toBeFalsy()
