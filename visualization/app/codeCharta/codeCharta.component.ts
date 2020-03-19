@@ -10,13 +10,15 @@ import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import * as codeCharta from "../../package.json"
+import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
 import { ErrorObject } from "ajv"
 
 export class CodeChartaController {
 	private _viewModel: {
 		version: string
 	} = {
-		version: require("../../package.json").version
+		version: "version unavailable"
 	}
 
 	private urlUtils: UrlExtractor
@@ -28,9 +30,10 @@ export class CodeChartaController {
 		private storeService: StoreService,
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
-		// tslint:disable-next-line
+		// @ts-ignore
 		private injectorService: InjectorService // We have to inject it somewhere
 	) {
+		this._viewModel.version = codeCharta.version
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
@@ -84,11 +87,11 @@ export class CodeChartaController {
 		const files = this.storeService.getState().files.getCCFiles()
 
 		if (renderState === "Delta" && files.length >= 2) {
-			this.storeService.getState().files.setDelta(files[0], files[1])
+			this.storeService.dispatch(setDelta(files[0], files[1]))
 		} else if (renderState === "Multiple") {
-			this.storeService.getState().files.setMultiple(files)
+			this.storeService.dispatch(setMultiple(files))
 		} else {
-			this.storeService.getState().files.setSingle(files[0])
+			this.storeService.dispatch(setSingle(files[0]))
 		}
 	}
 }

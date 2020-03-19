@@ -189,7 +189,6 @@ export interface MarkedPackage {
 export interface MetricData {
 	name: string
 	maxValue: number
-	availableInVisibleMaps: boolean
 }
 
 export interface Scenario {

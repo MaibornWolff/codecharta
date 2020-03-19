@@ -3,7 +3,7 @@ import { FileSelectionState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
-import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
+import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 
 interface SelectedFileNames {
@@ -63,7 +63,6 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	}
 
 	public onPartialSelectionClosed() {
-		this._viewModel.files = this.storeService.getState().files
 		this.updateSelectedFileNamesInViewModel()
 	}
 
@@ -113,7 +112,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		if (partialFileNames.length > 0) {
 			this.storeService.dispatch(setMultipleByNames(partialFileNames))
 		} else {
-			this._viewModel.selectedFileNames.partial = partialFileNames
+			this._viewModel.selectedFileNames.partial = []
 		}
 	}
 
@@ -143,8 +142,8 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	public invertPartialFileSelection() {
 		const invertedFileNames: string[] = this._viewModel.files
 			.getFiles()
-			.filter(x => x.selectedAs === FileSelectionState.None)
 			.map(x => x.file.fileMeta.fileName)
+			.filter(x => !this._viewModel.selectedFileNames.partial.includes(x))
 
 		this.onPartialFilesChange(invertedFileNames)
 	}

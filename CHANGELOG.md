@@ -11,12 +11,30 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Selectable metrics will only contain metrics from the visible maps
+- Right-clicking a building will open the node-context-menu on mouse up instead of mouse down
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+- Fix vulnerability with nokogiri <1.10.8
+
+## [1.42.3] - 2020-03-13
+
+### Added 🚀
+
+### Changed
+
 ### Removed 🗑
 
 ### Fixed 🐞
 
 - Loading Gif not displayed when preparing to render a new map #857
 - Selecting zero files in Multiple mode will not trigger the 3D CodeMap creation
+- Metrics in the dropdown menu now show the correct max value for the visible maps #876
 
 ### Chore 👨‍💻 👩‍💻
 

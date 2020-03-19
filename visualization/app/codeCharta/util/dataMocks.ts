@@ -876,10 +876,7 @@ export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
 	DEFAULT_STATE.appSettings.mapColors.neutral
 )
 
-export const METRIC_DATA: MetricData[] = [
-	{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
-	{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
-]
+export const METRIC_DATA: MetricData[] = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
 
 export const BLACKLIST: BlacklistItem[] = [
 	{
