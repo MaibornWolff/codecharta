@@ -1,5 +1,7 @@
 import { CCAction, RecursivePartial, {{properCase name}} } from "../../../codeCharta.model"
 
+// Plop: Append default property import here
+
 export enum {{properCase name}}Actions {
 	SET_{{constantCase name}} = "SET_{{constantCase name}}"
 }
@@ -19,4 +21,5 @@ export function set{{properCase name}}({{camelCase name}}: RecursivePartial<{{pr
 }
 
 export const default{{properCase name}}: {{properCase name}} = {
+    // Plop: Append default property here
 }

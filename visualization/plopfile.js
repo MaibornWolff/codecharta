@@ -197,6 +197,18 @@ module.exports = function(plop) {
 				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
 				pattern: /(\/\/ Plop: Append action forwarding here)/gi,
 				template: "$1\r\n\t\t{{camelCase name}}: {{camelCase name}}(state.{{camelCase name}}, {{camelCase name}}Action),"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.actions.ts",
+				pattern: /(\/\/ Plop: Append default property here)/gi,
+				template: "$1\r\n\t{{camelCase name}}: default{{properCase name}},"
+			},
+			{
+				type: "modify",
+				path: "app/codeCharta/state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.actions.ts",
+				pattern: /(\/\/ Plop: Append default property import here)/gi,
+				template: `$1\r\nimport { default{{properCase name}} } from "./{{camelCase name}}/{{camelCase name}}.actions"`
 			}
 		]
 	})
