@@ -1,5 +1,5 @@
 import { ScenarioHelper } from "./scenarioHelper"
-import { Scenario } from "../codeCharta.model"
+import { MetricData, Scenario } from "../codeCharta.model"
 import { DEFAULT_SCENARIO, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
@@ -38,11 +38,52 @@ describe("scenarioHelper", () => {
 		})
 	})
 
-	describe("getScenarios", () => {
-		it("should get all scenarios", () => {
-			const result = ScenarioHelper.getScenarios()
+	describe("getScenarioItems", () => {
+		it("should get all the items with its visibility", () => {
+			ScenarioHelper["scenarioList"] = [SCENARIO]
+			const black = "#000000"
 
-			expect(result).toEqual(DEFAULT_SCENARIO)
+			const expected = [
+				{
+					scenarioName: "Scenario1",
+					isScenarioAppliable: false,
+					faIconList: [
+						{ icon: "fa fa-video-camera", visibility: black },
+						{ icon: "fa fa-arrows-alt", visibility: black },
+						{ icon: "fa fa-paint-brush", visibility: black },
+						{ icon: "fa fa-arrows-v", visibility: black },
+						{ icon: "fa fa-exchange", visibility: black }
+					]
+				}
+			]
+
+			const result = ScenarioHelper.getScenarioItems([])
+
+			expect(result).toEqual(expected)
+		})
+
+		it("should set isScenarioAppliable to true when metric is in metricData", () => {
+			ScenarioHelper["scenarioList"] = [SCENARIO_WITH_ONLY_HEIGHT]
+			const black = "#000000"
+			const lightGray = "#d3d3d3"
+
+			const expected = [
+				{
+					scenarioName: "Scenario2",
+					isScenarioAppliable: true,
+					faIconList: [
+						{ icon: "fa fa-video-camera", visibility: lightGray },
+						{ icon: "fa fa-arrows-alt", visibility: lightGray },
+						{ icon: "fa fa-paint-brush", visibility: lightGray },
+						{ icon: "fa fa-arrows-v", visibility: black },
+						{ icon: "fa fa-exchange", visibility: lightGray }
+					]
+				}
+			]
+
+			const result = ScenarioHelper.getScenarioItems([{ name: "mcc", maxValue: 56 }])
+
+			expect(result).toEqual(expected)
 		})
 	})
 

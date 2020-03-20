@@ -27,7 +27,7 @@
 .custom-item {
 	display: flex;
 
-	.scenario-items {
+	.scenario-item {
 		display: inline-flex;
 	}
 	.add-scenario-button {
@@ -46,6 +46,10 @@
 
 .scenarios {
 	display: flex;
+
+	span.scenario-content-icons {
+		width: 8%;
+	}
 
 	i.fa {
 		display: inline-flex;

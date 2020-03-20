@@ -9,7 +9,7 @@ import { MetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
-import { DEFAULT_SCENARIO, STATE } from "../../util/dataMocks"
+import { SCENARIOITEMS, STATE } from "../../util/dataMocks"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
@@ -56,17 +56,27 @@ describe("ScenarioDropDownController", () => {
 	})
 
 	describe("onMetricDataAdded", () => {
-		it("should call getScenarios and set the scenarios in viewmodel correctly", () => {
-			ScenarioHelper.getScenarios = jest.fn().mockReturnValue([{ name: "scenario", settings: {} }])
+		it("should call getScenarioItems and set the scenarios in viewmodel correctly", () => {
+			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIOITEMS)
 
 			scenarioButtonsController.onMetricDataAdded(metricData)
 
-			expect(scenarioButtonsController["_viewModel"].scenarios).toEqual([{ name: "scenario", settings: {} }])
+			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIOITEMS)
+		})
+	})
+
+	describe("loadScenario", () => {
+		it("should call getScenarioHelpers and set the dropDownScenarioItems ", () => {
+			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIOITEMS)
+
+			scenarioButtonsController.onMetricDataAdded(metricData)
+
+			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIOITEMS)
 		})
 	})
 
 	describe("applyScenario", () => {
-		it("should call getScenarioSettingsByName, setControl and call store.dispatch with scenarioSettings", () => {
+		it("should call setControl and call store.dispatch with scenarioSettings", () => {
 			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(STATE)
 			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
@@ -77,39 +87,6 @@ describe("ScenarioDropDownController", () => {
 			expect(storeService.dispatch).toHaveBeenCalledWith(setState(STATE))
 			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange(STATE.dynamicSettings.colorRange))
 			expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalled()
-		})
-		it("should not apply the Scenario when isScenarioAppliable returns false", () => {
-			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(STATE)
-			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(false)
-			dialogService.showErrorDialog = jest.fn()
-
-			scenarioButtonsController.applyScenario("Scenario1")
-
-			expect(dialogService.showErrorDialog).toHaveBeenCalled()
-		})
-	})
-
-	describe("getVisibility", () => {
-		beforeEach(() => {
-			scenarioButtonsController["_viewModel"].scenarios = DEFAULT_SCENARIO
-		})
-
-		it("should set the visibility of the camera icon to light gray if the scenario does not contain camera", () => {
-			const result = scenarioButtonsController.getVisibility("view", "Complexity")
-			const lightGray = "#d3d3d3"
-
-			expect(result).toEqual(lightGray)
-		})
-		it("should not set the visibility of the area icon to light gray if the scenario contains areaMetric", () => {
-			const result = scenarioButtonsController.getVisibility("area", "Complexity")
-			const lightGray = "#d3d3d3"
-
-			expect(result).not.toEqual(lightGray)
-		})
-		it("should return an empty String when the icon parameter is unknown", () => {
-			const result = scenarioButtonsController.getVisibility("notAnIcon", "Complexity")
-
-			expect(result).toEqual("")
 		})
 	})
 

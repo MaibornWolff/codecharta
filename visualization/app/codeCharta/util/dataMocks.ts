@@ -22,6 +22,7 @@ import { IRootScopeService } from "angular"
 import { Scenario } from "./scenarioHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { Files } from "../model/files"
+import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -993,6 +994,11 @@ export const SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED: AddScenarioContent[] = [
 		isSelected: false,
 		isDisabled: false
 	}
+]
+
+export const SCENARIOITEMS: ScenarioItem[] = [
+	{ scenarioName: "Scenario", isScenarioAppliable: true, faIconList: [{ icon: "fa fa-random", visibility: "#d3d3d3" }] },
+	{ scenarioName: "Scenario2", isScenarioAppliable: false, faIconList: [{ icon: "fa fa-some", visibility: "#000000" }] }
 ]
 
 export const TEST_NODE_LEAF: Node = {

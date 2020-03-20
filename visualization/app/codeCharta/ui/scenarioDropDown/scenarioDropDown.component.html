@@ -18,14 +18,18 @@
 
 		<md-divider></md-divider>
 
-		<md-menu-item class="scenarios" ng-repeat="scenario in $ctrl._viewModel.scenarios track by $index">
-			<md-button class="scenario-items" ng-click="$ctrl.applyScenario(scenario.name)">{{ scenario.name }}</md-button>
-			<i class="fa fa-video-camera" ng-style="{'color' : $ctrl.getVisibility('view', scenario.name)}"></i>
-			<i class="fa fa-arrows-alt" ng-style="{'color' : $ctrl.getVisibility('area', scenario.name)}"></i>
-			<i class="fa fa-paint-brush" ng-style="{'color' : $ctrl.getVisibility('color', scenario.name)}"></i>
-			<i class="fa fa-arrows-v" ng-style="{'color' : $ctrl.getVisibility('height', scenario.name)}"></i>
-			<i class="fa fa-exchange" ng-style="{'color' : $ctrl.getVisibility('edges', scenario.name)}"></i>
-			<md-button ng-click="$ctrl.removeScenario(scenario.name)" class="remove-scenario-button">
+		<md-menu-item class="scenarios" ng-repeat="scenario in $ctrl._viewModel.dropDownScenarioItems track by $index">
+			<md-button
+				class="scenario-items"
+				ng-click="$ctrl.applyScenario(scenario.scenarioName)"
+				ng-disabled="!scenario.isScenarioAppliable"
+				>{{ scenario.scenarioName }}</md-button
+			>
+			<span class="scenario-content-icons" ng-repeat="icons in scenario.faIconList">
+				<i ng-class="icons.icon" ng-style="{'color' : icons.visibility}"></i>
+			</span>
+
+			<md-button ng-click="$ctrl.removeScenario(scenario.scenarioName)" class="remove-scenario-button">
 				<i class="fa fa-minus"></i>
 			</md-button>
 		</md-menu-item>

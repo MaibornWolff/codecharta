@@ -1,7 +1,8 @@
 "use strict"
-import { AppSettings, DynamicSettings, RecursivePartial, Settings } from "../codeCharta.model"
+import { AppSettings, DynamicSettings, MetricData, RecursivePartial, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
+import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 
 export interface Scenario {
 	name: string
@@ -12,8 +13,53 @@ export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
 	private static scenarioList: Scenario[] = ScenarioHelper.loadScenarios()
 
-	public static getScenarios() {
-		return this.scenarioList
+	public static getScenarioItems(metricData: MetricData[]) {
+		const scenarioItemList: ScenarioItem[] = []
+		const lightGray = "#d3d3d3"
+		const black = "#000000"
+
+		this.scenarioList.forEach(scenario => {
+			scenarioItemList.push({
+				scenarioName: scenario.name,
+				isScenarioAppliable: this.isScenarioAppliable(scenario.settings.dynamicSettings, metricData),
+				faIconList: [
+					{
+						icon: "fa fa-video-camera",
+						visibility: !scenario.settings.appSettings.camera ? lightGray : black
+					},
+					{
+						icon: "fa fa-arrows-alt",
+						visibility: !scenario.settings.dynamicSettings.areaMetric ? lightGray : black
+					},
+					{
+						icon: "fa fa-paint-brush",
+						visibility: !scenario.settings.dynamicSettings.colorMetric ? lightGray : black
+					},
+					{
+						icon: "fa fa-arrows-v",
+						visibility: !scenario.settings.dynamicSettings.heightMetric ? lightGray : black
+					},
+					{
+						icon: "fa fa-exchange",
+						visibility: !scenario.settings.dynamicSettings.edgeMetric ? lightGray : black
+					}
+				]
+			})
+		})
+		return scenarioItemList
+	}
+
+	private static isScenarioAppliable(scenario: RecursivePartial<DynamicSettings>, metricData: MetricData[]) {
+		for (let attribute in scenario) {
+			if (
+				typeof scenario[attribute] === "string" &&
+				!metricData.find(x => x.name == scenario[attribute]) === true &&
+				scenario[attribute] !== "None"
+			) {
+				return false
+			}
+		}
+		return true
 	}
 
 	private static getPreLoadScenarios(): Scenario[] {
