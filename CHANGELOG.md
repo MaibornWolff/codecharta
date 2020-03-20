@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.43.0] - 2020-03-20
+
+### Added 🚀
+
+### Changed
+
 - Selectable metrics will only contain metrics from the visible maps
 - Closing the attribute-side-bar by clicking somewhere in the map will now be triggered on mouse up instead of mouse down
 
