@@ -1,33 +1,36 @@
 import "./searchPanel.component.scss"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
-import $ from "jquery"
 import { StoreService } from "../../state/store.service"
 import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
 export class SearchPanelController implements SearchPanelModeSubscriber {
-	private collapsingElements = $("search-panel-component md-card")
-
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
+		isExpanded: boolean
 	} = {
-		searchPanelMode: null
+		searchPanelMode: null,
+		isExpanded: false
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		SearchPanelModeService.subscribe(this.$rootScope, this)
+		this.onSearchPanelModeChanged(SearchPanelMode.minimized)
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
-		this._viewModel.searchPanelMode = searchPanelMode
-		this.collapsingElements.attr("id", "")
-		this.$timeout(() => this.collapsingElements.attr("id", "search-panel"), 300)
+		if (searchPanelMode === SearchPanelMode.minimized) {
+			this._viewModel.isExpanded = false
+		} else {
+			this._viewModel.searchPanelMode = searchPanelMode
+			this._viewModel.isExpanded = true
+		}
 	}
 
 	public toggle() {
-		if (this._viewModel.searchPanelMode != SearchPanelMode.minimized) {
+		if (this._viewModel.isExpanded) {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
 		} else {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))

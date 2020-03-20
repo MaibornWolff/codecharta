@@ -11,12 +11,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.43.0] - 2020-03-20
+
+### Added 🚀
+
+### Changed
+
 - Selectable metrics will only contain metrics from the visible maps
-- Right-clicking a building will open the node-context-menu on mouse up instead of mouse down
+- Closing the attribute-side-bar by clicking somewhere in the map will now be triggered on mouse up instead of mouse down
 
 ### Removed 🗑
 
 ### Fixed 🐞
+
+- Search-panel opening for a short duration when importing a new file
 
 ### Chore 👨‍💻 👩‍💻
 

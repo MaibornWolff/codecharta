@@ -5,6 +5,7 @@ import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { CCAction, State } from "../codeCharta.model"
+import { SearchPanelModeActions } from "./store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { isActionOfType } from "../util/reduxHelper"
 import { SortingOrderAscendingActions } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingDialogOptionActions } from "./store/dynamicSettings/sortingDialogOption/sortingDialogOption.actions"
@@ -28,6 +29,7 @@ export class StoreService {
 				isActionOfType(action.type, IsLoadingMapActions) ||
 				isActionOfType(action.type, IsLoadingFileActions) ||
 				isActionOfType(action.type, SortingOrderAscendingActions) ||
+				isActionOfType(action.type, SearchPanelModeActions) ||
 				isActionOfType(action.type, SortingDialogOptionActions) ||
 				isSilent
 			)
