@@ -1,4 +1,6 @@
 // Plop: Append service import here
+import { SortingDialogOptionService } from "./store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
+import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
@@ -40,6 +42,8 @@ export class InjectorService {
 		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private sortingDialogOptionService: SortingDialogOptionService,
+		private sortingOrderAscendingService: SortingOrderAscendingService,
 		private isLoadingFileService: IsLoadingFileService,
 		private isLoadingMapService: IsLoadingMapService,
 		private mapSizeService: MapSizeService,

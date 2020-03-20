@@ -10,7 +10,8 @@ import {
 	BlacklistType,
 	EdgeVisibility,
 	State,
-	NodeType
+	NodeType,
+	SortingOption
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -45,6 +46,120 @@ export const VALID_NODE: CodeMapNode = {
 					attributes: { rloc: 70, functions: 1000, mcc: 10 }
 				}
 			]
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
+	name: "root",
+	attributes: { unary: 200 },
+	type: NodeType.FOLDER,
+	children: [
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			link: "http://www.google.de"
+		},
+		{
+			name: "small Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
+			children: []
+		},
+		{
+			name: "big Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "very big Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 160 },
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
+	name: "root",
+	attributes: { unary: 200 },
+	type: NodeType.FOLDER,
+	children: [
+		{
+			name: "very big Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 160 },
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+				}
+			]
+		},
+		{
+			name: "big Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "small Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
+			children: []
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			link: "http://www.google.de"
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
+	name: "root",
+	attributes: { unary: 200 },
+	type: NodeType.FOLDER,
+	children: [
+		{
+			name: "big Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "small Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
+			children: []
+		},
+		{
+			name: "very big Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 160 },
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+				}
+			]
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			link: "http://www.google.de"
 		}
 	]
 }
@@ -652,7 +767,8 @@ export const STATE: State = {
 		colorRange: {
 			from: 19,
 			to: 67
-		}
+		},
+		sortingDialogOption: SortingOption.Name
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -687,7 +803,8 @@ export const STATE: State = {
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
-		isLoadingFile: true
+		isLoadingFile: true,
+		sortingOrderAscending: false
 	},
 	treeMap: {
 		mapSize: 250
@@ -728,7 +845,8 @@ export const DEFAULT_STATE: State = {
 		showOnlyBuildingsWithEdges: false,
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
-		isLoadingFile: true
+		isLoadingFile: true,
+		sortingOrderAscending: false
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -743,7 +861,8 @@ export const DEFAULT_STATE: State = {
 			to: null
 		},
 		searchPattern: "",
-		searchedNodePaths: []
+		searchedNodePaths: [],
+		sortingDialogOption: SortingOption.Name
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 }

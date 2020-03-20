@@ -65,6 +65,11 @@ export enum NodeType {
 	FOLDER = "Folder"
 }
 
+export enum SortingOption {
+	Name = "Name",
+	Childnodes = "Childnodes"
+}
+
 export interface FileMeta {
 	fileName: string
 	apiVersion: string
@@ -86,6 +91,7 @@ export interface FileSettings {
 }
 
 export interface DynamicSettings {
+	sortingDialogOption: SortingOption
 	areaMetric: string
 	heightMetric: string
 	colorMetric: string
@@ -117,6 +123,7 @@ export interface AppSettings {
 	resetCameraIfNewFileIsLoaded: boolean
 	isLoadingMap: boolean
 	isLoadingFile: boolean
+	sortingOrderAscending: boolean
 }
 
 export interface TreeMapSettings {

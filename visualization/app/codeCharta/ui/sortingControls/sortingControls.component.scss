@@ -1,0 +1,21 @@
+sorting-controls-component {
+	float: right;
+	display: flex;
+	color: black;
+
+	#id-sort-component-button .md-button {
+		min-height: unset;
+		height: 80%;
+		background: #e6e6e6;
+		padding: 2px 8px;
+	}
+
+	#id-sort-component-dialog .md-select-value {
+		min-height: unset;
+		padding: 2px 8px;
+	}
+
+	.sort-component-styling {
+		margin-right: 3px;
+	}
+}

@@ -1,6 +1,7 @@
 import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
+import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
 import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
 import { splitMapColorsAction } from "./mapColors/mapColors.splitter"
@@ -24,6 +25,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.sortingOrderAscending !== undefined) {
+		actions.push(splitSortingOrderAscendingAction(payload.sortingOrderAscending))
+	}
+
 	if (payload.isLoadingFile !== undefined) {
 		actions.push(splitIsLoadingFileAction(payload.isLoadingFile))
 	}

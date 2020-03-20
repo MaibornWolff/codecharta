@@ -9,6 +9,7 @@ import { defaultHeightMetric } from "./heightMetric/heightMetric.actions"
 import { defaultMargin } from "./margin/margin.actions"
 import { defaultSearchedNodePaths } from "./searchedNodePaths/searchedNodePaths.actions"
 import { defaultSearchPattern } from "./searchPattern/searchPattern.actions"
+import { defaultSortingDialogOption } from "./sortingDialogOption/sortingDialogOption.actions"
 
 export enum DynamicSettingsActions {
 	SET_DYNAMIC_SETTINGS = "SET_DYNAMIC_SETTINGS"
@@ -38,5 +39,6 @@ export const defaultDynamicSettings: DynamicSettings = {
 	searchedNodePaths: defaultSearchedNodePaths,
 	searchPattern: defaultSearchPattern,
 	margin: defaultMargin,
-	colorRange: defaultColorRange
+	colorRange: defaultColorRange,
+	sortingDialogOption: defaultSortingDialogOption
 }

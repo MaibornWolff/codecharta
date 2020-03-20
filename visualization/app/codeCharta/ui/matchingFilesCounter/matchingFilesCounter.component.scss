@@ -2,7 +2,7 @@ matching-files-counter-component {
 	.node-count {
 		background: #eee;
 		color: black;
-		padding: 4px 8px !important;
+		padding: 4px 8px;
 		margin-right: 4px;
 	}
 
@@ -16,7 +16,6 @@ matching-files-counter-component {
 		line-height: 17px;
 		font-size: 10pt;
 		margin-top: 2px;
-		padding: 0 2px 0 2px;
 		min-width: 20px;
 		border-radius: 4px;
 		text-align: center;
