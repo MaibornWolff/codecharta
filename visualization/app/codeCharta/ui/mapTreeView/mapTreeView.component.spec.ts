@@ -128,7 +128,7 @@ describe("MapTreeViewController", () => {
 			mapTreeViewController["_viewModel"] = { rootNode: null }
 			mapTreeViewController["onRenderMapChanged"](map)
 
-			//mapTreeViewController.onRenderMapChanged(map)
+			mapTreeViewController.onRenderMapChanged(map)
 			$timeout.flush(100)
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toBe(map)
