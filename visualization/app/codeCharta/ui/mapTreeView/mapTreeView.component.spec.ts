@@ -70,7 +70,7 @@ describe("MapTreeViewController", () => {
 	})
 
 	describe("applySort", () => {
-		it("", () => {
+		it("should return the children array sorted by unary", () => {
 			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
 			let compareFn = (a, b) => b.attributes["unary"] - a.attributes["unary"]
 			let result = mapTreeViewController.applySort(validSetupNode, compareFn)
