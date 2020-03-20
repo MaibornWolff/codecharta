@@ -45,7 +45,7 @@ describe("SortingButtonController", () => {
 		it("should change sortingOrderAscending in service", () => {
 			sortingButtonController["_viewModel"].orderAscending = false
 			sortingButtonController["onButtonClick"]()
-			expect(sortingButtonController["_viewModel"].orderAscending).toEqual(false)
+			expect(storeService.getState().appSettings.sortingOrderAscending).toBe(!sortingButtonController["_viewModel"].orderAscending)
 		})
 	})
 })

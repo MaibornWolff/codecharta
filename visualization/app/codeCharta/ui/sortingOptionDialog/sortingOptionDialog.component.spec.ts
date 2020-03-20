@@ -37,12 +37,12 @@ describe("SortingOptionDialogController", () => {
 	})
 
 	describe("onSortingDialogOptionChanged", () => {
-		it("should change the state of sortingOptionDialog to Childnodes", () => {
+		it("should update the sortingOptionDialog to Childnodes", () => {
 			let sortingDialogOption = SortingOption.Childnodes
 			sortingOptionDialogController.onSortingDialogOptionChanged(sortingDialogOption)
 			expect(sortingOptionDialogController["_viewModel"].sortingOption).toEqual(SortingOption.Childnodes)
 		})
-		it("should update the sortingOptionDialog state to Name", () => {
+		it("should update the sortingOptionDialog to Name", () => {
 			let sortingDialogOption = SortingOption.Name
 			sortingOptionDialogController.onSortingDialogOptionChanged(sortingDialogOption)
 			expect(sortingOptionDialogController["_viewModel"].sortingOption).toEqual(SortingOption.Name)

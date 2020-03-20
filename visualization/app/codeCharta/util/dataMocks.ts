@@ -65,19 +65,19 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 			link: "http://www.google.de"
 		},
 		{
-			name: "big Folder",
+			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { unary: 60 },
 			children: []
 		},
 		{
-			name: "small Folder",
+			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { unary: 40 },
 			children: []
 		},
 		{
-			name: "very big Folder",
+			name: "Folder3",
 			type: NodeType.FOLDER,
 			attributes: { unary: 160 },
 			children: [
@@ -91,13 +91,13 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 	name: "root",
 	attributes: { unary: 200 },
 	type: NodeType.FOLDER,
 	children: [
 		{
-			name: "very big Folder",
+			name: "Folder3",
 			type: NodeType.FOLDER,
 			attributes: { unary: 160 },
 			children: [
@@ -109,13 +109,51 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 			]
 		},
 		{
-			name: "big Folder",
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
+			children: []
+		},
+		{
+			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { unary: 60 },
 			children: []
 		},
 		{
-			name: "small Folder",
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			link: "http://www.google.de"
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
+	name: "root",
+	attributes: { unary: 200 },
+	type: NodeType.FOLDER,
+	children: [
+		{
+			name: "Folder3",
+			type: NodeType.FOLDER,
+			attributes: { unary: 160 },
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+				}
+			]
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { unary: 40 },
 			children: []
@@ -135,19 +173,19 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 	type: NodeType.FOLDER,
 	children: [
 		{
-			name: "big Folder",
+			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { unary: 60 },
 			children: []
 		},
 		{
-			name: "small Folder",
+			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { unary: 40 },
 			children: []
 		},
 		{
-			name: "very big Folder",
+			name: "Folder3",
 			type: NodeType.FOLDER,
 			attributes: { unary: 160 },
 			children: [

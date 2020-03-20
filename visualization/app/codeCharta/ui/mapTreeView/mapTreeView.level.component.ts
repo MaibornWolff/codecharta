@@ -112,10 +112,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		}
 	}
 
-	public test() {
-		this.storeService.getState().dynamicSettings.sortingDialogOption
-	}
-
 	public getNodeUnaryValue() {
 		return this.node.attributes["unary"]
 	}

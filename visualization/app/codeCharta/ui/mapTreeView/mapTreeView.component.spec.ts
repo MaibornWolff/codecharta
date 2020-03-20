@@ -3,9 +3,10 @@ import { MapTreeViewController } from "./mapTreeView.component"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode, SortingOption } from "../../codeCharta.model"
 import {
 	VALID_NODE_WITH_MULTIPLE_FOLDERS,
+	VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED,
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME,
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY,
 	VALID_NODE_WITH_PATH
@@ -21,6 +22,7 @@ describe("MapTreeViewController", () => {
 	let $timeout: ITimeoutService
 	let storeService = getService<StoreService>("storeService")
 	let map: CodeMapNode
+	let validSetupNode: CodeMapNode
 
 	beforeEach(() => {
 		restartSystem()
@@ -35,6 +37,7 @@ describe("MapTreeViewController", () => {
 		storeService = getService<StoreService>("storeService")
 
 		map = _.cloneDeep(VALID_NODE_WITH_PATH)
+		validSetupNode = _.cloneDeep(VALID_NODE_WITH_MULTIPLE_FOLDERS)
 	}
 
 	function rebuildController() {
@@ -67,49 +70,58 @@ describe("MapTreeViewController", () => {
 	})
 
 	describe("applySort", () => {
-		it("should sort by unary", () => {
-			let validNodeSorted = VALID_NODE_WITH_MULTIPLE_FOLDERS
+		it("", () => {
 			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
 			let compareFn = (a, b) => b.attributes["unary"] - a.attributes["unary"]
-			let result = mapTreeViewController.applySortOrderChange(validNodeSorted, compareFn, false)
+			let result = mapTreeViewController.applySort(validSetupNode, compareFn)
+			expect(result).toEqual(sortedNode.children)
+		})
+	})
+
+	describe("applySortOrderChange", () => {
+		it("should sort by unary", () => {
+			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
+			let compareFn = (a, b) => b.attributes["unary"] - a.attributes["unary"]
+			let result = mapTreeViewController.applySortOrderChange(validSetupNode, compareFn, false)
 			expect(result).toEqual(sortedNode)
 		})
 
 		it("should sort by name", () => {
-			let validNodeSorted = VALID_NODE_WITH_MULTIPLE_FOLDERS
 			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME
 			let compareFn = (a, b) => (b.name > a.name ? 1 : 0)
-			let result = mapTreeViewController.applySortOrderChange(validNodeSorted, compareFn, false)
-			console.log(result)
+			let result = mapTreeViewController.applySortOrderChange(validSetupNode, compareFn, false)
+			expect(result).toEqual(sortedNode)
+		})
+
+		it("should reverse order", () => {
+			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED
+			let result = mapTreeViewController.applySortOrderChange(validSetupNode, null, true)
 			expect(result).toEqual(sortedNode)
 		})
 	})
 
 	describe("onSortingOrderAscendingChanged", () => {
-		it("", () => {})
+		it("should reverse the sorting order", () => {
+			mapTreeViewController["_viewModel"].rootNode = validSetupNode
+			mapTreeViewController.onSortingOrderAscendingChanged(true)
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED)
+		})
 	})
 
 	describe("onSortingDialogOptionChanged", () => {
-		it("", () => {})
-	})
-
-	describe("applySort", () => {
-		it("", () => {})
-	})
-
-	/*	it("should sort folder", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				NodeType.FOLDER,
-				VALID_NODE_WITH_PATH
-			)
-
-			const result = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
-
-			expect(result).toBe(1)
+		it("should sort folder structure according to childnode size", () => {
+			let sortingDialogOption = SortingOption.Childnodes
+			mapTreeViewController["_viewModel"].rootNode = validSetupNode
+			mapTreeViewController.onSortingDialogOptionChanged(sortingDialogOption)
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY)
 		})
-
-*/
+		it("should sort folder structure according to name", () => {
+			let sortingDialogOption = SortingOption.Name
+			mapTreeViewController["_viewModel"].rootNode = VALID_NODE_WITH_MULTIPLE_FOLDERS
+			mapTreeViewController.onSortingDialogOptionChanged(sortingDialogOption)
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME)
+		})
+	})
 
 	describe("onRenderMapChanged", () => {
 		it("should update viewModel.rootNode after timeout", () => {
@@ -121,8 +133,5 @@ describe("MapTreeViewController", () => {
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toBe(map)
 		})
-	})
-	describe("onSortingDialogOptionChanged", () => {
-		it("should sort the nodes according to name, splitting into Folders and Files while preserving tree structure", () => {})
 	})
 })
