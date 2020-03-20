@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Search-panel opening for a short duration when importing a new file
+
 ### Chore 👨‍💻 👩‍💻
 
 - Fix vulnerability with nokogiri <1.10.8
