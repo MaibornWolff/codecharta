@@ -65,15 +65,15 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 			link: "http://www.google.de"
 		},
 		{
-			name: "small Folder",
-			type: NodeType.FOLDER,
-			attributes: { unary: 40 },
-			children: []
-		},
-		{
 			name: "big Folder",
 			type: NodeType.FOLDER,
 			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "small Folder",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
 			children: []
 		},
 		{

@@ -3,7 +3,6 @@
 import angular from "angular"
 
 // Plop: Append module import here
-import "./sortingControls/sortingControls.module"
 import "./sortingOptionDialog/sortingOptionDialog.module"
 import "./sortingButton/sortingButton.module"
 import "./unfocusButton/unfocusButton.module"
@@ -45,7 +44,6 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
-	"app.codeCharta.ui.sortingControls",
 	"app.codeCharta.ui.sortingOptionDialog",
 	"app.codeCharta.ui.sortingButton",
 	"app.codeCharta.ui.unfocusButton",

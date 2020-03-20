@@ -20,4 +20,24 @@ matching-files-counter-component {
 		border-radius: 4px;
 		text-align: center;
 	}
+
+	#id-sort-component-button .md-button {
+		min-height: unset;
+		margin-bottom: 0;
+		height: 23px;
+		background: #e6e6e6;
+		padding: 1px 8px;
+	}
+
+	#id-sort-component-dialog .md-select-value {
+		min-height: unset;
+		padding: 2px 8px;
+	}
+
+	.sort-component-styling {
+		margin-right: 3px;
+		float: right;
+		display: flex;
+		color: black;
+	}
 }
