@@ -1,4 +1,6 @@
 import { CCAction, FileSettings, RecursivePartial } from "../../../codeCharta.model"
+
+// Plop: Append default property import here
 import { defaultAttributeTypes } from "./attributeTypes/attributeTypes.actions"
 import { defaultBlacklist } from "./blacklist/blacklist.actions"
 import { defaultEdges } from "./edges/edges.actions"
@@ -23,6 +25,7 @@ export function setFileSettings(fileSettings: RecursivePartial<FileSettings> = d
 }
 
 export const defaultFileSettings: FileSettings = {
+	// Plop: Append default property here
 	attributeTypes: defaultAttributeTypes,
 	blacklist: defaultBlacklist,
 	edges: defaultEdges,

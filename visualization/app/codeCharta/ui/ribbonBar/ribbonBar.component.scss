@@ -6,13 +6,14 @@ ribbon-bar-component {
 	pointer-events: none;
 	display: flex;
 
-	search-panel-component #search-panel.expanded {
-		height: auto;
-		max-height: 500px;
+	search-panel-component {
+		#search-panel-card.expanded {
+			height: 100%;
 
-		.section-body {
-			height: auto;
-			min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
+			.section-body {
+				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
+				max-height: 500px;
+			}
 		}
 	}
 
@@ -147,7 +148,7 @@ ribbon-bar-component {
 	.section .section-header,
 	.section .section-body,
 	.section-body reset-settings-button-component .md-button {
-		transition: all 0.3s ease;
+		transition: height 0.3s ease;
 	}
 
 	md-input-container {

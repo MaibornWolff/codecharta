@@ -5,6 +5,7 @@ import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { CCAction, State } from "../codeCharta.model"
+import { SearchPanelModeActions } from "./store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { isActionOfType } from "../util/reduxHelper"
 
 export interface StoreSubscriber {
@@ -21,7 +22,14 @@ export class StoreService {
 	}
 
 	public dispatch(action: CCAction, isSilent: boolean = false) {
-		if (!(isActionOfType(action.type, IsLoadingMapActions) || isActionOfType(action.type, IsLoadingFileActions) || isSilent)) {
+		if (
+			!(
+				isActionOfType(action.type, IsLoadingMapActions) ||
+				isActionOfType(action.type, IsLoadingFileActions) ||
+				isActionOfType(action.type, SearchPanelModeActions) ||
+				isSilent
+			)
+		) {
 			this.dispatch(setIsLoadingMap(true))
 		}
 

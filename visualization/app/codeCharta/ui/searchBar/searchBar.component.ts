@@ -60,7 +60,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {
-		return !!blacklist.find(x => this._viewModel.searchPattern == x.path && blacklistType == x.type)
+		return blacklist.some(x => this._viewModel.searchPattern == x.path && blacklistType == x.type)
 	}
 
 	private resetSearchPattern() {

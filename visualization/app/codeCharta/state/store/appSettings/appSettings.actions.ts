@@ -1,4 +1,6 @@
 import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
+
+// Plop: Append default property import here
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
@@ -39,6 +41,7 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 }
 
 export const defaultAppSettings: AppSettings = {
+	// Plop: Append default property here
 	amountOfTopLabels: defaultAmountOfTopLabels,
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
 	edgeHeight: defaultEdgeHeight,
