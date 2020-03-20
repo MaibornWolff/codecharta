@@ -162,7 +162,6 @@ describe("MapTreeViewLevelController", () => {
 
 			mapTreeViewLevelController.onRightClick($event)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
 		})
 	})

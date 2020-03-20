@@ -5,22 +5,19 @@ import { CodeChartaService } from "./codeCharta.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { NameDataPair } from "./codeCharta.model"
-import { FileStateService } from "./state/fileState.service"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import * as codeCharta from "../../package.json"
+import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
 		version: string
-		isLoadingFile: boolean
-		isLoadingMap: boolean
 	} = {
-		version: require("../../package.json").version,
-		isLoadingFile: true,
-		isLoadingMap: true
+		version: "version unavailable"
 	}
 
 	private urlUtils: UrlExtractor
@@ -32,10 +29,10 @@ export class CodeChartaController {
 		private storeService: StoreService,
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
-		private fileStateService: FileStateService,
-		// tslint:disable-next-line
+		// @ts-ignore
 		private injectorService: InjectorService // We have to inject it somewhere
 	) {
+		this._viewModel.version = codeCharta.version
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
@@ -86,14 +83,14 @@ export class CodeChartaController {
 
 	private setRenderStateFromUrl() {
 		const renderState: string = this.urlUtils.getParameterByName("mode")
-		const files = this.fileStateService.getCCFiles()
+		const files = this.storeService.getState().files.getCCFiles()
 
 		if (renderState === "Delta" && files.length >= 2) {
-			this.fileStateService.setDelta(files[0], files[1])
+			this.storeService.dispatch(setDelta(files[0], files[1]))
 		} else if (renderState === "Multiple") {
-			this.fileStateService.setMultiple(files)
+			this.storeService.dispatch(setMultiple(files))
 		} else {
-			this.fileStateService.setSingle(files[0])
+			this.storeService.dispatch(setSingle(files[0]))
 		}
 	}
 

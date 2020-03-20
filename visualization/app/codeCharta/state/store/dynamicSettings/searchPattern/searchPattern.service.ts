@@ -1,29 +1,29 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SearchPatternActions, setSearchPattern } from "./searchPattern.actions"
-import _ from "lodash"
-import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
-import { FileState } from "../../../../codeCharta.model"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
+import { Files } from "../../../../model/files"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)
 }
 
-export class SearchPatternService implements StoreSubscriber, FileStateSubscriber {
+export class SearchPatternService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static SEARCH_PATTERN_CHANGED_EVENT = "search-pattern-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(SearchPatternActions).includes(actionType)) {
+		if (isActionOfType(actionType, SearchPatternActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesSelectionChanged(files: Files) {
 		this.storeService.dispatch(setSearchPattern())
 	}
 

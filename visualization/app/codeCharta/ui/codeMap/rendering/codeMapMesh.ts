@@ -1,6 +1,6 @@
 import { CodeMapShaderStrings } from "./codeMapShaderStrings"
 import { BuildResult, GeometryGenerator } from "./geometryGenerator"
-import { CodeMapGeometricDescription, IntersectionResult } from "./codeMapGeometricDescription"
+import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, State } from "../../../codeCharta.model"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
@@ -68,7 +68,7 @@ export class CodeMapMesh {
 		return this.mapGeomDesc.getBuildingByPath(path)
 	}
 
-	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera): IntersectionResult {
+	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera): CodeMapBuilding {
 		const ray: Ray = this.calculatePickingRay(mouse, camera)
 		return this.getMeshDescription().intersect(ray)
 	}

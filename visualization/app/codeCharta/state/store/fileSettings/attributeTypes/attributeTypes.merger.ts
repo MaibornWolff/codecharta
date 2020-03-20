@@ -1,5 +1,5 @@
-import { AttributeTypes } from "../../../../codeCharta.model"
 import _ from "lodash"
+import { AttributeTypes } from "../../../../codeCharta.model"
 
 export function getMergedAttributeTypes(allAttributeTypes: AttributeTypes[]): AttributeTypes {
 	const attributeTypesNodes = []
@@ -12,14 +12,14 @@ export function getMergedAttributeTypes(allAttributeTypes: AttributeTypes[]): At
 	for (let attributeTypes of allAttributeTypes) {
 		for (let i = 0; i < attributeTypes.nodes.length; i++) {
 			const key = _.findKey(attributeTypes.nodes[i])
-			if (!attributeTypesNodes.find(x => _.findKey(x) === key)) {
+			if (!attributeTypesNodes.some(x => _.findKey(x) === key)) {
 				attributeTypesNodes.push({ [key]: attributeTypes.nodes[i][key] })
 			}
 		}
 
 		for (let i = 0; i < attributeTypes.edges.length; i++) {
 			const key = _.findKey(attributeTypes.edges[i])
-			if (!attributeTypesEdges.find(x => _.findKey(x) === key)) {
+			if (!attributeTypesEdges.some(x => _.findKey(x) === key)) {
 				attributeTypesEdges.push({ [key]: attributeTypes.edges[i][key] })
 			}
 		}

@@ -1,5 +1,6 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
+import { Files } from "./model/files"
 
 export interface NameDataPair {
 	fileName: string
@@ -124,6 +125,7 @@ export interface AppSettings {
 	isLoadingMap: boolean
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
+	searchPanelMode: SearchPanelMode
 }
 
 export interface TreeMapSettings {
@@ -198,15 +200,11 @@ export enum BlacklistType {
 export interface MarkedPackage {
 	path: string
 	color: string
-	attributes: {
-		[key: string]: any
-	}
 }
 
 export interface MetricData {
 	name: string
 	maxValue: number
-	availableInVisibleMaps: boolean
 }
 
 export interface Scenario {
@@ -256,8 +254,9 @@ export interface State {
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
+	files: Files
 }
 
 export interface CCAction extends Action {
-	payload: any
+	payload?: any
 }

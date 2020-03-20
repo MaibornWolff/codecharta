@@ -70,10 +70,10 @@ describe("ColorMetricService", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update colorMetric if current colorMetric is not available", () => {
 			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "c", maxValue: 2, availableInVisibleMaps: true },
-				{ name: "d", maxValue: 2, availableInVisibleMaps: true }
+				{ name: "a", maxValue: 1 },
+				{ name: "b", maxValue: 2 },
+				{ name: "c", maxValue: 2 },
+				{ name: "d", maxValue: 2 }
 			]
 
 			colorMetricService.onMetricDataAdded(metricData)
@@ -82,10 +82,7 @@ describe("ColorMetricService", () => {
 		})
 
 		it("should use first available metric, if less than 2 metrics are available", () => {
-			const metricData = [
-				{ name: "a", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 1, availableInVisibleMaps: false }
-			]
+			const metricData = [{ name: "a", maxValue: 1 }]
 
 			colorMetricService.onMetricDataAdded(metricData)
 
@@ -95,10 +92,7 @@ describe("ColorMetricService", () => {
 		it("should not update if current colorMetric is available", () => {
 			storeService.dispatch(setColorMetric("mcc"))
 			storeService.dispatch = jest.fn()
-			const metricData = [
-				{ name: "mcc", maxValue: 1, availableInVisibleMaps: true },
-				{ name: "rloc", maxValue: 2, availableInVisibleMaps: true }
-			]
+			const metricData = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
 
 			colorMetricService.onMetricDataAdded(metricData)
 
@@ -107,7 +101,7 @@ describe("ColorMetricService", () => {
 
 		it("should not update colorMetric, if no metric is available", () => {
 			storeService.dispatch = jest.fn()
-			const metricData = [{ name: "b", maxValue: 2, availableInVisibleMaps: false }]
+			const metricData = []
 
 			colorMetricService.onMetricDataAdded(metricData)
 

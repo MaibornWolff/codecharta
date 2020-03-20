@@ -2,8 +2,10 @@ import angular from "angular"
 // Plop: Append module import here
 import { SortingDialogOptionService } from "./store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
+import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
+import { FilesService } from "./store/files/files.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
 import { MapColorsService } from "./store/appSettings/mapColors/mapColors.service"
 import { ResetCameraIfNewFileIsLoadedService } from "./store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.service"
@@ -37,9 +39,7 @@ import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.servi
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
-import { SearchPanelService } from "./searchPanel.service"
 import { NodeSearchService } from "./nodeSearch.service"
-import { FileStateService } from "./fileState.service"
 import { MetricService } from "./metric.service"
 import "../codeCharta.module"
 import _ from "lodash"
@@ -48,10 +48,12 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(SearchPanelModeService.name), SearchPanelModeService)
 	.service(_.camelCase(SortingDialogOptionService.name), SortingDialogOptionService)
 	.service(_.camelCase(SortingOrderAscendingService.name), SortingOrderAscendingService)
 	.service(_.camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(_.camelCase(IsLoadingMapService.name), IsLoadingMapService)
+	.service(_.camelCase(FilesService.name), FilesService)
 	.service(_.camelCase(MapSizeService.name), MapSizeService)
 	.service(_.camelCase(MapColorsService.name), MapColorsService)
 	.service(_.camelCase(ResetCameraIfNewFileIsLoadedService.name), ResetCameraIfNewFileIsLoadedService)
@@ -86,7 +88,5 @@ angular
 	.service(_.camelCase(InjectorService.name), InjectorService)
 	.service(_.camelCase(StoreService.name), StoreService)
 	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
-	.service(_.camelCase(SearchPanelService.name), SearchPanelService)
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
-	.service(_.camelCase(FileStateService.name), FileStateService)
 	.service(_.camelCase(MetricService.name), MetricService)

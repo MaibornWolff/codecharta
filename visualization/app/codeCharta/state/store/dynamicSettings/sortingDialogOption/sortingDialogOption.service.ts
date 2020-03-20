@@ -3,6 +3,7 @@ import { IRootScopeService } from "angular"
 import { SortingDialogOptionActions } from "./sortingDialogOption.actions"
 import _ from "lodash"
 import { SortingOption } from "../../../../codeCharta.model"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface SortingDialogOptionSubscriber {
 	onSortingDialogOptionChanged(sortingDialogOption: SortingOption)
@@ -16,7 +17,7 @@ export class SortingDialogOptionService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(SortingDialogOptionActions).includes(actionType)) {
+		if (isActionOfType(actionType, SortingDialogOptionActions)) {
 			this.notify(this.select())
 		}
 	}

@@ -9,6 +9,7 @@ import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
 import { StoreService } from "../../../state/store.service"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { setResetCameraIfNewFileIsLoaded } from "../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
+import { FilesService } from "../../../state/store/files/files.service"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -93,15 +94,23 @@ describe("ThreeOrbitControlsService", () => {
 
 			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
 		})
+
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
+		})
 	})
 
-	describe("onFileStateChanged", () => {
+	describe("onFilesSelectionChanged", () => {
 		it("should autoFit when the option to do so is enabled", () => {
 			threeOrbitControlsService.autoFitTo = jest.fn()
 
 			storeService.dispatch(setResetCameraIfNewFileIsLoaded(true))
 
-			threeOrbitControlsService.onFileStatesChanged(undefined)
+			threeOrbitControlsService.onFilesSelectionChanged(undefined)
 
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 		})
@@ -111,7 +120,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			storeService.dispatch(setResetCameraIfNewFileIsLoaded(false))
 
-			threeOrbitControlsService.onFileStatesChanged(undefined)
+			threeOrbitControlsService.onFilesSelectionChanged(undefined)
 
 			expect(threeOrbitControlsService.autoFitTo).not.toHaveBeenCalled()
 		})

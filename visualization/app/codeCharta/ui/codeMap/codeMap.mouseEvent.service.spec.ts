@@ -14,6 +14,7 @@ import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEven
 import _ from "lodash"
 import { BlacklistType, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { FilesService } from "../../state/store/files/files.service"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -144,6 +145,14 @@ describe("codeMapMouseEventService", () => {
 
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
 		})
+
+		it("should subscribe to FilesService", () => {
+			FilesService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
+		})
 	})
 
 	describe("start", () => {
@@ -192,7 +201,15 @@ describe("codeMapMouseEventService", () => {
 		it("should call onDocumentDoubleClick", () => {
 			codeMapMouseEventService.onViewCubeEventPropagation("dblclick", null)
 
-			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalledWith(null)
+			expect(codeMapMouseEventService.onDocumentDoubleClick).toHaveBeenCalled()
+		})
+	})
+
+	describe("onFilesSelectionChanged", () => {
+		it("should deselect the building", () => {
+			codeMapMouseEventService.onFilesSelectionChanged(undefined)
+
+			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 		})
 	})
 
@@ -231,10 +248,7 @@ describe("codeMapMouseEventService", () => {
 	describe("updateHovering", () => {
 		beforeEach(() => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
-				checkMouseRayMeshIntersection: jest.fn().mockReturnValue({
-					intersectionFound: false,
-					building: CODE_MAP_BUILDING
-				})
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(null)
 			})
 		})
 
@@ -254,10 +268,7 @@ describe("codeMapMouseEventService", () => {
 
 		it("should hover a node when no node is hovered and an intersection was found", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
-				checkMouseRayMeshIntersection: jest.fn().mockReturnValue({
-					intersectionFound: true,
-					building: CODE_MAP_BUILDING
-				})
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
 			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
@@ -268,10 +279,7 @@ describe("codeMapMouseEventService", () => {
 
 		it("should not hover a node again when the intersection building is the same as the hovered building", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
-				checkMouseRayMeshIntersection: jest.fn().mockReturnValue({
-					intersectionFound: true,
-					building: CODE_MAP_BUILDING
-				})
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
 
 			codeMapMouseEventService.updateHovering()
@@ -283,7 +291,6 @@ describe("codeMapMouseEventService", () => {
 	describe("onDocumentMouseUp", () => {
 		beforeEach(() => {
 			codeMapMouseEventService["clickType"] = ClickType.LeftClick
-			codeMapMouseEventService["intersectionResult"] = { intersectionFound: true, building: undefined }
 		})
 
 		it("should not do anything when no building is hovered and nothing is selected", () => {
@@ -297,6 +304,7 @@ describe("codeMapMouseEventService", () => {
 
 		it("should call selectBuilding when no building is selected", () => {
 			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
+			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
@@ -305,6 +313,7 @@ describe("codeMapMouseEventService", () => {
 
 		it("should call selectBuilding when a new building is selected", () => {
 			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, null, null))
+			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentMouseUp()
 
@@ -344,6 +353,10 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onRightClick", () => {
+		beforeEach(() => {
+			codeMapMouseEventService["intersectionResult"] = { intersectionFound: true }
+		})
+
 		it("should $broadcast a building-right-clicked event with data", () => {
 			const event = { clientX: 0, clientY: 1 }
 			codeMapMouseEventService["clickType"] = ClickType.RightClick
@@ -356,6 +369,17 @@ describe("codeMapMouseEventService", () => {
 				y: 1,
 				event
 			})
+		})
+
+		it("should not $broadcast a building-right-clicked event when no building is highlighted", () => {
+			threeSceneService.getHighlightedBuilding = jest.fn()
+
+			const event = { clientX: 0, clientY: 1 }
+			codeMapMouseEventService["clickType"] = ClickType.RightClick
+
+			codeMapMouseEventService.onRightClick(event)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
 	})
 
@@ -371,7 +395,7 @@ describe("codeMapMouseEventService", () => {
 		it("should return if hovered is null", () => {
 			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
-			codeMapMouseEventService.onDocumentDoubleClick(undefined)
+			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).not.toHaveBeenCalled()
 		})
@@ -383,7 +407,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
 
-			codeMapMouseEventService.onDocumentDoubleClick(undefined)
+			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).not.toHaveBeenCalled()
 		})
@@ -391,7 +415,7 @@ describe("codeMapMouseEventService", () => {
 		it("should call open with link if hovered.node.link is defined", () => {
 			codeMapMouseEventService["hoveredInCodeMap"] = codeMapBuilding
 
-			codeMapMouseEventService.onDocumentDoubleClick(undefined)
+			codeMapMouseEventService.onDocumentDoubleClick()
 
 			expect($window.open).toHaveBeenCalledWith("NO_LINK", "_blank")
 		})

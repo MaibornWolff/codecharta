@@ -2,6 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SortingOrderAscendingActions } from "./sortingOrderAscending.actions"
 import _ from "lodash"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface SortingOrderAscendingSubscriber {
 	onSortingOrderAscendingChanged(sortingOrderAscending: boolean)
@@ -15,7 +16,7 @@ export class SortingOrderAscendingService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(SortingOrderAscendingActions).includes(actionType)) {
+		if (isActionOfType(actionType, SortingOrderAscendingActions)) {
 			this.notify(this.select())
 		}
 	}

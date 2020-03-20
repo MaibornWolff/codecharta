@@ -1,6 +1,10 @@
+//@ts-nocheck
+
 // Plop: Append service import here
 import { SortingDialogOptionService } from "./store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
+import { FilesService } from "./store/files/files.service"
+import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
 import { MapSizeService } from "./store/treeMap/mapSize/mapSize.service"
@@ -39,13 +43,14 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 export class InjectorService {
 	/* @ngInject */
 	constructor(
-		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
 		private sortingDialogOptionService: SortingDialogOptionService,
 		private sortingOrderAscendingService: SortingOrderAscendingService,
+		private searchPanelModeService: SearchPanelModeService,
 		private isLoadingFileService: IsLoadingFileService,
 		private isLoadingMapService: IsLoadingMapService,
+		private filesService: FilesService,
 		private mapSizeService: MapSizeService,
 		private mapColorsService: MapColorsService,
 		private resetCameraIfNewFileIsLoadedService: ResetCameraIfNewFileIsLoadedService,

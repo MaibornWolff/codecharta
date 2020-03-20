@@ -1,8 +1,8 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FocusedNodePathActions, unfocusNode } from "./focusedNodePath.actions"
-import { FileStateService, FileStateSubscriber } from "../../../fileState.service"
-import { FileState } from "../../../../codeCharta.model"
+import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
+import { Files } from "../../../../model/files"
 
 export interface FocusNodeSubscriber {
 	onFocusNode(focusedNodePath: string)
@@ -12,13 +12,13 @@ export interface UnfocusNodeSubscriber {
 	onUnfocusNode()
 }
 
-export class FocusedNodePathService implements StoreSubscriber, FileStateSubscriber {
+export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSubscriber {
 	private static FOCUS_NODE_EVENT = "focus-node"
 	private static UNFOCUS_NODE_EVENT = "unfocus-node"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		StoreService.subscribe(this.$rootScope, this)
-		FileStateService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -29,7 +29,7 @@ export class FocusedNodePathService implements StoreSubscriber, FileStateSubscri
 		}
 	}
 
-	public onFileStatesChanged(fileStates: FileState[]) {
+	public onFilesSelectionChanged(files: Files) {
 		if (this.storeService.getState().dynamicSettings.focusedNodePath) {
 			this.reset()
 		}
