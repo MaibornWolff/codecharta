@@ -26,7 +26,7 @@
 				>{{ scenario.scenarioName }}</md-button
 			>
 			<span class="scenario-content-icons" ng-repeat="icon in scenario.icons">
-				<i class="{{ icon.icon }}" ng-class="{'is-saved': icon.isSaved}"></i>
+				<i class="{{ icon.faIconClass }}" ng-class="{'is-saved': icon.isSaved}"></i>
 			</span>
 
 			<md-button ng-click="$ctrl.removeScenario(scenario.scenarioName)" class="remove-scenario-button">
