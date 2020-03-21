@@ -9,7 +9,7 @@ import { MetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
-import { SCENARIOITEMS, STATE } from "../../util/dataMocks"
+import { SCENARIO_ITEMS, STATE } from "../../util/dataMocks"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
@@ -57,21 +57,21 @@ describe("ScenarioDropDownController", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("should call getScenarioItems and set the scenarios in viewmodel correctly", () => {
-			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIOITEMS)
+			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
 			scenarioButtonsController.onMetricDataAdded(metricData)
 
-			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIOITEMS)
+			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIO_ITEMS)
 		})
 	})
 
 	describe("loadScenario", () => {
 		it("should call getScenarioHelpers and set the dropDownScenarioItems ", () => {
-			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIOITEMS)
+			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
 			scenarioButtonsController.onMetricDataAdded(metricData)
 
-			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIOITEMS)
+			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIO_ITEMS)
 		})
 	})
 
