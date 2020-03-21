@@ -2,12 +2,10 @@ import "./dialog.module.ts"
 import { StoreService } from "../../state/store.service"
 import { DialogAddScenarioSettingsComponent } from "./dialog.addScenarioSettings.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { DialogService } from "./dialog.service"
 import { setState } from "../../state/store/state.actions"
 import {
 	SCENARIO_ATTRIBUTE_CONTENT,
 	SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED,
-	SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED,
 	SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA,
 	STATE
 } from "../../util/dataMocks"
@@ -17,7 +15,6 @@ describe("DialogAddScenarioSettingsComponent", () => {
 	let dialogAddScenarioSettings: DialogAddScenarioSettingsComponent
 	let $mdDialog
 	let storeService: StoreService
-	let dialogService: DialogService
 
 	beforeEach(() => {
 		restartSystem()
@@ -25,7 +22,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 	})
 
 	function rebuildController() {
-		dialogAddScenarioSettings = new DialogAddScenarioSettingsComponent($mdDialog, storeService, dialogService)
+		dialogAddScenarioSettings = new DialogAddScenarioSettingsComponent($mdDialog, storeService)
 	}
 
 	function restartSystem() {
@@ -33,7 +30,6 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 		$mdDialog = getService("$mdDialog")
 		storeService = getService<StoreService>("storeService")
-		dialogService = getService<DialogService>("dialogService")
 	}
 
 	describe("constructor", () => {
@@ -47,35 +43,6 @@ describe("DialogAddScenarioSettingsComponent", () => {
 	})
 
 	describe("addScenario", () => {
-		it("should return an error, when isScenarioExisting function is true", () => {
-			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(true)
-			dialogService.showErrorDialog = jest.fn()
-
-			dialogAddScenarioSettings.addScenario()
-
-			expect(dialogService.showErrorDialog).toHaveBeenCalled()
-		})
-
-		it("should return an error Message, when the filename is null", () => {
-			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(false)
-			dialogService.showErrorDialog = jest.fn()
-
-			dialogAddScenarioSettings.addScenario()
-
-			expect(dialogService.showErrorDialog).toHaveBeenCalled()
-		})
-
-		it("should return an error Message, when none of the FileConent is selected", () => {
-			dialogAddScenarioSettings["_viewModel"].scenarioContent = SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED
-			dialogAddScenarioSettings["_viewModel"].scenarioName = "scenario1"
-			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(false)
-			dialogService.showErrorDialog = jest.fn()
-
-			dialogAddScenarioSettings.addScenario()
-
-			expect(dialogService.showErrorDialog).toHaveBeenCalled()
-		})
-
 		it("should call createNewScenario Function with the selected fileAttributes", () => {
 			dialogAddScenarioSettings["_viewModel"].scenarioContent = SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED
 			dialogAddScenarioSettings["_viewModel"].scenarioName = "scenario1"
