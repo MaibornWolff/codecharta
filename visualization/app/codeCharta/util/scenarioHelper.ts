@@ -22,23 +22,23 @@ export class ScenarioHelper {
 				isScenarioAppliable: this.isScenarioAppliable(scenario.settings.dynamicSettings, metricData),
 				icons: [
 					{
-						faIconClass: "fa fa-video-camera",
+						faIconClass: "fa-video-camera",
 						isSaved: !!scenario.settings.appSettings.camera
 					},
 					{
-						faIconClass: "fa fa-arrows-alt",
+						faIconClass: "fa-arrows-alt",
 						isSaved: !!scenario.settings.dynamicSettings.areaMetric
 					},
 					{
-						faIconClass: "fa fa-paint-brush",
+						faIconClass: "fa-paint-brush",
 						isSaved: !!scenario.settings.dynamicSettings.colorMetric
 					},
 					{
-						faIconClass: "fa fa-arrows-v",
+						faIconClass: "fa-arrows-v",
 						isSaved: !!scenario.settings.dynamicSettings.heightMetric
 					},
 					{
-						faIconClass: "fa fa-exchange",
+						faIconClass: "fa-exchange",
 						isSaved: !!scenario.settings.dynamicSettings.edgeMetric
 					}
 				]
