@@ -23,13 +23,13 @@ export class MetricTypeController
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
 		colorMetricType: AttributeTypeValue
-		edageMetricType: AttributeTypeValue
+		edgeMetricType: AttributeTypeValue
 		isFolderHovered: boolean
 	} = {
 		areaMetricType: null,
 		heightMetricType: null,
 		colorMetricType: null,
-		edageMetricType: null,
+		edgeMetricType: null,
 		isFolderHovered: false
 	}
 
@@ -61,7 +61,7 @@ export class MetricTypeController
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.edageMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric, this.storeService.getState())
+		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric, this.storeService.getState())
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
