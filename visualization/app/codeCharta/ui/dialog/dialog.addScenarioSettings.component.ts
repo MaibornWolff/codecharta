@@ -2,7 +2,6 @@ import "./dialog.component.scss"
 import { AppSettings, DynamicSettings } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { Scenario, ScenarioHelper } from "../../util/scenarioHelper"
-import { DialogService } from "./dialog.service"
 
 export interface AddScenarioContent {
 	metricType: ScenarioMetricType
@@ -31,7 +30,7 @@ export class DialogAddScenarioSettingsComponent {
 		scenarioContent: []
 	}
 
-	constructor(private $mdDialog, private storeService: StoreService, private dialogService: DialogService) {
+	constructor(private $mdDialog, private storeService: StoreService) {
 		this.initDialogFields()
 	}
 
@@ -40,20 +39,18 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	public addScenario() {
-		if (
-			ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName) ||
-			this.isScenarioNameEmpty() ||
-			!this.isAnyScenarioContentSelected()
-		) {
-			this.dialogService.showErrorDialog(
-				"Please select a non existing Scenario Name and select at least one attribute to be saved in the Scenario."
-			)
-		} else {
-			const selectedScenarioAttributes: AddScenarioContent[] = this._viewModel.scenarioContent.filter(x => x.isSelected == true)
-			const newScenario: Scenario = ScenarioHelper.createNewScenario(this._viewModel.scenarioName, selectedScenarioAttributes)
-			ScenarioHelper.addScenario(newScenario)
-			this.hide()
-		}
+		const selectedScenarioAttributes: AddScenarioContent[] = this._viewModel.scenarioContent.filter(x => x.isSelected == true)
+		const newScenario: Scenario = ScenarioHelper.createNewScenario(this._viewModel.scenarioName, selectedScenarioAttributes)
+		ScenarioHelper.addScenario(newScenario)
+		this.hide()
+	}
+
+	public isNewScenarioValid() {
+		return (
+			this.isAnyScenarioContentSelected() &&
+			!this.isScenarioNameEmpty() &&
+			!ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName)
+		)
 	}
 
 	private isAnyScenarioContentSelected() {

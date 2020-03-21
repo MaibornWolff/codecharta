@@ -23,6 +23,6 @@
 	</md-dialog-content>
 
 	<md-dialog-actions>
-		<md-button ng-click="$ctrl.addScenario()" class="md-primary">Add</md-button>
+		<md-button ng-click="$ctrl.addScenario()" ng-disabled="!$ctrl.isNewScenarioValid()" class="md-primary">Add</md-button>
 	</md-dialog-actions>
 </md-dialog>
