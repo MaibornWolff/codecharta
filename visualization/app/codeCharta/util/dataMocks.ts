@@ -997,8 +997,8 @@ export const SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED: AddScenarioContent[] = [
 ]
 
 export const SCENARIOITEMS: ScenarioItem[] = [
-	{ scenarioName: "Scenario", isScenarioAppliable: true, faIconList: [{ icon: "fa fa-random", visibility: "#d3d3d3" }] },
-	{ scenarioName: "Scenario2", isScenarioAppliable: false, faIconList: [{ icon: "fa fa-some", visibility: "#000000" }] }
+	{ scenarioName: "Scenario", isScenarioAppliable: true, faIconList: [{ icon: "fa fa-random", isSaved: false }] },
+	{ scenarioName: "Scenario2", isScenarioAppliable: false, faIconList: [{ icon: "fa fa-some", isSaved: true }] }
 ]
 
 export const TEST_NODE_LEAF: Node = {

@@ -56,9 +56,14 @@
 		justify-content: center;
 		width: 16px;
 		font-size: x-small;
+		color: #d3d3d3;
 
 		&.fa-minus {
 			font-size: inherit;
+		}
+
+		&.is-saved {
+			color: black;
 		}
 	}
 

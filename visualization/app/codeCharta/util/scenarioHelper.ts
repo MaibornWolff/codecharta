@@ -15,8 +15,6 @@ export class ScenarioHelper {
 
 	public static getScenarioItems(metricData: MetricData[]) {
 		const scenarioItemList: ScenarioItem[] = []
-		const lightGray = "#d3d3d3"
-		const black = "#000000"
 
 		this.scenarioList.forEach(scenario => {
 			scenarioItemList.push({
@@ -25,23 +23,23 @@ export class ScenarioHelper {
 				faIconList: [
 					{
 						icon: "fa fa-video-camera",
-						visibility: !scenario.settings.appSettings.camera ? lightGray : black
+						isSaved: !!scenario.settings.appSettings.camera
 					},
 					{
 						icon: "fa fa-arrows-alt",
-						visibility: !scenario.settings.dynamicSettings.areaMetric ? lightGray : black
+						isSaved: !!scenario.settings.dynamicSettings.areaMetric
 					},
 					{
 						icon: "fa fa-paint-brush",
-						visibility: !scenario.settings.dynamicSettings.colorMetric ? lightGray : black
+						isSaved: !!scenario.settings.dynamicSettings.colorMetric
 					},
 					{
 						icon: "fa fa-arrows-v",
-						visibility: !scenario.settings.dynamicSettings.heightMetric ? lightGray : black
+						isSaved: !!scenario.settings.dynamicSettings.heightMetric
 					},
 					{
 						icon: "fa fa-exchange",
-						visibility: !scenario.settings.dynamicSettings.edgeMetric ? lightGray : black
+						isSaved: !!scenario.settings.dynamicSettings.edgeMetric
 					}
 				]
 			})

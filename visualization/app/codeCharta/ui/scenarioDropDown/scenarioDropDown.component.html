@@ -25,8 +25,8 @@
 				ng-disabled="!scenario.isScenarioAppliable"
 				>{{ scenario.scenarioName }}</md-button
 			>
-			<span class="scenario-content-icons" ng-repeat="icons in scenario.faIconList">
-				<i ng-class="icons.icon" ng-style="{'color' : icons.visibility}"></i>
+			<span class="scenario-content-icons" ng-repeat="icon in scenario.faIconList">
+				<i class="{{ icon.icon }}" ng-class="{'is-saved': icon.isSaved}"></i>
 			</span>
 
 			<md-button ng-click="$ctrl.removeScenario(scenario.scenarioName)" class="remove-scenario-button">
