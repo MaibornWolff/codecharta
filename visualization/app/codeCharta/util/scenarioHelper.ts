@@ -61,7 +61,7 @@ export class ScenarioHelper {
 	}
 
 	private static getPreLoadScenarios(): Scenario[] {
-		return ScenarioHelper.importScenarios(require("../assets/scenarios.json"))
+		return this.importScenarios(require("../assets/scenarios.json"))
 	}
 
 	private static setScenariosToLocalStorage(scenarios: Scenario[]) {
