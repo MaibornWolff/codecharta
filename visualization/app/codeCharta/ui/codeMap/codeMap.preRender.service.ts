@@ -89,20 +89,17 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private decorateIfPossible() {
-		if (
-			this.unifiedMap &&
-			this.storeService.getState().files.fileStatesAvailable() &&
-			this.unifiedFileMeta &&
-			this.metricService.getMetricData()
-		) {
+		const store = this.storeService.getState()
+		if (this.unifiedMap && store.files.fileStatesAvailable() && this.unifiedFileMeta && this.metricService.getMetricData()) {
 			NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
-			NodeDecorator.decorateParentNodesWithSumAttributes(
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
-				this.storeService.getState().fileSettings.blacklist,
+				store.fileSettings.blacklist,
 				this.metricService.getMetricData(),
 				this.edgeMetricDataService.getMetricData(),
-				this.storeService.getState().files.isDeltaState()
+				store.files.isDeltaState(),
+				store.fileSettings.attributeTypes
 			)
 		}
 	}
