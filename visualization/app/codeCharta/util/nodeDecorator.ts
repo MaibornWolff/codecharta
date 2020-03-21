@@ -128,17 +128,17 @@ export class NodeDecorator {
 		node: HierarchyNode<CodeMapNode>,
 		metricData: MetricData[],
 		isDeltaState: boolean,
-		attributetypes: AttributeTypes
+		attributeTypes: AttributeTypes
 	) {
 		metricData.forEach(metric => {
 			if (node.data.children && node.data.children.length > 0) {
 				node.data.attributes[metric.name] = this.aggregateLeafMetric(
 					leaves.map(x => x.data.attributes),
 					metric.name,
-					attributetypes
+					attributeTypes
 				)
 				if (isDeltaState) {
-					node.data.deltas[metric.name] = this.aggregateLeafMetric(leaves.map(x => x.data.deltas), metric.name, attributetypes)
+					node.data.deltas[metric.name] = this.aggregateLeafMetric(leaves.map(x => x.data.deltas), metric.name, attributeTypes)
 				}
 			}
 		})
@@ -161,7 +161,9 @@ export class NodeDecorator {
 		const metricValues: number[] = metrics.map(x => x[metricName]).filter(x => !!x)
 		const attributeType = attributeTypes.nodes[metricName]
 
-		if (metricValues.length == 0) return 0
+		if (metricValues.length == 0) {
+			return 0
+		}
 
 		switch (attributeType) {
 			case AttributeTypeValue.relative:
@@ -186,7 +188,9 @@ export class NodeDecorator {
 			concentrated.outgoing.push(element.outgoing)
 		})
 
-		if (metricValues.length == 0) return { incoming: 0, outgoing: 0 }
+		if (metricValues.length == 0) {
+			return { incoming: 0, outgoing: 0 }
+		}
 
 		switch (attributeType) {
 			case AttributeTypeValue.relative:
@@ -202,7 +206,7 @@ export class NodeDecorator {
 
 	private static median(numbers: number[]): number {
 		const middle = (numbers.length - 1) / 2
-		numbers.sort()
+		numbers.sort((a, b) => a - b)
 		return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
 	}
 }
