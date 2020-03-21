@@ -20,7 +20,7 @@ export class ScenarioHelper {
 			scenarioItemList.push({
 				scenarioName: scenario.name,
 				isScenarioAppliable: this.isScenarioAppliable(scenario.settings.dynamicSettings, metricData),
-				faIconList: [
+				icons: [
 					{
 						icon: "fa fa-video-camera",
 						isSaved: !!scenario.settings.appSettings.camera

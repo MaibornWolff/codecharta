@@ -14,7 +14,7 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 export interface ScenarioItem {
 	scenarioName: string
 	isScenarioAppliable: boolean
-	faIconList: { icon: string; isSaved: boolean }[]
+	icons: { icon: string; isSaved: boolean }[]
 }
 
 export class ScenarioDropDownController implements MetricServiceSubscriber {
