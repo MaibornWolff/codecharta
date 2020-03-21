@@ -11,6 +11,7 @@ describe("nodeDecorator", () => {
 	let deltaMap: CodeMapNode
 	let fileMeta: FileMeta
 	let metricData: MetricData[]
+	let edgeMetricData: MetricData[]
 	let blacklist: BlacklistItem[]
 	let attributeTypes: AttributeTypes
 
@@ -20,7 +21,11 @@ describe("nodeDecorator", () => {
 		deltaMap = _.cloneDeep(VALID_NODE_WITH_PATH_AND_DELTAS)
 		fileMeta = _.cloneDeep(TEST_DELTA_MAP_A.fileMeta)
 		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
-		attributeTypes = { nodes: { functions: AttributeTypeValue.relative, rloc: AttributeTypeValue.absolute }, edges: {} }
+		edgeMetricData = [{ name: "pairingRate", maxValue: 999 }, { name: "avgCommits", maxValue: 999 }]
+		attributeTypes = {
+			nodes: { functions: AttributeTypeValue.relative, rloc: AttributeTypeValue.absolute },
+			edges: { pairingRate: AttributeTypeValue.relative }
+		}
 		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
 	})
 
@@ -42,6 +47,28 @@ describe("nodeDecorator", () => {
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
 
 			expect(map.attributes["functions"]).toBe(100)
+		})
+
+		it("should aggregate absolute edge metrics correctly", () => {
+			map.children[0].edgeAttributes = { avgCommits: { incoming: 12, outgoing: 13 } }
+			map.children[1].children[0].edgeAttributes = { avgCommits: { incoming: 10, outgoing: 10 } }
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, edgeMetricData, false, attributeTypes)
+
+			expect(map.edgeAttributes["avgCommits"].incoming).toBe(22)
+			expect(map.edgeAttributes["avgCommits"].outgoing).toBe(23)
+		})
+
+		it("should aggregate given relative edge metrics correctly", () => {
+			map.children[0].edgeAttributes = { pairingRate: { incoming: 12, outgoing: 13 } }
+			map.children[1].children[0].edgeAttributes = { pairingRate: { incoming: 10, outgoing: 10 } }
+			NodeDecorator.decorateMap(map, fileMeta, metricData)
+
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, edgeMetricData, false, attributeTypes)
+
+			expect(map.edgeAttributes["pairingRate"].incoming).toBe(11)
+			expect(map.edgeAttributes["pairingRate"].outgoing).toBe(11.5)
 		})
 
 		it("should aggregate missing metrics correctly", () => {
