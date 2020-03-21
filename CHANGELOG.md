@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Median symbol for aggregated relative metrics #365
+
 ### Changed
 
+- Metrics with AttributeType relative are now aggregated using the median #365
 - Selectable metrics will only contain metrics from the visible maps
 
 ### Removed 🗑
