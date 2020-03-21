@@ -1,37 +1,31 @@
-<md-menu class="scenario-drop-down">
+<md-menu class="scenario-component">
 	<md-button class="scenario-button" ng-style="{'color': $ctrl.getButtonColor()}" ng-click="$ctrl.loadScenarios(); $mdMenu.open($event)">
 		<i class="fa fa-star"></i>
 	</md-button>
-	<md-menu-content width="2">
-		<md-menu-item class="scenario-title">
-			<md-button class="title-button" ng-disabled="true">Metric Scenario</md-button>
+
+	<md-menu-content class="scenario-drop-down" width="2">
+		<md-menu-item class="scenario-item" ng-hide="!$ctrl._viewModel.isScenarioChanged">
+			<md-button ng-click="$ctrl.showAddScenarioSettings()" class="action-button add">
+				<i class="fa fa-plus" aria-hidden="true"></i>
+			</md-button>
+			<md-button class="scenario-name" ng-disabled="true">Metric Scenarios</md-button>
 		</md-menu-item>
 
 		<md-divider></md-divider>
 
-		<md-menu-item class="custom-item" ng-hide="!$ctrl._viewModel.isScenarioChanged">
-			<md-button class="scenario-items" ng-click="$ctrl.showAddScenarioSettings()">Add Custom Scenario</md-button>
-			<md-button ng-click="$ctrl.showAddScenarioSettings()" class="add-scenario-button"
-				><i class="fa fa-plus" aria-hidden="true"></i
-			></md-button>
-		</md-menu-item>
-
-		<md-divider></md-divider>
-
-		<md-menu-item class="scenarios" ng-repeat="scenario in $ctrl._viewModel.dropDownScenarioItems track by $index">
+		<md-menu-item class="scenario-item" ng-repeat="scenario in $ctrl._viewModel.dropDownScenarioItems track by $index">
+			<md-button ng-click="$ctrl.removeScenario(scenario.scenarioName)" class="action-button remove">
+				<i class="fa fa-minus"></i>
+			</md-button>
 			<md-button
-				class="scenario-items"
+				class="scenario-name"
 				ng-click="$ctrl.applyScenario(scenario.scenarioName)"
 				ng-disabled="!scenario.isScenarioAppliable"
 				>{{ scenario.scenarioName }}</md-button
 			>
-			<span class="scenario-content-icons" ng-repeat="icon in scenario.icons">
+			<span class="content-icons" ng-repeat="icon in scenario.icons">
 				<i class="fa {{ icon.faIconClass }}" ng-class="{'is-saved': icon.isSaved}"></i>
 			</span>
-
-			<md-button ng-click="$ctrl.removeScenario(scenario.scenarioName)" class="remove-scenario-button">
-				<i class="fa fa-minus"></i>
-			</md-button>
 		</md-menu-item>
 	</md-menu-content>
 </md-menu>
