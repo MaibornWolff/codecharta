@@ -1,5 +1,5 @@
 import "./metricType.component.scss"
-import { MetricService } from "../../state/metric.service"
+import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
@@ -18,7 +18,8 @@ export class MetricTypeController
 		ColorMetricSubscriber,
 		EdgeMetricSubscriber,
 		BuildingHoveredSubscriber,
-		BuildingUnhoveredSubscriber {
+		BuildingUnhoveredSubscriber,
+		MetricServiceSubscriber {
 	private _viewModel: {
 		areaMetricType: AttributeTypeValue
 		heightMetricType: AttributeTypeValue
@@ -46,6 +47,7 @@ export class MetricTypeController
 		EdgeMetricService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
+		MetricService.subscribe(this.$rootScope, this)
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
@@ -70,6 +72,14 @@ export class MetricTypeController
 
 	public onBuildingUnhovered() {
 		this._viewModel.isFolderHovered = false
+	}
+
+	public onMetricDataAdded() {
+		const store = this.storeService.getState()
+		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(store.dynamicSettings.areaMetric, store)
+		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(store.dynamicSettings.heightMetric, store)
+		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(store.dynamicSettings.colorMetric, store)
+		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(store.dynamicSettings.edgeMetric, store)
 	}
 }
 

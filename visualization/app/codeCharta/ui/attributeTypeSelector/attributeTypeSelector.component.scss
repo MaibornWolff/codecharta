@@ -1,6 +1,35 @@
 attribute-type-selector-component {
 	.small-action-button {
-		margin: 0px 5px 0px 5px;
+		margin: -3px 5px 0px 5px;
 		display: inline-block;
+		position: absolute;
+		right: 0;
+
+		display: inline-block;
+		height: 24px;
+		width: 24px;
+		vertical-align: top;
+
+		.md-fab {
+			min-height: 0;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+
+			i {
+				position: absolute;
+				top: 5px;
+				left: 6px;
+			}
+		}
+
+		&.transparent .md-fab {
+			background-color: transparent !important;
+			box-shadow: none;
+
+			&:hover {
+				background-color: #ddd !important;
+			}
+		}
 	}
 }
