@@ -4,7 +4,6 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { AttributeTypeValue, State } from "../../codeCharta.model"
-import { resetFiles } from "../../state/store/files/files.actions"
 
 describe("AttributeTypeSelectorController", () => {
 	let attributeTypeSelectorController: AttributeTypeSelectorController
