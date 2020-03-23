@@ -17,7 +17,9 @@ export class AttributeTypeSelectorController {
 
 	private setAttributeType(metricName: string, category: string, type: AttributeTypeValue) {
 		const attributeTypes = this.storeService.getState().fileSettings.attributeTypes
-		if (attributeTypes[category]) attributeTypes[category][metricName] = type
+		if (attributeTypes[category]) {
+			attributeTypes[category][metricName] = type
+		}
 		this.storeService.dispatch(setAttributeTypes(attributeTypes))
 	}
 }
