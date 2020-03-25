@@ -6,7 +6,6 @@ import {
 	SortingOrderAscendingService,
 	SortingOrderAscendingSubscriber
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
-import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import { setSortingOption } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 
@@ -31,11 +30,9 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 				(a, b) => b.attributes["unary"] - a.attributes["unary"],
 				false
 			)
-			this.storeService.dispatch(setSortingOrderAscending(this.storeService.getState().appSettings.sortingOrderAscending))
-			return
+		} else {
+			this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? 0 : 1), false)
 		}
-		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? 0 : 1), false)
-		this.storeService.dispatch(setSortingOrderAscending(this.storeService.getState().appSettings.sortingOrderAscending))
 	}
 
 	public onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
@@ -66,6 +63,10 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		folders.sort(compareFn)
 		files.sort(compareFn)
 
+		if (this.storeService.getState().appSettings.sortingOrderAscending === true) {
+			return folders.concat(files).reverse()
+		}
+
 		return folders.concat(files)
 	}
 
@@ -78,9 +79,6 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		this.synchronizeAngularTwoWayBinding()
 
 		this.storeService.dispatch(setSortingOption(this.storeService.getState().dynamicSettings.sortingOption))
-		if (this.storeService.getState().appSettings.sortingOrderAscending) {
-			this.storeService.dispatch(setSortingOrderAscending(this.storeService.getState().appSettings.sortingOrderAscending))
-		}
 	}
 
 	private synchronizeAngularTwoWayBinding() {
