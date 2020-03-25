@@ -46,6 +46,7 @@ describe("SortingOptionController", () => {
 
 			expect(sortingOptionController["_viewModel"].sortingOption).toEqual(SortingOption.NUMBER_OF_FILES)
 		})
+
 		it("should update the sortingOption to Name", () => {
 			sortingOptionController.onSortingOptionChanged(SortingOption.NAME)
 
