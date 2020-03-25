@@ -7,7 +7,6 @@ import {
 	SortingOrderAscendingSubscriber
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
-import { setSortingOption } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
 	private _viewModel: {
@@ -31,7 +30,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 				false
 			)
 		} else {
-			this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? 0 : 1), false)
+			this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? -1 : 1), false)
 		}
 	}
 
@@ -63,7 +62,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		folders.sort(compareFn)
 		files.sort(compareFn)
 
-		if (this.storeService.getState().appSettings.sortingOrderAscending === true) {
+		if (this.storeService.getState().appSettings.sortingOrderAscending) {
 			return folders.concat(files).reverse()
 		}
 
@@ -78,7 +77,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		this._viewModel.rootNode = map
 		this.synchronizeAngularTwoWayBinding()
 
-		this.storeService.dispatch(setSortingOption(this.storeService.getState().dynamicSettings.sortingOption))
+		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
 
 	private synchronizeAngularTwoWayBinding() {
