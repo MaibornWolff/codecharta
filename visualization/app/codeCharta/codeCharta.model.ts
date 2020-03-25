@@ -67,8 +67,8 @@ export enum NodeType {
 }
 
 export enum SortingOption {
-	Name = "Name",
-	Childnodes = "Childnodes"
+	NAME = "Name",
+	NUMBER_OF_FILES = "Number of Files"
 }
 
 export interface FileMeta {

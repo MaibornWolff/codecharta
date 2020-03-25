@@ -28,24 +28,30 @@ describe("SortingButtonController", () => {
 	describe("constructor", () => {
 		it("should subscribe to SortingOrderAscendingService", () => {
 			SortingOrderAscendingService.subscribe = jest.fn()
+
 			rebuildController()
+
 			expect(SortingOrderAscendingService.subscribe).toHaveBeenCalledWith($rootScope, sortingButtonController)
 		})
 	})
 
 	describe("onSortingOrderAscendingChanged", () => {
-		it("should change the sortingOrderAscending value", () => {
-			let sortingOrderAscendingValue = false
+		it("should invert the sorting order", () => {
+			const sortingOrderAscendingValue = false
+
 			sortingButtonController.onSortingOrderAscendingChanged(sortingOrderAscendingValue)
-			expect(sortingButtonController["_viewModel"].orderAscending).toEqual(false)
+
+			expect(sortingButtonController["_viewModel"].orderAscending).toBeFalsy()
 		})
 	})
 
 	describe("onButtonClick", () => {
 		it("should change sortingOrderAscending in service", () => {
 			sortingButtonController["_viewModel"].orderAscending = false
-			sortingButtonController["onButtonClick"]()
-			expect(storeService.getState().appSettings.sortingOrderAscending).toBe(!sortingButtonController["_viewModel"].orderAscending)
+
+			sortingButtonController.onButtonClick()
+
+			expect(storeService.getState().appSettings.sortingOrderAscending).toBeTruthy()
 		})
 	})
 })

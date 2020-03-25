@@ -29,15 +29,15 @@ export class MapTreeViewController
 	}
 
 	public onSortingDialogOptionChanged(sortingDialogOption: SortingOption) {
-		if (sortingDialogOption == SortingOption.Childnodes) {
+		if (sortingDialogOption === SortingOption.NUMBER_OF_FILES) {
 			this._viewModel.rootNode = this.applySortOrderChange(
 				this._viewModel.rootNode,
 				(a, b) => b.attributes["unary"] - a.attributes["unary"],
 				false
 			)
-		} else if (sortingDialogOption == SortingOption.Name) {
-			this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? 0 : 1), false)
+			return
 		}
+		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? 0 : 1), false)
 	}
 
 	public onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
@@ -49,28 +49,28 @@ export class MapTreeViewController
 			return
 		}
 		for (let i = 0; i < node.children.length; i++) {
-			if (node.children[i].type == NodeType.FOLDER) {
+			if (node.children[i].type === NodeType.FOLDER) {
 				node.children[i] = this.applySortOrderChange(node.children[i], compareFn, reverse)
 			}
 		}
 		if (!reverse) {
-			node.children = this.applySort(node, compareFn)
+			node.children = this.groupFilesAndFolders(node, compareFn)
 		} else {
 			node.children.reverse()
 		}
 		return node
 	}
 
-	public applySort(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number) {
-		let folders = node.children.filter(node => node.type == NodeType.FOLDER)
-		let files = node.children.filter(node => node.type == NodeType.FILE)
+	private groupFilesAndFolders(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number) {
+		const folders = node.children.filter(node => node.type === NodeType.FOLDER)
+		const files = node.children.filter(node => node.type === NodeType.FILE)
 		folders.sort(compareFn)
 		files.sort(compareFn)
 		return folders.concat(files)
 	}
 
 	public onRenderMapChanged(map: CodeMapNode) {
-		if (map == this._viewModel.rootNode) {
+		if (map === this._viewModel.rootNode) {
 			// needed to prevent flashing since event is triggered 4 times
 			return
 		}

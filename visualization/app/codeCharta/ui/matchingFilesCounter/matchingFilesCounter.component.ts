@@ -7,14 +7,12 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 
 export class MatchingFilesCounterController implements NodeSearchSubscriber, BlacklistSubscriber {
 	private _viewModel: {
-		isEnabled: boolean
 		fileCount: number
 		flattenCount: number
 		excludeCount: number
 		searchPattern: string
 		blacklist: BlacklistItem[]
 	} = {
-		isEnabled: false,
 		fileCount: 0,
 		flattenCount: 0,
 		excludeCount: 0,

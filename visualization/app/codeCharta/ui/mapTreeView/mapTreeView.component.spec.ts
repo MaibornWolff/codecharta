@@ -22,7 +22,7 @@ describe("MapTreeViewController", () => {
 	let $timeout: ITimeoutService
 	let storeService = getService<StoreService>("storeService")
 	let map: CodeMapNode
-	let validSetupNode: CodeMapNode
+	let mapWithMultipleFolders: CodeMapNode
 
 	beforeEach(() => {
 		restartSystem()
@@ -37,7 +37,7 @@ describe("MapTreeViewController", () => {
 		storeService = getService<StoreService>("storeService")
 
 		map = _.cloneDeep(VALID_NODE_WITH_PATH)
-		validSetupNode = _.cloneDeep(VALID_NODE_WITH_MULTIPLE_FOLDERS)
+		mapWithMultipleFolders = _.cloneDeep(VALID_NODE_WITH_MULTIPLE_FOLDERS)
 	}
 
 	function rebuildController() {
@@ -69,56 +69,64 @@ describe("MapTreeViewController", () => {
 		})
 	})
 
-	describe("applySort", () => {
-		it("should return the children array sorted by unary", () => {
-			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
-			let compareFn = (a, b) => b.attributes["unary"] - a.attributes["unary"]
-			let result = mapTreeViewController.applySort(validSetupNode, compareFn)
-			expect(result).toEqual(sortedNode.children)
-		})
-	})
-
 	describe("applySortOrderChange", () => {
 		it("should sort by unary", () => {
-			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
-			let compareFn = (a, b) => b.attributes["unary"] - a.attributes["unary"]
-			let result = mapTreeViewController.applySortOrderChange(validSetupNode, compareFn, false)
+			const sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
+
+			const compareFn = (a, b) => b.attributes["unary"] - a.attributes["unary"]
+
+			let result = mapTreeViewController.applySortOrderChange(mapWithMultipleFolders, compareFn, false)
+
 			expect(result).toEqual(sortedNode)
 		})
 
 		it("should sort by name", () => {
-			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME
-			let compareFn = (a, b) => (b.name > a.name ? 1 : 0)
-			let result = mapTreeViewController.applySortOrderChange(validSetupNode, compareFn, false)
+			const sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME
+
+			const compareFn = (a, b) => (b.name > a.name ? 1 : 0)
+
+			let result = mapTreeViewController.applySortOrderChange(mapWithMultipleFolders, compareFn, false)
+
 			expect(result).toEqual(sortedNode)
 		})
 
 		it("should reverse order", () => {
-			let sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED
-			let result = mapTreeViewController.applySortOrderChange(validSetupNode, null, true)
+			const sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED
+
+			let result = mapTreeViewController.applySortOrderChange(mapWithMultipleFolders, null, true)
+
 			expect(result).toEqual(sortedNode)
 		})
 	})
 
 	describe("onSortingOrderAscendingChanged", () => {
 		it("should reverse the sorting order", () => {
-			mapTreeViewController["_viewModel"].rootNode = validSetupNode
+			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
+
 			mapTreeViewController.onSortingOrderAscendingChanged(true)
+
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED)
 		})
 	})
 
 	describe("onSortingDialogOptionChanged", () => {
-		it("should sort folder structure according to childnode size", () => {
-			let sortingDialogOption = SortingOption.Childnodes
-			mapTreeViewController["_viewModel"].rootNode = validSetupNode
+		it("should sort folder structure according to number of files", () => {
+			const sortingDialogOption = SortingOption.NUMBER_OF_FILES
+
+			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
+
 			mapTreeViewController.onSortingDialogOptionChanged(sortingDialogOption)
+
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY)
 		})
+
 		it("should sort folder structure according to name", () => {
-			let sortingDialogOption = SortingOption.Name
+			const sortingDialogOption = SortingOption.NAME
+
 			mapTreeViewController["_viewModel"].rootNode = VALID_NODE_WITH_MULTIPLE_FOLDERS
+
 			mapTreeViewController.onSortingDialogOptionChanged(sortingDialogOption)
+
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME)
 		})
 	})

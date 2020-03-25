@@ -19,4 +19,4 @@ export function setSortingDialogOption(sortingDialogOption: SortingOption = defa
 	}
 }
 
-export const defaultSortingDialogOption: SortingOption = SortingOption.Name
+export const defaultSortingDialogOption: SortingOption = SortingOption.NAME

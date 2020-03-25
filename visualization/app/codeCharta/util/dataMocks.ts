@@ -809,7 +809,7 @@ export const STATE: State = {
 			from: 19,
 			to: 67
 		},
-		sortingDialogOption: SortingOption.Name
+		sortingDialogOption: SortingOption.NAME
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -906,7 +906,7 @@ export const DEFAULT_STATE: State = {
 		},
 		searchPattern: "",
 		searchedNodePaths: [],
-		sortingDialogOption: SortingOption.Name
+		sortingDialogOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },

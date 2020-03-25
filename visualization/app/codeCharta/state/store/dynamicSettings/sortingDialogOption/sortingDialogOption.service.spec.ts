@@ -43,14 +43,14 @@ describe("SortingDialogOptionService", () => {
 		it("should notify all subscribers with the new sortingDialogOption value", () => {
 			const action: SortingDialogOptionAction = {
 				type: SortingDialogOptionActions.SET_SORTING_DIALOG_OPTION,
-				payload: SortingOption.Childnodes
+				payload: SortingOption.NUMBER_OF_FILES
 			}
 			storeService["store"].dispatch(action)
 
 			sortingDialogOptionService.onStoreChanged(SortingDialogOptionActions.SET_SORTING_DIALOG_OPTION)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("sorting-dialog-option-changed", {
-				sortingDialogOption: SortingOption.Childnodes
+				sortingDialogOption: SortingOption.NUMBER_OF_FILES
 			})
 		})
 

@@ -34,32 +34,31 @@ describe("SortingOptionDialogController", () => {
 
 			expect(SortingDialogOptionService.subscribe).toHaveBeenCalledWith($rootScope, sortingOptionDialogController)
 		})
+
+		it("should set the correct sorting options", () => {
+			expect(sortingOptionDialogController["_viewModel"].sortingOptions).toEqual(["Name", "Number of Files"])
+		})
 	})
 
 	describe("onSortingDialogOptionChanged", () => {
-		it("should update the sortingOptionDialog to Childnodes", () => {
-			let sortingDialogOption = SortingOption.Childnodes
-			sortingOptionDialogController.onSortingDialogOptionChanged(sortingDialogOption)
-			expect(sortingOptionDialogController["_viewModel"].sortingOption).toEqual(SortingOption.Childnodes)
+		it("should update the sortingOptionDialog to Number of Files", () => {
+			sortingOptionDialogController.onSortingDialogOptionChanged(SortingOption.NUMBER_OF_FILES)
+
+			expect(sortingOptionDialogController["_viewModel"].sortingOption).toEqual(SortingOption.NUMBER_OF_FILES)
 		})
 		it("should update the sortingOptionDialog to Name", () => {
-			let sortingDialogOption = SortingOption.Name
-			sortingOptionDialogController.onSortingDialogOptionChanged(sortingDialogOption)
-			expect(sortingOptionDialogController["_viewModel"].sortingOption).toEqual(SortingOption.Name)
-		})
-	})
+			sortingOptionDialogController.onSortingDialogOptionChanged(SortingOption.NAME)
 
-	describe("enumToString", () => {
-		it("should return an array of keys in the same order", () => {
-			let keys = sortingOptionDialogController.enumToString()
-			expect(keys).toEqual(Object.keys(SortingOption))
+			expect(sortingOptionDialogController["_viewModel"].sortingOption).toEqual(SortingOption.NAME)
 		})
 	})
 
 	describe("onChange", () => {
 		it("should set sortingOption in settings", () => {
-			sortingOptionDialogController["_viewModel"].sortingOption = SortingOption.Childnodes
-			sortingOptionDialogController["onChange"]()
+			sortingOptionDialogController["_viewModel"].sortingOption = SortingOption.NUMBER_OF_FILES
+
+			sortingOptionDialogController.onChange()
+
 			expect(storeService.getState().dynamicSettings.sortingDialogOption).toBe(
 				sortingOptionDialogController["_viewModel"].sortingOption
 			)

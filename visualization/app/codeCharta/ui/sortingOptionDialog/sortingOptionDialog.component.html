@@ -1,6 +1,6 @@
 <md-input-container class="box-rounded">
 	<md-select ng-model="$ctrl._viewModel.sortingOption" ng-class="{'md-select-fixed-width':true}" ng-change="$ctrl.onChange()">
-		<md-option ng-repeat="option in $ctrl.enumToString()" ng-value="option">
+		<md-option ng-repeat="option in $ctrl._viewModel.sortingOptions" ng-value="option">
 			{{ option }}
 		</md-option>
 	</md-select>

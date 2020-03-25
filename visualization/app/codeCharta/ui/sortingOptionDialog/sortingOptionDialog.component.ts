@@ -7,25 +7,25 @@ import {
 	SortingDialogOptionSubscriber
 } from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
 import { setSortingDialogOption } from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.actions"
+import _ from "lodash"
 
 export class SortingOptionDialogController implements SortingDialogOptionSubscriber {
 	private _viewModel: {
 		sortingOption: SortingOption
+		sortingOptions: string[]
 	} = {
-		sortingOption: SortingOption.Name
+		sortingOption: SortingOption.NAME,
+		sortingOptions: null
 	}
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		SortingDialogOptionService.subscribe(this.$rootScope, this)
+		this._viewModel.sortingOptions = _.values(SortingOption)
 	}
 
 	public onChange() {
 		this.storeService.dispatch(setSortingDialogOption(this._viewModel.sortingOption))
-	}
-
-	public enumToString() {
-		return Object.keys(SortingOption)
 	}
 
 	public onSortingDialogOptionChanged(sortingDialogOption: SortingOption) {
