@@ -19,25 +19,24 @@
 		display: flex;
 
 		.action-button {
-			display: inline-flex;
-			width: 50px;
-			min-width: 50px;
-			justify-content: center;
+			margin-right: 1px;
+			min-width: 13%;
+			width: 13%;
 
 			i.fa {
-				color: white;
-			}
-
-			&:hover i.fa {
-				color: black;
+				font-size: x-small;
 			}
 
 			&.add {
+				display: inline-flex;
+				justify-content: center;
 				background-color: #00a091;
 			}
 
 			&.remove {
-				background-color: #ffcccc;
+				display: inline-flex;
+				justify-content: center;
+				color: #b30000;
 			}
 		}
 
@@ -46,15 +45,13 @@
 		}
 
 		.content-icons {
+			display: inline-flex;
+			justify-content: center;
+			font-size: x-small;
 			width: 5%;
+			color: #d3d3d3;
 
 			i.fa {
-				display: inline-flex;
-				justify-content: center;
-				font-size: x-small;
-				color: #d3d3d3;
-				width: 10px;
-
 				&.is-saved {
 					color: black;
 				}
