@@ -38,7 +38,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, null, true)
 	}
 
-	public applySortOrderChange(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number, reverse: boolean) {
+	private applySortOrderChange(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number, reverse: boolean) {
 		if (!node) {
 			return
 		}

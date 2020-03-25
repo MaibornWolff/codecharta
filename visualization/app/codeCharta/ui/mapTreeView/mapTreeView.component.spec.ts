@@ -69,36 +69,6 @@ describe("MapTreeViewController", () => {
 		})
 	})
 
-	describe("applySortOrderChange", () => {
-		it("should sort by unary", () => {
-			const sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
-
-			const compareFn = (a, b) => b.attributes["unary"] - a.attributes["unary"]
-
-			let result = mapTreeViewController.applySortOrderChange(mapWithMultipleFolders, compareFn, false)
-
-			expect(result).toEqual(sortedNode)
-		})
-
-		it("should sort by name", () => {
-			const sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME
-
-			const compareFn = (a, b) => (b.name > a.name ? 1 : 0)
-
-			let result = mapTreeViewController.applySortOrderChange(mapWithMultipleFolders, compareFn, false)
-
-			expect(result).toEqual(sortedNode)
-		})
-
-		it("should reverse order", () => {
-			const sortedNode = VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED
-
-			let result = mapTreeViewController.applySortOrderChange(mapWithMultipleFolders, null, true)
-
-			expect(result).toEqual(sortedNode)
-		})
-	})
-
 	describe("onSortingOrderAscendingChanged", () => {
 		it("should reverse the sorting order", () => {
 			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
@@ -112,7 +82,6 @@ describe("MapTreeViewController", () => {
 	describe("onSortingOptionChanged", () => {
 		it("should sort folder structure according to number of files", () => {
 			const sortingOption = SortingOption.NUMBER_OF_FILES
-
 			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
 
 			mapTreeViewController.onSortingOptionChanged(sortingOption)
@@ -122,7 +91,6 @@ describe("MapTreeViewController", () => {
 
 		it("should sort folder structure according to name", () => {
 			const sortingOption = SortingOption.NAME
-
 			mapTreeViewController["_viewModel"].rootNode = VALID_NODE_WITH_MULTIPLE_FOLDERS
 
 			mapTreeViewController.onSortingOptionChanged(sortingOption)
@@ -134,7 +102,6 @@ describe("MapTreeViewController", () => {
 	describe("onRenderMapChanged", () => {
 		it("should update viewModel.rootNode after timeout", () => {
 			mapTreeViewController["_viewModel"] = { rootNode: null }
-			mapTreeViewController["onRenderMapChanged"](map)
 
 			mapTreeViewController.onRenderMapChanged(map)
 			$timeout.flush(100)
