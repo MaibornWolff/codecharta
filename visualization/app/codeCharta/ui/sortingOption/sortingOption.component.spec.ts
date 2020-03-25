@@ -1,6 +1,6 @@
-import "./sortingOptionDialog.module"
+import "./sortingOption.module"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { SortingOptionDialogController } from "./sortingOptionDialog.component"
+import { SortingOptionDialogController } from "./sortingOption.component"
 import { IRootScopeService } from "angular"
 import { SortingDialogOptionService } from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
 import { StoreService } from "../../state/store.service"

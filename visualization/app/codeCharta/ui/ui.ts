@@ -3,7 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
-import "./sortingOptionDialog/sortingOptionDialog.module"
+import "./sortingOption/sortingOption.module"
 import "./sortingButton/sortingButton.module"
 import "./unfocusButton/unfocusButton.module"
 import "./metricValueHovered/metricValueHovered.module"

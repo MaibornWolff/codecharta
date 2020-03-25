@@ -1,4 +1,4 @@
-import "./sortingOptionDialog.component.scss"
+import "./sortingOption.component.scss"
 import { SortingOption } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
@@ -28,13 +28,13 @@ export class SortingOptionDialogController implements SortingDialogOptionSubscri
 		this.storeService.dispatch(setSortingDialogOption(this._viewModel.sortingOption))
 	}
 
-	public onSortingDialogOptionChanged(sortingDialogOption: SortingOption) {
-		this._viewModel.sortingOption = sortingDialogOption
+	public onSortingDialogOptionChanged(sortingOption: SortingOption) {
+		this._viewModel.sortingOption = sortingOption
 	}
 }
 
-export const sortingOptionDialogComponent = {
-	selector: "sortingOptionDialogComponent",
-	template: require("./sortingOptionDialog.component.html"),
+export const sortingOptionComponent = {
+	selector: "sortingOptionComponent",
+	template: require("./sortingOption.component.html"),
 	controller: SortingOptionDialogController
 }
