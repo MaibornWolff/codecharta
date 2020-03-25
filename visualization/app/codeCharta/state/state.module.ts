@@ -1,6 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
-import { SortingDialogOptionService } from "./store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
+import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
@@ -48,8 +48,8 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(SortingOptionService.name), SortingOptionService)
 	.service(_.camelCase(SearchPanelModeService.name), SearchPanelModeService)
-	.service(_.camelCase(SortingDialogOptionService.name), SortingDialogOptionService)
 	.service(_.camelCase(SortingOrderAscendingService.name), SortingOrderAscendingService)
 	.service(_.camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(_.camelCase(IsLoadingMapService.name), IsLoadingMapService)

@@ -1,13 +1,13 @@
 import "./sortingOption.module"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { SortingOptionDialogController } from "./sortingOption.component"
+import { SortingOptionController } from "./sortingOption.component"
 import { IRootScopeService } from "angular"
-import { SortingDialogOptionService } from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
 import { StoreService } from "../../state/store.service"
 import { SortingOption } from "../../codeCharta.model"
+import { SortingOptionService } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 
-describe("SortingOptionDialogController", () => {
-	let sortingOptionDialogController: SortingOptionDialogController
+describe("SortingOptionController", () => {
+	let sortingOptionController: SortingOptionController
 	let $rootScope: IRootScopeService
 	let storeService = getService<StoreService>("storeService")
 
@@ -23,45 +23,43 @@ describe("SortingOptionDialogController", () => {
 	}
 
 	function rebuildController() {
-		sortingOptionDialogController = new SortingOptionDialogController($rootScope, storeService)
+		sortingOptionController = new SortingOptionController($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to SortingDialogOptionService", () => {
-			SortingDialogOptionService.subscribe = jest.fn()
+		it("should subscribe to SortingOptionService", () => {
+			SortingOptionService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SortingDialogOptionService.subscribe).toHaveBeenCalledWith($rootScope, sortingOptionDialogController)
+			expect(SortingOptionService.subscribe).toHaveBeenCalledWith($rootScope, sortingOptionController)
 		})
 
 		it("should set the correct sorting options", () => {
-			expect(sortingOptionDialogController["_viewModel"].sortingOptions).toEqual(["Name", "Number of Files"])
+			expect(sortingOptionController["_viewModel"].sortingOptions).toEqual(["Name", "Number of Files"])
 		})
 	})
 
-	describe("onSortingDialogOptionChanged", () => {
-		it("should update the sortingOptionDialog to Number of Files", () => {
-			sortingOptionDialogController.onSortingDialogOptionChanged(SortingOption.NUMBER_OF_FILES)
+	describe("onSortingOptionChanged", () => {
+		it("should update the sortingOption to Number of Files", () => {
+			sortingOptionController.onSortingOptionChanged(SortingOption.NUMBER_OF_FILES)
 
-			expect(sortingOptionDialogController["_viewModel"].sortingOption).toEqual(SortingOption.NUMBER_OF_FILES)
+			expect(sortingOptionController["_viewModel"].sortingOption).toEqual(SortingOption.NUMBER_OF_FILES)
 		})
-		it("should update the sortingOptionDialog to Name", () => {
-			sortingOptionDialogController.onSortingDialogOptionChanged(SortingOption.NAME)
+		it("should update the sortingOption to Name", () => {
+			sortingOptionController.onSortingOptionChanged(SortingOption.NAME)
 
-			expect(sortingOptionDialogController["_viewModel"].sortingOption).toEqual(SortingOption.NAME)
+			expect(sortingOptionController["_viewModel"].sortingOption).toEqual(SortingOption.NAME)
 		})
 	})
 
 	describe("onChange", () => {
 		it("should set sortingOption in settings", () => {
-			sortingOptionDialogController["_viewModel"].sortingOption = SortingOption.NUMBER_OF_FILES
+			sortingOptionController["_viewModel"].sortingOption = SortingOption.NUMBER_OF_FILES
 
-			sortingOptionDialogController.onChange()
+			sortingOptionController.onChange()
 
-			expect(storeService.getState().dynamicSettings.sortingDialogOption).toBe(
-				sortingOptionDialogController["_viewModel"].sortingOption
-			)
+			expect(storeService.getState().dynamicSettings.sortingOption).toBe(sortingOptionController["_viewModel"].sortingOption)
 		})
 	})
 })

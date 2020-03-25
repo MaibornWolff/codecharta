@@ -1,5 +1,5 @@
 // Plop: Append reducer import here
-import { sortingDialogOption } from "./sortingDialogOption/sortingDialogOption.reducer"
+import { sortingOption } from "./sortingOption/sortingOption.reducer"
 import { edgeMetric } from "./edgeMetric/edgeMetric.reducer"
 import { colorRange } from "./colorRange/colorRange.reducer"
 import { margin } from "./margin/margin.reducer"
@@ -14,7 +14,7 @@ import { combineReducers } from "redux"
 
 const dynamicSettings = combineReducers({
 	// Plop: Append sub-reducer here
-	sortingDialogOption,
+	sortingOption,
 	edgeMetric,
 	colorRange,
 	margin,

@@ -3,18 +3,14 @@ import { CodeMapNode, NodeType, SortingOption } from "../../codeCharta.model"
 import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import {
-	SortingDialogOptionService,
-	SortingDialogOptionSubscriber
-} from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
-import {
 	SortingOrderAscendingService,
 	SortingOrderAscendingSubscriber
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
-import { setSortingDialogOption } from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.actions"
 import { setSortingOrderAscending } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
+import { setSortingOption } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 
-export class MapTreeViewController
-	implements CodeMapPreRenderServiceSubscriber, SortingDialogOptionSubscriber, SortingOrderAscendingSubscriber {
+export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
 	private _viewModel: {
 		rootNode: CodeMapNode
 	} = {
@@ -24,20 +20,22 @@ export class MapTreeViewController
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
-		SortingDialogOptionService.subscribe(this.$rootScope, this)
+		SortingOptionService.subscribe(this.$rootScope, this)
 		SortingOrderAscendingService.subscribe(this.$rootScope, this)
 	}
 
-	public onSortingDialogOptionChanged(sortingDialogOption: SortingOption) {
-		if (sortingDialogOption === SortingOption.NUMBER_OF_FILES) {
+	public onSortingOptionChanged(sortingOption: SortingOption) {
+		if (sortingOption === SortingOption.NUMBER_OF_FILES) {
 			this._viewModel.rootNode = this.applySortOrderChange(
 				this._viewModel.rootNode,
 				(a, b) => b.attributes["unary"] - a.attributes["unary"],
 				false
 			)
+			this.storeService.dispatch(setSortingOrderAscending(this.storeService.getState().appSettings.sortingOrderAscending))
 			return
 		}
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? 0 : 1), false)
+		this.storeService.dispatch(setSortingOrderAscending(this.storeService.getState().appSettings.sortingOrderAscending))
 	}
 
 	public onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
@@ -64,8 +62,10 @@ export class MapTreeViewController
 	private groupFilesAndFolders(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number) {
 		const folders = node.children.filter(node => node.type === NodeType.FOLDER)
 		const files = node.children.filter(node => node.type === NodeType.FILE)
+
 		folders.sort(compareFn)
 		files.sort(compareFn)
+
 		return folders.concat(files)
 	}
 
@@ -77,7 +77,7 @@ export class MapTreeViewController
 		this._viewModel.rootNode = map
 		this.synchronizeAngularTwoWayBinding()
 
-		this.storeService.dispatch(setSortingDialogOption(this.storeService.getState().dynamicSettings.sortingDialogOption))
+		this.storeService.dispatch(setSortingOption(this.storeService.getState().dynamicSettings.sortingOption))
 		if (this.storeService.getState().appSettings.sortingOrderAscending) {
 			this.storeService.dispatch(setSortingOrderAscending(this.storeService.getState().appSettings.sortingOrderAscending))
 		}

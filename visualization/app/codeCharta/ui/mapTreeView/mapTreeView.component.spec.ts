@@ -13,8 +13,8 @@ import {
 } from "../../util/dataMocks"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
-import { SortingDialogOptionService } from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
 import { SortingOrderAscendingService } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
+import { SortingOptionService } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 
 describe("MapTreeViewController", () => {
 	let mapTreeViewController: MapTreeViewController
@@ -53,12 +53,12 @@ describe("MapTreeViewController", () => {
 			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, mapTreeViewController)
 		})
 
-		it("should subscribe to SortingDialogOptionService", () => {
-			SortingDialogOptionService.subscribe = jest.fn()
+		it("should subscribe to SortingOptionService", () => {
+			SortingOptionService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(SortingDialogOptionService.subscribe).toHaveBeenCalledWith($rootScope, mapTreeViewController)
+			expect(SortingOptionService.subscribe).toHaveBeenCalledWith($rootScope, mapTreeViewController)
 		})
 		it("should subscribe to SortingOrderAscendingService", () => {
 			SortingOrderAscendingService.subscribe = jest.fn()
@@ -109,23 +109,23 @@ describe("MapTreeViewController", () => {
 		})
 	})
 
-	describe("onSortingDialogOptionChanged", () => {
+	describe("onSortingOptionChanged", () => {
 		it("should sort folder structure according to number of files", () => {
-			const sortingDialogOption = SortingOption.NUMBER_OF_FILES
+			const sortingOption = SortingOption.NUMBER_OF_FILES
 
 			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
 
-			mapTreeViewController.onSortingDialogOptionChanged(sortingDialogOption)
+			mapTreeViewController.onSortingOptionChanged(sortingOption)
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY)
 		})
 
 		it("should sort folder structure according to name", () => {
-			const sortingDialogOption = SortingOption.NAME
+			const sortingOption = SortingOption.NAME
 
 			mapTreeViewController["_viewModel"].rootNode = VALID_NODE_WITH_MULTIPLE_FOLDERS
 
-			mapTreeViewController.onSortingDialogOptionChanged(sortingDialogOption)
+			mapTreeViewController.onSortingOptionChanged(sortingOption)
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME)
 		})

@@ -772,6 +772,7 @@ export const FILE_STATES: FileState[] = [
 	}
 ]
 
+// @ts-ignore
 export const STATE: State = {
 	fileSettings: {
 		attributeTypes: {
@@ -809,7 +810,7 @@ export const STATE: State = {
 			from: 19,
 			to: 67
 		},
-		sortingDialogOption: SortingOption.NAME
+		sortingOption: SortingOption.NAME
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -906,7 +907,7 @@ export const DEFAULT_STATE: State = {
 		},
 		searchPattern: "",
 		searchedNodePaths: [],
-		sortingDialogOption: SortingOption.NAME
+		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },

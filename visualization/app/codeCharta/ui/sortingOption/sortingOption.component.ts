@@ -2,14 +2,11 @@ import "./sortingOption.component.scss"
 import { SortingOption } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
-import {
-	SortingDialogOptionService,
-	SortingDialogOptionSubscriber
-} from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.service"
-import { setSortingDialogOption } from "../../state/store/dynamicSettings/sortingDialogOption/sortingDialogOption.actions"
+import { setSortingOption } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import _ from "lodash"
+import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 
-export class SortingOptionDialogController implements SortingDialogOptionSubscriber {
+export class SortingOptionController implements SortingOptionSubscriber {
 	private _viewModel: {
 		sortingOption: SortingOption
 		sortingOptions: string[]
@@ -20,21 +17,21 @@ export class SortingOptionDialogController implements SortingDialogOptionSubscri
 
 	/* @ngInject */
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		SortingDialogOptionService.subscribe(this.$rootScope, this)
+		SortingOptionService.subscribe(this.$rootScope, this)
 		this._viewModel.sortingOptions = _.values(SortingOption)
 	}
 
-	public onChange() {
-		this.storeService.dispatch(setSortingDialogOption(this._viewModel.sortingOption))
+	public onSortingOptionChanged(sortingOption: SortingOption) {
+		this._viewModel.sortingOption = sortingOption
 	}
 
-	public onSortingDialogOptionChanged(sortingOption: SortingOption) {
-		this._viewModel.sortingOption = sortingOption
+	public onChange() {
+		this.storeService.dispatch(setSortingOption(this._viewModel.sortingOption))
 	}
 }
 
 export const sortingOptionComponent = {
 	selector: "sortingOptionComponent",
 	template: require("./sortingOption.component.html"),
-	controller: SortingOptionDialogController
+	controller: SortingOptionController
 }

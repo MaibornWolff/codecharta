@@ -1,6 +1,7 @@
 import { CCAction, DynamicSettings, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append default property import here
+import { defaultSortingOption } from "./sortingOption/sortingOption.actions"
 import { defaultAreaMetric } from "./areaMetric/areaMetric.actions"
 import { defaultColorMetric } from "./colorMetric/colorMetric.actions"
 import { defaultColorRange } from "./colorRange/colorRange.actions"
@@ -11,7 +12,6 @@ import { defaultHeightMetric } from "./heightMetric/heightMetric.actions"
 import { defaultMargin } from "./margin/margin.actions"
 import { defaultSearchedNodePaths } from "./searchedNodePaths/searchedNodePaths.actions"
 import { defaultSearchPattern } from "./searchPattern/searchPattern.actions"
-import { defaultSortingDialogOption } from "./sortingDialogOption/sortingDialogOption.actions"
 
 export enum DynamicSettingsActions {
 	SET_DYNAMIC_SETTINGS = "SET_DYNAMIC_SETTINGS"
@@ -33,6 +33,7 @@ export function setDynamicSettings(dynamicSettings: RecursivePartial<DynamicSett
 
 export const defaultDynamicSettings: DynamicSettings = {
 	// Plop: Append default property here
+	sortingOption: defaultSortingOption,
 	areaMetric: defaultAreaMetric,
 	heightMetric: defaultHeightMetric,
 	colorMetric: defaultColorMetric,
@@ -42,6 +43,5 @@ export const defaultDynamicSettings: DynamicSettings = {
 	searchedNodePaths: defaultSearchedNodePaths,
 	searchPattern: defaultSearchPattern,
 	margin: defaultMargin,
-	colorRange: defaultColorRange,
-	sortingDialogOption: defaultSortingDialogOption
+	colorRange: defaultColorRange
 }

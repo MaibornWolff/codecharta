@@ -92,7 +92,7 @@ export interface FileSettings {
 }
 
 export interface DynamicSettings {
-	sortingDialogOption: SortingOption
+	sortingOption: SortingOption
 	areaMetric: string
 	heightMetric: string
 	colorMetric: string

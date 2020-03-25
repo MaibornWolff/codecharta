@@ -2,13 +2,13 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { SortingDialogOptionAction, SortingDialogOptionActions } from "./sortingDialogOption.actions"
-import { SortingDialogOptionService } from "./sortingDialogOption.service"
+import { SortingOptionAction, SortingOptionActions } from "./sortingOption.actions"
+import { SortingOptionService } from "./sortingOption.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { SortingOption } from "../../../../codeCharta.model"
 
-describe("SortingDialogOptionService", () => {
-	let sortingDialogOptionService: SortingDialogOptionService
+describe("SortingOptionService", () => {
+	let sortingOptionService: SortingOptionService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
 
@@ -26,7 +26,7 @@ describe("SortingDialogOptionService", () => {
 	}
 
 	function rebuildService() {
-		sortingDialogOptionService = new SortingDialogOptionService($rootScope, storeService)
+		sortingOptionService = new SortingOptionService($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -35,27 +35,25 @@ describe("SortingDialogOptionService", () => {
 
 			rebuildService()
 
-			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, sortingDialogOptionService)
+			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, sortingOptionService)
 		})
 	})
 
 	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new sortingDialogOption value", () => {
-			const action: SortingDialogOptionAction = {
-				type: SortingDialogOptionActions.SET_SORTING_DIALOG_OPTION,
+		it("should notify all subscribers with the new sortingOption value", () => {
+			const action: SortingOptionAction = {
+				type: SortingOptionActions.SET_SORTING_OPTION,
 				payload: SortingOption.NUMBER_OF_FILES
 			}
 			storeService["store"].dispatch(action)
 
-			sortingDialogOptionService.onStoreChanged(SortingDialogOptionActions.SET_SORTING_DIALOG_OPTION)
+			sortingOptionService.onStoreChanged(SortingOptionActions.SET_SORTING_OPTION)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("sorting-dialog-option-changed", {
-				sortingDialogOption: SortingOption.NUMBER_OF_FILES
-			})
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("sorting-option-changed", { sortingOption: SortingOption.NUMBER_OF_FILES })
 		})
 
-		it("should not notify anything on non-sorting-dialog-option-events", () => {
-			sortingDialogOptionService.onStoreChanged("ANOTHER_ACTION")
+		it("should not notify anything on non-sorting-option-events", () => {
+			sortingOptionService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
