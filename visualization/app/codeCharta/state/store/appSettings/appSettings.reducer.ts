@@ -1,5 +1,6 @@
 // Plop: Append reducer import here
 import { cameraTarget } from "./cameraTarget/cameraTarget.reducer"
+import { sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { searchPanelMode } from "./searchPanelMode/searchPanelMode.reducer"
 import { isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
 import { isLoadingMap } from "./isLoadingMap/isLoadingMap.reducer"
@@ -24,6 +25,7 @@ import { combineReducers } from "redux"
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
 	cameraTarget,
+	sortingOrderAscending,
 	searchPanelMode,
 	isLoadingFile,
 	isLoadingMap,

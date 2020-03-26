@@ -1,6 +1,8 @@
 import angular from "angular"
 // Plop: Append module import here
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
+import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
+import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
 import { IsLoadingMapService } from "./store/appSettings/isLoadingMap/isLoadingMap.service"
@@ -48,7 +50,9 @@ angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
 	.service(_.camelCase(CameraTargetService.name), CameraTargetService)
+	.service(_.camelCase(SortingOptionService.name), SortingOptionService)
 	.service(_.camelCase(SearchPanelModeService.name), SearchPanelModeService)
+	.service(_.camelCase(SortingOrderAscendingService.name), SortingOrderAscendingService)
 	.service(_.camelCase(IsLoadingFileService.name), IsLoadingFileService)
 	.service(_.camelCase(IsLoadingMapService.name), IsLoadingMapService)
 	.service(_.camelCase(FilesService.name), FilesService)

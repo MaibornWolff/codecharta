@@ -2,6 +2,7 @@ import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../cod
 
 // Plop: Append action splitter import here
 import { splitCameraTargetAction } from "./cameraTarget/cameraTarget.splitter"
+import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
 import { splitSearchPanelModeAction } from "./searchPanelMode/searchPanelMode.splitter"
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
 import { splitIsLoadingMapAction } from "./isLoadingMap/isLoadingMap.splitter"
@@ -28,6 +29,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 	// Plop: Append action split here
 	if (payload.cameraTarget !== undefined) {
 		actions.push(splitCameraTargetAction(payload.cameraTarget))
+  }
+  
+  if (payload.sortingOrderAscending !== undefined) {
+		actions.push(splitSortingOrderAscendingAction(payload.sortingOrderAscending))
 	}
 
 	if (payload.searchPanelMode !== undefined) {
