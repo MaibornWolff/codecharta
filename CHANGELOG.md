@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Dialog to select between different sorting options #388
+- Button to reverse the current selected sorting #388
+
 ### Changed
 
 ### Removed 🗑

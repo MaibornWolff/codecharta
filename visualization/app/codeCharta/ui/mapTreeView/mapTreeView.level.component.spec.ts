@@ -313,32 +313,6 @@ describe("MapTreeViewLevelController", () => {
 		})
 	})
 
-	describe("sortByFolder", () => {
-		it("should sort leaf", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf/small leaf",
-				NodeType.FILE,
-				VALID_NODE_WITH_PATH
-			)
-
-			const result = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
-
-			expect(result).toBe(0)
-		})
-
-		it("should sort folder", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				NodeType.FOLDER,
-				VALID_NODE_WITH_PATH
-			)
-
-			const result = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
-
-			expect(result).toBe(1)
-		})
-	})
-
 	describe("openRootFolderByDefault", () => {
 		it("should set the collapsed variable to false, if depth size is 0", () => {
 			mapTreeViewLevelController["_viewModel"].collapsed = true
