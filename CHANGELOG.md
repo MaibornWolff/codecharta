@@ -9,6 +9,40 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Dialog to select between different sorting options #388
+- Button to reverse the current selected sorting #388
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.43.0] - 2020-03-20
+
+### Added 🚀
+
+### Changed
+
+- Selectable metrics will only contain metrics from the visible maps
+- Closing the attribute-side-bar by clicking somewhere in the map will now be triggered on mouse up instead of mouse down
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Search-panel opening for a short duration when importing a new file
+
+### Chore 👨‍💻 👩‍💻
+
+- Fix vulnerability with nokogiri <1.10.8
+
+## [1.42.3] - 2020-03-13
+
+### Added 🚀
+
 ### Changed
 
 ### Removed 🗑
@@ -17,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Loading Gif not displayed when preparing to render a new map #857
 - Selecting zero files in Multiple mode will not trigger the 3D CodeMap creation
+- Metrics in the dropdown menu now show the correct max value for the visible maps #876
 
 ### Chore 👨‍💻 👩‍💻
 

@@ -1,8 +1,8 @@
 import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
-import { CodeMapNode, BlacklistType, BlacklistItem } from "../../codeCharta.model"
+import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
@@ -68,7 +68,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public onRightClick($event) {
-		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
 	}
 
@@ -111,10 +110,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		if (depth == 0) {
 			this._viewModel.collapsed = false
 		}
-	}
-
-	public sortByFolder(node: CodeMapNode) {
-		return node && node.children && node.children.length > 0 ? 1 : 0
 	}
 
 	public getNodeUnaryValue() {

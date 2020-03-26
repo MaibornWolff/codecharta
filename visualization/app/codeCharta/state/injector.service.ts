@@ -1,4 +1,8 @@
+//@ts-nocheck
+
 // Plop: Append service import here
+import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
+import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { FilesService } from "./store/files/files.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
 import { IsLoadingFileService } from "./store/appSettings/isLoadingFile/isLoadingFile.service"
@@ -39,9 +43,10 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 export class InjectorService {
 	/* @ngInject */
 	constructor(
-		// tslint:disable:no-unused-variable
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private sortingOptionService: SortingOptionService,
+		private sortingOrderAscendingService: SortingOrderAscendingService,
 		private searchPanelModeService: SearchPanelModeService,
 		private isLoadingFileService: IsLoadingFileService,
 		private isLoadingMapService: IsLoadingMapService,

@@ -1,4 +1,6 @@
 import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
+
+// Plop: Append default property import here
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
 import { defaultEdgeHeight } from "./edgeHeight/edgeHeight.actions"
@@ -17,6 +19,7 @@ import { defaultShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/
 import { defaultResetIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
+import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
 
 export enum AppSettingsActions {
@@ -38,6 +41,7 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 }
 
 export const defaultAppSettings: AppSettings = {
+	// Plop: Append default property here
 	amountOfTopLabels: defaultAmountOfTopLabels,
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
 	edgeHeight: defaultEdgeHeight,
@@ -56,5 +60,6 @@ export const defaultAppSettings: AppSettings = {
 	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded,
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
-	searchPanelMode: defaultSearchPanelMode
+	searchPanelMode: defaultSearchPanelMode,
+	sortingOrderAscending: defaultSortingOrderAscending
 }

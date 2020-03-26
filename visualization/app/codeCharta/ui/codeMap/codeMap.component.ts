@@ -1,15 +1,11 @@
 import "./codeMap.component.scss"
-import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
-import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
+import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
-import { NodeType } from "../../codeCharta.model"
 
-export class CodeMapController
-	implements BuildingRightClickedEventSubscriber, AttributeSideBarVisibilitySubscriber, IsLoadingFileSubscriber {
+export class CodeMapController implements AttributeSideBarVisibilitySubscriber, IsLoadingFileSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isSideBarVisible: boolean
@@ -26,7 +22,6 @@ export class CodeMapController
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
-		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		AttributeSideBarService.subscribe(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
@@ -35,14 +30,6 @@ export class CodeMapController
 		this.threeViewerService.init(this.$element[0].children[0])
 		this.threeViewerService.animate()
 		this.codeMapMouseEventService.start()
-	}
-
-	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
-		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-		if (building) {
-			const nodeType = building.node.isLeaf ? NodeType.FILE : NodeType.FOLDER
-			NodeContextMenuController.broadcastShowEvent(this.$rootScope, building.node.path, nodeType, x, y)
-		}
 	}
 
 	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {

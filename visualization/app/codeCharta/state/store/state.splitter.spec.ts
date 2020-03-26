@@ -18,7 +18,7 @@ import { setAppSettings } from "./appSettings/appSettings.actions"
 describe("state.splitter", () => {
 	describe("setState", () => {
 		function getItemsOfType(array: CCAction[], actionTypes: string[]) {
-			return array.filter(action => !!actionTypes.find(type => type === action.type))
+			return array.filter(action => actionTypes.some(type => type === action.type))
 		}
 
 		it("should return 3 atomic actions", () => {

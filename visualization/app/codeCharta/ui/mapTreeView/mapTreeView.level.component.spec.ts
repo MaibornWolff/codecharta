@@ -162,7 +162,6 @@ describe("MapTreeViewLevelController", () => {
 
 			mapTreeViewLevelController.onRightClick($event)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu")
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
 		})
 	})
@@ -311,32 +310,6 @@ describe("MapTreeViewLevelController", () => {
 			const result = mapTreeViewLevelController.isSearched(null)
 
 			expect(result).toBeFalsy()
-		})
-	})
-
-	describe("sortByFolder", () => {
-		it("should sort leaf", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf/small leaf",
-				NodeType.FILE,
-				VALID_NODE_WITH_PATH
-			)
-
-			const result = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
-
-			expect(result).toBe(0)
-		})
-
-		it("should sort folder", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				NodeType.FOLDER,
-				VALID_NODE_WITH_PATH
-			)
-
-			const result = mapTreeViewLevelController.sortByFolder(mapTreeViewLevelController["node"])
-
-			expect(result).toBe(1)
 		})
 	})
 

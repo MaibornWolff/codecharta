@@ -1,10 +1,10 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { HeightMetricActions, setHeightMetric } from "./heightMetric.actions"
-import _ from "lodash"
 import { MetricData } from "../../../../codeCharta.model"
 import { MetricService, MetricServiceSubscriber } from "../../../metric.service"
 import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface HeightMetricSubscriber {
 	onHeightMetricChanged(heightMetric: string)
@@ -19,7 +19,7 @@ export class HeightMetricService implements StoreSubscriber, MetricServiceSubscr
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(HeightMetricActions).includes(actionType)) {
+		if (isActionOfType(actionType, HeightMetricActions)) {
 			this.notify(this.select())
 		}
 	}

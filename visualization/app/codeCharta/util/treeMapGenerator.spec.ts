@@ -60,10 +60,7 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.areaMetric = "myArea"
 			state.dynamicSettings.heightMetric = "myHeight"
 			state.treeMap.mapSize = 1000
-			metricData = [
-				{ name: "myArea", maxValue: 42, availableInVisibleMaps: true },
-				{ name: "myHeight", maxValue: 99, availableInVisibleMaps: true }
-			]
+			metricData = [{ name: "myArea", maxValue: 42 }, { name: "myHeight", maxValue: 99 }]
 
 			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
@@ -92,10 +89,7 @@ describe("treeMapGenerator", () => {
 		it("attribute do not exists, multiple children with non existant attributes", () => {
 			state.dynamicSettings.heightMetric = "b"
 			state.dynamicSettings.areaMetric = "b"
-			metricData = [
-				{ name: "a", maxValue: 42, availableInVisibleMaps: true },
-				{ name: "b", maxValue: 99, availableInVisibleMaps: true }
-			]
+			metricData = [{ name: "a", maxValue: 42 }, { name: "b", maxValue: 99 }]
 
 			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
@@ -106,7 +100,7 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.areaMetric = "unknown"
 			state.dynamicSettings.heightMetric = "unknown"
 			state.fileSettings.edges = VALID_EDGES
-			metricData = [{ name: "unknown", maxValue: 100, availableInVisibleMaps: true }]
+			metricData = [{ name: "unknown", maxValue: 100 }]
 
 			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 

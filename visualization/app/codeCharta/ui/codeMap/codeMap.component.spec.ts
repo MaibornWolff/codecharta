@@ -50,14 +50,6 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to CodeMapMouseEventService", () => {
-			CodeMapMouseEventService.subscribeToBuildingRightClickedEvents = jest.fn()
-
-			rebuildController()
-
-			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith($rootScope, codeMapController)
-		})
-
 		it("should subscribe to IsLoadingFileService", () => {
 			IsLoadingFileService.subscribe = jest.fn()
 

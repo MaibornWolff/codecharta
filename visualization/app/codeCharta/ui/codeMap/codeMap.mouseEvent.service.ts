@@ -10,7 +10,6 @@ import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { IntersectionResult } from "./rendering/codeMapGeometricDescription"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 
@@ -43,11 +42,11 @@ export class CodeMapMouseEventService
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
 
-	private highlightedInTreeView: CodeMapBuilding = null
+	private highlightedInTreeView: CodeMapBuilding
+	private intersectedBuilding: CodeMapBuilding
 
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private oldMouse: Coordinates = { x: 0, y: 0 }
-	private intersectionResult: IntersectionResult
 	private clickType: ClickType = null
 
 	/* @ngInject */
@@ -69,7 +68,7 @@ export class CodeMapMouseEventService
 		this.threeRendererService.renderer.domElement.addEventListener("mousemove", () => this.onDocumentMouseMove(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", () => this.onDocumentMouseUp())
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", () => this.onDocumentMouseDown(event))
-		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick(event))
+		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
@@ -85,7 +84,7 @@ export class CodeMapMouseEventService
 				this.onDocumentMouseDown(event)
 				break
 			case "dblclick":
-				this.onDocumentDoubleClick(event)
+				this.onDocumentDoubleClick()
 				break
 		}
 	}
@@ -114,18 +113,11 @@ export class CodeMapMouseEventService
 			this.threeCameraService.camera.updateMatrixWorld(false)
 
 			if (this.threeSceneService.getMapMesh()) {
-				this.intersectionResult = this.threeSceneService
+				this.intersectedBuilding = this.threeSceneService
 					.getMapMesh()
 					.checkMouseRayMeshIntersection(this.mouse, this.threeCameraService.camera)
-
 				const from = this.threeSceneService.getHighlightedBuilding()
-				let to = null
-
-				if (this.intersectionResult.intersectionFound) {
-					to = this.intersectionResult.building
-				} else {
-					to = this.highlightedInTreeView
-				}
+				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
 				if (from !== to) {
 					this.unhoverBuilding()
@@ -150,12 +142,9 @@ export class CodeMapMouseEventService
 
 	public onDocumentMouseUp() {
 		if (this.clickType === ClickType.LeftClick) {
-			const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
-			if (highlightedBuilding && this.intersectionResult.intersectionFound) {
-				this.threeSceneService.clearSelection()
-				this.threeSceneService.selectBuilding(highlightedBuilding)
-			} else {
-				this.threeSceneService.clearSelection()
+			this.threeSceneService.clearSelection()
+			if (this.intersectedBuilding) {
+				this.threeSceneService.selectBuilding(this.intersectedBuilding)
 			}
 		}
 	}
@@ -174,15 +163,19 @@ export class CodeMapMouseEventService
 	}
 
 	public onRightClick(event) {
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
-			building: this.threeSceneService.getHighlightedBuilding(),
-			x: event.clientX,
-			y: event.clientY,
-			event: event
-		})
+		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+
+		if (highlightedBuilding) {
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
+				building: highlightedBuilding,
+				x: event.clientX,
+				y: event.clientY,
+				event: event
+			})
+		}
 	}
 
-	public onDocumentDoubleClick(event) {
+	public onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
 		if (highlightedBuilding) {
 			let fileSourceLink = highlightedBuilding.node.link

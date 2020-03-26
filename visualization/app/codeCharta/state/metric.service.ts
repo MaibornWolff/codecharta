@@ -24,7 +24,6 @@ export interface MetricServiceSubscriber {
 
 interface MaxMetricValuePair {
 	maxValue: number
-	availableInVisibleMaps: boolean
 }
 
 export class MetricService implements FilesSelectionSubscriber, BlacklistSubscriber {
@@ -54,8 +53,8 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		return this.metricData
 	}
 
-	public isMetricAvailable(metricName: string) {
-		return this.metricData.find(x => x.name == metricName && x.availableInVisibleMaps)
+	public isMetricAvailable(metricName: string): boolean {
+		return this.metricData.some(x => x.name == metricName)
 	}
 
 	public getMaxMetricByMetricName(metricName: string): number {
@@ -99,44 +98,38 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 			return []
 		} else {
 			//TODO: keep track of these metrics in service
-			const metricsFromVisibleMaps = this.getUniqueMetricNames()
-			const hashMap = this.buildHashMapFromMetrics(metricsFromVisibleMaps)
+			const hashMap = this.buildHashMapFromMetrics()
 			return this.getMetricDataFromHashMap(hashMap)
 		}
 	}
 
-	private buildHashMapFromMetrics(metricsFromVisibleMaps) {
+	private buildHashMapFromMetrics() {
 		const hashMap: Map<string, MaxMetricValuePair> = new Map()
 
 		this.storeService
 			.getState()
-			.files.getFiles()
+			.files.getVisibleFileStates()
 			.forEach((fileState: FileState) => {
-				let nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
+				const nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 				nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
 					if (
 						node.data.path &&
 						!CodeMapHelper.isBlacklisted(node.data, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
 					) {
-						this.addMaxMetricValuesToHashMap(node, hashMap, metricsFromVisibleMaps)
+						this.addMaxMetricValuesToHashMap(node, hashMap)
 					}
 				})
 			})
 		return hashMap
 	}
 
-	private addMaxMetricValuesToHashMap(
-		node: HierarchyNode<CodeMapNode>,
-		hashMap: Map<string, MaxMetricValuePair>,
-		metricsFromVisibleMaps
-	) {
+	private addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: Map<string, MaxMetricValuePair>) {
 		const attributes: string[] = Object.keys(node.data.attributes)
 
 		attributes.forEach((metric: string) => {
 			if (!hashMap.has(metric) || hashMap.get(metric).maxValue <= node.data.attributes[metric]) {
 				hashMap.set(metric, {
-					maxValue: node.data.attributes[metric],
-					availableInVisibleMaps: this.isAvailableInVisibleMaps(metricsFromVisibleMaps, metric)
+					maxValue: node.data.attributes[metric]
 				})
 			}
 		})
@@ -148,34 +141,10 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		hashMap.forEach((value: MaxMetricValuePair, key: string) => {
 			metricData.push({
 				name: key,
-				maxValue: value.maxValue,
-				availableInVisibleMaps: value.availableInVisibleMaps
+				maxValue: value.maxValue
 			})
 		})
 		return this.sortByAttributeName(metricData)
-	}
-
-	private isAvailableInVisibleMaps(metricsFromVisibleMaps: string[], metric: string): boolean {
-		return !!metricsFromVisibleMaps.find(metricName => metricName === metric)
-	}
-
-	private getUniqueMetricNames(): string[] {
-		const files = this.storeService.getState().files
-		if (!files.fileStatesAvailable()) {
-			return []
-		}
-
-		let leaves: HierarchyNode<CodeMapNode>[] = []
-		files.getVisibleFileStates().forEach((fileState: FileState) => {
-			leaves = leaves.concat(hierarchy<CodeMapNode>(fileState.file.map).leaves())
-		})
-		const attributeList: string[][] = leaves.map((d: HierarchyNode<CodeMapNode>) => {
-			return d.data.attributes ? Object.keys(d.data.attributes) : []
-		})
-		const attributes: string[] = attributeList.reduce((left: string[], right: string[]) => {
-			return left.concat(right.filter(el => left.indexOf(el) === -1))
-		})
-		return attributes.sort()
 	}
 
 	private sortByAttributeName(metricData: MetricData[]): MetricData[] {
@@ -183,11 +152,10 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private addUnaryMetric() {
-		if (!this.metricData.find(x => x.name === "unary")) {
+		if (!this.metricData.some(x => x.name === "unary")) {
 			this.metricData.push({
 				name: "unary",
-				maxValue: 1,
-				availableInVisibleMaps: true
+				maxValue: 1
 			})
 		}
 	}

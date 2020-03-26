@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { InvertHeightActions } from "./invertHeight.actions"
-import _ from "lodash"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface InvertHeightSubscriber {
 	onInvertHeightChanged(invertHeight: boolean)
@@ -15,7 +15,7 @@ export class InvertHeightService implements StoreSubscriber {
 	}
 
 	public onStoreChanged(actionType: string) {
-		if (_.values(InvertHeightActions).includes(actionType)) {
+		if (isActionOfType(actionType, InvertHeightActions)) {
 			this.notify(this.select())
 		}
 	}
