@@ -19,6 +19,7 @@ import { defaultShowOnlyBuildingsWithEdges } from "./showOnlyBuildingsWithEdges/
 import { defaultResetIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
+import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
 import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
 
@@ -61,5 +62,6 @@ export const defaultAppSettings: AppSettings = {
 	resetCameraIfNewFileIsLoaded: defaultResetIfNewFileIsLoaded,
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
-	searchPanelMode: defaultSearchPanelMode
+	searchPanelMode: defaultSearchPanelMode,
+	sortingOrderAscending: defaultSortingOrderAscending
 }
