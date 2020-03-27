@@ -15,11 +15,12 @@ attribute-type-selector-component {
 			width: 100%;
 			height: 100%;
 			margin: 0;
+			text-transform: unset !important;
 
-			i {
+			.symbol {
 				position: absolute;
-				top: 5px;
-				left: 6px;
+				top: -16px;
+				left: 8px;
 			}
 		}
 

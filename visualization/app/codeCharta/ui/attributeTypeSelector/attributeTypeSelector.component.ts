@@ -2,10 +2,29 @@ import "./attributeTypeSelector.component.scss"
 import { StoreService } from "../../state/store.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { MetricService } from "../../state/metric.service"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 
 export class AttributeTypeSelectorController {
+	private _viewModel: {
+		aggregationSymbol: string
+	} = {
+		aggregationSymbol: ""
+	}
+
+	private type: string
+	private metric: string
+
 	/* @ngInject */
-	constructor(private storeService: StoreService) {}
+	constructor(
+		private storeService: StoreService,
+		private metricService: MetricService,
+		private edgeMetricDataService: EdgeMetricDataService
+	) {}
+
+	public $onInit() {
+		this.setAggregationSymbol()
+	}
 
 	public setToAbsolute(metricName: string, category: string) {
 		this.setAttributeType(metricName, category, AttributeTypeValue.absolute)
@@ -21,6 +40,23 @@ export class AttributeTypeSelectorController {
 			attributeTypes[category][metricName] = type
 		}
 		this.storeService.dispatch(setAttributeTypes(attributeTypes))
+		this.setAggregationSymbol()
+	}
+
+	private setAggregationSymbol() {
+		const state = this.storeService.getState()
+		const type =
+			this.type === "nodes"
+				? this.metricService.getAttributeTypeByMetric(this.metric, state)
+				: this.edgeMetricDataService.getAttributeTypeByMetric(this.metric, state)
+		switch (type) {
+			case AttributeTypeValue.relative:
+				this._viewModel.aggregationSymbol = "x͂"
+				break
+			case AttributeTypeValue.absolute:
+			default:
+				this._viewModel.aggregationSymbol = "Σ"
+		}
 	}
 }
 
