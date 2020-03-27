@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - AttributeTypes for tokeiImporter and SCMLogParser #365
+- Dialog to select between different sorting options #388
+- Button to reverse the current selected sorting #388
 
 ### Changed
 
