@@ -11,7 +11,14 @@ assignees: ''
 
 ## Expected Behavior
 
+<GIVEN>
+
+WHEN
+
+THEN
+
 ## Actual Behavior
+
 
 ## Screenshots
 
