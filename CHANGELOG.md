@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.44.0] - 2020-03-27
+
+### Added 🚀
+
 - Dialog to select between different sorting options #388
 - Button to reverse the current selected sorting #388
 
