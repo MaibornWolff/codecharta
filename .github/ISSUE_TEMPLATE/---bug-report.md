@@ -16,11 +16,12 @@ assignees: ''
 ## Screenshots
 
 ## Steps to Reproduce the Problem
-  1.
-  1.
-  1.
+1.
+1.
+1.
 
 ## Specifications
-  - CodeCharta Version:
-  - OS:
-  - Browser:
+- is released in [online-demo](https://maibornwolff.github.io/codecharta/visualization/app/index.html?file=codecharta.cc.json&file=codecharta_analysis.cc.json): yes | no
+- CodeCharta Version:
+- OS:
+- Browser:
