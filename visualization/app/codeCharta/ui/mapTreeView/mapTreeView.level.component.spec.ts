@@ -18,13 +18,14 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
 	let $rootScope: IRootScopeService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let storeService: StoreService
+	let threeSceneService: ThreeSceneService
 	let $event
 
 	beforeEach(() => {
@@ -40,7 +41,7 @@ describe("MapTreeViewLevelController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		storeService = getService<StoreService>("storeService")
-
+		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		$event = {
 			clientX: jest.fn(),
 			clientY: jest.fn()
@@ -48,7 +49,7 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	function rebuildController() {
-		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapPreRenderService, storeService)
+		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapPreRenderService, storeService, threeSceneService)
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -163,67 +164,6 @@ describe("MapTreeViewLevelController", () => {
 			mapTreeViewLevelController.onRightClick($event)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
-		})
-	})
-
-	describe("onFolderClick", () => {
-		it("should open subfolder", () => {
-			mapTreeViewLevelController["_viewModel"].collapsed = true
-
-			mapTreeViewLevelController.onFolderClick()
-
-			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
-		})
-
-		it("should collapse subfolder", () => {
-			mapTreeViewLevelController["_viewModel"].collapsed = false
-
-			mapTreeViewLevelController.onFolderClick()
-
-			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeTruthy()
-		})
-	})
-
-	describe("onLabelClick", () => {
-		it("should set new focused path", () => {
-			mapTreeViewLevelController["node"] = VALID_NODE_WITH_PATH.children[1]
-			mapTreeViewLevelController.onLabelClick()
-
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(VALID_NODE_WITH_PATH.children[1].path)
-		})
-	})
-
-	describe("onEyeClick", () => {
-		beforeEach(() => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				NodeType.FOLDER,
-				VALID_NODE_WITH_PATH
-			)
-		})
-
-		it("should add flattened blacklistItem", () => {
-			storeService.dispatch(setBlacklist([]))
-			mapTreeViewLevelController["node"].visible = true
-
-			mapTreeViewLevelController.onEyeClick()
-
-			expect(storeService.getState().fileSettings.blacklist).toContainEqual({
-				path: "/root/Parent Leaf",
-				type: BlacklistType.flatten
-			})
-		})
-
-		it("should remove flattened blacklistItem", () => {
-			storeService.dispatch(setBlacklist([{ path: "/root/Parent Leaf", type: BlacklistType.flatten }]))
-			mapTreeViewLevelController["node"].visible = false
-
-			mapTreeViewLevelController.onEyeClick()
-
-			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual({
-				path: "/root/Parent Leaf",
-				type: BlacklistType.flatten
-			})
 		})
 	})
 

@@ -7,48 +7,46 @@ map-tree-view-component {
 	.tree-root {
 		overflow-y: auto;
 		max-height: 400px;
+
+		div {
+			margin: 0;
+			padding: 0;
+		}
+
+		.tree-element-children {
+			margin-left: 22px;
+		}
 	}
 
-	.tree-root div {
-		margin: 0;
-		padding: 0;
-	}
-
-	.tree-root .tree-element-children {
-		margin-left: 22px;
-	}
-
-	.tree-element-label:hover,
-	.tree-element-label.hovered {
-		background-color: #efefef;
-		border-radius: 2px;
-	}
-
-	.node-type-icon {
-		display: inline-block;
-		width: 14px;
-		margin-left: 2px;
-	}
-
-	.node-type-icon,
-	.eye-icon,
-	.node-name {
+	.tree-element-label {
 		cursor: pointer;
 
 		&:focus {
 			outline: none;
 		}
-	}
 
-	.unary-absolute,
-	.unary-relative {
-		color: #a3a3a3;
-		font-size: 0.8em;
-		margin-top: 1px;
-	}
+		&:hover,
+		&.hovered {
+			background-color: #efefef;
+			border-radius: 2px;
+		}
 
-	.unary-absolute {
-		float: right;
-		margin-right: 5px;
+		.unary-absolute,
+		.unary-relative {
+			color: #a3a3a3;
+			font-size: 0.8em;
+			margin-top: 1px;
+		}
+
+		.unary-absolute {
+			float: right;
+			margin-right: 5px;
+		}
+
+		.node-type-icon {
+			display: inline-block;
+			width: 14px;
+			margin-left: 2px;
+		}
 	}
 }

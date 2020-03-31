@@ -2,12 +2,11 @@ import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode, NodeType } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -33,14 +32,14 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	constructor(
 		private $rootScope: IRootScopeService,
 		private codeMapPreRenderService: CodeMapPreRenderService,
-		private storeService: StoreService
+		private storeService: StoreService,
+		private threeSceneService: ThreeSceneService
 	) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
 	public getMarkingColor() {
-		// TODO: set a 'black' color in settings.mapColors ?
 		let defaultColor = "#000000"
 		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
@@ -71,21 +70,22 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
 	}
 
-	public onFolderClick() {
+	public onClickNode() {
 		this._viewModel.collapsed = !this._viewModel.collapsed
-	}
-
-	public onLabelClick() {
-		this.storeService.dispatch(focusNode(this.node.path))
-	}
-
-	public onEyeClick() {
-		const blacklistItem: BlacklistItem = { path: this.node.path, type: BlacklistType.flatten }
-		if (this.node.visible) {
-			this.storeService.dispatch(addBlacklistItem(blacklistItem))
+		if (this.shouldClearSelection()) {
+			this.threeSceneService.clearSelection()
 		} else {
-			this.storeService.dispatch(removeBlacklistItem(blacklistItem))
+			this.threeSceneService.selectBuilding(this.threeSceneService.getHighlightedBuilding())
 		}
+	}
+
+	private shouldClearSelection(): boolean {
+		if (this._viewModel.collapsed) {
+			const selectedNode = this.threeSceneService.getSelectedBuilding().node
+			const isNodeLeaf = this.node.type === NodeType.FILE
+			return this._viewModel.collapsed && selectedNode.path === this.node.path && selectedNode.isLeaf === isNodeLeaf
+		}
+		return false
 	}
 
 	public isLeaf(node: CodeMapNode = this.node): boolean {

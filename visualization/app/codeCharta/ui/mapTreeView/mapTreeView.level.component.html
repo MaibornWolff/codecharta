@@ -9,8 +9,9 @@
 		ng-mouseenter="$ctrl.onMouseEnter()"
 		ng-mouseleave="$ctrl.onMouseLeave()"
 		ng-right-click="$ctrl.onRightClick($event)"
+		ng-click="$ctrl.onClickNode()"
 	>
-		<span class="node-type-icon" ng-click="$ctrl.onFolderClick()">
+		<span class="node-type-icon">
 			<span
 				role="img"
 				ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.collapsed"
@@ -28,13 +29,8 @@
 			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
 		</span>
 
-		<span class="eye-icon" ng-click="$ctrl.onEyeClick()">
-			<span role="img" ng-if="$ctrl.node.visible" class="fa fa-eye" aria-hidden="true"></span>
-			<span role="img" ng-if="!$ctrl.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
-		</span>
-
-		<span class="node-name {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}" ng-click="$ctrl.onLabelClick()"
-			>{{::$ctrl.node.name}}
+		<span class="node-name {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}">
+			{{::$ctrl.node.name}}
 		</span>
 
 		<span class="unary-relative" ng-if="!$ctrl.isLeaf()">{{::$ctrl.getUnaryPercentage()}}%</span>
