@@ -15,7 +15,10 @@ import _ from "lodash"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { SearchPanelModeActions } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { isActionOfType } from "../../util/reduxHelper"
+import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
+import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 
 const clone = require("rfdc")()
 
@@ -60,7 +63,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
 			!isActionOfType(actionType, IsLoadingMapActions) &&
-			!isActionOfType(actionType, IsLoadingFileActions)
+			!isActionOfType(actionType, IsLoadingFileActions) &&
+			!isActionOfType(actionType, SearchPanelModeActions) &&
+			!isActionOfType(actionType, SortingOrderAscendingActions) &&
+			!isActionOfType(actionType, SortingOptionActions)
 		) {
 			this.debounceRendering()
 		}

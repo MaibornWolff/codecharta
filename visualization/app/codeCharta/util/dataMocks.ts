@@ -1,18 +1,19 @@
 import {
 	AttributeTypeValue,
 	BlacklistItem,
-	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	Edge,
-	EdgeVisibility,
 	FileMeta,
 	FileSelectionState,
 	FileState,
 	MarkedPackage,
 	MetricData,
 	Node,
+	BlacklistType,
+	EdgeVisibility,
 	NodeType,
+	SortingOption,
 	SearchPanelMode,
 	State
 } from "../codeCharta.model"
@@ -50,6 +51,158 @@ export const VALID_NODE: CodeMapNode = {
 					attributes: { rloc: 70, functions: 1000, mcc: 10 }
 				}
 			]
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
+	name: "root",
+	attributes: { unary: 200 },
+	type: NodeType.FOLDER,
+	children: [
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			link: "http://www.google.de"
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
+			children: []
+		},
+		{
+			name: "Folder3",
+			type: NodeType.FOLDER,
+			attributes: { unary: 160 },
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
+	name: "root",
+	attributes: { unary: 200 },
+	type: NodeType.FOLDER,
+	children: [
+		{
+			name: "Folder3",
+			type: NodeType.FOLDER,
+			attributes: { unary: 160 },
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+				}
+			]
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
+			children: []
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			link: "http://www.google.de"
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
+	name: "root",
+	attributes: { unary: 200 },
+	type: NodeType.FOLDER,
+	children: [
+		{
+			name: "Folder3",
+			type: NodeType.FOLDER,
+			attributes: { unary: 160 },
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+				}
+			]
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
+			children: []
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			link: "http://www.google.de"
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
+	name: "root",
+	attributes: { unary: 200 },
+	type: NodeType.FOLDER,
+	children: [
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: { unary: 60 },
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: { unary: 40 },
+			children: []
+		},
+		{
+			name: "Folder3",
+			type: NodeType.FOLDER,
+			attributes: { unary: 160 },
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+				}
+			]
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			link: "http://www.google.de"
 		}
 	]
 }
@@ -627,6 +780,7 @@ export const FILE_STATES: FileState[] = [
 	}
 ]
 
+// @ts-ignore
 export const STATE: State = {
 	fileSettings: {
 		attributeTypes: {
@@ -663,7 +817,8 @@ export const STATE: State = {
 		colorRange: {
 			from: 19,
 			to: 67
-		}
+		},
+		sortingOption: SortingOption.NAME
 	},
 	appSettings: {
 		amountOfTopLabels: 31,
@@ -699,6 +854,7 @@ export const STATE: State = {
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
 		isLoadingFile: true,
+		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.treeView
 	},
 	treeMap: {
@@ -742,6 +898,7 @@ export const DEFAULT_STATE: State = {
 		resetCameraIfNewFileIsLoaded: true,
 		isLoadingMap: true,
 		isLoadingFile: true,
+		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.minimized
 	},
 	dynamicSettings: {
@@ -757,7 +914,8 @@ export const DEFAULT_STATE: State = {
 			to: null
 		},
 		searchPattern: "",
-		searchedNodePaths: []
+		searchedNodePaths: [],
+		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },

@@ -57,6 +57,11 @@ export enum NodeType {
 	FOLDER = "Folder"
 }
 
+export enum SortingOption {
+	NAME = "Name",
+	NUMBER_OF_FILES = "Number of Files"
+}
+
 export interface FileMeta {
 	fileName: string
 	apiVersion: string
@@ -78,6 +83,7 @@ export interface FileSettings {
 }
 
 export interface DynamicSettings {
+	sortingOption: SortingOption
 	areaMetric: string
 	heightMetric: string
 	colorMetric: string
@@ -109,6 +115,7 @@ export interface AppSettings {
 	resetCameraIfNewFileIsLoaded: boolean
 	isLoadingMap: boolean
 	isLoadingFile: boolean
+	sortingOrderAscending: boolean
 	searchPanelMode: SearchPanelMode
 }
 
