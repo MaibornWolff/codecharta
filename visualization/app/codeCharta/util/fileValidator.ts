@@ -35,7 +35,7 @@ export function validate(file: RecursivePartial<ExportCCFile>): ErrorObject[] {
 		return compare.errors
 	}
 
-	if (!hasUniqueChildren(file.nodes[0])) {
+	if (!hasUniqueChildren((file as ExportCCFile).nodes[0])) {
 		return getErrorObject("n/a", { uniqueness: "n/a" }, "node children should be unique by name and nodeType")
 	}
 	return []
