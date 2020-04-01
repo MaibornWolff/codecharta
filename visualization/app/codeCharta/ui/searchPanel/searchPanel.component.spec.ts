@@ -1,14 +1,13 @@
 import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { IRootScopeService, ITimeoutService } from "angular"
+import { IRootScopeService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 
 describe("SearchPanelController", () => {
 	let searchPanelModeController: SearchPanelController
 	let $rootScope: IRootScopeService
-	let $timeout: ITimeoutService
 	let storeService: StoreService
 
 	beforeEach(() => {
@@ -19,43 +18,49 @@ describe("SearchPanelController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.searchPanel")
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		searchPanelModeController = new SearchPanelController($rootScope, $timeout, storeService)
+		searchPanelModeController = new SearchPanelController($rootScope, storeService)
 	}
 
-	describe("Show components selected", () => {
-		it("should set searchPanelMode correctly", () => {
-			let searchPanelMode = SearchPanelMode.treeView
+	describe("constructor", () => {
+		it("should minimize the search panel and not update searchPanelMode", () => {
+			rebuildController()
 
-			searchPanelModeController.onSearchPanelModeChanged(searchPanelMode)
+			expect(searchPanelModeController["_viewModel"].isExpanded).toBeFalsy()
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toBeNull()
+		})
+	})
+
+	describe("onSearchPanelModeChanged", () => {
+		it("should minimize the search panel, but still keep the old searchPanelMode value", () => {
+			searchPanelModeController["_viewModel"].searchPanelMode = SearchPanelMode.treeView
+
+			searchPanelModeController.onSearchPanelModeChanged(SearchPanelMode.minimized)
 
 			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.treeView)
 		})
 
-		it("should set searchPanelMode to minimized", () => {
-			let searchPanelMode = SearchPanelMode.minimized
+		it("should expand the search panel and update the searchPanelMode", () => {
+			searchPanelModeController.onSearchPanelModeChanged(SearchPanelMode.flatten)
 
-			searchPanelModeController.onSearchPanelModeChanged(searchPanelMode)
-
-			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.minimized)
+			expect(searchPanelModeController["_viewModel"].searchPanelMode).toEqual(SearchPanelMode.flatten)
 		})
 	})
 
 	describe("toggle", () => {
 		it("should switch to treeView if minimized", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = SearchPanelMode.minimized
+			searchPanelModeController["_viewModel"].isExpanded = false
 
 			searchPanelModeController.toggle()
 
 			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
 		})
 
-		it("should minimize when opened & clicked", () => {
-			searchPanelModeController["_viewModel"].searchPanelMode = SearchPanelMode.flatten
+		it("should minimize when search panel is expanded", () => {
+			searchPanelModeController["_viewModel"].isExpanded = true
 
 			searchPanelModeController.toggle()
 
