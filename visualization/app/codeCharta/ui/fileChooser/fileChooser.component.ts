@@ -13,6 +13,7 @@ import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { ErrorObject } from "ajv"
+import { resetFiles } from "../../state/store/files/files.actions"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -25,6 +26,7 @@ export class FileChooserController {
 
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
+			this.storeService.dispatch(resetFiles())
 			for (let file of element.files) {
 				let reader = new FileReader()
 				reader.onloadstart = () => {

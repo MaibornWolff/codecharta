@@ -4,7 +4,7 @@ import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { StoreService } from "./state/store.service"
-import { addFile, resetFiles, setSingle } from "./state/store/files/files.actions"
+import { addFile, setSingle } from "./state/store/files/files.actions"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
@@ -15,16 +15,10 @@ export class CodeChartaService {
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
-			let isFirstValidFile = true
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
 				const errors = validate(nameDataPair.content)
 				if (errors.length > 0) {
 					reject(errors)
-				}
-
-				if (isFirstValidFile) {
-					this.storeService.dispatch(resetFiles())
-					isFirstValidFile = false
 				}
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
 			})
