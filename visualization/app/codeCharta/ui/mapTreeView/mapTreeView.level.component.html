@@ -33,10 +33,10 @@
 			{{::$ctrl.node.name}}
 		</span>
 
-		<span class="unary-relative" ng-if="!$ctrl.isLeaf()">{{::$ctrl.getUnaryPercentage()}}%</span>
-		<span class="unary-absolute" ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.isHoveredInCodeMap"
-			>{{::$ctrl.getNodeUnaryValue()}} files</span
-		>
+		<span class="unary-number" ng-if="!$ctrl.isLeaf()">
+			<span ng-if="!$ctrl._viewModel.isHoveredInCodeMap">{{ ::$ctrl.getUnaryPercentage() }}%</span>
+			<span ng-if="$ctrl._viewModel.isHoveredInCodeMap">{{ ::$ctrl.getNodeUnaryValue() }} files</span>
+		</span>
 	</div>
 
 	<div class="tree-element-children tree-element-children-{{::$ctrl.depth?$ctrl.depth:0}}">
