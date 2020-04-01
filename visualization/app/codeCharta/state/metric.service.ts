@@ -53,8 +53,8 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		return this.metricData
 	}
 
-	public isMetricAvailable(metricName: string) {
-		return this.metricData.find(x => x.name == metricName)
+	public isMetricAvailable(metricName: string): boolean {
+		return this.metricData.some(x => x.name == metricName)
 	}
 
 	public getMaxMetricByMetricName(metricName: string): number {
@@ -152,7 +152,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private addUnaryMetric() {
-		if (!this.metricData.find(x => x.name === "unary")) {
+		if (!this.metricData.some(x => x.name === "unary")) {
 			this.metricData.push({
 				name: "unary",
 				maxValue: 1
