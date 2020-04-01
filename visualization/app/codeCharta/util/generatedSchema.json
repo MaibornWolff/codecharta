@@ -10,7 +10,6 @@
 			"type": "object"
 		},
 		"AttributeTypes": {
-			"additionalProperties": false,
 			"properties": {
 				"edges": {
 					"items": {
@@ -28,7 +27,6 @@
 			"type": "object"
 		},
 		"CodeMapNode": {
-			"additionalProperties": false,
 			"properties": {
 				"attributes": {
 					"$ref": "#/definitions/KeyValuePair"
@@ -61,7 +59,7 @@
 					"type": "string"
 				},
 				"type": {
-					"type": "string"
+					"$ref": "#/definitions/NodeType"
 				},
 				"visible": {
 					"type": "boolean"
@@ -71,7 +69,6 @@
 			"type": "object"
 		},
 		"Edge": {
-			"additionalProperties": false,
 			"properties": {
 				"attributes": {
 					"$ref": "#/definitions/KeyValuePair"
@@ -90,7 +87,6 @@
 			"type": "object"
 		},
 		"EdgeMetricCount": {
-			"additionalProperties": false,
 			"properties": {
 				"incoming": {
 					"type": "number"
@@ -107,7 +103,6 @@
 			"type": "string"
 		},
 		"ExportBlacklistItem": {
-			"additionalProperties": false,
 			"properties": {
 				"path": {
 					"type": "string"
@@ -124,7 +119,6 @@
 			"type": "string"
 		},
 		"ExportCCFile": {
-			"additionalProperties": false,
 			"properties": {
 				"apiVersion": {
 					"type": "string"
@@ -170,12 +164,7 @@
 			"type": "object"
 		},
 		"MarkedPackage": {
-			"additionalProperties": false,
 			"properties": {
-				"attributes": {
-					"additionalProperties": {},
-					"type": "object"
-				},
 				"color": {
 					"type": "string"
 				},
@@ -183,8 +172,12 @@
 					"type": "string"
 				}
 			},
-			"required": ["attributes", "color", "path"],
+			"required": ["color", "path"],
 			"type": "object"
+		},
+		"NodeType": {
+			"enum": ["File", "Folder"],
+			"type": "string"
 		}
 	}
 }

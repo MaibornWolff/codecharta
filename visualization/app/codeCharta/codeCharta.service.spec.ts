@@ -126,8 +126,8 @@ describe("codeChartaService", () => {
 						{
 							dataPath: "root",
 							keyword: "n/a",
-							message: "file should contain property 'apiVersion'",
-							params: { missingProperty: "apiVersion" },
+							message: "file should not be empty or invalid",
+							params: { emptyFile: "n/a" },
 							schemaPath: "n/a"
 						}
 					])

@@ -1,9 +1,8 @@
-import { validateApiVersion, validate } from "./util/fileValidator"
+import { validate } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
-import { migrate } from "./util/migration/migration"
 import { StoreService } from "./state/store.service"
 import { addFile, resetFiles, setSingle } from "./state/store/files/files.actions"
 
@@ -18,13 +17,7 @@ export class CodeChartaService {
 		return new Promise((resolve, reject) => {
 			let isFirstValidFile = true
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
-				let errors = validateApiVersion(nameDataPair.content)
-				if (errors.length > 0) {
-					reject(errors)
-				}
-
-				const migratedFile = migrate(nameDataPair.content)
-				errors = validate(migratedFile)
+				const errors = validate(nameDataPair.content)
 				if (errors.length > 0) {
 					reject(errors)
 				}
@@ -33,7 +26,7 @@ export class CodeChartaService {
 					this.storeService.dispatch(resetFiles())
 					isFirstValidFile = false
 				}
-				this.addFile(nameDataPair.fileName, migratedFile)
+				this.addFile(nameDataPair.fileName, nameDataPair.content)
 			})
 			this.storeService.dispatch(setSingle(this.storeService.getState().files.getCCFiles()[0]))
 			resolve()
@@ -78,7 +71,6 @@ export class CodeChartaService {
 		}
 	}
 
-	//TODO: Move this to migration after we found out what version this refers to
 	private potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
 		blacklist.forEach(x => {
 			if (x.type === ExportBlacklistType.hide) {

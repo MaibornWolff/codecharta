@@ -41,11 +41,6 @@ export function validate(file: RecursivePartial<ExportCCFile>): ErrorObject[] {
 	return []
 }
 
-export function validateApiVersion(file: RecursivePartial<ExportCCFile>): ErrorObject[] {
-	const errorObject = getErrorObject("root", { missingProperty: "apiVersion" }, "file should contain property 'apiVersion'")
-	return !file || !file.apiVersion ? errorObject : []
-}
-
 function getErrorObject(dataPath: string, params: { [key: string]: string }, message: string): ErrorObject[] {
 	return [{ keyword: "n/a", dataPath, schemaPath: "n/a", params, message }]
 }

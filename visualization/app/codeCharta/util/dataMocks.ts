@@ -21,7 +21,7 @@ import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
-import { APIVersions, ExportCCFile, ExportCCFile_0_1 } from "../codeCharta.api.model"
+import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { Files } from "../model/files"
 
 export const VALID_NODE: CodeMapNode = {
@@ -375,13 +375,6 @@ export const VALID_EDGE: Edge = {
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
 	apiVersion: APIVersions.ONE_POINT_ONE,
-	nodes: [VALID_NODE]
-}
-
-export const TEST_FILE_CONTENT_0_1: ExportCCFile_0_1 = {
-	fileName: "Sample File",
-	projectName: "Sample Map",
-	apiVersion: APIVersions.ZERO_POINT_ONE,
 	nodes: [VALID_NODE]
 }
 
