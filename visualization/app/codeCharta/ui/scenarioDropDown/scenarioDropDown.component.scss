@@ -18,6 +18,13 @@
 	.scenario-item {
 		display: flex;
 
+		.button-hovering {
+			background-color: unset;
+			&:hover:not([disabled]) {
+				background-color: rgba(158, 158, 158, 0.2);
+			}
+		}
+
 		.action-button {
 			margin-right: 1px;
 			min-width: 13%;
