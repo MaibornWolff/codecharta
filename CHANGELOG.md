@@ -10,6 +10,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - AttributeTypes for tokeiImporter and SCMLogParser #365
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Consistency of AttributeTypes representation #365
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.44.0] - 2020-03-27
+
+### Added 🚀
+
 - Dialog to select between different sorting options #388
 - Button to reverse the current selected sorting #388
 
@@ -19,7 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- Consistency of AttributeTypes representation #365
+- Show file selection in toolBar after excluding or hiding a node instead of an empty toolBar #896
 
 ### Chore 👨‍💻 👩‍💻
 
