@@ -9,6 +9,7 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Node, LayoutAlgorithm } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { MetricService } from "../../state/metric.service"
+import { StreetLayoutGenerator } from "../../util/streetLayoutGenerator"
 
 export class CodeMapRenderService {
 	constructor(
@@ -54,7 +55,7 @@ export class CodeMapRenderService {
 				this.storeService.getState().files.isDeltaState()
 			)
 		} else if (layoutAlgorithm === LayoutAlgorithm.StreetMap) {
-			nodes = TreeMapGenerator.createTreemapNodes(
+			nodes = StreetLayoutGenerator.createStreetLayoutNodes(
 				map,
 				this.storeService.getState(),
 				this.metricService.getMetricData(),
