@@ -14,7 +14,8 @@ import {
 	NodeType,
 	SortingOption,
 	SearchPanelMode,
-	State
+	State,
+	LayoutAlgorithm
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -847,7 +848,8 @@ export const STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
-		searchPanelMode: SearchPanelMode.treeView
+		searchPanelMode: SearchPanelMode.treeView,
+		layoutAlgorithm: LayoutAlgorithm.StreetMap
 	},
 	treeMap: {
 		mapSize: 250
@@ -891,7 +893,8 @@ export const DEFAULT_STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
-		searchPanelMode: SearchPanelMode.minimized
+		searchPanelMode: SearchPanelMode.minimized,
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap
 	},
 	dynamicSettings: {
 		areaMetric: null,

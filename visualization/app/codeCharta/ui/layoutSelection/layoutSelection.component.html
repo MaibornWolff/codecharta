@@ -1,1 +1,5 @@
-<h1>Hello LayoutSelectionComponent!</h1>
+<md-select ng-model="$ctrl._viewModel.layoutAlgorithm" ng-change="$ctrl.applyLayoutAlgorithm()">
+	<md-option ng-repeat="layout in $ctrl._viewModel.layoutAlgorithms" value="{{::layout}}">
+		{{::layout}}
+	</md-option>
+</md-select>

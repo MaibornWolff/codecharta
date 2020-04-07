@@ -130,8 +130,8 @@ export interface AppSettings {
 }
 
 export enum LayoutAlgorithm {
-	SquarifiedTreeMap,
-	StreetMap
+	SquarifiedTreeMap = "Squarified TreeMap",
+	StreetMap = "StreetMap"
 }
 
 export interface TreeMapSettings {
