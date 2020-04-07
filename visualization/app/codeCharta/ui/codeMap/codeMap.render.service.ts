@@ -6,7 +6,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, Node } from "../../codeCharta.model"
+import { CodeMapNode, Node, LayoutAlgorithm } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { MetricService } from "../../state/metric.service"
 
@@ -44,12 +44,23 @@ export class CodeMapRenderService {
 	}
 
 	private getSortedNodes(map: CodeMapNode): Node[] {
-		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(
-			map,
-			this.storeService.getState(),
-			this.metricService.getMetricData(),
-			this.storeService.getState().files.isDeltaState()
-		)
+		let nodes: Node[] = []
+		const layoutAlgorithm = this.storeService.getState().appSettings.layoutAlgorithm
+		if (layoutAlgorithm === LayoutAlgorithm.SquarifiedTreeMap) {
+			nodes = TreeMapGenerator.createTreemapNodes(
+				map,
+				this.storeService.getState(),
+				this.metricService.getMetricData(),
+				this.storeService.getState().files.isDeltaState()
+			)
+		} else if (layoutAlgorithm === LayoutAlgorithm.StreetMap) {
+			nodes = TreeMapGenerator.createTreemapNodes(
+				map,
+				this.storeService.getState(),
+				this.metricService.getMetricData(),
+				this.storeService.getState().files.isDeltaState()
+			)
+		}
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)
 	}
