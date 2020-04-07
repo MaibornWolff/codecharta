@@ -126,6 +126,12 @@ export interface AppSettings {
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
 	searchPanelMode: SearchPanelMode
+	layoutAlgorithm: LayoutAlgorithm
+}
+
+export enum LayoutAlgorithm {
+	SquarifiedTreeMap,
+	StreetMap
 }
 
 export interface TreeMapSettings {

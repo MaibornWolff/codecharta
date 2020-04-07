@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SearchPanelModeService } from "./store/appSettings/searchPanelMode/searchPanelMode.service"
@@ -48,6 +49,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(LayoutAlgorithmService.name), LayoutAlgorithmService)
 	.service(_.camelCase(SortingOptionService.name), SortingOptionService)
 	.service(_.camelCase(SearchPanelModeService.name), SearchPanelModeService)
 	.service(_.camelCase(SortingOrderAscendingService.name), SortingOrderAscendingService)
