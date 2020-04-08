@@ -36,7 +36,7 @@ describe("MetricTypeController", () => {
 	}
 
 	function rebuildController() {
-		metricTypeController = new MetricTypeController($rootScope, metricService, edgeMetricDataService, storeService)
+		metricTypeController = new MetricTypeController($rootScope, metricService, edgeMetricDataService)
 	}
 
 	describe("constructor", () => {

@@ -7,7 +7,6 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { StoreService } from "../../state/store.service"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 
@@ -37,8 +36,7 @@ export class MetricTypeController
 	constructor(
 		private $rootScope: IRootScopeService,
 		private metricService: MetricService,
-		private edgeMetricDataService: EdgeMetricDataService,
-		private storeService: StoreService
+		private edgeMetricDataService: EdgeMetricDataService
 	) {
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
@@ -49,19 +47,19 @@ export class MetricTypeController
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
-		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(areaMetric, this.storeService.getState())
+		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(areaMetric)
 	}
 
 	public onHeightMetricChanged(heightMetric: string) {
-		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(heightMetric, this.storeService.getState())
+		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(heightMetric)
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric, this.storeService.getState())
+		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric)
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric, this.storeService.getState())
+		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric)
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {

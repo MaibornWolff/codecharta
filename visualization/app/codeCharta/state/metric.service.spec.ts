@@ -1,8 +1,8 @@
 import "./state.module"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { MetricData, AttributeTypeValue, State } from "../codeCharta.model"
-import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods, STATE } from "../util/dataMocks"
+import { MetricData, AttributeTypeValue } from "../codeCharta.model"
+import { STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../util/dataMocks"
 import { MetricService } from "./metric.service"
 import { NodeDecorator } from "../util/nodeDecorator"
 import _ from "lodash"
@@ -10,6 +10,7 @@ import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.servi
 import { StoreService } from "./store.service"
 import { addFile, resetFiles, setSingle } from "./store/files/files.actions"
 import { FilesService } from "./store/files/files.service"
+import { setState } from "./store/state.actions"
 
 describe("MetricService", () => {
 	let metricService: MetricService
@@ -17,7 +18,6 @@ describe("MetricService", () => {
 	let storeService: StoreService
 
 	let metricData: MetricData[]
-	let state: State
 
 	beforeEach(() => {
 		restartSystem()
@@ -42,7 +42,6 @@ describe("MetricService", () => {
 		storeService.dispatch(addFile(deltaB))
 
 		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
-		state = _.cloneDeep(STATE)
 	}
 
 	function rebuildService() {
@@ -117,20 +116,24 @@ describe("MetricService", () => {
 	})
 
 	describe("getAttributeTypeByMetric", () => {
+		beforeEach(() => {
+			storeService.dispatch(setState(STATE))
+		})
+
 		it("should return absolute", () => {
-			const actual = metricService.getAttributeTypeByMetric("rloc", state)
+			const actual = metricService.getAttributeTypeByMetric("rloc")
 
 			expect(actual).toBe(AttributeTypeValue.absolute)
 		})
 
 		it("should return relative", () => {
-			const actual = metricService.getAttributeTypeByMetric("coverage", state)
+			const actual = metricService.getAttributeTypeByMetric("coverage")
 
 			expect(actual).toBe(AttributeTypeValue.relative)
 		})
 
 		it("should return undefined if attributeType not available", () => {
-			const actual = metricService.getAttributeTypeByMetric("notfound", state)
+			const actual = metricService.getAttributeTypeByMetric("notfound")
 
 			expect(actual).toBeUndefined()
 		})
