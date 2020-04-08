@@ -76,9 +76,6 @@ export class StreetLayoutHelper {
 		const length = streetLayoutNode.rect.height
 		const x0 = streetLayoutNode.rect.topLeft.x
 		const y0 = streetLayoutNode.rect.topLeft.y
-		if (streetLayoutNode.zOffset < 0) {
-			console.log("wut")
-		}
 		const z0 = streetLayoutNode.zOffset * StreetLayoutHelper.FOLDER_HEIGHT
 
 		return {

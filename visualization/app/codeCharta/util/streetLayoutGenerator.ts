@@ -8,6 +8,8 @@ import Rectangle from "./rectangle"
 import SliceDiceTreemap from "./treemap/SliceDiceTreemap"
 import Point from "./point"
 import { CodeMapHelper } from "./codeMapHelper"
+import SquarifiedTreemap from "./treemap/squarifiedTreemap"
+import Treemap from "./treemap/Treemap"
 
 export interface StreetLayoutValuedCodeMapNode {
 	data: CodeMapNode
@@ -19,6 +21,11 @@ export interface StreetLayoutValuedCodeMapNode {
 enum StreetOrientation {
 	Horizontal,
 	Vertical
+}
+
+enum TreemapAlgorithm {
+	Squarified,
+	SliceAndDice
 }
 
 export class StreetLayoutGenerator {
@@ -62,8 +69,8 @@ export class StreetLayoutGenerator {
 			if (StreetLayoutGenerator.isNodeLeaf(child)) {
 				children.push(new House(child))
 			} else {
-				if (depth >= 10) {
-					const treemap = new SliceDiceTreemap(child)
+				if (depth >= 3) {
+					const treemap = StreetLayoutGenerator.createTreemap(child, TreemapAlgorithm.Squarified)
 					children.push(treemap)
 				} else {
 					const streetChildren = StreetLayoutGenerator.createBoxes(child, metricName, state, 1 - orientation, depth + 1)
@@ -91,6 +98,17 @@ export class StreetLayoutGenerator {
 			return new HorizontalStreet(node, children, depth)
 		} else {
 			return new VerticalStreet(node, children, depth)
+		}
+	}
+
+	private static createTreemap(node: CodeMapNode, treemapAlgorithm: TreemapAlgorithm): Treemap {
+		switch (treemapAlgorithm) {
+			case TreemapAlgorithm.SliceAndDice:
+				return new SliceDiceTreemap(node)
+			case TreemapAlgorithm.Squarified:
+				return new SquarifiedTreemap(node)
+			default:
+				throw new Error("Treemap Algorithm not specified.")
 		}
 	}
 }
