@@ -44,11 +44,10 @@ export class AttributeTypeSelectorController {
 	}
 
 	private setAggregationSymbol() {
-		const state = this.storeService.getState()
 		const type =
 			this.type === "nodes"
-				? this.metricService.getAttributeTypeByMetric(this.metric, state)
-				: this.edgeMetricDataService.getAttributeTypeByMetric(this.metric, state)
+				? this.metricService.getAttributeTypeByMetric(this.metric)
+				: this.edgeMetricDataService.getAttributeTypeByMetric(this.metric)
 		switch (type) {
 			case AttributeTypeValue.relative:
 				this._viewModel.aggregationSymbol = "x͂"

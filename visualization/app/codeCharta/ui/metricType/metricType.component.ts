@@ -9,6 +9,7 @@ import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/d
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
+import { StoreService } from "../../state/store.service"
 
 export class MetricTypeController
 	implements
@@ -37,7 +38,8 @@ export class MetricTypeController
 	constructor(
 		private $rootScope: IRootScopeService,
 		private metricService: MetricService,
-		private edgeMetricDataService: EdgeMetricDataService
+		private edgeMetricDataService: EdgeMetricDataService,
+		private storeService: StoreService
 	) {
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
@@ -73,11 +75,11 @@ export class MetricTypeController
 	}
 
 	public onMetricDataAdded() {
-		const store = this.storeService.getState()
-		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(store.dynamicSettings.areaMetric, store)
-		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(store.dynamicSettings.heightMetric, store)
-		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(store.dynamicSettings.colorMetric, store)
-		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(store.dynamicSettings.edgeMetric, store)
+		const state = this.storeService.getState()
+		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings.areaMetric)
+		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings.heightMetric)
+		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings.colorMetric)
+		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings.edgeMetric)
 	}
 }
 
