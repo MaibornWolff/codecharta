@@ -1,4 +1,3 @@
-import { StreetLayoutHelper } from "./streetLayoutHelper"
 import { CodeMapNode, MetricData, Node, State, BlacklistType } from "../codeCharta.model"
 import BoundingBox from "./streetLayout/boundingBox"
 import VerticalStreet from "./streetLayout/verticalStreet"
@@ -10,6 +9,7 @@ import Point from "./point"
 import { CodeMapHelper } from "./codeMapHelper"
 import SquarifiedTreemap from "./treemap/squarifiedTreemap"
 import Treemap from "./treemap/treemap"
+import { LayoutNode, TreeMapHelper } from "./treeMapHelper"
 
 export interface StreetLayoutValuedCodeMapNode {
 	data: CodeMapNode
@@ -40,10 +40,10 @@ export class StreetLayoutGenerator {
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
 		const layoutNodes: StreetLayoutValuedCodeMapNode[] = rootStreet.layout(new Point(0, 0), margin)
 		const maxHeight = metricData.find(x => x.name == state.dynamicSettings.heightMetric).maxValue
-		const heightScale = (rootStreet.width * rootStreet.height) / StreetLayoutGenerator.HEIGHT_DIVISOR / maxHeight
+		const heightScale = (rootStreet.width + rootStreet.height) / 2 / StreetLayoutGenerator.HEIGHT_DIVISOR / maxHeight
 
 		return layoutNodes.map(streetLayoutNode => {
-			return StreetLayoutHelper.createNode(streetLayoutNode, heightScale, maxHeight, state, isDeltaState)
+			return TreeMapHelper.buildNodeFrom(streetLayoutNode as LayoutNode, heightScale, maxHeight, state, isDeltaState)
 		})
 	}
 
@@ -76,18 +76,6 @@ export class StreetLayoutGenerator {
 			}
 		}
 		return children
-	}
-
-	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
-		node.visible = visibility
-
-		if (!StreetLayoutGenerator.isNodeLeaf(node)) {
-			for (const child of node.children) {
-				child.visible = visibility
-				StreetLayoutGenerator.setVisibilityOfNodeAndDescendants(child, visibility)
-			}
-		}
-		return node
 	}
 
 	private static createStreet(node: CodeMapNode, orientation: StreetOrientation, children: BoundingBox[], depth: number) {

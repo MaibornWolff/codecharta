@@ -1,8 +1,10 @@
 import * as d3 from "d3"
 import { hierarchy, HierarchyNode, TreemapLayout } from "d3"
-import { TreeMapHelper } from "./treeMapHelper"
+import { LayoutNode, TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
 import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
+import Rectangle from "./rectangle"
+import Point from "./point"
 
 export interface SquarifiedValuedCodeMapNode {
 	data: CodeMapNode
@@ -25,7 +27,8 @@ export class TreeMapGenerator {
 		const heightScale = (s.treeMap.mapSize * 2) / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
 		const nodesAsArray: SquarifiedValuedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
-			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState)
+			const layoutNode: LayoutNode = this.convertToLayoutNode(squarifiedNode)
+			return TreeMapHelper.buildNodeFrom(layoutNode, heightScale, maxHeight, s, isDeltaState)
 		})
 	}
 
@@ -43,6 +46,18 @@ export class TreeMapGenerator {
 			.paddingInner(padding)
 
 		return treeMap(hierarchy.sum(node => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode
+	}
+
+	private static convertToLayoutNode(squarifiedNode: SquarifiedValuedCodeMapNode): LayoutNode {
+		const depth: number = squarifiedNode.data.path.split("/").length - 2
+		const length = squarifiedNode.y1 - squarifiedNode.y0
+		const width = squarifiedNode.x1 - squarifiedNode.x0
+		return {
+			data: squarifiedNode.data,
+			value: squarifiedNode.value,
+			rect: new Rectangle(new Point(squarifiedNode.x0, squarifiedNode.y0), width, length),
+			zOffset: depth
+		}
 	}
 
 	private static getNodesAsArray(node: SquarifiedValuedCodeMapNode): SquarifiedValuedCodeMapNode[] {

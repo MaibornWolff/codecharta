@@ -19,4 +19,4 @@ export function setLayoutAlgorithm(layoutAlgorithm: LayoutAlgorithm = defaultLay
 	}
 }
 
-export const defaultLayoutAlgorithm: LayoutAlgorithm = LayoutAlgorithm.SquarifiedTreeMap
+export const defaultLayoutAlgorithm: LayoutAlgorithm = LayoutAlgorithm.StreetMap
