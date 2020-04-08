@@ -35,8 +35,8 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 			.map(x => x.file)
 			.map(x => x.settings.fileSettings.attributeTypes)
 
-		const newAttributeTypes = getMergedAttributeTypes(allAttributeTypes)
-		this.storeService.dispatch(setAttributeTypes(newAttributeTypes))
+		const mergedAttributeTypes = getMergedAttributeTypes(allAttributeTypes)
+		this.storeService.dispatch(setAttributeTypes(mergedAttributeTypes))
 	}
 
 	private select() {

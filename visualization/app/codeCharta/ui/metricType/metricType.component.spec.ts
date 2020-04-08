@@ -62,7 +62,7 @@ describe("MetricTypeController", () => {
 
 	describe("onAreaMetricChanged", () => {
 		it("should set the areaMetricType to absolute", () => {
-			storeService.dispatch(setAttributeTypes({ nodes: [{ rloc: AttributeTypeValue.absolute }], edges: [] }))
+			storeService.dispatch(setAttributeTypes({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} }))
 
 			metricTypeController.onAreaMetricChanged("rloc")
 
@@ -72,7 +72,7 @@ describe("MetricTypeController", () => {
 
 	describe("onHeightMetricChanged", () => {
 		it("should set the heightMetricType to absolute", () => {
-			storeService.dispatch(setAttributeTypes({ nodes: [{ mcc: AttributeTypeValue.absolute }], edges: [] }))
+			storeService.dispatch(setAttributeTypes({ nodes: { mcc: AttributeTypeValue.absolute }, edges: {} }))
 
 			metricTypeController.onHeightMetricChanged("mcc")
 
@@ -82,7 +82,7 @@ describe("MetricTypeController", () => {
 
 	describe("onColorMetricChanged", () => {
 		it("should set the colorMetricType to relative", () => {
-			storeService.dispatch(setAttributeTypes({ nodes: [{ coverage: AttributeTypeValue.relative }], edges: [] }))
+			storeService.dispatch(setAttributeTypes({ nodes: { coverage: AttributeTypeValue.relative }, edges: {} }))
 
 			metricTypeController.onColorMetricChanged("coverage")
 

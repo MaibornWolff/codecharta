@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
+import de.maibornwolff.codecharta.model.AttributeType
 
 class AverageCodeChurnPerCommit: Metric {
     private var absoluteCodeChurn: Long = 0
@@ -28,5 +29,9 @@ class AverageCodeChurnPerCommit: Metric {
 
     override fun value(): Number {
         return if (numberOfNontrivialCommits > 0) absoluteCodeChurn() / numberOfNontrivialCommits else 0L
+    }
+
+    override fun attributeType(): AttributeType {
+        return AttributeType.relative
     }
 }

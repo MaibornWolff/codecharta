@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- AttributeTypes for tokeiImporter and SCMLogParser #365
+
 ### Changed
 
 ### Removed 🗑
 
 ### Fixed 🐞
+
+- Consistency of AttributeTypes representation #365
 
 ### Chore 👨‍💻 👩‍💻
 

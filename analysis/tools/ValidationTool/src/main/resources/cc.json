@@ -3,11 +3,7 @@
   "title": "CodeCharta visualization data",
   "description": "data used for visualization",
   "type": "object",
-  "required": [
-    "projectName",
-    "nodes",
-    "apiVersion"
-  ],
+  "required": ["projectName", "nodes", "apiVersion"],
   "properties": {
     "projectName": {
       "title": "project name",
@@ -35,25 +31,14 @@
     },
     "attributeTypes": {
       "title": "list of nodes and edges attributeTypes",
-      "type": "object",
-      "minItems": 1,
-      "items": {
-        "type": "array",
-        "minItems": 1,
-        "items": {
-          "$ref": "#/definitions/attributesType"
-        }
-      }
+      "$ref": "#/definitions/attributesType"
     }
   },
   "definitions": {
     "node": {
       "title": "nodes",
       "type": "object",
-      "required": [
-        "name",
-        "type"
-      ],
+      "required": ["name", "type"],
       "properties": {
         "name": {
           "title": "name of node",
@@ -80,10 +65,7 @@
     "edge": {
       "title": "edge between nodes",
       "type": "object",
-      "required": [
-        "fromNodeName",
-        "toNodeName"
-      ],
+      "required": ["fromNodeName", "toNodeName"],
       "properties": {
         "fromNodeName": {
           "title": "node where the edge comes from",
@@ -125,16 +107,28 @@
       }
     },
     "attributesType": {
-      "title": "attributesType list",
+      "title": "attributesTypes",
       "type": "object",
       "properties": {
-        "sum": {
-          "title": "sum of aggregated attribute numbers",
-          "type": "number"
+        "nodes": {
+          "title": "attributeTypes",
+          "description": "attributeTypes, interpreted as map<string,string>",
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z0-9_]+$": {
+              "type": "string"
+            }
+          }
         },
-        "average": {
-          "title": "average of aggregated attribute numbers",
-          "type": "number"
+        "edges": {
+          "title": "attributeTypes",
+          "description": "attributeTypes, interpreted as map<string,string>",
+          "type": "object",
+          "patternProperties": {
+            "^[A-Za-z0-9_]+$": {
+              "type": "string"
+            }
+          }
         }
       }
     }
