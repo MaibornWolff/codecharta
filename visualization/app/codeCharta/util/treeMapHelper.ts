@@ -2,7 +2,7 @@ import { CodeMapHelper } from "./codeMapHelper"
 import { Node, CodeMapNode, BlacklistItem, BlacklistType, State } from "../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import Rectangle from "./rectangle"
+import Rectangle from "./algorithm/rectangle"
 
 export interface LayoutNode {
 	data: CodeMapNode
