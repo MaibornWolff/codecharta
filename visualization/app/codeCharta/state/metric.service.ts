@@ -1,17 +1,7 @@
-import {
-	BlacklistItem,
-	BlacklistType,
-	CodeMapNode,
-	FileState,
-	MetricData,
-	AttributeTypeValue,
-	State,
-	AttributeTypes
-} from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, FileState, MetricData, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
-import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
 import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
@@ -67,8 +57,8 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		return metric ? metric.maxValue : undefined
 	}
 
-	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
-		return state.fileSettings.attributeTypes.nodes[metricName]
+	public getAttributeTypeByMetric(metricName: string): AttributeTypeValue {
+		return this.storeService.getState().fileSettings.attributeTypes.nodes[metricName]
 	}
 
 	private setNewMetricData() {
