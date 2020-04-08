@@ -17,6 +17,7 @@ export class LayoutSelectionController implements LayoutAlgorithmSubscriber {
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+		this.onLayoutAlgorithmChanged(this.storeService.getState().appSettings.layoutAlgorithm)
 		this._viewModel.layoutAlgorithms = _.values(LayoutAlgorithm)
 	}
 
