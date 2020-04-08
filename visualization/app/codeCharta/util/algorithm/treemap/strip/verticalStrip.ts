@@ -1,15 +1,15 @@
 import Strip from "./strip"
-import { CodeMapNode } from "../../../codeCharta.model"
 import Rectangle from "../../rectangle"
-import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Point from "../../point"
+import { CodeMapNode } from "../../../../codeCharta.model"
+import { StreetLayoutValuedCodeMapNode } from "../../../streetLayoutGenerator"
 
-export enum HorizontalOrder {
-	leftToRight,
-	rightToLeft
+export enum VerticalOrder {
+	topToBottom,
+	bottomToTop
 }
 
-export default class HorizontalStrip extends Strip {
+export default class VerticalStrip extends Strip {
 	constructor(nodes: CodeMapNode[]) {
 		super(nodes)
 	}
@@ -20,40 +20,40 @@ export default class HorizontalStrip extends Strip {
 		metricName: string,
 		currentTreemapDepth: number,
 		margin: number,
-		order: HorizontalOrder = HorizontalOrder.leftToRight
+		order: VerticalOrder = VerticalOrder.topToBottom
 	): StreetLayoutValuedCodeMapNode[] {
-		let offsetX = rect.topLeft.x
+		let offsetY = rect.topLeft.y
 
-		const nodes = order === HorizontalOrder.leftToRight ? this.nodes : this.nodes.reverse()
+		const nodes = order === VerticalOrder.topToBottom ? this.nodes : this.nodes.reverse()
 		const rootArea = rect.area()
-		const width = rect.width
-		const height = this.totalScaledSize(nodes, metricName, rootSize, rootArea) / width
+		const height = rect.height
+		const width = this.totalScaledSize(nodes, metricName, rootSize, rootArea) / height
 		const stripNodes: StreetLayoutValuedCodeMapNode[] = []
 
 		for (const node of nodes) {
 			const nodeSize = this.scaledSize(node, rootSize, rootArea, metricName)
-			const nodeWidth = height > 0 ? nodeSize / height : 0
-			const newRect = new Rectangle(new Point(offsetX, rect.topLeft.y), nodeWidth, height)
+			const nodeHeight = width > 0 ? nodeSize / width : 0
+			const newRect = new Rectangle(new Point(rect.topLeft.x, offsetY), width, nodeHeight)
 			stripNodes.push({
 				data: node,
 				value: node.type === "File" ? rootSize : 0,
-				rect: node.children && node.children.length > 0 ? this.applyNodeMargin(newRect, margin) : newRect,
+				rect: this.applyNodeMargin(newRect, margin),
 				zOffset: currentTreemapDepth
 			})
-			offsetX += nodeWidth
+			offsetY += nodeHeight
 		}
 		return stripNodes
 	}
 
 	public worstAspectRatio(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string): number {
-		const width = rect.width
+		const height = rect.height
 		const rootArea = rect.area()
 		const totalSize = this.totalScaledSize(nodes, metricName, rootSize, rootArea)
 		const stripMin = this.min(nodes, metricName, rootSize, rootArea)
 		const stripMax = this.max(nodes, metricName, rootSize, rootArea)
-		const widthSquared = Math.pow(width, 2)
+		const heightSquared = Math.pow(height, 2)
 		const totalSizeSquared = Math.pow(totalSize, 2)
 
-		return Math.max((widthSquared * stripMax) / totalSizeSquared, totalSizeSquared / (widthSquared * stripMin))
+		return Math.max((heightSquared * stripMax) / totalSizeSquared, totalSizeSquared / (heightSquared * stripMin))
 	}
 }

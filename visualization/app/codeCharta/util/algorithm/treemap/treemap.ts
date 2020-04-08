@@ -1,8 +1,8 @@
 import BoundingBox from "../streetLayout/boundingBox"
-import { CodeMapNode } from "../../codeCharta.model"
-import { StreetLayoutValuedCodeMapNode } from "../streetLayoutGenerator"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Point from "../point"
-import { StreetLayoutHelper } from "../streetLayoutHelper"
+import { StreetLayoutHelper } from "../../streetLayoutHelper"
 
 export default abstract class Treemap extends BoundingBox {
 	protected treemapNodes: StreetLayoutValuedCodeMapNode[] = []

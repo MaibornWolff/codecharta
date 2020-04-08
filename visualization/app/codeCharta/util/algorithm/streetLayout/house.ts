@@ -1,9 +1,9 @@
 import BoundingBox from "./boundingBox"
-import { CodeMapNode } from "../../codeCharta.model"
-import { StreetLayoutValuedCodeMapNode } from "../streetLayoutGenerator"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Point from "../point"
 import Rectangle from "../rectangle"
-import { StreetLayoutHelper } from "../streetLayoutHelper"
+import { StreetLayoutHelper } from "../../streetLayoutHelper"
 
 export default class House extends BoundingBox {
 	constructor(node: CodeMapNode) {

@@ -1,9 +1,9 @@
 import Treemap from "./treemap"
-import { CodeMapNode } from "../../codeCharta.model"
-import { StreetLayoutValuedCodeMapNode } from "../streetLayoutGenerator"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Point from "../point"
 import Rectangle from "../rectangle"
-import { StreetLayoutHelper } from "../streetLayoutHelper"
+import { StreetLayoutHelper } from "../../streetLayoutHelper"
 
 export default class SliceDiceTreemap extends Treemap {
 	protected treemapNodes: StreetLayoutValuedCodeMapNode[] = []

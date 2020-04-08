@@ -1,8 +1,8 @@
-import { CodeMapNode } from "../../../codeCharta.model"
 import Rectangle from "../../rectangle"
-import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
-import { StreetLayoutHelper } from "../../streetLayoutHelper"
 import Point from "../../point"
+import { CodeMapNode } from "../../../../codeCharta.model"
+import { StreetLayoutValuedCodeMapNode } from "../../../streetLayoutGenerator"
+import { StreetLayoutHelper } from "../../../streetLayoutHelper"
 
 export default abstract class Strip {
 	public nodes: CodeMapNode[] = []

@@ -1,11 +1,11 @@
 import Street from "./street"
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
 import Point from "../point"
-import { StreetLayoutValuedCodeMapNode } from "../streetLayoutGenerator"
+import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Rectangle from "../rectangle"
 import VerticalStreet, { VerticalOrientation } from "./verticalStreet"
 import BoundingBox from "./boundingBox"
-import { StreetLayoutHelper } from "../streetLayoutHelper"
+import { StreetLayoutHelper } from "../../streetLayoutHelper"
 
 export enum HorizontalOrientation {
 	RIGHT,

@@ -1,7 +1,7 @@
 import BoundingBox from "./boundingBox"
 import Rectangle from "../rectangle"
 import Point from "../point"
-import { StreetLayoutValuedCodeMapNode } from "../streetLayoutGenerator"
+import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 
 export default abstract class Street extends BoundingBox {
 	public streetRect: Rectangle | undefined

@@ -1,6 +1,6 @@
-import { CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../../codeCharta.model"
 import Point from "../point"
-import { StreetLayoutValuedCodeMapNode } from "../streetLayoutGenerator"
+import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 
 export default abstract class BoundingBox {
 	public height: number = 0

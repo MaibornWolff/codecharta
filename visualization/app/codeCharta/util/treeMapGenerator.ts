@@ -3,8 +3,8 @@ import { hierarchy, HierarchyNode, TreemapLayout } from "d3"
 import { LayoutNode, TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
 import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
-import Rectangle from "./rectangle"
-import Point from "./point"
+import Rectangle from "./algorithm/rectangle"
+import Point from "./algorithm/point"
 
 export interface SquarifiedValuedCodeMapNode {
 	data: CodeMapNode
