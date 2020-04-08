@@ -81,8 +81,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	public getAttributeTypeByMetric(metricName: string): AttributeTypeValue {
-		const attributeType = this.storeService.getState().fileSettings.attributeTypes.edges[metricName]
-		return !!attributeType ? attributeType : null
+		return this.storeService.getState().fileSettings.attributeTypes.edges[metricName]
 	}
 
 	private calculateMetrics(): MetricData[] {
