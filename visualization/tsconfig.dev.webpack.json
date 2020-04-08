@@ -1,0 +1,4 @@
+{
+	"extends": "./tsconfig.webpack.json",
+	"exclude": ["app/codeCharta/util/dataMocks.ts"]
+}

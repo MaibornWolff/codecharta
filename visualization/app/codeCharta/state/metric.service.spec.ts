@@ -129,10 +129,10 @@ describe("MetricService", () => {
 			expect(actual).toBe(AttributeTypeValue.relative)
 		})
 
-		it("should return null", () => {
+		it("should return undefined if attributeType not available", () => {
 			const actual = metricService.getAttributeTypeByMetric("notfound", state)
 
-			expect(actual).toBeNull()
+			expect(actual).toBeUndefined()
 		})
 	})
 

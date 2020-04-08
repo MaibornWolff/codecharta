@@ -102,6 +102,7 @@ export class CodeMapMouseEventService
 				this.threeSceneService.clearSelection()
 			}
 		}
+		this.unhoverBuilding()
 	}
 
 	public updateHovering() {
