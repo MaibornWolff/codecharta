@@ -68,8 +68,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
-		const attributeType = state.fileSettings.attributeTypes.nodes[metricName]
-		return !!attributeType ? attributeType : null
+		return state.fileSettings.attributeTypes.nodes[metricName]
 	}
 
 	private setNewMetricData() {

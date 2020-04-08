@@ -25,6 +25,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.44.0] - 2020-03-27
+
+### Added 🚀
+
+- Dialog to select between different sorting options #388
+- Button to reverse the current selected sorting #388
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Show file selection in toolBar after excluding or hiding a node instead of an empty toolBar #896
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.43.0] - 2020-03-20
 
 ### Added 🚀
