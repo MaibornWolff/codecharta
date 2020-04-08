@@ -1,51 +1,39 @@
-import * as d3 from "d3"
-import { hierarchy, HierarchyNode, TreemapLayout } from "d3"
+import { hierarchy, treemap, HierarchyNode, HierarchyRectangularNode, TreemapLayout } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
 import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
 
-export interface SquarifiedValuedCodeMapNode {
-	data: CodeMapNode
-	children?: SquarifiedValuedCodeMapNode[]
-	parent?: SquarifiedValuedCodeMapNode
-	value: number
-	x0: number
-	y0: number
-	x1: number
-	y1: number
-}
+export interface SquarifiedCodeMapNode extends HierarchyRectangularNode<CodeMapNode> {}
 
 export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
-	private static HEIGHT_DIVISOR = 1
 
 	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
-		const squarifiedTreeMap: SquarifiedValuedCodeMapNode = this.getSquarifiedTreeMap(map, s)
+		const squarifiedTreeMap: SquarifiedCodeMapNode = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
-		const heightScale = (s.treeMap.mapSize * 2) / TreeMapGenerator.HEIGHT_DIVISOR / maxHeight
-		const nodesAsArray: SquarifiedValuedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
+		const heightScale = (s.treeMap.mapSize * 2) / maxHeight
+		const nodesAsArray: SquarifiedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
 			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState)
 		})
 	}
 
-	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedValuedCodeMapNode {
-		let hierarchy: HierarchyNode<CodeMapNode> = d3.hierarchy<CodeMapNode>(map)
-		const nodeLeafs: CodeMapNode[] = hierarchy.descendants().map(d => d.data)
+	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedCodeMapNode {
+		const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
+		const nodeLeafs: CodeMapNode[] = hierarchyNode.descendants().map(d => d.data)
 		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs, s.fileSettings.blacklist)
-		const nodesPerSide: number = 2 * Math.sqrt(hierarchy.descendants().length - blacklisted)
+		const nodesPerSide: number = 2 * Math.sqrt(hierarchyNode.descendants().length - blacklisted)
 		const mapLength: number = s.treeMap.mapSize * 2 + nodesPerSide * s.dynamicSettings.margin
 		const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
-		let treeMap: TreemapLayout<CodeMapNode> = d3
-			.treemap<CodeMapNode>()
+		let treeMap: TreemapLayout<CodeMapNode> = treemap<CodeMapNode>()
 			.size([mapLength, mapLength])
 			.paddingOuter(padding)
 			.paddingInner(padding)
 
-		return treeMap(hierarchy.sum(node => this.calculateValue(node, s))) as SquarifiedValuedCodeMapNode
+		return treeMap(hierarchyNode.sum(node => this.calculateAreaValue(node, s)))
 	}
 
-	private static getNodesAsArray(node: SquarifiedValuedCodeMapNode): SquarifiedValuedCodeMapNode[] {
+	private static getNodesAsArray(node: SquarifiedCodeMapNode): SquarifiedCodeMapNode[] {
 		let nodes = [node]
 		if (node.children) {
 			node.children.forEach(child => nodes.push(...this.getNodesAsArray(child)))
@@ -53,7 +41,7 @@ export class TreeMapGenerator {
 		return nodes
 	}
 
-	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean) {
+	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean): CodeMapNode {
 		node.visible = visibility
 		hierarchy<CodeMapNode>(node)
 			.descendants()
@@ -65,7 +53,7 @@ export class TreeMapGenerator {
 		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
 
-	private static calculateValue(node: CodeMapNode, s: State): number {
+	private static calculateAreaValue(node: CodeMapNode, s: State): number {
 		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
 			return 0
 		}
