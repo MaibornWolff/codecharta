@@ -1,4 +1,4 @@
-import Strip from "./Strip"
+import Strip from "./strip"
 import { CodeMapNode } from "../../../codeCharta.model"
 import Rectangle from "../../rectangle"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
@@ -19,6 +19,7 @@ export default class HorizontalStrip extends Strip {
 		rootSize: number,
 		metricName: string,
 		currentTreemapDepth: number,
+		margin: number,
 		order: HorizontalOrder = HorizontalOrder.leftToRight
 	): StreetLayoutValuedCodeMapNode[] {
 		let offsetX = rect.topLeft.x
@@ -36,7 +37,7 @@ export default class HorizontalStrip extends Strip {
 			stripNodes.push({
 				data: node,
 				value: node.type === "File" ? rootSize : 0,
-				rect: newRect,
+				rect: node.children && node.children.length > 0 ? this.applyNodeMargin(newRect, margin) : newRect,
 				zOffset: currentTreemapDepth
 			})
 			offsetX += nodeWidth

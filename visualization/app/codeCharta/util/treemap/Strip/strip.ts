@@ -2,6 +2,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import Rectangle from "../../rectangle"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import { StreetLayoutHelper } from "../../streetLayoutHelper"
+import Point from "../../point"
 
 export default abstract class Strip {
 	public nodes: CodeMapNode[] = []
@@ -15,7 +16,8 @@ export default abstract class Strip {
 		rootSize: number,
 		metricName: string,
 		currentTreemapDepth: number,
-		order?: Number
+		margin: number,
+		order?: number
 	): StreetLayoutValuedCodeMapNode[]
 
 	public abstract worstAspectRatio(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, metricName: string): number
@@ -54,5 +56,12 @@ export default abstract class Strip {
 		const size = StreetLayoutHelper.calculateSize(node, metricName)
 		const scale = parentArea / parentSize
 		return scale * size
+	}
+
+	protected applyNodeMargin(rect: Rectangle, margin: number): Rectangle {
+		const topLeft = new Point(rect.topLeft.x + margin, rect.topLeft.y + margin)
+		const width = rect.width - 2 * margin
+		const height = rect.height - 2 * margin
+		return new Rectangle(topLeft, width, height)
 	}
 }

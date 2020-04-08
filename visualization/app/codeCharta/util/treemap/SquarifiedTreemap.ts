@@ -1,19 +1,19 @@
-import Treemap from "./Treemap"
+import Treemap from "./treemap"
 import { CodeMapNode } from "../../codeCharta.model"
 import Point from "../point"
 import { StreetLayoutValuedCodeMapNode } from "../streetLayoutGenerator"
 import Rectangle from "../rectangle"
 import { StreetLayoutHelper } from "../streetLayoutHelper"
-import HorizontalStrip from "./Strip/horizontalStrip"
-import VerticalStrip from "./Strip/verticalStrip"
-import Strip from "./Strip/strip"
+import HorizontalStrip from "./strip/horizontalStrip"
+import VerticalStrip from "./strip/verticalStrip"
+import Strip from "./strip/strip"
 
 export default class SquarifiedTreemap extends Treemap {
 	constructor(rootNode: CodeMapNode) {
 		super(rootNode)
 	}
 
-	public layout(origin: Point = new Point(0, 0)): StreetLayoutValuedCodeMapNode[] {
+	public layout(origin: Point = new Point(0, 0), margin: number): StreetLayoutValuedCodeMapNode[] {
 		const rectangle = new Rectangle(origin, this.width, this.height)
 		const rootNode: StreetLayoutValuedCodeMapNode = {
 			data: this.node,
@@ -28,12 +28,12 @@ export default class SquarifiedTreemap extends Treemap {
 		if (children.length === 0) {
 			return this.treemapNodes
 		}
-		this.createNodes(children, rectangle, this.metricValue, 1)
+		this.createNodes(children, rectangle, this.metricValue, 1, margin)
 
 		return this.treemapNodes
 	}
 
-	protected createNodes(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, currentTreemapDepth: number): void {
+	protected createNodes(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, currentTreemapDepth: number, margin: number): void {
 		let processedNodesCount = 0
 		let currentRect = new Rectangle(new Point(rect.topLeft.x, rect.topLeft.y), rect.width, rect.height)
 		let currentRootSize = rootSize
@@ -44,8 +44,8 @@ export default class SquarifiedTreemap extends Treemap {
 			const stripSize = currentStrip.totalSize(this.metricName)
 
 			if (stripSize > 0) {
-				const stripNodes = this.createStripNodes(currentStrip, currentRect, currentRootSize, currentTreemapDepth)
-				this.createChildrenNodes(stripNodes, currentTreemapDepth)
+				const stripNodes = this.createStripNodes(currentStrip, currentRect, currentRootSize, currentTreemapDepth, margin)
+				this.createChildrenNodes(stripNodes, currentTreemapDepth, margin)
 				currentRect = this.remainingRectangle(currentRect, currentStrip, currentRootSize, currentRect.area())
 				currentRootSize -= stripSize
 			}
@@ -86,19 +86,20 @@ export default class SquarifiedTreemap extends Treemap {
 		rect: Rectangle,
 		rootSize: number,
 		currentTreemapDepth: number,
+		margin: number,
 		order?: number
 	): StreetLayoutValuedCodeMapNode[] {
-		const stripNodes = strip.layout(rect, rootSize, this.metricName, currentTreemapDepth, order)
+		const stripNodes = strip.layout(rect, rootSize, this.metricName, currentTreemapDepth, margin, order)
 		this.treemapNodes.push(...stripNodes)
 		return stripNodes
 	}
 
-	protected createChildrenNodes(stripNodes: StreetLayoutValuedCodeMapNode[], currentTreemapDepth: number): void {
+	protected createChildrenNodes(stripNodes: StreetLayoutValuedCodeMapNode[], currentTreemapDepth: number, margin: number): void {
 		for (let node of stripNodes) {
 			const children = node.data.children.filter(child => StreetLayoutHelper.calculateSize(child, this.metricName) > 0)
 			if (children.length > 0) {
 				const size = StreetLayoutHelper.calculateSize(node.data, this.metricName)
-				this.createNodes(children, node.rect, size, currentTreemapDepth + 1)
+				this.createNodes(children, node.rect, size, currentTreemapDepth + 1, margin)
 			}
 		}
 	}

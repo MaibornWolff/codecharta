@@ -5,11 +5,11 @@ import VerticalStreet from "./streetLayout/verticalStreet"
 import HorizontalStreet from "./streetLayout/horizontalStreet"
 import House from "./streetLayout/house"
 import Rectangle from "./rectangle"
-import SliceDiceTreemap from "./treemap/SliceDiceTreemap"
+import SliceDiceTreemap from "./treemap/sliceDiceTreemap"
 import Point from "./point"
 import { CodeMapHelper } from "./codeMapHelper"
 import SquarifiedTreemap from "./treemap/squarifiedTreemap"
-import Treemap from "./treemap/Treemap"
+import Treemap from "./treemap/treemap"
 
 export interface StreetLayoutValuedCodeMapNode {
 	data: CodeMapNode
@@ -30,24 +30,21 @@ enum TreemapAlgorithm {
 
 export class StreetLayoutGenerator {
 	private static HEIGHT_DIVISOR = 1
-	private static MARGIN_SCALING_FACTOR = 0.1
+	private static MARGIN_SCALING_FACTOR = 0.05
 
-	public static createStreetLayoutNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
-		const layoutNodes: StreetLayoutValuedCodeMapNode[] = this.getStreetLayout(map, s)
-		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
-		const heightScale = StreetLayoutGenerator.HEIGHT_DIVISOR // TODO: how to calculate height scale?
-		return layoutNodes.map(streetLayoutNode => {
-			return StreetLayoutHelper.createNode(streetLayoutNode, heightScale, maxHeight, s, isDeltaState)
-		})
-	}
-
-	private static getStreetLayout(node: CodeMapNode, state: State): StreetLayoutValuedCodeMapNode[] {
+	public static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
 		const metricName = state.dynamicSettings.areaMetric
-		const childBoxes = this.createBoxes(node, metricName, state, StreetOrientation.Vertical, 1)
-		const rootStreet = new HorizontalStreet(node, childBoxes, 0)
+		const childBoxes = this.createBoxes(map, metricName, state, StreetOrientation.Vertical, 1)
+		const rootStreet = new HorizontalStreet(map, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
-		return rootStreet.layout(new Point(0, 0), margin)
+		const layoutNodes: StreetLayoutValuedCodeMapNode[] = rootStreet.layout(new Point(0, 0), margin)
+		const maxHeight = metricData.find(x => x.name == state.dynamicSettings.heightMetric).maxValue
+		const heightScale = (rootStreet.width * rootStreet.height) / StreetLayoutGenerator.HEIGHT_DIVISOR / maxHeight
+
+		return layoutNodes.map(streetLayoutNode => {
+			return StreetLayoutHelper.createNode(streetLayoutNode, heightScale, maxHeight, state, isDeltaState)
+		})
 	}
 
 	private static isNodeLeaf(node: CodeMapNode) {
