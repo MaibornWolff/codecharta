@@ -127,6 +127,7 @@ export interface AppSettings {
 	sortingOrderAscending: boolean
 	searchPanelMode: SearchPanelMode
 	layoutAlgorithm: LayoutAlgorithm
+	treeMapStartDepth: number
 }
 
 export enum LayoutAlgorithm {
@@ -138,6 +139,10 @@ export enum LayoutAlgorithm {
 export enum TreeMapAlgorithm {
 	Squarified = "Squarified",
 	SliceAndDice = "SliceAndDice"
+}
+
+export interface TreeMapStartDepth {
+	depth: number
 }
 
 export interface TreeMapSettings {

@@ -23,14 +23,14 @@ export default class SquarifiedTreemap extends Treemap {
 		}
 		const children = this.node.children.filter(child => StreetLayoutHelper.calculateSize(child, this.metricName) > 0)
 
-		this.treemapNodes.push(rootNode)
+		this.treeMapNodes.push(rootNode)
 
 		if (children.length === 0) {
-			return this.treemapNodes
+			return this.treeMapNodes
 		}
 		this.createNodes(children, rectangle, this.metricValue, 1, margin)
 
-		return this.treemapNodes
+		return this.treeMapNodes
 	}
 
 	protected createNodes(nodes: CodeMapNode[], rect: Rectangle, rootSize: number, currentTreemapDepth: number, margin: number): void {
@@ -90,7 +90,7 @@ export default class SquarifiedTreemap extends Treemap {
 		order?: number
 	): StreetLayoutValuedCodeMapNode[] {
 		const stripNodes = strip.layout(rect, rootSize, this.metricName, currentTreemapDepth, margin, order)
-		this.treemapNodes.push(...stripNodes)
+		this.treeMapNodes.push(...stripNodes)
 		return stripNodes
 	}
 

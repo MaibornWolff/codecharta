@@ -1,6 +1,7 @@
 //@ts-nocheck
 
 // Plop: Append service import here
+import { TreeMapStartDepthService } from "./store//treeMapStartDepth/treeMapStartDepth.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
 import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
@@ -46,6 +47,7 @@ export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private treeMapStartDepthService: TreeMapStartDepthService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
 		private sortingOptionService: SortingOptionService,
 		private sortingOrderAscendingService: SortingOrderAscendingService,

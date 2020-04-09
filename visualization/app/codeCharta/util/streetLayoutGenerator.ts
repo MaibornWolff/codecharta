@@ -27,12 +27,12 @@ export class StreetLayoutGenerator {
 		map: CodeMapNode,
 		state: State,
 		metricData: MetricData[],
-		treemapStartDepth = Number.MAX_VALUE,
-		treemapAlgorithm = TreeMapAlgorithm.Squarified
+		treeMapStartDepth = Number.MAX_VALUE,
+		treeMapAlgorithm = TreeMapAlgorithm.Squarified
 	): Node[] {
 		const isDeltaState = state.files.isDeltaState()
 		const metricName = state.dynamicSettings.areaMetric
-		const childBoxes = this.createBoxes(map, metricName, state, StreetOrientation.Vertical, 1, treemapStartDepth, treemapAlgorithm)
+		const childBoxes = this.createBoxes(map, metricName, state, StreetOrientation.Vertical, 1, treeMapStartDepth, treeMapAlgorithm)
 		const rootStreet = new HorizontalStreet(map, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
@@ -54,8 +54,8 @@ export class StreetLayoutGenerator {
 		state: State,
 		orientation: StreetOrientation,
 		depth: number,
-		treemapStartDepth: number,
-		treemapAlgorithm: TreeMapAlgorithm
+		treeMapStartDepth: number,
+		treeMapAlgorithm: TreeMapAlgorithm
 	): BoundingBox[] {
 		const children: BoundingBox[] = []
 		for (const child of node.children) {
@@ -65,9 +65,9 @@ export class StreetLayoutGenerator {
 			if (StreetLayoutGenerator.isNodeLeaf(child)) {
 				children.push(new House(child))
 			} else {
-				if (depth >= treemapStartDepth) {
-					const treemap = StreetLayoutGenerator.createTreemap(child, treemapAlgorithm)
-					children.push(treemap)
+				if (depth >= treeMapStartDepth) {
+					const treeMap = StreetLayoutGenerator.createTreemap(child, treeMapAlgorithm)
+					children.push(treeMap)
 				} else {
 					const streetChildren = StreetLayoutGenerator.createBoxes(
 						child,
@@ -75,8 +75,8 @@ export class StreetLayoutGenerator {
 						state,
 						1 - orientation,
 						depth + 1,
-						treemapStartDepth,
-						treemapAlgorithm
+						treeMapStartDepth,
+						treeMapAlgorithm
 					)
 					children.push(StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth))
 				}
@@ -93,8 +93,8 @@ export class StreetLayoutGenerator {
 		}
 	}
 
-	private static createTreemap(node: CodeMapNode, treemapAlgorithm: TreeMapAlgorithm): Treemap {
-		switch (treemapAlgorithm) {
+	private static createTreemap(node: CodeMapNode, treeMapAlgorithm: TreeMapAlgorithm): Treemap {
+		switch (treeMapAlgorithm) {
 			case TreeMapAlgorithm.SliceAndDice:
 				return new SliceDiceTreemap(node)
 			case TreeMapAlgorithm.Squarified:

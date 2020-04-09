@@ -6,7 +6,7 @@ import Rectangle from "../rectangle"
 import { StreetLayoutHelper } from "../../streetLayoutHelper"
 
 export default class SliceDiceTreemap extends Treemap {
-	protected treemapNodes: StreetLayoutValuedCodeMapNode[] = []
+	protected treeMapNodes: StreetLayoutValuedCodeMapNode[] = []
 
 	constructor(rootNode: CodeMapNode) {
 		super(rootNode)
@@ -17,7 +17,7 @@ export default class SliceDiceTreemap extends Treemap {
 		let topLeft: [number, number] = [rect.topLeft.x, rect.topLeft.y]
 		let bottomRight: [number, number] = [rect.topLeft.x + rect.width, rect.topLeft.y + rect.height]
 		this.sliceAndDice(this.node, topLeft, bottomRight, 0, margin)
-		return this.treemapNodes
+		return this.treeMapNodes
 	}
 
 	private sliceAndDice(
@@ -35,7 +35,7 @@ export default class SliceDiceTreemap extends Treemap {
 		const newWidth = bottomRight[0] - topLeft[0]
 		const newHeight = bottomRight[1] - topLeft[1]
 		const newRect = new Rectangle(newOrigin, newWidth, newHeight)
-		this.treemapNodes.push({
+		this.treeMapNodes.push({
 			data: rootNode,
 			value: rootNode.type === "File" ? StreetLayoutHelper.calculateSize(this.node, this.metricName) : 0,
 			rect: newRect,

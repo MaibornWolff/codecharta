@@ -849,7 +849,8 @@ export const STATE: State = {
 		isLoadingFile: true,
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.treeView,
-		layoutAlgorithm: LayoutAlgorithm.StreetMap
+		layoutAlgorithm: LayoutAlgorithm.StreetMap,
+		treeMapStartDepth: 1
 	},
 	treeMap: {
 		mapSize: 250
@@ -894,7 +895,8 @@ export const DEFAULT_STATE: State = {
 		isLoadingFile: true,
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.minimized,
-		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
+		treeMapStartDepth: 0
 	},
 	dynamicSettings: {
 		areaMetric: null,

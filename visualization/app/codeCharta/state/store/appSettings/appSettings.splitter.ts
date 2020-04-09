@@ -22,11 +22,16 @@ import { splitEdgeHeightAction } from "./edgeHeight/edgeHeight.splitter"
 import { splitAmountOfEdgePreviewsAction } from "./amountOfEdgePreviews/amountOfEdgePreviews.splitter"
 import { splitAmountOfTopLabelsAction } from "./amountOfTopLabels/amountOfTopLabels.splitter"
 import { splitIsPresentationModeAction } from "./isPresentationMode/isPresentationMode.splitter"
+import { splitTreeMapStartDepthAction } from "./treeMapStartDepth/treeMapStartDepth.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>): CCAction[] {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.treeMapStartDepth !== undefined) {
+		actions.push(splitTreeMapStartDepthAction(payload.treeMapStartDepth))
+	}
+
 	if (payload.layoutAlgorithm !== undefined) {
 		actions.push(splitLayoutAlgorithmAction(payload.layoutAlgorithm))
 	}

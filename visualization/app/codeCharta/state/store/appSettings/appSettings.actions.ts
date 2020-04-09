@@ -22,6 +22,7 @@ import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
 import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
+import { defaultTreeMapStartDepth } from "./treeMapStartDepth/treeMapStartDepth.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -43,7 +44,6 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 
 export const defaultAppSettings: AppSettings = {
 	// Plop: Append default property here
-	layoutAlgorithm: defaultLayoutAlgorithm,
 	amountOfTopLabels: defaultAmountOfTopLabels,
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
 	edgeHeight: defaultEdgeHeight,
@@ -63,5 +63,7 @@ export const defaultAppSettings: AppSettings = {
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
 	searchPanelMode: defaultSearchPanelMode,
-	sortingOrderAscending: defaultSortingOrderAscending
+	sortingOrderAscending: defaultSortingOrderAscending,
+	layoutAlgorithm: defaultLayoutAlgorithm,
+	treeMapStartDepth: defaultTreeMapStartDepth
 }

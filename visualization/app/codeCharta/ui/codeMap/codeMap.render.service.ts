@@ -48,10 +48,11 @@ export class CodeMapRenderService {
 		let nodes: Node[] = []
 		const state = this.storeService.getState()
 		const metricService = this.metricService.getMetricData()
-		const treemapAlgorithm = TreeMapAlgorithm.Squarified
-		const treemapStartDepth = 0
+		const treeMapAlgorithm = TreeMapAlgorithm.Squarified
+		const treeMapStartDepth = state.appSettings.treeMapStartDepth
+		console.log(state.appSettings)
+		const layoutAlgorithm = state.appSettings.layoutAlgorithm
 
-		const layoutAlgorithm = this.storeService.getState().appSettings.layoutAlgorithm
 		switch (layoutAlgorithm) {
 			case LayoutAlgorithm.SquarifiedTreeMap:
 				nodes = TreeMapGenerator.createTreemapNodes(map, state, metricService)
@@ -60,7 +61,7 @@ export class CodeMapRenderService {
 				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricService)
 				break
 			case LayoutAlgorithm.TMStreet:
-				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricService, treemapStartDepth, treemapAlgorithm)
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricService, treeMapStartDepth, treeMapAlgorithm)
 				break
 			default:
 				throw new Error(`Layout Algorithm "${layoutAlgorithm}" is not defined.`)

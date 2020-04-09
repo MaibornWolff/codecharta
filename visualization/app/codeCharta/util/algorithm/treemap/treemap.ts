@@ -5,7 +5,7 @@ import Point from "../point"
 import { StreetLayoutHelper } from "../../streetLayoutHelper"
 
 export default abstract class Treemap extends BoundingBox {
-	protected treemapNodes: StreetLayoutValuedCodeMapNode[] = []
+	protected treeMapNodes: StreetLayoutValuedCodeMapNode[] = []
 	protected metricName: string
 
 	constructor(rootNode: CodeMapNode) {
