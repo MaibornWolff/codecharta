@@ -2,9 +2,15 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { IsAttributeSideBarVisibleAction, IsAttributeSideBarVisibleActions } from "./isAttributeSideBarVisible.actions"
+import {
+	IsAttributeSideBarVisibleAction,
+	IsAttributeSideBarVisibleActions,
+	setIsAttributeSideBarVisible
+} from "./isAttributeSideBarVisible.actions"
 import { IsAttributeSideBarVisibleService } from "./isAttributeSideBarVisible.service"
-import { withMockedEventMethods } from "../../../../util/dataMocks"
+import { CODE_MAP_BUILDING, withMockedEventMethods } from "../../../../util/dataMocks"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
+import _ from "lodash"
 
 describe("IsAttributeSideBarVisibleService", () => {
 	let isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService
@@ -35,6 +41,43 @@ describe("IsAttributeSideBarVisibleService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, isAttributeSideBarVisibleService)
+		})
+
+		it("should subscribe to Node Selected Events", () => {
+			ThreeSceneService.subscribeToBuildingSelectedEvents = jest.fn()
+
+			rebuildService()
+
+			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, isAttributeSideBarVisibleService)
+		})
+
+		it("should subscribe to Node Deselected Events", () => {
+			ThreeSceneService.subscribeToBuildingDeselectedEvents = jest.fn()
+
+			rebuildService()
+
+			expect(ThreeSceneService.subscribeToBuildingDeselectedEvents).toHaveBeenCalledWith($rootScope, isAttributeSideBarVisibleService)
+		})
+	})
+
+	describe("onBuildingSelected", () => {
+		it("should set isAttributeSideBarVisible to true", () => {
+			storeService.dispatch(setIsAttributeSideBarVisible(false))
+			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+
+			isAttributeSideBarVisibleService.onBuildingSelected(codeMapBuilding)
+
+			expect(storeService.getState().appSettings.isAttributeSideBarVisible).toBeTruthy()
+		})
+	})
+
+	describe("onBuildingDeselected", () => {
+		it("should set isAttributeSideBarVisible to false", () => {
+			storeService.dispatch(setIsAttributeSideBarVisible(true))
+
+			isAttributeSideBarVisibleService.onBuildingDeselected()
+
+			expect(storeService.getState().appSettings.isAttributeSideBarVisible).toBeFalsy()
 		})
 	})
 
