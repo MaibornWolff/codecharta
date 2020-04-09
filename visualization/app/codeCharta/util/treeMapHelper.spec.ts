@@ -1,5 +1,4 @@
 import { TreeMapHelper, LayoutNode } from "./treeMapHelper"
-import { SquarifiedCodeMapNode } from "./treeMapGenerator"
 import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
 import Point from "./algorithm/point"

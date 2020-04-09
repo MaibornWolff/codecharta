@@ -1,6 +1,5 @@
 import { LayoutNode, TreeMapHelper } from "./treeMapHelper"
 import { hierarchy, treemap, HierarchyNode, HierarchyRectangularNode, TreemapLayout } from "d3"
-import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
 import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
 import Rectangle from "./algorithm/rectangle"
