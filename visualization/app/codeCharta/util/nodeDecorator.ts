@@ -1,7 +1,18 @@
 "use strict"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
-import { BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData, FileMeta, EdgeMetricCount, KeyValuePair } from "../codeCharta.model"
+import {
+	BlacklistItem,
+	BlacklistType,
+	CCFile,
+	CodeMapNode,
+	MetricData,
+	FileMeta,
+	EdgeMetricCount,
+	KeyValuePair,
+	AttributeTypes,
+	AttributeTypeValue
+} from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 
 export class NodeDecorator {
@@ -91,12 +102,13 @@ export class NodeDecorator {
 		}
 	}
 
-	public static decorateParentNodesWithSumAttributes(
+	public static decorateParentNodesWithAggregatedAttributes(
 		map: CodeMapNode,
 		blacklist: BlacklistItem[],
 		metricData: MetricData[],
 		edgeMetricData: MetricData[],
-		isDeltaState: boolean
+		isDeltaState: boolean,
+		attributeTypes: AttributeTypes
 	) {
 		if (map) {
 			let root = d3.hierarchy<CodeMapNode>(map)
@@ -104,24 +116,29 @@ export class NodeDecorator {
 				const leaves: HierarchyNode<CodeMapNode>[] = node
 					.leaves()
 					.filter(x => !CodeMapHelper.isBlacklisted(x.data, blacklist, BlacklistType.exclude))
-				this.decorateNodeWithChildrenSumMetrics(leaves, node, metricData, isDeltaState)
-				this.decorateNodeWithChildrenSumEdgeMetrics(leaves, node, edgeMetricData)
+				this.decorateNodeWithAggregatedChildrenMetrics(leaves, node, metricData, isDeltaState, attributeTypes)
+				this.decorateNodeWithChildrenSumEdgeMetrics(leaves, node, edgeMetricData, attributeTypes)
 			})
 		}
 		return map
 	}
 
-	private static decorateNodeWithChildrenSumMetrics(
+	private static decorateNodeWithAggregatedChildrenMetrics(
 		leaves: HierarchyNode<CodeMapNode>[],
 		node: HierarchyNode<CodeMapNode>,
 		metricData: MetricData[],
-		isDeltaState: boolean
+		isDeltaState: boolean,
+		attributeTypes: AttributeTypes
 	) {
 		metricData.forEach(metric => {
 			if (node.data.children && node.data.children.length > 0) {
-				node.data.attributes[metric.name] = this.getMetricSumOfLeaves(leaves.map(x => x.data.attributes), metric.name)
+				node.data.attributes[metric.name] = this.aggregateLeafMetric(
+					leaves.map(x => x.data.attributes),
+					metric.name,
+					attributeTypes
+				)
 				if (isDeltaState) {
-					node.data.deltas[metric.name] = this.getMetricSumOfLeaves(leaves.map(x => x.data.deltas), metric.name)
+					node.data.deltas[metric.name] = this.aggregateLeafMetric(leaves.map(x => x.data.deltas), metric.name, attributeTypes)
 				}
 			}
 		})
@@ -130,36 +147,66 @@ export class NodeDecorator {
 	private static decorateNodeWithChildrenSumEdgeMetrics(
 		leaves: HierarchyNode<CodeMapNode>[],
 		node: HierarchyNode<CodeMapNode>,
-		edgeMetricData: MetricData[]
+		edgeMetricData: MetricData[],
+		attributeTypes: AttributeTypes
 	) {
 		edgeMetricData.forEach(edgeMetric => {
 			if (node.data.children && node.data.children.length > 0) {
-				node.data.edgeAttributes[edgeMetric.name] = this.getEdgeMetricSumOfLeaves(leaves, edgeMetric.name)
+				node.data.edgeAttributes[edgeMetric.name] = this.aggregateLeafEdgeMetric(leaves, edgeMetric.name, attributeTypes)
 			}
 		})
 	}
 
-	private static getMetricSumOfLeaves(metrics: KeyValuePair[], metricName: string): number {
+	private static aggregateLeafMetric(metrics: KeyValuePair[], metricName: string, attributeTypes: AttributeTypes): number {
 		const metricValues: number[] = metrics.map(x => x[metricName]).filter(x => !!x)
+		const attributeType = attributeTypes.nodes[metricName]
 
-		if (metricValues.length > 0) {
-			return metricValues.reduce((partialSum, a) => partialSum + a)
+		if (metricValues.length == 0) {
+			return 0
 		}
-		return 0
+
+		switch (attributeType) {
+			case AttributeTypeValue.relative:
+				return this.median(metricValues)
+			case AttributeTypeValue.absolute:
+			default:
+				return metricValues.reduce((partialSum, a) => partialSum + a)
+		}
 	}
 
-	private static getEdgeMetricSumOfLeaves(leaves: HierarchyNode<CodeMapNode>[], metricName: string): EdgeMetricCount {
+	private static aggregateLeafEdgeMetric(
+		leaves: HierarchyNode<CodeMapNode>[],
+		metricName: string,
+		attributeTypes: AttributeTypes
+	): EdgeMetricCount {
 		const metricValues: EdgeMetricCount[] = leaves.map(x => x.data.edgeAttributes[metricName]).filter(x => !!x)
+		const attributeType = attributeTypes.edges[metricName]
 
-		if (metricValues.length > 0) {
-			const sum = { incoming: 0, outgoing: 0 }
-			metricValues.forEach(element => {
-				sum.incoming += element.incoming
-				sum.outgoing += element.outgoing
-			})
-			return sum
+		const concentrated = { incoming: [], outgoing: [] }
+		metricValues.forEach(element => {
+			concentrated.incoming.push(element.incoming)
+			concentrated.outgoing.push(element.outgoing)
+		})
+
+		if (metricValues.length == 0) {
+			return { incoming: 0, outgoing: 0 }
 		}
 
-		return { incoming: 0, outgoing: 0 }
+		switch (attributeType) {
+			case AttributeTypeValue.relative:
+				return { incoming: this.median(concentrated.incoming), outgoing: this.median(concentrated.outgoing) }
+			case AttributeTypeValue.absolute:
+			default:
+				return {
+					incoming: concentrated.incoming.reduce((pS, a) => pS + a),
+					outgoing: concentrated.outgoing.reduce((pS, a) => pS + a)
+				}
+		}
+	}
+
+	private static median(numbers: number[]): number {
+		const middle = (numbers.length - 1) / 2
+		numbers.sort((a, b) => a - b)
+		return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
 	}
 }

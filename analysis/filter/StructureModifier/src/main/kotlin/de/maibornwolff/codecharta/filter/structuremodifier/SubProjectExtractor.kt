@@ -56,10 +56,10 @@ class SubProjectExtractor(private val project: Project) {
                 }
     }
 
-    private fun copyAttributeTypes(): MutableMap<String, MutableList<Map<String, AttributeType>>> {
-        val mergedAttributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf()
+    private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
+        val mergedAttributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
         project.attributeTypes.forEach {
-            mergedAttributeTypes[it.key] = it.value.toMutableList()
+            mergedAttributeTypes[it.key] = it.value
         }
         return mergedAttributeTypes.toMutableMap()
     }

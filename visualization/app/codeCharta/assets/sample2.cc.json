@@ -40,6 +40,6 @@
 		}
 	],
 	"attributeTypes": {
-		"nodes": [{ "rloc": "absolute" }, { "functions": "absolute" }, { "mcc": "absolute" }]
+		"nodes": { "rloc": "absolute", "functions": "absolute", "mcc": "absolute" }
 	}
 }

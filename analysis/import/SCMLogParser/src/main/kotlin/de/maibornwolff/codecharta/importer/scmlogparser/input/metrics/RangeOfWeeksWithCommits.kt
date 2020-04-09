@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import de.maibornwolff.codecharta.model.AttributeType
 import java.util.*
 
 class RangeOfWeeksWithCommits: Metric {
@@ -23,5 +24,9 @@ class RangeOfWeeksWithCommits: Metric {
         return if (weeksWithCommits.size < 1) {
             0
         } else 1 + CalendarWeek.numberOfWeeksBetween(weeksWithCommits.last(), weeksWithCommits.first())
+    }
+
+    override fun attributeType(): AttributeType {
+        return AttributeType.relative
     }
 }

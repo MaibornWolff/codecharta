@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import de.maibornwolff.codecharta.model.AttributeType
 
 class NumberOfAuthors: Metric {
     private val authors = mutableSetOf<String>()
@@ -19,5 +20,9 @@ class NumberOfAuthors: Metric {
 
     override fun value(): Number {
         return authors.size
+    }
+
+    override fun attributeType(): AttributeType {
+        return AttributeType.relative
     }
 }

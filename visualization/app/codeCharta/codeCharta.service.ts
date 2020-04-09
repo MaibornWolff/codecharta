@@ -55,13 +55,13 @@ export class CodeChartaService {
 	private getAttributeTypes(attributeTypes: AttributeTypes): AttributeTypes {
 		if (_.isEmpty(attributeTypes) || !attributeTypes) {
 			return {
-				nodes: [],
-				edges: []
+				nodes: {},
+				edges: {}
 			}
 		}
 		return {
-			nodes: !attributeTypes.nodes ? [] : attributeTypes.nodes,
-			edges: !attributeTypes.edges ? [] : attributeTypes.edges
+			nodes: !attributeTypes.nodes ? {} : attributeTypes.nodes,
+			edges: !attributeTypes.edges ? {} : attributeTypes.edges
 		}
 	}
 
