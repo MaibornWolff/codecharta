@@ -1,12 +1,13 @@
-import { TreeMapHelper } from "./treeMapHelper"
-import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
+import { TreeMapHelper, LayoutNode } from "./treeMapHelper"
 import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
+import Point from "./algorithm/point"
+import Rectangle from "./algorithm/rectangle"
 
 describe("treeMapHelper", () => {
 	describe("build node", () => {
 		let codeMapNode: CodeMapNode
-		let squaredNode: SquarifiedValuedCodeMapNode
+		let layoutNode: LayoutNode
 		let state
 
 		let heightScale = 1
@@ -21,14 +22,12 @@ describe("treeMapHelper", () => {
 				attributes: { theHeight: 100 }
 			} as CodeMapNode
 
-			squaredNode = {
+			layoutNode = {
 				data: codeMapNode,
 				value: 42,
-				x0: 0,
-				y0: 0,
-				x1: 400,
-				y1: 400
-			} as SquarifiedValuedCodeMapNode
+				rect: new Rectangle(new Point(0, 0), 400, 400),
+				zOffset: 0
+			}
 
 			state = STATE
 			state.treeMap.mapSize = 1
@@ -38,7 +37,7 @@ describe("treeMapHelper", () => {
 		})
 
 		function buildNode() {
-			return TreeMapHelper.buildNodeFrom(squaredNode, heightScale, maxHeight, state, isDeltaState)
+			return TreeMapHelper.buildNodeFrom(layoutNode, heightScale, maxHeight, state, isDeltaState)
 		}
 
 		it("minimal", () => {
@@ -51,18 +50,18 @@ describe("treeMapHelper", () => {
 		})
 
 		it("deltas", () => {
-			squaredNode.data.deltas = {}
+			layoutNode.data.deltas = {}
 			state.dynamicSettings.heightMetric = "theHeight"
-			squaredNode.data.deltas[state.dynamicSettings.heightMetric] = 33
+			layoutNode.data.deltas[state.dynamicSettings.heightMetric] = 33
 			expect(buildNode()).toMatchSnapshot()
-			squaredNode.data.deltas = undefined
+			layoutNode.data.deltas = undefined
 		})
 
 		it("given negative deltas the resulting heightDelta also should be negative", () => {
-			squaredNode.data.deltas = {}
-			squaredNode.data.deltas[state.dynamicSettings.heightMetric] = -33
+			layoutNode.data.deltas = {}
+			layoutNode.data.deltas[state.dynamicSettings.heightMetric] = -33
 			expect(buildNode().heightDelta).toBe(-33)
-			squaredNode.data.deltas = undefined
+			layoutNode.data.deltas = undefined
 		})
 
 		it("should set lowest possible height caused by other visible edge pairs", () => {
@@ -129,7 +128,7 @@ describe("treeMapHelper", () => {
 
 	describe("isNodeToBeFlat", () => {
 		let codeMapNode: CodeMapNode
-		let squaredNode: SquarifiedValuedCodeMapNode
+		let layoutNode: LayoutNode
 		let state: State
 
 		beforeEach(() => {
@@ -141,14 +140,12 @@ describe("treeMapHelper", () => {
 				edgeAttributes: { pairingRate: { incoming: 42, outgoing: 23 } }
 			}
 
-			squaredNode = {
+			layoutNode = {
 				data: codeMapNode,
 				value: 42,
-				x0: 0,
-				y0: 0,
-				x1: 400,
-				y1: 400
-			} as SquarifiedValuedCodeMapNode
+				rect: new Rectangle(new Point(0, 0), 400, 400),
+				zOffset: 0
+			}
 
 			state = STATE
 			state.treeMap.mapSize = 1
@@ -157,7 +154,7 @@ describe("treeMapHelper", () => {
 
 		it("should not be a flat node when no visibleEdges", () => {
 			state.fileSettings.edges = []
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](layoutNode, state)).toBeFalsy()
 		})
 
 		it("should be a flat node when other edges are visible", () => {
@@ -170,7 +167,7 @@ describe("treeMapHelper", () => {
 					visible: EdgeVisibility.both
 				}
 			]
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
+			expect(TreeMapHelper["isNodeToBeFlat"](layoutNode, state)).toBeTruthy()
 		})
 
 		it("should not be a flat node when it contains edges", () => {
@@ -181,37 +178,37 @@ describe("treeMapHelper", () => {
 					attributes: {}
 				}
 			]
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](layoutNode, state)).toBeFalsy()
 		})
 
 		it("should not be a flat node, because its searched for", () => {
 			state.dynamicSettings.searchedNodePaths = ["/root/Anode"]
 			state.dynamicSettings.searchPattern = "Anode"
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](layoutNode, state)).toBeFalsy()
 		})
 
 		it("should be a flat node, because other nodes are searched for", () => {
 			state.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"]
 			state.dynamicSettings.searchPattern = "Anode"
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
+			expect(TreeMapHelper["isNodeToBeFlat"](layoutNode, state)).toBeTruthy()
 		})
 
 		it("should not be a flat node when searchPattern is empty", () => {
 			state.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"]
 			state.dynamicSettings.searchPattern = ""
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](layoutNode, state)).toBeFalsy()
 		})
 
 		it("should be flat if node is flattened in blacklist", () => {
 			state.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
 
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
+			expect(TreeMapHelper["isNodeToBeFlat"](layoutNode, state)).toBeTruthy()
 		})
 
 		it("should not be flat if node is not blacklisted", () => {
 			state.fileSettings.blacklist = []
 
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](layoutNode, state)).toBeFalsy()
 		})
 	})
 
