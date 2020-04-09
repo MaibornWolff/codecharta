@@ -22,14 +22,15 @@ export class FileValidator {
 				}
 			]
 		}
-
-		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
-			return [
-				{
-					message: "names or ids are not unique",
-					dataPath: "uniqueness"
-				}
-			]
+		if (validationResult.valid) {
+			if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
+				return [
+					{
+						message: "names or ids are not unique",
+						dataPath: "uniqueness"
+					}
+				]
+			}
 		}
 
 		return validationResult.errors
@@ -41,9 +42,8 @@ export class FileValidator {
 		}
 
 		let names = {}
-		for (let child of node.children) {
-			names[child.name + child.type] = true
-		}
+		node.children.forEach(child => (names[child.name + child.type] = true))
+
 		if (Object.keys(names).length !== node.children.length) {
 			return false
 		}
