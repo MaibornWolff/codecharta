@@ -1,9 +1,13 @@
 import "./layoutSelection.module"
 import { LayoutSelectionController } from "./layoutSelection.component"
-import { instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
+import { IRootScopeService } from "angular"
+import { StoreService } from "../../state/store.service"
 
 describe("LayoutSelectionController", () => {
 	let layoutSelectionController: LayoutSelectionController
+	let $rootScope: IRootScopeService
+	let storeService = getService<StoreService>("storeService")
 
 	beforeEach(() => {
 		restartSystem()
@@ -15,7 +19,7 @@ describe("LayoutSelectionController", () => {
 	}
 
 	function rebuildController() {
-		layoutSelectionController = new LayoutSelectionController()
+		layoutSelectionController = new LayoutSelectionController($rootScope, storeService)
 	}
 
 	describe("someMethodName", () => {
