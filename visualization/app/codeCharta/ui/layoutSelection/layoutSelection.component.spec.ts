@@ -21,7 +21,7 @@ describe("LayoutSelectionController", () => {
 		instantiateModule("app.codeCharta.ui.layoutSelection")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		storeService = getService<StoreService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
