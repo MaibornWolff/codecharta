@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { BlacklistType, CodeMapNode, NodeType, State } from "../codeCharta.model"
-import { STATE, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
+import { STATE, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC, setIsBlacklisted } from "./dataMocks"
 import { HSL } from "./color/hsl"
 
 describe("FileExtensionCalculator", () => {
@@ -30,6 +30,7 @@ describe("FileExtensionCalculator", () => {
 		it("should get correct absolute distribution of file-extensions for given metric with hidden node", () => {
 			const blacklistItem = { path: map.children[0].path, type: BlacklistType.flatten }
 			state.fileSettings.blacklist.push(blacklistItem)
+			setIsBlacklisted([map.children[0].path], map, BlacklistType.flatten)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
@@ -50,6 +51,7 @@ describe("FileExtensionCalculator", () => {
 		it("should get correct absolute distribution of file-extensions for given metric with excluded node", () => {
 			const blacklistItem = { path: map.children[0].path, type: BlacklistType.exclude }
 			state.fileSettings.blacklist.push(blacklistItem)
+			setIsBlacklisted([map.children[0].path], map, BlacklistType.exclude)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
@@ -70,6 +72,7 @@ describe("FileExtensionCalculator", () => {
 		it("should get correct absolute distribution of file-extensions for given metric with excluded path", () => {
 			const blacklistItem = { path: "*.java", type: BlacklistType.exclude }
 			state.fileSettings.blacklist.push(blacklistItem)
+			setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, BlacklistType.exclude)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
@@ -123,10 +126,10 @@ describe("FileExtensionCalculator", () => {
 
 		it("should get correct distribution of file-extensions for given metric using other-grouping", () => {
 			const additionalChildren: CodeMapNode[] = [
-				{ name: "child1.txt", type: NodeType.FILE, path: "/root/child1.txt", attributes: { rloc: 2 } },
-				{ name: "child2.kt", type: NodeType.FILE, path: "/root/child2.kt", attributes: { rloc: 4 } },
-				{ name: "child3.ts", type: NodeType.FILE, path: "/root/child3.ts", attributes: { rloc: 6 } },
-				{ name: "child4.xml", type: NodeType.FILE, path: "/root/child4.xml", attributes: { rloc: 8 } }
+				{ name: "child1.txt", type: NodeType.FILE, path: "/root/child1.txt", attributes: { rloc: 2 }, isBlacklisted: undefined },
+				{ name: "child2.kt", type: NodeType.FILE, path: "/root/child2.kt", attributes: { rloc: 4 }, isBlacklisted: undefined },
+				{ name: "child3.ts", type: NodeType.FILE, path: "/root/child3.ts", attributes: { rloc: 6 }, isBlacklisted: undefined },
+				{ name: "child4.xml", type: NodeType.FILE, path: "/root/child4.xml", attributes: { rloc: 8 }, isBlacklisted: undefined }
 			]
 			const expected: MetricDistribution[] = [
 				{

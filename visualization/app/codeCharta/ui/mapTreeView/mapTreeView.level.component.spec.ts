@@ -263,11 +263,7 @@ describe("MapTreeViewLevelController", () => {
 
 			mapTreeViewLevelController.isBlacklisted(mapTreeViewLevelController["node"])
 
-			expect(CodeMapHelper.isBlacklisted).toHaveBeenCalledWith(
-				mapTreeViewLevelController["node"],
-				storeService.getState().fileSettings.blacklist,
-				BlacklistType.exclude
-			)
+			expect(CodeMapHelper.isBlacklisted).toHaveBeenCalledWith(mapTreeViewLevelController["node"], BlacklistType.exclude)
 		})
 
 		it("should not be blacklisted", () => {

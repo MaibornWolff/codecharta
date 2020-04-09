@@ -81,7 +81,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public onEyeClick() {
 		const blacklistItem: BlacklistItem = { path: this.node.path, type: BlacklistType.flatten }
-		if (this.node.isBlacklisted) {
+		if (!this.node.isBlacklisted) {
 			this.storeService.dispatch(addBlacklistItem(blacklistItem))
 		} else {
 			this.storeService.dispatch(removeBlacklistItem(blacklistItem))

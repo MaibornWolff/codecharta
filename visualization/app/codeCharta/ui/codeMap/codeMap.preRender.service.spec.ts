@@ -125,8 +125,6 @@ describe("codeMapPreRenderService", () => {
 
 	describe("getRenderMap", () => {
 		it("should return unifiedMap", () => {
-			codeMapPreRenderService["unifiedMap"] = file.map
-
 			const result = codeMapPreRenderService.getRenderMap()
 
 			expect(result).toEqual(file.map)
@@ -142,7 +140,7 @@ describe("codeMapPreRenderService", () => {
 				expect(storeService.getState().appSettings.isLoadingFile).toBeFalsy()
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
 		})
 
 		it("should not call codeMapRenderService.render for scaling actions", () => {
@@ -159,6 +157,8 @@ describe("codeMapPreRenderService", () => {
 
 		it("should show and stop the loadingMapGif", done => {
 			codeMapPreRenderService["showLoadingMapGif"] = jest.fn()
+
+			codeMapPreRenderService["unifiedMap"] = file.map
 
 			codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
 
