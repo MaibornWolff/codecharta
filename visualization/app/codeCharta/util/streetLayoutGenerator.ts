@@ -23,16 +23,11 @@ export class StreetLayoutGenerator {
 	// private static HEIGHT_DIVISOR = 1
 	private static MARGIN_SCALING_FACTOR = 0.02
 
-	public static createStreetLayoutNodes(
-		map: CodeMapNode,
-		state: State,
-		metricData: MetricData[],
-		treeMapStartDepth = Number.MAX_VALUE,
-		treeMapAlgorithm = TreeMapAlgorithm.Squarified
-	): Node[] {
+	public static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: MetricData[]): Node[] {
 		const isDeltaState = state.files.isDeltaState()
 		const metricName = state.dynamicSettings.areaMetric
-		const childBoxes = this.createBoxes(map, metricName, state, StreetOrientation.Vertical, 1, treeMapStartDepth, treeMapAlgorithm)
+		const treeMapStartDepth = state.appSettings.treeMapStartDepth
+		const childBoxes = this.createBoxes(map, metricName, state, StreetOrientation.Vertical, 0, treeMapStartDepth)
 		const rootStreet = new HorizontalStreet(map, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
@@ -54,8 +49,7 @@ export class StreetLayoutGenerator {
 		state: State,
 		orientation: StreetOrientation,
 		depth: number,
-		treeMapStartDepth: number,
-		treeMapAlgorithm: TreeMapAlgorithm
+		treeMapStartDepth: number
 	): BoundingBox[] {
 		const children: BoundingBox[] = []
 		for (const child of node.children) {
@@ -66,7 +60,7 @@ export class StreetLayoutGenerator {
 				children.push(new House(child))
 			} else {
 				if (depth >= treeMapStartDepth) {
-					const treeMap = StreetLayoutGenerator.createTreemap(child, treeMapAlgorithm)
+					const treeMap = StreetLayoutGenerator.createTreemap(child, TreeMapAlgorithm.Squarified)
 					children.push(treeMap)
 				} else {
 					const streetChildren = StreetLayoutGenerator.createBoxes(
@@ -75,8 +69,7 @@ export class StreetLayoutGenerator {
 						state,
 						1 - orientation,
 						depth + 1,
-						treeMapStartDepth,
-						treeMapAlgorithm
+						treeMapStartDepth
 					)
 					children.push(StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth))
 				}

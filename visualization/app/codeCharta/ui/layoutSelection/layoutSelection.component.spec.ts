@@ -5,9 +5,9 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 
 describe("LayoutSelectionController", () => {
-	let layoutSelectionController: LayoutSelectionController
 	let $rootScope: IRootScopeService
 	let storeService = getService<StoreService>("storeService")
+	let layoutSelectionController: LayoutSelectionController
 
 	beforeEach(() => {
 		restartSystem()

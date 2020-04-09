@@ -6,7 +6,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, Node, LayoutAlgorithm, TreeMapAlgorithm } from "../../codeCharta.model"
+import { CodeMapNode, Node, LayoutAlgorithm } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { MetricService } from "../../state/metric.service"
 import { StreetLayoutGenerator } from "../../util/streetLayoutGenerator"
@@ -48,9 +48,6 @@ export class CodeMapRenderService {
 		let nodes: Node[] = []
 		const state = this.storeService.getState()
 		const metricService = this.metricService.getMetricData()
-		const treeMapAlgorithm = TreeMapAlgorithm.Squarified
-		const treeMapStartDepth = state.appSettings.treeMapStartDepth
-		console.log(state.appSettings)
 		const layoutAlgorithm = state.appSettings.layoutAlgorithm
 
 		switch (layoutAlgorithm) {
@@ -61,7 +58,7 @@ export class CodeMapRenderService {
 				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricService)
 				break
 			case LayoutAlgorithm.TMStreet:
-				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricService, treeMapStartDepth, treeMapAlgorithm)
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricService)
 				break
 			default:
 				throw new Error(`Layout Algorithm "${layoutAlgorithm}" is not defined.`)
