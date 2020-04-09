@@ -5,8 +5,8 @@ import { AttributeTypes } from "../../../../codeCharta.model"
 
 describe("attributeTypes", () => {
 	const defaultValue: AttributeTypes = {
-		nodes: [],
-		edges: []
+		nodes: {},
+		edges: {}
 	}
 
 	describe("Default State", () => {

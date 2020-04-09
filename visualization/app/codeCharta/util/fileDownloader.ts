@@ -64,7 +64,7 @@ export class FileDownloader {
 	}
 
 	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
-		if (attributeTypes.edges.length === 0 && attributeTypes.nodes.length === 0) {
+		if (Object.keys(attributeTypes.edges).length === 0 && Object.keys(attributeTypes.nodes).length === 0) {
 			return {}
 		} else {
 			return attributeTypes

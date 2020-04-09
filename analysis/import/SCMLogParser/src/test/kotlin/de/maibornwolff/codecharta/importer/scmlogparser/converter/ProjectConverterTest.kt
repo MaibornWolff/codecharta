@@ -32,7 +32,7 @@ class ProjectConverterTest {
         val projectConverter = ProjectConverter(true)
 
         // when
-        val project = projectConverter.convert(emptyList())
+        val project = projectConverter.convert(emptyList(), metricsFactory)
 
         //then
         assertThat(project.rootNode.leaves).hasSize(1)
@@ -46,7 +46,7 @@ class ProjectConverterTest {
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
 
         //when
-        val project = projectConverter.convert(Arrays.asList(file1))
+        val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
 
         //then
         assertThat(project.rootNode.children[0].attributes.containsKey("authors")).isTrue()
@@ -60,7 +60,7 @@ class ProjectConverterTest {
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
 
         //when
-        val project = projectConverter.convert(Arrays.asList(file1))
+        val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
 
         //then
         assertThat(project.rootNode.children[0].attributes.containsKey("authors")).isFalse()
@@ -78,11 +78,19 @@ class ProjectConverterTest {
         }
 
         //when
-        val project = projectConverter.convert(listOf(file1))
+        val project = projectConverter.convert(listOf(file1), MetricsFactory())
 
         //then
         assertThat(project.edges.size).isEqualTo(1)
         assertThat(project.edges[0].toNodeName).isEqualTo("/root/File 2")
         assertThat(project.edges[0].fromNodeName).isEqualTo("/root/File 1")
+    }
+
+    @Test
+    fun attributeTypesAreCreated() {
+        val projectConverter = ProjectConverter(false)
+        val project = projectConverter.convert(listOf(), MetricsFactory())
+
+        assertThat(project.attributeTypes).containsKeys("edges", "nodes")
     }
 }
