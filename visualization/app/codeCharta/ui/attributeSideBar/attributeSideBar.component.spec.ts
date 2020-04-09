@@ -1,6 +1,5 @@
 import "./attributeSideBar.module"
 import { AttributeSideBarController, PrimaryMetrics } from "./attributeSideBar.component"
-import { AttributeSideBarService } from "./attributeSideBar.service"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CODE_MAP_BUILDING, TEST_NODE_LEAF } from "../../util/dataMocks"
@@ -12,12 +11,15 @@ import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
+import { StoreService } from "../../state/store.service"
+import { setIsAttributeSideBarVisible } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
 	let $rootScope: IRootScopeService
+	let storeService: StoreService
 	let codeMapPreRenderService: CodeMapPreRenderService
-	let attributeSideBarService: AttributeSideBarService
 
 	beforeEach(() => {
 		restartSystem()
@@ -28,12 +30,12 @@ describe("AttributeSideBarController", () => {
 		instantiateModule("app.codeCharta.ui.attributeSideBar")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
-		attributeSideBarService = getService<AttributeSideBarService>("attributeSideBarService")
 	}
 
 	function rebuildController() {
-		attributeSideBarController = new AttributeSideBarController($rootScope, codeMapPreRenderService, attributeSideBarService)
+		attributeSideBarController = new AttributeSideBarController($rootScope, storeService, codeMapPreRenderService)
 	}
 
 	function withMockedCodeMapPreRenderService() {
@@ -85,12 +87,12 @@ describe("AttributeSideBarController", () => {
 			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 
-		it("should subscribe to AttributeSideBarService Events", () => {
-			AttributeSideBarService.subscribe = jest.fn()
+		it("should subscribe to IsAttributeSideBarVisibleService Events", () => {
+			IsAttributeSideBarVisibleService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(AttributeSideBarService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+			expect(IsAttributeSideBarVisibleService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
 		})
 	})
 
@@ -207,14 +209,12 @@ describe("AttributeSideBarController", () => {
 	})
 
 	describe("onClickCloseSideBar", () => {
-		beforeEach(() => {
-			attributeSideBarService.closeSideBar = jest.fn()
-		})
+		it("should call set isAttributeSideBarVisible to false", () => {
+			storeService.dispatch(setIsAttributeSideBarVisible(true))
 
-		it("should call attributeSideBarService.closeSideBar", () => {
 			attributeSideBarController.onClickCloseSideBar()
 
-			expect(attributeSideBarService.closeSideBar).toHaveBeenCalled()
+			expect(storeService.getState().appSettings.isAttributeSideBarVisible).toBeFalsy()
 		})
 	})
 
