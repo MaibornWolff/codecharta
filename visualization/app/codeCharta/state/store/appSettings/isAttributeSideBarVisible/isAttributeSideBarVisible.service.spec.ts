@@ -3,9 +3,10 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import {
+	closeAttributeSideBar,
 	IsAttributeSideBarVisibleAction,
 	IsAttributeSideBarVisibleActions,
-	setIsAttributeSideBarVisible
+	openAttributeSideBar
 } from "./isAttributeSideBarVisible.actions"
 import { IsAttributeSideBarVisibleService } from "./isAttributeSideBarVisible.service"
 import { CODE_MAP_BUILDING, withMockedEventMethods } from "../../../../util/dataMocks"
@@ -62,7 +63,7 @@ describe("IsAttributeSideBarVisibleService", () => {
 
 	describe("onBuildingSelected", () => {
 		it("should set isAttributeSideBarVisible to true", () => {
-			storeService.dispatch(setIsAttributeSideBarVisible(false))
+			storeService.dispatch(closeAttributeSideBar())
 			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 
 			isAttributeSideBarVisibleService.onBuildingSelected(codeMapBuilding)
@@ -73,7 +74,7 @@ describe("IsAttributeSideBarVisibleService", () => {
 
 	describe("onBuildingDeselected", () => {
 		it("should set isAttributeSideBarVisible to false", () => {
-			storeService.dispatch(setIsAttributeSideBarVisible(true))
+			storeService.dispatch(openAttributeSideBar())
 
 			isAttributeSideBarVisibleService.onBuildingDeselected()
 

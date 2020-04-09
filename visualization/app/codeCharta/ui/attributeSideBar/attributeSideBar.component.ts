@@ -14,7 +14,7 @@ import {
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { StoreService } from "../../state/store.service"
-import { setIsAttributeSideBarVisible } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
+import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 
 export interface PrimaryMetrics {
 	node: {
@@ -94,7 +94,7 @@ export class AttributeSideBarController
 	}
 
 	public onClickCloseSideBar() {
-		this.storeService.dispatch(setIsAttributeSideBarVisible(false))
+		this.storeService.dispatch(closeAttributeSideBar())
 	}
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {

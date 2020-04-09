@@ -1,5 +1,10 @@
 import { isAttributeSideBarVisible } from "./isAttributeSideBarVisible.reducer"
-import { IsAttributeSideBarVisibleAction, setIsAttributeSideBarVisible } from "./isAttributeSideBarVisible.actions"
+import {
+	closeAttributeSideBar,
+	IsAttributeSideBarVisibleAction,
+	openAttributeSideBar,
+	setIsAttributeSideBarVisible
+} from "./isAttributeSideBarVisible.actions"
 
 describe("isAttributeSideBarVisible", () => {
 	describe("Default State", () => {
@@ -19,6 +24,22 @@ describe("isAttributeSideBarVisible", () => {
 
 		it("should set default isAttributeSideBarVisible", () => {
 			const result = isAttributeSideBarVisible(true, setIsAttributeSideBarVisible())
+
+			expect(result).toEqual(false)
+		})
+	})
+
+	describe("Action: OPEN_ATTRIBUTE_SIDE_BAR", () => {
+		it("should set new isAttributeSideBarVisible", () => {
+			const result = isAttributeSideBarVisible(false, openAttributeSideBar())
+
+			expect(result).toEqual(true)
+		})
+	})
+
+	describe("Action: CLOSE_ATTRIBUTE_SIDE_BAR", () => {
+		it("should set default isAttributeSideBarVisible", () => {
+			const result = isAttributeSideBarVisible(true, closeAttributeSideBar())
 
 			expect(result).toEqual(false)
 		})

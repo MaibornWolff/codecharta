@@ -13,7 +13,7 @@ import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { StoreService } from "../../state/store.service"
-import { setIsAttributeSideBarVisible } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
+import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
@@ -210,7 +210,7 @@ describe("AttributeSideBarController", () => {
 
 	describe("onClickCloseSideBar", () => {
 		it("should call set isAttributeSideBarVisible to false", () => {
-			storeService.dispatch(setIsAttributeSideBarVisible(true))
+			storeService.dispatch(openAttributeSideBar())
 
 			attributeSideBarController.onClickCloseSideBar()
 

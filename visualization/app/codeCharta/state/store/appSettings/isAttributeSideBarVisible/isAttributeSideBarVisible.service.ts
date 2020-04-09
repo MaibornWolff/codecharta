@@ -1,6 +1,6 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { IsAttributeSideBarVisibleActions, setIsAttributeSideBarVisible } from "./isAttributeSideBarVisible.actions"
+import { closeAttributeSideBar, IsAttributeSideBarVisibleActions, openAttributeSideBar } from "./isAttributeSideBarVisible.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
 import {
@@ -24,11 +24,11 @@ export class IsAttributeSideBarVisibleService
 	}
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		this.storeService.dispatch(setIsAttributeSideBarVisible(true))
+		this.storeService.dispatch(openAttributeSideBar())
 	}
 
 	public onBuildingDeselected() {
-		this.storeService.dispatch(setIsAttributeSideBarVisible(false))
+		this.storeService.dispatch(closeAttributeSideBar())
 	}
 
 	public onStoreChanged(actionType: string) {
