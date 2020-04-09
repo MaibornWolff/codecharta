@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import de.maibornwolff.codecharta.model.AttributeType
 import java.util.*
 
 class SuccessiveWeeksWithCommits: Metric {
@@ -35,5 +36,9 @@ class SuccessiveWeeksWithCommits: Metric {
         }
 
         return numberOfSuccessiveWeeks
+    }
+
+    override fun attributeType(): AttributeType {
+        return AttributeType.relative
     }
 }

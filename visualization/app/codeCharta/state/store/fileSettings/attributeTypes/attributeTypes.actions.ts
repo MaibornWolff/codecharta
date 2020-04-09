@@ -18,4 +18,4 @@ export function setAttributeTypes(attributeTypes: AttributeTypes = defaultAttrib
 	}
 }
 
-export const defaultAttributeTypes: AttributeTypes = { nodes: [], edges: [] }
+export const defaultAttributeTypes: AttributeTypes = { nodes: {}, edges: {} }
