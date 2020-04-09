@@ -77,7 +77,7 @@ export class TreeMapHelper {
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					: 0,
-			visible: squaredNode.data.visible && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
+			visible: !squaredNode.data.isBlacklisted && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
 			path: squaredNode.data.path,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
@@ -137,7 +137,7 @@ export class TreeMapHelper {
 	}
 
 	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedCodeMapNode, blacklist: BlacklistItem[]): boolean {
-		return CodeMapHelper.isBlacklisted(squaredNode.data, blacklist, BlacklistType.flatten)
+		return CodeMapHelper.isBlacklisted(squaredNode.data, BlacklistType.flatten)
 	}
 
 	private static getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean): string {

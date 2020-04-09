@@ -48,7 +48,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 	}
 
 	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[], blacklistType: BlacklistType): number {
-		return searchedNodeLeaves.filter(node => CodeMapHelper.isBlacklisted(node, blacklist, blacklistType)).length
+		return searchedNodeLeaves.filter(node => CodeMapHelper.isBlacklisted(node, blacklistType)).length
 	}
 }
 

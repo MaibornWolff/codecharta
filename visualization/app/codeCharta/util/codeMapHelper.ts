@@ -62,8 +62,8 @@ export class CodeMapHelper {
 		)
 	}
 
-	public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
-		return CodeMapHelper.isPathBlacklisted(node.path, blacklist, type)
+	public static isBlacklisted(node: CodeMapNode, type: BlacklistType): boolean {
+		return node.isBlacklisted === type
 	}
 
 	public static isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {

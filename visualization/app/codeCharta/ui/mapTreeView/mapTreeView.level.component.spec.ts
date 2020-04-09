@@ -204,7 +204,7 @@ describe("MapTreeViewLevelController", () => {
 
 		it("should add flattened blacklistItem", () => {
 			storeService.dispatch(setBlacklist([]))
-			mapTreeViewLevelController["node"].visible = true
+			mapTreeViewLevelController["node"].isBlacklisted = undefined
 
 			mapTreeViewLevelController.onEyeClick()
 
@@ -216,7 +216,7 @@ describe("MapTreeViewLevelController", () => {
 
 		it("should remove flattened blacklistItem", () => {
 			storeService.dispatch(setBlacklist([{ path: "/root/Parent Leaf", type: BlacklistType.flatten }]))
-			mapTreeViewLevelController["node"].visible = false
+			mapTreeViewLevelController["node"].isBlacklisted = BlacklistType.exclude
 
 			mapTreeViewLevelController.onEyeClick()
 

@@ -81,7 +81,7 @@ export class NodeDecorator {
 		if (map) {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.each(node => {
-				node.data.visible = true
+				//node.data.isBlacklisted = undefined
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				node.data.edgeAttributes = !node.data.edgeAttributes ? {} : node.data.edgeAttributes
 				Object.assign(node.data.attributes, { unary: 1 })
@@ -115,7 +115,7 @@ export class NodeDecorator {
 			root.each((node: HierarchyNode<CodeMapNode>) => {
 				const leaves: HierarchyNode<CodeMapNode>[] = node
 					.leaves()
-					.filter(x => !CodeMapHelper.isBlacklisted(x.data, blacklist, BlacklistType.exclude))
+					.filter(x => !CodeMapHelper.isBlacklisted(x.data, BlacklistType.exclude))
 				this.decorateNodeWithAggregatedChildrenMetrics(leaves, node, metricData, isDeltaState, attributeTypes)
 				this.decorateNodeWithChildrenSumEdgeMetrics(leaves, node, edgeMetricData, attributeTypes)
 			})

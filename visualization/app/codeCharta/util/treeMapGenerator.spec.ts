@@ -112,14 +112,14 @@ describe("treeMapGenerator", () => {
 		it("node visibility should be adjusted", () => {
 			let result = TreeMapGenerator.setVisibilityOfNodeAndDescendants(codeMapNode, false)
 
-			expect(result.visible).toBeFalsy()
+			expect(result.isBlacklisted).toBeFalsy()
 		})
 
 		it("node children visibility should be adjusted", () => {
 			let result = TreeMapGenerator.setVisibilityOfNodeAndDescendants(codeMapNode, false)
 
-			expect(result.children[0].visible).toBeFalsy()
-			expect(result.children[1].visible).toBeFalsy()
+			expect(result.children[0].isBlacklisted).toBeFalsy()
+			expect(result.children[1].isBlacklisted).toBeFalsy()
 		})
 	})
 

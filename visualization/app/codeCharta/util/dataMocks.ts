@@ -300,7 +300,7 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 					path: "/root/Parent Leaf/other small leaf",
 					attributes: { rloc: 70, functions: 1000, mcc: 10, unary: 1 },
 					edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
-					visible: true
+					isBlacklisted: undefined
 				}
 			]
 		}

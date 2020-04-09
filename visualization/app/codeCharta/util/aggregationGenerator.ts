@@ -34,7 +34,7 @@ export class AggregationGenerator {
 				children: [],
 				attributes: {},
 				path: CodeChartaService.ROOT_PATH,
-				visible: true
+				isBlacklisted: undefined
 			},
 			settings: {
 				fileSettings: {

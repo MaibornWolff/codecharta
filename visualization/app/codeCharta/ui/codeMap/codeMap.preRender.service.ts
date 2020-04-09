@@ -1,6 +1,6 @@
 "use strict"
 
-import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta, BlacklistType } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -19,6 +19,10 @@ import { SearchPanelModeActions } from "../../state/store/appSettings/searchPane
 import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
+import ignore from "ignore"
+import { CodeMapHelper } from "../../util/codeMapHelper"
+import { hierarchy } from "d3"
+import { TreeMapGenerator } from "../../util/treeMapGenerator"
 
 const clone = require("rfdc")()
 
@@ -110,6 +114,44 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}
 	}
 
+	private showAllOrOnlyFocusedNode() {
+		if (this.storeService.getState().dynamicSettings.focusedNodePath.length > 0) {
+			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(
+				this.storeService.getState().dynamicSettings.focusedNodePath,
+				this.unifiedMap
+			)
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(this.unifiedMap, false)
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
+		} else {
+			TreeMapGenerator.setVisibilityOfNodeAndDescendants(this.unifiedMap, true)
+		}
+	}
+
+	private updateIsBlacklisted() {
+		const blacklist = this.storeService.getState().fileSettings.blacklist
+		const map = this.getRenderMap()
+		const flattened = ignore()
+		const excluded = ignore()
+
+		for (let item of blacklist) {
+			const path = CodeMapHelper.transformPath(item.path)
+			item.type === BlacklistType.flatten ? flattened.add(path) : excluded.add(path)
+		}
+
+		hierarchy(map)
+			.leaves()
+			.map(node => {
+				const path = CodeMapHelper.transformPath(node.data.path)
+				if (flattened.ignores(path)) {
+					node.data.isBlacklisted = BlacklistType.flatten
+				} else if (excluded.ignores(path)) {
+					node.data.isBlacklisted = BlacklistType.exclude
+				}
+			})
+
+		this.unifiedMap = map
+	}
+
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
 		if (map && this.edgeMetricDataService.getMetricNames()) {
 			let root = d3.hierarchy<CodeMapNode>(map)
@@ -148,6 +190,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private renderAndNotify() {
+		this.showAllOrOnlyFocusedNode()
+		this.updateIsBlacklisted()
 		this.codeMapRenderService.render(this.unifiedMap)
 		this.removeLoadingGifs()
 		this.notifyMapChanged()

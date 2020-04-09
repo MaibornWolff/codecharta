@@ -42,10 +42,12 @@ export class TreeMapGenerator {
 	}
 
 	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean): CodeMapNode {
-		node.visible = visibility
+		const blacklistType = visibility ? undefined : BlacklistType.exclude
+
+		node.isBlacklisted = blacklistType
 		hierarchy<CodeMapNode>(node)
 			.descendants()
-			.forEach(hierarchyNode => (hierarchyNode.data.visible = visibility))
+			.forEach(hierarchyNode => (hierarchyNode.data.isBlacklisted = blacklistType))
 		return node
 	}
 
@@ -54,7 +56,7 @@ export class TreeMapGenerator {
 	}
 
 	private static calculateAreaValue(node: CodeMapNode, s: State): number {
-		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
+		if (CodeMapHelper.isBlacklisted(node, BlacklistType.exclude)) {
 			return 0
 		}
 

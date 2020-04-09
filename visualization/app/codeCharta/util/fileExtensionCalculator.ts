@@ -30,7 +30,7 @@ export class FileExtensionCalculator {
 		d3.hierarchy(map)
 			.leaves()
 			.forEach((node: HierarchyNode<CodeMapNode>) => {
-				if (!CodeMapHelper.isBlacklisted(node.data, blacklist, BlacklistType.exclude)) {
+				if (!CodeMapHelper.isBlacklisted(node.data, BlacklistType.exclude)) {
 					const fileExtension: string = this.estimateFileExtension(node.data.name)
 					const metricValue: number = node.data.attributes[metric]
 					const matchingFileExtensionObject = distribution.find(x => x.fileExtension === fileExtension)

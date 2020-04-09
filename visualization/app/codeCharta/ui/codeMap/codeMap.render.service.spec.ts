@@ -206,10 +206,10 @@ describe("codeMapRenderService", () => {
 
 			codeMapRenderService["showAllOrOnlyFocusedNode"](map)
 
-			expect(map.visible).toBeFalsy()
-			expect(bigLeaf.visible).toBeFalsy()
-			expect(smallLeaf.visible).toBeTruthy()
-			expect(otherSmallLeaf.visible).toBeFalsy()
+			expect(map.isBlacklisted).toBeFalsy()
+			expect(bigLeaf.isBlacklisted).toBeFalsy()
+			expect(smallLeaf.isBlacklisted).toBeTruthy()
+			expect(otherSmallLeaf.isBlacklisted).toBeFalsy()
 		})
 
 		it("should show all nodes", () => {
@@ -220,10 +220,10 @@ describe("codeMapRenderService", () => {
 
 			codeMapRenderService["showAllOrOnlyFocusedNode"](map)
 
-			expect(map.visible).toBeTruthy()
-			expect(bigLeaf.visible).toBeTruthy()
-			expect(smallLeaf.visible).toBeTruthy()
-			expect(otherSmallLeaf.visible).toBeTruthy()
+			expect(map.isBlacklisted).toBeTruthy()
+			expect(bigLeaf.isBlacklisted).toBeTruthy()
+			expect(smallLeaf.isBlacklisted).toBeTruthy()
+			expect(otherSmallLeaf.isBlacklisted).toBeTruthy()
 		})
 	})
 })
