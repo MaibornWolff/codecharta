@@ -96,10 +96,12 @@ export default class SquarifiedTreemap extends Treemap {
 
 	protected createChildrenNodes(stripNodes: StreetLayoutValuedCodeMapNode[], currentTreemapDepth: number, margin: number): void {
 		for (let node of stripNodes) {
-			const children = node.data.children.filter(child => StreetLayoutHelper.calculateSize(child, this.metricName) > 0)
-			if (children.length > 0) {
-				const size = StreetLayoutHelper.calculateSize(node.data, this.metricName)
-				this.createNodes(children, node.rect, size, currentTreemapDepth + 1, margin)
+			if (node.data.children && node.data.children.length > 0) {
+				const children = node.data.children.filter(child => StreetLayoutHelper.calculateSize(child, this.metricName) > 0)
+				if (children.length > 0) {
+					const size = StreetLayoutHelper.calculateSize(node.data, this.metricName)
+					this.createNodes(children, node.rect, size, currentTreemapDepth + 1, margin)
+				}
 			}
 		}
 	}
