@@ -2,14 +2,13 @@ import "./mapTreeView.module"
 import { MapTreeViewController } from "./mapTreeView.component"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode, SortingOption } from "../../codeCharta.model"
 import {
 	VALID_NODE_WITH_MULTIPLE_FOLDERS,
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED,
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME,
-	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY,
-	VALID_NODE_WITH_PATH
+	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
 } from "../../util/dataMocks"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
@@ -21,7 +20,6 @@ describe("MapTreeViewController", () => {
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
 	let storeService = getService<StoreService>("storeService")
-	let map: CodeMapNode
 	let mapWithMultipleFolders: CodeMapNode
 
 	beforeEach(() => {
@@ -36,7 +34,6 @@ describe("MapTreeViewController", () => {
 		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 
-		map = _.cloneDeep(VALID_NODE_WITH_PATH)
 		mapWithMultipleFolders = _.cloneDeep(VALID_NODE_WITH_MULTIPLE_FOLDERS)
 	}
 
@@ -101,12 +98,14 @@ describe("MapTreeViewController", () => {
 
 	describe("onRenderMapChanged", () => {
 		it("should update viewModel.rootNode after timeout", () => {
-			mapTreeViewController["_viewModel"] = { rootNode: null }
+			const testNode = VALID_NODE_WITH_MULTIPLE_FOLDERS
 
-			mapTreeViewController.onRenderMapChanged(map)
+			mapTreeViewController["_viewModel"].rootNode = null
+
+			mapTreeViewController.onRenderMapChanged(testNode)
 			$timeout.flush(100)
 
-			expect(mapTreeViewController["_viewModel"].rootNode).toBe(map)
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME)
 		})
 	})
 })

@@ -1,18 +1,7 @@
-import {
-	AttributeTypes,
-	BlacklistItem,
-	BlacklistType,
-	CodeMapNode,
-	FileState,
-	MetricData,
-	AttributeType,
-	AttributeTypeValue,
-	State
-} from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, FileState, MetricData, AttributeTypeValue } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
-import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
 import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
@@ -62,35 +51,14 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		return metric ? metric.maxValue : undefined
 	}
 
-	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
-		const attributeType = this.getMergedAttributeTypes(state.fileSettings.attributeTypes).find(x => {
-			return _.findKey(x) === metricName
-		})
-
-		if (attributeType) {
-			return attributeType[metricName]
-		}
-		return null
+	public getAttributeTypeByMetric(metricName: string): AttributeTypeValue {
+		return this.storeService.getState().fileSettings.attributeTypes.nodes[metricName]
 	}
 
 	private setNewMetricData() {
 		this.metricData = this.calculateMetrics()
 		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
-	}
-
-	private getMergedAttributeTypes(attributeTypes: AttributeTypes): AttributeType[] {
-		const mergedAttributeTypes = [...attributeTypes.nodes]
-
-		mergedAttributeTypes.forEach(nodeAttribute => {
-			attributeTypes.edges.forEach(edgeAttribute => {
-				if (_.findKey(nodeAttribute) !== _.findKey(edgeAttribute)) {
-					mergedAttributeTypes.push(edgeAttribute)
-				}
-			})
-		})
-
-		return mergedAttributeTypes
 	}
 
 	private calculateMetrics(): MetricData[] {

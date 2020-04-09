@@ -11,7 +11,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import java.io.Writer
 
 class JSONMetricWriter(private val writer: Writer) : MetricWriter {
-  private val projectBuilder = ProjectBuilder()
+    private val projectBuilder = ProjectBuilder()
 
   override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
 
@@ -19,7 +19,7 @@ class JSONMetricWriter(private val writer: Writer) : MetricWriter {
 
     var project = projectBuilder.build()
     if (pipedProject != null) {
-      project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
+        project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
     }
     ProjectSerializer.serializeProject(project, writer)
   }

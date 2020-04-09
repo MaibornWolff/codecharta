@@ -7,6 +7,8 @@ import {
 	SortingOrderAscendingSubscriber
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
+import _ from "lodash"
+const clone = require("rfdc")()
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
 	private _viewModel: {
@@ -74,7 +76,11 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 			// needed to prevent flashing since event is triggered 4 times
 			return
 		}
-		this._viewModel.rootNode = map
+
+		if (!_.isMatch(this._viewModel.rootNode, map)) {
+			this._viewModel.rootNode = clone(map)
+		}
+
 		this.synchronizeAngularTwoWayBinding()
 
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)

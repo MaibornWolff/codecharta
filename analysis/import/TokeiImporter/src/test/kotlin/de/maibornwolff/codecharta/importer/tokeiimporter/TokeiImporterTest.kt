@@ -62,6 +62,17 @@ class TokeiImporterTest {
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children[1].name).isEqualTo("foo")
     }
+
+    @Test
+    fun `attributeTypes are set`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
+        val expected = mapOf("comment_lines" to "absolute", "empty_lines" to "absolute", "loc" to "absolute", "rloc" to "absolute")
+
+        val project = ProjectDeserializer.deserializeProject(cliResult)
+
+        Assertions.assertThat(project.attributeTypes).containsKey("nodes")
+        Assertions.assertThat(project.attributeTypes["nodes"]).isEqualTo(expected)
+    }
 }
 
 fun executeForOutput(input: String, args: Array<String> = emptyArray()) =

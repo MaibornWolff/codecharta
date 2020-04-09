@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.converter
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.model.*
 
 import java.util.*
@@ -38,12 +39,16 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         return edge
     }
 
-    fun convert(versionControlledFiles: List<VersionControlledFile>): Project {
+    fun convert(versionControlledFiles: List<VersionControlledFile>, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
         versionControlledFiles
                 .filter { vc -> !vc.markedDeleted() }
                 .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+
+        val metrics = metricsFactory.createMetrics()
+        projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))
+        projectBuilder.addAttributeTypes(AttributeTypesFactory.createEdgeAttributeTypes(metrics))
 
         return projectBuilder.build()
     }

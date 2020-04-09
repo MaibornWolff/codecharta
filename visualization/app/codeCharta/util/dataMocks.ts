@@ -391,7 +391,7 @@ export const TEST_FILE_DATA: CCFile = {
 	map: VALID_NODE,
 	settings: {
 		fileSettings: {
-			attributeTypes: { nodes: [], edges: [] },
+			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -445,7 +445,7 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: { nodes: [], edges: [] },
+			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -729,7 +729,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: { nodes: [], edges: [] },
+			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -787,7 +787,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: { nodes: [], edges: [] },
+			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -876,21 +876,13 @@ export const FILE_STATES: FileState[] = [
 export const STATE: State = {
 	fileSettings: {
 		attributeTypes: {
-			nodes: [
-				{
-					rloc: AttributeTypeValue.absolute
-				},
-				{
-					mcc: AttributeTypeValue.absolute
-				},
-				{
-					coverage: AttributeTypeValue.relative
-				},
-				{
-					pairing_rate: AttributeTypeValue.absolute
-				}
-			],
-			edges: []
+			nodes: {
+				rloc: AttributeTypeValue.absolute,
+				mcc: AttributeTypeValue.absolute,
+				coverage: AttributeTypeValue.relative,
+				pairing_rate: AttributeTypeValue.absolute
+			},
+			edges: {}
 		},
 		blacklist: [],
 		edges: VALID_EDGES,
@@ -1011,7 +1003,7 @@ export const DEFAULT_STATE: State = {
 		searchedNodePaths: [],
 		sortingOption: SortingOption.NAME
 	},
-	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
 	files: new Files()
 }
