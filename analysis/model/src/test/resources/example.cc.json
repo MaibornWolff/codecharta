@@ -128,6 +128,13 @@
     }
   ],
   "edges": [],
-  "attributeTypes": {},
+  "attributeTypes": {
+    "nodes": {
+      "rloc": "absolute",
+      "loc": "absolute",
+      "empty_lines": "absolute",
+      "comment_lines": "absolute"
+    }
+  },
   "blacklist": []
 }

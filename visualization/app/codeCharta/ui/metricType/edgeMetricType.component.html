@@ -1,1 +1,4 @@
-<span ng-show="$ctrl._viewModel.isBuildingHovered" class="sum-icon">Σ</span>
+<span ng-show="$ctrl._viewModel.isFolderHovered">
+	<span ng-show="$ctrl._viewModel.edgeMetricType === 'absolute' || !$ctrl._viewModel.edgeMetricType">Σ</span>
+	<span ng-show="$ctrl._viewModel.edgeMetricType === 'relative'">x͂</span>
+</span>

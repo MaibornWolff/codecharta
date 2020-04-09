@@ -1,13 +1,12 @@
 package de.maibornwolff.codecharta.model
 
-import de.maibornwolff.codecharta.attributeTypes.AttributeTypes
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import mu.KotlinLogging
 
 open class ProjectBuilder(
         private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
         private var edges: MutableList<Edge> = mutableListOf(),
-        private var attributeTypes: MutableMap<String, MutableList<Map<String, AttributeType>>> = mutableMapOf(),
+        private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
         private var blacklist: MutableList<BlacklistItem> = mutableListOf()
 ) {
 
@@ -78,9 +77,9 @@ open class ProjectBuilder(
 
     fun addAttributeTypes(attributeTypesToAdd: AttributeTypes): ProjectBuilder {
         if (!attributeTypes.containsKey(attributeTypesToAdd.type)) {
-            attributeTypes[attributeTypesToAdd.type] = mutableListOf(attributeTypesToAdd.attributeTypes)
+            attributeTypes[attributeTypesToAdd.type] = attributeTypesToAdd.attributeTypes.toMutableMap()
         } else {
-            attributeTypes[attributeTypesToAdd.type]!!.add(attributeTypesToAdd.attributeTypes)
+            attributeTypes[attributeTypesToAdd.type]!!.plus(attributeTypesToAdd.attributeTypes)
         }
         return this
     }

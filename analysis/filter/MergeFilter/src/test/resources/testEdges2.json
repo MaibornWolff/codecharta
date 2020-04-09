@@ -5,8 +5,7 @@
     {
       "name": "root",
       "type": "Folder",
-      "attributes": {
-      },
+      "attributes": {},
       "children": [
         {
           "name": "file1",
@@ -18,8 +17,7 @@
             "number_of_commits": 170.0
           },
           "link": "",
-          "children": [
-          ]
+          "children": []
         },
         {
           "name": "file4",
@@ -30,14 +28,12 @@
             "deleted_lines": 1.0
           },
           "link": "",
-          "children": [
-          ]
+          "children": []
         },
         {
           "name": "visualization",
           "type": "Folder",
-          "attributes": {
-          },
+          "attributes": {},
           "link": "",
           "children": [
             {
@@ -49,8 +45,7 @@
                 "deleted_lines": 3.0
               },
               "link": "",
-              "children": [
-              ]
+              "children": []
             },
             {
               "name": "file3",
@@ -61,8 +56,7 @@
                 "deleted_lines": 2.0
               },
               "link": "",
-              "children": [
-              ]
+              "children": []
             }
           ]
         }
@@ -88,25 +82,15 @@
     }
   ],
   "attributeTypes": {
-    "nodes": [
-      {
-        "attributeA": "absolute"
-      },
-      {
-        "attributeB": "absolute"
-      },
-      {
-        "attributeC": "absolute"
-      }
-    ],
-    "edges": [
-      {
-        "attributeD": "absolute"
-      },
-      {
-        "attributeE": "relative"
-      }
-    ]
+    "nodes": {
+      "attributeA": "absolute",
+      "attributeB": "absolute",
+      "attributeC": "absolute"
+    },
+    "edges": {
+      "attributeD": "absolute",
+      "attributeE": "relative"
+    }
   },
   "blacklist": [
     {

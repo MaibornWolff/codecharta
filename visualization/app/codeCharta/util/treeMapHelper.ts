@@ -47,7 +47,7 @@ export class TreeMapHelper {
 		}
 	}
 
-	public static buildNodeFrom(layoutNode: LayoutNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
+  public static buildNodeFrom(layoutNode: LayoutNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
 		const isNodeLeaf: boolean = !(layoutNode.data.children && layoutNode.data.children.length > 0)
 		const flattened: boolean = this.isNodeToBeFlat(layoutNode, s)
 		const heightValue: number = this.getHeightValue(s, layoutNode, maxHeight, flattened)
