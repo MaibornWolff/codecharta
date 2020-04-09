@@ -10,14 +10,26 @@ export class FileValidator {
 		let Validator = require("jsonschema").Validator
 		let valid = new Validator()
 		let validationResult = valid.validate(file, require("./schema.json"))
+		let message = ""
 		console.log(validationResult.errors)
 
-		this.checkApiVersion(file)
+		if (this.checkApiVersion(file)[0]) {
+			return [
+				{
+					message: "API Version Outdated",
+					dataPath: "Update API Version to match cc.json"
+				}
+			]
+		}
+
+		if (this.checkApiVersion(file)[1]) {
+			message = "Api Version Minor Outdated"
+		}
 
 		if (validationResult.errors.length !== 0) {
 			return [
 				{
-					message: validationResult.errors,
+					message: message + validationResult.errors,
 					dataPath: ""
 				}
 			]
@@ -60,6 +72,8 @@ export class FileValidator {
 		let apiVersion = this.getCodeChartaApiVersion()
 		let fileApiVersion = this.getFileApiVersion(file)
 
+		let apiVersionMajorMinor = [false, false]
+
 		let apiVersionMajor = apiVersion.split(".")[0]
 		let apiVersionMinor = apiVersion.split(".")[1]
 
@@ -68,12 +82,12 @@ export class FileValidator {
 
 		if (majorVersion > apiVersionMajor) {
 			console.log("Major Version Wrong")
-			return
-		}
-		if (minorVersion > apiVersionMinor) {
+			apiVersionMajorMinor[0] = true
+		} else if (minorVersion > apiVersionMinor) {
 			console.log("Minor Version Wrong")
-			return
+			apiVersionMajorMinor[1] = true
 		}
+		return apiVersionMajorMinor
 	}
 
 	private static getCodeChartaApiVersion() {
