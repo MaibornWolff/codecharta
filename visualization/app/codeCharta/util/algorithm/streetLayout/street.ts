@@ -3,6 +3,11 @@ import Rectangle from "../rectangle"
 import Point from "../point"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 
+export enum StreetOrientation {
+	Horizontal,
+	Vertical
+}
+
 export default abstract class Street extends BoundingBox {
 	public streetRect: Rectangle | undefined
 	protected spacer = 2

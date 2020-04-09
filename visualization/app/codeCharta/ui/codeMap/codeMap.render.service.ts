@@ -6,7 +6,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { CodeMapNode, Node, LayoutAlgorithm } from "../../codeCharta.model"
+import { CodeMapNode, Node, LayoutAlgorithm, TreeMapAlgorithm } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { MetricService } from "../../state/metric.service"
 import { StreetLayoutGenerator } from "../../util/streetLayoutGenerator"
@@ -46,22 +46,26 @@ export class CodeMapRenderService {
 
 	private getSortedNodes(map: CodeMapNode): Node[] {
 		let nodes: Node[] = []
+		const state = this.storeService.getState()
+		const metricService = this.metricService.getMetricData()
+		const treemapAlgorithm = TreeMapAlgorithm.Squarified
+		const treemapStartDepth = 0
+
 		const layoutAlgorithm = this.storeService.getState().appSettings.layoutAlgorithm
-		if (layoutAlgorithm === LayoutAlgorithm.SquarifiedTreeMap) {
-			nodes = TreeMapGenerator.createTreemapNodes(
-				map,
-				this.storeService.getState(),
-				this.metricService.getMetricData(),
-				this.storeService.getState().files.isDeltaState()
-			)
-		} else if (layoutAlgorithm === LayoutAlgorithm.StreetMap) {
-			nodes = StreetLayoutGenerator.createStreetLayoutNodes(
-				map,
-				this.storeService.getState(),
-				this.metricService.getMetricData(),
-				this.storeService.getState().files.isDeltaState()
-			)
+		switch (layoutAlgorithm) {
+			case LayoutAlgorithm.SquarifiedTreeMap:
+				nodes = TreeMapGenerator.createTreemapNodes(map, state, metricService)
+				break
+			case LayoutAlgorithm.StreetMap:
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricService)
+				break
+			case LayoutAlgorithm.TMStreet:
+				nodes = StreetLayoutGenerator.createStreetLayoutNodes(map, state, metricService, treemapStartDepth, treemapAlgorithm)
+				break
+			default:
+				throw new Error(`Layout Algorithm "${layoutAlgorithm}" is not defined.`)
 		}
+
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)
 	}

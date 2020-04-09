@@ -131,7 +131,13 @@ export interface AppSettings {
 
 export enum LayoutAlgorithm {
 	SquarifiedTreeMap = "Squarified TreeMap",
-	StreetMap = "StreetMap"
+	StreetMap = "StreetMap",
+	TMStreet = "TMStreet"
+}
+
+export enum TreeMapAlgorithm {
+	Squarified = "Squarified",
+	SliceAndDice = "SliceAndDice"
 }
 
 export interface TreeMapSettings {

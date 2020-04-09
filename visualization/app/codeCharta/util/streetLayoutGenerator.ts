@@ -1,4 +1,4 @@
-import { CodeMapNode, MetricData, Node, State, BlacklistType } from "../codeCharta.model"
+import { CodeMapNode, MetricData, Node, State, BlacklistType, TreeMapAlgorithm } from "../codeCharta.model"
 import BoundingBox from "./algorithm/streetLayout/boundingBox"
 import VerticalStreet from "./algorithm/streetLayout/verticalStreet"
 import HorizontalStreet from "./algorithm/streetLayout/horizontalStreet"
@@ -10,6 +10,7 @@ import { LayoutNode, TreeMapHelper } from "./treeMapHelper"
 import SliceDiceTreemap from "./algorithm/treemap/sliceDiceTreemap"
 import SquarifiedTreemap from "./algorithm/treemap/squarifiedTreemap"
 import Treemap from "./algorithm/treemap/treemap"
+import { StreetOrientation } from "./algorithm/streetLayout/street"
 
 export interface StreetLayoutValuedCodeMapNode {
 	data: CodeMapNode
@@ -18,23 +19,20 @@ export interface StreetLayoutValuedCodeMapNode {
 	zOffset: number
 }
 
-enum StreetOrientation {
-	Horizontal,
-	Vertical
-}
-
-enum TreemapAlgorithm {
-	Squarified,
-	SliceAndDice
-}
-
 export class StreetLayoutGenerator {
 	// private static HEIGHT_DIVISOR = 1
 	private static MARGIN_SCALING_FACTOR = 0.02
 
-	public static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
+	public static createStreetLayoutNodes(
+		map: CodeMapNode,
+		state: State,
+		metricData: MetricData[],
+		treemapStartDepth = Number.MAX_VALUE,
+		treemapAlgorithm = TreeMapAlgorithm.Squarified
+	): Node[] {
+		const isDeltaState = state.files.isDeltaState()
 		const metricName = state.dynamicSettings.areaMetric
-		const childBoxes = this.createBoxes(map, metricName, state, StreetOrientation.Vertical, 1)
+		const childBoxes = this.createBoxes(map, metricName, state, StreetOrientation.Vertical, 1, treemapStartDepth, treemapAlgorithm)
 		const rootStreet = new HorizontalStreet(map, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
@@ -55,7 +53,9 @@ export class StreetLayoutGenerator {
 		metricName: string,
 		state: State,
 		orientation: StreetOrientation,
-		depth: number
+		depth: number,
+		treemapStartDepth: number,
+		treemapAlgorithm: TreeMapAlgorithm
 	): BoundingBox[] {
 		const children: BoundingBox[] = []
 		for (const child of node.children) {
@@ -65,12 +65,19 @@ export class StreetLayoutGenerator {
 			if (StreetLayoutGenerator.isNodeLeaf(child)) {
 				children.push(new House(child))
 			} else {
-				if (depth >= Number.MAX_VALUE) {
-					//TODO: add starting depth for treemap generation
-					const treemap = StreetLayoutGenerator.createTreemap(child, TreemapAlgorithm.Squarified)
+				if (depth >= treemapStartDepth) {
+					const treemap = StreetLayoutGenerator.createTreemap(child, treemapAlgorithm)
 					children.push(treemap)
 				} else {
-					const streetChildren = StreetLayoutGenerator.createBoxes(child, metricName, state, 1 - orientation, depth + 1)
+					const streetChildren = StreetLayoutGenerator.createBoxes(
+						child,
+						metricName,
+						state,
+						1 - orientation,
+						depth + 1,
+						treemapStartDepth,
+						treemapAlgorithm
+					)
 					children.push(StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth))
 				}
 			}
@@ -86,11 +93,11 @@ export class StreetLayoutGenerator {
 		}
 	}
 
-	private static createTreemap(node: CodeMapNode, treemapAlgorithm: TreemapAlgorithm): Treemap {
+	private static createTreemap(node: CodeMapNode, treemapAlgorithm: TreeMapAlgorithm): Treemap {
 		switch (treemapAlgorithm) {
-			case TreemapAlgorithm.SliceAndDice:
+			case TreeMapAlgorithm.SliceAndDice:
 				return new SliceDiceTreemap(node)
-			case TreemapAlgorithm.Squarified:
+			case TreeMapAlgorithm.Squarified:
 				return new SquarifiedTreemap(node)
 			default:
 				throw new Error("Treemap Algorithm not specified.")
