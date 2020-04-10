@@ -1,6 +1,6 @@
 import "./metricType.component.scss"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import { AttributeTypeValue } from "../../codeCharta.model"
+import { AttributeTypeValue, MetricSelections } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -21,18 +21,14 @@ export class MetricTypeController
 		BuildingUnhoveredSubscriber,
 		MetricServiceSubscriber {
 	private _viewModel: {
-		areaMetricType: AttributeTypeValue
-		heightMetricType: AttributeTypeValue
-		colorMetricType: AttributeTypeValue
-		edgeMetricType: AttributeTypeValue
+		metricType: AttributeTypeValue
 		isFolderHovered: boolean
 	} = {
-		areaMetricType: null,
-		heightMetricType: null,
-		colorMetricType: null,
-		edgeMetricType: null,
+		metricType: null,
 		isFolderHovered: false
 	}
+
+	private metricSelection: MetricSelections
 
 	/* @ngInject */
 	constructor(
@@ -51,19 +47,23 @@ export class MetricTypeController
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
-		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(areaMetric)
+		this.metricSelection == MetricSelections.areaMetric &&
+			(this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(areaMetric))
 	}
 
 	public onHeightMetricChanged(heightMetric: string) {
-		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(heightMetric)
+		this.metricSelection == MetricSelections.heightMetric &&
+			(this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(heightMetric))
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric)
+		this.metricSelection == MetricSelections.colorMetric &&
+			(this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(colorMetric))
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric)
+		this.metricSelection == MetricSelections.edgeMetric &&
+			(this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric))
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -76,33 +76,17 @@ export class MetricTypeController
 
 	public onMetricDataAdded() {
 		const state = this.storeService.getState()
-		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings.areaMetric)
-		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings.heightMetric)
-		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings.colorMetric)
-		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings.edgeMetric)
+		if (this.metricSelection === MetricSelections.edgeMetric) {
+			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
+		} else {
+			this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
+		}
 	}
 }
 
-export const areaMetricTypeComponent = {
-	selector: "areaMetricTypeComponent",
-	template: require("./areaMetricType.component.html"),
-	controller: MetricTypeController
-}
-
-export const heightMetricTypeComponent = {
-	selector: "heightMetricTypeComponent",
-	template: require("./heightMetricType.component.html"),
-	controller: MetricTypeController
-}
-
-export const colorMetricTypeComponent = {
-	selector: "colorMetricTypeComponent",
-	template: require("./colorMetricType.component.html"),
-	controller: MetricTypeController
-}
-
-export const edgeMetricTypeComponent = {
-	selector: "edgeMetricTypeComponent",
-	template: require("./edgeMetricType.component.html"),
-	controller: MetricTypeController
+export const metricTypeComponent = {
+	selector: "metricTypeComponent",
+	template: require("./metricType.component.html"),
+	controller: MetricTypeController,
+	bindings: { metricSelection: "@" }
 }

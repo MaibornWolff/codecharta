@@ -164,6 +164,13 @@ export enum AttributeTypeValue {
 	relative = "relative"
 }
 
+export enum MetricSelections {
+	areaMetric = "areaMetric",
+	heightMetric = "heightMetric",
+	colorMetric = "colorMetric",
+	edgeMetric = "edgeMetric"
+}
+
 export interface Edge {
 	fromNodeName: string
 	toNodeName: string
