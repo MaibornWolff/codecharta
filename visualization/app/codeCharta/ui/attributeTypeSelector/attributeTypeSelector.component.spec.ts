@@ -2,8 +2,8 @@ import "./attributeTypeSelector.module"
 import { AttributeTypeSelectorController } from "./attributeTypeSelector.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
-import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
-import { AttributeTypeValue, State } from "../../codeCharta.model"
+import { updateAttributeType } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { AttributeTypeValue } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 
@@ -32,24 +32,13 @@ describe("AttributeTypeSelectorController", () => {
 
 	function withMockedDispatch() {
 		attributeTypeSelectorController["storeService"].dispatch = jest.fn(() => {})
-		storeService.getState = () => {
-			return ({ fileSettings: { attributeTypes: { nodes: { bar: "relative" }, edges: {} } } } as unknown) as State
-		}
 	}
 
 	describe("setToAbsolute", () => {
-		it("should change attributeType to absolute", () => {
-			const expected = setAttributeTypes({ nodes: { bar: AttributeTypeValue.absolute }, edges: {} })
+		it("should update attributeType to absolute", () => {
+			const expected = updateAttributeType("nodes", "bar", AttributeTypeValue.absolute)
 
 			attributeTypeSelectorController.setToAbsolute("bar", "nodes")
-
-			expect(storeService.dispatch).toBeCalledWith(expected)
-		})
-
-		it("should set attributeType to absolute for previously non-available metric", () => {
-			const expected = setAttributeTypes({ nodes: { foo: AttributeTypeValue.absolute, bar: AttributeTypeValue.relative }, edges: {} })
-
-			attributeTypeSelectorController.setToAbsolute("foo", "nodes")
 
 			expect(storeService.dispatch).toBeCalledWith(expected)
 		})
@@ -57,7 +46,7 @@ describe("AttributeTypeSelectorController", () => {
 
 	describe("setToRelative", () => {
 		it("should set attributeType to relative", () => {
-			const expected = setAttributeTypes({ nodes: { bar: AttributeTypeValue.relative }, edges: { foo: AttributeTypeValue.relative } })
+			const expected = updateAttributeType("edges", "foo", AttributeTypeValue.relative)
 
 			attributeTypeSelectorController.setToRelative("foo", "edges")
 
