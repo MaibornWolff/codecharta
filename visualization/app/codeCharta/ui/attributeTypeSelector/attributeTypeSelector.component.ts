@@ -1,7 +1,7 @@
 import "./attributeTypeSelector.component.scss"
 import { StoreService } from "../../state/store.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
-import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { updateAttributeType } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { MetricService } from "../../state/metric.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 
@@ -35,11 +35,7 @@ export class AttributeTypeSelectorController {
 	}
 
 	private setAttributeType(metricName: string, category: string, type: AttributeTypeValue) {
-		const attributeTypes = this.storeService.getState().fileSettings.attributeTypes
-		if (attributeTypes[category]) {
-			attributeTypes[category][metricName] = type
-		}
-		this.storeService.dispatch(setAttributeTypes(attributeTypes))
+		this.storeService.dispatch(updateAttributeType(category, metricName, type))
 		this.setAggregationSymbol()
 	}
 
