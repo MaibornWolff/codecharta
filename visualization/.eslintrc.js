@@ -10,7 +10,7 @@ module.exports = {
 		"plugin:@typescript-eslint/recommended",
 		"prettier",
 		"prettier/@typescript-eslint",
-	],
+	], // prettier must be last in array to override other configs
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"project": "tsconfig.json",
@@ -20,7 +20,7 @@ module.exports = {
 		"@typescript-eslint"
 	],
 	"rules": {
-		// Do not apply rules below
+		// Do not apply inappropriate rules below
 		"@typescript-eslint/no-inferrable-types": "off",
 		"@typescript-eslint/no-use-before-define": "off",
 
