@@ -4,7 +4,13 @@ module.exports = {
 		"es6": true,
 		"node": true
 	},
-	"extends": ["prettier"], // prettier must be last in array to override other configs
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended",
+		"prettier",
+		"prettier/@typescript-eslint",
+	],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"project": "tsconfig.json",
@@ -14,48 +20,24 @@ module.exports = {
 		"@typescript-eslint"
 	],
 	"rules": {
-		"@typescript-eslint/class-name-casing": "error",
-		"@typescript-eslint/explicit-member-accessibility": [
-			"error",
-			{
-				"accessibility": "explicit",
-				"overrides": {
-					"constructors": "no-public"
-				}
-			}
-		],
-		"@typescript-eslint/triple-slash-reference": "error",
-		"curly": "error",
-		"new-parens": "error",
-		"no-caller": "error",
-		"no-cond-assign": "error",
-		"no-console": [
-			"warn",
-			{
-				"allow": [
-					"warn",
-					"dir",
-					"timeLog",
-					"assert",
-					"clear",
-					"count",
-					"countReset",
-					"group",
-					"groupEnd",
-					"table",
-					"dirxml",
-					"error",
-					"groupCollapsed",
-					"Console",
-					"profile",
-					"profileEnd",
-					"timeStamp",
-					"context"
-				]
-			}
-		],
-		"no-empty": "error",
-		"no-eval": "error",
-		"no-var": "error"
+		// Do not apply rules below
+		"@typescript-eslint/no-inferrable-types": "off",
+		"@typescript-eslint/no-use-before-define": "off",
+
+		// TODO fix and remove rules below
+		"@typescript-eslint/ban-ts-ignore": "off",
+		"@typescript-eslint/explicit-function-return-type": "off",
+		"@typescript-eslint/ban-types": "off",
+		"@typescript-eslint/no-explicit-any": "off",
+		"@typescript-eslint/no-var-requires": "off",
+		"@typescript-eslint/no-unused-vars": "off",
+		"@typescript-eslint/no-empty-interface": "off",
+		"@typescript-eslint/consistent-type-assertions": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/no-empty-function": "off",
+		"@typescript-eslint/camelcase": "off",
+		"no-useless-escape": "off",
+		"no-prototype-builtins": "off",
+		"prefer-const": "off",
 	}
 }
