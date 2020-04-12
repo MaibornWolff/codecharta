@@ -18,6 +18,10 @@ map-tree-view-component {
 		}
 	}
 
+	.tree-leaf .tree-element-label {
+		cursor: default;
+	}
+
 	.tree-element-label {
 		cursor: pointer;
 
