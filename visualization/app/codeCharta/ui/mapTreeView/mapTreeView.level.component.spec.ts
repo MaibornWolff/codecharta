@@ -225,7 +225,7 @@ describe("MapTreeViewLevelController", () => {
 			)
 			storeService.dispatch(setSearchedNodePaths(["/root/Parent Leaf/", "/root/Parent Leaf/empty folder"]))
 
-			const result = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
+			const result = mapTreeViewLevelController.isSearched()
 
 			expect(result).toBeTruthy()
 		})
@@ -238,39 +238,41 @@ describe("MapTreeViewLevelController", () => {
 			)
 			storeService.dispatch(setSearchedNodePaths(["/root/Parent Leaf"]))
 
-			const result = mapTreeViewLevelController.isSearched(mapTreeViewLevelController["node"])
+			const result = mapTreeViewLevelController.isSearched()
 
 			expect(result).toBeFalsy()
 		})
 
 		it("should not be searched with null parameter", () => {
-			const result = mapTreeViewLevelController.isSearched(null)
+			mapTreeViewLevelController["node"] = null
+
+			const result = mapTreeViewLevelController.isSearched()
 
 			expect(result).toBeFalsy()
 		})
 	})
 
 	describe("openRootFolderByDefault", () => {
-		it("should set the collapsed variable to false, if depth size is 0", () => {
-			mapTreeViewLevelController["_viewModel"].collapsed = true
+		it("should set the isFolderOpened variable to false, if depth size is 0", () => {
+			mapTreeViewLevelController["_viewModel"].isFolderOpened = false
 
 			mapTreeViewLevelController.openRootFolderByDefault(0)
 
-			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
+			expect(mapTreeViewLevelController["_viewModel"].isFolderOpened).toBeTruthy()
 		})
 		it("should do nothing, if the depth size is not 0", () => {
-			mapTreeViewLevelController["_viewModel"].collapsed = true
+			mapTreeViewLevelController["_viewModel"].isFolderOpened = false
 
 			mapTreeViewLevelController.openRootFolderByDefault(5)
 
-			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeTruthy()
+			expect(mapTreeViewLevelController["_viewModel"].isFolderOpened).toBeFalsy()
 		})
-		it("should do nothing, if the depth size is not 0 and the collapsed variable is false", () => {
-			mapTreeViewLevelController["_viewModel"].collapsed = false
+		it("should do nothing, if the depth size is not 0 and the isFolderOpened variable is true", () => {
+			mapTreeViewLevelController["_viewModel"].isFolderOpened = true
 
 			mapTreeViewLevelController.openRootFolderByDefault(5)
 
-			expect(mapTreeViewLevelController["_viewModel"].collapsed).toBeFalsy()
+			expect(mapTreeViewLevelController["_viewModel"].isFolderOpened).toBeTruthy()
 		})
 	})
 
