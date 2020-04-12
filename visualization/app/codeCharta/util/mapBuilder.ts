@@ -23,7 +23,8 @@ export class MapBuilder {
 			path: CodeChartaService.ROOT_PATH,
 			type: NodeType.FOLDER,
 			children: [],
-			attributes: {}
+			attributes: {},
+			isBlacklisted: undefined
 		}
 	}
 

@@ -148,8 +148,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 					node.data.isBlacklisted = BlacklistType.exclude
 				}
 			})
-
-		this.unifiedMap = map
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
