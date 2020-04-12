@@ -20,9 +20,11 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	private _viewModel: {
 		isHoveredInCodeMap: boolean
+		isHoveredInTreeView: boolean
 		isFolderOpened: boolean
 	} = {
 		isHoveredInCodeMap: false,
+		isHoveredInTreeView: false,
 		isFolderOpened: false
 	}
 
@@ -57,10 +59,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public onMouseEnter() {
 		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, this.node)
+		this._viewModel.isHoveredInTreeView = true
 	}
 
 	public onMouseLeave() {
 		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_UNHOVER_NODE_EVENT, this.node)
+		this._viewModel.isHoveredInTreeView = false
 	}
 
 	public onRightClick($event) {
