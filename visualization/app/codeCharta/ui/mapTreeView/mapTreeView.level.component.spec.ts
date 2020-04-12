@@ -18,14 +18,12 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
 	let $rootScope: IRootScopeService
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let storeService: StoreService
-	let threeSceneService: ThreeSceneService
 	let $event
 
 	beforeEach(() => {
@@ -41,7 +39,6 @@ describe("MapTreeViewLevelController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 		storeService = getService<StoreService>("storeService")
-		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		$event = {
 			clientX: jest.fn(),
 			clientY: jest.fn()
@@ -49,7 +46,7 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	function rebuildController() {
-		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapPreRenderService, storeService, threeSceneService)
+		mapTreeViewLevelController = new MapTreeViewLevelController($rootScope, codeMapPreRenderService, storeService)
 	}
 
 	function withMockedCodeMapPreRenderService() {
