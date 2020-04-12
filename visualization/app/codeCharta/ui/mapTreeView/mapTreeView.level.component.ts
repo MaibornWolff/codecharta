@@ -64,6 +64,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public onRightClick($event) {
+		$event.stopPropagation()
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
 	}
 

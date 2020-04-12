@@ -46,5 +46,26 @@ map-tree-view-component {
 			width: 14px;
 			margin-left: 2px;
 		}
+
+		.right-aligned {
+			position: absolute;
+			right: 6px;
+
+			.small-action-button {
+				.md-fab {
+					i {
+						top: 2px;
+					}
+
+					&:hover {
+						background-color: transparent !important;
+					}
+
+					.md-ripple-container {
+						display: none;
+					}
+				}
+			}
+		}
 	}
 }
