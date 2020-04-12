@@ -20,10 +20,10 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	private _viewModel: {
 		isHoveredInCodeMap: boolean
-		collapsed: boolean
+		isFolderOpened: boolean
 	} = {
 		isHoveredInCodeMap: false,
-		collapsed: true
+		isFolderOpened: false
 	}
 
 	/* @ngInject */
@@ -68,7 +68,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public onClickNode() {
-		this._viewModel.collapsed = !this._viewModel.collapsed
+		this._viewModel.isFolderOpened = !this._viewModel.isFolderOpened
 	}
 
 	public isLeaf(node: CodeMapNode = this.node): boolean {
@@ -91,7 +91,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public openRootFolderByDefault(depth: number) {
 		if (depth == 0) {
-			this._viewModel.collapsed = false
+			this._viewModel.isFolderOpened = true
 		}
 	}
 
