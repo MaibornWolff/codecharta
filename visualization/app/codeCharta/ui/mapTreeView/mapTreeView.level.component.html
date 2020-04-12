@@ -29,7 +29,7 @@
 			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
 		</span>
 
-		<span class="node-name {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}">
+		<span class="node-name" ng-class="{'angular-green': $ctrl.isSearched()}">
 			{{::$ctrl.node.name}}
 		</span>
 
