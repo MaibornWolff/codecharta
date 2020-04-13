@@ -189,7 +189,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 	})
 
-	describe("isBlacklisted", () => {
+	describe("isExcluded", () => {
 		it("should call CodeMapHelper.isBlacklisted", () => {
 			CodeMapHelper.isBlacklisted = jest.fn()
 
@@ -199,7 +199,7 @@ describe("MapTreeViewLevelController", () => {
 				VALID_NODE_WITH_PATH
 			)
 
-			mapTreeViewLevelController.isBlacklisted()
+			mapTreeViewLevelController.isExcluded()
 
 			expect(CodeMapHelper.isBlacklisted).toHaveBeenCalledWith(
 				mapTreeViewLevelController["node"],
@@ -208,10 +208,10 @@ describe("MapTreeViewLevelController", () => {
 			)
 		})
 
-		it("should not be blacklisted", () => {
+		it("should not be excluded", () => {
 			CodeMapHelper.isBlacklisted = jest.fn()
 
-			const result = mapTreeViewLevelController.isBlacklisted()
+			const result = mapTreeViewLevelController.isExcluded()
 
 			expect(result).toBeFalsy()
 		})

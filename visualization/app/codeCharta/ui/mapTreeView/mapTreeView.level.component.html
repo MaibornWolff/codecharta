@@ -1,5 +1,5 @@
 <div
-	ng-if="!$ctrl.isBlacklisted()"
+	ng-if="!$ctrl.isExcluded()"
 	class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
 	ng-init="$ctrl.openRootFolderByDefault($ctrl.depth)"
 >
