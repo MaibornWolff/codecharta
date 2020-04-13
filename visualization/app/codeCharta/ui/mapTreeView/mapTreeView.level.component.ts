@@ -84,9 +84,9 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return CodeMapHelper.isBlacklisted(this.node, this.storeService.getState().fileSettings.blacklist, BlacklistType.flatten)
 	}
 
-	public isBlacklisted(node: CodeMapNode): boolean {
-		if (node) {
-			return CodeMapHelper.isBlacklisted(node, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
+	public isBlacklisted(): boolean {
+		if (this.node) {
+			return CodeMapHelper.isBlacklisted(this.node, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
 		}
 		return false
 	}
