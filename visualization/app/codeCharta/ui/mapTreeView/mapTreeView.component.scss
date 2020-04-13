@@ -48,6 +48,11 @@ map-tree-view-component {
 			margin-left: 2px;
 		}
 
+		.node-name.flattened {
+			color: gray;
+			text-decoration: line-through;
+		}
+
 		.right-aligned {
 			position: absolute;
 			right: 6px;
