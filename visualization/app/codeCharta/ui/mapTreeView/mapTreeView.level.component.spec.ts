@@ -41,7 +41,8 @@ describe("MapTreeViewLevelController", () => {
 		storeService = getService<StoreService>("storeService")
 		$event = {
 			clientX: jest.fn(),
-			clientY: jest.fn()
+			clientY: jest.fn(),
+			stopPropagation: jest.fn()
 		}
 	}
 
