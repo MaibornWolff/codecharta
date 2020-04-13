@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Metrics with AttributeType relative are now aggregated using the median #365
 - Showing absolute number of files instead of relative number when hovering list item in TreeView #780
 - Clicking a hovered list item inside the TreeView opens folders #780
+- Cross-out and color node name in gray when flattened #780
 
 ### Removed 🗑
 
