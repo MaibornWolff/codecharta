@@ -145,7 +145,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 	})
 
-	describe("onRightClick", () => {
+	describe("openNodeContextMenu", () => {
 		it("should broadcast node context menu events", () => {
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
@@ -159,7 +159,7 @@ describe("MapTreeViewLevelController", () => {
 				y: $event.clientY
 			}
 
-			mapTreeViewLevelController.onRightClick($event)
+			mapTreeViewLevelController.openNodeContextMenu($event)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
 		})

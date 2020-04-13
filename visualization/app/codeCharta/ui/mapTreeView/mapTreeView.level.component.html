@@ -8,7 +8,7 @@
 		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap }"
 		ng-mouseenter="$ctrl.onMouseEnter()"
 		ng-mouseleave="$ctrl.onMouseLeave()"
-		ng-right-click="$ctrl.onRightClick($event)"
+		ng-right-click="$ctrl.openNodeContextMenu($event)"
 		ng-click="$ctrl.onClickNode()"
 	>
 		<span class="node-type-icon">
@@ -42,7 +42,7 @@
 
 		<span class="right-aligned" ng-if="$ctrl._viewModel.isHoveredInTreeView">
 			<div class="small-action-button transparent">
-				<md-button class="md-fab" ng-click="$ctrl.onRightClick($event)">
+				<md-button class="md-fab" ng-click="$ctrl.openNodeContextMenu($event)">
 					<i class="fa fa-ellipsis-h"></i>
 				</md-button>
 			</div>
