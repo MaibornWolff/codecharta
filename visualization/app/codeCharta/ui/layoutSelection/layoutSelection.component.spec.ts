@@ -58,7 +58,7 @@ describe("LayoutSelectionController", () => {
 		it("should set new layoutAlgorithm into redux store", () => {
 			layoutSelectionController["_viewModel"].layoutAlgorithm = LayoutAlgorithm.StreetMap
 
-			layoutSelectionController.applyLayoutAlgorithm()
+			layoutSelectionController.applyLayoutAlgorithm(LayoutAlgorithm.SquarifiedTreeMap)
 
 			expect(storeService.getState().appSettings.layoutAlgorithm).toEqual(LayoutAlgorithm.StreetMap)
 		})
