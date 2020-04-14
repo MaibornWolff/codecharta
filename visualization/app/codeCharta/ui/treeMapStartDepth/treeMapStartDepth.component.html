@@ -1,26 +1,13 @@
-<md-slider-container class="md-block">
-	<span>TreeMap start depth</span>
-	<md-slider
+<md-input-container id="treeMapStartDepth-input">
+	<label>TreeMap Start Depth</label>
+	<input
 		flex
 		step="1"
 		min="0"
-		max="20"
+		max="100"
+		type="number"
 		ng-model="$ctrl._viewModel.treeMapStartDepth"
-		id="treeMapStartDepth-slider"
 		ng-change="$ctrl.applyTreeMapStartDepth()"
-		class="md-primary"
-	>
-	</md-slider>
-	<md-input-container>
-		<input
-			flex
-			step="1"
-			min="0"
-			max="20"
-			type="number"
-			ng-model="$ctrl._viewModel.treeMapStartDepth"
-			ng-change="$ctrl.applyTreeMapStartDepth()"
-			aria-controls="treeMapStartDepth-slider"
-		/>
-	</md-input-container>
-</md-slider-container>
+		display="none"
+	/>
+</md-input-container>
