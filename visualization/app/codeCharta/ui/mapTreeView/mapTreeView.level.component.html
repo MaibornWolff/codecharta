@@ -29,7 +29,7 @@
 			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
 		</span>
 
-		<span class="node-name" ng-class="{'angular-green': $ctrl.isSearched(), 'flattened': $ctrl.isFlattened()}">
+		<span class="node-name" ng-class="{'flattened': $ctrl.isFlattened(), 'angular-green': $ctrl.isSearched()}">
 			{{::$ctrl.node.name}}
 		</span>
 

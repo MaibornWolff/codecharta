@@ -50,12 +50,15 @@ map-tree-view-component {
 
 		.node-name.flattened {
 			color: gray;
-			text-decoration: line-through;
 		}
 
 		.right-aligned {
 			position: absolute;
 			right: 6px;
+
+			i.flattened {
+				color: gray;
+			}
 
 			.small-action-button {
 				.md-fab {
