@@ -4,6 +4,7 @@ import { CCFile, MetricData, BlacklistItem, CodeMapNode, FileMeta, NodeType, Att
 import { NodeDecorator } from "./nodeDecorator"
 import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
+import { MetricService } from "../state/metric.service"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
@@ -339,7 +340,7 @@ describe("nodeDecorator", () => {
 			const h = d3.hierarchy(map)
 
 			h.each(node => {
-				expect(node.data.attributes["unary"]).toBeDefined()
+				expect(node.data.attributes[MetricService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 
@@ -348,7 +349,7 @@ describe("nodeDecorator", () => {
 			NodeDecorator.decorateMap(map, fileMeta, metricData)
 			const h = d3.hierarchy(map)
 			h.each(node => {
-				expect(node.data.attributes["unary"]).toBeDefined()
+				expect(node.data.attributes[MetricService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 	})
