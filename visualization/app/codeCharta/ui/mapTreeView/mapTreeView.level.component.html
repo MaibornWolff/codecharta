@@ -40,7 +40,7 @@
 			</span>
 		</span>
 
-		<span class="right-aligned" ng-if="$ctrl._viewModel.isHoveredInTreeView">
+		<span class="right-aligned" ng-if="$ctrl._viewModel.isHoveredInTreeView || $ctrl._viewModel.isHoveredInCodeMap">
 			<i class="flattened fa fa-eye-slash" ng-if="$ctrl.isFlattened()" title="Flattened"></i>
 
 			<div class="small-action-button transparent">
