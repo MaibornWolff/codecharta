@@ -41,6 +41,8 @@
 		</span>
 
 		<span class="right-aligned" ng-if="$ctrl._viewModel.isHoveredInTreeView">
+			<i class="flattened fa fa-eye-slash" ng-if="$ctrl.isFlattened()" title="Flattened"></i>
+
 			<div class="small-action-button transparent">
 				<md-button class="md-fab" ng-click="$ctrl.openNodeContextMenu($event)">
 					<i class="fa fa-ellipsis-h"></i>
