@@ -6,6 +6,8 @@ import Rectangle from "../rectangle"
 import { StreetLayoutHelper } from "../../streetLayoutHelper"
 
 export default class House extends BoundingBox {
+	private FIXED_MARGIN = 0.5
+
 	constructor(node: CodeMapNode) {
 		super(node)
 	}
@@ -20,9 +22,16 @@ export default class House extends BoundingBox {
 		const layoutNode: StreetLayoutValuedCodeMapNode = {
 			data: this.node,
 			value: this.metricValue,
-			rect: new Rectangle(new Point(origin.x, origin.y), this.width, this.height),
+			rect: this.createMarginatedRectangle(origin),
 			zOffset: 0
 		}
 		return [layoutNode]
+	}
+
+	private createMarginatedRectangle(origin: Point) {
+		const newOrigin = new Point(origin.x + this.FIXED_MARGIN, origin.y + this.FIXED_MARGIN)
+		const width = this.width - 2 * this.FIXED_MARGIN
+		const height = this.height - 2 * this.FIXED_MARGIN
+		return new Rectangle(newOrigin, width, height)
 	}
 }
