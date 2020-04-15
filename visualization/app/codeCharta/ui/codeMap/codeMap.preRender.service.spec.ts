@@ -17,9 +17,11 @@ import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.ac
 import { Vector3 } from "three"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
-import { addBlacklistItem, BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { hierarchy } from "d3"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { FocusedNodePathService } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -66,6 +68,7 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(resetFiles())
 		storeService.dispatch(addFile(fileStates[0].file))
 		storeService.dispatch(setSingleByName(fileStates[0].file.fileMeta.fileName))
+		storeService.dispatch(setBlacklist())
 		metricData = _.cloneDeep(METRIC_DATA)
 	}
 
@@ -115,24 +118,45 @@ describe("codeMapPreRenderService", () => {
 			MetricService.subscribe = jest.fn()
 			StoreService.subscribe = jest.fn()
 			ScalingService.subscribe = jest.fn()
+			BlacklistService.subscribe = jest.fn()
+			FocusedNodePathService.subscribeToUnfocusNode = jest.fn()
+			FocusedNodePathService.subscribeToFocusNode = jest.fn()
 		})
 
-		it("should call subscribe for MetricService", () => {
+		it("should subscribe to MetricService", () => {
 			rebuildService()
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
-		it("should call subscribe for StoreService", () => {
+		it("should subscribe to StoreService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
-		it("should call subscribe for ScalingService", () => {
+		it("should subscribe to ScalingService", () => {
 			rebuildService()
 
 			expect(ScalingService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
+		})
+
+		it("should subscribe to BlacklistService", () => {
+			rebuildService()
+
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
+		})
+
+		it("should subscribe to UnfocusNodeEvents", () => {
+			rebuildService()
+
+			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
+		})
+
+		it("should subscribe to FocusNodeEvents", () => {
+			rebuildService()
+
+			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 	})
 
@@ -156,17 +180,6 @@ describe("codeMapPreRenderService", () => {
 			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
 		})
 
-		it("should call update the isBlacklisted attribute on each node", done => {
-			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
-
-			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
-
-			setTimeout(() => {
-				expect(allNodesToBeExcluded()).toBeTruthy()
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
-		})
-
 		it("should not call codeMapRenderService.render for scaling actions", () => {
 			codeMapPreRenderService.onStoreChanged(ScalingActions.SET_SCALING)
 
@@ -186,40 +199,6 @@ describe("codeMapPreRenderService", () => {
 
 			setTimeout(() => {
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
-		})
-
-		it("should show focused node only", done => {
-			const bigLeaf = map.children[0]
-			const smallLeaf = map.children[1].children[0]
-			const otherSmallLeaf = map.children[1].children[1]
-			storeService.dispatch(focusNode(smallLeaf.path))
-
-			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
-
-			setTimeout(() => {
-				expect(map.isBlacklisted).toEqual(BlacklistType.exclude)
-				expect(bigLeaf.isBlacklisted).toEqual(BlacklistType.exclude)
-				expect(smallLeaf.isBlacklisted).toBeUndefined()
-				expect(otherSmallLeaf.isBlacklisted).toEqual(BlacklistType.exclude)
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
-		})
-
-		it("should show all nodes", done => {
-			const bigLeaf = map.children[0]
-			const smallLeaf = map.children[1].children[0]
-			const otherSmallLeaf = map.children[1].children[1]
-			storeService.dispatch(unfocusNode())
-
-			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
-
-			setTimeout(() => {
-				expect(map.isBlacklisted).toBeUndefined()
-				expect(bigLeaf.isBlacklisted).toBeUndefined()
-				expect(smallLeaf.isBlacklisted).toBeUndefined()
-				expect(otherSmallLeaf.isBlacklisted).toBeUndefined()
 				done()
 			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
 		})
@@ -247,6 +226,42 @@ describe("codeMapPreRenderService", () => {
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
 			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
+		})
+	})
+
+	describe("onBlacklistChanged", () => {
+		it("should update the isBlacklisted attribute on each node", () => {
+			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
+
+			codeMapPreRenderService.onBlacklistChanged(undefined)
+
+			expect(allNodesToBeExcluded()).toBeTruthy()
+		})
+	})
+
+	describe("onFocusNode", () => {
+		it("should show focused node only", () => {
+			storeService.dispatch(focusNode(codeMapPreRenderService.getRenderMap().children[1].children[0].path))
+
+			codeMapPreRenderService.onFocusNode(codeMapPreRenderService.getRenderMap().children[1].children[0].path)
+
+			expect(codeMapPreRenderService.getRenderMap().isBlacklisted).toEqual(BlacklistType.exclude)
+			expect(codeMapPreRenderService.getRenderMap().children[0].isBlacklisted).toEqual(BlacklistType.exclude)
+			expect(codeMapPreRenderService.getRenderMap().children[1].children[0].isBlacklisted).toBeUndefined()
+			expect(codeMapPreRenderService.getRenderMap().children[1].children[1].isBlacklisted).toEqual(BlacklistType.exclude)
+		})
+	})
+
+	describe("onUnfocusNode", () => {
+		it("should show all nodes", () => {
+			storeService.dispatch(unfocusNode())
+
+			codeMapPreRenderService.onUnfocusNode()
+
+			expect(codeMapPreRenderService.getRenderMap().isBlacklisted).toBeUndefined()
+			expect(codeMapPreRenderService.getRenderMap().children[0].isBlacklisted).toBeUndefined()
+			expect(codeMapPreRenderService.getRenderMap().children[1].children[0].isBlacklisted).toBeUndefined()
+			expect(codeMapPreRenderService.getRenderMap().children[1].children[1].isBlacklisted).toBeUndefined()
 		})
 	})
 })

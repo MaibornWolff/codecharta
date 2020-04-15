@@ -1,6 +1,15 @@
 "use strict"
 
-import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta, BlacklistType } from "../../codeCharta.model"
+import {
+	CCFile,
+	FileSelectionState,
+	FileState,
+	MetricData,
+	CodeMapNode,
+	FileMeta,
+	BlacklistType,
+	BlacklistItem
+} from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -24,6 +33,12 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { hierarchy } from "d3"
 import { TreeMapGenerator } from "../../util/treeMapGenerator"
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import {
+	FocusedNodePathService,
+	FocusNodeSubscriber,
+	UnfocusNodeSubscriber
+} from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 
 const clone = require("rfdc")()
 
@@ -31,7 +46,14 @@ export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber {
+export class CodeMapPreRenderService
+	implements
+		StoreSubscriber,
+		MetricServiceSubscriber,
+		ScalingSubscriber,
+		BlacklistSubscriber,
+		FocusNodeSubscriber,
+		UnfocusNodeSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -50,6 +72,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		MetricService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
+		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
+		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
 		this.debounceRendering = _.debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
@@ -94,6 +119,23 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}
 	}
 
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.updateIsBlacklisted()
+	}
+
+	public onFocusNode(focusedNodePath: string) {
+		const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(
+			this.storeService.getState().dynamicSettings.focusedNodePath,
+			this.unifiedMap
+		)
+		TreeMapGenerator.setVisibilityOfNodeAndDescendants(this.unifiedMap, false)
+		TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
+	}
+
+	public onUnfocusNode() {
+		TreeMapGenerator.setVisibilityOfNodeAndDescendants(this.unifiedMap, true)
+	}
+
 	private updateRenderMapAndFileMeta() {
 		const unifiedFile = this.getSelectedFilesAsUnifiedMap()
 		this.unifiedMap = unifiedFile.map
@@ -113,19 +155,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 				state.files.isDeltaState(),
 				state.fileSettings.attributeTypes
 			)
-		}
-	}
-
-	private showAllOrOnlyFocusedNode() {
-		if (this.storeService.getState().dynamicSettings.focusedNodePath.length > 0) {
-			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(
-				this.storeService.getState().dynamicSettings.focusedNodePath,
-				this.unifiedMap
-			)
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(this.unifiedMap, false)
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
-		} else {
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(this.unifiedMap, true)
 		}
 	}
 
@@ -190,8 +219,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private renderAndNotify() {
-		this.showAllOrOnlyFocusedNode()
-		this.updateIsBlacklisted()
 		this.codeMapRenderService.render(this.unifiedMap)
 		this.removeLoadingGifs()
 		this.notifyMapChanged()
