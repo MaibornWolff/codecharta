@@ -1,6 +1,6 @@
 import "./metricType.component.scss"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import { AttributeTypeValue, MetricSelections } from "../../codeCharta.model"
+import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -10,6 +10,13 @@ import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dyn
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
+
+export enum MetricSelections {
+	areaMetric = "areaMetric",
+	heightMetric = "heightMetric",
+	colorMetric = "colorMetric",
+	edgeMetric = "edgeMetric"
+}
 
 export class MetricTypeController
 	implements
