@@ -138,7 +138,8 @@ export enum LayoutAlgorithm {
 
 export enum TreeMapAlgorithm {
 	Squarified = "Squarified",
-	SliceAndDice = "SliceAndDice"
+	SliceAndDice = "SliceAndDice",
+	Strip = "Strip"
 }
 
 export interface TreeMapStartDepth {

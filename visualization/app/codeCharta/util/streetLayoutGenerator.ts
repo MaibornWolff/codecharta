@@ -12,6 +12,7 @@ import SquarifiedTreemap from "./algorithm/treemap/squarifiedTreemap"
 import Treemap from "./algorithm/treemap/treemap"
 import { StreetOrientation } from "./algorithm/streetLayout/street"
 import { StreetLayoutHelper } from "./streetLayoutHelper"
+import StripTreemap from "./algorithm/treemap/StripTreemap"
 
 export interface StreetLayoutValuedCodeMapNode {
 	data: CodeMapNode
@@ -110,6 +111,8 @@ export class StreetLayoutGenerator {
 				return new SliceDiceTreemap(node)
 			case TreeMapAlgorithm.Squarified:
 				return new SquarifiedTreemap(node)
+			case TreeMapAlgorithm.Strip:
+				return new StripTreemap(node)
 			default:
 				throw new Error("Treemap Algorithm not specified.")
 		}
