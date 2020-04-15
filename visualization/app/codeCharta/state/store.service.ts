@@ -9,6 +9,7 @@ import { SearchPanelModeActions } from "./store/appSettings/searchPanelMode/sear
 import { isActionOfType } from "../util/reduxHelper"
 import { SortingOrderAscendingActions } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "./store/dynamicSettings/sortingOption/sortingOption.actions"
+import { IsAttributeSideBarVisibleActions } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
@@ -31,6 +32,7 @@ export class StoreService {
 				isActionOfType(action.type, SortingOrderAscendingActions) ||
 				isActionOfType(action.type, SearchPanelModeActions) ||
 				isActionOfType(action.type, SortingOptionActions) ||
+				isActionOfType(action.type, IsAttributeSideBarVisibleActions) ||
 				isSilent
 			)
 		) {

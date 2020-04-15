@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Median symbol for aggregated relative metrics #365
 - AttributeTypes for tokeiImporter and SCMLogParser #365
+- Attribute Type selector in the metric dropdowns for edges and nodes
 
 ### Changed
 

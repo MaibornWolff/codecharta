@@ -840,7 +840,8 @@ export const STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
-		searchPanelMode: SearchPanelMode.treeView
+		searchPanelMode: SearchPanelMode.treeView,
+		isAttributeSideBarVisible: true
 	},
 	treeMap: {
 		mapSize: 250
@@ -884,7 +885,8 @@ export const DEFAULT_STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
-		searchPanelMode: SearchPanelMode.minimized
+		searchPanelMode: SearchPanelMode.minimized,
+		isAttributeSideBarVisible: false
 	},
 	dynamicSettings: {
 		areaMetric: null,

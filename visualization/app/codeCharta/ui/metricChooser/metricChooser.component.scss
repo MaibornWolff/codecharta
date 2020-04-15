@@ -24,6 +24,15 @@ edge-chooser-component {
 			.metric-max-value {
 				display: none;
 			}
+
+			.attribute-type-select {
+				display: none;
+			}
+
+			.md-select-value span {
+				max-height: 18px;
+				overflow: hidden;
+			}
 		}
 
 		.metric-value {

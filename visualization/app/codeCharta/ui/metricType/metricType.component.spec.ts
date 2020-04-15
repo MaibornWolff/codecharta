@@ -1,5 +1,5 @@
 import "./metricType.module"
-import { MetricTypeController } from "./metricType.component"
+import { MetricSelections, MetricTypeController } from "./metricType.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { IRootScopeService } from "angular"
@@ -13,6 +13,8 @@ import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetri
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 
 describe("MetricTypeController", () => {
 	let metricTypeController: MetricTypeController
@@ -36,7 +38,7 @@ describe("MetricTypeController", () => {
 	}
 
 	function rebuildController() {
-		metricTypeController = new MetricTypeController($rootScope, metricService, edgeMetricDataService)
+		metricTypeController = new MetricTypeController($rootScope, metricService, edgeMetricDataService, storeService)
 	}
 
 	describe("constructor", () => {
@@ -69,40 +71,70 @@ describe("MetricTypeController", () => {
 	describe("onAreaMetricChanged", () => {
 		it("should set the areaMetricType to absolute", () => {
 			storeService.dispatch(setAttributeTypes({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} }))
+			metricTypeController["metricSelection"] = MetricSelections.areaMetric
 
 			metricTypeController.onAreaMetricChanged("rloc")
 
-			expect(metricTypeController["_viewModel"].areaMetricType).toBe(AttributeTypeValue.absolute)
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.absolute)
 		})
 	})
 
 	describe("onHeightMetricChanged", () => {
 		it("should set the heightMetricType to absolute", () => {
 			storeService.dispatch(setAttributeTypes({ nodes: { mcc: AttributeTypeValue.absolute }, edges: {} }))
+			metricTypeController["metricSelection"] = MetricSelections.heightMetric
 
 			metricTypeController.onHeightMetricChanged("mcc")
 
-			expect(metricTypeController["_viewModel"].heightMetricType).toBe(AttributeTypeValue.absolute)
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.absolute)
 		})
 	})
 
 	describe("onColorMetricChanged", () => {
 		it("should set the colorMetricType to relative", () => {
 			storeService.dispatch(setAttributeTypes({ nodes: { coverage: AttributeTypeValue.relative }, edges: {} }))
+			metricTypeController["metricSelection"] = MetricSelections.colorMetric
 
 			metricTypeController.onColorMetricChanged("coverage")
 
-			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeTypeValue.relative)
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
 		})
 	})
 
 	describe("onEdgeMetricChanged", () => {
 		it("should set the edgeMetricType to relative", () => {
 			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
+			metricTypeController["metricSelection"] = MetricSelections.edgeMetric
 
 			metricTypeController.onEdgeMetricChanged("foo")
 
-			expect(metricTypeController["_viewModel"].edgeMetricType).toBe(AttributeTypeValue.relative)
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
+		})
+	})
+
+	describe("onMetricDataAdded", () => {
+		it("should update metricType for node selections", () => {
+			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
+			storeService.dispatch(setHeightMetric("foo"))
+			metricTypeController["metricSelection"] = MetricSelections.heightMetric
+			metricService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
+
+			metricTypeController.onMetricDataAdded()
+
+			expect(metricService.getAttributeTypeByMetric).toBeCalledWith("foo")
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
+		})
+
+		it("should update metricType for edge selection", () => {
+			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
+			storeService.dispatch(setEdgeMetric("foo"))
+			metricTypeController["metricSelection"] = MetricSelections.edgeMetric
+			edgeMetricDataService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
+
+			metricTypeController.onMetricDataAdded()
+
+			expect(edgeMetricDataService.getAttributeTypeByMetric).toBeCalledWith("foo")
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
 		})
 	})
 
