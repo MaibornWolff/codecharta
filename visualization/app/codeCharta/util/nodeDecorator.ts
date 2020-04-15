@@ -7,7 +7,6 @@ import {
 	CCFile,
 	CodeMapNode,
 	MetricData,
-	FileMeta,
 	EdgeMetricCount,
 	KeyValuePair,
 	AttributeTypes,
@@ -17,8 +16,8 @@ import { CodeMapHelper } from "./codeMapHelper"
 import { MetricService } from "../state/metric.service"
 
 export class NodeDecorator {
-	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, metricData: MetricData[]) {
-		this.decorateMapWithMissingObjects(map, fileMeta)
+	public static decorateMap(map: CodeMapNode, metricData: MetricData[]) {
+		this.decorateMapWithMissingObjects(map)
 		this.decorateMapWithCompactMiddlePackages(map)
 		this.decorateLeavesWithMissingMetrics(map, metricData)
 	}
@@ -78,11 +77,10 @@ export class NodeDecorator {
 		return file
 	}
 
-	private static decorateMapWithMissingObjects(map: CodeMapNode, fileMeta: FileMeta) {
+	private static decorateMapWithMissingObjects(map: CodeMapNode) {
 		if (map) {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.each(node => {
-				//node.data.isBlacklisted = undefined
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				node.data.edgeAttributes = !node.data.edgeAttributes ? {} : node.data.edgeAttributes
 				Object.assign(node.data.attributes, { [MetricService.UNARY_METRIC]: 1 })

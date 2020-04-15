@@ -4,7 +4,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Node, MetricData, CodeMapNode, FileMeta, State } from "../../codeCharta.model"
+import { Node, MetricData, CodeMapNode, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
 import * as _ from "lodash"
@@ -28,7 +28,6 @@ describe("codeMapRenderService", () => {
 	let state: State
 	let map: CodeMapNode
 	let metricData: MetricData[]
-	let fileMeta: FileMeta
 
 	beforeEach(() => {
 		restartSystem()
@@ -52,11 +51,10 @@ describe("codeMapRenderService", () => {
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
-		fileMeta = _.cloneDeep(TEST_FILE_WITH_PATHS.fileMeta)
 		state = _.cloneDeep(STATE)
 		metricData = _.cloneDeep(METRIC_DATA)
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
-		NodeDecorator.decorateMap(map, fileMeta, metricData)
+		NodeDecorator.decorateMap(map, metricData)
 		storeService.dispatch(setState(state))
 	}
 
