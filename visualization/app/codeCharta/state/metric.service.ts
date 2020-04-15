@@ -17,6 +17,7 @@ interface MaxMetricValuePair {
 }
 
 export class MetricService implements FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
+	public static UNARY_METRIC = "unary"
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 
 	//TODO MetricData should contain attributeType
@@ -126,9 +127,9 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private addUnaryMetric() {
-		if (!this.metricData.some(x => x.name === "unary")) {
+		if (!this.metricData.some(x => x.name === MetricService.UNARY_METRIC)) {
 			this.metricData.push({
-				name: "unary",
+				name: MetricService.UNARY_METRIC,
 				maxValue: 1
 			})
 		}

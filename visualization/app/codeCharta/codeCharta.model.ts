@@ -126,6 +126,7 @@ export interface AppSettings {
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
 	searchPanelMode: SearchPanelMode
+	isAttributeSideBarVisible: boolean
 }
 
 export interface TreeMapSettings {
