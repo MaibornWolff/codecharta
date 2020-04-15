@@ -8,6 +8,7 @@ import {
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import _ from "lodash"
+import { MetricService } from "../../state/metric.service"
 const clone = require("rfdc")()
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
@@ -28,7 +29,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		if (sortingOption === SortingOption.NUMBER_OF_FILES) {
 			this._viewModel.rootNode = this.applySortOrderChange(
 				this._viewModel.rootNode,
-				(a, b) => b.attributes["unary"] - a.attributes["unary"],
+				(a, b) => b.attributes[MetricService.UNARY_METRIC] - a.attributes[MetricService.UNARY_METRIC],
 				false
 			)
 		} else {
