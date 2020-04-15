@@ -23,4 +23,19 @@ export class StreetLayoutHelper {
 	public static isNodeLeaf(node: CodeMapNode): boolean {
 		return !node.children || node.children.length === 0
 	}
+
+	public static mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
+		let mergedNode = node
+		for (const child of node.children) {
+			if (!StreetLayoutHelper.isNodeLeaf(child)) {
+				const nodeSize = StreetLayoutHelper.calculateSize(node, metricName)
+				const childSize = StreetLayoutHelper.calculateSize(child, metricName)
+				if (nodeSize === childSize) {
+					mergedNode = child
+					break
+				}
+			}
+		}
+		return mergedNode
+	}
 }

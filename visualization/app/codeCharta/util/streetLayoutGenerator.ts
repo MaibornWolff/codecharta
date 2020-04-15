@@ -28,8 +28,9 @@ export class StreetLayoutGenerator {
 		const isDeltaState = state.files.isDeltaState()
 		const metricName = state.dynamicSettings.areaMetric
 		const treeMapStartDepth = state.appSettings.treeMapStartDepth
-		const childBoxes = this.createBoxes(map, metricName, state, StreetOrientation.Vertical, 0, treeMapStartDepth)
-		const rootStreet = new HorizontalStreet(map, childBoxes, 0)
+		const mergedMap = StreetLayoutHelper.mergeDirectories(map, metricName)
+		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, treeMapStartDepth)
+		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
 		const layoutNodes: StreetLayoutValuedCodeMapNode[] = rootStreet.layout(new Point(0, 0), margin)
@@ -49,7 +50,9 @@ export class StreetLayoutGenerator {
 		treeMapStartDepth: number
 	): BoundingBox[] {
 		const children: BoundingBox[] = []
-		for (const child of node.children) {
+		const areaMetric = state.dynamicSettings.areaMetric
+		const mergedNode = StreetLayoutHelper.mergeDirectories(node, areaMetric)
+		for (let child of mergedNode.children) {
 			if (CodeMapHelper.isBlacklisted(child, state.fileSettings.blacklist, BlacklistType.exclude)) {
 				continue
 			}
@@ -63,6 +66,7 @@ export class StreetLayoutGenerator {
 					const treeMap = StreetLayoutGenerator.createTreeMap(child, TreeMapAlgorithm.Squarified)
 					children.push(treeMap)
 				} else {
+					child = StreetLayoutHelper.mergeDirectories(child, areaMetric)
 					const streetChildren = StreetLayoutGenerator.createBoxes(
 						child,
 						metricName,
