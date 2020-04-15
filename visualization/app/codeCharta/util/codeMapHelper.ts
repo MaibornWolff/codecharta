@@ -45,14 +45,8 @@ export class CodeMapHelper {
 		return nodes.filter(n => !set.has(CodeMapHelper.transformPath(n.path)))
 	}
 
-	public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<BlacklistItem>): number {
-		if (blacklist) {
-			const ig = ignore().add(blacklist.map(ex => CodeMapHelper.transformPath(ex.path)))
-			const filteredNodes = ig.filter(nodes.map(n => CodeMapHelper.transformPath(n.path)))
-			return nodes.length - filteredNodes.length
-		} else {
-			return 0
-		}
+	public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>): number {
+		return nodes.filter(node => node.isBlacklisted).length
 	}
 
 	public static isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {
