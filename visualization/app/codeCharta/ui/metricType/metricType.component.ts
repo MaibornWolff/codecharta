@@ -1,5 +1,5 @@
 import "./metricType.component.scss"
-import { MetricService } from "../../state/metric.service"
+import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
@@ -9,6 +9,14 @@ import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/d
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
+import { StoreService } from "../../state/store.service"
+
+export enum MetricSelections {
+	areaMetric = "areaMetric",
+	heightMetric = "heightMetric",
+	colorMetric = "colorMetric",
+	edgeMetric = "edgeMetric"
+}
 
 export class MetricTypeController
 	implements
@@ -17,26 +25,24 @@ export class MetricTypeController
 		ColorMetricSubscriber,
 		EdgeMetricSubscriber,
 		BuildingHoveredSubscriber,
-		BuildingUnhoveredSubscriber {
+		BuildingUnhoveredSubscriber,
+		MetricServiceSubscriber {
 	private _viewModel: {
-		areaMetricType: AttributeTypeValue
-		heightMetricType: AttributeTypeValue
-		colorMetricType: AttributeTypeValue
-		edgeMetricType: AttributeTypeValue
+		metricType: AttributeTypeValue
 		isFolderHovered: boolean
 	} = {
-		areaMetricType: null,
-		heightMetricType: null,
-		colorMetricType: null,
-		edgeMetricType: null,
+		metricType: null,
 		isFolderHovered: false
 	}
+
+	private metricSelection: MetricSelections
 
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
 		private metricService: MetricService,
-		private edgeMetricDataService: EdgeMetricDataService
+		private edgeMetricDataService: EdgeMetricDataService,
+		private storeService: StoreService
 	) {
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
@@ -44,22 +50,27 @@ export class MetricTypeController
 		EdgeMetricService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
+		MetricService.subscribe(this.$rootScope, this)
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
-		this._viewModel.areaMetricType = this.metricService.getAttributeTypeByMetric(areaMetric)
+		this.metricSelection == MetricSelections.areaMetric &&
+			(this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(areaMetric))
 	}
 
 	public onHeightMetricChanged(heightMetric: string) {
-		this._viewModel.heightMetricType = this.metricService.getAttributeTypeByMetric(heightMetric)
+		this.metricSelection == MetricSelections.heightMetric &&
+			(this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(heightMetric))
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		this._viewModel.colorMetricType = this.metricService.getAttributeTypeByMetric(colorMetric)
+		this.metricSelection == MetricSelections.colorMetric &&
+			(this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(colorMetric))
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.edgeMetricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric)
+		this.metricSelection == MetricSelections.edgeMetric &&
+			(this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric))
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -69,28 +80,20 @@ export class MetricTypeController
 	public onBuildingUnhovered() {
 		this._viewModel.isFolderHovered = false
 	}
+
+	public onMetricDataAdded() {
+		const state = this.storeService.getState()
+		if (this.metricSelection === MetricSelections.edgeMetric) {
+			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
+		} else {
+			this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
+		}
+	}
 }
 
-export const areaMetricTypeComponent = {
-	selector: "areaMetricTypeComponent",
-	template: require("./areaMetricType.component.html"),
-	controller: MetricTypeController
-}
-
-export const heightMetricTypeComponent = {
-	selector: "heightMetricTypeComponent",
-	template: require("./heightMetricType.component.html"),
-	controller: MetricTypeController
-}
-
-export const colorMetricTypeComponent = {
-	selector: "colorMetricTypeComponent",
-	template: require("./colorMetricType.component.html"),
-	controller: MetricTypeController
-}
-
-export const edgeMetricTypeComponent = {
-	selector: "edgeMetricTypeComponent",
-	template: require("./edgeMetricType.component.html"),
-	controller: MetricTypeController
+export const metricTypeComponent = {
+	selector: "metricTypeComponent",
+	template: require("./metricType.component.html"),
+	controller: MetricTypeController,
+	bindings: { metricSelection: "@" }
 }

@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - AttributeTypes for tokeiImporter and SCMLogParser #365
 - Ellipsis button in TreeView list when hovering a node to access context menu #780
 - Show gray eye-icon next to the ellipsis-button to indicate a flattened node #780
+- Attribute Type selector in the metric dropdowns for edges and nodes
 
 ### Changed
 
