@@ -23,6 +23,7 @@ import ignore from "ignore"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { hierarchy } from "d3"
 import { TreeMapGenerator } from "../../util/treeMapGenerator"
+import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 
 const clone = require("rfdc")()
 
@@ -70,7 +71,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			!isActionOfType(actionType, IsLoadingFileActions) &&
 			!isActionOfType(actionType, SearchPanelModeActions) &&
 			!isActionOfType(actionType, SortingOrderAscendingActions) &&
-			!isActionOfType(actionType, SortingOptionActions)
+			!isActionOfType(actionType, SortingOptionActions) &&
+			!isActionOfType(actionType, IsAttributeSideBarVisibleActions)
 		) {
 			this.debounceRendering()
 		}

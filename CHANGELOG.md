@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Consistency of AttributeTypes representation #365
 - Improved overall rendering performance of larger maps by roughly 40% #836
+- Wrong file description for tokeiimporter
 
 ### Chore 👨‍💻 👩‍💻
 
