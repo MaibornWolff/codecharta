@@ -728,7 +728,6 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		type: NodeType.FOLDER,
 		attributes: {},
 		isBlacklisted: undefined,
-
 		children: [
 			{
 				name: "big leaf",

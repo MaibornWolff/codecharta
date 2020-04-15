@@ -1,6 +1,6 @@
 import { SquarifiedCodeMapNode } from "./treeMapGenerator"
 import { CodeMapHelper } from "./codeMapHelper"
-import { Node, CodeMapNode, BlacklistItem, BlacklistType, State } from "../codeCharta.model"
+import { Node, CodeMapNode, BlacklistType, State } from "../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 
@@ -118,7 +118,7 @@ export class TreeMapHelper {
 			flattened = s.dynamicSettings.searchedNodePaths.length == 0 ? true : this.isNodeNonSearched(squaredNode, s)
 		}
 
-		let blacklistFlattened = this.isNodeOrParentFlattenedInBlacklist(squaredNode, s.fileSettings.blacklist)
+		let blacklistFlattened = this.isNodeOrParentFlattenedInBlacklist(squaredNode)
 
 		flattened = blacklistFlattened || flattened
 		return flattened
@@ -136,7 +136,7 @@ export class TreeMapHelper {
 		return s.dynamicSettings.searchedNodePaths.filter(path => path == squaredNode.data.path).length == 0
 	}
 
-	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedCodeMapNode, blacklist: BlacklistItem[]): boolean {
+	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedCodeMapNode): boolean {
 		return CodeMapHelper.isBlacklisted(squaredNode.data, BlacklistType.flatten)
 	}
 

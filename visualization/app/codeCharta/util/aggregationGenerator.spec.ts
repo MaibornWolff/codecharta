@@ -13,25 +13,29 @@ describe("AggregationGenerator", () => {
 			type: NodeType.FOLDER,
 			path: "/root",
 			attributes: { rloc: 170, functions: 1010, mcc: 11 },
+			isBlacklisted: undefined,
 			children: [
 				{
 					name: "big leaf",
 					type: NodeType.FILE,
 					path: "/root/big leaf",
 					attributes: { rloc: 100, functions: 10, mcc: 1 },
-					link: "http://www.google.de"
+					link: "http://www.google.de",
+					isBlacklisted: undefined
 				},
 				{
 					name: "Parent Leaf",
 					type: NodeType.FOLDER,
 					path: "/root/Parent Leaf",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
+					isBlacklisted: undefined,
 					children: [
 						{
 							name: "other small leaf",
 							type: NodeType.FILE,
 							path: "/root/Parent Leaf/other small leaf",
-							attributes: { rloc: 70, functions: 1000, mcc: 10 }
+							attributes: { rloc: 70, functions: 1000, mcc: 10 },
+							isBlacklisted: undefined
 						}
 					]
 				}
@@ -51,25 +55,29 @@ describe("AggregationGenerator", () => {
 			type: NodeType.FOLDER,
 			path: "/root",
 			attributes: { rloc: 260, functions: 220, mcc: 202, customMetric: 7 },
+			isBlacklisted: undefined,
 			children: [
 				{
 					name: "big leaf",
 					type: NodeType.FILE,
 					path: "/root/big leaf",
 					attributes: { rloc: 200, functions: 20, mcc: 2 },
-					link: "http://www.google.de"
+					link: "http://www.google.de",
+					isBlacklisted: undefined
 				},
 				{
 					name: "Parent Leaf",
 					type: NodeType.FOLDER,
 					path: "/root/Parent Leaf",
 					attributes: { rloc: 60, functions: 200, mcc: 200 },
+					isBlacklisted: undefined,
 					children: [
 						{
 							name: "small leaf",
 							type: NodeType.FILE,
 							path: "/root/Parent Leaf/small leaf",
-							attributes: { rloc: 60, functions: 200, mcc: 200 }
+							attributes: { rloc: 60, functions: 200, mcc: 200 },
+							isBlacklisted: undefined
 						}
 					]
 				}

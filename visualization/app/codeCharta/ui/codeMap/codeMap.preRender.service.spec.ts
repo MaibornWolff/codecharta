@@ -1,11 +1,11 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { CCFile, CodeMapNode, FileMeta, MetricData } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode, FileMeta, MetricData } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
-import { TEST_FILE_WITH_PATHS, METRIC_DATA, withMockedEventMethods, FILE_STATES, STATE } from "../../util/dataMocks"
+import { FILE_STATES, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
@@ -17,7 +17,9 @@ import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.ac
 import { Vector3 } from "three"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
-import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItem, BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { hierarchy } from "d3"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -27,7 +29,6 @@ describe("codeMapPreRenderService", () => {
 	let codeMapRenderService: CodeMapRenderService
 	let edgeMetricDataService: EdgeMetricDataService
 
-	let file: CCFile
 	let fileMeta: FileMeta
 	let map: CodeMapNode
 	let metricData: MetricData[]
@@ -40,6 +41,7 @@ describe("codeMapPreRenderService", () => {
 		withMockedMetricService()
 		withUnifiedMapAndFileMeta()
 		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
+		storeService.dispatch(unfocusNode())
 	})
 
 	afterEach(() => {
@@ -55,7 +57,6 @@ describe("codeMapPreRenderService", () => {
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
-		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
 		fileMeta = _.cloneDeep(FILE_STATES[0].file.fileMeta)
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 		map.children[1].children = _.slice(map.children[1].children, 0, 2)
@@ -97,6 +98,18 @@ describe("codeMapPreRenderService", () => {
 		codeMapPreRenderService["unifiedFileMeta"] = fileMeta
 	}
 
+	function allNodesToBeExcluded(): boolean {
+		hierarchy(codeMapPreRenderService.getRenderMap())
+			.leaves()
+			.forEach(node => {
+				if (!node.data.isBlacklisted) {
+					return false
+				}
+			})
+
+		return true
+	}
+
 	describe("constructor", () => {
 		beforeEach(() => {
 			MetricService.subscribe = jest.fn()
@@ -127,7 +140,7 @@ describe("codeMapPreRenderService", () => {
 		it("should return unifiedMap", () => {
 			const result = codeMapPreRenderService.getRenderMap()
 
-			expect(result).toEqual(file.map)
+			expect(result).toEqual(map)
 		})
 	})
 
@@ -139,6 +152,17 @@ describe("codeMapPreRenderService", () => {
 				expect(codeMapRenderService.render).toHaveBeenCalled()
 				expect(storeService.getState().appSettings.isLoadingFile).toBeFalsy()
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
+		})
+
+		it("should call update the isBlacklisted attribute on each node", done => {
+			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
+
+			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
+
+			setTimeout(() => {
+				expect(allNodesToBeExcluded()).toBeTruthy()
 				done()
 			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
 		})
@@ -158,12 +182,44 @@ describe("codeMapPreRenderService", () => {
 		it("should show and stop the loadingMapGif", done => {
 			codeMapPreRenderService["showLoadingMapGif"] = jest.fn()
 
-			codeMapPreRenderService["unifiedMap"] = file.map
-
 			codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
 
 			setTimeout(() => {
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+		})
+
+		it("should show focused node only", done => {
+			const bigLeaf = map.children[0]
+			const smallLeaf = map.children[1].children[0]
+			const otherSmallLeaf = map.children[1].children[1]
+			storeService.dispatch(focusNode(smallLeaf.path))
+
+			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
+
+			setTimeout(() => {
+				expect(map.isBlacklisted).toEqual(BlacklistType.exclude)
+				expect(bigLeaf.isBlacklisted).toEqual(BlacklistType.exclude)
+				expect(smallLeaf.isBlacklisted).toBeUndefined()
+				expect(otherSmallLeaf.isBlacklisted).toEqual(BlacklistType.exclude)
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+		})
+
+		it("should show all nodes", done => {
+			const bigLeaf = map.children[0]
+			const smallLeaf = map.children[1].children[0]
+			const otherSmallLeaf = map.children[1].children[1]
+			storeService.dispatch(unfocusNode())
+
+			codeMapPreRenderService.onStoreChanged("SOME_ACTION")
+
+			setTimeout(() => {
+				expect(map.isBlacklisted).toBeUndefined()
+				expect(bigLeaf.isBlacklisted).toBeUndefined()
+				expect(smallLeaf.isBlacklisted).toBeUndefined()
+				expect(otherSmallLeaf.isBlacklisted).toBeUndefined()
 				done()
 			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
 		})

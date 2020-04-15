@@ -29,25 +29,25 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
 		this.searchedNodeLeaves = this.getSearchedNodeLeaves(searchedNodes)
-		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
+		this.updateViewModel(this.searchedNodeLeaves)
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this._viewModel.blacklist = blacklist
-		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
+		this.updateViewModel(this.searchedNodeLeaves)
 	}
 
-	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[]) {
+	private updateViewModel(searchedNodeLeaves: CodeMapNode[]) {
 		this._viewModel.fileCount = searchedNodeLeaves.length
-		this._viewModel.flattenCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.flatten)
-		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.exclude)
+		this._viewModel.flattenCount = this.getBlacklistedFileCount(searchedNodeLeaves, BlacklistType.flatten)
+		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, BlacklistType.exclude)
 	}
 
 	private getSearchedNodeLeaves(searchedNodes: CodeMapNode[]): CodeMapNode[] {
 		return searchedNodes.filter(node => !(node.children && node.children.length > 0))
 	}
 
-	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[], blacklistType: BlacklistType): number {
+	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], blacklistType: BlacklistType): number {
 		return searchedNodeLeaves.filter(node => CodeMapHelper.isBlacklisted(node, blacklistType)).length
 	}
 }

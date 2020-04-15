@@ -15,7 +15,6 @@ import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { MetricService } from "../../state/metric.service"
 
 describe("codeMapRenderService", () => {
@@ -194,36 +193,6 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService["setArrows"](sortedNodes)
 
 			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalledWith(sortedNodes, storeService.getState().fileSettings.edges)
-		})
-	})
-
-	describe("showAllOrOnlyFocusedNode", () => {
-		it("should show focused node only", () => {
-			const bigLeaf = map.children[0]
-			const smallLeaf = map.children[1].children[0]
-			const otherSmallLeaf = map.children[1].children[1]
-			storeService.dispatch(focusNode(smallLeaf.path))
-
-			codeMapRenderService["showAllOrOnlyFocusedNode"](map)
-
-			expect(map.isBlacklisted).toBeFalsy()
-			expect(bigLeaf.isBlacklisted).toBeFalsy()
-			expect(smallLeaf.isBlacklisted).toBeTruthy()
-			expect(otherSmallLeaf.isBlacklisted).toBeFalsy()
-		})
-
-		it("should show all nodes", () => {
-			const bigLeaf = map.children[0]
-			const smallLeaf = map.children[1].children[0]
-			const otherSmallLeaf = map.children[1].children[1]
-			storeService.dispatch(unfocusNode())
-
-			codeMapRenderService["showAllOrOnlyFocusedNode"](map)
-
-			expect(map.isBlacklisted).toBeTruthy()
-			expect(bigLeaf.isBlacklisted).toBeTruthy()
-			expect(smallLeaf.isBlacklisted).toBeTruthy()
-			expect(otherSmallLeaf.isBlacklisted).toBeTruthy()
 		})
 	})
 })

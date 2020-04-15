@@ -18,8 +18,9 @@ describe("treeMapHelper", () => {
 				name: "Anode",
 				path: "/root/Anode",
 				type: NodeType.FILE,
-				attributes: { theHeight: 100 }
-			} as CodeMapNode
+				attributes: { theHeight: 100 },
+				isBlacklisted: undefined
+			}
 
 			squaredNode = {
 				data: codeMapNode,
@@ -138,7 +139,8 @@ describe("treeMapHelper", () => {
 				path: "/root/Anode",
 				type: NodeType.FILE,
 				attributes: {},
-				edgeAttributes: { pairingRate: { incoming: 42, outgoing: 23 } }
+				edgeAttributes: { pairingRate: { incoming: 42, outgoing: 23 } },
+				isBlacklisted: undefined
 			}
 
 			squaredNode = {
@@ -204,6 +206,7 @@ describe("treeMapHelper", () => {
 
 		it("should be flat if node is flattened in blacklist", () => {
 			state.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
+			squaredNode.data.isBlacklisted = BlacklistType.flatten
 
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
 		})
