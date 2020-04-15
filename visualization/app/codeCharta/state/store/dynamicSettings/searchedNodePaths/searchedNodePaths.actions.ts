@@ -6,16 +6,16 @@ export enum SearchedNodePathsActions {
 
 export interface SetSearchedNodePathsAction extends CCAction {
 	type: SearchedNodePathsActions.SET_SEARCHED_NODE_PATHS
-	payload: string[]
+	payload: Set<string>
 }
 
 export type SearchedNodePathsAction = SetSearchedNodePathsAction
 
-export function setSearchedNodePaths(searchedNodePaths: string[] = defaultSearchedNodePaths): SetSearchedNodePathsAction {
+export function setSearchedNodePaths(searchedNodePaths: Set<string> = defaultSearchedNodePaths): SetSearchedNodePathsAction {
 	return {
 		type: SearchedNodePathsActions.SET_SEARCHED_NODE_PATHS,
 		payload: searchedNodePaths
 	}
 }
 
-export const defaultSearchedNodePaths = []
+export const defaultSearchedNodePaths = new Set<string>(["abc"])
