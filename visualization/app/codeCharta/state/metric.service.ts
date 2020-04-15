@@ -87,7 +87,14 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 			.forEach((fileState: FileState) => {
 				const nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 				nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
-					if (node.data.path && !CodeMapHelper.isBlacklisted(node.data, BlacklistType.exclude)) {
+					if (
+						node.data.path &&
+						!CodeMapHelper.isPathBlacklisted(
+							node.data.path,
+							this.storeService.getState().fileSettings.blacklist,
+							BlacklistType.exclude
+						)
+					) {
 						this.addMaxMetricValuesToHashMap(node, hashMap)
 					}
 				})
