@@ -13,6 +13,8 @@ import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetri
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 
 describe("MetricTypeController", () => {
 	let metricTypeController: MetricTypeController
@@ -113,8 +115,8 @@ describe("MetricTypeController", () => {
 	describe("onMetricDataAdded", () => {
 		it("should update metricType for node selections", () => {
 			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
+			storeService.dispatch(setHeightMetric("foo"))
 			metricTypeController["metricSelection"] = MetricSelections.heightMetric
-			storeService.getState = jest.fn().mockReturnValue({ dynamicSettings: { heightMetric: "foo" } })
 			metricService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
 
 			metricTypeController.onMetricDataAdded()
@@ -125,8 +127,8 @@ describe("MetricTypeController", () => {
 
 		it("should update metricType for edge selection", () => {
 			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
+			storeService.dispatch(setEdgeMetric("foo"))
 			metricTypeController["metricSelection"] = MetricSelections.edgeMetric
-			storeService.getState = jest.fn().mockReturnValue({ dynamicSettings: { edgeMetric: "foo" } })
 			edgeMetricDataService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
 
 			metricTypeController.onMetricDataAdded()
