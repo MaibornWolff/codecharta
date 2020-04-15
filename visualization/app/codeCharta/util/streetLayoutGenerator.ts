@@ -1,4 +1,4 @@
-import { CodeMapNode, MetricData, Node, State, BlacklistType, TreeMapAlgorithm } from "../codeCharta.model"
+import { CodeMapNode, MetricData, Node, State, BlacklistType, TreeMapAlgorithm, LayoutAlgorithm } from "../codeCharta.model"
 import BoundingBox from "./algorithm/streetLayout/boundingBox"
 import VerticalStreet from "./algorithm/streetLayout/verticalStreet"
 import HorizontalStreet from "./algorithm/streetLayout/horizontalStreet"
@@ -11,6 +11,7 @@ import SliceDiceTreemap from "./algorithm/treemap/sliceDiceTreemap"
 import SquarifiedTreemap from "./algorithm/treemap/squarifiedTreemap"
 import Treemap from "./algorithm/treemap/treemap"
 import { StreetOrientation } from "./algorithm/streetLayout/street"
+import { StreetLayoutHelper } from "./streetLayoutHelper"
 
 export interface StreetLayoutValuedCodeMapNode {
 	data: CodeMapNode
@@ -39,10 +40,6 @@ export class StreetLayoutGenerator {
 		})
 	}
 
-	private static isNodeLeaf(node: CodeMapNode) {
-		return !node.children || node.children.length === 0
-	}
-
 	private static createBoxes(
 		node: CodeMapNode,
 		metricName: string,
@@ -56,11 +53,14 @@ export class StreetLayoutGenerator {
 			if (CodeMapHelper.isBlacklisted(child, state.fileSettings.blacklist, BlacklistType.exclude)) {
 				continue
 			}
-			if (StreetLayoutGenerator.isNodeLeaf(child)) {
+			if (StreetLayoutHelper.isNodeLeaf(child)) {
 				children.push(new House(child))
 			} else {
-				if (depth >= treeMapStartDepth) {
-					const treeMap = StreetLayoutGenerator.createTreemap(child, TreeMapAlgorithm.Squarified)
+				const layoutAlgorithm = state.appSettings.layoutAlgorithm
+				const fileDescendants = StreetLayoutHelper.countFileDescendants(child)
+				if (layoutAlgorithm === LayoutAlgorithm.TMStreet && fileDescendants <= 100) {
+					//TODO: change treeMapDepth option to number of files option
+					const treeMap = StreetLayoutGenerator.createTreeMap(child, TreeMapAlgorithm.Squarified)
 					children.push(treeMap)
 				} else {
 					const streetChildren = StreetLayoutGenerator.createBoxes(
@@ -71,8 +71,23 @@ export class StreetLayoutGenerator {
 						depth + 1,
 						treeMapStartDepth
 					)
-					children.push(StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth))
+					const street = StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth)
+					children.push(street)
 				}
+				// if (depth >= treeMapStartDepth) {
+				// 	const treeMap = StreetLayoutGenerator.createTreemap(child, TreeMapAlgorithm.Squarified)
+				// 	children.push(treeMap)
+				// } else {
+				// 	const streetChildren = StreetLayoutGenerator.createBoxes(
+				// 		child,
+				// 		metricName,
+				// 		state,
+				// 		1 - orientation,
+				// 		depth + 1,
+				// 		treeMapStartDepth
+				// 	)
+				// 	children.push(StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth))
+				// }
 			}
 		}
 		return children
@@ -86,7 +101,7 @@ export class StreetLayoutGenerator {
 		}
 	}
 
-	private static createTreemap(node: CodeMapNode, treeMapAlgorithm: TreeMapAlgorithm): Treemap {
+	private static createTreeMap(node: CodeMapNode, treeMapAlgorithm: TreeMapAlgorithm): Treemap {
 		switch (treeMapAlgorithm) {
 			case TreeMapAlgorithm.SliceAndDice:
 				return new SliceDiceTreemap(node)

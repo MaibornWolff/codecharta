@@ -11,4 +11,16 @@ export class StreetLayoutHelper {
 		}
 		return totalSize
 	}
+
+	public static countFileDescendants(folderNode: CodeMapNode): number {
+		let totalFileNodes = 0
+		for (const child of folderNode.children) {
+			totalFileNodes += StreetLayoutHelper.isNodeLeaf(child) ? 1 : StreetLayoutHelper.countFileDescendants(child)
+		}
+		return totalFileNodes
+	}
+
+	public static isNodeLeaf(node: CodeMapNode): boolean {
+		return !node.children || node.children.length === 0
+	}
 }
