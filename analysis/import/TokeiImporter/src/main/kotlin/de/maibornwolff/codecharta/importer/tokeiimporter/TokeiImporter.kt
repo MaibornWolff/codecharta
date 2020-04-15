@@ -42,7 +42,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["sourcemonitor csv file"])
+    @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["tokei generated json"])
     private var file: File? = null
 
     @Throws(IOException::class)

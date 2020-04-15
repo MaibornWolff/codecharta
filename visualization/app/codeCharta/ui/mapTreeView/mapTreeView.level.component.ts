@@ -6,6 +6,7 @@ import { BlacklistType, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
+import { MetricService } from "../../state/metric.service"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -105,11 +106,11 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public getNodeUnaryValue() {
-		return this.node.attributes["unary"]
+		return this.node.attributes[MetricService.UNARY_METRIC]
 	}
 
 	public getUnaryPercentage() {
-		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes["unary"]
+		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[MetricService.UNARY_METRIC]
 		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
 	}
 

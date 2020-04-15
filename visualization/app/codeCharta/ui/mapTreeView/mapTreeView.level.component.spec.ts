@@ -18,6 +18,7 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
+import { MetricService } from "../../state/metric.service"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -283,7 +284,7 @@ describe("MapTreeViewLevelController", () => {
 
 			const result = mapTreeViewLevelController.getNodeUnaryValue()
 
-			expect(result).toBe(VALID_NODE_WITH_METRICS.attributes["unary"])
+			expect(result).toBe(VALID_NODE_WITH_METRICS.attributes[MetricService.UNARY_METRIC])
 		})
 	})
 
