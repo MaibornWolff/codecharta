@@ -1,5 +1,5 @@
 import { createStore, Store } from "redux"
-import rootReducer from "./store/reducer"
+import rootReducer from "./store/state.reducer"
 import { IRootScopeService } from "angular"
 import { splitStateActions } from "./store/state.splitter"
 import { IsLoadingMapActions, setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
