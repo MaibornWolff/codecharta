@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Consistency of AttributeTypes representation #365
 - Wrong file description for tokeiimporter
+- Improved search performance #837
 
 ### Chore 👨‍💻 👩‍💻
 
