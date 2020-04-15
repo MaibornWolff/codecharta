@@ -31,7 +31,9 @@ export class StreetLayoutHelper {
 				const nodeSize = StreetLayoutHelper.calculateSize(node, metricName)
 				const childSize = StreetLayoutHelper.calculateSize(child, metricName)
 				if (nodeSize === childSize) {
+					const nodeName = mergedNode.name
 					mergedNode = child
+					mergedNode.name = nodeName + "/" + child.name
 					break
 				}
 			}

@@ -51,8 +51,7 @@ export class StreetLayoutGenerator {
 	): BoundingBox[] {
 		const children: BoundingBox[] = []
 		const areaMetric = state.dynamicSettings.areaMetric
-		const mergedNode = StreetLayoutHelper.mergeDirectories(node, areaMetric)
-		for (let child of mergedNode.children) {
+		for (let child of node.children) {
 			if (CodeMapHelper.isBlacklisted(child, state.fileSettings.blacklist, BlacklistType.exclude)) {
 				continue
 			}
