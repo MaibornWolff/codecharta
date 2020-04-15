@@ -10,17 +10,27 @@ import {
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { Files } from "../../../model/files"
+import { LayoutAlgorithmService, LayoutAlgorithmSubscriber } from "../../../state/store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
+import { CodeMapNode, LayoutAlgorithm } from "../../../codeCharta.model"
+import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../codeMap.preRender.service"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
-export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber {
+export class ThreeOrbitControlsService
+	implements
+		FocusNodeSubscriber,
+		UnfocusNodeSubscriber,
+		FilesSelectionSubscriber,
+		LayoutAlgorithmSubscriber,
+		CodeMapPreRenderServiceSubscriber {
 	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 	private static AUTO_FIT_TIMEOUT = 0
 
 	public controls: OrbitControls
 	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
+	private autoFitForNewRenderedMap: boolean = false
 
 	/* ngInject */
 	constructor(
@@ -33,6 +43,8 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
+		LayoutAlgorithmService.subscribe(this.$rootScope, this)
+		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
 	public onFocusNode(focusedNodePath: string) {
@@ -41,6 +53,17 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 
 	public onUnfocusNode() {
 		this.autoFitTo()
+	}
+
+	public onLayoutAlgorithmChanged(layoutAlgorithm: LayoutAlgorithm) {
+		this.autoFitForNewRenderedMap = true
+	}
+
+	public onRenderMapChanged(map: CodeMapNode) {
+		if (this.autoFitForNewRenderedMap) {
+			this.autoFitTo()
+			this.autoFitForNewRenderedMap = false
+		}
 	}
 
 	public onFilesSelectionChanged(files: Files) {
