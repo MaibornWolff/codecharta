@@ -19,6 +19,7 @@ import { SearchPanelModeActions } from "../../state/store/appSettings/searchPane
 import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
+import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 
 const clone = require("rfdc")()
 
@@ -66,7 +67,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			!isActionOfType(actionType, IsLoadingFileActions) &&
 			!isActionOfType(actionType, SearchPanelModeActions) &&
 			!isActionOfType(actionType, SortingOrderAscendingActions) &&
-			!isActionOfType(actionType, SortingOptionActions)
+			!isActionOfType(actionType, SortingOptionActions) &&
+			!isActionOfType(actionType, IsAttributeSideBarVisibleActions)
 		) {
 			this.debounceRendering()
 		}
