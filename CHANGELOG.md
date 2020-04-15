@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Consistency of AttributeTypes representation #365
+- Wrong file description for tokeiimporter
 
 ### Chore 👨‍💻 👩‍💻
 
