@@ -1,5 +1,5 @@
 <div
-	ng-if="!$ctrl.isBlacklisted($ctrl.node)"
+	ng-if="!$ctrl.isExcluded()"
 	class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
 	ng-init="$ctrl.openRootFolderByDefault($ctrl.depth)"
 >
@@ -8,19 +8,20 @@
 		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap }"
 		ng-mouseenter="$ctrl.onMouseEnter()"
 		ng-mouseleave="$ctrl.onMouseLeave()"
-		ng-right-click="$ctrl.onRightClick($event)"
+		ng-right-click="$ctrl.openNodeContextMenu($event)"
+		ng-click="$ctrl.onClickNode()"
 	>
-		<span class="node-type-icon" ng-click="$ctrl.onFolderClick()">
+		<span class="node-type-icon">
 			<span
 				role="img"
-				ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.collapsed"
+				ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.isFolderOpened"
 				class="fa fa-folder"
 				ng-style="{'color': $ctrl.getMarkingColor() }"
 				aria-hidden="true"
 			></span>
 			<span
 				role="img"
-				ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.collapsed"
+				ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.isFolderOpened"
 				class="fa fa-folder-open"
 				ng-style="{'color': $ctrl.getMarkingColor() }"
 				aria-hidden="true"
@@ -28,23 +29,30 @@
 			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
 		</span>
 
-		<span class="eye-icon" ng-click="$ctrl.onEyeClick()">
-			<span role="img" ng-if="$ctrl.node.visible" class="fa fa-eye" aria-hidden="true"></span>
-			<span role="img" ng-if="!$ctrl.node.visible" class="fa fa-eye-slash" aria-hidden="true"></span>
+		<span class="node-name" ng-class="{'flattened': $ctrl.isFlattened(), 'angular-green': $ctrl.isSearched()}">
+			{{::$ctrl.node.name}}
 		</span>
 
-		<span class="node-name {{ $ctrl.isSearched($ctrl.node) ? 'angular-green' : '' }}" ng-click="$ctrl.onLabelClick()"
-			>{{::$ctrl.node.name}}
+		<span class="unary-number" ng-if="!$ctrl.isLeaf()">
+			<span ng-if="!$ctrl._viewModel.isHoveredInCodeMap">{{ ::$ctrl.getUnaryPercentage() }}%</span>
+			<span ng-if="$ctrl._viewModel.isHoveredInCodeMap">
+				{{ ::$ctrl.getNodeUnaryValue() }} File<span ng-if="$ctrl.getNodeUnaryValue() !== 1">s</span>
+			</span>
 		</span>
 
-		<span class="unary-relative" ng-if="!$ctrl.isLeaf()">{{::$ctrl.getUnaryPercentage()}}%</span>
-		<span class="unary-absolute" ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.isHoveredInCodeMap"
-			>{{::$ctrl.getNodeUnaryValue()}} files</span
-		>
+		<span class="right-aligned" ng-if="$ctrl._viewModel.isHoveredInTreeView || $ctrl._viewModel.isHoveredInCodeMap">
+			<i class="flattened fa fa-eye-slash" ng-if="$ctrl.isFlattened()" title="Flattened"></i>
+
+			<div class="small-action-button transparent">
+				<md-button class="md-fab" ng-click="$ctrl.openNodeContextMenu($event)">
+					<i class="fa fa-ellipsis-h"></i>
+				</md-button>
+			</div>
+		</span>
 	</div>
 
 	<div class="tree-element-children tree-element-children-{{::$ctrl.depth?$ctrl.depth:0}}">
-		<div ng-if="!$ctrl._viewModel.collapsed" ng-repeat="node in $ctrl.node.children">
+		<div ng-if="$ctrl._viewModel.isFolderOpened" ng-repeat="node in $ctrl.node.children">
 			<map-tree-view-level-component node="::node" depth="::$ctrl.depth+1"></map-tree-view-level-component>
 		</div>
 	</div>
