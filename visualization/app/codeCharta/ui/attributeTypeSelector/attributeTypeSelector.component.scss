@@ -25,11 +25,11 @@ attribute-type-selector-component {
 		}
 
 		&.transparent .md-fab {
-			background-color: transparent !important;
+			background-color: rgba(230, 230, 230, 0.96);
 			box-shadow: none;
 
 			&:hover {
-				background-color: #ddd !important;
+				background-color: rgb(200, 200, 200) !important;
 			}
 		}
 	}
