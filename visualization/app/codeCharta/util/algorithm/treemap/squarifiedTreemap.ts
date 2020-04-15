@@ -14,11 +14,11 @@ export default class SquarifiedTreemap extends Treemap {
 	}
 
 	public layout(origin: Point = new Point(0, 0), margin: number): StreetLayoutValuedCodeMapNode[] {
-		const rectangle = new Rectangle(origin, this.width, this.height)
+		const rectangle = this.createMarginatedRectangle(origin)
 		const rootNode: StreetLayoutValuedCodeMapNode = {
 			data: this.node,
 			value: this.metricValue,
-			rect: new Rectangle(new Point(origin.x, origin.y), this.width, this.height),
+			rect: rectangle,
 			zOffset: 0
 		}
 		const children = this.node.children.filter(child => StreetLayoutHelper.calculateSize(child, this.metricName) > 0)
