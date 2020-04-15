@@ -99,7 +99,7 @@ export interface DynamicSettings {
 	distributionMetric: string
 	edgeMetric: string
 	focusedNodePath: string
-	searchedNodePaths: Set<string>
+	searchedNodePaths: Array<string>
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange

@@ -115,7 +115,7 @@ export class TreeMapHelper {
 		}
 
 		if (s.dynamicSettings.searchedNodePaths && s.dynamicSettings.searchPattern && s.dynamicSettings.searchPattern.length > 0) {
-			flattened = s.dynamicSettings.searchedNodePaths.size == 0 ? true : this.isNodeNonSearched(squaredNode, s)
+			flattened = s.dynamicSettings.searchedNodePaths.length == 0 ? true : this.isNodeNonSearched(squaredNode, s)
 		}
 
 		let blacklistFlattened = this.isNodeOrParentFlattenedInBlacklist(squaredNode)
@@ -133,7 +133,7 @@ export class TreeMapHelper {
 	}
 
 	private static isNodeNonSearched(squaredNode: SquarifiedCodeMapNode, s: State): boolean {
-		return !s.dynamicSettings.searchedNodePaths.has(squaredNode.data.path)
+		return s.dynamicSettings.searchedNodePaths.filter(path => path == squaredNode.data.path).length == 0
 	}
 
 	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedCodeMapNode): boolean {

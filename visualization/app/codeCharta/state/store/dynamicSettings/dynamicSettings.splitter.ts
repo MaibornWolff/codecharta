@@ -38,7 +38,7 @@ export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSet
 	}
 
 	if (payload.searchedNodePaths !== undefined) {
-		actions.push(splitSearchedNodePathsAction(payload.searchedNodePaths as Set<string>))
+		actions.push(splitSearchedNodePathsAction(payload.searchedNodePaths as string[]))
 	}
 
 	if (payload.focusedNodePath !== undefined) {

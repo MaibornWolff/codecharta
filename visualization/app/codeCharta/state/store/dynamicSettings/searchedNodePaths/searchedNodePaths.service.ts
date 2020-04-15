@@ -24,7 +24,7 @@ export class SearchedNodePathsService implements StoreSubscriber {
 		return this.storeService.getState().dynamicSettings.searchedNodePaths
 	}
 
-	private notify(newState: Set<string>) {
+	private notify(newState: string[]) {
 		this.$rootScope.$broadcast(SearchedNodePathsService.SEARCHED_NODE_PATHS_CHANGED_EVENT, { searchedNodePaths: newState })
 	}
 
