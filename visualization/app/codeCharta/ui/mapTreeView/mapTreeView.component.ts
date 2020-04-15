@@ -41,6 +41,21 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, null, true)
 	}
 
+	public onRenderMapChanged(map: CodeMapNode) {
+		if (map === this._viewModel.rootNode) {
+			// needed to prevent flashing since event is triggered 4 times
+			return
+		}
+
+		if (!_.isMatch(this._viewModel.rootNode, map)) {
+			this._viewModel.rootNode = clone(map)
+		}
+
+		this.synchronizeAngularTwoWayBinding()
+
+		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
+	}
+
 	private applySortOrderChange(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number, reverse: boolean) {
 		if (!node) {
 			return
@@ -70,21 +85,6 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		}
 
 		return folders.concat(files)
-	}
-
-	public onRenderMapChanged(map: CodeMapNode) {
-		if (map === this._viewModel.rootNode) {
-			// needed to prevent flashing since event is triggered 4 times
-			return
-		}
-
-		if (!_.isMatch(this._viewModel.rootNode, map)) {
-			this._viewModel.rootNode = clone(map)
-		}
-
-		this.synchronizeAngularTwoWayBinding()
-
-		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
 
 	private synchronizeAngularTwoWayBinding() {
