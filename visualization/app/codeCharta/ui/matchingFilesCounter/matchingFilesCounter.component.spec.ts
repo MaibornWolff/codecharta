@@ -2,7 +2,7 @@ import "./matchingFilesCounter.module"
 import { MatchingFilesCounterController } from "./matchingFilesCounter.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { CodeMapNode, BlacklistItem, BlacklistType } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService } from "../../state/nodeSearch.service"
@@ -41,16 +41,6 @@ describe("MatchingFilesCounterController", () => {
 			rebuildController()
 
 			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, matchingFilesCounterController)
-		})
-	})
-
-	describe("onBlacklistChanged", () => {
-		it("should update search pattern", () => {
-			const blacklist: BlacklistItem[] = [{ path: "/root/node/path", type: BlacklistType.exclude }]
-
-			matchingFilesCounterController.onBlacklistChanged(blacklist)
-
-			expect(matchingFilesCounterController["_viewModel"].blacklist).toBe(blacklist)
 		})
 	})
 

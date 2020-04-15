@@ -11,13 +11,11 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 		flattenCount: number
 		excludeCount: number
 		searchPattern: string
-		blacklist: BlacklistItem[]
 	} = {
 		fileCount: 0,
 		flattenCount: 0,
 		excludeCount: 0,
-		searchPattern: "",
-		blacklist: []
+		searchPattern: ""
 	}
 
 	private searchedNodeLeaves: CodeMapNode[] = []
@@ -33,7 +31,6 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this._viewModel.blacklist = blacklist
 		this.updateViewModel(this.searchedNodeLeaves)
 	}
 
