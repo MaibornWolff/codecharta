@@ -6,21 +6,21 @@ describe("searchedNodePaths", () => {
 		it("should initialize the default state", () => {
 			const result = searchedNodePaths(undefined, {} as SearchedNodePathsAction)
 
-			expect(result).toEqual([])
+			expect(Array.from(result)).toEqual([])
 		})
 	})
 
 	describe("Action: SET_SEARCHED_NODE_PATHS", () => {
 		it("should set new searchedNodePaths", () => {
-			const result = searchedNodePaths([], setSearchedNodePaths(["myPath", "anotherPath"]))
+			const result = searchedNodePaths(new Set(), setSearchedNodePaths(new Set(["myPath", "anotherPath"])))
 
-			expect(result).toEqual(["myPath", "anotherPath"])
+			expect(Array.from(result)).toEqual(["myPath", "anotherPath"])
 		})
 
 		it("should set new searchedNodePaths", () => {
-			const result = searchedNodePaths(["myPath", "anotherPath"], setSearchedNodePaths())
+			const result = searchedNodePaths(new Set(["myPath", "anotherPath"]), setSearchedNodePaths())
 
-			expect(result).toEqual([])
+			expect(Array.from(result)).toEqual([])
 		})
 	})
 })

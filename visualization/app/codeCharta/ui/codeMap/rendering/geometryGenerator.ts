@@ -40,6 +40,7 @@ export class GeometryGenerator {
 				this.addBuilding(data, n, i, desc, state, isDeltaState)
 			}
 		}
+		console.log("right before intermediate")
 
 		return {
 			mesh: this.buildMeshFromIntermediateVertexData(data, material),

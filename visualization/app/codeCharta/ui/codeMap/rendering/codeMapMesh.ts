@@ -23,11 +23,13 @@ export class CodeMapMesh {
 	private mapGeomDesc: CodeMapGeometricDescription
 
 	constructor(nodes: Node[], state: State, isDeltaState: boolean) {
+		console.log("codeMapMesh Constructor")
 		this.initMaterial()
 
 		this.geomGen = new GeometryGenerator()
 		const buildRes: BuildResult = this.geomGen.build(nodes, this.material, state, isDeltaState)
 
+		console.log("build done")
 		this.threeMesh = buildRes.mesh
 		this.mapGeomDesc = buildRes.desc
 
