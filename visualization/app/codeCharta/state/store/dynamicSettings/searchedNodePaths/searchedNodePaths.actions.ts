@@ -18,4 +18,4 @@ export function setSearchedNodePaths(searchedNodePaths: Set<string> = defaultSea
 	}
 }
 
-export const defaultSearchedNodePaths = new Set<string>(["abc"])
+export const defaultSearchedNodePaths = new Set<string>()
