@@ -14,6 +14,7 @@ import {
 	AttributeTypeValue
 } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
+import { MetricService } from "../state/metric.service"
 
 export class NodeDecorator {
 	public static decorateMap(map: CodeMapNode, fileMeta: FileMeta, metricData: MetricData[]) {
@@ -84,7 +85,7 @@ export class NodeDecorator {
 				//node.data.isBlacklisted = undefined
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				node.data.edgeAttributes = !node.data.edgeAttributes ? {} : node.data.edgeAttributes
-				Object.assign(node.data.attributes, { unary: 1 })
+				Object.assign(node.data.attributes, { [MetricService.UNARY_METRIC]: 1 })
 			})
 		}
 	}
