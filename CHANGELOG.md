@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Consistency of AttributeTypes representation #365
+- Improved overall rendering performance of larger maps by roughly 40% #836
 
 ### Chore 👨‍💻 👩‍💻
 
