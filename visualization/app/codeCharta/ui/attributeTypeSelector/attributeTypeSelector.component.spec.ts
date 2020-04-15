@@ -2,7 +2,7 @@ import "./attributeTypeSelector.module"
 import { AttributeTypeSelectorController } from "./attributeTypeSelector.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
-import { updateAttributeType } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
@@ -16,7 +16,6 @@ describe("AttributeTypeSelectorController", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildController()
-		withMockedDispatch()
 	})
 
 	function restartSystem() {
@@ -30,40 +29,30 @@ describe("AttributeTypeSelectorController", () => {
 		attributeTypeSelectorController = new AttributeTypeSelectorController(storeService, metricService, edgeMetricDataService)
 	}
 
-	function withMockedDispatch() {
-		attributeTypeSelectorController["storeService"].dispatch = jest.fn(() => {})
-	}
-
 	describe("setToAbsolute", () => {
 		it("should update attributeType to absolute", () => {
-			const expected = updateAttributeType("nodes", "bar", AttributeTypeValue.absolute)
-
 			attributeTypeSelectorController.setToAbsolute("bar", "nodes")
 
-			expect(storeService.dispatch).toBeCalledWith(expected)
+			expect(storeService.getState().fileSettings.attributeTypes.nodes["bar"]).toEqual(AttributeTypeValue.absolute)
 		})
 	})
 
 	describe("setToRelative", () => {
 		it("should set attributeType to relative", () => {
-			const expected = updateAttributeType("edges", "foo", AttributeTypeValue.relative)
-
 			attributeTypeSelectorController.setToRelative("foo", "edges")
 
-			expect(storeService.dispatch).toBeCalledWith(expected)
+			expect(storeService.getState().fileSettings.attributeTypes.edges["foo"]).toEqual(AttributeTypeValue.relative)
 		})
 	})
 
 	describe("setAggregationSymbol", () => {
 		beforeEach(() => {
-			storeService.getState = jest.fn().mockReturnValue({
-				fileSettings: {
-					attributeTypes: {
-						nodes: { rloc: AttributeTypeValue.absolute },
-						edges: { pairingRate: AttributeTypeValue.relative }
-					}
-				}
-			})
+			storeService.dispatch(
+				setAttributeTypes({
+					nodes: { rloc: AttributeTypeValue.absolute },
+					edges: { pairingRate: AttributeTypeValue.relative }
+				})
+			)
 		})
 
 		it("should set aggregationSymbol to absolute", () => {
