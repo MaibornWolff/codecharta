@@ -1,0 +1,36 @@
+attribute-type-selector-component {
+	.small-action-button {
+		margin: -3px 5px 0px 5px;
+		display: inline-block;
+		position: absolute;
+		right: 0;
+
+		display: inline-block;
+		height: 24px;
+		width: 24px;
+		vertical-align: top;
+
+		.md-fab {
+			min-height: 0;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			text-transform: unset !important;
+
+			.symbol {
+				position: absolute;
+				top: -16px;
+				left: 8px;
+			}
+		}
+
+		&.transparent .md-fab {
+			background-color: rgba(230, 230, 230, 0.96);
+			box-shadow: none;
+
+			&:hover {
+				background-color: rgb(200, 200, 200) !important;
+			}
+		}
+	}
+}
