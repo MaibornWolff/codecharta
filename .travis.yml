@@ -17,8 +17,6 @@ env:
 git:
   depth: false
 
-node_js: '9'
-
 addons:
   sonarcloud:
     organization: "maibornwolff"
@@ -32,6 +30,7 @@ before_install:
   - sudo apt-get install -y wine
 
 install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
   - cd visualization; npm install; cd ..
 
 jobs:
@@ -50,7 +49,7 @@ jobs:
       before_script: chmod +x ./analysis/gradlew
       script: cd analysis; ./gradlew build integrationTest
 
-    - stage: release
+    - stage: package
       name: "Create Release Package"
       script: cd visualization; npm run package
     - name: "Build docker image"
@@ -61,14 +60,15 @@ jobs:
 stages:
   - build
   - test
-  - release
+  - package
+ # - name: package
+  #  if: branch = master
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
-  - npm
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
