@@ -1,0 +1,21 @@
+<md-menu>
+	<div class="small-action-button transparent">
+		<md-button class="md-fab" ng-click="$mdMenu.open($event)" title="Select Attribute Type">
+			<span class="symbol">{{ $ctrl._viewModel.aggregationSymbol }}</span>
+		</md-button>
+	</div>
+	<md-menu-content width="2">
+		<md-menu-item style="min-height: 20px; height: 20px;">
+			<md-button style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; text-align: center;" ng-disabled="true"
+				>Aggregation</md-button
+			>
+		</md-menu-item>
+		<md-divider></md-divider>
+		<md-menu-item>
+			<md-button ng-click="$ctrl.setToAbsolute($ctrl.metric, $ctrl.type)">Σ Sum</md-button>
+		</md-menu-item>
+		<md-menu-item>
+			<md-button ng-click="$ctrl.setToRelative($ctrl.metric, $ctrl.type)">x͂ Median</md-button>
+		</md-menu-item>
+	</md-menu-content>
+</md-menu>

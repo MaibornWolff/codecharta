@@ -1,7 +1,7 @@
 import { attributeTypes } from "./attributeTypes.reducer"
-import { AttributeTypesAction, setAttributeTypes } from "./attributeTypes.actions"
+import { AttributeTypesAction, setAttributeTypes, updateAttributeType } from "./attributeTypes.actions"
 import { STATE } from "../../../../util/dataMocks"
-import { AttributeTypes } from "../../../../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue } from "../../../../codeCharta.model"
 
 describe("attributeTypes", () => {
 	const defaultValue: AttributeTypes = {
@@ -28,6 +28,29 @@ describe("attributeTypes", () => {
 			const result = attributeTypes(STATE.fileSettings.attributeTypes, setAttributeTypes())
 
 			expect(result).toEqual(defaultValue)
+		})
+	})
+
+	describe("Action: UPDATE_ATTRIBUTE_TYPE", () => {
+		it("should set new attributeType if not existing yet", () => {
+			const result = attributeTypes(defaultValue, updateAttributeType("edges", "foo", AttributeTypeValue.relative))
+
+			expect(result).toEqual({ nodes: {}, edges: { foo: AttributeTypeValue.relative } })
+		})
+
+		it("should update existing", () => {
+			const currentState = {
+				nodes: { foo: AttributeTypeValue.relative },
+				edges: { foo: AttributeTypeValue.absolute, bar: AttributeTypeValue.absolute }
+			}
+			const expected = {
+				nodes: { foo: AttributeTypeValue.relative },
+				edges: { foo: AttributeTypeValue.relative, bar: AttributeTypeValue.absolute }
+			}
+
+			const result = attributeTypes(currentState, updateAttributeType("edges", "foo", AttributeTypeValue.relative))
+
+			expect(result).toEqual(expected)
 		})
 	})
 })

@@ -2,16 +2,14 @@ import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { BlacklistItem, BlacklistType, CodeMapNode } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { MetricService } from "../../state/metric.service"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
-
 	onShouldUnhoverNode(node: CodeMapNode)
 }
 
@@ -23,10 +21,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	private _viewModel: {
 		isHoveredInCodeMap: boolean
-		collapsed: boolean
+		isHoveredInTreeView: boolean
+		isFolderOpened: boolean
 	} = {
 		isHoveredInCodeMap: false,
-		collapsed: true
+		isHoveredInTreeView: false,
+		isFolderOpened: false
 	}
 
 	/* @ngInject */
@@ -40,7 +40,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public getMarkingColor() {
-		// TODO: set a 'black' color in settings.mapColors ?
 		let defaultColor = "#000000"
 		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
@@ -61,63 +60,57 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public onMouseEnter() {
 		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, this.node)
+		this._viewModel.isHoveredInTreeView = true
 	}
 
 	public onMouseLeave() {
 		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_UNHOVER_NODE_EVENT, this.node)
+		this._viewModel.isHoveredInTreeView = false
 	}
 
-	public onRightClick($event) {
+	public openNodeContextMenu($event) {
+		$event.stopPropagation()
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
 	}
 
-	public onFolderClick() {
-		this._viewModel.collapsed = !this._viewModel.collapsed
-	}
-
-	public onLabelClick() {
-		this.storeService.dispatch(focusNode(this.node.path))
-	}
-
-	public onEyeClick() {
-		const blacklistItem: BlacklistItem = { path: this.node.path, type: BlacklistType.flatten }
-		if (this.node.visible) {
-			this.storeService.dispatch(addBlacklistItem(blacklistItem))
-		} else {
-			this.storeService.dispatch(removeBlacklistItem(blacklistItem))
-		}
+	public onClickNode() {
+		this._viewModel.isFolderOpened = !this._viewModel.isFolderOpened
 	}
 
 	public isLeaf(node: CodeMapNode = this.node): boolean {
 		return !(node && node.children && node.children.length > 0)
 	}
 
-	public isBlacklisted(node: CodeMapNode): boolean {
-		if (node) {
-			return CodeMapHelper.isBlacklisted(node, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
+	public isFlattened() {
+		return CodeMapHelper.isBlacklisted(this.node, this.storeService.getState().fileSettings.blacklist, BlacklistType.flatten)
+	}
+
+	public isExcluded(): boolean {
+		if (this.node) {
+			return CodeMapHelper.isBlacklisted(this.node, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
 		}
 		return false
 	}
 
-	public isSearched(node: CodeMapNode): boolean {
-		if (node != null && this.storeService.getState().dynamicSettings.searchedNodePaths) {
-			return this.storeService.getState().dynamicSettings.searchedNodePaths.filter(path => path == node.path).length > 0
+	public isSearched(): boolean {
+		if (this.node != null && this.storeService.getState().dynamicSettings.searchedNodePaths) {
+			return this.storeService.getState().dynamicSettings.searchedNodePaths.filter(path => path == this.node.path).length > 0
 		}
 		return false
 	}
 
 	public openRootFolderByDefault(depth: number) {
 		if (depth == 0) {
-			this._viewModel.collapsed = false
+			this._viewModel.isFolderOpened = true
 		}
 	}
 
 	public getNodeUnaryValue() {
-		return this.node.attributes["unary"]
+		return this.node.attributes[MetricService.UNARY_METRIC]
 	}
 
 	public getUnaryPercentage() {
-		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes["unary"]
+		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[MetricService.UNARY_METRIC]
 		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
 	}
 
@@ -126,8 +119,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
-		$rootScope.$on("should-hover-node", (event, args) => subscriber.onShouldHoverNode(args))
-		$rootScope.$on("should-unhover-node", (event, args) => subscriber.onShouldUnhoverNode(args))
+		$rootScope.$on(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, (event, data) => {
+			subscriber.onShouldHoverNode(data)
+		})
+		$rootScope.$on(MapTreeViewLevelController.MAP_TREE_VIEW_UNHOVER_NODE_EVENT, (event, data) => {
+			subscriber.onShouldUnhoverNode(data)
+		})
 	}
 }
 

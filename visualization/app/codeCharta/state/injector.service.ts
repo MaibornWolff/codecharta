@@ -3,6 +3,7 @@
 // Plop: Append service import here
 import { MaxTreeMapFilesService } from "./store/appSettings/maxTreeMapFiles/maxTreeMapFiles.service"
 import { LayoutAlgorithmService } from "./store/appSettings/layoutAlgorithm/layoutAlgorithm.service"
+import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { FilesService } from "./store/files/files.service"
@@ -49,6 +50,7 @@ export class InjectorService {
 		// Plop: Append service injection here
 		private maxTreeMapFilesService: MaxTreeMapFilesService,
 		private layoutAlgorithmService: LayoutAlgorithmService,
+		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		private sortingOptionService: SortingOptionService,
 		private sortingOrderAscendingService: SortingOrderAscendingService,
 		private searchPanelModeService: SearchPanelModeService,

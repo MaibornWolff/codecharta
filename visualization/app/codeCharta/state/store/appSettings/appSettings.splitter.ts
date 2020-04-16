@@ -3,6 +3,7 @@ import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../cod
 // Plop: Append action splitter import here
 import { splitMaxTreeMapFilesAction } from "./maxTreeMapFiles/maxTreeMapFiles.splitter"
 import { splitLayoutAlgorithmAction } from "./layoutAlgorithm/layoutAlgorithm.splitter"
+import { splitIsAttributeSideBarVisibleAction } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.splitter"
 import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
 import { splitSearchPanelModeAction } from "./searchPanelMode/searchPanelMode.splitter"
 import { splitIsLoadingFileAction } from "./isLoadingFile/isLoadingFile.splitter"
@@ -34,6 +35,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 
 	if (payload.layoutAlgorithm !== undefined) {
 		actions.push(splitLayoutAlgorithmAction(payload.layoutAlgorithm))
+	}
+
+	if (payload.isAttributeSideBarVisible !== undefined) {
+		actions.push(splitIsAttributeSideBarVisibleAction(payload.isAttributeSideBarVisible))
 	}
 
 	if (payload.sortingOrderAscending !== undefined) {

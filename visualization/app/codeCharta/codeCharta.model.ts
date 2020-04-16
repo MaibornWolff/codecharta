@@ -128,6 +128,7 @@ export interface AppSettings {
 	searchPanelMode: SearchPanelMode
 	layoutAlgorithm: LayoutAlgorithm
 	maxTreeMapFiles: number
+	isAttributeSideBarVisible: boolean
 }
 
 export enum LayoutAlgorithm {

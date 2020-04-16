@@ -5,6 +5,7 @@ import angular from "angular"
 // Plop: Append module import here
 import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./layoutSelection/layoutSelection.module"
+import "./attributeTypeSelector/attributeTypeSelector.module"
 import "./sortingOption/sortingOption.module"
 import "./sortingButton/sortingButton.module"
 import "./unfocusButton/unfocusButton.module"
@@ -50,6 +51,7 @@ angular.module("app.codeCharta.ui", [
 	"app.codeCharta.ui.layoutSelection",
 	"app.codeCharta.ui.sortingOptionDialog",
 	"app.codeCharta.ui.sortingButton",
+	"app.codeCharta.ui.attributeTypeSelector",
 	"app.codeCharta.ui.unfocusButton",
 	"app.codeCharta.ui.metricValueHovered",
 	"app.codeCharta.ui.downloadButton",

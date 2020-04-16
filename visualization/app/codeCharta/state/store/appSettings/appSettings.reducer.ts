@@ -1,6 +1,7 @@
 // Plop: Append reducer import here
 import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
 import { layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
+import { isAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.reducer"
 import { sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { searchPanelMode } from "./searchPanelMode/searchPanelMode.reducer"
 import { isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
@@ -27,6 +28,7 @@ const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
 	maxTreeMapFiles,
 	layoutAlgorithm,
+	isAttributeSideBarVisible,
 	sortingOrderAscending,
 	searchPanelMode,
 	isLoadingFile,
