@@ -78,13 +78,9 @@ export class TreeMapGenerator {
 			return Math.abs(node.deltas[s.dynamicSettings.areaMetric])
 		}
 
-		if (this.isNodeLeaf(node) && node.attributes && node.attributes[s.dynamicSettings.areaMetric]) {
+		if (LayoutHelper.isNodeLeaf(node) && node.attributes && node.attributes[s.dynamicSettings.areaMetric]) {
 			return node.attributes[s.dynamicSettings.areaMetric]
 		}
 		return 0
-	}
-
-	private static isNodeLeaf(node: CodeMapNode) {
-		return !node.children || node.children.length === 0
 	}
 }
