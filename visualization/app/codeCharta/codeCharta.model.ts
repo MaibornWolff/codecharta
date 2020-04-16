@@ -142,10 +142,6 @@ export enum TreeMapAlgorithm {
 	Strip = "Strip"
 }
 
-export interface TreeMapStartDepth {
-	depth: number
-}
-
 export interface TreeMapSettings {
 	mapSize: number
 }

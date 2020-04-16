@@ -3,7 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
-import "./treeMapStartDepth/treeMapStartDepth.module"
+import "./maxTreeMapFiles/maxTreeMapFiles.module"
 import "./layoutSelection/layoutSelection.module"
 import "./sortingOption/sortingOption.module"
 import "./sortingButton/sortingButton.module"
@@ -46,7 +46,7 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
-	"app.codeCharta.ui.treeMapStartDepth",
+	"app.codeCharta.ui.maxTreeMapFiles",
 	"app.codeCharta.ui.layoutSelection",
 	"app.codeCharta.ui.sortingOptionDialog",
 	"app.codeCharta.ui.sortingButton",

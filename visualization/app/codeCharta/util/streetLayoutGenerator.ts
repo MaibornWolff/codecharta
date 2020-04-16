@@ -22,14 +22,14 @@ export interface StreetLayoutValuedCodeMapNode {
 }
 
 export class StreetLayoutGenerator {
-	// private static HEIGHT_DIVISOR = 1
 	private static MARGIN_SCALING_FACTOR = 0.02
 
 	public static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: MetricData[]): Node[] {
 		const isDeltaState = state.files.isDeltaState()
 		const metricName = state.dynamicSettings.areaMetric
 		const mergedMap = StreetLayoutHelper.mergeDirectories(map, metricName)
-		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0)
+		const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
+		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
 		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
 		rootStreet.calculateDimension(metricName)
 		const margin = state.dynamicSettings.margin * StreetLayoutGenerator.MARGIN_SCALING_FACTOR
@@ -46,7 +46,8 @@ export class StreetLayoutGenerator {
 		metricName: string,
 		state: State,
 		orientation: StreetOrientation,
-		depth: number
+		depth: number,
+		maxTreeMapFiles: number
 	): BoundingBox[] {
 		const children: BoundingBox[] = []
 		const areaMetric = state.dynamicSettings.areaMetric
@@ -59,12 +60,19 @@ export class StreetLayoutGenerator {
 			} else {
 				const layoutAlgorithm = state.appSettings.layoutAlgorithm
 				const fileDescendants = StreetLayoutHelper.countFileDescendants(child)
-				if (layoutAlgorithm === LayoutAlgorithm.TMStreet && fileDescendants <= 100) {
+				if (layoutAlgorithm === LayoutAlgorithm.TMStreet && fileDescendants <= maxTreeMapFiles) {
 					const treeMap = StreetLayoutGenerator.createTreeMap(child, TreeMapAlgorithm.Squarified)
 					children.push(treeMap)
 				} else {
 					child = StreetLayoutHelper.mergeDirectories(child, areaMetric)
-					const streetChildren = StreetLayoutGenerator.createBoxes(child, metricName, state, 1 - orientation, depth + 1)
+					const streetChildren = StreetLayoutGenerator.createBoxes(
+						child,
+						metricName,
+						state,
+						1 - orientation,
+						depth + 1,
+						maxTreeMapFiles
+					)
 					const street = StreetLayoutGenerator.createStreet(child, orientation, streetChildren, depth)
 					children.push(street)
 				}

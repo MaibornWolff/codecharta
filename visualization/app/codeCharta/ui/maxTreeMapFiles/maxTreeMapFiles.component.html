@@ -1,0 +1,25 @@
+<md-slider-container class="md-block">
+	<span>Maximum TreeMap Files</span>
+	<md-slider
+		flex
+		step="1"
+		min="1"
+		max="1000"
+		ng-model="$ctrl._viewModel.maxTreeMapFiles"
+		id="maxTreeMapFiles-slider"
+		ng-change="$ctrl.onChangeMaxTreeMapFilesSlider()"
+		class="md-primary"
+	>
+	</md-slider>
+	<md-input-container>
+		<input
+			flex
+			step="1"
+			min="1"
+			max="1000"
+			type="number"
+			ng-model="$ctrl._viewModel.maxTreeMapFiles"
+			ng-change="$ctrl.onChangeMaxTreeMapFilesSlider()"
+		/>
+	</md-input-container>
+</md-slider-container>

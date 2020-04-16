@@ -32,6 +32,20 @@
 .global-settings {
 	min-width: 50%;
 
+	md-slider-container {
+		position: relative;
+		padding-left: 2px;
+
+		span {
+			white-space: nowrap;
+			position: absolute;
+			top: 0;
+			font-size: 10pt;
+			color: grey;
+			left: 5px;
+		}
+	}
+
 	.weblink {
 		display: block;
 		margin: 0 0 10px 0;
