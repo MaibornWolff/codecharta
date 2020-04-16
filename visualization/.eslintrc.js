@@ -23,9 +23,9 @@ module.exports = {
 		// Do not apply inappropriate rules below
 		"@typescript-eslint/no-inferrable-types": "off",
 		"@typescript-eslint/no-use-before-define": "off",
+		"@typescript-eslint/ban-ts-ignore": "off",
 
 		// TODO fix and remove rules below
-		"@typescript-eslint/ban-ts-ignore": "off",
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/ban-types": "off",
 		"@typescript-eslint/no-explicit-any": "off",
