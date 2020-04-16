@@ -60,9 +60,9 @@ jobs:
       script: ./script/build_gh_pages.sh
 
 stages:
-  - build
   - test
-  - release
+  - name: release
+    if: branch = master
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
