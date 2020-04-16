@@ -69,7 +69,7 @@ before_cache:
 
 cache:
   - npm
-  - directories:
+  directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - ./visualization/node_modules/nwjs-builder-phoenix/caches/
