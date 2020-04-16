@@ -25,15 +25,16 @@ addons:
     branches:
       - master
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y wine
+
 jobs:
   fast_finish: true
   include:
     - stage: build
       name: "Build"
-      before_install:
-        - sudo apt-get -qq update
-        - sudo apt-get install -y wine
-        - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+      before_install: rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
       install: cd visualization; npm install; cd ..
       script: cd visualization; npm run build:web
 
