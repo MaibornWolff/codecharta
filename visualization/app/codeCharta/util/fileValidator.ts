@@ -11,7 +11,6 @@ export class FileValidator {
 		let valid = new Validator()
 		let validationResult = valid.validate(file, require("./schema.json"))
 		let message = ""
-		console.log(validationResult.errors)
 
 		if (this.checkApiVersion(file)[0]) {
 			return [
@@ -81,10 +80,8 @@ export class FileValidator {
 		let minorVersion = fileApiVersion.split(".")[1]
 
 		if (majorVersion > apiVersionMajor) {
-			console.log("Major Version Wrong")
 			apiVersionMajorMinor[0] = true
 		} else if (minorVersion > apiVersionMinor) {
-			console.log("Minor Version Wrong")
 			apiVersionMajorMinor[1] = true
 		}
 		return apiVersionMajorMinor

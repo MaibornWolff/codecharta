@@ -1,9 +1,10 @@
 import { FileValidator } from "./fileValidator"
-import { TEST_FILE_CONTENT } from "./dataMocks"
+import { TEST_FILE_CONTENT, TEST_FILE_CONTENT_INVALID_MAJOR_API, TEST_FILE_CONTENT_INVALID_MINOR_API } from "./dataMocks"
 import { NodeType } from "../codeCharta.model"
 
 describe("FileValidator", () => {
 	let file
+	let invalidFile
 
 	beforeEach(() => {
 		file = TEST_FILE_CONTENT
@@ -20,6 +21,18 @@ describe("FileValidator", () => {
 	it("should reject null", () => {
 		const errors = FileValidator.validate(null)
 		expectFileToBeInvalid(errors)
+	})
+
+	it("should reject invalid API", () => {
+		invalidFile = TEST_FILE_CONTENT_INVALID_MAJOR_API
+		const errors = FileValidator.validate(invalidFile)
+		expectFileToBeInvalid(errors)
+	})
+
+	it("should not reject higher minor API version", () => {
+		file = TEST_FILE_CONTENT_INVALID_MINOR_API
+		const errors = FileValidator.validate(file)
+		expectFileToBeValid(errors)
 	})
 
 	it("should reject string", () => {
