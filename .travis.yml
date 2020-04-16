@@ -32,36 +32,36 @@ before_install:
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
-  - cd visualization
-  - npm install
+  - cd visualization; npm install; cd ..
 
 jobs:
   fast_finish: true
   include:
-    - stage: build
-      script: npm run build:web
-
-    - stage: test
-      name: "E2E Test"
-      script: npm run e2e --ci
+    - stage: build and test
+      name: "Build"
+      script: cd visualization; npm run build:web
     - name: "Unit Test"
-      script: npm run test --ci
+      script: cd visualization; npm run test --ci
     - name: "Linter"
-      script: npm run lint
+      script: cd visualization; npm run lint
     - name: "Analysis Integration Test"
-      script: ../analysis/gradlew build integrationTest
+      script: cd analysis; ./gradlew build integrationTest
+
+    - stage: e2e test
+      name: "E2E Test"
+      script: cd visualization; npm run e2e --ci
 
     - stage: package
       name: "Create Release Package"
-      script: npm run package
+      script: cd visualization; npm run package
     - name: "Build docker image"
-      script: docker build -t maibornwolff/codecharta-visualization .
+      script: cd visualization; docker build -t maibornwolff/codecharta-visualization .
     - name: "Build gh-pages"
-      script: ../script/build_gh_pages.sh
+      script: ./script/build_gh_pages.sh
 
 stages:
-  - build
-  - test
+  - build and test
+  - e2e test
   - package
  # - name: package
   #  if: branch = master
