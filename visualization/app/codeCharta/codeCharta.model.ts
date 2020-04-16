@@ -127,7 +127,7 @@ export interface AppSettings {
 	sortingOrderAscending: boolean
 	searchPanelMode: SearchPanelMode
 	layoutAlgorithm: LayoutAlgorithm
-	treeMapStartDepth: number
+	maxTreeMapFiles: number
 }
 
 export enum LayoutAlgorithm {

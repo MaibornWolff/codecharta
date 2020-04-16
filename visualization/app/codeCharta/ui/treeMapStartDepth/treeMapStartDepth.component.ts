@@ -17,7 +17,8 @@ export class TreeMapStartDepthController implements TreeMapStartDepthSubscriber 
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		TreeMapStartDepthService.subscribe(this.$rootScope, this)
-		const treeMapStartDepth = this.storeService.getState().appSettings.treeMapStartDepth
+		const treeMapStartDepth = 4
+		// const treeMapStartDepth = this.storeService.getState().appSettings.treeMapStartDepth
 		this.onTreeMapStartDepthChanged(treeMapStartDepth)
 		this._viewModel.treeMapStartDepth = treeMapStartDepth
 	}

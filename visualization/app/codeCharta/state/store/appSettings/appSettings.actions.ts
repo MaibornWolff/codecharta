@@ -1,6 +1,7 @@
 import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append default property import here
+import { defaultMaxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.actions"
 import { defaultLayoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.actions"
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
 import { defaultAmountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.actions"
@@ -22,7 +23,6 @@ import { defaultIsLoadingMap } from "./isLoadingMap/isLoadingMap.actions"
 import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
 import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
-import { defaultTreeMapStartDepth } from "./treeMapStartDepth/treeMapStartDepth.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -44,6 +44,7 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 
 export const defaultAppSettings: AppSettings = {
 	// Plop: Append default property here
+	maxTreeMapFiles: defaultMaxTreeMapFiles,
 	amountOfTopLabels: defaultAmountOfTopLabels,
 	amountOfEdgePreviews: defaultAmountOfEdgePreviews,
 	edgeHeight: defaultEdgeHeight,
@@ -64,6 +65,5 @@ export const defaultAppSettings: AppSettings = {
 	isLoadingFile: defaultIsLoadingFile,
 	searchPanelMode: defaultSearchPanelMode,
 	sortingOrderAscending: defaultSortingOrderAscending,
-	layoutAlgorithm: defaultLayoutAlgorithm,
-	treeMapStartDepth: defaultTreeMapStartDepth
+	layoutAlgorithm: defaultLayoutAlgorithm
 }

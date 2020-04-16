@@ -1,6 +1,6 @@
 // Plop: Append reducer import here
+import { maxTreeMapFiles } from "./maxTreeMapFiles/maxTreeMapFiles.reducer"
 import { layoutAlgorithm } from "./layoutAlgorithm/layoutAlgorithm.reducer"
-import { treeMapStartDepth } from "./treeMapStartDepth/treeMapStartDepth.reducer"
 import { sortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.reducer"
 import { searchPanelMode } from "./searchPanelMode/searchPanelMode.reducer"
 import { isLoadingFile } from "./isLoadingFile/isLoadingFile.reducer"
@@ -25,7 +25,7 @@ import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
-	treeMapStartDepth,
+	maxTreeMapFiles,
 	layoutAlgorithm,
 	sortingOrderAscending,
 	searchPanelMode,

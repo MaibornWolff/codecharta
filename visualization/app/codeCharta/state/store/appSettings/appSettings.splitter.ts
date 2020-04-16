@@ -1,6 +1,7 @@
 import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
+import { splitMaxTreeMapFilesAction } from "./maxTreeMapFiles/maxTreeMapFiles.splitter"
 import { splitLayoutAlgorithmAction } from "./layoutAlgorithm/layoutAlgorithm.splitter"
 import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
 import { splitSearchPanelModeAction } from "./searchPanelMode/searchPanelMode.splitter"
@@ -22,14 +23,13 @@ import { splitEdgeHeightAction } from "./edgeHeight/edgeHeight.splitter"
 import { splitAmountOfEdgePreviewsAction } from "./amountOfEdgePreviews/amountOfEdgePreviews.splitter"
 import { splitAmountOfTopLabelsAction } from "./amountOfTopLabels/amountOfTopLabels.splitter"
 import { splitIsPresentationModeAction } from "./isPresentationMode/isPresentationMode.splitter"
-import { splitTreeMapStartDepthAction } from "./treeMapStartDepth/treeMapStartDepth.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>): CCAction[] {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
-	if (payload.treeMapStartDepth !== undefined) {
-		actions.push(splitTreeMapStartDepthAction(payload.treeMapStartDepth))
+	if (payload.maxTreeMapFiles !== undefined) {
+		actions.push(splitMaxTreeMapFilesAction(payload.maxTreeMapFiles))
 	}
 
 	if (payload.layoutAlgorithm !== undefined) {
