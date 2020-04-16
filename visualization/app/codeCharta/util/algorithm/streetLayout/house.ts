@@ -2,7 +2,7 @@ import BoundingBox from "./boundingBox"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Point from "../point"
-import { StreetLayoutHelper } from "../../streetLayoutHelper"
+import { LayoutHelper } from "../../layoutHelper"
 
 export default class House extends BoundingBox {
 	constructor(node: CodeMapNode) {
@@ -10,7 +10,7 @@ export default class House extends BoundingBox {
 	}
 
 	public calculateDimension(metricName: string): void {
-		this.metricValue = StreetLayoutHelper.calculateSize(this.node, metricName)
+		this.metricValue = LayoutHelper.calculateSize(this.node, metricName)
 		this.width = Math.sqrt(this.metricValue)
 		this.height = Math.sqrt(this.metricValue)
 	}

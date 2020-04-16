@@ -2,7 +2,7 @@ import BoundingBox from "../streetLayout/boundingBox"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Point from "../point"
-import { StreetLayoutHelper } from "../../streetLayoutHelper"
+import { LayoutHelper } from "../../layoutHelper"
 
 export default abstract class Treemap extends BoundingBox {
 	protected treeMapNodes: StreetLayoutValuedCodeMapNode[] = []
@@ -16,7 +16,7 @@ export default abstract class Treemap extends BoundingBox {
 
 	public calculateDimension(metricName: string): void {
 		this.metricName = metricName
-		this.metricValue = StreetLayoutHelper.calculateSize(this.node, metricName)
+		this.metricValue = LayoutHelper.calculateSize(this.node, metricName)
 		this.width = Math.sqrt(this.metricValue)
 		this.height = Math.sqrt(this.metricValue)
 	}

@@ -1,8 +1,8 @@
-import { CodeMapHelper } from "./codeMapHelper"
-import { Node, CodeMapNode, BlacklistItem, BlacklistType, State } from "../codeCharta.model"
-import { Vector3 } from "three"
-import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
+import { CodeMapNode, State, BlacklistType, BlacklistItem, Node } from "../codeCharta.model"
 import Rectangle from "./algorithm/rectangle"
+import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
+import { CodeMapHelper } from "./codeMapHelper"
+import { Vector3 } from "three"
 
 export interface LayoutNode {
 	data: CodeMapNode
@@ -11,7 +11,7 @@ export interface LayoutNode {
 	zOffset: number
 }
 
-export class TreeMapHelper {
+export class LayoutHelper {
 	private static FOLDER_HEIGHT = 2
 	private static MIN_BUILDING_HEIGHT = 2
 	private static HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
@@ -36,10 +36,10 @@ export class TreeMapHelper {
 	}
 
 	private static getHeightValue(s: State, squaredNode: LayoutNode, maxHeight: number, flattened: boolean): number {
-		let heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+		let heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || LayoutHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 
 		if (flattened) {
-			return TreeMapHelper.MIN_BUILDING_HEIGHT
+			return LayoutHelper.MIN_BUILDING_HEIGHT
 		} else if (s.appSettings.invertHeight) {
 			return maxHeight - heightValue
 		} else {
@@ -47,18 +47,18 @@ export class TreeMapHelper {
 		}
 	}
 
-  public static buildNodeFrom(layoutNode: LayoutNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
+	public static buildNodeFrom(layoutNode: LayoutNode, heightScale: number, maxHeight: number, s: State, isDeltaState: boolean): Node {
 		const isNodeLeaf: boolean = !(layoutNode.data.children && layoutNode.data.children.length > 0)
 		const flattened: boolean = this.isNodeToBeFlat(layoutNode, s)
 		const heightValue: number = this.getHeightValue(s, layoutNode, maxHeight, flattened)
 		const height = Math.abs(
-			isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
+			isNodeLeaf ? Math.max(heightScale * heightValue, LayoutHelper.MIN_BUILDING_HEIGHT) : LayoutHelper.FOLDER_HEIGHT
 		)
 
 		const length = layoutNode.rect.height
 		const x0 = layoutNode.rect.topLeft.x
 		const y0 = layoutNode.rect.topLeft.y
-		const z0 = layoutNode.zOffset * TreeMapHelper.FOLDER_HEIGHT
+		const z0 = layoutNode.zOffset * LayoutHelper.FOLDER_HEIGHT
 
 		return {
 			name: layoutNode.data.name,
@@ -159,5 +159,37 @@ export class TreeMapHelper {
 				return s.appSettings.mapColors.neutral
 			}
 		}
+	}
+
+	public static calculateSize(node: CodeMapNode, metricName: string) {
+		let totalSize = node.attributes[metricName] || 0
+
+		if (totalSize === 0 && node.children && node.children.length > 0) {
+			for (const child of node.children) {
+				totalSize += LayoutHelper.calculateSize(child, metricName)
+			}
+		}
+		return totalSize
+	}
+
+	public static isNodeLeaf(node: CodeMapNode): boolean {
+		return !node.children || node.children.length === 0
+	}
+
+	public static mergeDirectories(node: CodeMapNode, metricName: string): CodeMapNode {
+		let mergedNode = node
+		for (const child of node.children) {
+			if (!LayoutHelper.isNodeLeaf(child)) {
+				const nodeSize = LayoutHelper.calculateSize(node, metricName)
+				const childSize = LayoutHelper.calculateSize(child, metricName)
+				if (nodeSize === childSize) {
+					const nodeName = mergedNode.name
+					mergedNode = child
+					mergedNode.name = nodeName + "/" + child.name
+					break
+				}
+			}
+		}
+		return mergedNode
 	}
 }

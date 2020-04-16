@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`layoutHelper build node deltas 1`] = `
+Object {
+  "attributes": Object {
+    "theHeight": 100,
+  },
+  "color": "#666666",
+  "deltas": Object {
+    "theHeight": 33,
+  },
+  "depth": 0,
+  "edgeAttributes": undefined,
+  "flat": false,
+  "height": 100,
+  "heightDelta": 33,
+  "incomingEdgePoint": Vector3 {
+    "x": 199,
+    "y": 100,
+    "z": 99,
+  },
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": null,
+  "name": "Anode",
+  "outgoingEdgePoint": Vector3 {
+    "x": 199,
+    "y": 100,
+    "z": 299,
+  },
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;
+
+exports[`layoutHelper build node invertHeight 1`] = `
+Object {
+  "attributes": Object {
+    "theHeight": 100,
+  },
+  "color": "#666666",
+  "deltas": undefined,
+  "depth": 0,
+  "edgeAttributes": undefined,
+  "flat": false,
+  "height": 1900,
+  "heightDelta": 0,
+  "incomingEdgePoint": Vector3 {
+    "x": 199,
+    "y": 1900,
+    "z": 99,
+  },
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": null,
+  "name": "Anode",
+  "outgoingEdgePoint": Vector3 {
+    "x": 199,
+    "y": 1900,
+    "z": 299,
+  },
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;
+
+exports[`layoutHelper build node minimal 1`] = `
+Object {
+  "attributes": Object {
+    "theHeight": 100,
+  },
+  "color": "#666666",
+  "deltas": undefined,
+  "depth": 0,
+  "edgeAttributes": undefined,
+  "flat": false,
+  "height": 100,
+  "heightDelta": 0,
+  "incomingEdgePoint": Vector3 {
+    "x": 199,
+    "y": 100,
+    "z": 99,
+  },
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": null,
+  "name": "Anode",
+  "outgoingEdgePoint": Vector3 {
+    "x": 199,
+    "y": 100,
+    "z": 299,
+  },
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;
+
+exports[`layoutHelper build node should set lowest possible height caused by other visible edge pairs 1`] = `
+Object {
+  "attributes": Object {
+    "theHeight": 100,
+  },
+  "color": "#666666",
+  "deltas": undefined,
+  "depth": 0,
+  "edgeAttributes": undefined,
+  "flat": false,
+  "height": 100,
+  "heightDelta": 0,
+  "incomingEdgePoint": Vector3 {
+    "x": 199,
+    "y": 100,
+    "z": 99,
+  },
+  "isLeaf": true,
+  "length": 400,
+  "link": undefined,
+  "markingColor": null,
+  "name": "Anode",
+  "outgoingEdgePoint": Vector3 {
+    "x": 199,
+    "y": 100,
+    "z": 299,
+  },
+  "path": "/root/Anode",
+  "visible": undefined,
+  "width": 400,
+  "x0": 0,
+  "y0": 0,
+  "z0": 0,
+}
+`;

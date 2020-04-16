@@ -3,7 +3,7 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Point from "../point"
 import Rectangle from "../rectangle"
-import { StreetLayoutHelper } from "../../streetLayoutHelper"
+import { LayoutHelper } from "../../layoutHelper"
 
 export default class SliceDiceTreemap extends Treemap {
 	protected treeMapNodes: StreetLayoutValuedCodeMapNode[] = []
@@ -37,7 +37,7 @@ export default class SliceDiceTreemap extends Treemap {
 		const newRect = new Rectangle(newOrigin, newWidth, newHeight)
 		this.treeMapNodes.push({
 			data: rootNode,
-			value: rootNode.type === "File" ? StreetLayoutHelper.calculateSize(this.node, this.metricName) : 0,
+			value: rootNode.type === "File" ? LayoutHelper.calculateSize(this.node, this.metricName) : 0,
 			rect: newRect,
 			zOffset: currentTreemapDepth
 		})
@@ -46,8 +46,8 @@ export default class SliceDiceTreemap extends Treemap {
 		const width = bottomRight[axis] - topLeft[axis]
 
 		for (const child of rootNode.children) {
-			const rootSize = StreetLayoutHelper.calculateSize(rootNode, this.metricName)
-			const childSize = StreetLayoutHelper.calculateSize(child, this.metricName)
+			const rootSize = LayoutHelper.calculateSize(rootNode, this.metricName)
+			const childSize = LayoutHelper.calculateSize(child, this.metricName)
 
 			if (rootSize !== 0) {
 				//sets position of new rectangle

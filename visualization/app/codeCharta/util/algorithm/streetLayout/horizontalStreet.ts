@@ -5,7 +5,7 @@ import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Rectangle from "../rectangle"
 import VerticalStreet, { VerticalOrientation } from "./verticalStreet"
 import BoundingBox from "./boundingBox"
-import { StreetLayoutHelper } from "../../streetLayoutHelper"
+import { LayoutHelper } from "../../layoutHelper"
 
 export enum HorizontalOrientation {
 	RIGHT,
@@ -39,7 +39,7 @@ export default class HorizontalStreet extends Street {
 		this.splitChildrenToRows(this.children)
 		this.rearrangeRows()
 
-		this.metricValue = StreetLayoutHelper.calculateSize(this.node, metricName)
+		this.metricValue = LayoutHelper.calculateSize(this.node, metricName)
 		this.width = Math.max(this.getLength(this.topRow), this.getLength(this.bottomRow))
 		this.height = this.getMaxHeight(this.topRow) + this.getStreetThickness() + this.getMaxHeight(this.bottomRow) + 2 * this.spacer
 	}

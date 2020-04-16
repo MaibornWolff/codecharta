@@ -3,10 +3,10 @@ import { CodeMapNode } from "../../../codeCharta.model"
 import Point from "../point"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
 import Rectangle from "../rectangle"
-import { StreetLayoutHelper } from "../../streetLayoutHelper"
 import HorizontalStrip from "./strip/horizontalStrip"
 import VerticalStrip from "./strip/verticalStrip"
 import Strip from "./strip/strip"
+import { LayoutHelper } from "../../layoutHelper"
 
 export default class SquarifiedTreemap extends Treemap {
 	constructor(rootNode: CodeMapNode) {
@@ -21,7 +21,7 @@ export default class SquarifiedTreemap extends Treemap {
 			rect: rectangle,
 			zOffset: 0
 		}
-		const children = this.node.children.filter(child => StreetLayoutHelper.calculateSize(child, this.metricName) > 0)
+		const children = this.node.children.filter(child => LayoutHelper.calculateSize(child, this.metricName) > 0)
 
 		this.treeMapNodes.push(rootNode)
 
@@ -97,9 +97,9 @@ export default class SquarifiedTreemap extends Treemap {
 	protected createChildrenNodes(stripNodes: StreetLayoutValuedCodeMapNode[], currentTreemapDepth: number, margin: number): void {
 		for (let node of stripNodes) {
 			if (node.data.children && node.data.children.length > 0) {
-				const children = node.data.children.filter(child => StreetLayoutHelper.calculateSize(child, this.metricName) > 0)
+				const children = node.data.children.filter(child => LayoutHelper.calculateSize(child, this.metricName) > 0)
 				if (children.length > 0) {
-					const size = StreetLayoutHelper.calculateSize(node.data, this.metricName)
+					const size = LayoutHelper.calculateSize(node.data, this.metricName)
 					this.createNodes(children, node.rect, size, currentTreemapDepth + 1, margin)
 				}
 			}
@@ -108,7 +108,7 @@ export default class SquarifiedTreemap extends Treemap {
 
 	private orderBySizeDescending(nodes: CodeMapNode[]): CodeMapNode[] {
 		return nodes.sort((a, b) => {
-			return StreetLayoutHelper.calculateSize(b, this.metricName) - StreetLayoutHelper.calculateSize(a, this.metricName)
+			return LayoutHelper.calculateSize(b, this.metricName) - LayoutHelper.calculateSize(a, this.metricName)
 		})
 	}
 }

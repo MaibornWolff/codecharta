@@ -6,13 +6,13 @@ import House from "./algorithm/streetLayout/house"
 import Rectangle from "./algorithm/rectangle"
 import Point from "./algorithm/point"
 import { CodeMapHelper } from "./codeMapHelper"
-import { LayoutNode, TreeMapHelper } from "./treeMapHelper"
 import TreeMap from "./algorithm/treeMap/treeMap"
 import SliceDiceTreeMap from "./algorithm/treeMap/sliceDiceTreeMap"
 import SquarifiedTreeMap from "./algorithm/treeMap/squarifiedTreeMap"
 import StripTreeMap from "./algorithm/treeMap/stripTreeMap"
 import { StreetOrientation } from "./algorithm/streetLayout/street"
 import { StreetLayoutHelper } from "./streetLayoutHelper"
+import { LayoutHelper, LayoutNode } from "./layoutHelper"
 
 export interface StreetLayoutValuedCodeMapNode {
 	data: CodeMapNode
@@ -27,7 +27,7 @@ export class StreetLayoutGenerator {
 	public static createStreetLayoutNodes(map: CodeMapNode, state: State, metricData: MetricData[]): Node[] {
 		const isDeltaState = state.files.isDeltaState()
 		const metricName = state.dynamicSettings.areaMetric
-		const mergedMap = StreetLayoutHelper.mergeDirectories(map, metricName)
+		const mergedMap = LayoutHelper.mergeDirectories(map, metricName)
 		const maxTreeMapFiles = state.appSettings.maxTreeMapFiles
 		const childBoxes = this.createBoxes(mergedMap, metricName, state, StreetOrientation.Vertical, 0, maxTreeMapFiles)
 		const rootStreet = new HorizontalStreet(mergedMap, childBoxes, 0)
@@ -37,7 +37,7 @@ export class StreetLayoutGenerator {
 		const maxHeight = metricData.find(x => x.name == state.dynamicSettings.heightMetric).maxValue
 		const heightScale = 1 //TODO: apply correct height after scaling layout size
 		return layoutNodes.map(streetLayoutNode => {
-			return TreeMapHelper.buildNodeFrom(streetLayoutNode as LayoutNode, heightScale, maxHeight, state, isDeltaState)
+			return LayoutHelper.buildNodeFrom(streetLayoutNode as LayoutNode, heightScale, maxHeight, state, isDeltaState)
 		})
 	}
 
@@ -55,7 +55,7 @@ export class StreetLayoutGenerator {
 			if (CodeMapHelper.isBlacklisted(child, state.fileSettings.blacklist, BlacklistType.exclude)) {
 				continue
 			}
-			if (StreetLayoutHelper.isNodeLeaf(child)) {
+			if (LayoutHelper.isNodeLeaf(child)) {
 				children.push(new House(child))
 			} else {
 				const layoutAlgorithm = state.appSettings.layoutAlgorithm
@@ -64,7 +64,7 @@ export class StreetLayoutGenerator {
 					const treeMap = StreetLayoutGenerator.createTreeMap(child, TreeMapAlgorithm.Squarified)
 					children.push(treeMap)
 				} else {
-					child = StreetLayoutHelper.mergeDirectories(child, areaMetric)
+					child = LayoutHelper.mergeDirectories(child, areaMetric)
 					const streetChildren = StreetLayoutGenerator.createBoxes(
 						child,
 						metricName,

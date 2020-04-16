@@ -4,7 +4,7 @@ import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, State } from "../../../codeCharta.model"
 import { Camera, Mesh, Ray, ShaderMaterial, UniformsLib, UniformsUtils, Vector3 } from "three"
-import { TreeMapHelper } from "../../../util/treeMapHelper"
+import { LayoutHelper } from "../../../util/layoutHelper"
 
 export interface MousePos {
 	x: number
@@ -78,7 +78,7 @@ export class CodeMapMesh {
 	}
 
 	public highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State) {
-		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
+		const highlightBuildingMap = LayoutHelper.buildingArrayToMap(highlightedBuildings)
 		this.mapGeomDesc.buildings.forEach(building => {
 			if (!this.isBuildingSelected(selected, building)) {
 				if (highlightBuildingMap.get(building.id)) {

@@ -1,9 +1,9 @@
-import { LayoutNode, TreeMapHelper } from "./treeMapHelper"
 import { hierarchy, treemap, HierarchyNode, HierarchyRectangularNode, TreemapLayout } from "d3"
 import { CodeMapHelper } from "./codeMapHelper"
 import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
 import Rectangle from "./algorithm/rectangle"
 import Point from "./algorithm/point"
+import { LayoutNode, LayoutHelper } from "./layoutHelper"
 
 export interface SquarifiedCodeMapNode extends HierarchyRectangularNode<CodeMapNode> {}
 
@@ -18,7 +18,7 @@ export class TreeMapGenerator {
 		const nodesAsArray: SquarifiedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
 			const layoutNode: LayoutNode = this.convertToLayoutNode(squarifiedNode)
-			return TreeMapHelper.buildNodeFrom(layoutNode, heightScale, maxHeight, s, isDeltaState)
+			return LayoutHelper.buildNodeFrom(layoutNode, heightScale, maxHeight, s, isDeltaState)
 		})
 	}
 

@@ -2,7 +2,7 @@ import Rectangle from "../../rectangle"
 import Point from "../../point"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { StreetLayoutValuedCodeMapNode } from "../../../streetLayoutGenerator"
-import { StreetLayoutHelper } from "../../../streetLayoutHelper"
+import { LayoutHelper } from "../../../layoutHelper"
 
 export default abstract class Strip {
 	public nodes: CodeMapNode[] = []
@@ -27,7 +27,7 @@ export default abstract class Strip {
 	}
 
 	public totalSize(metricName: string) {
-		return this.nodes.reduce((total, n) => total + StreetLayoutHelper.calculateSize(n, metricName), 0)
+		return this.nodes.reduce((total, n) => total + LayoutHelper.calculateSize(n, metricName), 0)
 	}
 
 	protected min(nodes: CodeMapNode[], metricName: string, rootSize: number, rootArea: number): number {
@@ -53,7 +53,7 @@ export default abstract class Strip {
 	}
 
 	protected scaledSize(node: CodeMapNode, parentSize: number, parentArea: number, metricName: string): number {
-		const size = StreetLayoutHelper.calculateSize(node, metricName)
+		const size = LayoutHelper.calculateSize(node, metricName)
 		const scale = parentArea / parentSize
 		return scale * size
 	}

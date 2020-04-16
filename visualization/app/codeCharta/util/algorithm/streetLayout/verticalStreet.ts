@@ -5,7 +5,7 @@ import HorizontalStreet, { HorizontalOrientation } from "./horizontalStreet"
 import Street from "./street"
 import { CodeMapNode } from "../../../codeCharta.model"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"
-import { StreetLayoutHelper } from "../../streetLayoutHelper"
+import { LayoutHelper } from "../../layoutHelper"
 
 export enum VerticalOrientation {
 	UP,
@@ -33,7 +33,7 @@ export default class VerticalStreet extends Street {
 		this.splitChildrenToRows(this.children)
 		this.rearrangeRows()
 
-		this.metricValue = StreetLayoutHelper.calculateSize(this.node, metricName)
+		this.metricValue = LayoutHelper.calculateSize(this.node, metricName)
 		this.width = this.getMaxWidth(this.leftRow) + this.getStreetThickness() + this.getMaxWidth(this.rightRow) + 2 * this.spacer
 		this.height = Math.max(this.getLength(this.leftRow), this.getLength(this.rightRow))
 	}
