@@ -29,22 +29,22 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y wine
 
+install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - cd visualization; npm install
+
 jobs:
   fast_finish: true
   include:
-    - stage: build
-      name: "Build"
-      before_install: rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
-      install: cd visualization; npm install; cd ..
-      script: cd visualization; npm run build:web
-
     - stage: test
       name: "Visualization Unit Test"
       script: cd visualization; npm run test --ci
     - name: "Visualization Linter"
       script: cd visualization; npm run lint
-    - name: "Visualization E2E Test"
-      script: cd visualization; npm run e2e --ci
+    - name: "Visualization Build and E2E Test"
+      script:
+        - cd visualization; npm run build:web
+        - cd visualization; npm run e2e --ci
     - name: "Analysis Integration Test"
       before_script: chmod +x ./analysis/gradlew
       script: cd analysis; ./gradlew build integrationTest
