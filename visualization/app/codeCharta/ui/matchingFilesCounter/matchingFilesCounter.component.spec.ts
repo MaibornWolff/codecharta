@@ -1,16 +1,18 @@
 import "./matchingFilesCounter.module"
 import { MatchingFilesCounterController } from "./matchingFilesCounter.component"
-import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
+import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { BlacklistType } from "../../codeCharta.model"
-import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService } from "../../state/nodeSearch.service"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { StoreService } from "../../state/store.service"
+import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 
 describe("MatchingFilesCounterController", () => {
 	let matchingFilesCounterController: MatchingFilesCounterController
 	let $rootScope: IRootScopeService
+	let storeService: StoreService
 
 	beforeEach(() => {
 		restartSystem()
@@ -20,10 +22,11 @@ describe("MatchingFilesCounterController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.matchingFilesCounter")
 		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
 	}
 
 	function rebuildController() {
-		matchingFilesCounterController = new MatchingFilesCounterController($rootScope)
+		matchingFilesCounterController = new MatchingFilesCounterController($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -49,18 +52,10 @@ describe("MatchingFilesCounterController", () => {
 
 		it("should update ViewModel count Attributes when pattern hidden and excluded", () => {
 			matchingFilesCounterController["_viewModel"].searchPattern = "/root/node/path"
-
 			matchingFilesCounterController["searchedNodeLeaves"] = [rootNode, rootNode]
 			matchingFilesCounterController["searchedNodeLeaves"][0].path = matchingFilesCounterController["_viewModel"].searchPattern
-
-			// On Windows 'ignore' generates paths with backslashes instead of slashes when executing
-			// the unit tests, and thus the test case fails without this mock.
-			CodeMapHelper.isBlacklisted = jest.fn((node, type) => {
-				return (
-					(type == BlacklistType.flatten && node.path == "/root/node/path") ||
-					(type == BlacklistType.exclude && node.path == "/root/node/path")
-				)
-			})
+			storeService.dispatch(addBlacklistItem({ path: "/root/node/path", type: BlacklistType.exclude }))
+			storeService.dispatch(addBlacklistItem({ path: "/root/node/path", type: BlacklistType.flatten }))
 
 			matchingFilesCounterController["updateViewModel"]()
 

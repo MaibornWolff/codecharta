@@ -4,6 +4,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { StoreService } from "../../state/store.service"
 
 export class MatchingFilesCounterController implements NodeSearchSubscriber, BlacklistSubscriber {
 	private _viewModel: {
@@ -20,7 +21,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	private searchedNodeLeaves: CodeMapNode[] = []
 
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		NodeSearchService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
@@ -45,7 +46,9 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 	}
 
 	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], blacklistType: BlacklistType): number {
-		return searchedNodeLeaves.filter(node => CodeMapHelper.isBlacklisted(node, blacklistType)).length
+		return searchedNodeLeaves.filter(node =>
+			CodeMapHelper.isPathBlacklisted(node.path, this.storeService.getState().fileSettings.blacklist, blacklistType)
+		).length
 	}
 }
 
