@@ -2,7 +2,7 @@ import "./matchingFilesCounter.module"
 import { MatchingFilesCounterController } from "./matchingFilesCounter.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { CodeMapNode, BlacklistType } from "../../codeCharta.model"
+import { BlacklistType } from "../../codeCharta.model"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService } from "../../state/nodeSearch.service"
@@ -45,14 +45,13 @@ describe("MatchingFilesCounterController", () => {
 	})
 
 	describe("updateViewModel", () => {
-		let searchedNodeLeaves: CodeMapNode[]
 		let rootNode = VALID_NODE_WITH_PATH
 
 		it("should update ViewModel count Attributes when pattern hidden and excluded", () => {
 			matchingFilesCounterController["_viewModel"].searchPattern = "/root/node/path"
 
-			searchedNodeLeaves = [rootNode, rootNode]
-			searchedNodeLeaves[0].path = matchingFilesCounterController["_viewModel"].searchPattern
+			matchingFilesCounterController["searchedNodeLeaves"] = [rootNode, rootNode]
+			matchingFilesCounterController["searchedNodeLeaves"][0].path = matchingFilesCounterController["_viewModel"].searchPattern
 
 			// On Windows 'ignore' generates paths with backslashes instead of slashes when executing
 			// the unit tests, and thus the test case fails without this mock.
@@ -63,9 +62,9 @@ describe("MatchingFilesCounterController", () => {
 				)
 			})
 
-			matchingFilesCounterController["updateViewModel"](searchedNodeLeaves)
+			matchingFilesCounterController["updateViewModel"]()
 
-			expect(matchingFilesCounterController["_viewModel"].fileCount).toEqual(searchedNodeLeaves.length)
+			expect(matchingFilesCounterController["_viewModel"].fileCount).toEqual(2)
 			expect(matchingFilesCounterController["_viewModel"].flattenCount).toEqual(2)
 			expect(matchingFilesCounterController["_viewModel"].excludeCount).toEqual(2)
 		})

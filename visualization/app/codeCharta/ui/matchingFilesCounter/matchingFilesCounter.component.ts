@@ -27,17 +27,17 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 
 	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
 		this.searchedNodeLeaves = this.getSearchedNodeLeaves(searchedNodes)
-		this.updateViewModel(this.searchedNodeLeaves)
+		this.updateViewModel()
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.updateViewModel(this.searchedNodeLeaves)
+		this.updateViewModel()
 	}
 
-	private updateViewModel(searchedNodeLeaves: CodeMapNode[]) {
-		this._viewModel.fileCount = searchedNodeLeaves.length
-		this._viewModel.flattenCount = this.getBlacklistedFileCount(searchedNodeLeaves, BlacklistType.flatten)
-		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, BlacklistType.exclude)
+	private updateViewModel() {
+		this._viewModel.fileCount = this.searchedNodeLeaves.length
+		this._viewModel.flattenCount = this.getBlacklistedFileCount(this.searchedNodeLeaves, BlacklistType.flatten)
+		this._viewModel.excludeCount = this.getBlacklistedFileCount(this.searchedNodeLeaves, BlacklistType.exclude)
 	}
 
 	private getSearchedNodeLeaves(searchedNodes: CodeMapNode[]): CodeMapNode[] {
