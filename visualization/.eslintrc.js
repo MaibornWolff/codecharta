@@ -20,6 +20,8 @@ module.exports = {
 		"@typescript-eslint"
 	],
 	"rules": {
+		"no-console": ["error", {allow : ["warn", "error"]}],
+
 		// Do not apply inappropriate rules below
 		"@typescript-eslint/no-inferrable-types": "off",
 		"@typescript-eslint/no-use-before-define": "off",
@@ -38,6 +40,6 @@ module.exports = {
 		"@typescript-eslint/camelcase": "off",
 		"no-useless-escape": "off",
 		"no-prototype-builtins": "off",
-		"prefer-const": "off",
+		"prefer-const": "off"
 	}
 }
