@@ -34,22 +34,35 @@ before_install:
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - cd visualization; npm install
 
 jobs:
   fast_finish: true
   include:
-    - stage: visualization
-      script: ./visualization/script/travis-build.sh
-    - stage: analysis
-      script: ./analysis/script/travis-build.sh
-    - stage: ghpages
-      name: "Build gh-pages"
+    - stage: test
+      name: "Build"
+      script: npm run build:web
+    - name: "Unit Test"
+      script: npm run test --ci
+    - name: "E2E Test"
+      script: npm run e2e --ci
+    - name: "Linter"
+      script: npm run lint
+    - name: "Analysis Test"
+      script: cd analysis; ./gradlew build integrationTest
+    - stage: build
+      name: "Create Release Package"
+      script: npm run package
+    - name: "Build docker image"
+      script: docker build -t maibornwolff/codecharta-visualization .
+    - name: "Build gh-pages"
       script: ./script/build_gh_pages.sh
 
 stages:
-  - visualization
-  - analysis
-  - ghpages
+  - test
+  - release
+ # - name: release
+  #  if: branch = master
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
