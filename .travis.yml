@@ -27,36 +27,37 @@ addons:
 
 before_install:
   - chmod +x ./analysis/gradlew
-  - chmod -R +x ./analysis/script/
-  - chmod -R +x ./visualization/script/
   - sudo apt-get -qq update
   - sudo apt-get install -y wine
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
-  - cd visualization; npm install
+  - cd visualization
+  - npm install
 
 jobs:
   fast_finish: true
   include:
-    - stage: test
-      name: "Build"
+    - stage: build
       script: npm run build:web
+
+    - stage: test
+      name: "E2E Test"
+      script: npm run e2e --ci
     - name: "Unit Test"
       script: npm run test --ci
-    - name: "E2E Test"
-      script: npm run e2e --ci
     - name: "Linter"
       script: npm run lint
-    - name: "Analysis Test"
-      script: cd analysis; ./gradlew build integrationTest
-    - stage: build
+    - name: "Analysis Integration Test"
+      script: ../analysis/gradlew build integrationTest
+
+    - stage: package
       name: "Create Release Package"
       script: npm run package
     - name: "Build docker image"
       script: docker build -t maibornwolff/codecharta-visualization .
     - name: "Build gh-pages"
-      script: ./script/build_gh_pages.sh
+      script: ../script/build_gh_pages.sh
 
 stages:
   - test
