@@ -1,4 +1,4 @@
-import SquarifiedTreemap from "./squarifiedTreemap"
+import SquarifiedTreemap from "./squarifiedTreeMap"
 import { CodeMapNode } from "../../../codeCharta.model"
 import Rectangle from "../rectangle"
 import Point from "../point"

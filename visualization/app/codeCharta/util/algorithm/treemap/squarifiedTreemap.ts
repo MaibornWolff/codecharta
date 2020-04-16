@@ -1,4 +1,4 @@
-import Treemap from "./treemap"
+import Treemap from "./treeMap"
 import { CodeMapNode } from "../../../codeCharta.model"
 import Point from "../point"
 import { StreetLayoutValuedCodeMapNode } from "../../streetLayoutGenerator"

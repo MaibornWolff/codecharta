@@ -7,12 +7,12 @@ import Rectangle from "./algorithm/rectangle"
 import Point from "./algorithm/point"
 import { CodeMapHelper } from "./codeMapHelper"
 import { LayoutNode, TreeMapHelper } from "./treeMapHelper"
-import SliceDiceTreemap from "./algorithm/treemap/sliceDiceTreemap"
-import SquarifiedTreemap from "./algorithm/treemap/squarifiedTreemap"
-import Treemap from "./algorithm/treemap/treemap"
+import TreeMap from "./algorithm/treeMap/treeMap"
+import SliceDiceTreeMap from "./algorithm/treeMap/sliceDiceTreeMap"
+import SquarifiedTreeMap from "./algorithm/treeMap/squarifiedTreeMap"
+import StripTreeMap from "./algorithm/treeMap/stripTreeMap"
 import { StreetOrientation } from "./algorithm/streetLayout/street"
 import { StreetLayoutHelper } from "./streetLayoutHelper"
-import StripTreemap from "./algorithm/treemap/StripTreemap"
 
 export interface StreetLayoutValuedCodeMapNode {
 	data: CodeMapNode
@@ -89,16 +89,16 @@ export class StreetLayoutGenerator {
 		}
 	}
 
-	private static createTreeMap(node: CodeMapNode, treeMapAlgorithm: TreeMapAlgorithm): Treemap {
+	private static createTreeMap(node: CodeMapNode, treeMapAlgorithm: TreeMapAlgorithm): TreeMap {
 		switch (treeMapAlgorithm) {
 			case TreeMapAlgorithm.SliceAndDice:
-				return new SliceDiceTreemap(node)
+				return new SliceDiceTreeMap(node)
 			case TreeMapAlgorithm.Squarified:
-				return new SquarifiedTreemap(node)
+				return new SquarifiedTreeMap(node)
 			case TreeMapAlgorithm.Strip:
-				return new StripTreemap(node)
+				return new StripTreeMap(node)
 			default:
-				throw new Error("Treemap Algorithm not specified.")
+				throw new Error("TreeMap Algorithm not specified.")
 		}
 	}
 }
