@@ -26,19 +26,43 @@ addons:
       - master
 
 before_install:
-  - chmod +x ./analysis/gradlew
-  - chmod -R +x ./analysis/script/
-  - chmod -R +x ./visualization/script/
   - sudo apt-get -qq update
   - sudo apt-get install -y wine
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - cd visualization; npm install; cd ..
 
-script:
-  - ./visualization/script/travis-build.sh
-  - ./analysis/script/travis-build.sh
-  - ./script/build_gh_pages.sh
+jobs:
+  fast_finish: true
+  include:
+    - stage: test
+      name: "Visualization Unit Test"
+      script: cd visualization; npm run test --ci
+    - name: "Visualization Linter"
+      script: cd visualization; npm run lint
+    - name: "Visualization Build and E2E Test"
+      script:
+        - cd visualization; npm run build:web
+        - cd visualization; npm run e2e --ci
+    - name: "Analysis Integration Test"
+      before_script: chmod +x ./analysis/gradlew
+      script: cd analysis; ./gradlew build integrationTest
+
+    - stage: release
+      name: "Create Release Package"
+      before_script: cd visualization; npm run build:web
+      script: npm run package
+    - name: "Build docker image"
+      before_script: cd visualization; npm run build:web
+      script: docker build -t maibornwolff/codecharta-visualization .
+    - name: "Build gh-pages"
+      script: ./script/build_gh_pages.sh
+
+stages:
+  - test
+  - name: release
+    if: branch = master
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
