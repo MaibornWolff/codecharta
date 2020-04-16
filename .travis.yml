@@ -49,20 +49,20 @@ jobs:
       before_script: chmod +x ./analysis/gradlew
       script: cd analysis; ./gradlew build integrationTest
 
-    - stage: package
+    - stage: release
       name: "Create Release Package"
-      script: cd visualization; npm run package
+      before_script: cd visualization; npm run build:web
+      script: npm run package
     - name: "Build docker image"
-      script: cd visualization; docker build -t maibornwolff/codecharta-visualization .
+      before_script: cd visualization; npm run build:web
+      script: docker build -t maibornwolff/codecharta-visualization .
     - name: "Build gh-pages"
       script: ./script/build_gh_pages.sh
 
 stages:
   - build
   - test
-  - package
- # - name: package
-  #  if: branch = master
+  - release
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
