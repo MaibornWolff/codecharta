@@ -1,4 +1,4 @@
-import rootReducer from "./reducer"
+import rootReducer from "./state.reducer"
 import { StateAction } from "./state.actions"
 import { DEFAULT_STATE } from "../../util/dataMocks"
 
