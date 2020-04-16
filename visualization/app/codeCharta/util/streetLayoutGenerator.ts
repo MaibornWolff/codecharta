@@ -11,7 +11,6 @@ import SliceDiceTreeMap from "./algorithm/treeMap/sliceDiceTreeMap"
 import SquarifiedTreeMap from "./algorithm/treeMap/squarifiedTreeMap"
 import StripTreeMap from "./algorithm/treeMap/stripTreeMap"
 import { StreetOrientation } from "./algorithm/streetLayout/street"
-import { StreetLayoutHelper } from "./streetLayoutHelper"
 import { LayoutHelper, LayoutNode } from "./layoutHelper"
 
 export interface StreetLayoutValuedCodeMapNode {
@@ -59,7 +58,7 @@ export class StreetLayoutGenerator {
 				children.push(new House(child))
 			} else {
 				const layoutAlgorithm = state.appSettings.layoutAlgorithm
-				const fileDescendants = StreetLayoutHelper.countFileDescendants(child)
+				const fileDescendants = StreetLayoutGenerator.countFileDescendants(child)
 				if (layoutAlgorithm === LayoutAlgorithm.TMStreet && fileDescendants <= maxTreeMapFiles) {
 					const treeMap = StreetLayoutGenerator.createTreeMap(child, TreeMapAlgorithm.Squarified)
 					children.push(treeMap)
@@ -100,5 +99,13 @@ export class StreetLayoutGenerator {
 			default:
 				throw new Error("TreeMap Algorithm not specified.")
 		}
+	}
+
+	private static countFileDescendants(folderNode: CodeMapNode): number {
+		let totalFileNodes = 0
+		for (const child of folderNode.children) {
+			totalFileNodes += LayoutHelper.isNodeLeaf(child) ? 1 : StreetLayoutGenerator.countFileDescendants(child)
+		}
+		return totalFileNodes
 	}
 }
