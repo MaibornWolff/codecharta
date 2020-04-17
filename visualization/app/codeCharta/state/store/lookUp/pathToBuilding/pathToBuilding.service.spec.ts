@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { PathToBuildingAction, PathToBuildingActions } from "./pathToBuilding.actions"
 import { PathToBuildingService } from "./pathToBuilding.service"
 import { CODE_MAP_BUILDING, withMockedEventMethods } from "../../../../util/dataMocks"
+import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 
 describe("PathToBuildingService", () => {
 	let pathToBuildingService: PathToBuildingService
@@ -35,6 +36,14 @@ describe("PathToBuildingService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, pathToBuildingService)
+		})
+
+		it("should subscribe to CodeMapMeshChange", () => {
+			ThreeSceneService.subscribeToCodeMapMeshChangedEvent = jest.fn()
+
+			rebuildService()
+
+			expect(ThreeSceneService.subscribeToCodeMapMeshChangedEvent).toHaveBeenCalledWith($rootScope, pathToBuildingService)
 		})
 	})
 

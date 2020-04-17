@@ -25,7 +25,7 @@ export class PathToNodeService implements StoreSubscriber, CodeMapPreRenderServi
 	}
 
 	public onRenderMapChanged(map: CodeMapNode) {
-		const pathToNode = new Map()
+		const pathToNode = new Map<string, CodeMapNode>()
 		pathToNode.set(map.path, map)
 		hierarchy(map)
 			.leaves()
