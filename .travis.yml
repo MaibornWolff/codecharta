@@ -27,13 +27,6 @@ before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y wine
   - chmod +x ./analysis/gradlew
-  - chmod -R +x ./analysis/script/
-  - chmod -R +x ./visualization/script/
-
-script:
-  - ./visualization/script/travis-build.sh
-  - ./analysis/script/travis-build.sh
-  - ./script/build_gh_pages.sh
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
@@ -53,7 +46,9 @@ jobs:
         - cd visualization; npm run e2e --ci
     - name: "Analysis Integration Test"
       before_script: chmod +x ./analysis/gradlew
-      script: ./analysis/script/travis-build.sh
+      script:
+        - cd analysis
+        - ./gradlew build integrationTest
 
     - stage: sonar
       name: "Publishes visualization sonar results"
@@ -73,6 +68,7 @@ jobs:
     deploy:
       # releases the built packages on github when a commit is tagged
       - provider: releases
+        script: cd visualization; npm run package
         api_key: $GITHUB_TOKEN
         file_glob: true
         file:
@@ -123,6 +119,9 @@ jobs:
 
       # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
       - provider: pages
+        script:
+          - docker build -t maibornwolff/codecharta-visualization .
+          - ./script/build_gh_pages.sh
         github_token: $GITHUB_TOKEN
         cleanup: true
         local_dir: "gh-pages"
