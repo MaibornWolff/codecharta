@@ -4,14 +4,13 @@ import { LegendPanelController, PackageList } from "./legendPanel.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { ColorRange } from "../../codeCharta.model"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { ColorRangeService } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { InvertColorRangeService } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { MarkedPackagesService } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
-import { AttributeSideBarService } from "../attributeSideBar/attributeSideBar.service"
+import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 
 describe("LegendPanelController", () => {
 	let legendPanelController: LegendPanelController
@@ -51,12 +50,12 @@ describe("LegendPanelController", () => {
 			expect(InvertColorRangeService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
 		})
 
-		it("should subscribe to attributeSideBar", () => {
-			AttributeSideBarService.subscribe = jest.fn()
+		it("should subscribe to IsAttributeSideBarVisibleService", () => {
+			IsAttributeSideBarVisibleService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(AttributeSideBarService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
+			expect(IsAttributeSideBarVisibleService.subscribe).toHaveBeenCalledWith($rootScope, legendPanelController)
 		})
 
 		it("should subscribe to markedPackages", () => {
@@ -136,9 +135,9 @@ describe("LegendPanelController", () => {
 		})
 	})
 
-	describe("onAttributeSideBarVisibilityChanged", () => {
+	describe("onIsAttributeSideBarVisibleChanged", () => {
 		it("should set the sideBarVisibility in viewModel", () => {
-			legendPanelController.onAttributeSideBarVisibilityChanged(true)
+			legendPanelController.onIsAttributeSideBarVisibleChanged(true)
 
 			expect(legendPanelController["_viewModel"].isSideBarVisible).toBeTruthy()
 		})

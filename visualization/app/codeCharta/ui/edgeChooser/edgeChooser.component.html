@@ -27,13 +27,15 @@
 			<md-option ng-repeat="metric in $ctrl._viewModel.edgeMetricData" value="{{::metric.name}}">
 				{{::metric.name}}
 				<span class="metric-max-value">({{::metric.maxValue}})</span>
+				<attribute-type-selector-component class="attribute-type-select" type="edges" metric="{{::metric.name}}">
+				</attribute-type-selector-component>
 			</md-option>
 		</md-content>
 	</md-select>
 
 	<div class="metric-value" ng-show="$ctrl._viewModel.hoveredEdgeValue">
 		<div class="rounded-box">
-			<edge-metric-type-component></edge-metric-type-component>
+			<metric-type-component metric-selection="edgeMetric"></metric-type-component>
 			{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
 			{{ ($ctrl._viewModel.hoveredEdgeValue.outgoing | number) || "-" }}
 		</div>
