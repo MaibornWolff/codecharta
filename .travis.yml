@@ -52,7 +52,7 @@ jobs:
         - chmod +x ./analysis/gradlew
         - cd analysis
       script:
-        - ./gradlew build integrationTest
+        - ./gradlew integrationTest
 
     - stage: sonar
       name: "Publishes visualization sonar results"
