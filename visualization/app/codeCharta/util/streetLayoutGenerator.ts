@@ -7,9 +7,7 @@ import Rectangle from "./algorithm/rectangle"
 import Point from "./algorithm/point"
 import { CodeMapHelper } from "./codeMapHelper"
 import TreeMap from "./algorithm/treeMap/treeMap"
-import SliceDiceTreeMap from "./algorithm/treeMap/sliceDiceTreeMap"
 import SquarifiedTreeMap from "./algorithm/treeMap/squarifiedTreeMap"
-import StripTreeMap from "./algorithm/treeMap/stripTreeMap"
 import { StreetOrientation } from "./algorithm/streetLayout/street"
 import { LayoutHelper, LayoutNode } from "./layoutHelper"
 
@@ -90,12 +88,8 @@ export class StreetLayoutGenerator {
 
 	private static createTreeMap(node: CodeMapNode, treeMapAlgorithm: TreeMapAlgorithm): TreeMap {
 		switch (treeMapAlgorithm) {
-			case TreeMapAlgorithm.SliceAndDice:
-				return new SliceDiceTreeMap(node)
 			case TreeMapAlgorithm.Squarified:
 				return new SquarifiedTreeMap(node)
-			case TreeMapAlgorithm.Strip:
-				return new StripTreeMap(node)
 			default:
 				throw new Error("TreeMap Algorithm not specified.")
 		}
