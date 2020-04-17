@@ -4,8 +4,9 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { PathToNodeAction, PathToNodeActions } from "./pathToNode.actions"
 import { PathToNodeService } from "./pathToNode.service"
-import { TEST_DELTA_MAP_A, withMockedEventMethods } from "../../../../util/dataMocks"
+import { TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../../../util/dataMocks"
 import { CodeMapNode } from "../../../../codeCharta.model"
+import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 
 describe("PathToNodeService", () => {
 	let pathToNodeService: PathToNodeService
@@ -37,12 +38,20 @@ describe("PathToNodeService", () => {
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, pathToNodeService)
 		})
+
+		it("should subscribe to renderMapChange", () => {
+			CodeMapPreRenderService.subscribe = jest.fn()
+
+			rebuildService()
+
+			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, pathToNodeService)
+		})
 	})
 
 	describe("onStoreChanged", () => {
 		it("should notify all subscribers with the new pathToNode value", () => {
 			const map = new Map<string, CodeMapNode>()
-			map.set(TEST_DELTA_MAP_A.map.path, TEST_DELTA_MAP_A.map)
+			map.set(TEST_FILE_WITH_PATHS.map.path, TEST_FILE_WITH_PATHS.map)
 			const action: PathToNodeAction = {
 				type: PathToNodeActions.SET_PATH_TO_NODE,
 				payload: map
@@ -58,6 +67,14 @@ describe("PathToNodeService", () => {
 			pathToNodeService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("onRenderMapChanged", () => {
+		it("should update the map", () => {
+			pathToNodeService.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
+
+			expect(storeService.getState().lookUp.pathToNode).toMatchSnapshot()
 		})
 	})
 })
