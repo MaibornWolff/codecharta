@@ -4,8 +4,10 @@ import { DialogService } from "../ui/dialog/dialog.service"
 
 export class FileValidator {
 	public static validate(file: { nodes: CodeMapNode[] }, dialogService?: DialogService): string[] {
+		let minorApiWrongMessage = ""
+
 		if (!file) {
-			return ["file is empty or invalid"]
+			return ['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"]
 		}
 
 		let Validator = require("jsonschema").Validator
@@ -13,28 +15,35 @@ export class FileValidator {
 		let validationResult = valid.validate(file, require("./schema.json"))
 
 		if (this.checkApiVersion(file)[0]) {
-			return ["API Version Outdated: Update API Version to match cc.json"]
+			return ['<i class="fa fa-exclamation-circle"></i>' + " API Version Outdated: Update API Version to match cc.json"]
+		} else if (this.checkApiVersion(file)[1]) {
+			if (dialogService !== undefined) {
+				minorApiWrongMessage = '<i class="fa fa-exclamation-triangle"></i>' + " Minor API Version Wrong"
+			}
 		}
 
 		if (validationResult.errors.length !== 0) {
-			let message: string[] = new Array(validationResult.errors.length)
+			let message: string[] = new Array(validationResult.errors.length + 1)
 			for (let i = 0; i < validationResult.errors.length; i++) {
 				let errorMessageBuilder = ""
 				errorMessageBuilder =
-					"Parameter " + validationResult.errors[i].property + " is not of type " + validationResult.errors[i].argument
+					'<i class="fa fa-exclamation-circle"></i>' +
+					"Parameter " +
+					validationResult.errors[i].property +
+					" is not of type " +
+					validationResult.errors[i].argument
 				message[i] = errorMessageBuilder
 			}
+			message[validationResult.errors.length] = minorApiWrongMessage
 			return message
 		}
 
-		if (this.checkApiVersion(file)[1]) {
-			if (dialogService !== undefined) {
-				dialogService.showErrorDialog("Minor API Version Wrong", "Warning")
-			}
+		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
+			return ['<i class="fa fa-exclamation-circle"></i>' + " names or ids are not unique"]
 		}
 
-		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
-			return ["names or ids are not unique"]
+		if (minorApiWrongMessage !== "") {
+			dialogService.showErrorDialog(minorApiWrongMessage, "Warning")
 		}
 
 		return validationResult.errors
