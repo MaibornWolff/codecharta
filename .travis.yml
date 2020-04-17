@@ -75,7 +75,6 @@ jobs:
             - "analysis/build/distributions/*.tar"
           cleanup: true
           on:
-            all_branches: true
             tags: true
 
 
@@ -87,7 +86,6 @@ jobs:
           cleanup: true
           local_dir: "gh-pages"
           on:
-            all_branches: true
             tags: true
 
     - name: "Publishes visualization npm package"
@@ -97,7 +95,6 @@ jobs:
           script: visualization/script/npm-publish.sh
           cleanup: true
           on:
-            all_branches: true
             tags: true
 
     - name: "Publishes analysis npm package"
@@ -107,7 +104,6 @@ jobs:
           script: analysis/script/npm-publish.sh
           cleanup: true
           on:
-            all_branches: true
             tags: true
 
     - name: "Publishes visualization docker image"
@@ -118,7 +114,6 @@ jobs:
           script: visualization/script/docker-publish.sh
           cleanup: true
           on:
-            all_branches: true
             tags: true
 
 stages:
