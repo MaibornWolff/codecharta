@@ -32,22 +32,26 @@ install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
   - cd visualization; npm install; cd ..
 
+script:
+  - cd visualization; npm run build:web
+  - cd analysis; ./gradlew build
+
 jobs:
   fast_finish: true
   include:
     - stage: test
       name: "Visualization Unit Test and Linter"
+      before_script: cd visualization
       script:
-        - cd visualization; npm run test --ci
-        - cd visualization; npm run lint
-    - name: "Visualization Build and E2E Test"
-      script:
-        - cd visualization; npm run build:web
-        - cd visualization; npm run e2e --ci
+        - npm run test --ci
+        - npm run lint
+    - name: "Visualization E2E Test"
+      script: cd visualization; npm run e2e --ci
     - name: "Analysis Integration Test"
-      before_script: chmod +x ./analysis/gradlew
-      script:
+      before_script:
+        - chmod +x ./analysis/gradlew
         - cd analysis
+      script:
         - ./gradlew build integrationTest
 
     - stage: sonar
