@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
-## [1.45.1] - 2020-04-17
+## [1.45.4] - 2020-04-17
 
 ### Added 🚀
 
