@@ -121,6 +121,7 @@ export class CodeMapPreRenderService
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.updateIsBlacklisted()
+		this.decorateIfPossible()
 	}
 
 	public onFocusNode(focusedNodePath: string) {
