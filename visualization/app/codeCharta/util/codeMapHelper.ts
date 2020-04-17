@@ -1,7 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
-import { MarkedPackage, NodeType } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import ignore from "ignore"
-import { CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model"
 
 export class CodeMapHelper {
 	public static getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode): CodeMapNode {
@@ -25,6 +24,10 @@ export class CodeMapHelper {
 			.map(node => node.data.path)
 	}
 
+	public static setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {
+		type === BlacklistType.exclude ? (node.isExcluded = flag) : (node.isFlattened = flag)
+	}
+
 	public static transformPath(toTransform: string): string {
 		let removeNumberOfCharactersFromStart = 0
 
@@ -46,7 +49,7 @@ export class CodeMapHelper {
 	}
 
 	public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>): number {
-		return nodes.filter(node => node.isBlacklisted).length
+		return nodes.filter(node => node.isExcluded || node.isFlattened).length
 	}
 
 	public static isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {
@@ -54,10 +57,6 @@ export class CodeMapHelper {
 			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude) ||
 			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.flatten)
 		)
-	}
-
-	public static isBlacklisted(node: CodeMapNode, type: BlacklistType): boolean {
-		return node.isBlacklisted === type
 	}
 
 	public static isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {

@@ -55,7 +55,8 @@ export interface CodeMapNode {
 	}
 	link?: string
 	path?: string
-	isBlacklisted: BlacklistType
+	isExcluded: boolean
+	isFlattened: boolean
 	deltas?: {
 		[key: string]: number
 	}

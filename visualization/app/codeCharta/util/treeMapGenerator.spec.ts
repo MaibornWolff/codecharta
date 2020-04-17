@@ -1,4 +1,4 @@
-import { BlacklistType, MetricData, State } from "../codeCharta.model"
+import { MetricData, State } from "../codeCharta.model"
 import { CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES, STATE } from "./dataMocks"
@@ -112,14 +112,14 @@ describe("treeMapGenerator", () => {
 		it("node visibility should be adjusted", () => {
 			let result = TreeMapGenerator.setVisibilityOfNodeAndDescendants(codeMapNode, false)
 
-			expect(result.isBlacklisted).toEqual(BlacklistType.exclude)
+			expect(result.isExcluded).toBeTruthy()
 		})
 
 		it("node children visibility should be adjusted", () => {
 			let result = TreeMapGenerator.setVisibilityOfNodeAndDescendants(codeMapNode, false)
 
-			expect(result.children[0].isBlacklisted).toEqual(BlacklistType.exclude)
-			expect(result.children[1].isBlacklisted).toEqual(BlacklistType.exclude)
+			expect(result.children[0].isExcluded).toBeTruthy()
+			expect(result.children[1].isExcluded).toBeTruthy()
 		})
 	})
 

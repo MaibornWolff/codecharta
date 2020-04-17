@@ -3,7 +3,6 @@ import * as d3 from "d3"
 import { HierarchyNode } from "d3"
 import {
 	BlacklistItem,
-	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	MetricData,
@@ -12,7 +11,6 @@ import {
 	AttributeTypes,
 	AttributeTypeValue
 } from "../codeCharta.model"
-import { CodeMapHelper } from "./codeMapHelper"
 import { MetricService } from "../state/metric.service"
 
 export class NodeDecorator {
@@ -112,9 +110,7 @@ export class NodeDecorator {
 		if (map) {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.each((node: HierarchyNode<CodeMapNode>) => {
-				const leaves: HierarchyNode<CodeMapNode>[] = node
-					.leaves()
-					.filter(x => !CodeMapHelper.isBlacklisted(x.data, BlacklistType.exclude))
+				const leaves: HierarchyNode<CodeMapNode>[] = node.leaves().filter(x => !x.data.isExcluded)
 				this.decorateNodeWithAggregatedChildrenMetrics(leaves, node, metricData, isDeltaState, attributeTypes)
 				this.decorateNodeWithChildrenSumEdgeMetrics(leaves, node, edgeMetricData, attributeTypes)
 			})

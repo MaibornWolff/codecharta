@@ -24,7 +24,8 @@ export class MapBuilder {
 			type: NodeType.FOLDER,
 			children: [],
 			attributes: {},
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		}
 	}
 

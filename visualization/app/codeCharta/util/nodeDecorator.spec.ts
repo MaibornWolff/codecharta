@@ -2,7 +2,6 @@ import * as d3 from "d3"
 import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
 import { CCFile, MetricData, BlacklistItem, CodeMapNode, NodeType, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
-import { CodeMapHelper } from "./codeMapHelper"
 import _ from "lodash"
 import { MetricService } from "../state/metric.service"
 
@@ -19,7 +18,14 @@ describe("nodeDecorator", () => {
 		file = _.cloneDeep(TEST_DELTA_MAP_A)
 		map = _.cloneDeep(TEST_DELTA_MAP_A.map)
 		deltaMap = _.cloneDeep(VALID_NODE_WITH_PATH_AND_DELTAS)
-		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
+		metricData = [
+			{ name: "rloc", maxValue: 999999 },
+			{ name: "functions", maxValue: 999999 },
+			{
+				name: "mcc",
+				maxValue: 999999
+			}
+		]
 		edgeMetricData = [{ name: "pairingRate", maxValue: 999 }, { name: "avgCommits", maxValue: 999 }]
 		attributeTypes = {
 			nodes: { functions: AttributeTypeValue.relative, rloc: AttributeTypeValue.absolute },
@@ -29,10 +35,6 @@ describe("nodeDecorator", () => {
 	})
 
 	describe("decorateMap", () => {
-		beforeEach(() => {
-			CodeMapHelper.isBlacklisted = jest.fn()
-		})
-
 		it("should aggregate given absolute metrics correctly", () => {
 			NodeDecorator.decorateMap(map, metricData)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
@@ -115,19 +117,22 @@ describe("nodeDecorator", () => {
 					name: "middle",
 					type: NodeType.FOLDER,
 					attributes: {},
-					isBlacklisted: undefined,
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "a",
 							type: NodeType.FILE,
 							attributes: {},
-							isBlacklisted: undefined
+							isExcluded: false,
+							isFlattened: false
 						},
 						{
 							name: "b",
 							type: NodeType.FILE,
 							attributes: {},
-							isBlacklisted: undefined
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}
@@ -147,19 +152,22 @@ describe("nodeDecorator", () => {
 					type: NodeType.FILE,
 					attributes: {},
 					link: "link1",
-					isBlacklisted: undefined,
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "a",
 							type: NodeType.FILE,
 							attributes: {},
-							isBlacklisted: undefined
+							isExcluded: false,
+							isFlattened: false
 						},
 						{
 							name: "b",
 							type: NodeType.FILE,
 							attributes: {},
-							isBlacklisted: undefined
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}
@@ -176,21 +184,24 @@ describe("nodeDecorator", () => {
 					path: "/root/middle",
 					type: NodeType.FOLDER,
 					attributes: {},
-					isBlacklisted: undefined,
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "a",
 							type: NodeType.FILE,
 							path: "/root/middle/a",
 							attributes: {},
-							isBlacklisted: undefined
+							isExcluded: false,
+							isFlattened: false
 						},
 						{
 							name: "b",
 							type: NodeType.FILE,
 							path: "/root/middle/b",
 							attributes: {},
-							isBlacklisted: undefined
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}
@@ -205,13 +216,15 @@ describe("nodeDecorator", () => {
 					name: "middle",
 					type: NodeType.FOLDER,
 					attributes: {},
-					isBlacklisted: undefined,
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "singleLeaf",
 							type: NodeType.FILE,
 							attributes: {},
-							isBlacklisted: undefined
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}
@@ -228,31 +241,36 @@ describe("nodeDecorator", () => {
 					name: "start",
 					type: NodeType.FOLDER,
 					attributes: {},
-					isBlacklisted: undefined,
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "middle",
 							type: NodeType.FOLDER,
 							attributes: {},
-							isBlacklisted: undefined,
+							isExcluded: false,
+							isFlattened: false,
 							children: [
 								{
 									name: "middle2",
 									type: NodeType.FOLDER,
 									attributes: {},
-									isBlacklisted: undefined,
+									isExcluded: false,
+									isFlattened: false,
 									children: [
 										{
 											name: "a",
 											type: NodeType.FILE,
 											attributes: {},
-											isBlacklisted: undefined
+											isExcluded: false,
+											isFlattened: false
 										},
 										{
 											name: "b",
 											type: NodeType.FILE,
 											attributes: {},
-											isBlacklisted: undefined
+											isExcluded: false,
+											isFlattened: false
 										}
 									]
 								}
@@ -262,7 +280,8 @@ describe("nodeDecorator", () => {
 							name: "c",
 							type: NodeType.FILE,
 							attributes: {},
-							isBlacklisted: undefined
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}

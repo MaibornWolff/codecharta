@@ -1,6 +1,6 @@
 import { SquarifiedCodeMapNode } from "./treeMapGenerator"
 import { CodeMapHelper } from "./codeMapHelper"
-import { Node, CodeMapNode, BlacklistType, State } from "../codeCharta.model"
+import { Node, CodeMapNode, State } from "../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 
@@ -77,7 +77,10 @@ export class TreeMapHelper {
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					: 0,
-			visible: !squaredNode.data.isBlacklisted && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
+			visible:
+				!squaredNode.data.isExcluded &&
+				!squaredNode.data.isFlattened &&
+				!(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
 			path: squaredNode.data.path,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
@@ -137,7 +140,7 @@ export class TreeMapHelper {
 	}
 
 	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedCodeMapNode): boolean {
-		return CodeMapHelper.isBlacklisted(squaredNode.data, BlacklistType.flatten)
+		return squaredNode.data.isFlattened
 	}
 
 	private static getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean): string {

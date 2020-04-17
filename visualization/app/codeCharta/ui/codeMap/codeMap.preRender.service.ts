@@ -173,11 +173,8 @@ export class CodeMapPreRenderService
 			.leaves()
 			.map(node => {
 				const path = CodeMapHelper.transformPath(node.data.path)
-				if (flattened.ignores(path)) {
-					node.data.isBlacklisted = BlacklistType.flatten
-				} else if (excluded.ignores(path)) {
-					node.data.isBlacklisted = BlacklistType.exclude
-				}
+				node.data.isFlattened = flattened.ignores(path)
+				node.data.isExcluded = excluded.ignores(path)
 			})
 	}
 

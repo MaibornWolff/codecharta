@@ -105,7 +105,7 @@ describe("codeMapPreRenderService", () => {
 		hierarchy(codeMapPreRenderService.getRenderMap())
 			.leaves()
 			.forEach(node => {
-				if (!node.data.isBlacklisted) {
+				if (!node.data.isExcluded) {
 					return false
 				}
 			})
@@ -245,10 +245,10 @@ describe("codeMapPreRenderService", () => {
 
 			codeMapPreRenderService.onFocusNode(codeMapPreRenderService.getRenderMap().children[1].children[0].path)
 
-			expect(codeMapPreRenderService.getRenderMap().isBlacklisted).toEqual(BlacklistType.exclude)
-			expect(codeMapPreRenderService.getRenderMap().children[0].isBlacklisted).toEqual(BlacklistType.exclude)
-			expect(codeMapPreRenderService.getRenderMap().children[1].children[0].isBlacklisted).toBeUndefined()
-			expect(codeMapPreRenderService.getRenderMap().children[1].children[1].isBlacklisted).toEqual(BlacklistType.exclude)
+			expect(codeMapPreRenderService.getRenderMap().isExcluded).toBeTruthy()
+			expect(codeMapPreRenderService.getRenderMap().children[0].isExcluded).toBeTruthy()
+			expect(codeMapPreRenderService.getRenderMap().children[1].children[0].isExcluded).toBeFalsy()
+			expect(codeMapPreRenderService.getRenderMap().children[1].children[1].isExcluded).toBeTruthy()
 		})
 	})
 
@@ -258,10 +258,10 @@ describe("codeMapPreRenderService", () => {
 
 			codeMapPreRenderService.onUnfocusNode()
 
-			expect(codeMapPreRenderService.getRenderMap().isBlacklisted).toBeUndefined()
-			expect(codeMapPreRenderService.getRenderMap().children[0].isBlacklisted).toBeUndefined()
-			expect(codeMapPreRenderService.getRenderMap().children[1].children[0].isBlacklisted).toBeUndefined()
-			expect(codeMapPreRenderService.getRenderMap().children[1].children[1].isBlacklisted).toBeUndefined()
+			expect(codeMapPreRenderService.getRenderMap().isExcluded).toBeFalsy()
+			expect(codeMapPreRenderService.getRenderMap().children[0].isExcluded).toBeFalsy()
+			expect(codeMapPreRenderService.getRenderMap().children[1].children[0].isExcluded).toBeFalsy()
+			expect(codeMapPreRenderService.getRenderMap().children[1].children[1].isExcluded).toBeFalsy()
 		})
 	})
 })

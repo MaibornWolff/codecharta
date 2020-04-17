@@ -1,7 +1,7 @@
-import { hierarchy, treemap, HierarchyNode, HierarchyRectangularNode, TreemapLayout } from "d3"
+import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap, TreemapLayout } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
-import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
+import { CodeMapNode, MetricData, Node, State } from "../codeCharta.model"
 
 export interface SquarifiedCodeMapNode extends HierarchyRectangularNode<CodeMapNode> {}
 
@@ -42,12 +42,10 @@ export class TreeMapGenerator {
 	}
 
 	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean): CodeMapNode {
-		const blacklistType = visibility ? undefined : BlacklistType.exclude
-
-		node.isBlacklisted = blacklistType
+		node.isExcluded = !visibility
 		hierarchy<CodeMapNode>(node)
 			.descendants()
-			.forEach(hierarchyNode => (hierarchyNode.data.isBlacklisted = blacklistType))
+			.forEach(hierarchyNode => (hierarchyNode.data.isExcluded = !visibility))
 		return node
 	}
 
@@ -56,7 +54,7 @@ export class TreeMapGenerator {
 	}
 
 	private static calculateAreaValue(node: CodeMapNode, s: State): number {
-		if (CodeMapHelper.isBlacklisted(node, BlacklistType.exclude)) {
+		if (node.isExcluded) {
 			return 0
 		}
 

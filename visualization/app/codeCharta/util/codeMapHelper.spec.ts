@@ -25,12 +25,12 @@ describe("codeMapHelper", () => {
 
 	function addRootToBlacklist() {
 		blacklist.push({ path: testRoot.path, type: BlacklistType.exclude })
-		testRoot.isBlacklisted = BlacklistType.exclude
+		testRoot.isExcluded = true
 	}
 
 	function addSubNodeToBlacklist() {
 		blacklist.push({ path: testRoot.children[0].path, type: BlacklistType.exclude })
-		testRoot.children[0].isBlacklisted = BlacklistType.exclude
+		testRoot.children[0].isExcluded = true
 	}
 
 	describe("getCodeMapNodeFromPath", () => {
@@ -157,39 +157,6 @@ describe("codeMapHelper", () => {
 			const result = CodeMapHelper.numberOfBlacklistedNodes([testRoot, testRoot.children[0]])
 
 			expect(result).toBe(1)
-		})
-	})
-
-	describe("isBlacklisted", () => {
-		it("should return false if node is not blacklisted", () => {
-			const result = CodeMapHelper.isBlacklisted(testRoot, BlacklistType.exclude)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false if node exists in blacklist, but does not match BlacklistType", () => {
-			addRootToBlacklist()
-
-			const result = CodeMapHelper.isBlacklisted(testRoot, BlacklistType.flatten)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return true if node exists in blacklist and matches BlacklistType", () => {
-			addRootToBlacklist()
-
-			const result = CodeMapHelper.isBlacklisted(testRoot, BlacklistType.exclude)
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return true if node exists in blacklist and sub-node is provided as node", () => {
-			addRootToBlacklist()
-			addSubNodeToBlacklist()
-
-			const result = CodeMapHelper.isBlacklisted(testRoot.children[0], BlacklistType.exclude)
-
-			expect(result).toBeTruthy()
 		})
 	})
 

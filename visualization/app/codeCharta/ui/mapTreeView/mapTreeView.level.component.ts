@@ -2,7 +2,7 @@ import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { BlacklistType, CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
@@ -82,12 +82,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public isFlattened() {
-		return CodeMapHelper.isBlacklisted(this.node, BlacklistType.flatten)
+		return this.node.isFlattened
 	}
 
 	public isExcluded(): boolean {
 		if (this.node) {
-			return CodeMapHelper.isBlacklisted(this.node, BlacklistType.exclude)
+			return this.node.isExcluded
 		}
 		return false
 	}

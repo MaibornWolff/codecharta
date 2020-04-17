@@ -23,37 +23,43 @@ import { IRootScopeService } from "angular"
 import { Files } from "../model/files"
 import { hierarchy } from "d3"
 import { MetricService } from "../state/metric.service"
+import { CodeMapHelper } from "./CodeMapHelper"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
 	attributes: {},
 	type: NodeType.FOLDER,
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			link: "http://www.google.de"
 		},
 		{
 			name: "Parent Leaf",
 			type: NodeType.FOLDER,
 			attributes: {},
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				},
 				{
 					name: "other small leaf",
 					type: NodeType.FILE,
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				}
 			]
 		}
@@ -64,41 +70,46 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 	name: "root",
 	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de",
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 60 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: []
 		},
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 40 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: []
 		},
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 160 },
-			isBlacklisted: undefined,
-
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				}
 			]
 		}
@@ -109,20 +120,22 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 	name: "root",
 	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 160 },
-			isBlacklisted: undefined,
-
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				}
 			]
 		},
@@ -130,14 +143,16 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 40 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: []
 		},
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 60 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: []
 		},
 		{
@@ -145,7 +160,8 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de",
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		}
 	]
 }
@@ -154,19 +170,22 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 	name: "root",
 	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 160 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				}
 			]
 		},
@@ -174,14 +193,16 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 60 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: []
 		},
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 40 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: []
 		},
 		{
@@ -189,7 +210,8 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de",
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		}
 	]
 }
@@ -198,33 +220,38 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 	name: "root",
 	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 60 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: []
 		},
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 40 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: []
 		},
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
 			attributes: { [MetricService.UNARY_METRIC]: 160 },
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				}
 			]
 		},
@@ -233,7 +260,8 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 			type: NodeType.FILE,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de",
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		}
 	]
 }
@@ -243,7 +271,8 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	attributes: {},
 	type: NodeType.FOLDER,
 	path: "/root",
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "big leaf",
@@ -251,36 +280,40 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 			path: "/root/big leaf",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			link: "http://www.google.de",
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "Parent Leaf",
 			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/Parent Leaf",
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf",
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				},
 				{
 					name: "other small leaf",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/other small leaf",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				},
 				{
 					name: "empty folder",
 					type: NodeType.FOLDER,
 					path: "/root/Parent Leaf/empty folder",
 					attributes: {},
-					isBlacklisted: undefined,
-
+					isExcluded: false,
+					isFlattened: false,
 					children: []
 				}
 			]
@@ -293,22 +326,24 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
 	path: "/root",
-	isBlacklisted: undefined,
-
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "first leaf",
 			type: NodeType.FILE,
 			path: "/root/first leaf",
 			attributes: { [MetricService.UNARY_METRIC]: 100, functions: 10, mcc: 1 },
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "second leaf",
 			type: NodeType.FILE,
 			path: "/root/second leaf",
 			attributes: { [MetricService.UNARY_METRIC]: 100, functions: 5, mcc: 1 },
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		}
 	]
 }
@@ -318,7 +353,8 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 	attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 5 },
 	type: NodeType.FOLDER,
 	path: "/root",
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "big leaf",
@@ -326,21 +362,24 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 			path: "/root/big leaf",
 			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de",
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "Parent Leaf",
 			type: NodeType.FOLDER,
 			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			path: "/root/Parent Leaf",
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf",
 					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				},
 				{
 					name: "other small leaf",
@@ -348,7 +387,8 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 					path: "/root/Parent Leaf/other small leaf",
 					attributes: { rloc: 70, functions: 1000, mcc: 10, [MetricService.UNARY_METRIC]: 1 },
 					edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				}
 			]
 		}
@@ -359,7 +399,8 @@ export const VALID_NODE_WITH_METRICS: CodeMapNode = {
 	name: "root",
 	type: NodeType.FOLDER,
 	attributes: { rloc: 100, functions: 10, mcc: 1 },
-	isBlacklisted: undefined
+	isExcluded: false,
+	isFlattened: false
 }
 
 export const VALID_EDGES: Edge[] = [
@@ -452,7 +493,8 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 		type: NodeType.FOLDER,
 		path: "/root",
 		attributes: {},
-		isBlacklisted: undefined,
+		isExcluded: false,
+		isFlattened: false,
 		children: [
 			{
 				name: "big leaf",
@@ -460,35 +502,40 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 				path: "/root/big leaf",
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
 				link: "http://www.google.de",
-				isBlacklisted: undefined
+				isExcluded: false,
+				isFlattened: false
 			},
 			{
 				name: "Parent Leaf",
 				type: NodeType.FOLDER,
 				attributes: {},
 				path: "/root/Parent Leaf",
-				isBlacklisted: undefined,
+				isExcluded: false,
+				isFlattened: false,
 				children: [
 					{
 						name: "small leaf",
 						type: NodeType.FILE,
 						path: "/root/Parent Leaf/small leaf",
 						attributes: { rloc: 30, functions: 100, mcc: 100 },
-						isBlacklisted: undefined
+						isExcluded: false,
+						isFlattened: false
 					},
 					{
 						name: "other small leaf",
 						type: NodeType.FILE,
 						path: "/root/Parent Leaf/other small leaf",
 						attributes: { rloc: 70, functions: 1000, mcc: 10 },
-						isBlacklisted: undefined
+						isExcluded: false,
+						isFlattened: false
 					},
 					{
 						name: "empty folder",
 						type: NodeType.FOLDER,
 						path: "/root/Parent Leaf/empty folder",
 						attributes: {},
-						isBlacklisted: undefined,
+						isExcluded: false,
+						isFlattened: false,
 						children: []
 					}
 				]
@@ -528,49 +575,56 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	attributes: {},
 	type: NodeType.FOLDER,
 	path: "/root",
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "big leaf.jpg",
 			type: NodeType.FILE,
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "another big leaf.java",
 			type: NodeType.FILE,
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 120, functions: 20, mcc: 2 },
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "Parent Leaf",
 			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/Parent Leaf",
-			isBlacklisted: undefined,
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf.jpg",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf.json",
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				},
 				{
 					name: "other small leaf.json",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/other small leaf.json",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				},
 				{
 					name: "another leaf.java",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/another leaf.java",
 					attributes: { rloc: 42, functions: 330, mcc: 45 },
-					isBlacklisted: undefined,
+					isExcluded: false,
+					isFlattened: false,
 					children: []
 				},
 				{
@@ -578,7 +632,8 @@ export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/leaf without extension",
 					attributes: { rloc: 15, functions: 23, mcc: 33 },
-					isBlacklisted: undefined,
+					isExcluded: false,
+					isFlattened: false,
 					children: []
 				}
 			]
@@ -592,7 +647,8 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 	deltas: {},
 	type: NodeType.FOLDER,
 	path: "/root",
-	isBlacklisted: undefined,
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "big leaf.jpg",
@@ -600,7 +656,8 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 100, functions: 10, mcc: 1 },
 			deltas: { rloc: 300, functions: -15, mcc: 12 },
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "another big leaf.java",
@@ -608,7 +665,8 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 120, functions: 20, mcc: 2 },
 			deltas: { rloc: -150, functions: 9, mcc: 33 },
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "Parent Leaf",
@@ -616,8 +674,8 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 			attributes: {},
 			deltas: {},
 			path: "/root/Parent Leaf",
-			isBlacklisted: undefined,
-
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "small leaf.jpg",
@@ -625,7 +683,8 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/small leaf.json",
 					attributes: { rloc: 30, functions: 100, mcc: 100 },
 					deltas: { rloc: -55, functions: 38, mcc: -40 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				},
 				{
 					name: "other small leaf.json",
@@ -633,7 +692,8 @@ export const VALID_NODE_WITH_PATH_AND_DELTAS: CodeMapNode = {
 					path: "/root/Parent Leaf/other small leaf.json",
 					attributes: { rloc: 70, functions: 1000, mcc: 10 },
 					deltas: { rloc: 200, functions: -27, mcc: 65 },
-					isBlacklisted: undefined
+					isExcluded: false,
+					isFlattened: false
 				}
 			]
 		}
@@ -645,22 +705,24 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 	attributes: {},
 	type: NodeType.FOLDER,
 	path: "/root",
-	isBlacklisted: undefined,
-
+	isExcluded: false,
+	isFlattened: false,
 	children: [
 		{
 			name: "big leaf.jpg",
 			type: NodeType.FILE,
 			path: "/root/big leaf.jpg",
 			attributes: { rloc: 0, functions: 10, mcc: 1 },
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		},
 		{
 			name: "another big leaf.java",
 			type: NodeType.FILE,
 			path: "/root/another big leaf.java",
 			attributes: { rloc: 0, functions: 20, mcc: 2 },
-			isBlacklisted: undefined
+			isExcluded: false,
+			isFlattened: false
 		}
 	]
 }
@@ -675,34 +737,37 @@ export const TEST_DELTA_MAP_A: CCFile = {
 		name: "root",
 		type: NodeType.FOLDER,
 		attributes: {},
-		isBlacklisted: undefined,
-
+		isExcluded: false,
+		isFlattened: false,
 		children: [
 			{
 				name: "big leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
 				link: "http://www.google.de",
-				isBlacklisted: undefined
+				isExcluded: false,
+				isFlattened: false
 			},
 			{
 				name: "Parent Leaf",
 				type: NodeType.FOLDER,
 				attributes: {},
-				isBlacklisted: undefined,
-
+				isExcluded: false,
+				isFlattened: false,
 				children: [
 					{
 						name: "small leaf",
 						type: NodeType.FILE,
 						attributes: { rloc: 30, functions: 100, mcc: 100 },
-						isBlacklisted: undefined
+						isExcluded: false,
+						isFlattened: false
 					},
 					{
 						name: "other small leaf",
 						type: NodeType.FILE,
 						attributes: { rloc: 70, functions: 1000, mcc: 10 },
-						isBlacklisted: undefined
+						isExcluded: false,
+						isFlattened: false
 					}
 				]
 			}
@@ -728,46 +793,53 @@ export const TEST_DELTA_MAP_B: CCFile = {
 		name: "root",
 		type: NodeType.FOLDER,
 		attributes: {},
-		isBlacklisted: undefined,
+		isExcluded: false,
+		isFlattened: false,
 		children: [
 			{
 				name: "big leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 20, functions: 10, mcc: 1 },
 				link: "http://www.google.de",
-				isBlacklisted: undefined
+				isExcluded: false,
+				isFlattened: false
 			},
 			{
 				name: "additional leaf",
 				type: NodeType.FILE,
 				attributes: { rloc: 10, functions: 11, mcc: 5 },
 				link: "http://www.google.de",
-				isBlacklisted: undefined
+				isExcluded: false,
+				isFlattened: false
 			},
 			{
 				name: "Parent Leaf",
 				type: NodeType.FOLDER,
 				attributes: {},
-				isBlacklisted: undefined,
+				isExcluded: false,
+				isFlattened: false,
 				children: [
 					{
 						name: "small leaf",
 						type: NodeType.FILE,
 						attributes: { rloc: 30, functions: 100, mcc: 100, more: 20 },
-						isBlacklisted: undefined
+						isExcluded: false,
+						isFlattened: false
 					},
 					{
 						name: "other small leaf",
 						type: NodeType.FILE,
 						attributes: { rloc: 70, functions: 1000 },
-						isBlacklisted: undefined
+						isExcluded: false,
+						isFlattened: false
 					},
 					{
 						name: "big leaf",
 						type: NodeType.FILE,
 						attributes: { rloc: 20, functions: 10, mcc: 1 },
 						link: "http://www.google.de",
-						isBlacklisted: undefined
+						isExcluded: false,
+						isFlattened: false
 					}
 				]
 			}
@@ -1156,7 +1228,7 @@ export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: Blackl
 		.leaves()
 		.forEach(node => {
 			if (paths.includes(node.data.path)) {
-				node.data.isBlacklisted = type
+				CodeMapHelper.setBlacklistFlagByType(node.data, type, true)
 			}
 		})
 }

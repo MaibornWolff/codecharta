@@ -5,7 +5,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { CodeMapNode, BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
+import { CodeMapNode, MarkedPackage, NodeType } from "../../codeCharta.model"
 import {
 	VALID_NODE_WITH_PATH,
 	CODE_MAP_BUILDING,
@@ -191,23 +191,7 @@ describe("MapTreeViewLevelController", () => {
 	})
 
 	describe("isExcluded", () => {
-		it("should call CodeMapHelper.isBlacklisted", () => {
-			CodeMapHelper.isBlacklisted = jest.fn()
-
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf/empty folder",
-				NodeType.FOLDER,
-				VALID_NODE_WITH_PATH
-			)
-
-			mapTreeViewLevelController.isExcluded()
-
-			expect(CodeMapHelper.isBlacklisted).toHaveBeenCalledWith(mapTreeViewLevelController["node"], BlacklistType.exclude)
-		})
-
 		it("should not be excluded", () => {
-			CodeMapHelper.isBlacklisted = jest.fn()
-
 			const result = mapTreeViewLevelController.isExcluded()
 
 			expect(result).toBeFalsy()

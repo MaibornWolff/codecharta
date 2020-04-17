@@ -21,15 +21,12 @@
 		>
 
 		<md-button
-			ng-if="!$ctrl._viewModel.codeMapNode.isBlacklisted"
+			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
 			ng-click="$ctrl.flattenNode()"
 			title="Flatten node and children-nodes, but keep an empty space"
 			><i class="fa fa-eye-slash"></i> Flatten</md-button
 		>
-		<md-button
-			ng-if="$ctrl._viewModel.codeMapNode.isBlacklisted === 'exclude'"
-			ng-click="$ctrl.showNode()"
-			title="Show node and children-nodes"
+		<md-button ng-if="$ctrl._viewModel.codeMapNode.isFlattened" ng-click="$ctrl.showNode()" title="Show node and children-nodes"
 			><i class="fa fa-eye"></i> Show</md-button
 		>
 
