@@ -108,7 +108,7 @@ jobs:
 stages:
   - test
   - name: sonar
-    if: branch = master
+    if: branch = master AND type != pull_request
   - name: deploy
     if: branch = master AND tag IS present
 
