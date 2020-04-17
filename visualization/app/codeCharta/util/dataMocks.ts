@@ -23,7 +23,7 @@ import { IRootScopeService } from "angular"
 import { Files } from "../model/files"
 import { hierarchy } from "d3"
 import { MetricService } from "../state/metric.service"
-import { CodeMapHelper } from "./CodeMapHelper"
+import { CodeMapHelper } from "./codeMapHelper"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
