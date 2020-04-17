@@ -56,7 +56,6 @@ jobs:
         - provider: script
           script: visualization/script/sonar-publish.sh
           skip_cleanup: true
-
     - name: "Publishes analysis sonar results"
       script: skip
       deploy:
