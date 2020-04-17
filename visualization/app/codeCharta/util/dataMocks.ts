@@ -842,7 +842,7 @@ export const STATE: State = {
 		isLoadingFile: true,
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.treeView,
-		layoutAlgorithm: LayoutAlgorithm.StreetMap,
+		layoutAlgorithm: LayoutAlgorithm.SquarifiedTreeMap,
 		maxTreeMapFiles: 200,
 		isAttributeSideBarVisible: true
 	},
