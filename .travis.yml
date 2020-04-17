@@ -37,10 +37,10 @@ jobs:
   fast_finish: true
   include:
     - stage: test
-      name: "Visualization Unit Test"
-      script: cd visualization; npm run test --ci
-    - name: "Visualization Linter"
-      script: cd visualization; npm run lint
+      name: "Visualization Unit Test and Linter"
+      script:
+        - cd visualization; npm run test --ci
+        - cd visualization; npm run lint
     - name: "Visualization Build and E2E Test"
       script:
         - cd visualization; npm run build:web
@@ -56,6 +56,7 @@ jobs:
         - provider: script
           script: visualization/script/sonar-publish.sh
           skip_cleanup: true
+
     - name: "Publishes analysis sonar results"
       script: skip
       deploy:
