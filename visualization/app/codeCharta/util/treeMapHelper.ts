@@ -77,10 +77,7 @@ export class TreeMapHelper {
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					: 0,
-			visible:
-				!squaredNode.data.isExcluded &&
-				!squaredNode.data.isFlattened &&
-				!(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
+			visible: !squaredNode.data.isExcluded && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
 			path: squaredNode.data.path,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
