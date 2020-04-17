@@ -20,7 +20,7 @@ export class DialogService {
 	public showErrorDialog(msg: string = "An error occured.", title: string = "Error", button: string = "Ok") {
 		this.$mdDialog.show(
 			this.$mdDialog
-				.error()
+				.alert()
 				.clickOutsideToClose(true)
 				.title(title)
 				.textContent(msg)
