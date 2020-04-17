@@ -846,7 +846,11 @@ export const STATE: State = {
 	treeMap: {
 		mapSize: 250
 	},
-	files: new Files()
+	files: new Files(),
+	lookUp: {
+		pathToNode: new Map(),
+		pathToBuilding: new Map()
+	}
 }
 
 export const DEFAULT_STATE: State = {
@@ -906,7 +910,11 @@ export const DEFAULT_STATE: State = {
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
-	files: new Files()
+	files: new Files(),
+	lookUp: {
+		pathToBuilding: new Map(),
+		pathToNode: new Map()
+	}
 }
 
 export const TEST_NODE_ROOT: Node = {

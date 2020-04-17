@@ -1,6 +1,7 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
 import { Files } from "./model/files"
+import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 
 export interface NameDataPair {
 	fileName: string
@@ -252,8 +253,14 @@ export interface State {
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
 	files: Files
+	lookUp: LookUp
 }
 
 export interface CCAction extends Action {
 	payload?: any
+}
+
+export interface LookUp {
+	pathToNode: Map<string, CodeMapNode>
+	pathToBuilding: Map<string, CodeMapBuilding>
 }

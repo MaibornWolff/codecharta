@@ -1,5 +1,7 @@
 import angular from "angular"
 // Plop: Append module import here
+import { PathToBuildingService } from "./store/lookUp/pathToBuilding/pathToBuilding.service"
+import { PathToNodeService } from "./store/lookUp/pathToNode/pathToNode.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
@@ -49,6 +51,8 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(PathToBuildingService.name), PathToBuildingService)
+	.service(_.camelCase(PathToNodeService.name), PathToNodeService)
 	.service(_.camelCase(IsAttributeSideBarVisibleService.name), IsAttributeSideBarVisibleService)
 	.service(_.camelCase(SortingOptionService.name), SortingOptionService)
 	.service(_.camelCase(SearchPanelModeService.name), SearchPanelModeService)
