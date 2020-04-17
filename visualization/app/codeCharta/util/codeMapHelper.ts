@@ -25,7 +25,11 @@ export class CodeMapHelper {
 	}
 
 	public static setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {
-		type === BlacklistType.exclude ? (node.isExcluded = flag) : (node.isFlattened = flag)
+		if (type === BlacklistType.exclude) {
+			node.isExcluded = flag
+		} else {
+			node.isFlattened = flag
+		}
 	}
 
 	public static transformPath(toTransform: string): string {
