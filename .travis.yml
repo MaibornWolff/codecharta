@@ -51,9 +51,18 @@ jobs:
 
     - stage: sonar
       name: "Publishes visualization sonar results"
-      script: visualization/script/sonar-publish.sh
+      script: skip
+      deploy:
+        - provider: script
+          script: visualization/script/sonar-publish.sh
+          skip_cleanup: true
+
     - name: "Publishes analysis sonar results"
-      script: analysis/script/sonar-publish.sh
+      script: skip
+      deploy:
+        - provider: script
+          script: analysis/script/sonar-publish.sh
+          skip_cleanup: true
 
     - stage: deploy
       name: "Release build packages on GitHub"
