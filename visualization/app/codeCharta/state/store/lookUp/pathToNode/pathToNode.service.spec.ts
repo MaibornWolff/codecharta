@@ -2,10 +2,8 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { PathToNodeAction, PathToNodeActions } from "./pathToNode.actions"
 import { PathToNodeService } from "./pathToNode.service"
 import { TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../../../util/dataMocks"
-import { CodeMapNode } from "../../../../codeCharta.model"
 import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 
 describe("PathToNodeService", () => {
@@ -31,14 +29,6 @@ describe("PathToNodeService", () => {
 	}
 
 	describe("constructor", () => {
-		it("should subscribe to store", () => {
-			StoreService.subscribe = jest.fn()
-
-			rebuildService()
-
-			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, pathToNodeService)
-		})
-
 		it("should subscribe to renderMapChange", () => {
 			CodeMapPreRenderService.subscribe = jest.fn()
 
@@ -48,33 +38,11 @@ describe("PathToNodeService", () => {
 		})
 	})
 
-	describe("onStoreChanged", () => {
-		it("should notify all subscribers with the new pathToNode value", () => {
-			const map = new Map<string, CodeMapNode>()
-			map.set(TEST_FILE_WITH_PATHS.map.path, TEST_FILE_WITH_PATHS.map)
-			const action: PathToNodeAction = {
-				type: PathToNodeActions.SET_PATH_TO_NODE,
-				payload: map
-			}
-			storeService["store"].dispatch(action)
-
-			pathToNodeService.onStoreChanged(PathToNodeActions.SET_PATH_TO_NODE)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("path-to-node-changed", { pathToNode: map })
-		})
-
-		it("should not notify anything on non-path-to-node-events", () => {
-			pathToNodeService.onStoreChanged("ANOTHER_ACTION")
-
-			expect($rootScope.$broadcast).not.toHaveBeenCalled()
-		})
-	})
-
 	describe("onRenderMapChanged", () => {
 		it("should update the map", () => {
 			pathToNodeService.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
-			expect(storeService.getState().lookUp.pathToNode).toMatchSnapshot()
+			expect(storeService.getState().lookUp.pathToNode.size).toBe(6)
 		})
 	})
 })

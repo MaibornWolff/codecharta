@@ -12,9 +12,12 @@ import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.ser
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEventMethods } from "../../util/dataMocks"
 import _ from "lodash"
-import { BlacklistType, Node } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
+import { StoreService } from "../../state/store.service"
+import { setPathToBuilding } from "../../state/store/lookUp/pathToBuilding/pathToBuilding.actions"
+import { setPathToNode } from "../../state/store/lookUp/pathToNode/pathToNode.actions"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -25,6 +28,7 @@ describe("codeMapMouseEventService", () => {
 	let threeRendererService: ThreeRendererService
 	let threeSceneService: ThreeSceneService
 	let threeUpdateCycleService: ThreeUpdateCycleService
+	let storeService: StoreService
 
 	let codeMapBuilding: CodeMapBuilding
 
@@ -53,6 +57,7 @@ describe("codeMapMouseEventService", () => {
 		threeRendererService = getService<ThreeRendererService>("threeRendererService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
+		storeService = getService<StoreService>("storeService")
 
 		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 	}
@@ -64,7 +69,8 @@ describe("codeMapMouseEventService", () => {
 			threeCameraService,
 			threeRendererService,
 			threeSceneService,
-			threeUpdateCycleService
+			threeUpdateCycleService,
+			storeService
 		)
 
 		codeMapMouseEventService["mouse"] = { x: 0, y: 0 }
@@ -119,7 +125,9 @@ describe("codeMapMouseEventService", () => {
 			clearSelection: jest.fn(),
 			selectBuilding: jest.fn(),
 			getSelectedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
-			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
+			addBuildingToHighlightingList: jest.fn(),
+			highlightBuildings: jest.fn()
 		})()
 	}
 
@@ -250,6 +258,12 @@ describe("codeMapMouseEventService", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(null)
 			})
+			const pathToBuilding = new Map<string, CodeMapBuilding>()
+			pathToBuilding.set(CODE_MAP_BUILDING.node.path, CODE_MAP_BUILDING)
+			const pathToNode = new Map<string, CodeMapNode>()
+			pathToNode.set(TEST_FILE_WITH_PATHS.map.path, TEST_FILE_WITH_PATHS.map)
+			storeService.dispatch(setPathToBuilding(pathToBuilding))
+			storeService.dispatch(setPathToNode(pathToNode))
 		})
 
 		it("should call updateMatrixWorld", () => {
@@ -274,7 +288,8 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.updateHovering()
 
-			expect(threeSceneService.highlightSingleBuilding).toHaveBeenCalledWith(CODE_MAP_BUILDING)
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING)
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 		})
 
 		it("should not hover a node again when the intersection building is the same as the hovered building", () => {
@@ -431,10 +446,20 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("hoverBuilding", () => {
+		beforeEach(() => {
+			const pathToBuilding = new Map<string, CodeMapBuilding>()
+			pathToBuilding.set(codeMapBuilding.node.path, codeMapBuilding)
+			const pathToNode = new Map<string, CodeMapNode>()
+			pathToNode.set(TEST_FILE_WITH_PATHS.map.path, TEST_FILE_WITH_PATHS.map)
+			storeService.dispatch(setPathToBuilding(pathToBuilding))
+			storeService.dispatch(setPathToNode(pathToNode))
+		})
+
 		it("should set the highlight when to is not null", () => {
 			codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
 
-			expect(threeSceneService.highlightSingleBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 		})
 
 		it("should add property node", () => {
@@ -445,15 +470,6 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
 
 			expect(codeMapBuilding.node).toEqual(codeMapBuilding.parent.node)
-		})
-
-		it("should not add property node if to has no parent", () => {
-			codeMapBuilding.setNode(undefined)
-			codeMapBuilding.parent = undefined
-
-			codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
-
-			expect(codeMapBuilding.node).not.toEqual(TEST_NODE_ROOT)
 		})
 	})
 

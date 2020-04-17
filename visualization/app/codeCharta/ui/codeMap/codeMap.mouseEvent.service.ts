@@ -12,6 +12,8 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
+import { StoreService } from "../../state/store.service"
+import { hierarchy } from "d3"
 
 interface Coordinates {
 	x: number
@@ -56,7 +58,8 @@ export class CodeMapMouseEventService
 		private threeCameraService: ThreeCameraService,
 		private threeRendererService: ThreeRendererService,
 		private threeSceneService: ThreeSceneService,
-		private threeUpdateCycleService: ThreeUpdateCycleService
+		private threeUpdateCycleService: ThreeUpdateCycleService,
+		private storeService: StoreService
 	) {
 		this.threeUpdateCycleService.register(() => this.updateHovering())
 		MapTreeViewLevelController.subscribeToHoverEvents(this.$rootScope, this)
@@ -186,22 +189,25 @@ export class CodeMapMouseEventService
 	}
 
 	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {
-		/*
-         if the hovered node does not have useful data, then we should look at its parent. If the parent has useful data
-         then this parent is a delta node which is made of two seperate, data-free nodes. This quick fix helps us to
-         handle delta objects, until there is a method for mergng their meshes and materials correctly.
-         See codeMapRenderService.js
-         */
-		if (hoveredBuilding && !hoveredBuilding.node) {
-			if (hoveredBuilding.parent && hoveredBuilding.parent.node) {
-				hoveredBuilding.setNode(hoveredBuilding.parent.node)
-			}
-		}
-
 		if (hoveredBuilding) {
-			this.threeSceneService.highlightSingleBuilding(hoveredBuilding)
-			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
+			this.hoverBuildingAndChildren(hoveredBuilding)
 		}
+	}
+
+	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
+		const lookUp = this.storeService.getState().lookUp
+		const codeMapNode = lookUp.pathToNode.get(hoveredBuilding.node.path)
+		this.threeSceneService.addBuildingToHighlightingList(hoveredBuilding)
+		hierarchy(codeMapNode)
+			.descendants()
+			.forEach(x => {
+				const building = lookUp.pathToBuilding.get(x.data.path)
+				if (building) {
+					this.threeSceneService.addBuildingToHighlightingList(building)
+				}
+			})
+		this.threeSceneService.highlightBuildings()
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 	}
 
 	private unhoverBuilding() {
