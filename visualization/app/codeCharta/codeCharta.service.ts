@@ -4,18 +4,19 @@ import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { addFile, setSingle } from "./state/store/files/files.actions"
+import { DialogService } from "./ui/dialog/dialog.service"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 
-	constructor(private storeService: StoreService) {}
+	constructor(private storeService: StoreService, private dialogService?: DialogService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
-				const errors = FileValidator.validate(nameDataPair.content)
+				const errors = FileValidator.validate(nameDataPair.content, this.dialogService)
 				if (errors.length === 0) {
 					const ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
 					NodeDecorator.preDecorateFile(ccFile)

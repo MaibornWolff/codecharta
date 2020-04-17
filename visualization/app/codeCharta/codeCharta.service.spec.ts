@@ -120,7 +120,7 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
+					expect(err).toEqual(["file is empty or invalid"])
 					done()
 				})
 		})
@@ -145,7 +145,7 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
+					expect(err).toEqual(["file is empty or invalid"])
 					done()
 				})
 		})
