@@ -110,7 +110,7 @@ stages:
   - name: sonar
     if: branch = master AND type != pull_request
   - name: deploy
-    if: branch = master AND tag IS present
+    if: tag IS present
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
