@@ -120,7 +120,7 @@ jobs:
       # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
       - provider: pages
         script:
-          - docker build -t maibornwolff/codecharta-visualization .
+          - cd visualization; docker build -t maibornwolff/codecharta-visualization .
           - ./script/build_gh_pages.sh
         github_token: $GITHUB_TOKEN
         cleanup: true
