@@ -65,7 +65,7 @@ export default class HorizontalStreet extends Street {
 			const childOriginX = this.calculateChildOriginX(rowOrigin, i, this.topRow)
 			const childOriginY = this.calculateStreetOffsetY(rowOrigin, maxTopHeight) - this.topRow[i].height
 			const childOrigin = new Point(childOriginX, childOriginY)
-			nodes.push.apply(nodes, this.topRow[i].layout(childOrigin, margin))
+			nodes.push(...this.topRow[i].layout(childOrigin, margin))
 		}
 		return nodes
 	}
@@ -109,7 +109,7 @@ export default class HorizontalStreet extends Street {
 			const childOriginX = this.calculateChildOriginX(rowOrigin, i, this.bottomRow)
 			const childOriginY = this.calculateStreetOffsetY(rowOrigin, maxTopHeight) + this.getStreetThickness()
 			const childOrigin = new Point(childOriginX, childOriginY)
-			nodes.push.apply(nodes, this.bottomRow[i].layout(childOrigin, margin))
+			nodes.push(...this.bottomRow[i].layout(childOrigin, margin))
 		}
 		return nodes
 	}

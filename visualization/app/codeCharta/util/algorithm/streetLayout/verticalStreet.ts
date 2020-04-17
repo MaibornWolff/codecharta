@@ -59,7 +59,7 @@ export default class VerticalStreet extends Street {
 			const childOriginX = this.calculateStreetOffsetX(rowOrigin, maxLeftWidth) - this.leftRow[i].width
 			const childOriginY = this.calculateChildOriginY(rowOrigin, i, this.leftRow)
 			const childOrigin = new Point(childOriginX, childOriginY)
-			nodes.push.apply(nodes, this.leftRow[i].layout(childOrigin, margin))
+			nodes.push(...this.leftRow[i].layout(childOrigin, margin))
 		}
 		return nodes
 	}
@@ -94,7 +94,7 @@ export default class VerticalStreet extends Street {
 			const childOriginX = this.calculateStreetOffsetX(rowOrigin, maxLeftWidth) + this.getStreetThickness()
 			const childOriginY = this.calculateChildOriginY(rowOrigin, i, this.rightRow)
 			const childOrigin = new Point(childOriginX, childOriginY)
-			nodes.push.apply(nodes, this.rightRow[i].layout(childOrigin, margin))
+			nodes.push(...this.rightRow[i].layout(childOrigin, margin))
 		}
 		return nodes
 	}
