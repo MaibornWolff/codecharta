@@ -40,16 +40,17 @@ describe("SearchedNodePathsService", () => {
 
 	describe("onStoreChanged", () => {
 		it("should notify all subscribers with the new searchedNodePaths value", () => {
+			const searchedNodePaths = new Set(["myPath", "anotherPath"])
 			const action: SearchedNodePathsAction = {
 				type: SearchedNodePathsActions.SET_SEARCHED_NODE_PATHS,
-				payload: ["myPath", "anotherPath"]
+				payload: searchedNodePaths
 			}
 			storeService["store"].dispatch(action)
 
 			searchedNodePathsService.onStoreChanged(SearchedNodePathsActions.SET_SEARCHED_NODE_PATHS)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("searched-node-paths-changed", {
-				searchedNodePaths: ["myPath", "anotherPath"]
+				searchedNodePaths
 			})
 		})
 

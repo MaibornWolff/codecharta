@@ -7,8 +7,8 @@ import {
 	SortingOrderAscendingSubscriber
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
-import _ from "lodash"
 import { MetricService } from "../../state/metric.service"
+
 const clone = require("rfdc")()
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
@@ -47,12 +47,8 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 			return
 		}
 
-		if (!_.isMatch(this._viewModel.rootNode, map)) {
-			this._viewModel.rootNode = clone(map)
-		}
-
+		this._viewModel.rootNode = clone(map)
 		this.synchronizeAngularTwoWayBinding()
-
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
 
