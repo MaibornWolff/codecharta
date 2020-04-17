@@ -26,6 +26,7 @@ addons:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y wine
+  - chmod +x ./analysis/gradlew
 
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
@@ -36,16 +37,21 @@ jobs:
   include:
     - stage: test
       name: "Visualization Unit Test and Linter"
+      before_script: cd visualization
       script:
-        - cd visualization; npm run test --ci
-        - cd visualization; npm run lint
+        - npm run test --ci
+        - npm run lint
     - name: "Visualization Build and E2E Test"
+      before_script: cd visualization
       script:
-        - cd visualization; npm run build:web
-        - cd visualization; npm run e2e --ci
+        - npm run build:web
+        - npm run e2e --ci
     - name: "Analysis Integration Test"
-      before_script: chmod +x ./analysis/gradlew
-      script: cd analysis; ./gradlew build integrationTest
+      before_script:
+        - cd analysis
+        - chmod +x ./gradlew
+      script:
+        - ./gradlew build integrationTest
 
     - stage: sonar
       name: "Publishes visualization sonar results"
@@ -63,11 +69,13 @@ jobs:
           cleanup: true
 
     - stage: deploy
-      name: "Release build packages on GitHub"
-      before_script: cd visualization; npm run build:web
-      script: npm run package
+      script:
+        - cd visualization; npm run build:web
+        - cd analysis; ./gradlew build
       deploy:
+        # releases the built packages on github when a commit is tagged
         - provider: releases
+          script: cd visualization; npm run package
           api_key: $GITHUB_TOKEN
           file_glob: true
           file:
@@ -75,51 +83,44 @@ jobs:
             - "analysis/build/distributions/*.tar"
           cleanup: true
           on:
-            all_branches: true
             tags: true
+            branch: master
 
+        # publishes visualization npm package
+        - provider: script
+          script: ./visualization/script/npm-publish.sh
+          cleanup: true
+          on:
+            tags: true
+            branch: master
 
-    - name: "Commits gh-pages directory to the gh-pages branch" # Does not ignore built ressources
-      script: ./script/build_gh_pages.sh
-      deploy:
+        # publishes analysis npm package
+        - provider: script
+          script: ./analysis/script/npm-publish.sh
+          cleanup: true
+          on:
+            tags: true
+            branch: master
+
+        # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
         - provider: pages
+          script:
+            - cd visualization; docker build -t maibornwolff/codecharta-visualization .
+            - ./script/build_gh_pages.sh
           github_token: $GITHUB_TOKEN
           cleanup: true
           local_dir: "gh-pages"
           on:
-            all_branches: true
             tags: true
+            branch: master
 
-    - name: "Publishes visualization npm package"
-      script: skip
-      deploy:
+        # publishes visualization docker image
         - provider: script
-          script: visualization/script/npm-publish.sh
+          script: ./visualization/script/docker-publish.sh
           cleanup: true
           on:
-            all_branches: true
             tags: true
-
-    - name: "Publishes analysis npm package"
-      script: skip
-      deploy:
-        - provider: script
-          script: analysis/script/npm-publish.sh
-          cleanup: true
-          on:
-            all_branches: true
-            tags: true
-
-    - name: "Publishes visualization docker image"
-      before_script: cd visualization; npm run build:web
-      script: docker build -t maibornwolff/codecharta-visualization .
-      deploy:
-        - provider: script
-          script: visualization/script/docker-publish.sh
-          cleanup: true
-          on:
-            all_branches: true
-            tags: true
+            branch: master
 
 stages:
   - test
