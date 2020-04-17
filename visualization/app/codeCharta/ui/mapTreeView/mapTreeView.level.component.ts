@@ -94,7 +94,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public isSearched(): boolean {
 		if (this.node != null && this.storeService.getState().dynamicSettings.searchedNodePaths) {
-			return this.storeService.getState().dynamicSettings.searchedNodePaths.filter(path => path == this.node.path).length > 0
+			return this.storeService.getState().dynamicSettings.searchedNodePaths.has(this.node.path)
 		}
 		return false
 	}
