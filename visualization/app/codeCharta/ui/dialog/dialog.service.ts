@@ -23,7 +23,7 @@ export class DialogService {
 				.alert()
 				.clickOutsideToClose(true)
 				.title(title)
-				.textContent(msg)
+				.htmlContent(msg)
 				.ok(button)
 		)
 	}

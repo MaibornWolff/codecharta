@@ -61,7 +61,7 @@ export class FileChooserController {
 	private printErrors(errors: string[]) {
 		let errorMessage = ""
 		for (let i = 0; i < errors.length; i++) {
-			errorMessage += errors[i] + "\n"
+			errorMessage += errors[i] + "</br>"
 		}
 		this.dialogService.showErrorDialog(errorMessage)
 	}
