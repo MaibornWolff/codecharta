@@ -61,7 +61,7 @@ jobs:
       script: skip
       deploy:
         - provider: script
-          script: analysis/script/sonar-publish.sh
+          script: ./analysis/script/sonar-publish.sh
           skip_cleanup: true
 
     - stage: deploy
