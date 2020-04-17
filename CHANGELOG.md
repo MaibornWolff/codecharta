@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- When hovering over a folder, all buildings inside it will be highlighted as well #694
+
 ### Changed
 
 ### Removed 🗑
