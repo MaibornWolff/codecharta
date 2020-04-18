@@ -90,7 +90,7 @@ export interface DynamicSettings {
 	distributionMetric: string
 	edgeMetric: string
 	focusedNodePath: string
-	searchedNodePaths: Array<string>
+	searchedNodePaths: Set<string>
 	searchPattern: string
 	margin: number
 	colorRange: ColorRange
@@ -117,6 +117,7 @@ export interface AppSettings {
 	isLoadingFile: boolean
 	sortingOrderAscending: boolean
 	searchPanelMode: SearchPanelMode
+	isAttributeSideBarVisible: boolean
 }
 
 export interface TreeMapSettings {

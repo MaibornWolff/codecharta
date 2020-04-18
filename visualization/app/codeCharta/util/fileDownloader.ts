@@ -5,6 +5,7 @@ import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { stringify } from "querystring"
 import { ExportCCFile } from "../codeCharta.api.model"
+import { MetricService } from "../state/metric.service"
 const clone = require("rfdc")()
 
 export class FileDownloader {
@@ -75,7 +76,7 @@ export class FileDownloader {
 			if (node.data.type === NodeType.FOLDER) {
 				node.data.attributes = {}
 			} else {
-				delete node.data.attributes["unary"]
+				delete node.data.attributes[MetricService.UNARY_METRIC]
 			}
 		})
 		return copy
