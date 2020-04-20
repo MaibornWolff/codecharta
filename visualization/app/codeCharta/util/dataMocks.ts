@@ -24,6 +24,7 @@ import { Scenario } from "./scenarioHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { Files } from "../model/files"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import { MetricService } from "../state/metric.service"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -58,36 +59,36 @@ export const VALID_NODE: CodeMapNode = {
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 	name: "root",
-	attributes: { unary: 200 },
+	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
 	children: [
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de"
 		},
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { unary: 60 },
+			attributes: { [MetricService.UNARY_METRIC]: 60 },
 			children: []
 		},
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { unary: 40 },
+			attributes: { [MetricService.UNARY_METRIC]: 40 },
 			children: []
 		},
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
-			attributes: { unary: 160 },
+			attributes: { [MetricService.UNARY_METRIC]: 160 },
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 }
 				}
 			]
 		}
@@ -96,37 +97,37 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS: CodeMapNode = {
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 	name: "root",
-	attributes: { unary: 200 },
+	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
 	children: [
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
-			attributes: { unary: 160 },
+			attributes: { [MetricService.UNARY_METRIC]: 160 },
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 }
 				}
 			]
 		},
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { unary: 40 },
+			attributes: { [MetricService.UNARY_METRIC]: 40 },
 			children: []
 		},
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { unary: 60 },
+			attributes: { [MetricService.UNARY_METRIC]: 60 },
 			children: []
 		},
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de"
 		}
 	]
@@ -134,37 +135,37 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED: CodeMapNode = {
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 	name: "root",
-	attributes: { unary: 200 },
+	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
 	children: [
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
-			attributes: { unary: 160 },
+			attributes: { [MetricService.UNARY_METRIC]: 160 },
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 }
 				}
 			]
 		},
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { unary: 60 },
+			attributes: { [MetricService.UNARY_METRIC]: 60 },
 			children: []
 		},
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { unary: 40 },
+			attributes: { [MetricService.UNARY_METRIC]: 40 },
 			children: []
 		},
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de"
 		}
 	]
@@ -172,37 +173,37 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY: CodeMapNode = {
 
 export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 	name: "root",
-	attributes: { unary: 200 },
+	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
 	children: [
 		{
 			name: "Folder1",
 			type: NodeType.FOLDER,
-			attributes: { unary: 60 },
+			attributes: { [MetricService.UNARY_METRIC]: 60 },
 			children: []
 		},
 		{
 			name: "Folder2",
 			type: NodeType.FOLDER,
-			attributes: { unary: 40 },
+			attributes: { [MetricService.UNARY_METRIC]: 40 },
 			children: []
 		},
 		{
 			name: "Folder3",
 			type: NodeType.FOLDER,
-			attributes: { unary: 160 },
+			attributes: { [MetricService.UNARY_METRIC]: 160 },
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
-					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 }
 				}
 			]
 		},
 		{
 			name: "big leaf",
 			type: NodeType.FILE,
-			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de"
 		}
 	]
@@ -253,7 +254,7 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
-	attributes: { unary: 200 },
+	attributes: { [MetricService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
 	path: "/root",
 	children: [
@@ -261,20 +262,20 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 			name: "first leaf",
 			type: NodeType.FILE,
 			path: "/root/first leaf",
-			attributes: { unary: 100, functions: 10, mcc: 1 }
+			attributes: { [MetricService.UNARY_METRIC]: 100, functions: 10, mcc: 1 }
 		},
 		{
 			name: "second leaf",
 			type: NodeType.FILE,
 			path: "/root/second leaf",
-			attributes: { unary: 100, functions: 5, mcc: 1 }
+			attributes: { [MetricService.UNARY_METRIC]: 100, functions: 5, mcc: 1 }
 		}
 	]
 }
 
 export const VALID_NODE_DECORATED: CodeMapNode = {
 	name: "root",
-	attributes: { rloc: 100, functions: 10, mcc: 1, unary: 5 },
+	attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 5 },
 	type: NodeType.FOLDER,
 	path: "/root",
 	children: [
@@ -282,26 +283,26 @@ export const VALID_NODE_DECORATED: CodeMapNode = {
 			name: "big leaf",
 			type: NodeType.FILE,
 			path: "/root/big leaf",
-			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			link: "http://www.google.de"
 		},
 		{
 			name: "Parent Leaf",
 			type: NodeType.FOLDER,
-			attributes: { rloc: 100, functions: 10, mcc: 1, unary: 1 },
+			attributes: { rloc: 100, functions: 10, mcc: 1, [MetricService.UNARY_METRIC]: 1 },
 			path: "/root/Parent Leaf",
 			children: [
 				{
 					name: "small leaf",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/small leaf",
-					attributes: { rloc: 30, functions: 100, mcc: 100, unary: 1 }
+					attributes: { rloc: 30, functions: 100, mcc: 100, [MetricService.UNARY_METRIC]: 1 }
 				},
 				{
 					name: "other small leaf",
 					type: NodeType.FILE,
 					path: "/root/Parent Leaf/other small leaf",
-					attributes: { rloc: 70, functions: 1000, mcc: 10, unary: 1 },
+					attributes: { rloc: 70, functions: 1000, mcc: 10, [MetricService.UNARY_METRIC]: 1 },
 					edgeAttributes: { Imports: { incoming: 12, outgoing: 13 } },
 					visible: true
 				}
@@ -391,7 +392,7 @@ export const TEST_FILE_DATA: CCFile = {
 	map: VALID_NODE,
 	settings: {
 		fileSettings: {
-			attributeTypes: { nodes: [], edges: [] },
+			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -445,7 +446,7 @@ export const TEST_FILE_WITH_PATHS: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: { nodes: [], edges: [] },
+			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -729,7 +730,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: { nodes: [], edges: [] },
+			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -787,7 +788,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	},
 	settings: {
 		fileSettings: {
-			attributeTypes: { nodes: [], edges: [] },
+			attributeTypes: { nodes: {}, edges: {} },
 			blacklist: [],
 			edges: VALID_EDGES,
 			markedPackages: []
@@ -876,21 +877,13 @@ export const FILE_STATES: FileState[] = [
 export const STATE: State = {
 	fileSettings: {
 		attributeTypes: {
-			nodes: [
-				{
-					rloc: AttributeTypeValue.absolute
-				},
-				{
-					mcc: AttributeTypeValue.absolute
-				},
-				{
-					coverage: AttributeTypeValue.relative
-				},
-				{
-					pairing_rate: AttributeTypeValue.absolute
-				}
-			],
-			edges: []
+			nodes: {
+				rloc: AttributeTypeValue.absolute,
+				mcc: AttributeTypeValue.absolute,
+				coverage: AttributeTypeValue.relative,
+				pairing_rate: AttributeTypeValue.absolute
+			},
+			edges: {}
 		},
 		blacklist: [],
 		edges: VALID_EDGES,
@@ -903,7 +896,7 @@ export const STATE: State = {
 		distributionMetric: "mcc",
 		edgeMetric: "pairingRate",
 		focusedNodePath: "/root/ParentLeaf",
-		searchedNodePaths: [],
+		searchedNodePaths: new Set(),
 		searchPattern: "",
 		margin: 48,
 		colorRange: {
@@ -948,7 +941,8 @@ export const STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
-		searchPanelMode: SearchPanelMode.treeView
+		searchPanelMode: SearchPanelMode.treeView,
+		isAttributeSideBarVisible: true
 	},
 	treeMap: {
 		mapSize: 250
@@ -993,7 +987,8 @@ export const DEFAULT_STATE: State = {
 		isLoadingMap: true,
 		isLoadingFile: true,
 		sortingOrderAscending: false,
-		searchPanelMode: SearchPanelMode.minimized
+		searchPanelMode: SearchPanelMode.minimized,
+		isAttributeSideBarVisible: false
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -1008,10 +1003,10 @@ export const DEFAULT_STATE: State = {
 			to: null
 		},
 		searchPattern: "",
-		searchedNodePaths: [],
+		searchedNodePaths: new Set(),
 		sortingOption: SortingOption.NAME
 	},
-	fileSettings: { attributeTypes: { nodes: [], edges: [] }, blacklist: [], edges: [], markedPackages: [] },
+	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
 	files: new Files()
 }

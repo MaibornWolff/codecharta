@@ -2,10 +2,13 @@ import "./codeMap.component.scss"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import {
+	IsAttributeSideBarVisibleService,
+	IsAttributeSideBarVisibleSubscriber
+} from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 
-export class CodeMapController implements AttributeSideBarVisibilitySubscriber, IsLoadingFileSubscriber {
+export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, IsLoadingFileSubscriber {
 	private _viewModel: {
 		isLoadingFile: boolean
 		isSideBarVisible: boolean
@@ -22,7 +25,7 @@ export class CodeMapController implements AttributeSideBarVisibilitySubscriber, 
 		private threeViewerService: ThreeViewerService,
 		private codeMapMouseEventService: CodeMapMouseEventService
 	) {
-		AttributeSideBarService.subscribe(this.$rootScope, this)
+		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
 
@@ -32,7 +35,7 @@ export class CodeMapController implements AttributeSideBarVisibilitySubscriber, 
 		this.codeMapMouseEventService.start()
 	}
 
-	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
+	public onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 

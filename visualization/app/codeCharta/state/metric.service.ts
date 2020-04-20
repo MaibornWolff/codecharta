@@ -1,22 +1,12 @@
-import {
-	AttributeTypes,
-	BlacklistItem,
-	BlacklistType,
-	CodeMapNode,
-	FileState,
-	MetricData,
-	AttributeType,
-	AttributeTypeValue,
-	State
-} from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, FileState, MetricData, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
-import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
 import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
 import { Files } from "../model/files"
+import { AttributeTypesSubscriber, AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -26,7 +16,8 @@ interface MaxMetricValuePair {
 	maxValue: number
 }
 
-export class MetricService implements FilesSelectionSubscriber, BlacklistSubscriber {
+export class MetricService implements FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
+	public static UNARY_METRIC = "unary"
 	private static METRIC_DATA_ADDED_EVENT = "metric-data-added"
 
 	//TODO MetricData should contain attributeType
@@ -35,6 +26,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
+		AttributeTypesService.subscribe(this.$rootScope, this)
 	}
 
 	public onFilesSelectionChanged(files: Files) {
@@ -42,6 +34,10 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.setNewMetricData()
+	}
+
+	public onAttributeTypesChanged(attributeTypes: AttributeTypes) {
 		this.setNewMetricData()
 	}
 
@@ -62,35 +58,14 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		return metric ? metric.maxValue : undefined
 	}
 
-	public getAttributeTypeByMetric(metricName: string, state: State): AttributeTypeValue {
-		const attributeType = this.getMergedAttributeTypes(state.fileSettings.attributeTypes).find(x => {
-			return _.findKey(x) === metricName
-		})
-
-		if (attributeType) {
-			return attributeType[metricName]
-		}
-		return null
+	public getAttributeTypeByMetric(metricName: string): AttributeTypeValue {
+		return this.storeService.getState().fileSettings.attributeTypes.nodes[metricName]
 	}
 
 	private setNewMetricData() {
 		this.metricData = this.calculateMetrics()
 		this.addUnaryMetric()
 		this.notifyMetricDataAdded()
-	}
-
-	private getMergedAttributeTypes(attributeTypes: AttributeTypes): AttributeType[] {
-		const mergedAttributeTypes = [...attributeTypes.nodes]
-
-		mergedAttributeTypes.forEach(nodeAttribute => {
-			attributeTypes.edges.forEach(edgeAttribute => {
-				if (_.findKey(nodeAttribute) !== _.findKey(edgeAttribute)) {
-					mergedAttributeTypes.push(edgeAttribute)
-				}
-			})
-		})
-
-		return mergedAttributeTypes
 	}
 
 	private calculateMetrics(): MetricData[] {
@@ -152,9 +127,9 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private addUnaryMetric() {
-		if (!this.metricData.some(x => x.name === "unary")) {
+		if (!this.metricData.some(x => x.name === MetricService.UNARY_METRIC)) {
 			this.metricData.push({
-				name: "unary",
+				name: MetricService.UNARY_METRIC,
 				maxValue: 1
 			})
 		}

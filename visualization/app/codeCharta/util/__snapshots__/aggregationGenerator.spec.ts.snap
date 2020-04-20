@@ -206,8 +206,8 @@ Object {
   "settings": Object {
     "fileSettings": Object {
       "attributeTypes": Object {
-        "edges": Array [],
-        "nodes": Array [],
+        "edges": Object {},
+        "nodes": Object {},
       },
       "blacklist": Array [],
       "edges": Array [],
@@ -332,8 +332,8 @@ Object {
   "settings": Object {
     "fileSettings": Object {
       "attributeTypes": Object {
-        "edges": Array [],
-        "nodes": Array [],
+        "edges": Object {},
+        "nodes": Object {},
       },
       "blacklist": Array [],
       "edges": Array [],

@@ -14,6 +14,7 @@ import {
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { stringify } from "querystring"
+import { MetricService } from "../state/metric.service"
 const clone = require("rfdc")()
 
 export class FileDownloader {
@@ -64,7 +65,7 @@ export class FileDownloader {
 	}
 
 	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
-		if (attributeTypes.edges.length === 0 && attributeTypes.nodes.length === 0) {
+		if (Object.keys(attributeTypes.edges).length === 0 && Object.keys(attributeTypes.nodes).length === 0) {
 			return {}
 		} else {
 			return attributeTypes
@@ -84,7 +85,7 @@ export class FileDownloader {
 			if (node.data.type === NodeType.FOLDER) {
 				node.data.attributes = {}
 			} else {
-				delete node.data.attributes["unary"]
+				delete node.data.attributes[MetricService.UNARY_METRIC]
 			}
 		})
 		return copy

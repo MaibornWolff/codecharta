@@ -7,6 +7,9 @@ import {
 	SortingOrderAscendingSubscriber
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
+import { MetricService } from "../../state/metric.service"
+
+const clone = require("rfdc")()
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
 	private _viewModel: {
@@ -26,7 +29,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		if (sortingOption === SortingOption.NUMBER_OF_FILES) {
 			this._viewModel.rootNode = this.applySortOrderChange(
 				this._viewModel.rootNode,
-				(a, b) => b.attributes["unary"] - a.attributes["unary"],
+				(a, b) => b.attributes[MetricService.UNARY_METRIC] - a.attributes[MetricService.UNARY_METRIC],
 				false
 			)
 		} else {
@@ -36,6 +39,17 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 
 	public onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, null, true)
+	}
+
+	public onRenderMapChanged(map: CodeMapNode) {
+		if (map === this._viewModel.rootNode) {
+			// needed to prevent flashing since event is triggered 4 times
+			return
+		}
+
+		this._viewModel.rootNode = clone(map)
+		this.synchronizeAngularTwoWayBinding()
+		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
 
 	private applySortOrderChange(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number, reverse: boolean) {
@@ -67,17 +81,6 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		}
 
 		return folders.concat(files)
-	}
-
-	public onRenderMapChanged(map: CodeMapNode) {
-		if (map === this._viewModel.rootNode) {
-			// needed to prevent flashing since event is triggered 4 times
-			return
-		}
-		this._viewModel.rootNode = map
-		this.synchronizeAngularTwoWayBinding()
-
-		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
 
 	private synchronizeAngularTwoWayBinding() {

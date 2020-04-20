@@ -1,5 +1,5 @@
 import "./metricType.module"
-import { MetricTypeController } from "./metricType.component"
+import { MetricSelections, MetricTypeController } from "./metricType.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { IRootScopeService } from "angular"
@@ -11,12 +11,17 @@ import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
+import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
+import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
+import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 
 describe("MetricTypeController", () => {
 	let metricTypeController: MetricTypeController
 	let $rootScope: IRootScopeService
 	let metricService: MetricService
 	let storeService: StoreService
+	let edgeMetricDataService: EdgeMetricDataService
 
 	beforeEach(() => {
 		restartSystem()
@@ -29,10 +34,11 @@ describe("MetricTypeController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		metricService = getService<MetricService>("metricService")
 		storeService = getService<StoreService>("storeService")
+		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 	}
 
 	function rebuildController() {
-		metricTypeController = new MetricTypeController($rootScope, metricService, storeService)
+		metricTypeController = new MetricTypeController($rootScope, metricService, edgeMetricDataService, storeService)
 	}
 
 	describe("constructor", () => {
@@ -40,6 +46,7 @@ describe("MetricTypeController", () => {
 			AreaMetricService.subscribe = jest.fn()
 			HeightMetricService.subscribe = jest.fn()
 			ColorMetricService.subscribe = jest.fn()
+			EdgeMetricService.subscribe = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingHovered = jest.fn()
 			CodeMapMouseEventService.subscribeToBuildingUnhovered = jest.fn()
 		})
@@ -50,6 +57,7 @@ describe("MetricTypeController", () => {
 			expect(AreaMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
 			expect(HeightMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
 			expect(ColorMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(EdgeMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 
 		it("should subscribe to CodeMapMouseEventService", () => {
@@ -62,109 +70,71 @@ describe("MetricTypeController", () => {
 
 	describe("onAreaMetricChanged", () => {
 		it("should set the areaMetricType to absolute", () => {
-			storeService.dispatch(setAttributeTypes({ nodes: [{ rloc: AttributeTypeValue.absolute }], edges: [] }))
+			storeService.dispatch(setAttributeTypes({ nodes: { rloc: AttributeTypeValue.absolute }, edges: {} }))
+			metricTypeController["metricSelection"] = MetricSelections.areaMetric
 
 			metricTypeController.onAreaMetricChanged("rloc")
 
-			expect(metricTypeController["_viewModel"].areaMetricType).toBe(AttributeTypeValue.absolute)
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.absolute)
 		})
 	})
 
 	describe("onHeightMetricChanged", () => {
 		it("should set the heightMetricType to absolute", () => {
-			storeService.dispatch(setAttributeTypes({ nodes: [{ mcc: AttributeTypeValue.absolute }], edges: [] }))
+			storeService.dispatch(setAttributeTypes({ nodes: { mcc: AttributeTypeValue.absolute }, edges: {} }))
+			metricTypeController["metricSelection"] = MetricSelections.heightMetric
 
 			metricTypeController.onHeightMetricChanged("mcc")
 
-			expect(metricTypeController["_viewModel"].heightMetricType).toBe(AttributeTypeValue.absolute)
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.absolute)
 		})
 	})
 
 	describe("onColorMetricChanged", () => {
 		it("should set the colorMetricType to relative", () => {
-			storeService.dispatch(setAttributeTypes({ nodes: [{ coverage: AttributeTypeValue.relative }], edges: [] }))
+			storeService.dispatch(setAttributeTypes({ nodes: { coverage: AttributeTypeValue.relative }, edges: {} }))
+			metricTypeController["metricSelection"] = MetricSelections.colorMetric
 
 			metricTypeController.onColorMetricChanged("coverage")
 
-			expect(metricTypeController["_viewModel"].colorMetricType).toBe(AttributeTypeValue.relative)
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
 		})
 	})
 
-	describe("isAreaMetricAbsolute", () => {
-		it("should return true if areaMetric is absolute", () => {
-			metricTypeController["_viewModel"].areaMetricType = AttributeTypeValue.absolute
+	describe("onEdgeMetricChanged", () => {
+		it("should set the edgeMetricType to relative", () => {
+			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
+			metricTypeController["metricSelection"] = MetricSelections.edgeMetric
 
-			const actual = metricTypeController.isAreaMetricAbsolute()
+			metricTypeController.onEdgeMetricChanged("foo")
 
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return true if areaMetric is null", () => {
-			metricTypeController["_viewModel"].colorMetricType = null
-
-			const actual = metricTypeController.isColorMetricAbsolute()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if areaMetric is relative", () => {
-			metricTypeController["_viewModel"].areaMetricType = AttributeTypeValue.relative
-
-			const actual = metricTypeController.isAreaMetricAbsolute()
-
-			expect(actual).toBeFalsy()
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
 		})
 	})
 
-	describe("isHeightMetricAbsolute", () => {
-		it("should return true if areaMetric is absolute", () => {
-			metricTypeController["_viewModel"].heightMetricType = AttributeTypeValue.absolute
+	describe("onMetricDataAdded", () => {
+		it("should update metricType for node selections", () => {
+			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
+			storeService.dispatch(setHeightMetric("foo"))
+			metricTypeController["metricSelection"] = MetricSelections.heightMetric
+			metricService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
 
-			const actual = metricTypeController.isHeightMetricAbsolute()
+			metricTypeController.onMetricDataAdded()
 
-			expect(actual).toBeTruthy()
+			expect(metricService.getAttributeTypeByMetric).toBeCalledWith("foo")
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
 		})
 
-		it("should return true if heightMetric is null", () => {
-			metricTypeController["_viewModel"].colorMetricType = null
+		it("should update metricType for edge selection", () => {
+			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
+			storeService.dispatch(setEdgeMetric("foo"))
+			metricTypeController["metricSelection"] = MetricSelections.edgeMetric
+			edgeMetricDataService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
 
-			const actual = metricTypeController.isColorMetricAbsolute()
+			metricTypeController.onMetricDataAdded()
 
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if heightMetric is relative", () => {
-			metricTypeController["_viewModel"].heightMetricType = AttributeTypeValue.relative
-
-			const actual = metricTypeController.isHeightMetricAbsolute()
-
-			expect(actual).toBeFalsy()
-		})
-	})
-
-	describe("isColorMetricAbsolute", () => {
-		it("should return true if colorMetric is absolute", () => {
-			metricTypeController["_viewModel"].colorMetricType = AttributeTypeValue.absolute
-
-			const actual = metricTypeController.isColorMetricAbsolute()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return true if colorMetric is null", () => {
-			metricTypeController["_viewModel"].colorMetricType = null
-
-			const actual = metricTypeController.isColorMetricAbsolute()
-
-			expect(actual).toBeTruthy()
-		})
-
-		it("should return false if colorMetric is relative", () => {
-			metricTypeController["_viewModel"].colorMetricType = AttributeTypeValue.relative
-
-			const actual = metricTypeController.isColorMetricAbsolute()
-
-			expect(actual).toBeFalsy()
+			expect(edgeMetricDataService.getAttributeTypeByMetric).toBeCalledWith("foo")
+			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
 		})
 	})
 
@@ -172,7 +142,7 @@ describe("MetricTypeController", () => {
 		it("should set isBuildingHovered to true", () => {
 			metricTypeController.onBuildingHovered({ node: { isLeaf: false } } as CodeMapBuilding)
 
-			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeTruthy()
+			expect(metricTypeController["_viewModel"].isFolderHovered).toBeTruthy()
 		})
 
 		it("should not set isBuildingHovered to true if building is a leaf", () => {
@@ -180,7 +150,7 @@ describe("MetricTypeController", () => {
 				node: { isLeaf: true }
 			} as CodeMapBuilding)
 
-			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
+			expect(metricTypeController["_viewModel"].isFolderHovered).toBeFalsy()
 		})
 
 		it("should set isBuildingHovered to true when going from a folder to another folder", () => {
@@ -188,7 +158,7 @@ describe("MetricTypeController", () => {
 				node: { isLeaf: false }
 			} as CodeMapBuilding)
 
-			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeTruthy()
+			expect(metricTypeController["_viewModel"].isFolderHovered).toBeTruthy()
 		})
 
 		it("should set isBuildingHovered to false when going from a folder to leaf", () => {
@@ -200,7 +170,7 @@ describe("MetricTypeController", () => {
 				node: { isLeaf: true }
 			} as CodeMapBuilding)
 
-			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
+			expect(metricTypeController["_viewModel"].isFolderHovered).toBeFalsy()
 		})
 	})
 
@@ -208,7 +178,7 @@ describe("MetricTypeController", () => {
 		it("should set isBuildingHovered to false", () => {
 			metricTypeController.onBuildingUnhovered()
 
-			expect(metricTypeController["_viewModel"].isBuildingHovered).toBeFalsy()
+			expect(metricTypeController["_viewModel"].isFolderHovered).toBeFalsy()
 		})
 	})
 })

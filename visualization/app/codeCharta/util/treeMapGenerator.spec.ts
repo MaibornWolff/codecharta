@@ -123,9 +123,9 @@ describe("treeMapGenerator", () => {
 		})
 	})
 
-	describe("calculateValue", () => {
+	describe("calculateAreaValue", () => {
 		it("should return 0 if node has children, not blacklisted and not only visible in comparison map", () => {
-			const actual = TreeMapGenerator["calculateValue"](codeMapNode, state)
+			const actual = TreeMapGenerator["calculateAreaValue"](codeMapNode, state)
 
 			expect(actual).toBe(0)
 		})

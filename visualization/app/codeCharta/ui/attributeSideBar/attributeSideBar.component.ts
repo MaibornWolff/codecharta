@@ -3,13 +3,18 @@ import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
 import _ from "lodash"
-import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "./attributeSideBar.service"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import {
+	IsAttributeSideBarVisibleService,
+	IsAttributeSideBarVisibleSubscriber
+} from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
+import { StoreService } from "../../state/store.service"
+import { closeAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 
 export interface PrimaryMetrics {
 	node: {
@@ -29,7 +34,7 @@ export class AttributeSideBarController
 		HeightMetricSubscriber,
 		ColorMetricSubscriber,
 		EdgeMetricSubscriber,
-		AttributeSideBarVisibilitySubscriber {
+		IsAttributeSideBarVisibleSubscriber {
 	private _viewModel: {
 		node: Node
 		fileName: string
@@ -47,15 +52,15 @@ export class AttributeSideBarController
 	/* @ngInject */
 	constructor(
 		private $rootScope: IRootScopeService,
-		private codeMapPreRenderService: CodeMapPreRenderService,
-		private attributeSideBarService: AttributeSideBarService
+		private storeService: StoreService,
+		private codeMapPreRenderService: CodeMapPreRenderService
 	) {
 		ThreeSceneService.subscribeToBuildingSelectedEvents(this.$rootScope, this)
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		EdgeMetricService.subscribe(this.$rootScope, this)
-		AttributeSideBarService.subscribe(this.$rootScope, this)
+		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 	}
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
@@ -84,12 +89,12 @@ export class AttributeSideBarController
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
-	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
+	public onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
 	public onClickCloseSideBar() {
-		this.attributeSideBarService.closeSideBar()
+		this.storeService.dispatch(closeAttributeSideBar())
 	}
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {

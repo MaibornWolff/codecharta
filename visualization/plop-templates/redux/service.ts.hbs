@@ -1,7 +1,7 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { {{properCase name}}Actions } from "./{{camelCase name}}.actions"
-import { isActionOfType } from "../../../../util/actionHelper"
+import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface {{properCase name}}Subscriber {
 	on{{properCase name}}Changed({{camelCase name}}: {{type}})

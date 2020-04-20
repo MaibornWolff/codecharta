@@ -1,6 +1,12 @@
 {
   "projectName": "SourceMonitorImporter",
   "apiVersion": "0.1",
+  "attributeTypes": {
+    "nodes": {
+      "foo": "relative"
+    },
+    "edges": {}
+  },
   "nodes": [
     {
       "name": "root",
