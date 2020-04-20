@@ -39,7 +39,6 @@ module.exports = {
 		"@typescript-eslint/no-empty-function": "off",
 		"@typescript-eslint/camelcase": "off",
 		"no-useless-escape": "off",
-		"no-prototype-builtins": "off",
 		"prefer-const": "off"
 	}
 }
