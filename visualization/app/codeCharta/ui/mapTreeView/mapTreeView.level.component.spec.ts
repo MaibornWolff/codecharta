@@ -205,7 +205,7 @@ describe("MapTreeViewLevelController", () => {
 				NodeType.FOLDER,
 				VALID_NODE_WITH_PATH
 			)
-			storeService.dispatch(setSearchedNodePaths(["/root/Parent Leaf/", "/root/Parent Leaf/empty folder"]))
+			storeService.dispatch(setSearchedNodePaths(new Set(["/root/Parent Leaf/", "/root/Parent Leaf/empty folder"])))
 
 			const result = mapTreeViewLevelController.isSearched()
 
@@ -218,7 +218,7 @@ describe("MapTreeViewLevelController", () => {
 				NodeType.FOLDER,
 				VALID_NODE_WITH_PATH
 			)
-			storeService.dispatch(setSearchedNodePaths(["/root/Parent Leaf"]))
+			storeService.dispatch(setSearchedNodePaths(new Set(["/root/Parent Leaf"])))
 
 			const result = mapTreeViewLevelController.isSearched()
 

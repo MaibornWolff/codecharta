@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.45.5] - 2020-04-17
+
+### Added 🚀
+
 - Median symbol for aggregated relative metrics #365
 - AttributeTypes for tokeiImporter and SCMLogParser #365
 - Ellipsis button in TreeView list when hovering a node to access context menu #780
@@ -32,6 +44,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 - Consistency of AttributeTypes representation #365
 - Improved overall rendering performance of larger maps by roughly 40% #836
 - Wrong file description for tokeiimporter
+- Improved search performance #837
 
 ### Chore 👨‍💻 👩‍💻
 

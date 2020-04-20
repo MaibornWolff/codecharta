@@ -955,7 +955,7 @@ export const STATE: State = {
 		distributionMetric: "mcc",
 		edgeMetric: "pairingRate",
 		focusedNodePath: "/root/ParentLeaf",
-		searchedNodePaths: [],
+		searchedNodePaths: new Set(),
 		searchPattern: "",
 		margin: 48,
 		colorRange: {
@@ -1060,7 +1060,7 @@ export const DEFAULT_STATE: State = {
 			to: null
 		},
 		searchPattern: "",
-		searchedNodePaths: [],
+		searchedNodePaths: new Set(),
 		sortingOption: SortingOption.NAME
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
