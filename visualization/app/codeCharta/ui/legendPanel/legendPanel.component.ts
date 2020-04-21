@@ -2,7 +2,6 @@ import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
 import { ColorRange, MarkedPackage, MapColors } from "../../codeCharta.model"
 import { ColorConverter } from "../../util/color/colorConverter"
-import { AttributeSideBarService, AttributeSideBarVisibilitySubscriber } from "../attributeSideBar/attributeSideBar.service"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import {
 	InvertColorRangeService,
@@ -18,6 +17,10 @@ import {
 	InvertDeltaColorsSubscriber,
 	InvertDeltaColorsService
 } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
+import {
+	IsAttributeSideBarVisibleService,
+	IsAttributeSideBarVisibleSubscriber
+} from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 
 export interface PackageList {
 	colorPixel: string
@@ -26,7 +29,7 @@ export interface PackageList {
 
 export class LegendPanelController
 	implements
-		AttributeSideBarVisibilitySubscriber,
+		IsAttributeSideBarVisibleSubscriber,
 		ColorRangeSubscriber,
 		InvertColorRangeSubscriber,
 		MarkedPackagesSubscriber,
@@ -54,7 +57,7 @@ export class LegendPanelController
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
-		AttributeSideBarService.subscribe(this.$rootScope, this)
+		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 		MarkedPackagesService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
@@ -78,7 +81,7 @@ export class LegendPanelController
 		this.setMarkedPackageLists(markedPackages)
 	}
 
-	public onAttributeSideBarVisibilityChanged(isAttributeSideBarVisible: boolean) {
+	public onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 

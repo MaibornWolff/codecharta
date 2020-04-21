@@ -3,9 +3,7 @@ package de.maibornwolff.codecharta.importer.tokeiimporter
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.PathFactory
-import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
 import mu.KotlinLogging
@@ -24,6 +22,12 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     private var TOP_LEVEL_OBJECT: String = "inner"
     private val logger = KotlinLogging.logger {}
 
+    private val attributeTypes = AttributeTypes(type = "nodes")
+            .add("rloc", AttributeType.absolute)
+            .add("loc", AttributeType.absolute)
+            .add("empty_lines", AttributeType.absolute)
+            .add("comment_lines", AttributeType.absolute)
+
     private lateinit var projectBuilder: ProjectBuilder
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -38,7 +42,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["sourcemonitor csv file"])
+    @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["tokei generated json"])
     private var file: File? = null
 
     @Throws(IOException::class)
@@ -57,6 +61,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
                 }
             }
         }
+        projectBuilder.addAttributeTypes(attributeTypes)
         ProjectSerializer.serializeProject(projectBuilder.build(), writer())
         return null
     }

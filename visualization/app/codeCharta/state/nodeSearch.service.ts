@@ -45,7 +45,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 
 	private applySettingsSearchedNodePaths() {
 		const newSearchedNodePaths = this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
-		this.storeService.dispatch(setSearchedNodePaths(newSearchedNodePaths))
+		this.storeService.dispatch(setSearchedNodePaths(new Set(newSearchedNodePaths)))
 	}
 
 	private notifyNodeSearchComplete() {

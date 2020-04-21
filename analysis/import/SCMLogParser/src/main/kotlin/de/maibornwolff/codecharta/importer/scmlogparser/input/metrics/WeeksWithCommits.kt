@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import de.maibornwolff.codecharta.model.AttributeType
 import java.util.*
 
 class WeeksWithCommits: Metric {
@@ -21,5 +22,9 @@ class WeeksWithCommits: Metric {
 
     override fun value(): Number {
         return weeksWithCommits.size
+    }
+
+    override fun attributeType(): AttributeType {
+        return AttributeType.relative
     }
 }

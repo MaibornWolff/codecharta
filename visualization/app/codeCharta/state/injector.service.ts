@@ -1,6 +1,7 @@
 //@ts-nocheck
 
 // Plop: Append service import here
+import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { FilesService } from "./store/files/files.service"
@@ -45,6 +46,7 @@ export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		private sortingOptionService: SortingOptionService,
 		private sortingOrderAscendingService: SortingOrderAscendingService,
 		private searchPanelModeService: SearchPanelModeService,

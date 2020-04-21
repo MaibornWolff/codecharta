@@ -17,6 +17,36 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.45.5] - 2020-04-17
+
+### Added 🚀
+
+- Median symbol for aggregated relative metrics #365
+- AttributeTypes for tokeiImporter and SCMLogParser #365
+- Ellipsis button in TreeView list when hovering a node to access context menu #780
+- Show gray eye-icon next to the ellipsis-button to indicate a flattened node #780
+- Attribute Type selector in the metric dropdowns for edges and nodes
+
+### Changed
+
+- Metrics with AttributeType relative are now aggregated using the median #365
+- Showing absolute number of files instead of relative number when hovering list item in TreeView #780
+- Clicking a hovered list item inside the TreeView opens folders #780
+- Color node name in gray when flattened #780
+
+### Removed 🗑
+
+- Eye-icon in TreeView list to flatten a node #780
+- Option to focus a node when clicking the node name inside the TreeView #780
+
+### Fixed 🐞
+
+- Consistency of AttributeTypes representation #365
+- Wrong file description for tokeiimporter
+- Improved search performance #837
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.44.0] - 2020-03-27
 
 ### Added 🚀

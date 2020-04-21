@@ -69,7 +69,7 @@ describe("codeChartaService", () => {
 			},
 			settings: {
 				fileSettings: {
-					attributeTypes: { nodes: [], edges: [] },
+					attributeTypes: { nodes: {}, edges: {} },
 					blacklist: [],
 					edges: [],
 					markedPackages: []

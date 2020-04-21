@@ -1,12 +1,12 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { SquarifiedValuedCodeMapNode } from "./treeMapGenerator"
+import { SquarifiedCodeMapNode } from "./treeMapGenerator"
 import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
 
 describe("treeMapHelper", () => {
 	describe("build node", () => {
 		let codeMapNode: CodeMapNode
-		let squaredNode: SquarifiedValuedCodeMapNode
+		let squaredNode: SquarifiedCodeMapNode
 		let state
 
 		let heightScale = 1
@@ -28,7 +28,7 @@ describe("treeMapHelper", () => {
 				y0: 0,
 				x1: 400,
 				y1: 400
-			} as SquarifiedValuedCodeMapNode
+			} as SquarifiedCodeMapNode
 
 			state = STATE
 			state.treeMap.mapSize = 1
@@ -129,7 +129,7 @@ describe("treeMapHelper", () => {
 
 	describe("isNodeToBeFlat", () => {
 		let codeMapNode: CodeMapNode
-		let squaredNode: SquarifiedValuedCodeMapNode
+		let squaredNode: SquarifiedCodeMapNode
 		let state: State
 
 		beforeEach(() => {
@@ -148,7 +148,7 @@ describe("treeMapHelper", () => {
 				y0: 0,
 				x1: 400,
 				y1: 400
-			} as SquarifiedValuedCodeMapNode
+			} as SquarifiedCodeMapNode
 
 			state = STATE
 			state.treeMap.mapSize = 1
@@ -185,19 +185,19 @@ describe("treeMapHelper", () => {
 		})
 
 		it("should not be a flat node, because its searched for", () => {
-			state.dynamicSettings.searchedNodePaths = ["/root/Anode"]
+			state.dynamicSettings.searchedNodePaths = new Set(["/root/Anode"])
 			state.dynamicSettings.searchPattern = "Anode"
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
 		})
 
 		it("should be a flat node, because other nodes are searched for", () => {
-			state.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"]
+			state.dynamicSettings.searchedNodePaths = new Set(["/root/anotherNode", "/root/anotherNode2"])
 			state.dynamicSettings.searchPattern = "Anode"
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
 		})
 
 		it("should not be a flat node when searchPattern is empty", () => {
-			state.dynamicSettings.searchedNodePaths = ["/root/anotherNode", "/root/anotherNode2"]
+			state.dynamicSettings.searchedNodePaths = new Set(["/root/anotherNode", "/root/anotherNode2"])
 			state.dynamicSettings.searchPattern = ""
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
 		})

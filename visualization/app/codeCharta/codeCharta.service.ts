@@ -54,18 +54,18 @@ export class CodeChartaService {
 
 		if (_.isEmpty(attributeTypes) || !attributeTypes) {
 			return {
-				nodes: [],
-				edges: []
+				nodes: {},
+				edges: {}
 			}
 		} else {
 			if (!attributeTypes.nodes) {
-				newAttributeTypes.nodes = []
+				newAttributeTypes.nodes = {}
 			} else {
 				newAttributeTypes.nodes = attributeTypes.nodes
 			}
 
 			if (!attributeTypes.edges) {
-				newAttributeTypes.edges = []
+				newAttributeTypes.edges = {}
 			} else {
 				newAttributeTypes.edges = attributeTypes.edges
 			}
