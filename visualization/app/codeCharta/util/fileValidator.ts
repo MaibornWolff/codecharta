@@ -28,7 +28,7 @@ export class FileValidator {
 				let errorMessageBuilder = ""
 				errorMessageBuilder =
 					'<i class="fa fa-exclamation-circle"></i>' +
-					"Parameter " +
+					"Parameter: " +
 					validationResult.errors[i].property +
 					" is not of type " +
 					validationResult.errors[i].argument
@@ -39,7 +39,7 @@ export class FileValidator {
 		}
 
 		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
-			return ['<i class="fa fa-exclamation-circle"></i>' + " names or ids are not unique"]
+			return ['<i class="fa fa-exclamation-circle"></i>' + "names or ids are not unique"]
 		}
 
 		if (minorApiWrongMessage !== "") {

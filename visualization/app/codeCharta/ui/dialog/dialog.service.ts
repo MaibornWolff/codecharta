@@ -17,7 +17,7 @@ export class DialogService {
 		this.$mdDialog.show(dialog)
 	}
 
-	public showErrorDialog(msg: string = "An error occured.", title: string = "Error", button: string = "Ok") {
+	public showErrorDialog(msg: string = "An error occurred.", title: string = "Validation Error", button: string = "Ok") {
 		this.$mdDialog.show(
 			this.$mdDialog
 				.alert()
