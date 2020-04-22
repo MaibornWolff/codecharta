@@ -48,12 +48,16 @@ jobs:
   include:
     - stage: test
       name: "Visualization Unit Test and Linter"
-      before_script: cd visualization
+      before_script:
+        - cd visualization
+        - npm install
       script:
         - npm run test --ci
         - npm run lint
     - name: "Visualization E2E Test"
-      before_script: cd visualization
+      before_script:
+        - cd visualization
+        - npm install
       script:
         - npm run build:web
         - npm run e2e --ci
@@ -66,17 +70,21 @@ jobs:
 
     - stage: sonar
       name: "Publish Visualization Sonar Results"
-      script: skip
+      before_script: cd visualization
+      script:
+        - npm install
+        - npm run test
       deploy:
         - provider: script
-          script: ./visualization/script/sonar-publish.sh
+          script: ./script/sonar-publish.sh
           skip_cleanup: true
 
     - name: "Publish Analysis Sonar Results"
-      script: skip
+      before_script: cd analysis
+      script: ./gradlew build integrationTest
       deploy:
         - provider: script
-          script: ./analysis/script/sonar-publish.sh
+          script: ./script/sonar-publish.sh
           skip_cleanup: true
 
     - stage: deploy
