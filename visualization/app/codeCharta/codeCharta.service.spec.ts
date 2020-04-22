@@ -1,5 +1,4 @@
 import "./codeCharta.module"
-
 import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
@@ -7,12 +6,10 @@ import { CCFile, BlacklistType, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
-import { DialogService } from "./ui/dialog/dialog.service"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
 	let storeService: StoreService
-	let dialogService: DialogService
 	let validFileContent
 
 	beforeEach(() => {
@@ -25,11 +22,10 @@ describe("codeChartaService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 		storeService = getService<StoreService>("storeService")
-		dialogService = getService<DialogService>("dialogService")
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(storeService, dialogService)
+		codeChartaService = new CodeChartaService(storeService)
 	}
 
 	describe("loadFiles", () => {
@@ -123,7 +119,8 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual(['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"])
+					expect(err.error).toEqual(['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"])
+					expect(err.warning).toEqual([])
 					done()
 				})
 		})
@@ -148,7 +145,8 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual(['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"])
+					expect(err.error).toEqual(['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"])
+					expect(err.warning).toEqual([])
 					done()
 				})
 		})

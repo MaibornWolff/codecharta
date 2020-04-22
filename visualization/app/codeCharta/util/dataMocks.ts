@@ -392,6 +392,19 @@ export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
 	nodes: [VALID_NODE]
 }
 
+export const TEST_FILE_CONTENT_INVALID_API = {
+	fileName: "noFileName",
+	projectName: "Invalid Sample Map",
+	apiVersion: "2.a",
+	nodes: [VALID_NODE]
+}
+
+export const TEST_FILE_CONTENT_NO_API = {
+	fileName: "noFileName",
+	projectName: "Invalid Sample Map",
+	nodes: [VALID_NODE]
+}
+
 export const FILE_META = {
 	fileName: "fileA",
 	projectName: "Sample Project",
