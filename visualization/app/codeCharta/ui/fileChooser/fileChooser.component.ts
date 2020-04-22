@@ -12,6 +12,7 @@ import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { resetFiles } from "../../state/store/files/files.actions"
+import { CCValidationResult } from "../../util/fileValidator"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -43,9 +44,10 @@ export class FileChooserController {
 			fileName: fileName,
 			content: this.getParsedContent(content)
 		}
-		this.codeChartaService.loadFiles([nameDataPair]).catch(e => {
+
+		this.codeChartaService.loadFiles([nameDataPair]).catch((validationResult: CCValidationResult) => {
 			this.storeService.dispatch(setIsLoadingFile(false))
-			this.printErrors(e)
+			this.printErrors(validationResult)
 		})
 	}
 
@@ -57,18 +59,17 @@ export class FileChooserController {
 		}
 	}
 
-	private printErrors(errors: { error: string[]; warning: string[]; title: string }) {
-		let errorMessage = ""
-		for (let i = 0; i < errors.error.length; i++) {
-			errorMessage += errors.error[i]
-			errorMessage += "</br>"
-		}
-		for (let i = 0; i < errors.warning.length; i++) {
-			errorMessage += errors.warning[i]
-			errorMessage += "</br>"
-		}
+	private printErrors(validationResult: CCValidationResult) {
+		const errorSymbol = '<i class="fa fa-exclamation-circle"></i>'
+		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i>'
+		const lineBreak = "<br>"
 
-		this.dialogService.showErrorDialog(errorMessage, errors.title)
+		const errorMessage = validationResult.error.map(message => errorSymbol + message).join(lineBreak)
+		const warningMessage = validationResult.warning.map(message => warningSymbol + message).join(lineBreak)
+
+		const htmlMessage = "<p>" + errorMessage + warningMessage + "</p>"
+
+		this.dialogService.showErrorDialog(htmlMessage, validationResult.title)
 	}
 }
 
