@@ -16,6 +16,7 @@ import { setScaling } from "../../state/store/appSettings/scaling/scaling.action
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { MetricService } from "../../state/metric.service"
+import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
@@ -56,6 +57,7 @@ describe("codeMapRenderService", () => {
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, metricData, [])
 		storeService.dispatch(setState(state))
+		storeService.dispatch(unfocusNode())
 	}
 
 	function rebuildService() {

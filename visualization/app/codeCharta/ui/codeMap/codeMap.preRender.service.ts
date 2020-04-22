@@ -19,23 +19,14 @@ import { SearchPanelModeActions } from "../../state/store/appSettings/searchPane
 import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
-import { CodeMapHelper } from "../../util/codeMapHelper"
-import { TreeMapGenerator } from "../../util/treeMapGenerator"
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import {
-	FocusedNodePathService,
-	FocusNodeSubscriber,
-	UnfocusNodeSubscriber
-} from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-
 const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService
-	implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber, FocusNodeSubscriber, UnfocusNodeSubscriber {
+export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -54,8 +45,6 @@ export class CodeMapPreRenderService
 		MetricService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
-		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
-		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
 		this.debounceRendering = _.debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
@@ -98,19 +87,6 @@ export class CodeMapPreRenderService
 				this.debounceRendering()
 			}
 		}
-	}
-
-	public onFocusNode(focusedNodePath: string) {
-		const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(
-			this.storeService.getState().dynamicSettings.focusedNodePath,
-			this.unifiedMap
-		)
-		TreeMapGenerator.setVisibilityOfNodeAndDescendants(this.unifiedMap, false)
-		TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
-	}
-
-	public onUnfocusNode() {
-		TreeMapGenerator.setVisibilityOfNodeAndDescendants(this.unifiedMap, true)
 	}
 
 	private updateRenderMapAndFileMeta() {

@@ -21,6 +21,7 @@ describe("treeMapGenerator", () => {
 		codeMapNode = _.cloneDeep(VALID_NODE_WITH_PATH)
 		metricData = _.cloneDeep(METRIC_DATA)
 		isDeltaState = false
+		state.dynamicSettings.focusedNodePath = ""
 	}
 
 	describe("create Treemap nodes", () => {
@@ -105,21 +106,6 @@ describe("treeMapGenerator", () => {
 			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[2].width * nodes[2].length).toEqual(0)
-		})
-	})
-
-	describe("setVisibilityOfNodeAndDescendants", () => {
-		it("node visibility should be adjusted", () => {
-			let result = TreeMapGenerator.setVisibilityOfNodeAndDescendants(codeMapNode, false)
-
-			expect(result.isExcluded).toBeTruthy()
-		})
-
-		it("node children visibility should be adjusted", () => {
-			let result = TreeMapGenerator.setVisibilityOfNodeAndDescendants(codeMapNode, false)
-
-			expect(result.children[0].isExcluded).toBeTruthy()
-			expect(result.children[1].isExcluded).toBeTruthy()
 		})
 	})
 

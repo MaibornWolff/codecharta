@@ -77,7 +77,7 @@ export class TreeMapHelper {
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					: 0,
-			visible: !squaredNode.data.isExcluded && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
+			visible: this.isVisible(squaredNode.data, isNodeLeaf, s, flattened),
 			path: squaredNode.data.path,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
@@ -86,6 +86,17 @@ export class TreeMapHelper {
 			incomingEdgePoint: this.getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),
 			outgoingEdgePoint: this.getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize)
 		}
+	}
+
+	private static isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, s: State, flattened: boolean): boolean {
+		let isVisible = true
+		if (s.dynamicSettings.focusedNodePath.length > 0) {
+			isVisible = squaredNode.path.includes(s.dynamicSettings.focusedNodePath)
+		}
+		if (squaredNode.isExcluded || (isNodeLeaf && s.appSettings.hideFlatBuildings && flattened)) {
+			isVisible = false
+		}
+		return isVisible
 	}
 
 	private static getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {

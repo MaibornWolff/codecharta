@@ -7,7 +7,7 @@ describe("treeMapHelper", () => {
 	describe("build node", () => {
 		let codeMapNode: CodeMapNode
 		let squaredNode: SquarifiedCodeMapNode
-		let state
+		let state: State
 
 		let heightScale = 1
 		let maxHeight = 2000
@@ -37,6 +37,7 @@ describe("treeMapHelper", () => {
 			state.dynamicSettings.margin = 15
 			state.dynamicSettings.heightMetric = "theHeight"
 			state.appSettings.invertHeight = false
+			state.dynamicSettings.focusedNodePath = ""
 		})
 
 		function buildNode() {
@@ -76,7 +77,7 @@ describe("treeMapHelper", () => {
 						pairingRate: 33,
 						avgCommits: 12
 					},
-					visible: true
+					visible: EdgeVisibility.both
 				}
 			]
 			expect(buildNode()).toMatchSnapshot()
@@ -87,8 +88,7 @@ describe("treeMapHelper", () => {
 			state.fileSettings.markedPackages = [
 				{
 					path: "/root/Anode",
-					color: color,
-					attributes: {}
+					color: color
 				}
 			]
 			expect(buildNode().markingColor).toEqual(color)
@@ -99,11 +99,24 @@ describe("treeMapHelper", () => {
 			state.fileSettings.markedPackages = [
 				{
 					path: "/root/AnotherNode",
-					color: color,
-					attributes: {}
+					color: color
 				}
 			]
 			expect(buildNode().markingColor).toEqual(null)
+		})
+
+		it("should be visible if it's a children of the focused node path", () => {
+			state.dynamicSettings.focusedNodePath = "/root"
+			expect(buildNode().visible).toBeTruthy()
+		})
+
+		it("should not be visible if it's excluded", () => {
+			codeMapNode.isExcluded = true
+			expect(buildNode().visible).toBeFalsy()
+		})
+
+		it("should be visible if it's not excluded and no focused node path is given", () => {
+			expect(buildNode().visible).toBeTruthy()
 		})
 	})
 
@@ -249,9 +262,9 @@ describe("treeMapHelper", () => {
 		})
 
 		it("creates flat colored building", () => {
-			const flattend = true
+			const flattened = true
 
-			const buildingColor = TreeMapHelper["getBuildingColor"](node, state, false, flattend)
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, state, false, flattened)
 
 			expect(buildingColor).toBe(state.appSettings.mapColors.flat)
 		})

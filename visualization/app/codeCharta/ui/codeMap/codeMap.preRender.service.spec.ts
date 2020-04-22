@@ -18,10 +18,7 @@ import { Vector3 } from "three"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { hierarchy } from "d3"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { FocusedNodePathService } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -43,7 +40,6 @@ describe("codeMapPreRenderService", () => {
 		withMockedMetricService()
 		withUnifiedMapAndFileMeta()
 		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
-		storeService.dispatch(unfocusNode())
 	})
 
 	afterEach(() => {
@@ -118,9 +114,6 @@ describe("codeMapPreRenderService", () => {
 			MetricService.subscribe = jest.fn()
 			StoreService.subscribe = jest.fn()
 			ScalingService.subscribe = jest.fn()
-			BlacklistService.subscribe = jest.fn()
-			FocusedNodePathService.subscribeToUnfocusNode = jest.fn()
-			FocusedNodePathService.subscribeToFocusNode = jest.fn()
 		})
 
 		it("should subscribe to MetricService", () => {
@@ -139,18 +132,6 @@ describe("codeMapPreRenderService", () => {
 			rebuildService()
 
 			expect(ScalingService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
-		})
-
-		it("should subscribe to UnfocusNodeEvents", () => {
-			rebuildService()
-
-			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
-		})
-
-		it("should subscribe to FocusNodeEvents", () => {
-			rebuildService()
-
-			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 	})
 
@@ -228,32 +209,6 @@ describe("codeMapPreRenderService", () => {
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
 			expect(allNodesToBeExcluded()).toBeTruthy()
-		})
-	})
-
-	describe("onFocusNode", () => {
-		it("should show focused node only", () => {
-			storeService.dispatch(focusNode(codeMapPreRenderService.getRenderMap().children[1].children[0].path))
-
-			codeMapPreRenderService.onFocusNode(codeMapPreRenderService.getRenderMap().children[1].children[0].path)
-
-			expect(codeMapPreRenderService.getRenderMap().isExcluded).toBeTruthy()
-			expect(codeMapPreRenderService.getRenderMap().children[0].isExcluded).toBeTruthy()
-			expect(codeMapPreRenderService.getRenderMap().children[1].children[0].isExcluded).toBeFalsy()
-			expect(codeMapPreRenderService.getRenderMap().children[1].children[1].isExcluded).toBeTruthy()
-		})
-	})
-
-	describe("onUnfocusNode", () => {
-		it("should show all nodes", () => {
-			storeService.dispatch(unfocusNode())
-
-			codeMapPreRenderService.onUnfocusNode()
-
-			expect(codeMapPreRenderService.getRenderMap().isExcluded).toBeFalsy()
-			expect(codeMapPreRenderService.getRenderMap().children[0].isExcluded).toBeFalsy()
-			expect(codeMapPreRenderService.getRenderMap().children[1].children[0].isExcluded).toBeFalsy()
-			expect(codeMapPreRenderService.getRenderMap().children[1].children[1].isExcluded).toBeFalsy()
 		})
 	})
 })

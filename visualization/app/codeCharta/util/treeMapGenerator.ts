@@ -41,14 +41,6 @@ export class TreeMapGenerator {
 		return nodes
 	}
 
-	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean): CodeMapNode {
-		node.isExcluded = !visibility
-		hierarchy<CodeMapNode>(node)
-			.descendants()
-			.forEach(hierarchyNode => (hierarchyNode.data.isExcluded = !visibility))
-		return node
-	}
-
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State): boolean {
 		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
