@@ -85,7 +85,7 @@ export class FileValidator {
 	private static isValidApiVersion(file: { apiVersion: string; nodes: CodeMapNode[] }): boolean {
 		const apiVersion = file.apiVersion
 		const hasApiVersion = apiVersion !== undefined
-		const versionRegExp = new RegExp("[0-9]+.[0-9]+")
+		const versionRegExp = new RegExp("[0-9]+\\.[0-9]+")
 		const isValidVersion = versionRegExp.test(apiVersion)
 		return hasApiVersion && isValidVersion
 	}
