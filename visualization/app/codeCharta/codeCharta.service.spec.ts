@@ -7,10 +7,12 @@ import { CCFile, BlacklistType, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
+import { DialogService } from "./ui/dialog/dialog.service"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
 	let storeService: StoreService
+	let dialogService: DialogService
 	let validFileContent
 
 	beforeEach(() => {
@@ -23,10 +25,11 @@ describe("codeChartaService", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 		storeService = getService<StoreService>("storeService")
+		dialogService = getService<DialogService>("dialogService")
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(storeService)
+		codeChartaService = new CodeChartaService(storeService, dialogService)
 	}
 
 	describe("loadFiles", () => {

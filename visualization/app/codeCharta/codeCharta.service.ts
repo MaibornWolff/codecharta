@@ -11,7 +11,7 @@ export class CodeChartaService {
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 
-	constructor(private storeService: StoreService, private dialogService?: DialogService) {}
+	constructor(private storeService: StoreService, private dialogService: DialogService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {

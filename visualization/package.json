@@ -85,7 +85,6 @@
 		}
 	},
 	"dependencies": {
-		"ajv": "^6.10.0",
 		"angular": "^1.6.9",
 		"angular-animate": "^1.6.9",
 		"angular-aria": "^1.6.9",

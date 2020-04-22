@@ -1,6 +1,9 @@
 import { CodeMapNode } from "../codeCharta.model"
-import * as codeCharta from "../../../package.json"
 import { DialogService } from "../ui/dialog/dialog.service"
+import { Validator } from "jsonschema"
+
+const jsonSchema = require("./schema.json")
+const latestApiVersion = require("../../../package.json").codecharta.apiVersion
 
 export class FileValidator {
 	public static validate(file: { nodes: CodeMapNode[] }, dialogService?: DialogService): string[] {
@@ -10,13 +13,16 @@ export class FileValidator {
 			return ['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"]
 		}
 
-		let Validator = require("jsonschema").Validator
-		let valid = new Validator()
-		let validationResult = valid.validate(file, require("./schema.json"))
+		let validator = new Validator()
+		let validationResult = validator.validate(file, jsonSchema)
 
-		if (this.checkApiVersion(file)[0]) {
-			return ['<i class="fa fa-exclamation-circle"></i>' + " API Version Outdated: Update API Version to match cc.json"]
-		} else if (this.checkApiVersion(file)[1]) {
+		if (!this.isValidApiVersion(file)) {
+			return ['<i class="fa fa-exclamation-circle"></i>' + " file API Version is empty or invalid"]
+		}
+
+		if (this.fileHasHigherMajorVersion(file)) {
+			return ['<i class="fa fa-exclamation-circle"></i>' + " API Version Outdated: Update CodeCharta API Version to match cc.json"]
+		} else if (this.fileHasHigherMinorVersion(file)) {
 			if (dialogService !== undefined) {
 				minorApiWrongMessage = '<i class="fa fa-exclamation-triangle"></i>' + " Minor API Version Wrong"
 			}
@@ -46,7 +52,7 @@ export class FileValidator {
 			dialogService.showErrorDialog(minorApiWrongMessage, "Warning")
 		}
 
-		return validationResult.errors
+		return null
 	}
 
 	private static hasUniqueChildren(node: CodeMapNode) {
@@ -69,45 +75,43 @@ export class FileValidator {
 		return true
 	}
 
-	private static checkApiVersion(file: { nodes: CodeMapNode[] }) {
-		let apiVersion = this.getCodeChartaApiVersion()
-		let fileApiVersion = this.getFileApiVersion(file)
-
-		let apiVersionMajorMinor = [false, false]
-
-		let apiVersionMajor = apiVersion.split(".")[0]
-		let apiVersionMinor = apiVersion.split(".")[1]
-
-		let majorVersion = fileApiVersion.split(".")[0]
-		let minorVersion = fileApiVersion.split(".")[1]
-
-		if (majorVersion > apiVersionMajor) {
-			apiVersionMajorMinor[0] = true
-		} else if (minorVersion > apiVersionMinor) {
-			apiVersionMajorMinor[1] = true
-		}
-		return apiVersionMajorMinor
-	}
-
-	private static getCodeChartaApiVersion() {
-		let schemaCodeCharta = codeCharta
-		let schemaApiVersion
-
-		for (let key in schemaCodeCharta) {
-			if (key === "codecharta") {
-				schemaApiVersion = schemaCodeCharta[key]
-				for (let apiVersionKey in schemaApiVersion) {
-					return schemaApiVersion[apiVersionKey]
-				}
-			}
-		}
-	}
-
 	private static getFileApiVersion(file: { nodes: CodeMapNode[] }) {
 		for (let key in file) {
 			if (key === "apiVersion") {
 				return file[key]
 			}
 		}
+	}
+
+	private static isValidApiVersion(file: { nodes: CodeMapNode[] }): boolean {
+		const apiVersion = this.getFileApiVersion(file)
+		const hasApiVersion = apiVersion !== undefined
+		const versionRegExp = new RegExp("[0-9]+.[0-9]+")
+		const isValidVersion = versionRegExp.test(apiVersion)
+		return hasApiVersion && isValidVersion
+	}
+
+	private static fileHasHigherMajorVersion(file: { nodes: CodeMapNode[] }): boolean {
+		const apiVersion = FileValidator.getFileApiVersion(file)
+		let fileMajorVersion = this.getMajorVersion(apiVersion)
+		let latestMajorVersion = this.getMajorVersion(latestApiVersion)
+
+		return fileMajorVersion > latestMajorVersion
+	}
+
+	private static fileHasHigherMinorVersion(file: { nodes: CodeMapNode[] }): boolean {
+		const apiVersion = FileValidator.getFileApiVersion(file)
+		let fileMinorVersion = this.getMinorVersion(apiVersion)
+		let latestMinorVersion = this.getMinorVersion(latestApiVersion)
+
+		return fileMinorVersion > latestMinorVersion
+	}
+
+	private static getMajorVersion(version: string) {
+		return version.split(".")[0]
+	}
+
+	private static getMinorVersion(version: string) {
+		return version.split(".")[1]
 	}
 }
