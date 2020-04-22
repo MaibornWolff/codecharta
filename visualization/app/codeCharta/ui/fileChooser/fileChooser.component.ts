@@ -60,14 +60,14 @@ export class FileChooserController {
 	}
 
 	private printErrors(validationResult: CCValidationResult) {
-		const errorSymbol = '<i class="fa fa-exclamation-circle"></i>'
-		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i>'
+		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
+		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
 		const lineBreak = "<br>"
 
 		const errorMessage = validationResult.error.map(message => errorSymbol + message).join(lineBreak)
 		const warningMessage = validationResult.warning.map(message => warningSymbol + message).join(lineBreak)
 
-		const htmlMessage = "<p>" + errorMessage + warningMessage + "</p>"
+		const htmlMessage = "<p>" + errorMessage + lineBreak + warningMessage + "</p>"
 
 		this.dialogService.showErrorDialog(htmlMessage, validationResult.title)
 	}

@@ -119,7 +119,7 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err.error).toEqual(['<i class="fa fa-exclamation-circle"></i>' + " File is empty or invalid"])
+					expect(err.error).toEqual(["file is empty or invalid"])
 					expect(err.warning).toEqual([])
 					done()
 				})
@@ -145,7 +145,7 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err.error).toEqual(['<i class="fa fa-exclamation-circle"></i>' + " File is empty or invalid"])
+					expect(err.error).toEqual(["file is empty or invalid"])
 					expect(err.warning).toEqual([])
 					done()
 				})

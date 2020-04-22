@@ -16,50 +16,44 @@ export interface CCValidationResult {
 }
 
 export class FileValidator {
-	private static FILE_IS_INVALID = "file is empty or invalid"
-	private static API_VERSION_IS_INVALID = "file API Version is empty or invalid"
-	private static API_VERSION_IS_OUTDATED = "API Version Outdated: Update CodeCharta API Version to match cc.json"
-	private static MINOR_API_VERSION_IS_OUTDATED = "Minor API Version Wrong"
-	private static NODES_NOT_UNIQUE = "node names in combination with node types are not unique"
+	private static FILE_IS_INVALID = ["file is empty or invalid", "Error Loading File"]
+	private static API_VERSION_IS_INVALID = ["file API Version is empty or invalid", "File API Version Error"]
+	private static API_VERSION_IS_OUTDATED = [
+		"API Version Outdated: Update CodeCharta API Version to match cc.json",
+		"Error CodeCharta Major API Version"
+	]
+	private static MINOR_API_VERSION_IS_OUTDATED = ["Minor API Version Outdated", "Warning CodeCharta Minor API Version"]
+	private static NODES_NOT_UNIQUE = ["node names in combination with node types are not unique", "Uniqueness Error"]
+	private static VALIDATION_ERROR_TITLE = "Validation Error"
 
 	public static validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CCValidationResult {
-		let result: CCValidationResult = { error: [], warning: [], title: string }
+		let result: CCValidationResult = { error: [], warning: [], title: "" }
 
 		if (!file) {
-			result.error.push(this.FILE_IS_INVALID)
-			result.title = "Error Loading File"
-			return result
-		}
-
-		if (!this.isValidApiVersion(file)) {
-			result.error.push(this.API_VERSION_IS_INVALID)
-			result.title = "File API Version Error"
-			return result
-		}
-
-		if (this.fileHasHigherMajorVersion(file)) {
-			result.error.push(this.API_VERSION_IS_OUTDATED)
-			result.title = "Error CodeCharta Major API Version"
-			return result
+			result.error.push(this.FILE_IS_INVALID[0])
+			result.title = this.FILE_IS_INVALID[1]
+		} else if (!this.isValidApiVersion(file)) {
+			result.error.push(this.API_VERSION_IS_INVALID[0])
+			result.title = this.API_VERSION_IS_INVALID[1]
+		} else if (this.fileHasHigherMajorVersion(file)) {
+			result.error.push(this.API_VERSION_IS_OUTDATED[0])
+			result.title = this.API_VERSION_IS_OUTDATED[1]
 		} else if (this.fileHasHigherMinorVersion(file)) {
-			result.warning.push(this.MINOR_API_VERSION_IS_OUTDATED)
-			result.title = "Warning CodeCharta Minor API Version"
+			result.warning.push(this.MINOR_API_VERSION_IS_OUTDATED[0])
+			result.title = this.MINOR_API_VERSION_IS_OUTDATED[1]
 		}
 
-		let validator = new Validator()
-		let validationResult: ValidatorResult = validator.validate(file, jsonSchema)
+		if (result.error.length === 0) {
+			let validator = new Validator()
+			let validationResult: ValidatorResult = validator.validate(file, jsonSchema)
 
-		if (validationResult.errors.length !== 0) {
-			result.error = validationResult.errors.map((error: ValidationError) => this.getValidationMessage(error))
-			result.warning = [minorApiWrongMessage]
-			result.title = "Validation Error"
-			return result
-		}
-
-		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
-			result.error.push(this.NODES_NOT_UNIQUE)
-			result.title = "Uniqueness Error"
-			return result
+			if (validationResult.errors.length !== 0) {
+				result.error = validationResult.errors.map((error: ValidationError) => this.getValidationMessage(error))
+				result.title = this.VALIDATION_ERROR_TITLE
+			} else if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
+				result.error.push(this.NODES_NOT_UNIQUE[0])
+				result.title = this.NODES_NOT_UNIQUE[1]
+			}
 		}
 		return result
 	}
