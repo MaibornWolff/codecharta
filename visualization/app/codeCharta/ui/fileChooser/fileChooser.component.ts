@@ -68,6 +68,9 @@ export class FileChooserController {
 			errorMessage += errors.warning[i]
 			errorMessage += "</br>"
 		}
+
+		errorMessage = "<p>" + errorMessage + "</p>"
+
 		if (errors.error.length === 0) {
 			this.dialogService.showErrorDialog(errorMessage, "Warning")
 		} else {
