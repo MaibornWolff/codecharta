@@ -43,7 +43,6 @@ export class FileChooserController {
 			fileName: fileName,
 			content: this.getParsedContent(content)
 		}
-
 		this.codeChartaService.loadFiles([nameDataPair]).catch(e => {
 			this.storeService.dispatch(setIsLoadingFile(false))
 			this.printErrors(e)
@@ -58,7 +57,7 @@ export class FileChooserController {
 		}
 	}
 
-	private printErrors(errors: { error: string[]; warning: string[] }) {
+	private printErrors(errors: { error: string[]; warning: string[]; title: string }) {
 		let errorMessage = ""
 		for (let i = 0; i < errors.error.length; i++) {
 			errorMessage += errors.error[i]
@@ -69,13 +68,7 @@ export class FileChooserController {
 			errorMessage += "</br>"
 		}
 
-		errorMessage = "<p>" + errorMessage + "</p>"
-
-		if (errors.error.length === 0) {
-			this.dialogService.showErrorDialog(errorMessage, "Warning")
-		} else {
-			this.dialogService.showErrorDialog(errorMessage)
-		}
+		this.dialogService.showErrorDialog(errorMessage, errors.title)
 	}
 }
 

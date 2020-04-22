@@ -30,37 +30,53 @@ describe("FileValidator", () => {
 
 	it("should reject null", () => {
 		const errors = FileValidator.validate(null)
+
 		expectFileToBeInvalid(errors)
+		expect(errors.title).toEqual("Error Loading File")
 	})
 
-	it("should reject invalid API", () => {
+	it("should reject higher Major API", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_MAJOR_API
+
 		const errors = FileValidator.validate(invalidFile)
+
 		expectFileToBeInvalid(errors)
+		expect(errors.title).toEqual("Error CodeCharta Major API Version")
 	})
 
 	it("should not reject higher minor API version but add warning", () => {
 		file = TEST_FILE_CONTENT_INVALID_MINOR_API
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeValid(errors)
 		expect(errors.warning.length).toBeGreaterThan(0)
+		expect(errors.title).toEqual("Warning CodeCharta Minor API Version")
 	})
 
 	it("should reject file missing API version", () => {
 		invalidFile = TEST_FILE_CONTENT_NO_API
+
 		const errors = FileValidator.validate(invalidFile)
+
 		expectFileToBeInvalid(errors)
+		expect(errors.title).toEqual("File API Version Error")
 	})
 
 	it("should reject file with wrong API version", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_API
+
 		const errors = FileValidator.validate(invalidFile)
+
 		expectFileToBeInvalid(errors)
+		expect(errors.title).toEqual("File API Version Error")
 	})
 
 	it("should reject string", () => {
 		const errors = FileValidator.validate("" as any)
+
 		expectFileToBeInvalid(errors)
+		expect(errors.title).toEqual("Error Loading File")
 	})
 
 	it("should not reject a file with edges", () => {
@@ -75,19 +91,25 @@ describe("FileValidator", () => {
 				visible: false
 			}
 		]
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeValid(errors)
 	})
 
 	it("should not reject a file without edges", () => {
 		file.edges = undefined
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeValid(errors)
 	})
 
 	it("should not reject a file when numbers are floating point values", () => {
 		file.nodes[0].children[0].attributes["rloc"] = 333.4
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeValid(errors)
 	})
 
@@ -96,13 +118,17 @@ describe("FileValidator", () => {
 		file.nodes[0].children[0].type = NodeType.FILE
 		file.nodes[0].children[1].name = "same"
 		file.nodes[0].children[1].type = NodeType.FILE
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeInvalid(errors)
 	})
 
 	it("should reject when nodes are empty", () => {
 		file.nodes[0] = []
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeInvalid(errors)
 	})
 
@@ -110,7 +136,9 @@ describe("FileValidator", () => {
 		file.nodes[0] = {
 			something: "something"
 		}
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeInvalid(errors)
 	})
 
@@ -118,7 +146,9 @@ describe("FileValidator", () => {
 		file.nodes[0].attributes = {
 			"tes t1": 0
 		}
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeInvalid(errors)
 	})
 
@@ -126,7 +156,9 @@ describe("FileValidator", () => {
 		file.nodes[0].attributes = {
 			"tes)t1": 0
 		}
+
 		const errors = FileValidator.validate(file)
+
 		expectFileToBeInvalid(errors)
 	})
 })

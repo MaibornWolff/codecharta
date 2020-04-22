@@ -5,12 +5,13 @@ const jsonSchema = require("./schema.json")
 const latestApiVersion = require("../../../package.json").codecharta.apiVersion
 
 export class FileValidator {
-	public static validate(file: { nodes: CodeMapNode[] }): { error: string[]; warning: string[] } {
+	public static validate(file: { nodes: CodeMapNode[] }): { error: string[]; warning: string[]; title: string } {
 		let minorApiWrongMessage = ""
-		let result = { error: [], warning: [] }
+		let result = { error: [], warning: [], title: "Error" }
 
 		if (!file) {
-			result.error = ['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"]
+			result.error = ['<i class="fa fa-exclamation-circle"></i>' + " File is empty or invalid"]
+			result.title = "Error Loading File"
 			return result
 		}
 
@@ -18,7 +19,8 @@ export class FileValidator {
 		let validationResult = validator.validate(file, jsonSchema)
 
 		if (!this.isValidApiVersion(file)) {
-			result.error = ['<i class="fa fa-exclamation-circle"></i>' + " file API Version is empty or invalid"]
+			result.error = ['<i class="fa fa-exclamation-circle"></i>' + " File API Version is empty or invalid"]
+			result.title = "File API Version Error"
 			return result
 		}
 
@@ -26,9 +28,11 @@ export class FileValidator {
 			result.error = [
 				'<i class="fa fa-exclamation-circle"></i>' + " API Version Outdated: Update CodeCharta API Version to match cc.json"
 			]
+			result.title = "Error CodeCharta Major API Version"
 			return result
 		} else if (this.fileHasHigherMinorVersion(file)) {
-			result.warning = [(minorApiWrongMessage = '<i class="fa fa-exclamation-triangle"></i>' + " Minor API Version Wrong")]
+			result.warning = [(minorApiWrongMessage = '<i class="fa fa-exclamation-triangle"></i>' + " Minor API Version Outdated")]
+			result.title = "Warning CodeCharta Minor API Version"
 		}
 
 		if (validationResult.errors.length !== 0) {
@@ -45,11 +49,13 @@ export class FileValidator {
 			}
 			result.error = message
 			result.warning = [minorApiWrongMessage]
+			result.title = "Validation Error"
 			return result
 		}
 
 		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
 			result.error = ['<i class="fa fa-exclamation-circle"></i>' + "names or ids are not unique"]
+			result.title = "Uniqueness Error"
 			return result
 		}
 		return result
