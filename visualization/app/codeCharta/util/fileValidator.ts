@@ -29,18 +29,23 @@ export class FileValidator {
 	public static validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CCValidationResult {
 		let result: CCValidationResult = { error: [], warning: [], title: "" }
 
-		if (!file) {
-			result.error.push(this.FILE_IS_INVALID[0])
-			result.title = this.FILE_IS_INVALID[1]
-		} else if (!this.isValidApiVersion(file)) {
-			result.error.push(this.API_VERSION_IS_INVALID[0])
-			result.title = this.API_VERSION_IS_INVALID[1]
-		} else if (this.fileHasHigherMajorVersion(file)) {
-			result.error.push(this.API_VERSION_IS_OUTDATED[0])
-			result.title = this.API_VERSION_IS_OUTDATED[1]
-		} else if (this.fileHasHigherMinorVersion(file)) {
-			result.warning.push(this.MINOR_API_VERSION_IS_OUTDATED[0])
-			result.title = this.MINOR_API_VERSION_IS_OUTDATED[1]
+		switch (true) {
+			case !file:
+				result.error.push(this.FILE_IS_INVALID[0])
+				result.title = this.FILE_IS_INVALID[1]
+				break
+			case !this.isValidApiVersion(file):
+				result.error.push(this.API_VERSION_IS_INVALID[0])
+				result.title = this.API_VERSION_IS_INVALID[1]
+				break
+			case this.fileHasHigherMajorVersion(file):
+				result.error.push(this.API_VERSION_IS_OUTDATED[0])
+				result.title = this.API_VERSION_IS_OUTDATED[1]
+				break
+			case this.fileHasHigherMinorVersion(file):
+				result.warning.push(this.MINOR_API_VERSION_IS_OUTDATED[0])
+				result.title = this.MINOR_API_VERSION_IS_OUTDATED[1]
+				break
 		}
 
 		if (result.error.length === 0) {

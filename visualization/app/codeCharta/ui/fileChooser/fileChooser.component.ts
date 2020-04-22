@@ -55,7 +55,7 @@ export class FileChooserController {
 		try {
 			return JSON.parse(content)
 		} catch (error) {
-			this.dialogService.showErrorDialog("Error parsing JSON!" + error)
+			return
 		}
 	}
 
