@@ -1,35 +1,38 @@
 import { CodeMapNode } from "../codeCharta.model"
-import { DialogService } from "../ui/dialog/dialog.service"
 import { Validator } from "jsonschema"
 
 const jsonSchema = require("./schema.json")
 const latestApiVersion = require("../../../package.json").codecharta.apiVersion
 
 export class FileValidator {
-	public static validate(file: { nodes: CodeMapNode[] }, dialogService?: DialogService): string[] {
+	public static validate(file: { nodes: CodeMapNode[] }): { error: string[]; warning: string[] } {
 		let minorApiWrongMessage = ""
+		let result = { error: [], warning: [] }
 
 		if (!file) {
-			return ['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"]
+			result.error = ['<i class="fa fa-exclamation-circle"></i>' + " file is empty or invalid"]
+			return result
 		}
 
 		let validator = new Validator()
 		let validationResult = validator.validate(file, jsonSchema)
 
 		if (!this.isValidApiVersion(file)) {
-			return ['<i class="fa fa-exclamation-circle"></i>' + " file API Version is empty or invalid"]
+			result.error = ['<i class="fa fa-exclamation-circle"></i>' + " file API Version is empty or invalid"]
+			return result
 		}
 
 		if (this.fileHasHigherMajorVersion(file)) {
-			return ['<i class="fa fa-exclamation-circle"></i>' + " API Version Outdated: Update CodeCharta API Version to match cc.json"]
+			result.error = [
+				'<i class="fa fa-exclamation-circle"></i>' + " API Version Outdated: Update CodeCharta API Version to match cc.json"
+			]
+			return result
 		} else if (this.fileHasHigherMinorVersion(file)) {
-			if (dialogService !== undefined) {
-				minorApiWrongMessage = '<i class="fa fa-exclamation-triangle"></i>' + " Minor API Version Wrong"
-			}
+			result.warning = [(minorApiWrongMessage = '<i class="fa fa-exclamation-triangle"></i>' + " Minor API Version Wrong")]
 		}
 
 		if (validationResult.errors.length !== 0) {
-			let message: string[] = new Array(validationResult.errors.length + 1)
+			let message: string[] = new Array(validationResult.errors.length)
 			for (let i = 0; i < validationResult.errors.length; i++) {
 				let errorMessageBuilder = ""
 				errorMessageBuilder =
@@ -40,19 +43,16 @@ export class FileValidator {
 					validationResult.errors[i].argument
 				message[i] = errorMessageBuilder
 			}
-			message[validationResult.errors.length] = minorApiWrongMessage
-			return message
+			result.error = message
+			result.warning = [minorApiWrongMessage]
+			return result
 		}
 
 		if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
-			return ['<i class="fa fa-exclamation-circle"></i>' + "names or ids are not unique"]
+			result.error = ['<i class="fa fa-exclamation-circle"></i>' + "names or ids are not unique"]
+			return result
 		}
-
-		if (minorApiWrongMessage !== "") {
-			dialogService.showErrorDialog(minorApiWrongMessage, "Warning")
-		}
-
-		return null
+		return result
 	}
 
 	private static hasUniqueChildren(node: CodeMapNode) {

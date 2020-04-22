@@ -58,13 +58,21 @@ export class FileChooserController {
 		}
 	}
 
-	private printErrors(errors: string[]) {
+	private printErrors(errors: { error: string[]; warning: string[] }) {
 		let errorMessage = ""
-		for (let i = 0; i < errors.length; i++) {
-			errorMessage += errors[i]
+		for (let i = 0; i < errors.error.length; i++) {
+			errorMessage += errors.error[i]
 			errorMessage += "</br>"
 		}
-		this.dialogService.showErrorDialog(errorMessage)
+		for (let i = 0; i < errors.warning.length; i++) {
+			errorMessage += errors.warning[i]
+			errorMessage += "</br>"
+		}
+		if (errors.error.length === 0) {
+			this.dialogService.showErrorDialog(errorMessage, "Warning")
+		} else {
+			this.dialogService.showErrorDialog(errorMessage)
+		}
 	}
 }
 
