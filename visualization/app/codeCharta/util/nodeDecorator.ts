@@ -95,7 +95,7 @@ export class NodeDecorator {
 			let root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				metricData.forEach(metric => {
-					if (!node.data.attributes.hasOwnProperty(metric.name)) {
+					if (node.data.attributes[metric.name] === undefined) {
 						node.data.attributes[metric.name] = 0
 					}
 				})
