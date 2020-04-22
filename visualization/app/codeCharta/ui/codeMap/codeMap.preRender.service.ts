@@ -1,15 +1,6 @@
 "use strict"
 
-import {
-	CCFile,
-	FileSelectionState,
-	FileState,
-	MetricData,
-	CodeMapNode,
-	FileMeta,
-	BlacklistType,
-	BlacklistItem
-} from "../../codeCharta.model"
+import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -28,12 +19,9 @@ import { SearchPanelModeActions } from "../../state/store/appSettings/searchPane
 import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
-import ignore from "ignore"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { hierarchy } from "d3"
 import { TreeMapGenerator } from "../../util/treeMapGenerator"
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import {
 	FocusedNodePathService,
 	FocusNodeSubscriber,
@@ -47,13 +35,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 }
 
 export class CodeMapPreRenderService
-	implements
-		StoreSubscriber,
-		MetricServiceSubscriber,
-		ScalingSubscriber,
-		BlacklistSubscriber,
-		FocusNodeSubscriber,
-		UnfocusNodeSubscriber {
+	implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber, FocusNodeSubscriber, UnfocusNodeSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -72,7 +54,6 @@ export class CodeMapPreRenderService
 		MetricService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
-		BlacklistService.subscribe(this.$rootScope, this)
 		FocusedNodePathService.subscribeToFocusNode(this.$rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode(this.$rootScope, this)
 		this.debounceRendering = _.debounce(() => {
@@ -119,11 +100,6 @@ export class CodeMapPreRenderService
 		}
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.updateIsBlacklisted()
-		this.decorateIfPossible()
-	}
-
 	public onFocusNode(focusedNodePath: string) {
 		const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(
 			this.storeService.getState().dynamicSettings.focusedNodePath,
@@ -146,7 +122,7 @@ export class CodeMapPreRenderService
 	private decorateIfPossible() {
 		const state = this.storeService.getState()
 		if (this.unifiedMap && state.files.fileStatesAvailable() && this.unifiedFileMeta && this.metricService.getMetricData()) {
-			NodeDecorator.decorateMap(this.unifiedMap, this.metricService.getMetricData())
+			NodeDecorator.decorateMap(this.unifiedMap, this.metricService.getMetricData(), state.fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
@@ -157,26 +133,6 @@ export class CodeMapPreRenderService
 				state.fileSettings.attributeTypes
 			)
 		}
-	}
-
-	private updateIsBlacklisted() {
-		const blacklist = this.storeService.getState().fileSettings.blacklist
-		const map = this.getRenderMap()
-		const flattened = ignore()
-		const excluded = ignore()
-
-		for (let item of blacklist) {
-			const path = CodeMapHelper.transformPath(item.path)
-			item.type === BlacklistType.flatten ? flattened.add(path) : excluded.add(path)
-		}
-
-		hierarchy(map)
-			.leaves()
-			.map(node => {
-				const path = CodeMapHelper.transformPath(node.data.path)
-				node.data.isFlattened = flattened.ignores(path)
-				node.data.isExcluded = excluded.ignores(path)
-			})
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {

@@ -1,6 +1,6 @@
 "use strict"
 import * as d3 from "d3"
-import { HierarchyNode } from "d3"
+import { HierarchyNode, hierarchy } from "d3"
 import {
 	BlacklistItem,
 	CCFile,
@@ -9,19 +9,41 @@ import {
 	EdgeMetricCount,
 	KeyValuePair,
 	AttributeTypes,
-	AttributeTypeValue
+	AttributeTypeValue,
+	BlacklistType
 } from "../codeCharta.model"
 import { MetricService } from "../state/metric.service"
+import { CodeMapHelper } from "./codeMapHelper"
+import ignore from "ignore"
 
 export class NodeDecorator {
-	public static decorateMap(map: CodeMapNode, metricData: MetricData[]) {
+	public static decorateMap(map: CodeMapNode, metricData: MetricData[], blacklist: BlacklistItem[]) {
 		this.decorateMapWithMissingObjects(map)
 		this.decorateMapWithCompactMiddlePackages(map)
 		this.decorateLeavesWithMissingMetrics(map, metricData)
+		this.decorateMapWithBlacklist(map, blacklist)
 	}
 
 	public static preDecorateFile(file: CCFile) {
 		this.decorateMapWithPathAttribute(file)
+	}
+
+	private static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
+		const flattened = ignore()
+		const excluded = ignore()
+
+		for (let item of blacklist) {
+			const path = CodeMapHelper.transformPath(item.path)
+			item.type === BlacklistType.flatten ? flattened.add(path) : excluded.add(path)
+		}
+
+		hierarchy(map)
+			.leaves()
+			.map(node => {
+				const path = CodeMapHelper.transformPath(node.data.path)
+				node.data.isFlattened = flattened.ignores(path)
+				node.data.isExcluded = excluded.ignores(path)
+			})
 	}
 
 	private static decorateMapWithCompactMiddlePackages(map: CodeMapNode) {

@@ -141,12 +141,6 @@ describe("codeMapPreRenderService", () => {
 			expect(ScalingService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
-		it("should subscribe to BlacklistService", () => {
-			rebuildService()
-
-			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
-		})
-
 		it("should subscribe to UnfocusNodeEvents", () => {
 			rebuildService()
 
@@ -227,13 +221,11 @@ describe("codeMapPreRenderService", () => {
 
 			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
-	})
 
-	describe("onBlacklistChanged", () => {
 		it("should update the isBlacklisted attribute on each node", () => {
 			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
 
-			codeMapPreRenderService.onBlacklistChanged(undefined)
+			codeMapPreRenderService.onMetricDataAdded(metricData)
 
 			expect(allNodesToBeExcluded()).toBeTruthy()
 		})
