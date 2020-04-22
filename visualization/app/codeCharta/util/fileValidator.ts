@@ -16,35 +16,51 @@ export interface CCValidationResult {
 }
 
 export class FileValidator {
-	private static FILE_IS_INVALID = ["file is empty or invalid", "Error Loading File"]
-	private static API_VERSION_IS_INVALID = ["file API Version is empty or invalid", "File API Version Error"]
-	private static API_VERSION_IS_OUTDATED = [
-		"API Version Outdated: Update CodeCharta API Version to match cc.json",
-		"Error CodeCharta Major API Version"
-	]
-	private static MINOR_API_VERSION_IS_OUTDATED = ["Minor API Version Outdated", "Warning CodeCharta Minor API Version"]
-	private static NODES_NOT_UNIQUE = ["node names in combination with node types are not unique", "Uniqueness Error"]
-	private static VALIDATION_ERROR_TITLE = "Validation Error"
+	private static ERROR_MESSAGES = {
+		fileIsInvalid: {
+			title: "Error Loading File",
+			message: "file is empty or invalid"
+		},
+		apiVersionIsInvalid: {
+			title: "Error File API Version",
+			message: "file API Version is empty or invalid"
+		},
+		apiVersionIsOutdated: {
+			title: "Error CodeCharta Major API Version",
+			message: "API Version Outdated: Update CodeCharta API Version to match cc.json"
+		},
+		minorApiVersionOutdated: {
+			title: "Warning CodeCharta Minor API Version",
+			message: "Minor API Version Outdated"
+		},
+		nodesNotUnique: {
+			title: "Error Name-Type Uniques",
+			message: "node names in combination with node types are not unique"
+		},
+		validationError: {
+			title: "Error Validation"
+		}
+	}
 
 	public static validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CCValidationResult {
 		let result: CCValidationResult = { error: [], warning: [], title: "" }
 
 		switch (true) {
 			case !file:
-				result.error.push(this.FILE_IS_INVALID[0])
-				result.title = this.FILE_IS_INVALID[1]
+				result.error.push(this.ERROR_MESSAGES.fileIsInvalid.message)
+				result.title = this.ERROR_MESSAGES.fileIsInvalid.title
 				break
 			case !this.isValidApiVersion(file):
-				result.error.push(this.API_VERSION_IS_INVALID[0])
-				result.title = this.API_VERSION_IS_INVALID[1]
+				result.error.push(this.ERROR_MESSAGES.apiVersionIsInvalid.message)
+				result.title = this.ERROR_MESSAGES.apiVersionIsInvalid.title
 				break
 			case this.fileHasHigherMajorVersion(file):
-				result.error.push(this.API_VERSION_IS_OUTDATED[0])
-				result.title = this.API_VERSION_IS_OUTDATED[1]
+				result.error.push(this.ERROR_MESSAGES.apiVersionIsOutdated.message)
+				result.title = this.ERROR_MESSAGES.apiVersionIsOutdated.title
 				break
 			case this.fileHasHigherMinorVersion(file):
-				result.warning.push(this.MINOR_API_VERSION_IS_OUTDATED[0])
-				result.title = this.MINOR_API_VERSION_IS_OUTDATED[1]
+				result.warning.push(this.ERROR_MESSAGES.minorApiVersionOutdated.message)
+				result.title = this.ERROR_MESSAGES.minorApiVersionOutdated.title
 				break
 		}
 
@@ -54,10 +70,10 @@ export class FileValidator {
 
 			if (validationResult.errors.length !== 0) {
 				result.error = validationResult.errors.map((error: ValidationError) => this.getValidationMessage(error))
-				result.title = this.VALIDATION_ERROR_TITLE
+				result.title = this.ERROR_MESSAGES.validationError.title
 			} else if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
-				result.error.push(this.NODES_NOT_UNIQUE[0])
-				result.title = this.NODES_NOT_UNIQUE[1]
+				result.error.push(this.ERROR_MESSAGES.nodesNotUnique.message)
+				result.title = this.ERROR_MESSAGES.nodesNotUnique.title
 			}
 		}
 		return result

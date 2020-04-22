@@ -60,7 +60,7 @@ describe("FileValidator", () => {
 		const errors = FileValidator.validate(invalidFile)
 
 		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("File API Version Error")
+		expect(errors.title).toEqual("Error File API Version")
 	})
 
 	it("should reject file with wrong API version", () => {
@@ -69,7 +69,7 @@ describe("FileValidator", () => {
 		const errors = FileValidator.validate(invalidFile)
 
 		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("File API Version Error")
+		expect(errors.title).toEqual("Error File API Version")
 	})
 
 	it("should reject string", () => {
@@ -122,6 +122,7 @@ describe("FileValidator", () => {
 		const errors = FileValidator.validate(file)
 
 		expectFileToBeInvalid(errors)
+		expect(errors.title).toEqual("Error Name-Type Uniques")
 	})
 
 	it("should reject when nodes are empty", () => {
@@ -130,6 +131,7 @@ describe("FileValidator", () => {
 		const errors = FileValidator.validate(file)
 
 		expectFileToBeInvalid(errors)
+		expect(errors.title).toEqual("Error Validation")
 	})
 
 	it("should reject if nodes is not a node and therefore has no name or id", () => {
