@@ -122,7 +122,7 @@ describe("FileValidator", () => {
 		const errors = FileValidator.validate(file)
 
 		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error Name-Type Uniques")
+		expect(errors.title).toEqual("Error Node Uniques")
 	})
 
 	it("should reject when nodes are empty", () => {
