@@ -1,7 +1,7 @@
-import { hierarchy, treemap, HierarchyNode, HierarchyRectangularNode, TreemapLayout } from "d3"
+import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap, TreemapLayout } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
-import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
+import { CodeMapNode, MetricData, Node, State } from "../codeCharta.model"
 
 export interface SquarifiedCodeMapNode extends HierarchyRectangularNode<CodeMapNode> {}
 
@@ -21,7 +21,7 @@ export class TreeMapGenerator {
 	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedCodeMapNode {
 		const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
 		const nodeLeafs: CodeMapNode[] = hierarchyNode.descendants().map(d => d.data)
-		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs, s.fileSettings.blacklist)
+		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs)
 		const nodesPerSide: number = 2 * Math.sqrt(hierarchyNode.descendants().length - blacklisted)
 		const mapLength: number = s.treeMap.mapSize * 2 + nodesPerSide * s.dynamicSettings.margin
 		const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
@@ -41,20 +41,12 @@ export class TreeMapGenerator {
 		return nodes
 	}
 
-	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean): CodeMapNode {
-		node.visible = visibility
-		hierarchy<CodeMapNode>(node)
-			.descendants()
-			.forEach(hierarchyNode => (hierarchyNode.data.visible = visibility))
-		return node
-	}
-
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State): boolean {
 		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
 
 	private static calculateAreaValue(node: CodeMapNode, s: State): number {
-		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
+		if (node.isExcluded) {
 			return 0
 		}
 

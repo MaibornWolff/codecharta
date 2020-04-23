@@ -46,7 +46,8 @@ export interface CodeMapNode {
 	}
 	link?: string
 	path?: string
-	visible?: boolean
+	isExcluded?: boolean
+	isFlattened?: boolean
 	deltas?: {
 		[key: string]: number
 	}

@@ -4,7 +4,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Node, MetricData, CodeMapNode, FileMeta, State } from "../../codeCharta.model"
+import { Node, MetricData, CodeMapNode, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
 import * as _ from "lodash"
@@ -15,8 +15,8 @@ import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { MetricService } from "../../state/metric.service"
+import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
@@ -29,7 +29,6 @@ describe("codeMapRenderService", () => {
 	let state: State
 	let map: CodeMapNode
 	let metricData: MetricData[]
-	let fileMeta: FileMeta
 
 	beforeEach(() => {
 		restartSystem()
@@ -53,12 +52,12 @@ describe("codeMapRenderService", () => {
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
-		fileMeta = _.cloneDeep(TEST_FILE_WITH_PATHS.fileMeta)
 		state = _.cloneDeep(STATE)
 		metricData = _.cloneDeep(METRIC_DATA)
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
-		NodeDecorator.decorateMap(map, fileMeta, metricData)
+		NodeDecorator.decorateMap(map, metricData, [])
 		storeService.dispatch(setState(state))
+		storeService.dispatch(unfocusNode())
 	}
 
 	function rebuildService() {
@@ -194,36 +193,6 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService["setArrows"](sortedNodes)
 
 			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalledWith(sortedNodes, storeService.getState().fileSettings.edges)
-		})
-	})
-
-	describe("showAllOrOnlyFocusedNode", () => {
-		it("should show focused node only", () => {
-			const bigLeaf = map.children[0]
-			const smallLeaf = map.children[1].children[0]
-			const otherSmallLeaf = map.children[1].children[1]
-			storeService.dispatch(focusNode(smallLeaf.path))
-
-			codeMapRenderService["showAllOrOnlyFocusedNode"](map)
-
-			expect(map.visible).toBeFalsy()
-			expect(bigLeaf.visible).toBeFalsy()
-			expect(smallLeaf.visible).toBeTruthy()
-			expect(otherSmallLeaf.visible).toBeFalsy()
-		})
-
-		it("should show all nodes", () => {
-			const bigLeaf = map.children[0]
-			const smallLeaf = map.children[1].children[0]
-			const otherSmallLeaf = map.children[1].children[1]
-			storeService.dispatch(unfocusNode())
-
-			codeMapRenderService["showAllOrOnlyFocusedNode"](map)
-
-			expect(map.visible).toBeTruthy()
-			expect(bigLeaf.visible).toBeTruthy()
-			expect(smallLeaf.visible).toBeTruthy()
-			expect(otherSmallLeaf.visible).toBeTruthy()
 		})
 	})
 })

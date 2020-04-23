@@ -76,7 +76,7 @@ jobs:
         - npm run test
       deploy:
         - provider: script
-          script: ./script/sonar-publish.sh
+          script: sonar-scanner
           skip_cleanup: true
 
     - name: "Publish Analysis Sonar Results"
@@ -84,7 +84,7 @@ jobs:
       script: ./gradlew build integrationTest
       deploy:
         - provider: script
-          script: ./script/sonar-publish.sh
+          script: ./gradlew sonarqube
           skip_cleanup: true
 
     - stage: deploy

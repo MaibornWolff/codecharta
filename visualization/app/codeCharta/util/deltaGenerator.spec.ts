@@ -22,18 +22,24 @@ describe("deltaGenerator", () => {
 			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/onlyA",
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "special",
 					type: NodeType.FOLDER,
 					attributes: {},
 					path: "/root/onlyA/special",
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "unicorn",
 							type: NodeType.FILE,
 							attributes: { special: 42 },
-							path: "/root/onlyA/special/unicorn"
+							path: "/root/onlyA/special/unicorn",
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}
@@ -45,18 +51,24 @@ describe("deltaGenerator", () => {
 			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/onlyA",
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "special",
 					type: NodeType.FOLDER,
 					attributes: {},
 					path: "/root/onlyA/special",
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "Narwal",
 							type: NodeType.FILE,
 							attributes: { monster: 666 },
-							path: "/root/onlyA/special/Narwal"
+							path: "/root/onlyA/special/Narwal",
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}
