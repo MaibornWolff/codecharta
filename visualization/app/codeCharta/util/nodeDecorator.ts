@@ -38,7 +38,7 @@ export class NodeDecorator {
 		}
 
 		hierarchy(map)
-			.leaves()
+			.descendants()
 			.map(node => {
 				const path = CodeMapHelper.transformPath(node.data.path)
 				node.data.isFlattened = flattened.ignores(path)
