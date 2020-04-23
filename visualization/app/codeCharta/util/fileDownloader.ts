@@ -79,7 +79,8 @@ export class FileDownloader {
 	private static undecorateMap(map: CodeMapNode): CodeMapNode {
 		let copy: CodeMapNode = clone(map)
 		d3.hierarchy(copy).each(node => {
-			delete node.data.visible
+			delete node.data.isExcluded
+			delete node.data.isFlattened
 			delete node.data.edgeAttributes
 			delete node.data.path
 			if (node.data.type === NodeType.FOLDER) {

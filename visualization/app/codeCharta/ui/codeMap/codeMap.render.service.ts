@@ -2,7 +2,6 @@
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { TreeMapGenerator } from "../../util/treeMapGenerator"
-import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
@@ -20,7 +19,6 @@ export class CodeMapRenderService {
 	) {}
 
 	public render(map: CodeMapNode) {
-		this.showAllOrOnlyFocusedNode(map)
 		const sortedNodes: Node[] = this.getSortedNodes(map)
 		this.setNewMapMesh(sortedNodes)
 		this.setLabels(sortedNodes)
@@ -73,16 +71,6 @@ export class CodeMapRenderService {
 		const edges = this.storeService.getState().fileSettings.edges
 		if (edges.length > 0) {
 			this.codeMapArrowService.addEdgePreview(sortedNodes, edges)
-		}
-	}
-
-	private showAllOrOnlyFocusedNode(map: CodeMapNode) {
-		if (this.storeService.getState().dynamicSettings.focusedNodePath.length > 0) {
-			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(this.storeService.getState().dynamicSettings.focusedNodePath, map)
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, false)
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
-		} else {
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, true)
 		}
 	}
 }

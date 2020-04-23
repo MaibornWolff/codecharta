@@ -4,6 +4,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { StoreService } from "../../state/store.service"
 
 export class MatchingFilesCounterController implements NodeSearchSubscriber, BlacklistSubscriber {
 	private _viewModel: {
@@ -11,44 +12,43 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 		flattenCount: number
 		excludeCount: number
 		searchPattern: string
-		blacklist: BlacklistItem[]
 	} = {
 		fileCount: 0,
 		flattenCount: 0,
 		excludeCount: 0,
-		searchPattern: "",
-		blacklist: []
+		searchPattern: ""
 	}
 
 	private searchedNodeLeaves: CodeMapNode[] = []
 
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		NodeSearchService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
 	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
 		this.searchedNodeLeaves = this.getSearchedNodeLeaves(searchedNodes)
-		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
+		this.updateViewModel()
 	}
 
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this._viewModel.blacklist = blacklist
-		this.updateViewModel(this.searchedNodeLeaves, this._viewModel.blacklist)
+		this.updateViewModel()
 	}
 
-	private updateViewModel(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[]) {
-		this._viewModel.fileCount = searchedNodeLeaves.length
-		this._viewModel.flattenCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.flatten)
-		this._viewModel.excludeCount = this.getBlacklistedFileCount(searchedNodeLeaves, blacklist, BlacklistType.exclude)
+	private updateViewModel() {
+		this._viewModel.fileCount = this.searchedNodeLeaves.length
+		this._viewModel.flattenCount = this.getBlacklistedFileCount(BlacklistType.flatten)
+		this._viewModel.excludeCount = this.getBlacklistedFileCount(BlacklistType.exclude)
 	}
 
 	private getSearchedNodeLeaves(searchedNodes: CodeMapNode[]): CodeMapNode[] {
 		return searchedNodes.filter(node => !(node.children && node.children.length > 0))
 	}
 
-	private getBlacklistedFileCount(searchedNodeLeaves: CodeMapNode[], blacklist: BlacklistItem[], blacklistType: BlacklistType): number {
-		return searchedNodeLeaves.filter(node => CodeMapHelper.isBlacklisted(node, blacklist, blacklistType)).length
+	private getBlacklistedFileCount(blacklistType: BlacklistType): number {
+		return this.searchedNodeLeaves.filter(node =>
+			CodeMapHelper.isPathBlacklisted(node.path, this.storeService.getState().fileSettings.blacklist, blacklistType)
+		).length
 	}
 }
 
