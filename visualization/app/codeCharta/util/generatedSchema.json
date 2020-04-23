@@ -2,26 +2,21 @@
 	"$ref": "#/definitions/ExportCCFile",
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"definitions": {
-		"AttributeType": {
-			"additionalProperties": {
-				"enum": ["absolute", "relative"],
-				"type": "string"
-			},
-			"type": "object"
-		},
 		"AttributeTypes": {
 			"properties": {
 				"edges": {
-					"items": {
-						"$ref": "#/definitions/AttributeType"
+					"additionalProperties": {
+						"enum": ["absolute", "relative"],
+						"type": "string"
 					},
-					"type": "array"
+					"type": "object"
 				},
 				"nodes": {
-					"items": {
-						"$ref": "#/definitions/AttributeType"
+					"additionalProperties": {
+						"enum": ["absolute", "relative"],
+						"type": "string"
 					},
-					"type": "array"
+					"type": "object"
 				}
 			},
 			"type": "object"
