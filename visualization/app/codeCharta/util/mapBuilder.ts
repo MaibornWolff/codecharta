@@ -23,9 +23,7 @@ export class MapBuilder {
 			path: CodeChartaService.ROOT_PATH,
 			type: NodeType.FOLDER,
 			children: [],
-			attributes: {},
-			isExcluded: false,
-			isFlattened: false
+			attributes: {}
 		}
 	}
 
