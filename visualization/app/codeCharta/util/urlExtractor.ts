@@ -9,7 +9,7 @@ export class UrlExtractor {
 	constructor(private $location: ILocationService, private $http: IHttpService) {}
 
 	public getParameterByName(name: string): string {
-		const sanitizedName = name.replace(/[\[\]]/g, "\\$&")
+		const sanitizedName = name.replace(/[[\]]/g, "\\$&")
 		let regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
 			results = regex.exec(this.$location.absUrl())
 

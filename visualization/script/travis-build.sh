@@ -6,10 +6,8 @@ set -o pipefail
 echo "Building npm package"
 cd visualization
 npm install
+npm run test
 npm run build:web
-npm run lint
-npm run test --ci
-npm run e2e --ci
 npm run package
 
 echo "Building docker image"
