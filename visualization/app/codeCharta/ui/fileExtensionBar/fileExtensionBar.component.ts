@@ -64,8 +64,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private setNewDistribution(map: CodeMapNode) {
 		const distributionMetric = this.storeService.getState().dynamicSettings.distributionMetric
-		const blacklist = this.storeService.getState().fileSettings.blacklist
-		this._viewModel.distribution = FileExtensionCalculator.getMetricDistribution(map, distributionMetric, blacklist)
+		this._viewModel.distribution = FileExtensionCalculator.getMetricDistribution(map, distributionMetric)
 	}
 
 	private setColorForEachExtension() {

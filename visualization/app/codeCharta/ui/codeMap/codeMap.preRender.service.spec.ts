@@ -1,11 +1,11 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { CCFile, CodeMapNode, FileMeta, MetricData } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode, FileMeta, MetricData } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
-import { TEST_FILE_WITH_PATHS, METRIC_DATA, withMockedEventMethods, FILE_STATES, STATE } from "../../util/dataMocks"
+import { FILE_STATES, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
@@ -17,7 +17,8 @@ import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.ac
 import { Vector3 } from "three"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
-import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { hierarchy } from "d3"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -27,7 +28,6 @@ describe("codeMapPreRenderService", () => {
 	let codeMapRenderService: CodeMapRenderService
 	let edgeMetricDataService: EdgeMetricDataService
 
-	let file: CCFile
 	let fileMeta: FileMeta
 	let map: CodeMapNode
 	let metricData: MetricData[]
@@ -55,7 +55,6 @@ describe("codeMapPreRenderService", () => {
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
-		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
 		fileMeta = _.cloneDeep(FILE_STATES[0].file.fileMeta)
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 		map.children[1].children = _.slice(map.children[1].children, 0, 2)
@@ -65,6 +64,7 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(resetFiles())
 		storeService.dispatch(addFile(fileStates[0].file))
 		storeService.dispatch(setSingleByName(fileStates[0].file.fileMeta.fileName))
+		storeService.dispatch(setBlacklist())
 		metricData = _.cloneDeep(METRIC_DATA)
 	}
 
@@ -97,6 +97,18 @@ describe("codeMapPreRenderService", () => {
 		codeMapPreRenderService["unifiedFileMeta"] = fileMeta
 	}
 
+	function allNodesToBeExcluded(): boolean {
+		hierarchy(codeMapPreRenderService.getRenderMap())
+			.leaves()
+			.forEach(node => {
+				if (!node.data.isExcluded) {
+					return false
+				}
+			})
+
+		return true
+	}
+
 	describe("constructor", () => {
 		beforeEach(() => {
 			MetricService.subscribe = jest.fn()
@@ -104,19 +116,19 @@ describe("codeMapPreRenderService", () => {
 			ScalingService.subscribe = jest.fn()
 		})
 
-		it("should call subscribe for MetricService", () => {
+		it("should subscribe to MetricService", () => {
 			rebuildService()
 
 			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
-		it("should call subscribe for StoreService", () => {
+		it("should subscribe to StoreService", () => {
 			rebuildService()
 
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
-		it("should call subscribe for ScalingService", () => {
+		it("should subscribe to ScalingService", () => {
 			rebuildService()
 
 			expect(ScalingService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
@@ -125,11 +137,9 @@ describe("codeMapPreRenderService", () => {
 
 	describe("getRenderMap", () => {
 		it("should return unifiedMap", () => {
-			codeMapPreRenderService["unifiedMap"] = file.map
-
 			const result = codeMapPreRenderService.getRenderMap()
 
-			expect(result).toEqual(file.map)
+			expect(result).toEqual(map)
 		})
 	})
 
@@ -142,7 +152,7 @@ describe("codeMapPreRenderService", () => {
 				expect(storeService.getState().appSettings.isLoadingFile).toBeFalsy()
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
 		})
 
 		it("should not call codeMapRenderService.render for scaling actions", () => {
@@ -191,6 +201,14 @@ describe("codeMapPreRenderService", () => {
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
 			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
+		})
+
+		it("should update the isBlacklisted attribute on each node", () => {
+			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
+
+			codeMapPreRenderService.onMetricDataAdded(metricData)
+
+			expect(allNodesToBeExcluded()).toBeTruthy()
 		})
 	})
 })

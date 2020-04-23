@@ -33,8 +33,7 @@ export class AggregationGenerator {
 				type: NodeType.FOLDER,
 				children: [],
 				attributes: {},
-				path: CodeChartaService.ROOT_PATH,
-				visible: true
+				path: CodeChartaService.ROOT_PATH
 			},
 			settings: {
 				fileSettings: {

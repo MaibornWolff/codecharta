@@ -34,13 +34,17 @@ describe("codeChartaService", () => {
 			fileMeta: { apiVersion: "1.1", fileName: "noFileName", projectName: "Sample Map" },
 			map: {
 				attributes: {},
+				isExcluded: false,
+				isFlattened: false,
 				children: [
 					{
 						attributes: { functions: 10, mcc: 1, rloc: 100 },
 						link: "http://www.google.de",
 						name: "big leaf",
 						path: "/root/big leaf",
-						type: NodeType.FILE
+						type: NodeType.FILE,
+						isExcluded: false,
+						isFlattened: false
 					},
 					{
 						attributes: {},
@@ -49,18 +53,24 @@ describe("codeChartaService", () => {
 								attributes: { functions: 100, mcc: 100, rloc: 30 },
 								name: "small leaf",
 								path: "/root/Parent Leaf/small leaf",
-								type: NodeType.FILE
+								type: NodeType.FILE,
+								isExcluded: false,
+								isFlattened: false
 							},
 							{
 								attributes: { functions: 1000, mcc: 10, rloc: 70 },
 								name: "other small leaf",
 								path: "/root/Parent Leaf/other small leaf",
-								type: NodeType.FILE
+								type: NodeType.FILE,
+								isExcluded: false,
+								isFlattened: false
 							}
 						],
 						name: "Parent Leaf",
 						path: "/root/Parent Leaf",
-						type: NodeType.FOLDER
+						type: NodeType.FOLDER,
+						isExcluded: false,
+						isFlattened: false
 					}
 				],
 				name: "root",
