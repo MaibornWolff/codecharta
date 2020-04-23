@@ -23,7 +23,6 @@ import { IRootScopeService } from "angular"
 import { Files } from "../model/files"
 import { hierarchy } from "d3"
 import { MetricService } from "../state/metric.service"
-import { CodeMapHelper } from "./codeMapHelper"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -1228,7 +1227,15 @@ export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: Blackl
 		.leaves()
 		.forEach(node => {
 			if (paths.includes(node.data.path)) {
-				CodeMapHelper.setBlacklistFlagByType(node.data, type, true)
+				setBlacklistFlagByType(node.data, type, true)
 			}
 		})
+}
+
+function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {
+	if (type === BlacklistType.exclude) {
+		node.isExcluded = flag
+	} else {
+		node.isFlattened = flag
+	}
 }

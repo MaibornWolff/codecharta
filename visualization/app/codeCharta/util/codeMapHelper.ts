@@ -24,14 +24,6 @@ export class CodeMapHelper {
 			.map(node => node.data.path)
 	}
 
-	public static setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {
-		if (type === BlacklistType.exclude) {
-			node.isExcluded = flag
-		} else {
-			node.isFlattened = flag
-		}
-	}
-
 	public static transformPath(toTransform: string): string {
 		let removeNumberOfCharactersFromStart = 0
 
