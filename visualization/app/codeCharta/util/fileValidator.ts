@@ -26,11 +26,11 @@ export class FileValidator {
 			message: "file API Version is empty or invalid"
 		},
 		apiVersionIsOutdated: {
-			title: "Error CodeCharta Major API Version",
+			title: "Error Major API Version",
 			message: "API Version Outdated: Update CodeCharta API Version to match cc.json"
 		},
 		minorApiVersionOutdated: {
-			title: "Warning CodeCharta Minor API Version",
+			title: "Warning Minor API Version",
 			message: "Minor API Version Outdated"
 		},
 		nodesNotUnique: {

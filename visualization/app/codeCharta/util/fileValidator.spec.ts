@@ -41,7 +41,7 @@ describe("FileValidator", () => {
 		const errors = FileValidator.validate(invalidFile)
 
 		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error CodeCharta Major API Version")
+		expect(errors.title).toEqual("Error Major API Version")
 	})
 
 	it("should not reject higher minor API version but add warning", () => {
@@ -51,7 +51,7 @@ describe("FileValidator", () => {
 
 		expectFileToBeValid(errors)
 		expect(errors.warning.length).toBeGreaterThan(0)
-		expect(errors.title).toEqual("Warning CodeCharta Minor API Version")
+		expect(errors.title).toEqual("Warning Minor API Version")
 	})
 
 	it("should reject file missing API version", () => {
