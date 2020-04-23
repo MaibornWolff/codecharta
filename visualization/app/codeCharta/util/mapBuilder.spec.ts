@@ -34,7 +34,9 @@ describe("mapBuilder", () => {
 				path: "/root/big leaf",
 				children: [],
 				attributes: { rloc: 100, functions: 10, mcc: 1 },
-				link: "http://www.google.de"
+				link: "http://www.google.de",
+				isExcluded: false,
+				isFlattened: false
 			}
 			expect(MapBuilder["findNode"](rootNode, "/root/big leaf")).toEqual(expected)
 		})
@@ -45,7 +47,9 @@ describe("mapBuilder", () => {
 				type: NodeType.FILE,
 				path: "/root/Parent Leaf/other small leaf",
 				children: [],
-				attributes: { rloc: 70, functions: 1000, mcc: 10 }
+				attributes: { rloc: 70, functions: 1000, mcc: 10 },
+				isExcluded: false,
+				isFlattened: false
 			}
 			expect(MapBuilder["findNode"](rootNode, "/root/Parent Leaf/other small leaf")).toEqual(expected)
 		})
