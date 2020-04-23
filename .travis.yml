@@ -76,7 +76,7 @@ jobs:
         - npm run test
       deploy:
         - provider: script
-          script: sonar-scanner || true
+          script: sonar-scanner
           skip_cleanup: true
 
     - name: "Publish Analysis Sonar Results"
