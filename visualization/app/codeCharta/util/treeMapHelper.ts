@@ -129,9 +129,7 @@ export class TreeMapHelper {
 			flattened = s.dynamicSettings.searchedNodePaths.size == 0 ? true : this.isNodeNonSearched(squaredNode, s)
 		}
 
-		let blacklistFlattened = this.isNodeOrParentFlattenedInBlacklist(squaredNode)
-
-		flattened = blacklistFlattened || flattened
+		flattened = squaredNode.data.isFlattened || flattened
 		return flattened
 	}
 
@@ -145,10 +143,6 @@ export class TreeMapHelper {
 
 	private static isNodeNonSearched(squaredNode: SquarifiedCodeMapNode, s: State): boolean {
 		return !s.dynamicSettings.searchedNodePaths.has(squaredNode.data.path)
-	}
-
-	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedCodeMapNode): boolean {
-		return squaredNode.data.isFlattened
 	}
 
 	private static getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean): string {
