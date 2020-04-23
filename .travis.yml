@@ -22,8 +22,6 @@ addons:
     organization: "maibornwolff"
     token:
       secure: $SONAR_TOKEN
-    branches:
-      - master
 
 before_install:
   - chmod +x ./analysis/gradlew
@@ -35,11 +33,6 @@ before_install:
 install:
   - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 
-script:
-  - ./visualization/script/travis-build.sh
-  - ./analysis/script/travis-build.sh
-  - ./script/build_gh_pages.sh
-
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -50,62 +43,99 @@ cache:
     - $HOME/.gradle/wrapper/
     - ./visualization/node_modules/nwjs-builder-phoenix/caches/
 
-deploy:
-  # releases the built packages on github when a commit is tagged
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    file_glob: true
-    file:
-      - "visualization/dist/packages/*.zip"
-      - "analysis/build/distributions/*.tar"
-    skip_cleanup: true
-    on:
-      tags: true
-      branch: master
+jobs:
+  fast_finish: true
+  include:
+    - stage: test
+      name: "Visualization Unit Test and Linter"
+      before_script:
+        - cd visualization
+        - npm install
+      script:
+        - npm run test --ci
+        - npm run lint
+    - name: "Visualization E2E Test"
+      before_script:
+        - cd visualization
+        - npm install
+      script:
+        - npm run build:web
+        - npm run e2e --ci
+    - name: "Analysis Unit and Integration Test"
+      before_script:
+        - cd analysis
+        - chmod +x ./gradlew
+      script:
+        - ./gradlew build integrationTest
 
-  # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
-  - provider: pages
-    github_token: $GITHUB_TOKEN
-    skip_cleanup: true
-    local_dir: "gh-pages"
-    on:
-      tags: true
-      branch: master
+    - stage: sonar
+      name: "Publish Visualization Sonar Results"
+      before_script: cd visualization
+      script:
+        - npm install
+        - npm run test
+      deploy:
+        - provider: script
+          script: sonar-scanner
+          skip_cleanup: true
 
-  # publishes visualization sonar results
-  - provider: script
-    script: visualization/script/sonar-publish.sh
-    skip_cleanup: true
-    on:
-      branch: master
+    - name: "Publish Analysis Sonar Results"
+      before_script: cd analysis
+      script: ./gradlew build integrationTest
+      deploy:
+        - provider: script
+          script: ./gradlew sonarqube
+          skip_cleanup: true
 
-  # publishes analysis sonar results
-  - provider: script
-    script: analysis/script/sonar-publish.sh
-    skip_cleanup: true
-    on:
-      branch: master
+    - stage: deploy
+      script:
+        - ./analysis/script/travis-build.sh
+        - ./visualization/script/travis-build.sh
+        - ./script/build-gh-pages.sh
+      deploy:
+        # releases the built packages on github when a commit is tagged
+        - provider: releases
+          api_key: $GITHUB_TOKEN
+          file_glob: true
+          file:
+            - "visualization/dist/packages/*.zip"
+            - "analysis/build/distributions/*.tar"
+          skip_cleanup: true
+          on:
+            tags: true
 
-  # publishes visualization npm package
-  - provider: script
-    script: visualization/script/npm-publish.sh
-    skip_cleanup: true
-    on:
-      tags: true
-      branch: master
+        # publishes visualization npm package
+        - provider: script
+          script: ./visualization/script/npm-publish.sh
+          skip_cleanup: true
+          on:
+            tags: true
 
-  # publishes analysis npm package
-  - provider: script
-    script: analysis/script/npm-publish.sh
-    skip_cleanup: true
-    on:
-      tags: true
-      branch: master
+        # publishes analysis npm package
+        - provider: script
+          script: ./analysis/script/npm-publish.sh
+          skip_cleanup: true
+          on:
+            tags: true
 
-  # publishes visualization docker image
-  - provider: script
-    script: visualization/script/docker-publish.sh
-    skip_cleanup: true
-    on:
-      tags: true
-      branch: master
+        # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
+        - provider: pages
+          github_token: $GITHUB_TOKEN
+          skip_cleanup: true
+          local_dir: "gh-pages"
+          on:
+            tags: true
+
+        # publishes visualization docker image
+        - provider: script
+          script: ./visualization/script/docker-publish.sh
+          skip_cleanup: true
+          on:
+            tags: true
+
+stages:
+  - test
+  - name: sonar
+    if: branch = master AND type != pull_request
+  - name: deploy
+    if: tag IS present

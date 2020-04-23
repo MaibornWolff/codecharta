@@ -6,6 +6,8 @@ closes #{Issue number}
 
 {Descriptive pull request text}
 
+## Screenshots or gifs
+
 ## Definition of Done
 
 A task/pull request will not be considered to be complete until all these items can be checked off.
