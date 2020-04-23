@@ -34,7 +34,7 @@ export class FileValidator {
 			message: "Minor API Version Outdated"
 		},
 		nodesNotUnique: {
-			title: "Error Name-Type Uniques",
+			title: "Error Node Uniques",
 			message: "node names in combination with node types are not unique"
 		},
 		validationError: {
