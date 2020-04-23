@@ -1,7 +1,8 @@
 import { CodeMapHelper } from "./codeMapHelper"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
-import { TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH_AND_EXTENSION } from "./dataMocks"
+import { TEST_FILE_WITH_PATHS } from "./dataMocks"
+import _ from "lodash"
 
 describe("codeMapHelper", () => {
 	let testRoot: CodeMapNode
@@ -18,15 +19,18 @@ describe("codeMapHelper", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
-		testRoot = JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS.map))
+		testRoot = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		blacklist = []
 	}
 
 	function addRootToBlacklist() {
 		blacklist.push({ path: testRoot.path, type: BlacklistType.exclude })
+		testRoot.isExcluded = true
 	}
 
 	function addSubNodeToBlacklist() {
 		blacklist.push({ path: testRoot.children[0].path, type: BlacklistType.exclude })
+		testRoot.children[0].isExcluded = true
 	}
 
 	describe("getCodeMapNodeFromPath", () => {
@@ -133,18 +137,8 @@ describe("codeMapHelper", () => {
 	})
 
 	describe("numberOfBlacklistedNodes", () => {
-		beforeEach(() => {
-			blacklist = []
-		})
-
-		it("should return 0 if no blacklist is provided", () => {
-			const result = CodeMapHelper.numberOfBlacklistedNodes(testRoot.children, null)
-
-			expect(result).toBe(0)
-		})
-
-		it("should return 0 if empty blacklist is provided", () => {
-			const result = CodeMapHelper.numberOfBlacklistedNodes(testRoot.children, blacklist)
+		it("should return 0 if no node is blacklisted", () => {
+			const result = CodeMapHelper.numberOfBlacklistedNodes(testRoot.children)
 
 			expect(result).toBe(0)
 		})
@@ -152,7 +146,7 @@ describe("codeMapHelper", () => {
 		it("should return 1 if only one node is blacklisted and provided for nodes", () => {
 			addRootToBlacklist()
 
-			const result = CodeMapHelper.numberOfBlacklistedNodes([testRoot], blacklist)
+			const result = CodeMapHelper.numberOfBlacklistedNodes([testRoot])
 
 			expect(result).toBe(1)
 		})
@@ -160,61 +154,9 @@ describe("codeMapHelper", () => {
 		it("should return 1 if only one sub-node is blacklisted and but root and sub-node are provided for nodes", () => {
 			addSubNodeToBlacklist()
 
-			const result = CodeMapHelper.numberOfBlacklistedNodes([testRoot, testRoot.children[0]], blacklist)
+			const result = CodeMapHelper.numberOfBlacklistedNodes([testRoot, testRoot.children[0]])
 
 			expect(result).toBe(1)
-		})
-	})
-
-	describe("isBlacklisted", () => {
-		beforeEach(() => {
-			blacklist = []
-		})
-
-		it("should return false if blacklist is empty", () => {
-			const result = CodeMapHelper.isBlacklisted(testRoot, blacklist, BlacklistType.exclude)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false if node does not exist in blacklist", () => {
-			addSubNodeToBlacklist()
-
-			const result = CodeMapHelper.isBlacklisted(testRoot, blacklist, BlacklistType.exclude)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return false if node exists in blacklist, but does not match BlacklistType", () => {
-			addRootToBlacklist()
-
-			const result = CodeMapHelper.isBlacklisted(testRoot, blacklist, BlacklistType.flatten)
-
-			expect(result).toBeFalsy()
-		})
-
-		it("should return true if node exists in blacklist and matches BlacklistType", () => {
-			addRootToBlacklist()
-
-			const result = CodeMapHelper.isBlacklisted(testRoot, blacklist, BlacklistType.exclude)
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return true if node exists in blacklist and sub-node is provided as node", () => {
-			addRootToBlacklist()
-
-			const result = CodeMapHelper.isBlacklisted(testRoot.children[0], blacklist, BlacklistType.exclude)
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return true if pattern exists in blacklist and node matches it", () => {
-			blacklist.push({ path: "*.jpg", type: BlacklistType.exclude })
-
-			const result = CodeMapHelper.isBlacklisted(VALID_NODE_WITH_PATH_AND_EXTENSION.children[0], blacklist, BlacklistType.exclude)
-
-			expect(result).toBeTruthy()
 		})
 	})
 
@@ -226,12 +168,12 @@ describe("codeMapHelper", () => {
 		})
 
 		function addRootToMarkedPackages() {
-			markedPackages.push({ path: "/root", color: "0x000000", attributes: {} })
+			markedPackages.push({ path: "/root", color: "0x000000" })
 		}
 
 		function addSubNodesToMarkedPackages() {
-			markedPackages.push({ path: "/root/Parent Leaf", color: "0x000001", attributes: {} })
-			markedPackages.push({ path: "/root/big leaf", color: "0x000002", attributes: {} })
+			markedPackages.push({ path: "/root/Parent Leaf", color: "0x000001" })
+			markedPackages.push({ path: "/root/big leaf", color: "0x000002" })
 		}
 
 		it("should return null if no markedPackages are provided", () => {
