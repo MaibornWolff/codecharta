@@ -190,14 +190,6 @@ describe("MapTreeViewLevelController", () => {
 		})
 	})
 
-	describe("isExcluded", () => {
-		it("should not be excluded", () => {
-			const result = mapTreeViewLevelController.isExcluded()
-
-			expect(result).toBeFalsy()
-		})
-	})
-
 	describe("isSearched", () => {
 		it("should be searched", () => {
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(

@@ -81,17 +81,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return !(node && node.children && node.children.length > 0)
 	}
 
-	public isFlattened() {
-		return this.node.isFlattened
-	}
-
-	public isExcluded(): boolean {
-		if (this.node) {
-			return this.node.isExcluded
-		}
-		return false
-	}
-
 	public isSearched(): boolean {
 		if (this.node != null && this.storeService.getState().dynamicSettings.searchedNodePaths) {
 			return this.storeService.getState().dynamicSettings.searchedNodePaths.has(this.node.path)
