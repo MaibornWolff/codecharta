@@ -1,5 +1,4 @@
 import "./codeCharta.module"
-
 import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
@@ -130,7 +129,8 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
+					expect(err.error).toEqual(["file is empty or invalid"])
+					expect(err.warning).toEqual([])
 					done()
 				})
 		})
@@ -155,7 +155,8 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual([{ dataPath: "empty or invalid file", message: "file is empty or invalid" }])
+					expect(err.error).toEqual(["file is empty or invalid"])
+					expect(err.warning).toEqual([])
 					done()
 				})
 		})
