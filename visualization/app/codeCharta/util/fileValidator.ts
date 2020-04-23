@@ -25,7 +25,7 @@ export class FileValidator {
 			title: "Error File API Version",
 			message: "file API Version is empty or invalid"
 		},
-		apiVersionIsOutdated: {
+		majorApiVersionIsOutdated: {
 			title: "Error Major API Version",
 			message: "API Version Outdated: Update CodeCharta API Version to match cc.json"
 		},
@@ -55,8 +55,8 @@ export class FileValidator {
 				result.title = this.ERROR_MESSAGES.apiVersionIsInvalid.title
 				break
 			case this.fileHasHigherMajorVersion(file):
-				result.error.push(this.ERROR_MESSAGES.apiVersionIsOutdated.message)
-				result.title = this.ERROR_MESSAGES.apiVersionIsOutdated.title
+				result.error.push(this.ERROR_MESSAGES.majorApiVersionIsOutdated.message)
+				result.title = this.ERROR_MESSAGES.majorApiVersionIsOutdated.title
 				break
 			case this.fileHasHigherMinorVersion(file):
 				result.warning.push(this.ERROR_MESSAGES.minorApiVersionOutdated.message)

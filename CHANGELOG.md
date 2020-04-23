@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Error dialogs in case of validation or api version issues #610
+
 ### Changed
 
 ### Removed 🗑
