@@ -22,8 +22,8 @@ export class FileValidator {
 			message: "file is empty or invalid"
 		},
 		apiVersionIsInvalid: {
-			title: "Error File API Version",
-			message: "file API Version is empty or invalid"
+			title: "Error API Version",
+			message: "API Version is empty or invalid"
 		},
 		majorApiVersionIsOutdated: {
 			title: "Error Major API Version",

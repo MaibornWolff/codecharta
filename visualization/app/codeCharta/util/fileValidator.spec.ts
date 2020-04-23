@@ -60,7 +60,7 @@ describe("FileValidator", () => {
 		const errors = FileValidator.validate(invalidFile)
 
 		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error File API Version")
+		expect(errors.title).toEqual("Error API Version")
 	})
 
 	it("should reject file with wrong API version", () => {
@@ -69,7 +69,7 @@ describe("FileValidator", () => {
 		const errors = FileValidator.validate(invalidFile)
 
 		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error File API Version")
+		expect(errors.title).toEqual("Error API Version")
 	})
 
 	it("should reject string", () => {
