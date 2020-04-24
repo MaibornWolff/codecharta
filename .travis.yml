@@ -25,8 +25,9 @@ addons:
 
 before_install:
   - chmod +x ./analysis/gradlew
-  - chmod -R +x ./analysis/script/
-  - chmod -R +x ./visualization/script/
+  - chmod -R +x ./analysis/script
+  - chmod -R +x ./visualization/script
+  - chmod -R +x ./script
   - sudo apt-get -qq update
   - sudo apt-get install -y wine
 
@@ -91,7 +92,7 @@ jobs:
       script:
         - ./analysis/script/travis-build.sh
         - ./visualization/script/travis-build.sh
-        - ./script/build-gh-pages.sh
+        - ./script/build_gh_pages.sh
       deploy:
         # releases the built packages on github when a commit is tagged
         - provider: releases
