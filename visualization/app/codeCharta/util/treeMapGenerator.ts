@@ -3,22 +3,20 @@ import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
 import { CodeMapNode, MetricData, Node, State } from "../codeCharta.model"
 
-export interface SquarifiedCodeMapNode extends HierarchyRectangularNode<CodeMapNode> {}
-
 export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
 
 	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
-		const squarifiedTreeMap: SquarifiedCodeMapNode = this.getSquarifiedTreeMap(map, s)
+		const squarifiedTreeMap: HierarchyRectangularNode<CodeMapNode> = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
 		const heightScale = (s.treeMap.mapSize * 2) / maxHeight
-		const nodesAsArray: SquarifiedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
+		const nodesAsArray: HierarchyRectangularNode<CodeMapNode>[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
 			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState)
 		})
 	}
 
-	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedCodeMapNode {
+	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): HierarchyRectangularNode<CodeMapNode> {
 		const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
 		const nodeLeafs: CodeMapNode[] = hierarchyNode.descendants().map(d => d.data)
 		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs)
@@ -33,7 +31,7 @@ export class TreeMapGenerator {
 		return treeMap(hierarchyNode.sum(node => this.calculateAreaValue(node, s)))
 	}
 
-	private static getNodesAsArray(node: SquarifiedCodeMapNode): SquarifiedCodeMapNode[] {
+	private static getNodesAsArray(node: HierarchyRectangularNode<CodeMapNode>): HierarchyRectangularNode<CodeMapNode>[] {
 		let nodes = [node]
 		if (node.children) {
 			node.children.forEach(child => nodes.push(...this.getNodesAsArray(child)))
