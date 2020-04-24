@@ -21,6 +21,7 @@ module.exports = {
 	],
 	"rules": {
 		"no-console": ["error", {allow : ["warn", "error"]}],
+		"@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none"}],
 
 		// Do not apply inappropriate rules below
 		"@typescript-eslint/no-inferrable-types": "off",
@@ -32,7 +33,6 @@ module.exports = {
 		"@typescript-eslint/ban-types": "off",
 		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-var-requires": "off",
-		"@typescript-eslint/no-unused-vars": "off",
 		"@typescript-eslint/consistent-type-assertions": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-empty-function": "off",
