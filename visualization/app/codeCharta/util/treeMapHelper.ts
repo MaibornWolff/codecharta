@@ -62,6 +62,7 @@ export class TreeMapHelper {
 
 		return {
 			name: squaredNode.data.name,
+			id: squaredNode.data.id,
 			width,
 			height,
 			length,

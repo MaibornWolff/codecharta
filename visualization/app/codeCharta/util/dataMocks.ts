@@ -1096,6 +1096,7 @@ export const DEFAULT_STATE: State = {
 
 export const TEST_NODE_ROOT: Node = {
 	name: "root",
+	id: 0,
 	width: 1,
 	height: 2,
 	length: 3,
@@ -1120,6 +1121,7 @@ export const TEST_NODE_ROOT: Node = {
 
 export const TEST_NODE_LEAF: Node = {
 	name: "root/big leaf.ts",
+	id: 1,
 	width: 1,
 	height: 2,
 	length: 3,
@@ -1146,6 +1148,7 @@ export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
 
 export const INCOMING_NODE: Node = {
 	name: "root/small leaf",
+	id: 2,
 	width: 1,
 	height: 2,
 	length: 3,
@@ -1170,6 +1173,7 @@ export const INCOMING_NODE: Node = {
 
 export const OUTGOING_NODE: Node = {
 	name: "root/big leaf",
+	id: 1,
 	width: 1,
 	height: 2,
 	length: 3,
