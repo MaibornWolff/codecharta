@@ -25,7 +25,7 @@ export class FileExtensionCalculator {
 	}
 
 	private static getAbsoluteDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
-		let distribution: MetricDistribution[] = []
+		const distribution: MetricDistribution[] = []
 		d3.hierarchy(map)
 			.leaves()
 			.forEach((node: HierarchyNode<CodeMapNode>) => {
@@ -59,8 +59,8 @@ export class FileExtensionCalculator {
 	}
 
 	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]): MetricDistribution[] {
-		let otherExtension: MetricDistribution = this.getOtherExtension()
-		let visibleDistributions: MetricDistribution[] = []
+		const otherExtension: MetricDistribution = this.getOtherExtension()
+		const visibleDistributions: MetricDistribution[] = []
 
 		distribution.forEach((x: MetricDistribution) => {
 			if (x.relativeMetricValue > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {

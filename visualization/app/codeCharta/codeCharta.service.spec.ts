@@ -152,7 +152,7 @@ describe("codeChartaService", () => {
 		})
 
 		it("should reject or catch invalid file", done => {
-			let invalidFileContent = validFileContent
+			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 			codeChartaService
 				.loadFiles([{ fileName: validFileContent.fileName, content: null }])

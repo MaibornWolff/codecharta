@@ -23,7 +23,7 @@ describe("FileExtensionBarController", () => {
 	let storeService: StoreService
 	let threeSceneService: ThreeSceneService
 
-	let distribution: MetricDistribution[] = METRIC_DISTRIBUTION
+	const distribution: MetricDistribution[] = METRIC_DISTRIBUTION
 	let codeMapBuilding: CodeMapBuilding
 
 	beforeEach(() => {

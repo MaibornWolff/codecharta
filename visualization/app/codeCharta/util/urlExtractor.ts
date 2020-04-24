@@ -9,7 +9,7 @@ export class UrlExtractor {
 
 	public getParameterByName(name: string): string {
 		const sanitizedName = name.replace(/[[\]]/g, "\\$&")
-		let regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
+		const regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
 			results = regex.exec(this.$location.absUrl())
 
 		if (!results) {
@@ -32,7 +32,7 @@ export class UrlExtractor {
 			fileNames = [fileNames]
 		}
 
-		let fileReadingTasks = []
+		const fileReadingTasks = []
 
 		fileNames.forEach(fileName => {
 			fileReadingTasks.push(

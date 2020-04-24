@@ -52,7 +52,7 @@ export class CodeChartaService {
 	}
 
 	private getAttributeTypes(attributeTypes: AttributeTypes): AttributeTypes {
-		let newAttributeTypes: any = {}
+		const newAttributeTypes: any = {}
 
 		if (_.isEmpty(attributeTypes) || !attributeTypes) {
 			return {

@@ -153,7 +153,7 @@ describe("MapTreeViewLevelController", () => {
 				NodeType.FOLDER,
 				VALID_NODE_WITH_PATH
 			)
-			let context = {
+			const context = {
 				path: mapTreeViewLevelController["node"].path,
 				type: mapTreeViewLevelController["node"].type,
 				x: $event.clientX,

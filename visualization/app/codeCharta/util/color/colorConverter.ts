@@ -9,7 +9,7 @@ export class ColorConverter {
 
 	public static convertNumberToHex(colorNumber: number): string {
 		const hexColor = colorNumber.toString(16)
-		let zeros: string = "0".repeat(6 - hexColor.length)
+		const zeros: string = "0".repeat(6 - hexColor.length)
 		return "#" + zeros + hexColor
 	}
 
@@ -53,22 +53,22 @@ export class ColorConverter {
 	}
 
 	public static gradient(startColor: string, endColor: string, steps: number): string[] {
-		let start: Color = this.convertHexToColorObject(startColor)
-		let end: Color = this.convertHexToColorObject(endColor)
-		let diff: Color = end.sub(start)
-		let stepsArray = []
+		const start: Color = this.convertHexToColorObject(startColor)
+		const end: Color = this.convertHexToColorObject(endColor)
+		const diff: Color = end.sub(start)
+		const stepsArray = []
 
 		for (let i = 0; i <= steps; i++) {
-			let stepDiff = diff.clone().multiplyScalar((1 / steps) * i)
-			let step = start.clone().add(stepDiff)
+			const stepDiff = diff.clone().multiplyScalar((1 / steps) * i)
+			const step = start.clone().add(stepDiff)
 			stepsArray[i] = this.convertColorToHex(step)
 		}
 		return stepsArray
 	}
 
 	public static getImageDataUri(hex: string): string {
-		let rgbColor: number[] = this.encodeHex(hex)
-		let encodedRGBColor: string = this.encodeRGB(rgbColor[0], rgbColor[1], rgbColor[2])
+		const rgbColor: number[] = this.encodeHex(hex)
+		const encodedRGBColor: string = this.encodeRGB(rgbColor[0], rgbColor[1], rgbColor[2])
 		return this.generatePixel(encodedRGBColor)
 	}
 
@@ -85,11 +85,11 @@ export class ColorConverter {
 	}
 
 	private static encodeTriplet(e1: number, e2: number, e3: number): string {
-		let keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
-		let enc1 = e1 >> 2
-		let enc2 = ((e1 & 3) << 4) | (e2 >> 4)
-		let enc3 = ((e2 & 15) << 2) | (e3 >> 6)
-		let enc4 = e3 & 63
+		const keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+		const enc1 = e1 >> 2
+		const enc2 = ((e1 & 3) << 4) | (e2 >> 4)
+		const enc3 = ((e2 & 15) << 2) | (e3 >> 6)
+		const enc4 = e3 & 63
 		return keyStr.charAt(enc1) + keyStr.charAt(enc2) + keyStr.charAt(enc3) + keyStr.charAt(enc4)
 	}
 
