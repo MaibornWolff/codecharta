@@ -21,6 +21,7 @@ module.exports = {
 	],
 	"rules": {
 		"no-console": ["error", {allow : ["warn", "error"]}],
+		"@typescript-eslint/camelcase": ["error", {properties: "never"}],
 
 		// Do not apply inappropriate rules below
 		"@typescript-eslint/no-inferrable-types": "off",
@@ -37,7 +38,6 @@ module.exports = {
 		"@typescript-eslint/consistent-type-assertions": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-empty-function": "off",
-		"@typescript-eslint/camelcase": "off",
 		"prefer-const": "off"
 	}
 }
