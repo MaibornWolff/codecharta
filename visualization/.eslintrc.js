@@ -22,9 +22,10 @@ module.exports = {
 	"rules": {
 		"no-console": ["error", {allow : ["warn", "error"]}],
         "@typescript-eslint/no-empty-function": ["error", {allow: ["arrowFunctions"]}],
+		"@typescript-eslint/camelcase": ["error", {properties: "never"}],
 		"@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none"}],
 
-        // Do not apply inappropriate rules below
+		// Do not apply inappropriate rules below
 		"@typescript-eslint/no-inferrable-types": "off",
 		"@typescript-eslint/no-use-before-define": "off",
 		"@typescript-eslint/ban-ts-ignore": "off",
@@ -37,7 +38,6 @@ module.exports = {
 		"@typescript-eslint/no-empty-interface": "off",
 		"@typescript-eslint/consistent-type-assertions": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
-		"@typescript-eslint/camelcase": "off",
 		"prefer-const": "off"
 	}
 }
