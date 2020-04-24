@@ -21,6 +21,7 @@ module.exports = {
 	],
 	"rules": {
 		"no-console": ["error", {allow : ["warn", "error"]}],
+		"@typescript-eslint/camelcase": ["error", {properties: "never"}],
 		"@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none"}],
 
 		// Do not apply inappropriate rules below
@@ -37,6 +38,5 @@ module.exports = {
 		"@typescript-eslint/consistent-type-assertions": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-empty-function": "off",
-		"@typescript-eslint/camelcase": "off",
 	}
 }
