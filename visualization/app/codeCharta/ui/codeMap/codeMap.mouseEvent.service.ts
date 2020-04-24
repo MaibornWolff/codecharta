@@ -197,7 +197,6 @@ export class CodeMapMouseEventService
 	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
 		const lookUp = this.storeService.getState().lookUp
 		const codeMapNode = lookUp.pathToNode.get(hoveredBuilding.node.id)
-		this.threeSceneService.addBuildingToHighlightingList(hoveredBuilding)
 		hierarchy(codeMapNode)
 			.descendants()
 			.forEach(x => {
