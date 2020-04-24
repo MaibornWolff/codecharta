@@ -1,4 +1,3 @@
-import _ from "lodash"
 import { AttributeTypes } from "../../../../codeCharta.model"
 
 export function getMergedAttributeTypes(allAttributeTypes: AttributeTypes[]): AttributeTypes {
