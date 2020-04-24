@@ -61,9 +61,9 @@ describe("EdgeMetricDataService", () => {
 
 	describe("getMetricNames", () => {
 		it("should return metric names", () => {
-			const metric_1: MetricData = { name: "pairing_rate" } as MetricData
-			const metric_2: MetricData = { name: "average_commits" } as MetricData
-			edgeMetricDataService["edgeMetricData"] = [metric_1, metric_2]
+			const pairingRate: MetricData = { name: "pairing_rate" } as MetricData
+			const avgCommits: MetricData = { name: "average_commits" } as MetricData
+			edgeMetricDataService["edgeMetricData"] = [pairingRate, avgCommits]
 
 			const metricNames = edgeMetricDataService.getMetricNames()
 
