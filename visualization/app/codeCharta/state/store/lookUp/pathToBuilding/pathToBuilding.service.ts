@@ -11,9 +11,9 @@ export class PathToBuildingService implements CodeMapMeshChangedSubscriber {
 	}
 
 	public onCodeMapMeshChanged(mapMesh: CodeMapMesh) {
-		const map = new Map<string, CodeMapBuilding>()
+		const map = new Map<number, CodeMapBuilding>()
 		mapMesh.getMeshDescription().buildings.forEach(x => {
-			map.set(x.node.path, x)
+			map.set(x.node.id, x)
 		})
 
 		this.storeService.dispatch(setPathToBuilding(map), true)

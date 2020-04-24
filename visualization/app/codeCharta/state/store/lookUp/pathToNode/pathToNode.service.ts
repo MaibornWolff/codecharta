@@ -11,12 +11,12 @@ export class PathToNodeService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public onRenderMapChanged(map: CodeMapNode) {
-		const pathToNode = new Map<string, CodeMapNode>()
-		pathToNode.set(map.path, map)
+		const pathToNode = new Map<number, CodeMapNode>()
+		pathToNode.set(map.id, map)
 		hierarchy(map)
 			.descendants()
 			.forEach(x => {
-				pathToNode.set(x.data.path, x.data)
+				pathToNode.set(x.data.id, x.data)
 			})
 
 		this.storeService.dispatch(setPathToNode(pathToNode), true)

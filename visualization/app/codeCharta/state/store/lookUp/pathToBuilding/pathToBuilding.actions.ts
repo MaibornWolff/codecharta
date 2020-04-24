@@ -7,16 +7,16 @@ export enum PathToBuildingActions {
 
 export interface SetPathToBuildingAction extends Action {
 	type: PathToBuildingActions.SET_PATH_TO_BUILDING
-	payload: Map<string, CodeMapBuilding>
+	payload: Map<number, CodeMapBuilding>
 }
 
 export type PathToBuildingAction = SetPathToBuildingAction
 
-export function setPathToBuilding(pathToBuilding: Map<string, CodeMapBuilding> = defaultPathToBuilding): SetPathToBuildingAction {
+export function setPathToBuilding(pathToBuilding: Map<number, CodeMapBuilding> = defaultPathToBuilding): SetPathToBuildingAction {
 	return {
 		type: PathToBuildingActions.SET_PATH_TO_BUILDING,
 		payload: pathToBuilding
 	}
 }
 
-export const defaultPathToBuilding: Map<string, CodeMapBuilding> = new Map()
+export const defaultPathToBuilding: Map<number, CodeMapBuilding> = new Map()

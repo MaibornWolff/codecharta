@@ -5,6 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { PathToNodeService } from "./pathToNode.service"
 import { TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../../../util/dataMocks"
 import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
+import { NodeDecorator } from "../../../../util/nodeDecorator"
 
 describe("PathToNodeService", () => {
 	let pathToNodeService: PathToNodeService
@@ -15,6 +16,7 @@ describe("PathToNodeService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
+		NodeDecorator.preDecorateFile(TEST_FILE_WITH_PATHS)
 	})
 
 	function restartSystem() {

@@ -7,16 +7,16 @@ export enum PathToNodeActions {
 
 export interface SetPathToNodeAction extends Action {
 	type: PathToNodeActions.SET_PATH_TO_NODE
-	payload: Map<string, CodeMapNode>
+	payload: Map<number, CodeMapNode>
 }
 
 export type PathToNodeAction = SetPathToNodeAction
 
-export function setPathToNode(pathToNode: Map<string, CodeMapNode> = defaultPathToNode): SetPathToNodeAction {
+export function setPathToNode(pathToNode: Map<number, CodeMapNode> = defaultPathToNode): SetPathToNodeAction {
 	return {
 		type: PathToNodeActions.SET_PATH_TO_NODE,
 		payload: pathToNode
 	}
 }
 
-export const defaultPathToNode: Map<string, CodeMapNode> = new Map()
+export const defaultPathToNode: Map<number, CodeMapNode> = new Map()

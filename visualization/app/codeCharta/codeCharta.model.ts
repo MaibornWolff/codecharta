@@ -264,6 +264,6 @@ export interface CCAction extends Action {
 }
 
 export interface LookUp {
-	pathToNode: Map<string, CodeMapNode>
-	pathToBuilding: Map<string, CodeMapBuilding>
+	pathToNode: Map<number, CodeMapNode>
+	pathToBuilding: Map<number, CodeMapBuilding>
 }

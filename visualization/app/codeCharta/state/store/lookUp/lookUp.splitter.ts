@@ -10,11 +10,11 @@ export function splitLookUpActions(payload: RecursivePartial<LookUp>): CCAction[
 
 	// Plop: Append action split here
 	if (payload.pathToBuilding !== undefined) {
-		actions.push(splitPathToBuildingAction(payload.pathToBuilding as Map<string, CodeMapBuilding>))
+		actions.push(splitPathToBuildingAction(payload.pathToBuilding as Map<number, CodeMapBuilding>))
 	}
 
 	if (payload.pathToNode !== undefined) {
-		actions.push(splitPathToNodeAction(payload.pathToNode as Map<string, CodeMapNode>))
+		actions.push(splitPathToNodeAction(payload.pathToNode as Map<number, CodeMapNode>))
 	}
 
 	return actions

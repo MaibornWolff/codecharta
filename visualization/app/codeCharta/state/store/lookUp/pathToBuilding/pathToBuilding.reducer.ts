@@ -2,9 +2,9 @@ import { PathToBuildingAction, PathToBuildingActions, setPathToBuilding } from "
 import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
 
 export function pathToBuilding(
-	state: Map<string, CodeMapBuilding> = setPathToBuilding().payload,
+	state: Map<number, CodeMapBuilding> = setPathToBuilding().payload,
 	action: PathToBuildingAction
-): Map<string, CodeMapBuilding> {
+): Map<number, CodeMapBuilding> {
 	switch (action.type) {
 		case PathToBuildingActions.SET_PATH_TO_BUILDING:
 			return new Map(action.payload)
