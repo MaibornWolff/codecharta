@@ -26,6 +26,7 @@ export class NodeDecorator {
 
 	public static preDecorateFile(file: CCFile) {
 		this.decorateMapWithPathAttribute(file)
+		this.decorateNodesWithIds(file.map)
 	}
 
 	private static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
@@ -43,6 +44,16 @@ export class NodeDecorator {
 				const path = CodeMapHelper.transformPath(node.data.path)
 				node.data.isFlattened = flattened.ignores(path)
 				node.data.isExcluded = excluded.ignores(path)
+			})
+	}
+
+	private static decorateNodesWithIds(map: CodeMapNode) {
+		let id = 0
+		hierarchy(map)
+			.descendants()
+			.map(node => {
+				node.data.id = id
+				id++
 			})
 	}
 

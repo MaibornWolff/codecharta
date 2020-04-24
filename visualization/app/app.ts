@@ -4,9 +4,10 @@ import "angular-aria"
 import "angular-material"
 import "./codeCharta/codeCharta.module"
 import "./assets/icon.ico"
+import "angular-sanitize"
 import "./app.scss"
 
-angular.module("app", ["app.codeCharta", "ngMaterial"])
+angular.module("app", ["app.codeCharta", "ngMaterial", "ngSanitize"])
 
 angular
 	.module("app")

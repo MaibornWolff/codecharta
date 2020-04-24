@@ -466,6 +466,33 @@ export const TEST_FILE_CONTENT = {
 	nodes: [VALID_NODE]
 }
 
+export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
+	fileName: "noFileName",
+	projectName: "Invalid Sample Map",
+	apiVersion: "2.0",
+	nodes: [VALID_NODE]
+}
+
+export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
+	fileName: "noFileName",
+	projectName: "Valid Sample Map Minor API High",
+	apiVersion: "1.2",
+	nodes: [VALID_NODE]
+}
+
+export const TEST_FILE_CONTENT_INVALID_API = {
+	fileName: "noFileName",
+	projectName: "Invalid Sample Map",
+	apiVersion: "2.a",
+	nodes: [VALID_NODE]
+}
+
+export const TEST_FILE_CONTENT_NO_API = {
+	fileName: "noFileName",
+	projectName: "Invalid Sample Map",
+	nodes: [VALID_NODE]
+}
+
 export const FILE_META = {
 	fileName: "fileA",
 	projectName: "Sample Project",
@@ -1077,6 +1104,7 @@ export const DEFAULT_STATE: State = {
 
 export const TEST_NODE_ROOT: Node = {
 	name: "root",
+	id: 0,
 	width: 1,
 	height: 2,
 	length: 3,
@@ -1101,6 +1129,7 @@ export const TEST_NODE_ROOT: Node = {
 
 export const TEST_NODE_LEAF: Node = {
 	name: "root/big leaf.ts",
+	id: 1,
 	width: 1,
 	height: 2,
 	length: 3,
@@ -1127,6 +1156,7 @@ export const TEST_NODES: Node[] = [TEST_NODE_ROOT, TEST_NODE_LEAF]
 
 export const INCOMING_NODE: Node = {
 	name: "root/small leaf",
+	id: 2,
 	width: 1,
 	height: 2,
 	length: 3,
@@ -1151,6 +1181,7 @@ export const INCOMING_NODE: Node = {
 
 export const OUTGOING_NODE: Node = {
 	name: "root/big leaf",
+	id: 1,
 	width: 1,
 	height: 2,
 	length: 3,

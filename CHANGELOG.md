@@ -19,6 +19,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.46.1] - 2020-04-24
+
+### Added 🚀
+
+- Error dialogs in case of validation or api version issues #610
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Improved overall rendering performance of larger maps by roughly 40% #836
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.45.5] - 2020-04-17
 
 ### Added 🚀
@@ -44,7 +60,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Consistency of AttributeTypes representation #365
-- Improved overall rendering performance of larger maps by roughly 40% #836
 - Wrong file description for tokeiimporter
 - Improved search performance #837
 

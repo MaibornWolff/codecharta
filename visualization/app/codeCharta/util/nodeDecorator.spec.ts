@@ -4,6 +4,7 @@ import { CCFile, MetricData, BlacklistItem, CodeMapNode, NodeType, AttributeType
 import { NodeDecorator } from "./nodeDecorator"
 import _ from "lodash"
 import { MetricService } from "../state/metric.service"
+import { HierarchyNode } from "d3"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
@@ -34,6 +35,17 @@ describe("nodeDecorator", () => {
 		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
 		NodeDecorator.preDecorateFile(file)
 	})
+
+	function allUniqueIds(map: HierarchyNode<CodeMapNode>): boolean {
+		const ids = new Set()
+		map.each(node => {
+			if (ids.has(node.id)) {
+				return false
+			}
+			ids.add(node.id)
+		})
+		return true
+	}
 
 	describe("decorateMap", () => {
 		it("should aggregate given absolute metrics correctly", () => {
@@ -313,6 +325,17 @@ describe("nodeDecorator", () => {
 
 			expect(file.map.path).toBe("/root")
 			expect(file.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
+		})
+
+		it("should decorate nodes with a unique id starting from 0", () => {
+			NodeDecorator.preDecorateFile(file)
+
+			const h = d3.hierarchy(file.map)
+			h.each(node => {
+				expect(node.data.id).toBeDefined()
+				expect(allUniqueIds(h)).toBeTruthy()
+			})
+			expect(file.map.id).toBe(0)
 		})
 	})
 

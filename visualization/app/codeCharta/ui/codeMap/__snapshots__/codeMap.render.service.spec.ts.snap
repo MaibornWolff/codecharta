@@ -13,6 +13,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 117.57550765359252,
       "y": 2,
@@ -49,6 +50,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -56.61224617320377,
       "y": 4,
@@ -82,6 +84,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -56.61224617320377,
       "y": 4,
@@ -118,6 +121,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -119.56734770392222,
       "y": 6,
@@ -154,6 +158,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 105.4367322709129,
       "y": 6,

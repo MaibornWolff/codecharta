@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.45.5",
+	"version": "1.46.1",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -85,13 +85,14 @@
 		}
 	},
 	"dependencies": {
-		"angularjs-nouislider": "^1.0.1",
-		"ajv": "^6.10.0",
+		"ajv": "^6.12.2",
 		"angular": "^1.6.9",
 		"angular-animate": "^1.6.9",
 		"angular-aria": "^1.6.9",
 		"angular-material": "^1.1.7",
 		"angular-mocks": "^1.6.9",
+		"angular-sanitize": "^1.7.9",
+		"angularjs-nouislider": "^1.0.1",
 		"angularjs-slider": "^7.0.0",
 		"color-convert": "^2.0.0",
 		"d3": "^5.9.2",
