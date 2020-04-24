@@ -1,7 +1,6 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SortingOrderAscendingActions } from "./sortingOrderAscending.actions"
-import _ from "lodash"
 import { isActionOfType } from "../../../../util/reduxHelper"
 
 export interface SortingOrderAscendingSubscriber {
