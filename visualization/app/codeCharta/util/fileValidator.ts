@@ -1,5 +1,5 @@
 import { CodeMapNode } from "../codeCharta.model"
-import { ValidationError, Validator, ValidatorResult } from "jsonschema"
+import Ajv from "ajv"
 
 const jsonSchema = require("./schema.json")
 const latestApiVersion = require("../../../package.json").codecharta.apiVersion
@@ -65,11 +65,12 @@ export class FileValidator {
 		}
 
 		if (result.error.length === 0) {
-			let validator = new Validator()
-			let validationResult: ValidatorResult = validator.validate(file, jsonSchema)
+			let ajv = new Ajv({ allErrors: true })
+			let validate = ajv.compile(jsonSchema)
+			let valid = validate(file)
 
-			if (validationResult.errors.length !== 0) {
-				result.error = validationResult.errors.map((error: ValidationError) => this.getValidationMessage(error))
+			if (!valid) {
+				result.error = validate.errors.map((error: Ajv.ErrorObject) => this.getValidationMessage(error))
 				result.title = this.ERROR_MESSAGES.validationError.title
 			} else if (!FileValidator.hasUniqueChildren(file.nodes[0])) {
 				result.error.push(this.ERROR_MESSAGES.nodesNotUnique.message)
@@ -79,8 +80,10 @@ export class FileValidator {
 		return result
 	}
 
-	private static getValidationMessage(error) {
-		return "Parameter: " + error.property + " is not of type " + error.argument
+	private static getValidationMessage(error: Ajv.ErrorObject) {
+		let errorType = error.keyword.charAt(0).toUpperCase() + error.keyword.slice(1)
+		let errorParameter = error.dataPath.slice(1)
+		return errorType + " error: " + errorParameter + " " + error.message
 	}
 
 	private static hasUniqueChildren(node: CodeMapNode): boolean {
