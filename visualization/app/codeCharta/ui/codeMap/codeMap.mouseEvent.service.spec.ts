@@ -12,12 +12,13 @@ import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.ser
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEventMethods } from "../../util/dataMocks"
 import _ from "lodash"
-import { BlacklistType, CodeMapNode, Node } from "../../codeCharta.model"
+import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { setPathToBuilding } from "../../state/store/lookUp/pathToBuilding/pathToBuilding.actions"
 import { setPathToNode } from "../../state/store/lookUp/pathToNode/pathToNode.actions"
+import { NodeDecorator } from "../../util/nodeDecorator"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -31,6 +32,7 @@ describe("codeMapMouseEventService", () => {
 	let storeService: StoreService
 
 	let codeMapBuilding: CodeMapBuilding
+	let file: CCFile
 
 	beforeEach(() => {
 		restartSystem()
@@ -42,6 +44,7 @@ describe("codeMapMouseEventService", () => {
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedEventMethods($rootScope)
+		NodeDecorator.preDecorateFile(TEST_FILE_WITH_PATHS)
 	})
 
 	afterEach(() => {
@@ -60,6 +63,7 @@ describe("codeMapMouseEventService", () => {
 		storeService = getService<StoreService>("storeService")
 
 		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
 	}
 
 	function rebuildService() {
@@ -258,10 +262,10 @@ describe("codeMapMouseEventService", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(null)
 			})
-			const pathToBuilding = new Map<string, CodeMapBuilding>()
-			pathToBuilding.set(CODE_MAP_BUILDING.node.path, CODE_MAP_BUILDING)
-			const pathToNode = new Map<string, CodeMapNode>()
-			pathToNode.set(TEST_FILE_WITH_PATHS.map.path, TEST_FILE_WITH_PATHS.map)
+			const pathToBuilding = new Map<number, CodeMapBuilding>()
+			pathToBuilding.set(CODE_MAP_BUILDING.node.id, CODE_MAP_BUILDING)
+			const pathToNode = new Map<number, CodeMapNode>()
+			pathToNode.set(file.map.id, file.map)
 			storeService.dispatch(setPathToBuilding(pathToBuilding))
 			storeService.dispatch(setPathToNode(pathToNode))
 		})
@@ -447,10 +451,10 @@ describe("codeMapMouseEventService", () => {
 
 	describe("hoverBuilding", () => {
 		beforeEach(() => {
-			const pathToBuilding = new Map<string, CodeMapBuilding>()
-			pathToBuilding.set(codeMapBuilding.node.path, codeMapBuilding)
-			const pathToNode = new Map<string, CodeMapNode>()
-			pathToNode.set(TEST_FILE_WITH_PATHS.map.path, TEST_FILE_WITH_PATHS.map)
+			const pathToBuilding = new Map<number, CodeMapBuilding>()
+			pathToBuilding.set(codeMapBuilding.node.id, codeMapBuilding)
+			const pathToNode = new Map<number, CodeMapNode>()
+			pathToNode.set(file.map.id, file.map)
 			storeService.dispatch(setPathToBuilding(pathToBuilding))
 			storeService.dispatch(setPathToNode(pathToNode))
 		})
@@ -479,16 +483,16 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call threeSceneService.getMapDescription", () => {
-			codeMapMouseEventService.onShouldHoverNode(TEST_FILE_WITH_PATHS.map)
+			codeMapMouseEventService.onShouldHoverNode(file.map)
 
 			expect(threeSceneService.getMapMesh().getMeshDescription).toHaveBeenCalled()
 		})
 
 		it("should call onBuildingHovered", () => {
-			codeMapBuilding.node.path = TEST_FILE_WITH_PATHS.map.path
+			codeMapBuilding.node.path = file.map.path
 			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
 
-			codeMapMouseEventService.onShouldHoverNode(TEST_FILE_WITH_PATHS.map)
+			codeMapMouseEventService.onShouldHoverNode(file.map)
 
 			expect(codeMapMouseEventService["hoverBuilding"]).toHaveBeenCalledWith(codeMapBuilding)
 		})
