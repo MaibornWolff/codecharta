@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.46.0] - 2020-04-24
+
+### Added 🚀
+
 - Error dialogs in case of validation or api version issues #610
 
 ### Changed
