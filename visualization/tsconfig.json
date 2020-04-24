@@ -8,7 +8,7 @@
 		"module": "es2015",
 		"moduleResolution": "node",
 		"noImplicitAny": false,
-		"noUnusedLocals": true,
+		"noUnusedLocals": false,
 		"noUnusedParameters": false,
 		"removeComments": true,
 		"preserveConstEnums": true,
