@@ -49,6 +49,10 @@
 		position: relative;
 	}
 
+	.md-dialog-content-body p {
+		white-space: pre;
+	}
+
 	reset-settings-button-component button {
 		top: 10px;
 		bottom: initial;

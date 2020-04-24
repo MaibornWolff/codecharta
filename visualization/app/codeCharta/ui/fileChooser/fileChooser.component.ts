@@ -12,8 +12,8 @@ import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { ErrorObject } from "ajv"
 import { resetFiles } from "../../state/store/files/files.actions"
+import { CCValidationResult } from "../../util/fileValidator"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -46,11 +46,11 @@ export class FileChooserController {
 			content: this.getParsedContent(content)
 		}
 
-		this.codeChartaService.loadFiles([nameDataPair]).catch((errors: ErrorObject[]) => {
+		this.codeChartaService.loadFiles([nameDataPair]).catch((validationResult: CCValidationResult) => {
 			this.storeService.dispatch(setIsLoadingFile(false))
 			this.storeService.dispatch(setIsLoadingMap(false))
-			console.error(errors)
-			this.dialogService.showErrorDialog(JSON.stringify(errors))
+			console.error(validationResult)
+			this.printErrors(validationResult)
 		})
 	}
 
@@ -58,8 +58,21 @@ export class FileChooserController {
 		try {
 			return JSON.parse(content)
 		} catch (error) {
-			this.dialogService.showErrorDialog("Error parsing JSON!" + error)
+			return
 		}
+	}
+
+	private printErrors(validationResult: CCValidationResult) {
+		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
+		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
+		const lineBreak = "<br>"
+
+		const errorMessage = validationResult.error.map(message => errorSymbol + message).join(lineBreak)
+		const warningMessage = validationResult.warning.map(message => warningSymbol + message).join(lineBreak)
+
+		const htmlMessage = "<p>" + errorMessage + lineBreak + warningMessage + "</p>"
+
+		this.dialogService.showErrorDialog(htmlMessage, validationResult.title)
 	}
 }
 

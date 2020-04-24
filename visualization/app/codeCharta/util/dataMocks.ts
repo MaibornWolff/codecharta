@@ -467,6 +467,33 @@ export const TEST_FILE_CONTENT: ExportCCFile = {
 	nodes: [VALID_NODE]
 }
 
+export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
+	fileName: "noFileName",
+	projectName: "Invalid Sample Map",
+	apiVersion: "2.0",
+	nodes: [VALID_NODE]
+}
+
+export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
+	fileName: "noFileName",
+	projectName: "Valid Sample Map Minor API High",
+	apiVersion: "1.2",
+	nodes: [VALID_NODE]
+}
+
+export const TEST_FILE_CONTENT_INVALID_API = {
+	fileName: "noFileName",
+	projectName: "Invalid Sample Map",
+	apiVersion: "2.a",
+	nodes: [VALID_NODE]
+}
+
+export const TEST_FILE_CONTENT_NO_API = {
+	fileName: "noFileName",
+	projectName: "Invalid Sample Map",
+	nodes: [VALID_NODE]
+}
+
 export const FILE_META: FileMeta = {
 	fileName: "fileA",
 	projectName: "Sample Project",

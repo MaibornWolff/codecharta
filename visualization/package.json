@@ -86,13 +86,13 @@
 		}
 	},
 	"dependencies": {
-		"angularjs-nouislider": "^1.0.1",
-		"ajv": "^6.10.0",
 		"angular": "^1.6.9",
 		"angular-animate": "^1.6.9",
 		"angular-aria": "^1.6.9",
 		"angular-material": "^1.1.7",
 		"angular-mocks": "^1.6.9",
+		"angular-sanitize": "^1.7.9",
+		"angularjs-nouislider": "^1.0.1",
 		"angularjs-slider": "^7.0.0",
 		"color-convert": "^2.0.0",
 		"d3": "^5.9.2",
@@ -102,6 +102,7 @@
 		"inquirer-directory": "^2.2.0",
 		"inquirer-file": "^1.0.1",
 		"jquery": "^3.3.1",
+		"jsonschema": "^1.2.6",
 		"lodash": "^4.17.11",
 		"nouislider": "^13.1.1",
 		"nwjs-builder-phoenix": "^1.14.6",

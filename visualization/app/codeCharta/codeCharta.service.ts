@@ -1,4 +1,4 @@
-import { validate } from "./util/fileValidator"
+import { validate, CCValidationResult } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
@@ -16,11 +16,14 @@ export class CodeChartaService {
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
-				const errors = validate(nameDataPair.content)
-				if (errors.length > 0) {
-					reject(errors)
+				const validationResult: CCValidationResult = validate(nameDataPair.content)
+				if (validationResult.error.length > 0) {
+					reject(validationResult)
 				}
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
+				if (validationResult.warning.length > 0) {
+					reject(validationResult)
+				}
 			})
 			this.storeService.dispatch(setSingle(this.storeService.getState().files.getCCFiles()[0]))
 			resolve()
@@ -28,7 +31,7 @@ export class CodeChartaService {
 	}
 
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
-		const ccFile = this.getCCFile(fileName, migratedFile)
+		const ccFile: CCFile = this.getCCFile(fileName, migratedFile)
 		NodeDecorator.preDecorateFile(ccFile)
 		this.storeService.dispatch(addFile(ccFile))
 	}

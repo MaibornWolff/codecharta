@@ -1,5 +1,4 @@
 import "./codeCharta.module"
-
 import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
@@ -132,15 +131,8 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual([
-						{
-							dataPath: "root",
-							keyword: "n/a",
-							message: "file should not be empty or invalid",
-							params: { emptyFile: "n/a" },
-							schemaPath: "n/a"
-						}
-					])
+					expect(err.error).toEqual(["file is empty or invalid"])
+					expect(err.warning).toEqual([])
 					done()
 				})
 		})
@@ -165,15 +157,8 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err).toEqual([
-						{
-							dataPath: "",
-							keyword: "required",
-							message: "should have required property 'projectName'",
-							params: { missingProperty: "projectName" },
-							schemaPath: "#/required"
-						}
-					])
+					expect(err.error).toEqual(["file is empty or invalid"])
+					expect(err.warning).toEqual([])
 					done()
 				})
 		})
