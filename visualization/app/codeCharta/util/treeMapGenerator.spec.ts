@@ -28,7 +28,7 @@ describe("treeMapGenerator", () => {
 		it("only root node", () => {
 			map.children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -36,13 +36,13 @@ describe("treeMapGenerator", () => {
 		it("root node with two direct children", () => {
 			map.children[1].children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
 
 		it("root node with two direct children and some grand children", () => {
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -63,7 +63,7 @@ describe("treeMapGenerator", () => {
 			state.treeMap.mapSize = 1000
 			metricData = [{ name: "myArea", maxValue: 42 }, { name: "myHeight", maxValue: 99 }]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[2].name).toBe("Parent Leaf")
 			expect(nodes[2].width).toBeGreaterThan(0)
@@ -74,7 +74,7 @@ describe("treeMapGenerator", () => {
 			map.children = []
 			map.attributes = { a: 100 }
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["a"]).toBe(100)
 		})
@@ -82,7 +82,7 @@ describe("treeMapGenerator", () => {
 		it("attribute do not exists, no children", () => {
 			map.children = []
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
@@ -92,7 +92,7 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.areaMetric = "b"
 			metricData = [{ name: "a", maxValue: 42 }, { name: "b", maxValue: 99 }]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
@@ -103,7 +103,7 @@ describe("treeMapGenerator", () => {
 			state.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "unknown", maxValue: 100 }]
 
-			let nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[2].width * nodes[2].length).toEqual(0)
 		})

@@ -38,15 +38,15 @@ export class BoxGeometryGenerationHelper {
 		subGeomIdx: number,
 		delta: number
 	): void {
-		let minPos: THREE.Vector3 = new THREE.Vector3(measures.x, measures.y, measures.z)
-		let maxPos: THREE.Vector3 = new THREE.Vector3(
+		const minPos: THREE.Vector3 = new THREE.Vector3(measures.x, measures.y, measures.z)
+		const maxPos: THREE.Vector3 = new THREE.Vector3(
 			measures.x + measures.width,
 			measures.y + measures.height,
 			measures.z + measures.depth
 		)
 
-		let uvs: THREE.Vector2[] = new Array<THREE.Vector2>()
-		let positions: THREE.Vector3[] = new Array<THREE.Vector3>()
+		const uvs: THREE.Vector2[] = new Array<THREE.Vector2>()
+		const positions: THREE.Vector3[] = new Array<THREE.Vector3>()
 
 		BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs)
 		BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIdx, positions, uvs, data)
@@ -144,14 +144,14 @@ export class BoxGeometryGenerationHelper {
 		uvs: THREE.Vector2[],
 		data: IntermediateVertexData
 	): void {
-		let deltaRelativeToHeight: number = delta / (maxPos.y - minPos.y)
+		const deltaRelativeToHeight: number = delta / (maxPos.y - minPos.y)
 
 		for (let side: number = 0; side < numSides; ++side) {
-			let intermediateIdxBL: number = side * verticesPerSide + vertexLocation.bottomLeft
-			let intermediateIdxTL: number = side * verticesPerSide + vertexLocation.topLeft
-			let intermediateIdxTR: number = side * verticesPerSide + vertexLocation.topRight
-			let intermediateIdxBR: number = side * verticesPerSide + vertexLocation.bottomRight
-			let indexBottomLeft: number = data.addVertex(
+			const intermediateIdxBL: number = side * verticesPerSide + vertexLocation.bottomLeft
+			const intermediateIdxTL: number = side * verticesPerSide + vertexLocation.topLeft
+			const intermediateIdxTR: number = side * verticesPerSide + vertexLocation.topRight
+			const intermediateIdxBR: number = side * verticesPerSide + vertexLocation.bottomRight
+			const indexBottomLeft: number = data.addVertex(
 				positions[intermediateIdxBL],
 				normals[side],
 				uvs[intermediateIdxBL],
@@ -159,7 +159,7 @@ export class BoxGeometryGenerationHelper {
 				subGeomIdx,
 				deltaRelativeToHeight
 			)
-			let indexTopLeft: number = data.addVertex(
+			const indexTopLeft: number = data.addVertex(
 				positions[intermediateIdxTL],
 				normals[side],
 				uvs[intermediateIdxTL],
@@ -167,7 +167,7 @@ export class BoxGeometryGenerationHelper {
 				subGeomIdx,
 				deltaRelativeToHeight
 			)
-			let indexTopRight: number = data.addVertex(
+			const indexTopRight: number = data.addVertex(
 				positions[intermediateIdxTR],
 				normals[side],
 				uvs[intermediateIdxTR],
@@ -175,7 +175,7 @@ export class BoxGeometryGenerationHelper {
 				subGeomIdx,
 				deltaRelativeToHeight
 			)
-			let indexBottomRight: number = data.addVertex(
+			const indexBottomRight: number = data.addVertex(
 				positions[intermediateIdxBR],
 				normals[side],
 				uvs[intermediateIdxBR],
@@ -183,8 +183,8 @@ export class BoxGeometryGenerationHelper {
 				subGeomIdx,
 				deltaRelativeToHeight
 			)
-			let dimension: number = Math.floor(side / 2)
-			let positiveFacing: boolean = normals[side].getComponent(dimension) > 0.0
+			const dimension: number = Math.floor(side / 2)
+			const positiveFacing: boolean = normals[side].getComponent(dimension) > 0.0
 			if (!positiveFacing) {
 				data.addFace(indexBottomLeft, indexTopRight, indexTopLeft)
 				data.addFace(indexBottomLeft, indexBottomRight, indexTopRight)

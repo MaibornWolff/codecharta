@@ -48,7 +48,7 @@ describe("MatchingFilesCounterController", () => {
 	})
 
 	describe("updateViewModel", () => {
-		let rootNode = VALID_NODE_WITH_PATH
+		const rootNode = VALID_NODE_WITH_PATH
 
 		it("should update ViewModel count Attributes when pattern hidden and excluded", () => {
 			matchingFilesCounterController["_viewModel"].searchPattern = "/root/node/path"

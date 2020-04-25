@@ -8,9 +8,9 @@ export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: b
 		return inputFiles[0].settings.fileSettings.markedPackages
 	}
 
-	for (let inputFile of inputFiles) {
+	for (const inputFile of inputFiles) {
 		if (inputFile.settings.fileSettings.markedPackages) {
-			for (let oldMarkedPackages of inputFile.settings.fileSettings.markedPackages) {
+			for (const oldMarkedPackages of inputFile.settings.fileSettings.markedPackages) {
 				const markedPackage: MarkedPackage = {
 					path: withUpdatedPath
 						? getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldMarkedPackages.path)

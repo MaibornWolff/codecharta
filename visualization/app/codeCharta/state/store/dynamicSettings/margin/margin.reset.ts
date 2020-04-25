@@ -12,7 +12,7 @@ export function getResetMargin(dynamicMargin: boolean, map: CodeMapNode, areaMet
 }
 
 function calculateMargin(map: CodeMapNode, areaMetric: string): number {
-	let leaves = hierarchy<CodeMapNode>(map).leaves()
+	const leaves = hierarchy<CodeMapNode>(map).leaves()
 	let numberOfBuildings = 0
 	let totalArea = 0
 
@@ -23,6 +23,6 @@ function calculateMargin(map: CodeMapNode, areaMetric: string): number {
 		}
 	})
 
-	let margin: number = MARGIN_FACTOR * Math.round(Math.sqrt(totalArea / numberOfBuildings))
+	const margin: number = MARGIN_FACTOR * Math.round(Math.sqrt(totalArea / numberOfBuildings))
 	return Math.min(MAX_MARGIN, Math.max(MIN_MARGIN, margin))
 }

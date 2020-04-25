@@ -38,6 +38,5 @@ module.exports = {
 		"@typescript-eslint/consistent-type-assertions": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-empty-function": "off",
-		"prefer-const": "off"
 	}
 }

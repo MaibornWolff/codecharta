@@ -17,7 +17,7 @@ describe("HeightSettingsPanelController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 
-	let SOME_EXTRA_TIME = 400
+	const SOME_EXTRA_TIME = 400
 
 	beforeEach(() => {
 		restartSystem()

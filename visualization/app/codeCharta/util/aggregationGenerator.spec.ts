@@ -80,26 +80,22 @@ describe("AggregationGenerator", () => {
 
 	describe("multipleService", () => {
 		it("aggregation of two maps", () => {
-			let aggregationFile: CCFile
-			aggregationFile = AggregationGenerator.getAggregationFile([file1, file2])
+			const aggregationFile = AggregationGenerator.getAggregationFile([file1, file2])
 			expect(aggregationFile).toMatchSnapshot()
 		})
 
 		it("aggregation of four maps", () => {
-			let aggregationFile: CCFile
-			aggregationFile = AggregationGenerator.getAggregationFile([file1, file2, file1, file2])
+			const aggregationFile = AggregationGenerator.getAggregationFile([file1, file2, file1, file2])
 			expect(aggregationFile).toMatchSnapshot()
 		})
 
 		it("aggregation one map", () => {
-			let aggregationFile: CCFile
-			aggregationFile = AggregationGenerator.getAggregationFile([file1])
+			const aggregationFile = AggregationGenerator.getAggregationFile([file1])
 			expect(aggregationFile).toMatchSnapshot()
 		})
 
 		it("aggregate two aggregated maps should aggregate the attributes to root", () => {
-			let aggregationFile: CCFile
-			aggregationFile = AggregationGenerator.getAggregationFile([file1, file2])
+			const aggregationFile = AggregationGenerator.getAggregationFile([file1, file2])
 			expect(aggregationFile.map.attributes.rloc).toBe(430)
 			expect(aggregationFile.map.attributes.functions).toBe(1230)
 			expect(aggregationFile.map.attributes.mcc).toBe(213)
