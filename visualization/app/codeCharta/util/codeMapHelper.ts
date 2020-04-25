@@ -68,10 +68,10 @@ export class CodeMapHelper {
 		let markingColor: string = null
 
 		if (markedPackages) {
-			let markedParentPackages = markedPackages.filter(mp => node.path.includes(mp.path))
+			const markedParentPackages = markedPackages.filter(mp => node.path.includes(mp.path))
 
 			if (markedParentPackages.length > 0) {
-				let sortedMarkedParentPackages = markedParentPackages.sort((a, b) => this.sortByPathLength(a, b))
+				const sortedMarkedParentPackages = markedParentPackages.sort((a, b) => this.sortByPathLength(a, b))
 				markingColor = sortedMarkedParentPackages[0].color
 			}
 		}

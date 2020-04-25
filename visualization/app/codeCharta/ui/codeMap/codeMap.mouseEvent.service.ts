@@ -181,7 +181,7 @@ export class CodeMapMouseEventService
 	public onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
 		if (highlightedBuilding) {
-			let fileSourceLink = highlightedBuilding.node.link
+			const fileSourceLink = highlightedBuilding.node.link
 			if (fileSourceLink) {
 				this.$window.open(fileSourceLink, "_blank")
 			}

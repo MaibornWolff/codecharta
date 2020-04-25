@@ -113,10 +113,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
 		if (map && this.edgeMetricDataService.getMetricNames()) {
-			let root = d3.hierarchy<CodeMapNode>(map)
+			const root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
-				for (let edgeMetric of edgeMetrics.keys()) {
+				for (const edgeMetric of edgeMetrics.keys()) {
 					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
 				}
 			})
