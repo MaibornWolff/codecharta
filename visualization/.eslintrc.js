@@ -34,7 +34,6 @@ module.exports = {
 		"@typescript-eslint/ban-types": "off",
 		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-var-requires": "off",
-		"@typescript-eslint/no-empty-interface": "off",
 		"@typescript-eslint/consistent-type-assertions": "off",
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-empty-function": "off",
