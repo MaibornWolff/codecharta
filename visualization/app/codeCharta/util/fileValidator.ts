@@ -43,7 +43,7 @@ export class FileValidator {
 	}
 
 	public static validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CCValidationResult {
-		let result: CCValidationResult = { error: [], warning: [], title: "" }
+		const result: CCValidationResult = { error: [], warning: [], title: "" }
 
 		switch (true) {
 			case !file:
@@ -65,9 +65,9 @@ export class FileValidator {
 		}
 
 		if (result.error.length === 0) {
-			let ajv = new Ajv({ allErrors: true })
-			let validate = ajv.compile(jsonSchema)
-			let valid = validate(file)
+			const ajv = new Ajv({ allErrors: true })
+			const validate = ajv.compile(jsonSchema)
+			const valid = validate(file)
 
 			if (!valid) {
 				result.error = validate.errors.map((error: Ajv.ErrorObject) => this.getValidationMessage(error))
@@ -81,8 +81,8 @@ export class FileValidator {
 	}
 
 	private static getValidationMessage(error: Ajv.ErrorObject) {
-		let errorType = error.keyword.charAt(0).toUpperCase() + error.keyword.slice(1)
-		let errorParameter = error.dataPath.slice(1)
+		const errorType = error.keyword.charAt(0).toUpperCase() + error.keyword.slice(1)
+		const errorParameter = error.dataPath.slice(1)
 		return errorType + " error: " + errorParameter + " " + error.message
 	}
 
@@ -91,14 +91,14 @@ export class FileValidator {
 			return true
 		}
 
-		let names = {}
+		const names = {}
 		node.children.forEach(child => (names[child.name + child.type] = true))
 
 		if (Object.keys(names).length !== node.children.length) {
 			return false
 		}
 
-		for (let child of node.children) {
+		for (const child of node.children) {
 			if (!FileValidator.hasUniqueChildren(child)) {
 				return false
 			}

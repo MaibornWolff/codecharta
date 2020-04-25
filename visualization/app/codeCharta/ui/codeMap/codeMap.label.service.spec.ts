@@ -140,7 +140,7 @@ describe("CodeMapLabelService", () => {
 		it("should calculate correct height without delta", () => {
 			codeMapLabelService.addLabel(sampleLeaf)
 
-			let positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
+			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(93)
 		})
 

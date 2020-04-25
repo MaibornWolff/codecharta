@@ -5,7 +5,7 @@ import { CodeMapShaderStrings } from "./codeMapShaderStrings"
 describe("common rendering tests", () => {
 	describe("shader strings", () => {
 		it("init", () => {
-			let cmss: CodeMapShaderStrings = new CodeMapShaderStrings()
+			const cmss: CodeMapShaderStrings = new CodeMapShaderStrings()
 			expect(cmss.fragmentShaderCode).toMatchSnapshot()
 			expect(cmss.vertexShaderCode).toMatchSnapshot()
 		})
@@ -13,7 +13,7 @@ describe("common rendering tests", () => {
 
 	describe("intermediate vertex data", () => {
 		it("addFace", () => {
-			let ivd: IntermediateVertexData = new IntermediateVertexData()
+			const ivd: IntermediateVertexData = new IntermediateVertexData()
 			ivd.addFace(0, 1, 2)
 			expect(ivd.indices.length).toBe(3)
 			expect(ivd.indices).toEqual([0, 1, 2])
@@ -23,8 +23,8 @@ describe("common rendering tests", () => {
 		})
 
 		it("addVertex", () => {
-			let ivd: IntermediateVertexData = new IntermediateVertexData()
-			let res = ivd.addVertex(new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector2(2, 2), "#000000", 3, 20)
+			const ivd: IntermediateVertexData = new IntermediateVertexData()
+			const res = ivd.addVertex(new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector2(2, 2), "#000000", 3, 20)
 			expect(ivd.indices.length).toBe(0)
 			expect(ivd.positions.length).toBe(1)
 			expect(ivd.normals.length).toBe(1)

@@ -14,7 +14,7 @@ angular
 	.component(mapTreeViewLevelComponent.selector, mapTreeViewLevelComponent)
 	.directive("ngRightClick", $parse => {
 		return (scope, element, attrs) => {
-			let fn = $parse(attrs.ngRightClick)
+			const fn = $parse(attrs.ngRightClick)
 			element.bind("contextmenu", event => {
 				scope.$apply(() => {
 					event.preventDefault()
