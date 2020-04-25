@@ -23,7 +23,7 @@ export class TreeMapGenerator {
 		const nodesPerSide: number = 2 * Math.sqrt(hierarchyNode.descendants().length - blacklisted)
 		const mapLength: number = s.treeMap.mapSize * 2 + nodesPerSide * s.dynamicSettings.margin
 		const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
-		let treeMap: TreemapLayout<CodeMapNode> = treemap<CodeMapNode>()
+		const treeMap: TreemapLayout<CodeMapNode> = treemap<CodeMapNode>()
 			.size([mapLength, mapLength])
 			.paddingOuter(padding)
 			.paddingInner(padding)
@@ -32,7 +32,7 @@ export class TreeMapGenerator {
 	}
 
 	private static getNodesAsArray(node: HierarchyRectangularNode<CodeMapNode>): HierarchyRectangularNode<CodeMapNode>[] {
-		let nodes = [node]
+		const nodes = [node]
 		if (node.children) {
 			node.children.forEach(child => nodes.push(...this.getNodesAsArray(child)))
 		}

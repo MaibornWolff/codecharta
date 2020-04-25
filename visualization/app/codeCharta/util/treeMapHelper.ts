@@ -34,7 +34,7 @@ export class TreeMapHelper {
 		maxHeight: number,
 		flattened: boolean
 	): number {
-		let heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+		const heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 
 		if (flattened) {
 			return TreeMapHelper.MIN_BUILDING_HEIGHT
@@ -152,7 +152,7 @@ export class TreeMapHelper {
 	}
 
 	private static getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean): string {
-		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
+		const mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
 		if (isDeltaState) {
 			return s.appSettings.mapColors.base
 		} else {

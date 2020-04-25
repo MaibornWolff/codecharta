@@ -9,9 +9,9 @@ describe("treeMapHelper", () => {
 		let squaredNode: HierarchyRectangularNode<CodeMapNode>
 		let state: State
 
-		let heightScale = 1
-		let maxHeight = 2000
-		let isDeltaState = false
+		const heightScale = 1
+		const maxHeight = 2000
+		const isDeltaState = false
 
 		beforeEach(() => {
 			codeMapNode = {

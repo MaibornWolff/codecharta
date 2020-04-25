@@ -30,7 +30,7 @@ describe("ThreeUpdateCycleService", () => {
 
 	describe("register", () => {
 		it("add one function to updatable object", () => {
-			let ref1 = jest.fn()
+			const ref1 = jest.fn()
 
 			threeUpdateCycleService.register(ref1)
 
@@ -38,8 +38,8 @@ describe("ThreeUpdateCycleService", () => {
 		})
 
 		it("add multiple functions to updatable object", () => {
-			let ref1 = jest.fn()
-			let ref2 = jest.fn()
+			const ref1 = jest.fn()
+			const ref2 = jest.fn()
 
 			threeUpdateCycleService.register(ref1)
 			threeUpdateCycleService.register(ref2)
@@ -50,8 +50,8 @@ describe("ThreeUpdateCycleService", () => {
 
 	describe("update", () => {
 		it("added updatable references should be updated on update call", () => {
-			let ref1 = jest.fn()
-			let ref2 = jest.fn()
+			const ref1 = jest.fn()
+			const ref2 = jest.fn()
 
 			threeUpdateCycleService["updatables"].push(ref1, ref2)
 			threeUpdateCycleService.update()

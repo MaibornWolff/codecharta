@@ -26,8 +26,8 @@ export class FileChooserController {
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
 			this.storeService.dispatch(resetFiles())
-			for (let file of element.files) {
-				let reader = new FileReader()
+			for (const file of element.files) {
+				const reader = new FileReader()
 				reader.onloadstart = () => {
 					this.storeService.dispatch(setIsLoadingFile(true))
 				}

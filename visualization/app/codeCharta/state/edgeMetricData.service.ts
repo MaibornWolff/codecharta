@@ -57,7 +57,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 			return []
 		}
 
-		let highestEdgeCountBuildings: string[] = []
+		const highestEdgeCountBuildings: string[] = []
 		const edgeMetricMapKeyIterator = this.nodeEdgeMetricsMap.get(metricName).keys()
 		for (let i = 0; i < numberOfNodes; i++) {
 			highestEdgeCountBuildings.push(edgeMetricMapKeyIterator.next().value)
@@ -68,7 +68,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 
 	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>): Map<string, EdgeMetricCount> {
 		const metricNames = this.getMetricNames().filter(it => !!this.nodeEdgeMetricsMap.get(it))
-		let nodeEdgeMetrics = new Map()
+		const nodeEdgeMetrics = new Map()
 
 		metricNames.forEach(metric => {
 			nodeEdgeMetrics.set(metric, this.nodeEdgeMetricsMap.get(metric).get(node.data.path))
@@ -125,7 +125,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	private addEdgeToCalculationMap(edge: Edge) {
-		for (let edgeMetric of Object.keys(edge.attributes)) {
+		for (const edgeMetric of Object.keys(edge.attributes)) {
 			const edgeMetricEntry = this.getEntryForMetric(edgeMetric)
 			this.addEdgeToNodes(edgeMetricEntry, edge.fromNodeName, edge.toNodeName)
 		}
@@ -152,7 +152,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	private getMetricDataFromMap(hashMap: Map<string, Map<string, EdgeMetricCount>>): MetricData[] {
-		let metricData: MetricData[] = []
+		const metricData: MetricData[] = []
 
 		hashMap.forEach((occurences: any, edgeMetric: any) => {
 			let maximumMetricValue = 0
@@ -169,7 +169,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	private sortNodeEdgeMetricsMap() {
-		let sortedEdgeMetricMap = new Map()
+		const sortedEdgeMetricMap = new Map()
 		if (this.nodeEdgeMetricsMap) {
 			this.nodeEdgeMetricsMap.forEach((value, key) => {
 				const sortedMapForMetric = new Map(
