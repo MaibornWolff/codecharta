@@ -84,13 +84,5 @@ describe("fileChooserController", () => {
 				}
 			])
 		})
-
-		it("should showErrorDialog on parsing error", () => {
-			const error = "Error parsing JSON!SyntaxError: Unexpected token c in JSON at position 0"
-
-			fileChooserController.setNewData(fileName, "content")
-
-			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(error)
-		})
 	})
 })

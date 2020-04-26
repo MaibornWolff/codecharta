@@ -14,7 +14,7 @@ export class AggregationGenerator {
 
 		this.resetVariables()
 
-		for (let inputFile of inputFiles) {
+		for (const inputFile of inputFiles) {
 			this.projectNameArray.push(inputFile.fileMeta.projectName.replace(" ", "_"))
 			this.fileNameArray.push(FileNameHelper.withoutCCJsonExtension(inputFile.fileMeta.fileName).replace(" ", "_"))
 		}
@@ -22,7 +22,7 @@ export class AggregationGenerator {
 	}
 
 	private static getNewAggregatedMap(inputFiles: CCFile[]): CCFile {
-		let outputFile: CCFile = {
+		const outputFile: CCFile = {
 			fileMeta: {
 				projectName: "project_aggregation_of_" + this.projectNameArray.join("_and_"),
 				fileName: "file_aggregation_of_" + this.fileNameArray.join("_and_"),
@@ -45,7 +45,7 @@ export class AggregationGenerator {
 			}
 		}
 
-		for (let inputMap of inputFiles) {
+		for (const inputMap of inputFiles) {
 			outputFile.map.children.push(this.extractNodeFromMap(inputMap))
 		}
 		this.aggregateRootAttributes(outputFile)
@@ -55,8 +55,8 @@ export class AggregationGenerator {
 
 	private static aggregateRootAttributes(outputFile: CCFile) {
 		outputFile.map.children.forEach(child => {
-			let attributes = child.attributes
-			for (let key in attributes) {
+			const attributes = child.attributes
+			for (const key in attributes) {
 				if (!(key in outputFile.map.attributes)) {
 					outputFile.map.attributes[key] = 0
 				}
@@ -66,7 +66,7 @@ export class AggregationGenerator {
 	}
 
 	private static extractNodeFromMap(inputMap: CCFile): CodeMapNode {
-		let outputNode: CodeMapNode = {
+		const outputNode: CodeMapNode = {
 			name: inputMap.fileMeta.fileName,
 			children: inputMap.map.children
 		} as CodeMapNode
@@ -75,7 +75,7 @@ export class AggregationGenerator {
 			outputNode.path = getUpdatedPath(inputMap.fileMeta.fileName, inputMap.map.path)
 		}
 
-		for (let key in inputMap.map) {
+		for (const key in inputMap.map) {
 			if (!["name", "path", "children"].includes(key)) {
 				outputNode[key] = inputMap.map[key]
 			}

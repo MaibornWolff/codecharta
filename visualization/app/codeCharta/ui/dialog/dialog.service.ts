@@ -17,13 +17,13 @@ export class DialogService {
 		this.$mdDialog.show(dialog)
 	}
 
-	public showErrorDialog(msg: string = "An error occured.", title: string = "Error", button: string = "Ok") {
+	public showErrorDialog(msg: string = "An error occurred.", title: string = "Error", button: string = "Ok") {
 		this.$mdDialog.show(
 			this.$mdDialog
 				.alert()
 				.clickOutsideToClose(true)
 				.title(title)
-				.textContent(msg)
+				.htmlContent(msg)
 				.ok(button)
 		)
 	}
@@ -35,7 +35,7 @@ export class DialogService {
 		title: string = "Prompt",
 		button: string = "Ok"
 	): Promise<any> {
-		let prompt = this.$mdDialog
+		const prompt = this.$mdDialog
 			.prompt()
 			.title(title)
 			.textContent(msg)

@@ -17,7 +17,7 @@ import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
 
 describe("files", () => {
-	let state = new Files()
+	const state = new Files()
 
 	beforeEach(() => {
 		files(state, resetFiles())

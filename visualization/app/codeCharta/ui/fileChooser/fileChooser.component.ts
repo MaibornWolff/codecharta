@@ -12,6 +12,7 @@ import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { resetFiles } from "../../state/store/files/files.actions"
+import { CCValidationResult } from "../../util/fileValidator"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -25,8 +26,8 @@ export class FileChooserController {
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
 			this.storeService.dispatch(resetFiles())
-			for (let file of element.files) {
-				let reader = new FileReader()
+			for (const file of element.files) {
+				const reader = new FileReader()
 				reader.onloadstart = () => {
 					this.storeService.dispatch(setIsLoadingFile(true))
 				}
@@ -44,10 +45,9 @@ export class FileChooserController {
 			content: this.getParsedContent(content)
 		}
 
-		this.codeChartaService.loadFiles([nameDataPair]).catch(e => {
+		this.codeChartaService.loadFiles([nameDataPair]).catch((validationResult: CCValidationResult) => {
 			this.storeService.dispatch(setIsLoadingFile(false))
-			console.error(e)
-			this.printErrors(e)
+			this.printErrors(validationResult)
 		})
 	}
 
@@ -55,12 +55,21 @@ export class FileChooserController {
 		try {
 			return JSON.parse(content)
 		} catch (error) {
-			this.dialogService.showErrorDialog("Error parsing JSON!" + error)
+			return
 		}
 	}
 
-	private printErrors(errors: Object) {
-		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
+	private printErrors(validationResult: CCValidationResult) {
+		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
+		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
+		const lineBreak = "<br>"
+
+		const errorMessage = validationResult.error.map(message => errorSymbol + message).join(lineBreak)
+		const warningMessage = validationResult.warning.map(message => warningSymbol + message).join(lineBreak)
+
+		const htmlMessage = "<p>" + errorMessage + lineBreak + warningMessage + "</p>"
+
+		this.dialogService.showErrorDialog(htmlMessage, validationResult.title)
 	}
 }
 
