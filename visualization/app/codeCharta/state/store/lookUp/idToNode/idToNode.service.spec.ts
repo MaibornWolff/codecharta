@@ -2,13 +2,13 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { PathToNodeService } from "./pathToNode.service"
+import { IdToNodeService } from "./idToNode.service"
 import { TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../../../util/dataMocks"
-import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
+import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 
-describe("PathToNodeService", () => {
-	let pathToNodeService: PathToNodeService
+describe("IdToNodeService", () => {
+	let idToNodeService: IdToNodeService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
 
@@ -27,7 +27,7 @@ describe("PathToNodeService", () => {
 	}
 
 	function rebuildService() {
-		pathToNodeService = new PathToNodeService($rootScope, storeService)
+		idToNodeService = new IdToNodeService($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -36,15 +36,15 @@ describe("PathToNodeService", () => {
 
 			rebuildService()
 
-			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, pathToNodeService)
+			expect(CodeMapPreRenderService.subscribe).toHaveBeenCalledWith($rootScope, idToNodeService)
 		})
 	})
 
 	describe("onRenderMapChanged", () => {
 		it("should update the map", () => {
-			pathToNodeService.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
+			idToNodeService.onRenderMapChanged(TEST_FILE_WITH_PATHS.map)
 
-			expect(storeService.getState().lookUp.pathToNode.size).toBe(6)
+			expect(storeService.getState().lookUp.idToNode.size).toBe(6)
 		})
 	})
 })
