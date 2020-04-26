@@ -1,12 +1,12 @@
 // Plop: Append reducer import here
-import { pathToBuilding } from "./pathToBuilding/pathToBuilding.reducer"
-import { pathToNode } from "./pathToNode/pathToNode.reducer"
+import { idToNode } from "./idToNode/idToNode.reducer"
+import { idToBuilding } from "./idToBuilding/idToBuilding.reducer"
 import { combineReducers } from "redux"
 
 const lookUp = combineReducers({
 	// Plop: Append sub-reducer here
-	pathToBuilding,
-	pathToNode
+	idToNode,
+	idToBuilding
 })
 
 export default lookUp

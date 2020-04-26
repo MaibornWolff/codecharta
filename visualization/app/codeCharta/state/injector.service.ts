@@ -1,8 +1,8 @@
 //@ts-nocheck
 
 // Plop: Append service import here
-import { PathToBuildingService } from "./store/lookUp/pathToBuilding/pathToBuilding.service"
-import { PathToNodeService } from "./store/lookUp/pathToNode/pathToNode.service"
+import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
+import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
 import { IsAttributeSideBarVisibleService } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { SortingOptionService } from "./store/dynamicSettings/sortingOption/sortingOption.service"
 import { SortingOrderAscendingService } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
@@ -48,8 +48,8 @@ export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
-		private pathToBuildingService: PathToBuildingService,
-		private pathToNodeService: PathToNodeService,
+		private idToNodeService: IdToNodeService,
+		private idToBuildingService: IdToBuildingService,
 		private isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService,
 		private sortingOptionService: SortingOptionService,
 		private sortingOrderAscendingService: SortingOrderAscendingService,

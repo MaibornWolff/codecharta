@@ -1,8 +1,8 @@
 import { CCAction, RecursivePartial, LookUp } from "../../../codeCharta.model"
 
 // Plop: Append default property import here
-import { defaultPathToBuilding } from "./pathToBuilding/pathToBuilding.actions"
-import { defaultPathToNode } from "./pathToNode/pathToNode.actions"
+import { defaultIdToNode } from "./idToNode/idToNode.actions"
+import { defaultIdToBuilding } from "./idToBuilding/idToBuilding.actions"
 
 export enum LookUpActions {
 	SET_LOOK_UP = "SET_LOOK_UP"
@@ -24,6 +24,6 @@ export function setLookUp(lookUp: RecursivePartial<LookUp> = defaultLookUp): Loo
 
 export const defaultLookUp: LookUp = {
 	// Plop: Append default property here
-	pathToBuilding: defaultPathToBuilding,
-	pathToNode: defaultPathToNode
+	idToNode: defaultIdToNode,
+	idToBuilding: defaultIdToBuilding
 }

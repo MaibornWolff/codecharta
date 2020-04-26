@@ -16,9 +16,9 @@ import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
-import { setPathToBuilding } from "../../state/store/lookUp/pathToBuilding/pathToBuilding.actions"
-import { setPathToNode } from "../../state/store/lookUp/pathToNode/pathToNode.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
+import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
+import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -262,12 +262,12 @@ describe("codeMapMouseEventService", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(null)
 			})
-			const pathToBuilding = new Map<number, CodeMapBuilding>()
-			pathToBuilding.set(CODE_MAP_BUILDING.node.id, CODE_MAP_BUILDING)
-			const pathToNode = new Map<number, CodeMapNode>()
-			pathToNode.set(file.map.id, file.map)
-			storeService.dispatch(setPathToBuilding(pathToBuilding))
-			storeService.dispatch(setPathToNode(pathToNode))
+			const idToBuilding = new Map<number, CodeMapBuilding>()
+			idToBuilding.set(CODE_MAP_BUILDING.node.id, CODE_MAP_BUILDING)
+			const idToNode = new Map<number, CodeMapNode>()
+			idToNode.set(file.map.id, file.map)
+			storeService.dispatch(setIdToBuilding(idToBuilding))
+			storeService.dispatch(setIdToNode(idToNode))
 		})
 
 		it("should call updateMatrixWorld", () => {
@@ -451,12 +451,12 @@ describe("codeMapMouseEventService", () => {
 
 	describe("hoverBuilding", () => {
 		beforeEach(() => {
-			const pathToBuilding = new Map<number, CodeMapBuilding>()
-			pathToBuilding.set(codeMapBuilding.node.id, codeMapBuilding)
-			const pathToNode = new Map<number, CodeMapNode>()
-			pathToNode.set(file.map.id, file.map)
-			storeService.dispatch(setPathToBuilding(pathToBuilding))
-			storeService.dispatch(setPathToNode(pathToNode))
+			const idToBuilding = new Map<number, CodeMapBuilding>()
+			idToBuilding.set(codeMapBuilding.node.id, codeMapBuilding)
+			const idToNode = new Map<number, CodeMapNode>()
+			idToNode.set(file.map.id, file.map)
+			storeService.dispatch(setIdToBuilding(idToBuilding))
+			storeService.dispatch(setIdToNode(idToNode))
 		})
 
 		it("should set the highlight when to is not null", () => {

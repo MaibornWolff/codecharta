@@ -2,12 +2,12 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { PathToBuildingService } from "./pathToBuilding.service"
+import { IdToBuildingService } from "./idToBuilding.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
 
-describe("PathToBuildingService", () => {
-	let pathToBuildingService: PathToBuildingService
+describe("IdToBuildingService", () => {
+	let idToBuildingService: IdToBuildingService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
 
@@ -25,7 +25,7 @@ describe("PathToBuildingService", () => {
 	}
 
 	function rebuildService() {
-		pathToBuildingService = new PathToBuildingService($rootScope, storeService)
+		idToBuildingService = new IdToBuildingService($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -34,7 +34,7 @@ describe("PathToBuildingService", () => {
 
 			rebuildService()
 
-			expect(ThreeSceneService.subscribeToCodeMapMeshChangedEvent).toHaveBeenCalledWith($rootScope, pathToBuildingService)
+			expect(ThreeSceneService.subscribeToCodeMapMeshChangedEvent).toHaveBeenCalledWith($rootScope, idToBuildingService)
 		})
 	})
 })

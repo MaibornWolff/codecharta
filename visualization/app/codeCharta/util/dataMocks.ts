@@ -1033,8 +1033,8 @@ export const STATE: State = {
 	},
 	files: new Files(),
 	lookUp: {
-		pathToNode: new Map(),
-		pathToBuilding: new Map()
+		idToNode: new Map(),
+		idToBuilding: new Map()
 	}
 }
 
@@ -1097,8 +1097,8 @@ export const DEFAULT_STATE: State = {
 	treeMap: { mapSize: 250 },
 	files: new Files(),
 	lookUp: {
-		pathToBuilding: new Map(),
-		pathToNode: new Map()
+		idToBuilding: new Map(),
+		idToNode: new Map()
 	}
 }
 
