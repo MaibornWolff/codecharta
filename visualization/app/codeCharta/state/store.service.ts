@@ -52,7 +52,7 @@ export class StoreService {
 	}
 
 	private notify(actionType: string) {
-		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType: actionType })
+		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType })
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {

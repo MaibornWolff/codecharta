@@ -120,7 +120,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 
 	public onCubeHovered(cube: THREE.Mesh) {
 		this.hoverInfo = {
-			cube: cube,
+			cube,
 			originalMaterial: cube.material
 		}
 		this.hoverInfo.cube.material.emissive = new THREE.Color(0xffffff)
