@@ -39,7 +39,7 @@ export class CodeChartaService {
 	private getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
 		return {
 			fileMeta: {
-				fileName: fileName,
+				fileName,
 				projectName: fileContent.projectName,
 				apiVersion: fileContent.apiVersion
 			},
