@@ -81,8 +81,8 @@ export class CodeMapActionsService {
 
 	private getNewMarkedPackage(path: string, color: string): MarkedPackage {
 		return {
-			path: path,
-			color: color
+			path,
+			color
 		}
 	}
 

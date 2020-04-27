@@ -79,8 +79,8 @@ describe("fileChooserController", () => {
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([
 				{
-					fileName: fileName,
-					content: content
+					fileName,
+					content
 				}
 			])
 		})
