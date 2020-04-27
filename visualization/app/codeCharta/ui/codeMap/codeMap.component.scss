@@ -9,25 +9,4 @@ code-map-component {
 			right: 350px;
 		}
 	}
-
-	.action-buttons {
-		position: absolute;
-		top: 200px;
-		right: 15px;
-		z-index: 60;
-		width: 180px;
-
-		.long-button {
-			width: inherit;
-			padding-left: 10px;
-			padding-right: 10px;
-			border-radius: 100px;
-		}
-
-		> * {
-			margin-left: 4px;
-			margin-right: 4px;
-			z-index: 60;
-		}
-	}
 }
