@@ -11,6 +11,7 @@ Array [
     "flat": false,
     "height": 500,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 48,
       "y": 500,
@@ -47,6 +48,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 83.13843876330611,
       "y": 2,
@@ -82,6 +84,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 83.13843876330606,
       "y": 4,
@@ -113,6 +116,7 @@ Array [
     "flat": false,
     "height": 500,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 406.6768775266122,
       "y": 502,
@@ -149,6 +153,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 117.57550765359252,
       "y": 2,
@@ -184,6 +189,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -56.61224617320377,
       "y": 4,
@@ -215,6 +221,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -56.61224617320377,
       "y": 4,
@@ -250,6 +257,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": -119.56734770392222,
       "y": 6,
@@ -285,6 +293,7 @@ Array [
     "flat": false,
     "height": 2,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 105.4367322709129,
       "y": 6,
@@ -316,6 +325,7 @@ Array [
     "flat": false,
     "height": 500,
     "heightDelta": 0,
+    "id": undefined,
     "incomingEdgePoint": Vector3 {
       "x": 456.351015307185,
       "y": 504,

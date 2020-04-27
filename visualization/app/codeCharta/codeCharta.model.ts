@@ -38,6 +38,7 @@ export interface CCFile {
 
 export interface CodeMapNode {
 	name: string
+	id?: number
 	type: NodeType
 	children?: CodeMapNode[]
 	attributes?: KeyValuePair
@@ -209,6 +210,7 @@ export interface KeyValuePair {
 
 export interface Node {
 	name: string
+	id: number
 	width: number
 	height: number
 	length: number

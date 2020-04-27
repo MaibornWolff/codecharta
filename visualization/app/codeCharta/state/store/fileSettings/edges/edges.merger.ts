@@ -8,9 +8,9 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): 
 		return inputFiles[0].settings.fileSettings.edges
 	}
 
-	for (let inputFile of inputFiles) {
+	for (const inputFile of inputFiles) {
 		if (inputFile.settings.fileSettings.edges) {
-			for (let oldEdge of inputFile.settings.fileSettings.edges) {
+			for (const oldEdge of inputFile.settings.fileSettings.edges) {
 				const edge: Edge = {
 					fromNodeName: withUpdatedPath
 						? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
@@ -22,7 +22,7 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): 
 				const equalEdgeItem = edges.find(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
 
 				if (equalEdgeItem) {
-					for (let key in edge.attributes) {
+					for (const key in edge.attributes) {
 						equalEdgeItem.attributes[key] = edge.attributes[key]
 					}
 				} else {

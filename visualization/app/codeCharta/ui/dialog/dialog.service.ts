@@ -35,7 +35,7 @@ export class DialogService {
 		title: string = "Prompt",
 		button: string = "Ok"
 	): Promise<any> {
-		let prompt = this.$mdDialog
+		const prompt = this.$mdDialog
 			.prompt()
 			.title(title)
 			.textContent(msg)

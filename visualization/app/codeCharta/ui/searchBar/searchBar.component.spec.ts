@@ -15,7 +15,7 @@ describe("SearchBarController", () => {
 
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let SOME_EXTRA_TIME = 100
+	const SOME_EXTRA_TIME = 100
 
 	beforeEach(() => {
 		restartSystem()

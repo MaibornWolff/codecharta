@@ -32,22 +32,22 @@ export class CodeMapGeometricDescription {
 		let intersectedBuilding: CodeMapBuilding
 		let leastIntersectedDistance: number = Infinity
 
-		let boxTranslation = this.scales
+		const boxTranslation = this.scales
 			.clone()
 			.multiplyScalar(this.mapSize)
 			.multiply(new Vector3(-1, 0, -1))
 
-		for (let building of this._buildings) {
-			let box: Box3 = building.boundingBox.clone()
+		for (const building of this._buildings) {
+			const box: Box3 = building.boundingBox.clone()
 			box.min.multiply(this.scales)
 			box.max.multiply(this.scales)
 			box.translate(boxTranslation)
 
 			if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) {
-				let intersectionPoint: Vector3 = ray.intersectBox(box)
+				const intersectionPoint: Vector3 = ray.intersectBox(box)
 
 				if (intersectionPoint) {
-					let intersectionDistance: number = intersectionPoint.distanceTo(ray.origin)
+					const intersectionDistance: number = intersectionPoint.distanceTo(ray.origin)
 
 					if (intersectionDistance < leastIntersectedDistance) {
 						leastIntersectedDistance = intersectionDistance
@@ -61,14 +61,14 @@ export class CodeMapGeometricDescription {
 	}
 
 	private rayIntersectsAxisAlignedBoundingBox(ray: Ray, box: Box3): boolean {
-		let tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x)
-		let tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x)
+		const tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x)
+		const tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x)
 
 		let tmin = Math.min(tx1, tx2)
 		let tmax = Math.max(tx1, tx2)
 
-		let ty1 = (box.min.y - ray.origin.y) * (1 / ray.direction.y)
-		let ty2 = (box.max.y - ray.origin.y) * (1 / ray.direction.y)
+		const ty1 = (box.min.y - ray.origin.y) * (1 / ray.direction.y)
+		const ty2 = (box.max.y - ray.origin.y) * (1 / ray.direction.y)
 
 		tmin = Math.max(tmin, Math.min(ty1, ty2))
 		tmax = Math.min(tmax, Math.max(ty1, ty2))

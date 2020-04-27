@@ -86,6 +86,7 @@
 		}
 	},
 	"dependencies": {
+		"ajv": "^6.12.2",
 		"angular": "^1.6.9",
 		"angular-animate": "^1.6.9",
 		"angular-aria": "^1.6.9",
@@ -102,7 +103,6 @@
 		"inquirer-directory": "^2.2.0",
 		"inquirer-file": "^1.0.1",
 		"jquery": "^3.3.1",
-		"jsonschema": "^1.2.6",
 		"lodash": "^4.17.11",
 		"nouislider": "^13.1.1",
 		"nwjs-builder-phoenix": "^1.14.6",

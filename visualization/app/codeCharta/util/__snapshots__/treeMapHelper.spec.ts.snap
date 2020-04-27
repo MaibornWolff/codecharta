@@ -14,6 +14,7 @@ Object {
   "flat": false,
   "height": 100,
   "heightDelta": 33,
+  "id": undefined,
   "incomingEdgePoint": Vector3 {
     "x": 199,
     "y": 102,
@@ -50,6 +51,7 @@ Object {
   "flat": false,
   "height": 1900,
   "heightDelta": 0,
+  "id": undefined,
   "incomingEdgePoint": Vector3 {
     "x": 199,
     "y": 1902,
@@ -86,6 +88,7 @@ Object {
   "flat": false,
   "height": 100,
   "heightDelta": 0,
+  "id": undefined,
   "incomingEdgePoint": Vector3 {
     "x": 199,
     "y": 102,
@@ -122,6 +125,7 @@ Object {
   "flat": false,
   "height": 100,
   "heightDelta": 0,
+  "id": undefined,
   "incomingEdgePoint": Vector3 {
     "x": 199,
     "y": 102,

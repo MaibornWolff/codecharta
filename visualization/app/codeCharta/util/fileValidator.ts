@@ -1,5 +1,5 @@
 import { CodeMapNode } from "../codeCharta.model"
-import { ValidationError, Validator, ValidatorResult } from "jsonschema"
+import Ajv from "ajv"
 
 const jsonSchema = require("./generatedSchema.json")
 const latestApiVersion = require("../../../package.json").codecharta.apiVersion
@@ -42,7 +42,7 @@ const ERROR_MESSAGES = {
 }
 
 export function validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CCValidationResult {
-	let result: CCValidationResult = { error: [], warning: [], title: "" }
+	const result: CCValidationResult = { error: [], warning: [], title: "" }
 
 	switch (true) {
 		case !file:
@@ -64,11 +64,12 @@ export function validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CC
 	}
 
 	if (result.error.length === 0) {
-		let validator = new Validator()
-		let validationResult: ValidatorResult = validator.validate(file, jsonSchema)
+		const ajv = new Ajv({ allErrors: true })
+		const validate = ajv.compile(jsonSchema)
+		const valid = validate(file)
 
-		if (validationResult.errors.length !== 0) {
-			result.error = validationResult.errors.map((error: ValidationError) => getValidationMessage(error))
+		if (!valid) {
+			result.error = validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
 			result.title = ERROR_MESSAGES.validationError.title
 		} else if (!hasUniqueChildren(file.nodes[0])) {
 			result.error.push(ERROR_MESSAGES.nodesNotUnique.message)
@@ -78,8 +79,10 @@ export function validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CC
 	return result
 }
 
-function getValidationMessage(error) {
-	return "Parameter: " + error.property + " is not of type " + error.argument
+function getValidationMessage(error: Ajv.ErrorObject) {
+	const errorType = error.keyword.charAt(0).toUpperCase() + error.keyword.slice(1)
+	const errorParameter = error.dataPath.slice(1)
+	return errorType + " error: " + errorParameter + " " + error.message
 }
 
 function hasUniqueChildren(node: CodeMapNode): boolean {
@@ -87,14 +90,14 @@ function hasUniqueChildren(node: CodeMapNode): boolean {
 		return true
 	}
 
-	let names = {}
+	const names = {}
 	node.children.forEach(child => (names[child.name + child.type] = true))
 
 	if (Object.keys(names).length !== node.children.length) {
 		return false
 	}
 
-	for (let child of node.children) {
+	for (const child of node.children) {
 		if (!hasUniqueChildren(child)) {
 			return false
 		}

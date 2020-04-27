@@ -39,7 +39,7 @@ export class FileDownloader {
 	}
 
 	private static getBlacklistToDownload(downloadSettingsNames: string[], blacklist: BlacklistItem[]) {
-		let mergedBlacklist = []
+		const mergedBlacklist = []
 
 		if (downloadSettingsNames.includes(DownloadCheckboxNames.flattens)) {
 			mergedBlacklist.push(
@@ -68,7 +68,7 @@ export class FileDownloader {
 	}
 
 	private static undecorateMap(map: CodeMapNode): CodeMapNode {
-		let copy: CodeMapNode = clone(map)
+		const copy: CodeMapNode = clone(map)
 		d3.hierarchy(copy).each(node => {
 			delete node.data.isExcluded
 			delete node.data.isFlattened
@@ -85,7 +85,7 @@ export class FileDownloader {
 
 	private static undecorateEdges(edges: Edge[]): Edge[] {
 		const copy: Edge[] = clone(edges)
-		for (let edge of copy) {
+		for (const edge of copy) {
 			delete edge.visible
 		}
 		return copy

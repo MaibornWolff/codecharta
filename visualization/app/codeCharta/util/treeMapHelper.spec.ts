@@ -1,17 +1,17 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { SquarifiedCodeMapNode } from "./treeMapGenerator"
 import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
+import { HierarchyRectangularNode } from "d3"
 
 describe("treeMapHelper", () => {
 	describe("build node", () => {
 		let codeMapNode: CodeMapNode
-		let squaredNode: SquarifiedCodeMapNode
+		let squaredNode: HierarchyRectangularNode<CodeMapNode>
 		let state: State
 
-		let heightScale = 1
-		let maxHeight = 2000
-		let isDeltaState = false
+		const heightScale = 1
+		const maxHeight = 2000
+		const isDeltaState = false
 
 		beforeEach(() => {
 			codeMapNode = {
@@ -30,7 +30,7 @@ describe("treeMapHelper", () => {
 				y0: 0,
 				x1: 400,
 				y1: 400
-			} as SquarifiedCodeMapNode
+			} as HierarchyRectangularNode<CodeMapNode>
 
 			state = STATE
 			state.treeMap.mapSize = 1
@@ -144,7 +144,7 @@ describe("treeMapHelper", () => {
 
 	describe("isNodeToBeFlat", () => {
 		let codeMapNode: CodeMapNode
-		let squaredNode: SquarifiedCodeMapNode
+		let squaredNode: HierarchyRectangularNode<CodeMapNode>
 		let state: State
 
 		beforeEach(() => {
@@ -165,7 +165,7 @@ describe("treeMapHelper", () => {
 				y0: 0,
 				x1: 400,
 				y1: 400
-			} as SquarifiedCodeMapNode
+			} as HierarchyRectangularNode<CodeMapNode>
 
 			state = STATE
 			state.treeMap.mapSize = 1

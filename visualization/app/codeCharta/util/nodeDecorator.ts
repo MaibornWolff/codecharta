@@ -26,13 +26,14 @@ export class NodeDecorator {
 
 	public static preDecorateFile(file: CCFile) {
 		this.decorateMapWithPathAttribute(file)
+		this.decorateNodesWithIds(file.map)
 	}
 
 	private static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
 		const flattened = ignore()
 		const excluded = ignore()
 
-		for (let item of blacklist) {
+		for (const item of blacklist) {
 			const path = CodeMapHelper.transformPath(item.path)
 			item.type === BlacklistType.flatten ? flattened.add(path) : excluded.add(path)
 		}
@@ -43,6 +44,16 @@ export class NodeDecorator {
 				const path = CodeMapHelper.transformPath(node.data.path)
 				node.data.isFlattened = flattened.ignores(path)
 				node.data.isExcluded = excluded.ignores(path)
+			})
+	}
+
+	private static decorateNodesWithIds(map: CodeMapNode) {
+		let id = 0
+		hierarchy(map)
+			.descendants()
+			.map(node => {
+				node.data.id = id
+				id++
 			})
 	}
 
@@ -59,7 +70,7 @@ export class NodeDecorator {
 
 		const rec = current => {
 			if (isEmptyMiddlePackage(current)) {
-				let child = current.children[0]
+				const child = current.children[0]
 				current.children = child.children
 				current.name += "/" + child.name
 				current.path += "/" + child.name
@@ -84,7 +95,7 @@ export class NodeDecorator {
 
 	private static decorateMapWithPathAttribute(file: CCFile) {
 		if (file && file.map) {
-			let root = d3.hierarchy<CodeMapNode>(file.map)
+			const root = d3.hierarchy<CodeMapNode>(file.map)
 			root.each(node => {
 				node.data.path =
 					"/" +
@@ -99,7 +110,7 @@ export class NodeDecorator {
 
 	private static decorateMapWithMissingObjects(map: CodeMapNode) {
 		if (map) {
-			let root = d3.hierarchy<CodeMapNode>(map)
+			const root = d3.hierarchy<CodeMapNode>(map)
 			root.each(node => {
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				node.data.edgeAttributes = !node.data.edgeAttributes ? {} : node.data.edgeAttributes
@@ -110,7 +121,7 @@ export class NodeDecorator {
 
 	private static decorateLeavesWithMissingMetrics(map: CodeMapNode, metricData: MetricData[]) {
 		if (map && metricData) {
-			let root = d3.hierarchy<CodeMapNode>(map)
+			const root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				metricData.forEach(metric => {
 					if (node.data.attributes[metric.name] === undefined) {
@@ -130,7 +141,7 @@ export class NodeDecorator {
 		attributeTypes: AttributeTypes
 	) {
 		if (map) {
-			let root = d3.hierarchy<CodeMapNode>(map)
+			const root = d3.hierarchy<CodeMapNode>(map)
 			root.each((node: HierarchyNode<CodeMapNode>) => {
 				const leaves: HierarchyNode<CodeMapNode>[] = node.leaves().filter(x => !x.data.isExcluded)
 				this.decorateNodeWithAggregatedChildrenMetrics(leaves, node, metricData, isDeltaState, attributeTypes)
