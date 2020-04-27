@@ -84,7 +84,7 @@ export class CodeMapMesh {
 				if (highlightBuildingMap.get(building.id)) {
 					building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
 				} else {
-					this.presentationModeHighlight(highlightedBuildings, building, state)
+					this.adjustSurroundingBuildingColors(highlightedBuildings, building, state)
 				}
 				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
 			}
@@ -92,9 +92,9 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	private presentationModeHighlight(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
+	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
 		const mapSize = state.treeMap.mapSize
-		if (state.appSettings.isPresentationMode && highlighted.length === 1) {
+		if (state.appSettings.isPresentationMode) {
 			const distance = highlighted[0].getCenterPoint(mapSize).distanceTo(building.getCenterPoint(mapSize))
 			this.decreaseLightnessByDistance(building, distance)
 		} else {

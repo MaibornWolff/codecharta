@@ -233,13 +233,13 @@ module.exports = function(plop) {
 			buildAddAction("redux-subreducer", ["{{camelCase name}}", "splitter", "ts"], "codeCharta/state/store/{{camelCase name}}"),
 			{
 				type: "modify",
-				path: "app/codeCharta/state/store/reducer.ts",
+				path: "app/codeCharta/state/store/state.reducer.ts",
 				pattern: /(\/\/ Plop: Import sub-reducer here)/gi,
 				template: '$1\r\nimport {{camelCase name}} from "./{{camelCase name}}/{{camelCase name}}.reducer"'
 			},
 			{
 				type: "modify",
-				path: "app/codeCharta/state/store/reducer.ts",
+				path: "app/codeCharta/state/store/state.reducer.ts",
 				pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
 				template: "$1\r\n\t{{camelCase name}},"
 			},
