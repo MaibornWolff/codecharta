@@ -41,7 +41,7 @@ export class FileChooserController {
 
 	public setNewData(fileName: string, content: string) {
 		const nameDataPair: NameDataPair = {
-			fileName: fileName,
+			fileName,
 			content: this.getParsedContent(content)
 		}
 

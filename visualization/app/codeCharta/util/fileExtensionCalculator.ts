@@ -89,7 +89,7 @@ export class FileExtensionCalculator {
 
 	private static getDistributionObject(fileExtension: string, metricValue: number): MetricDistribution {
 		return {
-			fileExtension: fileExtension,
+			fileExtension,
 			absoluteMetricValue: metricValue,
 			relativeMetricValue: null,
 			color: null

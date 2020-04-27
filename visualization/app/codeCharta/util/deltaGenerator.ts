@@ -92,7 +92,7 @@ export class DeltaGenerator {
 	private static getNewCCFileWithDeltas(rootNode: CodeMapNode, fileMeta: FileMeta): CCFile {
 		return {
 			map: rootNode,
-			fileMeta: fileMeta,
+			fileMeta,
 			settings: {
 				fileSettings: {
 					edges: [],
