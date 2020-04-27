@@ -99,26 +99,6 @@ code-charta-component {
 		margin: 0;
 	}
 
-	.action-buttons {
-		position: fixed;
-		bottom: 2em;
-		right: 2em;
-		z-index: 60;
-
-		.long-button {
-			width: inherit;
-			padding-left: 10px;
-			padding-right: 10px;
-			border-radius: 100px;
-		}
-
-		> * {
-			margin-left: 4px;
-			margin-right: 4px;
-			z-index: 60;
-		}
-	}
-
 	.state-selector-button {
 		height: 22px;
 		vertical-align: bottom;
