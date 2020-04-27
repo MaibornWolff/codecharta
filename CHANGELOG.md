@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Moved the show-complete-map-button when having a node focused under the view-cube #642
+
 ### Removed 🗑
 
 ### Fixed 🐞
