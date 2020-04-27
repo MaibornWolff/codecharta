@@ -26,7 +26,6 @@ module.exports = {
 		"@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none"}],
 		"object-shorthand": ["error", "always"],
 
-
 		// Do not apply inappropriate rules below
 		"@typescript-eslint/no-inferrable-types": "off",
 		"@typescript-eslint/no-use-before-define": "off",
