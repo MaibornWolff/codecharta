@@ -197,14 +197,12 @@ export class CodeMapMouseEventService
 	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
 		const lookUp = this.storeService.getState().lookUp
 		const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
-		hierarchy(codeMapNode)
-			.descendants()
-			.forEach(x => {
-				const building = lookUp.idToBuilding.get(x.data.id)
-				if (building) {
-					this.threeSceneService.addBuildingToHighlightingList(building)
-				}
-			})
+		hierarchy(codeMapNode).each(x => {
+			const building = lookUp.idToBuilding.get(x.data.id)
+			if (building) {
+				this.threeSceneService.addBuildingToHighlightingList(building)
+			}
+		})
 		this.threeSceneService.highlightBuildings()
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
 	}
