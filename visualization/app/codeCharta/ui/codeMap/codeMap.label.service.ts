@@ -128,7 +128,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.setLabelSize(sprite, canvas.width)
 
 		return {
-			sprite: sprite,
+			sprite,
 			heightValue: canvas.height,
 			line: null
 		}

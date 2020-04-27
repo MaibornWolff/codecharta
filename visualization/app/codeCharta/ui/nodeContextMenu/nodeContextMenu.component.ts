@@ -175,10 +175,10 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 
 	public static broadcastShowEvent($rootScope, path: string, type: string, x, y) {
 		$rootScope.$broadcast(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, {
-			path: path,
-			type: type,
-			x: x,
-			y: y
+			path,
+			type,
+			x,
+			y
 		})
 	}
 

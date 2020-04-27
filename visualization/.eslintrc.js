@@ -24,6 +24,8 @@ module.exports = {
 		"@typescript-eslint/no-empty-function": ["error", {allow: ["arrowFunctions"]}],
 		"@typescript-eslint/camelcase": ["error", {properties: "never"}],
 		"@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none"}],
+		"object-shorthand": ["error", "always"],
+
 
 		// Do not apply inappropriate rules below
 		"@typescript-eslint/no-inferrable-types": "off",
