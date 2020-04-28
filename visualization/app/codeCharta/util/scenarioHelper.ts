@@ -1,17 +1,50 @@
 "use strict"
-import { AppSettings, DynamicSettings, MetricData, RecursivePartial, Settings } from "../codeCharta.model"
+import { AppSettings, ColorRange, DynamicSettings, MetricData, RecursivePartial, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import { Vector3 } from "three"
 
 export interface Scenario {
 	name: string
 	settings: RecursivePartial<Settings>
 }
 
+interface CCLocalStorage {
+	version: string
+	scenarios: RecursivePartial<Scenario>[]
+}
+
+export interface Scenery {
+	name: string
+	area: {
+		areaMetric: string
+		margin: number
+	}
+	height: {
+		heightMetric: string
+		heightSlider: number
+		labelSlider: number
+	}
+	color: {
+		colorMetric: string
+		colorRange: ColorRange
+	}
+	camera: {
+		camera: Vector3
+		cameraTarget: Vector3
+	}
+	edge: {
+		edgeMetric: string
+		edgePreview: number
+		edgeHeight: number
+	}
+}
+
 export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
 	private static scenarioList: Scenario[] = ScenarioHelper.loadScenarios()
+	private static scenarioLists: RecursivePartial<Scenery>[] = ScenarioHelper.loadScenarioss()
 
 	public static getScenarioItems(metricData: MetricData[]) {
 		const scenarioItemList: ScenarioItem[] = []
@@ -63,9 +96,70 @@ export class ScenarioHelper {
 	private static getPreLoadScenarios(): Scenario[] {
 		return this.importScenarios(require("../assets/scenarios.json"))
 	}
+	private static getPreLoadScenarioss() {
+		const scenariosAsSettings: Scenario[] = this.importScenarios(require("../assets/scenarios.json"))
+		const scenery: RecursivePartial<Scenery>[] = []
+		scenariosAsSettings.forEach(scenarioSettings => {
+			scenery.push(this.transformScenarioToScenery(scenarioSettings))
+		})
+		return scenery
+	}
+
+	private static transformScenarioToScenery(scenarioAsSettings: Scenario) {
+		const scenery: RecursivePartial<Scenery> = { name: scenarioAsSettings.name }
+		const dynamicSettings: RecursivePartial<DynamicSettings> = scenarioAsSettings.settings.dynamicSettings
+		const appSettings: RecursivePartial<AppSettings> = scenarioAsSettings.settings.appSettings
+
+		for (let scenarioKey in dynamicSettings) {
+			switch (scenarioKey) {
+				case "areaMetric": {
+					scenery.area = {
+						areaMetric: dynamicSettings.areaMetric,
+						margin: dynamicSettings.margin
+					}
+					break
+				}
+				case "heightMetric": {
+					scenery.height = {
+						heightMetric: dynamicSettings.heightMetric,
+						labelSlider: appSettings.amountOfTopLabels,
+						heightSlider: appSettings.scaling
+					}
+					break
+				}
+				case "colorMetric": {
+					scenery.color = {
+						colorMetric: dynamicSettings.colorMetric,
+						colorRange: dynamicSettings.colorRange
+					}
+					break
+				}
+				case "edgeMetric": {
+					scenery.edge = {
+						edgeMetric: dynamicSettings.edgeMetric,
+						edgeHeight: appSettings.edgeHeight,
+						edgePreview: appSettings.amountOfEdgePreviews
+					}
+					break
+				}
+			}
+			if (appSettings.camera) {
+				scenery.camera = {
+					camera: appSettings.camera,
+					cameraTarget: appSettings.cameraTarget
+				}
+			}
+		}
+
+		return scenery
+	}
 
 	private static setScenariosToLocalStorage(scenarios: Scenario[]) {
 		localStorage.setItem("scenarios", JSON.stringify(scenarios))
+	}
+	private static setScenariosToLocalStoragee(scenarios: RecursivePartial<Scenery>[]) {
+		const newLocalStorageElement: CCLocalStorage = { version: "1.2", scenarios: scenarios }
+		localStorage.setItem("scenarioss", JSON.stringify(newLocalStorageElement))
 	}
 
 	private static loadScenarios(): Scenario[] {
@@ -75,6 +169,16 @@ export class ScenarioHelper {
 		} else {
 			this.setScenariosToLocalStorage(this.getPreLoadScenarios())
 			return this.getPreLoadScenarios()
+		}
+	}
+
+	private static loadScenarioss(): RecursivePartial<Scenery>[] {
+		const localStorageScenarios: RecursivePartial<Scenery>[] = JSON.parse(localStorage.getItem("scenarioss"))
+		if (localStorageScenarios) {
+			return localStorageScenarios
+		} else {
+			this.setScenariosToLocalStoragee(this.getPreLoadScenarioss())
+			return this.getPreLoadScenarioss()
 		}
 	}
 
@@ -95,6 +199,11 @@ export class ScenarioHelper {
 	public static addScenario(newScenario: Scenario) {
 		this.scenarioList.push(newScenario)
 		this.setScenariosToLocalStorage(this.scenarioList)
+	}
+
+	public static addScenarios(newScenario: RecursivePartial<Scenery>) {
+		this.scenarioLists.push(newScenario)
+		this.setScenariosToLocalStoragee(this.scenarioLists)
 	}
 
 	public static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
@@ -139,11 +248,63 @@ export class ScenarioHelper {
 		return newScenarioObject
 	}
 
+	public static createNewScenarios(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
+		const newScenery: RecursivePartial<Scenery> = { name: scenarioName }
+
+		scenarioAttributes.forEach(attribute => {
+			switch (attribute.metricType) {
+				case ScenarioMetricType.CAMERA_POSITION: {
+					newScenery.camera = {
+						camera: attribute.savedValues["camera"],
+						cameraTarget: attribute.savedValues["cameraTarget"]
+					}
+					break
+				}
+				case ScenarioMetricType.AREA_METRIC: {
+					newScenery.area = {
+						areaMetric: attribute.metricName,
+						margin: attribute.savedValues
+					}
+					break
+				}
+				case ScenarioMetricType.HEIGHT_METRIC: {
+					newScenery.height = {
+						heightMetric: attribute.metricName,
+						heightSlider: attribute.savedValues["heightSlider"],
+						labelSlider: attribute.savedValues["labelSlider"]
+					}
+					break
+				}
+				case ScenarioMetricType.COLOR_METRIC: {
+					newScenery.color = {
+						colorMetric: attribute.metricName,
+						colorRange: attribute.savedValues
+					}
+					break
+				}
+				case ScenarioMetricType.EDGE_METRIC: {
+					newScenery.edge = {
+						edgeMetric: attribute.metricName,
+						edgePreview: attribute.savedValues["edgePreview"],
+						edgeHeight: attribute.savedValues["edgeHeight"]
+					}
+					break
+				}
+			}
+		})
+
+		return newScenery
+	}
+
 	public static deleteScenario(scenarioName: String) {
 		this.scenarioList = this.scenarioList.filter(item => {
 			return item.name !== scenarioName
 		})
+		this.scenarioLists = this.scenarioLists.filter(item => {
+			return item.name !== scenarioName
+		})
 		this.setScenariosToLocalStorage(this.scenarioList)
+		this.setScenariosToLocalStoragee(this.scenarioLists)
 	}
 
 	public static getDefaultScenario(): Scenario {
