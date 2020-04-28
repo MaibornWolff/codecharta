@@ -27,6 +27,7 @@ export class Files {
 	}
 
 	public setFiles(files: Files) {
+		// TODO check if we can use rfdc here again
 		this.files = _.cloneDeep(files.getFiles())
 	}
 
