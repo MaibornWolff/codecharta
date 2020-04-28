@@ -1,12 +1,11 @@
 import { CodeMapHelper } from "./codeMapHelper"
-import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
+import { CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
 import { TEST_FILE_WITH_PATHS } from "./dataMocks"
 import _ from "lodash"
 
 describe("codeMapHelper", () => {
 	let testRoot: CodeMapNode
-	let blacklist: BlacklistItem[]
 
 	beforeEach(() => {
 		restartSystem()
@@ -20,16 +19,13 @@ describe("codeMapHelper", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		testRoot = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
-		blacklist = []
 	}
 
 	function addRootToBlacklist() {
-		blacklist.push({ path: testRoot.path, type: BlacklistType.exclude })
 		testRoot.isExcluded = true
 	}
 
 	function addSubNodeToBlacklist() {
-		blacklist.push({ path: testRoot.children[0].path, type: BlacklistType.exclude })
 		testRoot.children[0].isExcluded = true
 	}
 
