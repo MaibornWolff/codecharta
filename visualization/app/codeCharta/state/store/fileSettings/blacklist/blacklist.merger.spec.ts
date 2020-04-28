@@ -2,6 +2,7 @@ import { getMergedBlacklist } from "./blacklist.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
 import _ from "lodash"
 import { BlacklistItem, BlacklistType, CCFile } from "../../../../codeCharta.model"
+import { Blacklist } from "../../../../model/blacklist"
 
 describe("BlacklistMerger", () => {
 	let file1: CCFile
@@ -23,14 +24,14 @@ describe("BlacklistMerger", () => {
 		const blacklistItem1Duplicate: BlacklistItem = { path: "/root/nodeA", type: BlacklistType.exclude }
 
 		it("should merge blacklist for different paths", () => {
-			file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2]
-			file2.settings.fileSettings.blacklist = [blacklistItem3, blacklistItem4]
+			file1.settings.fileSettings.blacklist = new Blacklist([blacklistItem1, blacklistItem2])
+			file2.settings.fileSettings.blacklist = new Blacklist([blacklistItem3, blacklistItem4])
 			expect(getMergedBlacklist([file1, file2], false)).toMatchSnapshot()
 		})
 
 		it("should only contain unique paths+type", () => {
-			file1.settings.fileSettings.blacklist = [blacklistItem1, blacklistItem2]
-			file2.settings.fileSettings.blacklist = [blacklistItem1Duplicate, blacklistItem4]
+			file1.settings.fileSettings.blacklist = new Blacklist([blacklistItem1, blacklistItem2])
+			file2.settings.fileSettings.blacklist = new Blacklist([blacklistItem1Duplicate, blacklistItem4])
 			expect(getMergedBlacklist([file1, file2], false)).toMatchSnapshot()
 		})
 	})

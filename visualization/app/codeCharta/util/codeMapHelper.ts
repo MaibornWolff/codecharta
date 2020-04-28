@@ -1,5 +1,5 @@
 import { hierarchy } from "d3-hierarchy"
-import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
+import { CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import ignore from "ignore"
 
 export class CodeMapHelper {
@@ -46,22 +46,6 @@ export class CodeMapHelper {
 
 	public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>): number {
 		return nodes.filter(node => node.isExcluded || node.isFlattened).length
-	}
-
-	public static isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {
-		return (
-			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude) ||
-			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.flatten)
-		)
-	}
-
-	public static isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
-		if (blacklist.length === 0) {
-			return false
-		}
-
-		const ig = ignore().add(blacklist.filter(b => b.type === type).map(ex => CodeMapHelper.transformPath(ex.path)))
-		return ig.ignores(CodeMapHelper.transformPath(path))
 	}
 
 	public static getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {

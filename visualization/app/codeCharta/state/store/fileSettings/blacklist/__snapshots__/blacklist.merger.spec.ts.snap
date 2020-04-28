@@ -1,40 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-
 exports[`BlacklistMerger getMergedBlacklist should merge blacklist for different paths 1`] = `
-Array [
-  Object {
-    "path": "/root/nodeA",
-    "type": "exclude",
-  },
-  Object {
-    "path": "/another/nodeB",
-    "type": "flatten",
-  },
-  Object {
-    "path": "/another/nodeC",
-    "type": "exclude",
-  },
-  Object {
-    "path": "*prefix/nodeD",
-    "type": "flatten",
-  },
-]
+Blacklist {
+  "blacklist": Array [
+    Object {
+      "path": "/root/nodeA",
+      "type": "exclude",
+    },
+    Object {
+      "path": "/another/nodeB",
+      "type": "flatten",
+    },
+    Object {
+      "path": "/another/nodeC",
+      "type": "exclude",
+    },
+    Object {
+      "path": "*prefix/nodeD",
+      "type": "flatten",
+    },
+  ],
+}
 `;
 
 exports[`BlacklistMerger getMergedBlacklist should only contain unique paths+type 1`] = `
-Array [
-  Object {
-    "path": "/root/nodeA",
-    "type": "exclude",
-  },
-  Object {
-    "path": "/another/nodeB",
-    "type": "flatten",
-  },
-  Object {
-    "path": "*prefix/nodeD",
-    "type": "flatten",
-  },
-]
+Blacklist {
+  "blacklist": Array [
+    Object {
+      "path": "/root/nodeA",
+      "type": "exclude",
+    },
+    Object {
+      "path": "/another/nodeB",
+      "type": "flatten",
+    },
+    Object {
+      "path": "*prefix/nodeD",
+      "type": "flatten",
+    },
+  ],
+}
 `;

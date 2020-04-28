@@ -208,7 +208,9 @@ Object {
         "edges": Object {},
         "nodes": Object {},
       },
-      "blacklist": Array [],
+      "blacklist": Blacklist {
+        "blacklist": Array [],
+      },
       "edges": Array [],
       "markedPackages": Array [],
     },
@@ -333,7 +335,9 @@ Object {
         "edges": Object {},
         "nodes": Object {},
       },
-      "blacklist": Array [],
+      "blacklist": Blacklist {
+        "blacklist": Array [],
+      },
       "edges": Array [],
       "markedPackages": Array [],
     },

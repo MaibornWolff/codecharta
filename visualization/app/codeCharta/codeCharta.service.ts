@@ -4,6 +4,7 @@ import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { addFile, setSingle } from "./state/store/files/files.actions"
+import { Blacklist } from "./model/blacklist"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
@@ -43,7 +44,7 @@ export class CodeChartaService {
 				fileSettings: {
 					edges: fileContent.edges || [],
 					attributeTypes: this.getAttributeTypes(fileContent.attributeTypes),
-					blacklist: this.potentiallyUpdateBlacklistTypes(fileContent.blacklist || []),
+					blacklist: new Blacklist(this.potentiallyUpdateBlacklistTypes(fileContent.blacklist || [])),
 					markedPackages: fileContent.markedPackages || []
 				}
 			},

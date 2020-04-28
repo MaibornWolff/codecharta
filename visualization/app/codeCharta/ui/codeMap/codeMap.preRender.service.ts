@@ -1,5 +1,3 @@
-"use strict"
-
 import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
@@ -102,7 +100,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
-				state.fileSettings.blacklist,
 				this.metricService.getMetricData(),
 				this.edgeMetricDataService.getMetricData(),
 				state.files.isDeltaState(),

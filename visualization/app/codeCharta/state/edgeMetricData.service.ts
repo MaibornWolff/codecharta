@@ -1,4 +1,4 @@
-import { MetricData, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount, AttributeTypeValue } from "../codeCharta.model"
+import { MetricData, Edge, CodeMapNode, EdgeMetricCount, AttributeTypeValue } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { HierarchyNode } from "d3"
@@ -6,6 +6,7 @@ import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blac
 import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
 import { Files } from "../model/files"
 import { StoreService } from "./store.service"
+import { Blacklist } from "../model/blacklist"
 
 export interface EdgeMetricDataServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
@@ -22,7 +23,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged(blacklist: Blacklist) {
 		this.updateEdgeMetrics()
 	}
 
@@ -120,8 +121,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	private isNotBlacklisted(path: string): boolean {
-		const blacklist = this.storeService.getState().fileSettings.blacklist
-		return !CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude)
+		return this.storeService.getState().fileSettings.blacklist.isPathExcluded(path)
 	}
 
 	private addEdgeToCalculationMap(edge: Edge) {

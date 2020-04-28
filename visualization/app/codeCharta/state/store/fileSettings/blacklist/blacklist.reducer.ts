@@ -1,16 +1,20 @@
-import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistAction, BlacklistActions, setBlacklist } from "./blacklist.actions"
-import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
-const clone = require("rfdc")()
+import { Blacklist } from "../../../../model/blacklist"
 
-export function blacklist(state: BlacklistItem[] = setBlacklist().payload, action: BlacklistAction): BlacklistItem[] {
+export function blacklist(state: Blacklist = setBlacklist().payload, action: BlacklistAction): Blacklist {
 	switch (action.type) {
-		case BlacklistActions.ADD_BLACKLIST_ITEM:
-			return addItemToArray(state, action.payload)
-		case BlacklistActions.REMOVE_BLACKLIST_ITEM:
-			return removeItemFromArray(state, action.payload)
-		case BlacklistActions.SET_BLACKLIST:
-			return clone(action.payload)
+		case BlacklistActions.ADD_BLACKLIST_ITEM: {
+			state.addBlacklistItem(action.payload)
+			return state
+		}
+		case BlacklistActions.REMOVE_BLACKLIST_ITEM: {
+			state.removeBlacklistItem(action.payload)
+			return state
+		}
+		case BlacklistActions.SET_BLACKLIST: {
+			state.setBlacklist(action.payload.getItems())
+			return state
+		}
 		default:
 			return state
 	}

@@ -17,6 +17,7 @@ import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { MetricService } from "../../state/metric.service"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { Blacklist } from "../../model/blacklist"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
@@ -55,7 +56,7 @@ describe("codeMapRenderService", () => {
 		state = _.cloneDeep(STATE)
 		metricData = _.cloneDeep(METRIC_DATA)
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
-		NodeDecorator.decorateMap(map, metricData, [])
+		NodeDecorator.decorateMap(map, metricData, new Blacklist())
 		storeService.dispatch(setState(state))
 		storeService.dispatch(unfocusNode())
 	}

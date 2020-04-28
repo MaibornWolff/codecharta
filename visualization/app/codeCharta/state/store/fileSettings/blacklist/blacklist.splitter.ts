@@ -1,6 +1,6 @@
-import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistAction, setBlacklist } from "./blacklist.actions"
+import { Blacklist } from "../../../../model/blacklist"
 
-export function splitBlacklistAction(payload: BlacklistItem[]): BlacklistAction {
+export function splitBlacklistAction(payload: Blacklist): BlacklistAction {
 	return setBlacklist(payload)
 }

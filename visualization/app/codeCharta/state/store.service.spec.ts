@@ -11,6 +11,7 @@ import { setMargin } from "./store/dynamicSettings/margin/margin.actions"
 import { setCamera } from "./store/appSettings/camera/camera.actions"
 import { setIsLoadingMap } from "./store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { setIsLoadingFile } from "./store/appSettings/isLoadingFile/isLoadingFile.actions"
+import { Blacklist } from "../model/blacklist"
 
 describe("StoreService", () => {
 	let storeService: StoreService
@@ -54,7 +55,7 @@ describe("StoreService", () => {
 			storeService.dispatch(action)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("store-changed", { actionType: BlacklistActions.ADD_BLACKLIST_ITEM })
-			expect(storeService.getState().fileSettings.blacklist).toEqual([item])
+			expect(storeService.getState().fileSettings.blacklist).toEqual(new Blacklist([item]))
 		})
 
 		it("should update partial state (all metrics) with setState()", () => {

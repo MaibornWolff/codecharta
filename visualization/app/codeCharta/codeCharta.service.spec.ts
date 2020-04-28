@@ -6,6 +6,7 @@ import { CCFile, BlacklistType, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
+import { Blacklist } from "./model/blacklist"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -84,7 +85,7 @@ describe("codeChartaService", () => {
 			settings: {
 				fileSettings: {
 					attributeTypes: { nodes: {}, edges: {} },
-					blacklist: [],
+					blacklist: new Blacklist(),
 					edges: [],
 					markedPackages: []
 				}
@@ -177,7 +178,7 @@ describe("codeChartaService", () => {
 					}
 				])
 				.then(() => {
-					const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
+					const blacklist = new Blacklist([{ path: "foo", type: BlacklistType.flatten }])
 					expect(storeService.getState().files.getCCFiles()[0].settings.fileSettings.blacklist).toEqual(blacklist)
 					done()
 				})

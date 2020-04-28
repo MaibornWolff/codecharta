@@ -1,20 +1,11 @@
 import angular from "angular"
 import * as d3 from "d3"
-import {
-	CodeMapNode,
-	BlacklistType,
-	BlacklistItem,
-	FileSettings,
-	ExportCCFile,
-	FileMeta,
-	AttributeTypes,
-	Edge,
-	NodeType
-} from "../codeCharta.model"
+import { CodeMapNode, FileSettings, ExportCCFile, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { stringify } from "querystring"
 import { MetricService } from "../state/metric.service"
+import { Blacklist } from "../model/blacklist"
 const clone = require("rfdc")()
 
 export class FileDownloader {
@@ -43,23 +34,19 @@ export class FileDownloader {
 			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
 			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? this.undecorateEdges(fileSettings.edges) : [],
 			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? fileSettings.markedPackages : [],
-			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist)
+			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist).getItems()
 		}
 	}
 
-	private static getBlacklistToDownload(downloadSettingsNames: string[], blacklist: BlacklistItem[]) {
-		const mergedBlacklist = []
+	private static getBlacklistToDownload(downloadSettingsNames: string[], blacklist: Blacklist): Blacklist {
+		const mergedBlacklist: Blacklist = new Blacklist()
 
 		if (downloadSettingsNames.includes(DownloadCheckboxNames.flattens)) {
-			mergedBlacklist.push(
-				...this.getFilteredBlacklist(blacklist, BlacklistType.flatten).map(x => {
-					return { path: x.path, type: "hide" }
-				})
-			)
+			mergedBlacklist.append(new Blacklist(blacklist.getFlattenedItems()))
 		}
 
 		if (downloadSettingsNames.includes(DownloadCheckboxNames.excludes)) {
-			mergedBlacklist.push(...this.getFilteredBlacklist(blacklist, BlacklistType.exclude))
+			mergedBlacklist.append(new Blacklist(blacklist.getExcludedItems()))
 		}
 		return mergedBlacklist
 	}
@@ -70,10 +57,6 @@ export class FileDownloader {
 		} else {
 			return attributeTypes
 		}
-	}
-
-	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType): BlacklistItem[] {
-		return blacklist.filter(x => x.type == type)
 	}
 
 	private static undecorateMap(map: CodeMapNode): CodeMapNode {

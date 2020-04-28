@@ -1,12 +1,12 @@
-import { BlacklistItem, BlacklistType, CodeMapNode, FileState, MetricData, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
+import { CodeMapNode, FileState, MetricData, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
-import { CodeMapHelper } from "../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
 import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
 import { Files } from "../model/files"
 import { AttributeTypesSubscriber, AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
+import { Blacklist } from "../model/blacklist"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -33,7 +33,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		this.setNewMetricData()
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged(blacklist: Blacklist) {
 		this.setNewMetricData()
 	}
 
@@ -87,14 +87,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 			.forEach((fileState: FileState) => {
 				const nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
 				nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
-					if (
-						node.data.path &&
-						!CodeMapHelper.isPathBlacklisted(
-							node.data.path,
-							this.storeService.getState().fileSettings.blacklist,
-							BlacklistType.exclude
-						)
-					) {
+					if (node.data.path && !this.storeService.getState().fileSettings.blacklist.isPathExcluded(node.data.path)) {
 						this.addMaxMetricValuesToHashMap(node, hashMap)
 					}
 				})

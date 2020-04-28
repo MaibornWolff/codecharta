@@ -184,7 +184,7 @@ describe("nodeContextMenuController", () => {
 			}
 			nodeContextMenuController.flattenNode()
 
-			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
+			expect(storeService.getState().fileSettings.blacklist.has(expected.path, expected.type)).toBeTruthy()
 		})
 	})
 
@@ -360,7 +360,7 @@ describe("nodeContextMenuController", () => {
 
 			nodeContextMenuController.excludeNode()
 
-			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
+			expect(storeService.getState().fileSettings.blacklist.has(expected.path, expected.type)).toBeTruthy()
 		})
 	})
 

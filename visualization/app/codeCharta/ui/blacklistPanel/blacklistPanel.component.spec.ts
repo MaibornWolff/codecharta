@@ -1,10 +1,11 @@
 import "./blacklistPanel.module"
 import { BlacklistPanelController } from "./blacklistPanel.component"
-import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
+import { BlacklistType } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { StoreService } from "../../state/store.service"
+import { Blacklist } from "../../model/blacklist"
 
 describe("blacklistController", () => {
 	let blacklistPanelController: BlacklistPanelController
@@ -29,25 +30,25 @@ describe("blacklistController", () => {
 
 	describe("onBlacklistChanged", () => {
 		it("should set new excluded nodes", () => {
-			const blacklist: BlacklistItem[] = [
+			const blacklist = new Blacklist([
 				{ path: "/root", type: BlacklistType.exclude },
 				{ path: "/root/file", type: BlacklistType.flatten }
-			]
+			])
 
 			blacklistPanelController.onBlacklistChanged(blacklist)
 
-			expect(blacklistPanelController["_viewModel"].exclude).toEqual([blacklist[0]])
+			expect(blacklistPanelController["_viewModel"].exclude).toEqual([blacklist.getItems()[0]])
 		})
 
 		it("should set new flattened nodes", () => {
-			const blacklist: BlacklistItem[] = [
+			const blacklist = new Blacklist([
 				{ path: "/root", type: BlacklistType.exclude },
 				{ path: "/root/file", type: BlacklistType.flatten }
-			]
+			])
 
 			blacklistPanelController.onBlacklistChanged(blacklist)
 
-			expect(blacklistPanelController["_viewModel"].flatten).toEqual([blacklist[1]])
+			expect(blacklistPanelController["_viewModel"].flatten).toEqual([blacklist.getItems()[1]])
 		})
 	})
 

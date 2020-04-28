@@ -1,9 +1,10 @@
 import "./blacklistPanel.component.scss"
-import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
+import { BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { StoreService } from "../../state/store.service"
+import { Blacklist } from "../../model/blacklist"
 
 export class BlacklistPanelController implements BlacklistSubscriber {
 	private _viewModel: {
@@ -18,9 +19,9 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this._viewModel.flatten = blacklist.filter(x => x.type === BlacklistType.flatten)
-		this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
+	public onBlacklistChanged(blacklist: Blacklist) {
+		this._viewModel.flatten = blacklist.getFlattenedItems()
+		this._viewModel.exclude = blacklist.getExcludedItems()
 	}
 
 	public removeBlacklistEntry(entry: BlacklistItem) {

@@ -4,16 +4,16 @@ import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
-import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { Files } from "../../model/files"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
+import { Blacklist } from "../../model/blacklist"
 
 interface Coordinates {
 	x: number
@@ -96,10 +96,10 @@ export class CodeMapMouseEventService
 		this.threeSceneService.clearSelection()
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged(blacklist: Blacklist) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
 		if (selectedBuilding) {
-			const isSelectedBuildingBlacklisted = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
+			const isSelectedBuildingBlacklisted = blacklist.isPathFlattenedOrExcluded(selectedBuilding.node.path)
 
 			if (isSelectedBuildingBlacklisted) {
 				this.threeSceneService.clearSelection()

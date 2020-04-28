@@ -2,6 +2,7 @@ import { Vector3 } from "three"
 import { Action } from "redux"
 import { Files } from "./model/files"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
+import { Blacklist } from "./model/blacklist"
 
 export interface NameDataPair {
 	fileName: string
@@ -89,7 +90,7 @@ export interface Settings {
 
 export interface FileSettings {
 	attributeTypes: AttributeTypes
-	blacklist: Array<BlacklistItem>
+	blacklist: Blacklist
 	edges: Edge[]
 	markedPackages: MarkedPackage[]
 }

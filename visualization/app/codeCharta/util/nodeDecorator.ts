@@ -1,8 +1,6 @@
-"use strict"
 import * as d3 from "d3"
 import { HierarchyNode, hierarchy } from "d3"
 import {
-	BlacklistItem,
 	CCFile,
 	CodeMapNode,
 	MetricData,
@@ -15,9 +13,10 @@ import {
 import { MetricService } from "../state/metric.service"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
+import { Blacklist } from "../model/blacklist"
 
 export class NodeDecorator {
-	public static decorateMap(map: CodeMapNode, metricData: MetricData[], blacklist: BlacklistItem[]) {
+	public static decorateMap(map: CodeMapNode, metricData: MetricData[], blacklist: Blacklist) {
 		this.decorateMapWithMissingObjects(map)
 		this.decorateMapWithCompactMiddlePackages(map)
 		this.decorateLeavesWithMissingMetrics(map, metricData)
@@ -29,11 +28,11 @@ export class NodeDecorator {
 		this.decorateNodesWithIds(file.map)
 	}
 
-	private static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
+	private static decorateMapWithBlacklist(map: CodeMapNode, blacklist: Blacklist) {
 		const flattened = ignore()
 		const excluded = ignore()
 
-		for (const item of blacklist) {
+		for (const item of blacklist.getItems()) {
 			const path = CodeMapHelper.transformPath(item.path)
 			item.type === BlacklistType.flatten ? flattened.add(path) : excluded.add(path)
 		}
@@ -134,7 +133,6 @@ export class NodeDecorator {
 
 	public static decorateParentNodesWithAggregatedAttributes(
 		map: CodeMapNode,
-		blacklist: BlacklistItem[],
 		metricData: MetricData[],
 		edgeMetricData: MetricData[],
 		isDeltaState: boolean,

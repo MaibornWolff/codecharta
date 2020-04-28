@@ -2,6 +2,7 @@ import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
+import { Blacklist } from "../model/blacklist"
 
 export class AggregationGenerator {
 	private static projectNameArray: string[] = []
@@ -38,7 +39,7 @@ export class AggregationGenerator {
 			settings: {
 				fileSettings: {
 					edges: [],
-					blacklist: [],
+					blacklist: new Blacklist(),
 					attributeTypes: { nodes: {}, edges: {} },
 					markedPackages: []
 				}

@@ -19,6 +19,7 @@ import { StoreService } from "../../state/store.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
+import { Blacklist } from "../../model/blacklist"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -227,7 +228,7 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onBlacklistChanged", () => {
 		it("should deselect the building when the selected building is excluded", () => {
-			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.exclude }]
+			const blacklist = new Blacklist([{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.exclude }])
 
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 
@@ -235,7 +236,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should deselect the building when the selected building is hidden", () => {
-			const blacklist = [{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.flatten }]
+			const blacklist = new Blacklist([{ path: CODE_MAP_BUILDING.node.path, type: BlacklistType.flatten }])
 
 			codeMapMouseEventService.onBlacklistChanged(blacklist)
 
@@ -243,7 +244,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not deselect the building when the selected building is not blacklisted", () => {
-			codeMapMouseEventService.onBlacklistChanged([])
+			codeMapMouseEventService.onBlacklistChanged(new Blacklist())
 
 			expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
 		})
@@ -251,7 +252,7 @@ describe("codeMapMouseEventService", () => {
 		it("should not deselect the building when no building is selected", () => {
 			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
 
-			codeMapMouseEventService.onBlacklistChanged([])
+			codeMapMouseEventService.onBlacklistChanged(new Blacklist())
 
 			expect(threeSceneService.clearSelection).not.toHaveBeenCalled()
 		})

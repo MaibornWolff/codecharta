@@ -11,6 +11,7 @@ import { StoreService } from "./store.service"
 import { addFile, resetFiles, setSingle } from "./store/files/files.actions"
 import { FilesService } from "./store/files/files.service"
 import { setState } from "./store/state.actions"
+import { Blacklist } from "../model/blacklist"
 
 describe("MetricService", () => {
 	let metricService: MetricService
@@ -97,19 +98,19 @@ describe("MetricService", () => {
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onBlacklistChanged([])
+			metricService.onBlacklistChanged(new Blacklist())
 
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
 		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onBlacklistChanged([])
+			metricService.onBlacklistChanged(new Blacklist())
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
-			metricService.onBlacklistChanged([])
+			metricService.onBlacklistChanged(new Blacklist())
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBeGreaterThan(0)
 		})

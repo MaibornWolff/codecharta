@@ -2,13 +2,14 @@ import "./searchBar.module"
 import { SearchBarController } from "./searchBar.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { BlacklistItem, BlacklistType } from "../../codeCharta.model"
+import { BlacklistType } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { withMockedEventMethods } from "../../util/dataMocks"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { SearchPatternService } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
+import { Blacklist } from "../../model/blacklist"
 
 describe("SearchBarController", () => {
 	let searchBarController: SearchBarController
@@ -54,10 +55,10 @@ describe("SearchBarController", () => {
 
 	describe("onSearchPatternChange", () => {
 		it("should update the viewModel", () => {
-			const blacklist: BlacklistItem[] = [
+			const blacklist = new Blacklist([
 				{ path: "/root/node/path", type: BlacklistType.exclude },
 				{ path: "/root/another/node/path", type: BlacklistType.exclude }
-			]
+			])
 			storeService.dispatch(setBlacklist(blacklist))
 
 			searchBarController.onSearchPatternChanged("/root/node/path")
@@ -85,7 +86,7 @@ describe("SearchBarController", () => {
 
 			searchBarController.onClickBlacklistPattern(blacklistItem.type)
 
-			expect(storeService.getState().fileSettings.blacklist).toContainEqual(blacklistItem)
+			expect(storeService.getState().fileSettings.blacklist.has(blacklistItem.path, blacklistItem.type)).toBeTruthy()
 			expect(searchBarController["_viewModel"].searchPattern).toBe("")
 			expect(storeService.getState().dynamicSettings.searchPattern).toBe("")
 		})
@@ -97,20 +98,19 @@ describe("SearchBarController", () => {
 		})
 
 		it("should update ViewModel when pattern not blacklisted", () => {
-			const blacklist: BlacklistItem[] = []
 			storeService.dispatch(setBlacklist())
 
-			searchBarController.onBlacklistChanged(blacklist)
+			searchBarController.onBlacklistChanged(new Blacklist())
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeFalsy()
 		})
 
 		it("should update ViewModel when pattern excluded", () => {
-			const blacklist: BlacklistItem[] = [
+			const blacklist = new Blacklist([
 				{ path: "/root/node/path", type: BlacklistType.exclude },
 				{ path: "/root/another/node/path", type: BlacklistType.exclude }
-			]
+			])
 			storeService.dispatch(setBlacklist(blacklist))
 
 			searchBarController.onBlacklistChanged(blacklist)
@@ -120,10 +120,10 @@ describe("SearchBarController", () => {
 		})
 
 		it("should update ViewModel when pattern hidden and excluded", () => {
-			const blacklist: BlacklistItem[] = [
+			const blacklist = new Blacklist([
 				{ path: "/root/node/path", type: BlacklistType.exclude },
 				{ path: "/root/node/path", type: BlacklistType.flatten }
-			]
+			])
 			storeService.dispatch(setBlacklist(blacklist))
 
 			searchBarController.onBlacklistChanged(blacklist)

@@ -1,26 +1,26 @@
 import { getUpdatedBlacklistItemPath } from "../../../../util/nodePathHelper"
 import { BlacklistItem, CCFile } from "../../../../codeCharta.model"
+import { Blacklist } from "../../../../model/blacklist"
 
-export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolean): BlacklistItem[] {
-	const blacklist: BlacklistItem[] = []
+export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolean): Blacklist {
+	const blacklist = new Blacklist()
 
-	if (inputFiles.length == 1) {
+	if (inputFiles.length === 1) {
 		return inputFiles[0].settings.fileSettings.blacklist
 	}
 
 	for (const inputFile of inputFiles) {
 		if (inputFile.settings.fileSettings.blacklist) {
-			for (const oldBlacklistItem of inputFile.settings.fileSettings.blacklist) {
+			for (const oldBlacklistItem of inputFile.settings.fileSettings.blacklist.getItems()) {
 				const blacklistItem: BlacklistItem = {
 					path: withUpdatedPath
 						? getUpdatedBlacklistItemPath(inputFile.fileMeta.fileName, oldBlacklistItem.path)
 						: oldBlacklistItem.path,
 					type: oldBlacklistItem.type
 				}
-				const equalBlacklistItems = blacklist.find(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
 
-				if (!equalBlacklistItems) {
-					blacklist.push(blacklistItem)
+				if (!blacklist.has(blacklistItem.path, blacklistItem.type)) {
+					blacklist.addBlacklistItem(blacklistItem)
 				}
 			}
 		}

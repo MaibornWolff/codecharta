@@ -1,5 +1,5 @@
 import "./searchBar.component.scss"
-import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
+import { BlacklistType } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
@@ -7,6 +7,7 @@ import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import { Blacklist } from "../../model/blacklist"
 
 export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -31,7 +32,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		}, SearchBarController.DEBOUNCE_TIME)
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged(blacklist: Blacklist) {
 		this.updateViewModel()
 	}
 
@@ -54,13 +55,12 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	private updateViewModel() {
-		const blacklist = this.storeService.getState().fileSettings.blacklist
-		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
-		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
+		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(BlacklistType.exclude)
+		this._viewModel.isPatternHidden = this.isPatternBlacklisted(BlacklistType.flatten)
 	}
 
-	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {
-		return blacklist.some(x => this._viewModel.searchPattern == x.path && blacklistType == x.type)
+	private isPatternBlacklisted(blacklistType: BlacklistType): boolean {
+		return this.storeService.getState().fileSettings.blacklist.has(this._viewModel.searchPattern, blacklistType)
 	}
 
 	private resetSearchPattern() {

@@ -3,6 +3,7 @@ import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model
 import _ from "lodash"
 import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"
+import { Blacklist } from "../model/blacklist"
 const clone = require("rfdc")()
 
 export class DeltaGenerator {
@@ -96,7 +97,7 @@ export class DeltaGenerator {
 			settings: {
 				fileSettings: {
 					edges: [],
-					blacklist: [],
+					blacklist: new Blacklist(),
 					attributeTypes: { nodes: {}, edges: {} },
 					markedPackages: []
 				}

@@ -1,14 +1,14 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import { getMergedBlacklist } from "./blacklist.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { Files } from "../../../../model/files"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { Blacklist } from "../../../../model/blacklist"
 
 export interface BlacklistSubscriber {
-	onBlacklistChanged(blacklist: BlacklistItem[])
+	onBlacklistChanged(blacklist: Blacklist)
 }
 
 export class BlacklistService implements StoreSubscriber, FilesSelectionSubscriber {
@@ -40,7 +40,7 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 		return this.storeService.getState().fileSettings.blacklist
 	}
 
-	private notify(newState: BlacklistItem[]) {
+	private notify(newState: Blacklist) {
 		this.$rootScope.$broadcast(BlacklistService.BLACKLIST_CHANGED_EVENT, { blacklist: newState })
 	}
 

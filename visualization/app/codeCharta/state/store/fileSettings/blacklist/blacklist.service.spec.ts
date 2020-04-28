@@ -8,6 +8,7 @@ import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 import { PresentationModeActions } from "../../appSettings/isPresentationMode/isPresentationMode.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { FilesService } from "../../files/files.service"
+import { Blacklist } from "../../../../model/blacklist"
 
 describe("BlacklistService", () => {
 	let blacklistService: BlacklistService
@@ -57,7 +58,7 @@ describe("BlacklistService", () => {
 
 			blacklistService.onStoreChanged(BlacklistActions.ADD_BLACKLIST_ITEM)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("blacklist-changed", { blacklist: [item] })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("blacklist-changed", { blacklist: new Blacklist([item]) })
 		})
 
 		it("should not notify anything on non-blacklist-events", () => {

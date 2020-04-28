@@ -1,4 +1,5 @@
 import { BlacklistItem, CCAction } from "../../../../codeCharta.model"
+import { Blacklist } from "../../../../model/blacklist"
 
 export enum BlacklistActions {
 	ADD_BLACKLIST_ITEM = "ADD_BLACKLIST_ITEM",
@@ -18,7 +19,7 @@ export interface RemoveBlacklistAction extends CCAction {
 
 export interface SetBlacklistAction extends CCAction {
 	type: BlacklistActions.SET_BLACKLIST
-	payload: BlacklistItem[]
+	payload: Blacklist
 }
 
 export type BlacklistAction = AddBlacklistAction | RemoveBlacklistAction | SetBlacklistAction
@@ -37,11 +38,11 @@ export function removeBlacklistItem(item: BlacklistItem): RemoveBlacklistAction 
 	}
 }
 
-export function setBlacklist(blacklist: BlacklistItem[] = defaultBlacklist): SetBlacklistAction {
+export function setBlacklist(blacklist: Blacklist = defaultBlacklist): SetBlacklistAction {
 	return {
 		type: BlacklistActions.SET_BLACKLIST,
 		payload: blacklist
 	}
 }
 
-export const defaultBlacklist: BlacklistItem[] = []
+export const defaultBlacklist: Blacklist = new Blacklist()

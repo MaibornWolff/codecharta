@@ -1,11 +1,12 @@
 import "./searchPanelModeSelector.component.scss"
-import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
+import { BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
+import { Blacklist } from "../../model/blacklist"
 
 export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelModeSubscriber {
 	private _viewModel: {
@@ -31,9 +32,9 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 		this._viewModel.searchFieldIsEmpty = searchPattern === ""
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this._viewModel.flattenListLength = blacklist.filter(x => x.type === BlacklistType.flatten).length
-		this._viewModel.excludeListLength = blacklist.filter(x => x.type === BlacklistType.exclude).length
+	public onBlacklistChanged(blacklist: Blacklist) {
+		this._viewModel.flattenListLength = blacklist.sizeByType(BlacklistType.flatten)
+		this._viewModel.excludeListLength = blacklist.sizeByType(BlacklistType.exclude)
 	}
 
 	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
