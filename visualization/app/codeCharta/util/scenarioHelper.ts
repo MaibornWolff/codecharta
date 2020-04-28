@@ -173,9 +173,9 @@ export class ScenarioHelper {
 	}
 
 	private static loadScenarioss(): RecursivePartial<Scenery>[] {
-		const localStorageScenarios: RecursivePartial<Scenery>[] = JSON.parse(localStorage.getItem("scenarioss"))
-		if (localStorageScenarios) {
-			return localStorageScenarios
+		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarioss"))
+		if (ccLocalStorage) {
+			return ccLocalStorage.scenarios
 		} else {
 			this.setScenariosToLocalStoragee(this.getPreLoadScenarioss())
 			return this.getPreLoadScenarioss()
@@ -313,6 +313,45 @@ export class ScenarioHelper {
 
 	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
 		return this.scenarioList.find(s => s.name == name).settings
+	}
+
+	public static getScenarioSettingsByNames(name: string): RecursivePartial<Settings> {
+		const scenery: RecursivePartial<Scenery> = this.scenarioLists.find(s => s.name == name)
+		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
+		const partialAppSettings: RecursivePartial<AppSettings> = {}
+
+		for (let sceneryKey in scenery) {
+			switch (sceneryKey) {
+				case "area": {
+					partialDynamicSettings.areaMetric = scenery.area.areaMetric
+					partialDynamicSettings.margin = scenery.area.margin
+					break
+				}
+				case "height": {
+					partialDynamicSettings.heightMetric = scenery.height.heightMetric
+					partialAppSettings.amountOfTopLabels = scenery.height.labelSlider
+					partialAppSettings.scaling = scenery.height.heightSlider
+					break
+				}
+				case "color": {
+					partialDynamicSettings.colorMetric = scenery.color.colorMetric
+					partialDynamicSettings.colorRange = scenery.color.colorRange
+					break
+				}
+				case "edge": {
+					partialDynamicSettings.edgeMetric = scenery.edge.edgeMetric
+					partialAppSettings.edgeHeight = scenery.edge.edgeHeight
+					partialAppSettings.amountOfEdgePreviews = scenery.edge.edgePreview
+					break
+				}
+				case "camera": {
+					partialAppSettings.camera = scenery.camera.camera
+					partialAppSettings.cameraTarget = scenery.camera.cameraTarget
+				}
+			}
+		}
+
+		return { appSettings: partialAppSettings, dynamicSettings: partialDynamicSettings }
 	}
 
 	public static importScenarios(scenarios: Scenario[]): Scenario[] {
