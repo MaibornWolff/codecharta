@@ -74,8 +74,8 @@ export class DialogDownloadController {
 
 	private pushFileContent(name: string, numberOfListItems: number) {
 		this._viewModel.fileContent.push({
-			name: name,
-			numberOfListItems: numberOfListItems,
+			name,
+			numberOfListItems,
 			isSelected: numberOfListItems > 0,
 			isDisabled: !numberOfListItems || numberOfListItems == 0
 		})

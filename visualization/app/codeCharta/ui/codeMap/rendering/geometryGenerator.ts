@@ -43,7 +43,7 @@ export class GeometryGenerator {
 
 		return {
 			mesh: this.buildMeshFromIntermediateVertexData(data, material),
-			desc: desc
+			desc
 		}
 	}
 
