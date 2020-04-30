@@ -173,7 +173,7 @@ export class CodeMapMouseEventService
 				building: highlightedBuilding,
 				x: event.clientX,
 				y: event.clientY,
-				event: event
+				event
 			})
 		}
 	}
@@ -204,7 +204,7 @@ export class CodeMapMouseEventService
 			}
 		})
 		this.threeSceneService.highlightBuildings()
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding: hoveredBuilding })
+		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding })
 	}
 
 	private unhoverBuilding() {

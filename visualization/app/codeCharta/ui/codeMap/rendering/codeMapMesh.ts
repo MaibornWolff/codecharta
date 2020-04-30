@@ -180,7 +180,7 @@ export class CodeMapMesh {
 			vertexShader: shaderCode.vertexShaderCode,
 			fragmentShader: shaderCode.fragmentShaderCode,
 			lights: true,
-			uniforms: uniforms
+			uniforms
 		})
 	}
 

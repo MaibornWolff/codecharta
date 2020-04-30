@@ -153,14 +153,14 @@ export class ViewCubemeshGenerator {
 
 		return {
 			group,
-			topLeftMiddle: topLeftMiddle,
+			topLeftMiddle,
 			topMiddleMiddle: faceCenterTop,
-			topRightMiddle: topRightMiddle,
-			middleLeftMiddle: middleLeftMiddle,
-			middleRightMiddle: middleRightMiddle,
-			bottomLeftMiddle: bottomLeftMiddle,
+			topRightMiddle,
+			middleLeftMiddle,
+			middleRightMiddle,
+			bottomLeftMiddle,
 			bottomMiddleMiddle: faceCenterBottom,
-			bottomRightMiddle: bottomRightMiddle
+			bottomRightMiddle
 		}
 	}
 
@@ -191,15 +191,15 @@ export class ViewCubemeshGenerator {
 		group.add(middleFace)
 		return {
 			group,
-			topLeft: topLeft,
-			topCenter: topCenter,
-			topRight: topRight,
-			bottomLeft: bottomLeft,
-			bottomCenter: bottomCenter,
-			bottomRight: bottomRight,
-			middleLeft: middleLeft,
-			middleCenter: middleCenter,
-			middleRight: middleRight
+			topLeft,
+			topCenter,
+			topRight,
+			bottomLeft,
+			bottomCenter,
+			bottomRight,
+			middleLeft,
+			middleCenter,
+			middleRight
 		}
 	}
 
