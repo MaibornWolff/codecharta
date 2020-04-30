@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Generating a delta map with merged empty folders in between is now working correctly #730
+
 ### Chore 👨‍💻 👩‍💻
 
 - [Security] Bump jquery from 3.4.0 to 3.5.0 in /visualization #944
