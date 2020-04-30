@@ -139,7 +139,7 @@ export class LegendPanelController
 		if (this.isColorPixelInPackageLists(colorPixel)) {
 			this.insertMPIntoPackageList(mp, colorPixel)
 		} else {
-			const packageList: PackageList = { colorPixel: colorPixel, markedPackages: [mp] }
+			const packageList: PackageList = { colorPixel, markedPackages: [mp] }
 			this.addNewPackageList(packageList)
 		}
 	}
