@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Rename the button Show-Complete-Map button to Unfocus #642
+- Move the Unfocus button (visible when a node is focused) below the view-cube #642
+
 ### Removed 🗑
 
 ### Fixed 🐞
