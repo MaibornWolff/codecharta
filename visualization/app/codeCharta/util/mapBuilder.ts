@@ -4,10 +4,11 @@ import { CodeChartaService } from "../codeCharta.service"
 export class MapBuilder {
 	public static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>): CodeMapNode {
 		let rootNode: CodeMapNode = this.getEmptyRootNode()
+		const sortedNodes = this.getHashMapSortedByPath(hashMapWithAllNodes)
 
-		this.getHashMapSortedByPath(hashMapWithAllNodes).forEach((node: CodeMapNode, path: string) => {
+		sortedNodes.forEach((node: CodeMapNode, path: string) => {
 			node.children = []
-			const parentNode: CodeMapNode = this.findNode(rootNode, this.getParentPath(path))
+			const parentNode: CodeMapNode = this.getParentNode(sortedNodes, path, rootNode)
 			if (node.path == CodeChartaService.ROOT_PATH) {
 				rootNode = node
 			} else {
@@ -32,23 +33,20 @@ export class MapBuilder {
 	}
 
 	private static getParentPath(path: string): string {
-		const parentPathArray = path.split("/")
-		parentPathArray.splice(parentPathArray.length - 1, 1)
-		return parentPathArray.length == 1 ? "/" : parentPathArray.join("/")
+		return path.substring(0, path.lastIndexOf("/"))
 	}
 
-	private static findNode(parent: CodeMapNode, path: string): CodeMapNode {
-		if (parent.path == path || path == "/") {
-			return parent
-		} else {
-			if (parent.children && parent.children.length > 0) {
-				for (const child of parent.children) {
-					const foundNode = this.findNode(child, path)
-					if (foundNode) {
-						return foundNode
-					}
-				}
-			}
+	private static getParentNode(sortedHashMap: Map<string, CodeMapNode>, path: string, rootNode: CodeMapNode): CodeMapNode {
+		if (path === CodeChartaService.ROOT_PATH) {
+			return rootNode
 		}
+
+		const parentPath = this.getParentPath(path)
+
+		if (sortedHashMap.has(parentPath)) {
+			return sortedHashMap.get(parentPath)
+		}
+
+		return this.getParentNode(sortedHashMap, parentPath, rootNode)
 	}
 }
