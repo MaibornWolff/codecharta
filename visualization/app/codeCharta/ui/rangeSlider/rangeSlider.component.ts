@@ -1,6 +1,6 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import { ColorRange, FileState } from "../../codeCharta.model"
+import { ColorRange } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
@@ -17,7 +17,8 @@ import {
 	WhiteColorBuildingsSubscriber
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { isDeltaState } from "../../state/store/files/files.helper"
+import { isDeltaState } from "../../model/files/files.helper"
+import { FileState } from "../../model/files/files"
 
 export class RangeSliderController
 	implements

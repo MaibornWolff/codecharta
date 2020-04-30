@@ -5,7 +5,7 @@ import { BlacklistType } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { StoreService } from "../../state/store.service"
-import { isDeltaState } from "../../state/store/files/files.helper"
+import { isDeltaState } from "../../model/files/files.helper"
 
 interface FileDownloadContent {
 	name: string

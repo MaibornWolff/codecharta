@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { SearchPatternActions, setSearchPattern } from "./searchPattern.actions"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { FileState } from "../../../../codeCharta.model"
+import { FileState } from "../../../../model/files/files"
 
 export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)

@@ -1,5 +1,4 @@
-import { FileSelectionState, FileState } from "../../../codeCharta.model"
-import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
+import { setupFiles, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import {
 	fileStatesAvailable,
 	getCCFiles,
@@ -10,6 +9,7 @@ import {
 	isPartialState,
 	isSingleState
 } from "./files.helper"
+import { FileSelectionState, FileState } from "./files"
 
 describe("files", () => {
 	let files: FileState[]

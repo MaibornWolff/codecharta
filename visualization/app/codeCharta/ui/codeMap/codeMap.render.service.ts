@@ -8,7 +8,7 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { MetricService } from "../../state/metric.service"
-import { isDeltaState } from "../../state/store/files/files.helper"
+import { isDeltaState } from "../../model/files/files.helper"
 
 export class CodeMapRenderService {
 	constructor(

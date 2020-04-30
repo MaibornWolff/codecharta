@@ -1,11 +1,12 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actions"
-import { FileState, MarkedPackage } from "../../../../codeCharta.model"
+import { MarkedPackage } from "../../../../codeCharta.model"
 import { getMergedMarkedPackages } from "./markedPackages.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { getVisibleFiles, isPartialState } from "../../files/files.helper"
+import { getVisibleFiles, isPartialState } from "../../../../model/files/files.helper"
+import { FileState } from "../../../../model/files/files"
 
 export interface MarkedPackagesSubscriber {
 	onMarkedPackagesChanged(markedPackages: MarkedPackage[])

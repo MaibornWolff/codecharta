@@ -1,6 +1,6 @@
 "use strict"
 
-import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CCFile, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -20,13 +20,8 @@ import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import {
-	fileStatesAvailable,
-	getVisibleFileStates,
-	isDeltaState,
-	isPartialState,
-	isSingleState
-} from "../../state/store/files/files.helper"
+import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
+import { FileSelectionState, FileState } from "../../model/files/files"
 const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {

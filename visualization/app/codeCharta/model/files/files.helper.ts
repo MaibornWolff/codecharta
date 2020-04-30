@@ -1,4 +1,5 @@
-import { CCFile, FileSelectionState, FileState } from "../../../codeCharta.model"
+import { CCFile } from "../../codeCharta.model"
+import { FileSelectionState, FileState } from "./files"
 
 export function getCCFiles(fileStates: FileState[]): CCFile[] {
 	return fileStates.map(x => x.file)

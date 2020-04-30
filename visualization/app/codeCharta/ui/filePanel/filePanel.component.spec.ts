@@ -3,11 +3,11 @@ import { FilePanelController } from "./filePanel.component"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
-import { FileSelectionState } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { addFile, resetFiles, resetSelection, setDelta, setMultiple, setSingle } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
-import { getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../state/store/files/files.helper"
+import { getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
+import { FileSelectionState } from "../../model/files/files"
 
 describe("filePanelController", () => {
 	let filePanelController: FilePanelController

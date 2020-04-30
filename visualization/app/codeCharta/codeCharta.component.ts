@@ -12,7 +12,7 @@ import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import * as codeCharta from "../../package.json"
 import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
-import { getCCFiles } from "./state/store/files/files.helper"
+import { getCCFiles } from "./model/files/files.helper"
 
 export class CodeChartaController {
 	private _viewModel: {

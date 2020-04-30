@@ -13,8 +13,8 @@ import {
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/appSettings/invertHeight/invertHeight.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { FileState } from "../../codeCharta.model"
-import { isDeltaState } from "../../state/store/files/files.helper"
+import { isDeltaState } from "../../model/files/files.helper"
+import { FileState } from "../../model/files/files"
 
 export class HeightSettingsPanelController
 	implements FilesSelectionSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {

@@ -1,20 +1,12 @@
-import {
-	MetricData,
-	BlacklistItem,
-	Edge,
-	BlacklistType,
-	CodeMapNode,
-	EdgeMetricCount,
-	AttributeTypeValue,
-	FileState
-} from "../codeCharta.model"
+import { MetricData, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount, AttributeTypeValue } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { HierarchyNode } from "d3"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
 import { StoreService } from "./store.service"
-import { fileStatesAvailable, getVisibleFileStates } from "./store/files/files.helper"
+import { fileStatesAvailable, getVisibleFileStates } from "../model/files/files.helper"
+import { FileState } from "../model/files/files"
 
 export interface EdgeMetricDataServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])

@@ -2,7 +2,7 @@ import "./state.module"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { MetricData, CodeMapNode, FileState } from "../codeCharta.model"
+import { MetricData, CodeMapNode } from "../codeCharta.model"
 import { FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../util/dataMocks"
 import { HierarchyNode } from "d3"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
@@ -10,6 +10,7 @@ import { StoreService } from "./store.service"
 import { setFiles } from "./store/files/files.actions"
 import { FilesService } from "./store/files/files.service"
 import _ from "lodash"
+import { FileState } from "../model/files/files"
 
 describe("EdgeMetricDataService", () => {
 	let edgeMetricDataService: EdgeMetricDataService

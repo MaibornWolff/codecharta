@@ -1,12 +1,13 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { ColorRangeActions, setColorRange } from "./colorRange.actions"
-import { ColorRange, FileState } from "../../../../codeCharta.model"
+import { ColorRange } from "../../../../codeCharta.model"
 import { getResetColorRange } from "./colorRange.reset"
 import { MetricService } from "../../../metric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { FileState } from "../../../../model/files/files"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)

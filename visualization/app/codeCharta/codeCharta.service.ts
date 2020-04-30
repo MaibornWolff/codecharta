@@ -4,7 +4,7 @@ import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { addFile, setSingle } from "./state/store/files/files.actions"
-import { getCCFiles } from "./state/store/files/files.helper"
+import { getCCFiles } from "./model/files/files.helper"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"

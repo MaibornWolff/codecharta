@@ -4,7 +4,7 @@ import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode, BlacklistItem, FileState } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
@@ -13,6 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
+import { FileState } from "../../model/files/files"
 
 interface Coordinates {
 	x: number

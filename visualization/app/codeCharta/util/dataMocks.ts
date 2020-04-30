@@ -6,8 +6,6 @@ import {
 	CodeMapNode,
 	Edge,
 	EdgeVisibility,
-	FileSelectionState,
-	FileState,
 	MarkedPackage,
 	MetricData,
 	Node,
@@ -22,6 +20,7 @@ import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { hierarchy } from "d3"
 import { MetricService } from "../state/metric.service"
+import { FileSelectionState, FileState } from "../model/files/files"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",

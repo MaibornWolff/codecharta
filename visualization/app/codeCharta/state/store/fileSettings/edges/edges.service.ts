@@ -1,11 +1,12 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgesActions, setEdges } from "./edges.actions"
-import { Edge, FileState } from "../../../../codeCharta.model"
+import { Edge } from "../../../../codeCharta.model"
 import { getMergedEdges } from "./edges.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { getVisibleFileStates, isPartialState } from "../../files/files.helper"
+import { getVisibleFileStates, isPartialState } from "../../../../model/files/files.helper"
+import { FileState } from "../../../../model/files/files"
 
 export interface EdgesSubscriber {
 	onEdgesChanged(edges: Edge[])

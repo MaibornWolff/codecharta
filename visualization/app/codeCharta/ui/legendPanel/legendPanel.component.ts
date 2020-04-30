@@ -21,7 +21,7 @@ import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
-import { isDeltaState } from "../../state/store/files/files.helper"
+import { isDeltaState } from "../../model/files/files.helper"
 
 export interface PackageList {
 	colorPixel: string

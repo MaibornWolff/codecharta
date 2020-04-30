@@ -1,5 +1,6 @@
 import { setFiles } from "./files.actions"
-import { CCAction, FileState } from "../../../codeCharta.model"
+import { CCAction } from "../../../codeCharta.model"
+import { FileState } from "../../../model/files/files"
 
 export function splitFilesAction(payload: FileState[]): CCAction[] {
 	return [setFiles(payload)]

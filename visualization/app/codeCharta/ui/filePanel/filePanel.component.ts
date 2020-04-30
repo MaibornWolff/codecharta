@@ -1,16 +1,10 @@
 import "./filePanel.component.scss"
-import { FileSelectionState, FileState } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
-import {
-	fileStatesAvailable,
-	getVisibleFileStates,
-	isDeltaState,
-	isPartialState,
-	isSingleState
-} from "../../state/store/files/files.helper"
+import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
+import { FileSelectionState, FileState } from "../../model/files/files"
 
 interface SelectedFileNames {
 	single: string

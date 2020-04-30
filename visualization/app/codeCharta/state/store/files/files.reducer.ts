@@ -1,5 +1,6 @@
 import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles } from "./files.actions"
-import { CCFile, FileSelectionState, FileState } from "../../../codeCharta.model"
+import { CCFile } from "../../../codeCharta.model"
+import { FileSelectionState, FileState } from "../../../model/files/files"
 
 const clone = require("rfdc")()
 

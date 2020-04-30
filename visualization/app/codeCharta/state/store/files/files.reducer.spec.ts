@@ -14,8 +14,8 @@ import {
 } from "./files.actions"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
-import { FileSelectionState, FileState } from "../../../codeCharta.model"
-import { fileStatesAvailable, isDeltaState, isPartialState, isSingleState } from "./files.helper"
+import { fileStatesAvailable, isDeltaState, isPartialState, isSingleState } from "../../../model/files/files.helper"
+import { FileSelectionState, FileState } from "../../../model/files/files"
 
 describe("files", () => {
 	let state = []

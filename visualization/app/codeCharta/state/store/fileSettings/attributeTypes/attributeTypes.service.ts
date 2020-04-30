@@ -3,9 +3,10 @@ import { IRootScopeService } from "angular"
 import { AttributeTypesActions, setAttributeTypes } from "./attributeTypes.actions"
 import { getMergedAttributeTypes } from "./attributeTypes.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
-import { AttributeTypes, FileState } from "../../../../codeCharta.model"
+import { AttributeTypes } from "../../../../codeCharta.model"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { getVisibleFileStates } from "../../files/files.helper"
+import { getVisibleFileStates } from "../../../../model/files/files.helper"
+import { FileState } from "../../../../model/files/files"
 
 export interface AttributeTypesSubscriber {
 	onAttributeTypesChanged(attributeTypes: AttributeTypes)

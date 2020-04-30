@@ -6,7 +6,7 @@ import { CCFile, BlacklistType, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
-import { getCCFiles, isSingleState } from "./state/store/files/files.helper"
+import { getCCFiles, isSingleState } from "./model/files/files.helper"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService

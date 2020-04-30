@@ -7,7 +7,7 @@ import _ from "lodash"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { FileState } from "../../codeCharta.model"
+import { FileState } from "../../model/files/files"
 
 export class AreaSettingsPanelController implements FilesSelectionSubscriber, DynamicMarginSubscriber, MarginSubscriber {
 	private static DEBOUNCE_TIME = 400
