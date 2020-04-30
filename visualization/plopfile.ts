@@ -1,6 +1,6 @@
 import { NodePlopAPI } from "plop"
-const promptDirectory = require("inquirer-directory")
-const promptFile = require("inquirer-file")
+import promptFile from "inquirer-file"
+import promptDirectory from "inquirer-directory"
 import { PLOP_STATE_FILE_ACTIONS, PLOP_STATE_VARIABLE_PROMPTS } from "./plop/state"
 import { PLOP_UI_FILE_ACTIONS, PLOP_UI_VARIABLE_PROMPTS } from "./plop/ui"
 import { PLOP_UTIL_FILE_ACTIONS, PLOP_UTIL_VARIABLE_PROMPTS } from "./plop/util"

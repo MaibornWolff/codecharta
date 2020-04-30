@@ -21,7 +21,9 @@ export function createFileAction(sourceDirectory: string, destinationDirectory: 
 export function modifyFileAction(modification: FileModification) {
 	return {
 		type: "modify",
-		...modification
+		filePath: modification.filePath,
+		pattern: modification.pattern,
+		template: modification.template
 	}
 }
 
