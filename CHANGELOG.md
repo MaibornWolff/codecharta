@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+- [Security] Bump jquery from 3.4.0 to 3.5.0 in /visualization #944
+
 ## [1.46.1] - 2020-04-24
 
 ### Added 🚀
