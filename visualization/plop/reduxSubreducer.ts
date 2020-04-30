@@ -11,12 +11,12 @@ export const PLOP_REDUX_SUBREDUCER_FILE_ACTIONS = [
 	createFileAction(TEMPLATE_DIR, DESTINATION_DIR, ["reducer", "ts"]),
 	createFileAction(TEMPLATE_DIR, DESTINATION_DIR, ["splitter", "ts"]),
 	modifyFileAction({
-		filePath: "app/codeCharta/state/store/reducer.ts",
+		filePath: "app/codeCharta/state/store/state.reducer.ts",
 		pattern: /(\/\/ Plop: Import sub-reducer here)/gi,
 		template: '$1\r\nimport {{camelCase name}} from "./{{camelCase name}}/{{camelCase name}}.reducer"'
 	}),
 	modifyFileAction({
-		filePath: "app/codeCharta/state/store/reducer.ts",
+		filePath: "app/codeCharta/state/store/state.reducer.ts",
 		pattern: /(\/\/ Plop: Append sub-reducer here)/gi,
 		template: "$1\r\n\t{{camelCase name}},"
 	}),

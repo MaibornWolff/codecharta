@@ -88,7 +88,7 @@ describe("treeMapHelper", () => {
 			state.fileSettings.markedPackages = [
 				{
 					path: "/root/Anode",
-					color: color
+					color
 				}
 			]
 			expect(buildNode().markingColor).toEqual(color)
@@ -99,7 +99,7 @@ describe("treeMapHelper", () => {
 			state.fileSettings.markedPackages = [
 				{
 					path: "/root/AnotherNode",
-					color: color
+					color
 				}
 			]
 			expect(buildNode().markingColor).toEqual(null)
