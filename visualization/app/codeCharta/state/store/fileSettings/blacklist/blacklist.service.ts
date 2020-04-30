@@ -5,7 +5,7 @@ import { BlacklistActions, setBlacklist } from "./blacklist.actions"
 import { getMergedBlacklist } from "./blacklist.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { getVisibleFileStates, isPartialState } from "../../../../model/files/files.helper"
+import { getVisibleFiles, isPartialState } from "../../../../model/files/files.helper"
 import { FileState } from "../../../../model/files/files"
 
 export interface BlacklistSubscriber {
@@ -31,7 +31,7 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 	}
 
 	private merge(files: FileState[]) {
-		const visibleFiles = getVisibleFileStates(files).map(x => x.file)
+		const visibleFiles = getVisibleFiles(files)
 		const withUpdatedPath = isPartialState(files)
 		const newBlacklist = getMergedBlacklist(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setBlacklist(newBlacklist))
