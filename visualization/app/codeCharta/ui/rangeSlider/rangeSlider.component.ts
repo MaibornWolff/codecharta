@@ -1,6 +1,6 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
-import { ColorRange } from "../../codeCharta.model"
+import { ColorRange, FileState } from "../../codeCharta.model"
 import { MetricService } from "../../state/metric.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
@@ -17,7 +17,7 @@ import {
 	WhiteColorBuildingsSubscriber
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { Files } from "../../model/files"
+import { isDeltaState } from "../../state/store/files/files.helper"
 
 export class RangeSliderController
 	implements
@@ -76,7 +76,7 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}
@@ -117,12 +117,12 @@ export class RangeSliderController
 			ceil: this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
 			pushRange: true,
-			disabled: this.storeService.getState().files.isDeltaState()
+			disabled: isDeltaState(this.storeService.getState().files)
 		}
 	}
 
 	private updateDisabledSliderOption() {
-		this._viewModel.sliderOptions.disabled = this.storeService.getState().files.isDeltaState()
+		this._viewModel.sliderOptions.disabled = isDeltaState(this.storeService.getState().files)
 	}
 
 	private applySliderChange() {

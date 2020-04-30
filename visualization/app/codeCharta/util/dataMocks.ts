@@ -1,26 +1,25 @@
 import {
 	AttributeTypeValue,
 	BlacklistItem,
+	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	Edge,
+	EdgeVisibility,
 	FileSelectionState,
 	FileState,
 	MarkedPackage,
 	MetricData,
 	Node,
-	BlacklistType,
-	EdgeVisibility,
 	NodeType,
-	SortingOption,
 	SearchPanelMode,
+	SortingOption,
 	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
-import { Files } from "../model/files"
 import { hierarchy } from "d3"
 import { MetricService } from "../state/metric.service"
 
@@ -1031,7 +1030,7 @@ export const STATE: State = {
 	treeMap: {
 		mapSize: 250
 	},
-	files: new Files(),
+	files: [],
 	lookUp: {
 		idToNode: new Map(),
 		idToBuilding: new Map()
@@ -1095,7 +1094,7 @@ export const DEFAULT_STATE: State = {
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
-	files: new Files(),
+	files: [],
 	lookUp: {
 		idToBuilding: new Map(),
 		idToNode: new Map()
@@ -1277,4 +1276,11 @@ function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: bo
 	} else {
 		node.isFlattened = flag
 	}
+}
+
+export function setupFiles(): FileState[] {
+	return [
+		{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.None },
+		{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.None }
+	]
 }

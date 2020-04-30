@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FocusedNodePathActions, unfocusNode } from "./focusedNodePath.actions"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
-import { Files } from "../../../../model/files"
+import { FileState } from "../../../../codeCharta.model"
 
 export interface FocusNodeSubscriber {
 	onFocusNode(focusedNodePath: string)
@@ -29,7 +29,7 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 		}
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		if (this.storeService.getState().dynamicSettings.focusedNodePath) {
 			this.reset()
 		}

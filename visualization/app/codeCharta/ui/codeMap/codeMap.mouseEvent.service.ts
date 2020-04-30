@@ -4,14 +4,13 @@ import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
 import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
-import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
+import { CodeMapNode, BlacklistItem, FileState } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
 import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { Files } from "../../model/files"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
 
@@ -92,7 +91,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this.threeSceneService.clearSelection()
 	}
 

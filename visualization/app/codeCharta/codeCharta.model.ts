@@ -1,6 +1,5 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
-import { Files } from "./model/files"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 
 export interface NameDataPair {
@@ -255,7 +254,7 @@ export interface State {
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
-	files: Files
+	files: FileState[]
 	lookUp: LookUp
 }
 

@@ -13,7 +13,8 @@ import {
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/appSettings/invertHeight/invertHeight.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { Files } from "../../model/files"
+import { FileState } from "../../codeCharta.model"
+import { isDeltaState } from "../../state/store/files/files.helper"
 
 export class HeightSettingsPanelController
 	implements FilesSelectionSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
@@ -61,8 +62,8 @@ export class HeightSettingsPanelController
 		this._viewModel.scalingY = scaling.y
 	}
 
-	public onFilesSelectionChanged(files: Files) {
-		this._viewModel.isDeltaState = files.isDeltaState()
+	public onFilesSelectionChanged(files: FileState[]) {
+		this._viewModel.isDeltaState = isDeltaState(files)
 	}
 
 	public applySettingsAmountOfTopLabels() {

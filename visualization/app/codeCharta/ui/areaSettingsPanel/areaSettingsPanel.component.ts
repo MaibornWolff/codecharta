@@ -7,7 +7,7 @@ import _ from "lodash"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../state/store/appSettings/dynamicMargin/dynamicMargin.service"
 import { MarginService, MarginSubscriber } from "../../state/store/dynamicSettings/margin/margin.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { Files } from "../../model/files"
+import { FileState } from "../../codeCharta.model"
 
 export class AreaSettingsPanelController implements FilesSelectionSubscriber, DynamicMarginSubscriber, MarginSubscriber {
 	private static DEBOUNCE_TIME = 400
@@ -40,7 +40,7 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		this._viewModel.margin = margin
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.dynamicMargin = true
 		this.applyDynamicMargin()
 	}

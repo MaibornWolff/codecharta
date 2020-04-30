@@ -1,11 +1,11 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actions"
-import { MarkedPackage } from "../../../../codeCharta.model"
+import { FileState, MarkedPackage } from "../../../../codeCharta.model"
 import { getMergedMarkedPackages } from "./markedPackages.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
-import { Files } from "../../../../model/files"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { getVisibleFiles, isPartialState } from "../../files/files.helper"
 
 export interface MarkedPackagesSubscriber {
 	onMarkedPackagesChanged(markedPackages: MarkedPackage[])
@@ -25,13 +25,13 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSub
 		}
 	}
 
-	public onFilesSelectionChanged(fileStates: Files) {
+	public onFilesSelectionChanged(fileStates: FileState[]) {
 		this.merge(fileStates)
 	}
 
-	private merge(files: Files) {
-		const visibleFiles = files.getVisibleFiles()
-		const withUpdatedPath = files.isPartialState()
+	private merge(files: FileState[]) {
+		const visibleFiles = getVisibleFiles(files)
+		const withUpdatedPath = isPartialState(files)
 		const newMarkedPackages = getMergedMarkedPackages(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setMarkedPackages(newMarkedPackages))
 	}

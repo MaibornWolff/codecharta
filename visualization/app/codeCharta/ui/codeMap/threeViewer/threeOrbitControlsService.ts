@@ -9,7 +9,7 @@ import {
 	UnfocusNodeSubscriber
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
-import { Files } from "../../../model/files"
+import { FileState } from "../../../codeCharta.model"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -43,7 +43,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.autoFitTo()
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}

@@ -18,7 +18,8 @@ import {
 	InvertColorRangeSubscriber
 } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { Files } from "../../model/files"
+import { FileState } from "../../codeCharta.model"
+import { isDeltaState } from "../../state/store/files/files.helper"
 
 export class ColorSettingsPanelController
 	implements FilesSelectionSubscriber, InvertDeltaColorsSubscriber, WhiteColorBuildingsSubscriber, InvertColorRangeSubscriber {
@@ -54,8 +55,8 @@ export class ColorSettingsPanelController
 		this._viewModel.whiteColorBuildings = whiteColorBuildings
 	}
 
-	public onFilesSelectionChanged(files: Files) {
-		this._viewModel.isDeltaState = files.isDeltaState()
+	public onFilesSelectionChanged(files: FileState[]) {
+		this._viewModel.isDeltaState = isDeltaState(files)
 	}
 
 	public invertColorRange() {

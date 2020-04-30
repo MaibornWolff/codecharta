@@ -6,6 +6,7 @@ import { CCFile, BlacklistType, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
+import { getCCFiles, isSingleState } from "./state/store/files/files.helper"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -106,8 +107,8 @@ describe("codeChartaService", () => {
 					}
 				])
 				.then(() => {
-					expect(storeService.getState().files.getCCFiles()[0]).toEqual(expected)
-					expect(storeService.getState().files.isSingleState()).toBeTruthy()
+					expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
+					expect(isSingleState(storeService.getState().files)).toBeTruthy()
 					done()
 				})
 		})
@@ -121,8 +122,8 @@ describe("codeChartaService", () => {
 					}
 				])
 				.then(() => {
-					expect(storeService.getState().files.getCCFiles()[0]).toEqual(expected)
-					expect(storeService.getState().files.isSingleState()).toBeTruthy()
+					expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
+					expect(isSingleState(storeService.getState().files)).toBeTruthy()
 					done()
 				})
 		})
@@ -178,7 +179,7 @@ describe("codeChartaService", () => {
 				])
 				.then(() => {
 					const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
-					expect(storeService.getState().files.getCCFiles()[0].settings.fileSettings.blacklist).toEqual(blacklist)
+					expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
 					done()
 				})
 		})

@@ -2,8 +2,8 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { SearchPatternActions, setSearchPattern } from "./searchPattern.actions"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
-import { Files } from "../../../../model/files"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { FileState } from "../../../../codeCharta.model"
 
 export interface SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string)
@@ -23,7 +23,7 @@ export class SearchPatternService implements StoreSubscriber, FilesSelectionSubs
 		}
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this.storeService.dispatch(setSearchPattern())
 	}
 

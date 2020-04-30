@@ -2,13 +2,12 @@ import "./state.module"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { MetricData, CodeMapNode } from "../codeCharta.model"
+import { MetricData, CodeMapNode, FileState } from "../codeCharta.model"
 import { FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../util/dataMocks"
 import { HierarchyNode } from "d3"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
 import { setFiles } from "./store/files/files.actions"
-import { Files } from "../model/files"
 import { FilesService } from "./store/files/files.service"
 import _ from "lodash"
 
@@ -17,7 +16,7 @@ describe("EdgeMetricDataService", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 
-	let files: Files
+	let files: FileState[]
 
 	beforeEach(() => {
 		restartSystem()
@@ -31,10 +30,8 @@ describe("EdgeMetricDataService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 
-		const fileStates = _.cloneDeep(FILE_STATES)
+		files = _.cloneDeep(FILE_STATES)
 		FILE_STATES[0].file.map = _.cloneDeep(VALID_NODE_WITH_PATH)
-
-		files = new Files(fileStates)
 	}
 
 	function rebuildService() {
@@ -157,6 +154,7 @@ describe("EdgeMetricDataService", () => {
 
 	describe("getMetricValuesForNode", () => {
 		it("should return Edge Metric counts for node", () => {
+			storeService.dispatch(setFiles(files))
 			edgeMetricDataService.onFilesSelectionChanged(files)
 			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
 

@@ -21,6 +21,7 @@ import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
+import { isDeltaState } from "../../state/store/files/files.helper"
 
 export interface PackageList {
 	colorPixel: string
@@ -94,7 +95,7 @@ export class LegendPanelController
 	}
 
 	private updatePixelColors() {
-		this._viewModel.isDeltaState = this.storeService.getState().files.isDeltaState()
+		this._viewModel.isDeltaState = isDeltaState(this.storeService.getState().files)
 
 		const mapColors = this.storeService.getState().appSettings.mapColors
 		this._viewModel.colorIcons.selected = this.getImage(mapColors.selected)
