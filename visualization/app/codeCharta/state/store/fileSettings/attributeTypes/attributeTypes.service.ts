@@ -2,10 +2,11 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { AttributeTypesActions, setAttributeTypes } from "./attributeTypes.actions"
 import { getMergedAttributeTypes } from "./attributeTypes.merger"
-import { Files } from "../../../../model/files"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { AttributeTypes } from "../../../../codeCharta.model"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { getVisibleFileStates } from "../../../../model/files/files.helper"
+import { FileState } from "../../../../model/files/files"
 
 export interface AttributeTypesSubscriber {
 	onAttributeTypesChanged(attributeTypes: AttributeTypes)
@@ -25,13 +26,12 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 		}
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this.merge(files)
 	}
 
-	private merge(files: Files) {
-		const allAttributeTypes: AttributeTypes[] = files
-			.getVisibleFileStates()
+	private merge(files: FileState[]) {
+		const allAttributeTypes: AttributeTypes[] = getVisibleFileStates(files)
 			.map(x => x.file)
 			.map(x => x.settings.fileSettings.attributeTypes)
 

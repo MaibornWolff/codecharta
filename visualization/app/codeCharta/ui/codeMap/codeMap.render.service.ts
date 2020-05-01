@@ -8,6 +8,7 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { MetricService } from "../../state/metric.service"
+import { isDeltaState } from "../../model/files/files.helper"
 
 export class CodeMapRenderService {
 	constructor(
@@ -30,7 +31,7 @@ export class CodeMapRenderService {
 		const mapMesh: CodeMapMesh = new CodeMapMesh(
 			sortedNodes,
 			this.storeService.getState(),
-			this.storeService.getState().files.isDeltaState()
+			isDeltaState(this.storeService.getState().files)
 		)
 		this.threeSceneService.setMapMesh(mapMesh)
 	}
@@ -46,7 +47,7 @@ export class CodeMapRenderService {
 			map,
 			this.storeService.getState(),
 			this.metricService.getMetricData(),
-			this.storeService.getState().files.isDeltaState()
+			isDeltaState(this.storeService.getState().files)
 		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)

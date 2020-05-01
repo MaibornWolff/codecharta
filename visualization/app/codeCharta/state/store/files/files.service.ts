@@ -1,11 +1,11 @@
 import { StoreService, StoreSubscriber } from "../../store.service"
 import { IRootScopeService } from "angular"
 import { FilesSelectionActions } from "./files.actions"
-import { Files } from "../../../model/files"
 import { isActionOfType } from "../../../util/reduxHelper"
+import { FileState } from "../../../model/files/files"
 
 export interface FilesSelectionSubscriber {
-	onFilesSelectionChanged(files: Files)
+	onFilesSelectionChanged(files: FileState[])
 }
 
 export class FilesService implements StoreSubscriber {
@@ -25,7 +25,7 @@ export class FilesService implements StoreSubscriber {
 		return this.storeService.getState().files
 	}
 
-	private notify(newState: Files) {
+	private notify(newState: FileState[]) {
 		this.$rootScope.$broadcast(FilesService.FILES_SELECTION_CHANGED_EVENT, { files: newState })
 	}
 

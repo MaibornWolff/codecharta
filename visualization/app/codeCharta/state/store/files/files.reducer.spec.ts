@@ -12,17 +12,18 @@ import {
 	setSingle,
 	setSingleByName
 } from "./files.actions"
-import { Files } from "../../../model/files"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../../util/dataMocks"
 import files from "./files.reducer"
+import { fileStatesAvailable, isDeltaState, isPartialState, isSingleState } from "../../../model/files/files.helper"
+import { FileSelectionState, FileState } from "../../../model/files/files"
 
 describe("files", () => {
-	const state = new Files()
+	let state = []
 
 	beforeEach(() => {
-		files(state, resetFiles())
-		files(state, addFile(TEST_DELTA_MAP_A))
-		files(state, addFile(TEST_DELTA_MAP_B))
+		state = files(state, resetFiles())
+		state = files(state, addFile(TEST_DELTA_MAP_A))
+		state = files(state, addFile(TEST_DELTA_MAP_B))
 	})
 
 	describe("Default State", () => {
@@ -35,8 +36,7 @@ describe("files", () => {
 
 	describe("Action: SET_FILES", () => {
 		it("should set new files", () => {
-			const newFiles = new Files()
-			newFiles.addFile(TEST_DELTA_MAP_A)
+			const newFiles: FileState[] = [{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.Single }]
 
 			const result = files(state, setFiles(newFiles))
 
@@ -54,7 +54,7 @@ describe("files", () => {
 		it("should clear and reset the state", () => {
 			const result = files(state, resetFiles())
 
-			expect(result.getFiles().length).toBe(0)
+			expect(result.length).toBe(0)
 		})
 	})
 
@@ -64,7 +64,7 @@ describe("files", () => {
 
 			const result = files(state, resetSelection())
 
-			expect(result.fileStatesAvailable()).toBeFalsy()
+			expect(fileStatesAvailable(result)).toBeFalsy()
 		})
 	})
 
@@ -72,7 +72,7 @@ describe("files", () => {
 		it("should select a file to view in single mode", () => {
 			const result = files(state, setSingle(TEST_DELTA_MAP_A))
 
-			expect(result.isSingleState()).toBeTruthy()
+			expect(isSingleState(result)).toBeTruthy()
 		})
 	})
 
@@ -80,7 +80,7 @@ describe("files", () => {
 		it("should select a file by name to view in single mode", () => {
 			const result = files(state, setSingleByName(TEST_DELTA_MAP_A.fileMeta.fileName))
 
-			expect(result.isSingleState()).toBeTruthy()
+			expect(isSingleState(result)).toBeTruthy()
 		})
 	})
 
@@ -88,7 +88,7 @@ describe("files", () => {
 		it("should select a file as reference and another as comparison", () => {
 			const result = files(state, setDelta(TEST_DELTA_MAP_A, TEST_DELTA_MAP_B))
 
-			expect(result.isDeltaState()).toBeTruthy()
+			expect(isDeltaState(result)).toBeTruthy()
 		})
 	})
 
@@ -96,7 +96,7 @@ describe("files", () => {
 		it("should select a file as reference and another as comparison by name", () => {
 			const result = files(state, setDeltaByNames(TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName))
 
-			expect(result.isDeltaState()).toBeTruthy()
+			expect(isDeltaState(result)).toBeTruthy()
 		})
 	})
 
@@ -104,7 +104,7 @@ describe("files", () => {
 		it("should select two files to view in multiple mode", () => {
 			const result = files(state, setMultiple([TEST_DELTA_MAP_A, TEST_DELTA_MAP_B]))
 
-			expect(result.isPartialState()).toBeTruthy()
+			expect(isPartialState(result)).toBeTruthy()
 		})
 	})
 
@@ -112,7 +112,7 @@ describe("files", () => {
 		it("should select two files by name to view in multiple mode", () => {
 			const result = files(state, setMultipleByNames([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName]))
 
-			expect(result.isPartialState()).toBeTruthy()
+			expect(isPartialState(result)).toBeTruthy()
 		})
 	})
 })
