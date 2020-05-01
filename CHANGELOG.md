@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Generating a delta map with merged empty folders in between is now working correctly #730
 - Reduced time when opening a new file #932
 
 ### Chore 👨‍💻 👩‍💻
