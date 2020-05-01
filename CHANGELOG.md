@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Reduced time when opening a new file #932
+
 ### Chore 👨‍💻 👩‍💻
 
 - [Security] Bump jquery from 3.4.0 to 3.5.0 in /visualization #944
