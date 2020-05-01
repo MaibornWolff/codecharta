@@ -37,7 +37,7 @@ export default function(plop: NodePlopAPI) {
 
 	plop.setGenerator("redux subreducer", {
 		description: "creates a subreducer like dynamicSettings",
-		promts: PLOP_REDUX_SUBREDUCER_VARIABLE_PROMPTS,
+		prompts: PLOP_REDUX_SUBREDUCER_VARIABLE_PROMPTS,
 		actions: PLOP_REDUX_SUBREDUCER_FILE_ACTIONS
 	})
 }
