@@ -318,6 +318,61 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			path: "/root/in/between/big leaf",
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		},
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			path: "/root/in/between/Parent Leaf",
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					path: "/root/in/between/Parent Leaf/small leaf",
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "other small leaf",
+					type: NodeType.FILE,
+					path: "/root/in/between/Parent Leaf/other small leaf",
+					attributes: { rloc: 70, functions: 1000, mcc: 10 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "empty folder",
+					type: NodeType.FOLDER,
+					path: "/root/in/between/Parent Leaf/empty folder",
+					attributes: {},
+					isExcluded: false,
+					isFlattened: false,
+					children: []
+				}
+			]
+		}
+	]
+}
+
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
 	attributes: { [MetricService.UNARY_METRIC]: 200 },
