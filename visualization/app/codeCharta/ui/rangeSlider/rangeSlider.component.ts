@@ -17,7 +17,8 @@ import {
 	WhiteColorBuildingsSubscriber
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { Files } from "../../model/files"
+import { isDeltaState } from "../../model/files/files.helper"
+import { FileState } from "../../model/files/files"
 
 export class RangeSliderController
 	implements
@@ -76,7 +77,7 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}
@@ -117,12 +118,12 @@ export class RangeSliderController
 			ceil: this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
 			pushRange: true,
-			disabled: this.storeService.getState().files.isDeltaState()
+			disabled: isDeltaState(this.storeService.getState().files)
 		}
 	}
 
 	private updateDisabledSliderOption() {
-		this._viewModel.sliderOptions.disabled = this.storeService.getState().files.isDeltaState()
+		this._viewModel.sliderOptions.disabled = isDeltaState(this.storeService.getState().files)
 	}
 
 	private applySliderChange() {

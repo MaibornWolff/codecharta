@@ -1,5 +1,5 @@
-import { Files } from "../../../model/files"
 import { CCAction, CCFile } from "../../../codeCharta.model"
+import { FileState } from "../../../model/files/files"
 
 export enum FilesSelectionActions {
 	SET_SINGLE = "SET_SINGLE",
@@ -19,7 +19,7 @@ export enum NewFilesImportedActions {
 
 export interface SetFilesAction extends CCAction {
 	type: NewFilesImportedActions.SET_FILES
-	payload: Files
+	payload: FileState[]
 }
 
 export interface AddFileAction extends CCAction {
@@ -77,7 +77,7 @@ export type FilesAction =
 	| SetDeltaAction
 	| SetDeltaByNamesAction
 
-export function setFiles(files: Files = defaultFiles): SetFilesAction {
+export function setFiles(files: FileState[] = defaultFiles): SetFilesAction {
 	return {
 		type: NewFilesImportedActions.SET_FILES,
 		payload: files
@@ -145,4 +145,4 @@ export function setDeltaByNames(referenceFileName: string, comparisonFileName: s
 	}
 }
 
-export const defaultFiles: Files = new Files()
+export const defaultFiles: FileState[] = []
