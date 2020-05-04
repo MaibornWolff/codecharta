@@ -54,7 +54,8 @@ export class DialogAddScenarioSettingsComponent {
 		return (
 			this.isAnyScenarioContentSelected() &&
 			!this.isScenarioNameEmpty() &&
-			!ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName)
+			!ScenarioHelper.isScenarioExistings(this._viewModel.scenarioName)
+			//!ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName)
 		)
 	}
 

@@ -79,6 +79,39 @@ export class ScenarioHelper {
 		})
 		return scenarioItemList
 	}
+	public static getScenarioItemss(metricData: MetricData[]) {
+		const scenarioItemList: ScenarioItem[] = []
+
+		this.scenarioLists.forEach(scenery => {
+			scenarioItemList.push({
+				scenarioName: scenery.name,
+				isScenarioAppliable: this.isScenarioAppliablee(scenery, metricData),
+				icons: [
+					{
+						faIconClass: "fa-video-camera",
+						isSaved: !!scenery.camera
+					},
+					{
+						faIconClass: "fa-arrows-alt",
+						isSaved: !!scenery.area
+					},
+					{
+						faIconClass: "fa-paint-brush",
+						isSaved: !!scenery.color
+					},
+					{
+						faIconClass: "fa-arrows-v",
+						isSaved: !!scenery.height
+					},
+					{
+						faIconClass: "fa-exchange",
+						isSaved: !!scenery.edge
+					}
+				]
+			})
+		})
+		return scenarioItemList
+	}
 
 	private static isScenarioAppliable(scenario: RecursivePartial<DynamicSettings>, metricData: MetricData[]) {
 		for (let attribute in scenario) {
@@ -90,6 +123,20 @@ export class ScenarioHelper {
 				return false
 			}
 		}
+		return true
+	}
+
+	private static isScenarioAppliablee(scenario: RecursivePartial<Scenery>, metricData: MetricData[]) {
+		if (scenario.area && !metricData.find(value => value.name === scenario.area.areaMetric)) {
+			return false
+		}
+		if (scenario.color && !metricData.find(value => value.name === scenario.color.colorMetric)) {
+			return false
+		}
+		if (scenario.height && !metricData.find(value => value.name === scenario.height.heightMetric)) {
+			return false
+		}
+
 		return true
 	}
 
@@ -310,6 +357,9 @@ export class ScenarioHelper {
 	public static getDefaultScenario(): Scenario {
 		return this.scenarioList.find(s => s.name == "Complexity")
 	}
+	public static getDefaultScenarioSetting(): RecursivePartial<Settings> {
+		return this.getScenarioSettingsByNames("Complexity")
+	}
 
 	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
 		return this.scenarioList.find(s => s.name == name).settings
@@ -363,5 +413,8 @@ export class ScenarioHelper {
 
 	public static isScenarioExisting(scenarioName: string) {
 		return this.scenarioList.some(x => x.name == scenarioName)
+	}
+	public static isScenarioExistings(scenarioName: string) {
+		return this.scenarioLists.some(x => x.name == scenarioName)
 	}
 }

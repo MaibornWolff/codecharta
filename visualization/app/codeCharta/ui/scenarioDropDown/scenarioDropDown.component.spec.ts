@@ -57,7 +57,7 @@ describe("ScenarioDropDownController", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("should call getScenarioItems and set the scenarios in viewmodel correctly", () => {
-			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
+			ScenarioHelper.getScenarioItemss = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
 			scenarioButtonsController.onMetricDataAdded(metricData)
 
@@ -67,7 +67,7 @@ describe("ScenarioDropDownController", () => {
 
 	describe("loadScenario", () => {
 		it("should call getScenarioHelpers and set the dropDownScenarioItems ", () => {
-			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
+			ScenarioHelper.getScenarioItemss = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
 			scenarioButtonsController.onMetricDataAdded(metricData)
 
@@ -77,7 +77,7 @@ describe("ScenarioDropDownController", () => {
 
 	describe("applyScenario", () => {
 		it("should call setControl and call store.dispatch with scenarioSettings", () => {
-			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(STATE)
+			ScenarioHelper.getScenarioSettingsByNames = jest.fn().mockReturnValue(STATE)
 			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()

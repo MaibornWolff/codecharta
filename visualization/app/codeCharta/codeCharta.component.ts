@@ -72,7 +72,7 @@ export class CodeChartaController {
 		this.codeChartaService
 			.loadFiles(values)
 			.then(() => {
-				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenario().settings))
+				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
 			})
 			.catch(e => {
 				this.storeService.dispatch(setIsLoadingFile(false))
