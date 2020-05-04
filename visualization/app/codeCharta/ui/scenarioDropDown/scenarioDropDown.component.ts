@@ -51,7 +51,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public applyScenario(scenarioName: string) {
-		const scenerySettings = ScenarioHelper.getScenarioSettingsByNames(scenarioName)
+		const scenerySettings = ScenarioHelper.getScenarioSettingsByName(scenarioName)
 
 		this.storeService.dispatch(setState(scenerySettings))
 		this.storeService.dispatch(setColorRange(scenerySettings.dynamicSettings.colorRange as ColorRange))

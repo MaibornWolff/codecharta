@@ -227,14 +227,13 @@ export class ScenarioHelper {
 	}
 
 	public static getDefaultScenarioSetting(): RecursivePartial<Settings> {
-		return this.getScenarioSettingsByNames("Complexity")
+		return this.getScenarioSettingsByName("Complexity")
 	}
 
-	public static getScenarioSettingsByNames(name: string): RecursivePartial<Settings> {
+	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
 		const scenery: RecursivePartial<Scenery> = this.scenarioList.find(s => s.name == name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
-
 		for (let sceneryKey in scenery) {
 			switch (sceneryKey) {
 				case "area": {

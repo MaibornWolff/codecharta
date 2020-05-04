@@ -14,13 +14,15 @@ import {
 	NodeType,
 	SortingOption,
 	SearchPanelMode,
-	State
+	State,
+	RecursivePartial,
+	Settings
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
-import { Scenario } from "./scenarioHelper"
+import { Scenery } from "./scenarioHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { Files } from "../model/files"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
@@ -472,100 +474,63 @@ export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 	}
 ]
 
-export const DEFAULT_SCENARIO: Scenario[] = [
-	{
-		name: "Complexity",
-		settings: {
-			appSettings: {
-				invertColorRange: false
-			},
-			dynamicSettings: {
-				areaMetric: "rloc",
-				heightMetric: "mcc",
-				colorMetric: "mcc",
-				distributionMetric: "rloc"
-			}
-		}
-	},
-	{
-		name: "Average Complexity*",
-		settings: {
-			appSettings: {
-				invertColorRange: false
-			},
-			dynamicSettings: {
-				areaMetric: "unary",
-				heightMetric: "Average Complexity*",
-				colorMetric: "Average Complexity*",
-				distributionMetric: "unary"
-			}
-		}
-	},
-	{
-		name: "Coverage",
-		settings: {
-			appSettings: {
-				invertColorRange: true
-			},
-			dynamicSettings: {
-				areaMetric: "rloc",
-				heightMetric: "mcc",
-				colorMetric: "line_coverage",
-				distributionMetric: "rloc"
-			}
-		}
-	},
-	{
-		name: "Code Churn",
-		settings: {
-			appSettings: {
-				invertColorRange: false
-			},
-			dynamicSettings: {
-				areaMetric: "rloc",
-				heightMetric: "abs_code_churn",
-				colorMetric: "weeks_with_commits",
-				distributionMetric: "rloc"
-			}
-		}
-	}
-]
-
-export const SCENARIO: Scenario = {
+export const SCENARIO: Scenery = {
 	name: "Scenario1",
-	settings: {
-		dynamicSettings: {
-			areaMetric: "rloc",
-			heightMetric: "mcc",
-			colorMetric: "mcc",
-			edgeMetric: "pairingRate",
-			margin: 48,
-			colorRange: {
-				from: 19,
-				to: 67
-			}
-		},
-		appSettings: {
-			amountOfTopLabels: 31,
-			amountOfEdgePreviews: 5,
-			edgeHeight: 4,
-			scaling: new Vector3(1, 1.8, 1),
-			camera: new Vector3(0, 300, 1000),
-			cameraTarget: new Vector3(1, 1, 1)
+	area: {
+		areaMetric: "rloc",
+		margin: 48
+	},
+	height: {
+		heightMetric: "mcc",
+		heightSlider: new Vector3(1, 1.8, 1),
+		labelSlider: 31
+	},
+	color: {
+		colorMetric: "mcc",
+		colorRange: {
+			from: 19,
+			to: 67
 		}
+	},
+	edge: {
+		edgeMetric: "pairingRate",
+		edgePreview: 5,
+		edgeHeight: 4
+	},
+	camera: {
+		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(1, 1, 1)
 	}
 }
 
-export const SCENARIO_WITH_ONLY_HEIGHT: Scenario = {
-	name: "Scenario2",
-	settings: {
-		dynamicSettings: {
-			heightMetric: "mcc"
-		},
-		appSettings: {
-			amountOfTopLabels: 31,
-			scaling: new Vector3(1, 1.8, 1)
+export const PARTIALSETTINGS: RecursivePartial<Settings> = {
+	dynamicSettings: {
+		areaMetric: "rloc",
+		heightMetric: "mcc",
+		colorMetric: "mcc",
+		edgeMetric: "pairingRate",
+		margin: 48,
+		colorRange: {
+			from: 19,
+			to: 67
 		}
+	},
+	appSettings: {
+		amountOfTopLabels: 31,
+		amountOfEdgePreviews: 5,
+		edgeHeight: 4,
+		scaling: new Vector3(1, 1.8, 1),
+		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(1, 1, 1)
+	}
+}
+
+export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenery> = {
+	name: "Scenario2",
+	height: {
+		heightMetric: "mcc",
+		labelSlider: 31,
+		heightSlider: new Vector3(1, 1.8, 1)
 	}
 }
 
