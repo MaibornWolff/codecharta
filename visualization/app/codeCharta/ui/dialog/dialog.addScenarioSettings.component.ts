@@ -1,7 +1,7 @@
 import "./dialog.component.scss"
 import { AppSettings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
-import { Scenario, Scenery, ScenarioHelper } from "../../util/scenarioHelper"
+import { Scenery, ScenarioHelper } from "../../util/scenarioHelper"
 
 export interface AddScenarioContent {
 	metricType: ScenarioMetricType
@@ -40,13 +40,11 @@ export class DialogAddScenarioSettingsComponent {
 
 	public addScenario() {
 		const selectedScenarioAttributes: AddScenarioContent[] = this._viewModel.scenarioContent.filter(x => x.isSelected == true)
-		const newScenario: Scenario = ScenarioHelper.createNewScenario(this._viewModel.scenarioName, selectedScenarioAttributes)
-		const newScenery: RecursivePartial<Scenery> = ScenarioHelper.createNewScenarios(
+		const newScenery: RecursivePartial<Scenery> = ScenarioHelper.createNewScenario(
 			this._viewModel.scenarioName,
 			selectedScenarioAttributes
 		)
-		ScenarioHelper.addScenario(newScenario)
-		ScenarioHelper.addScenarios(newScenery)
+		ScenarioHelper.addScenario(newScenery)
 		this.hide()
 	}
 
@@ -54,8 +52,7 @@ export class DialogAddScenarioSettingsComponent {
 		return (
 			this.isAnyScenarioContentSelected() &&
 			!this.isScenarioNameEmpty() &&
-			!ScenarioHelper.isScenarioExistings(this._viewModel.scenarioName)
-			//!ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName)
+			!ScenarioHelper.isScenarioExisting(this._viewModel.scenarioName)
 		)
 	}
 

@@ -38,8 +38,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public loadScenarios() {
-		//this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.availableMetrics)
-		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItemss(this.availableMetrics)
+		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.availableMetrics)
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
@@ -52,7 +51,6 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public applyScenario(scenarioName: string) {
-		//const scenarioSettings = ScenarioHelper.getScenarioSettingsByName(scenarioName)
 		const scenerySettings = ScenarioHelper.getScenarioSettingsByNames(scenarioName)
 
 		this.storeService.dispatch(setState(scenerySettings))
