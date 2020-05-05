@@ -2,13 +2,13 @@
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
 import { TreeMapGenerator } from "../../util/treeMapGenerator"
-import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { MetricService } from "../../state/metric.service"
+import { isDeltaState } from "../../model/files/files.helper"
 
 export class CodeMapRenderService {
 	constructor(
@@ -20,7 +20,6 @@ export class CodeMapRenderService {
 	) {}
 
 	public render(map: CodeMapNode) {
-		this.showAllOrOnlyFocusedNode(map)
 		const sortedNodes: Node[] = this.getSortedNodes(map)
 		this.setNewMapMesh(sortedNodes)
 		this.setLabels(sortedNodes)
@@ -32,7 +31,7 @@ export class CodeMapRenderService {
 		const mapMesh: CodeMapMesh = new CodeMapMesh(
 			sortedNodes,
 			this.storeService.getState(),
-			this.storeService.getState().files.isDeltaState()
+			isDeltaState(this.storeService.getState().files)
 		)
 		this.threeSceneService.setMapMesh(mapMesh)
 	}
@@ -48,7 +47,7 @@ export class CodeMapRenderService {
 			map,
 			this.storeService.getState(),
 			this.metricService.getMetricData(),
-			this.storeService.getState().files.isDeltaState()
+			isDeltaState(this.storeService.getState().files)
 		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)
@@ -73,16 +72,6 @@ export class CodeMapRenderService {
 		const edges = this.storeService.getState().fileSettings.edges
 		if (edges.length > 0) {
 			this.codeMapArrowService.addEdgePreview(sortedNodes, edges)
-		}
-	}
-
-	private showAllOrOnlyFocusedNode(map: CodeMapNode) {
-		if (this.storeService.getState().dynamicSettings.focusedNodePath.length > 0) {
-			const focusedNode = CodeMapHelper.getAnyCodeMapNodeFromPath(this.storeService.getState().dynamicSettings.focusedNodePath, map)
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, false)
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(focusedNode, true)
-		} else {
-			TreeMapGenerator.setVisibilityOfNodeAndDescendants(map, true)
 		}
 	}
 }

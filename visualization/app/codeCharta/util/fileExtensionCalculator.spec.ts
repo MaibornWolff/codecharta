@@ -1,16 +1,14 @@
 import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
-import { BlacklistType, CodeMapNode, NodeType, State } from "../codeCharta.model"
-import { STATE, VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC } from "./dataMocks"
+import { BlacklistType, CodeMapNode, NodeType } from "../codeCharta.model"
+import { VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC, setIsBlacklisted } from "./dataMocks"
 import { HSL } from "./color/hsl"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
-	let state: State
 
 	beforeEach(() => {
 		map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
-		state = _.cloneDeep(STATE)
 	})
 
 	describe("getFileExtensionDistribution", () => {
@@ -22,14 +20,13 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc", [])
+			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with hidden node", () => {
-			const blacklistItem = { path: map.children[0].path, type: BlacklistType.flatten }
-			state.fileSettings.blacklist.push(blacklistItem)
+			setIsBlacklisted([map.children[0].path], map, BlacklistType.flatten)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
@@ -38,18 +35,13 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
-				map,
-				"rloc",
-				state.fileSettings.blacklist
-			)
+			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded node", () => {
-			const blacklistItem = { path: map.children[0].path, type: BlacklistType.exclude }
-			state.fileSettings.blacklist.push(blacklistItem)
+			setIsBlacklisted([map.children[0].path], map, BlacklistType.exclude)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
@@ -58,18 +50,13 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
-				map,
-				"rloc",
-				state.fileSettings.blacklist
-			)
+			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded path", () => {
-			const blacklistItem = { path: "*.java", type: BlacklistType.exclude }
-			state.fileSettings.blacklist.push(blacklistItem)
+			setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, BlacklistType.exclude)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
@@ -77,11 +64,7 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](
-				map,
-				"rloc",
-				state.fileSettings.blacklist
-			)
+			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
@@ -104,7 +87,7 @@ describe("FileExtensionCalculator", () => {
 				}
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
@@ -116,17 +99,45 @@ describe("FileExtensionCalculator", () => {
 				{ fileExtension: "None", absoluteMetricValue: null, relativeMetricValue: 100, color: "#676867" }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should get correct distribution of file-extensions for given metric using other-grouping", () => {
 			const additionalChildren: CodeMapNode[] = [
-				{ name: "child1.txt", type: NodeType.FILE, path: "/root/child1.txt", attributes: { rloc: 2 } },
-				{ name: "child2.kt", type: NodeType.FILE, path: "/root/child2.kt", attributes: { rloc: 4 } },
-				{ name: "child3.ts", type: NodeType.FILE, path: "/root/child3.ts", attributes: { rloc: 6 } },
-				{ name: "child4.xml", type: NodeType.FILE, path: "/root/child4.xml", attributes: { rloc: 8 } }
+				{
+					name: "child1.txt",
+					type: NodeType.FILE,
+					path: "/root/child1.txt",
+					attributes: { rloc: 2 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "child2.kt",
+					type: NodeType.FILE,
+					path: "/root/child2.kt",
+					attributes: { rloc: 4 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "child3.ts",
+					type: NodeType.FILE,
+					path: "/root/child3.ts",
+					attributes: { rloc: 6 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "child4.xml",
+					type: NodeType.FILE,
+					path: "/root/child4.xml",
+					attributes: { rloc: 8 },
+					isExcluded: false,
+					isFlattened: false
+				}
 			]
 			const expected: MetricDistribution[] = [
 				{
@@ -159,7 +170,7 @@ describe("FileExtensionCalculator", () => {
 			map.children.push(...additionalChildren)
 			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 2.0
 
-			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc", [])
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
 
 			expect(result).toEqual(expected)
 		})

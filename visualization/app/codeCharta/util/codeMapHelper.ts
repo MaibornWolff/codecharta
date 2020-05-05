@@ -1,7 +1,6 @@
 import { hierarchy } from "d3-hierarchy"
-import { MarkedPackage, NodeType } from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import ignore from "ignore"
-import { CodeMapNode, BlacklistItem, BlacklistType } from "../codeCharta.model"
 
 export class CodeMapHelper {
 	public static getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode): CodeMapNode {
@@ -45,14 +44,8 @@ export class CodeMapHelper {
 		return nodes.filter(n => !set.has(CodeMapHelper.transformPath(n.path)))
 	}
 
-	public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>, blacklist: Array<BlacklistItem>): number {
-		if (blacklist) {
-			const ig = ignore().add(blacklist.map(ex => CodeMapHelper.transformPath(ex.path)))
-			const filteredNodes = ig.filter(nodes.map(n => CodeMapHelper.transformPath(n.path)))
-			return nodes.length - filteredNodes.length
-		} else {
-			return 0
-		}
+	public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>): number {
+		return nodes.filter(node => node.isExcluded || node.isFlattened).length
 	}
 
 	public static isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {
@@ -60,10 +53,6 @@ export class CodeMapHelper {
 			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude) ||
 			CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.flatten)
 		)
-	}
-
-	public static isBlacklisted(node: CodeMapNode, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
-		return CodeMapHelper.isPathBlacklisted(node.path, blacklist, type)
 	}
 
 	public static isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
@@ -79,10 +68,10 @@ export class CodeMapHelper {
 		let markingColor: string = null
 
 		if (markedPackages) {
-			let markedParentPackages = markedPackages.filter(mp => node.path.includes(mp.path))
+			const markedParentPackages = markedPackages.filter(mp => node.path.includes(mp.path))
 
 			if (markedParentPackages.length > 0) {
-				let sortedMarkedParentPackages = markedParentPackages.sort((a, b) => this.sortByPathLength(a, b))
+				const sortedMarkedParentPackages = markedParentPackages.sort((a, b) => this.sortByPathLength(a, b))
 				markingColor = sortedMarkedParentPackages[0].color
 			}
 		}

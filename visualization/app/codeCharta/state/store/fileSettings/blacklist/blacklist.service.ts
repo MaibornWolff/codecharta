@@ -2,11 +2,11 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistActions, setBlacklist } from "./blacklist.actions"
-import _ from "lodash"
 import { getMergedBlacklist } from "./blacklist.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
-import { Files } from "../../../../model/files"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { getVisibleFiles, isPartialState } from "../../../../model/files/files.helper"
+import { FileState } from "../../../../model/files/files"
 
 export interface BlacklistSubscriber {
 	onBlacklistChanged(blacklist: BlacklistItem[])
@@ -26,13 +26,13 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 		}
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this.merge(files)
 	}
 
-	private merge(files: Files) {
-		const visibleFiles = files.getVisibleFileStates().map(x => x.file)
-		const withUpdatedPath = files.isPartialState()
+	private merge(files: FileState[]) {
+		const visibleFiles = getVisibleFiles(files)
+		const withUpdatedPath = isPartialState(files)
 		const newBlacklist = getMergedBlacklist(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setBlacklist(newBlacklist))
 	}

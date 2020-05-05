@@ -22,18 +22,24 @@ describe("deltaGenerator", () => {
 			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/onlyA",
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "special",
 					type: NodeType.FOLDER,
 					attributes: {},
 					path: "/root/onlyA/special",
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "unicorn",
 							type: NodeType.FILE,
 							attributes: { special: 42 },
-							path: "/root/onlyA/special/unicorn"
+							path: "/root/onlyA/special/unicorn",
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}
@@ -45,18 +51,24 @@ describe("deltaGenerator", () => {
 			type: NodeType.FOLDER,
 			attributes: {},
 			path: "/root/onlyA",
+			isExcluded: false,
+			isFlattened: false,
 			children: [
 				{
 					name: "special",
 					type: NodeType.FOLDER,
 					attributes: {},
 					path: "/root/onlyA/special",
+					isExcluded: false,
+					isFlattened: false,
 					children: [
 						{
 							name: "Narwal",
 							type: NodeType.FILE,
 							attributes: { monster: 666 },
-							path: "/root/onlyA/special/Narwal"
+							path: "/root/onlyA/special/Narwal",
+							isExcluded: false,
+							isFlattened: false
 						}
 					]
 				}
@@ -95,29 +107,29 @@ describe("deltaGenerator", () => {
 	})
 
 	it("checking delta calculation between two attribute lists", () => {
-		let a = { a: 100, b: 10, c: 1 }
-		let b = { a: 110, b: 11, c: 0 }
-		let c = { a: 110, b: 11, c: 0, d: 10 }
-		let d = { a: 110, b: 11 }
-		let e = { d: 110, e: 11 }
+		const a = { a: 100, b: 10, c: 1 }
+		const b = { a: 110, b: 11, c: 0 }
+		const c = { a: 110, b: 11, c: 0, d: 10 }
+		const d = { a: 110, b: 11 }
+		const e = { d: 110, e: 11 }
 
-		let ab: any = DeltaGenerator["getDeltaAttributeList"](a, b)
+		const ab: any = DeltaGenerator["getDeltaAttributeList"](a, b)
 		expect(ab.a).toBe(b.a - a.a)
 		expect(ab.b).toBe(b.b - a.b)
 		expect(ab.c).toBe(b.c - a.c)
 
-		let ac: any = DeltaGenerator["getDeltaAttributeList"](a, c)
+		const ac: any = DeltaGenerator["getDeltaAttributeList"](a, c)
 		expect(ac.a).toBe(c.a - a.a)
 		expect(ac.b).toBe(c.b - a.b)
 		expect(ac.c).toBe(c.c - a.c)
 		expect(ac.d).toBe(c.d)
 
-		let ad: any = DeltaGenerator["getDeltaAttributeList"](a, d)
+		const ad: any = DeltaGenerator["getDeltaAttributeList"](a, d)
 		expect(ad.a).toBe(d.a - a.a)
 		expect(ad.b).toBe(d.b - a.b)
 		expect(ad.c).toBe(-a.c)
 
-		let ae: any = DeltaGenerator["getDeltaAttributeList"](a, e)
+		const ae: any = DeltaGenerator["getDeltaAttributeList"](a, e)
 		expect(ae.a).toBe(-a.a)
 		expect(ae.b).toBe(-a.b)
 		expect(ae.c).toBe(-a.c)

@@ -26,13 +26,13 @@ export class GeometryGenerator {
 	private floorGradient: string[]
 
 	public build(nodes: Node[], material: THREE.Material, state: State, isDeltaState: boolean): BuildResult {
-		let data: IntermediateVertexData = new IntermediateVertexData()
-		let desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(state.treeMap.mapSize)
+		const data: IntermediateVertexData = new IntermediateVertexData()
+		const desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(state.treeMap.mapSize)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 
 		for (let i: number = 0; i < nodes.length; ++i) {
-			let n: Node = nodes[i]
+			const n: Node = nodes[i]
 
 			if (!n.isLeaf) {
 				this.addFloor(data, n, i, desc)
@@ -43,7 +43,7 @@ export class GeometryGenerator {
 
 		return {
 			mesh: this.buildMeshFromIntermediateVertexData(data, material),
-			desc: desc
+			desc
 		}
 	}
 
@@ -71,8 +71,8 @@ export class GeometryGenerator {
 	}
 
 	private addFloor(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription) {
-		let color = this.getMarkingColorWithGradient(n)
-		let measures: BoxMeasures = this.mapNodeToLocalBox(n)
+		const color = this.getMarkingColorWithGradient(n)
+		const measures: BoxMeasures = this.mapNodeToLocalBox(n)
 
 		desc.add(
 			new CodeMapBuilding(
@@ -107,7 +107,7 @@ export class GeometryGenerator {
 		state: State,
 		isDeltaState: boolean
 	): void {
-		let measures: BoxMeasures = this.mapNodeToLocalBox(n)
+		const measures: BoxMeasures = this.mapNodeToLocalBox(n)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
 
 		let renderDelta: number = 0.0
@@ -136,17 +136,17 @@ export class GeometryGenerator {
 	}
 
 	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: THREE.Material): THREE.Mesh {
-		let numVertices: number = data.positions.length
+		const numVertices: number = data.positions.length
 		const dimension: number = 3
 		const uvDimension: number = 2
 
-		let positions: Float32Array = new Float32Array(numVertices * dimension)
-		let normals: Float32Array = new Float32Array(numVertices * dimension)
-		let uvs: Float32Array = new Float32Array(numVertices * uvDimension)
-		let colors: Float32Array = new Float32Array(numVertices * dimension)
-		let deltaColors: Float32Array = new Float32Array(numVertices * dimension)
-		let ids: Float32Array = new Float32Array(numVertices)
-		let deltas: Float32Array = new Float32Array(numVertices)
+		const positions: Float32Array = new Float32Array(numVertices * dimension)
+		const normals: Float32Array = new Float32Array(numVertices * dimension)
+		const uvs: Float32Array = new Float32Array(numVertices * uvDimension)
+		const colors: Float32Array = new Float32Array(numVertices * dimension)
+		const deltaColors: Float32Array = new Float32Array(numVertices * dimension)
+		const ids: Float32Array = new Float32Array(numVertices)
+		const deltas: Float32Array = new Float32Array(numVertices)
 
 		for (let i: number = 0; i < numVertices; ++i) {
 			positions[i * dimension + 0] = data.positions[i].x
@@ -160,7 +160,7 @@ export class GeometryGenerator {
 			uvs[i * uvDimension + 0] = data.uvs[i].x
 			uvs[i * uvDimension + 1] = data.uvs[i].y
 
-			let color: THREE.Vector3 = ColorConverter.colorToVector3(data.colors[i])
+			const color: THREE.Vector3 = ColorConverter.colorToVector3(data.colors[i])
 
 			colors[i * dimension + 0] = color.x
 			colors[i * dimension + 1] = color.y
@@ -174,13 +174,13 @@ export class GeometryGenerator {
 			deltas[i] = data.deltas[i]
 		}
 
-		let indices: Uint32Array = new Uint32Array(data.indices.length)
+		const indices: Uint32Array = new Uint32Array(data.indices.length)
 
 		for (let i: number = 0; i < data.indices.length; ++i) {
 			indices[i] = data.indices[i]
 		}
 
-		let geometry: THREE.BufferGeometry = new THREE.BufferGeometry()
+		const geometry: THREE.BufferGeometry = new THREE.BufferGeometry()
 
 		geometry.addAttribute("position", new THREE.BufferAttribute(positions, dimension))
 		geometry.addAttribute("normal", new THREE.BufferAttribute(normals, dimension))

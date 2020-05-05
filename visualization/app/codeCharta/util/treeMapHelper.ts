@@ -1,8 +1,8 @@
-import { SquarifiedCodeMapNode } from "./treeMapGenerator"
 import { CodeMapHelper } from "./codeMapHelper"
-import { Node, CodeMapNode, BlacklistItem, BlacklistType, State } from "../codeCharta.model"
+import { Node, CodeMapNode, State } from "../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
+import { HierarchyRectangularNode } from "d3"
 
 export class TreeMapHelper {
 	private static FOLDER_HEIGHT = 2
@@ -28,8 +28,13 @@ export class TreeMapHelper {
 		return geomMap
 	}
 
-	private static getHeightValue(s: State, squaredNode: SquarifiedCodeMapNode, maxHeight: number, flattened: boolean): number {
-		let heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+	private static getHeightValue(
+		s: State,
+		squaredNode: HierarchyRectangularNode<CodeMapNode>,
+		maxHeight: number,
+		flattened: boolean
+	): number {
+		const heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 
 		if (flattened) {
 			return TreeMapHelper.MIN_BUILDING_HEIGHT
@@ -41,7 +46,7 @@ export class TreeMapHelper {
 	}
 
 	public static buildNodeFrom(
-		squaredNode: SquarifiedCodeMapNode,
+		squaredNode: HierarchyRectangularNode<CodeMapNode>,
 		heightScale: number,
 		maxHeight: number,
 		s: State,
@@ -62,6 +67,7 @@ export class TreeMapHelper {
 
 		return {
 			name: squaredNode.data.name,
+			id: squaredNode.data.id,
 			width,
 			height,
 			length,
@@ -77,7 +83,7 @@ export class TreeMapHelper {
 				squaredNode.data.deltas && squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
 					: 0,
-			visible: squaredNode.data.visible && !(isNodeLeaf && s.appSettings.hideFlatBuildings && flattened),
+			visible: this.isVisible(squaredNode.data, isNodeLeaf, s, flattened),
 			path: squaredNode.data.path,
 			link: squaredNode.data.link,
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
@@ -86,6 +92,17 @@ export class TreeMapHelper {
 			incomingEdgePoint: this.getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),
 			outgoingEdgePoint: this.getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize)
 		}
+	}
+
+	private static isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, s: State, flattened: boolean): boolean {
+		let isVisible = true
+		if (s.dynamicSettings.focusedNodePath.length > 0) {
+			isVisible = squaredNode.path.includes(s.dynamicSettings.focusedNodePath)
+		}
+		if (squaredNode.isExcluded || (isNodeLeaf && s.appSettings.hideFlatBuildings && flattened)) {
+			isVisible = false
+		}
+		return isVisible
 	}
 
 	private static getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
@@ -104,7 +121,7 @@ export class TreeMapHelper {
 		}
 	}
 
-	private static isNodeToBeFlat(squaredNode: SquarifiedCodeMapNode, s: State): boolean {
+	private static isNodeToBeFlat(squaredNode: HierarchyRectangularNode<CodeMapNode>, s: State): boolean {
 		let flattened = false
 		if (
 			s.appSettings.showOnlyBuildingsWithEdges &&
@@ -118,13 +135,11 @@ export class TreeMapHelper {
 			flattened = s.dynamicSettings.searchedNodePaths.size == 0 ? true : this.isNodeNonSearched(squaredNode, s)
 		}
 
-		let blacklistFlattened = this.isNodeOrParentFlattenedInBlacklist(squaredNode, s.fileSettings.blacklist)
-
-		flattened = blacklistFlattened || flattened
+		flattened = squaredNode.data.isFlattened || flattened
 		return flattened
 	}
 
-	private static nodeHasNoVisibleEdges(squaredNode: SquarifiedCodeMapNode, s: State): boolean {
+	private static nodeHasNoVisibleEdges(squaredNode: HierarchyRectangularNode<CodeMapNode>, s: State): boolean {
 		return (
 			squaredNode.data.edgeAttributes[s.dynamicSettings.edgeMetric] === undefined ||
 			s.fileSettings.edges.filter(edge => squaredNode.data.path === edge.fromNodeName || squaredNode.data.path === edge.toNodeName)
@@ -132,16 +147,12 @@ export class TreeMapHelper {
 		)
 	}
 
-	private static isNodeNonSearched(squaredNode: SquarifiedCodeMapNode, s: State): boolean {
+	private static isNodeNonSearched(squaredNode: HierarchyRectangularNode<CodeMapNode>, s: State): boolean {
 		return !s.dynamicSettings.searchedNodePaths.has(squaredNode.data.path)
 	}
 
-	private static isNodeOrParentFlattenedInBlacklist(squaredNode: SquarifiedCodeMapNode, blacklist: BlacklistItem[]): boolean {
-		return CodeMapHelper.isBlacklisted(squaredNode.data, blacklist, BlacklistType.flatten)
-	}
-
 	private static getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean): string {
-		let mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
+		const mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
 		if (isDeltaState) {
 			return s.appSettings.mapColors.base
 		} else {

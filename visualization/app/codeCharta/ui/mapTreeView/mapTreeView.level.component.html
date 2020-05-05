@@ -1,5 +1,5 @@
 <div
-	ng-if="!$ctrl.isExcluded()"
+	ng-if="!$ctrl.node.isExcluded"
 	class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
 	ng-init="$ctrl.openRootFolderByDefault($ctrl.depth)"
 >
@@ -29,7 +29,7 @@
 			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
 		</span>
 
-		<span class="node-name" ng-class="{'flattened': $ctrl.isFlattened(), 'angular-green': $ctrl.isSearched()}">
+		<span class="node-name" ng-class="{'flattened': $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched()}">
 			{{::$ctrl.node.name}}
 		</span>
 
@@ -41,7 +41,7 @@
 		</span>
 
 		<span class="right-aligned" ng-if="$ctrl._viewModel.isHoveredInTreeView || $ctrl._viewModel.isHoveredInCodeMap">
-			<i class="flattened fa fa-eye-slash" ng-if="$ctrl.isFlattened()" title="Flattened"></i>
+			<i class="flattened fa fa-eye-slash" ng-if="$ctrl.node.isFlattened" title="Flattened"></i>
 
 			<div class="small-action-button transparent">
 				<md-button class="md-fab" ng-click="$ctrl.openNodeContextMenu($event)">

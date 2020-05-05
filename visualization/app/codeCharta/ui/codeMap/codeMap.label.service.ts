@@ -43,7 +43,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const labelY: number = y + node.height
 			const labelZ: number = z + node.length / 2
 
-			let label: InternalLabel = this.makeText(node.name + ": " + node.attributes[state.dynamicSettings.heightMetric], 30)
+			const label: InternalLabel = this.makeText(node.name + ": " + node.attributes[state.dynamicSettings.heightMetric], 30)
 			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelZ)
 
@@ -69,7 +69,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			this.currentScale = new THREE.Vector3(1, 1, 1)
 		}
 
-		for (let label of this.labels) {
+		for (const label of this.labels) {
 			const labelHeightDifference = new Vector3(0, 60, 0)
 			label.sprite.position
 				.sub(labelHeightDifference.clone())
@@ -87,7 +87,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	public onCameraChanged(camera: PerspectiveCamera) {
-		for (let label of this.labels) {
+		for (const label of this.labels) {
 			this.setLabelSize(label.sprite)
 		}
 	}
@@ -128,7 +128,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.setLabelSize(sprite, canvas.width)
 
 		return {
-			sprite: sprite,
+			sprite,
 			heightValue: canvas.height,
 			line: null
 		}

@@ -7,9 +7,9 @@ const clone = require("rfdc")()
 
 export class DeltaGenerator {
 	public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
-		let referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(clone(referenceFile.map))
-		let comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(clone(comparisonFile.map))
-		let hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
+		const referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(clone(referenceFile.map))
+		const comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(clone(comparisonFile.map))
+		const hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
 
 		const fileMeta = this.getFileMetaData(referenceFile, comparisonFile)
 		const map = MapBuilder.createCodeMapFromHashMap(hashMapWithAllNodes)
@@ -17,7 +17,7 @@ export class DeltaGenerator {
 	}
 
 	private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode): Map<string, CodeMapNode> {
-		let hashMap = new Map<string, CodeMapNode>()
+		const hashMap = new Map<string, CodeMapNode>()
 
 		d3.hierarchy(rootNode)
 			.descendants()
@@ -33,7 +33,7 @@ export class DeltaGenerator {
 		referenceHashMap: Map<string, CodeMapNode>,
 		comparisonHashMap: Map<string, CodeMapNode>
 	): Map<string, CodeMapNode> {
-		let hashMapWithAllNodes: Map<string, CodeMapNode> = new Map<string, CodeMapNode>()
+		const hashMapWithAllNodes: Map<string, CodeMapNode> = new Map<string, CodeMapNode>()
 
 		comparisonHashMap.forEach((comparisonNode: CodeMapNode, path: string) => {
 			const referenceNode: CodeMapNode = referenceHashMap.get(path)
@@ -63,7 +63,7 @@ export class DeltaGenerator {
 	}
 
 	private static getDeltaAttributeList(referenceAttr: KeyValuePair, comparisonAttr: KeyValuePair): KeyValuePair {
-		let deltaAttr = {}
+		const deltaAttr = {}
 
 		_.keys(comparisonAttr).forEach((key: string) => {
 			deltaAttr[key] = referenceAttr[key] ? comparisonAttr[key] - referenceAttr[key] : comparisonAttr[key]
@@ -92,7 +92,7 @@ export class DeltaGenerator {
 	private static getNewCCFileWithDeltas(rootNode: CodeMapNode, fileMeta: FileMeta): CCFile {
 		return {
 			map: rootNode,
-			fileMeta: fileMeta,
+			fileMeta,
 			settings: {
 				fileSettings: {
 					edges: [],

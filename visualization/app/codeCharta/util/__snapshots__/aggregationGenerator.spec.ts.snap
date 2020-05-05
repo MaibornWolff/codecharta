@@ -201,7 +201,6 @@ Object {
     "name": "root",
     "path": "/root",
     "type": "Folder",
-    "visible": true,
   },
   "settings": Object {
     "fileSettings": Object {
@@ -327,7 +326,6 @@ Object {
     "name": "root",
     "path": "/root",
     "type": "Folder",
-    "visible": true,
   },
   "settings": Object {
     "fileSettings": Object {

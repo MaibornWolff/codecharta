@@ -1,7 +1,6 @@
-import { BlacklistItem, BlacklistType, CodeMapNode } from "../codeCharta.model"
+import { CodeMapNode } from "../codeCharta.model"
 import * as d3 from "d3"
 import { HierarchyNode } from "d3"
-import { CodeMapHelper } from "./codeMapHelper"
 import { HSL } from "./color/hsl"
 
 export interface MetricDistribution {
@@ -16,8 +15,8 @@ export class FileExtensionCalculator {
 	private static readonly OTHER_EXTENSION = "other"
 	private static OTHER_GROUP_THRESHOLD_VALUE = 3.0
 
-	public static getMetricDistribution(map: CodeMapNode, metric: string, blacklist: BlacklistItem[]): MetricDistribution[] {
-		let distribution: MetricDistribution[] = this.getAbsoluteDistribution(map, metric, blacklist)
+	public static getMetricDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
+		let distribution: MetricDistribution[] = this.getAbsoluteDistribution(map, metric)
 		distribution = this.decorateDistributionWithRelativeMetricValue(distribution)
 		distribution.sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
 		distribution = this.getMetricDistributionWithOthers(distribution)
@@ -25,12 +24,12 @@ export class FileExtensionCalculator {
 		return distribution
 	}
 
-	private static getAbsoluteDistribution(map: CodeMapNode, metric: string, blacklist: BlacklistItem[]): MetricDistribution[] {
-		let distribution: MetricDistribution[] = []
+	private static getAbsoluteDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
+		const distribution: MetricDistribution[] = []
 		d3.hierarchy(map)
 			.leaves()
 			.forEach((node: HierarchyNode<CodeMapNode>) => {
-				if (!CodeMapHelper.isBlacklisted(node.data, blacklist, BlacklistType.exclude)) {
+				if (!node.data.isExcluded) {
 					const fileExtension: string = this.estimateFileExtension(node.data.name)
 					const metricValue: number = node.data.attributes[metric]
 					const matchingFileExtensionObject = distribution.find(x => x.fileExtension === fileExtension)
@@ -60,8 +59,8 @@ export class FileExtensionCalculator {
 	}
 
 	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]): MetricDistribution[] {
-		let otherExtension: MetricDistribution = this.getOtherExtension()
-		let visibleDistributions: MetricDistribution[] = []
+		const otherExtension: MetricDistribution = this.getOtherExtension()
+		const visibleDistributions: MetricDistribution[] = []
 
 		distribution.forEach((x: MetricDistribution) => {
 			if (x.relativeMetricValue > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
@@ -90,7 +89,7 @@ export class FileExtensionCalculator {
 
 	private static getDistributionObject(fileExtension: string, metricValue: number): MetricDistribution {
 		return {
-			fileExtension: fileExtension,
+			fileExtension,
 			absoluteMetricValue: metricValue,
 			relativeMetricValue: null,
 			color: null

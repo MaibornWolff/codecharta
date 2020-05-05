@@ -4,8 +4,9 @@ import { EdgesActions, setEdges } from "./edges.actions"
 import { Edge } from "../../../../codeCharta.model"
 import { getMergedEdges } from "./edges.merger"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
-import { Files } from "../../../../model/files"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { getVisibleFiles, isPartialState } from "../../../../model/files/files.helper"
+import { FileState } from "../../../../model/files/files"
 
 export interface EdgesSubscriber {
 	onEdgesChanged(edges: Edge[])
@@ -25,13 +26,13 @@ export class EdgesService implements StoreSubscriber, FilesSelectionSubscriber {
 		}
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this.merge(files)
 	}
 
-	private merge(files: Files) {
-		const visibleFiles = files.getVisibleFileStates().map(x => x.file)
-		const withUpdatedPath = files.isPartialState()
+	private merge(files: FileState[]) {
+		const visibleFiles = getVisibleFiles(files)
+		const withUpdatedPath = isPartialState(files)
 		const newEdges = getMergedEdges(visibleFiles, withUpdatedPath)
 		this.storeService.dispatch(setEdges(newEdges))
 	}

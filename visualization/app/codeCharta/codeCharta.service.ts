@@ -1,9 +1,10 @@
-import { FileValidator } from "./util/fileValidator"
+import { FileValidator, CCValidationResult } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
 import { addFile, setSingle } from "./state/store/files/files.actions"
+import { getCCFiles } from "./model/files/files.helper"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
@@ -15,16 +16,19 @@ export class CodeChartaService {
 	public loadFiles(nameDataPairs: NameDataPair[]): Promise<void> {
 		return new Promise((resolve, reject) => {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
-				const errors = FileValidator.validate(nameDataPair.content)
-				if (errors.length === 0) {
+				const validationResult: CCValidationResult = FileValidator.validate(nameDataPair.content)
+				if (validationResult.error.length === 0) {
 					const ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
 					NodeDecorator.preDecorateFile(ccFile)
 					this.storeService.dispatch(addFile(ccFile))
+					if (validationResult.warning.length !== 0) {
+						reject(validationResult)
+					}
 				} else {
-					reject(errors)
+					reject(validationResult)
 				}
 			})
-			this.storeService.dispatch(setSingle(this.storeService.getState().files.getCCFiles()[0]))
+			this.storeService.dispatch(setSingle(getCCFiles(this.storeService.getState().files)[0]))
 			resolve()
 		})
 	}
@@ -32,7 +36,7 @@ export class CodeChartaService {
 	private getCCFile(fileName: string, fileContent: any): CCFile {
 		return {
 			fileMeta: {
-				fileName: fileName,
+				fileName,
 				projectName: fileContent.projectName,
 				apiVersion: fileContent.apiVersion
 			},
@@ -49,7 +53,7 @@ export class CodeChartaService {
 	}
 
 	private getAttributeTypes(attributeTypes: AttributeTypes): AttributeTypes {
-		let newAttributeTypes: any = {}
+		const newAttributeTypes: any = {}
 
 		if (_.isEmpty(attributeTypes) || !attributeTypes) {
 			return {

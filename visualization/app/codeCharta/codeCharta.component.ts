@@ -12,6 +12,7 @@ import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import * as codeCharta from "../../package.json"
 import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
+import { getCCFiles } from "./model/files/files.helper"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -83,7 +84,7 @@ export class CodeChartaController {
 
 	private setRenderStateFromUrl() {
 		const renderState: string = this.urlUtils.getParameterByName("mode")
-		const files = this.storeService.getState().files.getCCFiles()
+		const files = getCCFiles(this.storeService.getState().files)
 
 		if (renderState === "Delta" && files.length >= 2) {
 			this.storeService.dispatch(setDelta(files[0], files[1]))

@@ -1,23 +1,11 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
-import { Files } from "./model/files"
+import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
+import { FileState } from "./model/files/files"
 
 export interface NameDataPair {
 	fileName: string
 	content: any
-}
-
-export interface FileState {
-	file: CCFile
-	selectedAs: FileSelectionState
-}
-
-export enum FileSelectionState {
-	Single = "Single",
-	Reference = "Reference",
-	Comparison = "Comparison",
-	Partial = "Partial",
-	None = "None"
 }
 
 export enum SearchPanelMode {
@@ -47,6 +35,7 @@ export interface CCFile {
 
 export interface CodeMapNode {
 	name: string
+	id?: number
 	type: NodeType
 	children?: CodeMapNode[]
 	attributes: KeyValuePair
@@ -55,7 +44,8 @@ export interface CodeMapNode {
 	}
 	link?: string
 	path?: string
-	visible?: boolean
+	isExcluded?: boolean
+	isFlattened?: boolean
 	deltas?: {
 		[key: string]: number
 	}
@@ -223,6 +213,7 @@ export interface KeyValuePair {
 
 export interface Node {
 	name: string
+	id: number
 	width: number
 	height: number
 	length: number
@@ -252,9 +243,15 @@ export interface State {
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
-	files: Files
+	files: FileState[]
+	lookUp: LookUp
 }
 
 export interface CCAction extends Action {
 	payload?: any
+}
+
+export interface LookUp {
+	idToNode: Map<number, CodeMapNode>
+	idToBuilding: Map<number, CodeMapBuilding>
 }

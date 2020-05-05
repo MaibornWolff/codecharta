@@ -8,16 +8,16 @@ import { HierarchyNode } from "d3"
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
 import { setFiles } from "./store/files/files.actions"
-import { Files } from "../model/files"
 import { FilesService } from "./store/files/files.service"
 import _ from "lodash"
+import { FileState } from "../model/files/files"
 
 describe("EdgeMetricDataService", () => {
 	let edgeMetricDataService: EdgeMetricDataService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 
-	let files: Files
+	let files: FileState[]
 
 	beforeEach(() => {
 		restartSystem()
@@ -31,10 +31,8 @@ describe("EdgeMetricDataService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 
-		const fileStates = _.cloneDeep(FILE_STATES)
+		files = _.cloneDeep(FILE_STATES)
 		FILE_STATES[0].file.map = _.cloneDeep(VALID_NODE_WITH_PATH)
-
-		files = new Files(fileStates)
 	}
 
 	function rebuildService() {
@@ -61,9 +59,9 @@ describe("EdgeMetricDataService", () => {
 
 	describe("getMetricNames", () => {
 		it("should return metric names", () => {
-			const metric_1: MetricData = { name: "pairing_rate" } as MetricData
-			const metric_2: MetricData = { name: "average_commits" } as MetricData
-			edgeMetricDataService["edgeMetricData"] = [metric_1, metric_2]
+			const pairingRate: MetricData = { name: "pairing_rate" } as MetricData
+			const avgCommits: MetricData = { name: "average_commits" } as MetricData
+			edgeMetricDataService["edgeMetricData"] = [pairingRate, avgCommits]
 
 			const metricNames = edgeMetricDataService.getMetricNames()
 
@@ -157,6 +155,7 @@ describe("EdgeMetricDataService", () => {
 
 	describe("getMetricValuesForNode", () => {
 		it("should return Edge Metric counts for node", () => {
+			storeService.dispatch(setFiles(files))
 			edgeMetricDataService.onFilesSelectionChanged(files)
 			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
 

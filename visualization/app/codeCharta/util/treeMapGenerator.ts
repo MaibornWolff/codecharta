@@ -1,31 +1,29 @@
-import { hierarchy, treemap, HierarchyNode, HierarchyRectangularNode, TreemapLayout } from "d3"
+import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap, TreemapLayout } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
-import { CodeMapNode, BlacklistType, MetricData, Node, State } from "../codeCharta.model"
-
-export interface SquarifiedCodeMapNode extends HierarchyRectangularNode<CodeMapNode> {}
+import { CodeMapNode, MetricData, Node, State } from "../codeCharta.model"
 
 export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
 
 	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
-		const squarifiedTreeMap: SquarifiedCodeMapNode = this.getSquarifiedTreeMap(map, s)
+		const squarifiedTreeMap: HierarchyRectangularNode<CodeMapNode> = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
 		const heightScale = (s.treeMap.mapSize * 2) / maxHeight
-		const nodesAsArray: SquarifiedCodeMapNode[] = this.getNodesAsArray(squarifiedTreeMap)
+		const nodesAsArray: HierarchyRectangularNode<CodeMapNode>[] = this.getNodesAsArray(squarifiedTreeMap)
 		return nodesAsArray.map(squarifiedNode => {
 			return TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState)
 		})
 	}
 
-	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedCodeMapNode {
+	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): HierarchyRectangularNode<CodeMapNode> {
 		const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
 		const nodeLeafs: CodeMapNode[] = hierarchyNode.descendants().map(d => d.data)
-		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs, s.fileSettings.blacklist)
+		const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs)
 		const nodesPerSide: number = 2 * Math.sqrt(hierarchyNode.descendants().length - blacklisted)
 		const mapLength: number = s.treeMap.mapSize * 2 + nodesPerSide * s.dynamicSettings.margin
 		const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
-		let treeMap: TreemapLayout<CodeMapNode> = treemap<CodeMapNode>()
+		const treeMap: TreemapLayout<CodeMapNode> = treemap<CodeMapNode>()
 			.size([mapLength, mapLength])
 			.paddingOuter(padding)
 			.paddingInner(padding)
@@ -33,20 +31,12 @@ export class TreeMapGenerator {
 		return treeMap(hierarchyNode.sum(node => this.calculateAreaValue(node, s)))
 	}
 
-	private static getNodesAsArray(node: SquarifiedCodeMapNode): SquarifiedCodeMapNode[] {
-		let nodes = [node]
+	private static getNodesAsArray(node: HierarchyRectangularNode<CodeMapNode>): HierarchyRectangularNode<CodeMapNode>[] {
+		const nodes = [node]
 		if (node.children) {
 			node.children.forEach(child => nodes.push(...this.getNodesAsArray(child)))
 		}
 		return nodes
-	}
-
-	public static setVisibilityOfNodeAndDescendants(node: CodeMapNode, visibility: boolean): CodeMapNode {
-		node.visible = visibility
-		hierarchy<CodeMapNode>(node)
-			.descendants()
-			.forEach(hierarchyNode => (hierarchyNode.data.visible = visibility))
-		return node
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State): boolean {
@@ -54,7 +44,7 @@ export class TreeMapGenerator {
 	}
 
 	private static calculateAreaValue(node: CodeMapNode, s: State): number {
-		if (CodeMapHelper.isBlacklisted(node, s.fileSettings.blacklist, BlacklistType.exclude)) {
+		if (node.isExcluded) {
 			return 0
 		}
 

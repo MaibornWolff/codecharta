@@ -24,7 +24,7 @@
 		ng-model="$ctrl._viewModel.selectedFileNames.single"
 		ng-change="$ctrl.onSingleFileChange($ctrl._viewModel.selectedFileNames.single)"
 	>
-		<md-option ng-repeat="fileState in $ctrl._viewModel.files.getFiles()" value="{{::fileState.file.fileMeta.fileName}}">
+		<md-option ng-repeat="fileState in $ctrl._viewModel.files" value="{{::fileState.file.fileMeta.fileName}}">
 			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 		</md-option>
 	</md-select>
@@ -41,7 +41,7 @@
 		<md-button ng-click="$ctrl.selectZeroPartialFiles()">None</md-button>
 		<md-button ng-click="$ctrl.invertPartialFileSelection()">Invert</md-button>
 
-		<md-option ng-repeat="fileState in $ctrl._viewModel.files.getFiles()" value="{{::fileState.file.fileMeta.fileName}}">
+		<md-option ng-repeat="fileState in $ctrl._viewModel.files" value="{{::fileState.file.fileMeta.fileName}}">
 			<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 		</md-option>
 	</md-select>
@@ -54,7 +54,7 @@
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.reference"
 			ng-change="$ctrl.onDeltaReferenceFileChange($ctrl._viewModel.selectedFileNames.delta.reference)"
 		>
-			<md-option ng-repeat="fileState in $ctrl._viewModel.files.getFiles()" value="{{::fileState.file.fileMeta.fileName}}">
+			<md-option ng-repeat="fileState in $ctrl._viewModel.files" value="{{::fileState.file.fileMeta.fileName}}">
 				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 			</md-option>
 		</md-select>
@@ -69,7 +69,7 @@
 			ng-model="$ctrl._viewModel.selectedFileNames.delta.comparison"
 			ng-change="$ctrl.onDeltaComparisonFileChange($ctrl._viewModel.selectedFileNames.delta.comparison)"
 		>
-			<md-option ng-repeat="fileState in $ctrl._viewModel.files.getFiles()" value="{{::fileState.file.fileMeta.fileName}}">
+			<md-option ng-repeat="fileState in $ctrl._viewModel.files" value="{{::fileState.file.fileMeta.fileName}}">
 				<md-truncate>{{::fileState.file.fileMeta.fileName}}</md-truncate>
 			</md-option>
 		</md-select>

@@ -1,2 +1,12 @@
 unfocus-button-component {
+	#unfocus-button {
+		position: absolute;
+		top: 200px;
+		right: 40px;
+		z-index: 60;
+		width: 100px !important;
+		padding-left: 10px;
+		padding-right: 10px;
+		border-radius: 100px;
+	}
 }

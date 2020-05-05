@@ -17,6 +17,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.47.0] - 2020-05-02
+
+### Added 🚀
+
+- When hovering over a folder, all buildings inside it will be highlighted as well #694
+
+### Changed
+
+- Rename the button Show-Complete-Map button to Unfocus #642
+- Move the Unfocus button (visible when a node is focused) below the view-cube #642
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Generating a delta map with merged empty folders in between is now working correctly #730
+- Reduced time when opening a new file #932
+
+### Chore 👨‍💻 👩‍💻
+
+- [Security] Bump jquery from 3.4.0 to 3.5.0 in /visualization #944
+
+## [1.46.1] - 2020-04-24
+
+### Added 🚀
+
+- Error dialogs in case of validation or api version issues #610
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Improved overall rendering performance of larger maps by roughly 40% #836
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.45.5] - 2020-04-17
 
 ### Added 🚀

@@ -1,25 +1,27 @@
 import { TreeMapHelper } from "./treeMapHelper"
-import { SquarifiedCodeMapNode } from "./treeMapGenerator"
 import { BlacklistType, CodeMapNode, EdgeVisibility, NodeType, State } from "../codeCharta.model"
 import { CODE_MAP_BUILDING, STATE } from "./dataMocks"
+import { HierarchyRectangularNode } from "d3"
 
 describe("treeMapHelper", () => {
 	describe("build node", () => {
 		let codeMapNode: CodeMapNode
-		let squaredNode: SquarifiedCodeMapNode
-		let state
+		let squaredNode: HierarchyRectangularNode<CodeMapNode>
+		let state: State
 
-		let heightScale = 1
-		let maxHeight = 2000
-		let isDeltaState = false
+		const heightScale = 1
+		const maxHeight = 2000
+		const isDeltaState = false
 
 		beforeEach(() => {
 			codeMapNode = {
 				name: "Anode",
 				path: "/root/Anode",
 				type: NodeType.FILE,
-				attributes: { theHeight: 100 }
-			} as CodeMapNode
+				attributes: { theHeight: 100 },
+				isExcluded: false,
+				isFlattened: false
+			}
 
 			squaredNode = {
 				data: codeMapNode,
@@ -28,13 +30,14 @@ describe("treeMapHelper", () => {
 				y0: 0,
 				x1: 400,
 				y1: 400
-			} as SquarifiedCodeMapNode
+			} as HierarchyRectangularNode<CodeMapNode>
 
 			state = STATE
 			state.treeMap.mapSize = 1
 			state.dynamicSettings.margin = 15
 			state.dynamicSettings.heightMetric = "theHeight"
 			state.appSettings.invertHeight = false
+			state.dynamicSettings.focusedNodePath = ""
 		})
 
 		function buildNode() {
@@ -74,7 +77,7 @@ describe("treeMapHelper", () => {
 						pairingRate: 33,
 						avgCommits: 12
 					},
-					visible: true
+					visible: EdgeVisibility.both
 				}
 			]
 			expect(buildNode()).toMatchSnapshot()
@@ -85,8 +88,7 @@ describe("treeMapHelper", () => {
 			state.fileSettings.markedPackages = [
 				{
 					path: "/root/Anode",
-					color: color,
-					attributes: {}
+					color
 				}
 			]
 			expect(buildNode().markingColor).toEqual(color)
@@ -97,11 +99,24 @@ describe("treeMapHelper", () => {
 			state.fileSettings.markedPackages = [
 				{
 					path: "/root/AnotherNode",
-					color: color,
-					attributes: {}
+					color
 				}
 			]
 			expect(buildNode().markingColor).toEqual(null)
+		})
+
+		it("should be visible if it's a children of the focused node path", () => {
+			state.dynamicSettings.focusedNodePath = "/root"
+			expect(buildNode().visible).toBeTruthy()
+		})
+
+		it("should not be visible if it's excluded", () => {
+			codeMapNode.isExcluded = true
+			expect(buildNode().visible).toBeFalsy()
+		})
+
+		it("should be visible if it's not excluded and no focused node path is given", () => {
+			expect(buildNode().visible).toBeTruthy()
 		})
 	})
 
@@ -129,7 +144,7 @@ describe("treeMapHelper", () => {
 
 	describe("isNodeToBeFlat", () => {
 		let codeMapNode: CodeMapNode
-		let squaredNode: SquarifiedCodeMapNode
+		let squaredNode: HierarchyRectangularNode<CodeMapNode>
 		let state: State
 
 		beforeEach(() => {
@@ -138,7 +153,9 @@ describe("treeMapHelper", () => {
 				path: "/root/Anode",
 				type: NodeType.FILE,
 				attributes: {},
-				edgeAttributes: { pairingRate: { incoming: 42, outgoing: 23 } }
+				edgeAttributes: { pairingRate: { incoming: 42, outgoing: 23 } },
+				isExcluded: false,
+				isFlattened: false
 			}
 
 			squaredNode = {
@@ -148,7 +165,7 @@ describe("treeMapHelper", () => {
 				y0: 0,
 				x1: 400,
 				y1: 400
-			} as SquarifiedCodeMapNode
+			} as HierarchyRectangularNode<CodeMapNode>
 
 			state = STATE
 			state.treeMap.mapSize = 1
@@ -204,6 +221,7 @@ describe("treeMapHelper", () => {
 
 		it("should be flat if node is flattened in blacklist", () => {
 			state.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
+			squaredNode.data.isFlattened = true
 
 			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
 		})
@@ -244,9 +262,9 @@ describe("treeMapHelper", () => {
 		})
 
 		it("creates flat colored building", () => {
-			const flattend = true
+			const flattened = true
 
-			const buildingColor = TreeMapHelper["getBuildingColor"](node, state, false, flattend)
+			const buildingColor = TreeMapHelper["getBuildingColor"](node, state, false, flattened)
 
 			expect(buildingColor).toBe(state.appSettings.mapColors.flat)
 		})

@@ -3,12 +3,14 @@ import { CCAction } from "../../codeCharta.model"
 import { StateActions } from "./state.actions"
 
 // Plop: Import sub-reducer action here
+import { LookUpActions } from "./lookUp/lookUp.actions"
 import { DynamicSettingsActions } from "./dynamicSettings/dynamicSettings.actions"
 import { FileSettingsActions } from "./fileSettings/fileSettings.actions"
 import { AppSettingsActions } from "./appSettings/appSettings.actions"
 import { TreeMapSettingsActions } from "./treeMap/treeMap.actions"
 
 // Plop: Import sub-reducer splitter here
+import { splitLookUpActions } from "./lookUp/lookUp.splitter"
 import { splitDynamicSettingsActions } from "./dynamicSettings/dynamicSettings.splitter"
 import { splitFileSettingsActions } from "./fileSettings/fileSettings.splitter"
 import { splitAppSettingsActions } from "./appSettings/appSettings.splitter"
@@ -17,6 +19,10 @@ import { splitFilesAction } from "./files/files.splitter"
 
 export function splitStateActions(action: CCAction): CCAction[] {
 	// Plop: Propagate sub-reducer here
+	if (_.values(LookUpActions).includes(action.type)) {
+		return splitLookUpActions(action.payload)
+	}
+
 	if (_.values(DynamicSettingsActions).includes(action.type)) {
 		return splitDynamicSettingsActions(action.payload)
 	}
@@ -37,6 +43,10 @@ export function splitStateActions(action: CCAction): CCAction[] {
 		let actions: CCAction[] = []
 
 		// Plop: Split into sub-reducer here
+		if (action.payload.lookUp !== undefined) {
+			actions = actions.concat(...splitLookUpActions(action.payload.lookUp))
+		}
+
 		if (action.payload.dynamicSettings !== undefined) {
 			actions = actions.concat(...splitDynamicSettingsActions(action.payload.dynamicSettings))
 		}

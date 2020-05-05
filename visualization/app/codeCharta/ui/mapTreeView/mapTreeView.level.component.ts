@@ -2,7 +2,7 @@ import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
-import { BlacklistType, CodeMapNode } from "../../codeCharta.model"
+import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
@@ -40,7 +40,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public getMarkingColor() {
-		let defaultColor = "#000000"
+		const defaultColor = "#000000"
 		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
 	}
@@ -79,17 +79,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public isLeaf(node: CodeMapNode = this.node): boolean {
 		return !(node && node.children && node.children.length > 0)
-	}
-
-	public isFlattened() {
-		return CodeMapHelper.isBlacklisted(this.node, this.storeService.getState().fileSettings.blacklist, BlacklistType.flatten)
-	}
-
-	public isExcluded(): boolean {
-		if (this.node) {
-			return CodeMapHelper.isBlacklisted(this.node, this.storeService.getState().fileSettings.blacklist, BlacklistType.exclude)
-		}
-		return false
 	}
 
 	public isSearched(): boolean {

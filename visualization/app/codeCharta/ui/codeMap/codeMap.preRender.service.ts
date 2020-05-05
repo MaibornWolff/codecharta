@@ -1,6 +1,6 @@
 "use strict"
 
-import { CCFile, FileSelectionState, FileState, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CCFile, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -20,7 +20,8 @@ import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-
+import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
+import { FileSelectionState, FileState } from "../../model/files/files"
 const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
@@ -81,7 +82,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
-		if (this.storeService.getState().files.fileStatesAvailable()) {
+		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
 			if (this.allNecessaryRenderDataAvailable()) {
@@ -98,15 +99,15 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private decorateIfPossible() {
 		const state = this.storeService.getState()
-		if (this.unifiedMap && state.files.fileStatesAvailable() && this.unifiedFileMeta && this.metricService.getMetricData()) {
-			NodeDecorator.decorateMap(this.unifiedMap, this.unifiedFileMeta, this.metricService.getMetricData())
+		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && this.metricService.getMetricData()) {
+			NodeDecorator.decorateMap(this.unifiedMap, this.metricService.getMetricData(), state.fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
 				state.fileSettings.blacklist,
 				this.metricService.getMetricData(),
 				this.edgeMetricDataService.getMetricData(),
-				state.files.isDeltaState(),
+				isDeltaState(state.files),
 				state.fileSettings.attributeTypes
 			)
 		}
@@ -114,10 +115,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
 		if (map && this.edgeMetricDataService.getMetricNames()) {
-			let root = d3.hierarchy<CodeMapNode>(map)
+			const root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
-				for (let edgeMetric of edgeMetrics.keys()) {
+				for (const edgeMetric of edgeMetrics.keys()) {
 					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
 				}
 			})
@@ -126,13 +127,13 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private getSelectedFilesAsUnifiedMap(): CCFile {
 		const files = this.storeService.getState().files
-		const visibleFileStates = clone(files.getVisibleFileStates())
+		const visibleFileStates = clone(getVisibleFileStates(files))
 
-		if (files.isSingleState()) {
+		if (isSingleState(files)) {
 			return visibleFileStates[0].file
-		} else if (files.isPartialState()) {
+		} else if (isPartialState(files)) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
-		} else if (files.isDeltaState()) {
+		} else if (isDeltaState(files)) {
 			return this.getDeltaFile(visibleFileStates)
 		}
 	}
@@ -163,7 +164,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private allNecessaryRenderDataAvailable(): boolean {
 		return (
-			this.storeService.getState().files.fileStatesAvailable() &&
+			fileStatesAvailable(this.storeService.getState().files) &&
 			this.metricService.getMetricData() !== null &&
 			this.areChosenMetricsInMetricData() &&
 			_.values(this.storeService.getState().dynamicSettings).every(x => {

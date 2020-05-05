@@ -16,9 +16,14 @@ export interface BuildingDeselectedEventSubscriber {
 	onBuildingDeselected()
 }
 
+export interface CodeMapMeshChangedSubscriber {
+	onCodeMapMeshChanged(mapMesh: CodeMapMesh)
+}
+
 export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private static readonly BUILDING_SELECTED_EVENT = "building-selected"
 	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
+	private static readonly CODE_MAP_MESH_CHANGED_EVENT = "code-map-mesh-changed"
 
 	public scene: Scene
 	public labels: Group
@@ -132,6 +137,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.mapGeometry.position.z = -mapSize
 
 		this.mapGeometry.add(this.mapMesh.getThreeMesh())
+		this.notifyMapMeshChanged()
 	}
 
 	public getMapMesh(): CodeMapMesh {
@@ -172,6 +178,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		}
 	}
 
+	private notifyMapMeshChanged() {
+		this.$rootScope.$broadcast(ThreeSceneService.CODE_MAP_MESH_CHANGED_EVENT, this.mapMesh)
+	}
+
 	public static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, e => {
 			subscriber.onBuildingDeselected()
@@ -181,6 +191,12 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, selectedBuilding: CodeMapBuilding) => {
 			subscriber.onBuildingSelected(selectedBuilding)
+		})
+	}
+
+	public static subscribeToCodeMapMeshChangedEvent($rootScope: IRootScopeService, subscriber: CodeMapMeshChangedSubscriber) {
+		$rootScope.$on(this.CODE_MAP_MESH_CHANGED_EVENT, (e, mapMesh: CodeMapMesh) => {
+			subscriber.onCodeMapMeshChanged(mapMesh)
 		})
 	}
 }
