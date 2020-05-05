@@ -195,6 +195,37 @@ export interface MetricData {
 	maxValue: number
 }
 
+export interface CCLocalStorage {
+	version: string
+	scenarios: RecursivePartial<Scenery>[]
+}
+
+export interface Scenery {
+	name: string
+	area: {
+		areaMetric: string
+		margin: number
+	}
+	height: {
+		heightMetric: string
+		heightSlider: number
+		labelSlider: number
+	}
+	color: {
+		colorMetric: string
+		colorRange: ColorRange
+	}
+	camera: {
+		camera: Vector3
+		cameraTarget: Vector3
+	}
+	edge: {
+		edgeMetric: string
+		edgePreview: number
+		edgeHeight: number
+	}
+}
+
 export interface Scenario {
 	name: string
 	settings: RecursivePartial<Settings>

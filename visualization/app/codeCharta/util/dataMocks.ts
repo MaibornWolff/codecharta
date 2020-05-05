@@ -14,14 +14,14 @@ import {
 	SortingOption,
 	RecursivePartial,
 	Settings,
-	State
+	State,
+	Scenery
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { hierarchy } from "d3"
-import { Scenery } from "./scenarioHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { MetricService } from "../state/metric.service"
 import { FileSelectionState, FileState } from "../model/files/files"

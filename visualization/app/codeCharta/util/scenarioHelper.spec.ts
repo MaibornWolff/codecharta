@@ -1,5 +1,5 @@
-import { ScenarioHelper, Scenery } from "./scenarioHelper"
-import { RecursivePartial, Scenario, Settings } from "../codeCharta.model"
+import { ScenarioHelper } from "./scenarioHelper"
+import { RecursivePartial, Scenario, Scenery, Settings } from "../codeCharta.model"
 import { PARTIALSETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"

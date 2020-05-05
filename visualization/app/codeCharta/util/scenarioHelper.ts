@@ -1,45 +1,17 @@
 "use strict"
-import { AppSettings, ColorRange, DynamicSettings, MetricData, RecursivePartial, Settings } from "../codeCharta.model"
+import {
+	AppSettings,
+	CCLocalStorage,
+	DynamicSettings,
+	MetricData,
+	RecursivePartial,
+	Scenario,
+	Scenery,
+	Settings
+} from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
-import { Vector3 } from "three"
-
-export interface Scenario {
-	name: string
-	settings: RecursivePartial<Settings>
-}
-
-interface CCLocalStorage {
-	version: string
-	scenarios: RecursivePartial<Scenery>[]
-}
-
-export interface Scenery {
-	name: string
-	area: {
-		areaMetric: string
-		margin: number
-	}
-	height: {
-		heightMetric: string
-		heightSlider: number
-		labelSlider: number
-	}
-	color: {
-		colorMetric: string
-		colorRange: ColorRange
-	}
-	camera: {
-		camera: Vector3
-		cameraTarget: Vector3
-	}
-	edge: {
-		edgeMetric: string
-		edgePreview: number
-		edgeHeight: number
-	}
-}
 
 export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
@@ -107,7 +79,7 @@ export class ScenarioHelper {
 		const dynamicSettings: RecursivePartial<DynamicSettings> = scenarioAsSettings.settings.dynamicSettings
 		const appSettings: RecursivePartial<AppSettings> = scenarioAsSettings.settings.appSettings
 
-		for (let scenarioKey in dynamicSettings) {
+		for (const scenarioKey in dynamicSettings) {
 			switch (scenarioKey) {
 				case "areaMetric": {
 					scenery.area = {
@@ -152,7 +124,7 @@ export class ScenarioHelper {
 	}
 
 	private static setScenariosToLocalStorage(scenarios: RecursivePartial<Scenery>[]) {
-		const newLocalStorageElement: CCLocalStorage = { version: "1.2", scenarios: scenarios }
+		const newLocalStorageElement: CCLocalStorage = { version: "1.2", scenarios }
 		localStorage.setItem("scenarios", JSON.stringify(newLocalStorageElement))
 	}
 
@@ -234,7 +206,7 @@ export class ScenarioHelper {
 		const scenery: RecursivePartial<Scenery> = this.scenarioList.find(s => s.name == name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
-		for (let sceneryKey in scenery) {
+		for (const sceneryKey in scenery) {
 			switch (sceneryKey) {
 				case "area": {
 					partialDynamicSettings.areaMetric = scenery.area.areaMetric

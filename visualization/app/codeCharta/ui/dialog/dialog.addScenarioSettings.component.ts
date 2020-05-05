@@ -1,7 +1,7 @@
 import "./dialog.component.scss"
-import { AppSettings, DynamicSettings, RecursivePartial } from "../../codeCharta.model"
+import { AppSettings, DynamicSettings, RecursivePartial, Scenery } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
-import { Scenery, ScenarioHelper } from "../../util/scenarioHelper"
+import { ScenarioHelper } from "../../util/scenarioHelper"
 
 export interface AddScenarioContent {
 	metricType: ScenarioMetricType
@@ -89,9 +89,9 @@ export class DialogAddScenarioSettingsComponent {
 
 	private pushScenarioContent(metricType: ScenarioMetricType, metricName: string, savedValues?: any) {
 		this._viewModel.scenarioContent.push({
-			metricType: metricType,
-			metricName: metricName,
-			savedValues: savedValues,
+			metricType,
+			metricName,
+			savedValues,
 			isSelected: true,
 			isDisabled: name === "Edge" && this.storeService.getState().fileSettings.edges.length === 0
 		})
