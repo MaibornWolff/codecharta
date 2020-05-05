@@ -15,7 +15,7 @@ import {
 	RecursivePartial,
 	Settings,
 	State,
-	Scenery
+	Scenario
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -654,7 +654,7 @@ export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 	}
 ]
 
-export const SCENARIO: Scenery = {
+export const SCENARIO: Scenario = {
 	name: "Scenario1",
 	area: {
 		areaMetric: "rloc",
@@ -705,7 +705,7 @@ export const PARTIALSETTINGS: RecursivePartial<Settings> = {
 	}
 }
 
-export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenery> = {
+export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
 	name: "Scenario2",
 	height: {
 		heightMetric: "mcc",

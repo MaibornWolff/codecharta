@@ -6,7 +6,7 @@ import {
 	MetricData,
 	RecursivePartial,
 	ScenarioAsSettings,
-	Scenery,
+	Scenario,
 	Settings
 } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
@@ -15,7 +15,7 @@ import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 
 export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
-	private static scenarioList: RecursivePartial<Scenery>[] = ScenarioHelper.loadScenarios()
+	private static scenarioList: RecursivePartial<Scenario>[] = ScenarioHelper.loadScenarios()
 
 	public static getScenarioItems(metricData: MetricData[]) {
 		const scenarioItemList: ScenarioItem[] = []
@@ -51,7 +51,7 @@ export class ScenarioHelper {
 		return scenarioItemList
 	}
 
-	private static isScenarioAppliable(scenario: RecursivePartial<Scenery>, metricData: MetricData[]) {
+	private static isScenarioAppliable(scenario: RecursivePartial<Scenario>, metricData: MetricData[]) {
 		if (scenario.area && !metricData.find(value => value.name === scenario.area.areaMetric)) {
 			return false
 		}
@@ -67,7 +67,7 @@ export class ScenarioHelper {
 
 	private static getPreLoadScenarios() {
 		const scenariosAsSettings: ScenarioAsSettings[] = this.importScenarios(require("../assets/scenarios.json"))
-		const scenery: RecursivePartial<Scenery>[] = []
+		const scenery: RecursivePartial<Scenario>[] = []
 		scenariosAsSettings.forEach(scenarioSettings => {
 			scenery.push(this.transformScenarioToScenery(scenarioSettings))
 		})
@@ -75,7 +75,7 @@ export class ScenarioHelper {
 	}
 
 	private static transformScenarioToScenery(scenarioAsSettings: ScenarioAsSettings) {
-		const scenery: RecursivePartial<Scenery> = { name: scenarioAsSettings.name }
+		const scenery: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
 		const dynamicSettings: RecursivePartial<DynamicSettings> = scenarioAsSettings.settings.dynamicSettings
 		const appSettings: RecursivePartial<AppSettings> = scenarioAsSettings.settings.appSettings
 
@@ -123,12 +123,12 @@ export class ScenarioHelper {
 		return scenery
 	}
 
-	private static setScenariosToLocalStorage(scenarios: RecursivePartial<Scenery>[]) {
+	private static setScenariosToLocalStorage(scenarios: RecursivePartial<Scenario>[]) {
 		const newLocalStorageElement: CCLocalStorage = { version: "1.2", scenarios }
 		localStorage.setItem("scenarios", JSON.stringify(newLocalStorageElement))
 	}
 
-	private static loadScenarios(): RecursivePartial<Scenery>[] {
+	private static loadScenarios(): RecursivePartial<Scenario>[] {
 		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarios"))
 		if (ccLocalStorage) {
 			return ccLocalStorage.scenarios
@@ -138,13 +138,13 @@ export class ScenarioHelper {
 		}
 	}
 
-	public static addScenario(newScenario: RecursivePartial<Scenery>) {
+	public static addScenario(newScenario: RecursivePartial<Scenario>) {
 		this.scenarioList.push(newScenario)
 		this.setScenariosToLocalStorage(this.scenarioList)
 	}
 
 	public static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
-		const newScenery: RecursivePartial<Scenery> = { name: scenarioName }
+		const newScenery: RecursivePartial<Scenario> = { name: scenarioName }
 
 		scenarioAttributes.forEach(attribute => {
 			switch (attribute.metricType) {
@@ -203,7 +203,7 @@ export class ScenarioHelper {
 	}
 
 	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
-		const scenery: RecursivePartial<Scenery> = this.scenarioList.find(s => s.name == name)
+		const scenery: RecursivePartial<Scenario> = this.scenarioList.find(s => s.name == name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
 		for (const sceneryKey in scenery) {

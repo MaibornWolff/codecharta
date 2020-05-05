@@ -1,5 +1,5 @@
 import "./dialog.component.scss"
-import { AppSettings, DynamicSettings, RecursivePartial, Scenery } from "../../codeCharta.model"
+import { AppSettings, DynamicSettings, RecursivePartial, Scenario } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
 
@@ -40,7 +40,7 @@ export class DialogAddScenarioSettingsComponent {
 
 	public addScenario() {
 		const selectedScenarioAttributes: AddScenarioContent[] = this._viewModel.scenarioContent.filter(x => x.isSelected == true)
-		const newScenery: RecursivePartial<Scenery> = ScenarioHelper.createNewScenario(
+		const newScenery: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario(
 			this._viewModel.scenarioName,
 			selectedScenarioAttributes
 		)

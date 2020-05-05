@@ -1,5 +1,5 @@
 import { ScenarioHelper } from "./scenarioHelper"
-import { RecursivePartial, ScenarioAsSettings, Scenery, Settings } from "../codeCharta.model"
+import { RecursivePartial, ScenarioAsSettings, Scenario, Settings } from "../codeCharta.model"
 import { PARTIALSETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
@@ -124,7 +124,7 @@ describe("scenarioHelper", () => {
 		})
 		it("should add the new Scenario into the scenarioList", () => {
 			ScenarioHelper.addScenario(SCENARIO)
-			const lastScenarioOfScenarioList: RecursivePartial<Scenery> =
+			const lastScenarioOfScenarioList: RecursivePartial<Scenario> =
 				ScenarioHelper["scenarioList"][ScenarioHelper["scenarioList"].length - 1]
 
 			expect(lastScenarioOfScenarioList).toEqual(SCENARIO)
@@ -178,8 +178,8 @@ describe("scenarioHelper", () => {
 		]
 
 		it("should create a Scenario according to the given scenarioAttributeContent ", () => {
-			const result: RecursivePartial<Scenery> = ScenarioHelper.createNewScenario("Scenario1", scenarioAttributeContent)
-			const expected: RecursivePartial<Scenery> = SCENARIO
+			const result: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario("Scenario1", scenarioAttributeContent)
+			const expected: RecursivePartial<Scenario> = SCENARIO
 
 			expect(result).toEqual(expected)
 		})
@@ -195,8 +195,8 @@ describe("scenarioHelper", () => {
 				}
 			]
 
-			const result: RecursivePartial<Scenery> = ScenarioHelper.createNewScenario("Scenario2", scenarioAttributeContentWithOnlyHeight)
-			const expected: RecursivePartial<Scenery> = SCENARIO_WITH_ONLY_HEIGHT
+			const result: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario("Scenario2", scenarioAttributeContentWithOnlyHeight)
+			const expected: RecursivePartial<Scenario> = SCENARIO_WITH_ONLY_HEIGHT
 
 			expect(result).toEqual(expected)
 		})
