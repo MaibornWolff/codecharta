@@ -9,7 +9,7 @@ import { MetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
-import { SCENARIO_ITEMS, STATE } from "../../util/dataMocks"
+import { PARTIALSETTINGS, SCENARIO_ITEMS } from "../../util/dataMocks"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
@@ -57,7 +57,7 @@ describe("ScenarioDropDownController", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("should call getScenarioItems and set the scenarios in viewmodel correctly", () => {
-			ScenarioHelper.getScenarioItemss = jest.fn().mockReturnValue(SCENARIO_ITEMS)
+			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
 			scenarioButtonsController.onMetricDataAdded(metricData)
 
@@ -67,7 +67,7 @@ describe("ScenarioDropDownController", () => {
 
 	describe("loadScenario", () => {
 		it("should call getScenarioHelpers and set the dropDownScenarioItems ", () => {
-			ScenarioHelper.getScenarioItemss = jest.fn().mockReturnValue(SCENARIO_ITEMS)
+			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
 			scenarioButtonsController.onMetricDataAdded(metricData)
 
@@ -77,15 +77,15 @@ describe("ScenarioDropDownController", () => {
 
 	describe("applyScenario", () => {
 		it("should call setControl and call store.dispatch with scenarioSettings", () => {
-			ScenarioHelper.getScenarioSettingsByNames = jest.fn().mockReturnValue(STATE)
+			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(PARTIALSETTINGS)
 			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
 
 			scenarioButtonsController.applyScenario("Scenario1")
 
-			expect(storeService.dispatch).toHaveBeenCalledWith(setState(STATE))
-			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange(STATE.dynamicSettings.colorRange))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setState(PARTIALSETTINGS))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange({ from: 19, to: 67 }))
 			expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalled()
 		})
 	})
