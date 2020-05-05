@@ -12,6 +12,7 @@ import {
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import * as codeCharta from "../../../package.json"
 
 export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
@@ -124,7 +125,7 @@ export class ScenarioHelper {
 	}
 
 	private static setScenariosToLocalStorage(scenarios: RecursivePartial<Scenario>[]) {
-		const newLocalStorageElement: CCLocalStorage = { version: "1.2", scenarios }
+		const newLocalStorageElement: CCLocalStorage = { version: codeCharta.version, scenarios }
 		localStorage.setItem("scenarios", JSON.stringify(newLocalStorageElement))
 	}
 
