@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Attribute-Side-Bar being invisible
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.47.0] - 2020-05-02
