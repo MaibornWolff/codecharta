@@ -16,7 +16,8 @@
 
 			<md-input-container class="input-container md-block" ng-repeat="item in $ctrl._viewModel.scenarioContent" class="md-block">
 				<md-checkbox class="dialog-list md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
-					<span>{{::item.metricType}} ({{::item.metricName}})</span>
+					<span ng-if="item.metricType == 'Camera-Position'">{{::item.metricType}} </span>
+					<span ng-if="item.metricType != 'Camera-Position'">{{::item.metricType}} ({{::item.metricName}}) </span>
 				</md-checkbox>
 			</md-input-container>
 		</div>
