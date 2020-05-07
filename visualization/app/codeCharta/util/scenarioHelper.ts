@@ -21,30 +21,30 @@ export class ScenarioHelper {
 	public static getScenarioItems(metricData: MetricData[]) {
 		const scenarioItemList: ScenarioItem[] = []
 
-		this.scenarioList.forEach(scenery => {
+		this.scenarioList.forEach(scenario => {
 			scenarioItemList.push({
-				scenarioName: scenery.name,
-				isScenarioAppliable: this.isScenarioAppliable(scenery, metricData),
+				scenarioName: scenario.name,
+				isScenarioAppliable: this.isScenarioAppliable(scenario, metricData),
 				icons: [
 					{
 						faIconClass: "fa-video-camera",
-						isSaved: !!scenery.camera
+						isSaved: !!scenario.camera
 					},
 					{
 						faIconClass: "fa-arrows-alt",
-						isSaved: !!scenery.area
+						isSaved: !!scenario.area
 					},
 					{
 						faIconClass: "fa-paint-brush",
-						isSaved: !!scenery.color
+						isSaved: !!scenario.color
 					},
 					{
 						faIconClass: "fa-arrows-v",
-						isSaved: !!scenery.height
+						isSaved: !!scenario.height
 					},
 					{
 						faIconClass: "fa-exchange",
-						isSaved: !!scenery.edge
+						isSaved: !!scenario.edge
 					}
 				]
 			})
@@ -68,29 +68,29 @@ export class ScenarioHelper {
 
 	private static getPreLoadScenarios() {
 		const scenariosAsSettings: ScenarioAsSettings[] = this.importScenarios(require("../assets/scenarios.json"))
-		const scenery: RecursivePartial<Scenario>[] = []
+		const scenario: RecursivePartial<Scenario>[] = []
 		scenariosAsSettings.forEach(scenarioSettings => {
-			scenery.push(this.transformScenarioToScenery(scenarioSettings))
+			scenario.push(this.transformScenarioAsSettingsToScenario(scenarioSettings))
 		})
-		return scenery
+		return scenario
 	}
 
-	private static transformScenarioToScenery(scenarioAsSettings: ScenarioAsSettings) {
-		const scenery: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
+	private static transformScenarioAsSettingsToScenario(scenarioAsSettings: ScenarioAsSettings) {
+		const scenario: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
 		const dynamicSettings: RecursivePartial<DynamicSettings> = scenarioAsSettings.settings.dynamicSettings
 		const appSettings: RecursivePartial<AppSettings> = scenarioAsSettings.settings.appSettings
 
 		for (const scenarioKey in dynamicSettings) {
 			switch (scenarioKey) {
 				case "areaMetric": {
-					scenery.area = {
+					scenario.area = {
 						areaMetric: dynamicSettings.areaMetric,
 						margin: dynamicSettings.margin
 					}
 					break
 				}
 				case "heightMetric": {
-					scenery.height = {
+					scenario.height = {
 						heightMetric: dynamicSettings.heightMetric,
 						labelSlider: appSettings.amountOfTopLabels,
 						heightSlider: appSettings.scaling
@@ -98,14 +98,14 @@ export class ScenarioHelper {
 					break
 				}
 				case "colorMetric": {
-					scenery.color = {
+					scenario.color = {
 						colorMetric: dynamicSettings.colorMetric,
 						colorRange: dynamicSettings.colorRange
 					}
 					break
 				}
 				case "edgeMetric": {
-					scenery.edge = {
+					scenario.edge = {
 						edgeMetric: dynamicSettings.edgeMetric,
 						edgeHeight: appSettings.edgeHeight,
 						edgePreview: appSettings.amountOfEdgePreviews
@@ -114,14 +114,14 @@ export class ScenarioHelper {
 				}
 			}
 			if (appSettings.camera) {
-				scenery.camera = {
+				scenario.camera = {
 					camera: appSettings.camera,
 					cameraTarget: appSettings.cameraTarget
 				}
 			}
 		}
 
-		return scenery
+		return scenario
 	}
 
 	private static setScenariosToLocalStorage(scenarios: RecursivePartial<Scenario>[]) {
@@ -131,7 +131,7 @@ export class ScenarioHelper {
 
 	private static loadScenarios(): RecursivePartial<Scenario>[] {
 		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarios"))
-		if (ccLocalStorage) {
+		if (ccLocalStorage.scenarios) {
 			return ccLocalStorage.scenarios
 		} else {
 			this.setScenariosToLocalStorage(this.getPreLoadScenarios())
@@ -145,26 +145,26 @@ export class ScenarioHelper {
 	}
 
 	public static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
-		const newScenery: RecursivePartial<Scenario> = { name: scenarioName }
+		const newScenario: RecursivePartial<Scenario> = { name: scenarioName }
 
 		scenarioAttributes.forEach(attribute => {
 			switch (attribute.metricType) {
 				case ScenarioMetricType.CAMERA_POSITION: {
-					newScenery.camera = {
+					newScenario.camera = {
 						camera: attribute.savedValues["camera"],
 						cameraTarget: attribute.savedValues["cameraTarget"]
 					}
 					break
 				}
 				case ScenarioMetricType.AREA_METRIC: {
-					newScenery.area = {
+					newScenario.area = {
 						areaMetric: attribute.metricName,
 						margin: attribute.savedValues
 					}
 					break
 				}
 				case ScenarioMetricType.HEIGHT_METRIC: {
-					newScenery.height = {
+					newScenario.height = {
 						heightMetric: attribute.metricName,
 						heightSlider: attribute.savedValues["heightSlider"],
 						labelSlider: attribute.savedValues["labelSlider"]
@@ -172,14 +172,14 @@ export class ScenarioHelper {
 					break
 				}
 				case ScenarioMetricType.COLOR_METRIC: {
-					newScenery.color = {
+					newScenario.color = {
 						colorMetric: attribute.metricName,
 						colorRange: attribute.savedValues
 					}
 					break
 				}
 				case ScenarioMetricType.EDGE_METRIC: {
-					newScenery.edge = {
+					newScenario.edge = {
 						edgeMetric: attribute.metricName,
 						edgePreview: attribute.savedValues["edgePreview"],
 						edgeHeight: attribute.savedValues["edgeHeight"]
@@ -189,7 +189,7 @@ export class ScenarioHelper {
 			}
 		})
 
-		return newScenery
+		return newScenario
 	}
 
 	public static deleteScenario(scenarioName: String) {
@@ -204,36 +204,36 @@ export class ScenarioHelper {
 	}
 
 	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
-		const scenery: RecursivePartial<Scenario> = this.scenarioList.find(s => s.name == name)
+		const scenario: RecursivePartial<Scenario> = this.scenarioList.find(s => s.name == name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
-		for (const sceneryKey in scenery) {
-			switch (sceneryKey) {
+		for (const scenarioKey in scenario) {
+			switch (scenarioKey) {
 				case "area": {
-					partialDynamicSettings.areaMetric = scenery.area.areaMetric
-					partialDynamicSettings.margin = scenery.area.margin
+					partialDynamicSettings.areaMetric = scenario.area.areaMetric
+					partialDynamicSettings.margin = scenario.area.margin
 					break
 				}
 				case "height": {
-					partialDynamicSettings.heightMetric = scenery.height.heightMetric
-					partialAppSettings.amountOfTopLabels = scenery.height.labelSlider
-					partialAppSettings.scaling = scenery.height.heightSlider
+					partialDynamicSettings.heightMetric = scenario.height.heightMetric
+					partialAppSettings.amountOfTopLabels = scenario.height.labelSlider
+					partialAppSettings.scaling = scenario.height.heightSlider
 					break
 				}
 				case "color": {
-					partialDynamicSettings.colorMetric = scenery.color.colorMetric
-					partialDynamicSettings.colorRange = scenery.color.colorRange
+					partialDynamicSettings.colorMetric = scenario.color.colorMetric
+					partialDynamicSettings.colorRange = scenario.color.colorRange
 					break
 				}
 				case "edge": {
-					partialDynamicSettings.edgeMetric = scenery.edge.edgeMetric
-					partialAppSettings.edgeHeight = scenery.edge.edgeHeight
-					partialAppSettings.amountOfEdgePreviews = scenery.edge.edgePreview
+					partialDynamicSettings.edgeMetric = scenario.edge.edgeMetric
+					partialAppSettings.edgeHeight = scenario.edge.edgeHeight
+					partialAppSettings.amountOfEdgePreviews = scenario.edge.edgePreview
 					break
 				}
 				case "camera": {
-					partialAppSettings.camera = scenery.camera.camera
-					partialAppSettings.cameraTarget = scenery.camera.cameraTarget
+					partialAppSettings.camera = scenario.camera.camera
+					partialAppSettings.cameraTarget = scenario.camera.cameraTarget
 				}
 			}
 		}

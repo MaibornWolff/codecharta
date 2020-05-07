@@ -71,7 +71,7 @@ export class DialogAddScenarioSettingsComponent {
 	private setScenarioContentList() {
 		const dynamicSettings: DynamicSettings = this.storeService.getState().dynamicSettings
 		const appSettings: AppSettings = this.storeService.getState().appSettings
-		this.pushScenarioContent(ScenarioMetricType.CAMERA_POSITION, null, {
+		this.pushScenarioContent(ScenarioMetricType.CAMERA_POSITION, "", {
 			camera: appSettings.camera,
 			cameraTarget: appSettings.cameraTarget
 		})
