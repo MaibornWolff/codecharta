@@ -90,23 +90,6 @@ describe("ScenarioDropDownController", () => {
 		})
 	})
 
-	describe("getButtonColor", () => {
-		it("should return black if map has been changed", () => {
-			scenarioButtonsController["_viewModel"].isScenarioChanged = true
-
-			const result = scenarioButtonsController.getButtonColor()
-
-			expect(result).toEqual("black")
-		})
-		it("should return gray if map has not been changed", () => {
-			scenarioButtonsController["_viewModel"].isScenarioChanged = false
-
-			const result = scenarioButtonsController.getButtonColor()
-
-			expect(result).toEqual("gray")
-		})
-	})
-
 	describe("showAddScenarioSettings", () => {
 		it("should call showAddScenarioSettings", () => {
 			dialogService.showAddScenarioSettings = jest.fn()

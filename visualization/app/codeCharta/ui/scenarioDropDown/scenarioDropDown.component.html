@@ -1,10 +1,10 @@
 <md-menu class="scenario-component">
-	<md-button class="scenario-button" ng-style="{'color': $ctrl.getButtonColor()}" ng-click="$ctrl.loadScenarios(); $mdMenu.open($event)">
+	<md-button class="scenario-button" ng-click="$ctrl.loadScenarios(); $mdMenu.open($event)">
 		<i class="fa fa-star"></i>
 	</md-button>
 
 	<md-menu-content class="scenario-drop-down" width="2">
-		<md-menu-item class="scenario-item" ng-hide="!$ctrl._viewModel.isScenarioChanged">
+		<md-menu-item class="scenario-item">
 			<md-button class="scenario-name" ng-disabled="true">Metric Scenarios</md-button>
 			<md-button ng-click="$ctrl.showAddScenarioSettings()" class="action-button add">
 				<i class="fa fa-plus" aria-hidden="true"></i>

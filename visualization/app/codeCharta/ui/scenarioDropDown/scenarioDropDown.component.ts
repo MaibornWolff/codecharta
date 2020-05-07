@@ -20,10 +20,8 @@ export interface ScenarioItem {
 export class ScenarioDropDownController implements MetricServiceSubscriber {
 	private _viewModel: {
 		dropDownScenarioItems: ScenarioItem[]
-		isScenarioChanged: boolean
 	} = {
-		dropDownScenarioItems: [],
-		isScenarioChanged: true //TODO: When Method implemented to detect that codemap has changed set it to false at first
+		dropDownScenarioItems: []
 	}
 
 	private availableMetrics: MetricData[]
@@ -44,10 +42,6 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	public onMetricDataAdded(metricData: MetricData[]) {
 		this.availableMetrics = metricData
 		this.loadScenarios()
-	}
-
-	public getButtonColor() {
-		return this._viewModel.isScenarioChanged ? "black" : "gray"
 	}
 
 	public applyScenario(scenarioName: string) {
