@@ -1250,7 +1250,7 @@ export const TEST_NODE_ROOT: Node = {
 export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 	{
 		metricType: ScenarioMetricType.CAMERA_POSITION,
-		metricName: null,
+		metricName: "",
 		savedValues: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(177, 0, 299) },
 		isSelected: true,
 		isDisabled: false
