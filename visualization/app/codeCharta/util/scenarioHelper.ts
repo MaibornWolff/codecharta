@@ -53,13 +53,13 @@ export class ScenarioHelper {
 	}
 
 	private static isScenarioAppliable(scenario: RecursivePartial<Scenario>, metricData: MetricData[]) {
-		if (scenario.area && !metricData.find(value => value.name === scenario.area.areaMetric)) {
+		if (scenario.area && !metricData.find(x => x.name === scenario.area.areaMetric)) {
 			return false
 		}
-		if (scenario.color && !metricData.find(value => value.name === scenario.color.colorMetric)) {
+		if (scenario.color && !metricData.find(x => x.name === scenario.color.colorMetric)) {
 			return false
 		}
-		if (scenario.height && !metricData.find(value => value.name === scenario.height.heightMetric)) {
+		if (scenario.height && !metricData.find(x => x.name === scenario.height.heightMetric)) {
 			return false
 		}
 

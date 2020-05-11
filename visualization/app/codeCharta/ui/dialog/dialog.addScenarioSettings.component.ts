@@ -40,11 +40,11 @@ export class DialogAddScenarioSettingsComponent {
 
 	public addScenario() {
 		const selectedScenarioAttributes: AddScenarioContent[] = this._viewModel.scenarioContent.filter(x => x.isSelected == true)
-		const newScenery: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario(
+		const newScenario: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario(
 			this._viewModel.scenarioName,
 			selectedScenarioAttributes
 		)
-		ScenarioHelper.addScenario(newScenery)
+		ScenarioHelper.addScenario(newScenario)
 		this.hide()
 	}
 

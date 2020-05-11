@@ -45,10 +45,10 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 	}
 
 	public applyScenario(scenarioName: string) {
-		const scenerySettings = ScenarioHelper.getScenarioSettingsByName(scenarioName)
+		const scenarioSettings = ScenarioHelper.getScenarioSettingsByName(scenarioName)
 
-		this.storeService.dispatch(setState(scenerySettings))
-		this.storeService.dispatch(setColorRange(scenerySettings.dynamicSettings.colorRange as ColorRange))
+		this.storeService.dispatch(setState(scenarioSettings))
+		this.storeService.dispatch(setColorRange(scenarioSettings.dynamicSettings.colorRange as ColorRange))
 		this.threeOrbitControlsService.setControlTarget()
 	}
 

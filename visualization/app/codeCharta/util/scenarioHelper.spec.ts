@@ -1,6 +1,6 @@
 import { ScenarioHelper } from "./scenarioHelper"
 import { RecursivePartial, ScenarioAsSettings, Scenario, Settings } from "../codeCharta.model"
-import { PARTIALSETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
+import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
@@ -41,7 +41,7 @@ describe("scenarioHelper", () => {
 	describe("getScenarioSettingsByName", () => {
 		it("should return Settings for Scenario1", () => {
 			const result = ScenarioHelper.getScenarioSettingsByName("Scenario1")
-			const expected = PARTIALSETTINGS
+			const expected = PARTIAL_SETTINGS
 
 			expect(result).toEqual(expected)
 		})

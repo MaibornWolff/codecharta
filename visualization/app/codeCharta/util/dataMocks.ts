@@ -683,7 +683,7 @@ export const SCENARIO: Scenario = {
 	}
 }
 
-export const PARTIALSETTINGS: RecursivePartial<Settings> = {
+export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
 	dynamicSettings: {
 		areaMetric: "rloc",
 		heightMetric: "mcc",

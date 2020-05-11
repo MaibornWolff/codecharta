@@ -9,7 +9,7 @@ import { MetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
-import { PARTIALSETTINGS, SCENARIO_ITEMS } from "../../util/dataMocks"
+import { PARTIAL_SETTINGS, SCENARIO_ITEMS } from "../../util/dataMocks"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 
@@ -77,14 +77,14 @@ describe("ScenarioDropDownController", () => {
 
 	describe("applyScenario", () => {
 		it("should call setControl and call store.dispatch with scenarioSettings", () => {
-			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(PARTIALSETTINGS)
+			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(PARTIAL_SETTINGS)
 			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
 
 			scenarioButtonsController.applyScenario("Scenario1")
 
-			expect(storeService.dispatch).toHaveBeenCalledWith(setState(PARTIALSETTINGS))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setState(PARTIAL_SETTINGS))
 			expect(storeService.dispatch).toHaveBeenCalledWith(setColorRange({ from: 19, to: 67 }))
 			expect(threeOrbitControlsService.setControlTarget).toHaveBeenCalled()
 		})
