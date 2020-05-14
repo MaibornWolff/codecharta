@@ -38,6 +38,9 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-u", "--user"], description = ["user token for connecting to remote sonar instance"])
     private var user = ""
 
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
     private var usePath = false
 
@@ -48,6 +51,7 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
             BufferedWriter(FileWriter(outputFile))
         }
     }
+
 
     private fun createMesauresAPIImporter(): SonarMeasuresAPIImporter {
         if (url.endsWith("/")) url = url.substring(0, url.length - 1)
@@ -69,7 +73,8 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
-        ProjectSerializer.serializeProject(project, writer())
+
+        if(compress) ProjectSerializer.serializeAsCompressedFile(project,outputFile) else ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
@@ -79,11 +84,13 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine.call(SonarImporterMain(), System.out, *args)
+
         }
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine.call(SonarImporterMain(input, output, error), output, *args)
+
         }
     }
 }
