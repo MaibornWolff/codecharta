@@ -45,6 +45,9 @@ class SCMLogParser(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
 
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
     @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
     private var silent = false
 
@@ -93,7 +96,7 @@ class SCMLogParser(private val input: InputStream = System.`in`,
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         if (outputFile.isNotEmpty()) {
-            ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
+            if(compress) ProjectSerializer.serializeAsCompressedFile(project,outputFile) else ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
         } else {
             ProjectSerializer.serializeProject(project, OutputStreamWriter(output))
         }
