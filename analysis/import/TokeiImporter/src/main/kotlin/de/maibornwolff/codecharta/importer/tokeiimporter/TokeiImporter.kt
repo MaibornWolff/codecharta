@@ -45,6 +45,9 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["tokei generated json"])
     private var file: File? = null
 
@@ -66,7 +69,11 @@ runBlocking (Dispatchers.Default) {
     }
 }
         projectBuilder.addAttributeTypes(attributeTypes)
-        ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(projectBuilder.build(),filePath) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+
         return null
     }
 
