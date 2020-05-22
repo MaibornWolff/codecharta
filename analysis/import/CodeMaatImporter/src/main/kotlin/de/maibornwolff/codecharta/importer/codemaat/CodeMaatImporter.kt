@@ -70,6 +70,7 @@ class CodeMaatImporter: Callable<Void> {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
+            readLine()
             CommandLine.call(CodeMaatImporter(), System.out, *args)
         }
     }

@@ -34,12 +34,13 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         val componentMap = ComponentMap()
         System.err.print("0% of data retrieved...")
 
+        //TODO git blame comments
         val flowable = Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, MAX_METRICS_IN_ONE_SONARCALL, true))
         flowable.flatMap { p ->
             measureBatches++
                     getMeasures(componentKey, p)
                             .subscribeOn(Schedulers.computation())
-                }
+                }//TODO bottleneck
                 .blockingForEach { componentMap.updateComponent(it) }
 
         System.err.println()

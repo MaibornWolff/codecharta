@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.serialization
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.Project
+import model.src.main.kotlin.de.maibornwolff.codecharta.serialization.NodeJsonDeserializer
 import mu.KotlinLogging
 import java.io.InputStream
 import java.io.Reader

@@ -5,6 +5,8 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFac
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineParser
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.model.Project
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.stream.Stream
 
 /**
