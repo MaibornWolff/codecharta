@@ -4,6 +4,9 @@ import com.sonar.sslr.api.RecognitionException
 import de.maibornwolff.codecharta.importer.sourcecodeparser.NullFileLinesContextFactory
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.visitors.MaxNestingLevelVisitor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.sonar.api.SonarQubeSide
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder
@@ -86,6 +89,12 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         javaClasspath = JavaClasspath(mapSettings, sensorContext.fileSystem())
     }
 
+    fun <T> parallelFor(range: Iterable<T>, action: suspend (T) -> Unit) = runBlocking {
+        for (t in range) launch(Dispatchers.Default) {
+            action(t)
+        }
+    }
+
     override fun scanFiles(fileList: List<String>, root: File): ProjectMetrics {
         baseDir = root.absoluteFile
         val projectMetrics = ProjectMetrics()
@@ -93,27 +102,41 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         analyzedFiles = 0
         totalFiles = fileList.size
 
-        for (file in fileList) {
-            printProgressBar(file)
-            createContext()
-            buildSonarComponents()
-            addFileToContext(file)
-            try {
-                executeScan()
-            } catch (e: AnalysisException) {
-                System.err.println("Sonar AnalysisException while analyzing $file. File was therefore skipped.")
-                e.printStackTrace()
-                continue
-            }
+        //val parseScope = CoroutineScope(SupervisorJob())
 
-            val fileMetrics = retrieveMetrics(file)
-            retrieveAdditionalMetrics(file).forEach { fileMetrics.add(it.key, it.value) }
-            if (searchIssues) retrieveIssues().forEach { fileMetrics.add(it.key, it.value) }
-            projectMetrics.addFileMetricMap(file, fileMetrics)
+
+
+            for (file in fileList) {
+                printProgressBar(file)
+                createContext()
+                buildSonarComponents()
+                addFileToContext(file)
+
+                try {
+                        executeScan()
+                } catch (e: AnalysisException) {
+                    System.err.println("Sonar AnalysisException while analyzing $file. File was therefore skipped.")
+                    e.printStackTrace()
+                    continue
+                }
+
+                val fileMetrics = retrieveMetrics(file)
+
+                runBlocking (Dispatchers.Default){
+
+                    retrieveAdditionalMetrics(file).forEach { launch { fileMetrics.add(it.key, it.value) } }
+
+                    if (searchIssues) retrieveIssues().forEach { launch { fileMetrics.add(it.key, it.value) } }
+
+                    projectMetrics.addFileMetricMap(file, fileMetrics)
+                }
+                projectMetrics.addFileMetricMap(file, fileMetrics)
+
         }
 
-        System.setOut(originalOut)
-        return projectMetrics
+
+            System.setOut(originalOut)
+            return projectMetrics
     }
 
     override fun buildSonarComponents() {
@@ -146,14 +169,18 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     }
 
     override fun executeScan() {
-        val javaSquidSensor = JavaSquidSensor(
-                sonarComponents,
-                sensorContext.fileSystem(),
-                DefaultJavaResourceLocator(javaClasspath),
-                mapSettings,
-                NoSonarFilter()
-        )
-        javaSquidSensor.execute(sensorContext)
+        runBlocking {
+            launch {
+            val javaSquidSensor = JavaSquidSensor(
+                    sonarComponents,
+                    sensorContext.fileSystem(),
+                    DefaultJavaResourceLocator(javaClasspath),
+                    mapSettings,
+                    NoSonarFilter()
+            )
+                javaSquidSensor.execute(sensorContext)
+            }
+        }
     }
 
     private fun retrieveIssues(): HashMap<String, Int> {

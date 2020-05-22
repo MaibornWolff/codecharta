@@ -6,6 +6,9 @@ import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.*
@@ -50,17 +53,18 @@ class TokeiImporter(private val input: InputStream = System.`in`,
         print(" ")
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
-
-        val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
-        val gson = Gson()
-        for (languageEntry in languageSummaries.entrySet()) {
+runBlocking (Dispatchers.Default) {
+    val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
+    val gson = Gson()
+    for (languageEntry in languageSummaries.entrySet()) {
             val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
             if (languageAnalysisObject.hasChildren()) {
-                for (analysisObject in languageAnalysisObject.stats!!) {
-                    addAsNode(analysisObject)
-                }
+                    for (analysisObject in languageAnalysisObject.stats!!) {
+                        addAsNode(analysisObject)
+                    }
             }
-        }
+    }
+}
         projectBuilder.addAttributeTypes(attributeTypes)
         ProjectSerializer.serializeProject(projectBuilder.build(), writer())
         return null
@@ -84,20 +88,25 @@ class TokeiImporter(private val input: InputStream = System.`in`,
 
     private fun getInput(): JsonElement? {
         var root: JsonElement? = null
-
-        if (file != null) {
-            if (file!!.isFile) {
-                val bufferedReader = file!!.bufferedReader()
-                root = JsonParser().parse(bufferedReader)
+        runBlocking (Dispatchers.Default) {
+            if (file != null) {
+                launch {
+                    if (file!!.isFile) {
+                        val bufferedReader = file!!.bufferedReader()
+                        root = JsonParser().parse(bufferedReader)
+                    } else {
+                        logger.error("${file!!.name} has not been found.")
+                    }
+                }
             } else {
-                logger.error("${file!!.name} has not been found.")
-            }
-        } else {
-            val projectString: String = input.mapLines { it }.joinToString(separator = "") { it }
-            if (projectString.isNotEmpty()) {
-                root = JsonParser().parse(projectString)
-            } else {
-                logger.error("Neither source file nor piped input found.")
+                launch {
+                    val projectString: String = input.mapLines { it }.joinToString(separator = "") { it }
+                    if (projectString.isNotEmpty()) {
+                        root = JsonParser().parse(projectString)
+                    } else {
+                        logger.error("Neither source file nor piped input found.")
+                    }
+                }
             }
         }
 
@@ -115,6 +124,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
+            readLine()
             CommandLine.call(TokeiImporter(), System.out, *args)
         }
 

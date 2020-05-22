@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.serialization
+package model.src.main.kotlin.de.maibornwolff.codecharta.serialization
 
 import com.google.gson.*
 import de.maibornwolff.codecharta.model.Node

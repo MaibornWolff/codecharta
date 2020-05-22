@@ -14,10 +14,14 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserS
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
 import java.io.*
 import java.nio.charset.Charset
+import java.nio.file.Files
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
@@ -116,7 +120,8 @@ class SCMLogParser(private val input: InputStream = System.`in`,
     ): Project {
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
         if (!silent) error.println("Assumed encoding $encoding")
-        val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
+        val lines : Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
+       // val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
 
         val projectConverter = ProjectConverter(containsAuthors)
         return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
@@ -145,14 +150,22 @@ class SCMLogParser(private val input: InputStream = System.`in`,
     private fun printMetricInfo() {
         val infoFormat = "  \t%s:\t %s"
         println("  Available metrics:")
-        metricsFactory.createMetrics()
-                .forEach { metric -> println(String.format(infoFormat, metric.metricName(), metric.description())) }
+        runBlocking(Dispatchers.Default) {
+
+            metricsFactory.createMetrics()
+                    .forEach {
+                        launch{
+                         println(String.format(infoFormat, it.metricName(), it.description()))
+                        }
+                    }
+        }
     }
 
     companion object {
 
         @JvmStatic
         fun main(args: Array<String>) {
+            readLine()
             CommandLine.call(SCMLogParser(), System.out, *args)
         }
 
