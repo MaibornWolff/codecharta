@@ -42,6 +42,9 @@ class SourceCodeParserMain(
     @Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
+    @Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
     @Option(names = ["-v", "--verbose"], description = ["display info messages from sonar plugins"])
     private var verbose = false
 
@@ -74,8 +77,9 @@ class SourceCodeParserMain(
     }
 
     private fun getMetricWriter(): MetricWriter {
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
         return when (outputFormat) {
-            OutputFormat.JSON -> JSONMetricWriter(getOutputWriter())
+            OutputFormat.JSON -> JSONMetricWriter(getOutputWriter(), filePath, compress)
             OutputFormat.TABLE -> CSVMetricWriter(getOutputWriter())
         }
     }
