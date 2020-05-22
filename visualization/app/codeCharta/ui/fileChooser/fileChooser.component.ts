@@ -29,7 +29,7 @@ export class FileChooserController {
 			let decompressed
 
 			for (const file of element.files) {
-				const isCompressed = file.name.endsWith(".gzip")
+				const isCompressed = file.name.endsWith(".gz")
 				const reader = new FileReader()
 				reader.onloadstart = () => {
 					this.storeService.dispatch(setIsLoadingFile(true))
