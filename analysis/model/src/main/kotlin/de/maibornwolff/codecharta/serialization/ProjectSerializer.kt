@@ -69,4 +69,18 @@ object ProjectSerializer {
         return byteStream.toByteArray()
     }
 
+    /**
+     * This method serializes a Project-Object to json and compresses it to gzip and deletes the writer-File
+     *
+     * @param project the project to be compressed
+     * @param filePath the path to the writer generated empty file
+     * @param out the writer
+     */
+     fun serializeCompressedFileAndDeleteJsonFile(project: Project, filePath: String,out: Writer){
+        out.close()
+        serializeAsCompressedFile(project, filePath)
+        File(filePath).delete()
+
+    }
+
 }
