@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
+import com.sun.org.apache.xpath.internal.operations.Bool
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
@@ -7,9 +8,11 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import de.maibornwolff.codecharta.serialization.ProjectSerializer.serializeCompressedFileAndDeleteJsonFile
+import java.io.File
 import java.io.Writer
 
-class ProjectGenerator(private val writer: Writer) {
+class ProjectGenerator(private val writer: Writer, private val filePath: String, private val toCompress: Boolean) {
     private lateinit var projectBuilder: ProjectBuilder
 
     fun generate(metricMap: Map<String, FileMetrics>, pipedProject: Project?) {
@@ -21,8 +24,10 @@ class ProjectGenerator(private val writer: Writer) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
 
-        ProjectSerializer.serializeProject(project, writer)
+        if(toCompress && filePath != "notSpecified") serializeCompressedFileAndDeleteJsonFile(project, filePath, writer) else ProjectSerializer.serializeProject(project, writer)
+
     }
+
 
     private fun addAsNode(metrics: Map.Entry<String, FileMetrics>) {
         var directory = ""

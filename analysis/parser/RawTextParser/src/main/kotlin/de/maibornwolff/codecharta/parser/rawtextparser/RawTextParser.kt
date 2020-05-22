@@ -35,6 +35,9 @@ class RawTextParser(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
     @CommandLine.Option(names = ["--tab-width"], description = ["tab width used (estimated if not provided)"])
     private var tabWith: Int? = null
 
@@ -64,7 +67,11 @@ class RawTextParser(private val input: InputStream = System.`in`,
         val results: Map<String, FileMetrics> = MetricCollector(file, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
-        ProjectGenerator(getWriter()).generate(results, pipedProject)
+
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+
+        ProjectGenerator(getWriter(), filePath, compress).generate(results, pipedProject)
         return null
     }
 
