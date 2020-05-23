@@ -1,24 +1,11 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
-import { Files } from "./model/files"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
+import { FileState } from "./model/files/files"
 
 export interface NameDataPair {
 	fileName: string
 	content: any
-}
-
-export interface FileState {
-	file: CCFile
-	selectedAs: FileSelectionState
-}
-
-export enum FileSelectionState {
-	Single = "Single",
-	Reference = "Reference",
-	Comparison = "Comparison",
-	Partial = "Partial",
-	None = "None"
 }
 
 export enum SearchPanelMode {
@@ -255,7 +242,7 @@ export interface State {
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
-	files: Files
+	files: FileState[]
 	lookUp: LookUp
 }
 

@@ -1,28 +1,26 @@
 import {
 	AttributeTypeValue,
 	BlacklistItem,
+	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	Edge,
-	FileSelectionState,
-	FileState,
+	EdgeVisibility,
 	MarkedPackage,
 	MetricData,
 	Node,
-	BlacklistType,
-	EdgeVisibility,
 	NodeType,
-	SortingOption,
 	SearchPanelMode,
+	SortingOption,
 	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
-import { Files } from "../model/files"
 import { hierarchy } from "d3"
 import { MetricService } from "../state/metric.service"
+import { FileSelectionState, FileState } from "../model/files/files"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -310,6 +308,61 @@ export const VALID_NODE_WITH_PATH: CodeMapNode = {
 					name: "empty folder",
 					type: NodeType.FOLDER,
 					path: "/root/Parent Leaf/empty folder",
+					attributes: {},
+					isExcluded: false,
+					isFlattened: false,
+					children: []
+				}
+			]
+		}
+	]
+}
+
+export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
+	name: "root",
+	attributes: {},
+	type: NodeType.FOLDER,
+	path: "/root",
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			path: "/root/in/between/big leaf",
+			attributes: { rloc: 100, functions: 10, mcc: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		},
+		{
+			name: "Parent Leaf",
+			type: NodeType.FOLDER,
+			attributes: {},
+			path: "/root/in/between/Parent Leaf",
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "small leaf",
+					type: NodeType.FILE,
+					path: "/root/in/between/Parent Leaf/small leaf",
+					attributes: { rloc: 30, functions: 100, mcc: 100 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "other small leaf",
+					type: NodeType.FILE,
+					path: "/root/in/between/Parent Leaf/other small leaf",
+					attributes: { rloc: 70, functions: 1000, mcc: 10 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "empty folder",
+					type: NodeType.FOLDER,
+					path: "/root/in/between/Parent Leaf/empty folder",
 					attributes: {},
 					isExcluded: false,
 					isFlattened: false,
@@ -1031,7 +1084,7 @@ export const STATE: State = {
 	treeMap: {
 		mapSize: 250
 	},
-	files: new Files(),
+	files: [],
 	lookUp: {
 		idToNode: new Map(),
 		idToBuilding: new Map()
@@ -1095,7 +1148,7 @@ export const DEFAULT_STATE: State = {
 	},
 	fileSettings: { attributeTypes: { nodes: {}, edges: {} }, blacklist: [], edges: [], markedPackages: [] },
 	treeMap: { mapSize: 250 },
-	files: new Files(),
+	files: [],
 	lookUp: {
 		idToBuilding: new Map(),
 		idToNode: new Map()
@@ -1277,4 +1330,11 @@ function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: bo
 	} else {
 		node.isFlattened = flag
 	}
+}
+
+export function setupFiles(): FileState[] {
+	return [
+		{ file: TEST_DELTA_MAP_A, selectedAs: FileSelectionState.None },
+		{ file: TEST_DELTA_MAP_B, selectedAs: FileSelectionState.None }
+	]
 }

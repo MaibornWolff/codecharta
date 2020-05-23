@@ -9,4 +9,10 @@ code-map-component {
 			right: 350px;
 		}
 	}
+
+	unfocus-button-component {
+		&.sideBarVisible {
+			right: 390px;
+		}
+	}
 }
