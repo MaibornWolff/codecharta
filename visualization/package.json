@@ -68,7 +68,7 @@
 		"e2e": "jest --config ./jest.config.json .*\\.e2e\\.ts --coverage false",
 		"e2e:auto": "jest --config ./jest.config.json .*\\.e2e\\.ts --watch --coverage false",
 		"package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
-		"plop": "tsc --esModuleInterop true ./plopfile.ts && plop",
+		"plop": "tsc --esModuleInterop true --outDir ./dist/plop ./plopfile.ts && cd dist/plop && plop",
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "eslint --fix \"app/**/*.ts\"",
 		"format": "prettier --write \"./**/*\"",
