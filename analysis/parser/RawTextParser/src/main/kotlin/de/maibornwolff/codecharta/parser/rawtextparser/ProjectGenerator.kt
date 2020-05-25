@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
-import com.sun.org.apache.xpath.internal.operations.Bool
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
@@ -9,7 +8,6 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer.serializeCompressedFileAndDeleteJsonFile
-import java.io.File
 import java.io.Writer
 
 class ProjectGenerator(private val writer: Writer, private val filePath: String, private val toCompress: Boolean) {
