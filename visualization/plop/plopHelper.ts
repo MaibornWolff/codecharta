@@ -1,12 +1,13 @@
-const APP_BASE: string = "app/"
-const TEMPLATE_DIRECTORY: string = "plop/templates/"
+const OUTSIDE_DIST = "../../"
+const APP_BASE: string = OUTSIDE_DIST + "app/"
+const TEMPLATE_DIRECTORY: string = OUTSIDE_DIST + "plop/templates/"
 const FILE_NAME_SEPARATOR = "."
 const PATH_SEPARATOR = "/"
 const NAME = "{{camelCase name}}"
 const PLOP_TEMPLATE_EXTENSION = FILE_NAME_SEPARATOR + "hbs"
 
 interface FileModification {
-	filePath: string
+	path: string
 	pattern: RegExp
 	template: string
 }
@@ -21,7 +22,7 @@ export function createFileAction(sourceDirectory: string, destinationDirectory: 
 export function modifyFileAction(modification: FileModification) {
 	return {
 		type: "modify",
-		filePath: modification.filePath,
+		path: OUTSIDE_DIST + modification.path,
 		pattern: modification.pattern,
 		template: modification.template
 	}
