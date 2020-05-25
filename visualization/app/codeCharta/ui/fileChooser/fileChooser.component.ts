@@ -26,7 +26,7 @@ export class FileChooserController {
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
 			this.storeService.dispatch(resetFiles())
-			let decompressed
+			let content
 
 			for (const file of element.files) {
 				const isCompressed = file.name.endsWith(".gz")
@@ -37,12 +37,12 @@ export class FileChooserController {
 				reader.onload = event => {
 					if (isCompressed) {
 						const pako = require("pako")
-						decompressed = pako.ungzip((<any>event.target).result, { to: "string" })
+						content = pako.ungzip((<any>event.target).result, { to: "string" })
 					} else {
-						decompressed = (<any>event.target).result
+						content = (<any>event.target).result
 					}
 
-					this.setNewData(file.name, decompressed)
+					this.setNewData(file.name, content)
 				}
 				isCompressed ? reader.readAsArrayBuffer(file) : reader.readAsText(file, "UTF-8")
 			}
