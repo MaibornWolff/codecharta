@@ -1,5 +1,5 @@
 const OUTSIDE_DIST = "../../"
-const APP_BASE: string = OUTSIDE_DIST + "app/"
+const APP_BASE: string = OUTSIDE_DIST + "app/codeCharta/"
 const TEMPLATE_DIRECTORY: string = OUTSIDE_DIST + "plop/templates/"
 const FILE_NAME_SEPARATOR = "."
 const PATH_SEPARATOR = "/"
@@ -22,7 +22,7 @@ export function createFileAction(sourceDirectory: string, destinationDirectory: 
 export function modifyFileAction(modification: FileModification) {
 	return {
 		type: "modify",
-		path: OUTSIDE_DIST + modification.path,
+		path: APP_BASE + modification.path,
 		pattern: modification.pattern,
 		template: modification.template
 	}
