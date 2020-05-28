@@ -61,9 +61,8 @@ object ProjectSerializer {
      * This method compresses a string to gzip
      *
      * @param toCompress the string to be compressed
-     * @param
      */
-    fun compress(toCompress: String): ByteArray {
+    private fun compress(toCompress: String): ByteArray {
         val byteStream = ByteArrayOutputStream()
         GZIPOutputStream(byteStream).bufferedWriter(UTF_8).use { it.write(toCompress) }
         return byteStream.toByteArray()
