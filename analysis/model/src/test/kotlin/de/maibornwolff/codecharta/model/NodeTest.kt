@@ -27,16 +27,6 @@ class NodeTest: Spek({
             }
         }
 
-        context("getPathOfChild of invalid child") {
-
-            it("should throw an exception") {
-
-                assertFailsWith(NoSuchElementException::class) {
-                    root.getPathOfChild(MutableNode("invalidChild"))
-                }
-            }
-        }
-
         it("pathsToLeafs should return path of child") {
             val pathsToLeafs = root.pathsToLeaves
 

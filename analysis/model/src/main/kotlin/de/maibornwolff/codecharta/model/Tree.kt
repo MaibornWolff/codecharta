@@ -1,6 +1,9 @@
 package de.maibornwolff.codecharta.model
 
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
+import java.util.stream.Collectors
 
 private val logger = KotlinLogging.logger {}
 
@@ -68,7 +71,8 @@ abstract class Tree<T> {
     fun getNodeBy(path: Path): Tree<T>? {
         return when {
             path.isTrivial -> this
-            path.isSingle  -> children.first { path == getPathOfChild(it) }
+            path.isSingle  ->
+                children.parallelStream().filter { path == getPathOfChild(it)}.collect(Collectors.toList()).first()
             else           -> getNodeBy(Path(listOf(path.head)))!!.getNodeBy(path.tail)
         }
     }
