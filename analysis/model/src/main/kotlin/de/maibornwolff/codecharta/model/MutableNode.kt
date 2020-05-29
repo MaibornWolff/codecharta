@@ -1,6 +1,9 @@
 package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class MutableNode constructor(
@@ -15,10 +18,7 @@ class MutableNode constructor(
     override var children = childrenList.toMutableList()
 
     override fun getPathOfChild(child: Tree<MutableNode>): Path {
-        if (!children.contains(child)) {
-            throw NoSuchElementException("Child $child not contained in MutableNode.")
-        }
-        return Path(listOf((child.asTreeNode()).name))
+         return Path(listOf((child.asTreeNode()).name))
     }
 
     override fun toString(): String {
@@ -35,7 +35,11 @@ class MutableNode constructor(
 
     fun translateMetrics(metricNameTranslator: MetricNameTranslator, recursive: Boolean = false): MutableNode {
         if (recursive) {
-            children.forEach { it.translateMetrics(metricNameTranslator, recursive) }
+            runBlocking(Dispatchers.Default) {
+                children.forEach {
+                    launch { it.translateMetrics(metricNameTranslator, recursive) }
+                }
+            }
         }
         attributes = attributes.mapKeys { metricNameTranslator.translate(it.key) }.filterKeys { it.isNotBlank() }
 

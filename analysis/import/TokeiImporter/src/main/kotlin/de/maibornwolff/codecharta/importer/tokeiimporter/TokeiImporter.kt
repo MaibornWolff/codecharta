@@ -124,7 +124,6 @@ runBlocking (Dispatchers.Default) {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            readLine()
             CommandLine.call(TokeiImporter(), System.out, *args)
         }
 
