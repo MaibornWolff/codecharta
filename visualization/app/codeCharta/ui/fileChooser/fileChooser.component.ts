@@ -38,8 +38,7 @@ export class FileChooserController {
 					if (isCompressed) {
 						const zlib = require("zlib")
 
-						const buffer = new Buffer((<any>event.target).result, "UTF-8")
-						content = zlib.unzipSync(buffer).toString()
+						content = zlib.unzipSync(Buffer.from((<any>event.target).result))
 					} else {
 						content = (<any>event.target).result
 					}
