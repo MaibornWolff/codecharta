@@ -36,8 +36,10 @@ export class FileChooserController {
 				}
 				reader.onload = event => {
 					if (isCompressed) {
-						const pako = require("pako")
-						content = pako.ungzip((<any>event.target).result, { to: "string" })
+						const zlib = require("zlib")
+
+						const buffer = new Buffer((<any>event.target).result, "UTF-8")
+						content = zlib.unzipSync(buffer).toString()
 					} else {
 						content = (<any>event.target).result
 					}
