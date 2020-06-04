@@ -31,6 +31,12 @@ class TreeTest: Spek({
             assertThat(tree.getNodeBy(Path.TRIVIAL), `is`(tree))
         }
 
+        it("getNodeBy should throw exception on path not contained in tree") {
+            assertFailsWith(NoSuchElementException::class) {
+                tree.getNodeBy(Path("nonexistingpath"))
+            }
+        }
+
         context("when merging") {
             tree.merge(listOf(createTree().asTreeNode()))
 
@@ -75,5 +81,10 @@ class TreeTest: Spek({
             assertThat(tree.getNodeBy(pathToInnerTree), `is`(innerTree))
         }
 
+        it("getNodeBy should throw exception on path not contained in tree") {
+            assertFailsWith(NoSuchElementException::class) {
+                tree.getNodeBy(Path("nonexistingpath"))
+            }
+        }
     }
 })

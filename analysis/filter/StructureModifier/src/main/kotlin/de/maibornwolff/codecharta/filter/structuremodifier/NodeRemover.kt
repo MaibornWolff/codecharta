@@ -26,7 +26,7 @@ class NodeRemover(private val project: Project) {
         val filteredChildren = node.children.filter { it.name != path.firstOrNull() || path.size > 1 }
         node.children = filteredChildren.map {
             filterNodes(path.drop(1), it)
-        }.toMutableList()
+        }.toMutableSet()
         return node
     }
 

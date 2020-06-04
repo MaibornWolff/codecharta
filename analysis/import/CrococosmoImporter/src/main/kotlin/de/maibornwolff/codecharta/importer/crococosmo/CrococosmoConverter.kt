@@ -30,18 +30,18 @@ class CrococosmoConverter {
     }
 
     private fun convertToNodeList(origin: List<de.maibornwolff.codecharta.importer.crococosmo.model.Node>,
-                                  version: String): List<Node> {
+                                  version: String): Set<Node> {
         return when {
-            origin.isEmpty() -> listOf()
-            else             -> origin.map { convertToNode(it, version) }.reduce { a, b -> a + b }
+            origin.isEmpty() -> setOf()
+            else             -> origin.map { convertToNode(it, version) }.reduce { a, b -> a + b }.toSet()
         }
     }
 
     private fun convertToNode(origin: de.maibornwolff.codecharta.importer.crococosmo.model.Node,
-                              version: String): List<Node> {
+                              version: String): Set<Node> {
         return when {
             origin.name.isNullOrEmpty() -> convertToNodeList(origin.children.orEmpty(), version)
-            else                        -> listOf(
+            else                        -> setOf(
                     Node(origin.name, getNodeType(origin), createAttributeListForNode(origin.versions, version), "",
                             convertToNodeList(origin.children.orEmpty(), version)))
         }

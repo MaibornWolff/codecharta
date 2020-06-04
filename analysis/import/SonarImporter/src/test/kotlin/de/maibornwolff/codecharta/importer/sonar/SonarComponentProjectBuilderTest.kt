@@ -25,7 +25,7 @@ class SonarComponentProjectBuilderTest {
 
         // then
         assertThat(project.rootNode.children, hasSize(1))
-        val actualNode = project.rootNode.children[0]
+        val actualNode = project.rootNode.children.toMutableList()[0]
         assertThat(actualNode.name, `is`(name))
     }
 
@@ -42,7 +42,7 @@ class SonarComponentProjectBuilderTest {
 
         // then
         assertThat(project.rootNode.children, hasSize(1))
-        val actualNode = project.rootNode.children[0]
+        val actualNode = project.rootNode.children.toMutableList()[0]
         assertThat(actualNode.name, `is`(id))
     }
 
@@ -64,7 +64,7 @@ class SonarComponentProjectBuilderTest {
 
         // then
         assertThat(project.rootNode.children, hasSize(1))
-        val actualNode = project.rootNode.children[0]
+        val actualNode = project.rootNode.children.toMutableList()[0]
         assertThat(actualNode.name, `is`(key))
         assertThat(actualNode.type, `is`(NodeType.File))
         assertThat(actualNode.attributes, hasEntry<String, Any>(metric, java.lang.Double.valueOf(value)))
@@ -84,7 +84,7 @@ class SonarComponentProjectBuilderTest {
 
         // then
         assertThat(project.rootNode.children, hasSize(1))
-        val actualNode = project.rootNode.children[0]
+        val actualNode = project.rootNode.children.toMutableList()[0]
         assertThat<Set<String>>(actualNode.attributes.keys, hasSize(0))
     }
 
@@ -99,7 +99,7 @@ class SonarComponentProjectBuilderTest {
 
         // then
         assertThat(project.rootNode.children, hasSize(1))
-        val actualNode = project.rootNode.children[0]
+        val actualNode = project.rootNode.children.toMutableList()[0]
         assertThat(actualNode.type, `is`(NodeType.File))
     }
 
@@ -144,7 +144,7 @@ class SonarComponentProjectBuilderTest {
 
         // then
         assertThat(project.rootNode.children, hasSize(1))
-        val actualNode = project.rootNode.children[0]
+        val actualNode = project.rootNode.children.toMutableList()[0]
         assertThat(actualNode.name, `is`(path))
         assertThat(actualNode.type, `is`(NodeType.File))
     }
