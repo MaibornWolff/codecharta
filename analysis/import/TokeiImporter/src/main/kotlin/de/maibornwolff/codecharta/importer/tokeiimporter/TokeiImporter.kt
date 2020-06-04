@@ -59,9 +59,9 @@ runBlocking (Dispatchers.Default) {
     for (languageEntry in languageSummaries.entrySet()) {
             val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
             if (languageAnalysisObject.hasChildren()) {
-                    for (analysisObject in languageAnalysisObject.stats!!) {
-                        addAsNode(analysisObject)
-                    }
+                for (analysisObject in languageAnalysisObject.stats!!) {
+                    addAsNode(analysisObject)
+                }
             }
     }
 }
