@@ -17,15 +17,15 @@ abstract class Tree<T> {
     /**
      * @return children of the present tree
      */
-    abstract val children: List<Tree<T>>
+    abstract val children: Set<Tree<T>>
 
     val isLeaf: Boolean
         get() {
             return children.isEmpty()
         }
 
-    private val treeNodes: List<TreeNode<T>>
-        get() = listOf(TreeNode(Path.trivialPath(), asTreeNode())) +
+    private val treeNodes: Set<TreeNode<T>>
+        get() = setOf(TreeNode(Path.trivialPath(), asTreeNode())) +
                 children.flatMap { child ->
                     child.treeNodes.map { TreeNode(getPathOfChild(child).concat(it.path), it.node) }
                 }

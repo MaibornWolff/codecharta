@@ -23,7 +23,7 @@ class CrococosmoConverterTest {
         val nodeWithoutName = Node("", "type", listOf(), listOf())
         val g = Graph(schema, listOf(Node("node name", "type", listOf(nodeWithoutName), listOf())))
         val project = converter.createProject(g)
-        val grantChildren = project.rootNode.children[0].children
+        val grantChildren = project.rootNode.children.toMutableList()[0].children
 
         assertThat(grantChildren.count(), equalTo(0))
     }
@@ -33,7 +33,7 @@ class CrococosmoConverterTest {
         val nodeWithName = Node("happyChild", "type", listOf(), listOf())
         val g = Graph(schema, listOf(Node("node name", "type", listOf(nodeWithName), listOf())))
         val project = converter.createProject(g)
-        val grantChildren = project.rootNode.children[0].children
+        val grantChildren = project.rootNode.children.toMutableList()[0].children
 
         assertThat(grantChildren.count(), equalTo(1))
     }

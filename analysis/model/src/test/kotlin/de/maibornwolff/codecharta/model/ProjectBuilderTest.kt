@@ -18,7 +18,7 @@ class ProjectBuilderTest: Spek({
             it("has node as child of root") {
                 val root = projectBuilder.build().rootNode
                 assertThat(root.children, hasSize(1))
-                assertThat(root.children[0], NodeMatcher.matchesNode(nodeForInsertion.toNode()))
+                assertThat(root.children.toMutableList()[0], NodeMatcher.matchesNode(nodeForInsertion.toNode()))
             }
         }
     }
@@ -35,7 +35,7 @@ class ProjectBuilderTest: Spek({
                 val project = projectBuilder.build()
                 assertThat(project.rootNode, NodeMatcher.matchesNode(root.toNode()))
                 assertThat(root.children, hasSize(1))
-                assertThat(root.children[0], Matchers.`is`(nodeForInsertion))
+                assertThat(root.children.toMutableList()[0], Matchers.`is`(nodeForInsertion))
             }
         }
     }

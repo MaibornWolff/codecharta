@@ -4,21 +4,23 @@ import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.*
+import java.util.NoSuchElementException
 
-class MutableNode constructor(
+class MutableNode(
         val name: String,
         val type: NodeType? = NodeType.File,
         var attributes: Map<String, Any> = mapOf(),
         val link: String? = "",
-        childrenList: List<MutableNode> = listOf(),
+        childrenList: Set<MutableNode> = setOf(),
         @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger()
 ): Tree<MutableNode>() {
 
-    override var children = childrenList.toMutableList()
+     override var children = childrenList.toMutableSet()
 
     override fun getPathOfChild(child: Tree<MutableNode>): Path {
-         return Path(listOf((child.asTreeNode()).name))
+        if(!children.contains(child))
+            throw NoSuchElementException("Child $child not contained in MutableNode.")
+        return Path(listOf((child.asTreeNode()).name))
     }
 
     override fun toString(): String {
@@ -47,7 +49,7 @@ class MutableNode constructor(
     }
 
     fun toNode(): Node {
-        return Node(name, type, attributes, link, children = children.map { it.toNode() }.toList())
+        return Node(name, type, attributes, link, children = children.map { it.toNode() }.toSet())
     }
 
     val isEmptyFolder

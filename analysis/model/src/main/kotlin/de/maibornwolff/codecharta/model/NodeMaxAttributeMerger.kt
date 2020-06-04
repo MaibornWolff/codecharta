@@ -41,10 +41,10 @@ class NodeMaxAttributeMerger(var mergeChildrenList: Boolean = false): NodeMerger
         return tree.nodeMergingStrategy
     }
 
-    private fun createChildrenList(nodes: List<MutableNode>): List<MutableNode> {
+    private fun createChildrenList(nodes: List<MutableNode>): Set<MutableNode> {
         return when {
-            mergeChildrenList -> nodes.flatMap { it.children }.toList()
-            else              -> listOf()
+            mergeChildrenList -> nodes.flatMap { it.children }.toSet()
+            else              -> setOf()
         }
     }
 

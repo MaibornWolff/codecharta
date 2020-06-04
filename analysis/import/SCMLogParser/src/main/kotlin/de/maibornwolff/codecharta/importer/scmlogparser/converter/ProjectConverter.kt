@@ -17,7 +17,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val attributes = extractAttributes(versionControlledFile)
         val edges = versionControlledFile.getEdgeList()
         val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
-        val newNode = MutableNode(fileName, NodeType.File, attributes, "", ArrayList())
+        val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path = PathFactory.fromFileSystemPath(
                 versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
         projectBuilder.insertByPath(path, newNode)

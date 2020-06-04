@@ -62,7 +62,7 @@ class NodeInserterTest: Spek({
 
             it("should insert phantom node in inner position") {
                 assertThat(root.children, hasSize(1))
-                val createdPhantomNode = root.children[0]
+                val createdPhantomNode = root.children.toMutableList()[0]
                 assertThat(createdPhantomNode.name, `is`("folder"))
             }
         }
