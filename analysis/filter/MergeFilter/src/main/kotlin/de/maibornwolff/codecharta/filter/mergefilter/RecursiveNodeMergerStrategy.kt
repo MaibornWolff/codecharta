@@ -54,7 +54,7 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrate
     }
 
     private fun merge(vararg nodes: MutableNode): MutableNode {
-        val node = nodes.toList()[0].merge(nodes.toList())
+        val node = nodes[0].merge(nodes.toList())
         node.children.addAll(this.mergeNodeLists(nodes.map { it.children.toList() }.toList()))
         return node
     }

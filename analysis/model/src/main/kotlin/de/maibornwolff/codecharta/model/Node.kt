@@ -8,7 +8,7 @@ class Node(
         val attributes: Map<String, Any> = mapOf(),
         val link: String? = "",
         override val children: Set<Node> = setOf()
-): Tree<Node>() {
+) : Tree<Node>() {
 
     override fun getPathOfChild(child: Tree<Node>): Path {
         if (!children.contains(child)) {
@@ -30,7 +30,6 @@ class Node(
     }
 
     fun toMutableNode(): MutableNode {
-        return MutableNode(name, type, attributes, link,
-                children.map { it.toMutableNode() }.toSet())
+        return MutableNode(name, type, attributes, link, children.map { it.toMutableNode() }.toSet())
     }
 }

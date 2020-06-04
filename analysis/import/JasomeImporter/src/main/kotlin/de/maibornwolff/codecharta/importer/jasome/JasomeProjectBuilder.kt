@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 
-
 class JasomeProjectBuilder() {
 
     private val projectBuilder = ProjectBuilder()
@@ -24,12 +23,9 @@ class JasomeProjectBuilder() {
                 val nodeForPackage = createNode(jasomePackage)
                 val parentPath = createPathByPackageName(jasomePackage.name!!).parent
                 projectBuilder.insertByPath(parentPath, nodeForPackage)
-
-                jasomePackage.classes.orEmpty()
-                        .forEach {
-                            this.add(jasomePackage.name ?: "", it)
-                        }
         }
+        jasomePackage.classes.orEmpty()
+                .forEach { this.add(jasomePackage.name ?: "", it) }
         return this
     }
 

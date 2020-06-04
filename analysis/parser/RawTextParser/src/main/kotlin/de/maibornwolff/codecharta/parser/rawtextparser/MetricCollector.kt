@@ -9,7 +9,6 @@ import java.io.File
 import java.nio.file.Paths
 import java.util.concurrent.ConcurrentHashMap
 
-//TODO move to Importer? Should not be own file according to Richard
 class MetricCollector(private var root: File,
                       private val exclude: Array<String> = arrayOf(),
                       private val fileExtensions: Array<String> = arrayOf(),
@@ -45,7 +44,6 @@ class MetricCollector(private var root: File,
         return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricMap.putAll(current.metricMap)
             acc
-
         }
     }
 
