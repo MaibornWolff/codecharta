@@ -5,9 +5,6 @@ import com.univocity.parsers.csv.CsvParserSettings
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -42,12 +39,12 @@ class CSVProjectBuilder(
     }
 
     private fun parseContent(parser: CsvParser, header: CSVHeader) {
-            var row = parser.parseNext()
-            while (row != null) {
-                if (includeRows(row)) {
-                    insertRowInProject(row, header)
-                }
-                row = parser.parseNext()
+        var row = parser.parseNext()
+        while (row != null) {
+            if (includeRows(row)) {
+                insertRowInProject(row, header)
+            }
+            row = parser.parseNext()
         }
     }
 

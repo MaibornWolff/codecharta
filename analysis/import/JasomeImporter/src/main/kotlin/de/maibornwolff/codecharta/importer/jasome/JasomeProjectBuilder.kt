@@ -19,10 +19,9 @@ class JasomeProjectBuilder() {
 
     fun add(jasomePackage: Package): JasomeProjectBuilder {
         if (!jasomePackage.name.isNullOrBlank()) {
-
-                val nodeForPackage = createNode(jasomePackage)
-                val parentPath = createPathByPackageName(jasomePackage.name!!).parent
-                projectBuilder.insertByPath(parentPath, nodeForPackage)
+            val nodeForPackage = createNode(jasomePackage)
+            val parentPath = createPathByPackageName(jasomePackage.name!!).parent
+            projectBuilder.insertByPath(parentPath, nodeForPackage)
         }
         jasomePackage.classes.orEmpty()
                 .forEach { this.add(jasomePackage.name ?: "", it) }

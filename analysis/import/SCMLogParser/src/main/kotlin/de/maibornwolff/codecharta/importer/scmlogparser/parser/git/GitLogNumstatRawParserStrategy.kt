@@ -5,9 +5,6 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.AuthorParser.AUTHOR_ROW_INDICATOR
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.CommitDateParser.DATE_ROW_INDICATOR
-import javafx.application.Application.launch
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.time.OffsetDateTime
 import java.util.function.Predicate
 import java.util.stream.Collector
