@@ -71,8 +71,7 @@ abstract class Tree<T> {
     fun getNodeBy(path: Path): Tree<T>? {
         return when {
             path.isTrivial -> this
-            path.isSingle  ->
-                children.parallelStream().filter { path == getPathOfChild(it)}.collect(Collectors.toList()).first()
+            path.isSingle  -> children.first { path == getPathOfChild(it) }
             else           -> getNodeBy(Path(listOf(path.head)))!!.getNodeBy(path.tail)
         }
     }
