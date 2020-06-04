@@ -31,8 +31,7 @@ class CSVImporter: Callable<Void> {
     override fun call(): Void? {
 
         val csvProjectBuilder = CSVProjectBuilder(pathSeparator, csvDelimiter)
-        files.map { it.inputStream() }
-                .forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
+        files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())
 

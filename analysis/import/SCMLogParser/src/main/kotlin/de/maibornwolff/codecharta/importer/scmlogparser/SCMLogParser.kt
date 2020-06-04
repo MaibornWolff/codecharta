@@ -121,8 +121,6 @@ class SCMLogParser(private val input: InputStream = System.`in`,
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
         if (!silent) error.println("Assumed encoding $encoding")
         val lines : Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
-       // val lines: Stream<String> = pathToLog.readLines(Charset.forName(encoding)).stream()
-
         val projectConverter = ProjectConverter(containsAuthors)
         return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
     }
@@ -151,7 +149,6 @@ class SCMLogParser(private val input: InputStream = System.`in`,
         val infoFormat = "  \t%s:\t %s"
         println("  Available metrics:")
         runBlocking(Dispatchers.Default) {
-
             metricsFactory.createMetrics()
                     .forEach {
                         launch{
@@ -165,7 +162,6 @@ class SCMLogParser(private val input: InputStream = System.`in`,
 
         @JvmStatic
         fun main(args: Array<String>) {
-            readLine()
             CommandLine.call(SCMLogParser(), System.out, *args)
         }
 

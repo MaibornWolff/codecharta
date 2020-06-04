@@ -47,10 +47,8 @@ class CSVProjectBuilder(
                 if (includeRows(row)) {
                     insertRowInProject(row, header)
                 }
-
                 row = parser.parseNext()
         }
-
     }
 
     private fun createParser(inStream: InputStream): CsvParser {
