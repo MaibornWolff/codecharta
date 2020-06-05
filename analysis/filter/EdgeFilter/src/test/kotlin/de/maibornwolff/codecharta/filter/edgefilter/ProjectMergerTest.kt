@@ -8,10 +8,11 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.InputStreamReader
 
-class ProjectMergerTest : Spek({
+class ProjectMergerTest: Spek({
 
     val TEST_EDGES_JSON_FILE = "coupling.json"
     val TEST_EDGES_JSON_FILE_2 = "coupling-empty-nodes.json"
+
 
     describe("filter edges as node attributes") {
         val originalProject = ProjectDeserializer.deserializeProject(
@@ -74,6 +75,7 @@ class ProjectMergerTest : Spek({
         }
     }
 
+
     describe("filter edges as node attributes with empty nodes list in testfile") {
         val originalProject = ProjectDeserializer.deserializeProject(
                 InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_2)))
@@ -85,6 +87,7 @@ class ProjectMergerTest : Spek({
         val leaf1 = getChildByName(project.rootNode.children.toMutableList(), "leaf 1")
         val leaf3 = getChildByName(parent1.children.toMutableList(), "leaf 3")
         val leaf4 = getChildByName(parent2.children.toMutableList(), "leaf 4")
+
 
         it("should have correct amount of edges") {
             MatcherAssert.assertThat(project.sizeOfEdges(), CoreMatchers.`is`(6))

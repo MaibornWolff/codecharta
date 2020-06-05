@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.* // ktlint-disable no-wildcard-imports
+import java.io.*
 
 class RawTextParserTest {
 
@@ -63,9 +63,8 @@ fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStr
         outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
 fun outputAsString(
-    inputStream: InputStream = System.`in`,
-    aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
-) =
+        inputStream: InputStream = System.`in`,
+        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
         ByteArrayOutputStream().use { baOutputStream ->
             PrintStream(baOutputStream).use { outputStream ->
                 aMethod(inputStream, outputStream, System.err)

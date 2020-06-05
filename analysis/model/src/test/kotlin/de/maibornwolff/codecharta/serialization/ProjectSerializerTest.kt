@@ -7,10 +7,10 @@ import org.hamcrest.Matcher
 import org.spekframework.spek2.Spek
 import java.io.File
 
-class ProjectSerializerTest : Spek({
+class ProjectSerializerTest: Spek({
 
     fun matchesProjectFile(expectedProjectFile: File): Matcher<File> {
-        return object : BaseMatcher<File>() {
+        return object: BaseMatcher<File>() {
 
             override fun describeTo(description: Description) {
                 description.appendText("should be ").appendValue(expectedProjectFile.readLines())
@@ -32,4 +32,5 @@ class ProjectSerializerTest : Spek({
             }
         }
     }
+
 })

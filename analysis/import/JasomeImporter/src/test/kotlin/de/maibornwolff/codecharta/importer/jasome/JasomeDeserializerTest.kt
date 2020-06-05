@@ -5,7 +5,7 @@ import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class JasomeDeserializerTest : Spek({
+class JasomeDeserializerTest: Spek({
     describe("JasomeDeserializer adding big Jasome project") {
         val jasomeDeserializer = JasomeDeserializer()
 

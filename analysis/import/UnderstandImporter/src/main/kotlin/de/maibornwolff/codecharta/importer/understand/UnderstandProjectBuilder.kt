@@ -11,10 +11,10 @@ import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
-import java.util.Arrays
+import java.util.*
 
 class UnderstandProjectBuilder(
-    private val pathSeparator: Char
+        private val pathSeparator: Char
 ) {
 
     private val logger = KotlinLogging.logger {}
@@ -157,7 +157,7 @@ class UnderstandProjectBuilder(
         }
 
     fun parseCSVStream(
-        inStream: InputStream
+            inStream: InputStream
     ): UnderstandProjectBuilder {
         val parser = createParser(inStream)
         val header = UnderstandCSVHeader(parser.parseNext())
@@ -172,7 +172,7 @@ class UnderstandProjectBuilder(
     }
 
     private fun MutableNode.addAggregatedAttributes(
-        aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()): Map<String, Any> {
+            aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()): Map<String, Any> {
         if (!children.isEmpty()) {
 
             if (isAggregationType(type)) {

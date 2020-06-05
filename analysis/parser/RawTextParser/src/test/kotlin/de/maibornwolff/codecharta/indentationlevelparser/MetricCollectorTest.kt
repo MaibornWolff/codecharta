@@ -32,6 +32,7 @@ class MetricCollectorTest {
         Assertions.assertThat(result).doesNotContainKey("/spaces")
     }
 
+
     @Test
     fun `Should exlude regex patterns`() {
         val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = arrayOf(".*\\.xyz", "foobar")).parse()

@@ -8,7 +8,7 @@ import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class RecursiveNodeMergerTest : Spek({
+class RecursiveNodeMergerTest: Spek({
     describe("a recursive node merger") {
         val merger = RecursiveNodeMergerStrategy()
 

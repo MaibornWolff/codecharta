@@ -2,12 +2,7 @@ package de.maibornwolff.codecharta.importer.jasome
 
 import de.maibornwolff.codecharta.importer.jasome.model.Class
 import de.maibornwolff.codecharta.importer.jasome.model.Package
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.model.Path
-import de.maibornwolff.codecharta.model.PathFactory
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -36,7 +31,7 @@ class JasomeProjectBuilder() {
     fun add(packageName: String, jasomeClass: Class): JasomeProjectBuilder {
         val nodeForClass = createNode(jasomeClass)
         val parentPath = createPathByPackageName(packageName)
-        runBlocking(Dispatchers.Default) {
+        runBlocking (Dispatchers.Default) {
             launch {
                 projectBuilder.insertByPath(parentPath, nodeForClass)
             }

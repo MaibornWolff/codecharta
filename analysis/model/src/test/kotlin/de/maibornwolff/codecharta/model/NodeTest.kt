@@ -6,10 +6,10 @@ import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.util.Arrays
+import java.util.*
 import kotlin.test.assertFailsWith
 
-class NodeTest : Spek({
+class NodeTest: Spek({
 
     describe("root with child") {
 
@@ -43,6 +43,7 @@ class NodeTest : Spek({
             assertThat(pathsToLeafs, hasSize(1))
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path(childName)))
         }
+
     }
 
     describe("root node with many children") {
@@ -71,5 +72,6 @@ class NodeTest : Spek({
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node12")))
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node2", "node21")))
         }
+
     }
 })

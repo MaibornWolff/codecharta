@@ -5,6 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties("description")
 class Metric(
-    @JsonProperty("name") var name: String?,
-    @JsonProperty("value") var value: String?
+        @JsonProperty("name") var name: String?,
+        @JsonProperty("value") var value: String?
 )

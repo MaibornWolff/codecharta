@@ -11,7 +11,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class SVNLogParserStrategy : LogParserStrategy {
+class SVNLogParserStrategy: LogParserStrategy {
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         return commitLines
@@ -22,9 +22,9 @@ class SVNLogParserStrategy : LogParserStrategy {
 
     private fun parseCommitDate(metadataLine: String): OffsetDateTime {
         val splittedLine =
-                metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile{ it.isEmpty() }.toTypedArray()
         val commitDateAsString =
-                splittedLine[DATE_INDEX_IN_METADATA].trim { it <= ' ' }.replace(" \\(.*\\)".toRegex(), "")
+                splittedLine[DATE_INDEX_IN_METADATA].trim{ it <= ' ' }.replace(" \\(.*\\)".toRegex(), "")
         return OffsetDateTime.parse(commitDateAsString, DATE_TIME_FORMATTER)
     }
 
@@ -41,8 +41,8 @@ class SVNLogParserStrategy : LogParserStrategy {
 
     private fun parseAuthor(authorLine: String): String {
         val splittedLine =
-                authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        return splittedLine[AUTHOR_INDEX_IN_METADATA].trim { it <= ' ' }
+                authorLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile{ it.isEmpty() }.toTypedArray()
+        return splittedLine[AUTHOR_INDEX_IN_METADATA].trim{ it <= ' ' }
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
@@ -66,11 +66,11 @@ class SVNLogParserStrategy : LogParserStrategy {
         val metadataWithoutWhitespacePrefix = stripWhitespacePrefix(fileLine)
         val status = Status.byCharacter(metadataWithoutWhitespacePrefix[0])
         val metadataWithoutStatusLetter = metadataWithoutWhitespacePrefix.substring(1)
-        val trimmedFileLine = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim { it <= ' ' })
+        val trimmedFileLine = removeDefaultRepositoryFolderPrefix(metadataWithoutStatusLetter.trim{ it <= ' ' })
 
-        return when (trimmedFileLine.contains(RENAME_FILE_LINE_IDENTIFIER)) {
-            true -> parseRenameModification(trimmedFileLine)
-            else -> parseStandardModification(trimmedFileLine, status)
+        return when(trimmedFileLine.contains(RENAME_FILE_LINE_IDENTIFIER)) {
+            true ->  parseRenameModification(trimmedFileLine)
+            else ->  parseStandardModification(trimmedFileLine, status)
         }
     }
 
@@ -127,9 +127,9 @@ class SVNLogParserStrategy : LogParserStrategy {
 
         private fun removeDefaultRepositoryFolderPrefix(path: String): String {
             return DEFAULT_REPOSITORY_FOLDER_PREFIXES
-                .firstOrNull { path.startsWith(it) }
-                ?.let { path.substring(it.length) }
-                ?: path
+                           .firstOrNull { path.startsWith(it) }
+                           ?.let { path.substring(it.length) }
+                   ?: path
         }
 
         private fun ignoreIfRepresentsFolder(modification: Modification): Modification {

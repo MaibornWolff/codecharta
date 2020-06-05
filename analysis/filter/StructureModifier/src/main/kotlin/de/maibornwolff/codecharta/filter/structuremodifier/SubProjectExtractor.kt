@@ -1,11 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.Edge
-import de.maibornwolff.codecharta.model.AttributeType
-import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
 class SubProjectExtractor(private val project: Project) {

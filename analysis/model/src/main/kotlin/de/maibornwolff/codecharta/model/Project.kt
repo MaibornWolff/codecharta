@@ -1,12 +1,12 @@
 package de.maibornwolff.codecharta.model
 
 class Project(
-    val projectName: String,
-    private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
-    val apiVersion: String = API_VERSION,
-    val edges: List<Edge> = listOf(),
-    val attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
-    var blacklist: List<BlacklistItem> = listOf()
+        val projectName: String,
+        private val nodes: List<Node> = listOf(Node("root", NodeType.Folder)),
+        val apiVersion: String = API_VERSION,
+        val edges: List<Edge> = listOf(),
+        val attributeTypes: Map<String, MutableMap<String, AttributeType>> = mapOf(),
+        var blacklist: List<BlacklistItem> = listOf()
 ) {
 
     init {
@@ -29,7 +29,7 @@ class Project(
 
     override fun toString(): String {
         return "Project{projectName=$projectName, apiVersion=$apiVersion, nodes=$nodes, edges=$edges, " +
-            "attributeTypes=$attributeTypes, blacklist=$blacklist}"
+               "attributeTypes=$attributeTypes, blacklist=$blacklist}"
     }
 
     companion object {

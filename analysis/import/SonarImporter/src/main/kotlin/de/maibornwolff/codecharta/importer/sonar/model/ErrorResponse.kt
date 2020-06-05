@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.model
 
-import java.util.Arrays
+import java.util.*
 
 data class ErrorResponse(val errors: Array<ErrorEntity>) {
     override fun equals(other: Any?): Boolean {

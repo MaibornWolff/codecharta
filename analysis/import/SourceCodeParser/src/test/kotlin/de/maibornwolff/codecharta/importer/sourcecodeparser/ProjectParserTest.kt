@@ -4,13 +4,16 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriter
+import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMetricWriterTest
+import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaSonarAnalyzer
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.SonarAnalyzer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.File
 import java.lang.reflect.Field
 
-class ProjectParserTest {
+class ProjectParserTest{
 
     private fun addMockAnalyzerToProjectParser(projectParser: ProjectParser) {
         val sonarAnalyzers = projectParser.javaClass.getDeclaredField("sonarAnalyzers") as Field
@@ -27,7 +30,7 @@ class ProjectParserTest {
         projectParser.sonarAnalyzers.add(mockAnalyzerPython)
     }
 
-    private fun createmMockResponseJava(): ProjectMetrics {
+    private fun createmMockResponseJava(): ProjectMetrics{
         val result = ProjectMetrics().addFile("foo.java").addFile("bar/foo.java")
         result.addMetricToFile("foo.java", "functions", 4)
         result.addMetricToFile("bar/foo.java", "functions", 7)
@@ -36,11 +39,12 @@ class ProjectParserTest {
         return result
     }
 
-    private fun createmMockResponsePython(): ProjectMetrics {
+    private fun createmMockResponsePython(): ProjectMetrics{
         val result = ProjectMetrics().addFile("foo.py")
         result.addMetricToFile("foo.py", "something_else", 42)
         return result
     }
+
 
     @Test
     fun `paths and file names are correct`() {
@@ -112,4 +116,5 @@ class ProjectParserTest {
 
         assertThat(projectParser.metricKinds.toString()).contains("functions", "ncloc", "something_else")
     }
+
 }

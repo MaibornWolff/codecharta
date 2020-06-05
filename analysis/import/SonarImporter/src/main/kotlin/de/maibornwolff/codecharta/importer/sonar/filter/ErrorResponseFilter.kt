@@ -14,7 +14,7 @@ import javax.ws.rs.core.Response
 import javax.ws.rs.ext.Provider
 
 @Provider
-class ErrorResponseFilter : ClientResponseFilter {
+class ErrorResponseFilter: ClientResponseFilter {
 
     private val logger = KotlinLogging.logger {}
 

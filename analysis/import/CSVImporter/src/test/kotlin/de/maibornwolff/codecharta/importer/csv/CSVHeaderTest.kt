@@ -1,21 +1,19 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.CoreMatchers.hasItems
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class CSVHeaderTest : Spek({
+class CSVHeaderTest: Spek({
     describe("an empty header") {
         it("should throw exception") {
             assertFailsWith(IllegalArgumentException::class) {
                 CSVHeader(arrayOf())
             }
         }
+
     }
 
     describe("a valid header") {
@@ -31,6 +29,7 @@ class CSVHeaderTest : Spek({
         it("should ignore empty columns") {
             assertThat(header.columnNumbers, not(hasItem(2)))
         }
+
 
         it("should ignore null columns") {
             assertThat(header.columnNumbers, not(hasItem(3)))
@@ -64,6 +63,7 @@ class CSVHeaderTest : Spek({
             assertThat(header.pathColumn, `is`(1))
         }
     }
+
 
     describe("a header without path column and empty first column") {
         val header = CSVHeader(arrayOf("", null, "second", "third"))

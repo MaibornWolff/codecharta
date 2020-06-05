@@ -1,15 +1,12 @@
 package de.maibornwolff.codecharta.importer.understand
 
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.CoreMatchers.hasItems
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class UnderstandCSVHeaderTest : Spek({
+class UnderstandCSVHeaderTest: Spek({
     describe("an empty header") {
         val headerLine = arrayOf<String?>()
         it("should throw exception") {
@@ -42,6 +39,7 @@ class UnderstandCSVHeaderTest : Spek({
         it("should ignore empty columns") {
             assertThat(header.columnNumbers, not(hasItem(2)))
         }
+
 
         it("should ignore null columns") {
             assertThat(header.columnNumbers, not(hasItem(3)))

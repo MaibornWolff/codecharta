@@ -9,7 +9,7 @@ import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class PathTest : Spek({
+class PathTest: Spek({
 
     describe("trivial path") {
 

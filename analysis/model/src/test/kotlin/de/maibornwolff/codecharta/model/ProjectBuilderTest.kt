@@ -6,7 +6,7 @@ import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class ProjectBuilderTest : Spek({
+class ProjectBuilderTest: Spek({
 
     describe("ProjectBuilder without root node") {
         val projectBuilder = ProjectBuilder()
@@ -53,5 +53,6 @@ class ProjectBuilderTest : Spek({
                 assertThat(root.children, hasSize(0))
             }
         }
+
     }
 })

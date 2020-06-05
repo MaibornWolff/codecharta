@@ -4,56 +4,48 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMet
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
-import picocli.CommandLine
-import picocli.CommandLine.call
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStreamWriter
-import java.io.PrintStream
-import java.io.Writer
+import picocli.CommandLine.*
+import java.io.*
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
-@CommandLine.Command(
+@Command(
         name = "sourcecodeparser",
         description = ["generates cc.json from source code"],
         footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2020, MaibornWolff GmbH"]
 )
 class SourceCodeParserMain(
-    private val outputStream: PrintStream,
-    private val input: InputStream = System.`in`,
-    private val error: PrintStream = System.err
+        private val outputStream: PrintStream,
+        private val input: InputStream = System.`in`,
+        private val error: PrintStream = System.err
 ) : Callable<Void> {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
-    @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
+    @Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-i", "--no-issues"], description = ["do not search for sonar issues"])
+    @Option(names = ["-i", "--no-issues"], description = ["do not search for sonar issues"])
     private var findNoIssues = false
 
-    @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
+    @Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["--default-excludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
+    @Option(names = ["--default-excludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
     private var defaultExcludes = false
 
-    @CommandLine.Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
+    @Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
     private var outputFormat = OutputFormat.JSON
 
-    @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
+    @Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    @CommandLine.Option(names = ["-v", "--verbose"], description = ["display info messages from sonar plugins"])
+    @Option(names = ["-v", "--verbose"], description = ["display info messages from sonar plugins"])
     private var verbose = false
 
-    @CommandLine.Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["project folder or code file"])
+    @Parameters(arity = "1", paramLabel = "FOLDER or FILE", description = ["project folder or code file"])
     private var file: File = File("")
 
     @Throws(IOException::class)
@@ -112,3 +104,4 @@ class SourceCodeParserMain(
         }
     }
 }
+

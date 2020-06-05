@@ -5,14 +5,7 @@ import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
 import picocli.CommandLine.call
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStreamWriter
-import java.io.PrintStream
-import java.io.Writer
+import java.io.*
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
@@ -21,11 +14,9 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from projects or source code files"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class RawTextParser(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : Callable<Void> {
+class RawTextParser(private val input: InputStream = System.`in`,
+                    private val output: PrintStream = System.out,
+                    private val error: PrintStream = System.err) : Callable<Void> {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 

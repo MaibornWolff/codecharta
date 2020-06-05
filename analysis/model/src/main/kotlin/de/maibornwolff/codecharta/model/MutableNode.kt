@@ -7,18 +7,18 @@ import kotlinx.coroutines.runBlocking
 import java.util.NoSuchElementException
 
 class MutableNode(
-    val name: String,
-    val type: NodeType? = NodeType.File,
-    var attributes: Map<String, Any> = mapOf(),
-    val link: String? = "",
-    childrenList: Set<MutableNode> = setOf(),
-    @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger()
-) : Tree<MutableNode>() {
+        val name: String,
+        val type: NodeType? = NodeType.File,
+        var attributes: Map<String, Any> = mapOf(),
+        val link: String? = "",
+        childrenList: Set<MutableNode> = setOf(),
+        @Transient val nodeMergingStrategy: NodeMergerStrategy = NodeMaxAttributeMerger()
+): Tree<MutableNode>() {
 
-    override var children = childrenList.toMutableSet()
+     override var children = childrenList.toMutableSet()
 
     override fun getPathOfChild(child: Tree<MutableNode>): Path {
-        if (!children.contains(child))
+        if(!children.contains(child))
             throw NoSuchElementException("Child $child not contained in MutableNode.")
         return Path(listOf((child.asTreeNode()).name))
     }
@@ -64,7 +64,7 @@ class MutableNode(
 
         return when {
             children.isEmpty() && type == NodeType.Folder -> null
-            else -> this
+            else                                          -> this
         }
     }
 }

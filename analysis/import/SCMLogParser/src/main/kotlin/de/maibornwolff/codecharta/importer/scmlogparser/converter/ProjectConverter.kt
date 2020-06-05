@@ -2,12 +2,9 @@ package de.maibornwolff.codecharta.importer.scmlogparser.converter
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import de.maibornwolff.codecharta.model.Edge
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.model.PathFactory
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
+import de.maibornwolff.codecharta.model.*
+
+import java.util.*
 
 /**
  * creates Projects from List of VersionControlledFiles
@@ -32,7 +29,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         return when {
             containsAuthors -> versionControlledFile.metricsMap
                     .plus(Pair("authors", versionControlledFile.authors))
-            else -> versionControlledFile.metricsMap
+            else            -> versionControlledFile.metricsMap
         }
     }
 

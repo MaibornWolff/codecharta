@@ -7,13 +7,16 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.util.Arrays
+import java.util.*
 import java.util.stream.Stream
 
-class SVNLogParserStrategyTest : ParserStrategyContractTest() {
+class SVNLogParserStrategyTest: ParserStrategyContractTest() {
+
     private var parserStrategy: SVNLogParserStrategy = SVNLogParserStrategy()
+
     override val fullCommit: List<String>
         get() = FULL_COMMIT
+
     override val twoCommitsAsStraem: Stream<String>
         get() {
             val twoCommits = mutableListOf("------------------------------------------------------------------------")
@@ -23,6 +26,7 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
             twoCommits.add("------------------------------------------------------------------------")
             return twoCommits.stream()
         }
+
     override val logParserStrategy: LogParserStrategy
         get() = parserStrategy
 
@@ -68,8 +72,7 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
 
     @Test
     fun acceptsSVNLogWithoutEndingDashes() {
-        val logLinesWithoutEndingDashes =
-            Stream.of("------------------------------------------------------------------------", "commit data")
+        val logLinesWithoutEndingDashes = Stream.of("------------------------------------------------------------------------", "commit data")
         val commits = logLinesWithoutEndingDashes.collect(parserStrategy.createLogLineCollector())
         assertThat(commits).hasSize(1)
     }
@@ -84,28 +87,26 @@ class SVNLogParserStrategyTest : ParserStrategyContractTest() {
     @Test
     fun parsesSpecialCommit() {
         val parser = LogLineParser(logParserStrategy, MetricsFactory())
-        val commitString = mutableListOf(
-            "------------------------------------------------------------------------",
-            "r156657 | dpagam05 | 2017-01-02 03:12:18 +0100 (Mo, 02 Jan 2017) | 1 line",
-            "Changed paths:",
-            "    M /src/Modified.java",
-            "Task | Increased automaticly build number | builduser01",
-            "------------------------------------------------------------------------"
-        )
+        val commitString = mutableListOf("------------------------------------------------------------------------",
+                "r156657 | dpagam05 | 2017-01-02 03:12:18 +0100 (Mo, 02 Jan 2017) | 1 line",
+                "Changed paths:",
+                "    M /src/Modified.java",
+                "Task | Increased automaticly build number | builduser01",
+                "------------------------------------------------------------------------")
         val commit = parser.parseCommit(commitString)
         assertThat(commit.filenames)
-            .containsExactlyInAnyOrder("src/Modified.java")
+                .containsExactlyInAnyOrder("src/Modified.java")
     }
 
     companion object {
+
         private val FULL_COMMIT = mutableListOf(
-            "------------------------------------------------------------------------",
-            "r2 | TheAuthor | 2017-05-09 19:57:57 +0200 (Tue, 9 May 2017) | 1 line",
-            "Changed paths:",
-            "   A /trunk/src/Added.java",
-            "   M /trunk/src/Modified.java",
-            "   D /trunk/src/Deleted.java",
-            "the commit message"
-        )
+                "------------------------------------------------------------------------",
+                "r2 | TheAuthor | 2017-05-09 19:57:57 +0200 (Tue, 9 May 2017) | 1 line",
+                "Changed paths:",
+                "   A /trunk/src/Added.java",
+                "   M /trunk/src/Modified.java",
+                "   D /trunk/src/Deleted.java",
+                "the commit message")
     }
 }

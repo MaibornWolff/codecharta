@@ -1,17 +1,14 @@
 package de.maibornwolff.codecharta.importer.understand
 
 import de.maibornwolff.codecharta.model.Path
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.hasItem
-import org.hamcrest.CoreMatchers.not
-import org.hamcrest.CoreMatchers.nullValue
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class UnderstandCSVRowTest : Spek({
+class UnderstandCSVRowTest: Spek({
     val pathSeparator = '\\'
 
     describe("Using a valid header with path column") {
@@ -69,6 +66,7 @@ class UnderstandCSVRowTest : Spek({
                     arrayOf("projectName", "blubb2", "blubb3", "someDir\\anotherDir\\anotherName", "name",
                             "someStupidKind")
             val understandCSVRow = UnderstandCSVRow(rawRow, header, pathSeparator)
+
 
             it("transforming toNode should throw exception") {
                 assertFailsWith(IllegalArgumentException::class) {

@@ -21,9 +21,9 @@ internal enum class Status(private val letter: Char) {
 
     fun toModificationType(): Modification.Type {
         return when (this) {
-            Status.ADD -> Modification.Type.ADD
-            Status.DELETE -> Modification.Type.DELETE
-            Status.MODIFY -> Modification.Type.MODIFY
+            Status.ADD     -> Modification.Type.ADD
+            Status.DELETE  -> Modification.Type.DELETE
+            Status.MODIFY  -> Modification.Type.MODIFY
             Status.REPLACE -> Modification.Type.UNKNOWN
         }
     }

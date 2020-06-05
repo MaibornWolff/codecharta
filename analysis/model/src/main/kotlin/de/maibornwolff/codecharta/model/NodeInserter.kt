@@ -32,7 +32,7 @@ object NodeInserter {
 
             val name = path.head
             val folderNode = getNode(root, name)
-                ?: root.insertNewFolderNode(name).getNodeBy(Path(name)) as MutableNode
+                             ?: root.insertNewFolderNode(name).getNodeBy(Path(name)) as MutableNode
             insertByPath(folderNode, path.tail, node)
         }
         return root

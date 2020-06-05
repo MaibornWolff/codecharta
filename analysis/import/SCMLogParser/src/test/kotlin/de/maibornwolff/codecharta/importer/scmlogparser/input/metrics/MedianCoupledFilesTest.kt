@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.OffsetDateTime
-import java.util.Arrays
+import java.util.*
 import java.util.stream.Collectors
 
 class MedianCoupledFilesTest {

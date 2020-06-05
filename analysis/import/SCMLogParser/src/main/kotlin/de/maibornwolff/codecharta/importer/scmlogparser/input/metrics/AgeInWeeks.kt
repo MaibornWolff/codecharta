@@ -27,4 +27,5 @@ class AgeInWeeks : Metric {
     override fun attributeType(): AttributeType {
         return AttributeType.relative
     }
+
 }

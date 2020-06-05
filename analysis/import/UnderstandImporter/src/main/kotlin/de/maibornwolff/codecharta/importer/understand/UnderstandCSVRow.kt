@@ -1,17 +1,10 @@
 package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.NodeMaxAttributeMerger
-import de.maibornwolff.codecharta.model.NodeType
-import de.maibornwolff.codecharta.model.Path
-import de.maibornwolff.codecharta.model.PathFactory
+import de.maibornwolff.codecharta.model.*
 import java.util.regex.Pattern
 
-class UnderstandCSVRow(
-    private val rawRow: Array<String?>,
-    private val header: UnderstandCSVHeader,
-    private val pathSeparator: Char
-) {
+class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: UnderstandCSVHeader,
+                       private val pathSeparator: Char) {
 
     init {
         if (rawRow.size <= maxOf(header.fileColumn, header.nameColumn, header.kindColumn)) {
@@ -59,27 +52,26 @@ class UnderstandCSVRow(
 
     private val nodeType =
             when {
-                kind.endsWith("file", ignoreCase = true) -> NodeType.File
-                kind.endsWith("class", ignoreCase = true) -> NodeType.Class
+                kind.endsWith("file", ignoreCase = true)      -> NodeType.File
+                kind.endsWith("class", ignoreCase = true)     -> NodeType.Class
                 kind.endsWith("interface", ignoreCase = true) -> NodeType.Class
                 kind.endsWith("enum type", ignoreCase = true) -> NodeType.Class
-                else -> NodeType.Unknown
+                else                                          -> NodeType.Unknown
             }
 
     fun pathInTree(): Path {
         return when {
             isFileRow -> PathFactory.fromFileSystemPath(directoryContainingFile, pathSeparator)
-            else -> PathFactory.fromFileSystemPath(file, pathSeparator)
+            else      -> PathFactory.fromFileSystemPath(file, pathSeparator)
         }
     }
 
     fun asNode(): MutableNode {
         return when {
-            isFileRow -> MutableNode(filename, nodeType, attributes)
+            isFileRow                    -> MutableNode(filename, nodeType, attributes)
             nodeType == NodeType.Unknown -> throw IllegalArgumentException("Kind $kind not supported, yet.")
-            else -> MutableNode(name, nodeType, attributes,
-                    nodeMergingStrategy = NodeMaxAttributeMerger(true)
-            )
+            else                         -> MutableNode(name, nodeType, attributes,
+                    nodeMergingStrategy = NodeMaxAttributeMerger(true))
         }
     }
 }

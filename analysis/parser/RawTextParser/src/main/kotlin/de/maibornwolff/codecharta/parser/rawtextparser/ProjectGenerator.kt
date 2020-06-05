@@ -35,5 +35,6 @@ class ProjectGenerator(private val writer: Writer) {
         val node = MutableNode(fileName, attributes = metrics.value.metricMap)
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
+
     }
 }

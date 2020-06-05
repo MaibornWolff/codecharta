@@ -9,7 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import java.time.OffsetDateTime
-import java.util.Arrays
+import java.util.*
 
 class VersionControlledFileTest {
 
@@ -67,6 +67,7 @@ class VersionControlledFileTest {
         Assertions.assertThrows(IllegalStateException::class.java) {
             versionControlledFile.registerCommit(commit)
         }
+
     }
 
     @Test

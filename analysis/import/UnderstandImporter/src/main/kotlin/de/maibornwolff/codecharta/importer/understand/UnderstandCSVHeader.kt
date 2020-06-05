@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.understand
 
 import mu.KotlinLogging
+import java.util.*
 
 class UnderstandCSVHeader(header: Array<String?>) {
     private val logger = KotlinLogging.logger {}
@@ -23,11 +24,11 @@ class UnderstandCSVHeader(header: Array<String?>) {
         headerMap = HashMap()
         for (i in header.indices) {
             when {
-                header[i].isNullOrEmpty() ->
+                header[i].isNullOrEmpty()          ->
                     logger.warn { "Ignoring ${i + 1}-th column number due to: Column has no name." }
                 headerMap.containsValue(header[i]) ->
                     logger.warn { "Ignoring ${i + 1}-th column number due to: Column name '${header[i]}' duplicates a previous column." }
-                else ->
+                else                               ->
                     headerMap[i] = header[i]!!
             }
         }

@@ -53,7 +53,7 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
         return total / PAGE_SIZE + incrementor
     }
 
-    internal constructor(baseUrl: URL) : this("", baseUrl)
+    internal constructor(baseUrl: URL): this("", baseUrl)
 
     init {
 

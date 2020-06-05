@@ -1,10 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
-import java.util.function.BiConsumer
-import java.util.function.BinaryOperator
-import java.util.function.Predicate
-import java.util.function.Function
-import java.util.function.Supplier
+import java.util.*
+import java.util.function.*
 import java.util.stream.Collector
 import java.util.stream.Stream
 
@@ -43,10 +40,8 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
         lastCommit.add(logLine)
     }
 
-    private fun combineForParallelExecution(
-        firstList: MutableList<MutableList<String>>,
-        secondList: MutableList<MutableList<String>>
-    ): MutableList<MutableList<String>> {
+    private fun combineForParallelExecution(firstList: MutableList<MutableList<String>>,
+                                            secondList: MutableList<MutableList<String>>): MutableList<MutableList<String>> {
         throw UnsupportedOperationException("parallel collection of log lines not supported")
     }
 
