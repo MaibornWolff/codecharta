@@ -15,7 +15,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class NodeJsonDeserializerTest: Spek({
+class NodeJsonDeserializerTest : Spek({
     val NAME = "nodeName"
     val TYPE = NodeType.Folder
     val nodeClass = MutableNode::class.java

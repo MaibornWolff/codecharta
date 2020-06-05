@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaS
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.File
-import java.util.*
 
 class JavaSonarAnalyzerTest {
     private val path = File("src/test/resources/sampleproject").toString()
@@ -13,7 +12,6 @@ class JavaSonarAnalyzerTest {
     fun `single file is correctly analyzed`() {
         val fileList = ArrayList<String>()
         fileList.add("foo.java")
-
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
@@ -25,7 +23,6 @@ class JavaSonarAnalyzerTest {
         val fileList = ArrayList<String>()
         fileList.add("foo.java")
         fileList.add("bar/foo.java")
-
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
@@ -38,7 +35,6 @@ class JavaSonarAnalyzerTest {
         val fileList = ArrayList<String>()
         fileList.add("foo.java")
         fileList.add("bar/foo.java")
-
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
@@ -50,7 +46,6 @@ class JavaSonarAnalyzerTest {
     fun `correct metrics are retrieved`() {
         val fileList = ArrayList<String>()
         fileList.add("foo.java")
-
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
@@ -68,12 +63,12 @@ class JavaSonarAnalyzerTest {
         val path = File("src/test/resources").toString()
         val fileList = ArrayList<String>()
         fileList.add("sonar_issues_java/CodeSmell.java")
-
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(
-                metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue("code_smell")).isEqualTo(1)
+            metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue("code_smell")
+        ).isEqualTo(1)
     }
 
     @Test
@@ -81,7 +76,6 @@ class JavaSonarAnalyzerTest {
         val path = File("src/test/resources/sonar_issues_java").toString()
         val fileList = ArrayList<String>()
         fileList.add("Clean.java")
-
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
@@ -95,7 +89,6 @@ class JavaSonarAnalyzerTest {
         val path = File("src/test/resources/sonar_issues_java").toString()
         val fileList = ArrayList<String>()
         fileList.add("Clean.java")
-
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
@@ -107,11 +100,13 @@ class JavaSonarAnalyzerTest {
         val path = File("src/test/resources/sonar_issues_java").toString()
         val fileList = ArrayList<String>()
         fileList.add("CommentedOutCode.java")
-
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
-        assertThat(metrics.getFileMetricMap("CommentedOutCode.java")?.getMetricValue(
-                "commented_out_code_blocks")).isEqualTo(3)
+        assertThat(
+            metrics.getFileMetricMap("CommentedOutCode.java")?.getMetricValue(
+                "commented_out_code_blocks"
+            )
+        ).isEqualTo(3)
     }
 }

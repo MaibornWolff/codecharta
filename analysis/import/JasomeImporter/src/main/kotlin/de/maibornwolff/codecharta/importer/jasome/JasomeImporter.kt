@@ -10,7 +10,7 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from jasome xml file"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class JasomeImporter: Callable<Void> {
+class JasomeImporter : Callable<Void> {
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null

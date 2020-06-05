@@ -3,12 +3,17 @@ package de.maibornwolff.codecharta.importer.understand
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import mu.KotlinLogging
 import picocli.CommandLine
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.io.OutputStreamWriter
+import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "understandimport", description = ["generates cc.json from SciTools (TM) Understand csv"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class UnderstandImporter: Callable<Void> {
+class UnderstandImporter : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -51,4 +56,3 @@ class UnderstandImporter: Callable<Void> {
         }
     }
 }
-

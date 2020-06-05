@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import org.sonar.api.internal.apachecommons.io.FilenameUtils
 import java.io.File
 import java.nio.file.Paths
-import java.util.*
 
 class ProjectTraverser(var root: File, private val exclude: Array<String> = arrayOf()) {
     private var fileList: MutableList<File> = mutableListOf()
@@ -14,7 +13,7 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
 
         root.walk().forEach {
             val standardizedPath = "/" + getRelativeFileName(it.toString())
-            if(it.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))){
+            if (it.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))) {
                 fileList.add(it)
             }
         }

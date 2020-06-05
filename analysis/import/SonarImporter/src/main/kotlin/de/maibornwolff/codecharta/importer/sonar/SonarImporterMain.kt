@@ -6,7 +6,12 @@ import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatas
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
-import java.io.*
+import java.io.BufferedWriter
+import java.io.FileWriter
+import java.io.InputStream
+import java.io.OutputStreamWriter
+import java.io.PrintStream
+import java.io.Writer
 import java.net.URL
 import java.util.concurrent.Callable
 
@@ -15,9 +20,11 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from metric data from SonarQube"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class SonarImporterMain(private val input: InputStream = System.`in`,
-                        private val output: PrintStream = System.out,
-                        private val error: PrintStream = System.err) : Callable<Void> {
+class SonarImporterMain(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false

@@ -9,10 +9,12 @@ import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import io.mockk.every
 import io.mockk.mockk
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.nullValue
 import org.junit.Assert.assertThat
 import org.junit.Test
-import java.util.*
+import java.util.Arrays
 
 class SonarMeasuresAPIImporterTest {
 
