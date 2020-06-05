@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.e2e
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain.Companion.mainWithInOut
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.*
+import java.io.* // ktlint-disable
 
 class PipedInputStream {
     private val resource = "src/test/resources/sampleproject"

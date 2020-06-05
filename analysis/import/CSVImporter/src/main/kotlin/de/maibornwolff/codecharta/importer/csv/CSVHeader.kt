@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.csv
 
 import mu.KotlinLogging
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class CSVHeader(private val header: Array<String?>, private val pathColumnName: String = "path") {
     private val logger = KotlinLogging.logger {}

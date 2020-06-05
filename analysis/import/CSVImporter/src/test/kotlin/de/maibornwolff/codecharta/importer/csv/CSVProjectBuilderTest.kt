@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.* // ktlint-disable no-wildcard-imports
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.ByteArrayInputStream

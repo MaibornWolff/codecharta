@@ -1,10 +1,10 @@
 package model.src.main.kotlin.de.maibornwolff.codecharta.serialization
 
-import com.google.gson.*
+import com.google.gson.* // ktlint-disable no-wildcard-imports
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import java.lang.reflect.Type
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 internal class NodeJsonDeserializer : JsonDeserializer<Node> {
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Node {

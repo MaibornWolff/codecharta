@@ -18,12 +18,12 @@ object NodeMatcher {
     }
 
     fun match(n1: Node, n2: Node): Boolean {
-        return n1.name == n2.name
-            && n1.type == n2.type
-            && linksMatch(n1, n2)
-            && n1.attributes == n2.attributes
-            && n1.children.size == n2.children.size
-            && n1.children.indices
+        return n1.name == n2.name &&
+            n1.type == n2.type &&
+            linksMatch(n1, n2) &&
+            n1.attributes == n2.attributes &&
+            n1.children.size == n2.children.size &&
+            n1.children.indices
             .map { match(n1.children.toMutableList()[it], n2.children.toMutableList()[it]) }
             .fold(true) { x, y -> x && y }
     }

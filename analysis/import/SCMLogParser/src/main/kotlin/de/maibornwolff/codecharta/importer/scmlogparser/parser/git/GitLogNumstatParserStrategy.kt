@@ -53,10 +53,9 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
         private const val RENAME_FILE_LINE_SPLITTER = "[{}\\s+]"
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
         internal fun isFileLine(commitLine: String): Boolean {
-            return commitLine.length >= 5
-                && (
-                commitLine.matches(STANDARD_FILE_LINE_REGEX.toRegex())
-                    || commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
+            return commitLine.length >= 5 &&
+                (commitLine.matches(STANDARD_FILE_LINE_REGEX.toRegex()) ||
+                    commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
                 )
         }
 
@@ -82,7 +81,6 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
             var oldFileName: String
             var newFileName: String
 
-
             if (RENAMING_SEPARATOR == lineParts[4]) {
                 oldFileName = lineParts[2] + lineParts[3] + if (lineParts.size > 6) lineParts[6] else ""
                 if (lineParts[3].isEmpty()) {
@@ -100,7 +98,6 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
                 logger.warn { "Log line could not be parsed$fileLine" }
                 return Modification.EMPTY
             }
-
 
             return Modification(newFileName, oldFileName, additions, deletions, Modification.Type.RENAME)
         }

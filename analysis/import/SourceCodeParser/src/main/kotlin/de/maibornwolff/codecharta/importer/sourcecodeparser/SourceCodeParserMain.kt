@@ -4,8 +4,8 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.CSVMet
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.JSONMetricWriter
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metricwriters.MetricWriter
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
-import picocli.CommandLine.*
-import java.io.*
+import picocli.CommandLine.* // ktlint-disable no-wildcard-imports
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
@@ -109,4 +109,3 @@ class SourceCodeParserMain(
         }
     }
 }
-

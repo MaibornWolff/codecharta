@@ -4,7 +4,7 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.* // ktlint-disable no-wildcard-imports
 import java.lang.reflect.Type
 
 class ProjectJsonDeserializer : JsonDeserializer<Project> {

@@ -8,7 +8,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class LogLineParserTest {
     private val metricsFactory = mockk<MetricsFactory>()
@@ -33,7 +33,7 @@ class LogLineParserTest {
         val parser = LogLineParser(parserStrategy, metricsFactory)
         // when
         val commit = parser.parseCommit(input)
-        //then
+        // then
         assertThat(commit.author).isEqualTo(author)
         assertThat(commit.filenames).isEqualTo(filenames)
         assertThat(commit.commitDate).isEqualTo(commitDate)

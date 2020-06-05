@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.model.NodeMatcher.hasNodeAtPath
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.* // ktlint-disable no-wildcard-imports
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
@@ -12,7 +12,6 @@ class NodeInserterTest : Spek({
             val root = MutableNode("root", NodeType.Folder)
             val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
             NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion)
-
 
             it("should insert node in leaf position") {
                 assertThat(root.children, hasSize(1))

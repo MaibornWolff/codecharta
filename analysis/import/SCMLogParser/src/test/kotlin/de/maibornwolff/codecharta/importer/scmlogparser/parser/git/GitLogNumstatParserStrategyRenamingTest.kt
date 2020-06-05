@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 import java.util.function.Function
 
 @RunWith(Parameterized::class)

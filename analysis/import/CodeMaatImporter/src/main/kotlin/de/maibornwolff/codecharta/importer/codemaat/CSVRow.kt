@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
 import de.maibornwolff.codecharta.model.Edge
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class CSVRow(private val row: Array<String?>, private val header: CSVHeader, private val pathSeparator: Char) {
 

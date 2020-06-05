@@ -9,7 +9,7 @@ import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class CSVProjectBuilder(
     private val pathSeparator: Char,

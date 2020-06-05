@@ -1,10 +1,10 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.e2e
 
-import de.maibornwolff.codecharta.importer.sourcecodeparser.ProjectTraverser
+import de.maibornwolff.codecharta.importer.sourcecodeparser.ProjectTraverser // ktlint-disable
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import org.assertj.core.api.Assertions
 import org.junit.Test
-import java.io.File
+import java.io.File // ktlint-disable
 
 class ExcludeFilesAndFolders {
     private val resource = "src/test/resources"

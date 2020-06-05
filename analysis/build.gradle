@@ -13,6 +13,7 @@ buildscript {
 plugins {
     id 'org.sonarqube' version '2.8'
     id 'distribution'
+    id "org.jlleitschuh.gradle.ktlint" version "8.0.0"
 }
 
 allprojects {
@@ -40,6 +41,7 @@ sonarqube {
 
 subprojects {
     apply plugin: 'kotlin'
+    apply plugin: "org.jlleitschuh.gradle.ktlint"
 
     dependencies {
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version

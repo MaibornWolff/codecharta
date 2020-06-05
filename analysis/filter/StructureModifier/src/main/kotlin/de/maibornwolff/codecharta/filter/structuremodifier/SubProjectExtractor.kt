@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.* // ktlint-disable no-wildcard-imports
 import mu.KotlinLogging
 
 class SubProjectExtractor(private val project: Project) {

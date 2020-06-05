@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser
 import org.sonar.api.internal.apachecommons.io.FilenameUtils
 import java.io.File
 import java.nio.file.Paths
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class ProjectTraverser(var root: File, private val exclude: Array<String> = arrayOf()) {
     private var fileList: MutableList<File> = mutableListOf()

@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.* // ktlint-disable no-wildcard-imports
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource.Companion.PAGE_SIZE
@@ -12,7 +12,7 @@ import org.junit.Test
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class SonarMetricsAPIDatasourceIntegrationTest {
     @JvmField

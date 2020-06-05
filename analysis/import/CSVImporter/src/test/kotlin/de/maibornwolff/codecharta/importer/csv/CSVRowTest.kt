@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.model.Path
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.* // ktlint-disable no-wildcard-imports
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
@@ -13,7 +13,6 @@ private const val PATH_SEPARATOR = '\\'
 class CSVRowTest : Spek({
     describe("Using a header with path column") {
         val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib", "attrib2", ""))
-
 
         it("name of node should be filename from this columnn") {
             val nameExpectedFilenameMap = mapOf(

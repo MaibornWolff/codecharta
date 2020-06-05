@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
 import org.junit.Ignore
 import org.junit.jupiter.api.Test
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 
 class TokeiImporterTest {
     @Test

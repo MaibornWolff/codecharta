@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser
 import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser.Companion.mainWithInOut
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 
 class PipedInputStream {
     private val resource = "src/test/resources/example_git_numstat.log"

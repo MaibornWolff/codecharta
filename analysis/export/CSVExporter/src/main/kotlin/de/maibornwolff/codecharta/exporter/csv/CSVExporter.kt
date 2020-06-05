@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -93,4 +93,3 @@ private val Path.toPath: String
     get() {
         return this.edgesList.joinToString("/")
     }
-

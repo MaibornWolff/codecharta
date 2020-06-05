@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -51,4 +51,3 @@ class CSVImporter : Callable<Void> {
         }
     }
 }
-

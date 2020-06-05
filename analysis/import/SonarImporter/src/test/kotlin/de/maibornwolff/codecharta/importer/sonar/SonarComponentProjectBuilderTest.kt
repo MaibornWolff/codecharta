@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.importer.sonar.model.Measure
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.* // ktlint-disable no-wildcard-imports
 import org.junit.Assert.assertThat
 import org.junit.Test
 

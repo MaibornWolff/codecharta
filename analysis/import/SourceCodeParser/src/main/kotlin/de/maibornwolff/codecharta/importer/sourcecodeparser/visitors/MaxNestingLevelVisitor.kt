@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.visitors
 
 import org.sonar.java.ast.visitors.ComplexityVisitor
-import org.sonar.plugins.java.api.tree.*
+import org.sonar.plugins.java.api.tree.* // ktlint-disable no-wildcard-imports
 
 class MaxNestingLevelVisitor : ComplexityVisitor() {
     private var maxNestingLevel = 0

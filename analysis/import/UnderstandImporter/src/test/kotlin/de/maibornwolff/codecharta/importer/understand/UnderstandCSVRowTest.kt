@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.understand
 
 import de.maibornwolff.codecharta.model.Path
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.* // ktlint-disable no-wildcard-imports
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
@@ -72,7 +72,6 @@ class UnderstandCSVRowTest : Spek({
                     "someStupidKind"
                 )
             val understandCSVRow = UnderstandCSVRow(rawRow, header, pathSeparator)
-
 
             it("transforming toNode should throw exception") {
                 assertFailsWith(IllegalArgumentException::class) {

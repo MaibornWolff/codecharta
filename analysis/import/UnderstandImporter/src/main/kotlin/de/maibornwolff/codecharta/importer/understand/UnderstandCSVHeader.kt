@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.understand
 
 import mu.KotlinLogging
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class UnderstandCSVHeader(header: Array<String?>) {
     private val logger = KotlinLogging.logger {}

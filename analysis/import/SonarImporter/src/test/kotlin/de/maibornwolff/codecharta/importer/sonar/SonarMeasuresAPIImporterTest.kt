@@ -9,10 +9,10 @@ import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import io.mockk.every
 import io.mockk.mockk
 import org.hamcrest.CoreMatchers.not
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.* // ktlint-disable no-wildcard-imports
 import org.junit.Assert.assertThat
 import org.junit.Test
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class SonarMeasuresAPIImporterTest {
     private val metrics = Arrays.asList("MetricOne", "MetricTwo", "MetricThree")

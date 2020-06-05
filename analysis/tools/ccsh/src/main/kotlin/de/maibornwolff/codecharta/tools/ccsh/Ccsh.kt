@@ -86,9 +86,9 @@ class Ccsh : Callable<Void?> {
     object ManifestVersionProvider : CommandLine.IVersionProvider {
         override fun getVersion(): Array<String> {
             return arrayOf(
-                Ccsh::class.java.`package`.implementationTitle + "\n"
-                    + "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n"
-                    + "Copyright(c) 2020, MaibornWolff GmbH"
+                Ccsh::class.java.`package`.implementationTitle + "\n" +
+                    "version \"" + Ccsh::class.java.`package`.implementationVersion +
+                    "\"\n" + "Copyright(c) 2020, MaibornWolff GmbH"
             )
         }
     }

@@ -2,8 +2,8 @@ package de.maibornwolff.codecharta.importer.scmlogparser.converter
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import de.maibornwolff.codecharta.model.*
-import java.util.*
+import de.maibornwolff.codecharta.model.* // ktlint-disable no-wildcard-imports
+import java.util.* // ktlint-disable no-wildcard-imports
 
 /**
  * creates Projects from List of VersionControlledFiles

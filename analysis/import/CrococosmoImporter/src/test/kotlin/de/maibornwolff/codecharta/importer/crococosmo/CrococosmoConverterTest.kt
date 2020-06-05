@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.crococosmo
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import de.maibornwolff.codecharta.importer.crococosmo.model.*
+import de.maibornwolff.codecharta.importer.crococosmo.model.* // ktlint-disable no-wildcard-imports
 import org.junit.jupiter.api.Test
 
 class CrococosmoConverterTest {

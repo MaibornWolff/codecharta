@@ -119,7 +119,6 @@ class ProjectMergerTest : Spek({
             }
         }
 
-
         context("merging two projects with edges with leafNodeMergingStrategy") {
             val originalProject1 = ProjectDeserializer.deserializeProject(
                 InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE))

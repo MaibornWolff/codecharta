@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.* // ktlint-disable no-wildcard-imports
 import mu.KotlinLogging
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {

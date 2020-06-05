@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -72,4 +72,3 @@ class CodeMaatImporter : Callable<Void> {
         }
     }
 }
-

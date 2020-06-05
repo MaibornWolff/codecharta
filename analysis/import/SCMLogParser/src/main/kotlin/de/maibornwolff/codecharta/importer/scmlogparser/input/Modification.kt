@@ -1,9 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input
 
-class Modification(
-    val filename: String, val oldFilename: String, val additions: Long, val deletions: Long,
-    val type: Type
-) {
+class Modification(val filename: String, val oldFilename: String, val additions: Long, val deletions: Long, val type: Type) {
     constructor(filename: String, type: Type) : this(filename, 0, 0, type)
     constructor(filename: String, oldFilename: String, type: Type) : this(filename, oldFilename, 0, 0, type)
 

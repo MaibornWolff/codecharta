@@ -14,10 +14,10 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 @RunWith(Parameterized::class)
 class SCMLogProjectCreatorGoldenMasterTest(

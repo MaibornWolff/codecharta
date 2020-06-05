@@ -6,7 +6,7 @@ import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasItem
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 import kotlin.test.assertFailsWith
 
 class TreeTest : Spek({

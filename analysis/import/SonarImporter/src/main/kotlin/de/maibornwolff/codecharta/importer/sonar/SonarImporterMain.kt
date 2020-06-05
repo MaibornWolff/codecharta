@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatas
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.net.URL
 import java.util.concurrent.Callable
 

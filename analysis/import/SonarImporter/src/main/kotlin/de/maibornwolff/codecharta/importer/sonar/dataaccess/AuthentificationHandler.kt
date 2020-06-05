@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 internal object AuthentificationHandler {
     fun createAuthTxtBase64Encoded(username: String): String {

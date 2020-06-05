@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.sonar.model.Component
 import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.importer.sonar.model.Measure
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.* // ktlint-disable no-wildcard-imports
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 class SonarComponentProjectBuilder(

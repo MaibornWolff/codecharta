@@ -1,13 +1,9 @@
 package de.maibornwolff.codecharta.importer.understand
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.* // ktlint-disable no-wildcard-imports
 import java.util.regex.Pattern
 
-class UnderstandCSVRow(
-    private val rawRow: Array<String?>, private val header: UnderstandCSVHeader,
-    private val pathSeparator: Char
-) {
-
+class UnderstandCSVRow(private val rawRow: Array<String?>, private val header: UnderstandCSVHeader, private val pathSeparator: Char) {
     init {
         if (rawRow.size <= maxOf(header.fileColumn, header.nameColumn, header.kindColumn)) {
             throw IllegalArgumentException(

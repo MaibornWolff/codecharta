@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sonar
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.* // ktlint-disable no-wildcard-imports
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain.Companion.main
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
@@ -32,7 +32,6 @@ class SonarImporterMainTest {
                 )
         )
 
-
         main(arrayOf("http://localhost:8089/", "someproject"))
 
         verify(1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)))
@@ -51,9 +50,7 @@ class SonarImporterMainTest {
                 )
         )
 
-
         main(arrayOf("http://localhost:8089", "someproject"))
-
         verify(1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)))
     }
 }

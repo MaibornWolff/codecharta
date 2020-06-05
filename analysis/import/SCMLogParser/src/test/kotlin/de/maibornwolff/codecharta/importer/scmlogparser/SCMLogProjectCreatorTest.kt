@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 import java.util.function.Function
 
 @RunWith(Parameterized::class)

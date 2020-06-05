@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.understand
 
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.* // ktlint-disable no-wildcard-imports
 import org.hamcrest.MatcherAssert.assertThat
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -39,7 +39,6 @@ class UnderstandCSVHeaderTest : Spek({
         it("should ignore empty columns") {
             assertThat(header.columnNumbers, not(hasItem(2)))
         }
-
 
         it("should ignore null columns") {
             assertThat(header.columnNumbers, not(hasItem(3)))

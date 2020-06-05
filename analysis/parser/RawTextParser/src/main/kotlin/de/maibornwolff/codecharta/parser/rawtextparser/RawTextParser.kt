@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
 import picocli.CommandLine.call
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 

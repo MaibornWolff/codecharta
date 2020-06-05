@@ -8,7 +8,7 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.*
+import java.io.* // ktlint-disable
 
 class RawTextParserTest {
     @Test

@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.jasome
 
 import de.maibornwolff.codecharta.importer.jasome.model.Class
 import de.maibornwolff.codecharta.importer.jasome.model.Package
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.* // ktlint-disable no-wildcard-imports
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

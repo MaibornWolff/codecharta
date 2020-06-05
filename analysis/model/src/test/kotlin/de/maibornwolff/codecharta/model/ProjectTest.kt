@@ -11,11 +11,9 @@ class ProjectTest : Spek({
             assertThat(Project.isAPIVersionCompatible(Project.API_VERSION), `is`(true))
         }
 
-
         it("should be compatible with same major Version") {
             assertThat(Project.isAPIVersionCompatible("1.2"), `is`(true))
         }
-
 
         it("should not be compatible with different major version") {
             assertThat(Project.isAPIVersionCompatible("2.0"), `is`(false))

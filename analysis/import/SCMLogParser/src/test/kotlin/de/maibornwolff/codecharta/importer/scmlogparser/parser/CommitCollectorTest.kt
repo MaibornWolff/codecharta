@@ -4,10 +4,10 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import org.assertj.core.api.Assertions.*
+import org.assertj.core.api.Assertions.* // ktlint-disable no-wildcard-imports
 import org.junit.Test
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 import java.util.Arrays.asList
 import java.util.function.Function
 import java.util.stream.Stream

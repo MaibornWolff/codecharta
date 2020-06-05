@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.understand
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import mu.KotlinLogging
 import picocli.CommandLine
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -51,4 +51,3 @@ class UnderstandImporter : Callable<Void> {
         }
     }
 }
-

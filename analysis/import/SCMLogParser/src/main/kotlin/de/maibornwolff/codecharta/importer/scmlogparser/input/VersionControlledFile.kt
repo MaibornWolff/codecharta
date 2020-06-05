@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metric
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.model.Edge
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class VersionControlledFile internal constructor(
     filename: String,

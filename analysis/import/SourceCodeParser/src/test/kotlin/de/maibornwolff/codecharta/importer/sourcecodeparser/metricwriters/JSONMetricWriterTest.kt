@@ -44,7 +44,6 @@ class JSONMetricWriterTest {
         val parser = JsonParser()
         val expectedJson = parser.parse(expectedResultFile.reader()).toString()
 
-
         Assertions.assertThat(resultJSON == expectedJson).isTrue()
     }
 

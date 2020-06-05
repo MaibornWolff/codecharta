@@ -6,7 +6,7 @@ import de.maibornwolff.codecharta.model.Edge
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 import java.util.stream.Collectors
 
 class HighlyCoupledFilesTest {

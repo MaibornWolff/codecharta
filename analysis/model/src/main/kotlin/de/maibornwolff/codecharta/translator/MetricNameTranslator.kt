@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.translator
 
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 /**
  * This class provides methods to translate metric names. This enables normalization of metric names.

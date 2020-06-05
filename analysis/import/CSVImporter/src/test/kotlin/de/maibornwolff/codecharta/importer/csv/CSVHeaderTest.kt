@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.csv
 
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.* // ktlint-disable no-wildcard-imports
 import org.hamcrest.MatcherAssert.assertThat
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
@@ -28,7 +28,6 @@ class CSVHeaderTest : Spek({
         it("should ignore empty columns") {
             assertThat(header.columnNumbers, not(hasItem(2)))
         }
-
 
         it("should ignore null columns") {
             assertThat(header.columnNumbers, not(hasItem(3)))
@@ -62,7 +61,6 @@ class CSVHeaderTest : Spek({
             assertThat(header.pathColumn, `is`(1))
         }
     }
-
 
     describe("a header without path column and empty first column") {
         val header = CSVHeader(arrayOf("", null, "second", "third"))

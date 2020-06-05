@@ -10,7 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class ProjectConverterTest {
     private val metricsFactory = mockk<MetricsFactory>()
@@ -31,37 +31,37 @@ class ProjectConverterTest {
         val projectConverter = ProjectConverter(true)
         // when
         val project = projectConverter.convert(emptyList(), metricsFactory)
-        //then
+        // then
         assertThat(project.rootNode.leaves).hasSize(1)
     }
 
     @Test
     fun canConvertProjectWithAuthors() {
-        //given
+        // given
         val projectConverter = ProjectConverter(true)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
-        //when
+        // when
         val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
-        //then
+        // then
         assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isTrue()
     }
 
     @Test
     fun canConvertProjectWithoutAuthors() {
-        //given
+        // given
         val projectConverter = ProjectConverter(false)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
-        //when
+        // when
         val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
-        //then
+        // then
         assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isFalse()
     }
 
     @Test
     fun edgesAreRegisteredInProject() {
-        //given
+        // given
         val projectConverter = ProjectConverter(true)
         val metricsFactory = MetricsFactory().createMetrics()
         val file1 = VersionControlledFile("File 1", metricsFactory)
@@ -69,9 +69,9 @@ class ProjectConverterTest {
         for (i in 0..4) {
             file1.registerCommit(commit)
         }
-        //when
+        // when
         val project = projectConverter.convert(listOf(file1), MetricsFactory())
-        //then
+        // then
         assertThat(project.edges.size).isEqualTo(1)
         assertThat(project.edges[0].toNodeName).isEqualTo("/root/File 2")
         assertThat(project.edges[0].fromNodeName).isEqualTo("/root/File 1")

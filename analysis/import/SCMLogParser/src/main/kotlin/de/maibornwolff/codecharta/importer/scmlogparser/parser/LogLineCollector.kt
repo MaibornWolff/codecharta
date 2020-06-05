@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
-import java.util.*
-import java.util.function.*
+import java.util.* // ktlint-disable no-wildcard-imports
+import java.util.function.* // ktlint-disable no-wildcard-imports
 import java.util.stream.Collector
 import java.util.stream.Stream
 

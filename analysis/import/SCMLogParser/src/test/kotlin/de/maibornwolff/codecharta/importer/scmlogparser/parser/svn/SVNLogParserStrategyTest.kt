@@ -7,7 +7,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 import java.util.stream.Stream
 
 class SVNLogParserStrategyTest : ParserStrategyContractTest() {

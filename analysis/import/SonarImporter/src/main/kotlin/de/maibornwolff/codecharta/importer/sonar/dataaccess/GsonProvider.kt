@@ -28,19 +28,12 @@ class GsonProvider<T> : MessageBodyReader<T> {
         this.gson = builder.create()
     }
 
-    override fun isReadable(
-        type: Class<*>, genericType: Type,
-        annotations: Array<Annotation>, mediaType: MediaType
-    ): Boolean {
+    override fun isReadable(type: Class<*>, genericType: Type, annotations: Array<Annotation>, mediaType: MediaType): Boolean {
         return true
     }
 
     @Throws(IOException::class, WebApplicationException::class)
-    override fun readFrom(
-        type: Class<T>, genericType: Type, annotations: Array<Annotation>,
-        mediaType: MediaType, httpHeaders: MultivaluedMap<String, String>,
-        entityStream: InputStream
-    ): T {
+    override fun readFrom(type: Class<T>, genericType: Type, annotations: Array<Annotation>, mediaType: MediaType, httpHeaders: MultivaluedMap<String, String>, entityStream: InputStream): T {
         InputStreamReader(entityStream, "UTF-8").use { reader -> return gson.fromJson<T>(reader, type) }
     }
 }

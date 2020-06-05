@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaS
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.File
-import java.util.*
+import java.util.* // ktlint-disable
 
 class JavaSonarAnalyzerTest {
     private val path = File("src/test/resources/sampleproject").toString()

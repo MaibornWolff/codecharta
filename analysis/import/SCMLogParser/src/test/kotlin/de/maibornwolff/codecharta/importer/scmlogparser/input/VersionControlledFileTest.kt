@@ -9,7 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.* // ktlint-disable no-wildcard-imports
 
 class VersionControlledFileTest {
     @Test

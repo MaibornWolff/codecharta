@@ -2,14 +2,13 @@ package de.maibornwolff.codecharta.importer.understand
 
 import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.* // ktlint-disable no-wildcard-imports
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
 class UnderstandProjectBuilderTest : Spek({
     describe("UnderstandProjectBuilder for Understand") {
         val understandProjectBuilder = UnderstandProjectBuilder('/')
-
 
         context("reading csv lines from Understand") {
             val project = understandProjectBuilder

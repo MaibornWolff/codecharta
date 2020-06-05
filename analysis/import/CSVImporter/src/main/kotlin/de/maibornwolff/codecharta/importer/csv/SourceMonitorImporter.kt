@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.csv
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -75,4 +75,3 @@ class SourceMonitorImporter : Callable<Void> {
         }
     }
 }
-

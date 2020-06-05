@@ -2,8 +2,8 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain
 import de.maibornwolff.codecharta.importer.sourcecodeparser.e2e.StreamHelper.Companion.retrieveStreamAsString
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.ByteArrayOutputStream
-import java.io.PrintStream
+import java.io.ByteArrayOutputStream // ktlint-disable
+import java.io.PrintStream // ktlint-disable
 
 class ParseFileToJson {
     private val resource = "src/test/resources/ScriptShellSample.java"
