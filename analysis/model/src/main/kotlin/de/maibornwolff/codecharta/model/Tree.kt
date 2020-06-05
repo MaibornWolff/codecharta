@@ -68,8 +68,8 @@ abstract class Tree<T> {
     fun getNodeBy(path: Path): Tree<T>? {
         return when {
             path.isTrivial -> this
-            path.isSingle  -> children.first { path == getPathOfChild(it) }
-            else           -> getNodeBy(Path(listOf(path.head)))!!.getNodeBy(path.tail)
+            path.isSingle -> children.first { path == getPathOfChild(it) }
+            else -> getNodeBy(Path(listOf(path.head)))!!.getNodeBy(path.tail)
         }
     }
 

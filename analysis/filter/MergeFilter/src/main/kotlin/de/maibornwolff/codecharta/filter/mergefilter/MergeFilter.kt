@@ -11,7 +11,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(name = "merge",
         description = ["merges multiple cc.json files"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class MergeFilter: Callable<Void?> {
+class MergeFilter : Callable<Void?> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -39,9 +39,9 @@ class MergeFilter: Callable<Void?> {
     override fun call(): Void? {
         val nodeMergerStrategy =
                 when {
-                    leafStrategySet                          -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
+                    leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
                     recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
-                    else                                     -> throw IllegalArgumentException(
+                    else -> throw IllegalArgumentException(
                             "Only one merging strategy must be set")
                 }
 

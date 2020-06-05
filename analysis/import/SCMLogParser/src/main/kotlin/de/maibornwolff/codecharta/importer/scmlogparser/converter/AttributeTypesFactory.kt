@@ -22,6 +22,4 @@ object AttributeTypesFactory {
         }
         return attributeTypes
     }
-
-
 }

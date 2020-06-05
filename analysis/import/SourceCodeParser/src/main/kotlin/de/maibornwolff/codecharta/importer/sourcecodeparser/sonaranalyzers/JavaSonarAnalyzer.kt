@@ -20,7 +20,11 @@ import org.sonar.api.rule.RuleKey
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition
 import org.sonar.api.server.rule.RulesDefinition
 import org.sonar.api.utils.Version
-import org.sonar.java.*
+import org.sonar.java.AnalysisException
+import org.sonar.java.DefaultJavaResourceLocator
+import org.sonar.java.JavaClasspath
+import org.sonar.java.JavaTestClasspath
+import org.sonar.java.SonarComponents
 import org.sonar.java.ast.parser.JavaParser
 import org.sonar.java.checks.CheckList
 import org.sonar.java.model.DefaultJavaFileScannerContext
@@ -37,21 +41,16 @@ import java.io.PrintStream
 import java.nio.charset.StandardCharsets
 
 class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) : SonarAnalyzer(verbose, searchIssues) {
-
     override val FILE_EXTENSION = "java"
     override lateinit var baseDir: File
     val MAX_FILE_NAME_PRINT_LENGTH = 30
-
     private val SONAR_VERSION_MAJOR = 7
     private val SONAR_VERSION_MINOR = 3
-
     private lateinit var javaClasspath: JavaClasspath
     private lateinit var sonarComponents: SonarComponents
-
     private var activeRules = ActiveRulesBuilder().build()
     private var mapSettings = MapSettings().asConfig()
     private lateinit var issueRepository: RulesDefinition.Repository
-
     private var totalFiles = 0
     private var analyzedFiles = 0
     private val originalOut = System.out
@@ -64,7 +63,10 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     }
 
     private fun createIssueRepository() {
-        val sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR), SonarQubeSide.SERVER)
+        val sonarRuntime = SonarRuntimeImpl.forSonarQube(
+            Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR),
+            SonarQubeSide.SERVER
+        )
         val definition = JavaRulesDefinition(mapSettings, sonarRuntime)
         val context = RulesDefinition.Context()
         definition.define(context)
@@ -72,12 +74,14 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     }
 
     private fun setActiveRules() {
-        val sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR), SonarQubeSide.SERVER)
+        val sonarRuntime = SonarRuntimeImpl.forSonarQube(
+            Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR),
+            SonarQubeSide.SERVER
+        )
         val profileDef = JavaSonarWayProfile(sonarRuntime)
         val context = BuiltInQualityProfilesDefinition.Context()
         profileDef.define(context)
         val rules = context.profile("java", "Sonar way").rules()
-
         val activeRulesBuilder = ActiveRulesBuilder()
         rules.forEach { activeRulesBuilder.create(RuleKey.of(CheckList.REPOSITORY_KEY, it.ruleKey())).activate() }
         activeRules = activeRulesBuilder.build()
@@ -85,7 +89,12 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     override fun createContext() {
         sensorContext = SensorContextTester.create(baseDir)
-        sensorContext.setRuntime(SonarRuntimeImpl.forSonarQube(Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR), SonarQubeSide.SERVER))
+        sensorContext.setRuntime(
+            SonarRuntimeImpl.forSonarQube(
+                Version.create(SONAR_VERSION_MAJOR, SONAR_VERSION_MINOR),
+                SonarQubeSide.SERVER
+            )
+        )
         javaClasspath = JavaClasspath(mapSettings, sensorContext.fileSystem())
     }
 
@@ -108,7 +117,6 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
                 e.printStackTrace()
                 continue
             }
-
             val fileMetrics = retrieveMetrics(file)
 
             runBlocking(Dispatchers.Default) {
@@ -127,11 +135,11 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         val javaTestClasspath = JavaTestClasspath(mapSettings, sensorContext.fileSystem())
         val fileLinesContextFactory = NullFileLinesContextFactory()
         sonarComponents = SonarComponents(
-                fileLinesContextFactory,
-                sensorContext.fileSystem(),
-                javaClasspath,
-                javaTestClasspath,
-                checkFactory
+            fileLinesContextFactory,
+            sensorContext.fileSystem(),
+            javaClasspath,
+            javaTestClasspath,
+            checkFactory
         )
         sonarComponents.setSensorContext(this.sensorContext)
     }
@@ -142,23 +150,23 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     private fun getInputFile(fileName: String): InputFile {
         return TestInputFileBuilder.create("moduleKey", fileName)
-                .setModuleBaseDir(baseDir.toPath())
-                .setCharset(StandardCharsets.UTF_8)
-                .setType(InputFile.Type.MAIN)
-                .setLanguage(Java.KEY)
-                .initMetadata(fileContent(File("$baseDir/$fileName"), StandardCharsets.UTF_8))
-                .build()
+            .setModuleBaseDir(baseDir.toPath())
+            .setCharset(StandardCharsets.UTF_8)
+            .setType(InputFile.Type.MAIN)
+            .setLanguage(Java.KEY)
+            .initMetadata(fileContent(File("$baseDir/$fileName"), StandardCharsets.UTF_8))
+            .build()
     }
 
     override fun executeScan() {
         runBlocking {
             launch {
                 val javaSquidSensor = JavaSquidSensor(
-                        sonarComponents,
-                        sensorContext.fileSystem(),
-                        DefaultJavaResourceLocator(javaClasspath),
-                        mapSettings,
-                        NoSonarFilter()
+                    sonarComponents,
+                    sensorContext.fileSystem(),
+                    DefaultJavaResourceLocator(javaClasspath),
+                    mapSettings,
+                    NoSonarFilter()
                 )
                 javaSquidSensor.execute(sensorContext)
             }
@@ -167,17 +175,19 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     private fun retrieveIssues(): HashMap<String, Int> {
         val issues: HashMap<String, Int> = hashMapOf(
-                "bug" to 0,
-                "vulnerability" to 0,
-                "code_smell" to 0,
-                "security_hotspot" to 0,
-                "sonar_issue_other" to 0
+            "bug" to 0,
+            "vulnerability" to 0,
+            "code_smell" to 0,
+            "security_hotspot" to 0,
+            "sonar_issue_other" to 0
         )
 
         sensorContext.allIssues().forEach {
             val ruleKey = it.ruleKey().rule()
             val type = issueRepository.rule(ruleKey)?.type().toString().toLowerCase()
-            if (verbose) System.err.println("Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}")
+            if (verbose) System.err.println(
+                "Found: $type ${it.ruleKey().rule()} \n with message ${it.primaryLocation().message()}"
+            )
             if (issues.containsKey(type)) {
                 issues[type] = issues[type]!! + 1
             } else {
@@ -189,7 +199,6 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     private fun retrieveAdditionalMetrics(fileName: String): HashMap<String, Int> {
         val additionalMetrics: HashMap<String, Int> = hashMapOf()
-
         val tree: Tree
         try {
             tree = buildTree(fileName)
@@ -197,7 +206,6 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
             System.err.println("Syntax error in file $fileName, therefore some metrics are not calculated")
             return hashMapOf()
         }
-
         val commentedOutBlocks = sensorContext.allIssues().filter { it.ruleKey().rule() == "CommentedOutCodeLine" }
         additionalMetrics["commented_out_code_blocks"] = commentedOutBlocks.size
         addMetricsFromVisitors(tree, additionalMetrics)
@@ -208,7 +216,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun buildTree(fileName: String): Tree {
         val compilationUnitTree = JavaParser.createParser().parse(File("$baseDir/$fileName")) as CompilationUnitTree
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
-                compilationUnitTree, getInputFile(fileName), null, null, JavaVersionImpl(), true)
+            compilationUnitTree, getInputFile(fileName), null, null, JavaVersionImpl(), true
+        )
 
         return defaultJavaFileScannerContext.tree
     }
@@ -221,7 +230,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         analyzedFiles += 1
         val percentage = analyzedFiles.toFloat() / totalFiles * 100
         val roundedPercentage = String.format("%.1f", percentage)
-        val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH) else fileName
+        val currentFile =
+            if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH) else fileName
         val message = "\r Analyzing .java files... $roundedPercentage% ($currentFile)"
 
         System.setOut(originalOut)

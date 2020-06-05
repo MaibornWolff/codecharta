@@ -3,7 +3,11 @@ package de.maibornwolff.codecharta.importer.tokeiimporter
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.AttributeTypes
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.PathFactory
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +15,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import picocli.CommandLine
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStreamWriter
+import java.io.PrintStream
+import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -19,9 +30,11 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from tokei json"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class TokeiImporter(private val input: InputStream = System.`in`,
-                    private val output: PrintStream = System.out,
-                    private val error: PrintStream = System.err) : Callable<Void> {
+class TokeiImporter(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Void> {
     private var TOP_LEVEL_OBJECT: String = "inner"
     private val logger = KotlinLogging.logger {}
 
@@ -53,7 +66,7 @@ class TokeiImporter(private val input: InputStream = System.`in`,
         print(" ")
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
-runBlocking (Dispatchers.Default) {
+runBlocking(Dispatchers.Default) {
     val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
     val gson = Gson()
     for (languageEntry in languageSummaries.entrySet()) {
@@ -88,7 +101,7 @@ runBlocking (Dispatchers.Default) {
 
     private fun getInput(): JsonElement? {
         var root: JsonElement? = null
-        runBlocking (Dispatchers.Default) {
+        runBlocking(Dispatchers.Default) {
             if (file != null) {
                 launch {
                     if (file!!.isFile) {
@@ -133,4 +146,3 @@ runBlocking (Dispatchers.Default) {
         }
     }
 }
-

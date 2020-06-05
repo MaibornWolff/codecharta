@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser
 import de.maibornwolff.codecharta.importer.scmlogparser.SCMLogParser.Companion.mainWithInOut
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.*
+import java.io.* // ktlint-disable no-wildcard-imports
 
 class PipedInputStream {
     private val resource = "src/test/resources/example_git_numstat.log"
@@ -14,7 +14,6 @@ class PipedInputStream {
         val input = File("src/test/resources/cc_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
         return executeForOutput(input, arrayOf(resource, "--input-format=GIT_LOG_NUMSTAT"))
     }
-
 
     @Test
     fun `json output does contain files from scan`() {
@@ -41,8 +40,9 @@ class PipedInputStream {
             outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
     private fun outputAsString(
-            inputStream: InputStream = System.`in`,
-            aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+        inputStream: InputStream = System.`in`,
+        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+    ) =
             ByteArrayOutputStream().use { baOutputStream ->
                 PrintStream(baOutputStream).use { outputStream ->
                     aMethod(inputStream, outputStream, System.err)
