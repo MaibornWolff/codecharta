@@ -3,12 +3,12 @@ package de.maibornwolff.codecharta.model
 import javax.naming.OperationNotSupportedException
 
 class Node(
-    val name: String,
-    val type: NodeType? = NodeType.File,
-    val attributes: Map<String, Any> = mapOf(),
-    val link: String? = "",
-    override val children: Set<Node> = setOf()
-) : Tree<Node>() {
+        val name: String,
+        val type: NodeType? = NodeType.File,
+        val attributes: Map<String, Any> = mapOf(),
+        val link: String? = "",
+        override val children: Set<Node> = setOf()
+): Tree<Node>() {
 
     override fun getPathOfChild(child: Tree<Node>): Path {
         if (!children.contains(child)) {

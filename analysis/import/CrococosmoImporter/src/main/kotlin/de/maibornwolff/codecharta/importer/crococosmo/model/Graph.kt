@@ -5,6 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties("edges")
 class Graph(
-    @JsonProperty("schema") val schema: Schema,
-    @JsonProperty("nodes") val nodes: List<Node>
+        @JsonProperty("schema") val schema: Schema,
+        @JsonProperty("nodes") val nodes: List<Node>
 )

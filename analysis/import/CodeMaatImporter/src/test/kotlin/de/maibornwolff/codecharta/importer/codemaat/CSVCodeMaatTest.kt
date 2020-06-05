@@ -7,7 +7,7 @@ import org.hamcrest.Matchers.`is`
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class CSVCodeMaatTest : Spek({
+class CSVCodeMaatTest: Spek({
 
     describe("CSVProjectBuilder for CodeMaat") {
         val csvProjectBuilder = CSVProjectBuilder('\\', ',',
@@ -38,6 +38,7 @@ class CSVCodeMaatTest : Spek({
             }
         }
     }
+
 })
 
 fun getChildByName(edges: List<Edge>, fromNodeName: String, toNodeName: String): Edge {

@@ -44,7 +44,7 @@ import java.util.concurrent.Callable
         versionProvider = Ccsh.ManifestVersionProvider::class,
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class Ccsh : Callable<Void?> {
+class Ccsh: Callable<Void?> {
 
     @CommandLine.Option(names = ["-v", "--version"], versionHelp = true,
             description = ["prints version info and exits"])
@@ -84,19 +84,19 @@ class Ccsh : Callable<Void?> {
         }
     }
 
-    object ManifestVersionProvider : CommandLine.IVersionProvider {
+    object ManifestVersionProvider: CommandLine.IVersionProvider {
         override fun getVersion(): Array<String> {
             return arrayOf(
-                    Ccsh::class.java.`package`.implementationTitle + "\n" +
-                    "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n" +
-                            "Copyright(c) 2020, MaibornWolff GmbH"
+                    Ccsh::class.java.`package`.implementationTitle + "\n"
+                    + "version \"" + Ccsh::class.java.`package`.implementationVersion + "\"\n"
+                            + "Copyright(c) 2020, MaibornWolff GmbH"
             )
         }
     }
 }
 
 @CommandLine.Command(name = "install", description = ["[deprecated]: does nothing"])
-class Installer : Callable<Void?> {
+class Installer: Callable<Void?> {
 
     override fun call(): Void? {
         println("[deprecated]: does nothing")

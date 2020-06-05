@@ -1,21 +1,12 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.visitors
 
 import org.sonar.java.ast.visitors.ComplexityVisitor
-import org.sonar.plugins.java.api.tree.ConditionalExpressionTree
-import org.sonar.plugins.java.api.tree.DoWhileStatementTree
-import org.sonar.plugins.java.api.tree.ForEachStatement
-import org.sonar.plugins.java.api.tree.ForStatementTree
-import org.sonar.plugins.java.api.tree.IfStatementTree
-import org.sonar.plugins.java.api.tree.LambdaExpressionTree
-import org.sonar.plugins.java.api.tree.MethodTree
-import org.sonar.plugins.java.api.tree.SwitchExpressionTree
-import org.sonar.plugins.java.api.tree.Tree
-import org.sonar.plugins.java.api.tree.TryStatementTree
-import org.sonar.plugins.java.api.tree.WhileStatementTree
+import org.sonar.plugins.java.api.tree.*
 
-class MaxNestingLevelVisitor : ComplexityVisitor() {
+class MaxNestingLevelVisitor: ComplexityVisitor() {
     private var maxNestingLevel = 0
     private var currentNestingLevel = 0
+
     fun getMaxNestingLevel(tree: Tree): Int {
         super.getNodes(tree)
 

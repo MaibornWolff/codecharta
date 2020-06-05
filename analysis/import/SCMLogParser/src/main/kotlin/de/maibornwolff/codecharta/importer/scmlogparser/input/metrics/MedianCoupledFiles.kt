@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.model.AttributeType
 
-class MedianCoupledFiles : Metric {
+class MedianCoupledFiles: Metric {
     private val numberCommitedFiles = mutableListOf<Int>()
 
     private fun Iterable<Double>.median(): Double {

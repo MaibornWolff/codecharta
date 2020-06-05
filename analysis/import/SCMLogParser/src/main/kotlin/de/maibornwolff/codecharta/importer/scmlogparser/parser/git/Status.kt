@@ -21,11 +21,11 @@ internal enum class Status(private val letter: Char) {
 
     fun toModificationType(): Modification.Type {
         return when (this) {
-            ADDED -> Modification.Type.ADD
-            DELETED -> Modification.Type.DELETE
+            ADDED    -> Modification.Type.ADD
+            DELETED  -> Modification.Type.DELETE
             MODIFIED -> Modification.Type.MODIFY
-            RENAMED -> Modification.Type.RENAME
-            else -> Modification.Type.UNKNOWN
+            RENAMED  -> Modification.Type.RENAME
+            else     -> Modification.Type.UNKNOWN
         }
     }
 

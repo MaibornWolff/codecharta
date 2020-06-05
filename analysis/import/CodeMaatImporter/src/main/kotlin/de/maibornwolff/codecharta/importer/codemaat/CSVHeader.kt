@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.codemaat
 
 import mu.KotlinLogging
+import java.util.*
 
 class CSVHeader(header: Array<String?>) {
     private val logger = KotlinLogging.logger {}
@@ -12,8 +13,8 @@ class CSVHeader(header: Array<String?>) {
 
     val pathColumn: List<Int>
         get() = headerMap.keys.filter { i ->
-            headerMap[i].equals("entity", ignoreCase = true) ||
-            headerMap[i].equals("coupled", ignoreCase = true)
+            headerMap[i].equals("entity", ignoreCase = true)
+            || headerMap[i].equals("coupled", ignoreCase = true)
         }
 
     init {

@@ -1,11 +1,6 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
-import de.maibornwolff.codecharta.model.Project
-import de.maibornwolff.codecharta.model.ProjectBuilder
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.Edge
-import de.maibornwolff.codecharta.model.AttributeType
-import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
 class NodeRemover(private val project: Project) {
@@ -60,4 +55,5 @@ class NodeRemover(private val project: Project) {
         paths.forEach { path -> blacklist = blacklist.filter { !it.path.contains(path) } }
         return blacklist.toMutableList()
     }
+
 }

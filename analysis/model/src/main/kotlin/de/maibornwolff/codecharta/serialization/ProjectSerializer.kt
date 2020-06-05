@@ -18,7 +18,7 @@ object ProjectSerializer {
     /**
      * This method serializes a Project-Object to json and writes it into the specified file.
      *
-     * @param project the Project-Object to be serialized
+     * @param project    the Project-Object to be serialized
      * @param targetPath the path of the output-file
      */
     @Throws(IOException::class)
@@ -35,7 +35,7 @@ object ProjectSerializer {
      * This method serializes a Project-Object to json and writes using given writer
      *
      * @param project the Project-Object to be serialized
-     * @param out writer to write serialized object
+     * @param out     writer to write serialized object
      */
     @Throws(IOException::class)
     fun serializeProject(project: Project, out: Writer) {

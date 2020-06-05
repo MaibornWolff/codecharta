@@ -6,9 +6,7 @@ import de.maibornwolff.codecharta.importer.sonar.model.Measure
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import de.maibornwolff.codecharta.model.NodeType
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
-import org.hamcrest.Matchers.hasSize
-import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.hasEntry
+import org.hamcrest.Matchers.*
 import org.junit.Assert.assertThat
 import org.junit.Test
 

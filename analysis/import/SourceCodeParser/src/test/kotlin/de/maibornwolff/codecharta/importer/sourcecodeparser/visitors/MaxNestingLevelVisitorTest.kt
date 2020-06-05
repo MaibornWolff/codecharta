@@ -17,7 +17,7 @@ import java.nio.file.Files
 class MaxNestingLevelVisitorTest {
     private val baseDir = File("src/test/resources/max-nesting-level").absoluteFile
 
-    private fun getTree(fileName: String): Tree {
+    private fun getTree(fileName: String) : Tree {
         val file = File("$baseDir/$fileName")
         val inputFile: InputFile = TestInputFileBuilder.create("moduleKey", fileName)
                 .setModuleBaseDir(baseDir.toPath())

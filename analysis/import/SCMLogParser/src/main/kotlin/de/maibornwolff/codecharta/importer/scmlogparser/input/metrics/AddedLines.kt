@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
-class AddedLines : Metric {
+class AddedLines: Metric {
     private var loc: Long = 0
 
     override fun description(): String {

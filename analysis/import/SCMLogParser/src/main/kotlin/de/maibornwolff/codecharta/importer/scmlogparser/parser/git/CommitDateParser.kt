@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser.git
 
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import java.util.*
 
 internal object CommitDateParser {
     const val DATE_ROW_INDICATOR = "Date: "

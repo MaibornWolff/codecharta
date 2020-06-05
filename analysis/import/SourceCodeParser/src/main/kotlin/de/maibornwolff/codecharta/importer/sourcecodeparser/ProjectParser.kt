@@ -18,7 +18,7 @@ class ProjectParser(private val exclude: Array<String> = arrayOf(), private val 
         val projectTraverser = ProjectTraverser(root, exclude)
         projectTraverser.traverse()
 
-        for (analyzer in sonarAnalyzers) {
+        for(analyzer in sonarAnalyzers){
             val files = projectTraverser.getFileListByExtension(analyzer.FILE_EXTENSION)
             val metricsForKind: ProjectMetrics = analyzer.scanFiles(files, projectTraverser.root)
             projectMetrics.merge(metricsForKind)
@@ -31,4 +31,5 @@ class ProjectParser(private val exclude: Array<String> = arrayOf(), private val 
         val fileMetrics = metricsMap.getFileMetricMap(sampleFile)!!.fileMetrics
         metricKinds.addAll(fileMetrics.keys)
     }
+
 }

@@ -11,6 +11,7 @@ import java.io.File
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 
+
 class JSONMetricWriterTest {
 
     @Test
@@ -49,6 +50,7 @@ class JSONMetricWriterTest {
         val parser = JsonParser()
         val expectedJson = parser.parse(expectedResultFile.reader()).toString()
 
+
         Assertions.assertThat(resultJSON == expectedJson).isTrue()
     }
 
@@ -67,4 +69,5 @@ class JSONMetricWriterTest {
         Assertions.assertThat(leaf["name"]).isEqualTo("foo.java")
         Assertions.assertThat(leaf.getJSONObject("attributes").length()).isEqualTo(2)
     }
+
 }

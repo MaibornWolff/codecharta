@@ -9,68 +9,66 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 
 class CSVMetricWriterTest {
-    @Test
-    fun `empty project no metrics nor files`() {
-        val metrics = ProjectMetrics()
-        val result = ByteArrayOutputStream()
 
-        CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+  @Test
+  fun `empty project no metrics nor files`() {
+    val metrics = ProjectMetrics()
+    val result = ByteArrayOutputStream()
 
-        assertThat(result.toString()).isEqualTo("file\n")
-    }
+    CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
 
-    @Test
-    fun `paths for files are correct`() {
-        val metrics = ProjectMetrics()
-        metrics.addFile("myFile.java")
-        metrics.addFile("foo/bar/myFile.java")
-        val result = ByteArrayOutputStream()
+    assertThat(result.toString()).isEqualTo("file\n")
+  }
 
-        CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+  @Test
+  fun `paths for files are correct`() {
+    val metrics = ProjectMetrics()
+    metrics.addFile("myFile.java")
+    metrics.addFile("foo/bar/myFile.java")
+    val result = ByteArrayOutputStream()
 
-        assertThat(result.toString()).isEqualTo("file\nmyFile.java\nfoo/bar/myFile.java\n")
-    }
+    CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
 
-    @Test
-    fun `header of csv is correct`() {
-        val metrics = ProjectMetrics()
-        val result = ByteArrayOutputStream()
-        val allMetrics = setOf("foo", "bar")
+    assertThat(result.toString()).isEqualTo("file\nmyFile.java\nfoo/bar/myFile.java\n")
+  }
 
-        CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, allMetrics)
+  @Test
+  fun `header of csv is correct`() {
+    val metrics = ProjectMetrics()
+    val result = ByteArrayOutputStream()
+    val allMetrics = setOf("foo", "bar")
 
-        assertThat(result.toString()).isIn(setOf("file,foo,bar\n", "file,bar,foo\n"))
-    }
+    CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, allMetrics)
 
-    @Test
-    fun `metrics are written correct`() {
-        val fileMetrics1 = FileMetricMap().add("mcc", 2).add("rloc", 3)
-        val fileMetrics2 = FileMetricMap().add("mcc", 1).add("rloc", 4)
-        val metrics = ProjectMetrics()
-        metrics.addFileMetricMap("foo", fileMetrics1)
-        metrics.addFileMetricMap("bar", fileMetrics2)
-        val result = ByteArrayOutputStream()
-        val allMetrics = setOf("mcc", "rloc")
+    assertThat(result.toString()).isIn(setOf("file,foo,bar\n", "file,bar,foo\n"))
+  }
 
-        CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, allMetrics)
+  @Test
+  fun `metrics are written correct`() {
+    val fileMetrics1 = FileMetricMap().add("mcc", 2).add("rloc", 3)
+    val fileMetrics2 = FileMetricMap().add("mcc", 1).add("rloc", 4)
+    val metrics = ProjectMetrics()
+    metrics.addFileMetricMap("foo", fileMetrics1)
+    metrics.addFileMetricMap("bar", fileMetrics2)
+    val result = ByteArrayOutputStream()
+    val allMetrics = setOf("mcc", "rloc")
 
-        assertThat(result.toString()).isIn(
-            setOf(
-                "file,mcc,rloc\nfoo,2,3\nbar,1,4\n",
-                "file,mcc,rloc\nfoo,2,3\nbar,1,4\n"
-            )
-        )
-    }
+    CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, allMetrics)
 
-    @Test
-    fun `missing metrics lead to empty fields in csv`() {
-        val metrics = ProjectMetrics()
-        metrics.addFileMetricMap("bla", FileMetricMap())
-        val allMetrics = setOf("foo", "bar")
-        val result = ByteArrayOutputStream()
+    assertThat(result.toString()).isIn(setOf("file,mcc,rloc\nfoo,2,3\nbar,1,4\n", "file,mcc,rloc\nfoo,2,3\nbar,1,4\n"))
+  }
 
-        CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, allMetrics)
+  @Test
+  fun `missing metrics lead to empty fields in csv`() {
+    val metrics = ProjectMetrics()
+    metrics.addFileMetricMap("bla", FileMetricMap())
+    val allMetrics = setOf("foo","bar")
+    val result = ByteArrayOutputStream()
 
-        assertThat(result.toString()).isEqualTo("file,foo,bar\nbla,,\n")
-    }
+    CSVMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, allMetrics)
+
+    assertThat(result.toString()).isEqualTo("file,foo,bar\nbla,,\n")
+
+  }
+
 }

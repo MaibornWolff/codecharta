@@ -8,7 +8,7 @@ import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class PathFactoryTest : Spek({
+class PathFactoryTest: Spek({
 
     describe("empty dir") {
         val emptyPath = PathFactory.fromFileSystemPath("")

@@ -2,13 +2,7 @@ package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
-import java.io.BufferedWriter
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStreamWriter
-import java.io.Writer
+import java.io.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -16,7 +10,7 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from csv with header"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class CSVImporter : Callable<Void> {
+class CSVImporter: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -59,3 +53,4 @@ class CSVImporter : Callable<Void> {
         }
     }
 }
+

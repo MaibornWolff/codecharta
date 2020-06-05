@@ -19,27 +19,22 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
-import java.io.File
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStreamWriter
-import java.io.PrintStream
+import java.io.*
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.util.Arrays
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.stream.Stream
+
 
 @CommandLine.Command(
         name = "scmlogparser",
         description = ["generates cc.json from scm log file (git or svn)"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class SCMLogParser(
-    private val input: InputStream = System.`in`,
-    private val output: PrintStream = System.out,
-    private val error: PrintStream = System.err
-) : Callable<Void> {
+class SCMLogParser(private val input: InputStream = System.`in`,
+                   private val output: PrintStream = System.out,
+                   private val error: PrintStream = System.err) : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -78,7 +73,7 @@ class SCMLogParser(
 
             return when (inputFormatNames) {
                 GIT_LOG, InputFormatNames.GIT_LOG_RAW, SVN_LOG -> MetricsFactory(nonChurnMetrics)
-                else -> MetricsFactory()
+                else                                           -> MetricsFactory()
             }
         }
 
@@ -108,24 +103,24 @@ class SCMLogParser(
 
     private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy {
         return when (formatName) {
-            GIT_LOG -> GitLogParserStrategy()
-            InputFormatNames.GIT_LOG_NUMSTAT -> GitLogNumstatParserStrategy()
-            InputFormatNames.GIT_LOG_RAW -> GitLogRawParserStrategy()
+            GIT_LOG                              -> GitLogParserStrategy()
+            InputFormatNames.GIT_LOG_NUMSTAT     -> GitLogNumstatParserStrategy()
+            InputFormatNames.GIT_LOG_RAW         -> GitLogRawParserStrategy()
             InputFormatNames.GIT_LOG_NUMSTAT_RAW -> GitLogNumstatRawParserStrategy()
-            SVN_LOG -> SVNLogParserStrategy()
+            SVN_LOG                              -> SVNLogParserStrategy()
         }
     }
 
     private fun createProjectFromLog(
-        pathToLog: File,
-        parserStrategy: LogParserStrategy,
-        metricsFactory: MetricsFactory,
-        containsAuthors: Boolean,
-        silent: Boolean = false
+            pathToLog: File,
+            parserStrategy: LogParserStrategy,
+            metricsFactory: MetricsFactory,
+            containsAuthors: Boolean,
+            silent: Boolean = false
     ): Project {
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
         if (!silent) error.println("Assumed encoding $encoding")
-        val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
+        val lines : Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
         return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
     }
@@ -155,11 +150,11 @@ class SCMLogParser(
         println("  Available metrics:")
         runBlocking(Dispatchers.Default) {
             metricsFactory.createMetrics()
-                .forEach {
-                    launch {
-                        println(String.format(infoFormat, it.metricName(), it.description()))
+                    .forEach {
+                        launch{
+                         println(String.format(infoFormat, it.metricName(), it.description()))
+                        }
                     }
-                }
         }
     }
 

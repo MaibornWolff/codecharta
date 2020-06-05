@@ -1,9 +1,7 @@
 package de.maibornwolff.codecharta.importer.sonar
 
 import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
-import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import com.github.tomakehurst.wiremock.client.WireMock.verify
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain.Companion.main
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
@@ -17,6 +15,7 @@ class SonarImporterMainTest {
 
         private val METRIC_LIST_URL_PATH =
                 "/api/metrics/search?f=hidden,decimalScale&p=1&ps=${SonarMetricsAPIDatasource.PAGE_SIZE}"
+
     }
 
     @JvmField
@@ -33,9 +32,10 @@ class SonarImporterMainTest {
                                 .withHeader("Content-Type", "application/json")
                                 .withBody("{\"metrics\": [],\"total\": 0, \"p\": 0, \"ps\": 0}")))
 
-        main(arrayOf("http://localhost:8089/", "someproject"))
 
-        verify(1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)))
+        main(arrayOf("http://localhost:8089/",  "someproject"))
+
+        verify ( 1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)) )
     }
 
     @Test
@@ -48,8 +48,9 @@ class SonarImporterMainTest {
                                 .withHeader("Content-Type", "application/json")
                                 .withBody("{\"metrics\": [],\"total\": 0, \"p\": 0, \"ps\": 0}")))
 
-        main(arrayOf("http://localhost:8089", "someproject"))
 
-        verify(1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)))
+        main(arrayOf("http://localhost:8089",  "someproject"))
+
+        verify ( 1, getRequestedFor(urlEqualTo(METRIC_LIST_URL_PATH)) )
     }
 }

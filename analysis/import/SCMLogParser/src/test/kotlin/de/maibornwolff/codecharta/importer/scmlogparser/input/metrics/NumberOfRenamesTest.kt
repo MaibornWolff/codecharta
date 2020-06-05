@@ -33,4 +33,5 @@ class NumberOfRenamesTest {
 
         Assertions.assertThat(metric.value()).isEqualTo(2)
     }
+
 }

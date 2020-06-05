@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
-class AbsoluteCoupledChurn : Metric {
+class AbsoluteCoupledChurn: Metric {
     private var totalChurn: Long = 0
     private var ownChurn: Long = 0
 

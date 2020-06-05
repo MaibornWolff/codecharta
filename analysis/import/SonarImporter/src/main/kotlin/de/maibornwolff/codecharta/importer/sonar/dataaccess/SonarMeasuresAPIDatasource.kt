@@ -18,8 +18,10 @@ import javax.ws.rs.client.ClientBuilder
 import javax.ws.rs.core.MediaType
 
 class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: URL?) {
+
     private val client: Client = ClientBuilder.newClient()
     private val logger = KotlinLogging.logger {}
+
     private var measureBatches = 0
     private var processedPages = 0
 
@@ -31,25 +33,21 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     fun getComponentMap(componentKey: String, metricsList: List<String>): ComponentMap {
         val componentMap = ComponentMap()
         System.err.print("0% of data retrieved...")
-        val flowable = Flowable.fromIterable(
-            metricsList.windowed(
-                MAX_METRICS_IN_ONE_SONARCALL,
-                MAX_METRICS_IN_ONE_SONARCALL,
-                true
-            )
-        )
+
+        val flowable = Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, MAX_METRICS_IN_ONE_SONARCALL, true))
         flowable.flatMap { p ->
             measureBatches++
-            getMeasures(componentKey, p)
-                .subscribeOn(Schedulers.computation())
-        }
-            .blockingForEach { componentMap.updateComponent(it) }
+                    getMeasures(componentKey, p)
+                            .subscribeOn(Schedulers.computation())
+                }
+                .blockingForEach { componentMap.updateComponent(it) }
 
         System.err.println()
         return componentMap
     }
 
     private fun getMeasures(componentKey: String, sublist: List<String>): Flowable<Component> {
+
         return Flowable.create({ subscriber ->
             var page = 1
             var total: Int
@@ -59,8 +57,8 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
                 if (measures.components != null) {
                     measures.components
-                        .filter { c -> c.qualifier == Qualifier.FIL || c.qualifier == Qualifier.UTS }
-                        .forEach { subscriber.onNext(it) }
+                            .filter { c -> c.qualifier == Qualifier.FIL || c.qualifier == Qualifier.UTS }
+                            .forEach { subscriber.onNext(it) }
                 }
 
                 updateProgress(total)
@@ -71,9 +69,10 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
     internal fun getMeasuresFromPage(componentKey: String, metrics: List<String>, pageNumber: Int): Measures {
         val measureAPIRequestURI = createMeasureAPIRequestURI(componentKey, metrics, pageNumber)
+
         val request = client
-            .target(measureAPIRequestURI)
-            .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
+                .target(measureAPIRequestURI)
+                .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
 
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user))
@@ -91,6 +90,7 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         if (metrics.isEmpty()) {
             throw IllegalArgumentException("Empty list of metrics is not supported.")
         }
+
         val metricString = metrics.joinToString(",") { it }
         try {
             return URI(String.format(MEASURES_URL_PATTERN, baseUrl, componentKey, metricString, pageNumber))
@@ -107,9 +107,10 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     }
 
     companion object {
+
         private const val PAGE_SIZE = 500
         private const val MAX_METRICS_IN_ONE_SONARCALL = 15
         private const val MEASURES_URL_PATTERN =
-            "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
+                "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
     }
 }

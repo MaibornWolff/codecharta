@@ -5,18 +5,12 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
-import java.io.File
-import java.io.OutputStreamWriter
-import java.io.Writer
-import java.io.IOException
-import java.io.BufferedWriter
-import java.io.FileWriter
-import java.io.InputStream
+import java.io.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class CodeMaatImporter : Callable<Void> {
+class CodeMaatImporter: Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -80,3 +74,4 @@ class CodeMaatImporter : Callable<Void> {
         }
     }
 }
+

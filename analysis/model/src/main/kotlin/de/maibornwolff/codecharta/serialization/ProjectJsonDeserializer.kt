@@ -4,14 +4,10 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.reflect.TypeToken
-import de.maibornwolff.codecharta.model.Node
-import de.maibornwolff.codecharta.model.Edge
-import de.maibornwolff.codecharta.model.BlacklistItem
-import de.maibornwolff.codecharta.model.AttributeType
-import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.*
 import java.lang.reflect.Type
 
-class ProjectJsonDeserializer : JsonDeserializer<Project> {
+class ProjectJsonDeserializer: JsonDeserializer<Project> {
     override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext): Project {
         val jsonNode = json.asJsonObject
 

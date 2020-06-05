@@ -7,7 +7,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class EveritValidatorTest : Spek({
+class EveritValidatorTest: Spek({
     describe("a validator") {
         val validator = EveritValidator(SCHEMA_PATH)
 
@@ -32,5 +32,6 @@ class EveritValidatorTest : Spek({
                 validator.validate(this.javaClass.classLoader.getResourceAsStream("invalidJson.json"))
             }
         }
+
     }
 })
