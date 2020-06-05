@@ -11,22 +11,25 @@ import java.net.URL
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "sonarimport",
-        description = ["generates cc.json from metric data from SonarQube"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "sonarimport",
+    description = ["generates cc.json from metric data from SonarQube"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class SonarImporterMain(private val input: InputStream = System.`in`,
-                        private val output: PrintStream = System.out,
-                        private val error: PrintStream = System.err) : Callable<Void> {
-
+class SonarImporterMain(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])
     private var url: String = "http://localhost"
 
-    @CommandLine.Parameters(index = "1", arity = "1..1", paramLabel = "PROJECT_ID",
-            description = ["sonarqube project id"])
+    @CommandLine.Parameters(
+        index = "1", arity = "1..1", paramLabel = "PROJECT_ID",
+        description = ["sonarqube project id"]
+    )
     private var projectId = ""
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -40,7 +43,6 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
 
     @CommandLine.Option(names = ["--merge-modules"], description = ["merges modules in multi-module projects"])
     private var usePath = false
-
     private fun writer(): Writer {
         return if (outputFile.isEmpty()) {
             OutputStreamWriter(output)
@@ -64,7 +66,6 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
         print(" ")
         val importer = createMesauresAPIImporter()
         var project = importer.getProjectFromMeasureAPI(projectId, metrics)
-
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
@@ -75,7 +76,6 @@ class SonarImporterMain(private val input: InputStream = System.`in`,
     }
 
     companion object {
-
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine.call(SonarImporterMain(), System.out, *args)

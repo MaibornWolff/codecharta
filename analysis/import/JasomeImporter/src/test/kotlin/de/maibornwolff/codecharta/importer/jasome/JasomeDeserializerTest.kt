@@ -5,13 +5,13 @@ import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class JasomeDeserializerTest: Spek({
+class JasomeDeserializerTest : Spek({
     describe("JasomeDeserializer adding big Jasome project") {
         val jasomeDeserializer = JasomeDeserializer()
 
         context("deserializing a project ") {
             val jasomeProject = jasomeDeserializer.deserializeJasomeXML(
-                    this.javaClass.classLoader.getResourceAsStream("jasome.xml")!!
+                this.javaClass.classLoader.getResourceAsStream("jasome.xml")!!
             )
 
             it("should have packages") {

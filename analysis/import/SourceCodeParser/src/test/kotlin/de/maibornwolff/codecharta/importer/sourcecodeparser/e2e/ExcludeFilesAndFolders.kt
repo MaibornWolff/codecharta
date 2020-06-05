@@ -10,7 +10,7 @@ class ExcludeFilesAndFolders {
     private val resource = "src/test/resources"
 
     @Test
-    fun `should exclude files in ignored folders` () {
+    fun `should exclude files in ignored folders`() {
         val outputStream = StreamHelper.retrieveStreamAsString {
             SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-e=/bar/"))
         }
@@ -20,7 +20,7 @@ class ExcludeFilesAndFolders {
     }
 
     @Test
-    fun `should exclude files in multiple ignored folders` () {
+    fun `should exclude files in multiple ignored folders`() {
         val outputStream = StreamHelper.retrieveStreamAsString {
             SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-e=/bar/", "-e=/sonar_issues_java/"))
         }
@@ -31,7 +31,7 @@ class ExcludeFilesAndFolders {
     }
 
     @Test
-    fun `should exclude files where regex pattern matches` () {
+    fun `should exclude files where regex pattern matches`() {
         val outputStream = StreamHelper.retrieveStreamAsString {
             SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "-e=/sonar.*/"))
         }
@@ -39,7 +39,7 @@ class ExcludeFilesAndFolders {
     }
 
     @Test
-    fun `should exclude files with defaultExcludes option` () {
+    fun `should exclude files with defaultExcludes option`() {
         val outputStream = StreamHelper.retrieveStreamAsString {
             SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--defaultExcludes"))
         }

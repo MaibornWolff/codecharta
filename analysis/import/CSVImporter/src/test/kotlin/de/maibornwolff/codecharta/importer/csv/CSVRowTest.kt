@@ -10,17 +10,16 @@ import kotlin.test.assertFailsWith
 
 private const val PATH_SEPARATOR = '\\'
 
-class CSVRowTest: Spek({
-
+class CSVRowTest : Spek({
     describe("Using a header with path column") {
         val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib", "attrib2", ""))
 
 
         it("name of node should be filename from this columnn") {
             val nameExpectedFilenameMap = mapOf(
-                    Pair("someNodeName", "someNodeName"),
-                    Pair("someDir\\someName", "someName"),
-                    Pair("someDir\\anotherDir\\anotherName", "anotherName")
+                Pair("someNodeName", "someNodeName"),
+                Pair("someDir\\someName", "someName"),
+                Pair("someDir\\anotherDir\\anotherName", "anotherName")
             )
 
             for (name in nameExpectedFilenameMap.keys) {
@@ -31,9 +30,9 @@ class CSVRowTest: Spek({
 
         it("path in Tree should be absolute file name from this column") {
             val nameExpectedFolderWithFileMap = mapOf(
-                    Pair("someNodeName", Path.TRIVIAL),
-                    Pair("someDir\\someName", Path(listOf("someDir"))),
-                    Pair("someDir\\anotherDir\\anotherName", Path(listOf("someDir", "anotherDir")))
+                Pair("someNodeName", Path.TRIVIAL),
+                Pair("someDir\\someName", Path(listOf("someDir"))),
+                Pair("someDir\\anotherDir\\anotherName", Path(listOf("someDir", "anotherDir")))
             )
 
             for (name in nameExpectedFolderWithFileMap.keys) {

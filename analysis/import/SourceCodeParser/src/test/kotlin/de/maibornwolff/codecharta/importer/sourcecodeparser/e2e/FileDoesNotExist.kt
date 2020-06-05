@@ -7,7 +7,6 @@ import org.junit.Test
 
 class FileDoesNotExist {
     private val resource = "src/test/resources/sampleproject/folder/does/not/exist/Foo.java"
-
     private val outputStream = retrieveStreamAsString {
         SourceCodeParserMain.mainWithInOut(it, System.`in`, it, arrayOf(resource, "-out=table"))
     }

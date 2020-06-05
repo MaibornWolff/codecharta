@@ -8,13 +8,12 @@ import java.util.*
 class ProjectTraverser(var root: File, private val exclude: Array<String> = arrayOf()) {
     private var fileList: MutableList<File> = mutableListOf()
     private val analyzerFileLists: MutableMap<String, MutableList<String>>? = HashMap()
-
     fun traverse() {
         val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
         root.walk().forEach {
             val standardizedPath = "/" + getRelativeFileName(it.toString())
-            if(it.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))){
+            if (it.isFile && !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))) {
                 fileList.add(it)
             }
         }
@@ -48,9 +47,9 @@ class ProjectTraverser(var root: File, private val exclude: Array<String> = arra
 
     private fun getRelativeFileName(fileName: String): String {
         return root.toPath().toAbsolutePath()
-                .relativize(Paths.get(fileName).toAbsolutePath())
-                .toString()
-                .replace('\\', '/')
+            .relativize(Paths.get(fileName).toAbsolutePath())
+            .toString()
+            .replace('\\', '/')
     }
 
     private fun adjustRootFolderIfRootIsFile() {

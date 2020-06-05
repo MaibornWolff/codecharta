@@ -13,7 +13,6 @@ import java.time.OffsetDateTime
 import java.util.*
 
 class ProjectConverterTest {
-
     private val metricsFactory = mockk<MetricsFactory>()
 
     @Before
@@ -30,10 +29,8 @@ class ProjectConverterTest {
     fun canCreateAnEmptyProject() {
         // given
         val projectConverter = ProjectConverter(true)
-
         // when
         val project = projectConverter.convert(emptyList(), metricsFactory)
-
         //then
         assertThat(project.rootNode.leaves).hasSize(1)
     }
@@ -44,10 +41,8 @@ class ProjectConverterTest {
         val projectConverter = ProjectConverter(true)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
-
         //when
         val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
-
         //then
         assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isTrue()
     }
@@ -58,10 +53,8 @@ class ProjectConverterTest {
         val projectConverter = ProjectConverter(false)
         val file1 = VersionControlledFile("File 1", metricsFactory)
         file1.registerCommit(Commit("Author", modificationsByFilename("File 1", "File 2"), OffsetDateTime.now()))
-
         //when
         val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
-
         //then
         assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isFalse()
     }
@@ -76,10 +69,8 @@ class ProjectConverterTest {
         for (i in 0..4) {
             file1.registerCommit(commit)
         }
-
         //when
         val project = projectConverter.convert(listOf(file1), MetricsFactory())
-
         //then
         assertThat(project.edges.size).isEqualTo(1)
         assertThat(project.edges[0].toNodeName).isEqualTo("/root/File 2")

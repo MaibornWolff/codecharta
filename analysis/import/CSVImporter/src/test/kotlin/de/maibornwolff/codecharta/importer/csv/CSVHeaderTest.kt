@@ -6,14 +6,13 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class CSVHeaderTest: Spek({
+class CSVHeaderTest : Spek({
     describe("an empty header") {
         it("should throw exception") {
             assertFailsWith(IllegalArgumentException::class) {
                 CSVHeader(arrayOf())
             }
         }
-
     }
 
     describe("a valid header") {

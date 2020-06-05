@@ -5,7 +5,6 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 class MetricsFactoryTest {
-
     @Test
     fun `should create all metrics`() {
         val metrics = MetricsFactory.create(listOf(), mapOf())

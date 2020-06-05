@@ -6,11 +6,11 @@ import kotlin.math.max
 
 class EdgeProjectBuilder(private val project: Project, private val pathSeparator: Char) {
     private val logger = KotlinLogging.logger {}
-
     private val projectBuilder = ProjectBuilder(
-            listOf(MutableNode("root", NodeType.Folder)),
-            mutableListOf(),
-            getAttributeTypes())
+        listOf(MutableNode("root", NodeType.Folder)),
+        mutableListOf(),
+        getAttributeTypes()
+    )
 
     private fun getAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {
         val newAttributetypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf()
@@ -107,15 +107,17 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         return attributeKeys
     }
 
-    private fun getAggregatedAttributes(listOfAttributes: MutableList<String>,
-                                        filteredEdges: List<Edge>): MutableMap<String, Any> {
+    private fun getAggregatedAttributes(
+        listOfAttributes: MutableList<String>,
+        filteredEdges: List<Edge>
+    ): MutableMap<String, Any> {
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
         listOfAttributes.forEach { key: String ->
             val attributeType = getAttributeTypeByKey(key)
             val filteredAttribute = filteredEdges.filter { edge: Edge -> edge.attributes.containsKey(key) }
             var aggregatedAttributeValue =
-                    filteredAttribute.sumBy { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
+                filteredAttribute.sumBy { edge: Edge -> edge.attributes[key].toString().toFloat().toInt() }
 
             if (attributeType == AttributeType.relative) aggregatedAttributeValue /= filteredAttribute.size
 

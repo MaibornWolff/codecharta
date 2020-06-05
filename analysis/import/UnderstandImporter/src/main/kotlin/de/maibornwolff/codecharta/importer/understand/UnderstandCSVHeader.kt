@@ -5,18 +5,13 @@ import java.util.*
 
 class UnderstandCSVHeader(header: Array<String?>) {
     private val logger = KotlinLogging.logger {}
-
     private val headerMap: MutableMap<Int, String>
-
     val columnNumbers: Set<Int>
         get() = headerMap.keys
-
     val fileColumn: Int
         get() = headerMap.keys.first { i -> headerMap[i].equals("File") }
-
     val nameColumn: Int
         get() = headerMap.keys.first { i -> headerMap[i].equals("Name") }
-
     val kindColumn: Int
         get() = headerMap.keys.first { i -> headerMap[i].equals("Kind") }
 
@@ -24,11 +19,11 @@ class UnderstandCSVHeader(header: Array<String?>) {
         headerMap = HashMap()
         for (i in header.indices) {
             when {
-                header[i].isNullOrEmpty()          ->
+                header[i].isNullOrEmpty() ->
                     logger.warn { "Ignoring ${i + 1}-th column number due to: Column has no name." }
                 headerMap.containsValue(header[i]) ->
                     logger.warn { "Ignoring ${i + 1}-th column number due to: Column name '${header[i]}' duplicates a previous column." }
-                else                               ->
+                else ->
                     headerMap[i] = header[i]!!
             }
         }

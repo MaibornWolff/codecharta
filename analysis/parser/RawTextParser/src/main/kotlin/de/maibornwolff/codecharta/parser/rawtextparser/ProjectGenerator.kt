@@ -11,11 +11,9 @@ import java.io.Writer
 
 class ProjectGenerator(private val writer: Writer) {
     private lateinit var projectBuilder: ProjectBuilder
-
     fun generate(metricMap: Map<String, FileMetrics>, pipedProject: Project?) {
         projectBuilder = ProjectBuilder()
         metricMap.forEach { addAsNode(it) }
-
         var project = projectBuilder.build()
         if (pipedProject != null) {
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
@@ -31,10 +29,8 @@ class ProjectGenerator(private val writer: Writer) {
             directory = metrics.key.substringBeforeLast("/")
             fileName = metrics.key.substringAfterLast("/")
         }
-
         val node = MutableNode(fileName, attributes = metrics.value.metricMap)
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
-
     }
 }

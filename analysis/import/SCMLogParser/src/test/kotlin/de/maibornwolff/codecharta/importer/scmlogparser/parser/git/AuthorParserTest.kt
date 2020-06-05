@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class AuthorParserTest {
-
     @Test
     fun parsesAuthorWithoutEmail() {
         val author = AuthorParser.parseAuthor("Author: TheAuthor")

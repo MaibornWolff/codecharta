@@ -3,14 +3,12 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 import java.time.OffsetDateTime
 import java.time.temporal.WeekFields
 
-internal data class CalendarWeek(private val week: Int, private val year: Int): Comparable<CalendarWeek> {
-
+internal data class CalendarWeek(private val week: Int, private val year: Int) : Comparable<CalendarWeek> {
     override fun compareTo(o: CalendarWeek): Int {
         return numberOfWeeksBetween(this, o)
     }
 
     companion object {
-
         fun forDateTime(dateTime: OffsetDateTime): CalendarWeek {
             val cwWeek = dateTime.get(WeekFields.ISO.weekOfWeekBasedYear())
             var cwYear = dateTime.year

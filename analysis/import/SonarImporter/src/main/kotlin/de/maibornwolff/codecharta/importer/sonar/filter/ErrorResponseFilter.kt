@@ -14,8 +14,7 @@ import javax.ws.rs.core.Response
 import javax.ws.rs.ext.Provider
 
 @Provider
-class ErrorResponseFilter: ClientResponseFilter {
-
+class ErrorResponseFilter : ClientResponseFilter {
     private val logger = KotlinLogging.logger {}
 
     @Throws(IOException::class)
@@ -26,9 +25,10 @@ class ErrorResponseFilter: ClientResponseFilter {
 
             try {
                 val gson = GsonBuilder().create()
-                val error = gson.fromJson<ErrorResponse>(InputStreamReader(stream, StandardCharsets.UTF_8),
-                        ErrorResponse::class.java)
-
+                val error = gson.fromJson<ErrorResponse>(
+                    InputStreamReader(stream, StandardCharsets.UTF_8),
+                    ErrorResponse::class.java
+                )
                 var message = "Errors: \n"
                 for (errorEntity in error.errors) {
                     message += errorEntity.msg + "\n"

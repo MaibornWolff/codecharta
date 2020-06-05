@@ -16,29 +16,25 @@ import javax.ws.rs.core.MediaType
  * Requests Data from Sonar Instance through REST-API
  */
 class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: URL?) {
-
     private val METRICS_URL_PATTERN = "%s/api/metrics/search?f=hidden,decimalScale&p=%s&ps=$PAGE_SIZE"
     private val TIMEOUT_MS = 5000
     private val logger = KotlinLogging.logger {}
-
     private val client: Client
-
     val availableMetricKeys: List<String>
         get() {
             val noPages = numberOfPages
 
             return Flowable.range(1, noPages)
-                    .flatMap { p ->
-                        Flowable.just(p)
-                                .subscribeOn(Schedulers.io())
-                                .map<Metrics>({ this.getAvailableMetrics(it) })
-                    }
-                    .filter { it.metrics != null }
-                    .flatMap { Flowable.fromIterable(it.metrics!!) }
-                    .filter({ it.isFloatType })
-                    .map<String>({ it.key }).distinct().toSortedList().blockingGet()
+                .flatMap { p ->
+                    Flowable.just(p)
+                        .subscribeOn(Schedulers.io())
+                        .map<Metrics>({ this.getAvailableMetrics(it) })
+                }
+                .filter { it.metrics != null }
+                .flatMap { Flowable.fromIterable(it.metrics!!) }
+                .filter({ it.isFloatType })
+                .map<String>({ it.key }).distinct().toSortedList().blockingGet()
         }
-
     val numberOfPages: Int
         get() {
             val response = getAvailableMetrics(1)
@@ -53,13 +49,12 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
         return total / PAGE_SIZE + incrementor
     }
 
-    internal constructor(baseUrl: URL): this("", baseUrl)
+    internal constructor(baseUrl: URL) : this("", baseUrl)
 
     init {
-
         client = ClientBuilder.newClient()
-                .property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
-                .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS)
+            .property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
+            .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS)
         client.register(ErrorResponseFilter::class.java)
         client.register(GsonProvider::class.java)
     }
@@ -67,7 +62,7 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
     fun getAvailableMetrics(page: Int): Metrics {
         val url = String.format(METRICS_URL_PATTERN, baseUrl, page)
         val request = client.target(url)
-                .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
+            .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user))
         }

@@ -4,25 +4,23 @@ import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
-
     private val logger = KotlinLogging.logger { }
-
     fun merge(): Project {
         return when {
             areAllAPIVersionsCompatible() -> ProjectBuilder(
-                    mergeProjectNodes(),
-                    mergeEdges(),
-                    mergeAttributeTypes(),
-                    mergeBlacklist()
+                mergeProjectNodes(),
+                mergeEdges(),
+                mergeAttributeTypes(),
+                mergeBlacklist()
             ).build()
-            else                          -> throw MergeException("API versions not supported.")
+            else -> throw MergeException("API versions not supported.")
         }
     }
 
     private fun areAllAPIVersionsCompatible(): Boolean {
         val unsupportedAPIVersions = projects
-                .map { it.apiVersion }
-                .filter { !Project.isAPIVersionCompatible(it) }
+            .map { it.apiVersion }
+            .filter { !Project.isAPIVersionCompatible(it) }
 
         return unsupportedAPIVersions.isEmpty()
     }

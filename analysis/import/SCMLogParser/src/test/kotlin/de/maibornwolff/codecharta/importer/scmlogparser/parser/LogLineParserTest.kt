@@ -30,12 +30,9 @@ class LogLineParserTest {
         every { parserStrategy.parseAuthor(any()) } returns author
         every { parserStrategy.parseDate(any()) } returns commitDate
         every { parserStrategy.parseModifications(input) } returns filenames.map { Modification(it) }
-
         val parser = LogLineParser(parserStrategy, metricsFactory)
-
         // when
         val commit = parser.parseCommit(input)
-
         //then
         assertThat(commit.author).isEqualTo(author)
         assertThat(commit.filenames).isEqualTo(filenames)

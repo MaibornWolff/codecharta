@@ -5,16 +5,13 @@ import java.util.*
 
 class CSVHeader(header: Array<String?>) {
     private val logger = KotlinLogging.logger {}
-
     private val headerMap: MutableMap<Int, String>
-
     val columnNumbers: Set<Int>
         get() = headerMap.keys
-
     val pathColumn: List<Int>
         get() = headerMap.keys.filter { i ->
             headerMap[i].equals("entity", ignoreCase = true)
-            || headerMap[i].equals("coupled", ignoreCase = true)
+                || headerMap[i].equals("coupled", ignoreCase = true)
         }
 
     init {

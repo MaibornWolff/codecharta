@@ -6,9 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 class ParseFileToTable {
-
     private val resource = "src/test/resources/ScriptShellSample.java"
-
     private val output = retrieveStreamAsString {
         SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=table"))
     }

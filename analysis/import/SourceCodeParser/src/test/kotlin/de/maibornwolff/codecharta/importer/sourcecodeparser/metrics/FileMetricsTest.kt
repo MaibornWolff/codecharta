@@ -5,7 +5,6 @@ import org.junit.Before
 import org.junit.Test
 
 class FileMetricsTest {
-
     lateinit var fileMetricMap: FileMetricMap
 
     @Before

@@ -32,10 +32,12 @@ class MetricCollectorTest {
         Assertions.assertThat(result).doesNotContainKey("/spaces")
     }
 
-
     @Test
     fun `Should exlude regex patterns`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, exclude = arrayOf(".*\\.xyz", "foobar")).parse()
+        val result = MetricCollector(
+            File("src/test/resources/sampleproject").absoluteFile,
+            exclude = arrayOf(".*\\.xyz", "foobar")
+        ).parse()
 
         Assertions.assertThat(result.size).isEqualTo(1)
         Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")
@@ -43,7 +45,10 @@ class MetricCollectorTest {
 
     @Test
     fun `Should include only spedified File extensions`() {
-        val result = MetricCollector(File("src/test/resources/sampleproject").absoluteFile, fileExtensions = arrayOf("wrong")).parse()
+        val result = MetricCollector(
+            File("src/test/resources/sampleproject").absoluteFile,
+            fileExtensions = arrayOf("wrong")
+        ).parse()
 
         Assertions.assertThat(result.size).isEqualTo(1)
         Assertions.assertThat(result).containsKey("/spaces/spaces_xyz.wrong")

@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.parser.rawtextparser.metrics
 
 object MetricsFactory {
-
     fun create(metricList: List<String>, parameters: Map<String, Int>): List<Metric> {
         val metrics = if (metricList.isEmpty()) {
             instantiateAllMetrics()
@@ -15,7 +14,7 @@ object MetricsFactory {
 
     private fun instantiateAllMetrics(): List<Metric> {
         return listOf(
-                IndentationCounter()
+            IndentationCounter()
         )
     }
 }

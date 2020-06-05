@@ -3,10 +3,9 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.visitors
 import org.sonar.java.ast.visitors.ComplexityVisitor
 import org.sonar.plugins.java.api.tree.*
 
-class MaxNestingLevelVisitor: ComplexityVisitor() {
+class MaxNestingLevelVisitor : ComplexityVisitor() {
     private var maxNestingLevel = 0
     private var currentNestingLevel = 0
-
     fun getMaxNestingLevel(tree: Tree): Int {
         super.getNodes(tree)
 

@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.GsonBuilder
 import de.maibornwolff.codecharta.model.Project
-
 import java.io.BufferedWriter
 import java.io.FileWriter
 import java.io.IOException
@@ -12,7 +11,6 @@ import java.io.Writer
  * This class provides static methods and functions to convert a Project-Object to json
  */
 object ProjectSerializer {
-
     private val GSON = GsonBuilder().create()
 
     /**
@@ -23,7 +21,6 @@ object ProjectSerializer {
      */
     @Throws(IOException::class)
     fun serializeProjectAndWriteToFile(project: Project, targetPath: String) {
-
         try {
             BufferedWriter(FileWriter(targetPath)).use { serializeProject(project, it) }
         } catch (e: IOException) {

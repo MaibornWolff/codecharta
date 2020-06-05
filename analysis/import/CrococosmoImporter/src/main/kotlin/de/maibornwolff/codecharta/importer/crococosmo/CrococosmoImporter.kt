@@ -6,22 +6,22 @@ import java.io.File
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "crococosmoimport",
-        description = ["generates cc.json from crococosmo xml file"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "crococosmoimport",
+    description = ["generates cc.json from crococosmo xml file"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class CrococosmoImporter: Callable<Void> {
-
+class CrococosmoImporter : Callable<Void> {
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-o", "--output-file"],
-            description = ["output File or prefix for File (or empty for stdout)"])
+    @CommandLine.Option(
+        names = ["-o", "--output-file"],
+        description = ["output File or prefix for File (or empty for stdout)"]
+    )
     private var outputFile: String? = null
-
     override fun call(): Void? {
         val graph = CrococosmoDeserializer().deserializeCrococosmoXML(file!!.inputStream())
         val projects = CrococosmoConverter().convertToProjectsMap(graph)
@@ -34,13 +34,12 @@ class CrococosmoImporter: Callable<Void> {
     }
 
     private fun writer(name: String = "") =
-            when {
-                outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
-                else                       -> File(outputFile + name).bufferedWriter()
-            }
+        when {
+            outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
+            else -> File(outputFile + name).bufferedWriter()
+        }
 
     companion object {
-
         @JvmStatic
         fun main(args: Array<String>) {
             CommandLine.call(CrococosmoImporter(), System.out, *args)

@@ -3,10 +3,8 @@ package de.maibornwolff.codecharta.importer.sonar
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 internal object SonarMetricTranslatorFactory {
-
     fun createMetricTranslator(): MetricNameTranslator {
         val prefix = "sonar_"
-
         val replacementMap = mutableMapOf<String, String>()
         replacementMap["accessors"] = "accessors"
         replacementMap["commented_out_code_lines"] = "commented_out_loc"

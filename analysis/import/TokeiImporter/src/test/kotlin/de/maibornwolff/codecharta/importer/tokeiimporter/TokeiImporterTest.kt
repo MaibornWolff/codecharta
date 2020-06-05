@@ -17,8 +17,8 @@ class TokeiImporterTest {
 
     @Test
     fun `reads tokei piped input`() {
-        val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines().joinToString(separator = "") { it }
-
+        val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines()
+            .joinToString(separator = "") { it }
         val cliResult = executeForOutput(input, arrayOf())
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
@@ -26,10 +26,9 @@ class TokeiImporterTest {
 
     @Test
     fun `projectStructure is correct`() {
-        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "") { it }
-
+        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines()
+            .joinToString(separator = "") { it }
         val cliResult = executeForOutput(input, arrayOf("--pathSeparator=\\"))
-
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.size).isEqualTo(3)
         Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
@@ -41,7 +40,8 @@ class TokeiImporterTest {
     @Ignore
     @Test
     fun `reads project piped input multiline`() {
-        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
+        val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines()
+            .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
@@ -50,7 +50,6 @@ class TokeiImporterTest {
     @Test
     fun `sets root correctly`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
-
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
     }
@@ -58,7 +57,6 @@ class TokeiImporterTest {
     @Test
     fun `handles path separator correctly`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--pathSeparator=\\"))
-
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
     }
@@ -66,8 +64,8 @@ class TokeiImporterTest {
     @Test
     fun `attributeTypes are set`() {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
-        val expected = mapOf("comment_lines" to "absolute", "empty_lines" to "absolute", "loc" to "absolute", "rloc" to "absolute")
-
+        val expected =
+            mapOf("comment_lines" to "absolute", "empty_lines" to "absolute", "loc" to "absolute", "rloc" to "absolute")
         val project = ProjectDeserializer.deserializeProject(cliResult)
 
         Assertions.assertThat(project.attributeTypes).containsKey("nodes")
@@ -76,19 +74,20 @@ class TokeiImporterTest {
 }
 
 fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
-        outputAsString(input) { inputStream, outputStream, errorStream ->
-            mainWithInOut(inputStream, outputStream, errorStream, args)
-        }
+    outputAsString(input) { inputStream, outputStream, errorStream ->
+        mainWithInOut(inputStream, outputStream, errorStream, args)
+    }
 
 fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-        outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
+    outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
 fun outputAsString(
-        inputStream: InputStream = System.`in`,
-        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-        ByteArrayOutputStream().use { baOutputStream ->
-            PrintStream(baOutputStream).use { outputStream ->
-                aMethod(inputStream, outputStream, System.err)
-            }
-            baOutputStream.toString()
+    inputStream: InputStream = System.`in`,
+    aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+) =
+    ByteArrayOutputStream().use { baOutputStream ->
+        PrintStream(baOutputStream).use { outputStream ->
+            aMethod(inputStream, outputStream, System.err)
         }
+        baOutputStream.toString()
+    }

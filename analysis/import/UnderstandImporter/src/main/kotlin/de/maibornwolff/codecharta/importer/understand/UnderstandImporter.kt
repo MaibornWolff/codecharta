@@ -6,10 +6,11 @@ import picocli.CommandLine
 import java.io.*
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "understandimport", description = ["generates cc.json from SciTools (TM) Understand csv"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class UnderstandImporter: Callable<Void> {
-
+@CommandLine.Command(
+    name = "understandimport", description = ["generates cc.json from SciTools (TM) Understand csv"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
+class UnderstandImporter : Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -21,7 +22,6 @@ class UnderstandImporter: Callable<Void> {
 
     @CommandLine.Option(names = ["--path-separator"], description = ["path separator (default = '/')"])
     private var pathSeparator = '/'
-
     private val logger = KotlinLogging.logger {}
 
     @Throws(IOException::class)

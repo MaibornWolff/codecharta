@@ -2,9 +2,8 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
-class DeletedLines: Metric {
+class DeletedLines : Metric {
     private var loc: Long = 0
-
     override fun description(): String {
         return "Lines Of Code: Added lines for this file."
     }

@@ -6,11 +6,9 @@ import de.maibornwolff.codecharta.model.NodeType
 import java.lang.reflect.Type
 import java.util.*
 
-internal class NodeJsonDeserializer: JsonDeserializer<Node> {
-
+internal class NodeJsonDeserializer : JsonDeserializer<Node> {
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Node {
         val jsonNode = json.asJsonObject
-
         val name = deserializeName(jsonNode)
         val nodeType = deserializeNodeType(jsonNode)
         val attributes = deserializeAttributes(context, jsonNode)
@@ -43,7 +41,6 @@ internal class NodeJsonDeserializer: JsonDeserializer<Node> {
 
     private fun deserializeAttributes(context: JsonDeserializationContext, jsonNode: JsonObject): Map<String, Any> {
         val attributes = jsonNode.get("attributes") ?: return mapOf()
-
         val gson = GsonBuilder().create()
         return gson.fromJson<Map<String, Any>>(attributes, Map::class.java)
     }

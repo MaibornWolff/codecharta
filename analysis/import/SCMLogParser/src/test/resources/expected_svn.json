@@ -29,7 +29,10 @@
                     "number_of_commits": 5,
                     "successive_weeks_with_commits": 1,
                     "number_of_authors": 2,
-                    "authors": ["MartinSc", "AlexH"]
+                    "authors": [
+                      "MartinSc",
+                      "AlexH"
+                    ]
                   },
                   "link": "",
                   "children": []
@@ -43,7 +46,9 @@
                     "number_of_commits": 2,
                     "successive_weeks_with_commits": 1,
                     "number_of_authors": 1,
-                    "authors": ["MartinSc"]
+                    "authors": [
+                      "MartinSc"
+                    ]
                   },
                   "link": "",
                   "children": []
@@ -59,7 +64,10 @@
                 "number_of_commits": 4,
                 "successive_weeks_with_commits": 1,
                 "number_of_authors": 2,
-                "authors": ["MartinSc", "AlexH"]
+                "authors": [
+                  "MartinSc",
+                  "AlexH"
+                ]
               },
               "link": "",
               "children": []

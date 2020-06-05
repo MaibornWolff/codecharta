@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
 class NumberOfRenames : Metric {
     private var numberOfRenames = 0
-
     override fun description(): String {
         return "Number of Renames: The number of times a file was renamed"
     }

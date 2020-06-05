@@ -6,9 +6,7 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 class ParseFileToJson {
-
     private val resource = "src/test/resources/ScriptShellSample.java"
-
     private val outputStream = retrieveStreamAsString {
         SourceCodeParserMain.mainWithOutputStream(it, arrayOf(resource, "--format=json"))
     }

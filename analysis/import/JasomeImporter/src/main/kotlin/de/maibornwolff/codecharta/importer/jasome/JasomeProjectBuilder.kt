@@ -9,9 +9,7 @@ import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 
 class JasomeProjectBuilder() {
-
     private val projectBuilder = ProjectBuilder()
-
     fun add(jasomeProject: de.maibornwolff.codecharta.importer.jasome.model.Project): JasomeProjectBuilder {
         jasomeProject.packages.orEmpty().forEach { this.add(it) }
         return this
@@ -24,14 +22,14 @@ class JasomeProjectBuilder() {
             projectBuilder.insertByPath(parentPath, nodeForPackage)
         }
         jasomePackage.classes.orEmpty()
-                .forEach { this.add(jasomePackage.name ?: "", it) }
+            .forEach { this.add(jasomePackage.name ?: "", it) }
         return this
     }
 
     fun add(packageName: String, jasomeClass: Class): JasomeProjectBuilder {
         val nodeForClass = createNode(jasomeClass)
         val parentPath = createPathByPackageName(packageName)
-        runBlocking (Dispatchers.Default) {
+        runBlocking(Dispatchers.Default) {
             launch {
                 projectBuilder.insertByPath(parentPath, nodeForClass)
             }
@@ -45,17 +43,17 @@ class JasomeProjectBuilder() {
 
     private fun createNode(jasomePackage: Package): MutableNode {
         val attributes =
-                jasomePackage.metrics
-                        ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
-                        ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
+            jasomePackage.metrics
+                ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
+                ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
         return MutableNode(jasomePackage.name!!.substringAfterLast('.'), NodeType.Package, attributes)
     }
 
     private fun createNode(jasomeClass: Class): MutableNode {
         val attributes =
-                jasomeClass.metrics
-                        ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
-                        ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
+            jasomeClass.metrics
+                ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
+                ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
         return MutableNode(jasomeClass.name ?: "", NodeType.Class, attributes)
     }
 

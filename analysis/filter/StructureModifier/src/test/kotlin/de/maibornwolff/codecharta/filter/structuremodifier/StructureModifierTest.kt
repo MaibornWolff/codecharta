@@ -17,8 +17,8 @@ class StructureModifierTest {
 
     @Test
     fun `reads project piped input`() {
-        val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines().joinToString(separator = "") { it }
-
+        val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines()
+            .joinToString(separator = "") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
         Assertions.assertThat(cliResult).contains(listOf("otherFile.java"))
@@ -39,7 +39,8 @@ class StructureModifierTest {
     @Ignore
     @Test
     fun `reads project piped input multiline`() {
-        val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
+        val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines()
+            .joinToString(separator = "\n") { it }
         val cliResult = executeForOutput(input, arrayOf("-r=/does/not/exist"))
 
         Assertions.assertThat(cliResult).contains(listOf("otherFile.java"))
@@ -61,7 +62,8 @@ class StructureModifierTest {
 
     @Test
     fun `sets root for new subproject`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
+        val cliResult =
+            executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-s=/root/src/folder3"))
 
         Assertions.assertThat(cliResult).contains("otherFile2.java")
         Assertions.assertThat(cliResult).doesNotContain(listOf("src", "otherFile.java", "folder3"))
@@ -77,7 +79,10 @@ class StructureModifierTest {
 
     @Test
     fun `moves nodes`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/sample_project.cc.json", "-f=/root/src", "-t=/root/new123"))
+        val cliResult = executeForOutput(
+            "",
+            arrayOf("src/test/resources/sample_project.cc.json", "-f=/root/src", "-t=/root/new123")
+        )
 
         Assertions.assertThat(cliResult).contains("new123")
         Assertions.assertThat(cliResult).doesNotContain("src")

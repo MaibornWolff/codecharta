@@ -8,16 +8,12 @@ import org.junit.Test
 import java.util.Arrays.asList
 import java.util.stream.Stream
 
-class GitLogNumstatParserStrategyTest: ParserStrategyContractTest() {
-
+class GitLogNumstatParserStrategyTest : ParserStrategyContractTest() {
     private var parserStrategy: GitLogNumstatParserStrategy = GitLogNumstatParserStrategy()
-
     override val fullCommit: List<String>
         get() = FULL_COMMIT
-
     override val logParserStrategy: LogParserStrategy
         get() = parserStrategy
-
     override val twoCommitsAsStraem: Stream<String>
         get() {
             val twoCommits = Lists.newArrayList("commit")
@@ -38,7 +34,7 @@ class GitLogNumstatParserStrategyTest: ParserStrategyContractTest() {
     @Test
     fun parsesFilenamesFromUnusualFileMetadata() {
         assertThat(GitLogNumstatParserStrategy.parseModification("0\t10\tsrc/Main.java").filename)
-                .isEqualTo("src/Main.java")
+            .isEqualTo("src/Main.java")
     }
 
     @Test
@@ -48,14 +44,14 @@ class GitLogNumstatParserStrategyTest: ParserStrategyContractTest() {
     }
 
     companion object {
-
         private val FULL_COMMIT = asList(
-                "commit ca1fe2ba3be4",
-                "Author: TheAuthor <mail@example.com>",
-                "Date:   Tue May 9 19:57:57 2017 +0200",
-                "    the commit message",
-                "10 0 src/Added.java",
-                "2 1 src/Modified.java",
-                "0 20 src/Deleted.java")
+            "commit ca1fe2ba3be4",
+            "Author: TheAuthor <mail@example.com>",
+            "Date:   Tue May 9 19:57:57 2017 +0200",
+            "    the commit message",
+            "10 0 src/Added.java",
+            "2 1 src/Modified.java",
+            "0 20 src/Deleted.java"
+        )
     }
 }

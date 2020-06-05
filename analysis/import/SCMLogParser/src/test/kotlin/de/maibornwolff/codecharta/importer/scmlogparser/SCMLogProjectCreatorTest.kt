@@ -17,21 +17,22 @@ import java.util.function.Function
 
 @RunWith(Parameterized::class)
 class SCMLogProjectCreatorTest(
-        val testName: String,
-        private val strategy: LogParserStrategy,
-        private val logFilename: String,
-        private val expectedProjectSize: Long
+    val testName: String,
+    private val strategy: LogParserStrategy,
+    private val logFilename: String,
+    private val expectedProjectSize: Long
 ) {
-
     companion object {
-
         @JvmStatic
         @Parameterized.Parameters(name = "{index}: {0}")
         fun data(): Collection<Array<Any>> {
             return Arrays.asList(
-                    arrayOf("--numstat --raw", GitLogNumstatRawParserStrategy(), "codecharta_git_numstat_raw.log",
-                            358L),
-                    arrayOf("--numstat", GitLogNumstatParserStrategy(), "codecharta_git_numstat.log", 472L))
+                arrayOf(
+                    "--numstat --raw", GitLogNumstatRawParserStrategy(), "codecharta_git_numstat_raw.log",
+                    358L
+                ),
+                arrayOf("--numstat", GitLogNumstatParserStrategy(), "codecharta_git_numstat.log", 472L)
+            )
         }
     }
 
@@ -43,30 +44,28 @@ class SCMLogProjectCreatorTest(
     fun logParserGitExampleTest() {
         // given
         val gitSCMLogProjectCreator = SCMLogProjectCreator(
-                strategy,
-                metricsFactory,
-                projectConverter,
-                silent = true
+            strategy,
+            metricsFactory,
+            projectConverter,
+            silent = true
         )
         val logStream = Files.lines(Paths.get(this.javaClass.classLoader.getResource(logFilename)!!.toURI()))
-
         // when
         val gitProject = gitSCMLogProjectCreator.parse(logStream)
-
         // then
         assertThat(gitProject)
-                .extracting(Function<Project, Any> { it.size.toLong() })
-                .containsExactly(expectedProjectSize)
+            .extracting(Function<Project, Any> { it.size.toLong() })
+            .containsExactly(expectedProjectSize)
         assertNodesValid(gitProject)
     }
 
     private fun assertNodesValid(project: Project) {
         val leaves = project.rootNode.leaves.values
         leaves.flatMap { l -> l.attributes.entries }
-                .forEach { v ->
-                    assertThat((v.value as Number).toDouble())
-                            .`as`("attribute %s non positive (%s)", v.key, v.value)
-                            .isGreaterThanOrEqualTo(0.0)
-                }
+            .forEach { v ->
+                assertThat((v.value as Number).toDouble())
+                    .`as`("attribute %s non positive (%s)", v.key, v.value)
+                    .isGreaterThanOrEqualTo(0.0)
+            }
     }
 }

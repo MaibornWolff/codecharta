@@ -9,7 +9,6 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
  * see "action" char at http://svn.apache.org/viewvc/subversion/trunk/subversion/include/svn_types.h?view=markup&pathrev=1751399#l835
  */
 internal enum class Status(private val letter: Char) {
-
     ADD('A'),
     DELETE('D'),
     MODIFY('M'),
@@ -21,17 +20,15 @@ internal enum class Status(private val letter: Char) {
 
     fun toModificationType(): Modification.Type {
         return when (this) {
-            Status.ADD     -> Modification.Type.ADD
-            Status.DELETE  -> Modification.Type.DELETE
-            Status.MODIFY  -> Modification.Type.MODIFY
+            Status.ADD -> Modification.Type.ADD
+            Status.DELETE -> Modification.Type.DELETE
+            Status.MODIFY -> Modification.Type.MODIFY
             Status.REPLACE -> Modification.Type.UNKNOWN
         }
     }
 
     companion object {
-
         val ALL_STATUS_LETTERS: List<Char> = Status.values().map { it.statusLetter() }
-
         fun byCharacter(c: Char): Status {
             return Status.values().first { status -> status.letter == c }
         }

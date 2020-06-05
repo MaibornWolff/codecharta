@@ -9,7 +9,6 @@ class MetricsFactoryTest {
     fun createMetricsShouldReturnCorrectMetric() {
         val metricName = "abs_code_churn"
         val factory = MetricsFactory(Arrays.asList(metricName))
-
         val modificationMetrics = factory.createMetrics()
 
         assertThat(modificationMetrics).hasSize(1)

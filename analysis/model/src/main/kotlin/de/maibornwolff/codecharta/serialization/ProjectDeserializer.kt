@@ -10,11 +10,10 @@ import java.io.Reader
 
 object ProjectDeserializer {
     private val logger = KotlinLogging.logger {}
-
     private val GSON = GsonBuilder()
-            .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
-            .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
-            .create()
+        .registerTypeAdapter(Node::class.java, NodeJsonDeserializer())
+        .registerTypeAdapter(Project::class.java, ProjectJsonDeserializer())
+        .create()
 
     fun deserializeProject(reader: Reader): Project {
         return GSON.fromJson(reader, Project::class.java)

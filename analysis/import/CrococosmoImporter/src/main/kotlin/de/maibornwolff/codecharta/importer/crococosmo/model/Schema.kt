@@ -5,15 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonIgnoreProperties("nodeschema", "edgeSchema", "edgeschema")
 class Schema(@JsonProperty("versions") val versions: Versions) {
-
-    constructor(versions: List<SchemaVersion>): this(Versions(versions))
+    constructor(versions: List<SchemaVersion>) : this(Versions(versions))
 }
 
 class Versions(@JsonProperty("version") val versions: List<SchemaVersion>)
 
 @JsonIgnoreProperties("date")
 class SchemaVersion(
-        @JsonProperty("id") val id: String,
-        @JsonProperty("name") val name: String = "",
-        @JsonProperty("revision") val revision: String = ""
+    @JsonProperty("id") val id: String,
+    @JsonProperty("name") val name: String = "",
+    @JsonProperty("revision") val revision: String = ""
 )

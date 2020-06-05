@@ -13,7 +13,6 @@ class SuccessiveWeeksWithCommitsTest {
     fun initial_value_zero() {
         // when
         val metric = SuccessiveWeeksWithCommits()
-
         // then
         assertThat(metric.value()).isEqualTo(0)
     }
@@ -22,11 +21,9 @@ class SuccessiveWeeksWithCommitsTest {
     fun single_modification() {
         // given
         val metric = SuccessiveWeeksWithCommits()
-
         // when
         val date = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset)
         metric.registerCommit(Commit("author", emptyList(), date))
-
         // then
         assertThat(metric.value()).isEqualTo(1)
     }
@@ -35,13 +32,11 @@ class SuccessiveWeeksWithCommitsTest {
     fun additional_modification_in_same_calendar_week() {
         // given
         val metric = SuccessiveWeeksWithCommits()
-
         // when
         val date1 = OffsetDateTime.of(2016, 4, 2, 12, 0, 0, 0, zoneOffset)
         metric.registerCommit(Commit("author", emptyList(), date1))
         val date2 = OffsetDateTime.of(2016, 4, 3, 12, 0, 0, 0, zoneOffset)
         metric.registerCommit(Commit("author", emptyList(), date2))
-
         // then
         assertThat(metric.value()).isEqualTo(1)
     }
@@ -50,13 +45,11 @@ class SuccessiveWeeksWithCommitsTest {
     fun additional_modification_in_successive_calendar_week() {
         // given
         val metric = SuccessiveWeeksWithCommits()
-
         // when
         val date1 = OffsetDateTime.of(2016, 4, 3, 12, 0, 0, 0, zoneOffset)
         metric.registerCommit(Commit("author", emptyList(), date1))
         val date2 = OffsetDateTime.of(2016, 4, 4, 12, 0, 0, 0, zoneOffset)
         metric.registerCommit(Commit("author", emptyList(), date2))
-
         // then
         assertThat(metric.value()).isEqualTo(2)
     }
@@ -65,13 +58,11 @@ class SuccessiveWeeksWithCommitsTest {
     fun additional_modification_in_non_successive_calendar_week() {
         // given
         val metric = SuccessiveWeeksWithCommits()
-
         // when
         val date1 = OffsetDateTime.of(2016, 4, 3, 12, 0, 0, 0, zoneOffset)
         metric.registerCommit(Commit("author", emptyList(), date1))
         val date2 = OffsetDateTime.of(2016, 4, 11, 12, 0, 0, 0, zoneOffset)
         metric.registerCommit(Commit("author", emptyList(), date2))
-
         // then
         assertThat(metric.value()).isEqualTo(1)
     }

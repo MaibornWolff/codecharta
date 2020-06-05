@@ -4,12 +4,11 @@ import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import mu.KotlinLogging
 
 open class ProjectBuilder(
-        private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-        private var edges: MutableList<Edge> = mutableListOf(),
-        private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
-        private var blacklist: MutableList<BlacklistItem> = mutableListOf()
+    private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
+    private var edges: MutableList<Edge> = mutableListOf(),
+    private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
+    private var blacklist: MutableList<BlacklistItem> = mutableListOf()
 ) {
-
     val DUMMY_PROJECT_NAME = ""
 
     init {
@@ -17,10 +16,8 @@ open class ProjectBuilder(
     }
 
     private val logger = KotlinLogging.logger {}
-
     val rootNode: MutableNode
         get() = nodes[0]
-
     val size: Int
         get() = rootNode.size
 
@@ -35,9 +32,7 @@ open class ProjectBuilder(
     }
 
     private var metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
-
     private var filterRule: (MutableNode) -> Boolean = { true }
-
     fun withMetricTranslator(metricNameTranslator: MetricNameTranslator): ProjectBuilder {
         this.metricNameTranslator = metricNameTranslator
         return this
@@ -50,19 +45,18 @@ open class ProjectBuilder(
 
     fun build(): Project {
         nodes.flatMap { it.nodes.values }
-                .mapNotNull { it.filterChildren(filterRule, false) }
-                .map { it.translateMetrics(metricNameTranslator, false) }
+            .mapNotNull { it.filterChildren(filterRule, false) }
+            .map { it.translateMetrics(metricNameTranslator, false) }
 
         edges.forEach { it.translateMetrics(metricNameTranslator) }
 
         filterEmptyFolders()
-
         val project = Project(
-                DUMMY_PROJECT_NAME,
-                nodes.map { it.toNode() }.toList(),
-                edges = edges.toList(),
-                attributeTypes = attributeTypes.toMap(),
-                blacklist = blacklist.toList()
+            DUMMY_PROJECT_NAME,
+            nodes.map { it.toNode() }.toList(),
+            edges = edges.toList(),
+            attributeTypes = attributeTypes.toMap(),
+            blacklist = blacklist.toList()
         )
 
         System.err.println()

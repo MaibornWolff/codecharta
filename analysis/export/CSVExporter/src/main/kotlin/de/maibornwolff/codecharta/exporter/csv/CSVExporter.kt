@@ -11,12 +11,11 @@ import java.io.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "csvexport",
-        description = ["generates csv file with header"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "csvexport",
+    description = ["generates csv file with header"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class CSVExporter: Callable<Void> {
-
+class CSVExporter : Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -28,7 +27,6 @@ class CSVExporter: Callable<Void> {
 
     @CommandLine.Option(names = ["--depth-of-hierarchy"], description = ["depth of the hierarchy"])
     private var maxHierarchy: Int = 10
-
     private fun writer(): Writer {
         return if (outputFile.isEmpty()) {
             OutputStreamWriter(System.out)
@@ -42,7 +40,6 @@ class CSVExporter: Callable<Void> {
         if (maxHierarchy < 0) {
             throw IllegalArgumentException("depth-of-hierarchy must not be negative")
         }
-
         val projects = sources.map { ProjectDeserializer.deserializeProject(it.reader()) }
 
         projects.forEach { writeUsingWriter(it, writer()) }
@@ -53,12 +50,10 @@ class CSVExporter: Callable<Void> {
     private fun writeUsingWriter(project: Project, outputWriter: Writer) {
         val settings = CsvWriterSettings()
         val writer = CsvWriter(outputWriter, settings)
-
         val attributeNames: List<String> = project.rootNode.nodes.flatMap { it.value.attributes.keys }.distinct()
-
         val header = listOf("path", "name", "type")
-                .plus(attributeNames)
-                .plus(List(maxHierarchy, { "dir$it" }))
+            .plus(attributeNames)
+            .plus(List(maxHierarchy, { "dir$it" }))
 
         writer.writeHeaders(header)
 
@@ -69,16 +64,16 @@ class CSVExporter: Callable<Void> {
 
     private fun row(path: Path, node: Node, attributeNames: List<String>): List<String> {
         val values: List<String> = node.toAttributeList(attributeNames)
-
         val rowWithoutDirs = listOf(path.toPath, node.name, node.type.toString())
-                .plus(values)
+            .plus(values)
         val dirs = path.edgesList.dropLast(1)
 
         return when {
             values.distinct().none { !it.isBlank() } -> listOf()
-            dirs.size < maxHierarchy                 -> rowWithoutDirs.plus(dirs).plus(
-                    List(maxHierarchy - dirs.size, { "" }))
-            else                                     -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
+            dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(
+                List(maxHierarchy - dirs.size, { "" })
+            )
+            else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }
     }
 

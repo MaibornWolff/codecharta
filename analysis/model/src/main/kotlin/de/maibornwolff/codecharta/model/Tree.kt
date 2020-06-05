@@ -10,26 +10,21 @@ private val logger = KotlinLogging.logger {}
  * @param <T> must satisfy T = Tree<T>
  */
 abstract class Tree<T> {
-
     /**
      * @return children of the present tree
      */
     abstract val children: Set<Tree<T>>
-
     val isLeaf: Boolean
         get() {
             return children.isEmpty()
         }
-
     private val treeNodes: Set<TreeNode<T>>
         get() = setOf(TreeNode(Path.trivialPath(), asTreeNode())) +
-                children.flatMap { child ->
-                    child.treeNodes.map { TreeNode(getPathOfChild(child).concat(it.path), it.node) }
-                }
-
+            children.flatMap { child ->
+                child.treeNodes.map { TreeNode(getPathOfChild(child).concat(it.path), it.node) }
+            }
     val nodes: Map<Path, T>
         get() = treeNodes.map { it.path to it.node }.toMap()
-
     val leaves: Map<Path, T>
         get() = treeNodes.filter { (it.node as Tree<*>).isLeaf }.map { it.path to it.node }.toMap()
 
@@ -58,7 +53,6 @@ abstract class Tree<T> {
      * @return path of child in this object
      */
     abstract fun getPathOfChild(child: Tree<T>): Path
-
     private class TreeNode<out V> internal constructor(internal val path: Path, internal val node: V)
 
     /**
@@ -68,8 +62,8 @@ abstract class Tree<T> {
     fun getNodeBy(path: Path): Tree<T>? {
         return when {
             path.isTrivial -> this
-            path.isSingle  -> children.first { path == getPathOfChild(it) }
-            else           -> getNodeBy(Path(listOf(path.head)))!!.getNodeBy(path.tail)
+            path.isSingle -> children.first { path == getPathOfChild(it) }
+            else -> getNodeBy(Path(listOf(path.head)))!!.getNodeBy(path.tail)
         }
     }
 

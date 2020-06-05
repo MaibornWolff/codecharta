@@ -10,14 +10,14 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @Command(
-        name = "sourcecodeparser",
-        description = ["generates cc.json from source code"],
-        footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2020, MaibornWolff GmbH"]
+    name = "sourcecodeparser",
+    description = ["generates cc.json from source code"],
+    footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2020, MaibornWolff GmbH"]
 )
 class SourceCodeParserMain(
-        private val outputStream: PrintStream,
-        private val input: InputStream = System.`in`,
-        private val error: PrintStream = System.err
+    private val outputStream: PrintStream,
+    private val input: InputStream = System.`in`,
+    private val error: PrintStream = System.err
 ) : Callable<Void> {
     // we need this constructor because ccsh requires an empty constructor
     constructor() : this(System.out)
@@ -33,10 +33,17 @@ class SourceCodeParserMain(
     @Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
-    @Option(names = ["--default-excludes"], description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "])
+    @Option(
+        names = ["--default-excludes"],
+        description = ["exclude build, target, dist and out folders as well as files/folders starting with '.' "]
+    )
     private var defaultExcludes = false
 
-    @Option(names = ["-f", "--format"], description = ["the format to output"], converter = [(OutputTypeConverter::class)])
+    @Option(
+        names = ["-f", "--format"],
+        description = ["the format to output"],
+        converter = [(OutputTypeConverter::class)]
+    )
     private var outputFormat = OutputFormat.JSON
 
     @Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -50,7 +57,6 @@ class SourceCodeParserMain(
 
     @Throws(IOException::class)
     override fun call(): Void? {
-
         print(" ")
         if (!file.exists()) {
             val path = Paths.get("").toAbsolutePath().toString()
@@ -60,12 +66,10 @@ class SourceCodeParserMain(
         }
 
         if (defaultExcludes) exclude += DEFAULT_EXCLUDES
-
         val projectParser = ProjectParser(exclude, verbose, !findNoIssues)
 
         projectParser.setUpAnalyzers()
         projectParser.scanProject(file)
-
         val writer = getMetricWriter()
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         writer.generate(projectParser.projectMetrics, projectParser.metricKinds, pipedProject)
@@ -98,6 +102,7 @@ class SourceCodeParserMain(
         fun mainWithOutputStream(outputStream: PrintStream, args: Array<String>) {
             call(SourceCodeParserMain(outputStream), System.out, *args)
         }
+
         @JvmStatic
         fun mainWithInOut(outputStream: PrintStream, input: InputStream, error: PrintStream, args: Array<String>) {
             call(SourceCodeParserMain(outputStream, input, error), outputStream, *args)

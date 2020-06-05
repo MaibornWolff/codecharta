@@ -19,7 +19,6 @@ class NodeRemoverTest {
     @Test
     fun `Non existent path leads to replication of the project`() {
         val subProjectExtractor = NodeRemover(sampleProject)
-
         val result = subProjectExtractor.remove(arrayOf("/root/somethig"))
 
         Assertions.assertThat(result).usingRecursiveComparison().isEqualTo(sampleProject)
@@ -28,9 +27,7 @@ class NodeRemoverTest {
     @Test
     fun `Non affected nodes are kept`() {
         val subProjectExtractor = NodeRemover(sampleProject)
-
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
-
         val testFolder = result.rootNode.children.first().children.first()
         Assertions.assertThat(testFolder.name).isEqualTo("test")
     }
@@ -38,9 +35,7 @@ class NodeRemoverTest {
     @Test
     fun `specified nodes are removed`() {
         val subProjectExtractor = NodeRemover(sampleProject)
-
         val result = subProjectExtractor.remove(arrayOf("/root/src/main"))
-
         val srcContent = result.rootNode.children.first().children
         Assertions.assertThat(srcContent.size).isEqualTo(2)
         Assertions.assertThat(srcContent.map { it.name }).doesNotContain("main")
@@ -49,9 +44,7 @@ class NodeRemoverTest {
     @Test
     fun `multiple nodes are removed`() {
         val subProjectExtractor = NodeRemover(sampleProject)
-
         val result = subProjectExtractor.remove(arrayOf("/root/src/main/file1.java", "root/src/folder3/"))
-
         val srcContent = result.rootNode.children.first().children
         val mainContent = srcContent.first().children
         Assertions.assertThat(srcContent.map { it.name }).doesNotContain("folder3")
@@ -61,7 +54,6 @@ class NodeRemoverTest {
     @Test
     fun `Affected edges are removed`() {
         val subProjectExtractor = NodeRemover(sampleProject)
-
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
         Assertions.assertThat(result.edges.size).isEqualTo(1)
@@ -74,9 +66,7 @@ class NodeRemoverTest {
     fun `Affected edges are removed for multiple removals`() {
         val subProjectExtractor = NodeRemover(sampleProject)
         val toExclude = arrayOf("/root/foo/file1", "root/else/")
-
         val result = subProjectExtractor.remove(toExclude)
-
         val shouldBeExcluded = listOf("/root/foo/file1", "root/else/file1", "root/else")
         Assertions.assertThat(result.edges.size).isEqualTo(2)
         Assertions.assertThat(result.edges.map { it.fromNodeName }).doesNotContainAnyElementsOf(shouldBeExcluded)
@@ -86,7 +76,6 @@ class NodeRemoverTest {
     @Test
     fun `Affected blacklist items are removed`() {
         val subProjectExtractor = NodeRemover(sampleProject)
-
         val result = subProjectExtractor.remove(arrayOf("/root/foo"))
 
         Assertions.assertThat(result.blacklist.map { it.path }).doesNotContainSubsequence("/root/foo")

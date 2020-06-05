@@ -3,7 +3,11 @@
   "title": "CodeCharta visualization data",
   "description": "data used for visualization",
   "type": "object",
-  "required": ["projectName", "nodes", "apiVersion"],
+  "required": [
+    "projectName",
+    "nodes",
+    "apiVersion"
+  ],
   "properties": {
     "projectName": {
       "title": "project name",
@@ -38,7 +42,10 @@
     "node": {
       "title": "nodes",
       "type": "object",
-      "required": ["name", "type"],
+      "required": [
+        "name",
+        "type"
+      ],
       "properties": {
         "name": {
           "title": "name of node",
@@ -65,7 +72,10 @@
     "edge": {
       "title": "edge between nodes",
       "type": "object",
-      "required": ["fromNodeName", "toNodeName"],
+      "required": [
+        "fromNodeName",
+        "toNodeName"
+      ],
       "properties": {
         "fromNodeName": {
           "title": "node where the edge comes from",

@@ -13,14 +13,16 @@ import java.util.stream.Stream
 /**
  * Parses log lines and generates VersionControlledFiles from them using specific parserStrategy and metricsFactory
  */
-class LogLineParser(private val parserStrategy: LogParserStrategy, private val metricsFactory: MetricsFactory, private val silent: Boolean = false) {
-
+class LogLineParser(
+    private val parserStrategy: LogParserStrategy,
+    private val metricsFactory: MetricsFactory,
+    private val silent: Boolean = false
+) {
     private var numberOfCommitsParsed = 0
-
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
         return logLines.collect(parserStrategy.createLogLineCollector())
-                .map { this.parseCommit(it) }.filter { !it.isEmpty }
-                .collect(CommitCollector.create(metricsFactory))
+            .map { this.parseCommit(it) }.filter { !it.isEmpty }
+            .collect(CommitCollector.create(metricsFactory))
     }
 
     internal fun parseCommit(commitLines: List<String>): Commit {
@@ -31,9 +33,9 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
 
             runBlocking(Dispatchers.Default) {
                 launch {
-                     author = parserStrategy.parseAuthor(commitLines)
-                     commitDate = parserStrategy.parseDate(commitLines)
-                     modifications = parserStrategy.parseModifications(commitLines)
+                    author = parserStrategy.parseAuthor(commitLines)
+                    commitDate = parserStrategy.parseDate(commitLines)
+                    modifications = parserStrategy.parseModifications(commitLines)
                 }
             }
 

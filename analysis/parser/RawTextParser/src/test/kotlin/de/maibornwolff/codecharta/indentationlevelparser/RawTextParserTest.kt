@@ -11,14 +11,12 @@ import org.junit.jupiter.api.Test
 import java.io.*
 
 class RawTextParserTest {
-
     @Test
     fun `should be able to process single file`() {
         val result = ByteArrayOutputStream()
         val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
 
         RawTextParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/tabs.xyz"))
-
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
@@ -29,8 +27,16 @@ class RawTextParserTest {
         val result = ByteArrayOutputStream()
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
-        RawTextParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/", "-p=foo", "--tabWidth=2", "--maxIndentationLevel=2", "-e=tabs*."))
-
+        RawTextParser.mainWithOutputStream(
+            PrintStream(result),
+            arrayOf(
+                "src/test/resources/sampleproject/",
+                "-p=foo",
+                "--tabWidth=2",
+                "--maxIndentationLevel=2",
+                "-e=tabs*."
+            )
+        )
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
@@ -45,29 +51,31 @@ class RawTextParserTest {
         val partialProject1 = ProjectDeserializer.deserializeProject(File(partialResult).inputStream())!!
         val partialProject2 = ProjectDeserializer.deserializeProject(File(pipedProject).inputStream())!!
         val expected = ByteArrayOutputStream()
-        ProjectSerializer.serializeProject(MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1), OutputStreamWriter(PrintStream(expected)))
-
+        ProjectSerializer.serializeProject(
+            MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1),
+            OutputStreamWriter(PrintStream(expected))
+        )
         val result = executeForOutput(input, arrayOf(fileToParse, "-p="))
-
         val resultJSON = JsonParser().parse(result)
         Assertions.assertThat(resultJSON).isEqualTo(JsonParser().parse(expected.toString()))
     }
 }
 
 fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
-        outputAsString(input) { inputStream, outputStream, errorStream ->
-            mainWithInOut(outputStream, inputStream, errorStream, args)
-        }
+    outputAsString(input) { inputStream, outputStream, errorStream ->
+        mainWithInOut(outputStream, inputStream, errorStream, args)
+    }
 
 fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-        outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
+    outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
 fun outputAsString(
-        inputStream: InputStream = System.`in`,
-        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-        ByteArrayOutputStream().use { baOutputStream ->
-            PrintStream(baOutputStream).use { outputStream ->
-                aMethod(inputStream, outputStream, System.err)
-            }
-            baOutputStream.toString()
+    inputStream: InputStream = System.`in`,
+    aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+) =
+    ByteArrayOutputStream().use { baOutputStream ->
+        PrintStream(baOutputStream).use { outputStream ->
+            aMethod(inputStream, outputStream, System.err)
         }
+        baOutputStream.toString()
+    }

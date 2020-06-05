@@ -7,7 +7,6 @@ import java.util.function.Predicate
 import java.util.stream.Stream
 
 class LogLineCollectorTest {
-
     @Test
     fun collectsBetweenSeparators() {
         val logLines = Stream.of("##", "commit 1", "##", "commit 2")
@@ -21,7 +20,8 @@ class LogLineCollectorTest {
         val logLines = Stream.of("commit 1", "commit 2")
         val commitSeparatorTest = Predicate<String> { logLine -> logLine == "some commit separator" }
         assertThatThrownBy { logLines.collect(LogLineCollector.create(commitSeparatorTest)) }.isInstanceOf(
-                IllegalArgumentException::class.java)
+            IllegalArgumentException::class.java
+        )
     }
 
     @Test

@@ -12,20 +12,18 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 class CSVProjectBuilder(
-        private val pathSeparator: Char,
-        private val csvDelimiter: Char,
-        private val pathColumnName: String = "path",
-        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
+    private val pathSeparator: Char,
+    private val csvDelimiter: Char,
+    private val pathColumnName: String = "path",
+    metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
-
     private val logger = KotlinLogging.logger {}
-
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder()
-            .withMetricTranslator(metricNameTranslator)
+        .withMetricTranslator(metricNameTranslator)
 
     fun parseCSVStream(
-            inStream: InputStream
+        inStream: InputStream
     ): ProjectBuilder {
         val parser = createParser(inStream)
         val header = CSVHeader(parser.parseNext(), pathColumnName = pathColumnName)
@@ -52,7 +50,6 @@ class CSVProjectBuilder(
         val parserSettings = CsvParserSettings()
         parserSettings.format.delimiter = csvDelimiter
         parserSettings.isLineSeparatorDetectionEnabled = true
-
         val parser = CsvParser(parserSettings)
         parser.beginParsing(InputStreamReader(inStream, StandardCharsets.UTF_8))
         return parser

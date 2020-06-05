@@ -10,16 +10,12 @@ import org.junit.Test
 import java.util.Arrays.asList
 import java.util.stream.Stream
 
-class GitLogRawParserStrategyTest: ParserStrategyContractTest() {
-
+class GitLogRawParserStrategyTest : ParserStrategyContractTest() {
     private var parserStrategy: GitLogRawParserStrategy = GitLogRawParserStrategy()
-
     override val fullCommit: List<String>
         get() = FULL_COMMIT
-
     override val logParserStrategy: LogParserStrategy
         get() = parserStrategy
-
     override val twoCommitsAsStraem: Stream<String>
         get() {
             val twoCommits = Lists.newArrayList("commit")
@@ -69,14 +65,14 @@ class GitLogRawParserStrategyTest: ParserStrategyContractTest() {
     }
 
     companion object {
-
         private val FULL_COMMIT = asList(
-                "commit ca1fe2ba3be4",
-                "Author: TheAuthor <mail@example.com>",
-                "Date:   Tue May 9 19:57:57 2017 +0200",
-                "    the commit message",
-                ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java",
-                ":100644 100644 6c30570... 79b6243... M  src/Modified.java",
-                ":100644 100644 64d6a85... 8c57f3d... D  src/Deleted.java")
+            "commit ca1fe2ba3be4",
+            "Author: TheAuthor <mail@example.com>",
+            "Date:   Tue May 9 19:57:57 2017 +0200",
+            "    the commit message",
+            ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java",
+            ":100644 100644 6c30570... 79b6243... M  src/Modified.java",
+            ":100644 100644 64d6a85... 8c57f3d... D  src/Deleted.java"
+        )
     }
 }

@@ -15,11 +15,10 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class NodeJsonDeserializerTest: Spek({
+class NodeJsonDeserializerTest : Spek({
     val NAME = "nodeName"
     val TYPE = NodeType.Folder
     val nodeClass = MutableNode::class.java
-
     fun createMinimalJsonObject(): JsonObject {
         val obj = JsonObject()
         obj.addProperty("name", NAME)
@@ -87,19 +86,16 @@ class NodeJsonDeserializerTest: Spek({
             val obj = createMinimalJsonObject()
             val url = "someUrl"
             obj.addProperty("link", url)
-
             val attributeName = "bla"
             val attributeValue = 1
             val attributesObject = JsonObject()
             attributesObject.addProperty(attributeName, attributeValue)
             obj.add("attributes", attributesObject)
-
             val childrenElement = JsonArray()
             childrenElement.add(createMinimalJsonObject())
             obj.add("children", childrenElement)
 
             context("deserializing") {
-
                 val node = deserializer.deserialize(obj, nodeClass, mockk())
 
                 it("should deserialize link") {

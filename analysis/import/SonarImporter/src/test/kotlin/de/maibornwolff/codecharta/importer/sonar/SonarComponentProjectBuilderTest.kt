@@ -11,7 +11,6 @@ import org.junit.Assert.assertThat
 import org.junit.Test
 
 class SonarComponentProjectBuilderTest {
-
     @Test
     fun should_insert_a_node_from_file_component_without_key_and_use_name_as_backup_value() {
         // given
@@ -19,10 +18,8 @@ class SonarComponentProjectBuilderTest {
         val name = "name"
         val component = Component("id", null, name, "path", Qualifier.FIL, listOf(measure).toMutableList())
         val projectBuilder = SonarComponentProjectBuilder()
-
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
-
         // then
         assertThat(project.rootNode.children, hasSize(1))
         val actualNode = project.rootNode.children.toMutableList()[0]
@@ -36,10 +33,8 @@ class SonarComponentProjectBuilderTest {
         val id = "id"
         val component = Component(id, null, null, null, Qualifier.FIL, listOf(measure).toMutableList())
         val projectBuilder = SonarComponentProjectBuilder()
-
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
-
         // then
         assertThat(project.rootNode.children, hasSize(1))
         val actualNode = project.rootNode.children.toMutableList()[0]
@@ -58,10 +53,8 @@ class SonarComponentProjectBuilderTest {
         val path = "someFileName"
         val component = Component(id, key, name, path, Qualifier.FIL, listOf(measure).toMutableList())
         val projectBuilder = SonarComponentProjectBuilder()
-
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
-
         // then
         assertThat(project.rootNode.children, hasSize(1))
         val actualNode = project.rootNode.children.toMutableList()[0]
@@ -78,10 +71,8 @@ class SonarComponentProjectBuilderTest {
         val measure = Measure("metric", "bla")
         val component = Component("id", "key", "name", "path", Qualifier.FIL, listOf(measure).toMutableList())
         val projectBuilder = SonarComponentProjectBuilder()
-
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
-
         // then
         assertThat(project.rootNode.children, hasSize(1))
         val actualNode = project.rootNode.children.toMutableList()[0]
@@ -93,10 +84,8 @@ class SonarComponentProjectBuilderTest {
         // given
         val component = Component("id", "key", "name", "path", Qualifier.UTS)
         val projectBuilder = SonarComponentProjectBuilder()
-
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
-
         // then
         assertThat(project.rootNode.children, hasSize(1))
         val actualNode = project.rootNode.children.toMutableList()[0]
@@ -108,10 +97,8 @@ class SonarComponentProjectBuilderTest {
         // given
         val component = Component("id", "key", "name", "path", Qualifier.DIR)
         val projectBuilder = SonarComponentProjectBuilder()
-
         // when
         val project = projectBuilder.addComponentAsNode(component)
-
         // then
         assertThat(project.size, `is`(1))
     }
@@ -123,10 +110,8 @@ class SonarComponentProjectBuilderTest {
         val components = ComponentMap()
         components.updateComponent(component)
         val projectBuilder = SonarComponentProjectBuilder()
-
         // when
         val project = projectBuilder.addComponentAsNode(component)
-
         // then
         assertThat(project.size, `is`(1))
     }
@@ -137,11 +122,9 @@ class SonarComponentProjectBuilderTest {
         val path = "someFileName"
         val component = Component("id", "key", "name", path, Qualifier.FIL)
         val projectBuilder =
-                SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
-
+            SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
         // when
         val project = projectBuilder.addComponentAsNode(component).build()
-
         // then
         assertThat(project.rootNode.children, hasSize(1))
         val actualNode = project.rootNode.children.toMutableList()[0]

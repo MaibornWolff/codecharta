@@ -15,22 +15,22 @@ import java.io.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "tokeiimporter",
-        description = ["generates cc.json from tokei json"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "tokeiimporter",
+    description = ["generates cc.json from tokei json"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class TokeiImporter(private val input: InputStream = System.`in`,
-                    private val output: PrintStream = System.out,
-                    private val error: PrintStream = System.err) : Callable<Void> {
+class TokeiImporter(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Void> {
     private var TOP_LEVEL_OBJECT: String = "inner"
     private val logger = KotlinLogging.logger {}
-
     private val attributeTypes = AttributeTypes(type = "nodes")
-            .add("rloc", AttributeType.absolute)
-            .add("loc", AttributeType.absolute)
-            .add("empty_lines", AttributeType.absolute)
-            .add("comment_lines", AttributeType.absolute)
-
+        .add("rloc", AttributeType.absolute)
+        .add("loc", AttributeType.absolute)
+        .add("empty_lines", AttributeType.absolute)
+        .add("comment_lines", AttributeType.absolute)
     private lateinit var projectBuilder: ProjectBuilder
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -53,18 +53,18 @@ class TokeiImporter(private val input: InputStream = System.`in`,
         print(" ")
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
-runBlocking (Dispatchers.Default) {
-    val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
-    val gson = Gson()
-    for (languageEntry in languageSummaries.entrySet()) {
-            val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
-            if (languageAnalysisObject.hasChildren()) {
-                for (analysisObject in languageAnalysisObject.stats!!) {
-                    addAsNode(analysisObject)
+        runBlocking(Dispatchers.Default) {
+            val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
+            val gson = Gson()
+            for (languageEntry in languageSummaries.entrySet()) {
+                val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
+                if (languageAnalysisObject.hasChildren()) {
+                    for (analysisObject in languageAnalysisObject.stats!!) {
+                        addAsNode(analysisObject)
+                    }
                 }
             }
-    }
-}
+        }
         projectBuilder.addAttributeTypes(attributeTypes)
         ProjectSerializer.serializeProject(projectBuilder.build(), writer())
         return null
@@ -74,13 +74,13 @@ runBlocking (Dispatchers.Default) {
         val sanitizedName = analysisObject.name!!.removePrefix(rootName).replace(pathSeparator, "/")
         val directory = sanitizedName.substringBeforeLast("/")
         val fileName = sanitizedName.substringAfterLast("/")
-
         val node = MutableNode(
-                fileName, attributes = mapOf(
+            fileName, attributes = mapOf(
                 "empty_lines" to analysisObject.blanks,
                 "rloc" to analysisObject.code,
                 "comment_lines" to analysisObject.comments,
-                "loc" to analysisObject.lines)
+                "loc" to analysisObject.lines
+            )
         )
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
@@ -88,7 +88,7 @@ runBlocking (Dispatchers.Default) {
 
     private fun getInput(): JsonElement? {
         var root: JsonElement? = null
-        runBlocking (Dispatchers.Default) {
+        runBlocking(Dispatchers.Default) {
             if (file != null) {
                 launch {
                     if (file!!.isFile) {

@@ -6,8 +6,7 @@ import org.hamcrest.Matchers.*
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class NodeInserterTest: Spek({
-
+class NodeInserterTest : Spek({
     describe("NodeInserter") {
         context("Inserting a node at root") {
             val root = MutableNode("root", NodeType.Folder)
@@ -24,7 +23,6 @@ class NodeInserterTest: Spek({
 
         context("Inserting a node at root twice") {
             val root = MutableNode("root", NodeType.Folder)
-
             val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
             val secondNodeForInsertion = MutableNode("insertedNode", NodeType.Folder)
             NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion)
@@ -42,7 +40,6 @@ class NodeInserterTest: Spek({
             val root = MutableNode("root", NodeType.Folder)
             val intermediateNode = MutableNode("folder", NodeType.Folder)
             root.children.add(intermediateNode)
-
             val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
             NodeInserter.insertByPath(root, Path("folder"), nodeForInsertion)
 
@@ -75,8 +72,10 @@ class NodeInserterTest: Spek({
             it("should insert node in leaf position") {
                 assertThat(root.children, hasSize(1))
                 assertThat(root.pathsToLeaves.count(), `is`(1))
-                assertThat(root.toNode(),
-                        hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode")))
+                assertThat(
+                    root.toNode(),
+                    hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode"))
+                )
             }
         }
 
@@ -89,8 +88,10 @@ class NodeInserterTest: Spek({
             it("should insert node in leaf position") {
                 assertThat(root.children, hasSize(1))
                 assertThat(root.pathsToLeaves.count(), `is`(1))
-                assertThat(root.toNode(),
-                        hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode")))
+                assertThat(
+                    root.toNode(),
+                    hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode"))
+                )
             }
         }
     }

@@ -4,10 +4,8 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.model.AttributeType
 import java.util.*
 
-class SuccessiveWeeksWithCommits: Metric {
-
+class SuccessiveWeeksWithCommits : Metric {
     private val weeksWithCommits = TreeSet<CalendarWeek>()
-
     override fun description(): String {
         return "Successive Weeks With Commits: maximal number of successive weeks with commits."
     }
@@ -22,7 +20,6 @@ class SuccessiveWeeksWithCommits: Metric {
 
     override fun value(): Number {
         var numberOfSuccessiveWeeks = 0
-
         var temp = 0
         var lastKwWithCommit: CalendarWeek? = null
         for (kw in weeksWithCommits) {

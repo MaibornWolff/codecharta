@@ -6,19 +6,16 @@ import mu.KotlinLogging
 /**
  * merges nodes recursively if their paths coincide
  */
-class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrategy {
-
+class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrategy {
     private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
-
     private var nodesProcessed = 0
     private var nodesMerged = 0
-
     private val logger = KotlinLogging.logger { }
 
     init {
         mergeConditionSatisfied =
-                if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
-                else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
+            if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
+            else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
     }
 
     override fun mergeNodeLists(nodeLists: List<List<MutableNode>>): List<MutableNode> {
@@ -29,7 +26,6 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrate
                 nodesProcessed++
                 mergeOrAppendNode(accumulatedNodes, nextNode)
             })
-
         }
     }
 

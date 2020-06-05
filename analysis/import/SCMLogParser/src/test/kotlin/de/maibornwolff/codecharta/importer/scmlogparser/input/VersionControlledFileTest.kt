@@ -12,16 +12,13 @@ import java.time.OffsetDateTime
 import java.util.*
 
 class VersionControlledFileTest {
-
     @Test
     fun versionControlledFileHoldsInitallyOnlyTheFilename() {
         // given
         val metricsFactory = mockk<MetricsFactory>(relaxed = true)
         val filename = "filename"
-
         // when
         val versionControlledFile = VersionControlledFile(filename, metricsFactory)
-
         // then
         assertThat(versionControlledFile.filename).isEqualTo(filename)
         assertThat(versionControlledFile.actualFilename).isEqualTo(filename)
@@ -36,57 +33,48 @@ class VersionControlledFileTest {
         val metric = mockk<Metric>()
         every { metric.metricName() } returns metricName
         every { metric.value() } returns 1
-
         val metricsFactory = mockk<MetricsFactory>()
         every { metricsFactory.createMetrics() } returns Arrays.asList(metric)
-
         val versionControlledFile = VersionControlledFile(
-                "filename",
-                metricsFactory
+            "filename",
+            metricsFactory
         )
-
         // when
         val metricsMap = versionControlledFile.metricsMap
-
         // then
         assertThat(metricsMap).hasSize(1)
         assertThat(versionControlledFile.getMetricValue(metricName))
-                .isEqualTo(1)
+            .isEqualTo(1)
     }
 
     @Test
     fun throwsExceptionIfFileIsNotInCommit() {
         val versionControlledFile = VersionControlledFile(
-                "filename",
-                listOf()
+            "filename",
+            listOf()
         )
-
         val modification = Modification("anotherFilename")
         val commit = createCommit("An Author", modification)
 
         Assertions.assertThrows(IllegalStateException::class.java) {
             versionControlledFile.registerCommit(commit)
         }
-
     }
 
     @Test
     fun canRegisterASimpleCommit() {
         // given
         val modificationMetric = mockk<Metric>(relaxed = true)
-
         val filename = "filename"
         val author = "An Author"
         val versionControlledFile = VersionControlledFile(
-                filename,
-                Arrays.asList(modificationMetric)
+            filename,
+            Arrays.asList(modificationMetric)
         )
-
         // when
         val modification = Modification(filename)
         val commit = createCommit(author, modification)
         versionControlledFile.registerCommit(commit)
-
         // then
         assertThat(versionControlledFile.filename).isEqualTo(filename)
         assertThat(versionControlledFile.actualFilename).isEqualTo(filename)
@@ -104,7 +92,6 @@ class VersionControlledFileTest {
         val author1 = "An Author"
         val author2 = "2nd Author"
         val versionControlledFile = VersionControlledFile(filename)
-
         // when
         val modification1 = Modification(filename)
         versionControlledFile.registerCommit(createCommit(author1, modification1))
@@ -112,7 +99,6 @@ class VersionControlledFileTest {
         versionControlledFile.registerCommit(createCommit(author2, modification2))
         val modification3 = Modification(filename)
         versionControlledFile.registerCommit(createCommit(author1, modification3))
-
         // then
         assertThat(versionControlledFile.filename).isEqualTo(filename)
         assertThat(versionControlledFile.authors).containsExactlyInAnyOrder(author1, author2)
@@ -123,16 +109,14 @@ class VersionControlledFileTest {
         // given
         val filename = "filename"
         val versionControlledFile = VersionControlledFile(filename)
-
         // when
         val modifications = Arrays.asList(
-                Modification(filename),
-                Modification(filename, Modification.Type.DELETE),
-                Modification(filename)
+            Modification(filename),
+            Modification(filename, Modification.Type.DELETE),
+            Modification(filename)
         )
         modifications
-                .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
-
+            .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
         // then
         assertThat(versionControlledFile.filename).isEqualTo(filename)
         assertThat(versionControlledFile.actualFilename).isEqualTo(filename)
@@ -143,21 +127,18 @@ class VersionControlledFileTest {
     fun renamingChangesActualFilename() {
         // given
         val modificationMetric = mockk<Metric>(relaxed = true)
-
         val oldFilename = "old filename"
         val filename = "filename"
         val versionControlledFile = VersionControlledFile(filename, Arrays.asList(modificationMetric))
-
         // when
         // anti-chronological ordering
         val modifications = Arrays.asList(
-                Modification(filename),
-                Modification(filename, oldFilename, Modification.Type.RENAME),
-                Modification(oldFilename)
+            Modification(filename),
+            Modification(filename, oldFilename, Modification.Type.RENAME),
+            Modification(oldFilename)
         )
         modifications
-                .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
-
+            .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
         // then
         assertThat(versionControlledFile.filename).isEqualTo(oldFilename)
         assertThat(versionControlledFile.actualFilename).isEqualTo(filename)

@@ -6,9 +6,8 @@ import org.json.JSONObject
 import org.json.JSONTokener
 import java.io.InputStream
 
-class EveritValidator(private var schemaPath: String): Validator {
+class EveritValidator(private var schemaPath: String) : Validator {
     private var schema = loadSchema()
-
     private fun loadSchema(): Schema {
         val input = this.javaClass.classLoader.getResourceAsStream(schemaPath)
         val rawJson = JSONObject(JSONTokener(input))

@@ -5,7 +5,6 @@ package de.maibornwolff.codecharta.model
  * may be seen as multiple edges in the tree of nodes
  */
 data class Path(val edgesList: List<String>) {
-
     /**
      * @return true, if there are no edges in the path
      */
@@ -18,7 +17,7 @@ data class Path(val edgesList: List<String>) {
     val isSingle: Boolean
         get() = edgesList.size <= 1
 
-    constructor(vararg edges: String): this(listOf(*edges))
+    constructor(vararg edges: String) : this(listOf(*edges))
 
     /**
      * @return first edge in path to node
@@ -50,7 +49,7 @@ data class Path(val edgesList: List<String>) {
         return when {
             this.isTrivial -> path
             path.isTrivial -> this
-            else           -> Path(this.edgesList + path.edgesList)
+            else -> Path(this.edgesList + path.edgesList)
         }
     }
 
@@ -60,11 +59,10 @@ data class Path(val edgesList: List<String>) {
         val minSize = minOf(size, pathSize)
 
         return (0 until minSize).firstOrNull { this.edgesList[size - (it + 1)] != path.edgesList[pathSize - (it + 1)] }
-               ?: minSize
+            ?: minSize
     }
 
     companion object {
-
         fun trivialPath(): Path {
             return TRIVIAL
         }

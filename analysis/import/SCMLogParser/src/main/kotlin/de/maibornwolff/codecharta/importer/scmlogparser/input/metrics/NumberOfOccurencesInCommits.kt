@@ -2,9 +2,8 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
-class NumberOfOccurencesInCommits: Metric {
+class NumberOfOccurencesInCommits : Metric {
     private var numberOfOccurrencesInCommits: Long = 0
-
     override fun description(): String {
         return "Number Of Commits: Number of times this file occured in a commit."
     }

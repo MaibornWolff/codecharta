@@ -6,9 +6,7 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 
 class LogLineCollector private constructor(private val isCommitSeparator: Predicate<String>) {
-
     private val BOM = "\uFEFF"
-
     private fun collectLogLine(commits: MutableList<MutableList<String>>, logLine: String) {
         val sanitizedLogLine = sanitizeLogLine(logLine)
         if (isCommitSeparator.test(sanitizedLogLine)) {
@@ -40,8 +38,10 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
         lastCommit.add(logLine)
     }
 
-    private fun combineForParallelExecution(firstList: MutableList<MutableList<String>>,
-                                            secondList: MutableList<MutableList<String>>): MutableList<MutableList<String>> {
+    private fun combineForParallelExecution(
+        firstList: MutableList<MutableList<String>>,
+        secondList: MutableList<MutableList<String>>
+    ): MutableList<MutableList<String>> {
         throw UnsupportedOperationException("parallel collection of log lines not supported")
     }
 
@@ -50,20 +50,19 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
     }
 
     companion object {
-
         fun create(commitSeparatorTest: Predicate<String>): Collector<String, *, Stream<List<String>>> {
             val collector = LogLineCollector(commitSeparatorTest)
             return Collector.of<String, MutableList<MutableList<String>>, Stream<List<String>>>(
-                    Supplier<MutableList<MutableList<String>>> { ArrayList() },
-                    BiConsumer<MutableList<MutableList<String>>, String> { commits, logLine ->
-                        collector.collectLogLine(commits, logLine)
-                    },
-                    BinaryOperator<MutableList<MutableList<String>>> { firstList, secondList ->
-                        collector.combineForParallelExecution(firstList, secondList)
-                    },
-                    Function<MutableList<MutableList<String>>, Stream<List<String>>> {
-                        collector.removeIncompleteCommits(it).map { it.toList() }
-                    }
+                Supplier<MutableList<MutableList<String>>> { ArrayList() },
+                BiConsumer<MutableList<MutableList<String>>, String> { commits, logLine ->
+                    collector.collectLogLine(commits, logLine)
+                },
+                BinaryOperator<MutableList<MutableList<String>>> { firstList, secondList ->
+                    collector.combineForParallelExecution(firstList, secondList)
+                },
+                Function<MutableList<MutableList<String>>, Stream<List<String>>> {
+                    collector.removeIncompleteCommits(it).map { it.toList() }
+                }
             )
         }
     }

@@ -4,10 +4,8 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.model.AttributeType
 import java.util.*
 
-class WeeksWithCommits: Metric {
-
+class WeeksWithCommits : Metric {
     private val weeksWithCommits = TreeSet<CalendarWeek>()
-
     override fun description(): String {
         return "Weeks With Commits: number of weeks with commits for this file."
     }

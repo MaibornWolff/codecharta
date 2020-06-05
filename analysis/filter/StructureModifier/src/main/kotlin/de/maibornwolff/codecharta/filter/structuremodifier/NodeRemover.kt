@@ -5,7 +5,6 @@ import mu.KotlinLogging
 
 class NodeRemover(private val project: Project) {
     private val logger = KotlinLogging.logger {}
-
     fun remove(paths: Array<String>): Project {
         var pathSegments = paths.map { it.removePrefix("/").removeSuffix("/").split("/") }
 
@@ -15,10 +14,10 @@ class NodeRemover(private val project: Project) {
         }
 
         return ProjectBuilder(
-                removeNodes(pathSegments),
-                removeEdges(paths),
-                copyAttributeTypes(),
-                removeBlacklistItems(paths)
+            removeNodes(pathSegments),
+            removeEdges(paths),
+            copyAttributeTypes(),
+            removeBlacklistItems(paths)
         ).build()
     }
 
@@ -38,7 +37,9 @@ class NodeRemover(private val project: Project) {
 
     private fun removeEdges(removePatterns: Array<String>): MutableList<Edge> {
         var edges = project.edges
-        removePatterns.forEach { path -> edges = edges.filter { !it.fromNodeName.contains(path) && !it.toNodeName.contains(path) } }
+        removePatterns.forEach { path ->
+            edges = edges.filter { !it.fromNodeName.contains(path) && !it.toNodeName.contains(path) }
+        }
         return edges.toMutableList()
     }
 
@@ -55,5 +56,4 @@ class NodeRemover(private val project: Project) {
         paths.forEach { path -> blacklist = blacklist.filter { !it.path.contains(path) } }
         return blacklist.toMutableList()
     }
-
 }

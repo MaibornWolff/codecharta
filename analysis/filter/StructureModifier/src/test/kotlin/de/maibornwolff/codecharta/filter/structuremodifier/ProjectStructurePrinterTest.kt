@@ -9,9 +9,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 
-
 class ProjectStructurePrinterTest {
-
     private lateinit var sampleProject: Project
     private val outContent = ByteArrayOutputStream()
 

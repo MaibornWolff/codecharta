@@ -15,7 +15,6 @@ class AttributeTypesTest : Spek({
 
         it("should instantiate correctly with attribute types") {
             val attributeMap = mutableMapOf("foo" to AttributeType.relative, "bar" to AttributeType.absolute)
-
             val result = AttributeTypes(attributeMap, type = "nodes")
 
             assertThat(result.attributeTypes, equalTo(attributeMap))

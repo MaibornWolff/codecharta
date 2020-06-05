@@ -4,10 +4,8 @@ import de.maibornwolff.codecharta.model.*
 import mu.KotlinLogging
 
 class FolderMover(private val project: Project) {
-
     private val logger = KotlinLogging.logger { }
     private var toMove: List<MutableNode>? = null
-
     fun move(moveFrom: String?, moveTo: String?): Project? {
         if ((moveFrom == null) || (moveTo == null)) {
             logger.error("In order to move nodes, both source and destination need to be set.")
@@ -15,10 +13,10 @@ class FolderMover(private val project: Project) {
         }
 
         return ProjectBuilder(
-                moveNodes(moveFrom, moveTo),
-                extractEdges(moveFrom, moveTo),
-                copyAttributeTypes(),
-                copyBlacklist(moveFrom, moveTo)
+            moveNodes(moveFrom, moveTo),
+            extractEdges(moveFrom, moveTo),
+            copyAttributeTypes(),
+            copyBlacklist(moveFrom, moveTo)
         ).build()
     }
 
@@ -30,9 +28,8 @@ class FolderMover(private val project: Project) {
         val originPath = getPathSegments(moveFrom)
         val destinationPath = getPathSegments(moveTo)
         val rootNode = project.rootNode.toMutableNode()
-
         val newStructure = removeMovedNodeFromStructure(originPath, rootNode)
-                ?: MutableNode("root", type = NodeType.Folder)
+            ?: MutableNode("root", type = NodeType.Folder)
         val newStructureList = listOfNotNull(newStructure)
 
         if (toMove == null) {
@@ -44,14 +41,15 @@ class FolderMover(private val project: Project) {
     }
 
     private fun removeMovedNodeFromStructure(originPath: List<String>, node: MutableNode): MutableNode? {
-
         return if (originPath.isEmpty() || originPath.first() != node.name) {
             node
         } else if (originPath.size == 1) {
             toMove = node.children.toMutableList()
             null
         } else {
-            node.children = node.children.mapNotNull { child -> removeMovedNodeFromStructure(originPath.drop(1), child) }.toMutableSet()
+            node.children =
+                node.children.mapNotNull { child -> removeMovedNodeFromStructure(originPath.drop(1), child) }
+                    .toMutableSet()
             node
         }
     }
@@ -60,7 +58,6 @@ class FolderMover(private val project: Project) {
         if (destinationPath.isEmpty()) {
             val destinationNodeNamesAndType: HashMap<String, NodeType?> = hashMapOf()
             node.children.forEach { destinationNodeNamesAndType[it.name] = it.type }
-
             val filteredNodesToMove = toMove!!.filter {
                 !(destinationNodeNamesAndType.containsKey(it.name) && destinationNodeNamesAndType[it.name] == it.type)
             }
@@ -68,7 +65,6 @@ class FolderMover(private val project: Project) {
                 logger.warn("Some nodes are already available in the target location, they were not moved and discarded instead.")
             }
             node.children.addAll(filteredNodesToMove)
-
         } else {
             var chosenChild: MutableNode? = node.children.filter { destinationPath.first() == it.name }.firstOrNull()
 

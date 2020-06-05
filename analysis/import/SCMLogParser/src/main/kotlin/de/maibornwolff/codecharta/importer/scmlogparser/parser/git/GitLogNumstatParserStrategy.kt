@@ -12,7 +12,7 @@ import java.util.stream.Collector
 import java.util.stream.Stream
 import kotlin.streams.toList
 
-class GitLogNumstatParserStrategy: LogParserStrategy {
+class GitLogNumstatParserStrategy : LogParserStrategy {
     override fun creationCommand(): String {
         return "git log --numstat --topo-order"
     }
@@ -23,43 +23,41 @@ class GitLogNumstatParserStrategy: LogParserStrategy {
 
     override fun parseAuthor(commitLines: List<String>): String {
         return commitLines.parallelStream()
-                .filter { it.startsWith(AUTHOR_ROW_INDICATOR) }
-                .map { AuthorParser.parseAuthor(it) }
-                .toList()
-                .first()
+            .filter { it.startsWith(AUTHOR_ROW_INDICATOR) }
+            .map { AuthorParser.parseAuthor(it) }
+            .toList()
+            .first()
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
         return commitLines
-                .filter { isFileLine(it) }
-                .map { parseModification(it) }
-                .filter { it !== Modification.EMPTY }
+            .filter { isFileLine(it) }
+            .map { parseModification(it) }
+            .filter { it !== Modification.EMPTY }
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         return commitLines.parallelStream()
-                .filter { it.startsWith(DATE_ROW_INDICATOR) }
-                .map { CommitDateParser.parseCommitDate(it) }
-                .toList()
-                .first()
+            .filter { it.startsWith(DATE_ROW_INDICATOR) }
+            .map { CommitDateParser.parseCommitDate(it) }
+            .toList()
+            .first()
     }
 
     companion object {
         private val logger = KotlinLogging.logger {}
-
         private const val STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*"
         private const val RENAME_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S*\\S+ => \\S+\\S*\\s*"
         private const val RENAMING_SEPARATOR = "=>"
         private const val STANDARD_FILE_LINE_SPLITTER = "\\s+"
         private const val RENAME_FILE_LINE_SPLITTER = "[{}\\s+]"
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
-
         internal fun isFileLine(commitLine: String): Boolean {
             return commitLine.length >= 5
-                   && (
-                           commitLine.matches(STANDARD_FILE_LINE_REGEX.toRegex())
-                           || commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
-                      )
+                && (
+                commitLine.matches(STANDARD_FILE_LINE_REGEX.toRegex())
+                    || commitLine.matches(RENAME_FILE_LINE_REGEX.toRegex())
+                )
         }
 
         internal fun parseModification(fileLine: String): Modification {
@@ -78,7 +76,7 @@ class GitLogNumstatParserStrategy: LogParserStrategy {
 
         private fun parseRenameModification(fileLine: String): Modification {
             val lineParts = fileLine.split(RENAME_FILE_LINE_SPLITTER.toRegex())
-                    .dropLastWhile({ it.isEmpty() })
+                .dropLastWhile({ it.isEmpty() })
             val additions = lineParts[0].toLong()
             val deletions = lineParts[1].toLong()
             var oldFileName: String
@@ -109,7 +107,7 @@ class GitLogNumstatParserStrategy: LogParserStrategy {
 
         private fun parseStandardModification(fileLine: String): Modification {
             val lineParts = fileLine.split(STANDARD_FILE_LINE_SPLITTER.toRegex())
-                    .dropLastWhile({ it.isEmpty() })
+                .dropLastWhile({ it.isEmpty() })
             val additions = lineParts[0].toLong()
             val deletions = lineParts[1].toLong()
             val filename = lineParts[2]

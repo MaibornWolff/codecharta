@@ -12,32 +12,26 @@ import java.io.Writer
 
 class JSONMetricWriter(private val writer: Writer) : MetricWriter {
     private val projectBuilder = ProjectBuilder()
-
-  override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
-
-    projectMetrics.projectMetrics.forEach { addAsNode(it) }
-
-    var project = projectBuilder.build()
-    if (pipedProject != null) {
-        project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
-    }
-    ProjectSerializer.serializeProject(project, writer)
-  }
-
-  private fun addAsNode(metrics: Map.Entry<String, FileMetricMap>) {
-    var directory = ""
-    var fileName = metrics.key
-    if (fileName.contains("/")) {
-      directory = metrics.key.substringBeforeLast("/")
-      fileName = metrics.key.substringAfterLast("/")
+    override fun generate(projectMetrics: ProjectMetrics, allMetrics: Set<String>, pipedProject: Project?) {
+        projectMetrics.projectMetrics.forEach { addAsNode(it) }
+        var project = projectBuilder.build()
+        if (pipedProject != null) {
+            project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
+        }
+        ProjectSerializer.serializeProject(project, writer)
     }
 
-    val node = MutableNode(
+    private fun addAsNode(metrics: Map.Entry<String, FileMetricMap>) {
+        var directory = ""
+        var fileName = metrics.key
+        if (fileName.contains("/")) {
+            directory = metrics.key.substringBeforeLast("/")
+            fileName = metrics.key.substringAfterLast("/")
+        }
+        val node = MutableNode(
             fileName, attributes = metrics.value.fileMetrics
-    )
-    val path = PathFactory.fromFileSystemPath(directory)
-    projectBuilder.insertByPath(path, node)
-
-  }
-
+        )
+        val path = PathFactory.fromFileSystemPath(directory)
+        projectBuilder.insertByPath(path, node)
+    }
 }

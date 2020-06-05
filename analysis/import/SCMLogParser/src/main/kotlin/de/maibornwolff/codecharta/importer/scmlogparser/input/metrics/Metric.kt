@@ -6,13 +6,9 @@ import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
 interface Metric {
-
     fun description(): String
-
     fun metricName(): String
-
     fun value(): Number
-
     fun edgeMetricName(): String? {
         return null
     }
@@ -28,7 +24,6 @@ interface Metric {
     fun edgeAttributeType(): AttributeType? {
         return null
     }
-
 
     fun registerModification(modification: Modification) {
         // defaults to: do nothing

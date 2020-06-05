@@ -43,16 +43,18 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetrics() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
-
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
         val metricsList = ds.getAvailableMetrics(1).metrics!!.map { it.key }
-
         // then
         assertThat(metricsList, `is`(Arrays.asList(*METRIC_ARRAY)))
     }
@@ -61,21 +63,27 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetricsList() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(2)))
-                .willReturn(aResponse()
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(2)))
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
-
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
         val metricsList = ds.availableMetricKeys
-
         // then
         assertThat(metricsList, `is`(Arrays.asList(*METRIC_ARRAY)))
     }
@@ -84,16 +92,18 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetrics_if_authenticated() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
-
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
         // when
         val ds = SonarMetricsAPIDatasource(USERNAME, createBaseUrl())
         val metricsList = ds.getAvailableMetrics(1).metrics!!.map { it.key }
-
         // then
         assertThat(metricsList, `is`(Arrays.asList(*METRIC_ARRAY)))
     }
@@ -102,14 +112,16 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetrics_should_throw_exception_if_unauthorized() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
-                .willReturn(aResponse()
-                        .withStatus(401)))
-
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(
+                    aResponse()
+                        .withStatus(401)
+                )
+        )
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
         ds.getAvailableMetrics(1)
-
         // then throw
     }
 
@@ -117,14 +129,16 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetrics_should_throw_exception_if_return_code_not_oK() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
-                .willReturn(aResponse()
-                        .withStatus(501)))
-
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(
+                    aResponse()
+                        .withStatus(501)
+                )
+        )
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
         ds.getAvailableMetrics(1)
-
         // then throw
     }
 
@@ -132,29 +146,30 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getNumberOfPages_from_server() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
-
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
         // when
         val ds = SonarMetricsAPIDatasource(USERNAME, createBaseUrl())
         val numberOfPages = ds.numberOfPages
-
         // then
         Assert.assertThat(numberOfPages, `is`(1))
     }
 
     companion object {
-
         private val METRIC_ARRAY =
-                arrayOf("accessors", "blocker_violations", "public_api", "public_documented_api_density",
-                        "public_undocumented_api")
-
+            arrayOf(
+                "accessors", "blocker_violations", "public_api", "public_documented_api_density",
+                "public_undocumented_api"
+            )
         private const val PORT = 8089
         private const val USERNAME = "somename"
-
         private fun METRIC_LIST_URL_PATH(page: Int): String {
             return "/api/metrics/search?f=hidden,decimalScale&p=$page&ps=$PAGE_SIZE"
         }

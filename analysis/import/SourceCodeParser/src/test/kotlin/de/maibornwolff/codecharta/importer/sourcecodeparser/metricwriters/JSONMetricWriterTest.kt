@@ -11,9 +11,7 @@ import java.io.File
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 
-
 class JSONMetricWriterTest {
-
     @Test
     fun `file hierarchy and names are correct`() {
         val expectedResultFile = File("src/test/resources/jsonMetricHierarchy.json").absoluteFile
@@ -24,9 +22,7 @@ class JSONMetricWriterTest {
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
-
         val resultJSON = JSONObject(result.toString()).toString()
-
         val parser = JsonParser()
         val expectedJson = parser.parse(expectedResultFile.reader()).toString()
 
@@ -44,9 +40,7 @@ class JSONMetricWriterTest {
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
-
         val resultJSON = JSONObject(result.toString()).toString()
-
         val parser = JsonParser()
         val expectedJson = parser.parse(expectedResultFile.reader()).toString()
 
@@ -62,12 +56,10 @@ class JSONMetricWriterTest {
         val result = ByteArrayOutputStream()
 
         JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
-
         val resultJSON = JSONObject(result.toString())
         val leaf = resultJSON.getJSONArray("nodes").getJSONObject(0).getJSONArray("children").getJSONObject(0)
         Assertions.assertThat(leaf["type"]).isEqualTo("File")
         Assertions.assertThat(leaf["name"]).isEqualTo("foo.java")
         Assertions.assertThat(leaf.getJSONObject("attributes").length()).isEqualTo(2)
     }
-
 }

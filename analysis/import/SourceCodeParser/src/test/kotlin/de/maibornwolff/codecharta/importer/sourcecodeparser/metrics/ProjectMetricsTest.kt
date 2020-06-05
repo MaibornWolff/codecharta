@@ -59,7 +59,6 @@ class ProjectMetricsTest {
         val fileMetricMap = FileMetricMap()
         projectMetrics.addFileMetricMap("foo", fileMetricMap)
         projectMetrics.addFileMetricMap("bar", fileMetricMap)
-
         val result = projectMetrics.getRandomFileName()
 
         Assertions.assertThat(listOf("foo", "bar")).contains(result)

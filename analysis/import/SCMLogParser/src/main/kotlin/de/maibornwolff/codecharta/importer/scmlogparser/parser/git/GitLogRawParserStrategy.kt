@@ -10,8 +10,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class GitLogRawParserStrategy: LogParserStrategy {
-
+class GitLogRawParserStrategy : LogParserStrategy {
     override fun creationCommand(): String {
         return "git log --raw --topo-order"
     }
@@ -22,30 +21,28 @@ class GitLogRawParserStrategy: LogParserStrategy {
 
     override fun parseAuthor(commitLines: List<String>): String {
         return commitLines
-                .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
-                .map { AuthorParser.parseAuthor(it) }
-                .first()
+            .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
+            .map { AuthorParser.parseAuthor(it) }
+            .first()
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
         return commitLines
-                .filter { isFileLine(it) }
-                .map { parseModification(it) }
+            .filter { isFileLine(it) }
+            .map { parseModification(it) }
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         return commitLines
-                .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
-                .map { CommitDateParser.parseCommitDate(it) }
-                .first()
+            .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
+            .map { CommitDateParser.parseCommitDate(it) }
+            .first()
     }
 
     companion object {
-
         private const val FILE_LINE_REGEX = ":\\d+\\s+\\d+\\s+\\S+\\s+\\S+\\s+.+"
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
         private const val FILE_LINE_SPLITTER = "\\s+"
-
         internal fun isFileLine(commitLine: String): Boolean {
             return commitLine.length >= 5 && commitLine.matches(FILE_LINE_REGEX.toRegex())
         }
@@ -56,7 +53,8 @@ class GitLogRawParserStrategy: LogParserStrategy {
 
             return if (status == Status.RENAMED) {
                 Modification(lineParts[6].trim({ it <= ' ' }), lineParts[5].trim({ it <= ' ' }),
-                        status.toModificationType())
+                    status.toModificationType()
+                )
             } else Modification(lineParts[5].trim({ it <= ' ' }), status.toModificationType())
         }
     }

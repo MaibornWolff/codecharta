@@ -9,10 +9,8 @@ import org.spekframework.spek2.style.specification.describe
 import java.util.*
 import kotlin.test.assertFailsWith
 
-class NodeTest: Spek({
-
+class NodeTest : Spek({
     describe("root with child") {
-
         val childName = "child1"
         val child = MutableNode(childName)
         val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(child).toSet())
@@ -21,16 +19,13 @@ class NodeTest: Spek({
             val pathOfChild = root.getPathOfChild(child)
 
             it("should return path") {
-
                 assertThat(pathOfChild.isSingle, `is`(true))
                 assertThat(pathOfChild.head, `is`(childName))
             }
         }
 
         context("getPathOfChild of invalid child") {
-
             it("should throw an exception") {
-
                 assertFailsWith(NoSuchElementException::class) {
                     root.getPathOfChild(MutableNode("invalidChild"))
                 }
@@ -43,11 +38,9 @@ class NodeTest: Spek({
             assertThat(pathsToLeafs, hasSize(1))
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path(childName)))
         }
-
     }
 
     describe("root node with many children") {
-
         val node11 = MutableNode("node11")
         val node12 = MutableNode("node12")
         val node1 = MutableNode("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12).toSet())
@@ -72,6 +65,5 @@ class NodeTest: Spek({
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node12")))
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node2", "node21")))
         }
-
     }
 })

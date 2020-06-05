@@ -8,11 +8,12 @@ import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "merge",
-        description = ["merges multiple cc.json files"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class MergeFilter: Callable<Void?> {
-
+@CommandLine.Command(
+    name = "merge",
+    description = ["merges multiple cc.json files"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
+class MergeFilter : Callable<Void?> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -33,36 +34,31 @@ class MergeFilter: Callable<Void?> {
 
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
     private var ignoreCase = false
-
     private val logger = KotlinLogging.logger {}
-
     override fun call(): Void? {
         val nodeMergerStrategy =
-                when {
-                    leafStrategySet                          -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
-                    recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
-                    else                                     -> throw IllegalArgumentException(
-                            "Only one merging strategy must be set")
-                }
-
+            when {
+                leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
+                recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
+                else -> throw IllegalArgumentException(
+                    "Only one merging strategy must be set"
+                )
+            }
         val sourceFiles = mutableListOf<File>()
         for (source in sources) {
             sourceFiles.addAll(getFilesInFolder(source))
         }
-
         val srcProjects = sourceFiles
-                .mapNotNull {
-                    val bufferedReader = it.bufferedReader()
-                    try {
-                        ProjectDeserializer.deserializeProject(bufferedReader)
-                    } catch (e: Exception) {
-                        logger.warn("${it.name} is not a valid project file and is therefore skipped.")
-                        null
-                    }
+            .mapNotNull {
+                val bufferedReader = it.bufferedReader()
+                try {
+                    ProjectDeserializer.deserializeProject(bufferedReader)
+                } catch (e: Exception) {
+                    logger.warn("${it.name} is not a valid project file and is therefore skipped.")
+                    null
                 }
-
+            }
         val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy).merge()
-
         val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
         ProjectSerializer.serializeProject(mergedProject, writer)
 
@@ -82,8 +78,9 @@ class MergeFilter: Callable<Void?> {
 
         fun mergePipedWithCurrentProject(pipedProject: Project, currentProject: Project): Project {
             return ProjectMerger(
-                    listOf(pipedProject, currentProject),
-                    RecursiveNodeMergerStrategy(false)).merge()
+                listOf(pipedProject, currentProject),
+                RecursiveNodeMergerStrategy(false)
+            ).merge()
         }
     }
 }

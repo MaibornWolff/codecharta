@@ -8,14 +8,13 @@ import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class RecursiveNodeMergerTest: Spek({
+class RecursiveNodeMergerTest : Spek({
     describe("a recursive node merger") {
         val merger = RecursiveNodeMergerStrategy()
 
         context("merging nodes with same name") {
             val node1 = MutableNode("Name", NodeType.File)
             val node2 = MutableNode("Name", NodeType.Folder)
-
             val nodeList = merger.mergeNodeLists(listOf(listOf(node1), listOf(node2)))
 
             it("should return merged node") {
@@ -44,10 +43,9 @@ class RecursiveNodeMergerTest: Spek({
             val child1 = MutableNode("child1", NodeType.File)
             val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent =
-                    MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
+                MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
             val node1 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1_littleBitDifferent))
             val node2 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1, child2))
-
             val newNode = merger.mergeNodeLists(listOf(listOf(node2), listOf(node1)))[0]
 
             it("should merge children") {
@@ -68,7 +66,6 @@ class RecursiveNodeMergerTest: Spek({
             val node11 = MutableNode("Name1", NodeType.File)
             val node12 = MutableNode("Name2", NodeType.File)
             val node2 = MutableNode("Name1", NodeType.Folder)
-
             // when
             val nodeList = merger.mergeNodeLists(listOf(listOf(node11, node12), listOf(node2)))
 

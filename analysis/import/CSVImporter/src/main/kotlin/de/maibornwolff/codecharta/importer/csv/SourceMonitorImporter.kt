@@ -6,10 +6,11 @@ import picocli.CommandLine
 import java.io.*
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "sourcemonitorimport", description = ["generates cc.json from sourcemonitor csv"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class SourceMonitorImporter: Callable<Void> {
-
+@CommandLine.Command(
+    name = "sourcemonitorimport", description = ["generates cc.json from sourcemonitor csv"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
+class SourceMonitorImporter : Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -18,15 +19,13 @@ class SourceMonitorImporter: Callable<Void> {
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["sourcemonitor csv files"])
     private var files: List<File> = mutableListOf()
-
     private val pathSeparator = '\\'
-
     private val csvDelimiter = ','
 
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-                CSVProjectBuilder(pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
+            CSVProjectBuilder(pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
         ProjectSerializer.serializeProject(project, writer())

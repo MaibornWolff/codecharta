@@ -7,7 +7,6 @@ import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 class IndentationCounterTest {
-
     private fun addDoubleSpacedLines(indentationCounter: IndentationCounter) {
         indentationCounter.parseLine("    foo")
         indentationCounter.parseLine("  foo")
@@ -84,8 +83,10 @@ class IndentationCounterTest {
 
         Assertions.assertThat(result["indentation_level_2+"]).isEqualTo(1.0)
         Assertions.assertThat(result["indentation_level_1+"]).isEqualTo(3.0)
-        Assertions.assertThat(printContent.toString()).contains("WARN: Corrected mismatching indentations, moved 2 lines to indentation level 1+")
-        Assertions.assertThat(printContent.toString()).contains("WARN: Corrected mismatching indentations, moved 1 lines to indentation level 2+")
+        Assertions.assertThat(printContent.toString())
+            .contains("WARN: Corrected mismatching indentations, moved 2 lines to indentation level 1+")
+        Assertions.assertThat(printContent.toString())
+            .contains("WARN: Corrected mismatching indentations, moved 1 lines to indentation level 2+")
     }
 
     @Test

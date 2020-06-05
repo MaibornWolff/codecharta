@@ -6,12 +6,11 @@ import java.io.*
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "csvimport",
-        description = ["generates cc.json from csv with header"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "csvimport",
+    description = ["generates cc.json from csv with header"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class CSVImporter: Callable<Void> {
-
+class CSVImporter : Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
@@ -29,7 +28,6 @@ class CSVImporter: Callable<Void> {
 
     @Throws(IOException::class)
     override fun call(): Void? {
-
         val csvProjectBuilder = CSVProjectBuilder(pathSeparator, csvDelimiter)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()

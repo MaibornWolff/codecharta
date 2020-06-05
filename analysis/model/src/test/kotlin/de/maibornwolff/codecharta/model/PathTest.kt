@@ -9,10 +9,8 @@ import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class PathTest: Spek({
-
+class PathTest : Spek({
     describe("trivial path") {
-
         val trivialPath = Path.TRIVIAL
 
         it("should be equal to trivial path") {
@@ -41,7 +39,6 @@ class PathTest: Spek({
     }
 
     describe("non-trivial path of length one") {
-
         val edgeName = "bla"
         val nonTrivialPath = Path(edgeName)
 
@@ -128,24 +125,23 @@ class PathTest: Spek({
     }
 
     describe("fittingEdgesFromTailWith") {
-
         val paths = listOf(
-                Path(),
-                Path("1"),
-                Path("1", "2"),
-                Path("1", "2", "3"),
-                Path("a"),
-                Path("1", "a"),
-                Path("0", "1", "a"),
-                Path("1", "2", "a"),
-                Path("0", "1", "2", "a")
+            Path(),
+            Path("1"),
+            Path("1", "2"),
+            Path("1", "2", "3"),
+            Path("a"),
+            Path("1", "a"),
+            Path("0", "1", "a"),
+            Path("1", "2", "a"),
+            Path("0", "1", "2", "a")
         )
 
         describe("for trivial path") {
             it("should calculate fitting edges") {
                 assertThat(
-                        paths.map { paths[0].fittingEdgesFromTailWith(it) },
-                        `is`(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0))
+                    paths.map { paths[0].fittingEdgesFromTailWith(it) },
+                    `is`(listOf(0, 0, 0, 0, 0, 0, 0, 0, 0))
                 )
             }
         }
@@ -153,8 +149,8 @@ class PathTest: Spek({
         describe("for leaf") {
             it("should calculate fitting edges") {
                 assertThat(
-                        paths.map { paths[4].fittingEdgesFromTailWith(it) },
-                        `is`(listOf(0, 0, 0, 0, 1, 1, 1, 1, 1))
+                    paths.map { paths[4].fittingEdgesFromTailWith(it) },
+                    `is`(listOf(0, 0, 0, 0, 1, 1, 1, 1, 1))
                 )
             }
         }
@@ -162,8 +158,8 @@ class PathTest: Spek({
         describe("for path of length 2") {
             it("should calculate fitting edges") {
                 assertThat(
-                        paths.map { paths[5].fittingEdgesFromTailWith(it) },
-                        `is`(listOf(0, 0, 0, 0, 1, 2, 2, 1, 1))
+                    paths.map { paths[5].fittingEdgesFromTailWith(it) },
+                    `is`(listOf(0, 0, 0, 0, 1, 2, 2, 1, 1))
                 )
             }
         }
@@ -171,8 +167,8 @@ class PathTest: Spek({
         describe("for path of length 3") {
             it("should calculate fitting edges") {
                 assertThat(
-                        paths.map { paths[7].fittingEdgesFromTailWith(it) },
-                        `is`(listOf(0, 0, 0, 0, 1, 1, 1, 3, 3))
+                    paths.map { paths[7].fittingEdgesFromTailWith(it) },
+                    `is`(listOf(0, 0, 0, 0, 1, 1, 1, 3, 3))
                 )
             }
         }

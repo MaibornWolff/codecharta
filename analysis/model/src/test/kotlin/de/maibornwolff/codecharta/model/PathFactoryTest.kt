@@ -8,8 +8,7 @@ import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class PathFactoryTest: Spek({
-
+class PathFactoryTest : Spek({
     describe("empty dir") {
         val emptyPath = PathFactory.fromFileSystemPath("")
 
@@ -25,7 +24,7 @@ class PathFactoryTest: Spek({
     describe("paths with leading slash") {
         it("should produce same hierarchical position") {
             val pathsWithoutSlash = listOf(
-                    "file", "subdir/file", "subdir/subdir/file", "subdir/othersubdir/file"
+                "file", "subdir/file", "subdir/subdir/file", "subdir/othersubdir/file"
             )
 
             for (path in pathsWithoutSlash) {

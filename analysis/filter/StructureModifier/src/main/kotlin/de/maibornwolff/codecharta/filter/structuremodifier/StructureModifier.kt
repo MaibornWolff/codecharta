@@ -10,13 +10,16 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "modify",
-        description = ["changes the structure of cc.json files"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class StructureModifier(private val input: InputStream = System.`in`,
-                        private val output: PrintStream = System.out,
-                        private val error: PrintStream = System.err) : Callable<Void?> {
-
+@CommandLine.Command(
+    name = "modify",
+    description = ["changes the structure of cc.json files"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
+class StructureModifier(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Void?> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
 
@@ -26,7 +29,11 @@ class StructureModifier(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-s", "--set-root"], description = ["path within project to be extracted"])
     private var setRoot: String? = null
 
-    @CommandLine.Option(arity = "1", names = ["-p", "--print-levels"], description = ["show first x layers of project hierarchy"])
+    @CommandLine.Option(
+        arity = "1",
+        names = ["-p", "--print-levels"],
+        description = ["show first x layers of project hierarchy"]
+    )
     private var printLevels: Int = 0
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -40,12 +47,9 @@ class StructureModifier(private val input: InputStream = System.`in`,
 
     @CommandLine.Option(names = ["-t", "--move-to"], description = ["... move nodes to destination folder"])
     private var moveTo: String? = null
-
     private lateinit var project: Project
     private val logger = KotlinLogging.logger {}
-
     override fun call(): Void? {
-
         project = readProject() ?: return null
 
         when {
@@ -57,7 +61,6 @@ class StructureModifier(private val input: InputStream = System.`in`,
             remove.isNotEmpty() -> project = NodeRemover(project).remove(remove)
             moveFrom != null -> project = FolderMover(project).move(moveFrom, moveTo) ?: return null
         }
-
         val writer = outputFile?.bufferedWriter() ?: output.bufferedWriter()
         ProjectSerializer.serializeProject(project, writer)
 
@@ -71,7 +74,6 @@ class StructureModifier(private val input: InputStream = System.`in`,
             logger.error("${source!!.name} has not been found.")
             return null
         }
-
         val bufferedReader = source!!.bufferedReader()
         return try {
             ProjectDeserializer.deserializeProject(bufferedReader)

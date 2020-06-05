@@ -1,11 +1,9 @@
 package de.maibornwolff.codecharta.importer.sonar
 
 import de.maibornwolff.codecharta.importer.sonar.model.Component
-
 import java.net.URL
 
 open class SonarCodeURLLinker {
-
     private val baseCodeUrl: String
 
     private constructor() {
@@ -21,8 +19,7 @@ open class SonarCodeURLLinker {
     }
 
     companion object {
-
-        val NULL: SonarCodeURLLinker = object: SonarCodeURLLinker() {
+        val NULL: SonarCodeURLLinker = object : SonarCodeURLLinker() {
             override fun createUrlString(c: Component): String {
                 return ""
             }

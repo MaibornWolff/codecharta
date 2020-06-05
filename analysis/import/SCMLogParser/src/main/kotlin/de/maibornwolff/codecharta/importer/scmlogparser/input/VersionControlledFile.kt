@@ -6,10 +6,9 @@ import de.maibornwolff.codecharta.model.Edge
 import java.util.*
 
 class VersionControlledFile internal constructor(
-        filename: String,
-        private var metrics: List<Metric>
+    filename: String,
+    private var metrics: List<Metric>
 ) {
-
     // actual filename
     val actualFilename: String
     val authors = mutableSetOf<String>()
@@ -18,16 +17,14 @@ class VersionControlledFile internal constructor(
     var filename: String
         private set
     private var markedDeleted = false
-
     val metricsMap: Map<String, Number>
         get() = metrics.associateBy({ it.metricName() }, { it.value() })
 
-    constructor(filename: String, metricsFactory: MetricsFactory): this(filename, metricsFactory.createMetrics())
-
+    constructor(filename: String, metricsFactory: MetricsFactory) : this(filename, metricsFactory.createMetrics())
     internal constructor(
-            filename: String,
-            vararg metrics: Metric
-    ): this(filename, Arrays.asList<Metric>(*metrics))
+        filename: String,
+        vararg metrics: Metric
+    ) : this(filename, Arrays.asList<Metric>(*metrics))
 
     init {
         this.filename = filename
@@ -49,7 +46,7 @@ class VersionControlledFile internal constructor(
         when (type) {
             Modification.Type.DELETE -> markedDeleted = true
             Modification.Type.RENAME -> filename = modification.oldFilename
-            else                     -> {
+            else -> {
             }
         }
         metrics.forEach { it.registerModification(modification) }
@@ -66,9 +63,9 @@ class VersionControlledFile internal constructor(
     fun getEdgeList(): List<Edge> {
         val edgeList = mutableListOf<Edge>()
         metrics.flatMap { it.getEdges() }
-                .forEach { edge ->
-                    addEdgeToEdgeList(edge, edgeList)
-                }
+            .forEach { edge ->
+                addEdgeToEdgeList(edge, edgeList)
+            }
         return edgeList
     }
 

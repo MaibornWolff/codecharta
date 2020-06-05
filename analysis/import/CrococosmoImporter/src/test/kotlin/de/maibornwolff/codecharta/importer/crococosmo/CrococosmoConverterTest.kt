@@ -6,9 +6,7 @@ import de.maibornwolff.codecharta.importer.crococosmo.model.*
 import org.junit.jupiter.api.Test
 
 class CrococosmoConverterTest {
-
     private val converter = CrococosmoConverter()
-
     private val schema = Schema(listOf(SchemaVersion("1")))
 
     @Test
@@ -56,9 +54,7 @@ class CrococosmoConverterTest {
         val v = Version(versionId, listOf(Attribute(attribName, "" + attribValue)))
         val e = Node("some node", "type", listOf(), listOf(v))
         val g = Graph(schema, listOf(e))
-
         val project = converter.createProject(g)
-
         var node = project.rootNode
         while (!node.children.isEmpty()) {
             node = node.children.first()
@@ -68,7 +64,6 @@ class CrococosmoConverterTest {
 
     @Test
     fun shouldConvertComplexGraph() {
-
         val `in` = this.javaClass.classLoader.getResourceAsStream("test.xml")
         val graph = CrococosmoDeserializer().deserializeCrococosmoXML(`in`)
         val project = converter.createProject(graph)

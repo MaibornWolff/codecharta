@@ -5,7 +5,6 @@ import org.hamcrest.Matchers.`is`
 import org.junit.Test
 
 class AuthentificationHandlerTest {
-
     @Test
     @Throws(Exception::class)
     fun createAuthWithPassword() {

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test
 import java.io.File
 
 class FolderMoverTest {
-
     private lateinit var sampleProject: Project
 
     @BeforeEach
@@ -20,19 +19,15 @@ class FolderMoverTest {
     @Test
     fun `should remove the source node`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root/src/folder3", "/root/foo")
-
         val srcChildren = result!!.rootNode.children.first().children
         Assertions.assertThat(srcChildren.size).isEqualTo(2)
         Assertions.assertThat(srcChildren.filter { it.name == "folder3" }).isEmpty()
-
     }
 
     @Test
     fun `should move nothing if source node is not found`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/does/not/exist", "/something")
 
         Assertions.assertThat(result).usingRecursiveComparison().isEqualTo(sampleProject)
@@ -41,7 +36,6 @@ class FolderMoverTest {
     @Test
     fun `should return nothing if destination folder is null`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root/src/folder3", null)
 
         Assertions.assertThat(result).isNull()
@@ -51,9 +45,7 @@ class FolderMoverTest {
     fun `should merge content of source folder into existing folder, if existent`() {
         serializeProject()
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root/src/folder3", "/root/src/test")
-
         val destinationNode = result!!.rootNode.children.first().children.filter { it.name == "test" }.first()
         val destinationNodeChildrenName = destinationNode.children.map { it.name }
         Assertions.assertThat(destinationNodeChildrenName).containsAll(listOf("otherFile2.java", "otherFile.java"))
@@ -62,9 +54,7 @@ class FolderMoverTest {
     @Test
     fun `should place content in newly created node, if destination does not exist`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root/src/folder3", "/root/foo")
-
         val destinationNode = result!!.rootNode.children.filter { it.name == "foo" }.first()
         val destinationNodeChild = destinationNode.children.first()
         Assertions.assertThat(destinationNode.name).isEqualTo("foo")
@@ -75,19 +65,15 @@ class FolderMoverTest {
     fun `should copy unaffected edges`() {
         val folderMover = FolderMover(sampleProject)
         val unaffectedEdge = sampleProject.edges[3]
-
         val result = folderMover.move("/root/foo/", "/root/bar")
 
         Assertions.assertThat(result!!.edges).contains(unaffectedEdge)
-
     }
 
     @Test
     fun `should alter from and to node of affected edges`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root/foo", "root/bar/")!!
-
         val firstEdge = result.edges[0]
         val secondEdge = result.edges[1]
         val thirdEdge = result.edges[2]
@@ -100,9 +86,7 @@ class FolderMoverTest {
     @Test
     fun `should only alter to node of affected edges`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root/foo", "/root/bar")!!
-
         val firstEdge = result.edges[0]
         val secondEdge = result.edges[1]
         Assertions.assertThat(firstEdge.fromNodeName).isEqualTo("/root/file1")
@@ -112,9 +96,7 @@ class FolderMoverTest {
     @Test
     fun `should change path of relevant blacklist items`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root/foo", "/root/bar")!!
-
         val blacklist = result.blacklist
         Assertions.assertThat(blacklist.size).isEqualTo(2)
         Assertions.assertThat(blacklist[0].path).isEqualTo("/root/bar/file1")
@@ -124,9 +106,7 @@ class FolderMoverTest {
     @Test
     fun `should be able to move from root`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root", "/root/new")
-
         val destinationNode = result!!.rootNode.children.filter { it.name == "new" }.first()
         val destinationNodeChild = destinationNode.children.first()
         Assertions.assertThat(destinationNode.name).isEqualTo("new")
@@ -136,9 +116,7 @@ class FolderMoverTest {
     @Test
     fun `should be able to move to root`() {
         val folderMover = FolderMover(sampleProject)
-
         val result = folderMover.move("/root/src", "/root")
-
         val destinationNode = result!!.rootNode.children.filter { it.name == "main" }.first()
         val destinationNodeChild = destinationNode.children.first()
         Assertions.assertThat(destinationNode.name).isEqualTo("main")

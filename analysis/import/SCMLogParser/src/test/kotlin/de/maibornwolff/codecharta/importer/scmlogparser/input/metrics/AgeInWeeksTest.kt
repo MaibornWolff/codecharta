@@ -6,7 +6,6 @@ import org.junit.Test
 import java.time.OffsetDateTime
 
 class AgeInWeeksTest {
-
     @Test
     fun `initial value is zero`() {
         val metric = AgeInWeeks()
@@ -17,7 +16,6 @@ class AgeInWeeksTest {
     @Test
     fun `value should be zero if created this week`() {
         val date = OffsetDateTime.now()
-
         val metric = AgeInWeeks()
         metric.registerCommit(Commit("foo", emptyList(), date))
 
@@ -27,7 +25,6 @@ class AgeInWeeksTest {
     @Test
     fun `should have the correct age if one commit`() {
         val date = OffsetDateTime.now().minusDays(14)
-
         val metric = AgeInWeeks()
         metric.registerCommit(Commit("foo", emptyList(), date))
 
@@ -38,7 +35,6 @@ class AgeInWeeksTest {
     fun `should have the correct age if multiple commits`() {
         val dateRecent = OffsetDateTime.now().minusDays(14)
         val dateOlder = OffsetDateTime.now().minusDays(21)
-
         val metric = AgeInWeeks()
         metric.registerCommit(Commit("foo", emptyList(), dateRecent))
         metric.registerCommit(Commit("foo", emptyList(), dateOlder))

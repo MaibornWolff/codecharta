@@ -10,14 +10,15 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "rawtextparser",
-        description = ["generates cc.json from projects or source code files"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "rawtextparser",
+    description = ["generates cc.json from projects or source code files"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class RawTextParser(private val input: InputStream = System.`in`,
-                    private val output: PrintStream = System.out,
-                    private val error: PrintStream = System.err) : Callable<Void> {
-
+class RawTextParser(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Void> {
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
@@ -29,7 +30,11 @@ class RawTextParser(private val input: InputStream = System.`in`,
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE or FOLDER", description = ["file/project to parse"])
     private var file: File = File("")
 
-    @CommandLine.Option(arity = "0..", names = ["-m", "--metrics"], description = ["metrics to be computed (select all if not specified)"])
+    @CommandLine.Option(
+        arity = "0..",
+        names = ["-m", "--metrics"],
+        description = ["metrics to be computed (select all if not specified)"]
+    )
     private var metrics: List<String> = listOf()
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
@@ -44,10 +49,16 @@ class RawTextParser(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-e", "--exclude"], description = ["exclude file/folder according to regex pattern"])
     private var exclude: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["-f", "--file-extensions"], description = ["parse only files with specified extensions (defualt: any)"])
+    @CommandLine.Option(
+        names = ["-f", "--file-extensions"],
+        description = ["parse only files with specified extensions (defualt: any)"]
+    )
     private var fileExtensions: Array<String> = arrayOf()
 
-    @CommandLine.Option(names = ["--without-default-excludes"], description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "])
+    @CommandLine.Option(
+        names = ["--without-default-excludes"],
+        description = ["include build, target, dist, resources and out folders as well as files/folders starting with '.' "]
+    )
     private var withoutDefaultExcludes = false
 
     @Throws(IOException::class)
@@ -59,10 +70,9 @@ class RawTextParser(private val input: InputStream = System.`in`,
         }
 
         if (!withoutDefaultExcludes) exclude += DEFAULT_EXCLUDES
-
         val parameterMap = assembleParameterMap()
-        val results: Map<String, FileMetrics> = MetricCollector(file, exclude, fileExtensions, parameterMap, metrics).parse()
-
+        val results: Map<String, FileMetrics> =
+            MetricCollector(file, exclude, fileExtensions, parameterMap, metrics).parse()
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         ProjectGenerator(getWriter()).generate(results, pipedProject)
         return null
@@ -84,9 +94,9 @@ class RawTextParser(private val input: InputStream = System.`in`,
 
     private fun assembleParameterMap(): Map<String, Int> {
         return mapOf(
-                "verbose" to verbose.toInt(),
-                "maxIndentationLevel" to maxIndentLvl,
-                "tabWidth" to tabWith
+            "verbose" to verbose.toInt(),
+            "maxIndentationLevel" to maxIndentLvl,
+            "tabWidth" to tabWith
         ).filterValues { it != null }.mapValues { it.value as Int }
     }
 

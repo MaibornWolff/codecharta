@@ -11,14 +11,12 @@ import java.util.stream.Stream
  * creates cc-Project out of Log using specific parserStrategy and metricsFactory
  */
 class SCMLogProjectCreator(
-        parserStrategy: LogParserStrategy,
-        private val metricsFactory: MetricsFactory,
-        private val projectConverter: ProjectConverter,
-        silent: Boolean = false
+    parserStrategy: LogParserStrategy,
+    private val metricsFactory: MetricsFactory,
+    private val projectConverter: ProjectConverter,
+    silent: Boolean = false
 ) {
-
     private val logLineParser: LogLineParser = LogLineParser(parserStrategy, metricsFactory, silent)
-
     fun parse(lines: Stream<String>): Project {
         val versionControlledFiles = logLineParser.parse(lines)
         return projectConverter.convert(versionControlledFiles, metricsFactory)

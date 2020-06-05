@@ -13,18 +13,16 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 class CSVProjectBuilder(
-        private val pathSeparator: Char,
-        private val csvDelimiter: Char,
-        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges")
+    private val pathSeparator: Char,
+    private val csvDelimiter: Char,
+    metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+    attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges")
 ) {
-
     private val logger = KotlinLogging.logger {}
-
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder()
-            .withMetricTranslator(metricNameTranslator)
-            .addAttributeTypes(attributeTypes)
+        .withMetricTranslator(metricNameTranslator)
+        .addAttributeTypes(attributeTypes)
 
     fun parseCSVStream(inStream: InputStream): ProjectBuilder {
         val parser = createParser(inStream)
@@ -58,7 +56,6 @@ class CSVProjectBuilder(
         val parserSettings = CsvParserSettings()
         parserSettings.format.delimiter = csvDelimiter
         parserSettings.format.lineSeparator = "\n".toCharArray()
-
         val parser = CsvParser(parserSettings)
         parser.beginParsing(InputStreamReader(inStream, StandardCharsets.UTF_8))
         return parser
