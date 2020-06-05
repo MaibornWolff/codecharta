@@ -105,7 +105,7 @@ export class DialogDownloadController {
 	}
 
 	private setSortedDownloadableFileSettings() {
-		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
+		this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {
