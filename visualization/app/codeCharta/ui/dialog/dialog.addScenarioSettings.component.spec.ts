@@ -48,6 +48,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 			dialogAddScenarioSettings["_viewModel"].scenarioName = "scenario1"
 			ScenarioHelper.isScenarioExisting = jest.fn().mockReturnValue(false)
 			ScenarioHelper.createNewScenario = jest.fn()
+			ScenarioHelper.addScenario = jest.fn()
 
 			dialogAddScenarioSettings.addScenario()
 

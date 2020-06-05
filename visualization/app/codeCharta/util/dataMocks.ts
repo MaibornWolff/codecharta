@@ -654,7 +654,7 @@ export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 	}
 ]
 
-export const SCENARIO: Scenario = {
+export const SCENARIO: RecursivePartial<Scenario> = {
 	name: "Scenario1",
 	area: {
 		areaMetric: "rloc",
