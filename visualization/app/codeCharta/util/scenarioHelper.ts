@@ -16,7 +16,7 @@ import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 export class ScenarioHelper {
 	private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"
 	//TODO: Move Scenarios to Redux Store
-	private static scenarioList: RecursivePartial<Scenario>[] = ScenarioHelper.loadScenarios()
+	private static scenarioList: Map<String, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
 	public static getScenarioItems(metricData: MetricData[]) {
 		const scenarioItemList: ScenarioItem[] = []
@@ -66,11 +66,11 @@ export class ScenarioHelper {
 		return true
 	}
 
-	private static getPreLoadScenarios() {
+	private static getPreLoadScenarios(): Map<String, RecursivePartial<Scenario>> {
 		const scenariosAsSettings: ScenarioAsSettings[] = this.importScenarios(require("../assets/scenarios.json"))
-		const scenario: RecursivePartial<Scenario>[] = []
+		const scenario: Map<String, RecursivePartial<Scenario>> = new Map<String, RecursivePartial<Scenario>>()
 		scenariosAsSettings.forEach(scenarioSettings => {
-			scenario.push(this.transformScenarioAsSettingsToScenario(scenarioSettings))
+			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))
 		})
 		return scenario
 	}
@@ -124,15 +124,18 @@ export class ScenarioHelper {
 		return scenario
 	}
 
-	private static setScenariosToLocalStorage(scenarios: RecursivePartial<Scenario>[]) {
-		const newLocalStorageElement: CCLocalStorage = { version: this.CC_LOCAL_STORAGE_VERSION, scenarios }
+	private static setScenariosToLocalStorage(scenarios: Map<String, RecursivePartial<Scenario>>) {
+		const newLocalStorageElement: CCLocalStorage = {
+			version: this.CC_LOCAL_STORAGE_VERSION,
+			scenarios: Object.fromEntries([...scenarios])
+		}
 		localStorage.setItem("scenarios", JSON.stringify(newLocalStorageElement))
 	}
 
-	private static loadScenarios(): RecursivePartial<Scenario>[] {
+	private static loadScenarios(): Map<String, RecursivePartial<Scenario>> {
 		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarios"))
 		if (ccLocalStorage) {
-			return ccLocalStorage.scenarios
+			return new Map(Object.entries(ccLocalStorage.scenarios))
 		} else {
 			this.setScenariosToLocalStorage(this.getPreLoadScenarios())
 			return this.getPreLoadScenarios()
@@ -140,7 +143,7 @@ export class ScenarioHelper {
 	}
 
 	public static addScenario(newScenario: RecursivePartial<Scenario>) {
-		this.scenarioList.push(newScenario)
+		this.scenarioList.set(newScenario.name, newScenario)
 		this.setScenariosToLocalStorage(this.scenarioList)
 	}
 
@@ -193,9 +196,7 @@ export class ScenarioHelper {
 	}
 
 	public static deleteScenario(scenarioName: String) {
-		this.scenarioList = this.scenarioList.filter(item => {
-			return item.name !== scenarioName
-		})
+		this.scenarioList.delete(scenarioName)
 		this.setScenariosToLocalStorage(this.scenarioList)
 	}
 
@@ -204,7 +205,7 @@ export class ScenarioHelper {
 	}
 
 	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
-		const scenario: RecursivePartial<Scenario> = this.scenarioList.find(s => s.name == name)
+		const scenario: RecursivePartial<Scenario> = this.scenarioList.get(name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
 		for (const scenarioKey in scenario) {
@@ -249,6 +250,6 @@ export class ScenarioHelper {
 	}
 
 	public static isScenarioExisting(scenarioName: string) {
-		return this.scenarioList.some(x => x.name == scenarioName)
+		return this.scenarioList.has(scenarioName)
 	}
 }
