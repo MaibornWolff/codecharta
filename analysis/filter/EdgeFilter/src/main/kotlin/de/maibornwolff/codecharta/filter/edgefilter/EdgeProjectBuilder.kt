@@ -46,7 +46,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     }
 
     private fun insertNodesWithAttributesFromEdges() {
-        insertEdgeAttributesIntoNodes(projectBuilder.rootNode.children.map { it.toNode() })
+        insertEdgeAttributesIntoNodes(projectBuilder.rootNode.children.map { it.toNode() }.toSet())
     }
 
     private fun insertEdgeAsNode(nodeEdgeName: String) {
@@ -57,7 +57,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         insertNodeInProjectBuilder(node, nodeParentPath)
     }
 
-    private fun insertEdgeAttributesIntoNodes(nodes: List<Node>, parentPath: MutableList<String> = mutableListOf()) {
+    private fun insertEdgeAttributesIntoNodes(nodes: Set<Node>, parentPath: MutableList<String> = mutableListOf()) {
         nodes.forEach {
             val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link)
             insertNodeInProjectBuilder(node, parentPath.toList())

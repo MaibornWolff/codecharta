@@ -10,6 +10,7 @@ import java.time.OffsetDateTime
 import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
+import kotlin.streams.toList
 
 class GitLogNumstatParserStrategy: LogParserStrategy {
     override fun creationCommand(): String {
@@ -21,9 +22,10 @@ class GitLogNumstatParserStrategy: LogParserStrategy {
     }
 
     override fun parseAuthor(commitLines: List<String>): String {
-        return commitLines
+        return commitLines.parallelStream()
                 .filter { it.startsWith(AUTHOR_ROW_INDICATOR) }
                 .map { AuthorParser.parseAuthor(it) }
+                .toList()
                 .first()
     }
 
@@ -35,9 +37,10 @@ class GitLogNumstatParserStrategy: LogParserStrategy {
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
-        return commitLines
+        return commitLines.parallelStream()
                 .filter { it.startsWith(DATE_ROW_INDICATOR) }
                 .map { CommitDateParser.parseCommitDate(it) }
+                .toList()
                 .first()
     }
 

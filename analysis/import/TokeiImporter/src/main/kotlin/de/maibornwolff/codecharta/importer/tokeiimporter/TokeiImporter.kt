@@ -6,6 +6,9 @@ import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.model.*
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.*
@@ -42,6 +45,9 @@ class TokeiImporter(private val input: InputStream = System.`in`,
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["tokei generated json"])
     private var file: File? = null
 
@@ -50,19 +56,24 @@ class TokeiImporter(private val input: InputStream = System.`in`,
         print(" ")
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
-
-        val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
-        val gson = Gson()
-        for (languageEntry in languageSummaries.entrySet()) {
+runBlocking (Dispatchers.Default) {
+    val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
+    val gson = Gson()
+    for (languageEntry in languageSummaries.entrySet()) {
             val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
             if (languageAnalysisObject.hasChildren()) {
                 for (analysisObject in languageAnalysisObject.stats!!) {
                     addAsNode(analysisObject)
                 }
             }
-        }
+    }
+}
         projectBuilder.addAttributeTypes(attributeTypes)
-        ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(projectBuilder.build(),filePath) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+
         return null
     }
 
@@ -84,20 +95,25 @@ class TokeiImporter(private val input: InputStream = System.`in`,
 
     private fun getInput(): JsonElement? {
         var root: JsonElement? = null
-
-        if (file != null) {
-            if (file!!.isFile) {
-                val bufferedReader = file!!.bufferedReader()
-                root = JsonParser().parse(bufferedReader)
+        runBlocking (Dispatchers.Default) {
+            if (file != null) {
+                launch {
+                    if (file!!.isFile) {
+                        val bufferedReader = file!!.bufferedReader()
+                        root = JsonParser().parse(bufferedReader)
+                    } else {
+                        logger.error("${file!!.name} has not been found.")
+                    }
+                }
             } else {
-                logger.error("${file!!.name} has not been found.")
-            }
-        } else {
-            val projectString: String = input.mapLines { it }.joinToString(separator = "") { it }
-            if (projectString.isNotEmpty()) {
-                root = JsonParser().parse(projectString)
-            } else {
-                logger.error("Neither source file nor piped input found.")
+                launch {
+                    val projectString: String = input.mapLines { it }.joinToString(separator = "") { it }
+                    if (projectString.isNotEmpty()) {
+                        root = JsonParser().parse(projectString)
+                    } else {
+                        logger.error("Neither source file nor piped input found.")
+                    }
+                }
             }
         }
 

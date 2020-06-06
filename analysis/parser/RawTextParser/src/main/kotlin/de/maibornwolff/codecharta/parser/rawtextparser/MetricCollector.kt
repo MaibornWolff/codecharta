@@ -2,8 +2,12 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.MetricsFactory
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.nio.file.Paths
+import java.util.concurrent.ConcurrentHashMap
 
 class MetricCollector(private var root: File,
                       private val exclude: Array<String> = arrayOf(),
@@ -14,26 +18,29 @@ class MetricCollector(private var root: File,
     val MAX_FILE_NAME_PRINT_LENGTH = 30
 
     fun parse(): Map<String, FileMetrics> {
-        val projectMetrics = mutableMapOf<String, FileMetrics>()
+        val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
         val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
-        root.walk().forEach {
-            if (it.isFile) {
-                val standardizedPath = "/" + getRelativeFileName(it.toString())
-                val isMatchingFileExtension = fileExtensions.isEmpty() || fileExtensions.contains(standardizedPath.substringAfterLast("."))
-                val isNotExcluded = !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))
-                if (it.isFile && isNotExcluded && isMatchingFileExtension) {
-                    logProgress(it.name)
-                    projectMetrics[standardizedPath] = parseFile(it)
-                }
-            }
+        runBlocking(Dispatchers.Default){
+            root.walk().asSequence()
+                    .filter{ it.isFile }
+                    .forEach { launch{
+                        val standardizedPath = "/" + getRelativeFileName(it.toString())
+                        val isMatchingFileExtension = fileExtensions.isEmpty() || fileExtensions.contains(standardizedPath.substringAfterLast("."))
+                        val isNotExcluded = !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))
+                        if (it.isFile && isNotExcluded && isMatchingFileExtension) {
+                            logProgress(it.name)
+                            projectMetrics[standardizedPath] = parseFile(it)
+                        }
+                    }
+                    }
         }
         return projectMetrics
     }
 
     private fun parseFile(file: File): FileMetrics {
         val metrics = MetricsFactory.create(metrics, parameters)
-        file.readLines().forEach { line -> metrics.forEach { it.parseLine(line) } }
+        file.readLines().stream().parallel().forEach { line -> metrics.forEach { it.parseLine(line) } }
         return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricMap.putAll(current.metricMap)
             acc

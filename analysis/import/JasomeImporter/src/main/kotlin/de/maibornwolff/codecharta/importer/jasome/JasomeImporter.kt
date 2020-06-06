@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.jasome
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import picocli.CommandLine
 import java.io.File
+import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -21,14 +22,22 @@ class JasomeImporter: Callable<Void> {
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
-    private var writer = outputFile?.writer() ?: System.out.writer()
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
 
     override fun call(): Void? {
         val jasomeProject = JasomeDeserializer().deserializeJasomeXML(file!!.inputStream())
         val project = JasomeProjectBuilder().add(jasomeProject).build()
-        ProjectSerializer.serializeProject(project, writer)
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,filePath) else  ProjectSerializer.serializeProject(project, writer())
 
         return null
+    }
+
+    private fun writer(): Writer{
+        return  outputFile?.writer() ?: System.out.writer()
     }
 
     companion object {

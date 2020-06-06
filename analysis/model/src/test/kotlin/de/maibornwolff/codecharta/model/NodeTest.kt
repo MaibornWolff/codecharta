@@ -15,7 +15,7 @@ class NodeTest: Spek({
 
         val childName = "child1"
         val child = MutableNode(childName)
-        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(child))
+        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(child).toSet())
 
         context("getPathOfChild of valid child") {
             val pathOfChild = root.getPathOfChild(child)
@@ -50,10 +50,10 @@ class NodeTest: Spek({
 
         val node11 = MutableNode("node11")
         val node12 = MutableNode("node12")
-        val node1 = MutableNode("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12))
+        val node1 = MutableNode("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12).toSet())
         val node21 = MutableNode("node21", NodeType.Folder)
-        val node2 = MutableNode("node2", NodeType.Folder, childrenList = Arrays.asList(node21))
-        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2))
+        val node2 = MutableNode("node2", NodeType.Folder, childrenList = Arrays.asList(node21).toSet())
+        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2).toSet())
 
         it("getLeafs should return leafs") {
             val leafs = root.leafObjects

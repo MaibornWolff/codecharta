@@ -6,6 +6,7 @@ import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import mu.KotlinLogging
 import picocli.CommandLine
 import java.io.File
+import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "merge",
@@ -30,6 +31,9 @@ class MergeFilter: Callable<Void?> {
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
+
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
 
     @CommandLine.Option(names = ["--ignore-case"], description = ["ignores case when checking node names"])
     private var ignoreCase = false
@@ -63,10 +67,17 @@ class MergeFilter: Callable<Void?> {
 
         val mergedProject = ProjectMerger(srcProjects, nodeMergerStrategy).merge()
 
-        val writer = outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
-        ProjectSerializer.serializeProject(mergedProject, writer)
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(mergedProject,filePath) else ProjectSerializer.serializeProject(mergedProject, writer())
+
 
         return null
+    }
+
+    private fun writer(): Writer {
+        return outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
+
     }
 
     private fun getFilesInFolder(folder: File): List<File> {

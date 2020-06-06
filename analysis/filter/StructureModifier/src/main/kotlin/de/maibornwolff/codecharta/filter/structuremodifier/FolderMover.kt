@@ -48,10 +48,10 @@ class FolderMover(private val project: Project) {
         return if (originPath.isEmpty() || originPath.first() != node.name) {
             node
         } else if (originPath.size == 1) {
-            toMove = node.children
+            toMove = node.children.toMutableList()
             null
         } else {
-            node.children = node.children.mapNotNull { child -> removeMovedNodeFromStructure(originPath.drop(1), child) }.toMutableList()
+            node.children = node.children.mapNotNull { child -> removeMovedNodeFromStructure(originPath.drop(1), child) }.toMutableSet()
             node
         }
     }
