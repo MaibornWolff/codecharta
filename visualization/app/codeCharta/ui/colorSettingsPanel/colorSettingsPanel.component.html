@@ -13,7 +13,11 @@
 </md-input-container>
 
 <md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
-	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.whiteColorBuildings" ng-change="$ctrl.applyWhiteColorBuildings()">
+	<md-checkbox
+		class="md-primary"
+		ng-model="$ctrl._viewModel.whiteColorBuildings"
+		ng-change="$ctrl.applyWhiteColorBuildings()"
+	>
 		White Positive Buildings
 	</md-checkbox>
 </md-input-container>

@@ -12,7 +12,9 @@ export interface SetIdToBuildingAction extends Action {
 
 export type IdToBuildingAction = SetIdToBuildingAction
 
-export function setIdToBuilding(idToBuilding: Map<number, CodeMapBuilding> = defaultIdToBuilding): SetIdToBuildingAction {
+export function setIdToBuilding(
+	idToBuilding: Map<number, CodeMapBuilding> = defaultIdToBuilding
+): SetIdToBuildingAction {
 	return {
 		type: IdToBuildingActions.SET_ID_TO_BUILDING,
 		payload: idToBuilding

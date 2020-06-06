@@ -29,7 +29,12 @@ export class ThreeCameraService implements CameraChangeSubscriber {
 
 	public init(containerWidth: number, containerHeight: number) {
 		const aspect = containerWidth / containerHeight
-		this.camera = new THREE.PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
+		this.camera = new THREE.PerspectiveCamera(
+			ThreeCameraService.VIEW_ANGLE,
+			aspect,
+			ThreeCameraService.NEAR,
+			ThreeCameraService.FAR
+		)
 		this.setPosition()
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}

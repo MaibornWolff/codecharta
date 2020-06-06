@@ -81,7 +81,10 @@ describe("CodeMapArrowService", () => {
 
 			rebuildService()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, codeMapArrowService)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith(
+				$rootScope,
+				codeMapArrowService
+			)
 		})
 
 		it("should subscribe to Building-Unhovered-Events", () => {
@@ -89,7 +92,10 @@ describe("CodeMapArrowService", () => {
 
 			rebuildService()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, codeMapArrowService)
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith(
+				$rootScope,
+				codeMapArrowService
+			)
 		})
 	})
 
@@ -160,14 +166,18 @@ describe("CodeMapArrowService", () => {
 		})
 		it("should create and edge Preview of one", () => {
 			const nodes: Node[] = [OUTGOING_NODE]
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
+			const edges: Edge[] = storeService
+				.getState()
+				.fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
 
 			codeMapArrowService.addEdgePreview(nodes, edges)
 
 			expect(codeMapArrowService["map"].size).toEqual(1)
 		})
 		it("should create and no edge Preview at all", () => {
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
+			const edges: Edge[] = storeService
+				.getState()
+				.fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
 
 			codeMapArrowService.addEdgePreview(null, edges)
 

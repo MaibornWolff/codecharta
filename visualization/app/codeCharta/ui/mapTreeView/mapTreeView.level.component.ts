@@ -1,7 +1,11 @@
 import { IRootScopeService } from "angular"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import {
+	BuildingHoveredSubscriber,
+	BuildingUnhoveredSubscriber,
+	CodeMapMouseEventService
+} from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
@@ -41,7 +45,10 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public getMarkingColor() {
 		const defaultColor = "#000000"
-		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
+		const markingColor = CodeMapHelper.getMarkingColor(
+			this.node,
+			this.storeService.getState().fileSettings.markedPackages
+		)
 		return markingColor ? markingColor : defaultColor
 	}
 
@@ -70,7 +77,13 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public openNodeContextMenu($event) {
 		$event.stopPropagation()
-		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
+		NodeContextMenuController.broadcastShowEvent(
+			this.$rootScope,
+			this.node.path,
+			this.node.type,
+			$event.clientX,
+			$event.clientY
+		)
 	}
 
 	public onClickNode() {

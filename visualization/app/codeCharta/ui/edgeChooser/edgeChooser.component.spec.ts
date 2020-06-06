@@ -58,7 +58,10 @@ describe("EdgeChooserController", () => {
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith(
+				$rootScope,
+				edgeChooserController
+			)
 		})
 
 		it("should subscribe to unhovered buildings", () => {
@@ -66,7 +69,10 @@ describe("EdgeChooserController", () => {
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith(
+				$rootScope,
+				edgeChooserController
+			)
 		})
 
 		it("should subscribe to EdgeMetricService", () => {
@@ -80,7 +86,10 @@ describe("EdgeChooserController", () => {
 
 	describe("onEdgeMetricDataUpdated", () => {
 		it("should store edge data", () => {
-			const metricData = [{ name: "metric1", maxValue: 22 }, { name: "metric2", maxValue: 1 }]
+			const metricData = [
+				{ name: "metric1", maxValue: 22 },
+				{ name: "metric2", maxValue: 1 }
+			]
 
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
@@ -164,7 +173,10 @@ describe("EdgeChooserController", () => {
 
 	describe("filterMetricData()", () => {
 		it("should return the all entries if search term is empty", () => {
-			const metricData = [{ name: "metric1", maxValue: 1 }, { name: "metric2", maxValue: 2 }]
+			const metricData = [
+				{ name: "metric1", maxValue: 1 },
+				{ name: "metric2", maxValue: 2 }
+			]
 			edgeChooserController["_viewModel"].searchTerm = ""
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
@@ -174,7 +186,10 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should return only metrics that include search term", () => {
-			const metricData = [{ name: "metric1", maxValue: 1 }, { name: "metric2", maxValue: 2 }]
+			const metricData = [
+				{ name: "metric1", maxValue: 1 },
+				{ name: "metric2", maxValue: 2 }
+			]
 			edgeChooserController["_viewModel"].searchTerm = "ic2"
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 
@@ -184,7 +199,10 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
-			const metricData = [{ name: "metric1", maxValue: 1 }, { name: "metric2", maxValue: 2 }]
+			const metricData = [
+				{ name: "metric1", maxValue: 1 },
+				{ name: "metric2", maxValue: 2 }
+			]
 			edgeChooserController["_viewModel"].searchTerm = "fooBar"
 			edgeChooserController.onEdgeMetricDataUpdated(metricData)
 

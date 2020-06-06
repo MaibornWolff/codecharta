@@ -4,7 +4,10 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setSortingOption } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import _ from "lodash"
-import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
+import {
+	SortingOptionService,
+	SortingOptionSubscriber
+} from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 
 export class SortingOptionController implements SortingOptionSubscriber {
 	private _viewModel: {

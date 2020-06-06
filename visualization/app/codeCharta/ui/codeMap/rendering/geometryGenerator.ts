@@ -79,7 +79,11 @@ export class GeometryGenerator {
 				idx,
 				new THREE.Box3(
 					new THREE.Vector3(measures.x, measures.y, measures.z),
-					new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
+					new THREE.Vector3(
+						measures.x + measures.width,
+						measures.y + measures.height,
+						measures.z + measures.depth
+					)
 				),
 				n,
 				color
@@ -125,7 +129,11 @@ export class GeometryGenerator {
 				idx,
 				new THREE.Box3(
 					new THREE.Vector3(measures.x, measures.y, measures.z),
-					new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
+					new THREE.Vector3(
+						measures.x + measures.width,
+						measures.y + measures.height,
+						measures.z + measures.depth
+					)
 				),
 				n,
 				n.color

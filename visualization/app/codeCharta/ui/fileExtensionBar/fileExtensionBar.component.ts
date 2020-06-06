@@ -18,7 +18,11 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private threeSceneService: ThreeSceneService
+	) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
@@ -69,7 +73,9 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private setColorForEachExtension() {
 		this._viewModel.distribution.forEach(x => {
-			x.color = x.color ? x.color : FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(x.fileExtension)).toString()
+			x.color = x.color
+				? x.color
+				: FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(x.fileExtension)).toString()
 		})
 	}
 

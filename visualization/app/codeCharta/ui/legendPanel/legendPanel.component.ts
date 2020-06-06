@@ -2,13 +2,19 @@ import { IRootScopeService } from "angular"
 import "./legendPanel.component.scss"
 import { ColorRange, MarkedPackage, MapColors } from "../../codeCharta.model"
 import { ColorConverter } from "../../util/color/colorConverter"
-import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
+import {
+	ColorRangeService,
+	ColorRangeSubscriber
+} from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import {
 	InvertColorRangeService,
 	InvertColorRangeSubscriber
 } from "../../state/store/appSettings/invertColorRange/invertColorRange.service"
 import { StoreService } from "../../state/store.service"
-import { MarkedPackagesSubscriber, MarkedPackagesService } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
+import {
+	MarkedPackagesSubscriber,
+	MarkedPackagesService
+} from "../../state/store/fileSettings/markedPackages/markedPackages.service"
 import {
 	WhiteColorBuildingsService,
 	WhiteColorBuildingsSubscriber
@@ -110,7 +116,9 @@ export class LegendPanelController
 	}
 
 	private updateNormalColors(mapColors: MapColors) {
-		const positive = this.storeService.getState().appSettings.whiteColorBuildings ? mapColors.lightGrey : mapColors.positive
+		const positive = this.storeService.getState().appSettings.whiteColorBuildings
+			? mapColors.lightGrey
+			: mapColors.positive
 
 		this._viewModel.colorIcons.positive = this.getImage(positive)
 		this._viewModel.colorIcons.neutral = this.getImage(mapColors.neutral)
@@ -149,7 +157,9 @@ export class LegendPanelController
 	}
 
 	private insertMPIntoPackageList(mp: MarkedPackage, colorPixel: string) {
-		this._viewModel.packageLists.filter(packageList => packageList.colorPixel == colorPixel)[0].markedPackages.push(mp)
+		this._viewModel.packageLists
+			.filter(packageList => packageList.colorPixel == colorPixel)[0]
+			.markedPackages.push(mp)
 	}
 
 	private isColorPixelInPackageLists(colorPixel: string) {

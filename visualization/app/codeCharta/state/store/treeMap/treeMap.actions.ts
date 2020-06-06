@@ -14,7 +14,9 @@ export interface SetTreeMapSettingsAction extends CCAction {
 
 export type TreeMapSettingsAction = SetTreeMapSettingsAction
 
-export function setTreeMapSettings(treeMapSettings: RecursivePartial<TreeMapSettings> = defaultTreeMapSettings): TreeMapSettingsAction {
+export function setTreeMapSettings(
+	treeMapSettings: RecursivePartial<TreeMapSettings> = defaultTreeMapSettings
+): TreeMapSettingsAction {
 	return {
 		type: TreeMapSettingsActions.SET_TREE_MAP_SETTINGS,
 		payload: treeMapSettings

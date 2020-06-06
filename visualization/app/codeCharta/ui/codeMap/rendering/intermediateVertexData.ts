@@ -21,7 +21,14 @@ export class IntermediateVertexData {
 		this.indices = new Array<number>()
 	}
 
-	public addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIdx: number, delta: number): number {
+	public addVertex(
+		pos: Vector3,
+		normal: Vector3,
+		uv: Vector2,
+		color: string,
+		subGeomIdx: number,
+		delta: number
+	): number {
 		this.positions.push(pos)
 		this.normals.push(normal)
 		this.uvs.push(uv)

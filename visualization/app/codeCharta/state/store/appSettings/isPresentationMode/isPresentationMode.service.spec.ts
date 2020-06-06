@@ -2,7 +2,10 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { PresentationModeAction, PresentationModeActions } from "../../appSettings/isPresentationMode/isPresentationMode.actions"
+import {
+	PresentationModeAction,
+	PresentationModeActions
+} from "../../appSettings/isPresentationMode/isPresentationMode.actions"
 import { IsPresentationModeService } from "./isPresentationMode.service"
 import { BlacklistActions } from "../../fileSettings/blacklist/blacklist.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
@@ -49,7 +52,9 @@ describe("IsPresentationModeService", () => {
 
 			isPresentationModeService.onStoreChanged(PresentationModeActions.SET_PRESENTATION_MODE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("presentation-mode-changed", { isPresentationMode: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("presentation-mode-changed", {
+				isPresentationMode: true
+			})
 		})
 
 		it("should not notify anything on non-presentation-mode-events", () => {

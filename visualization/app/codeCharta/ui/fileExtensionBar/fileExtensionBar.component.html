@@ -1,5 +1,5 @@
 <div>
-	<div class="metric-chooser ">
+	<div class="metric-chooser">
 		<distribution-metric-chooser-component></distribution-metric-chooser-component>
 	</div>
 
@@ -8,7 +8,7 @@
 			class="bar-section"
 			ng-click="$ctrl.toggleExtensiveMode()"
 			ng-repeat="item in $ctrl._viewModel.distribution"
-			ng-style="{ 'width': item.relativeMetricValue + '%', 'background': item.color}"
+			ng-style="{ width: item.relativeMetricValue + '%', background: item.color }"
 		>
 			<p
 				class="bar-section-text"
@@ -16,16 +16,20 @@
 				ng-mouseleave="$ctrl.onUnhoverFileExtensionBar()"
 				title="{{ item.relativeMetricValue.toFixed(2) }}%"
 			>
-				<span ng-if="item.relativeMetricValue >= item.fileExtension.length/2+1">
+				<span ng-if="item.relativeMetricValue >= item.fileExtension.length / 2 + 1">
 					{{ item.fileExtension }}
 				</span>
 			</p>
 		</div>
 	</div>
-	<div class="bar-details" ng-class="{expanded: $ctrl._viewModel.isExtensiveMode}" ng-click="$ctrl.togglePercentageAbsoluteValues()">
+	<div
+		class="bar-details"
+		ng-class="{ expanded: $ctrl._viewModel.isExtensiveMode }"
+		ng-click="$ctrl.togglePercentageAbsoluteValues()"
+	>
 		<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution">
 			<p class="bar-details-text">
-				<span class="dot" ng-style="{'background': item.color}"></span>{{ item.fileExtension }} :
+				<span class="dot" ng-style="{ background: item.color }"></span>{{ item.fileExtension }} :
 				<span class="metric-value" ng-class="{ hidden: $ctrl._viewModel.isAbsoluteValueVisible }"
 					>{{ item.relativeMetricValue.toFixed(2) }}%</span
 				>

@@ -36,7 +36,11 @@ export class MapBuilder {
 		return path.substring(0, path.lastIndexOf("/"))
 	}
 
-	private static getParentNode(sortedHashMap: Map<string, CodeMapNode>, path: string, rootNode: CodeMapNode): CodeMapNode {
+	private static getParentNode(
+		sortedHashMap: Map<string, CodeMapNode>,
+		path: string,
+		rootNode: CodeMapNode
+	): CodeMapNode {
 		if (path === CodeChartaService.ROOT_PATH) {
 			return rootNode
 		}

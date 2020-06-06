@@ -17,7 +17,9 @@ export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolea
 						: oldBlacklistItem.path,
 					type: oldBlacklistItem.type
 				}
-				const equalBlacklistItems = blacklist.find(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
+				const equalBlacklistItems = blacklist.find(
+					b => b.path == blacklistItem.path && b.type == blacklistItem.type
+				)
 
 				if (!equalBlacklistItems) {
 					blacklist.push(blacklistItem)

@@ -36,7 +36,12 @@ describe("MetricDeltaSelectedController", () => {
 	}
 
 	function rebuildController() {
-		metricDeltaSelectedController = new MetricDeltaSelectedController($rootScope, $timeout, threeSceneService, storeService)
+		metricDeltaSelectedController = new MetricDeltaSelectedController(
+			$rootScope,
+			$timeout,
+			threeSceneService,
+			storeService
+		)
 	}
 
 	function withMockedThreeSceneService() {
@@ -51,7 +56,10 @@ describe("MetricDeltaSelectedController", () => {
 
 			rebuildController()
 
-			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, metricDeltaSelectedController)
+			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith(
+				$rootScope,
+				metricDeltaSelectedController
+			)
 		})
 
 		it("should subscribe to InvertDeltaColorsService", () => {

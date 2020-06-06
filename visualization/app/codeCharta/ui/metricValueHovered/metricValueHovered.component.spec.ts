@@ -64,13 +64,19 @@ describe("MetricValueHoveredController", () => {
 		it("should subscribe to Building-Hovered-Event", () => {
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith(
+				$rootScope,
+				metricValueHoveredController
+			)
 		})
 
 		it("should subscribe to Building-Unhovered-Event", () => {
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, metricValueHoveredController)
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith(
+				$rootScope,
+				metricValueHoveredController
+			)
 		})
 	})
 

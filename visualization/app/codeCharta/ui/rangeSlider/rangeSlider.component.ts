@@ -6,8 +6,14 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import _ from "lodash"
-import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
-import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import {
+	ColorRangeService,
+	ColorRangeSubscriber
+} from "../../state/store/dynamicSettings/colorRange/colorRange.service"
+import {
+	ColorMetricService,
+	ColorMetricSubscriber
+} from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import {
 	InvertColorRangeService,
 	InvertColorRangeSubscriber
@@ -91,14 +97,20 @@ export class RangeSliderController
 	}
 
 	public onFromSliderChange() {
-		this._viewModel.colorRangeFrom = Math.min(this._viewModel.sliderOptions.ceil - 1, this._viewModel.colorRangeFrom)
+		this._viewModel.colorRangeFrom = Math.min(
+			this._viewModel.sliderOptions.ceil - 1,
+			this._viewModel.colorRangeFrom
+		)
 		this._viewModel.colorRangeTo = Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1)
 		this.applyColorRange()
 	}
 
 	public onToSliderChange() {
 		this._viewModel.colorRangeFrom = Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
-		this._viewModel.colorRangeTo = Math.min(this._viewModel.sliderOptions.ceil, Math.max(1, this._viewModel.colorRangeTo))
+		this._viewModel.colorRangeTo = Math.min(
+			this._viewModel.sliderOptions.ceil,
+			Math.max(1, this._viewModel.colorRangeTo)
+		)
 		this.applyColorRange()
 	}
 
@@ -153,7 +165,9 @@ export class RangeSliderController
 
 	private updateSliderColors() {
 		const rangeFromPercentage = (100 / this._viewModel.sliderOptions.ceil) * this._viewModel.colorRangeFrom
-		const rangeColors = this._viewModel.sliderOptions.disabled ? this.getGreyRangeColors() : this.getColoredRangeColors()
+		const rangeColors = this._viewModel.sliderOptions.disabled
+			? this.getGreyRangeColors()
+			: this.getColoredRangeColors()
 		this.applyCssColors(rangeColors, rangeFromPercentage)
 	}
 
@@ -168,7 +182,9 @@ export class RangeSliderController
 
 	private getColoredRangeColors() {
 		const appSettings = this.storeService.getState().appSettings
-		const mapColorPositive = appSettings.whiteColorBuildings ? appSettings.mapColors.lightGrey : appSettings.mapColors.positive
+		const mapColorPositive = appSettings.whiteColorBuildings
+			? appSettings.mapColors.lightGrey
+			: appSettings.mapColors.positive
 
 		return {
 			left: appSettings.invertColorRange ? appSettings.mapColors.negative : mapColorPositive,
@@ -183,7 +199,10 @@ export class RangeSliderController
 		const middleSection = slider.find(".rz-selection")
 		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
 
-		leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
+		leftSection.css(
+			"cssText",
+			"background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;"
+		)
 		middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
 		rightSection.css("cssText", "background: " + rangeColors.right + ";")
 	}

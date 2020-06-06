@@ -144,7 +144,7 @@
 		"ng-annotate-loader": "^0.6.1",
 		"node-sass": "^4.13.1",
 		"plop": "^2.6.0",
-		"prettier": "^1.16.4",
+		"prettier": "^2.0.5",
 		"pretty-quick": "^1.10.0",
 		"puppeteer": "^1.6.0",
 		"rimraf": "^2.6.2",

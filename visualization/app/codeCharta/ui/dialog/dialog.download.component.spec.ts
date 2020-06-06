@@ -5,7 +5,13 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { AttributeTypes, AttributeTypeValue } from "../../codeCharta.model"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { stubDate } from "../../../../mocks/dateMock.helper"
-import { VALID_NODE_WITH_PATH_AND_EXTENSION, FILE_META, VALID_EDGES, BLACKLIST, MARKED_PACKAGES } from "../../util/dataMocks"
+import {
+	VALID_NODE_WITH_PATH_AND_EXTENSION,
+	FILE_META,
+	VALID_EDGES,
+	BLACKLIST,
+	MARKED_PACKAGES
+} from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"

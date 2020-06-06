@@ -11,7 +11,9 @@ export interface SetWhiteColorBuildingsAction extends CCAction {
 
 export type WhiteColorBuildingsAction = SetWhiteColorBuildingsAction
 
-export function setWhiteColorBuildings(whiteColorBuildings: boolean = defaultWhiteColorBuildings): SetWhiteColorBuildingsAction {
+export function setWhiteColorBuildings(
+	whiteColorBuildings: boolean = defaultWhiteColorBuildings
+): SetWhiteColorBuildingsAction {
 	return {
 		type: WhiteColorBuildingsActions.SET_WHITE_COLOR_BUILDINGS,
 		payload: whiteColorBuildings

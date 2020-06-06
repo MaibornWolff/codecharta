@@ -2,12 +2,28 @@ import "./metricType.component.scss"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import {
+	BuildingHoveredSubscriber,
+	BuildingUnhoveredSubscriber,
+	CodeMapMouseEventService
+} from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
-import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
-import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import {
+	AreaMetricService,
+	AreaMetricSubscriber
+} from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import {
+	HeightMetricService,
+	HeightMetricSubscriber
+} from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import {
+	ColorMetricService,
+	ColorMetricSubscriber
+} from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import {
+	EdgeMetricService,
+	EdgeMetricSubscriber
+} from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 
@@ -84,9 +100,13 @@ export class MetricTypeController
 	public onMetricDataAdded() {
 		const state = this.storeService.getState()
 		if (this.metricSelection === MetricSelections.edgeMetric) {
-			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
+			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(
+				state.dynamicSettings[this.metricSelection]
+			)
 		} else {
-			this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])
+			this._viewModel.metricType = this.metricService.getAttributeTypeByMetric(
+				state.dynamicSettings[this.metricSelection]
+			)
 		}
 	}
 }

@@ -3,7 +3,10 @@ import { MarkedPackage } from "../../../../codeCharta.model"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 const clone = require("rfdc")()
 
-export function markedPackages(state: MarkedPackage[] = setMarkedPackages().payload, action: MarkedPackagesAction): MarkedPackage[] {
+export function markedPackages(
+	state: MarkedPackage[] = setMarkedPackages().payload,
+	action: MarkedPackagesAction
+): MarkedPackage[] {
 	switch (action.type) {
 		case MarkedPackagesActions.SET_MARKED_PACKAGES:
 			return clone(action.payload)

@@ -26,14 +26,20 @@ describe("AttributeTypeSelectorController", () => {
 	}
 
 	function rebuildController() {
-		attributeTypeSelectorController = new AttributeTypeSelectorController(storeService, metricService, edgeMetricDataService)
+		attributeTypeSelectorController = new AttributeTypeSelectorController(
+			storeService,
+			metricService,
+			edgeMetricDataService
+		)
 	}
 
 	describe("setToAbsolute", () => {
 		it("should update attributeType to absolute", () => {
 			attributeTypeSelectorController.setToAbsolute("bar", "nodes")
 
-			expect(storeService.getState().fileSettings.attributeTypes.nodes["bar"]).toEqual(AttributeTypeValue.absolute)
+			expect(storeService.getState().fileSettings.attributeTypes.nodes["bar"]).toEqual(
+				AttributeTypeValue.absolute
+			)
 		})
 	})
 
@@ -41,7 +47,9 @@ describe("AttributeTypeSelectorController", () => {
 		it("should set attributeType to relative", () => {
 			attributeTypeSelectorController.setToRelative("foo", "edges")
 
-			expect(storeService.getState().fileSettings.attributeTypes.edges["foo"]).toEqual(AttributeTypeValue.relative)
+			expect(storeService.getState().fileSettings.attributeTypes.edges["foo"]).toEqual(
+				AttributeTypeValue.relative
+			)
 		})
 	})
 

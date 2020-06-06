@@ -75,7 +75,13 @@ describe("ThreeOrbitControlsService", () => {
 	}
 
 	function rebuildService() {
-		threeOrbitControlsService = new ThreeOrbitControlsService($rootScope, $timeout, storeService, threeCameraService, threeSceneService)
+		threeOrbitControlsService = new ThreeOrbitControlsService(
+			$rootScope,
+			$timeout,
+			storeService,
+			threeCameraService,
+			threeSceneService
+		)
 	}
 
 	describe("constructor", () => {
@@ -84,7 +90,10 @@ describe("ThreeOrbitControlsService", () => {
 
 			rebuildService()
 
-			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
+			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith(
+				$rootScope,
+				threeOrbitControlsService
+			)
 		})
 
 		it("should subscribe to FocusedNodePathService unfocus", () => {
@@ -92,7 +101,10 @@ describe("ThreeOrbitControlsService", () => {
 
 			rebuildService()
 
-			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith($rootScope, threeOrbitControlsService)
+			expect(FocusedNodePathService.subscribeToUnfocusNode).toHaveBeenCalledWith(
+				$rootScope,
+				threeOrbitControlsService
+			)
 		})
 
 		it("should subscribe to FilesService", () => {

@@ -156,7 +156,9 @@ describe("RangeSliderController", () => {
 			rangeSliderController.onColorMetricChanged("mcc")
 
 			setTimeout(() => {
-				expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
+				expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(
+					JSON.stringify(expected)
+				)
 			})
 		})
 

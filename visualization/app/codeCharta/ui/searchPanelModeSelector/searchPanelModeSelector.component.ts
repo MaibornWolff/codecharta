@@ -1,13 +1,20 @@
 import "./searchPanelModeSelector.component.scss"
 import { BlacklistItem, BlacklistType, SearchPanelMode } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import {
+	SearchPatternService,
+	SearchPatternSubscriber
+} from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "../../state/store.service"
 import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
-import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
+import {
+	SearchPanelModeService,
+	SearchPanelModeSubscriber
+} from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
-export class SearchPanelModeSelectorController implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelModeSubscriber {
+export class SearchPanelModeSelectorController
+	implements SearchPatternSubscriber, BlacklistSubscriber, SearchPanelModeSubscriber {
 	private _viewModel: {
 		searchPanelMode: SearchPanelMode
 		flattenListLength: number

@@ -12,7 +12,9 @@ export interface SetSearchPanelModeAction extends Action {
 
 export type SearchPanelModeAction = SetSearchPanelModeAction
 
-export function setSearchPanelMode(searchPanelMode: SearchPanelMode = defaultSearchPanelMode): SetSearchPanelModeAction {
+export function setSearchPanelMode(
+	searchPanelMode: SearchPanelMode = defaultSearchPanelMode
+): SetSearchPanelModeAction {
 	return {
 		type: SearchPanelModeActions.SET_SEARCH_PANEL_MODE,
 		payload: searchPanelMode

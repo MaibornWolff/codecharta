@@ -1,14 +1,32 @@
 import "./metricValueHovered.component.scss"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
-import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import {
+	BuildingHoveredSubscriber,
+	BuildingUnhoveredSubscriber,
+	CodeMapMouseEventService
+} from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
-import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
-import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import {
+	AreaMetricService,
+	AreaMetricSubscriber
+} from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import {
+	HeightMetricService,
+	HeightMetricSubscriber
+} from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import {
+	ColorMetricService,
+	ColorMetricSubscriber
+} from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 export class MetricValueHoveredController
-	implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber {
+	implements
+		BuildingHoveredSubscriber,
+		BuildingUnhoveredSubscriber,
+		AreaMetricSubscriber,
+		HeightMetricSubscriber,
+		ColorMetricSubscriber {
 	private POSITIVE_COLOR = "#b1d8a8"
 	private NEGATIVE_COLOR = "#ffcccc"
 	private NEUTRAL_COLOR = "#e6e6e6"

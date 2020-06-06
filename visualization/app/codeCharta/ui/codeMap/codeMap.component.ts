@@ -2,7 +2,10 @@ import "./codeMap.component.scss"
 import { ThreeViewerService } from "./threeViewer/threeViewerService"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import {
+	IsLoadingFileService,
+	IsLoadingFileSubscriber
+} from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
 import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber

@@ -34,7 +34,9 @@ export class TreeMapHelper {
 		maxHeight: number,
 		flattened: boolean
 	): number {
-		const heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+		const heightValue =
+			squaredNode.data.attributes[s.dynamicSettings.heightMetric] ||
+			TreeMapHelper.HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 
 		if (flattened) {
 			return TreeMapHelper.MIN_BUILDING_HEIGHT
@@ -58,7 +60,9 @@ export class TreeMapHelper {
 		const depth: number = squaredNode.data.path.split("/").length - 2
 		const width = squaredNode.x1 - squaredNode.x0
 		const height = Math.abs(
-			isNodeLeaf ? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT) : TreeMapHelper.FOLDER_HEIGHT
+			isNodeLeaf
+				? Math.max(heightScale * heightValue, TreeMapHelper.MIN_BUILDING_HEIGHT)
+				: TreeMapHelper.FOLDER_HEIGHT
 		)
 		const length = squaredNode.y1 - squaredNode.y0
 		const x0 = squaredNode.x0
@@ -89,8 +93,20 @@ export class TreeMapHelper {
 			markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
 			flat: flattened,
 			color: this.getBuildingColor(squaredNode.data, s, isDeltaState, flattened),
-			incomingEdgePoint: this.getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),
-			outgoingEdgePoint: this.getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize)
+			incomingEdgePoint: this.getIncomingEdgePoint(
+				width,
+				height,
+				length,
+				new Vector3(x0, z0, y0),
+				s.treeMap.mapSize
+			),
+			outgoingEdgePoint: this.getOutgoingEdgePoint(
+				width,
+				height,
+				length,
+				new Vector3(x0, z0, y0),
+				s.treeMap.mapSize
+			)
 		}
 	}
 
@@ -105,7 +121,13 @@ export class TreeMapHelper {
 		return isVisible
 	}
 
-	private static getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+	private static getIncomingEdgePoint(
+		width: number,
+		height: number,
+		length: number,
+		vector: Vector3,
+		mapSize: number
+	) {
 		if (width > length) {
 			return new Vector3(vector.x - mapSize + width / 4, vector.y + height, vector.z - mapSize + length / 2)
 		} else {
@@ -113,7 +135,13 @@ export class TreeMapHelper {
 		}
 	}
 
-	private static getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
+	private static getOutgoingEdgePoint(
+		width: number,
+		height: number,
+		length: number,
+		vector: Vector3,
+		mapSize: number
+	) {
 		if (width > length) {
 			return new Vector3(vector.x - mapSize + 0.75 * width, vector.y + height, vector.z - mapSize + length / 2)
 		} else {
@@ -131,7 +159,11 @@ export class TreeMapHelper {
 			flattened = this.nodeHasNoVisibleEdges(squaredNode, s)
 		}
 
-		if (s.dynamicSettings.searchedNodePaths && s.dynamicSettings.searchPattern && s.dynamicSettings.searchPattern.length > 0) {
+		if (
+			s.dynamicSettings.searchedNodePaths &&
+			s.dynamicSettings.searchPattern &&
+			s.dynamicSettings.searchPattern.length > 0
+		) {
 			flattened = s.dynamicSettings.searchedNodePaths.size == 0 ? true : this.isNodeNonSearched(squaredNode, s)
 		}
 
@@ -142,8 +174,9 @@ export class TreeMapHelper {
 	private static nodeHasNoVisibleEdges(squaredNode: HierarchyRectangularNode<CodeMapNode>, s: State): boolean {
 		return (
 			squaredNode.data.edgeAttributes[s.dynamicSettings.edgeMetric] === undefined ||
-			s.fileSettings.edges.filter(edge => squaredNode.data.path === edge.fromNodeName || squaredNode.data.path === edge.toNodeName)
-				.length == 0
+			s.fileSettings.edges.filter(
+				edge => squaredNode.data.path === edge.fromNodeName || squaredNode.data.path === edge.toNodeName
+			).length == 0
 		)
 	}
 
@@ -152,7 +185,9 @@ export class TreeMapHelper {
 	}
 
 	private static getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean): string {
-		const mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
+		const mapColorPositive = s.appSettings.whiteColorBuildings
+			? s.appSettings.mapColors.lightGrey
+			: s.appSettings.mapColors.positive
 		if (isDeltaState) {
 			return s.appSettings.mapColors.base
 		} else {

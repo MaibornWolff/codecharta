@@ -2,7 +2,10 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { ShowOnlyBuildingsWithEdgesAction, ShowOnlyBuildingsWithEdgesActions } from "./showOnlyBuildingsWithEdges.actions"
+import {
+	ShowOnlyBuildingsWithEdgesAction,
+	ShowOnlyBuildingsWithEdgesActions
+} from "./showOnlyBuildingsWithEdges.actions"
 import { ShowOnlyBuildingsWithEdgesService } from "./showOnlyBuildingsWithEdges.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 
@@ -46,7 +49,9 @@ describe("ShowOnlyBuildingsWithEdgesService", () => {
 			}
 			storeService["store"].dispatch(action)
 
-			showOnlyBuildingsWithEdgesService.onStoreChanged(ShowOnlyBuildingsWithEdgesActions.SET_SHOW_ONLY_BUILDINGS_WITH_EDGES)
+			showOnlyBuildingsWithEdgesService.onStoreChanged(
+				ShowOnlyBuildingsWithEdgesActions.SET_SHOW_ONLY_BUILDINGS_WITH_EDGES
+			)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-only-buildings-with-edges-changed", {
 				showOnlyBuildingsWithEdges: true

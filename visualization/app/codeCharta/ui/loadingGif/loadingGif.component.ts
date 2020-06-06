@@ -1,7 +1,13 @@
 import "./loadingGif.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { IsLoadingFileService, IsLoadingFileSubscriber } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
-import { IsLoadingMapService, IsLoadingMapSubscriber } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.service"
+import {
+	IsLoadingFileService,
+	IsLoadingFileSubscriber
+} from "../../state/store/appSettings/isLoadingFile/isLoadingFile.service"
+import {
+	IsLoadingMapService,
+	IsLoadingMapSubscriber
+} from "../../state/store/appSettings/isLoadingMap/isLoadingMap.service"
 
 export class LoadingGifController implements IsLoadingFileSubscriber, IsLoadingMapSubscriber {
 	private _viewModel: {

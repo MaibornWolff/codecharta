@@ -15,11 +15,15 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): 
 					fromNodeName: withUpdatedPath
 						? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.fromNodeName)
 						: oldEdge.fromNodeName,
-					toNodeName: withUpdatedPath ? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName) : oldEdge.toNodeName,
+					toNodeName: withUpdatedPath
+						? getUpdatedPath(inputFile.fileMeta.fileName, oldEdge.toNodeName)
+						: oldEdge.toNodeName,
 					attributes: oldEdge.attributes,
 					visible: oldEdge.visible
 				}
-				const equalEdgeItem = edges.find(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
+				const equalEdgeItem = edges.find(
+					e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName
+				)
 
 				if (equalEdgeItem) {
 					for (const key in edge.attributes) {

@@ -6,7 +6,10 @@ import { setSearchPattern } from "../../state/store/dynamicSettings/searchPatter
 import _ from "lodash"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
+import {
+	SearchPatternService,
+	SearchPatternSubscriber
+} from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
 
 export class SearchBarController implements BlacklistSubscriber, SearchPatternSubscriber {
 	private static DEBOUNCE_TIME = 400

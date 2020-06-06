@@ -5,7 +5,10 @@ import { CodeMapHelper } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 import { StoreService } from "./store.service"
 import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { SearchPatternService, SearchPatternSubscriber } from "./store/dynamicSettings/searchPattern/searchPattern.service"
+import {
+	SearchPatternService,
+	SearchPatternSubscriber
+} from "./store/dynamicSettings/searchPattern/searchPattern.service"
 
 export interface NodeSearchSubscriber {
 	onNodeSearchComplete(searchedNodes: CodeMapNode[])

@@ -1,6 +1,9 @@
 import { StoreService } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { CodeMapPreRenderService, CodeMapPreRenderServiceSubscriber } from "../../../../ui/codeMap/codeMap.preRender.service"
+import {
+	CodeMapPreRenderService,
+	CodeMapPreRenderServiceSubscriber
+} from "../../../../ui/codeMap/codeMap.preRender.service"
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { hierarchy } from "d3"
 import { setIdToNode } from "./idToNode.actions"

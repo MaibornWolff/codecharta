@@ -25,14 +25,20 @@ export class ResetCameraIfNewFileIsLoadedService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(ResetCameraIfNewFileIsLoadedService.RESET_CAMERA_IF_NEW_FILE_IS_LOADED_CHANGED_EVENT, {
-			resetCameraIfNewFileIsLoaded: newState
-		})
+		this.$rootScope.$broadcast(
+			ResetCameraIfNewFileIsLoadedService.RESET_CAMERA_IF_NEW_FILE_IS_LOADED_CHANGED_EVENT,
+			{
+				resetCameraIfNewFileIsLoaded: newState
+			}
+		)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: ResetCameraIfNewFileIsLoadedSubscriber) {
-		$rootScope.$on(ResetCameraIfNewFileIsLoadedService.RESET_CAMERA_IF_NEW_FILE_IS_LOADED_CHANGED_EVENT, (event, data) => {
-			subscriber.onResetCameraIfNewFileIsLoadedChanged(data.resetCameraIfNewFileIsLoaded)
-		})
+		$rootScope.$on(
+			ResetCameraIfNewFileIsLoadedService.RESET_CAMERA_IF_NEW_FILE_IS_LOADED_CHANGED_EVENT,
+			(event, data) => {
+				subscriber.onResetCameraIfNewFileIsLoadedChanged(data.resetCameraIfNewFileIsLoaded)
+			}
+		)
 	}
 }

@@ -28,7 +28,11 @@ describe("ScenarioDropDownController", () => {
 		storeService = getService<StoreService>("storeService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
-		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
+		metricData = [
+			{ name: "rloc", maxValue: 999999 },
+			{ name: "functions", maxValue: 999999 },
+			{ name: "mcc", maxValue: 999999 }
+		]
 	}
 
 	function withMockedThreeOrbitControlsService() {

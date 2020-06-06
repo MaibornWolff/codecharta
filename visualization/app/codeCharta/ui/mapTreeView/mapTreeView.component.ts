@@ -6,12 +6,16 @@ import {
 	SortingOrderAscendingService,
 	SortingOrderAscendingSubscriber
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
-import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
+import {
+	SortingOptionService,
+	SortingOptionSubscriber
+} from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import { MetricService } from "../../state/metric.service"
 
 const clone = require("rfdc")()
 
-export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
+export class MapTreeViewController
+	implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
 	private _viewModel: {
 		rootNode: CodeMapNode
 	} = {
@@ -19,7 +23,11 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
+		private storeService: StoreService
+	) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 		SortingOptionService.subscribe(this.$rootScope, this)
 		SortingOrderAscendingService.subscribe(this.$rootScope, this)
@@ -33,7 +41,11 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 				false
 			)
 		} else {
-			this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? -1 : 1), false)
+			this._viewModel.rootNode = this.applySortOrderChange(
+				this._viewModel.rootNode,
+				(a, b) => (b.name > a.name ? -1 : 1),
+				false
+			)
 		}
 	}
 
@@ -52,7 +64,11 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
 
-	private applySortOrderChange(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number, reverse: boolean) {
+	private applySortOrderChange(
+		node: CodeMapNode,
+		compareFn: (a: CodeMapNode, b: CodeMapNode) => number,
+		reverse: boolean
+	) {
 		if (!node) {
 			return
 		}

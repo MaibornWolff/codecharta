@@ -27,7 +27,9 @@ export function isSingleState(fileStates: FileState[]): boolean {
 }
 
 export function isDeltaState(fileStates: FileState[]): boolean {
-	return fileStates.some(x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison)
+	return fileStates.some(
+		x => x.selectedAs === FileSelectionState.Reference || x.selectedAs === FileSelectionState.Comparison
+	)
 }
 
 export function isPartialState(fileStates: FileState[]): boolean {

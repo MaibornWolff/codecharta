@@ -25,7 +25,12 @@ export class FileDownloader {
 		downloadSettingsNames: string[],
 		fileName: string
 	) {
-		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
+		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(
+			map,
+			fileMeta,
+			fileSettings,
+			downloadSettingsNames
+		)
 		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
@@ -41,8 +46,12 @@ export class FileDownloader {
 			apiVersion: fileMeta.apiVersion,
 			nodes: [this.undecorateMap(map)],
 			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
-			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? this.undecorateEdges(fileSettings.edges) : [],
-			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages) ? fileSettings.markedPackages : [],
+			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges)
+				? this.undecorateEdges(fileSettings.edges)
+				: [],
+			markedPackages: downloadSettingsNames.includes(DownloadCheckboxNames.markedPackages)
+				? fileSettings.markedPackages
+				: [],
 			blacklist: this.getBlacklistToDownload(downloadSettingsNames, fileSettings.blacklist)
 		}
 	}

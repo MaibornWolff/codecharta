@@ -41,7 +41,11 @@ export class ColorConverter {
 
 	public static colorToVector3(color: string): Vector3 {
 		const convertedColor = ColorConverter.convertHexToNumber(color)
-		return new Vector3(((convertedColor >> 16) & 0xff) / 255.0, ((convertedColor >> 8) & 0xff) / 255.0, (convertedColor & 0xff) / 255.0)
+		return new Vector3(
+			((convertedColor >> 16) & 0xff) / 255.0,
+			((convertedColor >> 8) & 0xff) / 255.0,
+			(convertedColor & 0xff) / 255.0
+		)
 	}
 
 	public static vector3ToRGB(vector: Vector3): Color {

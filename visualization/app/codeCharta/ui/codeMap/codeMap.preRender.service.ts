@@ -14,13 +14,22 @@ import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings
 import _ from "lodash"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import {
+	IsLoadingFileActions,
+	setIsLoadingFile
+} from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { SearchPanelModeActions } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { isActionOfType } from "../../util/reduxHelper"
 import { SortingOrderAscendingActions } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingOption/sortingOption.actions"
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
+import {
+	fileStatesAvailable,
+	getVisibleFileStates,
+	isDeltaState,
+	isPartialState,
+	isSingleState
+} from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
 const clone = require("rfdc")()
 
@@ -99,7 +108,12 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private decorateIfPossible() {
 		const state = this.storeService.getState()
-		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && this.metricService.getMetricData()) {
+		if (
+			this.unifiedMap &&
+			fileStatesAvailable(state.files) &&
+			this.unifiedFileMeta &&
+			this.metricService.getMetricData()
+		) {
 			NodeDecorator.decorateMap(this.unifiedMap, this.metricService.getMetricData(), state.fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(

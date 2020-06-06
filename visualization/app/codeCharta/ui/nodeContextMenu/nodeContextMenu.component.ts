@@ -16,7 +16,8 @@ export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
 }
 
-export class NodeContextMenuController implements BuildingRightClickedEventSubscriber, ShowNodeContextMenuSubscriber, MapColorsSubscriber {
+export class NodeContextMenuController
+	implements BuildingRightClickedEventSubscriber, ShowNodeContextMenuSubscriber, MapColorsSubscriber {
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
 
 	private _viewModel: {
@@ -54,7 +55,11 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	public onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
-		this._viewModel.codeMapNode = CodeMapHelper.getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
+		this._viewModel.codeMapNode = CodeMapHelper.getCodeMapNodeFromPath(
+			path,
+			nodeType,
+			this.codeMapPreRenderService.getRenderMap()
+		)
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
 		this.synchronizeAngularTwoWayBinding()
@@ -124,7 +129,9 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	private isNodeMarked(): boolean {
-		return this.storeService.getState().fileSettings.markedPackages.some(mp => mp.path == this._viewModel.codeMapNode.path)
+		return this.storeService
+			.getState()
+			.fileSettings.markedPackages.some(mp => mp.path == this._viewModel.codeMapNode.path)
 	}
 
 	private packageMatchesColor(color: string): boolean {
@@ -166,7 +173,11 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	}
 
 	public nodeIsFolder() {
-		return this._viewModel.codeMapNode && this._viewModel.codeMapNode.children && this._viewModel.codeMapNode.children.length > 0
+		return (
+			this._viewModel.codeMapNode &&
+			this._viewModel.codeMapNode.children &&
+			this._viewModel.codeMapNode.children.length > 0
+		)
 	}
 
 	private synchronizeAngularTwoWayBinding() {
@@ -182,7 +193,10 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 		})
 	}
 
-	public static subscribeToShowNodeContextMenu($rootScope: IRootScopeService, subscriber: ShowNodeContextMenuSubscriber) {
+	public static subscribeToShowNodeContextMenu(
+		$rootScope: IRootScopeService,
+		subscriber: ShowNodeContextMenuSubscriber
+	) {
 		$rootScope.$on(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, (event, data) => {
 			subscriber.onShowNodeContextMenu(data.path, data.type, data.x, data.y)
 		})

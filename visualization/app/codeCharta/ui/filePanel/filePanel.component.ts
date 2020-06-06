@@ -3,7 +3,13 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setDeltaByNames, setMultipleByNames, setSingleByName } from "../../state/store/files/files.actions"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
-import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
+import {
+	fileStatesAvailable,
+	getVisibleFileStates,
+	isDeltaState,
+	isPartialState,
+	isSingleState
+} from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
 
 interface SelectedFileNames {
@@ -101,11 +107,15 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	}
 
 	public onDeltaReferenceFileChange(referenceFileName: string) {
-		this.storeService.dispatch(setDeltaByNames(referenceFileName, this._viewModel.selectedFileNames.delta.comparison))
+		this.storeService.dispatch(
+			setDeltaByNames(referenceFileName, this._viewModel.selectedFileNames.delta.comparison)
+		)
 	}
 
 	public onDeltaComparisonFileChange(comparisonFileName: string) {
-		this.storeService.dispatch(setDeltaByNames(this._viewModel.selectedFileNames.delta.reference, comparisonFileName))
+		this.storeService.dispatch(
+			setDeltaByNames(this._viewModel.selectedFileNames.delta.reference, comparisonFileName)
+		)
 	}
 
 	public onPartialFilesChange(partialFileNames: string[]) {

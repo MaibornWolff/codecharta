@@ -56,7 +56,11 @@ describe("FileExtensionCalculator", () => {
 		})
 
 		it("should get correct absolute distribution of file-extensions for given metric with excluded path", () => {
-			setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, BlacklistType.exclude)
+			setIsBlacklisted(
+				["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"],
+				map,
+				BlacklistType.exclude
+			)
 
 			const expected: MetricDistribution[] = [
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },

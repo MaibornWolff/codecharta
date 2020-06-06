@@ -83,7 +83,9 @@ describe("MapTreeViewController", () => {
 
 			mapTreeViewController.onSortingOptionChanged(sortingOption)
 
-			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY)
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(
+				VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
+			)
 		})
 
 		it("should sort folder structure according to name", () => {
@@ -92,7 +94,9 @@ describe("MapTreeViewController", () => {
 
 			mapTreeViewController.onSortingOptionChanged(sortingOption)
 
-			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME)
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(
+				VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME
+			)
 		})
 	})
 
@@ -105,7 +109,9 @@ describe("MapTreeViewController", () => {
 			mapTreeViewController.onRenderMapChanged(testNode)
 			$timeout.flush(100)
 
-			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME)
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(
+				VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME
+			)
 		})
 	})
 })

@@ -192,7 +192,10 @@ describe("codeMapRenderService", () => {
 
 			codeMapRenderService["setArrows"](sortedNodes)
 
-			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalledWith(sortedNodes, storeService.getState().fileSettings.edges)
+			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalledWith(
+				sortedNodes,
+				storeService.getState().fileSettings.edges
+			)
 		})
 	})
 })

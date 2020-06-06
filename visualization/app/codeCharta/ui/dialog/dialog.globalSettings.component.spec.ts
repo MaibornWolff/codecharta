@@ -56,7 +56,10 @@ describe("DialogGlobalSettingsController", () => {
 
 			rebuildController()
 
-			expect(ResetCameraIfNewFileIsLoadedService.subscribe).toHaveBeenCalledWith($rootScope, dialogGlobalSettingsController)
+			expect(ResetCameraIfNewFileIsLoadedService.subscribe).toHaveBeenCalledWith(
+				$rootScope,
+				dialogGlobalSettingsController
+			)
 		})
 
 		it("should call initDialogOnClick", () => {

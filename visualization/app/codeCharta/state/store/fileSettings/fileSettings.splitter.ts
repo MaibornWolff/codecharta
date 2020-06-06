@@ -1,4 +1,12 @@
-import { RecursivePartial, CCAction, FileSettings, AttributeTypes, MarkedPackage, Edge, BlacklistItem } from "../../../codeCharta.model"
+import {
+	RecursivePartial,
+	CCAction,
+	FileSettings,
+	AttributeTypes,
+	MarkedPackage,
+	Edge,
+	BlacklistItem
+} from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
 import { splitMarkedPackagesAction } from "./markedPackages/markedPackages.splitter"

@@ -33,7 +33,10 @@ describe("attributeTypes", () => {
 
 	describe("Action: UPDATE_ATTRIBUTE_TYPE", () => {
 		it("should set new attributeType if not existing yet", () => {
-			const result = attributeTypes(defaultValue, updateAttributeType("edges", "foo", AttributeTypeValue.relative))
+			const result = attributeTypes(
+				defaultValue,
+				updateAttributeType("edges", "foo", AttributeTypeValue.relative)
+			)
 
 			expect(result).toEqual({ nodes: {}, edges: { foo: AttributeTypeValue.relative } })
 		})
@@ -48,7 +51,10 @@ describe("attributeTypes", () => {
 				edges: { foo: AttributeTypeValue.relative, bar: AttributeTypeValue.absolute }
 			}
 
-			const result = attributeTypes(currentState, updateAttributeType("edges", "foo", AttributeTypeValue.relative))
+			const result = attributeTypes(
+				currentState,
+				updateAttributeType("edges", "foo", AttributeTypeValue.relative)
+			)
 
 			expect(result).toEqual(expected)
 		})

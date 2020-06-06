@@ -3,7 +3,11 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { DistributionMetricService } from "./distributionMetric.service"
-import { DistributionMetricAction, DistributionMetricActions, setDistributionMetric } from "./distributionMetric.actions"
+import {
+	DistributionMetricAction,
+	DistributionMetricActions,
+	setDistributionMetric
+} from "./distributionMetric.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { MetricService } from "../../../metric.service"
 
@@ -86,7 +90,10 @@ describe("DistributionMetricService", () => {
 		it("should not update if current distributionMetric is available", () => {
 			storeService.dispatch(setDistributionMetric("mcc"))
 			storeService.dispatch = jest.fn()
-			const metricData = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
+			const metricData = [
+				{ name: "mcc", maxValue: 1 },
+				{ name: "rloc", maxValue: 2 }
+			]
 
 			distributionMetricService.onMetricDataAdded(metricData)
 

@@ -34,7 +34,10 @@ describe("IdToBuildingService", () => {
 
 			rebuildService()
 
-			expect(ThreeSceneService.subscribeToCodeMapMeshChangedEvent).toHaveBeenCalledWith($rootScope, idToBuildingService)
+			expect(ThreeSceneService.subscribeToCodeMapMeshChangedEvent).toHaveBeenCalledWith(
+				$rootScope,
+				idToBuildingService
+			)
 		})
 	})
 })

@@ -179,7 +179,9 @@ describe("codeChartaService", () => {
 				])
 				.then(() => {
 					const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
-					expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
+					expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(
+						blacklist
+					)
 					done()
 				})
 		})

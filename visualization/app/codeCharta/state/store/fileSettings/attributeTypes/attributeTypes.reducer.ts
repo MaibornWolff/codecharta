@@ -1,8 +1,16 @@
-import { AttributeTypesAction, AttributeTypesActions, setAttributeTypes, UpdateAttributeTypeAction } from "./attributeTypes.actions"
+import {
+	AttributeTypesAction,
+	AttributeTypesActions,
+	setAttributeTypes,
+	UpdateAttributeTypeAction
+} from "./attributeTypes.actions"
 import { AttributeTypes } from "../../../../codeCharta.model"
 const clone = require("rfdc")()
 
-export function attributeTypes(state: AttributeTypes = setAttributeTypes().payload, action: AttributeTypesAction): AttributeTypes {
+export function attributeTypes(
+	state: AttributeTypes = setAttributeTypes().payload,
+	action: AttributeTypesAction
+): AttributeTypes {
 	switch (action.type) {
 		case AttributeTypesActions.SET_ATTRIBUTE_TYPES:
 			return clone(action.payload)
@@ -14,5 +22,8 @@ export function attributeTypes(state: AttributeTypes = setAttributeTypes().paylo
 }
 
 function updateAttributeType(state: AttributeTypes, action: UpdateAttributeTypeAction): AttributeTypes {
-	return { ...state, [action.payload.category]: { ...state[action.payload.category], [action.payload.name]: action.payload.type } }
+	return {
+		...state,
+		[action.payload.category]: { ...state[action.payload.category], [action.payload.name]: action.payload.type }
+	}
 }

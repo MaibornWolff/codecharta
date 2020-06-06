@@ -24,7 +24,9 @@ export interface SetDynamicSettingsAction extends CCAction {
 
 export type DynamicSettingsAction = SetDynamicSettingsAction
 
-export function setDynamicSettings(dynamicSettings: RecursivePartial<DynamicSettings> = defaultDynamicSettings): DynamicSettingsAction {
+export function setDynamicSettings(
+	dynamicSettings: RecursivePartial<DynamicSettings> = defaultDynamicSettings
+): DynamicSettingsAction {
 	return {
 		type: DynamicSettingsActions.SET_DYNAMIC_SETTINGS,
 		payload: dynamicSettings

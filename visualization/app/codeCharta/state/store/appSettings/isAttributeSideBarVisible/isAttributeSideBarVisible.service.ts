@@ -1,6 +1,10 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
-import { closeAttributeSideBar, IsAttributeSideBarVisibleActions, openAttributeSideBar } from "./isAttributeSideBarVisible.actions"
+import {
+	closeAttributeSideBar,
+	IsAttributeSideBarVisibleActions,
+	openAttributeSideBar
+} from "./isAttributeSideBarVisible.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
 import {

@@ -49,7 +49,16 @@ export class BoxGeometryGenerationHelper {
 		const positions: THREE.Vector3[] = new Array<THREE.Vector3>()
 
 		BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs)
-		BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIdx, positions, uvs, data)
+		BoxGeometryGenerationHelper.createVerticesAndFaces(
+			minPos,
+			maxPos,
+			color,
+			delta,
+			subGeomIdx,
+			positions,
+			uvs,
+			data
+		)
 	}
 	private static createPositionsUVs(
 		minPos: THREE.Vector3,
@@ -58,30 +67,78 @@ export class BoxGeometryGenerationHelper {
 		uvs: THREE.Vector2[]
 	): void {
 		//Left Vertices
-		positions[sides.left * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(minPos.x, minPos.y, minPos.z)
-		positions[sides.left * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(minPos.x, maxPos.y, minPos.z)
-		positions[sides.left * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(minPos.x, maxPos.y, maxPos.z)
-		positions[sides.left * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(minPos.x, minPos.y, maxPos.z)
+		positions[sides.left * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(
+			minPos.x,
+			minPos.y,
+			minPos.z
+		)
+		positions[sides.left * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(
+			minPos.x,
+			maxPos.y,
+			minPos.z
+		)
+		positions[sides.left * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(
+			minPos.x,
+			maxPos.y,
+			maxPos.z
+		)
+		positions[sides.left * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(
+			minPos.x,
+			minPos.y,
+			maxPos.z
+		)
 		uvs[sides.left * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector2(1.0, 0.0)
 		uvs[sides.left * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector2(1.0, 1.0)
 		uvs[sides.left * verticesPerSide + vertexLocation.topRight] = new THREE.Vector2(0.0, 1.0)
 		uvs[sides.left * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector2(0.0, 0.0)
 
 		//Bottom Vertices
-		positions[sides.bottom * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(minPos.x, minPos.y, minPos.z)
-		positions[sides.bottom * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(minPos.x, minPos.y, maxPos.z)
-		positions[sides.bottom * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(maxPos.x, minPos.y, maxPos.z)
-		positions[sides.bottom * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(maxPos.x, minPos.y, minPos.z)
+		positions[sides.bottom * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(
+			minPos.x,
+			minPos.y,
+			minPos.z
+		)
+		positions[sides.bottom * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(
+			minPos.x,
+			minPos.y,
+			maxPos.z
+		)
+		positions[sides.bottom * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(
+			maxPos.x,
+			minPos.y,
+			maxPos.z
+		)
+		positions[sides.bottom * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(
+			maxPos.x,
+			minPos.y,
+			minPos.z
+		)
 		uvs[sides.bottom * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector2(0.0, 1.0)
 		uvs[sides.bottom * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector2(1.0, 1.0)
 		uvs[sides.bottom * verticesPerSide + vertexLocation.topRight] = new THREE.Vector2(1.0, 0.0)
 		uvs[sides.bottom * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector2(0.0, 0.0)
 
 		//Back Vertices
-		positions[sides.back * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(maxPos.x, minPos.y, maxPos.z)
-		positions[sides.back * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(minPos.x, minPos.y, maxPos.z)
-		positions[sides.back * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(minPos.x, maxPos.y, maxPos.z)
-		positions[sides.back * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(maxPos.x, maxPos.y, maxPos.z)
+		positions[sides.back * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(
+			maxPos.x,
+			minPos.y,
+			maxPos.z
+		)
+		positions[sides.back * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(
+			minPos.x,
+			minPos.y,
+			maxPos.z
+		)
+		positions[sides.back * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(
+			minPos.x,
+			maxPos.y,
+			maxPos.z
+		)
+		positions[sides.back * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(
+			maxPos.x,
+			maxPos.y,
+			maxPos.z
+		)
 		uvs[sides.back * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector2(0.0, 0.0)
 		uvs[sides.back * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector2(1.0, 0.0)
 		uvs[sides.back * verticesPerSide + vertexLocation.topRight] = new THREE.Vector2(1.0, 1.0)

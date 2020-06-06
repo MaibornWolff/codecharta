@@ -11,7 +11,9 @@ export interface SetHideFlatBuildingsAction extends CCAction {
 
 export type HideFlatBuildingsAction = SetHideFlatBuildingsAction
 
-export function setHideFlatBuildings(hideFlatBuildings: boolean = defaultHideFlatBuildings): SetHideFlatBuildingsAction {
+export function setHideFlatBuildings(
+	hideFlatBuildings: boolean = defaultHideFlatBuildings
+): SetHideFlatBuildingsAction {
 	return {
 		type: HideFlatBuildingsActions.SET_HIDE_FLAT_BUILDINGS,
 		payload: hideFlatBuildings

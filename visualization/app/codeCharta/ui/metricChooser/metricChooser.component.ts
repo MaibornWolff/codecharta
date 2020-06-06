@@ -8,16 +8,30 @@ import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/area
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
 import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
 import { setColorMetric } from "../../state/store/dynamicSettings/colorMetric/colorMetric.actions"
-import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
-import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
-import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import {
+	AreaMetricService,
+	AreaMetricSubscriber
+} from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import {
+	HeightMetricService,
+	HeightMetricSubscriber
+} from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import {
+	ColorMetricService,
+	ColorMetricSubscriber
+} from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import {
 	DistributionMetricService,
 	DistributionMetricSubscriber
 } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
 
 export class MetricChooserController
-	implements MetricServiceSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
+	implements
+		MetricServiceSubscriber,
+		AreaMetricSubscriber,
+		HeightMetricSubscriber,
+		ColorMetricSubscriber,
+		DistributionMetricSubscriber {
 	private originalMetricData: MetricData[]
 
 	private _viewModel: {
@@ -37,7 +51,11 @@ export class MetricChooserController
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private $timeout: ITimeoutService, private storeService: StoreService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private $timeout: ITimeoutService,
+		private storeService: StoreService
+	) {
 		AreaMetricService.subscribe(this.$rootScope, this)
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)

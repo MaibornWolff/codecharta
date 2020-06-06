@@ -33,7 +33,10 @@ describe("UnfocusButtonController", () => {
 
 			rebuildController()
 
-			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, unfocusButtonController)
+			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith(
+				$rootScope,
+				unfocusButtonController
+			)
 		})
 	})
 

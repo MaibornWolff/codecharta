@@ -73,11 +73,15 @@ describe("ThreeViewerService", () => {
 	}
 
 	function withMockedThreeRendererService() {
-		threeRendererService = threeViewerService["threeRendererService"] = jest.fn().mockReturnValue({ init: jest.fn() })()
+		threeRendererService = threeViewerService["threeRendererService"] = jest
+			.fn()
+			.mockReturnValue({ init: jest.fn() })()
 	}
 
 	function withMockedThreeOrbitControlsService() {
-		threeOrbitControlsService = threeViewerService["threeOrbitControlsService"] = jest.fn().mockReturnValue({ init: jest.fn() })()
+		threeOrbitControlsService = threeViewerService["threeOrbitControlsService"] = jest
+			.fn()
+			.mockReturnValue({ init: jest.fn() })()
 	}
 
 	afterEach(() => {
@@ -214,7 +218,10 @@ describe("ThreeViewerService", () => {
 		it("should call renderer.render", () => {
 			threeViewerService.animate()
 
-			expect(threeRendererService.renderer.render).toHaveBeenCalledWith(threeSceneService.scene, threeCameraService.camera)
+			expect(threeRendererService.renderer.render).toHaveBeenCalledWith(
+				threeSceneService.scene,
+				threeCameraService.camera
+			)
 		})
 
 		it("should call controls.update", () => {

@@ -937,7 +937,10 @@ export const TEST_DELTA_MAP_B: CCFile = {
 export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
-	blacklist: [{ path: "/root/bigLeaf.ts", type: "hide" }, { path: "/root/sample1OnlyLeaf.scss", type: "exclude" }],
+	blacklist: [
+		{ path: "/root/bigLeaf.ts", type: "hide" },
+		{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
+	],
 	edges: [
 		{
 			attributes: {
@@ -1271,7 +1274,10 @@ export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
 	DEFAULT_STATE.appSettings.mapColors.neutral
 )
 
-export const METRIC_DATA: MetricData[] = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
+export const METRIC_DATA: MetricData[] = [
+	{ name: "mcc", maxValue: 1 },
+	{ name: "rloc", maxValue: 2 }
+]
 
 export const BLACKLIST: BlacklistItem[] = [
 	{

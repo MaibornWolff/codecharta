@@ -11,10 +11,7 @@ export class ResetSettingsButtonController {
 	constructor(private storeService: StoreService) {}
 
 	public applyDefaultSettings() {
-		const tokens: string[] = this.settingsNames
-			.replace(/ /g, "")
-			.replace(/\n/g, "")
-			.split(",")
+		const tokens: string[] = this.settingsNames.replace(/ /g, "").replace(/\n/g, "").split(",")
 		const updatedSettings: RecursivePartial<Settings> = {}
 
 		tokens.forEach(token => {

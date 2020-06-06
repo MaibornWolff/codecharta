@@ -53,7 +53,8 @@ export const PLOP_REDUX_FILE_ACTIONS = [
 	modifyFileAction({
 		path: "state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.splitter.ts",
 		pattern: /(\/\/ Plop: Append action splitter import here)/gi,
-		template: '$1\r\nimport { split{{properCase name}}Action } from "./{{camelCase name}}/{{camelCase name}}.splitter"'
+		template:
+			'$1\r\nimport { split{{properCase name}}Action } from "./{{camelCase name}}/{{camelCase name}}.splitter"'
 	}),
 	modifyFileAction({
 		path: "state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.splitter.ts",
@@ -64,7 +65,8 @@ export const PLOP_REDUX_FILE_ACTIONS = [
 	modifyFileAction({
 		path: "state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.reducer.ts",
 		pattern: /(\/\/ Plop: Append action forwarding here)/gi,
-		template: "$1\r\n\t\t{{camelCase name}}: {{camelCase name}}(state.{{camelCase name}}, {{camelCase name}}Action),"
+		template:
+			"$1\r\n\t\t{{camelCase name}}: {{camelCase name}}(state.{{camelCase name}}, {{camelCase name}}Action),"
 	}),
 	modifyFileAction({
 		path: "state/store/{{camelCase subreducer}}/{{camelCase subreducer}}.actions.ts",

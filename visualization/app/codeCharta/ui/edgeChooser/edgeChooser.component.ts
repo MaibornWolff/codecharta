@@ -3,15 +3,26 @@ import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
+import {
+	CodeMapMouseEventService,
+	BuildingHoveredSubscriber,
+	BuildingUnhoveredSubscriber
+} from "../codeMap/codeMap.mouseEvent.service"
 import $ from "jquery"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
-import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import {
+	EdgeMetricService,
+	EdgeMetricSubscriber
+} from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 
 export class EdgeChooserController
-	implements EdgeMetricDataServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+	implements
+		EdgeMetricDataServiceSubscriber,
+		EdgeMetricSubscriber,
+		BuildingHoveredSubscriber,
+		BuildingUnhoveredSubscriber {
 	private originalEdgeMetricData: MetricData[]
 
 	private _viewModel: {

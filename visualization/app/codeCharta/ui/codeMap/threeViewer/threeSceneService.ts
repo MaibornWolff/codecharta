@@ -182,19 +182,28 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.$rootScope.$broadcast(ThreeSceneService.CODE_MAP_MESH_CHANGED_EVENT, this.mapMesh)
 	}
 
-	public static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
+	public static subscribeToBuildingDeselectedEvents(
+		$rootScope: IRootScopeService,
+		subscriber: BuildingDeselectedEventSubscriber
+	) {
 		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, e => {
 			subscriber.onBuildingDeselected()
 		})
 	}
 
-	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
+	public static subscribeToBuildingSelectedEvents(
+		$rootScope: IRootScopeService,
+		subscriber: BuildingSelectedEventSubscriber
+	) {
 		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, selectedBuilding: CodeMapBuilding) => {
 			subscriber.onBuildingSelected(selectedBuilding)
 		})
 	}
 
-	public static subscribeToCodeMapMeshChangedEvent($rootScope: IRootScopeService, subscriber: CodeMapMeshChangedSubscriber) {
+	public static subscribeToCodeMapMeshChangedEvent(
+		$rootScope: IRootScopeService,
+		subscriber: CodeMapMeshChangedSubscriber
+	) {
 		$rootScope.$on(this.CODE_MAP_MESH_CHANGED_EVENT, (e, mapMesh: CodeMapMesh) => {
 			subscriber.onCodeMapMeshChanged(mapMesh)
 		})

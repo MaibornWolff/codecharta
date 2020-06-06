@@ -24,7 +24,9 @@ describe("codecharta", () => {
 	async function handleErrorDialog() {
 		const dialogErrorPageObject = new DialogErrorPageObject(page)
 		const msg = await dialogErrorPageObject.getMessage()
-		expect(msg).toEqual("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.")
+		expect(msg).toEqual(
+			"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
+		)
 		await page.waitFor(2000)
 		return dialogErrorPageObject.clickOk()
 	}

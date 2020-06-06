@@ -24,7 +24,11 @@ export function setAttributeTypes(attributeTypes: AttributeTypes = defaultAttrib
 	}
 }
 
-export function updateAttributeType(category: string, name: string, type: AttributeTypeValue): UpdateAttributeTypeAction {
+export function updateAttributeType(
+	category: string,
+	name: string,
+	type: AttributeTypeValue
+): UpdateAttributeTypeAction {
 	return {
 		type: AttributeTypesActions.UPDATE_ATTRIBUTE_TYPE,
 		payload: { category, name, type }

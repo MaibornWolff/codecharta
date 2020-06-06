@@ -39,7 +39,9 @@ describe("AttributeSideBarController", () => {
 	}
 
 	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = attributeSideBarController["codeMapPreRenderService"] = jest.fn<CodeMapPreRenderService>(() => {
+		codeMapPreRenderService = attributeSideBarController["codeMapPreRenderService"] = jest.fn<
+			CodeMapPreRenderService
+		>(() => {
 			return {
 				getRenderFileMeta: jest.fn().mockReturnValue({ fileName: "my_fileName" })
 			}
@@ -52,7 +54,10 @@ describe("AttributeSideBarController", () => {
 
 			rebuildController()
 
-			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith(
+				$rootScope,
+				attributeSideBarController
+			)
 		})
 
 		it("should subscribe to AreaMetricService", () => {
@@ -92,7 +97,10 @@ describe("AttributeSideBarController", () => {
 
 			rebuildController()
 
-			expect(IsAttributeSideBarVisibleService.subscribe).toHaveBeenCalledWith($rootScope, attributeSideBarController)
+			expect(IsAttributeSideBarVisibleService.subscribe).toHaveBeenCalledWith(
+				$rootScope,
+				attributeSideBarController
+			)
 		})
 	})
 

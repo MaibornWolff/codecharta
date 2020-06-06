@@ -18,10 +18,17 @@ import {
 	ShowOnlyBuildingsWithEdgesService,
 	ShowOnlyBuildingsWithEdgesSubscriber
 } from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
-import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import {
+	EdgeMetricService,
+	EdgeMetricSubscriber
+} from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 
 export class EdgeSettingsPanelController
-	implements EdgeMetricSubscriber, AmountOfEdgePreviewsSubscriber, EdgeHeightSubscriber, ShowOnlyBuildingsWithEdgesSubscriber {
+	implements
+		EdgeMetricSubscriber,
+		AmountOfEdgePreviewsSubscriber,
+		EdgeHeightSubscriber,
+		ShowOnlyBuildingsWithEdgesSubscriber {
 	private _viewModel: {
 		amountOfEdgePreviews: number
 		totalAffectedBuildings: number

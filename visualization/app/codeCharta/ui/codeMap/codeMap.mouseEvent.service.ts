@@ -3,7 +3,10 @@ import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { IRootScopeService, IWindowService } from "angular"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import $ from "jquery"
-import { ViewCubeEventPropagationSubscriber, ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
+import {
+	ViewCubeEventPropagationSubscriber,
+	ViewCubeMouseEventsService
+} from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapNode, BlacklistItem } from "../../codeCharta.model"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
@@ -39,7 +42,11 @@ export enum ClickType {
 }
 
 export class CodeMapMouseEventService
-	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
+	implements
+		MapTreeViewHoverEventSubscriber,
+		ViewCubeEventPropagationSubscriber,
+		FilesSelectionSubscriber,
+		BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
@@ -68,9 +75,13 @@ export class CodeMapMouseEventService
 	}
 
 	public start() {
-		this.threeRendererService.renderer.domElement.addEventListener("mousemove", () => this.onDocumentMouseMove(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mousemove", () =>
+			this.onDocumentMouseMove(event)
+		)
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", () => this.onDocumentMouseUp())
-		this.threeRendererService.renderer.domElement.addEventListener("mousedown", () => this.onDocumentMouseDown(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mousedown", () =>
+			this.onDocumentMouseDown(event)
+		)
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
@@ -99,7 +110,10 @@ export class CodeMapMouseEventService
 	public onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
 		if (selectedBuilding) {
-			const isSelectedBuildingBlacklisted = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
+			const isSelectedBuildingBlacklisted = CodeMapHelper.isPathHiddenOrExcluded(
+				selectedBuilding.node.path,
+				blacklist
+			)
 
 			if (isSelectedBuildingBlacklisted) {
 				this.threeSceneService.clearSelection()
@@ -239,7 +253,10 @@ export class CodeMapMouseEventService
 		})
 	}
 
-	public static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
+	public static subscribeToBuildingRightClickedEvents(
+		$rootScope: IRootScopeService,
+		subscriber: BuildingRightClickedEventSubscriber
+	) {
 		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (e, data) => {
 			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
 		})

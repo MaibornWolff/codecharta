@@ -16,7 +16,9 @@ export class AggregationGenerator {
 
 		for (const inputFile of inputFiles) {
 			this.projectNameArray.push(inputFile.fileMeta.projectName.replace(" ", "_"))
-			this.fileNameArray.push(FileNameHelper.withoutCCJsonExtension(inputFile.fileMeta.fileName).replace(" ", "_"))
+			this.fileNameArray.push(
+				FileNameHelper.withoutCCJsonExtension(inputFile.fileMeta.fileName).replace(" ", "_")
+			)
 		}
 		return this.getNewAggregatedMap(inputFiles)
 	}

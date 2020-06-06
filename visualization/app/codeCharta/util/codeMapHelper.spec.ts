@@ -108,13 +108,19 @@ describe("codeMapHelper", () => {
 		it("should return the ignored leaf if parent folder is provided", () => {
 			const expected = [testRoot.children[1].children[1]]
 
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children[1].children, "/root/Parent Leaf/other small leaf")
+			const result = CodeMapHelper.getNodesByGitignorePath(
+				testRoot.children[1].children,
+				"/root/Parent Leaf/other small leaf"
+			)
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should return an empty array if no direct children are found with path", () => {
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children, "/root/Parent Leaf/other small leaf")
+			const result = CodeMapHelper.getNodesByGitignorePath(
+				testRoot.children,
+				"/root/Parent Leaf/other small leaf"
+			)
 
 			expect(result).toEqual([])
 		})
