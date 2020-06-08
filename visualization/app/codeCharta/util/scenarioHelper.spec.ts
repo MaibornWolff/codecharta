@@ -76,8 +76,8 @@ describe("scenarioHelper", () => {
 					icons: [
 						{ faIconClass: "fa-video-camera", isSaved: true },
 						{ faIconClass: "fa-arrows-alt", isSaved: true },
-						{ faIconClass: "fa-paint-brush", isSaved: true },
 						{ faIconClass: "fa-arrows-v", isSaved: true },
+						{ faIconClass: "fa-paint-brush", isSaved: true },
 						{ faIconClass: "fa-exchange", isSaved: true }
 					]
 				}
@@ -98,8 +98,8 @@ describe("scenarioHelper", () => {
 					icons: [
 						{ faIconClass: "fa-video-camera", isSaved: false },
 						{ faIconClass: "fa-arrows-alt", isSaved: false },
-						{ faIconClass: "fa-paint-brush", isSaved: false },
 						{ faIconClass: "fa-arrows-v", isSaved: true },
+						{ faIconClass: "fa-paint-brush", isSaved: false },
 						{ faIconClass: "fa-exchange", isSaved: false }
 					]
 				}

@@ -35,12 +35,12 @@ export class ScenarioHelper {
 						isSaved: !!scenario.area
 					},
 					{
-						faIconClass: "fa-paint-brush",
-						isSaved: !!scenario.color
-					},
-					{
 						faIconClass: "fa-arrows-v",
 						isSaved: !!scenario.height
+					},
+					{
+						faIconClass: "fa-paint-brush",
+						isSaved: !!scenario.color
 					},
 					{
 						faIconClass: "fa-exchange",
