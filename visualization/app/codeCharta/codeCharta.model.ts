@@ -197,7 +197,7 @@ export interface MetricData {
 
 export interface CCLocalStorage {
 	version: string
-	scenarios: RecursivePartial<Scenario>[]
+	scenarios: [String, RecursivePartial<Scenario>][]
 }
 
 export interface Scenario {

@@ -127,7 +127,7 @@ export class ScenarioHelper {
 	private static setScenariosToLocalStorage(scenarios: Map<String, RecursivePartial<Scenario>>) {
 		const newLocalStorageElement: CCLocalStorage = {
 			version: this.CC_LOCAL_STORAGE_VERSION,
-			scenarios: Object.fromEntries([...scenarios])
+			scenarios: [...scenarios]
 		}
 		localStorage.setItem("scenarios", JSON.stringify(newLocalStorageElement))
 	}
@@ -135,7 +135,7 @@ export class ScenarioHelper {
 	private static loadScenarios(): Map<String, RecursivePartial<Scenario>> {
 		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarios"))
 		if (ccLocalStorage) {
-			return new Map(Object.entries(ccLocalStorage.scenarios))
+			return new Map(ccLocalStorage.scenarios)
 		} else {
 			this.setScenariosToLocalStorage(this.getPreLoadScenarios())
 			return this.getPreLoadScenarios()
