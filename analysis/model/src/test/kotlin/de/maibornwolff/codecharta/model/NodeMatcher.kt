@@ -26,7 +26,7 @@ object NodeMatcher {
                && n1.attributes == n2.attributes
                && n1.children.size == n2.children.size
                && n1.children.indices
-                       .map { match(n1.children[it], n2.children[it]) }
+                       .map { match(n1.children.toMutableList()[it], n2.children.toMutableList()[it]) }
                        .fold(true) { x, y -> x && y }
     }
 

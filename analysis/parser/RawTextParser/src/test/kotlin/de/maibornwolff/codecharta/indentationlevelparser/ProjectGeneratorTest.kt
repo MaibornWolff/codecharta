@@ -21,7 +21,7 @@ class ProjectGeneratorTest {
         metricsMap["foo.java"] = FileMetrics().addMetric("barx", 42)
         val result = ByteArrayOutputStream()
 
-        ProjectGenerator(OutputStreamWriter(PrintStream(result))).generate(metricsMap, null)
+        ProjectGenerator(OutputStreamWriter(PrintStream(result)),expectedResultFile.absolutePath,false).generate(metricsMap, null)
 
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())
@@ -36,7 +36,7 @@ class ProjectGeneratorTest {
         metricsMap["foo.java"] = FileMetrics().addMetric("bar", 18)
         val result = ByteArrayOutputStream()
 
-        ProjectGenerator(OutputStreamWriter(PrintStream(result))).generate(metricsMap, pipedProject)
+        ProjectGenerator(OutputStreamWriter(PrintStream(result)), expectedResultFile.absolutePath, false).generate(metricsMap, pipedProject)
 
         val resultJSON = JsonParser().parse(result.toString())
         val expectedJson = JsonParser().parse(expectedResultFile.reader())

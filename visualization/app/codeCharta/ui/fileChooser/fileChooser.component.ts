@@ -26,15 +26,26 @@ export class FileChooserController {
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
 			this.storeService.dispatch(resetFiles())
+			let content
+
 			for (const file of element.files) {
+				const isCompressed = file.name.endsWith(".gz")
 				const reader = new FileReader()
 				reader.onloadstart = () => {
 					this.storeService.dispatch(setIsLoadingFile(true))
 				}
 				reader.onload = event => {
-					this.setNewData(file.name, (<any>event.target).result)
+					if (isCompressed) {
+						const zlib = require("zlib")
+
+						content = zlib.unzipSync(Buffer.from((<any>event.target).result))
+					} else {
+						content = (<any>event.target).result
+					}
+
+					this.setNewData(file.name, content)
 				}
-				reader.readAsText(file, "UTF-8")
+				isCompressed ? reader.readAsArrayBuffer(file) : reader.readAsText(file, "UTF-8")
 			}
 		})
 	}
@@ -42,7 +53,7 @@ export class FileChooserController {
 	public setNewData(fileName: string, content: string) {
 		const nameDataPair: NameDataPair = {
 			fileName,
-			content: this.getParsedContent(content)
+			content: FileChooserController.getParsedContent(content)
 		}
 
 		this.codeChartaService.loadFiles([nameDataPair]).catch((validationResult: CCValidationResult) => {
@@ -51,7 +62,7 @@ export class FileChooserController {
 		})
 	}
 
-	private getParsedContent(content: string): any {
+	private static getParsedContent(content: string): any {
 		try {
 			return JSON.parse(content)
 		} catch (error) {

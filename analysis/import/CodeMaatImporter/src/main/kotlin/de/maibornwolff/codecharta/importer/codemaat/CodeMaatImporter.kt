@@ -18,6 +18,9 @@ class CodeMaatImporter: Callable<Void> {
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["codemaat coupling csv files"])
     private var files: List<File> = mutableListOf()
 
@@ -32,7 +35,12 @@ class CodeMaatImporter: Callable<Void> {
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
-        ProjectSerializer.serializeProject(project, writer())
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,filePath) else   ProjectSerializer.serializeProject(project, writer())
+
+
+
 
         return null
     }

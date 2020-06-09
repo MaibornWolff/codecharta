@@ -49,7 +49,7 @@ class ProjectConverterTest {
         val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
 
         //then
-        assertThat(project.rootNode.children[0].attributes.containsKey("authors")).isTrue()
+        assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isTrue()
     }
 
     @Test
@@ -63,7 +63,7 @@ class ProjectConverterTest {
         val project = projectConverter.convert(Arrays.asList(file1), metricsFactory)
 
         //then
-        assertThat(project.rootNode.children[0].attributes.containsKey("authors")).isFalse()
+        assertThat(project.rootNode.children.toMutableList()[0].attributes.containsKey("authors")).isFalse()
     }
 
     @Test
