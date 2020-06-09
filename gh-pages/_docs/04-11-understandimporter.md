@@ -3,7 +3,7 @@ permalink: /docs/understandimporter
 title: "UnderstandImporter"
 ---
 
-Generates visualisation data from [SciTools Understand](https://scitools.com/features/) through its CSV export functionality.
+The Understandimporter generates visualisation data from [SciTools Understand](https://scitools.com/features/) through its CSV export functionality.
 
 ## Usage
 

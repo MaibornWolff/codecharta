@@ -3,7 +3,7 @@ permalink: /docs/codemaarimporter
 title: "CodeMaatImporter"
 ---
 
-Generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analysing tool on GitHub https://github.com/adamtornhill/code-maat
+The Codemaatimporter, generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analysing tool on [GitHub](https://github.com/adamtornhill/code-maat)
 
 ## Usage
 

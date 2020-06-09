@@ -3,14 +3,7 @@ permalink: /docs/source-code-parser
 title: "Source Code Parser"
 ---
 
----
-
-permalink: /docs/source-code-parser
-title: "Source Code Parser"
-
----
-
-A parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
+The Source-Code-Parser is parser to generate code metrics from a source code file or a project folder. It generates either a cc.json or a csv file.
 
 ## Supported languages
 

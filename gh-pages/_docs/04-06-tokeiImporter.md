@@ -3,13 +3,6 @@ permalink: /docs/tokei-importer
 title: "Tokei Importer"
 ---
 
----
-
-permalink: /docs/tokei-importer
-title: "Tokei Importer"
-
----
-
 [Tokei](https://github.com/XAMPPRocky/tokei) is a program that computes basic metrics for your code.
 It supports a large amount of different languages. The metrics provided are:
 
