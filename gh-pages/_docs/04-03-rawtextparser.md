@@ -52,5 +52,5 @@ ccsh rawtextparser foo.txt --maxIndentationLevel=6 tabWidth=4 --metrics=Indentat
 ccsh rawtextparser foo -o out.cc.json --exclude=*.html --exclude=bar
 ```
 
-If a project is piped into the SourceCodeParser, the results and the piped project are merged.
+If a project is piped into the [SourceCodeParser]({{site.baseurl}}{% link _docs/04-02-sourcecodeparser.md %}) , the results and the piped project are merged.
 The resulting project has the project name specified for the SourceCodeParser.

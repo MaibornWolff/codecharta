@@ -3,9 +3,7 @@ permalink: /docs/scm-log-parser
 title: "SCM Log Parser"
 ---
 
-# SCMLogParser
-
-Generates visualisation data from repository (Git or SVN) logs. It supports the following metrics per file:
+The SCM-Log-Parser generates visualisation data from repository (Git or SVN) logs. It supports the following metrics per file:
 
 | Metric                 | Description                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------------- |
@@ -48,7 +46,7 @@ See `ccsh -h` for help. Standard usage:
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
-If a project is piped into the SCMLogParser, the results and the piped project are merged.
+If a project is piped into the [SourceCodeParser]({{site.baseurl}}{% link _docs/04-02-sourcecodeparser.md %}), the results and the piped project are merged.
 The resulting project has the project name specified for the SCMLogParser.
 
 ### Example using Git

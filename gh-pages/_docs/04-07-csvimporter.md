@@ -3,14 +3,7 @@ permalink: /docs/csv-importer
 title: "CSV Importer"
 ---
 
----
-
-permalink: /docs/csv-importer
-title: "CSV Importer"
-
----
-
-Generates visualisation data from CSV data with header, e.g. from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html).
+The CSV importer generates visualisation data from CSV data with header, e.g. from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html).
 
 ## Usage
 
@@ -49,3 +42,7 @@ If SourceMonitor is installed in a different directory the script must be change
 ### General CSV Import
 
 You may use the CSVImporter to import general CSV files.
+
+### Example
+
+An explicit example with the [Open Office Code](https://github.com/apache/openoffice), can be found [here]({{site.baseurl}}{% link _posts/how-to/2019-06-14-generate_with_sourcemonitor.md %})
