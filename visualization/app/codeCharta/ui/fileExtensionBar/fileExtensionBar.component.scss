@@ -31,10 +31,9 @@ file-extension-bar-component {
 	.bar-details {
 		display: block;
 		width: 100%;
-		height: 25px;
+		height: 15px;
 		text-align: center;
 		background-color: white;
-		height: 0px;
 		overflow: hidden;
 		transition: all linear 0.2s;
 		outline: none;
@@ -55,7 +54,7 @@ file-extension-bar-component {
 
 			.bar-details-text {
 				color: black;
-				font-size: 15px;
+				font-size: 10px;
 				margin-left: 30px;
 				margin-top: 3px;
 
@@ -69,7 +68,7 @@ file-extension-bar-component {
 
 				.metric-value {
 					color: gray;
-					font-size: 15px;
+					font-size: 10px;
 
 					&.hidden {
 						display: none;

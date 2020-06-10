@@ -1,8 +1,12 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.OffsetDateTime
 import java.util.stream.Stream
 
@@ -21,9 +25,18 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
 
     internal fun parseCommit(commitLines: List<String>): Commit {
         return try {
-            val author = parserStrategy.parseAuthor(commitLines)
-            val commitDate = parserStrategy.parseDate(commitLines)
-            val modifications = parserStrategy.parseModifications(commitLines)
+            var author = ""
+            var commitDate = OffsetDateTime.now()
+            var modifications: List<Modification> = listOf()
+
+            runBlocking(Dispatchers.Default) {
+                launch {
+                     author = parserStrategy.parseAuthor(commitLines)
+                     commitDate = parserStrategy.parseDate(commitLines)
+                     modifications = parserStrategy.parseModifications(commitLines)
+                }
+            }
+
             if (!silent) showProgress(commitDate)
             Commit(author, modifications, commitDate)
         } catch (e: NoSuchElementException) {

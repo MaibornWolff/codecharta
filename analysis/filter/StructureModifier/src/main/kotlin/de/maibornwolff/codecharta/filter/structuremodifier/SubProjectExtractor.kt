@@ -20,7 +20,7 @@ class SubProjectExtractor(private val project: Project) {
     }
 
     private fun extractNodes(extractionPattern: List<String>, node: MutableNode): MutableList<MutableNode> {
-        val children: List<MutableNode> = node.children
+        val children: Set<MutableNode> = node.children
         val extractedNodes: MutableList<MutableNode> = mutableListOf()
 
         val currentSearchPattern = extractionPattern.firstOrNull()
@@ -38,7 +38,7 @@ class SubProjectExtractor(private val project: Project) {
         if (nodes.size == 0) logger.warn("No nodes with the specified path ($path) were fond. The resulting project is therefore empty")
 
         val rootNode = project.rootNode.toMutableNode()
-        rootNode.children = nodes
+        rootNode.children = nodes.toMutableSet()
         return mutableListOf(rootNode)
     }
 

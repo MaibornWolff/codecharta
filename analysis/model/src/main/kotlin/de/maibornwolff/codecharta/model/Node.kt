@@ -1,14 +1,13 @@
 package de.maibornwolff.codecharta.model
 
-import java.util.*
 import javax.naming.OperationNotSupportedException
 
-class Node constructor(
+class Node(
         val name: String,
         val type: NodeType? = NodeType.File,
         val attributes: Map<String, Any> = mapOf(),
         val link: String? = "",
-        override val children: List<Node> = listOf()
+        override val children: Set<Node> = setOf()
 ): Tree<Node>() {
 
     override fun getPathOfChild(child: Tree<Node>): Path {
@@ -31,6 +30,6 @@ class Node constructor(
     }
 
     fun toMutableNode(): MutableNode {
-        return MutableNode(name, type, attributes, link, children.map { it.toMutableNode() })
+        return MutableNode(name, type, attributes, link, children.map { it.toMutableNode() }.toSet())
     }
 }

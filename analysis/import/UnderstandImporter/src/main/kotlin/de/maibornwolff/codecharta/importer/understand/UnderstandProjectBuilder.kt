@@ -190,7 +190,7 @@ class UnderstandProjectBuilder(
     }
 
     fun build(): Project {
-        val nodes: List<MutableNode> = projectBuilder.rootNode.children
+        val nodes: Set<MutableNode> = projectBuilder.rootNode.children
         nodes.forEach { it.addAggregatedAttributes(aggregationRules) }
 
         return projectBuilder.build()

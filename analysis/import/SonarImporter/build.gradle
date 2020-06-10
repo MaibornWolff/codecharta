@@ -2,7 +2,7 @@ dependencies {
     implementation project(':model')
     implementation project(':filter:MergeFilter')
 
-    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.13'
+    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.19'
     implementation group: 'org.glassfish.jersey.core', name: 'jersey-client', version: jersey_version
     implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
