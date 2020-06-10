@@ -466,4 +466,33 @@ describe("nodeContextMenuController", () => {
 			expect(actual).toBeFalsy()
 		})
 	})
+
+	describe("isNodeOrParentFocused", () => {
+		it("should return true if a node is focused", () => {
+			storeService.dispatch(focusNode("/root/big leaf"))
+			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
+
+			const actual = nodeContextMenuController.isNodeOrParentFocused()
+
+			expect(actual).toBeTruthy()
+		})
+
+		it("should return true if a parent of a node is focused", () => {
+			storeService.dispatch(focusNode("/root/Parent Leaf"))
+			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[1].children[0]
+
+			const actual = nodeContextMenuController.isNodeOrParentFocused()
+
+			expect(actual).toBeTruthy()
+		})
+
+		it("should return false if a node is not focused", () => {
+			storeService.dispatch(unfocusNode())
+			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
+
+			const actual = nodeContextMenuController.isNodeOrParentFocused()
+
+			expect(actual).toBeFalsy()
+		})
+	})
 })

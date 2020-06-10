@@ -185,9 +185,16 @@ export class NodeContextMenuController
 		this.storeService.dispatch(focusNode(this._viewModel.codeMapNode.path))
 	}
 
+	public isNodeOrParentFocused(): boolean {
+		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
+		if (this._viewModel.codeMapNode && focusedNodePath) {
+			return this._viewModel.codeMapNode.path.includes(focusedNodePath)
+		}
+	}
+
 	public isNodeFocused(): boolean {
 		if (this._viewModel.codeMapNode) {
-			return this.storeService.getState().dynamicSettings.focusedNodePath === this._viewModel.codeMapNode.path
+			return this._viewModel.codeMapNode.path === this.storeService.getState().dynamicSettings.focusedNodePath
 		}
 	}
 
