@@ -24,23 +24,21 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		dropDownScenarioItems: []
 	}
 
-	private availableMetrics: MetricData[]
-
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private dialogService: DialogService,
+		private metricService: MetricService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
 		MetricService.subscribe(this.$rootScope, this)
 	}
 
 	public loadScenarios() {
-		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.availableMetrics)
+		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.metricService.getMetricData())
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
-		this.availableMetrics = metricData
 		this.loadScenarios()
 	}
 
