@@ -18,11 +18,18 @@ describe("ScenarioDropDownController", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let dialogService: DialogService
+	let metricService: MetricService
 	let threeOrbitControlsService: ThreeOrbitControlsService
 	let metricData: MetricData[]
 
 	function rebuildController() {
-		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, dialogService, threeOrbitControlsService)
+		scenarioButtonsController = new ScenarioDropDownController(
+			$rootScope,
+			storeService,
+			dialogService,
+			metricService,
+			threeOrbitControlsService
+		)
 	}
 
 	function restartSystem() {
@@ -31,6 +38,7 @@ describe("ScenarioDropDownController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
+		metricService = getService<MetricService>("metricService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
 		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
