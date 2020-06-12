@@ -82,7 +82,9 @@ jobs:
 
     - name: "Publish Analysis Sonar Results"
       before_script: cd analysis
-      script: ./gradlew build integrationTest
+      script:
+        - ./gradlew build integrationTest
+        - ./gradlew codeCoverageReport
       deploy:
         - provider: script
           script: ./gradlew sonarqube
