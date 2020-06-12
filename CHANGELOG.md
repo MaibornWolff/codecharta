@@ -19,6 +19,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.48.0] - 2020-06-12
+
+### Added 🚀
+
+- Support of compressed cc.json files. Files can be compressed in the analysis #848
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Improved performance of several importers #846
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.47.1] - 2020-05-08
 
 ### Added 🚀
@@ -42,7 +58,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Rename the button Show-Complete-Map button to Unfocus #642
-- Move the Unfocus button (visible when a node is focused) below the view-cube #642
+- Move the Unfocus button (visible when right-clicking a focused node) to the node-context-menu #948
 
 ### Removed 🗑
 
