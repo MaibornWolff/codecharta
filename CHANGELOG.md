@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Support of compressed cc.json files. Files can be compressed in the analysis #848
+
 ### Changed
 
 ### Removed 🗑
 
 ### Fixed 🐞
+
+- Improved performance of several importers #846
 
 ### Chore 👨‍💻 👩‍💻
 
