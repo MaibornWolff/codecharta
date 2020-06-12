@@ -1,12 +1,12 @@
 import { ScenarioHelper } from "./scenarioHelper"
-import { RecursivePartial, ScenarioAsSettings, Scenario, Settings } from "../codeCharta.model"
+import { RecursivePartial, ExportScenario, Scenario, Settings } from "../codeCharta.model"
 import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 
 describe("scenarioHelper", () => {
-	const scenarios: ScenarioAsSettings[] = require("../assets/scenarios.json")
+	const scenarios: ExportScenario[] = require("../assets/scenarios.json")
 
 	afterEach(() => {
 		jest.resetAllMocks()
@@ -112,7 +112,7 @@ describe("scenarioHelper", () => {
 	})
 
 	describe("getDefaultScenario", () => {
-		it("should return Complexity ScenarioAsSettings", () => {
+		it("should return Complexity ExportScenario", () => {
 			ScenarioHelper.getScenarioSettingsByName = jest.fn()
 
 			ScenarioHelper.getDefaultScenarioSetting()

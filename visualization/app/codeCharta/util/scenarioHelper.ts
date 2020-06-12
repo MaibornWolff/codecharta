@@ -5,7 +5,7 @@ import {
 	DynamicSettings,
 	MetricData,
 	RecursivePartial,
-	ScenarioAsSettings,
+	ExportScenario,
 	Scenario,
 	Settings
 } from "../codeCharta.model"
@@ -67,7 +67,7 @@ export class ScenarioHelper {
 	}
 
 	private static getPreLoadScenarios(): Map<String, RecursivePartial<Scenario>> {
-		const scenariosAsSettings: ScenarioAsSettings[] = this.importScenarios(require("../assets/scenarios.json"))
+		const scenariosAsSettings: ExportScenario[] = this.importScenarios(require("../assets/scenarios.json"))
 		const scenario: Map<String, RecursivePartial<Scenario>> = new Map<String, RecursivePartial<Scenario>>()
 		scenariosAsSettings.forEach(scenarioSettings => {
 			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))
@@ -75,7 +75,7 @@ export class ScenarioHelper {
 		return scenario
 	}
 
-	private static transformScenarioAsSettingsToScenario(scenarioAsSettings: ScenarioAsSettings) {
+	private static transformScenarioAsSettingsToScenario(scenarioAsSettings: ExportScenario) {
 		const scenario: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
 		const dynamicSettings: RecursivePartial<DynamicSettings> = scenarioAsSettings.settings.dynamicSettings
 		const appSettings: RecursivePartial<AppSettings> = scenarioAsSettings.settings.appSettings
@@ -242,7 +242,7 @@ export class ScenarioHelper {
 		return { appSettings: partialAppSettings, dynamicSettings: partialDynamicSettings }
 	}
 
-	public static importScenarios(scenarios: ScenarioAsSettings[]): ScenarioAsSettings[] {
+	public static importScenarios(scenarios: ExportScenario[]): ExportScenario[] {
 		scenarios.forEach(scenario => {
 			convertToVectors(scenario.settings)
 		})

@@ -226,7 +226,7 @@ export interface Scenario {
 	}
 }
 
-export interface ScenarioAsSettings {
+export interface ExportScenario {
 	name: string
 	settings: RecursivePartial<Settings>
 }
