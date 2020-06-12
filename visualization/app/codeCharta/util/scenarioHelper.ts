@@ -16,13 +16,13 @@ import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 export class ScenarioHelper {
 	private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"
 	//TODO: Move Scenarios to Redux Store
-	private static scenarioList: Map<String, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
+	private static scenarios: Map<String, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
 	public static getScenarioItems(metricData: MetricData[]) {
-		const scenarioItemList: ScenarioItem[] = []
+		const scenarioItems: ScenarioItem[] = []
 
-		this.scenarioList.forEach(scenario => {
-			scenarioItemList.push({
+		this.scenarios.forEach(scenario => {
+			scenarioItems.push({
 				scenarioName: scenario.name,
 				isScenarioAppliable: this.isScenarioAppliable(scenario, metricData),
 				icons: [
@@ -49,7 +49,7 @@ export class ScenarioHelper {
 				]
 			})
 		})
-		return scenarioItemList
+		return scenarioItems
 	}
 
 	private static isScenarioAppliable(scenario: RecursivePartial<Scenario>, metricData: MetricData[]) {
@@ -143,8 +143,8 @@ export class ScenarioHelper {
 	}
 
 	public static addScenario(newScenario: RecursivePartial<Scenario>) {
-		this.scenarioList.set(newScenario.name, newScenario)
-		this.setScenariosToLocalStorage(this.scenarioList)
+		this.scenarios.set(newScenario.name, newScenario)
+		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
 	public static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
@@ -196,8 +196,8 @@ export class ScenarioHelper {
 	}
 
 	public static deleteScenario(scenarioName: String) {
-		this.scenarioList.delete(scenarioName)
-		this.setScenariosToLocalStorage(this.scenarioList)
+		this.scenarios.delete(scenarioName)
+		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
 	public static getDefaultScenarioSetting(): RecursivePartial<Settings> {
@@ -205,7 +205,7 @@ export class ScenarioHelper {
 	}
 
 	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
-		const scenario: RecursivePartial<Scenario> = this.scenarioList.get(name)
+		const scenario: RecursivePartial<Scenario> = this.scenarios.get(name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
 		for (const scenarioKey in scenario) {
@@ -250,6 +250,6 @@ export class ScenarioHelper {
 	}
 
 	public static isScenarioExisting(scenarioName: string) {
-		return this.scenarioList.has(scenarioName)
+		return this.scenarios.has(scenarioName)
 	}
 }

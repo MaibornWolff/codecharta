@@ -13,8 +13,8 @@ describe("scenarioHelper", () => {
 	})
 
 	beforeEach(() => {
-		ScenarioHelper["scenarioList"].set("Scenario1", SCENARIO)
-		ScenarioHelper["scenarioList"].set("Scenario2", SCENARIO_WITH_ONLY_HEIGHT)
+		ScenarioHelper["scenarios"].set("Scenario1", SCENARIO)
+		ScenarioHelper["scenarios"].set("Scenario2", SCENARIO_WITH_ONLY_HEIGHT)
 	})
 
 	describe("importScenarios", () => {
@@ -64,10 +64,10 @@ describe("scenarioHelper", () => {
 
 	describe("getScenarioItems", () => {
 		beforeEach(() => {
-			ScenarioHelper["scenarioList"].clear()
+			ScenarioHelper["scenarios"].clear()
 		})
 		it("should get all the items with its visibility", () => {
-			ScenarioHelper["scenarioList"].set("Scenario1", SCENARIO)
+			ScenarioHelper["scenarios"].set("Scenario1", SCENARIO)
 
 			const expected: ScenarioItem[] = [
 				{
@@ -89,7 +89,7 @@ describe("scenarioHelper", () => {
 		})
 
 		it("should set isScenarioAppliable to true when metric is in metricData", () => {
-			ScenarioHelper["scenarioList"].set("Scenario2", SCENARIO_WITH_ONLY_HEIGHT)
+			ScenarioHelper["scenarios"].set("Scenario2", SCENARIO_WITH_ONLY_HEIGHT)
 
 			const expected: ScenarioItem[] = [
 				{
@@ -123,20 +123,20 @@ describe("scenarioHelper", () => {
 
 	describe("addScenario", () => {
 		beforeEach(() => {
-			ScenarioHelper["scenarioList"].clear()
+			ScenarioHelper["scenarios"].clear()
 		})
-		it("should add the new Scenario into the scenarioList", () => {
+		it("should add the new Scenario into the scenarios", () => {
 			ScenarioHelper.addScenario(SCENARIO)
-			const lastScenarioOfScenarioList: RecursivePartial<Scenario> = Array.from(ScenarioHelper["scenarioList"].values()).pop()
+			const lastScenarioOfScenarios: RecursivePartial<Scenario> = Array.from(ScenarioHelper["scenarios"].values()).pop()
 
-			expect(lastScenarioOfScenarioList).toEqual(SCENARIO)
+			expect(lastScenarioOfScenarios).toEqual(SCENARIO)
 		})
-		it("should call setScenariosToLocalStorage with scenarioList", () => {
+		it("should call setScenariosToLocalStorage with scenarios", () => {
 			ScenarioHelper["setScenariosToLocalStorage"] = jest.fn()
 
 			ScenarioHelper.addScenario(SCENARIO)
 
-			expect(ScenarioHelper["setScenariosToLocalStorage"]).toHaveBeenCalledWith(ScenarioHelper["scenarioList"])
+			expect(ScenarioHelper["setScenariosToLocalStorage"]).toHaveBeenCalledWith(ScenarioHelper["scenarios"])
 		})
 	})
 
@@ -181,9 +181,8 @@ describe("scenarioHelper", () => {
 
 		it("should create a Scenario according to the given scenarioAttributeContent ", () => {
 			const result: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario("Scenario1", scenarioAttributeContent)
-			const expected: RecursivePartial<Scenario> = SCENARIO
 
-			expect(result).toEqual(expected)
+			expect(result).toEqual(SCENARIO)
 		})
 
 		it("should create a Scenario only with height attributes", () => {
@@ -205,36 +204,36 @@ describe("scenarioHelper", () => {
 
 	describe("deleteScenario", () => {
 		beforeEach(() => {
-			ScenarioHelper["scenarioList"].clear()
+			ScenarioHelper["scenarios"].clear()
 		})
-		it("should remove the Scenario from ScenarioList ", () => {
-			ScenarioHelper["scenarioList"].set("Scenario", { name: "Scenario", area: { areaMetric: "mcc", margin: 48 } })
+		it("should remove the Scenario from Scenarios", () => {
+			ScenarioHelper["scenarios"].set("Scenario", { name: "Scenario", area: { areaMetric: "mcc", margin: 48 } })
 			ScenarioHelper.deleteScenario("Scenario")
 
-			expect(ScenarioHelper["scenarioList"]).toEqual(new Map<String, RecursivePartial<Scenario>>())
+			expect(ScenarioHelper["scenarios"]).toEqual(new Map<String, RecursivePartial<Scenario>>())
 		})
 
 		it("should not delete an Element when it doesn't exist ", () => {
-			ScenarioHelper["scenarioList"].set("Scenario", { name: "Scenario", area: { areaMetric: "mcc", margin: 48 } })
+			ScenarioHelper["scenarios"].set("Scenario", { name: "Scenario", area: { areaMetric: "mcc", margin: 48 } })
 
 			ScenarioHelper.deleteScenario("UnknownScenario")
 			const expected = new Map<String, RecursivePartial<Scenario>>()
 			expected.set("Scenario", { name: "Scenario", area: { areaMetric: "mcc", margin: 48 } })
 
-			expect(ScenarioHelper["scenarioList"]).toEqual(expected)
+			expect(ScenarioHelper["scenarios"]).toEqual(expected)
 		})
 
 		it("should find the specific Scenario and delete it ", () => {
-			ScenarioHelper["scenarioList"].set("Scenario1", { name: "Scenario1", area: { areaMetric: "rloc", margin: 48 } })
-			ScenarioHelper["scenarioList"].set("Scenario2", { name: "Scenario2", height: { heightMetric: "mcc", labelSlider: 2 } })
-			ScenarioHelper["scenarioList"].set("Scenario3", { name: "Scenario3", color: { colorMetric: "mcc" } })
+			ScenarioHelper["scenarios"].set("Scenario1", { name: "Scenario1", area: { areaMetric: "rloc", margin: 48 } })
+			ScenarioHelper["scenarios"].set("Scenario2", { name: "Scenario2", height: { heightMetric: "mcc", labelSlider: 2 } })
+			ScenarioHelper["scenarios"].set("Scenario3", { name: "Scenario3", color: { colorMetric: "mcc" } })
 
 			ScenarioHelper.deleteScenario("Scenario2")
 			const expected = new Map<String, RecursivePartial<Scenario>>()
 			expected.set("Scenario1", { name: "Scenario1", area: { areaMetric: "rloc", margin: 48 } })
 			expected.set("Scenario3", { name: "Scenario3", color: { colorMetric: "mcc" } })
 
-			expect(ScenarioHelper["scenarioList"]).toEqual(expected)
+			expect(ScenarioHelper["scenarios"]).toEqual(expected)
 		})
 
 		it("should call setScenariosToLocalStorage", () => {
