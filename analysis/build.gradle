@@ -26,7 +26,6 @@ allprojects {
 
     jacoco {
         toolVersion = jacoco_version
-        reportsDir = file("$buildDir/reports")
     }
 }
 
@@ -35,6 +34,7 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "de.maibornwolff.codecharta:analysis"
         property "sonar.projectName", "CodeCharta Analysis"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/codeCoverageReport/codeCoverageReport.xml"
     }
 }
 
@@ -106,6 +106,28 @@ task integrationTest(type: Exec) {
     executable 'sh'
     workingDir('test')
     args '-c', "./golden_test.sh $version"
+}
+
+task codeCoverageReport(type: JacocoReport) {
+
+    // Gather execution data from all subprojects
+    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
+
+    // Add all relevant sourcesets from the subprojects
+    subprojects.each {
+        sourceSets it.sourceSets.main
+    }
+
+    reports {
+        xml.enabled true
+        html.enabled false
+        csv.enabled false
+    }
+}
+
+// always run the tests before generating the report
+codeCoverageReport.dependsOn {
+    subprojects*.test
 }
 
 integrationTest.dependsOn build
