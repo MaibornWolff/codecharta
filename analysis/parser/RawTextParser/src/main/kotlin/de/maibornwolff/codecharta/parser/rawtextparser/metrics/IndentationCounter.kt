@@ -16,6 +16,7 @@ class IndentationCounter(private var maxIndentation: Int = 6,
     override val name = "IndentationLevel"
     override val description = "Number of lines with an indentation level of at least x"
 
+    // TODO no mixed tab/ space possible at line start?
     override fun parseLine(line: String) {
         var tabIndent = line.length - line.trimStart('\t').length
         var spaceIndent = line.length - line.trimStart(' ').length
@@ -36,6 +37,7 @@ class IndentationCounter(private var maxIndentation: Int = 6,
         verbose = parameters["verbose"]?.toBool() ?: verbose
     }
 
+    // TODO tabSize - (offset % tabSize) from the current position
     private fun guessTabWidth(): Int {
         tabWidth = 1
         if (spaceIndentations.sum() == 0) return tabWidth
