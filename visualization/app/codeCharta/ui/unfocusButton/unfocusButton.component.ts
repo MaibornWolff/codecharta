@@ -8,8 +8,10 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 export class UnfocusButtonController implements BuildingRightClickedEventSubscriber {
 	private _viewModel: {
 		isNodeFocused: boolean
+		isParentFocused: boolean
 	} = {
-		isNodeFocused: false
+		isNodeFocused: false,
+		isParentFocused: false
 	}
 
 	/* @ngInject */
@@ -19,7 +21,9 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
 		const codeMapNode = this.storeService.getState().lookUp.idToNode.get(building.node.id)
-		this._viewModel.isNodeFocused = codeMapNode.path === this.storeService.getState().dynamicSettings.focusedNodePath
+		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
+		this._viewModel.isNodeFocused = codeMapNode.path === focusedNodePath
+		this._viewModel.isParentFocused = codeMapNode.path.includes(focusedNodePath) && codeMapNode.path !== focusedNodePath
 	}
 
 	public removeFocusedNode() {

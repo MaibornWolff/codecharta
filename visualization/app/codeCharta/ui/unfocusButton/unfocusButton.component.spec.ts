@@ -28,7 +28,8 @@ describe("UnfocusButtonController", () => {
 		NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
 		const map = new Map([
 			[TEST_DELTA_MAP_A.map.children[0].id, TEST_DELTA_MAP_A.map.children[0]],
-			[TEST_DELTA_MAP_A.map.children[1].id, TEST_DELTA_MAP_A.map.children[1]]
+			[TEST_DELTA_MAP_A.map.children[1].id, TEST_DELTA_MAP_A.map.children[1]],
+			[TEST_DELTA_MAP_A.map.children[1].children[0].id, TEST_DELTA_MAP_A.map.children[1].children[0]]
 		])
 		storeService.dispatch(setIdToNode(map))
 	}
@@ -48,7 +49,7 @@ describe("UnfocusButtonController", () => {
 	})
 
 	describe("onBuildingRightClicked", () => {
-		it("should not show the unfocus button when the focusedNodePath equals the right-clicked-buildings path", () => {
+		it("should show the unfocus button when the focusedNodePath equals the right-clicked-buildings path", () => {
 			storeService.dispatch(focusNode(TEST_DELTA_MAP_A.map.children[0].path))
 			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[0].id
 			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[0].path
@@ -56,15 +57,17 @@ describe("UnfocusButtonController", () => {
 			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING, 0, 0)
 
 			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeTruthy()
+			expect(unfocusButtonController["_viewModel"].isParentFocused).toBeFalsy()
 		})
 
-		it("should show the unfocus button when the focusedNodePath does not equal the right-clicked-buildings path", () => {
-			storeService.dispatch(focusNode(TEST_DELTA_MAP_A.map.children[0].path))
-			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].id
-			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[1].path
+		it("should show the unfocus parent button when right-clicking a child of the focused node", () => {
+			storeService.dispatch(focusNode(TEST_DELTA_MAP_A.map.children[1].path))
+			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].children[0].id
+			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[1].children[0].path
 
 			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING, 0, 0)
 
+			expect(unfocusButtonController["_viewModel"].isParentFocused).toBeTruthy()
 			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeFalsy()
 		})
 	})

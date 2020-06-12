@@ -1,4 +1,5 @@
 <md-button aria-label="Remove Focus on node" ng-click="$ctrl.removeFocusedNode()"
 	><i class="fa fa-bullseye"></i>
-	Unfocus
+	<span ng-show="$ctrl._viewModel.isParentFocused">Unfocus Parent</span>
+	<span ng-show="$ctrl._viewModel.isNodeFocused">Unfocus</span>
 </md-button>
