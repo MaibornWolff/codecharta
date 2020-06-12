@@ -15,37 +15,21 @@ internal class CommitCollector private constructor(private val metricsFactory: M
         if (commit.isEmpty) {
             return
         }
-        addYetUnknownFilesToVersionControlledFiles(versionControlledFiles, commit.filenames)
-        addCommitMetadataToMatchingVersionControlledFiles(commit, versionControlledFiles)
-    }
+        commit.filenames
+            .filter { findVersionControlledFileByFilename(versionControlledFiles, it) == null }
+            .forEach {
+                val missingVersionControlledFile = VersionControlledFile(it, metricsFactory)
+                versionControlledFiles.add(missingVersionControlledFile)
+            }
 
-    private fun addYetUnknownFilesToVersionControlledFiles(versionControlledFiles: MutableList<VersionControlledFile>,
-                                                           filenamesOfCommit: List<String>) {
-        filenamesOfCommit
-                .filter { !versionControlledFilesContainsFile(versionControlledFiles, it) }
-                .forEach { addYetUnknownFile(versionControlledFiles, it) }
-    }
-
-    private fun versionControlledFilesContainsFile(versionControlledFiles: List<VersionControlledFile>,
-                                                   filename: String): Boolean {
-        return findVersionControlledFileByFilename(versionControlledFiles, filename) != null
+        commit.filenames
+            .mapNotNull { findVersionControlledFileByFilename(versionControlledFiles, it) }
+            .forEach { it.registerCommit(commit) }
     }
 
     private fun findVersionControlledFileByFilename(versionControlledFiles: List<VersionControlledFile>,
                                                     filename: String): VersionControlledFile? {
         return versionControlledFiles.firstOrNull { it.filename == filename }
-    }
-
-    private fun addYetUnknownFile(versionControlledFiles: MutableList<VersionControlledFile>,
-                                  filenameOfYetUnversionedFile: String): Boolean {
-        val missingVersionControlledFile = VersionControlledFile(filenameOfYetUnversionedFile, metricsFactory)
-        return versionControlledFiles.add(missingVersionControlledFile)
-    }
-
-    private fun addCommitMetadataToMatchingVersionControlledFiles(commit: Commit,
-                                                                  versionControlledFiles: List<VersionControlledFile>) {
-        commit.filenames.mapNotNull { findVersionControlledFileByFilename(versionControlledFiles, it) }
-                .forEach { it.registerCommit(commit) }
     }
 
     private fun combineForParallelExecution(firstCommits: MutableList<VersionControlledFile>,
