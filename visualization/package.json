@@ -96,7 +96,7 @@
 		"angularjs-slider": "^7.0.0",
 		"color-convert": "^2.0.0",
 		"d3": "^5.9.2",
-		"file-loader": "^6.0.0",
+		"file-loader": "^4.2.0",
 		"font-awesome": "^4.7.0",
 		"ignore": "^5.0.2",
 		"inquirer-directory": "^2.2.0",
