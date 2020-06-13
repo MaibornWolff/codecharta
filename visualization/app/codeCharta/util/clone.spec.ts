@@ -7,7 +7,7 @@ describe("clone", () => {
 		const actual = clone(object)
 
 		expect(actual).toEqual(object)
-		object.x = 1
+		object.x = 2
 		expect(actual).not.toEqual(object)
 	})
 })
