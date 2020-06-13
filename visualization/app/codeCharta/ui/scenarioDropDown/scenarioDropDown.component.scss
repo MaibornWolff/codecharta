@@ -1,4 +1,4 @@
-scenario-drop-down-component {
+.scenario-component {
 	.scenario-button {
 		height: 22px;
 		min-height: 0;
@@ -9,5 +9,60 @@ scenario-drop-down-component {
 		font-size: 9pt;
 		text-transform: none;
 		background-color: rgba(230, 230, 230, 0.96);
+	}
+}
+
+.scenario-drop-down {
+	padding: 0;
+
+	.scenario-item {
+		display: flex;
+
+		.button-hovering {
+			background-color: unset;
+			&:hover:not([disabled]) {
+				background-color: rgba(158, 158, 158, 0.2);
+			}
+		}
+
+		.action-button {
+			margin-right: 1px;
+			min-width: 13%;
+			width: 13%;
+
+			i.fa {
+				font-size: x-small;
+			}
+
+			&.add {
+				display: inline-flex;
+				justify-content: center;
+				background-color: #00a091;
+			}
+
+			&.remove {
+				display: inline-flex;
+				justify-content: center;
+				color: #b30000;
+			}
+		}
+
+		.scenario-name {
+			display: inline-flex;
+		}
+
+		.content-icons {
+			display: inline-flex;
+			justify-content: center;
+			font-size: x-small;
+			width: 5%;
+			color: #d3d3d3;
+
+			i.fa {
+				&.is-saved {
+					color: black;
+				}
+			}
+		}
 	}
 }
