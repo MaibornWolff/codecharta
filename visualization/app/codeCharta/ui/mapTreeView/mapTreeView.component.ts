@@ -8,8 +8,7 @@ import {
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import { MetricService } from "../../state/metric.service"
-
-const clone = require("rfdc")()
+import { clone } from "../../util/clone"
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
 	private _viewModel: {

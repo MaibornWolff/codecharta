@@ -2,6 +2,8 @@ import { CC_URL, newPage, puppeteer } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import { Browser, Page } from "puppeteer"
+import * as sample1 from "../assets/sample3.cc.json"
+import * as sample3 from "../assets/sample3.cc.json"
 
 jest.setTimeout(15000)
 
@@ -52,13 +54,13 @@ describe("codecharta", () => {
 				request.respond({
 					contentType: "application/json",
 					headers: { "Access-Control-Allow-Origin": "*" },
-					body: JSON.stringify(require("../assets/sample2.cc.json"))
+					body: JSON.stringify(sample1)
 				})
 			} else if (request.url().includes("/fileTwo.json")) {
 				request.respond({
 					contentType: "application/json",
 					headers: { "Access-Control-Allow-Origin": "*" },
-					body: JSON.stringify(require("../assets/sample3.cc.json"))
+					body: JSON.stringify(sample3)
 				})
 			} else {
 				request.continue()

@@ -22,7 +22,7 @@ import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingO
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
-const clone = require("rfdc")()
+import { clone } from "../../util/clone"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)

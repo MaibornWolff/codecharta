@@ -1,6 +1,5 @@
 import angular from "angular"
-
-const clone = require("rfdc")()
+import { clone } from "./clone"
 
 export function removeItemFromArray(array: any[], item: any): any[] {
 	return array.filter(x => {

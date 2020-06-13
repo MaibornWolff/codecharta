@@ -1,7 +1,7 @@
 import * as path from "path"
 import { Browser, Page } from "puppeteer"
+import * as puppeteer from "puppeteer"
 
-export const puppeteer = require("puppeteer")
 export const CC_URL = `file:${path.join(__dirname, "../dist/webpack/index.html")}`
 
 export const delay = timeout => {

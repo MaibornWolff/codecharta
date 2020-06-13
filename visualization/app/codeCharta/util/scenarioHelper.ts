@@ -12,6 +12,7 @@ import {
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import * as scenarios from "../assets/scenarios.json"
 
 export class ScenarioHelper {
 	private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -67,7 +68,7 @@ export class ScenarioHelper {
 	}
 
 	private static getPreLoadScenarios(): Map<String, RecursivePartial<Scenario>> {
-		const scenariosAsSettings: ExportScenario[] = this.importScenarios(require("../assets/scenarios.json"))
+		const scenariosAsSettings: ExportScenario[] = this.importScenarios(scenarios)
 		const scenario: Map<String, RecursivePartial<Scenario>> = new Map<String, RecursivePartial<Scenario>>()
 		scenariosAsSettings.forEach(scenarioSettings => {
 			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))

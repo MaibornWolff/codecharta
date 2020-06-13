@@ -13,6 +13,7 @@ import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { resetFiles } from "../../state/store/files/files.actions"
 import { CCValidationResult } from "../../util/fileValidator"
+import zlib from "zlib"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -36,8 +37,6 @@ export class FileChooserController {
 				}
 				reader.onload = event => {
 					if (isCompressed) {
-						const zlib = require("zlib")
-
 						content = zlib.unzipSync(Buffer.from((<any>event.target).result))
 					} else {
 						content = (<any>event.target).result

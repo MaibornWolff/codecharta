@@ -4,9 +4,10 @@ import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMoc
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import * as scenarioJson from "../assets/scenarios.json"
 
 describe("scenarioHelper", () => {
-	const scenarios: ExportScenario[] = require("../assets/scenarios.json")
+	const scenarios: ExportScenario[] = scenarioJson
 
 	afterEach(() => {
 		jest.resetAllMocks()

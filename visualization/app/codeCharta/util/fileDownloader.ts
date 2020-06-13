@@ -15,7 +15,7 @@ import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { stringify } from "querystring"
 import { MetricService } from "../state/metric.service"
-const clone = require("rfdc")()
+import { clone } from "./clone"
 
 export class FileDownloader {
 	public static downloadCurrentMap(

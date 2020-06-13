@@ -3,7 +3,7 @@ import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model
 import _ from "lodash"
 import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"
-const clone = require("rfdc")()
+import { clone } from "./clone"
 
 export class DeltaGenerator {
 	public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
