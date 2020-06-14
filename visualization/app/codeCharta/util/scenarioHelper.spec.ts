@@ -4,7 +4,7 @@ import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMoc
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
-import * as scenarioJson from "../assets/scenarios.json"
+import scenarioJson from "../assets/scenarios.json"
 
 describe("scenarioHelper", () => {
 	const scenarios: ExportScenario[] = scenarioJson

@@ -1,8 +1,9 @@
 import { CodeMapNode } from "../codeCharta.model"
 import Ajv from "ajv"
+import packageJson from "../../../package.json"
+import jsonSchema from "./schema.json"
 
-import * as jsonSchema from "./schema.json"
-const latestApiVersion = require("../../../package.json").codecharta.apiVersion
+const latestApiVersion = packageJson.codecharta.apiVersion
 
 interface ApiVersion {
 	major: number

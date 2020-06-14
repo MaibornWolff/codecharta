@@ -1,17 +1,15 @@
 import "./codeCharta.module"
-import _ from "lodash"
 import { IHttpService, ILocationService } from "angular"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CodeChartaService } from "./codeCharta.service"
 import { CodeChartaController } from "./codeCharta.component"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
-import { State } from "./codeCharta.model"
-import { ScenarioHelper } from "./util/scenarioHelper"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
-import { STATE } from "./util/dataMocks"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
+import sample1 from "./assets/sample1.cc.json"
+import sample2 from "./assets/sample2.cc.json"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -22,7 +20,6 @@ describe("codeChartaController", () => {
 	let dialogService: DialogService
 	let codeChartaService: CodeChartaService
 	let injectorService: InjectorService
-	let state: State
 
 	beforeEach(() => {
 		restartSystem()
@@ -31,7 +28,6 @@ describe("codeChartaController", () => {
 		withMockedUrlUtils()
 		withMockedCodeChartaService()
 		withMockedDialogService()
-		withMockedScenarioHelper()
 	})
 
 	function restartSystem() {
@@ -44,8 +40,6 @@ describe("codeChartaController", () => {
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
 		injectorService = getService<InjectorService>("injectorService")
-
-		state = _.cloneDeep(STATE)
 	}
 
 	function rebuildController() {
@@ -78,10 +72,6 @@ describe("codeChartaController", () => {
 	function initThreeCameraService() {
 		// Has to be called, to initialize the camera
 		threeCameraService.init(1536, 754)
-	}
-
-	function withMockedScenarioHelper() {
-		ScenarioHelper.getDefaultScenario = jest.fn().mockReturnValue({ settings: state })
 	}
 
 	describe("constructor", () => {
@@ -143,10 +133,7 @@ describe("codeChartaController", () => {
 		})
 
 		it("should call loadFiles with sample files", () => {
-			const expected = [
-				{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
-				{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
-			]
+			const expected = [{ fileName: "sample1.cc.json", content: sample1 }, { fileName: "sample2.cc.json", content: sample2 }]
 
 			codeChartaController.tryLoadingSampleFiles()
 

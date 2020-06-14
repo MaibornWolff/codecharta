@@ -1,9 +1,10 @@
-import { CC_URL, newPage, puppeteer } from "../../puppeteer.helper"
+import * as puppeteer from "puppeteer"
+import { CC_URL, newPage } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import { Browser, Page } from "puppeteer"
-import * as sample1 from "../assets/sample3.cc.json"
-import * as sample3 from "../assets/sample3.cc.json"
+import sample1 from "../assets/sample3.cc.json"
+import sample3 from "../assets/sample3.cc.json"
 
 jest.setTimeout(15000)
 
