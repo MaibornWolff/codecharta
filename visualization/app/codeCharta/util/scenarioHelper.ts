@@ -68,7 +68,7 @@ export class ScenarioHelper {
 	}
 
 	private static getPreLoadScenarios(): Map<String, RecursivePartial<Scenario>> {
-		const scenariosAsSettings: ExportScenario[] = this.importScenarios(JSON.parse(JSON.stringify(scenarios)))
+		const scenariosAsSettings: ExportScenario[] = this.importScenarios(scenarios)
 		const scenario: Map<String, RecursivePartial<Scenario>> = new Map<String, RecursivePartial<Scenario>>()
 		scenariosAsSettings.forEach(scenarioSettings => {
 			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))
