@@ -1,4 +1,4 @@
-# Change Log
+﻿# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added 🚀
+
+- Custom scenarios can be created and saved through the scenario menu #675
 
 ### Changed
 

@@ -1,0 +1,29 @@
+<md-dialog class="scenario-dialog">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<h2>Add Scenario</h2>
+		</div>
+	</md-toolbar>
+
+	<md-dialog-content>
+		<div class="md-dialog-content">
+			<md-input-container class="md-block">
+				<label>Scenario Name</label>
+				<input class="scenario-input" type="text" ng-model="$ctrl._viewModel.scenarioName" />
+			</md-input-container>
+
+			<p>The scenario includes:</p>
+
+			<md-input-container class="input-container md-block" ng-repeat="item in $ctrl._viewModel.scenarioContent" class="md-block">
+				<md-checkbox class="dialog-list md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
+					<span ng-if="item.metricType == 'Camera-Position'">{{::item.metricType}} </span>
+					<span ng-if="item.metricType != 'Camera-Position'">{{::item.metricType}} ({{::item.metricName}}) </span>
+				</md-checkbox>
+			</md-input-container>
+		</div>
+	</md-dialog-content>
+
+	<md-dialog-actions>
+		<md-button ng-click="$ctrl.addScenario()" ng-disabled="!$ctrl.isNewScenarioValid()" class="md-primary">Add</md-button>
+	</md-dialog-actions>
+</md-dialog>
