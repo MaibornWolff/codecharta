@@ -1,7 +1,7 @@
 import { goto, launch, newPage } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
 import { Browser, Page } from "puppeteer"
-import packageJson from "../../../package.json"
+import { getVersion } from "../util/version"
 
 jest.setTimeout(20000)
 
@@ -26,7 +26,7 @@ describe("CodeCharta logo", () => {
 	})
 
 	it("should have correct version", async () => {
-		expect(await logo.getVersion()).toBe(packageJson.version)
+		expect(await logo.getVersion()).toBe(getVersion())
 	})
 
 	it("should have correct link", async () => {

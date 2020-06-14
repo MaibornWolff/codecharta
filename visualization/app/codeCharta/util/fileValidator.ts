@@ -1,9 +1,7 @@
 import { CodeMapNode } from "../codeCharta.model"
 import Ajv from "ajv"
-import packageJson from "../../../package.json"
 import jsonSchema from "./schema.json"
-
-const latestApiVersion = packageJson.codecharta.apiVersion
+import { getAPIVersion } from "./version"
 
 interface ApiVersion {
 	major: number
@@ -117,12 +115,12 @@ export class FileValidator {
 
 	private static fileHasHigherMajorVersion(file: { apiVersion: string; nodes: CodeMapNode[] }): boolean {
 		const apiVersion = this.getAsApiVersion(file.apiVersion)
-		return apiVersion.major > this.getAsApiVersion(latestApiVersion).major
+		return apiVersion.major > this.getAsApiVersion(getAPIVersion()).major
 	}
 
 	private static fileHasHigherMinorVersion(file: { apiVersion: string; nodes: CodeMapNode[] }): boolean {
 		const apiVersion = this.getAsApiVersion(file.apiVersion)
-		return apiVersion.minor > this.getAsApiVersion(latestApiVersion).minor
+		return apiVersion.minor > this.getAsApiVersion(getAPIVersion()).minor
 	}
 
 	private static getAsApiVersion(version: string): ApiVersion {
