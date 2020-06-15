@@ -4,7 +4,7 @@ import _ from "lodash"
 import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"
 import { clone } from "./clone"
-import { getAPIVersion } from "./version"
+import packageJson from "../../../package.json"
 
 export class DeltaGenerator {
 	public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
@@ -85,7 +85,7 @@ export class DeltaGenerator {
 				FileNameHelper.withoutCCJsonExtension(referenceFile.fileMeta.fileName) +
 				"_and_" +
 				FileNameHelper.withoutCCJsonExtension(comparisonFile.fileMeta.fileName),
-			apiVersion: getAPIVersion(),
+			apiVersion: packageJson.codecharta.apiVersion,
 			projectName: "delta_between_" + referenceFile.fileMeta.projectName + "_and_" + comparisonFile.fileMeta.projectName
 		}
 	}
