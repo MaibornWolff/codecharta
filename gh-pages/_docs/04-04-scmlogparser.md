@@ -51,14 +51,26 @@ The resulting project has the project name specified for the SCMLogParser.
 
 ### Example using Git
 
-- `cd <my_git_project>`
-- `git log --numstat --raw --topo-order > git.log` (or `anongit > git.log`)
-- `./ccsh scmlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o output.cc.json`
-- load `output.cc.json` in visualization
+```bash
+# navigate to the project folder
+- cd <my_git_project>
+# create log file
+- git log --numstat --raw --topo-order > git.log (or anongit > git.log)
+# create cc.json File
+- ./ccsh scmlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o output.cc.json
+```
+
+Then load `output.cc.json` in visualization
 
 ### Example using SVN
 
-- `cd <my_svn_project>`
-- `svn log --verbose > svn.log`
-- `./ccsh scmlogparser svn.log --input-format SVN_LOG -o output.cc.json`
-- load `output.cc.json` in visualization
+```bash
+# navigate to the project folder
+- cd <my_svn_project>
+# create svn log file
+- svn log --verbose > svn.log
+# create cc.json file
+- ./ccsh scmlogparser svn.log --input-format SVN_LOG -o output.cc.json
+```
+
+- Then load `output.cc.json` in visualization

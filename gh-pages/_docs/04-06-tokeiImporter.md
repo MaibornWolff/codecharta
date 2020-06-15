@@ -31,7 +31,13 @@ For Linux and MacOS binaries can be downloaded, on Windows the tool has to be bu
 
 ## Analyze a Project with Tokei
 
-Run `tokei . --output json > tokei_results.json` in the project's root folder.
+Run
+
+```bash
+tokei . --output json > tokei_results.json
+```
+
+in the project's root folder.
 
 ## Usage of the Tokei Importer
 

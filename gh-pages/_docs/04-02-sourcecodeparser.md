@@ -26,6 +26,16 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 - bug
 - sonar_issue_other
 
+## Parameters
+
+- --default-excludes (exclude build, target, dist and out folders as well as files/folders starting with '.')
+- -e, --exclude=\<excludePattern> (exclude file/folder from scan according to regex pattern)
+- -f, --format=\<outputFormat> (table or json)
+- -h, --help
+- -i, --no-issues (do not search for sonar issues)
+- -o, --output-file=\<outputFile> (file to write output to, if empty stdout is used)
+- -v, --verbose
+
 ## Run
 
 The SourceCodeParser can analyze either a single file or a project folder; here are some sample commands:
@@ -54,16 +64,6 @@ or
 
 If a project is piped into the SourceCodeParser, the results and the piped project are merged.
 The resulting project has the project name specified for the SourceCodeParser.
-
-## Parameters
-
-- --default-excludes (exclude build, target, dist and out folders as well as files/folders starting with '.')
-- -e, --exclude=\<excludePattern> (exclude file/folder from scan according to regex pattern)
-- -f, --format=\<outputFormat> (table or json)
-- -h, --help
-- -i, --no-issues (do not search for sonar issues)
-- -o, --output-file=\<outputFile> (file to write output to, if empty stdout is used)
-- -v, --verbose
 
 ## Sonar Plugins
 

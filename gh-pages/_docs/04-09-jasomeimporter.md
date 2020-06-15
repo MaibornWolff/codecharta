@@ -13,4 +13,6 @@ Output goes to _stdout_ or to a file if specified by '-o'.
 
 ### Example
 
-> ccsh jasomeimport jasome.xml
+```bash
+ ccsh jasomeimport jasome.xml
+```
