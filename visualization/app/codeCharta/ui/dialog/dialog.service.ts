@@ -1,5 +1,6 @@
 import { dialogDownloadComponent } from "./dialog.download.component"
 import { dialogGlobalSettingsComponent } from "./dialog.globalSettings.component"
+import { addScenarioSettingsComponent } from "./dialog.addScenarioSettings.component"
 
 export class DialogService {
 	/* @ngInject */
@@ -11,6 +12,10 @@ export class DialogService {
 
 	public showGlobalSettingsDialog() {
 		this.showCustomDialog(dialogGlobalSettingsComponent)
+	}
+
+	public showAddScenarioSettings() {
+		this.showCustomDialog(addScenarioSettingsComponent)
 	}
 
 	public showCustomDialog(dialog) {

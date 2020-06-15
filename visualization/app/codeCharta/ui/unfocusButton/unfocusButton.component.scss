@@ -1,13 +1,5 @@
 unfocus-button-component {
-	position: absolute;
-	top: 200px;
-	right: 40px;
-	z-index: 60;
-
 	.md-button {
-		width: 100px !important;
-		padding-left: 10px;
-		padding-right: 10px;
-		border-radius: 100px !important;
+		margin-bottom: 0;
 	}
 }
