@@ -48,7 +48,7 @@ The Codemaatimporter, generates visualisation data from CodeMaat Temporal Coupli
 
 6. Visualizing `merged.cc.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
 
-![CodeMaatImport Modell](src/codemaatimport-modell.jpg)
+![Image]({{site.baseurl}}/assets/images/docs/codemaat/codemaatimport-modell.png)
 
 ## Example File Content
 
