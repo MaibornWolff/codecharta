@@ -9,32 +9,31 @@ This parser analyzes code regardless of the programming language used to generat
 
 - Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
 
-## Parameters
+## Usage and Parameters
+
+| Parameter                              | description                                                                                        |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `FILE or FOLDER`                       | file/project to parse                                                                              |
+| `--maxIndentationLevel=<maxIndentLvl>` | maximum Indentation Level (default 10)                                                             |
+| `--tabWidth=<tabWidth>`                | tab width used (estimated if not provided)                                                         |
+| `--withoutDefaultExcludes`             | includes build, target, dist, resources and out folders as well as files/folders starting with '.' |
+| `-e, --exclude=<exclude>`              | exclude file/folders according to regex pattern                                                    |
+| `-h, --help`                           | displays help                                                                                      |
+| `-m, --metrics[=<metrics>...]`         | metrics to be computed (select all if not specified)                                               |
+| `-o, --outputFile=<outputFile>`        | output File (or empty for stdout)                                                                  |
+| `-c`                                   | compresses outputfile to .gz                                                                       |
+| `-p, --projectName=<projectName>`      | project name                                                                                       |
+| `-v, --verbose`                        | verbose mode                                                                                       |
 
 ```
-Usage: rawtextparser [-hv] [--withoutDefaultExcludes]
+Usage: rawtextparser [-chv] [--withoutDefaultExcludes]
                      [--maxIndentationLevel=<maxIndentLvl>]
-                     [--tabWidth=<tabWith>] [-o=<outputFile>]
+                     [--tabWidth=<tabWith>] [-o=<outputFile>] [-c]
                      [-p=<projectName>] [-e=<exclude>]... [-m
                      [=<metrics>...]]... FILE or FOLDER
-generates cc.json from projects or source code files
-      FILE or FOLDER         file/project to parse
-      --maxIndentationLevel=<maxIndentLvl>
-                             maximum Indentation Level (default 10)
-      --tabWidth=<tabWith>   tab width used (estimated if not provided)
-      --withoutDefaultExcludes
-                             include build, target, dist, resources and out folders
-                               as well as files/folders starting with '.'
-  -e, --exclude=<exclude>    exclude file/folder according to regex pattern
-  -h, --help                 displays this help and exits
-  -m, --metrics[=<metrics>...]
-                             metrics to be computed (select all if not specified)
-  -o, --outputFile=<outputFile>
-                             output File (or empty for stdout)
-  -p, --projectName=<projectName>
-                             project name
-  -v, --verbose              verbose mode
 ```
+
+generates cc.json from projects or source code files
 
 ## Examples
 

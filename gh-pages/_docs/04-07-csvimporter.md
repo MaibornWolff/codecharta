@@ -19,7 +19,14 @@ _Conventions for csv input:_
 
 Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) through its CSV export functionality.
 
-## Usage
+## Parameter and Usage
+
+| Parameter                       | description                          |
+| ------------------------------- | ------------------------------------ |
+| `FILE`                          | sourcemonitor csv files              |
+| `-h, --help`                    | displays help                        |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)    |
+| `-c`                            | compresses outputfile to gzip format |
 
 ### CSV Import for SourceMonitor
 

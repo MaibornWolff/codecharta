@@ -7,7 +7,14 @@ The Jasomeimporter generates visualisation data from special xml files, generate
 
 Please contact this team concerning questions about Jasome.
 
-## Usage
+## Parameter and Usage
+
+| Parameter                       | description                          |
+| ------------------------------- | ------------------------------------ |
+| `FILE`                          | codemaat coupling csv files          |
+| `-h, --help`                    | displays help                        |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)    |
+| `-c`                            | compresses outputfile to gzip format |
 
 Output goes to _stdout_ or to a file if specified by '-o'.
 

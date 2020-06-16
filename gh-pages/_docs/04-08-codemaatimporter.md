@@ -5,6 +5,15 @@ title: "CodeMaatImporter"
 
 The Codemaatimporter, generates visualisation data from CodeMaat Temporal Coupling CSV data with header. You can find the analysing tool on [GitHub](https://github.com/adamtornhill/code-maat)
 
+## Parameter
+
+| Parameter                       | description                          |
+| ------------------------------- | ------------------------------------ |
+| `FILE`                          | codemaat coupling csv files          |
+| `-h, --help`                    | displays help                        |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)    |
+| `-c`                            | compresses outputfile to gzip format |
+
 ## Usage
 
 1. Create VCS Log file from your project, e.x. with Git

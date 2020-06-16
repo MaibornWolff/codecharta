@@ -41,19 +41,19 @@ in the project's root folder.
 
 ## Usage of the Tokei Importer
 
+| Parameter                          | description                                   |
+| ---------------------------------- | --------------------------------------------- |
+| `FILE`                             | tokei generated json                          |
+| `--path-seperator=<pathSeperator>` | path seperator (default = '/')                |
+| `-h, --help`                       | displays help                                 |
+| `-o, --outputFile=<outputFile>`    | output File (or empty for stdout)             |
+| `-c`                               | compresses outputfile to gzip format          |
+| `-r, --root-name=<rootName>`       | root folder as specified when executing tokei |
+
 ```
 Usage: ccsh tokeiimporter [-h] [--path-separator=<pathSeparator>]
                           [-o=<outputFile>] [-p=<projectName>] [-r=<rootName>]
                           [FILE]
-generates cc.json from tokei json
-      [FILE]   sourcemonitor csv file
-      --path-separator=<pathSeparator>
-               path separator (default = '/')
-  -h, --help   displays this help and exits
-  -o, --output-file=<outputFile>
-               output File (or empty for stdout)
-  -r, --root-name=<rootName>
-               root folder as specified when executing tokei
 ```
 
 Examples:

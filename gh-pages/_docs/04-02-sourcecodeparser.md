@@ -26,15 +26,26 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 - bug
 - sonar_issue_other
 
-## Parameters
+## Parameter and Usage
 
-- --default-excludes (exclude build, target, dist and out folders as well as files/folders starting with '.')
-- -e, --exclude=\<excludePattern> (exclude file/folder from scan according to regex pattern)
-- -f, --format=\<outputFormat> (table or json)
-- -h, --help
-- -i, --no-issues (do not search for sonar issues)
-- -o, --output-file=\<outputFile> (file to write output to, if empty stdout is used)
-- -v, --verbose
+| Parameter                       | description                                                                            |
+| ------------------------------- | -------------------------------------------------------------------------------------- |
+| `FILE or FOLDER`                | file/project to parse                                                                  |
+| `--default-excludes`            | exclude build, target, dist and out folders as well as files/folders starting with '.' |
+| `-e, --exclude=<exclude>`       | exclude file/folders according to regex pattern                                        |
+| `-f, --format=<outputFormat>`   | the format to output                                                                   |
+| `-h, --help`                    | displays help                                                                          |
+| `-i, --no-issues`               | do not search for sonar issues                                                         |
+| `-o, --outputFile=<outputFile>` | output File (or empty for stdout)                                                      |
+| `-c`                            | compresses outputfile to gzip format, if format of File is JSON                        |
+| `-v, --verbose`                 | verbose mode                                                                           |
+
+### Usage
+
+```
+sourcecodeparser [-chiv] [--default-excludes] [-f=<outputFormat>]
+                 [-o=<outputFile>] [-e=<exclude>]... FOLDER or FILE
+```
 
 ## Run
 

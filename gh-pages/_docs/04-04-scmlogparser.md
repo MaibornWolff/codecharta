@@ -40,7 +40,18 @@ You can also use the bash script anongit which generates an anonymous git log wi
 
 ### Executing the SCMLogParser
 
-See `ccsh -h` for help. Standard usage:
+| Parameter                           | description                                 |
+| ----------------------------------- | ------------------------------------------- |
+| `FILE`                              | file to parse                               |
+| `--add-author`                      | add an array of authors to every file       |
+| `--input-format=<inputFormatNames>` | input format for parsing                    |
+| `--silent`                          | suppress command line output during process |
+| `-h, --help`                        | displays help                               |
+| `-o, --outputFile=<outputFile>`     | output File (or empty for stdout)           |
+| `-c`                                | compresses outputfile to gzip format        |
+| `-log, --logfile`                   | gives loghelp                               |
+
+Standard usage:
 
 > `ccsh scmlogparser <log_file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
 
