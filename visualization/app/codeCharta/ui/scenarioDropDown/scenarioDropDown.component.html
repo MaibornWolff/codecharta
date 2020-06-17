@@ -1,18 +1,37 @@
-<md-menu>
-	<md-button class="scenario-button" ng-click="$mdMenu.open($event)">
+<md-menu class="scenario-component">
+	<md-button class="scenario-button" ng-click="$ctrl.loadScenarios(); $mdMenu.open($event)">
 		<i class="fa fa-star"></i>
 	</md-button>
-	<md-menu-content width="2">
-		<md-menu-item style="min-height: 20px; height: 20px;">
-			<md-button
-				style="min-height: 20px; height: 20px; line-height: 20px; font-size: 9pt; text-align: center;"
-				ng-disabled="true"
-				>Metric Scenario</md-button
-			>
+
+	<md-menu-content class="scenario-drop-down" width="2">
+		<md-menu-item class="scenario-item">
+			<md-button class="scenario-name" ng-disabled="true">Metric Scenarios</md-button>
+			<md-button ng-click="$ctrl.showAddScenarioSettings()" class="action-button add">
+				<i class="fa fa-plus" aria-hidden="true"></i>
+			</md-button>
 		</md-menu-item>
+
 		<md-divider></md-divider>
-		<md-menu-item ng-repeat="scenario in $ctrl._viewModel.scenarios">
-			<md-button ng-click="$ctrl.applyScenario(scenario.name)">{{::scenario.name}}</md-button>
+
+		<md-menu-item
+			class="scenario-item"
+			ng-repeat="scenario in $ctrl._viewModel.dropDownScenarioItems track by $index"
+		>
+			<md-button
+				class="button-hovering"
+				ng-click="$ctrl.applyScenario(scenario.scenarioName)"
+				ng-disabled="!scenario.isScenarioAppliable"
+				>{{ scenario.scenarioName }}</md-button
+			>
+			<span class="content-icons" ng-repeat="icon in scenario.icons">
+				<i class="fa {{ icon.faIconClass }}" ng-class="{ 'is-saved': icon.isSaved }"></i>
+			</span>
+			<md-button
+				ng-click="$ctrl.removeScenario(scenario.scenarioName)"
+				class="action-button remove button-hovering"
+			>
+				<i class="fa fa-minus-square"></i>
+			</md-button>
 		</md-menu-item>
 	</md-menu-content>
 </md-menu>

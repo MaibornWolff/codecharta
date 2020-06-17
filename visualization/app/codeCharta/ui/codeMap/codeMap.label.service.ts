@@ -98,31 +98,32 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private makeText(message: string, fontsize: number): InternalLabel {
 		const canvas = document.createElement("canvas")
 		const ctx = canvas.getContext("2d")
-		ctx!.font = fontsize + "px Helvetica Neue"
+
+		ctx.font = fontsize + "px Helvetica Neue"
 
 		const margin = 20
 
 		// setting canvas width/height before ctx draw, else canvas is empty
-		canvas.width = ctx!.measureText(message).width + margin
+		canvas.width = ctx.measureText(message).width + margin
 		canvas.height = fontsize + margin
 
 		//bg
-		ctx!.fillStyle = "rgba(255,255,255,1)"
-		ctx!.strokeStyle = ColorConverter.convertHexToRgba(
+		ctx.fillStyle = "rgba(255,255,255,1)"
+		ctx.strokeStyle = ColorConverter.convertHexToRgba(
 			this.storeService.getState().appSettings.mapColors.angularGreen
 		)
-		ctx!.lineJoin = "round"
-		ctx!.lineCap = "round"
-		ctx!.lineWidth = 5
-		ctx!.fillRect(0, 0, canvas.width, canvas.height)
-		ctx!.strokeRect(0, 0, canvas.width, canvas.height)
+		ctx.lineJoin = "round"
+		ctx.lineCap = "round"
+		ctx.lineWidth = 5
+		ctx.fillRect(0, 0, canvas.width, canvas.height)
+		ctx.strokeRect(0, 0, canvas.width, canvas.height)
 
 		// after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
-		ctx!.font = fontsize + "px Helvetica Neue"
-		ctx!.fillStyle = "rgba(0,0,0,1)"
-		ctx!.textAlign = "center"
-		ctx!.textBaseline = "middle"
-		ctx!.fillText(message, canvas.width / 2, canvas.height / 2)
+		ctx.font = fontsize + "px Helvetica Neue"
+		ctx.fillStyle = "rgba(0,0,0,1)"
+		ctx.textAlign = "center"
+		ctx.textBaseline = "middle"
+		ctx.fillText(message, canvas.width / 2, canvas.height / 2)
 
 		const texture = new THREE.Texture(canvas)
 		texture.minFilter = THREE.LinearFilter // NearestFilter;

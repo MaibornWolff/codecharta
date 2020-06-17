@@ -16,10 +16,13 @@
 
 	<div class="button-group">
 		<md-button ng-disabled="true">Node</md-button>
-		<md-button ng-click="$ctrl.focusNode()" title="Only show selected nodes with children-nodes"
+		<md-button
+			ng-show="!$ctrl.isNodeFocused()"
+			ng-click="$ctrl.focusNode()"
+			title="Only show selected nodes with children-nodes"
 			><i class="fa fa-bullseye"></i> Focus</md-button
 		>
-
+		<unfocus-button-component ng-show="$ctrl.isNodeOrParentFocused()"></unfocus-button-component>
 		<md-button
 			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
 			ng-click="$ctrl.flattenNode()"
