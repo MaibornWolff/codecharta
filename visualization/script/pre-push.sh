@@ -2,7 +2,7 @@
 
 BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ $BRANCH_NAME =~ ^dependabot/ ]]
+if [[ $BRANCH_NAME =~ ^dependabot ]]
 then
     exit 1
 fi
