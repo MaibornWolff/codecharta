@@ -115,9 +115,7 @@ describe("MetricService", () => {
 		it("should add unary metric to metricData", () => {
 			metricService.onBlacklistChanged([])
 
-			expect(
-				metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length
-			).toBeGreaterThan(0)
+			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBeGreaterThan(0)
 		})
 	})
 

@@ -1,9 +1,6 @@
 import { HideFlatBuildingsAction, HideFlatBuildingsActions, setHideFlatBuildings } from "./hideFlatBuildings.actions"
 
-export function hideFlatBuildings(
-	state: boolean = setHideFlatBuildings().payload,
-	action: HideFlatBuildingsAction
-): boolean {
+export function hideFlatBuildings(state: boolean = setHideFlatBuildings().payload, action: HideFlatBuildingsAction): boolean {
 	switch (action.type) {
 		case HideFlatBuildingsActions.SET_HIDE_FLAT_BUILDINGS:
 			return action.payload

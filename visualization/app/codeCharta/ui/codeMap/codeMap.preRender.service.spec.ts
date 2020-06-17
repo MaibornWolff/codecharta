@@ -17,11 +17,7 @@ import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.ac
 import { Vector3 } from "three"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
-import {
-	addBlacklistItem,
-	BlacklistActions,
-	setBlacklist
-} from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3"
 
 describe("codeMapPreRenderService", () => {

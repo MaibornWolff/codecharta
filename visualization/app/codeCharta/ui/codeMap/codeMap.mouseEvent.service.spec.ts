@@ -179,10 +179,7 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.start()
 
-			expect(ViewCubeMouseEventsService.subscribeToEventPropagation).toHaveBeenCalledWith(
-				$rootScope,
-				codeMapMouseEventService
-			)
+			expect(ViewCubeMouseEventsService.subscribeToEventPropagation).toHaveBeenCalledWith($rootScope, codeMapMouseEventService)
 		})
 	})
 
@@ -334,9 +331,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should call selectBuilding when a new building is selected", () => {
-			threeSceneService.getSelectedBuilding = jest
-				.fn()
-				.mockReturnValue(new CodeMapBuilding(200, null, null, null))
+			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, null, null))
 			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
 
 			codeMapMouseEventService.onDocumentMouseUp()

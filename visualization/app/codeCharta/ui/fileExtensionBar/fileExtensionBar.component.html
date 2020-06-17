@@ -22,11 +22,7 @@
 			</p>
 		</div>
 	</div>
-	<div
-		class="bar-details"
-		ng-class="{ expanded: $ctrl._viewModel.isExtensiveMode }"
-		ng-click="$ctrl.togglePercentageAbsoluteValues()"
-	>
+	<div class="bar-details" ng-class="{ expanded: $ctrl._viewModel.isExtensiveMode }" ng-click="$ctrl.togglePercentageAbsoluteValues()">
 		<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution">
 			<p class="bar-details-text">
 				<span class="dot" ng-style="{ background: item.color }"></span>{{ item.fileExtension }} :

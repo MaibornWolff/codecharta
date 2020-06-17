@@ -38,8 +38,7 @@ export const PLOP_REDUX_SUBREDUCER_FILE_ACTIONS = [
 	modifyFileAction({
 		path: "state/store/state.splitter.ts",
 		pattern: /(\/\/ Plop: Import sub-reducer splitter here)/gi,
-		template:
-			'$1\r\nimport { split{{properCase name}}Actions } from "./{{camelCase name}}/{{camelCase name}}.splitter"'
+		template: '$1\r\nimport { split{{properCase name}}Actions } from "./{{camelCase name}}/{{camelCase name}}.splitter"'
 	}),
 	modifyFileAction({
 		path: "state/store/state.splitter.ts",

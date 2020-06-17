@@ -44,23 +44,19 @@ describe("EdgeSettingsPanelController", () => {
 	}
 
 	function withMockedEdgeMetricDataService(amountOfAffectedBuildings: number = 0) {
-		edgeMetricDataService = edgeSettingsPanelController["edgeMetricDataService"] = jest.fn<EdgeMetricDataService>(
-			() => {
-				return {
-					getAmountOfAffectedBuildings: jest.fn().mockReturnValue(amountOfAffectedBuildings)
-				}
+		edgeMetricDataService = edgeSettingsPanelController["edgeMetricDataService"] = jest.fn<EdgeMetricDataService>(() => {
+			return {
+				getAmountOfAffectedBuildings: jest.fn().mockReturnValue(amountOfAffectedBuildings)
 			}
-		)()
+		})()
 	}
 
 	function withMockedCodeMapActionsService() {
-		codeMapActionsService = edgeSettingsPanelController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(
-			() => {
-				return {
-					updateEdgePreviews: jest.fn()
-				}
+		codeMapActionsService = edgeSettingsPanelController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
+			return {
+				updateEdgePreviews: jest.fn()
 			}
-		)()
+		})()
 	}
 
 	describe("constructor", () => {
@@ -85,10 +81,7 @@ describe("EdgeSettingsPanelController", () => {
 
 			rebuildController()
 
-			expect(ShowOnlyBuildingsWithEdgesService.subscribe).toHaveBeenCalledWith(
-				$rootScope,
-				edgeSettingsPanelController
-			)
+			expect(ShowOnlyBuildingsWithEdgesService.subscribe).toHaveBeenCalledWith($rootScope, edgeSettingsPanelController)
 		})
 
 		it("should subscribe to EdgeMetricService", () => {
@@ -145,9 +138,7 @@ describe("EdgeSettingsPanelController", () => {
 		it("should get amountOfEdgePreviews from settings", () => {
 			edgeSettingsPanelController.onEdgeMetricChanged("anyMetricName")
 
-			expect(edgeSettingsPanelController["_viewModel"].amountOfEdgePreviews).toBe(
-				DEFAULT_STATE.appSettings.amountOfEdgePreviews
-			)
+			expect(edgeSettingsPanelController["_viewModel"].amountOfEdgePreviews).toBe(DEFAULT_STATE.appSettings.amountOfEdgePreviews)
 		})
 
 		it("should get 0 amountOfEdgePreviews and call applySettingsAmountOfEdgePreviews for metricName None", () => {

@@ -1,9 +1,5 @@
 import "./nodePathPanel.component.scss"
-import {
-	BuildingHoveredSubscriber,
-	BuildingUnhoveredSubscriber,
-	CodeMapMouseEventService
-} from "../codeMap/codeMap.mouseEvent.service"
+import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 

@@ -150,12 +150,8 @@ describe("ColorSettingsPanelController", () => {
 			colorSettingsPanelController.invertDeltaColors()
 
 			expect(storeService.getState().appSettings.invertDeltaColors).toBeFalsy()
-			expect(storeService.getState().appSettings.mapColors.positiveDelta).toEqual(
-				DEFAULT_STATE.appSettings.mapColors.negativeDelta
-			)
-			expect(storeService.getState().appSettings.mapColors.negativeDelta).toEqual(
-				DEFAULT_STATE.appSettings.mapColors.positiveDelta
-			)
+			expect(storeService.getState().appSettings.mapColors.positiveDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.negativeDelta)
+			expect(storeService.getState().appSettings.mapColors.negativeDelta).toEqual(DEFAULT_STATE.appSettings.mapColors.positiveDelta)
 		})
 	})
 

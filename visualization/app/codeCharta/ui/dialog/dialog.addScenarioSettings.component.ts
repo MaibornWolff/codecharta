@@ -39,9 +39,7 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	public addScenario() {
-		const selectedScenarioAttributes: AddScenarioContent[] = this._viewModel.scenarioContent.filter(
-			x => x.isSelected == true
-		)
+		const selectedScenarioAttributes: AddScenarioContent[] = this._viewModel.scenarioContent.filter(x => x.isSelected == true)
 		const newScenario: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario(
 			this._viewModel.scenarioName,
 			selectedScenarioAttributes
@@ -82,11 +80,7 @@ export class DialogAddScenarioSettingsComponent {
 			heightSlider: appSettings.scaling,
 			labelSlider: appSettings.amountOfTopLabels
 		})
-		this.pushScenarioContent(
-			ScenarioMetricType.COLOR_METRIC,
-			dynamicSettings.colorMetric,
-			dynamicSettings.colorRange
-		)
+		this.pushScenarioContent(ScenarioMetricType.COLOR_METRIC, dynamicSettings.colorMetric, dynamicSettings.colorRange)
 		this.pushScenarioContent(ScenarioMetricType.EDGE_METRIC, dynamicSettings.edgeMetric, {
 			edgePreview: appSettings.amountOfEdgePreviews,
 			edgeHeight: appSettings.edgeHeight

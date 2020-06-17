@@ -49,14 +49,7 @@ describe("codeChartaController", () => {
 	}
 
 	function rebuildController() {
-		codeChartaController = new CodeChartaController(
-			$location,
-			$http,
-			storeService,
-			dialogService,
-			codeChartaService,
-			injectorService
-		)
+		codeChartaController = new CodeChartaController($location, $http, storeService, dialogService, codeChartaService, injectorService)
 	}
 
 	afterEach(() => {
@@ -117,9 +110,7 @@ describe("codeChartaController", () => {
 		})
 
 		it("should call loadFiles when data is not an empty array", async () => {
-			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest
-				.fn()
-				.mockReturnValue(Promise.resolve([{}]))
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
 
 			await codeChartaController.loadFileOrSample()
 
@@ -127,9 +118,7 @@ describe("codeChartaController", () => {
 		})
 
 		it("should call storeService.dispatch if loadFiles-Promise resolves", async () => {
-			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest
-				.fn()
-				.mockReturnValue(Promise.resolve([{}]))
+			codeChartaController["urlUtils"].getFileDataFromQueryParam = jest.fn().mockReturnValue(Promise.resolve([{}]))
 			storeService.dispatch = jest.fn()
 
 			await codeChartaController.loadFileOrSample()
@@ -146,8 +135,7 @@ describe("codeChartaController", () => {
 		})
 
 		it("should call showErrorDialog when no file is found", () => {
-			const expected =
-				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
+			const expected = "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
 
 			codeChartaController.tryLoadingSampleFiles()
 

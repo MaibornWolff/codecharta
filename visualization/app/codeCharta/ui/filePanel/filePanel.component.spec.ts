@@ -4,14 +4,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
-import {
-	addFile,
-	resetFiles,
-	resetSelection,
-	setDelta,
-	setMultiple,
-	setSingle
-} from "../../state/store/files/files.actions"
+import { addFile, resetFiles, resetSelection, setDelta, setMultiple, setSingle } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
 import { getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState } from "../../model/files/files"
@@ -79,9 +72,7 @@ describe("filePanelController", () => {
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Single)
-			expect(filePanelController["_viewModel"].selectedFileNames.single).toEqual(
-				TEST_DELTA_MAP_A.fileMeta.fileName
-			)
+			expect(filePanelController["_viewModel"].selectedFileNames.single).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
 		})
 
 		it("should update selected filenames in viewModel correctly if partial mode is active", () => {
@@ -102,12 +93,8 @@ describe("filePanelController", () => {
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
-			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(
-				TEST_DELTA_MAP_A.fileMeta.fileName
-			)
-			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(
-				TEST_DELTA_MAP_B.fileMeta.fileName
-			)
+			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
+			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(TEST_DELTA_MAP_B.fileMeta.fileName)
 		})
 
 		it("should update selected filenames in viewModel correctly if delta mode is active with only one file", () => {
@@ -118,12 +105,8 @@ describe("filePanelController", () => {
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].renderState).toEqual(FileSelectionState.Comparison)
-			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(
-				TEST_DELTA_MAP_A.fileMeta.fileName
-			)
-			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(
-				TEST_DELTA_MAP_A.fileMeta.fileName
-			)
+			expect(filePanelController["_viewModel"].selectedFileNames.delta.reference).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
+			expect(filePanelController["_viewModel"].selectedFileNames.delta.comparison).toEqual(TEST_DELTA_MAP_A.fileMeta.fileName)
 		})
 
 		it("should assume that mode is partial, when no mode is active", () => {
@@ -142,12 +125,8 @@ describe("filePanelController", () => {
 			filePanelController.onFilesSelectionChanged(storeService.getState().files)
 
 			expect(filePanelController["_viewModel"].pictogramFirstFileColor).toBe("#808080")
-			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(
-				storeService.getState().appSettings.mapColors.negativeDelta
-			)
-			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(
-				storeService.getState().appSettings.mapColors.positiveDelta
-			)
+			expect(filePanelController["_viewModel"].pictogramLowerColor).toBe(storeService.getState().appSettings.mapColors.negativeDelta)
+			expect(filePanelController["_viewModel"].pictogramUpperColor).toBe(storeService.getState().appSettings.mapColors.positiveDelta)
 		})
 	})
 
@@ -182,9 +161,7 @@ describe("filePanelController", () => {
 			filePanelController.onDeltaReferenceFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
 
 			expect(isDeltaState(storeService.getState().files)).toBeTruthy()
-			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(
-				FileSelectionState.Reference
-			)
+			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(FileSelectionState.Reference)
 		})
 	})
 
@@ -195,26 +172,17 @@ describe("filePanelController", () => {
 			filePanelController.onDeltaComparisonFileChange(TEST_DELTA_MAP_B.fileMeta.fileName)
 
 			expect(isDeltaState(storeService.getState().files)).toBeTruthy()
-			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(
-				FileSelectionState.Comparison
-			)
+			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(FileSelectionState.Comparison)
 		})
 	})
 
 	describe("onPartialFilesChange", () => {
 		it("should set multiple files in multiple mode when at least one is selected", () => {
-			filePanelController.onPartialFilesChange([
-				TEST_DELTA_MAP_A.fileMeta.fileName,
-				TEST_DELTA_MAP_B.fileMeta.fileName
-			])
+			filePanelController.onPartialFilesChange([TEST_DELTA_MAP_A.fileMeta.fileName, TEST_DELTA_MAP_B.fileMeta.fileName])
 
 			expect(isPartialState(storeService.getState().files)).toBeTruthy()
-			expect(getVisibleFileStates(storeService.getState().files)[0].selectedAs).toEqual(
-				FileSelectionState.Partial
-			)
-			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(
-				FileSelectionState.Partial
-			)
+			expect(getVisibleFileStates(storeService.getState().files)[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(FileSelectionState.Partial)
 		})
 	})
 
@@ -259,12 +227,8 @@ describe("filePanelController", () => {
 
 			filePanelController.selectAllPartialFiles()
 
-			expect(getVisibleFileStates(storeService.getState().files)[0].selectedAs).toEqual(
-				FileSelectionState.Partial
-			)
-			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(
-				FileSelectionState.Partial
-			)
+			expect(getVisibleFileStates(storeService.getState().files)[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(FileSelectionState.Partial)
 		})
 	})
 
@@ -276,12 +240,8 @@ describe("filePanelController", () => {
 			filePanelController.selectZeroPartialFiles()
 
 			expect(isPartialState(storeService.getState().files)).toBeTruthy()
-			expect(getVisibleFileStates(storeService.getState().files)[0].selectedAs).toEqual(
-				FileSelectionState.Partial
-			)
-			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(
-				FileSelectionState.Partial
-			)
+			expect(getVisibleFileStates(storeService.getState().files)[0].selectedAs).toEqual(FileSelectionState.Partial)
+			expect(getVisibleFileStates(storeService.getState().files)[1].selectedAs).toEqual(FileSelectionState.Partial)
 			expect(filePanelController["_viewModel"].selectedFileNames.partial).toHaveLength(0)
 		})
 	})

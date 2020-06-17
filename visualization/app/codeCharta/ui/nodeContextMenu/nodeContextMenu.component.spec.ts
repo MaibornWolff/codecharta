@@ -87,22 +87,18 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedCodeMapActionService() {
-		codeMapActionsService = nodeContextMenuController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(
-			() => {
-				return {
-					getParentMP: jest.fn(),
-					anyEdgeIsVisible: jest.fn(),
-					markFolder: jest.fn(),
-					unmarkFolder: jest.fn()
-				}
+		codeMapActionsService = nodeContextMenuController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
+			return {
+				getParentMP: jest.fn(),
+				anyEdgeIsVisible: jest.fn(),
+				markFolder: jest.fn(),
+				unmarkFolder: jest.fn()
 			}
-		)()
+		})()
 	}
 
 	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = nodeContextMenuController["codeMapPreRenderService"] = jest.fn<
-			CodeMapPreRenderService
-		>(() => {
+		codeMapPreRenderService = nodeContextMenuController["codeMapPreRenderService"] = jest.fn<CodeMapPreRenderService>(() => {
 			return {
 				getRenderMap: jest.fn(() => {
 					return TEST_DELTA_MAP_A.map
@@ -125,10 +121,7 @@ describe("nodeContextMenuController", () => {
 
 			rebuildController()
 
-			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith(
-				$rootScope,
-				nodeContextMenuController
-			)
+			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
 		it("should subscribe focus-node-events", () => {
@@ -137,10 +130,7 @@ describe("nodeContextMenuController", () => {
 
 			rebuildController()
 
-			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith(
-				$rootScope,
-				nodeContextMenuController
-			)
+			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
 		it("should subscribe unfocus-node-events", () => {
@@ -149,10 +139,7 @@ describe("nodeContextMenuController", () => {
 
 			rebuildController()
 
-			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith(
-				$rootScope,
-				nodeContextMenuController
-			)
+			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
 		it("should subscribe blacklist events", () => {
@@ -374,9 +361,7 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.isNodeOrParentMarked("color")
 
 			expect(result).toBeTruthy()
-			expect(codeMapActionsService.getParentMP).toHaveBeenCalledWith(
-				nodeContextMenuController["_viewModel"].codeMapNode.path
-			)
+			expect(codeMapActionsService.getParentMP).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode.path)
 		})
 	})
 
@@ -384,10 +369,7 @@ describe("nodeContextMenuController", () => {
 		it("should call hide and codeMapActionService.markFolder", () => {
 			nodeContextMenuController.markFolder("color")
 
-			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(
-				nodeContextMenuController["_viewModel"].codeMapNode,
-				"color"
-			)
+			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode, "color")
 		})
 	})
 
@@ -395,9 +377,7 @@ describe("nodeContextMenuController", () => {
 		it("should call hide and codeMapActionService.unmarkFolder", () => {
 			nodeContextMenuController.unmarkFolder()
 
-			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(
-				nodeContextMenuController["_viewModel"].codeMapNode
-			)
+			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode)
 		})
 	})
 
@@ -409,9 +389,7 @@ describe("nodeContextMenuController", () => {
 		it("should set new focused path", () => {
 			nodeContextMenuController.focusNode()
 
-			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(
-				VALID_NODE_WITH_PATH.children[1].path
-			)
+			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual(VALID_NODE_WITH_PATH.children[1].path)
 		})
 	})
 

@@ -11,9 +11,7 @@ export interface SetSearchedNodePathsAction extends CCAction {
 
 export type SearchedNodePathsAction = SetSearchedNodePathsAction
 
-export function setSearchedNodePaths(
-	searchedNodePaths: Set<string> = defaultSearchedNodePaths
-): SetSearchedNodePathsAction {
+export function setSearchedNodePaths(searchedNodePaths: Set<string> = defaultSearchedNodePaths): SetSearchedNodePathsAction {
 	return {
 		type: SearchedNodePathsActions.SET_SEARCHED_NODE_PATHS,
 		payload: searchedNodePaths

@@ -5,12 +5,8 @@
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="legend-block">
 			<img ng-src="{{ $ctrl._viewModel.colorIcons.positive }}" alt="" />
-			<span ng-if="!$ctrl._viewModel.invertColorRange"
-				>0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span
-			>
-			<span ng-if="$ctrl._viewModel.invertColorRange"
-				>&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span
-			>
+			<span ng-if="!$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
+			<span ng-if="$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span>
 		</div>
 		<div class="legend-block">
 			<img ng-src="{{ $ctrl._viewModel.colorIcons.neutral }}" alt="" />
@@ -19,12 +15,8 @@
 		</div>
 		<div class="legend-block">
 			<img ng-src="{{ $ctrl._viewModel.colorIcons.negative }}" alt="" />
-			<span ng-if="!$ctrl._viewModel.invertColorRange"
-				>&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span
-			>
-			<span ng-if="$ctrl._viewModel.invertColorRange"
-				>0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span
-			>
+			<span ng-if="!$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span>
+			<span ng-if="$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
 		</div>
 	</div>
 
@@ -55,11 +47,7 @@
 	</div>
 
 	<hr ng-show="$ctrl._viewModel.packageLists[0]" />
-	<div
-		class="legend-block"
-		ng-show="$ctrl._viewModel.packageLists"
-		ng-repeat="packageList in $ctrl._viewModel.packageLists"
-	>
+	<div class="legend-block" ng-show="$ctrl._viewModel.packageLists" ng-repeat="packageList in $ctrl._viewModel.packageLists">
 		<img ng-src="{{::packageList.colorPixel}}" alt="" />
 		<span
 			class="marked-package {{ $first ? '' : 'set-left-margin' }}"

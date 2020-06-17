@@ -41,9 +41,7 @@ export class CodeMapBuilding {
 		if (this._node.deltas) {
 			const deltaColorHSL = ColorConverter.hexToHSL(this._defaultDeltaColor)
 			deltaColorHSL.decreaseLightness(value)
-			deltaColorHSL.getLightness() < 10
-				? deltaColorHSL.setLightness(10)
-				: deltaColorHSL.setLightness(deltaColorHSL.getLightness())
+			deltaColorHSL.getLightness() < 10 ? deltaColorHSL.setLightness(10) : deltaColorHSL.setLightness(deltaColorHSL.getLightness())
 			this._deltaColor = deltaColorHSL.toHex()
 		}
 	}

@@ -17,9 +17,7 @@ export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: b
 						: oldMarkedPackages.path,
 					color: oldMarkedPackages.color
 				}
-				const equalMarkedPackages = markedPackages.find(
-					x => x.path == markedPackage.path && x.color == markedPackage.color
-				)
+				const equalMarkedPackages = markedPackages.find(x => x.path == markedPackage.path && x.color == markedPackage.color)
 
 				if (!equalMarkedPackages) {
 					markedPackages.push(markedPackage)

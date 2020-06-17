@@ -12,10 +12,7 @@ export class FilePanelPageObject {
 	}
 
 	public async getAllNames() {
-		const content = await this.page.$eval(
-			".md-select-menu-container.md-active > md-select-menu",
-			el => el["innerText"]
-		)
+		const content = await this.page.$eval(".md-select-menu-container.md-active > md-select-menu", el => el["innerText"])
 		return content.split("\n")
 	}
 }

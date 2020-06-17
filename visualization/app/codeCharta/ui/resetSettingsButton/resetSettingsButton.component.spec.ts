@@ -40,8 +40,7 @@ describe("resetSettingsButtonController", () => {
 		})
 
 		it("settingsNames should allow newline", () => {
-			resetSettingsButtonController["settingsNames"] =
-				"appSettings.invertColorRange,\nappSettings.hideFlatBuildings"
+			resetSettingsButtonController["settingsNames"] = "appSettings.invertColorRange,\nappSettings.hideFlatBuildings"
 
 			resetSettingsButtonController.applyDefaultSettings()
 
@@ -78,8 +77,7 @@ describe("resetSettingsButtonController", () => {
 
 		it("should update nested settings in service", () => {
 			storeService.dispatch(setScaling(new Vector3(2, 2, 2)))
-			resetSettingsButtonController["settingsNames"] =
-				"appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"
+			resetSettingsButtonController["settingsNames"] = "appSettings.scaling.x, appSettings.scaling.y, appSettings.scaling.z"
 
 			resetSettingsButtonController.applyDefaultSettings()
 

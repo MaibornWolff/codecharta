@@ -13,10 +13,7 @@
 
 		<md-divider></md-divider>
 
-		<md-menu-item
-			class="scenario-item"
-			ng-repeat="scenario in $ctrl._viewModel.dropDownScenarioItems track by $index"
-		>
+		<md-menu-item class="scenario-item" ng-repeat="scenario in $ctrl._viewModel.dropDownScenarioItems track by $index">
 			<md-button
 				class="button-hovering"
 				ng-click="$ctrl.applyScenario(scenario.scenarioName)"
@@ -26,10 +23,7 @@
 			<span class="content-icons" ng-repeat="icon in scenario.icons">
 				<i class="fa {{ icon.faIconClass }}" ng-class="{ 'is-saved': icon.isSaved }"></i>
 			</span>
-			<md-button
-				ng-click="$ctrl.removeScenario(scenario.scenarioName)"
-				class="action-button remove button-hovering"
-			>
+			<md-button ng-click="$ctrl.removeScenario(scenario.scenarioName)" class="action-button remove button-hovering">
 				<i class="fa fa-minus-square"></i>
 			</md-button>
 		</md-menu-item>

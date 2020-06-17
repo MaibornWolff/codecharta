@@ -3,11 +3,7 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { DistributionMetricService } from "./distributionMetric.service"
-import {
-	DistributionMetricAction,
-	DistributionMetricActions,
-	setDistributionMetric
-} from "./distributionMetric.actions"
+import { DistributionMetricAction, DistributionMetricActions, setDistributionMetric } from "./distributionMetric.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { MetricService } from "../../../metric.service"
 

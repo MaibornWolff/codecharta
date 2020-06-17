@@ -53,11 +53,7 @@
 </md-slider-container>
 
 <md-input-container class="md-block" ng-if="!$ctrl._viewModel.isDeltaState">
-	<md-checkbox
-		class="md-primary"
-		ng-model="$ctrl._viewModel.invertHeight"
-		ng-change="$ctrl.applySettingsInvertHeight()"
-	>
+	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertHeight" ng-change="$ctrl.applySettingsInvertHeight()">
 		Invert Height
 	</md-checkbox>
 </md-input-container>

@@ -43,10 +43,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const labelY: number = y + node.height
 			const labelZ: number = z + node.length / 2
 
-			const label: InternalLabel = this.makeText(
-				node.name + ": " + node.attributes[state.dynamicSettings.heightMetric],
-				30
-			)
+			const label: InternalLabel = this.makeText(node.name + ": " + node.attributes[state.dynamicSettings.heightMetric], 30)
 			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelZ)
 
@@ -109,9 +106,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		//bg
 		ctx.fillStyle = "rgba(255,255,255,1)"
-		ctx.strokeStyle = ColorConverter.convertHexToRgba(
-			this.storeService.getState().appSettings.mapColors.angularGreen
-		)
+		ctx.strokeStyle = ColorConverter.convertHexToRgba(this.storeService.getState().appSettings.mapColors.angularGreen)
 		ctx.lineJoin = "round"
 		ctx.lineCap = "round"
 		ctx.lineWidth = 5
@@ -144,11 +139,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere().center
 		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
 		const resultingLabelWidth = !currentLabelWidth ? sprite.material.map.image.width : currentLabelWidth
-		sprite.scale.set(
-			(distance / this.LABEL_WIDTH_DIVISOR) * resultingLabelWidth,
-			distance / this.LABEL_HEIGHT_DIVISOR,
-			1
-		)
+		sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * resultingLabelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
 	}
 
 	private makeLine(x: number, y: number, z: number): THREE.Line {

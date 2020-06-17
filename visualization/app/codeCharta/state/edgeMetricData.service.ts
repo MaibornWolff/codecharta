@@ -1,12 +1,4 @@
-import {
-	MetricData,
-	BlacklistItem,
-	Edge,
-	BlacklistType,
-	CodeMapNode,
-	EdgeMetricCount,
-	AttributeTypeValue
-} from "../codeCharta.model"
+import { MetricData, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount, AttributeTypeValue } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { HierarchyNode } from "d3"

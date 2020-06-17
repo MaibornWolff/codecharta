@@ -60,9 +60,7 @@ describe("SortingOptionController", () => {
 
 			sortingOptionController.onChange()
 
-			expect(storeService.getState().dynamicSettings.sortingOption).toBe(
-				sortingOptionController["_viewModel"].sortingOption
-			)
+			expect(storeService.getState().dynamicSettings.sortingOption).toBe(sortingOptionController["_viewModel"].sortingOption)
 		})
 	})
 })

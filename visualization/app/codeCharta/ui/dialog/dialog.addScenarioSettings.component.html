@@ -14,28 +14,16 @@
 
 			<p>The scenario includes:</p>
 
-			<md-input-container
-				class="input-container md-block"
-				ng-repeat="item in $ctrl._viewModel.scenarioContent"
-				class="md-block"
-			>
-				<md-checkbox
-					class="dialog-list md-primary"
-					ng-disabled="::item.isDisabled"
-					ng-model="::item.isSelected"
-				>
+			<md-input-container class="input-container md-block" ng-repeat="item in $ctrl._viewModel.scenarioContent" class="md-block">
+				<md-checkbox class="dialog-list md-primary" ng-disabled="::item.isDisabled" ng-model="::item.isSelected">
 					<span ng-if="item.metricType == 'Camera-Position'">{{::item.metricType}} </span>
-					<span ng-if="item.metricType != 'Camera-Position'"
-						>{{::item.metricType}} ({{::item.metricName}})
-					</span>
+					<span ng-if="item.metricType != 'Camera-Position'">{{::item.metricType}} ({{::item.metricName}}) </span>
 				</md-checkbox>
 			</md-input-container>
 		</div>
 	</md-dialog-content>
 
 	<md-dialog-actions>
-		<md-button ng-click="$ctrl.addScenario()" ng-disabled="!$ctrl.isNewScenarioValid()" class="md-primary"
-			>Add</md-button
-		>
+		<md-button ng-click="$ctrl.addScenario()" ng-disabled="!$ctrl.isNewScenarioValid()" class="md-primary">Add</md-button>
 	</md-dialog-actions>
 </md-dialog>

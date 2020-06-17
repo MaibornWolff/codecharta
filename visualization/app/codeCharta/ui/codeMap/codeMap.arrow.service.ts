@@ -1,36 +1,20 @@
-import {
-	BuildingDeselectedEventSubscriber,
-	BuildingSelectedEventSubscriber,
-	ThreeSceneService
-} from "./threeViewer/threeSceneService"
+import { BuildingDeselectedEventSubscriber, BuildingSelectedEventSubscriber, ThreeSceneService } from "./threeViewer/threeSceneService"
 import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { Edge } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
-import {
-	BuildingHoveredSubscriber,
-	CodeMapMouseEventService,
-	BuildingUnhoveredSubscriber
-} from "./codeMap.mouseEvent.service"
+import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
 import { ColorConverter } from "../../util/color/colorConverter"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 
 export class CodeMapArrowService
-	implements
-		BuildingSelectedEventSubscriber,
-		BuildingDeselectedEventSubscriber,
-		BuildingHoveredSubscriber,
-		BuildingUnhoveredSubscriber {
+	implements BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private VERTICES_PER_LINE = 5
 	private map: Map<String, Node>
 	private arrows: Object3D[]
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private threeSceneService: ThreeSceneService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
 		this.arrows = new Array<Object3D>()
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
@@ -165,19 +149,11 @@ export class CodeMapArrowService
 		const arrowHeight = Math.max(bezierPoint2.y + arrowTargetNode.height, bezierPoint3.y + 1) + curveScale
 		bezierPoint2.setY(arrowHeight)
 		bezierPoint3.setY(arrowHeight)
-		return new CubicBezierCurve3(
-			arrowOriginNode.outgoingEdgePoint,
-			bezierPoint2,
-			bezierPoint3,
-			arrowTargetNode.incomingEdgePoint
-		)
+		return new CubicBezierCurve3(arrowOriginNode.outgoingEdgePoint, bezierPoint2, bezierPoint3, arrowTargetNode.incomingEdgePoint)
 	}
 
 	private highlightBuilding(node: Node) {
-		const building: CodeMapBuilding = this.threeSceneService
-			.getMapMesh()
-			.getMeshDescription()
-			.getBuildingByPath(node.path)
+		const building: CodeMapBuilding = this.threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath(node.path)
 		this.threeSceneService.addBuildingToHighlightingList(building)
 	}
 

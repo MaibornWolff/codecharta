@@ -16,10 +16,7 @@
 
 	<div class="button-group">
 		<md-button ng-disabled="true">Node</md-button>
-		<md-button
-			ng-show="!$ctrl.isNodeFocused()"
-			ng-click="$ctrl.focusNode()"
-			title="Only show selected nodes with children-nodes"
+		<md-button ng-show="!$ctrl.isNodeFocused()" ng-click="$ctrl.focusNode()" title="Only show selected nodes with children-nodes"
 			><i class="fa fa-bullseye"></i> Focus</md-button
 		>
 		<unfocus-button-component ng-show="$ctrl.isNodeOrParentFocused()"></unfocus-button-component>
@@ -29,10 +26,7 @@
 			title="Flatten node and children-nodes, but keep an empty space"
 			><i class="fa fa-eye-slash"></i> Flatten</md-button
 		>
-		<md-button
-			ng-if="$ctrl._viewModel.codeMapNode.isFlattened"
-			ng-click="$ctrl.showNode()"
-			title="Show node and children-nodes"
+		<md-button ng-if="$ctrl._viewModel.codeMapNode.isFlattened" ng-click="$ctrl.showNode()" title="Show node and children-nodes"
 			><i class="fa fa-eye"></i> Show</md-button
 		>
 

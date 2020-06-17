@@ -73,9 +73,7 @@ describe("SearchBarController", () => {
 			searchBarController["_viewModel"].searchPattern = "*fileSettings"
 			searchBarController["updateSearchPattern"]()
 
-			expect(storeService.getState().dynamicSettings.searchPattern).toBe(
-				searchBarController["_viewModel"].searchPattern
-			)
+			expect(storeService.getState().dynamicSettings.searchPattern).toBe(searchBarController["_viewModel"].searchPattern)
 		})
 	})
 

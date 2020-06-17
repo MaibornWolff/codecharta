@@ -9,10 +9,7 @@ export class DeltaGenerator {
 	public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
 		const referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(clone(referenceFile.map))
 		const comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(clone(comparisonFile.map))
-		const hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(
-			referenceHashMap,
-			comparisonHashMap
-		)
+		const hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
 
 		const fileMeta = this.getFileMetaData(referenceFile, comparisonFile)
 		const map = MapBuilder.createCodeMapFromHashMap(hashMapWithAllNodes)
@@ -58,11 +55,7 @@ export class DeltaGenerator {
 		return hashMapWithAllNodes
 	}
 
-	private static getNewDeltaNode(
-		node: CodeMapNode,
-		referenceAttr: KeyValuePair,
-		comparisonAttr: KeyValuePair
-	): CodeMapNode {
+	private static getNewDeltaNode(node: CodeMapNode, referenceAttr: KeyValuePair, comparisonAttr: KeyValuePair): CodeMapNode {
 		node.children = []
 		node.deltas = this.getDeltaAttributeList(referenceAttr, comparisonAttr)
 		node.attributes = comparisonAttr
@@ -92,8 +85,7 @@ export class DeltaGenerator {
 				"_and_" +
 				FileNameHelper.withoutCCJsonExtension(comparisonFile.fileMeta.fileName),
 			apiVersion: require("../../../package.json").codecharta.apiVersion,
-			projectName:
-				"delta_between_" + referenceFile.fileMeta.projectName + "_and_" + comparisonFile.fileMeta.projectName
+			projectName: "delta_between_" + referenceFile.fileMeta.projectName + "_and_" + comparisonFile.fileMeta.projectName
 		}
 	}
 

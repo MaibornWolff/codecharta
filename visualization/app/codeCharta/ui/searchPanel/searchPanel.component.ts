@@ -3,10 +3,7 @@ import { IRootScopeService } from "angular"
 import { SearchPanelMode } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
-import {
-	SearchPanelModeService,
-	SearchPanelModeSubscriber
-} from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
+import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
 
 export class SearchPanelController implements SearchPanelModeSubscriber {
 	private _viewModel: {

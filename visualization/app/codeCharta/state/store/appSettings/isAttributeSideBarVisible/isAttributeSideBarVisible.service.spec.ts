@@ -49,10 +49,7 @@ describe("IsAttributeSideBarVisibleService", () => {
 
 			rebuildService()
 
-			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith(
-				$rootScope,
-				isAttributeSideBarVisibleService
-			)
+			expect(ThreeSceneService.subscribeToBuildingSelectedEvents).toHaveBeenCalledWith($rootScope, isAttributeSideBarVisibleService)
 		})
 
 		it("should subscribe to Node Deselected Events", () => {
@@ -60,10 +57,7 @@ describe("IsAttributeSideBarVisibleService", () => {
 
 			rebuildService()
 
-			expect(ThreeSceneService.subscribeToBuildingDeselectedEvents).toHaveBeenCalledWith(
-				$rootScope,
-				isAttributeSideBarVisibleService
-			)
+			expect(ThreeSceneService.subscribeToBuildingDeselectedEvents).toHaveBeenCalledWith($rootScope, isAttributeSideBarVisibleService)
 		})
 	})
 
@@ -96,9 +90,7 @@ describe("IsAttributeSideBarVisibleService", () => {
 			}
 			storeService["store"].dispatch(action)
 
-			isAttributeSideBarVisibleService.onStoreChanged(
-				IsAttributeSideBarVisibleActions.SET_IS_ATTRIBUTE_SIDE_BAR_VISIBLE
-			)
+			isAttributeSideBarVisibleService.onStoreChanged(IsAttributeSideBarVisibleActions.SET_IS_ATTRIBUTE_SIDE_BAR_VISIBLE)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("is-attribute-side-bar-visible-changed", {
 				isAttributeSideBarVisible: true

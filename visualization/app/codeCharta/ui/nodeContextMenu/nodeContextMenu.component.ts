@@ -17,10 +17,7 @@ import {
 	UnfocusNodeSubscriber
 } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import {
-	MarkedPackagesService,
-	MarkedPackagesSubscriber
-} from "../../state/store/fileSettings/markedPackages/markedPackages.service"
+import { MarkedPackagesService, MarkedPackagesSubscriber } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
 
 export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
@@ -92,11 +89,7 @@ export class NodeContextMenuController
 	}
 
 	public onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
-		this._viewModel.codeMapNode = CodeMapHelper.getCodeMapNodeFromPath(
-			path,
-			nodeType,
-			this.codeMapPreRenderService.getRenderMap()
-		)
+		this._viewModel.codeMapNode = CodeMapHelper.getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
 		this.synchronizeAngularTwoWayBinding()
@@ -164,9 +157,7 @@ export class NodeContextMenuController
 	}
 
 	private isNodeMarked(): boolean {
-		return this.storeService
-			.getState()
-			.fileSettings.markedPackages.some(mp => mp.path == this._viewModel.codeMapNode.path)
+		return this.storeService.getState().fileSettings.markedPackages.some(mp => mp.path == this._viewModel.codeMapNode.path)
 	}
 
 	private packageMatchesColor(color: string): boolean {
@@ -217,11 +208,7 @@ export class NodeContextMenuController
 	}
 
 	public nodeIsFolder() {
-		return (
-			this._viewModel.codeMapNode &&
-			this._viewModel.codeMapNode.children &&
-			this._viewModel.codeMapNode.children.length > 0
-		)
+		return this._viewModel.codeMapNode && this._viewModel.codeMapNode.children && this._viewModel.codeMapNode.children.length > 0
 	}
 
 	private synchronizeAngularTwoWayBinding() {
@@ -237,10 +224,7 @@ export class NodeContextMenuController
 		})
 	}
 
-	public static subscribeToShowNodeContextMenu(
-		$rootScope: IRootScopeService,
-		subscriber: ShowNodeContextMenuSubscriber
-	) {
+	public static subscribeToShowNodeContextMenu($rootScope: IRootScopeService, subscriber: ShowNodeContextMenuSubscriber) {
 		$rootScope.$on(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, (event, data) => {
 			subscriber.onShowNodeContextMenu(data.path, data.type, data.x, data.y)
 		})

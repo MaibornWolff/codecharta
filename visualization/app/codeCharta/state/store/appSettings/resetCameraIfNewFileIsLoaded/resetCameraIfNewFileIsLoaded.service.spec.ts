@@ -2,10 +2,7 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import {
-	ResetCameraIfNewFileIsLoadedAction,
-	ResetCameraIfNewFileIsLoadedActions
-} from "./resetCameraIfNewFileIsLoaded.actions"
+import { ResetCameraIfNewFileIsLoadedAction, ResetCameraIfNewFileIsLoadedActions } from "./resetCameraIfNewFileIsLoaded.actions"
 import { ResetCameraIfNewFileIsLoadedService } from "./resetCameraIfNewFileIsLoaded.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 
@@ -49,9 +46,7 @@ describe("ResetCameraIfNewFileIsLoadedService", () => {
 			}
 			storeService["store"].dispatch(action)
 
-			resetCameraIfNewFileIsLoadedService.onStoreChanged(
-				ResetCameraIfNewFileIsLoadedActions.SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED
-			)
+			resetCameraIfNewFileIsLoadedService.onStoreChanged(ResetCameraIfNewFileIsLoadedActions.SET_RESET_CAMERA_IF_NEW_FILE_IS_LOADED)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("reset-camera-if-new-file-is-loaded-changed", {
 				resetCameraIfNewFileIsLoaded: false

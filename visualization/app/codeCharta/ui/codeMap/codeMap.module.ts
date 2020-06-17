@@ -13,11 +13,7 @@ import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import _ from "lodash"
 
 angular
-	.module("app.codeCharta.ui.codeMap", [
-		"app.codeCharta.state",
-		"app.codeCharta",
-		"app.codeCharta.ui.codeMap.threeViewer"
-	])
+	.module("app.codeCharta.ui.codeMap", ["app.codeCharta.state", "app.codeCharta", "app.codeCharta.ui.codeMap.threeViewer"])
 	.component(codeMapComponent.selector, codeMapComponent)
 	.service(_.camelCase(CodeMapRenderService.name), CodeMapRenderService)
 	.service(_.camelCase(CodeMapPreRenderService.name), CodeMapPreRenderService)

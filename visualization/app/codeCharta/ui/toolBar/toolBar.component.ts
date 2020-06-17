@@ -1,9 +1,5 @@
 import "./toolBar.component.scss"
-import {
-	CodeMapMouseEventService,
-	BuildingUnhoveredSubscriber,
-	BuildingHoveredSubscriber
-} from "../codeMap/codeMap.mouseEvent.service"
+import { CodeMapMouseEventService, BuildingUnhoveredSubscriber, BuildingHoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 

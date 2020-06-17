@@ -46,13 +46,7 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	function rebuildController() {
-		codeMapController = new CodeMapController(
-			$rootScope,
-			$timeout,
-			$element,
-			threeViewerService,
-			codeMapMouseEventService
-		)
+		codeMapController = new CodeMapController($rootScope, $timeout, $element, threeViewerService, codeMapMouseEventService)
 	}
 
 	describe("constructor", () => {

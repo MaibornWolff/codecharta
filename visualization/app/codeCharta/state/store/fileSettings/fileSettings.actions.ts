@@ -17,9 +17,7 @@ export interface SetFileSettingsAction extends CCAction {
 
 export type FileSettingsAction = SetFileSettingsAction
 
-export function setFileSettings(
-	fileSettings: RecursivePartial<FileSettings> = defaultFileSettings
-): FileSettingsAction {
+export function setFileSettings(fileSettings: RecursivePartial<FileSettings> = defaultFileSettings): FileSettingsAction {
 	return {
 		type: FileSettingsActions.SET_FILE_SETTINGS,
 		payload: fileSettings

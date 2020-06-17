@@ -58,10 +58,7 @@ describe("EdgeChooserController", () => {
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith(
-				$rootScope,
-				edgeChooserController
-			)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 
 		it("should subscribe to unhovered buildings", () => {
@@ -69,10 +66,7 @@ describe("EdgeChooserController", () => {
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith(
-				$rootScope,
-				edgeChooserController
-			)
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, edgeChooserController)
 		})
 
 		it("should subscribe to EdgeMetricService", () => {

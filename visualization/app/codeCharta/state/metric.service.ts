@@ -1,21 +1,11 @@
-import {
-	BlacklistItem,
-	BlacklistType,
-	CodeMapNode,
-	MetricData,
-	AttributeTypeValue,
-	AttributeTypes
-} from "../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, MetricData, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blacklist/blacklist.service"
 import { StoreService } from "./store.service"
 import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
-import {
-	AttributeTypesSubscriber,
-	AttributeTypesService
-} from "./store/fileSettings/attributeTypes/attributeTypes.service"
+import { AttributeTypesSubscriber, AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { fileStatesAvailable, getVisibleFileStates } from "../model/files/files.helper"
 import { FileState } from "../model/files/files"
 

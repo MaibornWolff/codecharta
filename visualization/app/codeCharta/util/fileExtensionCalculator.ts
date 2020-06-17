@@ -44,9 +44,7 @@ export class FileExtensionCalculator {
 		return distribution
 	}
 
-	private static decorateDistributionWithRelativeMetricValue(
-		distribution: MetricDistribution[]
-	): MetricDistribution[] {
+	private static decorateDistributionWithRelativeMetricValue(distribution: MetricDistribution[]): MetricDistribution[] {
 		const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
 		if (sumOfAllMetricValues === 0) {
 			return [this.getNoneExtension()]

@@ -169,27 +169,18 @@ export class ViewCubemeshGenerator {
 		cubeVerticeGeometry: THREE.BoxGeometry,
 		cubeFaceGeometry: THREE.BoxGeometry
 	) {
-		const {
-			group: topEdge,
-			left: topLeft,
-			right: topRight,
-			center: topCenter
-		} = ViewCubemeshGenerator.buildFullEdge(cubeEdgeGeometry, cubeVerticeGeometry)
-		const {
-			group: bottomEdge,
-			left: bottomLeft,
-			right: bottomRight,
-			center: bottomCenter
-		} = ViewCubemeshGenerator.buildFullEdge(cubeEdgeGeometry, cubeVerticeGeometry)
+		const { group: topEdge, left: topLeft, right: topRight, center: topCenter } = ViewCubemeshGenerator.buildFullEdge(
+			cubeEdgeGeometry,
+			cubeVerticeGeometry
+		)
+		const { group: bottomEdge, left: bottomLeft, right: bottomRight, center: bottomCenter } = ViewCubemeshGenerator.buildFullEdge(
+			cubeEdgeGeometry,
+			cubeVerticeGeometry
+		)
 		const offset = cubeEdgeGeometry.parameters.height / 2 + cubeFaceGeometry.parameters.height / 2
 		topEdge.position.y += offset
 		bottomEdge.position.y -= offset
-		const {
-			group: middleFace,
-			left: middleLeft,
-			right: middleRight,
-			center: middleCenter
-		} = ViewCubemeshGenerator.buildMiddleFace(
+		const { group: middleFace, left: middleLeft, right: middleRight, center: middleCenter } = ViewCubemeshGenerator.buildMiddleFace(
 			cubeFaceGeometry,
 
 			cubeEdgeGeometry

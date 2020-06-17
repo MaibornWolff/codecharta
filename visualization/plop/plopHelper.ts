@@ -15,8 +15,7 @@ export function createFileAction(sourceDirectory: string, destinationDirectory: 
 	return {
 		type: "add",
 		path: APP_BASE + destinationDirectory + PATH_SEPARATOR + [NAME, ...suffixTokens].join(FILE_NAME_SEPARATOR),
-		templateFile:
-			TEMPLATE_DIRECTORY + sourceDirectory + PATH_SEPARATOR + suffixTokens.join(".") + PLOP_TEMPLATE_EXTENSION
+		templateFile: TEMPLATE_DIRECTORY + sourceDirectory + PATH_SEPARATOR + suffixTokens.join(".") + PLOP_TEMPLATE_EXTENSION
 	}
 }
 

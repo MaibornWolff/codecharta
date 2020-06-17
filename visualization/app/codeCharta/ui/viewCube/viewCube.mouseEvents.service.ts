@@ -36,12 +36,8 @@ export class ViewCubeMouseEventsService {
 	private initRendererEventListeners(renderer: THREE.WebGLRenderer) {
 		renderer.domElement.addEventListener("mousemove", (event: MouseEvent) => this.onDocumentMouseMove(event))
 		renderer.domElement.addEventListener("mouseup", (event: MouseEvent) => this.onDocumentMouseUp(event))
-		renderer.domElement.addEventListener("mousedown", (event: MouseEvent) =>
-			this.checkMouseIntersection(event, "mousedown")
-		)
-		renderer.domElement.addEventListener("dblclick", (event: MouseEvent) =>
-			this.checkMouseIntersection(event, "dblclick")
-		)
+		renderer.domElement.addEventListener("mousedown", (event: MouseEvent) => this.checkMouseIntersection(event, "mousedown"))
+		renderer.domElement.addEventListener("dblclick", (event: MouseEvent) => this.checkMouseIntersection(event, "dblclick"))
 	}
 
 	private checkMouseIntersection(event: MouseEvent, mouseAction: string) {
@@ -118,10 +114,7 @@ export class ViewCubeMouseEventsService {
 		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME, { cube })
 	}
 
-	public static subscribeToEventPropagation(
-		$rootScope: IRootScopeService,
-		subscriber: ViewCubeEventPropagationSubscriber
-	) {
+	public static subscribeToEventPropagation($rootScope: IRootScopeService, subscriber: ViewCubeEventPropagationSubscriber) {
 		$rootScope.$on(
 			ViewCubeMouseEventsService.VIEW_CUBE_EVENT_PROPAGATION_EVENT_NAME,
 			(event: IAngularEvent, params: { type: string; e: MouseEvent }) => {
@@ -131,22 +124,16 @@ export class ViewCubeMouseEventsService {
 	}
 
 	public static subscribeToViewCubeMouseEvents($rootScope: IRootScopeService, subscriber: ViewCubeEventSubscriber) {
-		$rootScope.$on(
-			ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME,
-			(event: IAngularEvent, params: { cube: THREE.Mesh }) => {
-				subscriber.onCubeHovered(params.cube)
-			}
-		)
+		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME, (event: IAngularEvent, params: { cube: THREE.Mesh }) => {
+			subscriber.onCubeHovered(params.cube)
+		})
 
 		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_UNHOVER_EVENT_NAME, () => {
 			subscriber.onCubeUnhovered()
 		})
 
-		$rootScope.$on(
-			ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME,
-			(event: IAngularEvent, params: { cube: THREE.Mesh }) => {
-				subscriber.onCubeClicked(params.cube)
-			}
-		)
+		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME, (event: IAngularEvent, params: { cube: THREE.Mesh }) => {
+			subscriber.onCubeClicked(params.cube)
+		})
 	}
 }

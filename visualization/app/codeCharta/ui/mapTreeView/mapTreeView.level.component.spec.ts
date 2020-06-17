@@ -142,10 +142,7 @@ describe("MapTreeViewLevelController", () => {
 		it("should broadcast should-unhover-node", () => {
 			mapTreeViewLevelController.onMouseLeave()
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith(
-				"should-unhover-node",
-				mapTreeViewLevelController["node"]
-			)
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("should-unhover-node", mapTreeViewLevelController["node"])
 		})
 	})
 
@@ -200,9 +197,7 @@ describe("MapTreeViewLevelController", () => {
 				NodeType.FOLDER,
 				VALID_NODE_WITH_PATH
 			)
-			storeService.dispatch(
-				setSearchedNodePaths(new Set(["/root/Parent Leaf/", "/root/Parent Leaf/empty folder"]))
-			)
+			storeService.dispatch(setSearchedNodePaths(new Set(["/root/Parent Leaf/", "/root/Parent Leaf/empty folder"])))
 
 			const result = mapTreeViewLevelController.isSearched()
 

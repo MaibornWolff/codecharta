@@ -19,10 +19,7 @@ export interface CloseAttributeSideBarAction extends Action {
 	type: IsAttributeSideBarVisibleActions.CLOSE_ATTRIBUTE_SIDE_BAR
 }
 
-export type IsAttributeSideBarVisibleAction =
-	| SetIsAttributeSideBarVisibleAction
-	| OpenAttributeSideBarAction
-	| CloseAttributeSideBarAction
+export type IsAttributeSideBarVisibleAction = SetIsAttributeSideBarVisibleAction | OpenAttributeSideBarAction | CloseAttributeSideBarAction
 
 export function setIsAttributeSideBarVisible(
 	isAttributeSideBarVisible: boolean = defaultIsAttributeSideBarVisible

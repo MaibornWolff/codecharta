@@ -33,10 +33,7 @@ describe("PresentationModeButtonController", () => {
 
 			rebuildController()
 
-			expect(IsPresentationModeService.subscribe).toHaveBeenCalledWith(
-				$rootScope,
-				presentationModeButtonController
-			)
+			expect(IsPresentationModeService.subscribe).toHaveBeenCalledWith($rootScope, presentationModeButtonController)
 		})
 	})
 

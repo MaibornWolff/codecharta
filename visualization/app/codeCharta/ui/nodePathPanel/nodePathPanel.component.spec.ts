@@ -30,10 +30,7 @@ describe("NodePathPanelController", () => {
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith(
-				$rootScope,
-				nodePathPanelController
-			)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
 		})
 
 		it("should subscribe to Building-Unhovered", () => {
@@ -41,10 +38,7 @@ describe("NodePathPanelController", () => {
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith(
-				$rootScope,
-				nodePathPanelController
-			)
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, nodePathPanelController)
 		})
 	})
 

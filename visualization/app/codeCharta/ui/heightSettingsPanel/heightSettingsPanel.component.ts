@@ -11,10 +11,7 @@ import {
 	AmountOfTopLabelsSubscriber
 } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
-import {
-	InvertHeightService,
-	InvertHeightSubscriber
-} from "../../state/store/appSettings/invertHeight/invertHeight.service"
+import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/appSettings/invertHeight/invertHeight.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"

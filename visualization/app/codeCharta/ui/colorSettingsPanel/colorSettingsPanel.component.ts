@@ -22,11 +22,7 @@ import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
 
 export class ColorSettingsPanelController
-	implements
-		FilesSelectionSubscriber,
-		InvertDeltaColorsSubscriber,
-		WhiteColorBuildingsSubscriber,
-		InvertColorRangeSubscriber {
+	implements FilesSelectionSubscriber, InvertDeltaColorsSubscriber, WhiteColorBuildingsSubscriber, InvertColorRangeSubscriber {
 	private _viewModel: {
 		invertColorRange: boolean
 		invertDeltaColors: boolean

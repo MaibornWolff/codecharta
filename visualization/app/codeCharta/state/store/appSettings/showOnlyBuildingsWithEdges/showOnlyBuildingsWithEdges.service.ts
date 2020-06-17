@@ -31,11 +31,8 @@ export class ShowOnlyBuildingsWithEdgesService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: ShowOnlyBuildingsWithEdgesSubscriber) {
-		$rootScope.$on(
-			ShowOnlyBuildingsWithEdgesService.SHOW_ONLY_BUILDINGS_WITH_EDGES_CHANGED_EVENT,
-			(event, data) => {
-				subscriber.onShowOnlyBuildingsWithEdgesChanged(data.showOnlyBuildingsWithEdges)
-			}
-		)
+		$rootScope.$on(ShowOnlyBuildingsWithEdgesService.SHOW_ONLY_BUILDINGS_WITH_EDGES_CHANGED_EVENT, (event, data) => {
+			subscriber.onShowOnlyBuildingsWithEdgesChanged(data.showOnlyBuildingsWithEdges)
+		})
 	}
 }

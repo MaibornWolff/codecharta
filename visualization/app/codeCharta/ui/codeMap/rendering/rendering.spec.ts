@@ -24,14 +24,7 @@ describe("common rendering tests", () => {
 
 		it("addVertex", () => {
 			const ivd: IntermediateVertexData = new IntermediateVertexData()
-			const res = ivd.addVertex(
-				new THREE.Vector3(0, 0, 0),
-				new THREE.Vector3(1, 0, 0),
-				new THREE.Vector2(2, 2),
-				"#000000",
-				3,
-				20
-			)
+			const res = ivd.addVertex(new THREE.Vector3(0, 0, 0), new THREE.Vector3(1, 0, 0), new THREE.Vector2(2, 2), "#000000", 3, 20)
 			expect(ivd.indices.length).toBe(0)
 			expect(ivd.positions.length).toBe(1)
 			expect(ivd.normals.length).toBe(1)

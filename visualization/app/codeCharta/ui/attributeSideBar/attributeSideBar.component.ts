@@ -5,22 +5,10 @@ import { Node } from "../../codeCharta.model"
 import _ from "lodash"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
-import {
-	AreaMetricService,
-	AreaMetricSubscriber
-} from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
-import {
-	HeightMetricService,
-	HeightMetricSubscriber
-} from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
-import {
-	ColorMetricService,
-	ColorMetricSubscriber
-} from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import {
-	EdgeMetricService,
-	EdgeMetricSubscriber
-} from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
+import { HeightMetricService, HeightMetricSubscriber } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
+import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import {
 	IsAttributeSideBarVisibleService,
 	IsAttributeSideBarVisibleSubscriber

@@ -16,11 +16,7 @@ export interface ColorRangeSubscriber {
 export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FilesSelectionSubscriber {
 	private static COLOR_RANGE_CHANGED_EVENT = "color-range-changed"
 
-	constructor(
-		private $rootScope: IRootScopeService,
-		private storeService: StoreService,
-		private metricService: MetricService
-	) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private metricService: MetricService) {
 		StoreService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)

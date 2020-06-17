@@ -53,8 +53,7 @@ describe("MatchingFilesCounterController", () => {
 		it("should update ViewModel count Attributes when pattern hidden and excluded", () => {
 			matchingFilesCounterController["_viewModel"].searchPattern = "/root/node/path"
 			matchingFilesCounterController["searchedNodeLeaves"] = [rootNode, rootNode]
-			matchingFilesCounterController["searchedNodeLeaves"][0].path =
-				matchingFilesCounterController["_viewModel"].searchPattern
+			matchingFilesCounterController["searchedNodeLeaves"][0].path = matchingFilesCounterController["_viewModel"].searchPattern
 			storeService.dispatch(addBlacklistItem({ path: "/root/node/path", type: BlacklistType.exclude }))
 			storeService.dispatch(addBlacklistItem({ path: "/root/node/path", type: BlacklistType.flatten }))
 

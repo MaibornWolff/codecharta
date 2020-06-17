@@ -44,10 +44,7 @@ describe("UnfocusButtonController", () => {
 
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith(
-				$rootScope,
-				unfocusButtonController
-			)
+			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith($rootScope, unfocusButtonController)
 		})
 	})
 

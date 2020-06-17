@@ -63,14 +63,8 @@ describe("MetricTypeController", () => {
 		it("should subscribe to CodeMapMouseEventService", () => {
 			rebuildController()
 
-			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith(
-				$rootScope,
-				metricTypeController
-			)
-			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith(
-				$rootScope,
-				metricTypeController
-			)
+			expect(CodeMapMouseEventService.subscribeToBuildingHovered).toHaveBeenCalledWith($rootScope, metricTypeController)
+			expect(CodeMapMouseEventService.subscribeToBuildingUnhovered).toHaveBeenCalledWith($rootScope, metricTypeController)
 		})
 	})
 

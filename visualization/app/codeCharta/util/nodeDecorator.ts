@@ -184,20 +184,12 @@ export class NodeDecorator {
 	) {
 		edgeMetricData.forEach(edgeMetric => {
 			if (node.data.children && node.data.children.length > 0) {
-				node.data.edgeAttributes[edgeMetric.name] = this.aggregateLeafEdgeMetric(
-					leaves,
-					edgeMetric.name,
-					attributeTypes
-				)
+				node.data.edgeAttributes[edgeMetric.name] = this.aggregateLeafEdgeMetric(leaves, edgeMetric.name, attributeTypes)
 			}
 		})
 	}
 
-	private static aggregateLeafMetric(
-		metrics: KeyValuePair[],
-		metricName: string,
-		attributeTypes: AttributeTypes
-	): number {
+	private static aggregateLeafMetric(metrics: KeyValuePair[], metricName: string, attributeTypes: AttributeTypes): number {
 		const metricValues: number[] = metrics.map(x => x[metricName]).filter(x => !!x)
 		const attributeType = attributeTypes.nodes[metricName]
 

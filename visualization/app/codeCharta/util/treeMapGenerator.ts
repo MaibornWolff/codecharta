@@ -6,12 +6,7 @@ import { CodeMapNode, MetricData, Node, State } from "../codeCharta.model"
 export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
 
-	public static createTreemapNodes(
-		map: CodeMapNode,
-		s: State,
-		metricData: MetricData[],
-		isDeltaState: boolean
-	): Node[] {
+	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
 		const squarifiedTreeMap: HierarchyRectangularNode<CodeMapNode> = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
 		const heightScale = (s.treeMap.mapSize * 2) / maxHeight
@@ -36,9 +31,7 @@ export class TreeMapGenerator {
 		return treeMap(hierarchyNode.sum(node => this.calculateAreaValue(node, s)))
 	}
 
-	private static getNodesAsArray(
-		node: HierarchyRectangularNode<CodeMapNode>
-	): HierarchyRectangularNode<CodeMapNode>[] {
+	private static getNodesAsArray(node: HierarchyRectangularNode<CodeMapNode>): HierarchyRectangularNode<CodeMapNode>[] {
 		const nodes = [node]
 		if (node.children) {
 			node.children.forEach(child => nodes.push(...this.getNodesAsArray(child)))
@@ -47,12 +40,7 @@ export class TreeMapGenerator {
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State): boolean {
-		return (
-			node &&
-			node.deltas &&
-			node.deltas[s.dynamicSettings.heightMetric] < 0 &&
-			node.attributes[s.dynamicSettings.areaMetric] === 0
-		)
+		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
 
 	private static calculateAreaValue(node: CodeMapNode, s: State): number {

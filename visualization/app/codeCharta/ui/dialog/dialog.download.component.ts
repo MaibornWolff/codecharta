@@ -34,11 +34,7 @@ export class DialogDownloadController {
 		fileContent: []
 	}
 
-	constructor(
-		private $mdDialog,
-		private codeMapPreRenderService: CodeMapPreRenderService,
-		private storeService: StoreService
-	) {
+	constructor(private $mdDialog, private codeMapPreRenderService: CodeMapPreRenderService, private storeService: StoreService) {
 		this.initDialogFields()
 	}
 
@@ -88,10 +84,7 @@ export class DialogDownloadController {
 
 	private setFileName() {
 		const fileMeta = this.codeMapPreRenderService.getRenderFileMeta()
-		this._viewModel.fileName = FileNameHelper.getNewFileName(
-			fileMeta.fileName,
-			isDeltaState(this.storeService.getState().files)
-		)
+		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState(this.storeService.getState().files))
 	}
 
 	private setAmountOfNodes() {

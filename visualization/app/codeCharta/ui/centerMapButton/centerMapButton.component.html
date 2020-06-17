@@ -1,8 +1,4 @@
-<div
-	id="centerMap"
-	ng-show="!$ctrl._viewModel.isMapCentered"
-	ng-class="$ctrl._viewModel.isMapCentered ? 'invisible' : 'visible'"
->
+<div id="centerMap" ng-show="!$ctrl._viewModel.isMapCentered" ng-class="$ctrl._viewModel.isMapCentered ? 'invisible' : 'visible'">
 	<md-button class="md-fab md-primary cc-shadow" aria-label="Fit Map to View" ng-click="$ctrl.fitMapToView()">
 		<i class="fa fa-compass fa-2x"></i>
 	</md-button>

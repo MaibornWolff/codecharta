@@ -10,19 +10,13 @@ export class CodeMapActionsService {
 
 	public markFolder(node: CodeMapNode, color: string) {
 		const newMP: MarkedPackage = this.getNewMarkedPackage(node.path, color)
-		const clickedMP: MarkedPackage = this.storeService
-			.getState()
-			.fileSettings.markedPackages.find(p => p.path === newMP.path)
+		const clickedMP: MarkedPackage = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === newMP.path)
 		const parentMP: MarkedPackage = this.getParentMP(newMP.path)
 
 		this.handleUpdatingMarkedPackages(newMP, clickedMP, parentMP)
 	}
 
-	private handleUpdatingMarkedPackages(
-		newMP: MarkedPackage,
-		clickedMP: MarkedPackage,
-		parentMP: MarkedPackage
-	): void {
+	private handleUpdatingMarkedPackages(newMP: MarkedPackage, clickedMP: MarkedPackage, parentMP: MarkedPackage): void {
 		if (!clickedMP && this.packagesHaveDifferentColor(parentMP, newMP)) {
 			this.addMarkedPackage(newMP)
 		} else if (this.packagesHaveDifferentColor(clickedMP, newMP)) {
@@ -40,9 +34,7 @@ export class CodeMapActionsService {
 	}
 
 	public unmarkFolder(node: CodeMapNode) {
-		const clickedMP: MarkedPackage = this.storeService
-			.getState()
-			.fileSettings.markedPackages.find(p => p.path === node.path)
+		const clickedMP: MarkedPackage = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === node.path)
 
 		if (clickedMP) {
 			this.removeMarkedPackage(clickedMP)
@@ -105,9 +97,7 @@ export class CodeMapActionsService {
 	}
 
 	private getAllChildrenMP(path: string): MarkedPackage[] {
-		return this.storeService
-			.getState()
-			.fileSettings.markedPackages.filter(p => p.path.includes(path) && p.path != path)
+		return this.storeService.getState().fileSettings.markedPackages.filter(p => p.path.includes(path) && p.path != path)
 	}
 
 	private addMarkedPackage(markedPackage: MarkedPackage) {

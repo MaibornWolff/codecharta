@@ -102,11 +102,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	private lookAtDirectionFromTarget(x: number, y: number, z: number) {
-		this.threeCameraService.camera.position.set(
-			this.controls.target.x,
-			this.controls.target.y,
-			this.controls.target.z
-		)
+		this.threeCameraService.camera.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
 
 		const alignmentCube = new Mesh(new CubeGeometry(20, 20, 20), new MeshNormalMaterial())
 
@@ -144,11 +140,8 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CameraChangeSubscriber) {
-		$rootScope.$on(
-			ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME,
-			(event: IAngularEvent, camera: PerspectiveCamera) => {
-				subscriber.onCameraChanged(camera)
-			}
-		)
+		$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (event: IAngularEvent, camera: PerspectiveCamera) => {
+			subscriber.onCameraChanged(camera)
+		})
 	}
 }

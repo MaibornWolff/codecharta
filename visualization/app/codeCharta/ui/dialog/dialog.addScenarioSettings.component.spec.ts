@@ -52,10 +52,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 			dialogAddScenarioSettings.addScenario()
 
-			expect(ScenarioHelper.createNewScenario).toHaveBeenCalledWith(
-				"scenario1",
-				SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA
-			)
+			expect(ScenarioHelper.createNewScenario).toHaveBeenCalledWith("scenario1", SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA)
 		})
 	})
 })

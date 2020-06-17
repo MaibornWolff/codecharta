@@ -127,9 +127,7 @@ describe("scenarioHelper", () => {
 		})
 		it("should add the new Scenario into the scenarios", () => {
 			ScenarioHelper.addScenario(SCENARIO)
-			const lastScenarioOfScenarios: RecursivePartial<Scenario> = Array.from(
-				ScenarioHelper["scenarios"].values()
-			).pop()
+			const lastScenarioOfScenarios: RecursivePartial<Scenario> = Array.from(ScenarioHelper["scenarios"].values()).pop()
 
 			expect(lastScenarioOfScenarios).toEqual(SCENARIO)
 		})
@@ -182,10 +180,7 @@ describe("scenarioHelper", () => {
 		]
 
 		it("should create a Scenario according to the given scenarioAttributeContent ", () => {
-			const result: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario(
-				"Scenario1",
-				scenarioAttributeContent
-			)
+			const result: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario("Scenario1", scenarioAttributeContent)
 
 			expect(result).toEqual(SCENARIO)
 		})
@@ -201,10 +196,7 @@ describe("scenarioHelper", () => {
 				}
 			]
 
-			const result: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario(
-				"Scenario2",
-				scenarioAttributeContentWithOnlyHeight
-			)
+			const result: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario("Scenario2", scenarioAttributeContentWithOnlyHeight)
 
 			expect(result).toEqual(SCENARIO_WITH_ONLY_HEIGHT)
 		})
