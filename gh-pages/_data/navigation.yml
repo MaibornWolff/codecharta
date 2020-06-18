@@ -56,6 +56,8 @@ docs:
         url: /docs/tokei-importer
       - title: "CSV Importer"
         url: /docs/csv-importer
+      - title: "SourceMonitorImporter"
+        url: /docs/sourcemonitorimporter
       - title: "CodeMaatImporter"
         url: /docs/codemaarimporter
       - title: "JasomeImporter"
