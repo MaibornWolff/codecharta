@@ -13,6 +13,9 @@ class SourceMonitorImporter: Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
+
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
 
@@ -29,7 +32,9 @@ class SourceMonitorImporter: Callable<Void> {
                 CSVProjectBuilder(pathSeparator, csvDelimiter, "File Name", sourceMonitorReplacement)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
-        ProjectSerializer.serializeProject(project, writer())
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,filePath) else ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
