@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - Custom scenarios can be created and saved through the scenario menu #675
+- Importer and parser documentation can now be found on the github Website #954
 - Output of sourcemonitor can now be compressed with the compression flag
 
 ### Changed
