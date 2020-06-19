@@ -3,29 +3,59 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import java.util.*
+import java.util.ArrayList
 import java.util.function.BiConsumer
 import java.util.function.BinaryOperator
 import java.util.function.Supplier
 import java.util.stream.Collector
 
 internal class CommitCollector private constructor(private val metricsFactory: MetricsFactory) {
+
     private fun collectCommit(versionControlledFiles: MutableList<VersionControlledFile>, commit: Commit) {
         if (commit.isEmpty) {
             return
         }
+        addYetUnknownFilesToVersionControlledFiles(versionControlledFiles, commit.filenames)
+        addCommitMetadataToMatchingVersionControlledFiles(commit, versionControlledFiles)
+    }
 
-        for (fileName in commit.filenames) {
-            var versionControlledFile: VersionControlledFile? =
-                versionControlledFiles.firstOrNull { it.filename == fileName }
-            if (versionControlledFile == null) {
-                val missingVersionControlledFile = VersionControlledFile(fileName, metricsFactory)
-                versionControlledFiles.add(missingVersionControlledFile)
-                missingVersionControlledFile.registerCommit(commit)
-            } else {
-                versionControlledFile.registerCommit(commit)
-            }
-        }
+    private fun addYetUnknownFilesToVersionControlledFiles(
+        versionControlledFiles: MutableList<VersionControlledFile>,
+        filenamesOfCommit: List<String>
+    ) {
+        filenamesOfCommit
+                .filter { !versionControlledFilesContainsFile(versionControlledFiles, it) }
+                .forEach { addYetUnknownFile(versionControlledFiles, it) }
+    }
+
+    private fun versionControlledFilesContainsFile(
+        versionControlledFiles: List<VersionControlledFile>,
+        filename: String
+    ): Boolean {
+        return findVersionControlledFileByFilename(versionControlledFiles, filename) != null
+    }
+
+    private fun findVersionControlledFileByFilename(
+        versionControlledFiles: List<VersionControlledFile>,
+        filename: String
+    ): VersionControlledFile? {
+        return versionControlledFiles.firstOrNull { it.filename == filename }
+    }
+
+    private fun addYetUnknownFile(
+        versionControlledFiles: MutableList<VersionControlledFile>,
+        filenameOfYetUnversionedFile: String
+    ): Boolean {
+        val missingVersionControlledFile = VersionControlledFile(filenameOfYetUnversionedFile, metricsFactory)
+        return versionControlledFiles.add(missingVersionControlledFile)
+    }
+
+    private fun addCommitMetadataToMatchingVersionControlledFiles(
+        commit: Commit,
+        versionControlledFiles: List<VersionControlledFile>
+    ) {
+        commit.filenames.mapNotNull { findVersionControlledFileByFilename(versionControlledFiles, it) }
+                .forEach { it.registerCommit(commit) }
     }
 
     private fun combineForParallelExecution(
@@ -36,14 +66,15 @@ internal class CommitCollector private constructor(private val metricsFactory: M
     }
 
     companion object {
+
         fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableList<VersionControlledFile>> {
             val collector = CommitCollector(metricsFactory)
             return Collector.of(Supplier<MutableList<VersionControlledFile>> { ArrayList() },
-                BiConsumer<MutableList<VersionControlledFile>, Commit> { versionControlledFiles, commit ->
-                    collector.collectCommit(versionControlledFiles, commit)
-                }, BinaryOperator<MutableList<VersionControlledFile>> { firstCommits, secondCommits ->
-                    collector.combineForParallelExecution(firstCommits, secondCommits)
-                })
+                    BiConsumer<MutableList<VersionControlledFile>, Commit> { versionControlledFiles, commit ->
+                        collector.collectCommit(versionControlledFiles, commit)
+                    }, BinaryOperator<MutableList<VersionControlledFile>> { firstCommits, secondCommits ->
+                collector.combineForParallelExecution(firstCommits, secondCommits)
+            })
         }
     }
 }
