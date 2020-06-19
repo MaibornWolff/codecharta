@@ -1,6 +1,12 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import mu.KotlinLogging
 
 class FolderMover(private val project: Project) {
@@ -68,7 +74,6 @@ class FolderMover(private val project: Project) {
                 logger.warn("Some nodes are already available in the target location, they were not moved and discarded instead.")
             }
             node.children.addAll(filteredNodesToMove)
-
         } else {
             var chosenChild: MutableNode? = node.children.filter { destinationPath.first() == it.name }.firstOrNull()
 

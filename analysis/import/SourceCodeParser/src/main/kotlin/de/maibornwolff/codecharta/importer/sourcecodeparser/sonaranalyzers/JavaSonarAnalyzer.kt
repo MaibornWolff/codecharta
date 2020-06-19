@@ -20,7 +20,11 @@ import org.sonar.api.rule.RuleKey
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition
 import org.sonar.api.server.rule.RulesDefinition
 import org.sonar.api.utils.Version
-import org.sonar.java.*
+import org.sonar.java.AnalysisException
+import org.sonar.java.DefaultJavaResourceLocator
+import org.sonar.java.JavaClasspath
+import org.sonar.java.JavaTestClasspath
+import org.sonar.java.SonarComponents
 import org.sonar.java.ast.parser.JavaParser
 import org.sonar.java.checks.CheckList
 import org.sonar.java.model.DefaultJavaFileScannerContext

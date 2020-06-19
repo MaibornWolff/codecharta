@@ -5,12 +5,20 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStreamWriter
+import java.io.Writer
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class CodeMaatImporter: Callable<Void> {
+@CommandLine.Command(
+    name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
+class CodeMaatImporter : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -31,16 +39,16 @@ class CodeMaatImporter: Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
+            CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,filePath) else   ProjectSerializer.serializeProject(project, writer())
-
-
-
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
+            project,
+            filePath
+        ) else ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
@@ -82,4 +90,3 @@ class CodeMaatImporter: Callable<Void> {
         }
     }
 }
-

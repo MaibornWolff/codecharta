@@ -53,7 +53,6 @@ class HighlyCoupledFiles: Metric {
                     .filter { it.filename != fileName }
                     .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
         }
-
     }
 
     private fun isHighlyCoupled(value: Int): Boolean {

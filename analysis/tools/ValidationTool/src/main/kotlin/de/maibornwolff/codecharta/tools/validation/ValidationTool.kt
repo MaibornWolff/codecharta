@@ -9,7 +9,7 @@ import java.util.concurrent.Callable
         description = ["validates cc.json files"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class ValidationTool: Callable<Void?> {
+class ValidationTool : Callable<Void?> {
 
     private val schemaPath = "cc.json"
 

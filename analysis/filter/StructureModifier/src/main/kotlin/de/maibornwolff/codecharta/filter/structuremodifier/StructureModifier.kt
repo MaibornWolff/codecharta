@@ -13,9 +13,11 @@ import java.util.concurrent.Callable
 @CommandLine.Command(name = "modify",
         description = ["changes the structure of cc.json files"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class StructureModifier(private val input: InputStream = System.`in`,
-                        private val output: PrintStream = System.out,
-                        private val error: PrintStream = System.err) : Callable<Void?> {
+class StructureModifier(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Void?> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -94,5 +96,3 @@ class StructureModifier(private val input: InputStream = System.`in`,
         }
     }
 }
-
-

@@ -7,10 +7,10 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.ParserStrategyContractTest
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.util.*
+import java.util.Arrays
 import java.util.stream.Stream
 
-class SVNLogParserStrategyTest: ParserStrategyContractTest() {
+class SVNLogParserStrategyTest : ParserStrategyContractTest() {
 
     private var parserStrategy: SVNLogParserStrategy = SVNLogParserStrategy()
 

@@ -6,11 +6,12 @@ import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 class SonarMeasuresAPIImporter @JvmOverloads constructor(
-        private val measuresDS: SonarMeasuresAPIDatasource?,
-        private val metricsDS: SonarMetricsAPIDatasource?,
-        private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
-        private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        private val usePath: Boolean = false) {
+    private val measuresDS: SonarMeasuresAPIDatasource?,
+    private val metricsDS: SonarMetricsAPIDatasource?,
+    private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
+    private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+    private val usePath: Boolean = false
+) {
 
     fun getProjectFromMeasureAPI(projectKey: String, metrics: List<String>): Project {
         val metricsList = getMetricList(metrics)
