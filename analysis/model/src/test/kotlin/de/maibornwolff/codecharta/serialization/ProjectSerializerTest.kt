@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.serialization
 
 import com.google.gson.JsonParser
-import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.describe
 import de.maibornwolff.codecharta.model.Project
 import io.mockk.mockk
@@ -11,15 +10,12 @@ import org.hamcrest.Matcher
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.File
-import kotlin.test.assertEquals
-import kotlin.test.assertFails
-import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ProjectSerializerTest: Spek({
+class ProjectSerializerTest : Spek({
 
     fun matchesProjectFile(expectedProjectFile: File): Matcher<File> {
-        return object: BaseMatcher<File>() {
+        return object : BaseMatcher<File>() {
 
             override fun describeTo(description: Description) {
                 description.appendText("should be ").appendValue(expectedProjectFile.readLines())
@@ -42,13 +38,12 @@ class ProjectSerializerTest: Spek({
         }
     }
 
-    describe("serializeAsCompressedFile"){
+    describe("serializeAsCompressedFile") {
         val project = mockk<Project>()
-        it("should create a gz file"){
-            ProjectSerializer.serializeAsCompressedFile(project,"test.cc.json")
+        it("should create a gz file") {
+            ProjectSerializer.serializeAsCompressedFile(project, "test.cc.json")
             assertTrue { File("test.cc.json.gz").exists() }
             File("test.cc.json.gz").delete()
         }
 }
-
 })

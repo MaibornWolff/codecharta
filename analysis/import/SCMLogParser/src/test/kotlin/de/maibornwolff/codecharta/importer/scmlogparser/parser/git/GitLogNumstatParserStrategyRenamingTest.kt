@@ -5,14 +5,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import java.util.*
+import java.util.Arrays
 import java.util.function.Function
 
 @RunWith(Parameterized::class)
 class GitLogNumstatParserStrategyRenamingTest(
-        private val fileLine: String,
-        private val oldFilename: String,
-        private val newFilename: String
+    private val fileLine: String,
+    private val oldFilename: String,
+    private val newFilename: String
 ) {
 
     companion object {
