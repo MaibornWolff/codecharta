@@ -10,7 +10,7 @@ import java.util.Arrays.asList
 import java.util.function.Function
 import java.util.stream.Stream
 
-class GitLogNumstatRawParserStrategyTest: ParserStrategyContractTest() {
+class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
 
     private var parserStrategy: GitLogNumstatRawParserStrategy = GitLogNumstatRawParserStrategy()
 

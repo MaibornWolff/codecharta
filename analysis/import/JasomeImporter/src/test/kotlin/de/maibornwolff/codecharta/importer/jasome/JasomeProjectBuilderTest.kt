@@ -12,7 +12,7 @@ import org.hamcrest.MatcherAssert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class JasomeProjectBuilderTest: Spek({
+class JasomeProjectBuilderTest : Spek({
     describe("JasomeProjectBuilder adding an empty Jasome Project") {
         val projectBuilder = JasomeProjectBuilder()
         val jasomeProject = Project(listOf())

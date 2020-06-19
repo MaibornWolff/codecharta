@@ -2,14 +2,16 @@ package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
 
-class CSVProjectBuilderTest: Spek({
+class CSVProjectBuilderTest : Spek({
     fun toInputStream(content: String): InputStream {
         return ByteArrayInputStream(content.toByteArray(StandardCharsets.UTF_8))
     }
@@ -52,7 +54,6 @@ class CSVProjectBuilderTest: Spek({
                 assertThat(project.rootNode.children.map { it.name }, hasItem(name))
             }
         }
-
     }
 
     describe("a CSVProjectBuilder") {
@@ -75,7 +76,6 @@ class CSVProjectBuilderTest: Spek({
                 assertThat<Any>(nodeAttributes[attribName], `is`<Any>(attValFloat))
             }
         }
-
     }
 
     describe("a CSVProjectBuilder") {

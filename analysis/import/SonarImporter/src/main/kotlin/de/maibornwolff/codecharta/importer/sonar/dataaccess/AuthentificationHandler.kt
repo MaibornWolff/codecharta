@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import java.util.*
+import java.util.Base64
 
 internal object AuthentificationHandler {
 
