@@ -9,7 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.49.0] - 2020-06-19
+
+### Added 🚀
+
 - Custom scenarios can be created and saved through the scenario menu #675
+- Importer and parser documentation can now be found on the github Website #954
 - Output of sourcemonitor can now be compressed with the compression flag
 
 ### Changed
@@ -19,6 +32,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 ### Chore 👨‍💻 👩‍💻
+
+- [Security] Bump angular from 1.7.9 to 1.8.0 in /visualization #995
 
 ## [1.48.0] - 2020-06-12
 
