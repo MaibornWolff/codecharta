@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 
-class AbsoluteCodeChurn: Metric {
+class AbsoluteCodeChurn : Metric {
     private var accumulatedNumberOfLinesAdded: Long = 0
     private var accumulatedNumberOfLinesDeleted: Long = 0
 

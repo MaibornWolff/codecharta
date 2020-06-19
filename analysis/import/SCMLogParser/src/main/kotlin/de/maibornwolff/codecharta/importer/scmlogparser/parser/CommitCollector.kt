@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import java.util.*
 import java.util.function.BiConsumer
 import java.util.function.BinaryOperator
 import java.util.function.Supplier
@@ -19,37 +18,49 @@ internal class CommitCollector private constructor(private val metricsFactory: M
         addCommitMetadataToMatchingVersionControlledFiles(commit, versionControlledFiles)
     }
 
-    private fun addYetUnknownFilesToVersionControlledFiles(versionControlledFiles: MutableList<VersionControlledFile>,
-                                                           filenamesOfCommit: List<String>) {
+    private fun addYetUnknownFilesToVersionControlledFiles(
+        versionControlledFiles: MutableList<VersionControlledFile>,
+        filenamesOfCommit: List<String>
+    ) {
         filenamesOfCommit
                 .filter { !versionControlledFilesContainsFile(versionControlledFiles, it) }
                 .forEach { addYetUnknownFile(versionControlledFiles, it) }
     }
 
-    private fun versionControlledFilesContainsFile(versionControlledFiles: List<VersionControlledFile>,
-                                                   filename: String): Boolean {
+    private fun versionControlledFilesContainsFile(
+        versionControlledFiles: List<VersionControlledFile>,
+        filename: String
+    ): Boolean {
         return findVersionControlledFileByFilename(versionControlledFiles, filename) != null
     }
 
-    private fun findVersionControlledFileByFilename(versionControlledFiles: List<VersionControlledFile>,
-                                                    filename: String): VersionControlledFile? {
+    private fun findVersionControlledFileByFilename(
+        versionControlledFiles: List<VersionControlledFile>,
+        filename: String
+    ): VersionControlledFile? {
         return versionControlledFiles.firstOrNull { it.filename == filename }
     }
 
-    private fun addYetUnknownFile(versionControlledFiles: MutableList<VersionControlledFile>,
-                                  filenameOfYetUnversionedFile: String): Boolean {
+    private fun addYetUnknownFile(
+        versionControlledFiles: MutableList<VersionControlledFile>,
+        filenameOfYetUnversionedFile: String
+    ): Boolean {
         val missingVersionControlledFile = VersionControlledFile(filenameOfYetUnversionedFile, metricsFactory)
         return versionControlledFiles.add(missingVersionControlledFile)
     }
 
-    private fun addCommitMetadataToMatchingVersionControlledFiles(commit: Commit,
-                                                                  versionControlledFiles: List<VersionControlledFile>) {
+    private fun addCommitMetadataToMatchingVersionControlledFiles(
+        commit: Commit,
+        versionControlledFiles: List<VersionControlledFile>
+    ) {
         commit.filenames.mapNotNull { findVersionControlledFileByFilename(versionControlledFiles, it) }
                 .forEach { it.registerCommit(commit) }
     }
 
-    private fun combineForParallelExecution(firstCommits: MutableList<VersionControlledFile>,
-                                            secondCommits: MutableList<VersionControlledFile>): MutableList<VersionControlledFile> {
+    private fun combineForParallelExecution(
+        firstCommits: MutableList<VersionControlledFile>,
+        secondCommits: MutableList<VersionControlledFile>
+    ): MutableList<VersionControlledFile> {
         throw UnsupportedOperationException("parallel collection of commits not supported")
     }
 

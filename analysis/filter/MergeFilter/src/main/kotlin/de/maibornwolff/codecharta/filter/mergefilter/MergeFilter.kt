@@ -12,7 +12,7 @@ import java.util.concurrent.Callable
 @CommandLine.Command(name = "merge",
         description = ["merges multiple cc.json files"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class MergeFilter: Callable<Void?> {
+class MergeFilter : Callable<Void?> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     var help: Boolean = false
@@ -43,9 +43,9 @@ class MergeFilter: Callable<Void?> {
     override fun call(): Void? {
         val nodeMergerStrategy =
                 when {
-                    leafStrategySet                          -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
+                    leafStrategySet -> LeafNodeMergerStrategy(addMissingNodes, ignoreCase)
                     recursiveStrategySet && !leafStrategySet -> RecursiveNodeMergerStrategy(ignoreCase)
-                    else                                     -> throw IllegalArgumentException(
+                    else -> throw IllegalArgumentException(
                             "Only one merging strategy must be set")
                 }
 
@@ -69,15 +69,13 @@ class MergeFilter: Callable<Void?> {
 
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(mergedProject,filePath) else ProjectSerializer.serializeProject(mergedProject, writer())
-
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(mergedProject, filePath) else ProjectSerializer.serializeProject(mergedProject, writer())
 
         return null
     }
 
     private fun writer(): Writer {
         return outputFile?.bufferedWriter() ?: System.out.bufferedWriter()
-
     }
 
     private fun getFilesInFolder(folder: File): List<File> {

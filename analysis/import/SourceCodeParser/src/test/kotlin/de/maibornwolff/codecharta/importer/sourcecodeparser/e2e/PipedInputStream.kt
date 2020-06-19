@@ -3,7 +3,11 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.e2e
 import de.maibornwolff.codecharta.importer.sourcecodeparser.SourceCodeParserMain.Companion.mainWithInOut
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
+import java.io.PrintStream
 
 class PipedInputStream {
     private val resource = "src/test/resources/sampleproject"
@@ -14,7 +18,6 @@ class PipedInputStream {
         val input = File("src/test/resources/cc_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
         return executeForOutput(input, arrayOf(resource, "--format=json"))
     }
-
 
     @Test
     fun `json output does contain files from scan`() {
@@ -49,8 +52,9 @@ class PipedInputStream {
             outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
     private fun outputAsString(
-            inputStream: InputStream = System.`in`,
-            aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+        inputStream: InputStream = System.`in`,
+        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+    ) =
             ByteArrayOutputStream().use { baOutputStream ->
                 PrintStream(baOutputStream).use { outputStream ->
                     aMethod(inputStream, outputStream, System.err)

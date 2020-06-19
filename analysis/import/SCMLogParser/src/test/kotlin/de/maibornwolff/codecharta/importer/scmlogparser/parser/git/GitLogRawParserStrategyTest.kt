@@ -10,7 +10,7 @@ import org.junit.Test
 import java.util.Arrays.asList
 import java.util.stream.Stream
 
-class GitLogRawParserStrategyTest: ParserStrategyContractTest() {
+class GitLogRawParserStrategyTest : ParserStrategyContractTest() {
 
     private var parserStrategy: GitLogRawParserStrategy = GitLogRawParserStrategy()
 

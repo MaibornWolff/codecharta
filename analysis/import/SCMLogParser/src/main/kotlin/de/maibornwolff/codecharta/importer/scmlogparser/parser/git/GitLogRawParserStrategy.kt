@@ -10,7 +10,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class GitLogRawParserStrategy: LogParserStrategy {
+class GitLogRawParserStrategy : LogParserStrategy {
 
     override fun creationCommand(): String {
         return "git log --raw --topo-order"

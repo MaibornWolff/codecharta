@@ -8,7 +8,7 @@ import org.spekframework.spek2.style.specification.describe
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
-class MergeFilterTest: Spek({
+class MergeFilterTest : Spek({
     val outContent = ByteArrayOutputStream()
     val originalOut = System.out
     val errContent = ByteArrayOutputStream()

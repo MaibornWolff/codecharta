@@ -12,15 +12,15 @@ import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.*
+import java.util.Arrays
 import java.util.function.Function
 
 @RunWith(Parameterized::class)
 class SCMLogProjectCreatorTest(
-        val testName: String,
-        private val strategy: LogParserStrategy,
-        private val logFilename: String,
-        private val expectedProjectSize: Long
+    val testName: String,
+    private val strategy: LogParserStrategy,
+    private val logFilename: String,
+    private val expectedProjectSize: Long
 ) {
 
     companion object {
