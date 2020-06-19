@@ -31,9 +31,9 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
 
             runBlocking(Dispatchers.Default) {
                 launch {
-                     author = parserStrategy.parseAuthor(commitLines)
-                     commitDate = parserStrategy.parseDate(commitLines)
-                     modifications = parserStrategy.parseModifications(commitLines)
+                    author = parserStrategy.parseAuthor(commitLines)
+                    commitDate = parserStrategy.parseDate(commitLines)
+                    modifications = parserStrategy.parseModifications(commitLines)
                 }
             }
 

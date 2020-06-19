@@ -1,6 +1,11 @@
 package de.maibornwolff.codecharta.filter.mergefilter
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import mu.KotlinLogging
 
 class ProjectMerger(private val projects: List<Project>, private val nodeMerger: NodeMergerStrategy) {
@@ -15,7 +20,7 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
                     mergeAttributeTypes(),
                     mergeBlacklist()
             ).build()
-            else                          -> throw MergeException("API versions not supported.")
+            else -> throw MergeException("API versions not supported.")
         }
     }
 

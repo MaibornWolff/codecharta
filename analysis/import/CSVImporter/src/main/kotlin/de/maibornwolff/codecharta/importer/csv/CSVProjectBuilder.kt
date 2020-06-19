@@ -9,13 +9,13 @@ import mu.KotlinLogging
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.Arrays
 
 class CSVProjectBuilder(
-        private val pathSeparator: Char,
-        private val csvDelimiter: Char,
-        private val pathColumnName: String = "path",
-        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
+    private val pathSeparator: Char,
+    private val csvDelimiter: Char,
+    private val pathColumnName: String = "path",
+    metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL
 ) {
 
     private val logger = KotlinLogging.logger {}
@@ -25,7 +25,7 @@ class CSVProjectBuilder(
             .withMetricTranslator(metricNameTranslator)
 
     fun parseCSVStream(
-            inStream: InputStream
+        inStream: InputStream
     ): ProjectBuilder {
         val parser = createParser(inStream)
         val header = CSVHeader(parser.parseNext(), pathColumnName = pathColumnName)

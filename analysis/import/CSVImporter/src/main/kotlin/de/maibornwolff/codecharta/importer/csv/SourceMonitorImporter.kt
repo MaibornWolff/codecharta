@@ -3,12 +3,18 @@ package de.maibornwolff.codecharta.importer.csv
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStreamWriter
+import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(name = "sourcemonitorimport", description = ["generates cc.json from sourcemonitor csv"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class SourceMonitorImporter: Callable<Void> {
+class SourceMonitorImporter : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -34,7 +40,7 @@ class SourceMonitorImporter: Callable<Void> {
         val project = csvProjectBuilder.build()
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if(compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project,filePath) else ProjectSerializer.serializeProject(project, writer())
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(project, filePath) else ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
@@ -81,4 +87,3 @@ class SourceMonitorImporter: Callable<Void> {
         }
     }
 }
-

@@ -55,8 +55,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     companion object {
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
         private fun isFileLine(commitLine: String): Boolean {
-            return GitLogRawParserStrategy.isFileLine(commitLine) || GitLogNumstatParserStrategy.isFileLine(commitLine)
-        }
+            return GitLogRawParserStrategy.isFileLine(commitLine) || GitLogNumstatParserStrategy.isFileLine(commitLine) }
 
         internal fun parseModification(fileLine: String): Modification {
             return if (fileLine.startsWith(":")) {

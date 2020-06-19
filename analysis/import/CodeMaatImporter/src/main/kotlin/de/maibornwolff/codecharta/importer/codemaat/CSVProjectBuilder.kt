@@ -13,10 +13,10 @@ import java.io.InputStreamReader
 import java.nio.charset.StandardCharsets
 
 class CSVProjectBuilder(
-        private val pathSeparator: Char,
-        private val csvDelimiter: Char,
-        metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges")
+    private val pathSeparator: Char,
+    private val csvDelimiter: Char,
+    metricNameTranslator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+    attributeTypes: AttributeTypes = AttributeTypes(mutableMapOf(), "edges")
 ) {
 
     private val logger = KotlinLogging.logger {}

@@ -1,12 +1,14 @@
 package de.maibornwolff.codecharta.serialization
 
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.not
+import org.hamcrest.Matchers.nullValue
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import java.io.StringReader
 
-class ProjectDeserializerTest: Spek({
+class ProjectDeserializerTest : Spek({
     val EXAMPLE_CC_JSON = "example.cc.json"
 
     describe("A ProjectDeserializer") {

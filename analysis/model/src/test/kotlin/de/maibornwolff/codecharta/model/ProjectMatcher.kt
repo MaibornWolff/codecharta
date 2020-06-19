@@ -7,7 +7,7 @@ import org.hamcrest.Matcher
 object ProjectMatcher {
 
     fun matchesProject(expectedProject: Project): Matcher<Project> {
-        return object: BaseMatcher<Project>() {
+        return object : BaseMatcher<Project>() {
 
             override fun describeTo(description: Description) {
                 description.appendText("should be ").appendValue(expectedProject)
@@ -20,7 +20,7 @@ object ProjectMatcher {
     }
 
     fun matchesProjectUpToVersion(expectedProject: Project): Matcher<Project> {
-        return object: BaseMatcher<Project>() {
+        return object : BaseMatcher<Project>() {
 
             override fun describeTo(description: Description) {
                 description.appendText("should be ").appendValue(expectedProject)
@@ -33,8 +33,8 @@ object ProjectMatcher {
     }
 
     fun matchUpToVersion(p1: Project, p2: Project): Boolean {
-        return NodeMatcher.match(p1.rootNode, p2.rootNode)
-               && match(p1.edges, p2.edges)
+        return NodeMatcher.match(p1.rootNode, p2.rootNode) &&
+            match(p1.edges, p2.edges)
     }
 
     fun match(d1: List<Edge>, d2: List<Edge>): Boolean {
@@ -42,7 +42,7 @@ object ProjectMatcher {
     }
 
     fun match(p1: Project, p2: Project): Boolean {
-        return p1.apiVersion == p2.apiVersion
-               && matchUpToVersion(p1, p2)
+        return p1.apiVersion == p2.apiVersion &&
+            matchUpToVersion(p1, p2)
     }
 }

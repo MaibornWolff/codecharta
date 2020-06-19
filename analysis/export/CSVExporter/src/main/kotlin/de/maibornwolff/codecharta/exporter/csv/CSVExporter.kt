@@ -7,7 +7,12 @@ import de.maibornwolff.codecharta.model.Path
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.io.OutputStreamWriter
+import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
@@ -15,7 +20,7 @@ import java.util.concurrent.Callable
         description = ["generates csv file with header"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class CSVExporter: Callable<Void> {
+class CSVExporter : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -76,9 +81,9 @@ class CSVExporter: Callable<Void> {
 
         return when {
             values.distinct().none { !it.isBlank() } -> listOf()
-            dirs.size < maxHierarchy                 -> rowWithoutDirs.plus(dirs).plus(
+            dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(
                     List(maxHierarchy - dirs.size, { "" }))
-            else                                     -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
+            else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }
     }
 
@@ -98,4 +103,3 @@ private val Path.toPath: String
     get() {
         return this.edgesList.joinToString("/")
     }
-

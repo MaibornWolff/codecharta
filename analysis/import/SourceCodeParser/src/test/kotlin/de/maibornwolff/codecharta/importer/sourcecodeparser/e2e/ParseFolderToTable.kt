@@ -20,7 +20,7 @@ class ParseFolderToTable {
 
     @Test
     fun `tabular output has header, one line for each file`() {
-        assertThat(output.lines().size).describedAs(output).isEqualTo(1 + 3 + 1) //header+javacode+eof
+        assertThat(output.lines().size).describedAs(output).isEqualTo(1 + 3 + 1) // header+javacode+eof
     }
 
     @Test

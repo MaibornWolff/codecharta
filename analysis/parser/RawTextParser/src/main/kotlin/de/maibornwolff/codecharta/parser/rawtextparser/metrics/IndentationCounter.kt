@@ -5,10 +5,12 @@ import de.maibornwolff.codecharta.parser.rawtextparser.model.toBool
 import java.io.PrintStream
 import java.lang.Integer.min
 
-class IndentationCounter(private var maxIndentation: Int = 6,
-                         private var stderr: PrintStream = System.err,
-                         private var verbose: Boolean = false,
-                         private var tabWidth: Int = 0) : Metric {
+class IndentationCounter(
+    private var maxIndentation: Int = 6,
+    private var stderr: PrintStream = System.err,
+    private var verbose: Boolean = false,
+    private var tabWidth: Int = 0
+) : Metric {
 
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
