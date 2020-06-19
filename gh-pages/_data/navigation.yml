@@ -56,7 +56,7 @@ docs:
         url: /docs/csv-importer
       - title: "SourceMonitor Importer"
         url: /docs/sourcemonitorimporter
-      - title: "CodeMaat Importer"
+      - title: "Code Maat Importer"
         url: /docs/codemaatimporter
       - title: "Jasome Importer"
         url: /docs/jasomeimporter
