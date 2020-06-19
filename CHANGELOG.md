@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+- [Security] Bump angular from 1.7.9 to 1.8.0 in /visualization #995
+
 ## [1.48.0] - 2020-06-12
 
 ### Added 🚀
