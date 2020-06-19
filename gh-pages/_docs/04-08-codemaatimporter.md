@@ -1,5 +1,5 @@
 ---
-permalink: /docs/codemaarimporter
+permalink: /docs/codemaatimporter
 title: "CodeMaatImporter"
 ---
 

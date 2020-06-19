@@ -1,6 +1,6 @@
 ---
 permalink: /docs/sourcemonitorimporter
-title: "SourceMonitorImporter"
+title: "SourceMonitor Importer"
 ---
 
 Generates visualisation data from [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) through its CSV export functionality.

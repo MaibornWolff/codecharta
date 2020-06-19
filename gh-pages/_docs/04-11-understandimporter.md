@@ -1,6 +1,6 @@
 ---
 permalink: /docs/understandimporter
-title: "UnderstandImporter"
+title: "Understand Importer"
 ---
 
 The Understandimporter generates visualisation data from [SciTools Understand](https://scitools.com/features/) through its CSV export functionality.
