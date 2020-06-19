@@ -42,8 +42,6 @@ docs:
 
   - title: Analysing-Tools
     children:
-      - title: "Analysing Tools"
-        url: /docs/analysing-tools
       - title: "Source Code Parser"
         url: /docs/source-code-parser
       - title: "Raw Text Parser"
@@ -56,15 +54,15 @@ docs:
         url: /docs/tokei-importer
       - title: "CSV Importer"
         url: /docs/csv-importer
-      - title: "SourceMonitorImporter"
+      - title: "SourceMonitor Importer"
         url: /docs/sourcemonitorimporter
-      - title: "CodeMaatImporter"
-        url: /docs/codemaarimporter
-      - title: "JasomeImporter"
+      - title: "CodeMaat Importer"
+        url: /docs/codemaatimporter
+      - title: "Jasome Importer"
         url: /docs/jasomeimporter
-      - title: "CrococosmoImporter"
+      - title: "Crococosmo Importer"
         url: /docs/crococosmoimporter
-      - title: "UnderstandImporter"
+      - title: "Understand Importer"
         url: /docs/understandimporter
 
   - title: Visualization
