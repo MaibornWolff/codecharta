@@ -10,7 +10,8 @@
 		</div>
 		<div class="legend-block">
 			<img ng-src="{{ $ctrl._viewModel.colorIcons.neutral }}" alt="" />
-			&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}
+			&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le;
+			{{ $ctrl._viewModel.colorRange.to | number: 0 }}
 		</div>
 		<div class="legend-block">
 			<img ng-src="{{ $ctrl._viewModel.colorIcons.negative }}" alt="" />

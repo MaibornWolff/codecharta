@@ -14,5 +14,8 @@ export function attributeTypes(state: AttributeTypes = setAttributeTypes().paylo
 }
 
 function updateAttributeType(state: AttributeTypes, action: UpdateAttributeTypeAction): AttributeTypes {
-	return { ...state, [action.payload.category]: { ...state[action.payload.category], [action.payload.name]: action.payload.type } }
+	return {
+		...state,
+		[action.payload.category]: { ...state[action.payload.category], [action.payload.name]: action.payload.type }
+	}
 }

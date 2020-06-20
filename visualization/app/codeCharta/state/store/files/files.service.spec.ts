@@ -48,7 +48,9 @@ describe("FilesService", () => {
 
 			filesService.onStoreChanged(FilesSelectionActions.SET_SINGLE)
 
-			expect($rootScope.$broadcast).toBeCalledWith("files-selection-changed", { files: storeService.getState().files })
+			expect($rootScope.$broadcast).toBeCalledWith("files-selection-changed", {
+				files: storeService.getState().files
+			})
 		})
 
 		it("should not notify anything on non-files-events", () => {

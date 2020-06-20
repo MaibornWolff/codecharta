@@ -1002,7 +1002,10 @@ export const TEST_DELTA_MAP_B: CCFile = {
 export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
-	blacklist: [{ path: "/root/bigLeaf.ts", type: "hide" }, { path: "/root/sample1OnlyLeaf.scss", type: "exclude" }],
+	blacklist: [
+		{ path: "/root/bigLeaf.ts", type: "hide" },
+		{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
+	],
 	edges: [
 		{
 			attributes: {
@@ -1255,7 +1258,13 @@ export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
 		isSelected: true,
 		isDisabled: false
 	},
-	{ metricType: ScenarioMetricType.AREA_METRIC, metricName: "rloc", savedValues: 48, isSelected: true, isDisabled: false },
+	{
+		metricType: ScenarioMetricType.AREA_METRIC,
+		metricName: "rloc",
+		savedValues: 48,
+		isSelected: true,
+		isDisabled: false
+	},
 	{
 		metricType: ScenarioMetricType.HEIGHT_METRIC,
 		metricName: "mcc",
@@ -1287,7 +1296,13 @@ export const SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED: AddScenarioContent[] 
 		isSelected: false,
 		isDisabled: false
 	},
-	{ metricType: ScenarioMetricType.AREA_METRIC, metricName: "rloc", savedValues: 48, isSelected: true, isDisabled: false },
+	{
+		metricType: ScenarioMetricType.AREA_METRIC,
+		metricName: "rloc",
+		savedValues: 48,
+		isSelected: true,
+		isDisabled: false
+	},
 	{
 		metricType: ScenarioMetricType.HEIGHT_METRIC,
 		metricName: "mcc",
@@ -1312,7 +1327,13 @@ export const SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED: AddScenarioContent[] 
 ]
 
 export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddScenarioContent[] = [
-	{ metricType: ScenarioMetricType.AREA_METRIC, metricName: "rloc", savedValues: 48, isSelected: true, isDisabled: false },
+	{
+		metricType: ScenarioMetricType.AREA_METRIC,
+		metricName: "rloc",
+		savedValues: 48,
+		isSelected: true,
+		isDisabled: false
+	},
 	{
 		metricType: ScenarioMetricType.HEIGHT_METRIC,
 		metricName: "mcc",
@@ -1337,7 +1358,13 @@ export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddScenarioContent[] = [
 ]
 
 export const SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED: AddScenarioContent[] = [
-	{ metricType: ScenarioMetricType.AREA_METRIC, metricName: "rloc", savedValues: 48, isSelected: false, isDisabled: false },
+	{
+		metricType: ScenarioMetricType.AREA_METRIC,
+		metricName: "rloc",
+		savedValues: 48,
+		isSelected: false,
+		isDisabled: false
+	},
 	{
 		metricType: ScenarioMetricType.HEIGHT_METRIC,
 		metricName: "mcc",
@@ -1457,7 +1484,10 @@ export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
 	DEFAULT_STATE.appSettings.mapColors.neutral
 )
 
-export const METRIC_DATA: MetricData[] = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
+export const METRIC_DATA: MetricData[] = [
+	{ name: "mcc", maxValue: 1 },
+	{ name: "rloc", maxValue: 2 }
+]
 
 export const BLACKLIST: BlacklistItem[] = [
 	{

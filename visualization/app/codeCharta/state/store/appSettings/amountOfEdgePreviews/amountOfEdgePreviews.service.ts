@@ -25,7 +25,9 @@ export class AmountOfEdgePreviewsService implements StoreSubscriber {
 	}
 
 	private notify(newState: number) {
-		this.$rootScope.$broadcast(AmountOfEdgePreviewsService.AMOUNT_OF_EDGE_PREVIEWS_CHANGED_EVENT, { amountOfEdgePreviews: newState })
+		this.$rootScope.$broadcast(AmountOfEdgePreviewsService.AMOUNT_OF_EDGE_PREVIEWS_CHANGED_EVENT, {
+			amountOfEdgePreviews: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: AmountOfEdgePreviewsSubscriber) {

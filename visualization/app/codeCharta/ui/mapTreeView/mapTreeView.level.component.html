@@ -16,20 +16,20 @@
 				role="img"
 				ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.isFolderOpened"
 				class="fa fa-folder"
-				ng-style="{'color': $ctrl.getMarkingColor() }"
+				ng-style="{ color: $ctrl.getMarkingColor() }"
 				aria-hidden="true"
 			></span>
 			<span
 				role="img"
 				ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.isFolderOpened"
 				class="fa fa-folder-open"
-				ng-style="{'color': $ctrl.getMarkingColor() }"
+				ng-style="{ color: $ctrl.getMarkingColor() }"
 				aria-hidden="true"
 			></span>
 			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
 		</span>
 
-		<span class="node-name" ng-class="{'flattened': $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched()}">
+		<span class="node-name" ng-class="{ flattened: $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched() }">
 			{{::$ctrl.node.name}}
 		</span>
 

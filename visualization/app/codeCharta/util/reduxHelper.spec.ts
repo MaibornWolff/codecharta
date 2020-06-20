@@ -37,7 +37,10 @@ describe("reduxHelper", () => {
 			mutateObject(obj1)
 			mutateObject(obj2)
 
-			expect(result).toEqual([{ x: 10000, y: 2 }, { x: 3, y: 4 }])
+			expect(result).toEqual([
+				{ x: 10000, y: 2 },
+				{ x: 3, y: 4 }
+			])
 		})
 	})
 

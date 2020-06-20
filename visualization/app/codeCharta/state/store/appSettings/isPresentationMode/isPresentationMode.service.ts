@@ -25,7 +25,9 @@ export class IsPresentationModeService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(IsPresentationModeService.PRESENTATION_MODE_CHANGED_EVENT, { isPresentationMode: newState })
+		this.$rootScope.$broadcast(IsPresentationModeService.PRESENTATION_MODE_CHANGED_EVENT, {
+			isPresentationMode: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: IsPresentationModeSubscriber) {

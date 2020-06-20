@@ -41,7 +41,11 @@ describe("MetricService", () => {
 		storeService.dispatch(addFile(deltaA))
 		storeService.dispatch(addFile(deltaB))
 
-		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
+		metricData = [
+			{ name: "rloc", maxValue: 999999 },
+			{ name: "functions", maxValue: 999999 },
+			{ name: "mcc", maxValue: 999999 }
+		]
 	}
 
 	function rebuildService() {
@@ -183,7 +187,11 @@ describe("MetricService", () => {
 
 		it("should return an array of metricData sorted by name calculated from visibleFileStates", () => {
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
-			const expected = [{ maxValue: 1000, name: "functions" }, { maxValue: 100, name: "mcc" }, { maxValue: 100, name: "rloc" }]
+			const expected = [
+				{ maxValue: 1000, name: "functions" },
+				{ maxValue: 100, name: "mcc" },
+				{ maxValue: 100, name: "rloc" }
+			]
 
 			const result = metricService["calculateMetrics"]()
 
