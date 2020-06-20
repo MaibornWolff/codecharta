@@ -3,7 +3,7 @@ dependencies {
     implementation project(':filter:MergeFilter')
     
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
-    implementation group: 'org.sonarsource.java', name: 'sonar-java-plugin', version: '5.14.0.18788'
+    implementation group: 'org.sonarsource.java', name: 'sonar-java-plugin', version: '6.4.0.21967'
     implementation group: 'org.json', name: 'json', version: json_version
     compile "org.jetbrains.kotlin:kotlin-reflect:1.3.72"
     implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
