@@ -108,7 +108,7 @@ describe("MetricService", () => {
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENTif metricData changed", () => {
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
 			metricService["metricData"] = []
 
 			metricService.onBlacklistChanged([])
