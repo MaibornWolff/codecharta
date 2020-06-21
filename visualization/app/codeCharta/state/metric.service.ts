@@ -8,6 +8,7 @@ import { FilesService, FilesSelectionSubscriber } from "./store/files/files.serv
 import { AttributeTypesSubscriber, AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { fileStatesAvailable, getVisibleFileStates } from "../model/files/files.helper"
 import { FileState } from "../model/files/files"
+import { isEqualObject } from "../util/reduxHelper"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -64,9 +65,12 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private setNewMetricData() {
-		this.metricData = this.calculateMetrics()
-		this.addUnaryMetric()
-		this.notifyMetricDataAdded()
+		const newMetricData = this.calculateMetrics()
+		this.addUnaryMetric(newMetricData)
+		if (!isEqualObject(this.metricData, newMetricData)) {
+			this.metricData = newMetricData
+			this.notifyMetricDataAdded()
+		}
 	}
 
 	private calculateMetrics(): MetricData[] {
@@ -128,13 +132,11 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		return metricData.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
 	}
 
-	private addUnaryMetric() {
-		if (!this.metricData.some(x => x.name === MetricService.UNARY_METRIC)) {
-			this.metricData.push({
-				name: MetricService.UNARY_METRIC,
-				maxValue: 1
-			})
-		}
+	private addUnaryMetric(metricData: MetricData[]) {
+		metricData.push({
+			name: MetricService.UNARY_METRIC,
+			maxValue: 1
+		})
 	}
 
 	private notifyMetricDataAdded() {

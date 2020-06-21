@@ -21,10 +21,10 @@ export function isActionOfType(actionType: string, actions) {
 	return actions[actionType] !== undefined
 }
 
-function arrayContainsItem(array: any[], item: any): boolean {
-	return array.some(x => isEqualObject(x, item))
+export function isEqualObject(obj1: any, obj2: any): boolean {
+	return angular.toJson(obj1) === angular.toJson(obj2)
 }
 
-function isEqualObject(obj1: any, obj2: any): boolean {
-	return angular.toJson(obj1) === angular.toJson(obj2)
+function arrayContainsItem(array: any[], item: any): boolean {
+	return array.some(x => isEqualObject(x, item))
 }
