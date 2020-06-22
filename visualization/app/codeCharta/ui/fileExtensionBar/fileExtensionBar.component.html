@@ -7,7 +7,7 @@
 		<div
 			class="bar-section"
 			ng-click="$ctrl.toggleExtensiveMode()"
-			ng-repeat="item in $ctrl._viewModel.distribution"
+			ng-repeat="item in $ctrl._viewModel.distribution track by $index"
 			ng-style="{ width: item.relativeMetricValue + '%', background: item.color }"
 		>
 			<p
@@ -23,7 +23,7 @@
 		</div>
 	</div>
 	<div class="bar-details" ng-class="{ expanded: $ctrl._viewModel.isExtensiveMode }" ng-click="$ctrl.togglePercentageAbsoluteValues()">
-		<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution">
+		<div class="bar-details-section" ng-repeat="item in $ctrl._viewModel.distribution track by $index">
 			<p class="bar-details-text">
 				<span class="dot" ng-style="{ background: item.color }"></span>{{ item.fileExtension }} :
 				<span class="metric-value" ng-class="{ hidden: $ctrl._viewModel.isAbsoluteValueVisible }"
