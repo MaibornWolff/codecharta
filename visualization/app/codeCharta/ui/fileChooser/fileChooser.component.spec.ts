@@ -61,9 +61,14 @@ describe("fileChooserController", () => {
 
 	describe("onImportNewFiles", () => {
 		it("should call $apply", () => {
-			fileChooserController.onImportNewFiles({ files: [] })
+			fileChooserController.onImportNewFiles({ files: [{ name: "sample.cc.json" }] })
 
 			expect($rootScope.$apply).toHaveBeenCalled()
+		})
+		it("should not call $apply, when no files were loaded", () => {
+			fileChooserController.onImportNewFiles({ files: [] })
+
+			expect($rootScope.$apply).not.toHaveBeenCalled()
 		})
 
 		it("should not set state if no file loaded", () => {
