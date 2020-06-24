@@ -82,7 +82,9 @@ describe("MetricService", () => {
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
+			metricService["metricData"] = []
+
 			metricService.onFilesSelectionChanged(undefined)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
@@ -106,7 +108,9 @@ describe("MetricService", () => {
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
+			metricService["metricData"] = []
+
 			metricService.onBlacklistChanged([])
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
