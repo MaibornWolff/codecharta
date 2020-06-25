@@ -48,7 +48,9 @@ describe("HideFlatBuildingsService", () => {
 
 			hideFlatBuildingsService.onStoreChanged(HideFlatBuildingsActions.SET_HIDE_FLAT_BUILDINGS)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-flat-buildings-changed", { hideFlatBuildings: false })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-flat-buildings-changed", {
+				hideFlatBuildings: false
+			})
 		})
 
 		it("should not notify anything on non-hide-flat-buildings-events", () => {

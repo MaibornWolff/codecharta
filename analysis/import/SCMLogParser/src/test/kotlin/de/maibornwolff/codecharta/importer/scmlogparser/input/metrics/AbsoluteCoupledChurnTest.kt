@@ -5,7 +5,8 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.ArrayList
+import java.util.Arrays
 
 class AbsoluteCoupledChurnTest {
 
@@ -69,8 +70,11 @@ class AbsoluteCoupledChurnTest {
         assertThat(metric.value()).isEqualTo(9L)
     }
 
-    private fun registerModifications(metric: Metric, modification: Modification,
-                                      vararg otherModifications: Modification) {
+    private fun registerModifications(
+        metric: Metric,
+        modification: Modification,
+        vararg otherModifications: Modification
+    ) {
         val modificationList = ArrayList(Arrays.asList(*otherModifications))
         modificationList.add(modification)
 

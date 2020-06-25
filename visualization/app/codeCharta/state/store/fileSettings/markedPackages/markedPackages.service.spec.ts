@@ -57,7 +57,9 @@ describe("MarkedPackagesService", () => {
 
 			markedPackagesService.onStoreChanged(MarkedPackagesActions.SET_MARKED_PACKAGES)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("marked-packages-changed", { markedPackages: MARKED_PACKAGES })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("marked-packages-changed", {
+				markedPackages: MARKED_PACKAGES
+			})
 		})
 
 		it("should not notify anything on non-marked-packages-events", () => {

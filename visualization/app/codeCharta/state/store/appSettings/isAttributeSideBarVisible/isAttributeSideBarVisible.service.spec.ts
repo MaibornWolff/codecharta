@@ -92,7 +92,9 @@ describe("IsAttributeSideBarVisibleService", () => {
 
 			isAttributeSideBarVisibleService.onStoreChanged(IsAttributeSideBarVisibleActions.SET_IS_ATTRIBUTE_SIDE_BAR_VISIBLE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("is-attribute-side-bar-visible-changed", { isAttributeSideBarVisible: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("is-attribute-side-bar-visible-changed", {
+				isAttributeSideBarVisible: true
+			})
 		})
 
 		it("should not notify anything on non-is-attribute-side-bar-visible-events", () => {

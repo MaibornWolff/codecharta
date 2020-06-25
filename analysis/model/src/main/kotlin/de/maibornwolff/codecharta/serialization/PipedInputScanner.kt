@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.serialization
 
 import java.io.InputStream
-import java.util.*
+import java.util.Scanner
 
 fun <R> InputStream.mapLines(transform: (String) -> R): List<R> {
     val result = mutableListOf<R>()

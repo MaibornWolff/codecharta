@@ -22,10 +22,8 @@ class ProjectGenerator(private val writer: Writer, private val filePath: String,
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
 
-        if(toCompress && filePath != "notSpecified") serializeCompressedFileAndDeleteJsonFile(project, filePath, writer) else ProjectSerializer.serializeProject(project, writer)
-
+        if (toCompress && filePath != "notSpecified") serializeCompressedFileAndDeleteJsonFile(project, filePath, writer) else ProjectSerializer.serializeProject(project, writer)
     }
-
 
     private fun addAsNode(metrics: Map.Entry<String, FileMetrics>) {
         var directory = ""
@@ -38,6 +36,5 @@ class ProjectGenerator(private val writer: Writer, private val filePath: String,
         val node = MutableNode(fileName, attributes = metrics.value.metricMap)
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
-
     }
 }

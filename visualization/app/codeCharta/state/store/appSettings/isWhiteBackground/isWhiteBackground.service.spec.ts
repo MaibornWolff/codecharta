@@ -48,7 +48,9 @@ describe("IsWhiteBackgroundService", () => {
 
 			isWhiteBackgroundService.onStoreChanged(IsWhiteBackgroundActions.SET_IS_WHITE_BACKGROUND)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("is-white-background-changed", { isWhiteBackground: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("is-white-background-changed", {
+				isWhiteBackground: true
+			})
 		})
 
 		it("should not notify anything on non-is-white-background-events", () => {

@@ -10,7 +10,7 @@ import org.spekframework.spek2.style.specification.describe
 import java.io.InputStreamReader
 import kotlin.test.assertFailsWith
 
-class ProjectMergerTest: Spek({
+class ProjectMergerTest : Spek({
     describe("using a recursive node merger strategy") {
         val nodeMergerStrategy = RecursiveNodeMergerStrategy()
 
@@ -117,7 +117,6 @@ class ProjectMergerTest: Spek({
                 assertThat(project.rootNode.children.first().attributes.size, CoreMatchers.`is`(11))
             }
         }
-
 
         context("merging two projects with edges with leafNodeMergingStrategy") {
             val originalProject1 = ProjectDeserializer.deserializeProject(

@@ -60,7 +60,10 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should not remove the children of a marked package if color is different", () => {
-			const expected = [{ color: "0x000000", path: "/root" }, { color: "0x000001", path: "/root/big leaf" }]
+			const expected = [
+				{ color: "0x000000", path: "/root" },
+				{ color: "0x000001", path: "/root/big leaf" }
+			]
 
 			codeMapActionsService.markFolder(nodeA, "0x000000")
 			codeMapActionsService.markFolder(nodeA.children[0], "0x000001")
@@ -98,7 +101,10 @@ describe("CodeMapActionService", () => {
 		})
 
 		it("should not unmark marked children nodes", () => {
-			const expected = [{ color: "0x000000", path: "/root/big leaf" }, { color: "0x000000", path: "/root/Parent Leaf" }]
+			const expected = [
+				{ color: "0x000000", path: "/root/big leaf" },
+				{ color: "0x000000", path: "/root/Parent Leaf" }
+			]
 
 			codeMapActionsService.markFolder(nodeA.children[0], "0x000000")
 			codeMapActionsService.markFolder(nodeA.children[1], "0x000000")

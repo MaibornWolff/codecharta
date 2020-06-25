@@ -7,7 +7,7 @@ import mu.KotlinLogging
 /**
  * merges leafs according to the level of matching of their paths
  */
-class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase: Boolean = false): NodeMergerStrategy {
+class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase: Boolean = false) : NodeMergerStrategy {
 
     private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
@@ -56,7 +56,7 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
     private fun replaceMisfittingPath(path: Path): Path {
         return when {
             addMisfittingNodes -> path
-            else               -> Path.TRIVIAL
+            else -> Path.TRIVIAL
         }
     }
 
@@ -64,7 +64,7 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
         val matchingLeaf = this.filter { !it.isTrivial }.maxBy { path.fittingEdgesFromTailWith(it) } ?: path
         return when {
             path.fittingEdgesFromTailWith(matchingLeaf) == 0 -> null
-            else                                             -> matchingLeaf
+            else -> matchingLeaf
         }
     }
 

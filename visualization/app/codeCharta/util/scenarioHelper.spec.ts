@@ -224,8 +224,14 @@ describe("scenarioHelper", () => {
 		})
 
 		it("should find the specific Scenario and delete it ", () => {
-			ScenarioHelper["scenarios"].set("Scenario1", { name: "Scenario1", area: { areaMetric: "rloc", margin: 48 } })
-			ScenarioHelper["scenarios"].set("Scenario2", { name: "Scenario2", height: { heightMetric: "mcc", labelSlider: 2 } })
+			ScenarioHelper["scenarios"].set("Scenario1", {
+				name: "Scenario1",
+				area: { areaMetric: "rloc", margin: 48 }
+			})
+			ScenarioHelper["scenarios"].set("Scenario2", {
+				name: "Scenario2",
+				height: { heightMetric: "mcc", labelSlider: 2 }
+			})
 			ScenarioHelper["scenarios"].set("Scenario3", { name: "Scenario3", color: { colorMetric: "mcc" } })
 
 			ScenarioHelper.deleteScenario("Scenario2")

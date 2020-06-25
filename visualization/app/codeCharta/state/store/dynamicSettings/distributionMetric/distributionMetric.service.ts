@@ -44,7 +44,9 @@ export class DistributionMetricService implements StoreSubscriber, MetricService
 	}
 
 	private notify(newState: string) {
-		this.$rootScope.$broadcast(DistributionMetricService.DISTRIBUTION_METRIC_CHANGED_EVENT, { distributionMetric: newState })
+		this.$rootScope.$broadcast(DistributionMetricService.DISTRIBUTION_METRIC_CHANGED_EVENT, {
+			distributionMetric: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {

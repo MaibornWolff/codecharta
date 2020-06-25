@@ -8,7 +8,7 @@ import org.junit.Test
 import java.util.Arrays.asList
 import java.util.stream.Stream
 
-class GitLogNumstatParserStrategyTest: ParserStrategyContractTest() {
+class GitLogNumstatParserStrategyTest : ParserStrategyContractTest() {
 
     private var parserStrategy: GitLogNumstatParserStrategy = GitLogNumstatParserStrategy()
 

@@ -4,10 +4,10 @@ import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import mu.KotlinLogging
 
 open class ProjectBuilder(
-        private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
-        private var edges: MutableList<Edge> = mutableListOf(),
-        private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
-        private var blacklist: MutableList<BlacklistItem> = mutableListOf()
+    private val nodes: List<MutableNode> = listOf(MutableNode("root", NodeType.Folder)),
+    private var edges: MutableList<Edge> = mutableListOf(),
+    private var attributeTypes: MutableMap<String, MutableMap<String, AttributeType>> = mutableMapOf(),
+    private var blacklist: MutableList<BlacklistItem> = mutableListOf()
 ) {
 
     val DUMMY_PROJECT_NAME = ""

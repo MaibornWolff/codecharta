@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
-class HighlyCoupledFiles: Metric {
+class HighlyCoupledFiles : Metric {
 
     private var fileName: String = ""
     private var numberOfCommits: Long = 0
@@ -51,7 +51,6 @@ class HighlyCoupledFiles: Metric {
                     .filter { it.filename != fileName }
                     .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
         }
-
     }
 
     private fun isHighlyCoupled(value: Int): Boolean {

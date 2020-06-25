@@ -49,7 +49,9 @@ describe("CameraTargetService", () => {
 
 			cameraTargetService.onStoreChanged(CameraTargetActions.SET_CAMERA_TARGET)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("camera-target-changed", { cameraTarget: new Vector3(100, 100, 100) })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("camera-target-changed", {
+				cameraTarget: new Vector3(100, 100, 100)
+			})
 		})
 
 		it("should not notify anything on non-camera-target-events", () => {

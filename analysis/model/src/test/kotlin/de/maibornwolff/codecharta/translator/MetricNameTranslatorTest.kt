@@ -6,7 +6,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class MetricNameTranslatorTest: Spek({
+class MetricNameTranslatorTest : Spek({
     describe("trivial replacer") {
         val replacer = MetricNameTranslator.TRIVIAL
         it("should not replace anything") {

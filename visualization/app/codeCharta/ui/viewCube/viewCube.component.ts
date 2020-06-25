@@ -82,10 +82,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	private calculateCameraPosition(camera: THREE.PerspectiveCamera) {
 		const codeMapTargetVector = this.threeOrbitControlsService.controls.target.clone()
 		const codeMapCameraPosition = camera.position.clone()
-		return codeMapCameraPosition
-			.sub(codeMapTargetVector)
-			.normalize()
-			.multiplyScalar(3)
+		return codeMapCameraPosition.sub(codeMapTargetVector).normalize().multiplyScalar(3)
 	}
 
 	private startAnimation() {

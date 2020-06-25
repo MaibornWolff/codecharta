@@ -29,7 +29,6 @@ interface Metric {
         return null
     }
 
-
     fun registerModification(modification: Modification) {
         // defaults to: do nothing
     }

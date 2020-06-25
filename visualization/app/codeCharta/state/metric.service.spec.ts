@@ -41,7 +41,11 @@ describe("MetricService", () => {
 		storeService.dispatch(addFile(deltaA))
 		storeService.dispatch(addFile(deltaB))
 
-		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
+		metricData = [
+			{ name: "rloc", maxValue: 999999 },
+			{ name: "functions", maxValue: 999999 },
+			{ name: "mcc", maxValue: 999999 }
+		]
 	}
 
 	function rebuildService() {
@@ -78,10 +82,21 @@ describe("MetricService", () => {
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
+			metricService["metricData"] = []
+
 			metricService.onFilesSelectionChanged(undefined)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+		})
+
+		it("should not broadcast a METRIC_DATA_ADDED_EVENT if metricData is still the same", () => {
+			const oldMetricData = metricService.getMetricData()
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+			expect(oldMetricData).toEqual(metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
@@ -102,10 +117,21 @@ describe("MetricService", () => {
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
+			metricService["metricData"] = []
+
 			metricService.onBlacklistChanged([])
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+		})
+
+		it("should not broadcast a METRIC_DATA_ADDED_EVENT if metricData is still the same", () => {
+			const oldMetricData = metricService.getMetricData()
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+			expect(oldMetricData).toEqual(metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
@@ -183,7 +209,11 @@ describe("MetricService", () => {
 
 		it("should return an array of metricData sorted by name calculated from visibleFileStates", () => {
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
-			const expected = [{ maxValue: 1000, name: "functions" }, { maxValue: 100, name: "mcc" }, { maxValue: 100, name: "rloc" }]
+			const expected = [
+				{ maxValue: 1000, name: "functions" },
+				{ maxValue: 100, name: "mcc" },
+				{ maxValue: 100, name: "rloc" }
+			]
 
 			const result = metricService["calculateMetrics"]()
 
