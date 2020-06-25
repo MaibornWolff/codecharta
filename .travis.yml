@@ -79,6 +79,8 @@ jobs:
         - provider: script
           script: sonar-scanner
           skip_cleanup: true
+          on:
+            all_branches: true
 
     - name: "Publish Analysis Sonar Results"
       before_script: cd analysis
@@ -89,6 +91,9 @@ jobs:
         - provider: script
           script: ./gradlew sonarqube
           skip_cleanup: true
+          on:
+            all_branches: true
+
 
     - stage: deploy
       script:
