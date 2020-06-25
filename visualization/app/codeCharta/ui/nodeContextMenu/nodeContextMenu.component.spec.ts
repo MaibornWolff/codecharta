@@ -11,6 +11,11 @@ import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { FocusedNodePathService } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
+import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { MarkedPackagesService } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
+import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { NodeDecorator } from "../../util/nodeDecorator"
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -27,10 +32,11 @@ describe("nodeContextMenuController", () => {
 		mockElement()
 		mockWindow()
 		rebuildController()
-		withMockedEventMethods($rootScope)
 		withMockedCodeMapActionService()
 		withMockedCodeMapPreRenderService()
 		withMockedHideNodeContextMenuMethod()
+
+		NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
 	})
 
 	function restartSystem() {
@@ -118,7 +124,44 @@ describe("nodeContextMenuController", () => {
 			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
+		it("should subscribe focus-node-events", () => {
+			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
+			FocusedNodePathService.subscribeToFocusNode = jest.fn()
+
+			rebuildController()
+
+			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
+		})
+
+		it("should subscribe unfocus-node-events", () => {
+			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
+			FocusedNodePathService.subscribeToFocusNode = jest.fn()
+
+			rebuildController()
+
+			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
+		})
+
+		it("should subscribe blacklist events", () => {
+			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
+			BlacklistService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
+		})
+
+		it("should subscribe marked packages events", () => {
+			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
+			MarkedPackagesService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(MarkedPackagesService.subscribe).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
+		})
+
 		it("should broadcast 'show-node-context-menu' when 'show' method is called", () => {
+			withMockedEventMethods($rootScope)
 			NodeContextMenuController.broadcastShowEvent($rootScope, "somepath", "sometype", 42, 24)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", {
@@ -127,6 +170,38 @@ describe("nodeContextMenuController", () => {
 				x: 42,
 				y: 24
 			})
+		})
+	})
+
+	describe("onFocusNode", () => {
+		it("should hide the node context menu", () => {
+			nodeContextMenuController.onFocusNode("/root")
+
+			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+		})
+	})
+
+	describe("onUnfocusNode", () => {
+		it("should hide the node context menu", () => {
+			nodeContextMenuController.onUnfocusNode()
+
+			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+		})
+	})
+
+	describe("onBlacklistChanged", () => {
+		it("should hide the node context menu", () => {
+			nodeContextMenuController.onBlacklistChanged([])
+
+			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+		})
+	})
+
+	describe("onMarkedPackagesChanged", () => {
+		it("should hide the node context menu", () => {
+			nodeContextMenuController.onMarkedPackagesChanged([])
+
+			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -291,14 +366,6 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("markFolder", () => {
-		it("should hide contextMenu", () => {
-			nodeContextMenuController.hideNodeContextMenu = jest.fn()
-
-			nodeContextMenuController.markFolder("color")
-
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
-		})
-
 		it("should call hide and codeMapActionService.markFolder", () => {
 			nodeContextMenuController.markFolder("color")
 
@@ -307,14 +374,6 @@ describe("nodeContextMenuController", () => {
 	})
 
 	describe("unmarkFolder", () => {
-		it("should hide contextMenu", () => {
-			nodeContextMenuController.hideNodeContextMenu = jest.fn()
-
-			nodeContextMenuController.unmarkFolder()
-
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
-		})
-
 		it("should call hide and codeMapActionService.unmarkFolder", () => {
 			nodeContextMenuController.unmarkFolder()
 
@@ -327,14 +386,6 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
 		})
 
-		it("should hide contextMenu", () => {
-			nodeContextMenuController.hideNodeContextMenu = jest.fn()
-
-			nodeContextMenuController.focusNode()
-
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
-		})
-
 		it("should set new focused path", () => {
 			nodeContextMenuController.focusNode()
 
@@ -345,14 +396,6 @@ describe("nodeContextMenuController", () => {
 	describe("excludeNode", () => {
 		beforeEach(() => {
 			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH.children[1]
-		})
-
-		it("should hide contextMenu", () => {
-			nodeContextMenuController.hideNodeContextMenu = jest.fn()
-
-			nodeContextMenuController.excludeNode()
-
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
 		})
 
 		it("should add exclude blacklistItem", () => {
@@ -401,6 +444,55 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.nodeIsFolder()
 
 			expect(result).toBeFalsy()
+		})
+	})
+
+	describe("isNodeFocused", () => {
+		it("should return true if a node is focused", () => {
+			storeService.dispatch(focusNode("/root/big leaf"))
+			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
+
+			const actual = nodeContextMenuController.isNodeFocused()
+
+			expect(actual).toBeTruthy()
+		})
+
+		it("should return false if a node is not focused", () => {
+			storeService.dispatch(unfocusNode())
+			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
+
+			const actual = nodeContextMenuController.isNodeFocused()
+
+			expect(actual).toBeFalsy()
+		})
+	})
+
+	describe("isNodeOrParentFocused", () => {
+		it("should return true if a node is focused", () => {
+			storeService.dispatch(focusNode("/root/big leaf"))
+			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
+
+			const actual = nodeContextMenuController.isNodeOrParentFocused()
+
+			expect(actual).toBeTruthy()
+		})
+
+		it("should return true if a parent of a node is focused", () => {
+			storeService.dispatch(focusNode("/root/Parent Leaf"))
+			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[1].children[0]
+
+			const actual = nodeContextMenuController.isNodeOrParentFocused()
+
+			expect(actual).toBeTruthy()
+		})
+
+		it("should return false if a node is not focused", () => {
+			storeService.dispatch(unfocusNode())
+			nodeContextMenuController["_viewModel"].codeMapNode = TEST_DELTA_MAP_A.map.children[0]
+
+			const actual = nodeContextMenuController.isNodeOrParentFocused()
+
+			expect(actual).toBeFalsy()
 		})
 	})
 })

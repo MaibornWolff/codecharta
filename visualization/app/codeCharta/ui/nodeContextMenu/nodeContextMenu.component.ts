@@ -2,7 +2,7 @@ import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, MarkedPackage, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
@@ -11,12 +11,27 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { Vector2 } from "three"
+import {
+	FocusedNodePathService,
+	FocusNodeSubscriber,
+	UnfocusNodeSubscriber
+} from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { MarkedPackagesService, MarkedPackagesSubscriber } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
 
 export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
 }
 
-export class NodeContextMenuController implements BuildingRightClickedEventSubscriber, ShowNodeContextMenuSubscriber, MapColorsSubscriber {
+export class NodeContextMenuController
+	implements
+		BuildingRightClickedEventSubscriber,
+		ShowNodeContextMenuSubscriber,
+		MapColorsSubscriber,
+		FocusNodeSubscriber,
+		UnfocusNodeSubscriber,
+		BlacklistSubscriber,
+		MarkedPackagesSubscriber {
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
 
 	private _viewModel: {
@@ -40,12 +55,32 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
+		BlacklistService.subscribe($rootScope, this)
+		FocusedNodePathService.subscribeToFocusNode($rootScope, this)
+		FocusedNodePathService.subscribeToUnfocusNode($rootScope, this)
+		MarkedPackagesService.subscribe($rootScope, this)
 
 		document.body.addEventListener("click", event => this.hideNodeContextMenu(event), true)
 	}
 
 	public onMapColorsChanged(mapColors: MapColors) {
 		this._viewModel.markingColors = mapColors.markingColors
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.hideNodeContextMenu()
+	}
+
+	public onFocusNode(focusedNodePath: string) {
+		this.hideNodeContextMenu()
+	}
+
+	public onUnfocusNode() {
+		this.hideNodeContextMenu()
+	}
+
+	public onMarkedPackagesChanged(markedPackages: MarkedPackage[]) {
+		this.hideNodeContextMenu()
 	}
 
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
@@ -84,13 +119,11 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 	public flattenNode() {
 		const blacklistItem: BlacklistItem = { path: this._viewModel.codeMapNode.path, type: BlacklistType.flatten }
 		this.storeService.dispatch(addBlacklistItem(blacklistItem))
-		this.hideNodeContextMenu()
 	}
 
 	public showNode() {
 		const blacklistItem: BlacklistItem = { path: this._viewModel.codeMapNode.path, type: BlacklistType.flatten }
 		this.storeService.dispatch(removeBlacklistItem(blacklistItem))
-		this.hideNodeContextMenu()
 	}
 
 	public clickColor(color: string) {
@@ -142,17 +175,27 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 
 	public markFolder(color: string) {
 		this.codeMapActionsService.markFolder(this._viewModel.codeMapNode, color)
-		this.hideNodeContextMenu()
 	}
 
 	public unmarkFolder() {
 		this.codeMapActionsService.unmarkFolder(this._viewModel.codeMapNode)
-		this.hideNodeContextMenu()
 	}
 
 	public focusNode() {
 		this.storeService.dispatch(focusNode(this._viewModel.codeMapNode.path))
-		this.hideNodeContextMenu()
+	}
+
+	public isNodeOrParentFocused(): boolean {
+		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
+		if (this._viewModel.codeMapNode && focusedNodePath) {
+			return this._viewModel.codeMapNode.path.includes(focusedNodePath)
+		}
+	}
+
+	public isNodeFocused(): boolean {
+		if (this._viewModel.codeMapNode) {
+			return this._viewModel.codeMapNode.path === this.storeService.getState().dynamicSettings.focusedNodePath
+		}
 	}
 
 	public excludeNode() {
@@ -162,7 +205,6 @@ export class NodeContextMenuController implements BuildingRightClickedEventSubsc
 				type: BlacklistType.exclude
 			})
 		)
-		this.hideNodeContextMenu()
 	}
 
 	public nodeIsFolder() {

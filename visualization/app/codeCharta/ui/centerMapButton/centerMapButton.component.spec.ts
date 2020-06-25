@@ -45,7 +45,6 @@ describe("CenterMapButtonController", () => {
 
 	describe("fitMapToView", () => {
 		it("should call autoFitTo", () => {
-			threeOrbitControlsService.autoFitTo = jest.fn()
 			centerMapButtonController.fitMapToView()
 
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
