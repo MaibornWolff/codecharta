@@ -1,10 +1,10 @@
-import angular from "angular"
+import _ from "lodash"
 
 const clone = require("rfdc")()
 
 export function removeItemFromArray(array: any[], item: any): any[] {
 	return array.filter(x => {
-		return !isEqualObject(x, item)
+		return !_.isEqual(x, item)
 	})
 }
 
@@ -21,10 +21,6 @@ export function isActionOfType(actionType: string, actions) {
 	return actions[actionType] !== undefined
 }
 
-export function isEqualObject(obj1: any, obj2: any): boolean {
-	return angular.toJson(obj1) === angular.toJson(obj2)
-}
-
 function arrayContainsItem(array: any[], item: any): boolean {
-	return array.some(x => isEqualObject(x, item))
+	return array.some(x => _.isEqual(x, item))
 }

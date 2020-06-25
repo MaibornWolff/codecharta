@@ -8,7 +8,7 @@ import { FilesService, FilesSelectionSubscriber } from "./store/files/files.serv
 import { AttributeTypesSubscriber, AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { fileStatesAvailable, getVisibleFileStates } from "../model/files/files.helper"
 import { FileState } from "../model/files/files"
-import { isEqualObject } from "../util/reduxHelper"
+import _ from "lodash"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -67,7 +67,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	private setNewMetricData() {
 		const newMetricData = this.calculateMetrics()
 		this.addUnaryMetric(newMetricData)
-		if (!isEqualObject(this.metricData, newMetricData)) {
+		if (!_.isEqual(this.metricData, newMetricData)) {
 			this.metricData = newMetricData
 			this.notifyMetricDataAdded()
 		}

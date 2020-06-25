@@ -2,7 +2,7 @@
 	<div ng-if="$ctrl.nodeIsFolder()">
 		<div layout="row" layout-align="center center">
 			<md-button
-				ng-repeat="color in $ctrl._viewModel.markingColors"
+				ng-repeat="color in $ctrl._viewModel.markingColors track by $index"
 				ng-style="{'background-color':'{{ color }}'}"
 				ng-disabled="primary === color && !isPrimary"
 				ng-click="$ctrl.clickColor(color)"

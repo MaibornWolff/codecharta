@@ -90,6 +90,15 @@ describe("MetricService", () => {
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
+		it("should not broadcast a METRIC_DATA_ADDED_EVENT if metricData is still the same", () => {
+			const oldMetricData = metricService.getMetricData()
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+			expect(oldMetricData).toEqual(metricService.getMetricData())
+		})
+
 		it("should add unary metric to metricData", () => {
 			metricService.onFilesSelectionChanged(undefined)
 
@@ -114,6 +123,15 @@ describe("MetricService", () => {
 			metricService.onBlacklistChanged([])
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+		})
+
+		it("should not broadcast a METRIC_DATA_ADDED_EVENT if metricData is still the same", () => {
+			const oldMetricData = metricService.getMetricData()
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+			expect(oldMetricData).toEqual(metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
