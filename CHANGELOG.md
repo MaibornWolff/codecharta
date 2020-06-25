@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Improved performance significantly when switching between single, multiple and delta
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.49.0] - 2020-06-19
