@@ -86,7 +86,7 @@
 	},
 	"dependencies": {
 		"ajv": "^6.12.2",
-		"angular": "^1.6.9",
+		"angular": "^1.8.0",
 		"angular-animate": "^1.6.9",
 		"angular-aria": "^1.6.9",
 		"angular-material": "^1.1.7",
@@ -112,7 +112,7 @@
 		"three-orbit-controls": "^82.1.0"
 	},
 	"devDependencies": {
-		"@types/angular": "^1.6.43",
+		"@types/angular": "^1.7.2",
 		"@types/angular-mocks": "^1.5.11",
 		"@types/color-convert": "^1.9.0",
 		"@types/d3": "^5.7.1",
