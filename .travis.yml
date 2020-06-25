@@ -89,7 +89,7 @@ jobs:
         - ./gradlew codeCoverageReport
       deploy:
         - provider: script
-          script: ./gradlew sonarqube
+          script: sonar-scanner
           skip_cleanup: true
           on:
             all_branches: true
