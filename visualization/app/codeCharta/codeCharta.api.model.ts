@@ -1,10 +1,10 @@
-import { AttributeTypes, CodeMapNode, Edge, MarkedPackage, RecursivePartial, Settings } from "./codeCharta.model"
+import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage, RecursivePartial, Settings } from "./codeCharta.model"
 
 export interface ExportCCFile {
 	projectName: string
 	apiVersion: string
 	nodes: CodeMapNode[]
-	attributeTypes?: AttributeTypes
+	attributeTypes?: AttributeTypes | ExportAttributeTypes
 	edges?: Edge[]
 	markedPackages?: MarkedPackage[]
 	blacklist?: ExportBlacklistItem[]
@@ -29,4 +29,9 @@ export enum APIVersions {
 export interface ExportScenario {
 	name: string
 	settings: RecursivePartial<Settings>
+}
+
+export interface ExportAttributeTypes {
+	nodes?: [{ [key: string]: AttributeTypeValue }]
+	edges?: [{ [key: string]: AttributeTypeValue }]
 }
