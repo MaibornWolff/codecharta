@@ -154,7 +154,7 @@ describe("codeChartaService", () => {
 				})
 		})
 
-		it("should reject or catch invalid file", done => {
+		it("should reject or catch a file with missing properties", done => {
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 			codeChartaService
@@ -163,7 +163,7 @@ describe("codeChartaService", () => {
 					letTestFail()
 				})
 				.catch(err => {
-					expect(err.error).toEqual(["file is empty or invalid"])
+					expect(err.error).toEqual(["Required error:  should have required property 'projectName'"])
 					expect(err.warning).toEqual([])
 					done()
 				})

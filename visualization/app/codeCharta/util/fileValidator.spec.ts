@@ -1,4 +1,3 @@
-import { TEST_FILE_CONTENT } from "./dataMocks"
 import {
 	TEST_FILE_CONTENT,
 	TEST_FILE_CONTENT_INVALID_API,
@@ -48,7 +47,7 @@ describe("FileValidator", () => {
 	it("should not reject higher minor API version but add warning", () => {
 		file = TEST_FILE_CONTENT_INVALID_MINOR_API
 
-		const errors = FileValidator.validate(file)
+		const errors = validate(file)
 
 		expectFileToBeValid(errors)
 		expect(errors.warning.length).toBeGreaterThan(0)
@@ -58,7 +57,7 @@ describe("FileValidator", () => {
 	it("should reject file missing API version", () => {
 		invalidFile = TEST_FILE_CONTENT_NO_API
 
-		const errors = FileValidator.validate(invalidFile)
+		const errors = validate(invalidFile)
 
 		expectFileToBeInvalid(errors)
 		expect(errors.title).toEqual("Error API Version")
@@ -67,7 +66,7 @@ describe("FileValidator", () => {
 	it("should reject file with wrong API version", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_API
 
-		const errors = FileValidator.validate(invalidFile)
+		const errors = validate(invalidFile)
 
 		expectFileToBeInvalid(errors)
 		expect(errors.title).toEqual("Error API Version")
