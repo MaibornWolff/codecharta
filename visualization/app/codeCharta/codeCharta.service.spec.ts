@@ -104,7 +104,7 @@ describe("codeChartaService", () => {
 			codeChartaService
 				.loadFiles([
 					{
-						fileName: fileName,
+						fileName,
 						content: validFileContent
 					}
 				])
@@ -119,7 +119,7 @@ describe("codeChartaService", () => {
 			codeChartaService
 				.loadFiles([
 					{
-						fileName: fileName,
+						fileName,
 						content: validFileContent
 					}
 				])
@@ -132,7 +132,7 @@ describe("codeChartaService", () => {
 
 		it("should reject null", done => {
 			codeChartaService
-				.loadFiles([{ fileName: fileName, content: null }])
+				.loadFiles([{ fileName, content: null }])
 				.then(() => {
 					letTestFail()
 				})
@@ -145,7 +145,7 @@ describe("codeChartaService", () => {
 
 		it("should reject string", done => {
 			codeChartaService
-				.loadFiles([{ fileName: fileName, content: ("string" as any) as ExportCCFile }])
+				.loadFiles([{ fileName, content: ("string" as any) as ExportCCFile }])
 				.then(() => {
 					letTestFail()
 				})
@@ -158,7 +158,7 @@ describe("codeChartaService", () => {
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 			codeChartaService
-				.loadFiles([{ fileName: fileName, content: invalidFileContent }])
+				.loadFiles([{ fileName, content: invalidFileContent }])
 				.then(() => {
 					letTestFail()
 				})
@@ -175,7 +175,7 @@ describe("codeChartaService", () => {
 			codeChartaService
 				.loadFiles([
 					{
-						fileName: fileName,
+						fileName,
 						content: validFileContent
 					}
 				])
