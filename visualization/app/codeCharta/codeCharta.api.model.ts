@@ -4,7 +4,7 @@ export interface ExportCCFile {
 	projectName: string
 	apiVersion: string
 	nodes: CodeMapNode[]
-	attributeTypes?: AttributeTypes | ExportAttributeTypes
+	attributeTypes?: AttributeTypes | OldAttributeTypes
 	edges?: Edge[]
 	markedPackages?: MarkedPackage[]
 	blacklist?: ExportBlacklistItem[]
@@ -31,7 +31,7 @@ export interface ExportScenario {
 	settings: RecursivePartial<Settings>
 }
 
-export interface ExportAttributeTypes {
+export interface OldAttributeTypes {
 	nodes?: [{ [key: string]: AttributeTypeValue }]
 	edges?: [{ [key: string]: AttributeTypeValue }]
 }

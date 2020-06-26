@@ -44,6 +44,15 @@
 					},
 					"type": "object"
 				},
+				"id": {
+					"type": "number"
+				},
+				"isExcluded": {
+					"type": "boolean"
+				},
+				"isFlattened": {
+					"type": "boolean"
+				},
 				"link": {
 					"type": "string"
 				},
@@ -55,9 +64,6 @@
 				},
 				"type": {
 					"$ref": "#/definitions/NodeType"
-				},
-				"visible": {
-					"type": "boolean"
 				}
 			},
 			"required": ["name", "type"],
@@ -119,7 +125,14 @@
 					"type": "string"
 				},
 				"attributeTypes": {
-					"$ref": "#/definitions/AttributeTypes"
+					"anyOf": [
+						{
+							"$ref": "#/definitions/OldAttributeTypes"
+						},
+						{
+							"$ref": "#/definitions/AttributeTypes"
+						}
+					]
 				},
 				"blacklist": {
 					"items": {
@@ -173,6 +186,59 @@
 		"NodeType": {
 			"enum": ["File", "Folder"],
 			"type": "string"
+		},
+		"OldAttributeTypes": {
+			"properties": {
+				"edges": {
+					"additionalItems": {
+						"anyOf": [
+							{
+								"additionalProperties": {
+									"enum": ["absolute", "relative"],
+									"type": "string"
+								},
+								"type": "object"
+							}
+						]
+					},
+					"items": [
+						{
+							"additionalProperties": {
+								"enum": ["absolute", "relative"],
+								"type": "string"
+							},
+							"type": "object"
+						}
+					],
+					"minItems": 1,
+					"type": "array"
+				},
+				"nodes": {
+					"additionalItems": {
+						"anyOf": [
+							{
+								"additionalProperties": {
+									"enum": ["absolute", "relative"],
+									"type": "string"
+								},
+								"type": "object"
+							}
+						]
+					},
+					"items": [
+						{
+							"additionalProperties": {
+								"enum": ["absolute", "relative"],
+								"type": "string"
+							},
+							"type": "object"
+						}
+					],
+					"minItems": 1,
+					"type": "array"
+				}
+			},
+			"type": "object"
 		}
 	}
 }

@@ -2,7 +2,7 @@ import { validate, CCValidationResult } from "./util/fileValidator"
 import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } from "./codeCharta.model"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
-import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
+import { OldAttributeTypes, ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { StoreService } from "./state/store.service"
 import { addFile, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
@@ -59,13 +59,18 @@ export class CodeChartaService {
 		}
 	}
 
-	private getAttributeTypes(attributeTypes: AttributeTypes): AttributeTypes {
+	private getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): AttributeTypes {
 		if (_.isEmpty(attributeTypes) || !attributeTypes) {
 			return {
 				nodes: {},
 				edges: {}
 			}
 		}
+
+		if (_.isArray(attributeTypes.nodes) || _.isArray(attributeTypes.edges)) {
+			return this.migrateAttributeTypes(attributeTypes as OldAttributeTypes)
+		}
+
 		return {
 			nodes: !attributeTypes.nodes ? {} : attributeTypes.nodes,
 			edges: !attributeTypes.edges ? {} : attributeTypes.edges
@@ -79,6 +84,18 @@ export class CodeChartaService {
 			}
 		})
 		return blacklist
+	}
+
+	private migrateAttributeTypes(attributeTypes: OldAttributeTypes): AttributeTypes {
+		const result = { nodes: {}, edges: {} }
+		attributeTypes.nodes.forEach(x => {
+			result.nodes[Object.keys(x)[0]] = Object.values(x)[0]
+		})
+		attributeTypes.edges.forEach(x => {
+			result.edges[Object.keys(x)[0]] = Object.values(x)[0]
+		})
+
+		return result
 	}
 
 	private printWarnings(validationResult: CCValidationResult) {

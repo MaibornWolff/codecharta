@@ -2,7 +2,7 @@ import "./codeCharta.module"
 import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { CCFile, BlacklistType, NodeType } from "./codeCharta.model"
+import { AttributeTypes, AttributeTypeValue, BlacklistType, CCFile, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
@@ -184,6 +184,29 @@ describe("codeChartaService", () => {
 				.then(() => {
 					const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
 					expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
+					done()
+				})
+		})
+
+		it("should migrate old attribute types", done => {
+			validFileContent.attributeTypes = {
+				nodes: [{ rloc: AttributeTypeValue.absolute }],
+				edges: [{ pairing: AttributeTypeValue.relative }]
+			}
+
+			codeChartaService
+				.loadFiles([
+					{
+						fileName,
+						content: validFileContent
+					}
+				])
+				.then(() => {
+					const attributeTypes: AttributeTypes = {
+						nodes: { rloc: AttributeTypeValue.absolute },
+						edges: { pairing: AttributeTypeValue.relative }
+					}
+					expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.attributeTypes).toEqual(attributeTypes)
 					done()
 				})
 		})
