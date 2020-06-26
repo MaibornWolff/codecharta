@@ -1,4 +1,4 @@
-import { AttributeTypes, CodeMapNode, Edge, MarkedPackage } from "./codeCharta.model"
+import { AttributeTypes, CodeMapNode, Edge, MarkedPackage, RecursivePartial, Settings } from "./codeCharta.model"
 
 export interface ExportCCFile {
 	projectName: string
@@ -24,4 +24,9 @@ export enum APIVersions {
 	ZERO_POINT_ONE = "0.1",
 	ONE_POINT_ZERO = "1.0",
 	ONE_POINT_ONE = "1.1"
+}
+
+export interface ExportScenario {
+	name: string
+	settings: RecursivePartial<Settings>
 }

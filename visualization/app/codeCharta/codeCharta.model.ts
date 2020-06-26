@@ -217,11 +217,6 @@ export interface Scenario {
 	}
 }
 
-export interface ExportScenario {
-	name: string
-	settings: RecursivePartial<Settings>
-}
-
 export type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> }
 
 export interface KeyValuePair {
