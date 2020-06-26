@@ -42,12 +42,11 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         return edge
     }
 
-    fun convert(versionControlledFiles: List<VersionControlledFile>, metricsFactory: MetricsFactory): Project {
+    fun convert(versionControlledFiles: MutableMap<String, VersionControlledFile>?, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
-        versionControlledFiles
-                .filter { vc -> !vc.markedDeleted() }
-                .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+        versionControlledFiles?.values?.filter { vc -> !vc.markedDeleted() }
+            ?.forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))

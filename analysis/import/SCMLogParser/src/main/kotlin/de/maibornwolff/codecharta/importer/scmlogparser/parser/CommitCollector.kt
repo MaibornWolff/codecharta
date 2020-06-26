@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import java.util.function.BiConsumer
@@ -10,68 +11,88 @@ import java.util.stream.Collector
 
 internal class CommitCollector private constructor(private val metricsFactory: MetricsFactory) {
 
-    private fun collectCommit(versionControlledFiles: MutableList<VersionControlledFile>, commit: Commit) {
+    private var renames : MutableMap<String, String> = mutableMapOf() // Map<CurrentName, OldestName>
+
+    // Map<String, VersionControlledFile> = [filename, versionControlledFiles.get(filename)]
+
+    private fun collectCommit(versionControlledFiles: MutableMap<String, VersionControlledFile>, commit: Commit) {
         if (commit.isEmpty) {
             return
         }
-        addYetUnknownFilesToVersionControlledFiles(versionControlledFiles, commit.filenames)
-        addCommitMetadataToMatchingVersionControlledFiles(commit, versionControlledFiles)
+
+        val renamedFilenames =  commit.modifications.map {
+            if(it.type == Modification.Type.ADD){
+                val file: VersionControlledFile? = versionControlledFiles[it.filename]
+                if(file == null || file.markedDeleted()) {
+                    val missingVersionControlledFile = VersionControlledFile(it.filename, metricsFactory)
+                    versionControlledFiles[it.filename] = missingVersionControlledFile
+                }
+                it.filename
+            }
+            else if (it.type == Modification.Type.RENAME) {
+                val tmp: String? = renames[it.oldFilename]
+                if (tmp != null) {
+                    removeLogic(tmp, versionControlledFiles, true)
+                    renames.remove(it.oldFilename)
+                    renames[it.filename] = tmp
+                tmp
+                } else {
+                    removeLogic(it.oldFilename, versionControlledFiles, true)
+                    renames[it.filename] = it.oldFilename
+                    it.oldFilename
+                }
+            }
+            else{
+                it.filename
+            }
+        }
+
+        renamedFilenames
+            .forEach {
+                versionControlledFiles[it]?.registerCommit(commit)
+            }
     }
 
-    private fun addYetUnknownFilesToVersionControlledFiles(
-        versionControlledFiles: MutableList<VersionControlledFile>,
-        filenamesOfCommit: List<String>
-    ) {
-        filenamesOfCommit
-                .filter { !versionControlledFilesContainsFile(versionControlledFiles, it) }
-                .forEach { addYetUnknownFile(versionControlledFiles, it) }
+    private fun removeLogic(filename: String, versionControlledFiles: MutableMap<String, VersionControlledFile>, rename: Boolean){
+        if(versionControlledFiles.containsKey(filename)){
+            var startRemoving: Boolean = false
+            for (key in versionControlledFiles.keys) {
+                if(startRemoving){
+                    val tmp = versionControlledFiles[key]
+                    versionControlledFiles.remove(key)
+                    if (tmp != null) {
+                        versionControlledFiles[key] = tmp
+                    }
+                }
+                else if (key == filename){
+                    startRemoving = true
+                    val tmp = versionControlledFiles[key]
+                    versionControlledFiles.remove(key)
+                    if (tmp != null) {
+                        versionControlledFiles[tmp.filename] = tmp
+                    }
+                }
+            }
+            if(rename){
+                renames.remove(filename)
+                //renames[]
+            }
+        }
     }
 
-    private fun versionControlledFilesContainsFile(
-        versionControlledFiles: List<VersionControlledFile>,
-        filename: String
-    ): Boolean {
-        return findVersionControlledFileByFilename(versionControlledFiles, filename) != null
-    }
-
-    private fun findVersionControlledFileByFilename(
-        versionControlledFiles: List<VersionControlledFile>,
-        filename: String
-    ): VersionControlledFile? {
-        return versionControlledFiles.firstOrNull { it.filename == filename }
-    }
-
-    private fun addYetUnknownFile(
-        versionControlledFiles: MutableList<VersionControlledFile>,
-        filenameOfYetUnversionedFile: String
-    ): Boolean {
-        val missingVersionControlledFile = VersionControlledFile(filenameOfYetUnversionedFile, metricsFactory)
-        return versionControlledFiles.add(missingVersionControlledFile)
-    }
-
-    private fun addCommitMetadataToMatchingVersionControlledFiles(
-        commit: Commit,
-        versionControlledFiles: List<VersionControlledFile>
-    ) {
-        commit.filenames.mapNotNull { findVersionControlledFileByFilename(versionControlledFiles, it) }
-                .forEach { it.registerCommit(commit) }
-    }
-
-    private fun combineForParallelExecution(
-        firstCommits: MutableList<VersionControlledFile>,
-        secondCommits: MutableList<VersionControlledFile>
-    ): MutableList<VersionControlledFile> {
+    private fun combineForParallelExecution(firstCommits: MutableMap<String, VersionControlledFile>,
+                                            secondCommits: MutableMap<String, VersionControlledFile>): MutableMap<String, VersionControlledFile> {
         throw UnsupportedOperationException("parallel collection of commits not supported")
     }
 
     companion object {
 
-        fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableList<VersionControlledFile>> {
+        fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableMap<String, VersionControlledFile>> {
             val collector = CommitCollector(metricsFactory)
-            return Collector.of(Supplier<MutableList<VersionControlledFile>> { ArrayList() },
-                    BiConsumer<MutableList<VersionControlledFile>, Commit> { versionControlledFiles, commit ->
+            return Collector.of(Supplier<MutableMap<String, VersionControlledFile>> { mutableMapOf() },
+                    BiConsumer<MutableMap<String, VersionControlledFile>, Commit> { versionControlledFiles, commit ->
                         collector.collectCommit(versionControlledFiles, commit)
-                    }, BinaryOperator<MutableList<VersionControlledFile>> { firstCommits, secondCommits ->
+                    }, BinaryOperator<MutableMap<String, VersionControlledFile>> { firstCommits, secondCommits ->
                 collector.combineForParallelExecution(firstCommits, secondCommits)
             })
         }

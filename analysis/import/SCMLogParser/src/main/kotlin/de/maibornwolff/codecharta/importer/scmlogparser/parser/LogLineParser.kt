@@ -17,7 +17,7 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
 
     private var numberOfCommitsParsed = 0
 
-    fun parse(logLines: Stream<String>): List<VersionControlledFile> {
+    fun parse(logLines: Stream<String>): MutableMap<String, VersionControlledFile>? {
         return logLines.collect(parserStrategy.createLogLineCollector())
                 .map { this.parseCommit(it) }.filter { !it.isEmpty }
                 .collect(CommitCollector.create(metricsFactory))
@@ -26,7 +26,7 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
     internal fun parseCommit(commitLines: List<String>): Commit {
         return try {
             var author = ""
-            var commitDate = OffsetDateTime.now()
+            var commitDate = OffsetDateTime.MIN
             var modifications: List<Modification> = listOf()
 
             runBlocking(Dispatchers.Default) {

@@ -22,10 +22,15 @@ class Commit(val author: String, modifications: List<Modification>, val commitDa
     }
 
     fun getModification(filename: String): Modification {
-        val modifications = modifications.filter { filename == it.filename }
-        if (modifications.isEmpty()) {
-            throw IllegalStateException("File $filename could not be assigned to a modification.")
-        } else if (modifications.size > 1) {
+
+        val modifications2 = modifications.filter {
+            if(it.type == Modification.Type.RENAME) filename == it.oldFilename
+            else filename == it.filename
+        }
+        if (modifications2.isEmpty()) {
+            throw IllegalStateException("File $filename could not be assigned to a modification $modifications")
+        } else if (modifications2.size > 1) {
+
             System.err.println("No unique file name was found in commit for $filename, ${modifications.size} files were found")
             System.err.println("This likely means that the Syntax of this commit is broken.")
         }
