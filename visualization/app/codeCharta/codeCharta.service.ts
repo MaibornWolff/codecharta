@@ -5,6 +5,7 @@ import { NodeDecorator } from "./util/nodeDecorator"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { StoreService } from "./state/store.service"
 import { addFile, setSingle } from "./state/store/files/files.actions"
+import { getCCFiles } from "./model/files/files.helper"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
@@ -25,7 +26,7 @@ export class CodeChartaService {
 					reject(validationResult)
 				}
 			})
-			this.storeService.dispatch(setSingle(this.storeService.getState().files.getCCFiles()[0]))
+			this.storeService.dispatch(setSingle(getCCFiles(this.storeService.getState().files)[0]))
 			resolve()
 		})
 	}

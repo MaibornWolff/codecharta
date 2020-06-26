@@ -66,7 +66,9 @@ describe("ColorRangeService", () => {
 
 			colorRangeService.onStoreChanged(ColorRangeActions.SET_COLOR_RANGE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("color-range-changed", { colorRange: { from: 33, to: 66 } })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("color-range-changed", {
+				colorRange: { from: 33, to: 66 }
+			})
 		})
 
 		it("should not notify anything on non-color-range-events", () => {

@@ -4,16 +4,17 @@
 >
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
 		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.positive }}" />
+			<img ng-src="{{ $ctrl._viewModel.colorIcons.positive }}" alt="" />
 			<span ng-if="!$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
 			<span ng-if="$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span>
 		</div>
 		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.neutral }}" />
-			&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}
+			<img ng-src="{{ $ctrl._viewModel.colorIcons.neutral }}" alt="" />
+			&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le;
+			{{ $ctrl._viewModel.colorRange.to | number: 0 }}
 		</div>
 		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.negative }}" />
+			<img ng-src="{{ $ctrl._viewModel.colorIcons.negative }}" alt="" />
 			<span ng-if="!$ctrl._viewModel.invertColorRange">&gt; {{ $ctrl._viewModel.colorRange.to | number: 0 }} to Infinite</span>
 			<span ng-if="$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
 		</div>
@@ -21,36 +22,40 @@
 
 	<div ng-if="$ctrl._viewModel.isDeltaState">
 		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.positiveDelta }}" />
+			<img ng-src="{{ $ctrl._viewModel.colorIcons.positiveDelta }}" alt="positive delta;" />
 			+&Delta;
 		</div>
 		<div class="legend-block">
-			<img ng-src="{{ $ctrl._viewModel.colorIcons.negativeDelta }}" />
+			<img ng-src="{{ $ctrl._viewModel.colorIcons.negativeDelta }}" alt="negative delta;" />
 			-&Delta;
 		</div>
 	</div>
 
 	<div class="legend-block">
-		<img ng-src="{{ $ctrl._viewModel.colorIcons.selected }}" />
+		<img ng-src="{{ $ctrl._viewModel.colorIcons.selected }}" alt="selected" />
 		selected
 	</div>
 	<hr />
 	<div class="legend-block">
-		<img ng-src="{{ $ctrl._viewModel.colorIcons.outgoingEdge }}" />
+		<img ng-src="{{ $ctrl._viewModel.colorIcons.outgoingEdge }}" alt="outgoing edge" />
 		Outgoing Edge
 	</div>
 
 	<div class="legend-block">
-		<img ng-src="{{ $ctrl._viewModel.colorIcons.incomingEdge }}" />
+		<img ng-src="{{ $ctrl._viewModel.colorIcons.incomingEdge }}" alt="incoming edge" />
 		Incoming Edge
 	</div>
 
 	<hr ng-show="$ctrl._viewModel.packageLists[0]" />
-	<div class="legend-block" ng-show="$ctrl._viewModel.packageLists" ng-repeat="packageList in $ctrl._viewModel.packageLists">
-		<img ng-src="{{::packageList.colorPixel}}" />
+	<div
+		class="legend-block"
+		ng-show="$ctrl._viewModel.packageLists"
+		ng-repeat="packageList in $ctrl._viewModel.packageLists track by $index"
+	>
+		<img ng-src="{{::packageList.colorPixel}}" alt="" />
 		<span
 			class="marked-package {{ $first ? '' : 'set-left-margin' }}"
-			ng-repeat="item in packageList.markedPackages"
+			ng-repeat="item in packageList.markedPackages track by $index"
 			title="{{::item.path}}"
 		>
 			{{::item.path}}{{ $last ? "" : ",&nbsp;" }}

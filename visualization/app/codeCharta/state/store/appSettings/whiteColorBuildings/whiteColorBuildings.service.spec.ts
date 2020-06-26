@@ -48,7 +48,9 @@ describe("WhiteColorBuildingsService", () => {
 
 			whiteColorBuildingsService.onStoreChanged(WhiteColorBuildingsActions.SET_WHITE_COLOR_BUILDINGS)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("white-color-buildings-changed", { whiteColorBuildings: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("white-color-buildings-changed", {
+				whiteColorBuildings: true
+			})
 		})
 
 		it("should not notify anything on non-white-color-buildings-events", () => {

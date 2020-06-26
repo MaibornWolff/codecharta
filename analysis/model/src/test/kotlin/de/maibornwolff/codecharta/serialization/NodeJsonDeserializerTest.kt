@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
 import io.mockk.mockk
+import model.src.main.kotlin.de.maibornwolff.codecharta.serialization.NodeJsonDeserializer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.nullValue
@@ -14,7 +15,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 import kotlin.test.assertFailsWith
 
-class NodeJsonDeserializerTest: Spek({
+class NodeJsonDeserializerTest : Spek({
     val NAME = "nodeName"
     val TYPE = NodeType.Folder
     val nodeClass = MutableNode::class.java

@@ -6,16 +6,16 @@ import org.hamcrest.Matchers.hasItem
 import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.util.*
+import java.util.Arrays
 import kotlin.test.assertFailsWith
 
-class NodeTest: Spek({
+class NodeTest : Spek({
 
     describe("root with child") {
 
         val childName = "child1"
         val child = MutableNode(childName)
-        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(child))
+        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(child).toSet())
 
         context("getPathOfChild of valid child") {
             val pathOfChild = root.getPathOfChild(child)
@@ -43,17 +43,16 @@ class NodeTest: Spek({
             assertThat(pathsToLeafs, hasSize(1))
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path(childName)))
         }
-
     }
 
     describe("root node with many children") {
 
         val node11 = MutableNode("node11")
         val node12 = MutableNode("node12")
-        val node1 = MutableNode("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12))
+        val node1 = MutableNode("node1", NodeType.Folder, childrenList = Arrays.asList(node11, node12).toSet())
         val node21 = MutableNode("node21", NodeType.Folder)
-        val node2 = MutableNode("node2", NodeType.Folder, childrenList = Arrays.asList(node21))
-        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2))
+        val node2 = MutableNode("node2", NodeType.Folder, childrenList = Arrays.asList(node21).toSet())
+        val root = MutableNode("root", NodeType.Folder, childrenList = Arrays.asList(node1, node2).toSet())
 
         it("getLeafs should return leafs") {
             val leafs = root.leafObjects
@@ -72,6 +71,5 @@ class NodeTest: Spek({
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node1", "node12")))
             assertThat(pathsToLeafs, PathMatcher.containsPath(Path("node2", "node21")))
         }
-
     }
 })

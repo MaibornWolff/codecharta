@@ -12,7 +12,7 @@ jdk:
   - oraclejdk9
 
 env:
-  - TRAVIS_NODE_VERSION="9"
+  - TRAVIS_NODE_VERSION="12"
 
 git:
   depth: false
@@ -137,6 +137,6 @@ jobs:
 stages:
   - test
   - name: sonar
-    if: branch = master AND type != pull_request
+    if: false AND branch = master AND type != pull_request
   - name: deploy
     if: tag IS present

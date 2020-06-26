@@ -15,7 +15,8 @@
 		<p class="node-path">{{ $ctrl._viewModel.node.path }}</p>
 
 		<div class="metric-box">
-			<table class="primary-metrics">
+			<table class="primary-metrics" aria-hidden="true">
+				<th align="left">Primary Metrics</th>
 				<tr>
 					<td>
 						<i class="fa fa-arrows-alt"></i>
@@ -69,8 +70,9 @@
 	<div class="side-bar-body">
 		<div class="metrics-wrapper">
 			<div class="metric-box scrollable-content">
-				<table>
-					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys">
+				<table class="secondary-metrics" aria-hidden="true">
+					<th>Secondary Metrics</th>
+					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys track by $index">
 						<td>
 							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number: 0 }}</span>
 						</td>

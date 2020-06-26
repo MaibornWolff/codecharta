@@ -5,7 +5,14 @@ import de.maibornwolff.codecharta.parser.rawtextparser.model.toInt
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
 import picocli.CommandLine.call
-import java.io.*
+import java.io.BufferedWriter
+import java.io.InputStream
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.io.OutputStreamWriter
+import java.io.PrintStream
+import java.io.Writer
 import java.nio.file.Paths
 import java.util.concurrent.Callable
 
@@ -14,9 +21,11 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from projects or source code files"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class RawTextParser(private val input: InputStream = System.`in`,
-                    private val output: PrintStream = System.out,
-                    private val error: PrintStream = System.err) : Callable<Void> {
+class RawTextParser(
+    private val input: InputStream = System.`in`,
+    private val output: PrintStream = System.out,
+    private val error: PrintStream = System.err
+) : Callable<Void> {
 
     private val DEFAULT_EXCLUDES = arrayOf("/out/", "/build/", "/target/", "/dist/", "/resources/", "/\\..*")
 
@@ -34,6 +43,9 @@ class RawTextParser(private val input: InputStream = System.`in`,
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
+
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
 
     @CommandLine.Option(names = ["--tab-width"], description = ["tab width used (estimated if not provided)"])
     private var tabWith: Int? = null
@@ -64,7 +76,10 @@ class RawTextParser(private val input: InputStream = System.`in`,
         val results: Map<String, FileMetrics> = MetricCollector(file, exclude, fileExtensions, parameterMap, metrics).parse()
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
-        ProjectGenerator(getWriter()).generate(results, pipedProject)
+
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+        ProjectGenerator(getWriter(), filePath, compress).generate(results, pipedProject)
         return null
     }
 

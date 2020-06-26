@@ -1,6 +1,11 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.BlacklistItem
+import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import mu.KotlinLogging
 
 class NodeRemover(private val project: Project) {
@@ -26,7 +31,7 @@ class NodeRemover(private val project: Project) {
         val filteredChildren = node.children.filter { it.name != path.firstOrNull() || path.size > 1 }
         node.children = filteredChildren.map {
             filterNodes(path.drop(1), it)
-        }.toMutableList()
+        }.toMutableSet()
         return node
     }
 
@@ -55,5 +60,4 @@ class NodeRemover(private val project: Project) {
         paths.forEach { path -> blacklist = blacklist.filter { !it.path.contains(path) } }
         return blacklist.toMutableList()
     }
-
 }

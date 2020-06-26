@@ -49,7 +49,9 @@ describe("SearchPanelModeService", () => {
 
 			searchPanelModeService.onStoreChanged(SearchPanelModeActions.SET_SEARCH_PANEL_MODE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("search-panel-mode-changed", { searchPanelMode: SearchPanelMode.treeView })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("search-panel-mode-changed", {
+				searchPanelMode: SearchPanelMode.treeView
+			})
 		})
 
 		it("should not notify anything on non-search-panel-mode-events", () => {

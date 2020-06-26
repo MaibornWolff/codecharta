@@ -28,15 +28,15 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
             val noPages = numberOfPages
 
             return Flowable.range(1, noPages)
-                    .flatMap { p ->
-                        Flowable.just(p)
-                                .subscribeOn(Schedulers.io())
-                                .map<Metrics>({ this.getAvailableMetrics(it) })
-                    }
-                    .filter { it.metrics != null }
-                    .flatMap { Flowable.fromIterable(it.metrics!!) }
-                    .filter({ it.isFloatType })
-                    .map<String>({ it.key }).distinct().toSortedList().blockingGet()
+                .flatMap { p ->
+                    Flowable.just(p)
+                        .subscribeOn(Schedulers.io())
+                        .map<Metrics>({ this.getAvailableMetrics(it) })
+                }
+                .filter { it.metrics != null }
+                .flatMap { Flowable.fromIterable(it.metrics!!) }
+                .filter({ it.isFloatType })
+                .map<String>({ it.key }).distinct().toSortedList().blockingGet()
         }
 
     val numberOfPages: Int
@@ -53,13 +53,13 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
         return total / PAGE_SIZE + incrementor
     }
 
-    internal constructor(baseUrl: URL): this("", baseUrl)
+    internal constructor(baseUrl: URL) : this("", baseUrl)
 
     init {
 
         client = ClientBuilder.newClient()
-                .property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
-                .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS)
+            .property(ClientProperties.CONNECT_TIMEOUT, TIMEOUT_MS)
+            .property(ClientProperties.READ_TIMEOUT, TIMEOUT_MS)
         client.register(ErrorResponseFilter::class.java)
         client.register(GsonProvider::class.java)
     }
@@ -67,7 +67,7 @@ class SonarMetricsAPIDatasource(private val user: String, private val baseUrl: U
     fun getAvailableMetrics(page: Int): Metrics {
         val url = String.format(METRICS_URL_PATTERN, baseUrl, page)
         val request = client.target(url)
-                .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
+            .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user))
         }

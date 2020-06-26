@@ -11,7 +11,6 @@ import java.io.File
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 
-
 class JSONMetricWriterTest {
 
     @Test
@@ -23,7 +22,7 @@ class JSONMetricWriterTest {
         metrics.addFile("foo3/bar.java")
         val result = ByteArrayOutputStream()
 
-        JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+        JSONMetricWriter(OutputStreamWriter(PrintStream(result)), expectedResultFile.absolutePath, false).generate(metrics, setOf())
 
         val resultJSON = JSONObject(result.toString()).toString()
 
@@ -43,13 +42,12 @@ class JSONMetricWriterTest {
         metrics.addFileMetricMap("bar.kt", fileMetrics2)
         val result = ByteArrayOutputStream()
 
-        JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+        JSONMetricWriter(OutputStreamWriter(PrintStream(result)), expectedResultFile.absolutePath, false).generate(metrics, setOf())
 
         val resultJSON = JSONObject(result.toString()).toString()
 
         val parser = JsonParser()
         val expectedJson = parser.parse(expectedResultFile.reader()).toString()
-
 
         Assertions.assertThat(resultJSON == expectedJson).isTrue()
     }
@@ -61,7 +59,7 @@ class JSONMetricWriterTest {
         metrics.addFileMetricMap("foo.java", fileMetrics)
         val result = ByteArrayOutputStream()
 
-        JSONMetricWriter(OutputStreamWriter(PrintStream(result))).generate(metrics, setOf())
+        JSONMetricWriter(OutputStreamWriter(PrintStream(result)), "notSpecified", false).generate(metrics, setOf())
 
         val resultJSON = JSONObject(result.toString())
         val leaf = resultJSON.getJSONArray("nodes").getJSONObject(0).getJSONArray("children").getJSONObject(0)
@@ -69,5 +67,4 @@ class JSONMetricWriterTest {
         Assertions.assertThat(leaf["name"]).isEqualTo("foo.java")
         Assertions.assertThat(leaf.getJSONObject("attributes").length()).isEqualTo(2)
     }
-
 }

@@ -1,13 +1,12 @@
 package de.maibornwolff.codecharta.translator
 
-import java.util.*
-
 /**
  * This class provides methods to translate metric names. This enables normalization of metric names.
  */
 open class MetricNameTranslator(
-        private val translationMap: Map<String, String>,
-        private val prefix: String = "") {
+    private val translationMap: Map<String, String>,
+    private val prefix: String = ""
+) {
 
     init {
         validate()
@@ -16,7 +15,7 @@ open class MetricNameTranslator(
     open fun translate(oldMetricName: String): String {
         return when {
             translationMap.containsKey(oldMetricName) -> translationMap[oldMetricName]!!
-            else                                      -> prefix + oldMetricName.toLowerCase().replace(' ', '_')
+            else -> prefix + oldMetricName.toLowerCase().replace(' ', '_')
         }
     }
 
@@ -40,7 +39,7 @@ open class MetricNameTranslator(
     }
 
     companion object {
-        val TRIVIAL: MetricNameTranslator = object: MetricNameTranslator(emptyMap()) {
+        val TRIVIAL: MetricNameTranslator = object : MetricNameTranslator(emptyMap()) {
             override fun translate(oldMetricName: String): String {
                 return oldMetricName
             }

@@ -48,7 +48,9 @@ describe("AmountOfEdgePreviewsService", () => {
 
 			amountOfEdgePreviewsService.onStoreChanged(AmountOfEdgePreviewsActions.SET_AMOUNT_OF_EDGE_PREVIEWS)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("amount-of-edge-previews-changed", { amountOfEdgePreviews: 2 })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("amount-of-edge-previews-changed", {
+				amountOfEdgePreviews: 2
+			})
 		})
 
 		it("should not notify anything on non-amount-of-edge-previews-events", () => {

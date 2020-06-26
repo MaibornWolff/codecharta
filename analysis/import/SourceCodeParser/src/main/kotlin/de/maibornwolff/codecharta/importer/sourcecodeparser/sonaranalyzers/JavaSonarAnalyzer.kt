@@ -4,6 +4,9 @@ import com.sonar.sslr.api.RecognitionException
 import de.maibornwolff.codecharta.importer.sourcecodeparser.NullFileLinesContextFactory
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.visitors.MaxNestingLevelVisitor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.sonar.api.SonarQubeSide
 import org.sonar.api.batch.fs.InputFile
 import org.sonar.api.batch.fs.internal.TestInputFileBuilder
@@ -17,7 +20,11 @@ import org.sonar.api.rule.RuleKey
 import org.sonar.api.server.profile.BuiltInQualityProfilesDefinition
 import org.sonar.api.server.rule.RulesDefinition
 import org.sonar.api.utils.Version
-import org.sonar.java.*
+import org.sonar.java.AnalysisException
+import org.sonar.java.DefaultJavaResourceLocator
+import org.sonar.java.JavaClasspath
+import org.sonar.java.JavaTestClasspath
+import org.sonar.java.SonarComponents
 import org.sonar.java.ast.parser.JavaParser
 import org.sonar.java.checks.CheckList
 import org.sonar.java.model.DefaultJavaFileScannerContext
@@ -92,12 +99,12 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
         analyzedFiles = 0
         totalFiles = fileList.size
-
         for (file in fileList) {
             printProgressBar(file)
             createContext()
             buildSonarComponents()
             addFileToContext(file)
+
             try {
                 executeScan()
             } catch (e: AnalysisException) {
@@ -107,11 +114,14 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
             }
 
             val fileMetrics = retrieveMetrics(file)
-            retrieveAdditionalMetrics(file).forEach { fileMetrics.add(it.key, it.value) }
-            if (searchIssues) retrieveIssues().forEach { fileMetrics.add(it.key, it.value) }
+
+            runBlocking(Dispatchers.Default) {
+                retrieveAdditionalMetrics(file).forEach { launch { fileMetrics.add(it.key, it.value) } }
+                if (searchIssues) retrieveIssues().forEach { launch { fileMetrics.add(it.key, it.value) } }
+                projectMetrics.addFileMetricMap(file, fileMetrics)
+            }
             projectMetrics.addFileMetricMap(file, fileMetrics)
         }
-
         System.setOut(originalOut)
         return projectMetrics
     }
@@ -130,12 +140,11 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         sonarComponents.setSensorContext(this.sensorContext)
     }
 
-
     override fun addFileToContext(fileName: String) {
         sensorContext.fileSystem().add(getInputFile(fileName))
     }
 
-    private fun getInputFile(fileName: String) : InputFile {
+    private fun getInputFile(fileName: String): InputFile {
         return TestInputFileBuilder.create("moduleKey", fileName)
                 .setModuleBaseDir(baseDir.toPath())
                 .setCharset(StandardCharsets.UTF_8)
@@ -146,14 +155,18 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     }
 
     override fun executeScan() {
-        val javaSquidSensor = JavaSquidSensor(
-                sonarComponents,
-                sensorContext.fileSystem(),
-                DefaultJavaResourceLocator(javaClasspath),
-                mapSettings,
-                NoSonarFilter()
-        )
-        javaSquidSensor.execute(sensorContext)
+        runBlocking {
+            launch {
+                val javaSquidSensor = JavaSquidSensor(
+                        sonarComponents,
+                        sensorContext.fileSystem(),
+                        DefaultJavaResourceLocator(javaClasspath),
+                        mapSettings,
+                        NoSonarFilter()
+                )
+                javaSquidSensor.execute(sensorContext)
+            }
+        }
     }
 
     private fun retrieveIssues(): HashMap<String, Int> {

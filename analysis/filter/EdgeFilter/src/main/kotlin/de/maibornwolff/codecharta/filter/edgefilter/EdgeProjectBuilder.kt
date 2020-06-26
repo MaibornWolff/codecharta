@@ -1,6 +1,13 @@
 package de.maibornwolff.codecharta.filter.edgefilter
 
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.AttributeType
+import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.Node
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import mu.KotlinLogging
 import kotlin.math.max
 
@@ -46,7 +53,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
     }
 
     private fun insertNodesWithAttributesFromEdges() {
-        insertEdgeAttributesIntoNodes(projectBuilder.rootNode.children.map { it.toNode() })
+        insertEdgeAttributesIntoNodes(projectBuilder.rootNode.children.map { it.toNode() }.toSet())
     }
 
     private fun insertEdgeAsNode(nodeEdgeName: String) {
@@ -57,7 +64,7 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         insertNodeInProjectBuilder(node, nodeParentPath)
     }
 
-    private fun insertEdgeAttributesIntoNodes(nodes: List<Node>, parentPath: MutableList<String> = mutableListOf()) {
+    private fun insertEdgeAttributesIntoNodes(nodes: Set<Node>, parentPath: MutableList<String> = mutableListOf()) {
         nodes.forEach {
             val node = Node(it.name, it.type, getAttributes(it, parentPath), it.link)
             insertNodeInProjectBuilder(node, parentPath.toList())
@@ -107,8 +114,10 @@ class EdgeProjectBuilder(private val project: Project, private val pathSeparator
         return attributeKeys
     }
 
-    private fun getAggregatedAttributes(listOfAttributes: MutableList<String>,
-                                        filteredEdges: List<Edge>): MutableMap<String, Any> {
+    private fun getAggregatedAttributes(
+        listOfAttributes: MutableList<String>,
+        filteredEdges: List<Edge>
+    ): MutableMap<String, Any> {
         val aggregatedAttributes: MutableMap<String, Any> = mutableMapOf()
 
         listOfAttributes.forEach { key: String ->

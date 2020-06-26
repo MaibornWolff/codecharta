@@ -5,7 +5,6 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { SearchPatternAction, SearchPatternActions, setSearchPattern } from "./searchPattern.actions"
 import { SearchPatternService } from "./searchPattern.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
-import { Files } from "../../../../model/files"
 import { FilesService } from "../../files/files.service"
 
 describe("SearchPatternService", () => {
@@ -58,7 +57,9 @@ describe("SearchPatternService", () => {
 
 			searchPatternService.onStoreChanged(SearchPatternActions.SET_SEARCH_PATTERN)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("search-pattern-changed", { searchPattern: "mySearch/*.ts" })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("search-pattern-changed", {
+				searchPattern: "mySearch/*.ts"
+			})
 		})
 
 		it("should not notify anything on non-search-pattern-events", () => {
@@ -72,7 +73,7 @@ describe("SearchPatternService", () => {
 		it("should reset and set empty searchPattern", () => {
 			storeService.dispatch(setSearchPattern("some/search.pattern*"))
 
-			searchPatternService.onFilesSelectionChanged(new Files())
+			searchPatternService.onFilesSelectionChanged([])
 
 			expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
 		})

@@ -53,7 +53,8 @@ code-charta-component {
 	attribute-side-bar-component .side-bar-container,
 	legend-panel-component .block-wrapper,
 	legend-panel-component .panel-button,
-	view-cube-component {
+	view-cube-component,
+	unfocus-button-component {
 		transition: right 0.25s ease;
 	}
 
@@ -97,26 +98,6 @@ code-charta-component {
 		width: 36px;
 		border-radius: 50%;
 		margin: 0;
-	}
-
-	.action-buttons {
-		position: fixed;
-		bottom: 2em;
-		right: 2em;
-		z-index: 60;
-
-		.long-button {
-			width: inherit;
-			padding-left: 10px;
-			padding-right: 10px;
-			border-radius: 100px;
-		}
-
-		> * {
-			margin-left: 4px;
-			margin-right: 4px;
-			z-index: 60;
-		}
 	}
 
 	.state-selector-button {

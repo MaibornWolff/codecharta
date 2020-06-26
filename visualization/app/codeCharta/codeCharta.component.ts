@@ -13,6 +13,7 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import * as codeCharta from "../../package.json"
 import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
 import { ErrorObject } from "ajv"
+import { getCCFiles } from "./model/files/files.helper"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -73,7 +74,7 @@ export class CodeChartaController {
 		this.codeChartaService
 			.loadFiles(values)
 			.then(() => {
-				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenario().settings))
+				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
 			})
 			.catch((errors: ErrorObject[]) => {
 				this.storeService.dispatch(setIsLoadingFile(false))
@@ -84,7 +85,7 @@ export class CodeChartaController {
 
 	private setRenderStateFromUrl() {
 		const renderState: string = this.urlUtils.getParameterByName("mode")
-		const files = this.storeService.getState().files.getCCFiles()
+		const files = getCCFiles(this.storeService.getState().files)
 
 		if (renderState === "Delta" && files.length >= 2) {
 			this.storeService.dispatch(setDelta(files[0], files[1]))

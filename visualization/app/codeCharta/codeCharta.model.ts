@@ -1,25 +1,12 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
-import { Files } from "./model/files"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
+import { FileState } from "./model/files/files"
 
 export interface NameDataPair {
 	fileName: string
 	content: ExportCCFile
-}
-
-export interface FileState {
-	file: CCFile
-	selectedAs: FileSelectionState
-}
-
-export enum FileSelectionState {
-	Single = "Single",
-	Reference = "Reference",
-	Comparison = "Comparison",
-	Partial = "Partial",
-	None = "None"
 }
 
 export enum SearchPanelMode {
@@ -105,6 +92,7 @@ export interface AppSettings {
 	edgeHeight: number
 	scaling: Vector3
 	camera: Vector3
+	cameraTarget: Vector3
 	hideFlatBuildings: boolean
 	invertColorRange: boolean
 	invertDeltaColors: boolean
@@ -198,7 +186,38 @@ export interface MetricData {
 	maxValue: number
 }
 
+export interface CCLocalStorage {
+	version: string
+	scenarios: [String, RecursivePartial<Scenario>][]
+}
+
 export interface Scenario {
+	name: string
+	area: {
+		areaMetric: string
+		margin: number
+	}
+	height: {
+		heightMetric: string
+		heightSlider: number
+		labelSlider: number
+	}
+	color: {
+		colorMetric: string
+		colorRange: ColorRange
+	}
+	camera: {
+		camera: Vector3
+		cameraTarget: Vector3
+	}
+	edge: {
+		edgeMetric: string
+		edgePreview: number
+		edgeHeight: number
+	}
+}
+
+export interface ExportScenario {
 	name: string
 	settings: RecursivePartial<Settings>
 }
@@ -241,7 +260,7 @@ export interface State {
 	dynamicSettings: DynamicSettings
 	appSettings: AppSettings
 	treeMap: TreeMapSettings
-	files: Files
+	files: FileState[]
 	lookUp: LookUp
 }
 

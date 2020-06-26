@@ -5,6 +5,7 @@ import { BlacklistType } from "../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 import { FileNameHelper } from "../../util/fileNameHelper"
 import { StoreService } from "../../state/store.service"
+import { isDeltaState } from "../../model/files/files.helper"
 
 interface FileDownloadContent {
 	name: string
@@ -83,8 +84,7 @@ export class DialogDownloadController {
 
 	private setFileName() {
 		const fileMeta = this.codeMapPreRenderService.getRenderFileMeta()
-		const isDeltaState = this.storeService.getState().files.isDeltaState()
-		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState)
+		this._viewModel.fileName = FileNameHelper.getNewFileName(fileMeta.fileName, isDeltaState(this.storeService.getState().files))
 	}
 
 	private setAmountOfNodes() {
@@ -105,7 +105,7 @@ export class DialogDownloadController {
 	}
 
 	private setSortedDownloadableFileSettings() {
-		this._viewModel.fileContent = this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
+		this._viewModel.fileContent.sort((a, b) => this.sortByDisabled(a, b))
 	}
 
 	private sortByDisabled(a: FileDownloadContent, b: FileDownloadContent) {

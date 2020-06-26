@@ -10,7 +10,7 @@ import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
 
-class GitLogParserStrategy: LogParserStrategy {
+class GitLogParserStrategy : LogParserStrategy {
 
     override fun creationCommand(): String {
         return "git log --name-status --topo-order"

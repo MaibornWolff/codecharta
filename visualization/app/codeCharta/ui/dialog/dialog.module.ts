@@ -7,9 +7,11 @@ import { DialogService } from "./dialog.service"
 import _ from "lodash"
 import { dialogDownloadComponent } from "./dialog.download.component"
 import { dialogGlobalSettingsComponent } from "./dialog.globalSettings.component"
+import { addScenarioSettingsComponent } from "./dialog.addScenarioSettings.component"
 
 angular
 	.module("app.codeCharta.ui.dialog", ["ngMaterial", "app.codeCharta.state"])
 	.service(_.camelCase(DialogService.name), DialogService)
 	.component(dialogDownloadComponent.selector, dialogDownloadComponent)
 	.component(dialogGlobalSettingsComponent.selector, dialogGlobalSettingsComponent)
+	.component(addScenarioSettingsComponent.selector, addScenarioSettingsComponent)

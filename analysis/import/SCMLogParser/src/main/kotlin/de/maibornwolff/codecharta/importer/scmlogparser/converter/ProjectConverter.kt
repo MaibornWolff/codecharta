@@ -2,9 +2,12 @@ package de.maibornwolff.codecharta.importer.scmlogparser.converter
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import de.maibornwolff.codecharta.model.*
-
-import java.util.*
+import de.maibornwolff.codecharta.model.Edge
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.PathFactory
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 
 /**
  * creates Projects from List of VersionControlledFiles
@@ -17,7 +20,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val attributes = extractAttributes(versionControlledFile)
         val edges = versionControlledFile.getEdgeList()
         val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
-        val newNode = MutableNode(fileName, NodeType.File, attributes, "", ArrayList())
+        val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path = PathFactory.fromFileSystemPath(
                 versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
         projectBuilder.insertByPath(path, newNode)
@@ -29,7 +32,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         return when {
             containsAuthors -> versionControlledFile.metricsMap
                     .plus(Pair("authors", versionControlledFile.authors))
-            else            -> versionControlledFile.metricsMap
+            else -> versionControlledFile.metricsMap
         }
     }
 

@@ -187,11 +187,7 @@ export class CodeMapMesh {
 	private calculatePickingRay(mouse: MousePos, camera: Camera): Ray {
 		const ray: Ray = new Ray()
 		ray.origin.setFromMatrixPosition(camera.matrixWorld)
-		ray.direction
-			.set(mouse.x, mouse.y, 0.5)
-			.unproject(camera)
-			.sub(ray.origin)
-			.normalize()
+		ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize()
 
 		return ray
 	}

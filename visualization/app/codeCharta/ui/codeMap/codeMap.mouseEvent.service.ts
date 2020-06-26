@@ -11,9 +11,9 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
-import { Files } from "../../model/files"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
+import { FileState } from "../../model/files/files"
 
 interface Coordinates {
 	x: number
@@ -92,7 +92,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFilesSelectionChanged(files: Files) {
+	public onFilesSelectionChanged(files: FileState[]) {
 		this.threeSceneService.clearSelection()
 	}
 

@@ -5,18 +5,29 @@ import de.maibornwolff.codecharta.model.AttributeTypes
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 import picocli.CommandLine
-import java.io.*
+import java.io.BufferedWriter
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStreamWriter
+import java.io.Writer
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
-class CodeMaatImporter: Callable<Void> {
+@CommandLine.Command(
+    name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
+class CodeMaatImporter : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile: File? = null
+
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
 
     @CommandLine.Parameters(arity = "1..*", paramLabel = "FILE", description = ["codemaat coupling csv files"])
     private var files: List<File> = mutableListOf()
@@ -28,11 +39,16 @@ class CodeMaatImporter: Callable<Void> {
     @Throws(IOException::class)
     override fun call(): Void? {
         val csvProjectBuilder =
-                CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
+            CSVProjectBuilder(pathSeparator, csvDelimiter, codemaatReplacement, attributeTypes)
         files.map { it.inputStream() }.forEach<InputStream> { csvProjectBuilder.parseCSVStream(it) }
         val project = csvProjectBuilder.build()
 
-        ProjectSerializer.serializeProject(project, writer())
+        val filePath = outputFile?.absolutePath ?: "notSpecified"
+
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
+            project,
+            filePath
+        ) else ProjectSerializer.serializeProject(project, writer())
 
         return null
     }
@@ -74,4 +90,3 @@ class CodeMaatImporter: Callable<Void> {
         }
     }
 }
-

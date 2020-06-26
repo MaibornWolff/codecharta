@@ -49,7 +49,9 @@ describe("IsPresentationModeService", () => {
 
 			isPresentationModeService.onStoreChanged(PresentationModeActions.SET_PRESENTATION_MODE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("presentation-mode-changed", { isPresentationMode: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("presentation-mode-changed", {
+				isPresentationMode: true
+			})
 		})
 
 		it("should not notify anything on non-presentation-mode-events", () => {

@@ -1,4 +1,4 @@
-# Change Log
+﻿# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -9,7 +9,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- When hovering over a folder, all buildings inside it will be highlighted as well #694
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Improved performance significantly when switching between single, multiple and delta
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.49.0] - 2020-06-19
+
+### Added 🚀
+
+- Custom scenarios can be created and saved through the scenario menu #675
+- Importer and parser documentation can now be found on the github Website #954
+- Output of sourcemonitor can now be compressed with the compression flag
 
 ### Changed
 
@@ -18,6 +34,60 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 ### Chore 👨‍💻 👩‍💻
+
+- [Security] Bump angular from 1.7.9 to 1.8.0 in /visualization #995
+
+## [1.48.0] - 2020-06-12
+
+### Added 🚀
+
+- Support of compressed cc.json files. Files can be compressed in the analysis #848
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Improved performance of several importers #846
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.47.1] - 2020-05-08
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Attribute-Side-Bar being invisible
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.47.0] - 2020-05-02
+
+### Added 🚀
+
+- When hovering over a folder, all buildings inside it will be highlighted as well #694
+
+### Changed
+
+- Rename the button Show-Complete-Map button to Unfocus #642
+- Move the Unfocus button (visible when right-clicking a focused node) to the node-context-menu #948
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Generating a delta map with merged empty folders in between is now working correctly #730
+- Reduced time when opening a new file #932
+
+### Chore 👨‍💻 👩‍💻
+
+- [Security] Bump jquery from 3.4.0 to 3.5.0 in /visualization #944
 
 ## [1.46.1] - 2020-04-24
 

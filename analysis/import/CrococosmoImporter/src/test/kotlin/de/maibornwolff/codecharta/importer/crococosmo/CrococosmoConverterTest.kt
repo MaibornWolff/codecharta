@@ -2,7 +2,12 @@ package de.maibornwolff.codecharta.importer.crococosmo
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import de.maibornwolff.codecharta.importer.crococosmo.model.*
+import de.maibornwolff.codecharta.importer.crococosmo.model.Attribute
+import de.maibornwolff.codecharta.importer.crococosmo.model.Graph
+import de.maibornwolff.codecharta.importer.crococosmo.model.Node
+import de.maibornwolff.codecharta.importer.crococosmo.model.Schema
+import de.maibornwolff.codecharta.importer.crococosmo.model.SchemaVersion
+import de.maibornwolff.codecharta.importer.crococosmo.model.Version
 import org.junit.jupiter.api.Test
 
 class CrococosmoConverterTest {
@@ -23,7 +28,7 @@ class CrococosmoConverterTest {
         val nodeWithoutName = Node("", "type", listOf(), listOf())
         val g = Graph(schema, listOf(Node("node name", "type", listOf(nodeWithoutName), listOf())))
         val project = converter.createProject(g)
-        val grantChildren = project.rootNode.children[0].children
+        val grantChildren = project.rootNode.children.toMutableList()[0].children
 
         assertThat(grantChildren.count(), equalTo(0))
     }
@@ -33,7 +38,7 @@ class CrococosmoConverterTest {
         val nodeWithName = Node("happyChild", "type", listOf(), listOf())
         val g = Graph(schema, listOf(Node("node name", "type", listOf(nodeWithName), listOf())))
         val project = converter.createProject(g)
-        val grantChildren = project.rootNode.children[0].children
+        val grantChildren = project.rootNode.children.toMutableList()[0].children
 
         assertThat(grantChildren.count(), equalTo(1))
     }

@@ -2,18 +2,19 @@ package de.maibornwolff.codecharta.model
 
 import de.maibornwolff.codecharta.model.NodeMatcher.hasNodeAtPath
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class NodeInserterTest: Spek({
+class NodeInserterTest : Spek({
 
     describe("NodeInserter") {
         context("Inserting a node at root") {
             val root = MutableNode("root", NodeType.Folder)
             val nodeForInsertion = MutableNode("insertedNode", NodeType.File)
             NodeInserter.insertByPath(root, Path.trivialPath(), nodeForInsertion)
-
 
             it("should insert node in leaf position") {
                 assertThat(root.children, hasSize(1))
@@ -62,7 +63,7 @@ class NodeInserterTest: Spek({
 
             it("should insert phantom node in inner position") {
                 assertThat(root.children, hasSize(1))
-                val createdPhantomNode = root.children[0]
+                val createdPhantomNode = root.children.toMutableList()[0]
                 assertThat(createdPhantomNode.name, `is`("folder"))
             }
         }

@@ -10,10 +10,13 @@ import java.util.concurrent.Callable
         description = ["generates cc.json from crococosmo xml file"],
         footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class CrococosmoImporter: Callable<Void> {
+class CrococosmoImporter : Callable<Void> {
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
+
+    @CommandLine.Option(names = ["-c"], description = ["compress output File to gzip format"])
+    private var compress = false
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
@@ -28,6 +31,10 @@ class CrococosmoImporter: Callable<Void> {
         projects.forEach {
             val suffix = if (projects.isNotEmpty()) "_" + it.key else ""
             ProjectSerializer.serializeProject(it.value, writer(suffix))
+
+            val filePath = file?.absolutePath ?: "notSpecified"
+
+            if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(it.value, filePath) else ProjectSerializer.serializeProject(it.value, writer(suffix))
         }
 
         return null
@@ -36,7 +43,7 @@ class CrococosmoImporter: Callable<Void> {
     private fun writer(name: String = "") =
             when {
                 outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
-                else                       -> File(outputFile + name).bufferedWriter()
+                else -> File(outputFile + name).bufferedWriter()
             }
 
     companion object {

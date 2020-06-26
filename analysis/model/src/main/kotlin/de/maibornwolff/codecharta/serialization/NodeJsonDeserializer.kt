@@ -1,12 +1,16 @@
-package de.maibornwolff.codecharta.serialization
+package model.src.main.kotlin.de.maibornwolff.codecharta.serialization
 
-import com.google.gson.*
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonDeserializationContext
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import com.google.gson.JsonParseException
 import de.maibornwolff.codecharta.model.Node
 import de.maibornwolff.codecharta.model.NodeType
 import java.lang.reflect.Type
-import java.util.*
 
-internal class NodeJsonDeserializer: JsonDeserializer<Node> {
+internal class NodeJsonDeserializer : JsonDeserializer<Node> {
 
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Node {
         val jsonNode = json.asJsonObject
@@ -17,7 +21,7 @@ internal class NodeJsonDeserializer: JsonDeserializer<Node> {
         val link = deserializeLink(jsonNode)
         val children = deserializeChildren(context, jsonNode)
 
-        return Node(name, nodeType, attributes, link, children)
+        return Node(name, nodeType, attributes, link, children.toSet())
     }
 
     private fun deserializeLink(jsonNode: JsonObject): String? {

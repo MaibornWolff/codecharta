@@ -5,7 +5,11 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
 import org.junit.Ignore
 import org.junit.jupiter.api.Test
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
+import java.io.PrintStream
 
 class TokeiImporterTest {
     @Test
@@ -32,10 +36,10 @@ class TokeiImporterTest {
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.size).isEqualTo(3)
-        Assertions.assertThat(project.rootNode.children[0].name).isEqualTo("CHANGELOG.md")
-        Assertions.assertThat(project.rootNode.children[0].attributes["loc"]).isEqualTo(450.0)
-        Assertions.assertThat(project.rootNode.children[2].name).isEqualTo("src")
-        Assertions.assertThat(project.rootNode.children[2].size).isEqualTo(3)
+        Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
+        Assertions.assertThat(project.rootNode.children.toMutableList()[0].attributes["loc"]).isEqualTo(450.0)
+        Assertions.assertThat(project.rootNode.children.toMutableList()[2].name).isEqualTo("src")
+        Assertions.assertThat(project.rootNode.children.toMutableList()[2].size).isEqualTo(3)
     }
 
     @Ignore
@@ -52,7 +56,7 @@ class TokeiImporterTest {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_with_root.json", "-r=foo/bar"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        Assertions.assertThat(project.rootNode.children[0].name).isEqualTo("CHANGELOG.md")
+        Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
     }
 
     @Test
@@ -60,7 +64,7 @@ class TokeiImporterTest {
         val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--pathSeparator=\\"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
-        Assertions.assertThat(project.rootNode.children[1].name).isEqualTo("foo")
+        Assertions.assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
     }
 
     @Test
@@ -84,8 +88,9 @@ fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStr
         outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
 fun outputAsString(
-        inputStream: InputStream = System.`in`,
-        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+    inputStream: InputStream = System.`in`,
+    aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+) =
         ByteArrayOutputStream().use { baOutputStream ->
             PrintStream(baOutputStream).use { outputStream ->
                 aMethod(inputStream, outputStream, System.err)

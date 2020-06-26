@@ -2,7 +2,15 @@ package de.maibornwolff.codecharta.importer.jasome
 
 import de.maibornwolff.codecharta.importer.jasome.model.Class
 import de.maibornwolff.codecharta.importer.jasome.model.Package
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
+import de.maibornwolff.codecharta.model.PathFactory
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.math.BigDecimal
 
 class JasomeProjectBuilder() {
@@ -20,7 +28,6 @@ class JasomeProjectBuilder() {
             val parentPath = createPathByPackageName(jasomePackage.name!!).parent
             projectBuilder.insertByPath(parentPath, nodeForPackage)
         }
-
         jasomePackage.classes.orEmpty()
                 .forEach { this.add(jasomePackage.name ?: "", it) }
         return this
@@ -29,7 +36,11 @@ class JasomeProjectBuilder() {
     fun add(packageName: String, jasomeClass: Class): JasomeProjectBuilder {
         val nodeForClass = createNode(jasomeClass)
         val parentPath = createPathByPackageName(packageName)
-        projectBuilder.insertByPath(parentPath, nodeForClass)
+        runBlocking(Dispatchers.Default) {
+            launch {
+                projectBuilder.insertByPath(parentPath, nodeForClass)
+            }
+        }
         return this
     }
 
