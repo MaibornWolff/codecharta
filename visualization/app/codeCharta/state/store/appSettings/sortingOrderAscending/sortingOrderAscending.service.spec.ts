@@ -48,7 +48,9 @@ describe("SortingOrderAscendingService", () => {
 
 			sortingOrderAscendingService.onStoreChanged(SortingOrderAscendingActions.SET_SORTING_ORDER_ASCENDING)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("sorting-order-ascending-changed", { sortingOrderAscending: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("sorting-order-ascending-changed", {
+				sortingOrderAscending: true
+			})
 		})
 
 		it("should not notify anything on non-sorting-order-ascending-events", () => {

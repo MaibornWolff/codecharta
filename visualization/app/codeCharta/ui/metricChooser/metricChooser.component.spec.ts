@@ -115,7 +115,10 @@ describe("MetricChooserController", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("metric data should be updated", () => {
-			const metricData = [{ name: "a", maxValue: 1 }, { name: "b", maxValue: 2 }]
+			const metricData = [
+				{ name: "a", maxValue: 1 },
+				{ name: "b", maxValue: 2 }
+			]
 
 			metricChooserController.onMetricDataAdded(metricData)
 
@@ -165,7 +168,10 @@ describe("MetricChooserController", () => {
 
 	describe("filterMetricData", () => {
 		it("should return the default MetricData list", () => {
-			const metricData = [{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }]
+			const metricData = [
+				{ name: "rloc", maxValue: 1 },
+				{ name: "mcc", maxValue: 2 }
+			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = ""
 
@@ -174,7 +180,10 @@ describe("MetricChooserController", () => {
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})
 		it("should return only metric mcc from MetricData list, when its the searchTerm", () => {
-			const metricData = [{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }]
+			const metricData = [
+				{ name: "rloc", maxValue: 1 },
+				{ name: "mcc", maxValue: 2 }
+			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "mcc"
 
@@ -189,7 +198,10 @@ describe("MetricChooserController", () => {
 		})
 
 		it("should return rloc metric when searchTerm is only 'rl'", () => {
-			const metricData = [{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }]
+			const metricData = [
+				{ name: "rloc", maxValue: 1 },
+				{ name: "mcc", maxValue: 2 }
+			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "rl"
 
@@ -204,13 +216,20 @@ describe("MetricChooserController", () => {
 		})
 
 		it("should return the metrics which contains the metrics with 'c' in it", () => {
-			const metricData = [{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }, { name: "avg", maxValue: 3 }]
+			const metricData = [
+				{ name: "rloc", maxValue: 1 },
+				{ name: "mcc", maxValue: 2 },
+				{ name: "avg", maxValue: 3 }
+			]
 			setMetricData(metricData)
 			metricChooserController["_viewModel"].searchTerm = "c"
 
 			metricChooserController.filterMetricData()
 
-			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "rloc", maxValue: 1 }, { name: "mcc", maxValue: 2 }])
+			expect(metricChooserController["_viewModel"].metricData).toEqual([
+				{ name: "rloc", maxValue: 1 },
+				{ name: "mcc", maxValue: 2 }
+			])
 		})
 
 		it("should return the metrics which contains substrings with 'mc' as prefix", () => {
@@ -225,7 +244,10 @@ describe("MetricChooserController", () => {
 
 			metricChooserController.filterMetricData()
 
-			expect(metricChooserController["_viewModel"].metricData).toEqual([{ name: "mcc", maxValue: 2 }, { name: "cmc", maxValue: 4 }])
+			expect(metricChooserController["_viewModel"].metricData).toEqual([
+				{ name: "mcc", maxValue: 2 },
+				{ name: "cmc", maxValue: 4 }
+			])
 		})
 		it("should return an empty metric list if it doesn't have the searchTerm as substring", () => {
 			const metricData = [

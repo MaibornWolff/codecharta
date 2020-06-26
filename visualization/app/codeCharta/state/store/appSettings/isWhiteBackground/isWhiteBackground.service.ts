@@ -25,7 +25,9 @@ export class IsWhiteBackgroundService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(IsWhiteBackgroundService.IS_WHITE_BACKGROUND_CHANGED_EVENT, { isWhiteBackground: newState })
+		this.$rootScope.$broadcast(IsWhiteBackgroundService.IS_WHITE_BACKGROUND_CHANGED_EVENT, {
+			isWhiteBackground: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: IsWhiteBackgroundSubscriber) {

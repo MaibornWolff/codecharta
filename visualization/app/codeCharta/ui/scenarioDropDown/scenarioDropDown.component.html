@@ -20,8 +20,8 @@
 				ng-disabled="!scenario.isScenarioAppliable"
 				>{{ scenario.scenarioName }}</md-button
 			>
-			<span class="content-icons" ng-repeat="icon in scenario.icons">
-				<i class="fa {{ icon.faIconClass }}" ng-class="{'is-saved': icon.isSaved}"></i>
+			<span class="content-icons" ng-repeat="icon in scenario.icons track by $index">
+				<i class="fa {{ icon.faIconClass }}" ng-class="{ 'is-saved': icon.isSaved }"></i>
 			</span>
 			<md-button ng-click="$ctrl.removeScenario(scenario.scenarioName)" class="action-button remove button-hovering">
 				<i class="fa fa-minus-square"></i>

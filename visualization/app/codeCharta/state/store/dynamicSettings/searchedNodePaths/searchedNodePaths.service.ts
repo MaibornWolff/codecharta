@@ -25,7 +25,9 @@ export class SearchedNodePathsService implements StoreSubscriber {
 	}
 
 	private notify(newState: Set<string>) {
-		this.$rootScope.$broadcast(SearchedNodePathsService.SEARCHED_NODE_PATHS_CHANGED_EVENT, { searchedNodePaths: newState })
+		this.$rootScope.$broadcast(SearchedNodePathsService.SEARCHED_NODE_PATHS_CHANGED_EVENT, {
+			searchedNodePaths: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SearchedNodePathsSubscriber) {

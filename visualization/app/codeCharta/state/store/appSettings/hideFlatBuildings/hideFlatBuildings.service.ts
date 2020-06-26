@@ -25,7 +25,9 @@ export class HideFlatBuildingsService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(HideFlatBuildingsService.HIDE_FLAT_BUILDINGS_CHANGED_EVENT, { hideFlatBuildings: newState })
+		this.$rootScope.$broadcast(HideFlatBuildingsService.HIDE_FLAT_BUILDINGS_CHANGED_EVENT, {
+			hideFlatBuildings: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: HideFlatBuildingsSubscriber) {
