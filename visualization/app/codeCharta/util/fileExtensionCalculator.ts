@@ -102,10 +102,7 @@ export class FileExtensionCalculator {
 
 	public static estimateFileExtension(fileName: string): string {
 		if (fileName.includes(".")) {
-			return fileName
-				.split(".")
-				.reverse()[0]
-				.toLowerCase()
+			return fileName.split(".").reverse()[0].toLowerCase()
 		} else {
 			return FileExtensionCalculator.NO_EXTENSION
 		}

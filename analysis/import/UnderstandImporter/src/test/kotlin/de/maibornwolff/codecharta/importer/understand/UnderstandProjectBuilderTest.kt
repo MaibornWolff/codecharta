@@ -2,15 +2,16 @@ package de.maibornwolff.codecharta.importer.understand
 
 import de.maibornwolff.codecharta.model.NodeType
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.*
+import org.hamcrest.Matchers.greaterThanOrEqualTo
+import org.hamcrest.Matchers.hasItem
+import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class UnderstandProjectBuilderTest: Spek({
+class UnderstandProjectBuilderTest : Spek({
 
     describe("UnderstandProjectBuilder for Understand") {
         val understandProjectBuilder = UnderstandProjectBuilder('/')
-
 
         context("reading csv lines from Understand") {
             val project = understandProjectBuilder
@@ -52,9 +53,6 @@ class UnderstandProjectBuilderTest: Spek({
             it("project has number number of files in csv") {
                 assertThat(project.size, greaterThanOrEqualTo(223))
             }
-
         }
-
     }
-
 })

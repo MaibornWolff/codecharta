@@ -12,15 +12,20 @@ import {
 	NodeType,
 	SearchPanelMode,
 	SortingOption,
-	State
+	RecursivePartial,
+	Settings,
+	State,
+	Scenario
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import { hierarchy } from "d3"
+import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { MetricService } from "../state/metric.service"
 import { FileSelectionState, FileState } from "../model/files/files"
+import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -649,6 +654,66 @@ export const NONE_METRIC_DISTRIBUTION: MetricDistribution[] = [
 	}
 ]
 
+export const SCENARIO: RecursivePartial<Scenario> = {
+	name: "Scenario1",
+	area: {
+		areaMetric: "rloc",
+		margin: 48
+	},
+	height: {
+		heightMetric: "mcc",
+		heightSlider: new Vector3(1, 1.8, 1),
+		labelSlider: 31
+	},
+	color: {
+		colorMetric: "mcc",
+		colorRange: {
+			from: 19,
+			to: 67
+		}
+	},
+	edge: {
+		edgeMetric: "pairingRate",
+		edgePreview: 5,
+		edgeHeight: 4
+	},
+	camera: {
+		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(1, 1, 1)
+	}
+}
+
+export const PARTIAL_SETTINGS: RecursivePartial<Settings> = {
+	dynamicSettings: {
+		areaMetric: "rloc",
+		heightMetric: "mcc",
+		colorMetric: "mcc",
+		edgeMetric: "pairingRate",
+		margin: 48,
+		colorRange: {
+			from: 19,
+			to: 67
+		}
+	},
+	appSettings: {
+		amountOfTopLabels: 31,
+		amountOfEdgePreviews: 5,
+		edgeHeight: 4,
+		scaling: new Vector3(1, 1.8, 1),
+		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(1, 1, 1)
+	}
+}
+
+export const SCENARIO_WITH_ONLY_HEIGHT: RecursivePartial<Scenario> = {
+	name: "Scenario2",
+	height: {
+		heightMetric: "mcc",
+		labelSlider: 31,
+		heightSlider: new Vector3(1, 1.8, 1)
+	}
+}
+
 export const VALID_NODE_WITH_PATH_AND_EXTENSION: CodeMapNode = {
 	name: "root",
 	attributes: {},
@@ -937,7 +1002,10 @@ export const TEST_DELTA_MAP_B: CCFile = {
 export const TEST_FILE_DATA_DOWNLOADED = {
 	apiVersion: "1.1",
 	attributeTypes: {},
-	blacklist: [{ path: "/root/bigLeaf.ts", type: "hide" }, { path: "/root/sample1OnlyLeaf.scss", type: "exclude" }],
+	blacklist: [
+		{ path: "/root/bigLeaf.ts", type: "hide" },
+		{ path: "/root/sample1OnlyLeaf.scss", type: "exclude" }
+	],
 	edges: [
 		{
 			attributes: {
@@ -1049,6 +1117,7 @@ export const STATE: State = {
 		edgeHeight: 4,
 		scaling: new Vector3(1, 1.8, 1),
 		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(177, 0, 299),
 		invertDeltaColors: false,
 		hideFlatBuildings: true,
 		invertHeight: true,
@@ -1097,6 +1166,7 @@ export const DEFAULT_STATE: State = {
 		amountOfEdgePreviews: 1,
 		edgeHeight: 4,
 		camera: new Vector3(0, 300, 1000),
+		cameraTarget: new Vector3(177, 0, 299),
 		invertDeltaColors: false,
 		dynamicMargin: true,
 		hideFlatBuildings: false,
@@ -1179,6 +1249,149 @@ export const TEST_NODE_ROOT: Node = {
 	incomingEdgePoint: new Vector3(),
 	outgoingEdgePoint: new Vector3()
 }
+
+export const SCENARIO_ATTRIBUTE_CONTENT: AddScenarioContent[] = [
+	{
+		metricType: ScenarioMetricType.CAMERA_POSITION,
+		metricName: "",
+		savedValues: { camera: new Vector3(0, 300, 1000), cameraTarget: new Vector3(177, 0, 299) },
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.AREA_METRIC,
+		metricName: "rloc",
+		savedValues: 48,
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.HEIGHT_METRIC,
+		metricName: "mcc",
+		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.COLOR_METRIC,
+		metricName: "mcc",
+		savedValues: { from: 19, to: 67 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.EDGE_METRIC,
+		metricName: "pairingRate",
+		savedValues: { edgePreview: 5, edgeHeight: 4 },
+		isSelected: true,
+		isDisabled: false
+	}
+]
+
+export const SCENARIO_ATTRIBUTE_CONTENT_CAMERA_UNSELECTED: AddScenarioContent[] = [
+	{
+		metricType: ScenarioMetricType.CAMERA_POSITION,
+		metricName: null,
+		savedValues: new Vector3(0, 300, 1000),
+		isSelected: false,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.AREA_METRIC,
+		metricName: "rloc",
+		savedValues: 48,
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.HEIGHT_METRIC,
+		metricName: "mcc",
+		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.COLOR_METRIC,
+		metricName: "mcc",
+		savedValues: { from: 19, to: 67 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.EDGE_METRIC,
+		metricName: "pairingRate",
+		savedValues: { edgePreview: 5, edgeHeight: 4 },
+		isSelected: true,
+		isDisabled: false
+	}
+]
+
+export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddScenarioContent[] = [
+	{
+		metricType: ScenarioMetricType.AREA_METRIC,
+		metricName: "rloc",
+		savedValues: 48,
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.HEIGHT_METRIC,
+		metricName: "mcc",
+		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.COLOR_METRIC,
+		metricName: "mcc",
+		savedValues: { from: 19, to: 67 },
+		isSelected: true,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.EDGE_METRIC,
+		metricName: "pairingRate",
+		savedValues: { edgePreview: 5, edgeHeight: 4 },
+		isSelected: true,
+		isDisabled: false
+	}
+]
+
+export const SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED: AddScenarioContent[] = [
+	{
+		metricType: ScenarioMetricType.AREA_METRIC,
+		metricName: "rloc",
+		savedValues: 48,
+		isSelected: false,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.HEIGHT_METRIC,
+		metricName: "mcc",
+		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
+		isSelected: false,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.COLOR_METRIC,
+		metricName: "mcc",
+		savedValues: { from: 19, to: 67 },
+		isSelected: false,
+		isDisabled: false
+	},
+	{
+		metricType: ScenarioMetricType.EDGE_METRIC,
+		metricName: "pairingRate",
+		savedValues: { edgePreview: 5, edgeHeight: 4 },
+		isSelected: false,
+		isDisabled: false
+	}
+]
+
+export const SCENARIO_ITEMS: ScenarioItem[] = [
+	{ scenarioName: "Scenario", isScenarioAppliable: true, icons: [{ faIconClass: "fa fa-random", isSaved: false }] },
+	{ scenarioName: "Scenario2", isScenarioAppliable: false, icons: [{ faIconClass: "fa fa-some", isSaved: true }] }
+]
 
 export const TEST_NODE_LEAF: Node = {
 	name: "root/big leaf.ts",
@@ -1271,7 +1484,10 @@ export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
 	DEFAULT_STATE.appSettings.mapColors.neutral
 )
 
-export const METRIC_DATA: MetricData[] = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
+export const METRIC_DATA: MetricData[] = [
+	{ name: "mcc", maxValue: 1 },
+	{ name: "rloc", maxValue: 2 }
+]
 
 export const BLACKLIST: BlacklistItem[] = [
 	{

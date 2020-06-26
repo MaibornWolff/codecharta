@@ -27,7 +27,10 @@ describe("nodeDecorator", () => {
 				maxValue: 999999
 			}
 		]
-		edgeMetricData = [{ name: "pairingRate", maxValue: 999 }, { name: "avgCommits", maxValue: 999 }]
+		edgeMetricData = [
+			{ name: "pairingRate", maxValue: 999 },
+			{ name: "avgCommits", maxValue: 999 }
+		]
 		attributeTypes = {
 			nodes: { functions: AttributeTypeValue.relative, rloc: AttributeTypeValue.absolute },
 			edges: { pairingRate: AttributeTypeValue.relative }

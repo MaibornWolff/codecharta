@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
-
 class CcshTest {
 
     @Test
@@ -20,5 +19,4 @@ class CcshTest {
         Assertions.assertThat(outStream.toString()).contains("--default-excludes-s=AbC")
         System.setOut(originalOut)
     }
-
 }

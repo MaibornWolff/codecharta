@@ -7,7 +7,7 @@ import { PLOP_UTIL_FILE_ACTIONS, PLOP_UTIL_VARIABLE_PROMPTS } from "./plop/util"
 import { PLOP_REDUX_FILE_ACTIONS, PLOP_REDUX_VARIABLE_PROMPTS } from "./plop/redux"
 import { PLOP_REDUX_SUBREDUCER_FILE_ACTIONS, PLOP_REDUX_SUBREDUCER_VARIABLE_PROMPTS } from "./plop/reduxSubreducer"
 
-export default function(plop: NodePlopAPI) {
+export default function (plop: NodePlopAPI) {
 	plop.setPrompt("directory", promptDirectory)
 	plop.setPrompt("file", promptFile)
 

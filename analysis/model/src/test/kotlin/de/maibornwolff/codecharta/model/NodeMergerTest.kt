@@ -6,7 +6,7 @@ import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class NodeMergerTest: Spek({
+class NodeMergerTest : Spek({
     describe("a node merger NodeMaxAttributeMerger") {
 
         context("merging nodes with same name") {

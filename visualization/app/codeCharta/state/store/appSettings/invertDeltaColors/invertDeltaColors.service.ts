@@ -25,7 +25,9 @@ export class InvertDeltaColorsService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(InvertDeltaColorsService.INVERT_DELTA_COLORS_CHANGED_EVENT, { invertDeltaColors: newState })
+		this.$rootScope.$broadcast(InvertDeltaColorsService.INVERT_DELTA_COLORS_CHANGED_EVENT, {
+			invertDeltaColors: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: InvertDeltaColorsSubscriber) {

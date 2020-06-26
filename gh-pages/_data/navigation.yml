@@ -40,6 +40,31 @@ docs:
       - title: "Custom Metrics"
         url: /docs/custom-metrics/
 
+  - title: Analysing-Tools
+    children:
+      - title: "Source Code Parser"
+        url: /docs/source-code-parser
+      - title: "Raw Text Parser"
+        url: /docs/raw-text-parser
+      - title: "SCM Log Parser"
+        url: /docs/scm-log-parser
+      - title: "Sonar Importer"
+        url: /docs/sonar-importer
+      - title: "Tokei Importer"
+        url: /docs/tokei-importer
+      - title: "CSV Importer"
+        url: /docs/csv-importer
+      - title: "SourceMonitor Importer"
+        url: /docs/sourcemonitorimporter
+      - title: "Code Maat Importer"
+        url: /docs/codemaatimporter
+      - title: "Jasome Importer"
+        url: /docs/jasomeimporter
+      - title: "Crococosmo Importer"
+        url: /docs/crococosmoimporter
+      - title: "Understand Importer"
+        url: /docs/understandimporter
+
   - title: Visualization
     children:
       - title: "Visualization"

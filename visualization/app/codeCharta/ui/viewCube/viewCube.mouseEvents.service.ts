@@ -94,7 +94,10 @@ export class ViewCubeMouseEventsService {
 	}
 
 	private triggerViewCubeEventPropagation(type: string, event: MouseEvent) {
-		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_EVENT_PROPAGATION_EVENT_NAME, { e: event, type })
+		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_EVENT_PROPAGATION_EVENT_NAME, {
+			e: event,
+			type
+		})
 	}
 
 	private triggerViewCubeHoverEvent(cube: THREE.Mesh) {

@@ -26,7 +26,6 @@ class FolderMoverTest {
         val srcChildren = result!!.rootNode.children.first().children
         Assertions.assertThat(srcChildren.size).isEqualTo(2)
         Assertions.assertThat(srcChildren.filter { it.name == "folder3" }).isEmpty()
-
     }
 
     @Test
@@ -79,7 +78,6 @@ class FolderMoverTest {
         val result = folderMover.move("/root/foo/", "/root/bar")
 
         Assertions.assertThat(result!!.edges).contains(unaffectedEdge)
-
     }
 
     @Test

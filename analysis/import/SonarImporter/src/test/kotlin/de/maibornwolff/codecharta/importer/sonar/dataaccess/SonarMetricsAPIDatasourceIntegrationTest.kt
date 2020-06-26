@@ -1,6 +1,9 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource.Companion.PAGE_SIZE
@@ -12,7 +15,7 @@ import org.junit.Test
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.*
+import java.util.Arrays
 
 class SonarMetricsAPIDatasourceIntegrationTest {
     @JvmField

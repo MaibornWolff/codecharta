@@ -3,7 +3,7 @@
 		<metric-type-component metric-selection="heightMetric"></metric-type-component>
 		{{ $ctrl._viewModel.hoveredNode.attributes[$ctrl._viewModel.heightMetric] | number }}
 	</div>
-	<div class="rounded-box" ng-style="{backgroundColor: $ctrl._viewModel.deltaColor}" ng-show="$ctrl._viewModel.hoveredNode.deltas">
+	<div class="rounded-box" ng-style="{ backgroundColor: $ctrl._viewModel.deltaColor }" ng-show="$ctrl._viewModel.hoveredNode.deltas">
 		&Delta;{{ $ctrl._viewModel.hoveredNode.deltas[$ctrl._viewModel.heightMetric] | number }}
 	</div>
 </div>

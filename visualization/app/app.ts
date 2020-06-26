@@ -22,11 +22,7 @@ angular
 		}
 	])
 	.config($mdThemingProvider => {
-		$mdThemingProvider
-			.theme("default")
-			.primaryPalette("teal")
-			.warnPalette("teal")
-			.accentPalette("teal")
+		$mdThemingProvider.theme("default").primaryPalette("teal").warnPalette("teal").accentPalette("teal")
 	})
 	.config($mdAriaProvider => {
 		$mdAriaProvider.disableWarnings()

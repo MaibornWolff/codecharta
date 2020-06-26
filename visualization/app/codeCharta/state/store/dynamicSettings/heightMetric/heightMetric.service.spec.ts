@@ -57,7 +57,9 @@ describe("HeightMetricService", () => {
 
 			heightMetricService.onStoreChanged(HeightMetricActions.SET_HEIGHT_METRIC)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("height-metric-changed", { heightMetric: "another_height_metric" })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("height-metric-changed", {
+				heightMetric: "another_height_metric"
+			})
 		})
 
 		it("should not notify anything on non-height-metric-events", () => {
@@ -92,7 +94,10 @@ describe("HeightMetricService", () => {
 		it("should not update if current heightMetric is available", () => {
 			storeService.dispatch(setHeightMetric("mcc"))
 			storeService.dispatch = jest.fn()
-			const metricData = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
+			const metricData = [
+				{ name: "mcc", maxValue: 1 },
+				{ name: "rloc", maxValue: 2 }
+			]
 
 			heightMetricService.onMetricDataAdded(metricData)
 

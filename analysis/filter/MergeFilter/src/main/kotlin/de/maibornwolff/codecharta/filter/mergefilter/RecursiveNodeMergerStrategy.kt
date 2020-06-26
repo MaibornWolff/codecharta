@@ -6,7 +6,7 @@ import mu.KotlinLogging
 /**
  * merges nodes recursively if their paths coincide
  */
-class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrategy {
+class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false) : NodeMergerStrategy {
 
     private val mergeConditionSatisfied: (MutableNode, MutableNode) -> Boolean
 
@@ -29,7 +29,6 @@ class RecursiveNodeMergerStrategy(ignoreCase: Boolean = false): NodeMergerStrate
                 nodesProcessed++
                 mergeOrAppendNode(accumulatedNodes, nextNode)
             })
-
         }
     }
 
