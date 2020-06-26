@@ -33,7 +33,10 @@ export class CodeMapArrowService
 
 	public onBuildingDeselected() {
 		this.clearArrows()
-		this.addEdgePreview(null, this.storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none))
+		this.addEdgePreview(
+			null,
+			this.storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
+		)
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -120,7 +123,10 @@ export class CodeMapArrowService
 		} else if (this.threeSceneService.getSelectedBuilding()) {
 			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
 		} else {
-			this.addEdgePreview(null, edges.filter(x => x.visible != EdgeVisibility.none))
+			this.addEdgePreview(
+				null,
+				edges.filter(x => x.visible != EdgeVisibility.none)
+			)
 		}
 	}
 
@@ -147,10 +153,7 @@ export class CodeMapArrowService
 	}
 
 	private highlightBuilding(node: Node) {
-		const building: CodeMapBuilding = this.threeSceneService
-			.getMapMesh()
-			.getMeshDescription()
-			.getBuildingByPath(node.path)
+		const building: CodeMapBuilding = this.threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath(node.path)
 		this.threeSceneService.addBuildingToHighlightingList(building)
 	}
 

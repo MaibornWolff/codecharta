@@ -57,7 +57,9 @@ describe("AreaMetricService", () => {
 
 			areaMetricService.onStoreChanged(AreaMetricActions.SET_AREA_METRIC)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("area-metric-changed", { areaMetric: "another_area_metric" })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("area-metric-changed", {
+				areaMetric: "another_area_metric"
+			})
 		})
 
 		it("should not notify anything on non-area-metric-events", () => {
@@ -84,7 +86,10 @@ describe("AreaMetricService", () => {
 		it("should not update if current areaMetric is available", () => {
 			storeService.dispatch(setAreaMetric("rloc"))
 			storeService.dispatch = jest.fn()
-			const metricData = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
+			const metricData = [
+				{ name: "mcc", maxValue: 1 },
+				{ name: "rloc", maxValue: 2 }
+			]
 
 			areaMetricService.onMetricDataAdded(metricData)
 

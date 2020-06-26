@@ -24,10 +24,7 @@ export class CenterMapButtonController implements CameraChangeSubscriber {
 	}
 
 	private isMapCentered(camera: PerspectiveCamera) {
-		return camera.position
-			.clone()
-			.floor()
-			.equals(this.threeOrbitControlsService.defaultCameraPosition.clone().floor())
+		return camera.position.clone().floor().equals(this.threeOrbitControlsService.defaultCameraPosition.clone().floor())
 	}
 }
 

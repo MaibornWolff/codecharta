@@ -57,7 +57,9 @@ describe("ColorMetricService", () => {
 
 			colorMetricService.onStoreChanged(ColorMetricActions.SET_COLOR_METRIC)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("color-metric-changed", { colorMetric: "another_color_metric" })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("color-metric-changed", {
+				colorMetric: "another_color_metric"
+			})
 		})
 
 		it("should not notify anything on non-color-metric-events", () => {
@@ -92,7 +94,10 @@ describe("ColorMetricService", () => {
 		it("should not update if current colorMetric is available", () => {
 			storeService.dispatch(setColorMetric("mcc"))
 			storeService.dispatch = jest.fn()
-			const metricData = [{ name: "mcc", maxValue: 1 }, { name: "rloc", maxValue: 2 }]
+			const metricData = [
+				{ name: "mcc", maxValue: 1 },
+				{ name: "rloc", maxValue: 2 }
+			]
 
 			colorMetricService.onMetricDataAdded(metricData)
 

@@ -86,5 +86,8 @@ function setMultipleByNames(state: FileState[], partialFileNames: string[]): Fil
 }
 
 function setMultiple(state: FileState[], multipleFiles: CCFile[]): FileState[] {
-	return setMultipleByNames(state, multipleFiles.map(x => x.fileMeta.fileName))
+	return setMultipleByNames(
+		state,
+		multipleFiles.map(x => x.fileMeta.fileName)
+	)
 }

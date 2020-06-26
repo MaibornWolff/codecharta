@@ -57,7 +57,9 @@ describe("SearchPatternService", () => {
 
 			searchPatternService.onStoreChanged(SearchPatternActions.SET_SEARCH_PATTERN)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("search-pattern-changed", { searchPattern: "mySearch/*.ts" })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("search-pattern-changed", {
+				searchPattern: "mySearch/*.ts"
+			})
 		})
 
 		it("should not notify anything on non-search-pattern-events", () => {

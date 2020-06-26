@@ -61,7 +61,10 @@ describe("treeMapGenerator", () => {
 			state.dynamicSettings.areaMetric = "myArea"
 			state.dynamicSettings.heightMetric = "myHeight"
 			state.treeMap.mapSize = 1000
-			metricData = [{ name: "myArea", maxValue: 42 }, { name: "myHeight", maxValue: 99 }]
+			metricData = [
+				{ name: "myArea", maxValue: 42 },
+				{ name: "myHeight", maxValue: 99 }
+			]
 
 			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 
@@ -90,7 +93,10 @@ describe("treeMapGenerator", () => {
 		it("attribute do not exists, multiple children with non existant attributes", () => {
 			state.dynamicSettings.heightMetric = "b"
 			state.dynamicSettings.areaMetric = "b"
-			metricData = [{ name: "a", maxValue: 42 }, { name: "b", maxValue: 99 }]
+			metricData = [
+				{ name: "a", maxValue: 42 },
+				{ name: "b", maxValue: 99 }
+			]
 
 			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
 

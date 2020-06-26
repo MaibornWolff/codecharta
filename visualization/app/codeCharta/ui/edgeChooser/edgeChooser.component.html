@@ -24,7 +24,7 @@
 			/>
 		</md-select-header>
 		<md-content class="option-group">
-			<md-option ng-repeat="metric in $ctrl._viewModel.edgeMetricData" value="{{::metric.name}}">
+			<md-option ng-repeat="metric in $ctrl._viewModel.edgeMetricData track by $index" value="{{::metric.name}}">
 				{{::metric.name}}
 				<span class="metric-max-value">({{::metric.maxValue}})</span>
 				<attribute-type-selector-component class="attribute-type-select" type="edges" metric="{{::metric.name}}">

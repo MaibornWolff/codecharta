@@ -49,7 +49,9 @@ describe("SortingOptionService", () => {
 
 			sortingOptionService.onStoreChanged(SortingOptionActions.SET_SORTING_OPTION)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("sorting-option-changed", { sortingOption: SortingOption.NUMBER_OF_FILES })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("sorting-option-changed", {
+				sortingOption: SortingOption.NUMBER_OF_FILES
+			})
 		})
 
 		it("should not notify anything on non-sorting-option-events", () => {

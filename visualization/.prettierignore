@@ -10,3 +10,4 @@ __snapshots__
 Dockerfile
 *.glsl
 .*
+*.hbs

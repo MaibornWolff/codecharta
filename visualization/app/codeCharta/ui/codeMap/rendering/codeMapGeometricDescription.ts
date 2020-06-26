@@ -32,10 +32,7 @@ export class CodeMapGeometricDescription {
 		let intersectedBuilding: CodeMapBuilding
 		let leastIntersectedDistance: number = Infinity
 
-		const boxTranslation = this.scales
-			.clone()
-			.multiplyScalar(this.mapSize)
-			.multiply(new Vector3(-1, 0, -1))
+		const boxTranslation = this.scales.clone().multiplyScalar(this.mapSize).multiply(new Vector3(-1, 0, -1))
 
 		for (const building of this._buildings) {
 			const box: Box3 = building.boundingBox.clone()

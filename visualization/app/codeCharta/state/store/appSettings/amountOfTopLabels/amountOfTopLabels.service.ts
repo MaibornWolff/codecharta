@@ -25,7 +25,9 @@ export class AmountOfTopLabelsService implements StoreSubscriber {
 	}
 
 	private notify(newState: number) {
-		this.$rootScope.$broadcast(AmountOfTopLabelsService.AMOUNT_OF_TOP_LABELS_CHANGED_EVENT, { amountOfTopLabels: newState })
+		this.$rootScope.$broadcast(AmountOfTopLabelsService.AMOUNT_OF_TOP_LABELS_CHANGED_EVENT, {
+			amountOfTopLabels: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: AmountOfTopLabelsSubscriber) {
