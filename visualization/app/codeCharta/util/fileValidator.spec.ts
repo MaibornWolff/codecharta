@@ -24,62 +24,92 @@ describe("FileValidator", () => {
 		expect(errors.error.length).toBeGreaterThan(0)
 	}
 
+	function expectFileToThrowResult(file) {
+		expect(() => {
+			validate(file)
+		}).toThrow()
+	}
+
+	function expectFileNotToThrowResult(file) {
+		expect(() => {
+			validate(file)
+		}).not.toThrow()
+	}
+
 	it("API version exists in package.json", () => {
 		expect(require("../../../package.json").codecharta.apiVersion).toEqual("1.1")
 	})
 
-	it("should reject null", () => {
-		const errors = validate(null)
-
-		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error Loading File")
+	it("should throw on null", () => {
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(null)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+			expect(e.title).toEqual("Error Loading File")
+		}
 	})
 
-	it("should reject higher Major API", () => {
+	it("should throw when higher Major API", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_MAJOR_API
 
-		const errors = validate(invalidFile)
-
-		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error Major API Version")
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(invalidFile)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+			expect(e.title).toEqual("Error Major API Version")
+		}
 	})
 
-	it("should not reject higher minor API version but add warning", () => {
+	it("should throw on warning with higher minor API version", () => {
 		file = TEST_FILE_CONTENT_INVALID_MINOR_API
 
-		const errors = validate(file)
-
-		expectFileToBeValid(errors)
-		expect(errors.warning.length).toBeGreaterThan(0)
-		expect(errors.title).toEqual("Warning Minor API Version")
+		expectFileToThrowResult(file)
+		try {
+			validate(file)
+		} catch (e) {
+			expectFileToBeValid(e)
+			expect(e.warning.length).toBeGreaterThan(0)
+			expect(e.title).toEqual("Warning Minor API Version")
+		}
 	})
 
-	it("should reject file missing API version", () => {
+	it("should throw on file missing API version", () => {
 		invalidFile = TEST_FILE_CONTENT_NO_API
 
-		const errors = validate(invalidFile)
-
-		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error API Version")
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(invalidFile)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+			expect(e.title).toEqual("Error API Version")
+		}
 	})
 
-	it("should reject file with wrong API version", () => {
+	it("should throw on file with wrong API version", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_API
 
-		const errors = validate(invalidFile)
-
-		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error API Version")
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(invalidFile)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+			expect(e.title).toEqual("Error API Version")
+		}
 	})
 
-	it("should reject string", () => {
-		const errors = validate("" as any)
-
-		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error Loading File")
+	it("should throw on string", () => {
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate("" as any)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+			expect(e.title).toEqual("Error Loading File")
+		}
 	})
 
-	it("should not reject a file with edges", () => {
+	it("should not throw on a file with edges", () => {
 		file.edges = [
 			{
 				fromNodeName: "a",
@@ -91,56 +121,59 @@ describe("FileValidator", () => {
 			}
 		]
 
-		const errors = validate(file)
-
-		expectFileToBeValid(errors)
+		expectFileNotToThrowResult(file)
 	})
 
-	it("should not reject a file without edges", () => {
+	it("should not throw on a file without edges", () => {
 		file.edges = undefined
 
-		const errors = validate(file)
-
-		expectFileToBeValid(errors)
+		expectFileNotToThrowResult(file)
 	})
 
-	it("should not reject a file when numbers are floating point values", () => {
+	it("should not throw on a file when numbers are floating point values", () => {
 		file.nodes[0].children[0].attributes["rloc"] = 333.4
 
-		const errors = validate(file)
-
-		expectFileToBeValid(errors)
+		expectFileNotToThrowResult(file)
 	})
 
-	it("should reject when children are not unique in name+type", () => {
+	it("should throw when children are not unique in name+type", () => {
 		file.nodes[0].children[0].name = "same"
 		file.nodes[0].children[0].type = NodeType.FILE
 		file.nodes[0].children[1].name = "same"
 		file.nodes[0].children[1].type = NodeType.FILE
 
-		const errors = validate(file)
-
-		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error Node Uniques")
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(file)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+			expect(e.title).toEqual("Error Node Uniques")
+		}
 	})
 
-	it("should reject when nodes are empty", () => {
+	it("should throw when nodes are empty", () => {
 		file.nodes[0] = []
 
-		const errors = validate(file)
-
-		expectFileToBeInvalid(errors)
-		expect(errors.title).toEqual("Error Validation")
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(file)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+			expect(e.title).toEqual("Error Validation")
+		}
 	})
 
-	it("should reject if nodes is not a node and therefore has no name or id", () => {
+	it("should throw if nodes is not a node and therefore has no name or id", () => {
 		file.nodes[0] = {
 			something: "something"
 		}
 
-		const errors = validate(file)
-
-		expectFileToBeInvalid(errors)
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(file)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+		}
 	})
 
 	it("attributes should not allow whitespaces", () => {
@@ -148,9 +181,12 @@ describe("FileValidator", () => {
 			"tes t1": 0
 		}
 
-		const errors = validate(file)
-
-		expectFileToBeInvalid(errors)
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(file)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+		}
 	})
 
 	it("attributes should not allow special characters", () => {
@@ -158,8 +194,11 @@ describe("FileValidator", () => {
 			"tes)t1": 0
 		}
 
-		const errors = validate(file)
-
-		expectFileToBeInvalid(errors)
+		expectFileToThrowResult(invalidFile)
+		try {
+			validate(file)
+		} catch (e) {
+			expectFileToBeInvalid(e)
+		}
 	})
 })

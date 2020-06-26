@@ -41,7 +41,7 @@ const ERROR_MESSAGES = {
 	}
 }
 
-export function validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CCValidationResult {
+export function validate(file: { apiVersion: string; nodes: CodeMapNode[] }) {
 	const result: CCValidationResult = { error: [], warning: [], title: "" }
 
 	switch (true) {
@@ -76,7 +76,10 @@ export function validate(file: { apiVersion: string; nodes: CodeMapNode[] }): CC
 			result.title = ERROR_MESSAGES.nodesNotUnique.title
 		}
 	}
-	return result
+
+	if (result.error.length > 0 || result.warning.length > 0) {
+		throw result
+	}
 }
 
 function getValidationMessage(error: Ajv.ErrorObject) {

@@ -60,7 +60,6 @@ export class FileChooserController {
 		this.codeChartaService.loadFiles([nameDataPair]).catch((validationResult: CCValidationResult) => {
 			this.storeService.dispatch(setIsLoadingFile(false))
 			this.storeService.dispatch(setIsLoadingMap(false))
-			console.error(validationResult)
 			this.printErrors(validationResult)
 		})
 	}
@@ -75,13 +74,11 @@ export class FileChooserController {
 
 	private printErrors(validationResult: CCValidationResult) {
 		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
-		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
 		const lineBreak = "<br>"
 
 		const errorMessage = validationResult.error.map(message => errorSymbol + message).join(lineBreak)
-		const warningMessage = validationResult.warning.map(message => warningSymbol + message).join(lineBreak)
 
-		const htmlMessage = "<p>" + errorMessage + lineBreak + warningMessage + "</p>"
+		const htmlMessage = "<p>" + errorMessage + "</p>"
 
 		this.dialogService.showErrorDialog(htmlMessage, validationResult.title)
 	}

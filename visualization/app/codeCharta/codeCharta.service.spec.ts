@@ -8,10 +8,12 @@ import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isSingleState } from "./model/files/files.helper"
+import { DialogService } from "./ui/dialog/dialog.service"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
 	let storeService: StoreService
+	let dialogService: DialogService
 	let validFileContent: ExportCCFile
 	const fileName: string = "someFileName"
 
@@ -28,7 +30,7 @@ describe("codeChartaService", () => {
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(storeService)
+		codeChartaService = new CodeChartaService(storeService, dialogService)
 	}
 
 	describe("loadFiles", () => {
