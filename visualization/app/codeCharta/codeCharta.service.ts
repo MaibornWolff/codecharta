@@ -88,11 +88,15 @@ export class CodeChartaService {
 
 	private migrateAttributeTypes(attributeTypes: OldAttributeTypes): AttributeTypes {
 		const result = { nodes: {}, edges: {} }
+
 		attributeTypes.nodes.forEach(x => {
-			result.nodes[Object.keys(x)[0]] = Object.values(x)[0]
+			const [[key, value]] = Object.entries(x)
+			result.nodes[key] = value
 		})
+
 		attributeTypes.edges.forEach(x => {
-			result.edges[Object.keys(x)[0]] = Object.values(x)[0]
+			const [[key, value]] = Object.entries(x)
+			result.edges[key] = value
 		})
 
 		return result
