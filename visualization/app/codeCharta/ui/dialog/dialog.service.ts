@@ -25,16 +25,4 @@ export class DialogService {
 	public showErrorDialog(msg: string = "An error occurred.", title: string = "Error", button: string = "Ok") {
 		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(msg).ok(button))
 	}
-
-	public showPromptDialog(
-		msg: string,
-		initial: string,
-		placeholder: string = initial,
-		title: string = "Prompt",
-		button: string = "Ok"
-	): Promise<any> {
-		const prompt = this.$mdDialog.prompt().title(title).textContent(msg).initialValue(initial).placeholder(placeholder).ok(button)
-
-		return this.$mdDialog.show(prompt)
-	}
 }
