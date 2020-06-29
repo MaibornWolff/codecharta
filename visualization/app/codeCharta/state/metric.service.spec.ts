@@ -82,10 +82,21 @@ describe("MetricService", () => {
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
+			metricService["metricData"] = []
+
 			metricService.onFilesSelectionChanged(undefined)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+		})
+
+		it("should not broadcast a METRIC_DATA_ADDED_EVENT if metricData is still the same", () => {
+			const oldMetricData = metricService.getMetricData()
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+			expect(oldMetricData).toEqual(metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
@@ -106,10 +117,21 @@ describe("MetricService", () => {
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
+			metricService["metricData"] = []
+
 			metricService.onBlacklistChanged([])
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+		})
+
+		it("should not broadcast a METRIC_DATA_ADDED_EVENT if metricData is still the same", () => {
+			const oldMetricData = metricService.getMetricData()
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect($rootScope.$broadcast).not.toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
+			expect(oldMetricData).toEqual(metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
