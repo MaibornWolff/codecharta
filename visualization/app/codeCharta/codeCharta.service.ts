@@ -3,13 +3,14 @@ import { AttributeTypes, CCFile, NameDataPair, BlacklistType, BlacklistItem } fr
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { StoreService } from "./state/store.service"
-import { addFile, setSingle } from "./state/store/files/files.actions"
+import { addFile, resetFiles, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
+	private isToReset: boolean = true
 
 	constructor(private storeService: StoreService) {}
 
@@ -18,6 +19,10 @@ export class CodeChartaService {
 			nameDataPairs.forEach((nameDataPair: NameDataPair) => {
 				const validationResult: CCValidationResult = FileValidator.validate(nameDataPair.content)
 				if (validationResult.error.length === 0) {
+					if (this.isToReset) {
+						this.storeService.dispatch(resetFiles())
+						this.isToReset = false
+					}
 					const ccFile = this.getCCFile(nameDataPair.fileName, nameDataPair.content)
 					NodeDecorator.preDecorateFile(ccFile)
 					this.storeService.dispatch(addFile(ccFile))
@@ -31,6 +36,10 @@ export class CodeChartaService {
 			this.storeService.dispatch(setSingle(getCCFiles(this.storeService.getState().files)[0]))
 			resolve()
 		})
+	}
+
+	public setIsToReset() {
+		this.isToReset = true
 	}
 
 	private getCCFile(fileName: string, fileContent: any): CCFile {
