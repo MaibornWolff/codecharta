@@ -141,7 +141,7 @@
 		"jest": "^22.4.3",
 		"jest-serializer-html": "^6.0.0",
 		"makeshift": "^1.1.0",
-		"ng-annotate-loader": "^0.6.1",
+		"ng-annotate-loader": "^0.7.0",
 		"node-sass": "^4.13.1",
 		"plop": "^2.6.0",
 		"prettier": "^2.0.5",
