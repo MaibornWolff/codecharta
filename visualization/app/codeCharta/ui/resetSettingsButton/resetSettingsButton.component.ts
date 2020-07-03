@@ -5,7 +5,7 @@ import { defaultState, setState } from "../../state/store/state.actions"
 import { convertToVectors } from "../../util/settingsHelper"
 
 export class ResetSettingsButtonController {
-	private settingsNames: string = ""
+	private settingsNames = ""
 
 	/* @ngInject */
 	constructor(private storeService: StoreService) {}

@@ -18,4 +18,4 @@ export function setIsLoadingFile(isLoadingFile: boolean = defaultIsLoadingFile):
 	}
 }
 
-export const defaultIsLoadingFile: boolean = true
+export const defaultIsLoadingFile = true
