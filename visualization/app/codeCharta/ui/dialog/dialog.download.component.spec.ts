@@ -14,7 +14,7 @@ import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages
 
 describe("DialogDownloadController", () => {
 	stubDate(new Date(Date.UTC(2018, 11, 14, 9, 39)))
-	const newDate: string = "2018-12-14_09-39"
+	const newDate = "2018-12-14_09-39"
 
 	let dialogDownloadController: DialogDownloadController
 	let $mdDialog

@@ -42,4 +42,4 @@ export function closeAttributeSideBar(): CloseAttributeSideBarAction {
 	}
 }
 
-export const defaultIsAttributeSideBarVisible: boolean = false
+export const defaultIsAttributeSideBarVisible = false
