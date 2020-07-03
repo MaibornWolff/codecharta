@@ -18,4 +18,4 @@ export function setMapSize(mapSize: number = defaultMapSize): SetMapSizeAction {
 	}
 }
 
-export const defaultMapSize: number = 250
+export const defaultMapSize = 250

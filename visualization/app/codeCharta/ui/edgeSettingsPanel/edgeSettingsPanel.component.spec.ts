@@ -43,7 +43,7 @@ describe("EdgeSettingsPanelController", () => {
 		)
 	}
 
-	function withMockedEdgeMetricDataService(amountOfAffectedBuildings: number = 0) {
+	function withMockedEdgeMetricDataService(amountOfAffectedBuildings = 0) {
 		edgeMetricDataService = edgeSettingsPanelController["edgeMetricDataService"] = jest.fn<EdgeMetricDataService>(() => {
 			return {
 				getAmountOfAffectedBuildings: jest.fn().mockReturnValue(amountOfAffectedBuildings)

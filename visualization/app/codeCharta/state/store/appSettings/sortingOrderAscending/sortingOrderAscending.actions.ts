@@ -18,4 +18,4 @@ export function setSortingOrderAscending(sortingOrderAscending: boolean = defaul
 	}
 }
 
-export const defaultSortingOrderAscending: boolean = false
+export const defaultSortingOrderAscending = false

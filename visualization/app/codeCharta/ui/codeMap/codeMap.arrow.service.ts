@@ -157,7 +157,7 @@ export class CodeMapArrowService
 		this.threeSceneService.addBuildingToHighlightingList(building)
 	}
 
-	private setCurveColor(bezier: CubicBezierCurve3, color: number, bezierPoints: number = 50) {
+	private setCurveColor(bezier: CubicBezierCurve3, color: number, bezierPoints = 50) {
 		const points = bezier.getPoints(bezierPoints)
 		const curveObject = this.buildLine(points, color)
 		curveObject.add(this.buildArrow(points))
@@ -185,7 +185,7 @@ export class CodeMapArrowService
 		return map
 	}
 
-	private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints: number = 50) {
+	private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints = 50) {
 		const points = bezier.getPoints(bezierPoints)
 		let pointsPreviews: Vector3[]
 		let arrowColor: string
@@ -211,7 +211,7 @@ export class CodeMapArrowService
 		return curveObject
 	}
 
-	private buildLine(points: Vector3[], color: number = 0) {
+	private buildLine(points: Vector3[], color = 0) {
 		const geometry = new BufferGeometry()
 		geometry.setFromPoints(points)
 
@@ -219,7 +219,7 @@ export class CodeMapArrowService
 		return new Line(geometry, material)
 	}
 
-	private buildArrow(points: Vector3[], ARROW_COLOR: number = 0, headLength: number = 10, headWidth: number = 10) {
+	private buildArrow(points: Vector3[], ARROW_COLOR = 0, headLength = 10, headWidth = 10) {
 		const dir = points[points.length - 1]
 			.clone()
 			.sub(points[points.length - 2].clone())

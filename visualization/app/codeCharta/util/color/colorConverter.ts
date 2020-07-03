@@ -13,7 +13,7 @@ export class ColorConverter {
 		return "#" + zeros + hexColor
 	}
 
-	public static convertHexToRgba(hex: string, opacity: number = 1): string {
+	public static convertHexToRgba(hex: string, opacity = 1): string {
 		const rgbColor: number[] = this.encodeHex(hex)
 		return "rgba(" + rgbColor.join(",") + "," + opacity + ")"
 	}
