@@ -12,8 +12,11 @@ import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { CCValidationResult } from "../../util/fileValidator"
+import { resetFiles } from "../../state/store/files/files.actions"
 
 export class FileChooserController {
+	private files: NameDataPair[] = []
+
 	/* @ngInject */
 	constructor(
 		private $scope,
@@ -25,9 +28,9 @@ export class FileChooserController {
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
 			let content
+			let readFiles = 0
 
 			for (const file of element.files) {
-				this.codeChartaService.setIsToReset()
 				const isCompressed = file.name.endsWith(".gz")
 				const reader = new FileReader()
 				reader.onloadstart = () => {
@@ -41,23 +44,33 @@ export class FileChooserController {
 					} else {
 						content = (<any>event.target).result
 					}
+				}
+				reader.onloadend = () => {
+					readFiles++
+					this.addNameDataPair(file.name, content)
 
-					this.setNewData(file.name, content)
+					if (readFiles === element.files.length) {
+						this.storeService.dispatch(resetFiles())
+						this.setNewData()
+					}
 				}
 				isCompressed ? reader.readAsArrayBuffer(file) : reader.readAsText(file, "UTF-8")
 			}
 		})
 	}
 
-	public setNewData(fileName: string, content: string) {
-		const nameDataPair: NameDataPair = {
-			fileName,
-			content: FileChooserController.getParsedContent(content)
-		}
-
-		this.codeChartaService.loadFiles([nameDataPair]).catch((validationResult: CCValidationResult) => {
+	public setNewData() {
+		this.codeChartaService.loadFiles(this.files).catch((validationResult: CCValidationResult) => {
 			this.storeService.dispatch(setIsLoadingFile(false))
 			this.printErrors(validationResult)
+		})
+		this.files = []
+	}
+
+	private addNameDataPair(fileName: string, content: string) {
+		this.files.push({
+			fileName,
+			content: FileChooserController.getParsedContent(content)
 		})
 	}
 
