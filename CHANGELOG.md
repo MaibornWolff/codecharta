@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Improved performance significantly when switching between single, multiple and delta
+- Color-Range-Slider sometimes misbehaved when loading a new map or excluding buildings #926
 
 ### Chore 👨‍💻 👩‍💻
 
