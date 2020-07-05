@@ -147,7 +147,7 @@
 		"prettier": "^2.0.5",
 		"pretty-quick": "^2.0.1",
 		"puppeteer": "^4.0.1",
-		"rimraf": "^2.6.2",
+		"rimraf": "^3.0.2",
 		"sass-loader": "^8.0.2",
 		"style-loader": "^0.23.1",
 		"ts-jest": "^21.1.3",
