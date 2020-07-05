@@ -145,7 +145,7 @@
 		"node-sass": "^4.13.1",
 		"plop": "^2.6.0",
 		"prettier": "^2.0.5",
-		"pretty-quick": "^1.10.0",
+		"pretty-quick": "^2.0.1",
 		"puppeteer": "^4.0.1",
 		"rimraf": "^2.6.2",
 		"sass-loader": "^8.0.2",
