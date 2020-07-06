@@ -1,5 +1,7 @@
 import { CodeMapNode } from "../codeCharta.model"
 import Ajv from "ajv"
+import { ExportCCFile } from "../codeCharta.api.model"
+import _ from "lodash"
 
 const jsonSchema = require("./generatedSchema.json")
 const latestApiVersion = require("../../../package.json").codecharta.apiVersion
@@ -41,7 +43,7 @@ const ERROR_MESSAGES = {
 	}
 }
 
-export function validate(file: { apiVersion: string; nodes: CodeMapNode[] }) {
+export function validate(file: ExportCCFile) {
 	const result: CCValidationResult = { error: [], warning: [], title: "" }
 
 	switch (true) {
@@ -77,7 +79,7 @@ export function validate(file: { apiVersion: string; nodes: CodeMapNode[] }) {
 		}
 	}
 
-	if (result.error.length > 0 || result.warning.length > 0) {
+	if (!_.isEmpty(result.error) || !_.isEmpty(result.warning)) {
 		throw result
 	}
 }
@@ -108,7 +110,7 @@ function hasUniqueChildren(node: CodeMapNode): boolean {
 	return true
 }
 
-function isValidApiVersion(file: { apiVersion: string; nodes: CodeMapNode[] }): boolean {
+function isValidApiVersion(file: ExportCCFile): boolean {
 	const apiVersion = file.apiVersion
 	const hasApiVersion = apiVersion !== undefined
 	const versionRegExp = new RegExp("[0-9]+\\.[0-9]+")
