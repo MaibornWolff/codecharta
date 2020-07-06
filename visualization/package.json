@@ -92,7 +92,7 @@
 		"angular-material": "^1.1.7",
 		"angular-mocks": "^1.6.9",
 		"angular-sanitize": "^1.7.9",
-		"angularjs-nouislider": "^1.0.1",
+		"angularjs-nouislider": "^14.1.1",
 		"angularjs-slider": "^7.0.0",
 		"color-convert": "^2.0.0",
 		"d3": "^5.9.2",
