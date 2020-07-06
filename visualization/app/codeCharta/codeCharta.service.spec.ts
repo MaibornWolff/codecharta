@@ -2,35 +2,53 @@ import "./codeCharta.module"
 import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { AttributeTypes, AttributeTypeValue, BlacklistType, CCFile, NodeType } from "./codeCharta.model"
+import { BlacklistType, CCFile, MetricData, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
+import { MetricService } from "./state/metric.service"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
 	let storeService: StoreService
 	let dialogService: DialogService
+	let metricService: MetricService
 	let validFileContent: ExportCCFile
+	let metricData: MetricData[]
 	const fileName: string = "someFileName"
 
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
+		withMockedDialogService()
+
 		validFileContent = _.cloneDeep(TEST_FILE_CONTENT)
+		metricData = _.cloneDeep([
+			{ name: "mcc", maxValue: 1 },
+			{ name: "rloc", maxValue: 2 }
+		])
 		storeService.dispatch(resetFiles())
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta")
 		storeService = getService<StoreService>("storeService")
+		dialogService = getService<DialogService>("dialogService")
+		metricService = getService<MetricService>("metricService")
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(storeService, dialogService)
+		codeChartaService = new CodeChartaService(storeService, dialogService, metricService)
+	}
+
+	function withMockedDialogService() {
+		dialogService = codeChartaService["dialogService"] = jest.fn().mockReturnValue({
+			showValidationErrorDialog: jest.fn(),
+			showValidationWarningDialog: jest.fn()
+		})()
 	}
 
 	describe("loadFiles", () => {
@@ -96,119 +114,98 @@ describe("codeChartaService", () => {
 			}
 		}
 
-		function letTestFail() {
-			expect(true).toBeFalsy()
-		}
-
-		it("should load a file without edges", done => {
+		it("should load a file without edges", () => {
 			validFileContent.edges = undefined
 
-			codeChartaService
-				.loadFiles([
-					{
-						fileName,
-						content: validFileContent
-					}
-				])
-				.then(() => {
-					expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
-					expect(isSingleState(storeService.getState().files)).toBeTruthy()
-					done()
-				})
+			codeChartaService.loadFiles([
+				{
+					fileName,
+					content: validFileContent
+				}
+			])
+
+			expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
+			expect(isSingleState(storeService.getState().files)).toBeTruthy()
 		})
 
-		it("should resolve valid file", done => {
-			codeChartaService
-				.loadFiles([
-					{
-						fileName,
-						content: validFileContent
-					}
-				])
-				.then(() => {
-					expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
-					expect(isSingleState(storeService.getState().files)).toBeTruthy()
-					done()
-				})
+		it("should load a valid file", () => {
+			codeChartaService.loadFiles([
+				{
+					fileName,
+					content: validFileContent
+				}
+			])
+
+			expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
+			expect(isSingleState(storeService.getState().files)).toBeTruthy()
 		})
 
-		it("should reject null", done => {
-			codeChartaService
-				.loadFiles([{ fileName, content: null }])
-				.then(() => {
-					letTestFail()
-				})
-				.catch(err => {
-					expect(err.error).toEqual(["file is empty or invalid"])
-					expect(err.warning).toEqual([])
-					done()
-				})
+		it("should load the default scenario after loading a valid file", () => {
+			metricService["metricData"] = metricData
+
+			codeChartaService.loadFiles([
+				{
+					fileName,
+					content: validFileContent
+				}
+			])
+
+			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("rloc")
+			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("mcc")
+			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("mcc")
 		})
 
-		it("should reject string", done => {
-			codeChartaService
-				.loadFiles([{ fileName, content: ("string" as any) as ExportCCFile }])
-				.then(() => {
-					letTestFail()
-				})
-				.catch(() => {
-					done()
-				})
+		it("should not load the default scenario after loading a valid file, that does not have the required metrics", () => {
+			metricData.pop()
+			metricService["metricData"] = metricData
+
+			codeChartaService.loadFiles([
+				{
+					fileName,
+					content: validFileContent
+				}
+			])
+
+			expect(storeService.getState().dynamicSettings.areaMetric).toBeNull()
+			expect(storeService.getState().dynamicSettings.heightMetric).toBeNull()
+			expect(storeService.getState().dynamicSettings.colorMetric).toBeNull()
 		})
 
-		it("should reject or catch a file with missing properties", done => {
+		it("should show error on invalid file", () => {
+			codeChartaService.loadFiles([{ fileName, content: null }])
+
+			expect(storeService.getState().files).toHaveLength(0)
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalled()
+		})
+
+		it("should show error on a random string", () => {
+			codeChartaService.loadFiles([{ fileName, content: ("string" as any) as ExportCCFile }])
+
+			expect(storeService.getState().files).toHaveLength(0)
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalled()
+		})
+
+		it("should show error if a file is missing a required property", () => {
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
-			codeChartaService
-				.loadFiles([{ fileName, content: invalidFileContent }])
-				.then(() => {
-					letTestFail()
-				})
-				.catch(err => {
-					expect(err.error).toEqual(["Required error:  should have required property 'projectName'"])
-					expect(err.warning).toEqual([])
-					done()
-				})
+			codeChartaService.loadFiles([{ fileName, content: invalidFileContent }])
+
+			expect(storeService.getState().files).toHaveLength(0)
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalled()
 		})
 
-		it("should convert old blacklist type", done => {
+		it("should convert old blacklist type", () => {
 			validFileContent.blacklist = [{ path: "foo", type: ExportBlacklistType.hide }]
 
-			codeChartaService
-				.loadFiles([
-					{
-						fileName,
-						content: validFileContent
-					}
-				])
-				.then(() => {
-					const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
-					expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
-					done()
-				})
-		})
+			codeChartaService.loadFiles([
+				{
+					fileName,
+					content: validFileContent
+				}
+			])
 
-		it("should migrate old attribute types", done => {
-			validFileContent.attributeTypes = {
-				nodes: [{ rloc: AttributeTypeValue.absolute }],
-				edges: [{ pairing: AttributeTypeValue.relative }]
-			}
-
-			codeChartaService
-				.loadFiles([
-					{
-						fileName,
-						content: validFileContent
-					}
-				])
-				.then(() => {
-					const attributeTypes: AttributeTypes = {
-						nodes: { rloc: AttributeTypeValue.absolute },
-						edges: { pairing: AttributeTypeValue.relative }
-					}
-					expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.attributeTypes).toEqual(attributeTypes)
-					done()
-				})
+			const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
+			expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
 		})
 	})
 })

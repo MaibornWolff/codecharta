@@ -11,9 +11,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { resetFiles } from "../../state/store/files/files.actions"
-import { CCValidationResult } from "../../util/fileValidator"
 
 export class FileChooserController {
 	/* @ngInject */
@@ -57,11 +55,7 @@ export class FileChooserController {
 			content: FileChooserController.getParsedContent(content)
 		}
 
-		this.codeChartaService.loadFiles([nameDataPair]).catch((validationResult: CCValidationResult) => {
-			this.storeService.dispatch(setIsLoadingFile(false))
-			this.storeService.dispatch(setIsLoadingMap(false))
-			this.printErrors(validationResult)
-		})
+		this.codeChartaService.loadFiles([nameDataPair])
 	}
 
 	private static getParsedContent(content: string): any {
@@ -70,17 +64,6 @@ export class FileChooserController {
 		} catch (error) {
 			return
 		}
-	}
-
-	private printErrors(validationResult: CCValidationResult) {
-		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
-		const lineBreak = "<br>"
-
-		const errorMessage = validationResult.error.map(message => errorSymbol + message).join(lineBreak)
-
-		const htmlMessage = "<p>" + errorMessage + "</p>"
-
-		this.dialogService.showErrorDialog(htmlMessage, validationResult.title)
 	}
 }
 
