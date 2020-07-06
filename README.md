@@ -56,7 +56,7 @@ Want to have even more information? Please check our [news](https://maibornwolff
 ## Further Information
 
 - [Docs](https://maibornwolff.github.io/codecharta/)
-- [Quickstart Guide](https://maibornwolff.github.io/codecharta/quick-start-guide/)
+- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
 - [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
 - [Sonarqube Visualization](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
 - [Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)

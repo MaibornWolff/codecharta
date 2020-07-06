@@ -178,19 +178,19 @@ describe("FileExtensionCalculator", () => {
 
 	describe("estimateFileExtension", () => {
 		it("should return correct lower-cased file extension", () => {
-			const fileName: string = "fileName.JAVA"
+			const fileName = "fileName.JAVA"
 			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("java")
 		})
 
 		it("should return correct file extension when filename contains multiple points", () => {
-			const fileName: string = "prefix.name.suffix.json"
+			const fileName = "prefix.name.suffix.json"
 			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("json")
 		})
 
 		it("should return 'none' as extension, as there does not exist any", () => {
-			const fileName: string = "name_without_extension"
+			const fileName = "name_without_extension"
 			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("None")
 		})

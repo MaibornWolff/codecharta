@@ -133,10 +133,12 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private addUnaryMetric(metricData: MetricData[]) {
-		metricData.push({
-			name: MetricService.UNARY_METRIC,
-			maxValue: 1
-		})
+		if (!metricData.some(x => x.name === MetricService.UNARY_METRIC)) {
+			metricData.push({
+				name: MetricService.UNARY_METRIC,
+				maxValue: 1
+			})
+		}
 	}
 
 	private notifyMetricDataAdded() {

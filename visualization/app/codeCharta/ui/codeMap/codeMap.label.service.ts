@@ -16,11 +16,11 @@ interface InternalLabel {
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
-	private LABEL_WIDTH_DIVISOR: number = 2100 // empirically gathered
-	private LABEL_HEIGHT_DIVISOR: number = 40 // empirically gathered
+	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
+	private LABEL_HEIGHT_DIVISOR = 40 // empirically gathered
 
 	private currentScale: Vector3 = new THREE.Vector3(1, 1, 1)
-	private resetScale: boolean = false
+	private resetScale = false
 
 	constructor(
 		private $rootScope: IRootScopeService,
