@@ -160,7 +160,7 @@ export class GeometryGenerator {
 			uvs[i * uvDimension + 0] = data.uvs[i].x
 			uvs[i * uvDimension + 1] = data.uvs[i].y
 
-			const color: THREE.Vector3 = ColorConverter.colorToVector3(data.colors[i])
+			const color: THREE.Vector3 = ColorConverter.getVector3(data.colors[i])
 
 			colors[i * dimension + 0] = color.x
 			colors[i * dimension + 1] = color.y

@@ -2,6 +2,10 @@ import { ColorConverter } from "./colorConverter"
 import { Vector3 } from "three"
 
 describe("colorConverter", () => {
+	beforeEach(() => {
+		ColorConverter["colorToVector3Map"].clear()
+	})
+
 	describe("convertHexToNumber", () => {
 		it("should return that the input can't be a number", () => {
 			const result = ColorConverter.convertHexToNumber("string")
@@ -124,6 +128,26 @@ describe("colorConverter", () => {
 			expect(result.r).toBe(25)
 			expect(result.g).toBe(127)
 			expect(result.b).toBe(153)
+		})
+	})
+
+	describe("getVector3", () => {
+		it("should return the vector3 from a color", () => {
+			const expected = new Vector3(0.5098039215686274, 0.054901960784313725, 0.054901960784313725)
+			ColorConverter["colorToVector3Map"].set("#820E0E", expected)
+
+			const actual = ColorConverter.getVector3("#820E0E")
+
+			expect(actual).toEqual(expected)
+		})
+
+		it("should add the color if it's not in the map and return it", () => {
+			expect(ColorConverter["colorToVector3Map"].size).toBe(0)
+
+			const actual = ColorConverter.getVector3("#820E0E")
+
+			expect(actual).toEqual(new Vector3(0.5098039215686274, 0.054901960784313725, 0.054901960784313725))
+			expect(ColorConverter["colorToVector3Map"].size).toBe(1)
 		})
 	})
 })

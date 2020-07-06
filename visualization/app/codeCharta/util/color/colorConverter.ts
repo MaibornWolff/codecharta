@@ -3,6 +3,16 @@ import convert from "color-convert"
 import { HSL } from "./hsl"
 
 export class ColorConverter {
+	private static colorToVector3Map = new Map<string, Vector3>()
+
+	public static getVector3(color: string): Vector3 {
+		if (!this.colorToVector3Map.has(color)) {
+			this.colorToVector3Map.set(color, ColorConverter.colorToVector3(color))
+		}
+
+		return this.colorToVector3Map.get(color)
+	}
+
 	public static convertHexToNumber(hex: string): number {
 		return Number(hex.replace("#", "0x"))
 	}
