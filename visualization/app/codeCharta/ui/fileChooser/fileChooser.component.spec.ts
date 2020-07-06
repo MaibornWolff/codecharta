@@ -60,15 +60,10 @@ describe("fileChooserController", () => {
 	}
 
 	describe("onImportNewFiles", () => {
-		it("should call $apply", () => {
+		it("should call $apply and should call setNewData when data was chosen", () => {
 			fileChooserController.onImportNewFiles({ files: [{ name: "sample.cc.json" }] })
 
 			expect($rootScope.$apply).toHaveBeenCalled()
-		})
-		it("should not call $apply, when no files were loaded", () => {
-			fileChooserController.onImportNewFiles({ files: [] })
-
-			expect($rootScope.$apply).not.toHaveBeenCalled()
 		})
 
 		it("should not set state if no file loaded", () => {
@@ -79,8 +74,10 @@ describe("fileChooserController", () => {
 	})
 
 	describe("setNewData", () => {
-		it("should call loadFiles", () => {
-			fileChooserController.setNewData(fileName, JSON.stringify(content))
+		it("should call loadFiles with read files", () => {
+			fileChooserController["files"] = [{ fileName, content }]
+
+			fileChooserController.setNewData()
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([
 				{
