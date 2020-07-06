@@ -13,7 +13,6 @@ import {
 } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
-import { stringify } from "querystring"
 import { MetricService } from "../state/metric.service"
 const clone = require("rfdc")()
 
@@ -101,7 +100,7 @@ export class FileDownloader {
 	}
 
 	private static downloadData(data: ExportCCFile, fileName: string) {
-		let dataJson = stringify(data)
+		let dataJson = JSON.stringify(data)
 		if (typeof data === "object") {
 			dataJson = angular.toJson(data)
 		}
