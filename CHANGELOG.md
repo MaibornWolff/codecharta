@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Sorting in tree-view not being applied #1040
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.49.1] - 2020-07-03
