@@ -4,6 +4,7 @@ import { Vector3 } from "three"
 describe("colorConverter", () => {
 	beforeEach(() => {
 		ColorConverter["colorToVector3Map"].clear()
+		ColorConverter["hexToNumberMap"].clear()
 	})
 
 	describe("convertHexToNumber", () => {
@@ -148,6 +149,26 @@ describe("colorConverter", () => {
 
 			expect(actual).toEqual(new Vector3(0.5098039215686274, 0.054901960784313725, 0.054901960784313725))
 			expect(ColorConverter["colorToVector3Map"].size).toBe(1)
+		})
+	})
+
+	describe("getNumber", () => {
+		it("should return the number from a hex", () => {
+			const expected = 8523278
+			ColorConverter["hexToNumberMap"].set("#820E0E", expected)
+
+			const actual = ColorConverter.getNumber("#820E0E")
+
+			expect(actual).toEqual(expected)
+		})
+
+		it("should add the hex if it's not in the map and return it", () => {
+			expect(ColorConverter["hexToNumberMap"].size).toBe(0)
+
+			const actual = ColorConverter.getNumber("#820E0E")
+
+			expect(actual).toEqual(8523278)
+			expect(ColorConverter["hexToNumberMap"].size).toBe(1)
 		})
 	})
 })
