@@ -18,7 +18,7 @@ describe("codeChartaService", () => {
 	let metricService: MetricService
 	let validFileContent: ExportCCFile
 	let metricData: MetricData[]
-	const fileName: string = "someFileName"
+	const fileName = "someFileName"
 
 	beforeEach(() => {
 		restartSystem()
