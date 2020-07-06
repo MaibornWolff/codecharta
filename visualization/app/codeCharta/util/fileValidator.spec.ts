@@ -6,7 +6,7 @@ import {
 	TEST_FILE_CONTENT_NO_API
 } from "./dataMocks"
 import { NodeType } from "../codeCharta.model"
-import { validate } from "./fileValidator"
+import { ERROR_MESSAGES, validate } from "./fileValidator"
 
 describe("FileValidator", () => {
 	let file
@@ -46,7 +46,8 @@ describe("FileValidator", () => {
 			validate(null)
 		} catch (e) {
 			expectFileToBeInvalid(e)
-			expect(e.title).toEqual("Error Loading File")
+			expect(e.title).toEqual(ERROR_MESSAGES.fileIsInvalid.title)
+			expect(e.error[0]).toEqual(ERROR_MESSAGES.fileIsInvalid.message)
 		}
 	})
 
@@ -58,7 +59,8 @@ describe("FileValidator", () => {
 			validate(invalidFile)
 		} catch (e) {
 			expectFileToBeInvalid(e)
-			expect(e.title).toEqual("Error Major API Version")
+			expect(e.title).toEqual(ERROR_MESSAGES.majorApiVersionIsOutdated.title)
+			expect(e.error[0]).toEqual(ERROR_MESSAGES.majorApiVersionIsOutdated.message)
 		}
 	})
 
@@ -71,7 +73,8 @@ describe("FileValidator", () => {
 		} catch (e) {
 			expectFileToBeValid(e)
 			expect(e.warning.length).toBeGreaterThan(0)
-			expect(e.title).toEqual("Warning Minor API Version")
+			expect(e.title).toEqual(ERROR_MESSAGES.minorApiVersionOutdated.title)
+			expect(e.warning[0]).toEqual(ERROR_MESSAGES.minorApiVersionOutdated.message)
 		}
 	})
 
@@ -83,7 +86,8 @@ describe("FileValidator", () => {
 			validate(invalidFile)
 		} catch (e) {
 			expectFileToBeInvalid(e)
-			expect(e.title).toEqual("Error API Version")
+			expect(e.title).toEqual(ERROR_MESSAGES.apiVersionIsInvalid.title)
+			expect(e.error[0]).toEqual(ERROR_MESSAGES.apiVersionIsInvalid.message)
 		}
 	})
 
@@ -95,7 +99,8 @@ describe("FileValidator", () => {
 			validate(invalidFile)
 		} catch (e) {
 			expectFileToBeInvalid(e)
-			expect(e.title).toEqual("Error API Version")
+			expect(e.title).toEqual(ERROR_MESSAGES.apiVersionIsInvalid.title)
+			expect(e.error[0]).toEqual(ERROR_MESSAGES.apiVersionIsInvalid.message)
 		}
 	})
 
@@ -104,8 +109,8 @@ describe("FileValidator", () => {
 		try {
 			validate("" as any)
 		} catch (e) {
-			expectFileToBeInvalid(e)
-			expect(e.title).toEqual("Error Loading File")
+			expect(e.title).toEqual(ERROR_MESSAGES.fileIsInvalid.title)
+			expect(e.error[0]).toEqual(ERROR_MESSAGES.fileIsInvalid.message)
 		}
 	})
 
@@ -147,7 +152,8 @@ describe("FileValidator", () => {
 			validate(file)
 		} catch (e) {
 			expectFileToBeInvalid(e)
-			expect(e.title).toEqual("Error Node Uniques")
+			expect(e.title).toEqual(ERROR_MESSAGES.nodesNotUnique.title)
+			expect(e.error[0]).toEqual(ERROR_MESSAGES.nodesNotUnique.message)
 		}
 	})
 
@@ -159,7 +165,7 @@ describe("FileValidator", () => {
 			validate(file)
 		} catch (e) {
 			expectFileToBeInvalid(e)
-			expect(e.title).toEqual("Error Validation")
+			expect(e.title).toEqual(ERROR_MESSAGES.validationError.title)
 		}
 	})
 

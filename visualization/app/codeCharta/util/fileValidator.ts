@@ -17,7 +17,7 @@ export interface CCValidationResult {
 	title: string
 }
 
-const ERROR_MESSAGES = {
+export const ERROR_MESSAGES = {
 	fileIsInvalid: {
 		title: "Error Loading File",
 		message: "file is empty or invalid"
