@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Opening the same file again will now reload the file and reset the application #1032
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.49.1] - 2020-07-03
