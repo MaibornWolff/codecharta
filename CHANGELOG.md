@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Reduced transition time when opening or collapsing parts of the ribbon bar #1043
+
 ### Removed 🗑
 
 ### Fixed 🐞
