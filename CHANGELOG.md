@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Changes made after opening the filechooser and closing it won't be applied #875
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.49.1] - 2020-07-03
