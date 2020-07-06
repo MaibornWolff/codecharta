@@ -103,7 +103,7 @@
 		"inquirer-file": "^1.0.1",
 		"jquery": "^3.3.1",
 		"lodash": "^4.17.11",
-		"nouislider": "^13.1.1",
+		"nouislider": "^14.6.0",
 		"nwjs-builder-phoenix": "^1.14.6",
 		"redux": "^4.0.4",
 		"rfdc": "^1.1.4",
