@@ -38,7 +38,9 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 	}
 
 	public openSearchPanel() {
-		this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
+		if (!this._viewModel.isExpanded) {
+			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
+		}
 	}
 }
 
