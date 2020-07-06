@@ -27,7 +27,6 @@ module.exports = {
 		"object-shorthand": ["error", "always"],
 
 		// Do not apply inappropriate rules below
-		"@typescript-eslint/no-inferrable-types": "off",
 		"@typescript-eslint/no-use-before-define": "off",
 		"@typescript-eslint/ban-ts-ignore": "off",
 

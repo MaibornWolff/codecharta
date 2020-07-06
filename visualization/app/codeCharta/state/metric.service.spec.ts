@@ -104,6 +104,14 @@ describe("MetricService", () => {
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})
+
+		it("should not add unary metric a second time if the cc.json already contains unary", () => {
+			metricData.push({ name: MetricService.UNARY_METRIC, maxValue: 1 })
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
+		})
 	})
 
 	describe("onBlacklistChanged", () => {
@@ -138,6 +146,14 @@ describe("MetricService", () => {
 			metricService.onBlacklistChanged([])
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBeGreaterThan(0)
+		})
+
+		it("should not add unary metric a second time if the cc.json already contains unary", () => {
+			metricData.push({ name: MetricService.UNARY_METRIC, maxValue: 1 })
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})
 	})
 

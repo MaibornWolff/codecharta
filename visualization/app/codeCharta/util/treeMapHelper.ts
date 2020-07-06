@@ -52,7 +52,7 @@ export class TreeMapHelper {
 		s: State,
 		isDeltaState: boolean
 	): Node {
-		const isNodeLeaf: boolean = !(squaredNode.children && squaredNode.children.length > 0)
+		const isNodeLeaf = !(squaredNode.children && squaredNode.children.length > 0)
 		const flattened: boolean = this.isNodeToBeFlat(squaredNode, s)
 		const heightValue: number = this.getHeightValue(s, squaredNode, maxHeight, flattened)
 		const depth: number = squaredNode.data.path.split("/").length - 2
