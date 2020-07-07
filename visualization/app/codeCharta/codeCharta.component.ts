@@ -4,7 +4,7 @@ import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { NameDataPair } from "./codeCharta.model"
+import { NameDataPair, SearchPanelMode } from "./codeCharta.model"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setState } from "./state/store/state.actions"
@@ -13,6 +13,7 @@ import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoad
 import * as codeCharta from "../../package.json"
 import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
+import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -65,6 +66,12 @@ export class CodeChartaController {
 			{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
 			{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
 		])
+	}
+
+	public onClick() {
+		if (this.storeService.getState().appSettings.searchPanelMode !== SearchPanelMode.minimized) {
+			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
+		}
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
