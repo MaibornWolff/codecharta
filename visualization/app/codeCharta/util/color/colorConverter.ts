@@ -7,11 +7,13 @@ export class ColorConverter {
 	private static hexToNumberMap = new Map<string, number>()
 
 	public static getVector3(color: string): Vector3 {
-		if (!this.colorToVector3Map.has(color)) {
-			this.colorToVector3Map.set(color, ColorConverter.colorToVector3(color))
+		let vector = this.colorToVector3Map.get(color)
+		if (vector === undefined) {
+			vector = ColorConverter.colorToVector3(color)
+			this.colorToVector3Map.set(color, vector)
 		}
 
-		return this.colorToVector3Map.get(color)
+		return vector
 	}
 
 	public static getNumber(hex: string): number {
