@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Changes made after opening the filechooser and closing it won't be applied #875
+- Sorting in tree-view not being applied #1040
 
 ### Chore 👨‍💻 👩‍💻
 
