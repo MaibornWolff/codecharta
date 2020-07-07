@@ -78,11 +78,11 @@ export class CodeMapArrowService
 
 			if (buildingIsOriginNode) {
 				this.highlightBuilding(arrowTargetNode)
-				const color = ColorConverter.convertHexToNumber(state.appSettings.mapColors.outgoingEdge)
+				const color = ColorConverter.getNumber(state.appSettings.mapColors.outgoingEdge)
 				this.setCurveColor(curve, color)
 			} else {
 				this.highlightBuilding(arrowOriginNode)
-				const color = ColorConverter.convertHexToNumber(state.appSettings.mapColors.incomingEdge)
+				const color = ColorConverter.getNumber(state.appSettings.mapColors.incomingEdge)
 				this.setCurveColor(curve, color)
 			}
 		}
@@ -201,7 +201,7 @@ export class CodeMapArrowService
 			arrowColor = this.storeService.getState().appSettings.mapColors.outgoingEdge
 		}
 
-		return this.buildEdge(pointsPreviews, ColorConverter.convertHexToNumber(arrowColor))
+		return this.buildEdge(pointsPreviews, ColorConverter.getNumber(arrowColor))
 	}
 
 	private buildEdge(points: Vector3[], color: number): Object3D {
