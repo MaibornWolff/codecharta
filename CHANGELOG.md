@@ -11,11 +11,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Search Panel will open now when clicking in the search field and collapse when clicking somewhere else #1071
+
 ### Removed 🗑
 
 ### Fixed 🐞
 
 - Opening the same file again will now reload the file and reset the application #1032
+- Sorting in tree-view not being applied #1040
 
 ### Chore 👨‍💻 👩‍💻
 
