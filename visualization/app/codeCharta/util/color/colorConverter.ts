@@ -17,11 +17,13 @@ export class ColorConverter {
 	}
 
 	public static getNumber(hex: string): number {
-		if (!this.hexToNumberMap.has(hex)) {
-			this.hexToNumberMap.set(hex, ColorConverter.convertHexToNumber(hex))
+		let number = this.hexToNumberMap.get(hex)
+		if (number === undefined) {
+			number = ColorConverter.convertHexToNumber(hex)
+			this.hexToNumberMap.set(hex, number)
 		}
 
-		return this.hexToNumberMap.get(hex)
+		return number
 	}
 
 	public static convertHexToNumber(hex: string): number {
