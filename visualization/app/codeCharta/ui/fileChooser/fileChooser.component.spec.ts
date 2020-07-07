@@ -59,20 +59,6 @@ describe("fileChooserController", () => {
 		})()
 	}
 
-	describe("onImportNewFiles", () => {
-		it("should call $apply and should call setNewData when data was chosen", () => {
-			fileChooserController.onImportNewFiles({ files: [{ name: "sample.cc.json" }] })
-
-			expect($rootScope.$apply).toHaveBeenCalled()
-		})
-
-		it("should not set state if no file loaded", () => {
-			fileChooserController.onImportNewFiles({ files: [] })
-
-			expect(storeSevice.getState().appSettings.isLoadingFile).toBeTruthy()
-		})
-	})
-
 	describe("setNewData", () => {
 		it("should call loadFiles with read files", () => {
 			fileChooserController["files"] = [{ fileName, content }]
