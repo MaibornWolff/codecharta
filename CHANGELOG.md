@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Improve render performance by persisting color conversions #1034
 - Sorting in tree-view not being applied #1040
 
 ### Chore 👨‍💻 👩‍💻
