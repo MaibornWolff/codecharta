@@ -47,19 +47,19 @@ export class CodeMapBuilding {
 	}
 
 	public getColorVector(): Vector3 {
-		return ColorConverter.colorToVector3(this._color)
+		return ColorConverter.getVector3(this._color)
 	}
 
 	public getDefaultColorVector(): Vector3 {
-		return ColorConverter.colorToVector3(this._defaultColor)
+		return ColorConverter.getVector3(this._defaultColor)
 	}
 
 	public getDeltaColorVector(): Vector3 {
-		return ColorConverter.colorToVector3(this._deltaColor)
+		return ColorConverter.getVector3(this._deltaColor)
 	}
 
 	public getDefaultDeltaColorVector(): Vector3 {
-		return ColorConverter.colorToVector3(this._defaultDeltaColor)
+		return ColorConverter.getVector3(this._defaultDeltaColor)
 	}
 
 	public resetColor() {

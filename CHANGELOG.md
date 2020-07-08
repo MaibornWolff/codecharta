@@ -13,12 +13,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Reduced transition time when opening or collapsing parts of the ribbon bar #1043
 - Search Panel will open now when clicking in the search field and collapse when clicking somewhere else #1071
 
 ### Removed 🗑
 
 ### Fixed 🐞
 
+- Improve render performance by persisting color conversions #1034
 - Sorting in tree-view not being applied #1040
 
 ### Chore 👨‍💻 👩‍💻
