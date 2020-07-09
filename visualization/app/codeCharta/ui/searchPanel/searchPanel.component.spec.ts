@@ -67,4 +67,14 @@ describe("SearchPanelController", () => {
 			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 		})
 	})
+
+	describe("openSearchPanel", () => {
+		it("should open the search panel", () => {
+			searchPanelModeController["_viewModel"].isExpanded = false
+
+			searchPanelModeController.openSearchPanel()
+
+			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
+		})
+	})
 })
