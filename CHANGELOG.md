@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- line between scenario indicator and remove button #1069
+- Line between scenario indicator and remove button #1069
 
 ### Changed
 
