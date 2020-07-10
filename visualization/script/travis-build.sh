@@ -12,4 +12,4 @@ npm run package
 
 echo "Building docker image"
 # update repo name here as well
-docker build -t maibornwolff/codecharta-visualization .
+docker build -t codecharta/codecharta-visualization .

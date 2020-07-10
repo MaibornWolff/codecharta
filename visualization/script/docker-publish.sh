@@ -3,7 +3,7 @@
 cd visualization
 
 # update docker hub repo name after verification
-DOCKER_HUB_REPO=maibornwolff/codecharta-visualization
+DOCKER_HUB_REPO=codecharta/codecharta-visualization
 RELEASE_TAG=$DOCKER_HUB_REPO:$TRAVIS_TAG
 LATEST_TAG=$DOCKER_HUB_REPO:latest
 
