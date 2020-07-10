@@ -32,10 +32,10 @@ export class RangeSliderController
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
-	private DIGIT_WIDTH: number = 11
-	private MIN_DIGITS: number = 4
-	private MAX_DIGITS: number = 6
-	private FULL_WIDTH_SLIDER: number = 235
+	private DIGIT_WIDTH = 11
+	private MIN_DIGITS = 4
+	private MAX_DIGITS = 6
+	private FULL_WIDTH_SLIDER = 235
 
 	private _viewModel: {
 		colorRangeFrom: number

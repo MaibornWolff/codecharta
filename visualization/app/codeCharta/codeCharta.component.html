@@ -1,23 +1,27 @@
-<tool-bar-component></tool-bar-component>
+<div ng-mousedown="$ctrl.onClick()">
+	<tool-bar-component></tool-bar-component>
 
-<file-extension-bar-component></file-extension-bar-component>
-<div class="ribbon-bar-wrapper">
-	<ribbon-bar-component class="ribbon-bar-component"></ribbon-bar-component>
-</div>
-
-<code-map-component></code-map-component>
-
-<legend-panel-component></legend-panel-component>
-
-<loading-gif-file-component></loading-gif-file-component>
-
-<div id="mw-logo">
-	<div class="logo">
-		<a href="https://www.maibornwolff.de" target="_blank"><img src="assets/logo.png" alt="MaibornWolff" rel="noopener noreferrer" /></a>
-		<h2>
-			<span>CodeCharta {{ $ctrl._viewModel.version }}</span>
-		</h2>
+	<file-extension-bar-component></file-extension-bar-component>
+	<div class="ribbon-bar-wrapper">
+		<ribbon-bar-component class="ribbon-bar-component"></ribbon-bar-component>
 	</div>
-</div>
 
-<node-context-menu-component></node-context-menu-component>
+	<code-map-component></code-map-component>
+
+	<legend-panel-component></legend-panel-component>
+
+	<loading-gif-file-component></loading-gif-file-component>
+
+	<div id="mw-logo">
+		<div class="logo">
+			<a href="https://www.maibornwolff.de" target="_blank"
+				><img src="assets/logo.png" alt="MaibornWolff" rel="noopener noreferrer"
+			/></a>
+			<h2>
+				<span>CodeCharta {{ $ctrl._viewModel.version }}</span>
+			</h2>
+		</div>
+	</div>
+
+	<node-context-menu-component></node-context-menu-component>
+</div>

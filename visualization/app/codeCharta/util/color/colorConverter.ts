@@ -3,6 +3,29 @@ import convert from "color-convert"
 import { HSL } from "./hsl"
 
 export class ColorConverter {
+	private static colorToVector3Map = new Map<string, Vector3>()
+	private static hexToNumberMap = new Map<string, number>()
+
+	public static getVector3(color: string): Vector3 {
+		let vector = this.colorToVector3Map.get(color)
+		if (vector === undefined) {
+			vector = ColorConverter.colorToVector3(color)
+			this.colorToVector3Map.set(color, vector)
+		}
+
+		return vector
+	}
+
+	public static getNumber(hex: string): number {
+		let number = this.hexToNumberMap.get(hex)
+		if (number === undefined) {
+			number = ColorConverter.convertHexToNumber(hex)
+			this.hexToNumberMap.set(hex, number)
+		}
+
+		return number
+	}
+
 	public static convertHexToNumber(hex: string): number {
 		return Number(hex.replace("#", "0x"))
 	}
@@ -13,7 +36,7 @@ export class ColorConverter {
 		return "#" + zeros + hexColor
 	}
 
-	public static convertHexToRgba(hex: string, opacity: number = 1): string {
+	public static convertHexToRgba(hex: string, opacity = 1): string {
 		const rgbColor: number[] = this.encodeHex(hex)
 		return "rgba(" + rgbColor.join(",") + "," + opacity + ")"
 	}

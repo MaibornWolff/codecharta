@@ -31,7 +31,7 @@ export class GeometryGenerator {
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 
-		for (let i: number = 0; i < nodes.length; ++i) {
+		for (let i = 0; i < nodes.length; ++i) {
 			const n: Node = nodes[i]
 
 			if (!n.isLeaf) {
@@ -91,7 +91,7 @@ export class GeometryGenerator {
 
 	private getMarkingColorWithGradient(n: Node) {
 		if (n.markingColor) {
-			const markingColorAsNumber = ColorConverter.convertHexToNumber(n.markingColor)
+			const markingColorAsNumber = ColorConverter.getNumber(n.markingColor)
 			const markingColorWithGradient = markingColorAsNumber & (n.depth % 2 === 0 ? 0xdddddd : 0xffffff)
 			return ColorConverter.convertNumberToHex(markingColorWithGradient)
 		} else {
@@ -110,7 +110,7 @@ export class GeometryGenerator {
 		const measures: BoxMeasures = this.mapNodeToLocalBox(n)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
 
-		let renderDelta: number = 0.0
+		let renderDelta = 0.0
 
 		if (isDeltaState && n.deltas && n.deltas[state.dynamicSettings.heightMetric] && n.heightDelta) {
 			renderDelta = n.heightDelta //set the transformed render delta
@@ -137,8 +137,8 @@ export class GeometryGenerator {
 
 	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: THREE.Material): THREE.Mesh {
 		const numVertices: number = data.positions.length
-		const dimension: number = 3
-		const uvDimension: number = 2
+		const dimension = 3
+		const uvDimension = 2
 
 		const positions: Float32Array = new Float32Array(numVertices * dimension)
 		const normals: Float32Array = new Float32Array(numVertices * dimension)
@@ -148,7 +148,7 @@ export class GeometryGenerator {
 		const ids: Float32Array = new Float32Array(numVertices)
 		const deltas: Float32Array = new Float32Array(numVertices)
 
-		for (let i: number = 0; i < numVertices; ++i) {
+		for (let i = 0; i < numVertices; ++i) {
 			positions[i * dimension + 0] = data.positions[i].x
 			positions[i * dimension + 1] = data.positions[i].y
 			positions[i * dimension + 2] = data.positions[i].z
@@ -160,7 +160,7 @@ export class GeometryGenerator {
 			uvs[i * uvDimension + 0] = data.uvs[i].x
 			uvs[i * uvDimension + 1] = data.uvs[i].y
 
-			const color: THREE.Vector3 = ColorConverter.colorToVector3(data.colors[i])
+			const color: THREE.Vector3 = ColorConverter.getVector3(data.colors[i])
 
 			colors[i * dimension + 0] = color.x
 			colors[i * dimension + 1] = color.y
@@ -176,7 +176,7 @@ export class GeometryGenerator {
 
 		const indices: Uint32Array = new Uint32Array(data.indices.length)
 
-		for (let i: number = 0; i < data.indices.length; ++i) {
+		for (let i = 0; i < data.indices.length; ++i) {
 			indices[i] = data.indices[i]
 		}
 
