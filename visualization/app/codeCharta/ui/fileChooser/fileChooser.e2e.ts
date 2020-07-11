@@ -2,7 +2,7 @@ import { goto, newPage, launch } from "../../../puppeteer.helper"
 import { FileChooserPageObject } from "./fileChooser.po"
 import { FilePanelPageObject } from "../filePanel/filePanel.po"
 
-jest.setTimeout(15000)
+jest.setTimeout(60000)
 
 describe("FileChooser", () => {
 	let browser, page
