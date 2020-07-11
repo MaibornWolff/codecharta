@@ -8,6 +8,8 @@ import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
+import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { SearchPanelMode } from "./codeCharta.model"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -139,6 +141,16 @@ describe("codeChartaController", () => {
 			codeChartaController.tryLoadingSampleFiles()
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
+		})
+	})
+
+	describe("onClick", () => {
+		it("should minimize the search panel if it's expanded", () => {
+			storeService.dispatch(setSearchPanelMode(SearchPanelMode.exclude))
+
+			codeChartaController.onClick()
+
+			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 		})
 	})
 })

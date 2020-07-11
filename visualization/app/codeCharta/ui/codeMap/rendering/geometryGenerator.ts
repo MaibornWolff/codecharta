@@ -91,7 +91,7 @@ export class GeometryGenerator {
 
 	private getMarkingColorWithGradient(n: Node) {
 		if (n.markingColor) {
-			const markingColorAsNumber = ColorConverter.convertHexToNumber(n.markingColor)
+			const markingColorAsNumber = ColorConverter.getNumber(n.markingColor)
 			const markingColorWithGradient = markingColorAsNumber & (n.depth % 2 === 0 ? 0xdddddd : 0xffffff)
 			return ColorConverter.convertNumberToHex(markingColorWithGradient)
 		} else {
@@ -160,7 +160,7 @@ export class GeometryGenerator {
 			uvs[i * uvDimension + 0] = data.uvs[i].x
 			uvs[i * uvDimension + 1] = data.uvs[i].y
 
-			const color: THREE.Vector3 = ColorConverter.colorToVector3(data.colors[i])
+			const color: THREE.Vector3 = ColorConverter.getVector3(data.colors[i])
 
 			colors[i * dimension + 0] = color.x
 			colors[i * dimension + 1] = color.y
