@@ -26,3 +26,8 @@ export const newPage = async (browser: Browser): Promise<Page> => {
 	await page.setViewport({ width: 1920, height: 1080 })
 	return page
 }
+
+export const enableConsole = async (page: Page) => {
+	/* eslint-disable no-console */
+	page.on("console", async (msg: any) => console[msg._type](...(await Promise.all(msg.args().map(arg => arg.jsonValue())))))
+}
