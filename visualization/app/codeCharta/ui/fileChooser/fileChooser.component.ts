@@ -41,6 +41,8 @@ export class FileChooserController {
 						content = zlib.unzipSync(Buffer.from((<any>event.target).result))
 					} else {
 						content = (<any>event.target).result
+						/* eslint-disable no-console */
+						console.log("content", content)
 					}
 
 					this.setNewData(file.name, content)
