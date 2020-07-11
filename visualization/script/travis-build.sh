@@ -11,4 +11,5 @@ npm run build:web
 npm run package
 
 echo "Building docker image"
-docker build -t maibornwolff/codecharta-visualization .
+# update repo name here as well
+docker build -t codecharta/codecharta-visualization .
