@@ -48,9 +48,9 @@ class JasomeProjectBuilderTest : Spek({
             MatcherAssert.assertThat(leaves.keys, hasItem(Path(listOf("com", "package", "name", "ClassName"))))
         }
 
-        it("contains class") {
+        it("contains class exporte to cc.json as file") {
             val node = leaves.values.first()
-            MatcherAssert.assertThat(node.type, `is`(NodeType.Class))
+            MatcherAssert.assertThat(node.type, `is`(NodeType.File))
             MatcherAssert.assertThat(node.name, `is`("ClassName"))
         }
 
