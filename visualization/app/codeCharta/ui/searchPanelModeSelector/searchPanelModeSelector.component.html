@@ -4,14 +4,14 @@
 		id="tree-view"
 		ng-class="{ current: $ctrl._viewModel.searchPanelMode == 'treeView' }"
 		ng-click="$ctrl.onToggleSearchPanelMode('treeView')"
-		title="Folder Structure"
+		title="Folder structure"
 		><i class="fa fa-sitemap"></i
 	></md-button>
 	<md-button
 		class="state-selector-button middle"
 		ng-class="{ current: $ctrl._viewModel.searchPanelMode == 'flatten' }"
 		ng-click="$ctrl.onToggleSearchPanelMode('flatten')"
-		title="Flattened Buildings"
+		title="Flattened buildings"
 		><i class="fa fa-eye-slash"></i>
 		<div class="list-length-count" ng-show="$ctrl._viewModel.flattenListLength > 0"></div
 	></md-button>
@@ -19,7 +19,7 @@
 		class="state-selector-button right"
 		ng-class="{ current: $ctrl._viewModel.searchPanelMode == 'exclude' }"
 		ng-click="$ctrl.onToggleSearchPanelMode('exclude')"
-		title="Excluded Buildings"
+		title="Excluded buildings"
 		><i class="fa fa-ban"></i>
 		<div class="list-length-count" ng-show="$ctrl._viewModel.excludeListLength > 0"></div
 	></md-button>
