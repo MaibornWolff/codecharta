@@ -33,7 +33,7 @@ export class DialogService {
 		return this.$mdDialog.show(prompt)
 	}
 
-	public showValidationErrorDialog(validationResult: CCValidationResult) {
+	public showValidationWarningDialog(validationResult: CCValidationResult) {
 		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
 		const lineBreak = "<br>"
 
@@ -44,7 +44,7 @@ export class DialogService {
 		this.showErrorDialog(htmlMessage, validationResult.title)
 	}
 
-	public showValidationWarningDialog(validationResult: CCValidationResult) {
+	public showValidationErrorDialog(validationResult: CCValidationResult) {
 		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
 		const lineBreak = "<br>"
 
