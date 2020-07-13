@@ -55,6 +55,10 @@
 			"displayName": "codecharta-visualization"
 		}
 	},
+	"browserslist": [
+		"last 2 versions",
+		"not IE 11"
+	],
 	"scripts": {
 		"start": "run --mirror https://dl.nwjs.io/ .",
 		"build": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='true' --env.STANDALONE=true",
