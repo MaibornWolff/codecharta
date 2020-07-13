@@ -1,4 +1,4 @@
-<md-slider-container class="md-block" title="Amount of space between buildings">
+<md-slider-container class="md-block" title="Amount of space between buildings in percent">
 	<span>Margin</span>
 	<md-slider
 		flex
@@ -30,7 +30,7 @@
 		class="md-primary"
 		ng-model="$ctrl._viewModel.dynamicMargin"
 		ng-change="$ctrl.applyDynamicMargin()"
-		title="Use calculated margin for this map"
+		title="Use a fit to width margin to see the whole map"
 	>
 		Dynamic Margin
 	</md-checkbox>
