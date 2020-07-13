@@ -1,4 +1,4 @@
-import { delay, goto, launch, newPage } from "../../../puppeteer.helper"
+import { goto, launch, newPage } from "../../../puppeteer.helper"
 import { Browser, Page } from "puppeteer"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
@@ -34,10 +34,8 @@ describe("MapTreeViewLevel", () => {
 	describe("Blacklist", () => {
 		it("excluding a building should exclude it from the tree-view as well", async () => {
 			await searchPanelModeSelector.openTreeView()
-			await delay(200)
 			await mapTreeViewLevel.openContextMenu()
 			await nodeContextMenu.exclude()
-			await delay(300)
 
 			expect(await mapTreeViewLevel.nodeExists()).toBeFalsy()
 		})
