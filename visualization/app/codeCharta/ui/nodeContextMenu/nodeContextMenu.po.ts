@@ -12,6 +12,6 @@ export class NodeContextMenuPageObject {
 
 	public async exclude() {
 		this.page.click("#exclude-button")
-		await delay(300)
+		await delay(500)
 	}
 }

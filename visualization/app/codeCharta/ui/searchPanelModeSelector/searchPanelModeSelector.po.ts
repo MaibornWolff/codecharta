@@ -6,6 +6,6 @@ export class SearchPanelModeSelectorPageObject {
 
 	public async openTreeView() {
 		await this.page.click("search-panel-mode-selector-component #tree-view")
-		await delay(200)
+		await delay(500)
 	}
 }
