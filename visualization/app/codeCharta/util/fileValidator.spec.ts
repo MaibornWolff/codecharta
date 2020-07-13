@@ -113,25 +113,19 @@ describe("FileValidator", () => {
 			}
 		]
 
-		assert.doesNotThrow(() => {
-			validate(file)
-		})
+		validate(file)
 	})
 
 	it("should not throw on a file without edges", () => {
 		file.edges = undefined
 
-		assert.doesNotThrow(() => {
-			validate(file)
-		})
+		validate(file)
 	})
 
 	it("should not throw on a file when numbers are floating point values", () => {
 		file.nodes[0].children[0].attributes["rloc"] = 333.4
 
-		assert.doesNotThrow(() => {
-			validate(file)
-		})
+		validate(file)
 	})
 
 	it("should throw when children are not unique in name+type", () => {
