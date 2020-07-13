@@ -51,27 +51,13 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function mockElement() {
-		element = jest.fn<Element>(() => {
-			return [
-				{
-					children: [
-						{
-							clientWidth: 50,
-							clientHeight: 100
-						}
-					]
-				}
-			]
-		})()
+		element = [{}] as any
+		element[0] = Object.assign(element[0], { children: [{ clientWidth: 50, clientHeight: 100 }] })
 	}
 
 	function mockWindow() {
-		$window = jest.fn<IWindowService>(() => {
-			return {
-				innerWidth: 800,
-				innerHeight: 600
-			}
-		})()
+		$window = {} as IWindowService
+		$window = Object.assign($window, { innerWidth: 800, innerHeight: 600 })
 	}
 
 	function rebuildController() {
@@ -87,33 +73,22 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedCodeMapActionService() {
-		codeMapActionsService = nodeContextMenuController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
-			return {
-				getParentMP: jest.fn(),
-				anyEdgeIsVisible: jest.fn(),
-				markFolder: jest.fn(),
-				unmarkFolder: jest.fn()
-			}
-		})()
+		codeMapActionsService.getParentMP = jest.fn()
+		codeMapActionsService["anyEdgeIsVisible"] = jest.fn()
+		codeMapActionsService.markFolder = jest.fn()
+		codeMapActionsService.unmarkFolder = jest.fn()
+
+		nodeContextMenuController["codeMapActionsService"] = codeMapActionsService
 	}
 
 	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = nodeContextMenuController["codeMapPreRenderService"] = jest.fn<CodeMapPreRenderService>(() => {
-			return {
-				getRenderMap: jest.fn(() => {
-					return TEST_DELTA_MAP_A.map
-				})
-			}
-		})()
+		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
+		nodeContextMenuController["codeMapPreRenderService"] = codeMapPreRenderService
 	}
 
 	function withMockedHideNodeContextMenuMethod() {
 		nodeContextMenuController.hideNodeContextMenu = jest.fn()
 	}
-
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
 
 	describe("constructor", () => {
 		it("should subscribe to 'show-node-context-menu' events", () => {

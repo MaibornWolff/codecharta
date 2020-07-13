@@ -26,10 +26,10 @@ describe("CodeMapLabelService", () => {
 
 	beforeEach(() => {
 		restartSystem()
+		rebuild()
 		withMockedEventMethods($rootScope)
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
-		rebuild()
 		setCanvasRenderSettings()
 	})
 
@@ -47,27 +47,27 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function withMockedThreeCameraService() {
-		threeCameraService = jest.fn<ThreeCameraService>(() => {
-			return {
-				camera: {
-					position: {
-						distanceTo: jest.fn()
-					}
+		threeCameraService = Object.assign(threeCameraService, {
+			camera: {
+				position: {
+					distanceTo: jest.fn()
 				}
 			}
-		})()
+		})
+
+		codeMapLabelService["threeCameraService"] = threeCameraService
 	}
 
 	function withMockedThreeSceneService() {
-		threeSceneService = jest.fn<ThreeSceneService>(() => {
-			return {
-				mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)),
-				labels: {
-					add: jest.fn(),
-					children: jest.fn()
-				}
+		threeSceneService = Object.assign(threeSceneService, {
+			mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)),
+			labels: {
+				add: jest.fn(),
+				children: jest.fn()
 			}
-		})()
+		})
+
+		codeMapLabelService["threeSceneService"] = threeSceneService
 	}
 
 	function setCanvasRenderSettings() {
@@ -96,11 +96,9 @@ describe("CodeMapLabelService", () => {
 
 		createElementOrigin = document.createElement
 
-		document.createElement = jest.fn(() => {
-			return {
-				getContext: () => {
-					return canvasCtxMock
-				}
+		document.createElement = jest.fn().mockReturnValue({
+			getContext: () => {
+				return canvasCtxMock
 			}
 		})
 

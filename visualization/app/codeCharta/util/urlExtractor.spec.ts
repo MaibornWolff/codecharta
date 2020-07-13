@@ -27,7 +27,7 @@ describe("urlExtractor", () => {
 			return "http://testurl?file=valid.json"
 		})
 
-		$http.get = jest.fn(file => {
+		$http.get = jest.fn().mockImplementation(file => {
 			return new Promise((resolve, reject) => {
 				resolve({ data: "some data", status: 200 })
 			})
@@ -55,9 +55,7 @@ describe("urlExtractor", () => {
 
 	describe("getFileDataFromQueryParam", () => {
 		it("should return an empty array when file is undefined", async () => {
-			$location.search = jest.fn(() => {
-				return {}
-			})
+			$location.search = jest.fn().mockReturnValue({})
 
 			const result = await urlExtractor.getFileDataFromQueryParam()
 			const expected = []
@@ -66,14 +64,16 @@ describe("urlExtractor", () => {
 		})
 
 		it("should create an array when file is defined but not as an array", async () => {
-			$location.search = jest.fn(() => {
-				return { file: { data: "some data" } }
+			$location.search = jest.fn().mockReturnValue({
+				file: { data: "some data" }
 			})
-			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
-				return new Promise((resolve, reject) => {
-					resolve(fileName)
-				})
-			})
+
+			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(
+				fileName =>
+					new Promise((resolve, reject) => {
+						resolve(fileName)
+					})
+			)
 
 			const result = await urlExtractor.getFileDataFromQueryParam()
 			const expected = [{ data: "some data" }]
@@ -84,15 +84,14 @@ describe("urlExtractor", () => {
 		})
 
 		it("should return an array of resolved file data", () => {
-			$location.search = jest.fn(() => {
-				return { file: ["some data", "some more"] }
-			})
+			$location.search = jest.fn().mockReturnValue({ file: ["some data", "some more"] })
 
-			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
-				return new Promise((resolve, reject) => {
-					resolve(fileName)
-				})
-			})
+			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(
+				(fileName: string) =>
+					new Promise((resolve, reject) => {
+						resolve(fileName)
+					})
+			)
 
 			const expected = ["some data", "some more"]
 
@@ -100,9 +99,7 @@ describe("urlExtractor", () => {
 		})
 
 		it("should return the first filename rejected", () => {
-			$location.search = jest.fn(() => {
-				return { file: ["some data", "some more"] }
-			})
+			$location.search = jest.fn().mockReturnValue({ file: ["some data", "some more"] })
 
 			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
 				return new Promise((resolve, reject) => {
@@ -131,7 +128,7 @@ describe("urlExtractor", () => {
 		})
 
 		it("should reject if statuscode is not 200", async () => {
-			$http.get = jest.fn(file => {
+			$http.get = jest.fn().mockImplementation(file => {
 				return new Promise((resolve, reject) => {
 					resolve({ data: "some data", status: 201 })
 				})

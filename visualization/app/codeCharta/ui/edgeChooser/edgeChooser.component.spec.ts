@@ -37,11 +37,8 @@ describe("EdgeChooserController", () => {
 	}
 
 	function withMockedCodeMapActionsService() {
-		codeMapActionsService = edgeChooserController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
-			return {
-				updateEdgePreviews: jest.fn()
-			}
-		})()
+		codeMapActionsService.updateEdgePreviews = jest.fn()
+		edgeChooserController["codeMapActionsService"] = codeMapActionsService
 	}
 
 	describe("constructor", () => {
