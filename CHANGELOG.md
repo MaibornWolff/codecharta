@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Blacklisting a building would sometimes not update the map #1098
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.50.0] - 2020-07-10
