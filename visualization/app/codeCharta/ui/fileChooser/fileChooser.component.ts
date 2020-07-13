@@ -30,21 +30,23 @@ export class FileChooserController {
 			for (const file of element.files) {
 				const isCompressed = file.name.endsWith(".gz")
 				const reader = new FileReader()
+				isCompressed ? reader.readAsArrayBuffer(file) : reader.readAsText(file, "UTF-8")
+
 				reader.onloadstart = () => {
 					this.storeService.dispatch(setIsLoadingFile(true))
 				}
+
 				reader.onload = event => {
 					if (isCompressed) {
 						const zlib = require("zlib")
 
-						content = zlib.unzipSync(Buffer.from((<any>event.target).result))
+						content = zlib.unzipSync(Buffer.from(event.target.result))
 					} else {
-						content = (<any>event.target).result
+						content = event.target.result
 					}
 
 					this.setNewData(file.name, content)
 				}
-				isCompressed ? reader.readAsArrayBuffer(file) : reader.readAsText(file, "UTF-8")
 			}
 		})
 	}
