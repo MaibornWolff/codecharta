@@ -26,10 +26,10 @@ describe("CodeMapLabelService", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		rebuild()
 		withMockedEventMethods($rootScope)
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
+		rebuild()
 		setCanvasRenderSettings()
 	})
 
@@ -47,27 +47,17 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function withMockedThreeCameraService() {
-		threeCameraService = Object.assign(threeCameraService, {
-			camera: {
-				position: {
-					distanceTo: jest.fn()
-				}
-			}
-		})
-
-		codeMapLabelService["threeCameraService"] = threeCameraService
+		threeCameraService.camera = { position: { distanceTo: jest.fn() } }
 	}
 
 	function withMockedThreeSceneService() {
-		threeSceneService = Object.assign(threeSceneService, {
+		Object.assign(threeSceneService, {
 			mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)),
 			labels: {
 				add: jest.fn(),
 				children: jest.fn()
 			}
 		})
-
-		codeMapLabelService["threeSceneService"] = threeSceneService
 	}
 
 	function setCanvasRenderSettings() {

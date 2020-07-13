@@ -31,15 +31,7 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	function mockElement() {
-		$element = {} as any
-		$element = Object.assign($element, {
-			children: [
-				{
-					clientWidth: 50,
-					clientHeight: 100
-				}
-			]
-		})
+		$element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }] as any
 	}
 
 	function rebuildController() {

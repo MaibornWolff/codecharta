@@ -31,9 +31,9 @@ describe("nodeContextMenuController", () => {
 		restartSystem()
 		mockElement()
 		mockWindow()
-		rebuildController()
 		withMockedCodeMapActionService()
 		withMockedCodeMapPreRenderService()
+		rebuildController()
 		withMockedHideNodeContextMenuMethod()
 
 		NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
@@ -51,13 +51,11 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function mockElement() {
-		element = [{}] as any
-		element[0] = Object.assign(element[0], { children: [{ clientWidth: 50, clientHeight: 100 }] })
+		element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }] as any
 	}
 
 	function mockWindow() {
-		$window = {} as IWindowService
-		$window = Object.assign($window, { innerWidth: 800, innerHeight: 600 })
+		$window = { innerWidth: 800, innerHeight: 600 } as IWindowService
 	}
 
 	function rebuildController() {
@@ -77,13 +75,10 @@ describe("nodeContextMenuController", () => {
 		codeMapActionsService["anyEdgeIsVisible"] = jest.fn()
 		codeMapActionsService.markFolder = jest.fn()
 		codeMapActionsService.unmarkFolder = jest.fn()
-
-		nodeContextMenuController["codeMapActionsService"] = codeMapActionsService
 	}
 
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
-		nodeContextMenuController["codeMapPreRenderService"] = codeMapPreRenderService
 	}
 
 	function withMockedHideNodeContextMenuMethod() {
