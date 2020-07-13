@@ -8,4 +8,8 @@ export class NodeContextMenuPageObject {
 			visible: true
 		})
 	}
+
+	public async exclude() {
+		return this.page.click("#exclude-button")
+	}
 }
