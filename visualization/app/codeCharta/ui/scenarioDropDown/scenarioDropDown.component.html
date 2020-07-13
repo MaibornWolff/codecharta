@@ -22,7 +22,7 @@
 				>{{ scenario.scenarioName }}</md-button
 			>
 			<span class="content-icons" ng-repeat="icon in scenario.icons track by $index">
-				<i class="fa {{ icon.faIconClass }}" ng-class="{ 'is-saved': icon.isSaved }"></i>
+				<i class="fa {{ icon.faIconClass }}" ng-class="{ 'is-saved': icon.isSaved }" ng-attr-title="{{ icon.tooltip }}"></i>
 			</span>
 			<md-button
 				ng-click="$ctrl.removeScenario(scenario.scenarioName)"
