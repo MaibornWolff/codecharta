@@ -70,7 +70,7 @@ export class CodeChartaService {
 	}
 
 	private getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): AttributeTypes {
-		if (_.isEmpty(attributeTypes) || !attributeTypes || _.isArray(attributeTypes.nodes) || _.isArray(attributeTypes.edges)) {
+		if (_.isEmpty(attributeTypes) || !attributeTypes || Array.isArray(attributeTypes.nodes) || Array.isArray(attributeTypes.edges)) {
 			return {
 				nodes: {},
 				edges: {}
