@@ -1,6 +1,11 @@
-<i class="presentation-mode-icon fa fa-television"></i>
+<div title="Enabling presentation mode will change the hovering effect so that it simulates a flashlight">
+	<i class="presentation-mode-icon fa fa-television"></i>
 
-<label class="presentation-mode-button" title="Enable Presentation Mode">
-	<input type="checkbox" />
-	<span class="slider round" ng-click="$ctrl.toggleMode()"></span>
-</label>
+	<label
+		class="presentation-mode-button"
+		ng-attr-title="{{ $ctrl._viewModel.isEnabled ? 'Disable presentation mode' : 'Enable presentation mode' }}"
+	>
+		<input type="checkbox" />
+		<span class="slider round" ng-click="$ctrl.toggleMode()"></span>
+	</label>
+</div>

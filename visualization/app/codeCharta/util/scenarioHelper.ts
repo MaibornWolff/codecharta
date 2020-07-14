@@ -20,23 +20,28 @@ export class ScenarioHelper {
 				icons: [
 					{
 						faIconClass: "fa-video-camera",
-						isSaved: !!scenario.camera
+						isSaved: !!scenario.camera,
+						tooltip: "Camera angle"
 					},
 					{
 						faIconClass: "fa-arrows-alt",
-						isSaved: !!scenario.area
+						isSaved: !!scenario.area,
+						tooltip: "Area metric"
 					},
 					{
 						faIconClass: "fa-arrows-v",
-						isSaved: !!scenario.height
+						isSaved: !!scenario.height,
+						tooltip: "Height metric"
 					},
 					{
 						faIconClass: "fa-paint-brush",
-						isSaved: !!scenario.color
+						isSaved: !!scenario.color,
+						tooltip: "Color metric"
 					},
 					{
 						faIconClass: "fa-exchange",
-						isSaved: !!scenario.edge
+						isSaved: !!scenario.edge,
+						tooltip: "Edge metric"
 					}
 				]
 			})

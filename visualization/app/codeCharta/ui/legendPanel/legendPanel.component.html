@@ -66,5 +66,6 @@
 	class="panel-button md-raised md-primary cc-shadow"
 	ng-click="$ctrl.toggle()"
 	ng-class="{ sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
+	ng-attr-title="{{ $ctrl._viewModel.isLegendVisible ? 'Hide panel' : 'Show panel' }}"
 	>Legend</md-button
 >
