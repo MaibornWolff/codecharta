@@ -7,6 +7,7 @@
 				ng-disabled="primary === color && !isPrimary"
 				ng-click="$ctrl.clickColor(color)"
 				class="colorButton"
+				title="Colorize folder"
 			>
 				<i class="fa fa-times" ng-if="$ctrl.isNodeOrParentMarked(color)"></i>
 			</md-button>
