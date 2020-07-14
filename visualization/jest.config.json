@@ -5,22 +5,24 @@
 	"coveragePathIgnorePatterns": ["(/__tests__/.*|\\.(spec|e2e|po))\\.(ts|tsx)$", "<rootDir>/app/puppeteer.helper.ts"],
 	"snapshotSerializers": ["jest-serializer-html"],
 	"transform": {
-		"\\.(ts|tsx)$": "<rootDir>/node_modules/ts-jest/preprocessor.js",
+		"\\.(ts|tsx)$": "ts-jest",
 		"\\.(html|glsl)$": "<rootDir>/mocks/fileTransformer.js"
 	},
+	"transformIgnorePatterns": ["<rootDir>/node_modules"],
 	"moduleNameMapper": {
 		"\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
 		"\\.(css|less|scss)$": "<rootDir>/mocks/styleMock.js"
 	},
 	"roots": ["<rootDir>/app"],
-	"testMatch": ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|e2e).[jt]s?(x)"],
-	"moduleFileExtensions": ["ts", "tsx", "js", "json"],
+	"testMatch": ["**/?(*.)+(spec|e2e).[jt]s?(x)", "**/__tests__/**/*.[jt]s?(x)"],
+	"moduleFileExtensions": ["js", "json", "ts", "tsx"],
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"globals": {
 		"ts-jest": {
-			"tsConfigFile": "tsconfig.json",
-			"skipBabel": false
+			"tsConfig": "tsconfig.json",
+			"babelConfig": true
 		}
 	},
-	"testURL": "http://localhost:3000"
+	"testURL": "http://localhost:3000",
+	"preset": "ts-jest"
 }

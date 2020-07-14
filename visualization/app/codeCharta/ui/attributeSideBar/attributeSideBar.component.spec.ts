@@ -39,11 +39,8 @@ describe("AttributeSideBarController", () => {
 	}
 
 	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = attributeSideBarController["codeMapPreRenderService"] = jest.fn<CodeMapPreRenderService>(() => {
-			return {
-				getRenderFileMeta: jest.fn().mockReturnValue({ fileName: "my_fileName" })
-			}
-		})()
+		codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue({ fileName: "my_fileName" })
+		attributeSideBarController["codeMapPreRenderService"] = codeMapPreRenderService
 	}
 
 	describe("constructor", () => {
