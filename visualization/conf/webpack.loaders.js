@@ -3,7 +3,7 @@ module.exports = {
 		{
 			test: /\.js$/,
 			exclude: /node_modules/,
-			loaders: ["ng-annotate-loader", "babel-loader"]
+			loaders: ["babel-loader"]
 		},
 		{
 			test: /\.html$/,
@@ -31,7 +31,7 @@ module.exports = {
 		},
 		{
 			test: /\.ts(x?)$/,
-			use: ["ng-annotate-loader", "babel-loader", "ts-loader?configFile=tsconfig.webpack.json"]
+			use: ["babel-loader", "ts-loader?configFile=tsconfig.webpack.json"]
 		},
 		{
 			test: /\.glsl$/,
