@@ -27,10 +27,8 @@ describe("urlExtractor", () => {
 			return "http://testurl?file=valid.json"
 		})
 
-		$http.get = jest.fn().mockImplementation(file => {
-			return new Promise((resolve, reject) => {
-				resolve({ data: "some data", status: 200 })
-			})
+		$http.get = jest.fn().mockImplementation(async () => {
+			return { data: "some data", status: 200 }
 		})
 	}
 
@@ -68,12 +66,7 @@ describe("urlExtractor", () => {
 				file: { data: "some data" }
 			})
 
-			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(
-				fileName =>
-					new Promise((resolve, reject) => {
-						resolve(fileName)
-					})
-			)
+			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(async (fileName: string) => fileName)
 
 			const result = await urlExtractor.getFileDataFromQueryParam()
 			const expected = [{ data: "some data" }]
@@ -86,12 +79,7 @@ describe("urlExtractor", () => {
 		it("should return an array of resolved file data", () => {
 			$location.search = jest.fn().mockReturnValue({ file: ["some data", "some more"] })
 
-			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(
-				(fileName: string) =>
-					new Promise((resolve, reject) => {
-						resolve(fileName)
-					})
-			)
+			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(async (fileName: string) => fileName)
 
 			const expected = ["some data", "some more"]
 
@@ -102,9 +90,7 @@ describe("urlExtractor", () => {
 			$location.search = jest.fn().mockReturnValue({ file: ["some data", "some more"] })
 
 			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
-				return new Promise((resolve, reject) => {
-					reject(fileName)
-				})
+				throw fileName
 			})
 
 			const expected = "some data"
@@ -128,11 +114,10 @@ describe("urlExtractor", () => {
 		})
 
 		it("should reject if statuscode is not 200", async () => {
-			$http.get = jest.fn().mockImplementation(file => {
-				return new Promise((resolve, reject) => {
-					resolve({ data: "some data", status: 201 })
-				})
+			$http.get = jest.fn().mockImplementation(async () => {
+				return { data: "some data", status: 201 }
 			})
+
 			return expect(urlExtractor.getFileDataFromFile("test.json")).rejects.toEqual(undefined)
 		})
 	})
