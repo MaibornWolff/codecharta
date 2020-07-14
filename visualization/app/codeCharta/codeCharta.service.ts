@@ -38,7 +38,7 @@ export class CodeChartaService {
 			}
 		})
 
-		if (!_.isEmpty(this.storeService.getState().files)) {
+		if (this.storeService.getState().files.length !== 0) {
 			this.storeService.dispatch(setSingle(getCCFiles(this.storeService.getState().files)[0]))
 			this.setDefaultScenario()
 		}
