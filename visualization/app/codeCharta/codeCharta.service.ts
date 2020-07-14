@@ -99,7 +99,7 @@ export class CodeChartaService {
 
 		metricData.forEach(x => set.delete(x.name))
 
-		if (_.isEmpty(set)) {
+		if (set.size === 0) {
 			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
 		}
 	}
