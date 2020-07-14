@@ -40,12 +40,8 @@ describe("DialogDownloadController", () => {
 	}
 
 	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = jest.fn<CodeMapPreRenderService>(() => {
-			return {
-				getRenderMap: jest.fn().mockReturnValue(VALID_NODE_WITH_PATH_AND_EXTENSION),
-				getRenderFileMeta: jest.fn().mockReturnValue(FILE_META)
-			}
-		})()
+		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_WITH_PATH_AND_EXTENSION)
+		codeMapPreRenderService.getRenderFileMeta = jest.fn().mockReturnValue(FILE_META)
 	}
 
 	function getFilteredFileContent(name: DownloadCheckboxNames) {

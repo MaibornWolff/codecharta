@@ -29,8 +29,8 @@ describe("MapTreeViewLevelController", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		withMockedCodeMapPreRenderService()
 		rebuildController()
+		withMockedCodeMapPreRenderService()
 		withMockedEventMethods($rootScope)
 	})
 
@@ -52,11 +52,8 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = jest.fn<CodeMapPreRenderService>(() => {
-			return {
-				getRenderMap: jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_UNARY)
-			}
-		})()
+		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_UNARY)
+		mapTreeViewLevelController["codeMapPreRenderService"] = codeMapPreRenderService
 	}
 
 	describe("onBuildingHovered", () => {
