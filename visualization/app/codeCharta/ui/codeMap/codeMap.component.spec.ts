@@ -17,8 +17,8 @@ describe("ColorSettingsPanelController", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		mockElement()
 		rebuildController()
+		mockElement()
 	})
 
 	function restartSystem() {
@@ -31,18 +31,7 @@ describe("ColorSettingsPanelController", () => {
 	}
 
 	function mockElement() {
-		$element = jest.fn<Element>(() => {
-			return [
-				{
-					children: [
-						{
-							clientWidth: 50,
-							clientHeight: 100
-						}
-					]
-				}
-			]
-		})()
+		$element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }] as any
 	}
 
 	function rebuildController() {

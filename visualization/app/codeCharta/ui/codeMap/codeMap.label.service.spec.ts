@@ -47,27 +47,17 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function withMockedThreeCameraService() {
-		threeCameraService = jest.fn<ThreeCameraService>(() => {
-			return {
-				camera: {
-					position: {
-						distanceTo: jest.fn()
-					}
-				}
-			}
-		})()
+		threeCameraService.camera = { position: { distanceTo: jest.fn() } }
 	}
 
 	function withMockedThreeSceneService() {
-		threeSceneService = jest.fn<ThreeSceneService>(() => {
-			return {
-				mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)),
-				labels: {
-					add: jest.fn(),
-					children: jest.fn()
-				}
+		Object.assign(threeSceneService, {
+			mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)),
+			labels: {
+				add: jest.fn(),
+				children: jest.fn()
 			}
-		})()
+		})
 	}
 
 	function setCanvasRenderSettings() {
@@ -96,11 +86,9 @@ describe("CodeMapLabelService", () => {
 
 		createElementOrigin = document.createElement
 
-		document.createElement = jest.fn(() => {
-			return {
-				getContext: () => {
-					return canvasCtxMock
-				}
+		document.createElement = jest.fn().mockReturnValue({
+			getContext: () => {
+				return canvasCtxMock
 			}
 		})
 
