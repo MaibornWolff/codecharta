@@ -17,6 +17,7 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
 
     private var numberOfCommitsParsed = 0
 
+    //changed List -> Map
     fun parse(logLines: Stream<String>): MutableMap<String, VersionControlledFile>? {
         return logLines.collect(parserStrategy.createLogLineCollector())
                 .map { this.parseCommit(it) }.filter { !it.isEmpty }
@@ -36,6 +37,8 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
                     modifications = parserStrategy.parseModifications(commitLines)
                 }
             }
+
+            //TODO Modification.size > 1
 
             if (!silent) showProgress(commitDate)
             Commit(author, modifications, commitDate)

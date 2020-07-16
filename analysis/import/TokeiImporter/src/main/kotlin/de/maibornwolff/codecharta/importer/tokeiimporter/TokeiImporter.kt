@@ -69,15 +69,14 @@ class TokeiImporter(
         print(" ")
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
-runBlocking(Dispatchers.Default) {
-    val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
+
+        val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
     val gson = Gson()
     for (languageEntry in languageSummaries.entrySet()) {
             val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
             if (languageAnalysisObject.hasChildren()) {
                 for (analysisObject in languageAnalysisObject.stats!!) {
                     addAsNode(analysisObject)
-                }
             }
     }
 }

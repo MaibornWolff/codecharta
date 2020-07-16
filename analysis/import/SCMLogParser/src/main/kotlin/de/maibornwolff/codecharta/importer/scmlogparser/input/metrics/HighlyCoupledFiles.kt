@@ -50,8 +50,8 @@ class HighlyCoupledFiles : Metric {
 
         commits.forEach { commit ->
             commit.modifications
-                .filter { it.filename != fileName }
-                .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
+                    .filter { it.currentFilename != fileName }
+                    .forEach { simultaneouslyCommittedFiles.merge(it.currentFilename, 1) { x, y -> x + y } }
         }
     }
 
@@ -67,7 +67,7 @@ class HighlyCoupledFiles : Metric {
     }
 
     override fun registerModification(modification: Modification) {
-        fileName = modification.filename
+        fileName = modification.currentFilename
     }
 
     override fun edgeAttributeType(): AttributeType? {

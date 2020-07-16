@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.input
 
 class Modification(
-    val filename: String,
+    val currentFilename: String,
     val oldFilename: String,
     val additions: Long,
     val deletions: Long,

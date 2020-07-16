@@ -32,12 +32,12 @@ class GitLogNumstatParserStrategyTest : ParserStrategyContractTest() {
     fun parsesFilenameFromFileMetadata() {
         val fileMetadata = "0 10\t src/Main.java"
         val modification = GitLogNumstatParserStrategy.parseModification(fileMetadata)
-        assertThat(modification.filename).isEqualTo("src/Main.java")
+        assertThat(modification.currentFilename).isEqualTo("src/Main.java")
     }
 
     @Test
     fun parsesFilenamesFromUnusualFileMetadata() {
-        assertThat(GitLogNumstatParserStrategy.parseModification("0\t10\tsrc/Main.java").filename)
+        assertThat(GitLogNumstatParserStrategy.parseModification("0\t10\tsrc/Main.java").currentFilename)
                 .isEqualTo("src/Main.java")
     }
 

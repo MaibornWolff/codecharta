@@ -133,7 +133,7 @@ class SVNLogParserStrategy : LogParserStrategy {
         }
 
         private fun ignoreIfRepresentsFolder(modification: Modification): Modification {
-            return if (!modification.filename.contains(".")) {
+            return if (!modification.currentFilename.contains(".")) {
                 Modification.EMPTY
             } else modification
         }

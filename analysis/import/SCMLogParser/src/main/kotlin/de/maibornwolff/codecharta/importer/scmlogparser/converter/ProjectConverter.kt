@@ -45,6 +45,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     fun convert(versionControlledFiles: MutableMap<String, VersionControlledFile>?, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
+        // changed from master versionControlledFiles.filter -> versionControlledFiles.values.filter
+        //TODO markedDeleted done in previous steps? maybe not needed here
         versionControlledFiles?.values?.filter { vc -> !vc.markedDeleted() }
             ?.forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 

@@ -33,7 +33,7 @@ class GitLogParserStrategyTest : ParserStrategyContractTest() {
     fun parsesFilenameFromFileMetadata() {
         val fileMetadata = "M\t src/Main.java"
         val modification = GitLogParserStrategy.parseModification(fileMetadata)
-        assertThat(modification.filename).isEqualTo("src/Main.java")
+        assertThat(modification.currentFilename).isEqualTo("src/Main.java")
         assertThat(modification.type).isEqualTo(Modification.Type.MODIFY)
     }
 
@@ -41,7 +41,7 @@ class GitLogParserStrategyTest : ParserStrategyContractTest() {
     fun parsesFilenameFromFileMetadataWithRename() {
         val fileMetadata = "R094\t srcs/Main.java\t src/Main.java"
         val modification = GitLogParserStrategy.parseModification(fileMetadata)
-        assertThat(modification.filename).isEqualTo("src/Main.java")
+        assertThat(modification.currentFilename).isEqualTo("src/Main.java")
         assertThat(modification.oldFilename).isEqualTo("srcs/Main.java")
         assertThat(modification.type).isEqualTo(Modification.Type.RENAME)
     }
@@ -50,7 +50,7 @@ class GitLogParserStrategyTest : ParserStrategyContractTest() {
     fun parsesFilenameFromAddedFile() {
         val fileMetadata = "A\t src/Main.java"
         val modification = GitLogParserStrategy.parseModification(fileMetadata)
-        assertThat(modification.filename).isEqualTo("src/Main.java")
+        assertThat(modification.currentFilename).isEqualTo("src/Main.java")
         assertThat(modification.type).isEqualTo(Modification.Type.ADD)
     }
 
@@ -58,14 +58,14 @@ class GitLogParserStrategyTest : ParserStrategyContractTest() {
     fun parsesFilenameFromDeletedFile() {
         val fileMetadata = "D\t src/Main.java"
         val modification = GitLogParserStrategy.parseModification(fileMetadata)
-        assertThat(modification.filename).isEqualTo("src/Main.java")
+        assertThat(modification.currentFilename).isEqualTo("src/Main.java")
         assertThat(modification.type).isEqualTo(Modification.Type.DELETE)
     }
 
     @Test
     fun parsesFilenamesFromUnusualFileMetadata() {
         assertThat(GitLogParserStrategy.parseModification("")).isEqualTo(Modification.EMPTY)
-        assertThat(GitLogParserStrategy.parseModification("  src/Main.java").filename)
+        assertThat(GitLogParserStrategy.parseModification("  src/Main.java").currentFilename)
                 .isEqualTo("src/Main.java")
     }
 

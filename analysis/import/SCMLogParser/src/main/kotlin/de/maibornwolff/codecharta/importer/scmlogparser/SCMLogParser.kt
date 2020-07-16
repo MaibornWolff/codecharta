@@ -134,7 +134,7 @@ class SCMLogParser(
         return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
     }
 
-    // not implemented yet.
+    // not implemented yet #738
     private fun printUsage() {
         println("----")
         printLogCreation()

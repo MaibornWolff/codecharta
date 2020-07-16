@@ -35,13 +35,15 @@ class VersionControlledFile internal constructor(
     }
 
     /**
-     * registers commits in anti-chronological order
+     * registers commits in chronological order
      */
     fun registerCommit(commit: Commit) {
-        val modification = commit.getModification(filename)
+        val modificationForFilename = commit.getModificationForFilename(filename)
+        // registerCommit() refers to Metric version: each commit is also registered for each separate metric
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
-        registerModification(modification)
+        println(authors)
+        registerModification(modificationForFilename)
     }
 
     private fun registerModification(modification: Modification) {

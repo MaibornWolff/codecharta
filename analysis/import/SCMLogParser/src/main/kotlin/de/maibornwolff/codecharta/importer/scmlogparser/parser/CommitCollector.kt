@@ -11,9 +11,15 @@ import java.util.stream.Collector
 
 internal class CommitCollector private constructor(private val metricsFactory: MetricsFactory) {
 
+    //remember concrete history
+    // is a file always added before it is modified? Modification.Type.ADD
+
+
     private var renames : MutableMap<String, String> = mutableMapOf() // Map<CurrentName, OldestName>
 
     // Map<String, VersionControlledFile> = [filename, versionControlledFiles.get(filename)]
+
+
 
     private fun collectCommit(versionControlledFiles: MutableMap<String, VersionControlledFile>, commit: Commit) {
         if (commit.isEmpty) {
@@ -22,57 +28,72 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
         val renamedFilenames =  commit.modifications.map {
             if(it.type == Modification.Type.ADD){
-                val file: VersionControlledFile? = versionControlledFiles[it.filename]
+                val file: VersionControlledFile? = versionControlledFiles[it.currentFilename]
                 if(file == null || file.markedDeleted()) {
-                    val missingVersionControlledFile = VersionControlledFile(it.filename, metricsFactory)
-                    versionControlledFiles[it.filename] = missingVersionControlledFile
+                    val missingVersionControlledFile = VersionControlledFile(it.currentFilename, metricsFactory)
+                    versionControlledFiles[it.currentFilename] = missingVersionControlledFile
                 }
-                it.filename
+                it.currentFilename
             }
+            // Modification.Type.DELETE delete a file from map, saves logic
             else if (it.type == Modification.Type.RENAME) {
+                println(it)
                 val tmp: String? = renames[it.oldFilename]
                 if (tmp != null) {
                     removeLogic(tmp, versionControlledFiles, true)
                     renames.remove(it.oldFilename)
-                    renames[it.filename] = tmp
+                    renames[it.currentFilename] = tmp
                 tmp
                 } else {
                     removeLogic(it.oldFilename, versionControlledFiles, true)
-                    renames[it.filename] = it.oldFilename
+                    renames[it.currentFilename] = it.oldFilename
                     it.oldFilename
                 }
             }
             else{
-                it.filename
+                it.currentFilename
             }
         }
 
         renamedFilenames
             .forEach {
-                versionControlledFiles[it]?.registerCommit(commit)
+                try {
+                    versionControlledFiles[it]?.registerCommit(commit)
+                }
+                catch (e: IllegalStateException){
+                    println("File$it")
+                }
             }
     }
 
     private fun removeLogic(filename: String, versionControlledFiles: MutableMap<String, VersionControlledFile>, rename: Boolean){
+        var removeIDList = mutableListOf<String>()
         if(versionControlledFiles.containsKey(filename)){
             var startRemoving: Boolean = false
             for (key in versionControlledFiles.keys) {
                 if(startRemoving){
                     val tmp = versionControlledFiles[key]
-                    versionControlledFiles.remove(key)
-                    if (tmp != null) {
-                        versionControlledFiles[key] = tmp
+                    //versionControlledFiles.remove(key) //can't remove during iteration, write access is blocked
+                    if (tmp == null) { //tmp !=null
+                        removeIDList.add(key)
+                        //versionControlledFiles[key] = tmp
                     }
                 }
                 else if (key == filename){
                     startRemoving = true
                     val tmp = versionControlledFiles[key]
-                    versionControlledFiles.remove(key)
+                    removeIDList.add(key)
+                    // versionControlledFiles.remove(key)
                     if (tmp != null) {
                         versionControlledFiles[tmp.filename] = tmp
                     }
                 }
             }
+
+            for(id in removeIDList){
+                versionControlledFiles.remove(id)
+            }
+
             if(rename){
                 renames.remove(filename)
                 //renames[]
