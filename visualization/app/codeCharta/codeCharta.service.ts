@@ -102,11 +102,11 @@ export class CodeChartaService {
 	private setDefaultScenario() {
 		const metricData = this.metricService.getMetricData()
 		const { areaMetric, heightMetric, colorMetric } = ScenarioHelper.getDefaultScenarioSetting().dynamicSettings
-		const set = new Set([areaMetric, heightMetric, colorMetric])
+		const names = [areaMetric, heightMetric, colorMetric]
 
-		metricData.forEach(x => set.delete(x.name))
+		const existsInMetricData = (metric: string) => metricData.map(x => x.name).includes(metric)
 
-		if (set.size === 0) {
+		if (names.every(existsInMetricData)) {
 			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
 		}
 	}
