@@ -207,5 +207,17 @@ describe("codeChartaService", () => {
 			const blacklist = [{ path: "foo", type: BlacklistType.flatten }]
 			expect(getCCFiles(storeService.getState().files)[0].settings.fileSettings.blacklist).toEqual(blacklist)
 		})
+
+		it("should break the loop after the first invalid file was validated", () => {
+			const invalidFileContent = validFileContent
+			delete invalidFileContent.projectName
+
+			codeChartaService.loadFiles([
+				{ fileName, content: invalidFileContent },
+				{ fileName, content: invalidFileContent }
+			])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
+		})
 	})
 })

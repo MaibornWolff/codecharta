@@ -20,13 +20,20 @@ export class CodeChartaService {
 	constructor(private storeService: StoreService, private dialogService: DialogService, private metricService: MetricService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]) {
+		let printErrors = true
+
 		nameDataPairs.forEach((nameDataPair: NameDataPair) => {
+			if (!printErrors) {
+				return
+			}
+
 			try {
 				validate(nameDataPair.content)
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
 			} catch (e) {
 				if (!_.isEmpty(e.error)) {
 					this.dialogService.showValidationErrorDialog(e)
+					printErrors = false
 				}
 
 				if (!_.isEmpty(e.warning)) {
