@@ -10,6 +10,7 @@ import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { MetricService } from "./state/metric.service"
+import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -138,6 +139,8 @@ describe("codeChartaService", () => {
 
 			expect(getCCFiles(storeService.getState().files)[0]).toEqual(expected)
 			expect(isSingleState(storeService.getState().files)).toBeTruthy()
+			expect(dialogService.showValidationWarningDialog).not.toHaveBeenCalled()
+			expect(dialogService.showValidationErrorDialog).not.toHaveBeenCalled()
 		})
 
 		it("should load the default scenario after loading a valid file", () => {
@@ -172,26 +175,44 @@ describe("codeChartaService", () => {
 		})
 
 		it("should show error on invalid file", () => {
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.fileIsInvalid.title,
+				error: [ERROR_MESSAGES.fileIsInvalid.message],
+				warning: []
+			}
+
 			codeChartaService.loadFiles([{ fileName, content: null }])
 
 			expect(storeService.getState().files).toHaveLength(0)
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalled()
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 
 		it("should show error on a random string", () => {
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.apiVersionIsInvalid.title,
+				error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+				warning: []
+			}
+
 			codeChartaService.loadFiles([{ fileName, content: ("string" as any) as ExportCCFile }])
 
 			expect(storeService.getState().files).toHaveLength(0)
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalled()
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 
 		it("should show error if a file is missing a required property", () => {
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.validationError.title,
+				error: ["Required error:  should have required property 'projectName'"],
+				warning: []
+			}
+
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 			codeChartaService.loadFiles([{ fileName, content: invalidFileContent }])
 
 			expect(storeService.getState().files).toHaveLength(0)
-			expect(dialogService.showValidationErrorDialog).toHaveBeenCalled()
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 
 		it("should convert old blacklist type", () => {
@@ -209,6 +230,12 @@ describe("codeChartaService", () => {
 		})
 
 		it("should break the loop after the first invalid file was validated", () => {
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.validationError.title,
+				error: ["Required error:  should have required property 'projectName'"],
+				warning: []
+			}
+
 			const invalidFileContent = validFileContent
 			delete invalidFileContent.projectName
 
@@ -218,6 +245,7 @@ describe("codeChartaService", () => {
 			])
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
 		})
 	})
 })
