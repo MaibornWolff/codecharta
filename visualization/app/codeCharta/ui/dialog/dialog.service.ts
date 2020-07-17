@@ -36,7 +36,7 @@ export class DialogService {
 	public showValidationWarningDialog(validationResult: CCValidationResult) {
 		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
 
-		const htmlMessage = this.buildHtmlMessage(warningSymbol, validationResult, "warning")
+		const htmlMessage = this.buildHtmlMessage(warningSymbol, validationResult.warning)
 
 		this.showErrorDialog(htmlMessage, validationResult.title)
 	}
@@ -44,15 +44,15 @@ export class DialogService {
 	public showValidationErrorDialog(validationResult: CCValidationResult) {
 		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
 
-		const htmlMessage = this.buildHtmlMessage(errorSymbol, validationResult, "error")
+		const htmlMessage = this.buildHtmlMessage(errorSymbol, validationResult.error)
 
 		this.showErrorDialog(htmlMessage, validationResult.title)
 	}
 
-	private buildHtmlMessage(symbol: string, validationResult: CCValidationResult, errorType: string): string {
+	private buildHtmlMessage(symbol: string, validationResult: string[]): string {
 		const lineBreak = "<br>"
 
-		const errorMessage = validationResult[errorType].map(message => symbol + message).join(lineBreak)
+		const errorMessage = validationResult.map(message => symbol + message).join(lineBreak)
 
 		return "<p>" + errorMessage + "</p>"
 	}
