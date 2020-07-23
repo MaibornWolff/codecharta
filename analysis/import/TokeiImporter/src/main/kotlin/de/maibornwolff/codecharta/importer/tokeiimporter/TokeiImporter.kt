@@ -26,9 +26,9 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "tokeiimporter",
-        description = ["generates cc.json from tokei json"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "tokeiimporter",
+    description = ["generates cc.json from tokei json"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class TokeiImporter(
     private val input: InputStream = System.`in`,
@@ -39,10 +39,10 @@ class TokeiImporter(
     private val logger = KotlinLogging.logger {}
 
     private val attributeTypes = AttributeTypes(type = "nodes")
-            .add("rloc", AttributeType.absolute)
-            .add("loc", AttributeType.absolute)
-            .add("empty_lines", AttributeType.absolute)
-            .add("comment_lines", AttributeType.absolute)
+        .add("rloc", AttributeType.absolute)
+        .add("loc", AttributeType.absolute)
+        .add("empty_lines", AttributeType.absolute)
+        .add("comment_lines", AttributeType.absolute)
 
     private lateinit var projectBuilder: ProjectBuilder
 
@@ -69,22 +69,26 @@ class TokeiImporter(
         print(" ")
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
-
-        val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
-    val gson = Gson()
-    for (languageEntry in languageSummaries.entrySet()) {
-            val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
-            if (languageAnalysisObject.hasChildren()) {
-                for (analysisObject in languageAnalysisObject.stats!!) {
-                    addAsNode(analysisObject)
+        runBlocking(Dispatchers.Default) {
+            val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
+            val gson = Gson()
+            for (languageEntry in languageSummaries.entrySet()) {
+                val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
+                if (languageAnalysisObject.hasChildren()) {
+                    for (analysisObject in languageAnalysisObject.stats!!) {
+                        addAsNode(analysisObject)
+                    }
+                }
             }
-    }
-}
+        }
         projectBuilder.addAttributeTypes(attributeTypes)
 
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(projectBuilder.build(), filePath) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
+            projectBuilder.build(),
+            filePath
+        ) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
 
         return null
     }
@@ -95,11 +99,12 @@ class TokeiImporter(
         val fileName = sanitizedName.substringAfterLast("/")
 
         val node = MutableNode(
-                fileName, attributes = mapOf(
+            fileName, attributes = mapOf(
                 "empty_lines" to analysisObject.blanks,
                 "rloc" to analysisObject.code,
                 "comment_lines" to analysisObject.comments,
-                "loc" to analysisObject.lines)
+                "loc" to analysisObject.lines
+            )
         )
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
@@ -128,7 +133,6 @@ class TokeiImporter(
                 }
             }
         }
-
         return root
     }
 
