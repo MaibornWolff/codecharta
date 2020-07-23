@@ -40,7 +40,6 @@ export class CodeChartaService {
 					this.dialogService.showValidationWarningDialog(e)
 				}
 
-				console.error(e)
 				this.storeService.dispatch(setIsLoadingFile(false))
 			}
 		})
