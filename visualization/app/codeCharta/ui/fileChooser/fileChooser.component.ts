@@ -11,7 +11,6 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { CCValidationResult } from "../../util/fileValidator"
 import { resetFiles } from "../../state/store/files/files.actions"
 
 export class FileChooserController {
@@ -33,16 +32,19 @@ export class FileChooserController {
 			for (const file of element.files) {
 				const isCompressed = file.name.endsWith(".gz")
 				const reader = new FileReader()
+				isCompressed ? reader.readAsArrayBuffer(file) : reader.readAsText(file, "UTF-8")
+
 				reader.onloadstart = () => {
 					this.storeService.dispatch(setIsLoadingFile(true))
 				}
+
 				reader.onload = event => {
 					if (isCompressed) {
 						const zlib = require("zlib")
 
-						content = zlib.unzipSync(Buffer.from((<any>event.target).result))
+						content = zlib.unzipSync(Buffer.from(event.target.result))
 					} else {
-						content = (<any>event.target).result
+						content = event.target.result
 					}
 				}
 				reader.onloadend = () => {
@@ -54,16 +56,12 @@ export class FileChooserController {
 						this.setNewData()
 					}
 				}
-				isCompressed ? reader.readAsArrayBuffer(file) : reader.readAsText(file, "UTF-8")
 			}
 		})
 	}
 
 	public setNewData() {
-		this.codeChartaService.loadFiles(this.files).catch((validationResult: CCValidationResult) => {
-			this.storeService.dispatch(setIsLoadingFile(false))
-			this.printErrors(validationResult)
-		})
+		this.codeChartaService.loadFiles(this.files)
 		this.files = []
 	}
 
@@ -80,19 +78,6 @@ export class FileChooserController {
 		} catch (error) {
 			return
 		}
-	}
-
-	private printErrors(validationResult: CCValidationResult) {
-		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
-		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
-		const lineBreak = "<br>"
-
-		const errorMessage = validationResult.error.map(message => errorSymbol + message).join(lineBreak)
-		const warningMessage = validationResult.warning.map(message => warningSymbol + message).join(lineBreak)
-
-		const htmlMessage = "<p>" + errorMessage + lineBreak + warningMessage + "</p>"
-
-		this.dialogService.showErrorDialog(htmlMessage, validationResult.title)
 	}
 }
 

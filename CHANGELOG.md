@@ -9,6 +9,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- file chooser now accept ".json" files only to avoid accidentally loading incorrect files.
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Blacklisting a building would sometimes not update the map #1098
+- Changes made after opening the filechooser and closing it won't be applied #875
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.50.0] - 2020-07-10
+
+### Added 🚀
+
+- Line between scenario indicator and remove button #1069
+
 ### Changed
 
 - Reduced transition time when opening or collapsing parts of the ribbon bar #1043
@@ -18,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- Changes made after opening the filechooser and closing it won't be applied #875
+- Opening the same file again will now reload the file and reset the application #1032
 - Improve render performance by persisting color conversions #1034
 - Sorting in tree-view not being applied #1040
 

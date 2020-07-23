@@ -15,7 +15,8 @@ import {
 	RecursivePartial,
 	Settings,
 	State,
-	Scenario
+	Scenario,
+	FileMeta
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -24,8 +25,9 @@ import { IRootScopeService } from "angular"
 import { hierarchy } from "d3"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { MetricService } from "../state/metric.service"
-import { FileSelectionState, FileState } from "../model/files/files"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import { FileSelectionState, FileState } from "../model/files/files"
+import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -517,10 +519,9 @@ export const VALID_EDGE: Edge = {
 	}
 }
 
-export const TEST_FILE_CONTENT = {
-	fileName: "noFileName",
+export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
-	apiVersion: "1.1",
+	apiVersion: APIVersions.ONE_POINT_ONE,
 	nodes: [VALID_NODE]
 }
 
@@ -551,7 +552,7 @@ export const TEST_FILE_CONTENT_NO_API = {
 	nodes: [VALID_NODE]
 }
 
-export const FILE_META = {
+export const FILE_META: FileMeta = {
 	fileName: "fileA",
 	projectName: "Sample Project",
 	apiVersion: "1.1"
@@ -1389,8 +1390,16 @@ export const SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED: AddScenarioContent[] = [
 ]
 
 export const SCENARIO_ITEMS: ScenarioItem[] = [
-	{ scenarioName: "Scenario", isScenarioAppliable: true, icons: [{ faIconClass: "fa fa-random", isSaved: false }] },
-	{ scenarioName: "Scenario2", isScenarioAppliable: false, icons: [{ faIconClass: "fa fa-some", isSaved: true }] }
+	{
+		scenarioName: "Scenario",
+		isScenarioAppliable: true,
+		icons: [{ faIconClass: "fa fa-random", isSaved: false, tooltip: "random" }]
+	},
+	{
+		scenarioName: "Scenario2",
+		isScenarioAppliable: false,
+		icons: [{ faIconClass: "fa fa-some", isSaved: true, tooltip: "some" }]
+	}
 ]
 
 export const TEST_NODE_LEAF: Node = {

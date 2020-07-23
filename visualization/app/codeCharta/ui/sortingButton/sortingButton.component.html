@@ -1,3 +1,7 @@
-<md-button class="box-rounded" ng-click="$ctrl.onButtonClick()">
+<md-button
+	class="box-rounded"
+	ng-click="$ctrl.onButtonClick()"
+	ng-attr-title="Toggle sort order (currently {{ $ctrl._viewModel.orderAscending ? 'ascending' : 'descending' }})"
+>
 	<i ng-class="$ctrl._viewModel.orderAscending ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc'"></i>
 </md-button>
