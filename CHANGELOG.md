@@ -9,11 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- file chooser now accept ".json" files only to avoid accidentally loading incorrect files.
+
 ### Changed
 
 ### Removed 🗑
 
 ### Fixed 🐞
+
+- Blacklisting a building would sometimes not update the map #1098
 
 ### Chore 👨‍💻 👩‍💻
 

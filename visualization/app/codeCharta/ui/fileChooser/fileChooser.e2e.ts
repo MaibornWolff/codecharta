@@ -38,4 +38,10 @@ describe("FileChooser", () => {
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 		expect(await page.$eval("#loading-gif-map", el => el["className"])).toContain("ng-hide")
 	})
+
+	it("should not load non json file", async () => {
+		await fileChooser.openFile("./app/codeCharta/assets/logo.png")
+
+		expect(await filePanel.getSelectedName()).toEqual("sample1.cc.json")
+	})
 })

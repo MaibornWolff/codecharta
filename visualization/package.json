@@ -75,7 +75,8 @@
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "eslint --fix \"app/**/*.ts\"",
 		"format": "prettier --write \"./**/*\"",
-		"format:quick": "pretty-quick --staged"
+		"format:quick": "pretty-quick --staged",
+		"schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json"
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
@@ -113,7 +114,8 @@
 		"rfdc": "^1.1.4",
 		"shelljs": "^0.8.1",
 		"three": "^0.89.0",
-		"three-orbit-controls": "^82.1.0"
+		"three-orbit-controls": "^82.1.0",
+		"typescript-json-schema": "^0.42.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.4",
@@ -148,7 +150,7 @@
 		"plop": "^2.6.0",
 		"prettier": "^2.0.5",
 		"pretty-quick": "^2.0.1",
-		"puppeteer": "^4.0.1",
+		"puppeteer": "^5.1.0",
 		"rimraf": "^3.0.2",
 		"sass-loader": "^9.0.1",
 		"style-loader": "^1.2.1",

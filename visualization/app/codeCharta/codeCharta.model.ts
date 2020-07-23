@@ -1,11 +1,12 @@
 import { Vector3 } from "three"
 import { Action } from "redux"
+import { ExportCCFile } from "./codeCharta.api.model"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
 
 export interface NameDataPair {
 	fileName: string
-	content: any
+	content: ExportCCFile
 }
 
 export enum SearchPanelMode {
@@ -13,16 +14,6 @@ export enum SearchPanelMode {
 	flatten = "flatten",
 	exclude = "exclude",
 	minimized = "minimized"
-}
-
-export interface ExportCCFile {
-	projectName: string
-	apiVersion: string
-	nodes: CodeMapNode[]
-	attributeTypes: AttributeTypes | {}
-	edges: Edge[]
-	markedPackages: MarkedPackage[]
-	blacklist: BlacklistItem[]
 }
 
 export interface CCFile {
@@ -38,7 +29,7 @@ export interface CodeMapNode {
 	id?: number
 	type: NodeType
 	children?: CodeMapNode[]
-	attributes: KeyValuePair
+	attributes?: KeyValuePair
 	edgeAttributes?: {
 		[key: string]: EdgeMetricCount
 	}
@@ -147,8 +138,8 @@ export interface ColorRange {
 }
 
 export interface AttributeTypes {
-	nodes: { [key: string]: AttributeTypeValue }
-	edges: { [key: string]: AttributeTypeValue }
+	nodes?: { [key: string]: AttributeTypeValue }
+	edges?: { [key: string]: AttributeTypeValue }
 }
 
 export enum AttributeTypeValue {
@@ -224,16 +215,6 @@ export interface Scenario {
 		edgePreview: number
 		edgeHeight: number
 	}
-}
-
-export interface ExportScenario {
-	name: string
-	settings: RecursivePartial<Settings>
-}
-
-export interface UrlData {
-	filenames: string[]
-	settings: Partial<Settings>
 }
 
 export type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> }

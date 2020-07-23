@@ -1,17 +1,9 @@
 "use strict"
-import {
-	AppSettings,
-	CCLocalStorage,
-	DynamicSettings,
-	MetricData,
-	RecursivePartial,
-	ExportScenario,
-	Scenario,
-	Settings
-} from "../codeCharta.model"
+import { AppSettings, CCLocalStorage, DynamicSettings, MetricData, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import { ExportScenario } from "../codeCharta.api.model"
 
 export class ScenarioHelper {
 	private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"

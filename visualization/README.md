@@ -74,4 +74,4 @@ You can generate the following modules:
 
 [Example Data](/visualization/app/codeCharta/assets/sample1.cc.json)
 
-[JSON Schema](/visualization/app/codeCharta/util/schema.json)
+[JSON Schema](/visualization/app/codeCharta/util/generatedSchema.json)
