@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Blacklisting a building would sometimes not update the map #1098
+- Changes made after opening the filechooser and closing it won't be applied #875
 
 ### Chore 👨‍💻 👩‍💻
 

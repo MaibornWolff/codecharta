@@ -14,6 +14,8 @@ import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/is
 import { resetFiles } from "../../state/store/files/files.actions"
 
 export class FileChooserController {
+	private files: NameDataPair[] = []
+
 	/* @ngInject */
 	constructor(
 		private $scope,
@@ -24,8 +26,8 @@ export class FileChooserController {
 
 	public onImportNewFiles(element) {
 		this.$scope.$apply(() => {
-			this.storeService.dispatch(resetFiles())
 			let content
+			let readFiles = 0
 
 			for (const file of element.files) {
 				const isCompressed = file.name.endsWith(".gz")
@@ -44,20 +46,30 @@ export class FileChooserController {
 					} else {
 						content = event.target.result
 					}
+				}
+				reader.onloadend = () => {
+					readFiles++
+					this.addNameDataPair(file.name, content)
 
-					this.setNewData(file.name, content)
+					if (readFiles === element.files.length) {
+						this.storeService.dispatch(resetFiles())
+						this.setNewData()
+					}
 				}
 			}
 		})
 	}
 
-	public setNewData(fileName: string, content: string) {
-		const nameDataPair: NameDataPair = {
+	public setNewData() {
+		this.codeChartaService.loadFiles(this.files)
+		this.files = []
+	}
+
+	private addNameDataPair(fileName: string, content: string) {
+		this.files.push({
 			fileName,
 			content: FileChooserController.getParsedContent(content)
-		}
-
-		this.codeChartaService.loadFiles([nameDataPair])
+		})
 	}
 
 	private static getParsedContent(content: string): any {
