@@ -50,10 +50,6 @@ export class DialogService {
 	}
 
 	private buildHtmlMessage(symbol: string, validationResult: string[]): string {
-		const lineBreak = "<br>"
-
-		const errorMessage = validationResult.map(message => symbol + message).join(lineBreak)
-
-		return "<p>" + errorMessage + "</p>"
+		return `<p>${validationResult.map(message => symbol + message).join("<br>")}</p>`
 	}
 }
