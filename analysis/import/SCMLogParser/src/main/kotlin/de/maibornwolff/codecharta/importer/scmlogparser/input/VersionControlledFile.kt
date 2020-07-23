@@ -42,7 +42,7 @@ class VersionControlledFile internal constructor(
         // registerCommit() refers to Metric version: each commit is also registered for each separate metric
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
-        println(authors)
+        //println(authors)
         registerModification(modificationForFilename)
     }
 

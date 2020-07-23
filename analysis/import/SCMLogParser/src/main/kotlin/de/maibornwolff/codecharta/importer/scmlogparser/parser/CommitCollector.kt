@@ -14,95 +14,99 @@ internal class CommitCollector private constructor(private val metricsFactory: M
     //remember concrete history
     // is a file always added before it is modified? Modification.Type.ADD
 
-
-    private var renames : MutableMap<String, String> = mutableMapOf() // Map<CurrentName, OldestName>
+    private var renames: MutableMap<String, String> = mutableMapOf() // Map<CurrentName, OldestName>
 
     // Map<String, VersionControlledFile> = [filename, versionControlledFiles.get(filename)]
-
-
 
     private fun collectCommit(versionControlledFiles: MutableMap<String, VersionControlledFile>, commit: Commit) {
         if (commit.isEmpty) {
             return
         }
 
-        val renamedFilenames =  commit.modifications.map {
-            if(it.type == Modification.Type.ADD){
-                val file: VersionControlledFile? = versionControlledFiles[it.currentFilename]
-                if(file == null || file.markedDeleted()) {
-                    val missingVersionControlledFile = VersionControlledFile(it.currentFilename, metricsFactory)
-                    versionControlledFiles[it.currentFilename] = missingVersionControlledFile
+        val renamedFilenames = commit.modifications.map {
+            when (it.type) {
+                Modification.Type.ADD -> {
+                    val file: VersionControlledFile? = versionControlledFiles[it.currentFilename] //does the file exist?
+                    if (file == null) {
+                        val missingVersionControlledFile = VersionControlledFile(it.currentFilename, metricsFactory) // if not create a file
+                        versionControlledFiles[it.currentFilename] = missingVersionControlledFile // and add it to the list
+                    }
+                    it.currentFilename
                 }
-                it.currentFilename
-            }
-            // Modification.Type.DELETE delete a file from map, saves logic
-            else if (it.type == Modification.Type.RENAME) {
-                println(it)
-                val tmp: String? = renames[it.oldFilename]
-                if (tmp != null) {
-                    removeLogic(tmp, versionControlledFiles, true)
-                    renames.remove(it.oldFilename)
-                    renames[it.currentFilename] = tmp
-                tmp
-                } else {
-                    removeLogic(it.oldFilename, versionControlledFiles, true)
-                    renames[it.currentFilename] = it.oldFilename
-                    it.oldFilename
+                Modification.Type.DELETE -> {
+                    versionControlledFiles.remove(it.currentFilename) //remove a deleted file from list
+                    renames.remove(it.currentFilename) // and remove its references in renames
+                    null // we have no corresponding element, as it has been removed
                 }
-            }
-            else{
-                it.currentFilename
-            }
-        }
+                Modification.Type.RENAME -> {
+                    val tmp: String? = renames[it.oldFilename] //do we have an entry?
+                    if (tmp != null) {
+                        preserveOrder(tmp, versionControlledFiles, true) //preserve order of versionControlledFiles
+                        renames.remove(it.oldFilename) //remove old entry
+                        renames[it.currentFilename] = tmp // insert new entry, tracking the current name
+                        tmp
+                    } else {
+                        preserveOrder(it.oldFilename, versionControlledFiles, true) //preserve order of versionControlledFiles
+                        renames[it.currentFilename] = it.oldFilename //add new entry
+                        it.oldFilename
+                    }
+                }
 
+                else -> it.currentFilename
+            }
+
+        }
         renamedFilenames
             .forEach {
                 try {
-                    versionControlledFiles[it]?.registerCommit(commit)
+                    versionControlledFiles[it]?.registerCommit(commit) // try registering commit
                 }
                 catch (e: IllegalStateException){
-                    println("File$it")
+                    println("File$it") // we catch exception, in case a sanity check fails
                 }
             }
     }
 
-    private fun removeLogic(filename: String, versionControlledFiles: MutableMap<String, VersionControlledFile>, rename: Boolean){
+    private fun preserveOrder(
+        filename: String,
+        versionControlledFiles: MutableMap<String, VersionControlledFile>,
+        rename: Boolean
+    ) {
         var removeIDList = mutableListOf<String>()
-        if(versionControlledFiles.containsKey(filename)){
+        if (versionControlledFiles.containsKey(filename)) {
             var startRemoving: Boolean = false
-            for (key in versionControlledFiles.keys) {
-                if(startRemoving){
+            for (key in versionControlledFiles.keys) { //iterate file list
+                if (startRemoving) {
                     val tmp = versionControlledFiles[key]
-                    //versionControlledFiles.remove(key) //can't remove during iteration, write access is blocked
                     if (tmp == null) { //tmp !=null
                         removeIDList.add(key)
                         //versionControlledFiles[key] = tmp
                     }
-                }
-                else if (key == filename){
+                } else if (key == filename) {
                     startRemoving = true
                     val tmp = versionControlledFiles[key]
                     removeIDList.add(key)
-                    // versionControlledFiles.remove(key)
                     if (tmp != null) {
                         versionControlledFiles[tmp.filename] = tmp
                     }
                 }
             }
 
-            for(id in removeIDList){
+            for (id in removeIDList) {
                 versionControlledFiles.remove(id)
             }
 
-            if(rename){
+            if (rename) {
                 renames.remove(filename)
                 //renames[]
             }
         }
     }
 
-    private fun combineForParallelExecution(firstCommits: MutableMap<String, VersionControlledFile>,
-                                            secondCommits: MutableMap<String, VersionControlledFile>): MutableMap<String, VersionControlledFile> {
+    private fun combineForParallelExecution(
+        firstCommits: MutableMap<String, VersionControlledFile>,
+        secondCommits: MutableMap<String, VersionControlledFile>
+    ): MutableMap<String, VersionControlledFile> {
         throw UnsupportedOperationException("parallel collection of commits not supported")
     }
 
@@ -111,11 +115,11 @@ internal class CommitCollector private constructor(private val metricsFactory: M
         fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableMap<String, VersionControlledFile>> {
             val collector = CommitCollector(metricsFactory)
             return Collector.of(Supplier<MutableMap<String, VersionControlledFile>> { mutableMapOf() },
-                    BiConsumer<MutableMap<String, VersionControlledFile>, Commit> { versionControlledFiles, commit ->
-                        collector.collectCommit(versionControlledFiles, commit)
-                    }, BinaryOperator<MutableMap<String, VersionControlledFile>> { firstCommits, secondCommits ->
-                collector.combineForParallelExecution(firstCommits, secondCommits)
-            })
+                BiConsumer<MutableMap<String, VersionControlledFile>, Commit> { versionControlledFiles, commit ->
+                    collector.collectCommit(versionControlledFiles, commit)
+                }, BinaryOperator<MutableMap<String, VersionControlledFile>> { firstCommits, secondCommits ->
+                    collector.combineForParallelExecution(firstCommits, secondCommits)
+                })
         }
     }
 }

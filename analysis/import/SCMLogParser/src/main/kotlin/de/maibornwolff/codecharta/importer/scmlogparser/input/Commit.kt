@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.input
 
 import java.time.OffsetDateTime
 
-class Commit(val author: String, modifications: List<Modification>, val commitDate: OffsetDateTime) {
+class Commit(val author: String,  modifications: List<Modification>, val commitDate: OffsetDateTime) {
 
     val modifications: List<Modification>
 
