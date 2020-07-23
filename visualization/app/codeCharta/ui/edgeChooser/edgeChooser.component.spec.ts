@@ -1,7 +1,6 @@
 import "./edgeChooser.module"
 import { EdgeChooserController } from "./edgeChooser.component"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
@@ -9,6 +8,7 @@ import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
@@ -19,8 +19,8 @@ describe("EdgeChooserController", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		rebuildController()
 		withMockedCodeMapActionsService()
+		rebuildController()
 	})
 
 	function restartSystem() {
@@ -37,11 +37,7 @@ describe("EdgeChooserController", () => {
 	}
 
 	function withMockedCodeMapActionsService() {
-		codeMapActionsService = edgeChooserController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
-			return {
-				updateEdgePreviews: jest.fn()
-			}
-		})()
+		codeMapActionsService.updateEdgePreviews = jest.fn()
 	}
 
 	describe("constructor", () => {
@@ -85,7 +81,7 @@ describe("EdgeChooserController", () => {
 				{ name: "metric2", maxValue: 1 }
 			]
 
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+			edgeChooserController.onEdgeMetricDataChanged(metricData)
 
 			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("metric1")
 			expect(edgeChooserController["_viewModel"].edgeMetricData.map(x => x.name)).toContain("metric2")
@@ -172,7 +168,7 @@ describe("EdgeChooserController", () => {
 				{ name: "metric2", maxValue: 2 }
 			]
 			edgeChooserController["_viewModel"].searchTerm = ""
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+			edgeChooserController.onEdgeMetricDataChanged(metricData)
 
 			edgeChooserController.filterMetricData()
 
@@ -185,7 +181,7 @@ describe("EdgeChooserController", () => {
 				{ name: "metric2", maxValue: 2 }
 			]
 			edgeChooserController["_viewModel"].searchTerm = "ic2"
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+			edgeChooserController.onEdgeMetricDataChanged(metricData)
 
 			edgeChooserController.filterMetricData()
 
@@ -198,7 +194,7 @@ describe("EdgeChooserController", () => {
 				{ name: "metric2", maxValue: 2 }
 			]
 			edgeChooserController["_viewModel"].searchTerm = "fooBar"
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+			edgeChooserController.onEdgeMetricDataChanged(metricData)
 
 			edgeChooserController.filterMetricData()
 
@@ -217,7 +213,7 @@ describe("EdgeChooserController", () => {
 		it("should return the the metricData Array with all Elements, when function is called", () => {
 			const metricData = [{ name: "metric1", maxValue: 1 }]
 			edgeChooserController["_viewModel"].searchTerm = "rlo"
-			edgeChooserController.onEdgeMetricDataUpdated(metricData)
+			edgeChooserController.onEdgeMetricDataChanged(metricData)
 
 			edgeChooserController.clearSearchTerm()
 

@@ -1,13 +1,11 @@
 "use strict"
 
-import { CCFile, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CCFile, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
-import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import * as d3 from "d3"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
@@ -22,13 +20,16 @@ import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingO
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
+import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber {
+export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -40,11 +41,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private metricService: MetricService,
+		private nodeMetricDataService: NodeMetricDataService,
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
-		MetricService.subscribe(this.$rootScope, this)
+		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		this.debounceRendering = _.debounce(() => {
@@ -81,7 +82,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}
 	}
 
-	public onMetricDataAdded(metricData: MetricData[]) {
+	public onMetricDataComplete() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
@@ -99,13 +100,14 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private decorateIfPossible() {
 		const state = this.storeService.getState()
-		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && this.metricService.getMetricData()) {
-			NodeDecorator.decorateMap(this.unifiedMap, this.metricService.getMetricData(), state.fileSettings.blacklist)
+		const nodeMetricData = state.metricData.nodeMetricData
+		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && nodeMetricData) {
+			NodeDecorator.decorateMap(this.unifiedMap, nodeMetricData, state.fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
 				state.fileSettings.blacklist,
-				this.metricService.getMetricData(),
+				nodeMetricData,
 				this.edgeMetricDataService.getMetricData(),
 				isDeltaState(state.files),
 				state.fileSettings.attributeTypes
@@ -165,7 +167,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	private allNecessaryRenderDataAvailable(): boolean {
 		return (
 			fileStatesAvailable(this.storeService.getState().files) &&
-			this.metricService.getMetricData() !== null &&
+			this.storeService.getState().metricData.nodeMetricData !== null &&
 			this.areChosenMetricsInMetricData() &&
 			_.values(this.storeService.getState().dynamicSettings).every(x => {
 				return x !== null && _.values(x).every(x => x !== null)
@@ -176,9 +178,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	private areChosenMetricsInMetricData() {
 		const dynamicSettings = this.storeService.getState().dynamicSettings
 		return (
-			this.metricService.isMetricAvailable(dynamicSettings.areaMetric) &&
-			this.metricService.isMetricAvailable(dynamicSettings.colorMetric) &&
-			this.metricService.isMetricAvailable(dynamicSettings.heightMetric)
+			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.areaMetric) &&
+			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.colorMetric) &&
+			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.heightMetric)
 		)
 	}
 

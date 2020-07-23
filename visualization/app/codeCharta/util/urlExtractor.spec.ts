@@ -34,10 +34,6 @@ describe("urlExtractor", () => {
 		})
 	}
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	describe("getParameterByName", () => {
 		it("should return fileName for given parameter name 'file'", () => {
 			const result = urlExtractor.getParameterByName("file")

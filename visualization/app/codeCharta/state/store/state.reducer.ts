@@ -1,4 +1,5 @@
 // Plop: Import sub-reducer here
+import metricData from "./metricData/metricData.reducer"
 import lookUp from "./lookUp/lookUp.reducer"
 import appSettings from "./appSettings/appSettings.reducer"
 import fileSettings from "./fileSettings/fileSettings.reducer"
@@ -9,6 +10,7 @@ import { combineReducers } from "redux"
 
 const rootReducer = combineReducers({
 	// Plop: Append sub-reducer here
+	metricData,
 	lookUp,
 	fileSettings,
 	appSettings,

@@ -47,10 +47,6 @@ describe("codeMapMouseEventService", () => {
 		NodeDecorator.preDecorateFile(TEST_FILE_WITH_PATHS)
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 

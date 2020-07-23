@@ -1,17 +1,26 @@
 import * as d3 from "d3"
 import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
-import { CCFile, MetricData, BlacklistItem, CodeMapNode, NodeType, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
+import {
+	CCFile,
+	BlacklistItem,
+	CodeMapNode,
+	NodeType,
+	AttributeTypeValue,
+	AttributeTypes,
+	NodeMetricData,
+	EdgeMetricData
+} from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import _ from "lodash"
-import { MetricService } from "../state/metric.service"
 import { HierarchyNode } from "d3"
+import { MetricDataService } from "../state/store/metricData/metricData.service"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
 	let map: CodeMapNode
 	let deltaMap: CodeMapNode
-	let metricData: MetricData[]
-	let edgeMetricData: MetricData[]
+	let metricData: NodeMetricData[]
+	let edgeMetricData: EdgeMetricData[]
 	let blacklist: BlacklistItem[]
 	let attributeTypes: AttributeTypes
 
@@ -405,7 +414,7 @@ describe("nodeDecorator", () => {
 			const h = d3.hierarchy(map)
 
 			h.each(node => {
-				expect(node.data.attributes[MetricService.UNARY_METRIC]).toBeDefined()
+				expect(node.data.attributes[MetricDataService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 
@@ -414,7 +423,7 @@ describe("nodeDecorator", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 			const h = d3.hierarchy(map)
 			h.each(node => {
-				expect(node.data.attributes[MetricService.UNARY_METRIC]).toBeDefined()
+				expect(node.data.attributes[MetricDataService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 	})

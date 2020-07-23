@@ -8,10 +8,6 @@ import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 describe("scenarioHelper", () => {
 	const scenarios: ExportScenario[] = require("../assets/scenarios.json")
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	beforeEach(() => {
 		ScenarioHelper["scenarios"].set("Scenario1", SCENARIO)
 		ScenarioHelper["scenarios"].set("Scenario2", SCENARIO_WITH_ONLY_HEIGHT)

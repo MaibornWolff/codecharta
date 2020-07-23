@@ -22,10 +22,6 @@ describe("ThreeOrbitControlsService", () => {
 
 	let vector: Vector3
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()

@@ -1,7 +1,6 @@
 import "./edgeChooser.component.scss"
-import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
+import { EdgeMetricCount, EdgeMetricData } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import $ from "jquery"
@@ -9,13 +8,14 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export class EdgeChooserController
-	implements EdgeMetricDataServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
-	private originalEdgeMetricData: MetricData[]
+	implements EdgeMetricDataSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+	private originalEdgeMetricData: EdgeMetricData[]
 
 	private _viewModel: {
-		edgeMetricData: MetricData[]
+		edgeMetricData: EdgeMetricData[]
 		edgeMetric: string
 		hoveredEdgeValue: EdgeMetricCount
 		searchTerm: string
@@ -38,9 +38,9 @@ export class EdgeChooserController
 		EdgeMetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
-		this._viewModel.edgeMetricData = edgeMetrics
-		this.originalEdgeMetricData = edgeMetrics
+	public onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
+		this._viewModel.edgeMetricData = edgeMetricData
+		this.originalEdgeMetricData = edgeMetricData
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -56,7 +56,7 @@ export class EdgeChooserController
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.edgeMetric = edgeMetric == null ? "None" : edgeMetric
+		this._viewModel.edgeMetric = edgeMetric == null ? EdgeMetricDataService.NONE_METRIC : edgeMetric
 		this.codeMapActionsService.updateEdgePreviews()
 	}
 

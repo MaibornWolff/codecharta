@@ -111,10 +111,6 @@ describe("nodeContextMenuController", () => {
 		nodeContextMenuController.hideNodeContextMenu = jest.fn()
 	}
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	describe("constructor", () => {
 		it("should subscribe to 'show-node-context-menu' events", () => {
 			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()

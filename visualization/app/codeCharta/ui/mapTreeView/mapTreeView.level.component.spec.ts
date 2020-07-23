@@ -18,7 +18,7 @@ import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { MetricService } from "../../state/metric.service"
+import { MetricDataService } from "../../state/store/metricData/metricData.service"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -30,8 +30,8 @@ describe("MapTreeViewLevelController", () => {
 	beforeEach(() => {
 		restartSystem()
 		withMockedCodeMapPreRenderService()
-		rebuildController()
 		withMockedEventMethods($rootScope)
+		rebuildController()
 	})
 
 	function restartSystem() {
@@ -52,11 +52,7 @@ describe("MapTreeViewLevelController", () => {
 	}
 
 	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = jest.fn<CodeMapPreRenderService>(() => {
-			return {
-				getRenderMap: jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_UNARY)
-			}
-		})()
+		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_UNARY)
 	}
 
 	describe("onBuildingHovered", () => {
@@ -256,7 +252,7 @@ describe("MapTreeViewLevelController", () => {
 
 			const result = mapTreeViewLevelController.getNodeUnaryValue()
 
-			expect(result).toBe(VALID_NODE_WITH_METRICS.attributes[MetricService.UNARY_METRIC])
+			expect(result).toBe(VALID_NODE_WITH_METRICS.attributes[MetricDataService.UNARY_METRIC])
 		})
 	})
 

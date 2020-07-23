@@ -42,10 +42,6 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 

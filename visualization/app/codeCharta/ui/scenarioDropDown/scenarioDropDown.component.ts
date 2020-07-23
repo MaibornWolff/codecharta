@@ -2,14 +2,14 @@
 
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper } from "../../util/scenarioHelper"
-import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import { ColorRange, MetricData } from "../../codeCharta.model"
+import { ColorRange } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 
 export interface ScenarioItem {
 	scenarioName: string
@@ -17,7 +17,7 @@ export interface ScenarioItem {
 	icons: { faIconClass: string; isSaved: boolean }[]
 }
 
-export class ScenarioDropDownController implements MetricServiceSubscriber {
+export class ScenarioDropDownController implements MetricDataSubscriber {
 	private _viewModel: {
 		dropDownScenarioItems: ScenarioItem[]
 	} = {
@@ -28,17 +28,16 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private dialogService: DialogService,
-		private metricService: MetricService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
-		MetricService.subscribe(this.$rootScope, this)
+		MetricDataService.subscribe(this.$rootScope, this)
 	}
 
 	public loadScenarios() {
-		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.metricService.getMetricData())
+		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.storeService.getState().metricData.nodeMetricData)
 	}
 
-	public onMetricDataAdded(metricData: MetricData[]) {
+	public onMetricDataComplete() {
 		this.loadScenarios()
 	}
 

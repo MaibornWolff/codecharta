@@ -1,7 +1,6 @@
 import "./rangeSlider.component.scss"
 import $ from "jquery"
 import { ColorRange } from "../../codeCharta.model"
-import { MetricService } from "../../state/metric.service"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -20,6 +19,7 @@ import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/
 import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export class RangeSliderController
 	implements
@@ -52,7 +52,7 @@ export class RangeSliderController
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
 		private storeService: StoreService,
-		private metricService: MetricService,
+		private nodeMetricDataService: NodeMetricDataService,
 		private colorRangeService: ColorRangeService
 	) {
 		ColorMetricService.subscribe(this.$rootScope, this)
@@ -119,19 +119,21 @@ export class RangeSliderController
 	}
 
 	private updateMaxMetricValue() {
-		this._viewModel.sliderOptions.ceil = this.metricService.getMaxMetricByMetricName(
+		this._viewModel.sliderOptions.ceil = this.nodeMetricDataService.getMaxMetricByMetricName(
 			this.storeService.getState().dynamicSettings.colorMetric
 		)
 	}
 
 	private isMaxMetricValueChanged() {
-		const newMaxValue: number = this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
+		const newMaxValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(
+			this.storeService.getState().dynamicSettings.colorMetric
+		)
 		return this._viewModel.sliderOptions.ceil !== newMaxValue
 	}
 
 	private initSliderOptions() {
 		this._viewModel.sliderOptions = {
-			ceil: this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
+			ceil: this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric),
 			onChange: () => this.applySliderChange(),
 			pushRange: true,
 			disabled: isDeltaState(this.storeService.getState().files)
