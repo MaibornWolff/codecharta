@@ -1,7 +1,5 @@
 import { CC_URL, puppeteer, delay, newPage } from "./puppeteer.helper"
 
-jest.setTimeout(60000)
-
 describe("app", () => {
 	let browser, page
 

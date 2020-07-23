@@ -2,8 +2,6 @@ import { goto, launch, newPage } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
 import { Browser, Page } from "puppeteer"
 
-jest.setTimeout(60000)
-
 describe("CodeCharta logo", () => {
 	let browser: Browser
 	let page: Page

@@ -4,8 +4,6 @@ import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { NodeContextMenuPageObject } from "../nodeContextMenu/nodeContextMenu.po"
 
-jest.setTimeout(60000)
-
 describe("MapTreeViewLevel", () => {
 	let browser: Browser
 	let page: Page

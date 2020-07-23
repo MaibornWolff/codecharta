@@ -2,9 +2,6 @@ import { goto, puppeteer } from "../../../puppeteer.helper"
 import { Browser, Page } from "puppeteer"
 import { {{properCase name}}PageObject } from "./{{camelCase name}}.po"
 
-
-jest.setTimeout(60000)
-
 describe("{{properCase name}}", () => {
 
     let browser: Browser
