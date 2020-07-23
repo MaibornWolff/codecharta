@@ -150,7 +150,7 @@
 		"plop": "^2.6.0",
 		"prettier": "^2.0.5",
 		"pretty-quick": "^2.0.1",
-		"puppeteer": "^5.0.0",
+		"puppeteer": "^5.1.0",
 		"rimraf": "^3.0.2",
 		"sass-loader": "^9.0.1",
 		"style-loader": "^1.2.1",
