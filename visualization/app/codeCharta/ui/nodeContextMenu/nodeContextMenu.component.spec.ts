@@ -31,9 +31,9 @@ describe("nodeContextMenuController", () => {
 		restartSystem()
 		mockElement()
 		mockWindow()
-		rebuildController()
 		withMockedCodeMapActionService()
 		withMockedCodeMapPreRenderService()
+		rebuildController()
 		withMockedHideNodeContextMenuMethod()
 
 		NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
@@ -51,27 +51,11 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function mockElement() {
-		element = jest.fn<Element>(() => {
-			return [
-				{
-					children: [
-						{
-							clientWidth: 50,
-							clientHeight: 100
-						}
-					]
-				}
-			]
-		})()
+		element = [{ children: [{ clientWidth: 50, clientHeight: 100 }] }] as any
 	}
 
 	function mockWindow() {
-		$window = jest.fn<IWindowService>(() => {
-			return {
-				innerWidth: 800,
-				innerHeight: 600
-			}
-		})()
+		$window = { innerWidth: 800, innerHeight: 600 } as IWindowService
 	}
 
 	function rebuildController() {
@@ -87,24 +71,14 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedCodeMapActionService() {
-		codeMapActionsService = nodeContextMenuController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
-			return {
-				getParentMP: jest.fn(),
-				anyEdgeIsVisible: jest.fn(),
-				markFolder: jest.fn(),
-				unmarkFolder: jest.fn()
-			}
-		})()
+		codeMapActionsService.getParentMP = jest.fn()
+		codeMapActionsService["anyEdgeIsVisible"] = jest.fn()
+		codeMapActionsService.markFolder = jest.fn()
+		codeMapActionsService.unmarkFolder = jest.fn()
 	}
 
 	function withMockedCodeMapPreRenderService() {
-		codeMapPreRenderService = nodeContextMenuController["codeMapPreRenderService"] = jest.fn<CodeMapPreRenderService>(() => {
-			return {
-				getRenderMap: jest.fn(() => {
-					return TEST_DELTA_MAP_A.map
-				})
-			}
-		})()
+		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
 	}
 
 	function withMockedHideNodeContextMenuMethod() {

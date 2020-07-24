@@ -1,9 +1,10 @@
 import { ScenarioHelper } from "./scenarioHelper"
-import { RecursivePartial, ExportScenario, Scenario, Settings } from "../codeCharta.model"
+import { RecursivePartial, Scenario, Settings } from "../codeCharta.model"
 import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import { ExportScenario } from "../codeCharta.api.model"
 
 describe("scenarioHelper", () => {
 	const scenarios: ExportScenario[] = require("../assets/scenarios.json")
@@ -70,11 +71,31 @@ describe("scenarioHelper", () => {
 					scenarioName: "Scenario1",
 					isScenarioAppliable: false,
 					icons: [
-						{ faIconClass: "fa-video-camera", isSaved: true },
-						{ faIconClass: "fa-arrows-alt", isSaved: true },
-						{ faIconClass: "fa-arrows-v", isSaved: true },
-						{ faIconClass: "fa-paint-brush", isSaved: true },
-						{ faIconClass: "fa-exchange", isSaved: true }
+						{
+							faIconClass: "fa-video-camera",
+							isSaved: true,
+							tooltip: "Camera angle"
+						},
+						{
+							faIconClass: "fa-arrows-alt",
+							isSaved: true,
+							tooltip: "Area metric"
+						},
+						{
+							faIconClass: "fa-arrows-v",
+							isSaved: true,
+							tooltip: "Height metric"
+						},
+						{
+							faIconClass: "fa-paint-brush",
+							isSaved: true,
+							tooltip: "Color metric"
+						},
+						{
+							faIconClass: "fa-exchange",
+							isSaved: true,
+							tooltip: "Edge metric"
+						}
 					]
 				}
 			]
@@ -92,11 +113,31 @@ describe("scenarioHelper", () => {
 					scenarioName: "Scenario2",
 					isScenarioAppliable: true,
 					icons: [
-						{ faIconClass: "fa-video-camera", isSaved: false },
-						{ faIconClass: "fa-arrows-alt", isSaved: false },
-						{ faIconClass: "fa-arrows-v", isSaved: true },
-						{ faIconClass: "fa-paint-brush", isSaved: false },
-						{ faIconClass: "fa-exchange", isSaved: false }
+						{
+							faIconClass: "fa-video-camera",
+							isSaved: false,
+							tooltip: "Camera angle"
+						},
+						{
+							faIconClass: "fa-arrows-alt",
+							isSaved: false,
+							tooltip: "Area metric"
+						},
+						{
+							faIconClass: "fa-arrows-v",
+							isSaved: true,
+							tooltip: "Height metric"
+						},
+						{
+							faIconClass: "fa-paint-brush",
+							isSaved: false,
+							tooltip: "Color metric"
+						},
+						{
+							faIconClass: "fa-exchange",
+							isSaved: false,
+							tooltip: "Edge metric"
+						}
 					]
 				}
 			]

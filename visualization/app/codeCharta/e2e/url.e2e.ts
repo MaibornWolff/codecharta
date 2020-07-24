@@ -3,8 +3,6 @@ import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import { Browser, Page } from "puppeteer"
 
-jest.setTimeout(15000)
-
 describe("codecharta", () => {
 	let browser: Browser
 	let page: Page

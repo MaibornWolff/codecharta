@@ -14,7 +14,7 @@ import { MetricDataService, MetricDataSubscriber } from "../../state/store/metri
 export interface ScenarioItem {
 	scenarioName: string
 	isScenarioAppliable: boolean
-	icons: { faIconClass: string; isSaved: boolean }[]
+	icons: { faIconClass: string; isSaved: boolean; tooltip: string }[]
 }
 
 export class ScenarioDropDownController implements MetricDataSubscriber {

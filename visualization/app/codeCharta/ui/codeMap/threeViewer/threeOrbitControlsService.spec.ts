@@ -45,23 +45,17 @@ describe("ThreeOrbitControlsService", () => {
 	function withMockedThreeCameraService() {
 		const camera = new PerspectiveCamera(100, 0, 0, 0)
 		camera.position.set(vector.x, vector.y, vector.z)
-		threeCameraService = threeOrbitControlsService["threeCameraService"] = jest.fn<ThreeCameraService>(() => {
-			return {
-				camera
-			}
-		})()
+
+		threeCameraService.camera = camera
+		threeOrbitControlsService["threeCameraService"] = threeCameraService
 	}
 
 	function withMockedThreeSceneService() {
-		threeSceneService = threeOrbitControlsService["threeSceneService"] = jest.fn<ThreeSceneService>(() => {
-			return {
-				scene: {
-					add: jest.fn(),
-					remove: jest.fn()
-				},
-				mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10))
-			}
-		})()
+		threeSceneService.scene.add = jest.fn()
+		threeSceneService.scene.remove = jest.fn()
+		threeSceneService.mapGeometry = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10))
+
+		threeOrbitControlsService["threeSceneService"] = threeSceneService
 	}
 
 	function withMockedControlService() {
