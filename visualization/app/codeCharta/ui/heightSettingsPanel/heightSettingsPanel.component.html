@@ -1,4 +1,4 @@
-<md-slider-container class="md-block">
+<md-slider-container class="md-block" title="Display the labels of the {{ $ctrl._viewModel.amountOfTopLabels }} highest buildings">
 	<span>Labels</span>
 	<md-slider
 		flex
@@ -25,7 +25,7 @@
 	</md-input-container>
 </md-slider-container>
 
-<md-slider-container class="md-block">
+<md-slider-container class="md-block" title="Adjust buildings height">
 	<span>Height</span>
 	<md-slider
 		flex
@@ -60,4 +60,5 @@
 
 <reset-settings-button-component
 	settings-names="appSettings.amountOfTopLabels, appSettings.scaling.y, appSettings.invertHeight"
+	tooltip="Reset height metric settings to their defaults"
 ></reset-settings-button-component>

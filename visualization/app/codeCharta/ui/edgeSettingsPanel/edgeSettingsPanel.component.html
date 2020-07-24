@@ -1,4 +1,9 @@
-<md-slider-container class="md-block">
+<md-slider-container
+	class="md-block"
+	title="Preview the edges of up to {{
+		$ctrl._viewModel.totalAffectedBuildings
+	}} buildings with the highest amount of incoming and outgoing edges"
+>
 	<span>Preview</span>
 	<md-slider
 		flex
@@ -27,7 +32,7 @@
 	</md-input-container>
 </md-slider-container>
 
-<md-slider-container class="md-block">
+<md-slider-container class="md-block" title="Adjust the curve height">
 	<span>Height</span>
 	<md-slider
 		flex
@@ -69,4 +74,5 @@
 
 <reset-settings-button-component
 	settings-names="appSettings.showOnlyBuildingsWithEdges, appSettings.amountOfEdgePreviews, appSettings.edgeHeight"
+	tooltip="Reset edge metric settings to their defaults"
 ></reset-settings-button-component>

@@ -53,7 +53,7 @@ class JasomeProjectBuilder() {
                 jasomePackage.metrics
                         ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
                         ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
-        return MutableNode(jasomePackage.name!!.substringAfterLast('.'), NodeType.Package, attributes)
+        return MutableNode(jasomePackage.name!!.substringAfterLast('.'), NodeType.Folder, attributes)
     }
 
     private fun createNode(jasomeClass: Class): MutableNode {
@@ -61,7 +61,7 @@ class JasomeProjectBuilder() {
                 jasomeClass.metrics
                         ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
                         ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
-        return MutableNode(jasomeClass.name ?: "", NodeType.Class, attributes)
+        return MutableNode(jasomeClass.name ?: "", NodeType.File, attributes)
     }
 
     private fun convertMetricValue(value: String?): BigDecimal {

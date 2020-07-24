@@ -1,4 +1,4 @@
-<md-input-container class="box-rounded">
+<md-input-container class="box-rounded" title="Sort by">
 	<md-select ng-model="$ctrl._viewModel.sortingOption" ng-class="{ 'md-select-fixed-width': true }" ng-change="$ctrl.onChange()">
 		<md-option ng-repeat="option in $ctrl._viewModel.sortingOptions track by $index" ng-value="option">
 			{{ option }}

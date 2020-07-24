@@ -3,8 +3,6 @@ import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
 
-jest.setTimeout(10000)
-
 describe("NodeContextMenu", () => {
 	let browser: Browser
 	let page: Page

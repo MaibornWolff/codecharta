@@ -9,12 +9,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- File chooser now accept ".json" files only to avoid accidentally loading incorrect files.
+
 ### Changed
 
 ### Removed 🗑
 
 ### Fixed 🐞
 
+- Blacklisting a building would sometimes not update the map #1098
+- Changes made after opening the filechooser and closing it won't be applied #875
 - Edge metric list not always updated correctly when loading a new file #1106
 
 ### Chore 👨‍💻 👩‍💻
@@ -34,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Opening the same file again will now reload the file and reset the application #1032
 - Improve render performance by persisting color conversions #1034
 - Sorting in tree-view not being applied #1040
 
