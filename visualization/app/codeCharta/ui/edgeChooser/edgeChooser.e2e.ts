@@ -28,7 +28,7 @@ describe("MapTreeViewLevel", () => {
 
 	describe("EdgeChooser", () => {
 		it("should update metrics correctly after switching to a map with different metrics", async () => {
-			await fileChooser.openFile("./app/codeCharta/ressources/codecharta.cc.json")
+			await fileChooser.openFile("./app/codeCharta/ressources/sample1_with_different_edges.cc.json")
 			await delay(1500)
 
 			await edgeChooser.open()
