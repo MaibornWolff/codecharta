@@ -10,14 +10,13 @@ import { DialogService } from "./ui/dialog/dialog.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setState } from "./state/store/state.actions"
 import { ScenarioHelper } from "./util/scenarioHelper"
-import { MetricService } from "./state/metric.service"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
 	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 
-	constructor(private storeService: StoreService, private dialogService: DialogService, private metricService: MetricService) {}
+	constructor(private storeService: StoreService, private dialogService: DialogService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]) {
 		let printErrors = true
@@ -101,7 +100,7 @@ export class CodeChartaService {
 	private setDefaultScenario() {
 		const { areaMetric, heightMetric, colorMetric } = ScenarioHelper.getDefaultScenarioSetting().dynamicSettings
 		const names = [areaMetric, heightMetric, colorMetric]
-		const metricNames = new Set(this.metricService.getMetricData().map(x => x.name))
+		const metricNames = new Set(this.storeService.getState().metricData.nodeMetricData.map(x => x.name))
 
 		const existsInMetricData = (metric: string) => metricNames.has(metric)
 
