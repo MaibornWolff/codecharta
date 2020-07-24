@@ -2,18 +2,26 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { calculateNewEdgeMetricData, EdgeMetricDataActions } from "./edgeMetricData.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { AttributeTypeValue, BlacklistItem, CodeMapNode, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
+import {
+	AttributeTypes,
+	AttributeTypeValue,
+	BlacklistItem,
+	CodeMapNode,
+	EdgeMetricCount,
+	EdgeMetricData
+} from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { HierarchyNode } from "d3"
-import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
-import { FilesService } from "../../files/files.service"
+import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
+import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
 import { nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
+import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
 
 export interface EdgeMetricDataSubscriber {
 	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[])
 }
 
-export class EdgeMetricDataService implements StoreSubscriber {
+export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscriber, FilesSelectionSubscriber, AttributeTypesSubscriber {
 	private static EDGE_METRIC_DATA_CHANGED_EVENT = "edge-metric-data-changed"
 	public static NONE_METRIC = "None"
 
@@ -21,6 +29,7 @@ export class EdgeMetricDataService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
+		AttributeTypesService.subscribe(this.$rootScope, this)
 	}
 
 	public onStoreChanged(actionType: string) {
@@ -35,6 +44,12 @@ export class EdgeMetricDataService implements StoreSubscriber {
 
 	public onFilesSelectionChanged(files: FileState[]) {
 		this.storeService.dispatch(calculateNewEdgeMetricData(files, this.storeService.getState().fileSettings.blacklist))
+	}
+
+	public onAttributeTypesChanged(attributeTypes: AttributeTypes) {
+		this.storeService.dispatch(
+			calculateNewEdgeMetricData(this.storeService.getState().files, this.storeService.getState().fileSettings.blacklist)
+		)
 	}
 
 	public getMetricNames(): string[] {
