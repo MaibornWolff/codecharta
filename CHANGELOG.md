@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Edge metric list not always updated correctly when loading a new file #1106
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.50.0] - 2020-07-10
