@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.51.0] - 2020-07-24
+
+### Added 🚀
+
 - File chooser now accept ".json" files only to avoid accidentally loading incorrect files.
 
 ### Changed
