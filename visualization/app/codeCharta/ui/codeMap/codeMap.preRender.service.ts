@@ -108,7 +108,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 				this.unifiedMap,
 				state.fileSettings.blacklist,
 				nodeMetricData,
-				this.edgeMetricDataService.getMetricData(),
+				this.storeService.getState().metricData.edgeMetricData,
 				isDeltaState(state.files),
 				state.fileSettings.attributeTypes
 			)

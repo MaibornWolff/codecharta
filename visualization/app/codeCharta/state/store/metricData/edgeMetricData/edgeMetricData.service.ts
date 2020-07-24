@@ -91,10 +91,6 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		return nodeEdgeMetrics
 	}
 
-	public getMetricData(): EdgeMetricData[] {
-		return this.storeService.getState().metricData.edgeMetricData
-	}
-
 	public getAttributeTypeByMetric(metricName: string): AttributeTypeValue {
 		return this.storeService.getState().fileSettings.attributeTypes.edges[metricName]
 	}
