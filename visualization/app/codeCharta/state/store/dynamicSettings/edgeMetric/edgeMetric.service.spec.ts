@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { EdgeMetricAction, EdgeMetricActions, setEdgeMetric } from "./edgeMetric.actions"
 import { EdgeMetricService } from "./edgeMetric.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
-import { EdgeMetricDataService } from "../../../edgeMetricData.service"
+import { EdgeMetricDataService } from "../../metricData/edgeMetricData/edgeMetricData.service"
 
 describe("EdgeMetricService", () => {
 	let edgeMetricService: EdgeMetricService
@@ -75,7 +75,7 @@ describe("EdgeMetricService", () => {
 			]
 			storeService.dispatch(setEdgeMetric("validEdgeMetric"))
 
-			edgeMetricService.onEdgeMetricDataUpdated(metricData)
+			edgeMetricService.onEdgeMetricDataChanged(metricData)
 
 			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("validEdgeMetric")
 		})
@@ -86,7 +86,7 @@ describe("EdgeMetricService", () => {
 			]
 			storeService.dispatch(setEdgeMetric("invalidEdgeMetric"))
 
-			edgeMetricService.onEdgeMetricDataUpdated(metricData)
+			edgeMetricService.onEdgeMetricDataChanged(metricData)
 
 			expect(storeService.getState().dynamicSettings.edgeMetric).toEqual("None")
 		})

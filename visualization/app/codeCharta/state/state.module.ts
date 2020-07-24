@@ -99,6 +99,4 @@ angular
 	.service(_.camelCase(BlacklistService.name), BlacklistService)
 	.service(_.camelCase(InjectorService.name), InjectorService)
 	.service(_.camelCase(StoreService.name), StoreService)
-	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
-	.service(_.camelCase(NodeMetricDataService.name), NodeMetricDataService)
