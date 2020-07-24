@@ -1,10 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`codeMapPreRenderService onMetricDataAdded should decorate and set a new render map 1`] = `
+exports[`codeMapPreRenderService onMetricDataComplete should decorate and set a new render map 1`] = `
 Object {
   "attributes": Object {
-    "mcc": 111,
-    "rloc": 200,
     "unary": 1,
   },
   "children": Array [
@@ -26,8 +24,6 @@ Object {
     },
     Object {
       "attributes": Object {
-        "mcc": 110,
-        "rloc": 100,
         "unary": 1,
       },
       "children": Array [

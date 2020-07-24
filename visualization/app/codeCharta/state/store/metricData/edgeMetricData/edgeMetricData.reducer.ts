@@ -86,7 +86,7 @@ function getMetricDataFromMap(hashMap: Map<string, Map<string, EdgeMetricCount>>
 
 	hashMap.forEach((occurences: any, edgeMetric: any) => {
 		let maximumMetricValue = 0
-		occurences.forEach((value: EdgeMetricCount, _) => {
+		occurences.forEach((value: EdgeMetricCount) => {
 			const combinedValue = value.incoming + value.outgoing
 			if (combinedValue > maximumMetricValue) {
 				maximumMetricValue = combinedValue

@@ -2,24 +2,30 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { EdgeMetricDataAction, EdgeMetricDataActions } from "./edgeMetricData.actions"
+import { calculateNewEdgeMetricData, EdgeMetricDataAction, EdgeMetricDataActions } from "./edgeMetricData.actions"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
-import { EDGE_METRIC_DATA, FILE_STATES, withMockedEventMethods } from "../../../../util/dataMocks"
-import { CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
-import { setFiles } from "../../files/files.actions"
+import { EDGE_METRIC_DATA, FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../../../util/dataMocks"
+import { CodeMapNode } from "../../../../codeCharta.model"
 import { HierarchyNode } from "d3"
 import { FilesService } from "../../files/files.service"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
+import { FileState } from "../../../../model/files/files"
+import _ from "lodash"
 
 describe("EdgeMetricDataService", () => {
 	let edgeMetricDataService: EdgeMetricDataService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
 
+	let files: FileState[]
+
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
+
+		storeService.dispatch(calculateNewEdgeMetricData(files, []))
+
 		withMockedEventMethods($rootScope)
 	})
 
@@ -28,6 +34,9 @@ describe("EdgeMetricDataService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+
+		files = _.cloneDeep(FILE_STATES)
+		files[0].file.map = _.cloneDeep(VALID_NODE_WITH_PATH)
 	}
 
 	function rebuildService() {
@@ -90,24 +99,13 @@ describe("EdgeMetricDataService", () => {
 
 	describe("getMetricNames", () => {
 		it("should return metric names", () => {
-			const pairingRate: EdgeMetricData = { name: "pairing_rate", maxValue: 1 }
-			const avgCommits: EdgeMetricData = { name: "average_commits", maxValue: 2 }
-			edgeMetricDataService["edgeMetricData"] = [pairingRate, avgCommits]
-
 			const metricNames = edgeMetricDataService.getMetricNames()
 
-			expect(metricNames).toEqual(["pairing_rate", "average_commits"])
+			expect(metricNames).toEqual(["pairingRate", "avgCommits", "otherMetric", EdgeMetricDataService.NONE_METRIC])
 		})
 	})
 
 	describe("getAmountOfAffectedBuildings", () => {
-		beforeEach(() => {
-			const filesForPairingRate = new Map()
-			filesForPairingRate.set("foo", 2)
-			edgeMetricDataService["nodeEdgeMetricsMap"] = new Map()
-			edgeMetricDataService["nodeEdgeMetricsMap"].set("pairing_rate", filesForPairingRate)
-		})
-
 		it("should return 0 if metric is non-existent", () => {
 			const affectedNodes = edgeMetricDataService.getAmountOfAffectedBuildings("bar")
 
@@ -115,24 +113,13 @@ describe("EdgeMetricDataService", () => {
 		})
 
 		it("should return number of affected buildings", () => {
-			const affectedNodes = edgeMetricDataService.getAmountOfAffectedBuildings("pairing_rate")
+			const affectedNodes = edgeMetricDataService.getAmountOfAffectedBuildings("pairingRate")
 
-			expect(affectedNodes).toEqual(1)
+			expect(affectedNodes).toEqual(3)
 		})
 	})
 
 	describe("getNodesWithHighestValues", () => {
-		beforeEach(() => {
-			const filesForPairingRate = new Map()
-			filesForPairingRate.set("foo", 2)
-			filesForPairingRate.set("bar", 4)
-			filesForPairingRate.set("foobar", 1)
-
-			edgeMetricDataService["nodeEdgeMetricsMap"] = new Map()
-			edgeMetricDataService["nodeEdgeMetricsMap"].set("pairing_rate", filesForPairingRate)
-			edgeMetricDataService["sortNodeEdgeMetricsMap"]()
-		})
-
 		it("should return empty if metric is non-existent", () => {
 			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("something", 11)
 
@@ -140,19 +127,18 @@ describe("EdgeMetricDataService", () => {
 		})
 
 		it("should return the correct nodes", () => {
-			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("pairing_rate", 2)
+			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("pairingRate", 2)
 
-			expect(nodePaths).toEqual(["foo", "bar"])
+			expect(nodePaths).toEqual(["/root/Parent Leaf/small leaf", "/root/big leaf"])
 		})
 	})
 
 	describe("getMetricValuesForNode", () => {
 		it("should return Edge Metric counts for node", () => {
-			storeService.dispatch(setFiles(FILE_STATES))
-			edgeMetricDataService.onFilesSelectionChanged(FILE_STATES)
 			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
 
 			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node)
+
 			expect(metricsForNode.get("pairingRate")).toEqual({ incoming: 0, outgoing: 1 })
 		})
 	})

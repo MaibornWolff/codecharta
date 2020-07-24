@@ -5,13 +5,16 @@ import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { BlacklistType } from "../../../../codeCharta.model"
 import { MetricDataService } from "../metricData.service"
 import _ from "lodash"
+import { NodeDecorator } from "../../../../util/nodeDecorator"
 
 describe("nodeMetricData", () => {
 	let fileState: FileState
 
 	beforeEach(() => {
+		const file = _.cloneDeep(TEST_DELTA_MAP_A)
+		NodeDecorator.preDecorateFile(file)
 		fileState = {
-			file: _.cloneDeep(TEST_DELTA_MAP_A),
+			file,
 			selectedAs: FileSelectionState.Single
 		}
 	})
@@ -39,17 +42,12 @@ describe("nodeMetricData", () => {
 	})
 
 	describe("Action: CALCULATE_NEW_METRIC_DATA", () => {
-		it("should return an empty array if there are no visible fileStates", () => {
-			const result = nodeMetricData([], calculateNewNodeMetricData([], []))
-
-			expect(result).toHaveLength(0)
-		})
-
 		it("should return a sorted array of metricData sorted by name calculated from visibleFileStates", () => {
 			const expected = [
 				{ maxValue: 1000, name: "functions" },
 				{ maxValue: 100, name: "mcc" },
-				{ maxValue: 100, name: "rloc" }
+				{ maxValue: 100, name: "rloc" },
+				{ maxValue: 1, name: MetricDataService.UNARY_METRIC }
 			]
 
 			const result = nodeMetricData([], calculateNewNodeMetricData([fileState], []))
@@ -61,7 +59,8 @@ describe("nodeMetricData", () => {
 			const expected = [
 				{ maxValue: 1000, name: "functions" },
 				{ maxValue: 100, name: "mcc" },
-				{ maxValue: 100, name: "rloc" }
+				{ maxValue: 70, name: "rloc" },
+				{ maxValue: 1, name: MetricDataService.UNARY_METRIC }
 			]
 
 			const result = nodeMetricData(

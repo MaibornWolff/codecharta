@@ -1,6 +1,6 @@
 import { edgeMetricData, nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
 import { calculateNewEdgeMetricData, EdgeMetricDataAction, setEdgeMetricData } from "./edgeMetricData.actions"
-import { EDGE_METRIC_DATA, FILE_STATES } from "../../../../util/dataMocks"
+import { EDGE_METRIC_DATA, FILE_STATES, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
 import { FileState } from "../../../../model/files/files"
 import _ from "lodash"
 
@@ -9,6 +9,7 @@ describe("edgeMetricData", () => {
 
 	beforeEach(() => {
 		fileStates = _.cloneDeep(FILE_STATES)
+		fileStates[0].file.map = _.cloneDeep(VALID_NODE_WITH_PATH)
 	})
 
 	describe("Default State", () => {
@@ -60,7 +61,7 @@ describe("edgeMetricData", () => {
 		it("metrics Map should be sorted entries", () => {
 			edgeMetricData([], calculateNewEdgeMetricData(fileStates, []))
 
-			const pairingRateMap = nodeEdgeMetricsMap["nodeEdgeMetricsMap"].get("pairingRate")
+			const pairingRateMap = nodeEdgeMetricsMap.get("pairingRate")
 			expect(pairingRateMap.get("/root/Parent Leaf/small leaf")).toEqual({ incoming: 2, outgoing: 0 })
 			const avgCommitsMap = nodeEdgeMetricsMap.get("avgCommits")
 			expect(avgCommitsMap.get("/root/big leaf")).toEqual({ incoming: 0, outgoing: 1 })

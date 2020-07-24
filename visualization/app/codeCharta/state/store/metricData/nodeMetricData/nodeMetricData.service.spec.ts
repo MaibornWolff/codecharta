@@ -6,7 +6,7 @@ import { NodeMetricDataAction, NodeMetricDataActions, setNodeMetricData } from "
 import { NodeMetricDataService } from "./nodeMetricData.service"
 import { METRIC_DATA, STATE, withMockedEventMethods } from "../../../../util/dataMocks"
 import { setState } from "../../state.actions"
-import { AttributeTypeValue } from "../../../../codeCharta.model"
+import { AttributeTypeValue, NodeMetricData } from "../../../../codeCharta.model"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../files/files.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
@@ -15,6 +15,12 @@ describe("NodeMetricDataService", () => {
 	let nodeMetricDataService: NodeMetricDataService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
+
+	const metricData: NodeMetricData[] = [
+		{ name: "rloc", maxValue: 999999 },
+		{ name: "functions", maxValue: 999999 },
+		{ name: "mcc", maxValue: 999999 }
+	]
 
 	beforeEach(() => {
 		restartSystem()
@@ -27,6 +33,8 @@ describe("NodeMetricDataService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+
+		storeService.dispatch(setNodeMetricData(metricData))
 	}
 
 	function rebuildService() {

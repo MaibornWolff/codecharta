@@ -1081,7 +1081,16 @@ export const FILE_STATES: FileState[] = [
 	}
 ]
 
-// @ts-ignore
+export const METRIC_DATA: NodeMetricData[] = [
+	{ name: "mcc", maxValue: 1 },
+	{ name: "rloc", maxValue: 2 }
+]
+
+export const EDGE_METRIC_DATA: EdgeMetricData[] = [
+	{ name: "pairing_rate", maxValue: 10 },
+	{ name: "average_commits", maxValue: 20 }
+]
+
 export const STATE: State = {
 	fileSettings: {
 		attributeTypes: {
@@ -1159,6 +1168,10 @@ export const STATE: State = {
 	lookUp: {
 		idToNode: new Map(),
 		idToBuilding: new Map()
+	},
+	metricData: {
+		nodeMetricData: METRIC_DATA,
+		edgeMetricData: EDGE_METRIC_DATA
 	}
 }
 
@@ -1497,16 +1510,6 @@ export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
 	TEST_NODE_LEAF,
 	DEFAULT_STATE.appSettings.mapColors.neutral
 )
-
-export const METRIC_DATA: NodeMetricData[] = [
-	{ name: "mcc", maxValue: 1 },
-	{ name: "rloc", maxValue: 2 }
-]
-
-export const EDGE_METRIC_DATA: EdgeMetricData[] = [
-	{ name: "pairing_rate", maxValue: 10 },
-	{ name: "average_commits", maxValue: 20 }
-]
 
 export const BLACKLIST: BlacklistItem[] = [
 	{
