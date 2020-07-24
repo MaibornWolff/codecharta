@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- file chooser now accept ".json" files only to avoid accidentally loading incorrect files.
+- File chooser now accept ".json" files only to avoid accidentally loading incorrect files.
 
 ### Changed
 
@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Blacklisting a building would sometimes not update the map #1098
 - Changes made after opening the filechooser and closing it won't be applied #875
+- Edge metric list not always updated correctly when loading a new file #1106
 
 ### Chore 👨‍💻 👩‍💻
 
