@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Blacklisting a building would sometimes not update the map #1098
 - Changes made after opening the filechooser and closing it won't be applied #875
+- Number of incoming and outgoing edges not visible when hovering over a node #1095
 
 ### Chore 👨‍💻 👩‍💻
 
