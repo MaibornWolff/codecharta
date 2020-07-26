@@ -3,12 +3,14 @@ import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
 import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
+import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 
 describe("RibbonBar", () => {
 	let browser: Browser
 	let page: Page
 
 	let searchPanel: SearchPanelPageObject
+	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let ribbonBar: RibbonBarPageObject
 	let metricChooser: MetricChooserPageObject
 
@@ -24,6 +26,7 @@ describe("RibbonBar", () => {
 		page = await newPage(browser)
 
 		searchPanel = new SearchPanelPageObject(page)
+		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
 		ribbonBar = new RibbonBarPageObject(page)
 		metricChooser = new MetricChooserPageObject(page)
 
@@ -31,7 +34,7 @@ describe("RibbonBar", () => {
 	})
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
-		await searchPanel.toggleTreeViewMode()
+		await searchPanelModeSelector.toggleTreeView()
 		await searchPanel.hoverRootNodeInTreeViewSearchPanel()
 
 		const actual = await metricChooser.getAreaMetricValue()

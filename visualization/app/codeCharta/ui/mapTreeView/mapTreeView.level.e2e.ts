@@ -31,7 +31,7 @@ describe("MapTreeViewLevel", () => {
 
 	describe("Blacklist", () => {
 		it("excluding a building should exclude it from the tree-view as well", async () => {
-			await searchPanelModeSelector.openTreeView()
+			await searchPanelModeSelector.toggleTreeView()
 			await mapTreeViewLevel.openContextMenu()
 			await nodeContextMenu.exclude()
 
