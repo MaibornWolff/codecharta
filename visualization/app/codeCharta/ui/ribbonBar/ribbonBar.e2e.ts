@@ -2,6 +2,7 @@ import { goto, launch, newPage } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
+import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
 
 describe("RibbonBar", () => {
 	let browser: Browser
@@ -9,6 +10,7 @@ describe("RibbonBar", () => {
 
 	let searchPanel: SearchPanelPageObject
 	let ribbonBar: RibbonBarPageObject
+	let metricChooser: MetricChooserPageObject
 
 	beforeAll(async () => {
 		browser = await launch()
@@ -23,6 +25,7 @@ describe("RibbonBar", () => {
 
 		searchPanel = new SearchPanelPageObject(page)
 		ribbonBar = new RibbonBarPageObject(page)
+		metricChooser = new MetricChooserPageObject(page)
 
 		await goto(page)
 	})
@@ -31,7 +34,7 @@ describe("RibbonBar", () => {
 		await searchPanel.toggleTreeViewMode()
 		await searchPanel.hoverRootNodeInTreeViewSearchPanel()
 
-		const actual = await ribbonBar.getAreaMetricValue()
+		const actual = await metricChooser.getAreaMetricValue()
 		expect(actual).toContain("600")
 	})
 
