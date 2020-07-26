@@ -21,7 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- File chooser now accept ".json" files only to avoid accidentally loading incorrect files.
+- File chooser now accept ".json" files only to avoid accidentally loading incorrect files
+- Lots of tooltips #1030
 
 ### Changed
 
