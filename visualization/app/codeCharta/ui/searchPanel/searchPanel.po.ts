@@ -15,12 +15,4 @@ export class SearchPanelPageObject {
 		const classNames = await this.page.$eval("search-panel-component md-card", el => el["className"])
 		return classNames.includes(this.EXPANDED)
 	}
-
-	public async rightClickRootNodeInTreeViewSearchPanel() {
-		await this.page.click("map-tree-view-level-component > .tree-root > .tree-element-label-0", { button: "right" })
-	}
-
-	public async hoverRootNodeInTreeViewSearchPanel() {
-		await this.page.hover("map-tree-view-level-component > .tree-root > .tree-element-label-0")
-	}
 }
