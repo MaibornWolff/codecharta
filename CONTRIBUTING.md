@@ -24,7 +24,7 @@ For more detailed information check out the source [Branch Types by CKSource](ht
 | Types       | Changelog | Description                                        |
 | ----------- | --------- | -------------------------------------------------- |
 | `feature`   | yes       | New feature I add or expand                        |
-| `bug`       | yes       | Bug fix                                            |
+| `fix`       | yes       | Bug fix                                            |
 | `docs`      | yes       | Updated documentation                              |
 | `revert`    | yes       | Revert of some commit                              |
 | `codestyle` | no        | Our beloved code style improvements / refactorings |
@@ -33,7 +33,7 @@ For more detailed information check out the source [Branch Types by CKSource](ht
 Examples:
 
 - `feature/123/add-settings-option-xyz`
-- `bug/124/solve-unecpected-settings-errors`
+- `fix/124/solve-unecpected-settings-errors`
 
 ### Commit Messages
 
