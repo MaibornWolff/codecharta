@@ -1,8 +1,9 @@
 import { Page } from "puppeteer"
-import { delay } from "../../../puppeteer.helper"
+import { click } from "../../../puppeteer.helper"
 
 export class RibbonBarPageObject {
 	private EXPANDED = "expanded"
+	private TRANSITION_TIME = 500
 
 	constructor(private page: Page) {}
 
@@ -12,8 +13,8 @@ export class RibbonBarPageObject {
 	}
 
 	public async togglePanel(selector: string) {
-		await this.page.click(`ribbon-bar-component #${selector}-card .section .section-title`)
-		await delay(400)
+		await click(`ribbon-bar-component #${selector}-card .section .section-title`)
+		await this.page.waitFor(this.TRANSITION_TIME)
 	}
 
 	public async focusSomething(): Promise<void> {

@@ -1,4 +1,4 @@
-import { CC_URL, delay, goto } from "./puppeteer.helper"
+import { goto, waitForElementRemoval } from "./puppeteer.helper"
 
 describe("app", () => {
 	beforeEach(async () => {
@@ -9,7 +9,7 @@ describe("app", () => {
 		page.on("console", msg => {
 			expect(msg.type).not.toBe("error")
 		})
-		await page.goto(CC_URL)
-		await delay(3000)
+		await goto()
+		await waitForElementRemoval("#loading-gif-file")
 	})
 })

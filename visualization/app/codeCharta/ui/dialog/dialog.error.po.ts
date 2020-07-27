@@ -1,4 +1,5 @@
 import { Page } from "puppeteer"
+import { click, waitForElementRemoval } from "../../../puppeteer.helper"
 
 export class DialogErrorPageObject {
 	constructor(private page: Page) {}
@@ -8,6 +9,7 @@ export class DialogErrorPageObject {
 	}
 
 	public async clickOk() {
-		return this.page.click("md-dialog-actions button")
+		await click("md-dialog-actions button")
+		await waitForElementRemoval("md-dialog-actions button")
 	}
 }

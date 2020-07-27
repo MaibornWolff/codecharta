@@ -1,19 +1,23 @@
 import * as path from "path"
-import { Page } from "puppeteer"
 
 export const puppeteer = require("puppeteer")
 export const CC_URL = `file:${path.join(__dirname, "../dist/webpack/index.html")}`
 
-export const delay = async timeout => {
-	await page.waitFor(timeout)
+export const goto = async (url: string = CC_URL): Promise<void> => {
+	await page.goto(url)
+	await waitForElementRemoval("#loading-gif-file")
+	await page.waitFor(500)
 }
 
-export const goto = async (): Promise<void> => {
-	await page.goto(CC_URL)
-	await delay(1000) // Wait for Loading Gif to finish
+export async function waitForElementRemoval(selector: string) {
+	await page.waitForSelector(selector, { visible: false })
 }
 
-export const enableConsole = async (page: Page) => {
+export async function click(selector: string) {
+	await page.$eval(selector, (elem: HTMLElement) => elem.click())
+}
+
+export const enableConsole = async () => {
 	/* eslint-disable no-console */
 	page.on("console", async (msg: any) => console[msg._type](...(await Promise.all(msg.args().map(arg => arg.jsonValue())))))
 }

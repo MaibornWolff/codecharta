@@ -1,12 +1,14 @@
 import { Page } from "puppeteer"
-import { delay } from "../../../puppeteer.helper"
+import { click } from "../../../puppeteer.helper"
 
 export class SearchPanelModeSelectorPageObject {
+	private TRANSITION_TIME = 500
+
 	constructor(private page: Page) {}
 
 	public async toggleTreeView() {
-		await this.page.click("#tree-view")
-		await delay(500)
+		await click("#tree-view")
+		await this.page.waitFor(this.TRANSITION_TIME)
 	}
 
 	public async isTreeViewOpen() {

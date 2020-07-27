@@ -8,8 +8,6 @@ describe("MapTreeViewLevel", () => {
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let nodeContextMenu: NodeContextMenuPageObject
 
-	beforeAll(async () => {})
-
 	beforeEach(async () => {
 		await goto()
 

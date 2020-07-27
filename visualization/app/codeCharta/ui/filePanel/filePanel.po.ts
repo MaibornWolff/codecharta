@@ -1,4 +1,5 @@
 import { Page } from "puppeteer"
+import { click } from "../../../puppeteer.helper"
 
 export class FilePanelPageObject {
 	constructor(private page: Page) {}
@@ -8,10 +9,13 @@ export class FilePanelPageObject {
 	}
 
 	public async clickChooser() {
-		return this.page.click("file-panel-component md-select")
+		await click("file-panel-component md-select")
 	}
 
 	public async getAllNames() {
+		await this.clickChooser()
+
+		await this.page.waitForSelector(".md-select-menu-container.md-active > md-select-menu")
 		const content = await this.page.$eval(".md-select-menu-container.md-active > md-select-menu", el => el["innerText"])
 		return content.split("\n")
 	}

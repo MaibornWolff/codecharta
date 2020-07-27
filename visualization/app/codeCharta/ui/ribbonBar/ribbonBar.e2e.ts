@@ -12,8 +12,6 @@ describe("RibbonBar", () => {
 	let metricChooser: MetricChooserPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 
-	beforeAll(async () => {})
-
 	beforeEach(async () => {
 		await goto()
 

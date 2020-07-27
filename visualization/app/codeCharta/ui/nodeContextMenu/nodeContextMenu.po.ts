@@ -1,5 +1,5 @@
 import { Page } from "puppeteer"
-import { delay } from "../../../puppeteer.helper"
+import { waitForElementRemoval } from "../../../puppeteer.helper"
 
 export class NodeContextMenuPageObject {
 	constructor(private page: Page) {}
@@ -11,7 +11,7 @@ export class NodeContextMenuPageObject {
 	}
 
 	public async exclude() {
-		this.page.click("#exclude-button")
-		await delay(500)
+		await this.page.click("#exclude-button")
+		await waitForElementRemoval("#loading-gif-map")
 	}
 }

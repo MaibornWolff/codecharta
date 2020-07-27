@@ -1,4 +1,5 @@
 import { Page } from "puppeteer"
+import { click } from "../../../puppeteer.helper"
 
 export class MapTreeViewLevelPageObject {
 	constructor(private page: Page) {}
@@ -8,7 +9,7 @@ export class MapTreeViewLevelPageObject {
 	}
 
 	public async openFolder(path: string) {
-		await this.page.click(`[id='${path}']`)
+		await click(`[id='${path}']`)
 	}
 
 	public async hoverNode(path: string) {
