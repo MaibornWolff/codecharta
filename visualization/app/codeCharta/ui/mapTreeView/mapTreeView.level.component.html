@@ -6,7 +6,7 @@
 >
 	<div
 		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label"
-		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap }"
+		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap, marked: $ctrl._viewModel.isMarked }"
 		ng-mouseenter="$ctrl.onMouseEnter()"
 		ng-mouseleave="$ctrl.onMouseLeave()"
 		ng-right-click="$ctrl.openNodeContextMenu($event)"

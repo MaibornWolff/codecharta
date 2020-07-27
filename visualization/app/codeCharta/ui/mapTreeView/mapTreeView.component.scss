@@ -35,6 +35,10 @@ map-tree-view-component {
 			background-color: #efefef;
 			border-radius: 2px;
 		}
+		&.marked {
+			background-color: #efefef;
+			border-radius: 2px;
+		}
 
 		.unary-number {
 			color: #a3a3a3;
