@@ -23,6 +23,10 @@ export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
 }
 
+export interface HideNodeContextMenuSubscriber {
+	onHideNodeContextMenu()
+}
+
 export class NodeContextMenuController
 	implements
 		BuildingRightClickedEventSubscriber,
@@ -33,6 +37,7 @@ export class NodeContextMenuController
 		BlacklistSubscriber,
 		MarkedPackagesSubscriber {
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
+	private static HIDE_NODE_CONTEXT_MENU_EVENT = "hide-node-context-menu"
 
 	private _viewModel: {
 		codeMapNode: CodeMapNode
@@ -89,6 +94,7 @@ export class NodeContextMenuController
 	}
 
 	public onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
+		this.hideNodeContextMenu()
 		this._viewModel.codeMapNode = CodeMapHelper.getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
@@ -112,6 +118,7 @@ export class NodeContextMenuController
 	public hideNodeContextMenu(mousePosition = new Vector2(-1, -1)) {
 		if (this.isClickInsideNodeContextMenu(mousePosition)) {
 			this._viewModel.codeMapNode = null
+			this.$rootScope.$broadcast(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT)
 			this.synchronizeAngularTwoWayBinding()
 		}
 	}
@@ -227,6 +234,12 @@ export class NodeContextMenuController
 	public static subscribeToShowNodeContextMenu($rootScope: IRootScopeService, subscriber: ShowNodeContextMenuSubscriber) {
 		$rootScope.$on(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, (event, data) => {
 			subscriber.onShowNodeContextMenu(data.path, data.type, data.x, data.y)
+		})
+	}
+
+	public static subscribeToHideNodeContextMenu($rootScope: IRootScopeService, subscriber: HideNodeContextMenuSubscriber) {
+		$rootScope.$on(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT, () => {
+			subscriber.onHideNodeContextMenu()
 		})
 	}
 }
