@@ -1,4 +1,4 @@
-import { click, waitForElementRemoval } from "../../../puppeteer.helper"
+import { waitForElementRemoval } from "../../../puppeteer.helper"
 
 export class DialogErrorPageObject {
 	public async getMessage() {
@@ -6,7 +6,8 @@ export class DialogErrorPageObject {
 	}
 
 	public async clickOk() {
-		await click("md-dialog-actions button")
+		await expect(page).toClick("md-dialog-actions button")
+
 		await waitForElementRemoval("md-dialog-actions button")
 	}
 }

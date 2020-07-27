@@ -1,12 +1,10 @@
-import { click } from "../../../puppeteer.helper"
-
 export class FilePanelPageObject {
 	public async getSelectedName() {
 		return await page.$eval("file-panel-component md-select .md-text", el => el["innerText"])
 	}
 
 	public async clickChooser() {
-		await click("file-panel-component md-select")
+		await expect(page).toClick("file-panel-component md-select")
 	}
 
 	public async getAllNames() {

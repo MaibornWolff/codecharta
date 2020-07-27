@@ -1,10 +1,8 @@
-import { click } from "../../../puppeteer.helper"
-
 export class SearchPanelModeSelectorPageObject {
 	private TRANSITION_TIME = 500
 
 	public async toggleTreeView() {
-		await click("#tree-view")
+		await expect(page).toClick("#tree-view")
 		await page.waitFor(this.TRANSITION_TIME)
 	}
 

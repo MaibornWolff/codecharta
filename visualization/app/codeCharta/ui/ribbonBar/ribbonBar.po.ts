@@ -1,5 +1,3 @@
-import { click } from "../../../puppeteer.helper"
-
 export class RibbonBarPageObject {
 	private EXPANDED = "expanded"
 	private TRANSITION_TIME = 500
@@ -10,7 +8,7 @@ export class RibbonBarPageObject {
 	}
 
 	public async togglePanel(selector: string) {
-		await click(`ribbon-bar-component #${selector}-card .section .section-title`)
+		await expect(page).toClick(`ribbon-bar-component #${selector}-card .section .section-title`)
 		await page.waitFor(this.TRANSITION_TIME)
 	}
 

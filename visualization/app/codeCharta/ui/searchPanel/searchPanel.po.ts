@@ -1,11 +1,9 @@
-import { click } from "../../../puppeteer.helper"
-
 export class SearchPanelPageObject {
 	private EXPANDED = "expanded"
 	private TRANSITION_TIME = 500
 
 	public async toggle() {
-		await click("search-panel-component md-card .section .section-title")
+		await expect(page).toClick("search-panel-component md-card .section .section-title")
 		await page.waitFor(this.TRANSITION_TIME)
 	}
 

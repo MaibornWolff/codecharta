@@ -8,7 +8,7 @@ export class NodeContextMenuPageObject {
 	}
 
 	public async exclude() {
-		await page.click("#exclude-button")
+		await expect(page).toClick("#exclude-button")
 		await waitForElementRemoval("#loading-gif-map")
 	}
 }

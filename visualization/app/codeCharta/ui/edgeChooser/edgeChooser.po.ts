@@ -1,8 +1,6 @@
-import { click } from "../../../puppeteer.helper"
-
 export class EdgeChooserPageObject {
 	public async open() {
-		await click("edge-chooser-component md-select")
+		await expect(page).toClick("edge-chooser-component md-select")
 	}
 
 	public async getMetrics() {

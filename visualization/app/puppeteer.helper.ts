@@ -13,10 +13,6 @@ export async function waitForElementRemoval(selector: string) {
 	await page.waitForSelector(selector, { visible: false })
 }
 
-export async function click(selector: string) {
-	await page.$eval(selector, (elem: HTMLElement) => elem.click())
-}
-
 export const enableConsole = async () => {
 	/* eslint-disable no-console */
 	page.on("console", async (msg: any) => console[msg._type](...(await Promise.all(msg.args().map(arg => arg.jsonValue())))))

@@ -1,12 +1,10 @@
-import { click } from "../../../puppeteer.helper"
-
 export class MapTreeViewLevelPageObject {
 	public async openContextMenu(path: string) {
-		await page.click(`[id='${path}']`, { button: "right" })
+		await expect(page).toClick(`[id='${path}']`, { button: "right" })
 	}
 
 	public async openFolder(path: string) {
-		await click(`[id='${path}']`)
+		await expect(page).toClick(`[id='${path}']`)
 	}
 
 	public async hoverNode(path: string) {
