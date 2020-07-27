@@ -4,12 +4,11 @@ Cool, that you are interested in contributing. We like pull request and suggesti
 
 If you are planning in making a major contribution we appreciate your opening an issue or contacting [us](mailto:codecharta@github.com).
 
-Some things that will increase the chance of that your pull request to be accepted:
+Things that increase the chance that a pull request will be accepted:
 
 - Write clean code.
 - Write tests for your new code and regression tests after fixing a bug.
 - Write a good commit message and include the issue number at the end `#123`.
-- Code for Analysis sub-project only in Java and Kotlin languages.
 - Update the CHANGELOG.md with any changes/additions made
 
 We will _NOT_ accept any pull requests that don't follow the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md).
@@ -56,7 +55,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 - The subject line always uses the **imperative mood** and is able to **complete the following sentence**:
   > If applied, this commit will ...
 
-#### Correct commits
+#### Good commit messages
 
 - ... Add new function to do X #123
 - ... Add test for X #123
