@@ -8,4 +8,10 @@ export class SearchPanelModeSelectorPageObject {
 		await this.page.click("#tree-view")
 		await delay(500)
 	}
+
+	public async isTreeViewOpen() {
+		const classNames = await this.page.$eval("#tree-view", el => el.className)
+
+		return classNames.includes("current")
+	}
 }
