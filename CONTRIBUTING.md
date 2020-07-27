@@ -11,7 +11,7 @@ Things that increase the chance that a pull request will be accepted:
 - Write a good commit message and include the issue number at the end `#123`.
 - Update the CHANGELOG.md with any changes/additions made
 
-We will _NOT_ accept any pull requests that don't follow the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md).
+This project is bound by a [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Naming conventions
 
