@@ -55,7 +55,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 - The subject line always uses the **imperative mood** and is able to **complete the following sentence**:
   > If applied, this commit will ...
 
-#### Correct commits
+#### Good commit messages
 
 - ... Add new function to do X #123
 - ... Add test for X #123
