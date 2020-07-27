@@ -26,7 +26,6 @@ describe("codecharta", () => {
 	}
 
 	async function checkAllFileNames(shouldBe: string[]) {
-		await page.waitFor(1000)
 		const names = await filePanel.getAllNames()
 		expect(names).toEqual(shouldBe)
 	}
