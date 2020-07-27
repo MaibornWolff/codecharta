@@ -31,11 +31,14 @@ describe("MapTreeViewLevel", () => {
 
 	describe("Blacklist", () => {
 		it("excluding a building should exclude it from the tree-view as well", async () => {
-			await searchPanelModeSelector.openTreeView()
-			await mapTreeViewLevel.openContextMenu()
+			const filePath = "/root/ParentLeaf/smallLeaf.html"
+
+			await searchPanelModeSelector.toggleTreeView()
+			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
+			await mapTreeViewLevel.openContextMenu(filePath)
 			await nodeContextMenu.exclude()
 
-			expect(await mapTreeViewLevel.nodeExists()).toBeFalsy()
+			expect(await mapTreeViewLevel.nodeExists(filePath)).toBeFalsy()
 		})
 	})
 })
