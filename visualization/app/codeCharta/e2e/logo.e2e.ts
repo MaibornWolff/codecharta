@@ -9,7 +9,7 @@ describe("CodeCharta logo", () => {
 	beforeEach(async () => {
 		await goto()
 
-		logo = new LogoPageObject(page)
+		logo = new LogoPageObject()
 	})
 
 	it("should have correct version", async () => {

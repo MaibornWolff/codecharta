@@ -11,9 +11,9 @@ describe("NodeContextMenu", () => {
 	beforeEach(async () => {
 		await goto()
 
-		contextMenu = new NodeContextMenuPageObject(page)
-		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
-		mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
+		contextMenu = new NodeContextMenuPageObject()
+		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
+		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 	})
 
 	it("right clicking a folder should open a context menu with color options", async () => {

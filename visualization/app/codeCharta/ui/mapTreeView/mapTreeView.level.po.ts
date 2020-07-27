@@ -1,11 +1,8 @@
-import { Page } from "puppeteer"
 import { click } from "../../../puppeteer.helper"
 
 export class MapTreeViewLevelPageObject {
-	constructor(private page: Page) {}
-
 	public async openContextMenu(path: string) {
-		await this.page.click(`[id='${path}']`, { button: "right" })
+		await page.click(`[id='${path}']`, { button: "right" })
 	}
 
 	public async openFolder(path: string) {
@@ -13,10 +10,10 @@ export class MapTreeViewLevelPageObject {
 	}
 
 	public async hoverNode(path: string) {
-		await this.page.hover(`[id='${path}']`)
+		await page.hover(`[id='${path}']`)
 	}
 
 	public async nodeExists(path: string) {
-		return !!(await this.page.$(`[id='${path}']`))
+		return !!(await page.$(`[id='${path}']`))
 	}
 }

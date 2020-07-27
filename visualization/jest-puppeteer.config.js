@@ -3,6 +3,6 @@ module.exports = {
 		headless: true,
 		args: ["--allow-file-access-from-files", "--start-maximized"],
 		defaultViewport: null
-		// slowMo: 500
+		// slowMo: 250
 	}
 }

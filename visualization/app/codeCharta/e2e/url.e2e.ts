@@ -7,8 +7,8 @@ describe("codecharta", () => {
 	let filePanel: FilePanelPageObject
 
 	beforeEach(async () => {
-		dialogError = new DialogErrorPageObject(page)
-		filePanel = new FilePanelPageObject(page)
+		dialogError = new DialogErrorPageObject()
+		filePanel = new FilePanelPageObject()
 
 		await goto()
 	})

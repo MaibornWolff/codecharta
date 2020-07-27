@@ -9,8 +9,8 @@ describe("FileChooser", () => {
 	beforeEach(async () => {
 		await goto()
 
-		fileChooser = new FileChooserPageObject(page)
-		filePanel = new FilePanelPageObject(page)
+		fileChooser = new FileChooserPageObject()
+		filePanel = new FilePanelPageObject()
 	})
 
 	it("should load another cc.json", async () => {

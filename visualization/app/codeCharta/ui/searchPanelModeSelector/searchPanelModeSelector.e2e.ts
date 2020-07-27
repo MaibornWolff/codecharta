@@ -7,7 +7,7 @@ describe("SearchPanelModeSelector", () => {
 	beforeEach(async () => {
 		await goto()
 
-		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
+		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 	})
 
 	it("should open and close the tree-view when clicking on the tree-view icon", async () => {
