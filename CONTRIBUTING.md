@@ -9,7 +9,6 @@ Some things that will increase the chance of that your pull request to be accept
 - Write clean code.
 - Write tests for your new code and regression tests after fixing a bug.
 - Write a good commit message and include the issue number at the end `#123`.
-- Code for Analysis sub-project only in Java and Kotlin languages.
 - Update the CHANGELOG.md with any changes/additions made
 
 We will _NOT_ accept any pull requests that don't follow the Contributor Covenant [code of conduct](CODE_OF_CONDUCT.md).
