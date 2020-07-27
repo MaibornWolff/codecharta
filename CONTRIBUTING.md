@@ -26,9 +26,9 @@ For more detailed information check out the source [Branch Types by CKSource](ht
 | `feature`   | yes       | New feature I add or expand                        |
 | `bug`       | yes       | Bug fix                                            |
 | `docs`      | yes       | Updated documentation                              |
+| `revert`    | yes       | Revert of some commit                              |
 | `codestyle` | no        | Our beloved code style improvements / refactorings |
 | `tech`      | no        | Other kinds of technical changes                   |
-| `revert`    | no        | Revert of some commit                              |
 
 Examples:
 
@@ -63,7 +63,7 @@ To unify the appearance of all commit messages we only accept commit messages us
 - ... Update getting started documentation #123
 - ... Remove deprecated methods #123
 
-#### Wrong commits
+#### Bad commit messages
 
 - _adding new function to do X for Y_ #123
 - _added service X_ #123
