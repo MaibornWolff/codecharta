@@ -4,7 +4,7 @@ Cool, that you are interested in contributing. We like pull request and suggesti
 
 If you are planning in making a major contribution we appreciate your opening an issue or contacting [us](mailto:codecharta@github.com).
 
-Some things that will increase the chance of that your pull request to be accepted:
+Things that increase the chance that a pull request will be accepted:
 
 - Write clean code.
 - Write tests for your new code and regression tests after fixing a bug.
