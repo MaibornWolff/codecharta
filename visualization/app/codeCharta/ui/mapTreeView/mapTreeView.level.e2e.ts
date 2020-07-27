@@ -1,32 +1,21 @@
-import { goto, launch, newPage } from "../../../puppeteer.helper"
-import { Browser, Page } from "puppeteer"
+import { goto } from "../../../puppeteer.helper"
 import { MapTreeViewLevelPageObject } from "./mapTreeView.level.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { NodeContextMenuPageObject } from "../nodeContextMenu/nodeContextMenu.po"
 
 describe("MapTreeViewLevel", () => {
-	let browser: Browser
-	let page: Page
-
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let nodeContextMenu: NodeContextMenuPageObject
 
-	beforeAll(async () => {
-		browser = await launch()
-	})
-
-	afterAll(async () => {
-		await browser.close()
-	})
+	beforeAll(async () => {})
 
 	beforeEach(async () => {
-		page = await newPage(browser)
+		await goto()
+
 		mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
 		nodeContextMenu = new NodeContextMenuPageObject(page)
-
-		await goto(page)
 	})
 
 	describe("Blacklist", () => {

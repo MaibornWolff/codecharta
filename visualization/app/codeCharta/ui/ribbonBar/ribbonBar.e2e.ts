@@ -1,39 +1,27 @@
-import { goto, launch, newPage } from "../../../puppeteer.helper"
+import { goto } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
-import { Browser, Page } from "puppeteer"
 import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 
 describe("RibbonBar", () => {
-	let browser: Browser
-	let page: Page
-
 	let searchPanel: SearchPanelPageObject
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let ribbonBar: RibbonBarPageObject
 	let metricChooser: MetricChooserPageObject
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 
-	beforeAll(async () => {
-		browser = await launch()
-	})
-
-	afterAll(async () => {
-		await browser.close()
-	})
+	beforeAll(async () => {})
 
 	beforeEach(async () => {
-		page = await newPage(browser)
+		await goto()
 
 		searchPanel = new SearchPanelPageObject(page)
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
 		ribbonBar = new RibbonBarPageObject(page)
 		metricChooser = new MetricChooserPageObject(page)
 		mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
-
-		await goto(page)
 	})
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {

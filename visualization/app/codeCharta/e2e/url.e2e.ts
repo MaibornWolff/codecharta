@@ -1,22 +1,10 @@
-import { CC_URL, newPage, puppeteer } from "../../puppeteer.helper"
+import { CC_URL, goto } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
-import { Browser, Page } from "puppeteer"
 
 describe("codecharta", () => {
-	let browser: Browser
-	let page: Page
-
 	beforeEach(async () => {
-		browser = await puppeteer.launch({
-			headless: true,
-			args: ["--allow-file-access-from-files"]
-		})
-		page = await newPage(browser)
-	})
-
-	afterEach(async () => {
-		await browser.close()
+		await goto()
 	})
 
 	async function handleErrorDialog() {

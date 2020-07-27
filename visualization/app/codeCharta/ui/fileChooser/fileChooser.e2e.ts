@@ -1,26 +1,16 @@
-import { goto, newPage, launch } from "../../../puppeteer.helper"
+import { goto } from "../../../puppeteer.helper"
 import { FileChooserPageObject } from "./fileChooser.po"
 import { FilePanelPageObject } from "../filePanel/filePanel.po"
 
 describe("FileChooser", () => {
-	let browser, page
 	let fileChooser: FileChooserPageObject
 	let filePanel: FilePanelPageObject
 
-	beforeAll(async () => {
-		browser = await launch()
-	})
-
-	afterAll(async () => {
-		await browser.close()
-	})
-
 	beforeEach(async () => {
-		page = await newPage(browser)
+		await goto()
+
 		fileChooser = new FileChooserPageObject(page)
 		filePanel = new FilePanelPageObject(page)
-
-		await goto(page)
 	})
 
 	it("should load another cc.json", async () => {

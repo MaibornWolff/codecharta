@@ -1,29 +1,16 @@
-import { delay, goto, launch, newPage } from "../../../puppeteer.helper"
-import { Browser, Page } from "puppeteer"
+import { delay, goto } from "../../../puppeteer.helper"
 import { EdgeChooserPageObject } from "./edgeChooser.po"
 import { FileChooserPageObject } from "../fileChooser/fileChooser.po"
 
 describe("MapTreeViewLevel", () => {
-	let browser: Browser
-	let page: Page
-
 	let edgeChooser: EdgeChooserPageObject
 	let fileChooser: FileChooserPageObject
 
-	beforeAll(async () => {
-		browser = await launch()
-	})
-
-	afterAll(async () => {
-		await browser.close()
-	})
-
 	beforeEach(async () => {
-		page = await newPage(browser)
+		await goto()
+
 		edgeChooser = new EdgeChooserPageObject(page)
 		fileChooser = new FileChooserPageObject(page)
-
-		await goto(page)
 	})
 
 	describe("EdgeChooser", () => {

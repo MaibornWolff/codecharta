@@ -1,23 +1,13 @@
-import { goto, newPage, launch } from "../../../puppeteer.helper"
+import { goto } from "../../../puppeteer.helper"
 import { SearchPanelModeSelectorPageObject } from "./searchPanelModeSelector.po"
 
 describe("SearchPanelModeSelector", () => {
-	let browser, page
 	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 
-	beforeAll(async () => {
-		browser = await launch()
-	})
-
-	afterAll(async () => {
-		await browser.close()
-	})
-
 	beforeEach(async () => {
-		page = await newPage(browser)
-		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
+		await goto()
 
-		await goto(page)
+		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
 	})
 
 	it("should open and close the tree-view when clicking on the tree-view icon", async () => {
