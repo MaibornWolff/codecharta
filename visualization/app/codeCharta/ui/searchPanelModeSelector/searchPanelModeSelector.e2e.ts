@@ -20,14 +20,11 @@ describe("SearchPanelModeSelector", () => {
 		await goto(page)
 	})
 
-	it("should open the tree-view when clicking on the tree-view icon", async () => {
+	it("should open and close the tree-view when clicking on the tree-view icon", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 
 		expect(await searchPanelModeSelector.isTreeViewOpen()).toBeTruthy()
-	})
 
-	it("should open and close tree-view when clicking on the tree-view icon twice", async () => {
-		await searchPanelModeSelector.toggleTreeView()
 		await searchPanelModeSelector.toggleTreeView()
 
 		expect(await searchPanelModeSelector.isTreeViewOpen()).toBeFalsy()
