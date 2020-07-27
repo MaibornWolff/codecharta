@@ -79,5 +79,4 @@ To unify the appearance of all commit messages we only accept commit messages us
 - Follow the given template when opening the PR
 - Name the PR like its branch name (e.x. `Tech/123/my branch name`). The name is usually created by GitHub automatically
 - Add the correct labels
-- The tick list _Definition of Done_ is not checked by the developer, but by the reviewer
 - The PR Assignee is only used by the reviewer to see who is reviewing it
