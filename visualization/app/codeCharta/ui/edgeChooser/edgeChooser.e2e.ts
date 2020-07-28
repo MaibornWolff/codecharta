@@ -46,14 +46,16 @@ describe("MapTreeViewLevel", () => {
 		it("should display the amount of incoming and outgoing edges next to the metric name", async () => {
 			await edgeChooser.selectEdgeMetric("pairingRate")
 			await searchPanel.toggle()
-			await mapTreeViewLevel.hoverNode()
+			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
+			await mapTreeViewLevel.hoverNode("/root/ParentLeaf/smallLeaf.html")
 
 			expect(edgeChooser.isEdgeCountAvailable()).toBeTruthy()
 		})
 
 		it("should not display the amount of incoming and outgoing edges of buildings for the none metric", async () => {
 			await searchPanel.toggle()
-			await mapTreeViewLevel.hoverNode()
+			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
+			await mapTreeViewLevel.hoverNode("/root/ParentLeaf/smallLeaf.html")
 
 			expect(await edgeChooser.isEdgeCountAvailable()).toBeFalsy()
 		})
