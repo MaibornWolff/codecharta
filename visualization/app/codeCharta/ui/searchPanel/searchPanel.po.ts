@@ -1,14 +1,20 @@
 export class SearchPanelPageObject {
 	private EXPANDED = "expanded"
-	private TRANSITION_TIME = 500
 
 	public async toggle() {
+		const wasOpen = await this.isOpen()
+
 		await expect(page).toClick("search-panel-component md-card .section .section-title")
-		await page.waitFor(this.TRANSITION_TIME)
+
+		if (wasOpen) {
+			await page.waitFor(() => !document.querySelector(`#search-panel-card.${this.EXPANDED}`))
+		} else {
+			await page.waitForSelector(`#search-panel-card.${this.EXPANDED}`)
+		}
 	}
 
 	public async isOpen(): Promise<boolean> {
-		const classNames = await page.$eval("search-panel-component md-card", el => el["className"])
+		const classNames = await page.$eval("#search-panel-card", el => el["className"])
 		return classNames.includes(this.EXPANDED)
 	}
 }
