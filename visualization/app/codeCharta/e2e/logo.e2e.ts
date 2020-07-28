@@ -5,9 +5,9 @@ describe("CodeCharta logo", () => {
 	let logo: LogoPageObject
 
 	beforeEach(async () => {
-		await goto()
-
 		logo = new LogoPageObject()
+
+		await goto()
 	})
 
 	it("should have correct version", async () => {

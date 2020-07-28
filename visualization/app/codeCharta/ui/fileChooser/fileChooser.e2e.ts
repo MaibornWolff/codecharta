@@ -7,10 +7,10 @@ describe("FileChooser", () => {
 	let filePanel: FilePanelPageObject
 
 	beforeEach(async () => {
-		await goto()
-
 		fileChooser = new FileChooserPageObject()
 		filePanel = new FilePanelPageObject()
+
+		await goto()
 	})
 
 	it("should load another cc.json", async () => {

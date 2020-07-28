@@ -7,10 +7,10 @@ describe("MapTreeViewLevel", () => {
 	let fileChooser: FileChooserPageObject
 
 	beforeEach(async () => {
-		await goto()
-
 		edgeChooser = new EdgeChooserPageObject()
 		fileChooser = new FileChooserPageObject()
+
+		await goto()
 	})
 
 	describe("EdgeChooser", () => {

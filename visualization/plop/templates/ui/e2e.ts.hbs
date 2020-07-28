@@ -6,9 +6,9 @@ describe("{{properCase name}}", () => {
     let {{camelCase name}} : {{properCase name}}PageObject
 
     beforeEach(async () => {
-    	await goto()
-
     	{{camelCase name}} = new {{properCase name}}PageObject()
+
+    	await goto()
     })
 
     it("should do something", async () => {

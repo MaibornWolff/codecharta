@@ -9,11 +9,11 @@ describe("MapTreeViewLevel", () => {
 	let nodeContextMenu: NodeContextMenuPageObject
 
 	beforeEach(async () => {
-		await goto()
-
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		nodeContextMenu = new NodeContextMenuPageObject()
+
+		await goto()
 	})
 
 	describe("Blacklist", () => {

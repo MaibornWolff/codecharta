@@ -9,11 +9,11 @@ describe("NodeContextMenu", () => {
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 
 	beforeEach(async () => {
-		await goto()
-
 		contextMenu = new NodeContextMenuPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
+
+		await goto()
 	})
 
 	it("right clicking a folder should open a context menu with color options", async () => {

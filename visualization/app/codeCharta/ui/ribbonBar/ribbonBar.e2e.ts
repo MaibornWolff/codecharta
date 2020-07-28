@@ -13,13 +13,13 @@ describe("RibbonBar", () => {
 	let mapTreeViewLevel: MapTreeViewLevelPageObject
 
 	beforeEach(async () => {
-		await goto()
-
 		searchPanel = new SearchPanelPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		ribbonBar = new RibbonBarPageObject()
 		metricChooser = new MetricChooserPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
+
+		await goto()
 	})
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
