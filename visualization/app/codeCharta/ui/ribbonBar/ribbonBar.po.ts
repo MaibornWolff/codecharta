@@ -1,15 +1,21 @@
 export class RibbonBarPageObject {
 	private EXPANDED = "expanded"
-	private TRANSITION_TIME = 500
 
 	public async isPanelOpen(selector: string): Promise<boolean> {
-		const classNames = await page.$eval(`ribbon-bar-component #${selector}-card`, el => el["className"])
+		const classNames = await page.$eval(`#${selector}-card`, el => el["className"])
 		return classNames.includes(this.EXPANDED)
 	}
 
 	public async togglePanel(selector: string) {
-		await expect(page).toClick(`ribbon-bar-component #${selector}-card .section .section-title`)
-		await page.waitFor(this.TRANSITION_TIME)
+		const wasOpen = await this.isPanelOpen(selector)
+
+		await expect(page).toClick(`#${selector}-card .section .section-title`)
+
+		if (wasOpen) {
+			await page.waitFor(() => !document.querySelector(`ribbon-bar-component #${selector}-card.${this.EXPANDED}`))
+		} else {
+			await page.waitForSelector(`#${selector}-card.${this.EXPANDED}`)
+		}
 	}
 
 	public async focusSomething(): Promise<void> {
