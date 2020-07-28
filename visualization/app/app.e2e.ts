@@ -1,4 +1,4 @@
-import { goto, waitForElementRemoval } from "./puppeteer.helper"
+import { goto } from "./puppeteer.helper"
 
 describe("app", () => {
 	beforeEach(async () => {
@@ -10,6 +10,6 @@ describe("app", () => {
 			expect(msg.type).not.toBe("error")
 		})
 		await goto()
-		await waitForElementRemoval("#loading-gif-file")
+		await page.waitForSelector("#loading-gif-file", { visible: false })
 	})
 })
