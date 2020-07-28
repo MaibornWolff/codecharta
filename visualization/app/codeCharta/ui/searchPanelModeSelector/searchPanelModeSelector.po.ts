@@ -1,5 +1,7 @@
 export class SearchPanelModeSelectorPageObject {
 	public async toggleTreeView() {
+		await page.waitForSelector("#tree-view")
+
 		const wasOpen = await this.isTreeViewOpen()
 
 		await expect(page).toClick("#tree-view")
