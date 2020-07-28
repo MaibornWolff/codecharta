@@ -6,7 +6,6 @@ export const CC_URL = `file:${path.join(__dirname, "../dist/webpack/index.html")
 export const goto = async (url: string = CC_URL): Promise<void> => {
 	await page.goto(url)
 	await waitForElementRemoval("#loading-gif-file")
-	await page.waitFor(500)
 }
 
 export async function waitForElementRemoval(selector: string) {
