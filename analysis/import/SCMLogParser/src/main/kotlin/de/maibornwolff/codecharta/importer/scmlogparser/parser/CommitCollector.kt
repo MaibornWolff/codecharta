@@ -26,24 +26,27 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
         val renamedFilenames = commit.modifications.map {
             var possibleConflictName: String;
-            if(nameConflictsMap.containsKey(it.currentFilename)){
-                possibleConflictName = it.currentFilename + "_\\0_" + nameConflictsMap[it.currentFilename] //if conflict[it.currentFilename] ==> tmp = conflict.key_\0_conflict.value
-            }
-            else{
+            if (nameConflictsMap.containsKey(it.currentFilename)) {
+                possibleConflictName =
+                    it.currentFilename + "_\\0_" + nameConflictsMap[it.currentFilename] //if conflict[it.currentFilename] ==> tmp = conflict.key_\0_conflict.value
+            } else {
                 possibleConflictName = it.currentFilename //else tmp = it.currentFilename
             }
             when (it.type) {
                 Modification.Type.ADD -> {
-                    val file: VersionControlledFile? = versionControlledFiles[possibleConflictName] //does the file exist?
+                    val file: VersionControlledFile? =
+                        versionControlledFiles[possibleConflictName] //does the file exist?
                     if (file == null) {
-                        val missingVersionControlledFile = VersionControlledFile(possibleConflictName, metricsFactory) // if not create a file
-                        versionControlledFiles[possibleConflictName] = missingVersionControlledFile // and add it to the list
+                        val missingVersionControlledFile =
+                            VersionControlledFile(possibleConflictName, metricsFactory) // if not create a file
+                        versionControlledFiles[possibleConflictName] =
+                            missingVersionControlledFile // and add it to the list
                     }
                     possibleConflictName
                 }
                 Modification.Type.DELETE -> {
                     val filename = renamesMap[possibleConflictName]
-                    versionControlledFiles.remove(if (filename == null)  possibleConflictName else filename) //remove a deleted file from list
+                    versionControlledFiles.remove(if (filename == null) possibleConflictName else filename) //remove a deleted file from list
                     renamesMap.remove(possibleConflictName) // and remove its references in renames
                     null // we have no corresponding element, as it has been removed
                 }
@@ -59,27 +62,26 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     //conflict<file.currentName, marker> taken => conflict<file.currentName, marker+1>
                     //vcF <conflict.key_conflict.value, newFile>
 
-
-                    if(versionControlledFiles.containsKey(possibleConflictName)) {//is the filename contained in vCF
+                    if (versionControlledFiles.containsKey(possibleConflictName)) {//is the filename contained in vCF
                         val marker: Int? =
                             nameConflictsMap[possibleConflictName] //check if the file is already contained with a marker
                         val newMarker: Int =
                             if (marker != null) marker + 1 else 0 //increment the marker for additional tracking
 
                         val newVCFFileName =
-                            it.currentFilename + "_\\0_" + marker // generate new vCF entry we work with it.currentFilename to preserve the string structure
+                            it.currentFilename + "_\\0_" + newMarker // generate new vCF entry we work with it.currentFilename to preserve the string structure
                         val newFile = VersionControlledFile(newVCFFileName, metricsFactory)
                         versionControlledFiles[newVCFFileName] = newFile
                     }
 
                     if (tmp != null) {
                         //*1 used to be here, but I think we need to account for it in both cases
-                      //preserveOrder(tmp, versionControlledFiles, true) //preserve order of versionControlledFiles
+                        //  preserveOrder(tmp, versionControlledFiles, true) //preserve order of versionControlledFiles
                         renamesMap.remove(it.oldFilename) //remove old entry
                         renamesMap[possibleConflictName] = tmp // insert new entry, tracking the current name
                         tmp
                     } else {
-                       // preserveOrder(it.oldFilename, versionControlledFiles, true) //preserve order of versionControlledFiles
+                        //  preserveOrder(it.oldFilename, versionControlledFiles, true) //preserve order of versionControlledFiles
                         renamesMap[possibleConflictName] = it.oldFilename //add new entry
                         it.oldFilename
                     }
@@ -93,8 +95,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             .forEach {
                 try {
                     versionControlledFiles[it]?.registerCommit(commit) // try registering commit
-                }
-                catch (e: IllegalStateException){
+                } catch (e: IllegalStateException) {
                     println("File$it") // we catch exception, in case a sanity check fails
                 }
             }
@@ -112,7 +113,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 if (startRemoving) {
                     val tmp = versionControlledFiles[key]
 
-                    if(tmp != null)
+                    if (tmp != null)
                         versionControlledFiles[key] = tmp
 
                     if (tmp == null) { //tmp !=null
