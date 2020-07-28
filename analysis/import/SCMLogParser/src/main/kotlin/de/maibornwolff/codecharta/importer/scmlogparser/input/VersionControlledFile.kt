@@ -14,9 +14,8 @@ class VersionControlledFile internal constructor(
     val actualFilename: String
     val authors = mutableSetOf<String>()
 
-    // current filename in a specific revision, might change in history
-    var filename: String
-        private set
+    // the current filename in a specific revision, might change in history
+    private var filename: String
     private var markedDeleted = false
 
     val metricsMap: Map<String, Number>
@@ -37,20 +36,17 @@ class VersionControlledFile internal constructor(
     /**
      * registers commits in chronological order
      */
-    fun registerCommit(commit: Commit) {
-        val modificationForFilename = commit.getModificationForFilename(filename)
-        // registerCommit() refers to Metric version: each commit is also registered for each separate metric
+    fun registerCommit(commit: Commit, modification: Modification) {
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
-        //println(authors)
-        registerModification(modificationForFilename)
+        registerModification(modification)
     }
 
     private fun registerModification(modification: Modification) {
         val type = modification.type
         when (type) {
             Modification.Type.DELETE -> markedDeleted = true
-            Modification.Type.RENAME -> filename = modification.oldFilename
+            Modification.Type.RENAME -> filename = modification.currentFilename
             else -> {
             }
         }
