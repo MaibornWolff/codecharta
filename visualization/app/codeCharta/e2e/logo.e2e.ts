@@ -4,8 +4,6 @@ import { LogoPageObject } from "./logo.po"
 describe("CodeCharta logo", () => {
 	let logo: LogoPageObject
 
-	beforeAll(async () => {})
-
 	beforeEach(async () => {
 		await goto()
 
