@@ -45,7 +45,6 @@ class VersionControlledFile internal constructor(
     private fun registerModification(modification: Modification) {
         val type = modification.type
         when (type) {
-            Modification.Type.DELETE -> markedDeleted = true
             Modification.Type.RENAME -> filename = modification.currentFilename
             else -> {
             }

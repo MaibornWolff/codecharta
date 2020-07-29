@@ -16,6 +16,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
     private var renamesMap: MutableMap<String, String> = mutableMapOf() // Map<CurrentName, OldestName>
     private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf() //Map <CurrentName, NumberOfConflicts>
+    private var commitsParsed: Int = 0
 
     // Map<String, VersionControlledFile> = [filename, versionControlledFiles.get(filename)]
 
@@ -66,10 +67,11 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                         val marker: Int? =
                             nameConflictsMap[it.currentFilename] //check if the file is already contained with a marker
                         val newMarker: Int =
-                            if (marker != null) marker + 1 else 0 //increment the marker for additional tracking
+                            if (marker != null) marker + 1 else 0 //increment the marker for further tracking
 
                         newVCFFileName =
                             it.currentFilename + "_\\0_" + newMarker // generate new vCF entry we work with it.currentFilename to preserve the string structure
+                        nameConflictsMap[it.currentFilename] = newMarker
                     }
                     if (renameName != null) {
                         renamesMap.remove(possibleConflictName) //remove old entry
@@ -79,9 +81,12 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     }
                     versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }
-
                 else -> versionControlledFiles[VCFName]?.registerCommit(commit, it)
             }
+
+            if(commitsParsed == 195)
+                println("Hey")
+            commitsParsed++
 
         }
     }
