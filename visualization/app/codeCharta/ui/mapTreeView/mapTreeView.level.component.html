@@ -2,7 +2,6 @@
 	ng-if="!$ctrl.node.isExcluded"
 	class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
 	ng-init="$ctrl.openRootFolderByDefault($ctrl.depth)"
-	id="{{ ::$ctrl.node.path }}"
 >
 	<div
 		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label"
@@ -11,6 +10,7 @@
 		ng-mouseleave="$ctrl.onMouseLeave()"
 		ng-right-click="$ctrl.openNodeContextMenu($event)"
 		ng-click="$ctrl.onClickNode()"
+		id="{{ ::$ctrl.node.path }}"
 	>
 		<span class="node-type-icon">
 			<span
