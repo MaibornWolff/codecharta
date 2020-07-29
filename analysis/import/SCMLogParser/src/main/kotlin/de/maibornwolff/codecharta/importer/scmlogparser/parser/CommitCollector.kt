@@ -35,6 +35,10 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 trackName
             }
 
+            val renameName: String? = renamesMap[possibleConflictName] //current
+            val VCFName: String? =
+                if (renameName == null) possibleConflictName else renameName //do we have an entry?
+
             when (it.type) {
                 Modification.Type.ADD -> {
                     val file: VersionControlledFile? =
@@ -46,7 +50,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                             missingVersionControlledFile // and add it to the list
                         missingVersionControlledFile.registerCommit(commit, it)
                     } else {
-                        versionControlledFiles[possibleConflictName]?.registerCommit(commit, it)
+                        versionControlledFiles[VCFName]!!.registerCommit(commit, it)
                     }
                 }
                 Modification.Type.DELETE -> {
@@ -56,9 +60,6 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 }
                 Modification.Type.RENAME -> {
 
-                    val renameName: String? = renamesMap[possibleConflictName] //current
-                    val tmp: String? =
-                        if (renameName == null) possibleConflictName else renameName //do we have an entry?
                     var newVCFFileName = it.currentFilename
 
                     if (versionControlledFiles.containsKey(it.currentFilename)) {//is the filename contained in vCF
@@ -76,10 +77,10 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     } else {
                         renamesMap[newVCFFileName] = it.oldFilename //add new entry
                     }
-                    versionControlledFiles[tmp]?.registerCommit(commit, it)
+                    versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }
 
-                else -> versionControlledFiles[possibleConflictName]?.registerCommit(commit, it)
+                else -> versionControlledFiles[VCFName]?.registerCommit(commit, it)
             }
 
         }
