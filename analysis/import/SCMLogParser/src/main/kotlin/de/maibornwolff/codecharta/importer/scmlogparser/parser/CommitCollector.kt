@@ -45,10 +45,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     val file: VersionControlledFile? =
                         versionControlledFiles[possibleConflictName] //does the file exist?
                     if (file == null) {
-                        val missingVersionControlledFile =
-                            VersionControlledFile(possibleConflictName, metricsFactory) // if not create a file
-                        versionControlledFiles[possibleConflictName] =
-                            missingVersionControlledFile // and add it to the list
+                        val missingVersionControlledFile = VersionControlledFile(possibleConflictName, metricsFactory) // if not create a file
+                        versionControlledFiles[possibleConflictName] = missingVersionControlledFile // and add it to the list
                         missingVersionControlledFile.registerCommit(commit, it)
                     } else {
                         versionControlledFiles[VCFName]!!.registerCommit(commit, it)
