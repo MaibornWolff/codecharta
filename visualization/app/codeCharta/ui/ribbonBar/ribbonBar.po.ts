@@ -16,10 +16,6 @@ export class RibbonBarPageObject {
 		await delay(400)
 	}
 
-	public async getAreaMetricValue(): Promise<number> {
-		return await this.page.$eval("area-metric-chooser-component .metric-value", el => el["innerText"])
-	}
-
 	public async focusSomething(): Promise<void> {
 		await this.page.evaluate(() => {
 			const element = <HTMLElement>document.getElementsByClassName("md-ink-ripple")[0]

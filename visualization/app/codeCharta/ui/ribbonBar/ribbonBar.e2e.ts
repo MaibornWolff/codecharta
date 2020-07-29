@@ -2,13 +2,19 @@ import { goto, launch, newPage } from "../../../puppeteer.helper"
 import { RibbonBarPageObject } from "./ribbonBar.po"
 import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
+import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
+import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
+import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 
 describe("RibbonBar", () => {
 	let browser: Browser
 	let page: Page
 
 	let searchPanel: SearchPanelPageObject
+	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
 	let ribbonBar: RibbonBarPageObject
+	let metricChooser: MetricChooserPageObject
+	let mapTreeViewLevel: MapTreeViewLevelPageObject
 
 	beforeAll(async () => {
 		browser = await launch()
@@ -22,16 +28,19 @@ describe("RibbonBar", () => {
 		page = await newPage(browser)
 
 		searchPanel = new SearchPanelPageObject(page)
+		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
 		ribbonBar = new RibbonBarPageObject(page)
+		metricChooser = new MetricChooserPageObject(page)
+		mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
 
 		await goto(page)
 	})
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
-		await searchPanel.toggleTreeViewMode()
-		await searchPanel.hoverRootNodeInTreeViewSearchPanel()
+		await searchPanelModeSelector.toggleTreeView()
+		await mapTreeViewLevel.hoverNode("/root")
 
-		const actual = await ribbonBar.getAreaMetricValue()
+		const actual = await metricChooser.getAreaMetricValue()
 		expect(actual).toContain("600")
 	})
 
