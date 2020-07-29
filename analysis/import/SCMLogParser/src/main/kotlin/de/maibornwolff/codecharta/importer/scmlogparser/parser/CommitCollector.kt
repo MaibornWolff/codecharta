@@ -11,14 +11,8 @@ import java.util.stream.Collector
 
 internal class CommitCollector private constructor(private val metricsFactory: MetricsFactory) {
 
-    //remember concrete history
-    // is a file always added before it is modified? Modification.Type.ADD
-
     private var renamesMap: MutableMap<String, String> = mutableMapOf() // Map<CurrentName, OldestName>
-    private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf() //Map <CurrentName, NumberOfConflicts>
-    private var commitsParsed: Int = 0
-
-    // Map<String, VersionControlledFile> = [filename, versionControlledFiles.get(filename)]
+    private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf() // Map <CurrentName, NumberOfConflicts>
 
     private fun collectCommit(versionControlledFiles: MutableMap<String, VersionControlledFile>, commit: Commit) {
         if (commit.isEmpty) {
@@ -26,56 +20,49 @@ internal class CommitCollector private constructor(private val metricsFactory: M
         }
 
         commit.modifications.forEach {
-            renamesMap
-            nameConflictsMap
 
             val trackName = if (it.oldFilename.isNotEmpty()) it.oldFilename else it.currentFilename
-            var possibleConflictName: String = if (nameConflictsMap.containsKey(trackName)) {
-                trackName + "_\\0_" + nameConflictsMap[trackName]
-            } else {
-                trackName
-            }
+            val possibleConflictName =
+                if (nameConflictsMap.containsKey(trackName)) {
+                    trackName + "_\\0_" + nameConflictsMap[trackName]
+                } else {
+                    trackName
+                }
 
-            val renameName: String? = renamesMap[possibleConflictName] //current
-            val VCFName: String? =
-                if (renameName == null) possibleConflictName else renameName //do we have an entry?
+            val renameName = renamesMap[possibleConflictName]
+            val VCFName = if (renameName == null) possibleConflictName else renameName
 
             when (it.type) {
+
                 Modification.Type.ADD -> {
-                    val file: VersionControlledFile? =
-                        versionControlledFiles[possibleConflictName] //does the file exist?
+                    val file = versionControlledFiles[possibleConflictName]
                     if (file == null) {
-                        val missingVersionControlledFile = VersionControlledFile(possibleConflictName, metricsFactory) // if not create a file
-                        versionControlledFiles[possibleConflictName] = missingVersionControlledFile // and add it to the list
+                        val missingVersionControlledFile = VersionControlledFile(possibleConflictName, metricsFactory)
+                        versionControlledFiles[possibleConflictName] = missingVersionControlledFile
                         missingVersionControlledFile.registerCommit(commit, it)
                     } else {
                         versionControlledFiles[VCFName]!!.registerCommit(commit, it)
                     }
                 }
+
                 Modification.Type.DELETE -> {
                     val filename = renamesMap[possibleConflictName]
-                    versionControlledFiles.remove(if (filename == null) possibleConflictName else filename) //remove a deleted file from list
-                    renamesMap.remove(possibleConflictName) // and remove its references in renames
+                    versionControlledFiles.remove(if (filename == null) possibleConflictName else filename)
+                    renamesMap.remove(possibleConflictName)
                 }
                 Modification.Type.RENAME -> {
-
                     var newVCFFileName = it.currentFilename
-
-                    if (versionControlledFiles.containsKey(it.currentFilename)) {//is the filename contained in vCF
-                        val marker: Int? =
-                            nameConflictsMap[it.currentFilename] //check if the file is already contained with a marker
-                        val newMarker: Int =
-                            if (marker != null) marker + 1 else 0 //increment the marker for further tracking
-
-                        newVCFFileName =
-                            it.currentFilename + "_\\0_" + newMarker // generate new vCF entry we work with it.currentFilename to preserve the string structure
+                    if (versionControlledFiles.containsKey(it.currentFilename)) {
+                        val marker = nameConflictsMap[it.currentFilename]
+                        val newMarker = if (marker != null) marker + 1 else 0
+                        newVCFFileName = it.currentFilename + "_\\0_" + newMarker
                         nameConflictsMap[it.currentFilename] = newMarker
                     }
                     if (renameName != null) {
-                        renamesMap.remove(possibleConflictName) //remove old entry
-                        renamesMap[newVCFFileName] = renameName // insert new entry, tracking the current name
+                        renamesMap.remove(possibleConflictName)
+                        renamesMap[newVCFFileName] = renameName
                     } else {
-                        renamesMap[newVCFFileName] = it.oldFilename //add new entry
+                        renamesMap[newVCFFileName] = it.oldFilename
                     }
                     versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }

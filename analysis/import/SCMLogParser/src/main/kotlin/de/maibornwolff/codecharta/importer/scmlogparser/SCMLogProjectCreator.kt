@@ -21,7 +21,7 @@ class SCMLogProjectCreator(
     private val logLineParser: LogLineParser = LogLineParser(parserStrategy, metricsFactory, silent)
 
     fun parse(lines: Stream<String>): Project {
-        val versionControlledFiles : MutableMap<String,VersionControlledFile> = logLineParser.parse(lines)
+        val versionControlledFiles: MutableMap<String, VersionControlledFile> = logLineParser.parse(lines)
         return projectConverter.convert(versionControlledFiles, metricsFactory)
     }
 }
