@@ -83,11 +83,6 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 }
                 else -> versionControlledFiles[VCFName]?.registerCommit(commit, it)
             }
-
-            if(commitsParsed == 195)
-                println("Hey")
-            commitsParsed++
-
         }
     }
 
