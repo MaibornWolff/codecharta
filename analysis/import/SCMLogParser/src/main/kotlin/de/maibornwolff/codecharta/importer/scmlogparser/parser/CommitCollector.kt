@@ -21,6 +21,15 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
         commit.modifications.forEach {
 
+            //Registers each modification for a given commit, performing different actions depending on the type
+            //to preserve uniqueness a marker is added to the name, following a marker_\\0_marker scheme, for tracking in the map
+            //
+            //Type.ADD: creates a new VCF file, if it doesn't exist, adds it to the VCF map and registers adding
+            //Type.DELETE: selects the tracking name and deletes the file from the VCF map, and rename map if needed
+            //Type.RENAME: Checks for potential rename conflicts and increments the tracking pointer if one is found
+            // -> creates a new rename entry or updates the key to the current name used to track the oldest file name
+            //Type.MODIFY/Type.UNKNOWN: simply registers this modification for the commit
+
             val trackName = if (it.oldFilename.isNotEmpty()) it.oldFilename else it.currentFilename
             val possibleConflictName =
                 if (nameConflictsMap.containsKey(trackName)) {
@@ -29,8 +38,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     trackName
                 }
 
-            val renameName = renamesMap[possibleConflictName]
-            val VCFName = if (renameName == null) possibleConflictName else renameName
+            val oldestName = renamesMap[possibleConflictName]
+            val VCFName = if (oldestName == null) possibleConflictName else oldestName
 
             when (it.type) {
 
@@ -49,6 +58,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     val filename = renamesMap[possibleConflictName]
                     versionControlledFiles.remove(if (filename == null) possibleConflictName else filename)
                     renamesMap.remove(possibleConflictName)
+
                 }
                 Modification.Type.RENAME -> {
                     var newVCFFileName = it.currentFilename
@@ -58,9 +68,9 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                         newVCFFileName = it.currentFilename + "_\\0_" + newMarker
                         nameConflictsMap[it.currentFilename] = newMarker
                     }
-                    if (renameName != null) {
+                    if (oldestName != null) {
                         renamesMap.remove(possibleConflictName)
-                        renamesMap[newVCFFileName] = renameName
+                        renamesMap[newVCFFileName] = oldestName
                     } else {
                         renamesMap[newVCFFileName] = it.oldFilename
                     }
