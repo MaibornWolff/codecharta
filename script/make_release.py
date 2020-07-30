@@ -196,6 +196,7 @@ message = "Do you want to commit the changes and tag them correctly? WARNING: Co
 printMessage = "Committing and tagging..."
 confirm(message, printMessage)
 
+repo.index.add([release_post_path])
 repo.index.commit(f"Releasing {new_version}")
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
