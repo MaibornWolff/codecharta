@@ -30,9 +30,9 @@ def confirm(message, printMessage):
         quit()
 
 
-def getLatestChangelogEntry():
+def getLatestChangelogEntry(path):
     release_post_content = ""
-    with open(f"{root}/CHANGELOG.md", "r", encoding="utf-8") as fp:
+    with open(path, "r", encoding="utf-8") as fp:
         line_number = 0
         section = None
         for line in fp:
@@ -55,10 +55,10 @@ def getLatestChangelogEntry():
     return release_post_content
 
 
-def getReleasePost(version):
+def getReleasePost(version, path):
     release_post_header = f"---\ncategories:\n\t- Release\ntags:\n\t- gh-pages\n\ntitle: {version}\n---\n\n"
     release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
-    release_post_content = getLatestChangelogEntry()
+    release_post_content = getLatestChangelogEntry(path)
     return release_post_header + release_post_headline + release_post_content
 
 
@@ -127,7 +127,8 @@ confirm(message, printMessage)
 
 
 # bump version in gradle.properties
-for line in fileinput.input(f"{root}/analysis/gradle.properties", inplace=True):
+gradle_properties_path = f"{root}/analysis/gradle.properties"
+for line in fileinput.input(gradle_properties_path, inplace=True):
     if "currentVersion=" in line:
         print(f"currentVersion={new_version}", end="\n")
         fileinput.close()
@@ -139,23 +140,26 @@ print("incremented version in ./analysis/gradle.properties")
 
 
 # bump version in package.jsons
-subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
+analysis_package_json_path = f"{root}/analysis/node-wrapper"
+subprocess.run(["npm", "--prefix", analysis_package_json_path,
                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
 print("incremented version in ./analysis/node-wrapper/package.json + locks")
 
-subprocess.run(["npm", "--prefix", "./visualization",
+visualization_package_json_path = f"{root}/visualization"
+subprocess.run(["npm", "--prefix", visualization_package_json_path,
                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
 print("incremented version in ./visualization/package.json + locks")
 
 
 # update changelog
+changelog_path = f"{root}/CHANGELOG.md"
 date = datetime.datetime.now()
 month = date.strftime("%m")
 day = date.strftime("%d")
 date_formatted = f"{date.year}-{month}-{day}"
 
 
-with in_place.InPlace(f"{root}/CHANGELOG.md", encoding="utf-8") as fp:
+with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
     for line in fp:
         if "## [unreleased]" in line:
             fp.write(
@@ -163,7 +167,7 @@ with in_place.InPlace(f"{root}/CHANGELOG.md", encoding="utf-8") as fp:
         else:
             fp.write(line)
 
-with in_place.InPlace(f"{root}/CHANGELOG.md", encoding="utf-8") as fp:
+with in_place.InPlace(changelog_path, encoding="utf-8") as fp:
     line_number = 0
 
     for line in fp:
@@ -188,7 +192,7 @@ with open(release_post_path, "w", encoding="utf-8") as fp:
 
 with in_place.InPlace(release_post_path, encoding="utf-8") as fp:
     for line in fp:
-        fp.write(getReleasePost(new_version))
+        fp.write(getReleasePost(new_version, changelog_path))
         break
 
 
@@ -197,7 +201,8 @@ message = "Do you want to commit the changes and tag them correctly? WARNING: Co
 printMessage = "Committing and tagging..."
 confirm(message, printMessage)
 
-repo.index.add([release_post_path])
+repo.index.add([release_post_path, changelog_path, gradle_properties_path,
+                analysis_package_json_path, visualization_package_json_path])
 repo.index.commit(f"Releasing {new_version}")
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
