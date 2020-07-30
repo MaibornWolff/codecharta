@@ -3,6 +3,8 @@ import git
 import PyInquirer
 import subprocess
 import fileinput
+import datetime
+import in_place
 
 
 def isRootFolder():
@@ -21,13 +23,13 @@ else:
 
 
 # Check if there are any uncommited changes
-if repo.is_dirty():
+if not repo.is_dirty():
     print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
     quit()
 
 
 # Check if we are on master branch
-if repo.head != "master":
+if not repo.head != "master":
     print("You can only release on master branch. Aborting.")
     quit()
 
@@ -86,21 +88,50 @@ else:
     quit()
 
 
-# bump version in gradle.properties
-for line in fileinput.input("./analysis/gradle.properties", inplace=True):
-    if "currentVersion=" in line:
-        print(f"currentVersion={new_version}", end="\n")
-    else:
-        print(line, end="")
+# # bump version in gradle.properties
+# for line in fileinput.input("./analysis/gradle.properties", inplace=True):
+#     if "currentVersion=" in line:
+#         print(f"currentVersion={new_version}", end="\n")
+#         fileinput.close()
+#     else:
+#         print(line, end="")
 
-print(f"v{new_version}")
-print("incremented version in ./analysis/gradle.properties")
+# print(f"v{new_version}")
+# print("incremented version in ./analysis/gradle.properties")
 
-# bump version in package.jsons
-subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
-                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
-print("incremented version in ./analysis/node-wrapper/package.json + locks")
+# # bump version in package.jsons
+# subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
+#                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+# print("incremented version in ./analysis/node-wrapper/package.json + locks")
 
-subprocess.run(["npm", "--prefix", "./visualization",
-                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
-print("incremented version in ./visualization/package.json + locks")
+# subprocess.run(["npm", "--prefix", "./visualization",
+#                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+# print("incremented version in ./visualization/package.json + locks")
+
+# update changelog
+date = datetime.datetime.now()
+day = date.strftime("%d")
+month = date.strftime("%m")
+
+with in_place.InPlace("./CHANGELOG.md", encoding="utf-8") as fp:
+    for line in fp:
+        if "## [unreleased]" in line:
+            fp.write(
+                f"## [{new_version}] - {date.year}-{month}-{day}\n")
+        else:
+            fp.write(line)
+
+replaceNextLine = False
+with in_place.InPlace("./CHANGELOG.md", encoding="utf-8") as fp:
+    for line in fp:
+        if replaceNextLine:
+            fp.write(
+                "\n## [unreleased]\n\n### Added 🚀\n\n### Changed\n\n### Removed 🗑\n\n### Fixed 🐞\n\n### Chore 👨‍💻 👩‍💻\n")
+            replaceNextLine = False
+        if "and this project adheres to [Semantic Versioning](http://semver.org/)" in line:
+            replaceNextLine = True
+            fp.write(line)
+        if not replaceNextLine:
+            fp.write(line)
+
+print("updated ./CHANGELOG.md")
