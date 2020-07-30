@@ -10,8 +10,6 @@ class VersionControlledFile internal constructor(
     private var metrics: List<Metric>
 ) {
 
-    // actual filename
-    val actualFilename: String
     val authors = mutableSetOf<String>()
 
     // the current filename in a specific revision, might change in history
@@ -29,7 +27,6 @@ class VersionControlledFile internal constructor(
 
     init {
         this.filename = filename
-        this.actualFilename = filename
     }
 
     /**
@@ -42,7 +39,7 @@ class VersionControlledFile internal constructor(
     }
 
     override fun toString(): String {
-        return "$actualFilename with metrics $metricsMap"
+        return "$filename with metrics $metricsMap"
     }
 
     fun getEdgeList(): List<Edge> {

@@ -19,10 +19,10 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     private fun addVersionControlledFile(projectBuilder: ProjectBuilder, versionControlledFile: VersionControlledFile) {
         val attributes = extractAttributes(versionControlledFile)
         val edges = versionControlledFile.getEdgeList()
-        val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
+        val fileName = versionControlledFile.filename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path = PathFactory.fromFileSystemPath(
-                versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
+                versionControlledFile.filename.substringBeforeLast(PATH_SEPARATOR, ""))
         projectBuilder.insertByPath(path, newNode)
         edges.forEach { projectBuilder.insertEdge(addRootToEdgePaths(it)) }
         versionControlledFile.removeMetricsToFreeMemory()

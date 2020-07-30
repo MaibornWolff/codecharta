@@ -13,11 +13,13 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
     private var renamesMap: MutableMap<String, String> = mutableMapOf() // Map<CurrentName, OldestName>
     private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf() // Map <CurrentName, NumberOfConflicts>
+    private var commitNumber = 0
 
     private fun collectCommit(versionControlledFiles: MutableMap<String, VersionControlledFile>, commit: Commit) {
         if (commit.isEmpty) {
             return
         }
+        commitNumber += 1
 
         commit.modifications.forEach {
 
@@ -29,7 +31,6 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             //Type.RENAME: Checks for potential rename conflicts and increments the tracking pointer if one is found
             // -> creates a new rename entry or updates the key to the current name used to track the oldest file name
             //Type.MODIFY/Type.UNKNOWN: simply registers this modification for the commit
-
             val trackName = if (it.oldFilename.isNotEmpty()) it.oldFilename else it.currentFilename
             val possibleConflictName =
                 if (nameConflictsMap.containsKey(trackName)) {
@@ -40,6 +41,9 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
             val oldestName = renamesMap[possibleConflictName]
             val VCFName = if (oldestName == null) possibleConflictName else oldestName
+
+           if(VCFName == "visualization/app/codeCharta/codeMap/codeMapController.js")
+            println("Found")
 
             when (it.type) {
 
@@ -74,10 +78,12 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     } else {
                         renamesMap[newVCFFileName] = it.oldFilename
                     }
-                    versionControlledFiles[VCFName]?.filename = it.currentFilename
-                    versionControlledFiles[VCFName]?.registerCommit(commit, it)
+                        versionControlledFiles[VCFName]?.filename = it.currentFilename
+                        versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }
-                else -> versionControlledFiles[VCFName]?.registerCommit(commit, it)
+                else ->
+                        versionControlledFiles[VCFName]?.registerCommit(commit, it)
+
             }
         }
     }
