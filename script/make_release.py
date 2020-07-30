@@ -50,6 +50,7 @@ if not repo.head != "master":
     print("You can only release on master branch. Aborting.")
     quit()
 
+
 # Get latest tag
 latest_tag = str(
     sorted(repo.tags, key=lambda t: t.commit.committed_datetime)[-1])
@@ -94,25 +95,25 @@ printMessage = f"Selected {release_type} release. Updating project..."
 confirm(message, printMessage)
 
 
-# # bump version in gradle.properties
-# for line in fileinput.input("./analysis/gradle.properties", inplace=True):
-#     if "currentVersion=" in line:
-#         print(f"currentVersion={new_version}", end="\n")
-#         fileinput.close()
-#     else:
-#         print(line, end="")
+# bump version in gradle.properties
+for line in fileinput.input("./analysis/gradle.properties", inplace=True):
+    if "currentVersion=" in line:
+        print(f"currentVersion={new_version}", end="\n")
+        fileinput.close()
+    else:
+        print(line, end="")
 
-# print(f"v{new_version}")
-# print("incremented version in ./analysis/gradle.properties")
+print(f"v{new_version}")
+print("incremented version in ./analysis/gradle.properties")
 
-# # bump version in package.jsons
-# subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
-#                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
-# print("incremented version in ./analysis/node-wrapper/package.json + locks")
+# bump version in package.jsons
+subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
+                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+print("incremented version in ./analysis/node-wrapper/package.json + locks")
 
-# subprocess.run(["npm", "--prefix", "./visualization",
-#                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
-# print("incremented version in ./visualization/package.json + locks")
+subprocess.run(["npm", "--prefix", "./visualization",
+                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+print("incremented version in ./visualization/package.json + locks")
 
 
 # update changelog
@@ -128,18 +129,16 @@ with in_place.InPlace("./CHANGELOG.md", encoding="utf-8") as fp:
         else:
             fp.write(line)
 
-replaceNextLine = False
 with in_place.InPlace("./CHANGELOG.md", encoding="utf-8") as fp:
+    line_number = 0
+
     for line in fp:
-        if replaceNextLine:
+        if line_number == 6:
             fp.write(
-                "\n## [unreleased]\n\n### Added 🚀\n\n### Changed\n\n### Removed 🗑\n\n### Fixed 🐞\n\n### Chore 👨‍💻 👩‍💻\n")
-            replaceNextLine = False
-        if "and this project adheres to [Semantic Versioning](http://semver.org/)" in line:
-            replaceNextLine = True
+                "\n## [unreleased]\n\n### Added 🚀\n\n### Changed\n\n### Removed 🗑\n\n### Fixed 🐞\n\n### Chore 👨‍💻 👩‍💻\n\n")
+        else:
             fp.write(line)
-        if not replaceNextLine:
-            fp.write(line)
+        line_number = line_number + 1
 
 print("updated ./CHANGELOG.md")
 
@@ -152,6 +151,7 @@ confirm(message, printMessage)
 repo.index.commit(f"Releasing {new_version}")
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
+
 
 # push
 message = "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push ?"
