@@ -1,15 +1,32 @@
-import pathlib
 import git
 import PyInquirer
+import in_place
+import pathlib
 import subprocess
 import fileinput
 import datetime
-import in_place
 
 
 def isRootFolder():
     currentDir = pathlib.Path().absolute()
     return currentDir[-10:] == "codecharta"
+
+
+def confirm(message, printMessage):
+    confirm = [{
+        "type": "confirm",
+        "name": "confirmed",
+        "message": message,
+        "default": True
+    }]
+    confirmation = PyInquirer.prompt(confirm)["confirmed"]
+
+    if confirmation:
+        print(printMessage)
+    else:
+        print("Aborting.")
+        quit()
+
 
 # Requirements
 
@@ -72,20 +89,9 @@ if release_type == "Patch":
 
 
 # Confirm release
-confirm = [{
-    "type": "confirm",
-    "name": "confirmed",
-    "message": f"Do you REALLY want to release {new_version}? WARNING: File changes need to be undone manually or through git when done unintentionally!",
-    "default": True
-}]
-
-confirmation = PyInquirer.prompt(confirm)["confirmed"]
-
-if confirmation:
-    print(f"Selected {release_type} release. Updating project...")
-else:
-    print("Aborting.")
-    quit()
+message = f"Do you REALLY want to release {new_version}? WARNING: File changes need to be undone manually or through git when done unintentionally!"
+printMessage = f"Selected {release_type} release. Updating project..."
+confirm(message, printMessage)
 
 
 # # bump version in gradle.properties
@@ -107,6 +113,7 @@ else:
 # subprocess.run(["npm", "--prefix", "./visualization",
 #                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
 # print("incremented version in ./visualization/package.json + locks")
+
 
 # update changelog
 date = datetime.datetime.now()
@@ -135,3 +142,22 @@ with in_place.InPlace("./CHANGELOG.md", encoding="utf-8") as fp:
             fp.write(line)
 
 print("updated ./CHANGELOG.md")
+
+
+# confirm and make a commit and tag it correctly
+message = "Do you want to commit the changes and tag them correctly? WARNING: Commit and Tag need to be undone manually when done unintentionally!"
+printMessage = "Committing and tagging..."
+confirm(message, printMessage)
+
+repo.index.commit(f"Releasing {new_version}")
+tag = repo.create_tag(new_version, ref="HEAD",
+                      message=f"Releasing {new_version}")
+
+# push
+message = "The release is now committed and tagged but not pushed. In order to finish this release you need to push the commit and tag. Push ?"
+printMessage = "Pushing..."
+confirm(message, printMessage)
+
+repo.remotes.origin.push(tag)
+
+print("Please manually add the latest release notes, as soon as the build is successfully deployed")
