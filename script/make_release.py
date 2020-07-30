@@ -71,13 +71,13 @@ else:
 
 
 # Check if there are any uncommited changes
-if repo.is_dirty():
+if not repo.is_dirty():
     print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
     quit()
 
 
 # Check if we are on master branch
-if repo.head != "master":
+if not repo.head != "master":
     print("You can only release on master branch. Aborting.")
     quit()
 
@@ -127,8 +127,8 @@ confirm(message, printMessage)
 
 
 # bump version in gradle.properties
-gradle_properties_path = f"{root}/analysis/gradle.properties"
-for line in fileinput.input(gradle_properties_path, inplace=True):
+gradle_properties = f"{root}/analysis/gradle.properties"
+for line in fileinput.input(gradle_properties, inplace=True):
     if "currentVersion=" in line:
         print(f"currentVersion={new_version}", end="\n")
         fileinput.close()
@@ -140,13 +140,18 @@ print("incremented version in ./analysis/gradle.properties")
 
 
 # bump version in package.jsons
-analysis_package_json_path = f"{root}/analysis/node-wrapper"
-subprocess.run(["npm", "--prefix", analysis_package_json_path,
+analysis_package = f"{root}/analysis/node-wrapper"
+analysis_package_json = f"{analysis_package}/package.json"
+analysis_package_lock_json = f"{analysis_package}/package-lock.json"
+
+subprocess.run(["npm", "--prefix", analysis_package,
                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
 print("incremented version in ./analysis/node-wrapper/package.json + locks")
 
-visualization_package_json_path = f"{root}/visualization"
-subprocess.run(["npm", "--prefix", visualization_package_json_path,
+visualization_package = f"{root}/visualization"
+visualization_package_json = f"{visualization_package}/package.json"
+visualization_package_lock_json = f"{visualization_package}/package-lock.json"
+subprocess.run(["npm", "--prefix", visualization_package,
                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
 print("incremented version in ./visualization/package.json + locks")
 
@@ -201,8 +206,8 @@ message = "Do you want to commit the changes and tag them correctly? WARNING: Co
 printMessage = "Committing and tagging..."
 confirm(message, printMessage)
 
-repo.index.add([release_post_path, changelog_path, gradle_properties_path,
-                analysis_package_json_path, visualization_package_json_path])
+repo.index.add([release_post_path, changelog_path, gradle_properties,
+                analysis_package_json, analysis_package_lock_json, visualization_package_json, visualization_package_lock_json])
 repo.index.commit(f"Releasing {new_version}")
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
