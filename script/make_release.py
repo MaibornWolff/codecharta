@@ -128,12 +128,14 @@ confirm(message, printMessage)
 
 # bump version in gradle.properties
 gradle_properties = f"{root}/analysis/gradle.properties"
-for line in fileinput.input(gradle_properties, inplace=True):
-    if "currentVersion=" in line:
-        print(f"currentVersion={new_version}", end="\n")
-        fileinput.close()
-    else:
-        print(line, end="")
+
+with in_place.InPlace(gradle_properties, encoding="utf-8") as fp:
+    for line in fp:
+        if "currentVersion=" in line:
+            fp.write(
+                f"currentVersion={new_version}\n")
+        else:
+            fp.write(line)
 
 print(f"v{new_version}")
 print("incremented version in ./analysis/gradle.properties")
