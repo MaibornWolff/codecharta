@@ -1,6 +1,6 @@
 import pathlib
 import git
-import inquirer
+import PyInquirer
 import subprocess
 import fileinput
 
@@ -50,16 +50,14 @@ new_patch_version = f"{major}.{minor}.{patch + 1}"
 
 
 # Get release type and version
-questions = [
-    inquirer.List("version",
-                  message=f"Do you want to release a major version [{new_major_version}], minor version [{new_minor_version}] or a patch [{new_patch_version}]?",
-                  choices=["Major", "Minor", "Patch"],
-                  ),
-]
-release_type = inquirer.prompt(questions)["version"]
-print("release type: ", release_type)
+questions = [{
+    "type": "list",
+    "name": "version",
+    "message": f"Do you want to release a major version [{new_major_version}], minor version [{new_minor_version}] or a patch [{new_patch_version}]?",
+    "choices": ["Major", "Minor", "Patch"],
+}]
 
-new_version = ""
+release_type = PyInquirer.prompt(questions)["version"]
 
 if release_type == None:
     quit()
@@ -72,12 +70,14 @@ if release_type == "Patch":
 
 
 # Confirm release
-confirm = {
-    inquirer.Confirm("confirmed",
-                     message=f"Do you REALLY want to release {new_version}? WARNING: File changes need to be undone manually or through git when done unintentionally!",
-                     default=True),
-}
-confirmation = inquirer.prompt(confirm)["confirmed"]
+confirm = [{
+    "type": "confirm",
+    "name": "confirmed",
+    "message": f"Do you REALLY want to release {new_version}? WARNING: File changes need to be undone manually or through git when done unintentionally!",
+    "default": True
+}]
+
+confirmation = PyInquirer.prompt(confirm)["confirmed"]
 
 if confirmation:
     print(f"Selected {release_type} release. Updating project...")
