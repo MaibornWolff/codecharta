@@ -74,6 +74,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     } else {
                         renamesMap[newVCFFileName] = it.oldFilename
                     }
+                    versionControlledFiles[VCFName]?.filename = it.currentFilename
                     versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }
                 else -> versionControlledFiles[VCFName]?.registerCommit(commit, it)

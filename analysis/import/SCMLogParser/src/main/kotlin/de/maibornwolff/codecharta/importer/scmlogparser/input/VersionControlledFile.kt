@@ -15,8 +15,7 @@ class VersionControlledFile internal constructor(
     val authors = mutableSetOf<String>()
 
     // the current filename in a specific revision, might change in history
-    private var filename: String
-    private var markedDeleted = false
+    var filename: String
 
     val metricsMap: Map<String, Number>
         get() = metrics.associateBy({ it.metricName() }, { it.value() })
@@ -39,21 +38,7 @@ class VersionControlledFile internal constructor(
     fun registerCommit(commit: Commit, modification: Modification) {
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
-        registerModification(modification)
-    }
-
-    private fun registerModification(modification: Modification) {
-        val type = modification.type
-        when (type) {
-            Modification.Type.RENAME -> filename = modification.currentFilename
-            else -> {
-            }
-        }
-        metrics.forEach { it.registerModification(modification) }
-    }
-
-    fun markedDeleted(): Boolean {
-        return markedDeleted
+        metrics.forEach { it.registerModification(modification)}
     }
 
     override fun toString(): String {
