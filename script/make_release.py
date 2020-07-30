@@ -71,13 +71,13 @@ else:
 
 
 # Check if there are any uncommited changes
-if not repo.is_dirty():
+if repo.is_dirty():
     print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
     quit()
 
 
 # Check if we are on master branch
-if not repo.head != "master":
+if repo.head != "master":
     print("You can only release on master branch. Aborting.")
     quit()
 
