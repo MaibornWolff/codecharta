@@ -7,9 +7,11 @@ import fileinput
 import datetime
 
 
+root = pathlib.Path().absolute()
+
+
 def isRootFolder():
-    currentDir = pathlib.Path().absolute()
-    return currentDir[-10:] == "codecharta"
+    return root[-10:] == "codecharta"
 
 
 def confirm(message, printMessage):
@@ -28,7 +30,36 @@ def confirm(message, printMessage):
         quit()
 
 
-# Requirements
+def getLatestChangelogEntry():
+    release_post_content = ""
+    with open(f"{root}/CHANGELOG.md", "r", encoding="utf-8") as fp:
+        line_number = 0
+        section = None
+        for line in fp:
+            if line_number > 20:
+                if "## [" in line:
+                    break
+
+                if "###" in line and section != None:
+                    if len(section.split("\n")) > 3:
+                        release_post_content = release_post_content + section
+                    section = None
+
+                if section != None:
+                    section = section + line
+
+                if "###" in line and section == None:
+                    section = line
+
+            line_number = line_number + 1
+    return release_post_content
+
+
+def getReleasePost(version):
+    release_post_header = f"---\ncategories:\n\t- Release\ntags:\n\t- gh-pages\n\ntitle: {version}\n---\n\n"
+    release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
+    release_post_content = getLatestChangelogEntry()
+    return release_post_header + release_post_headline + release_post_content
 
 
 # Check if we're on project root folder
@@ -36,7 +67,7 @@ if not isRootFolder:
     print("Please execute this script from the project root folder. Aborting.")
     quit()
 else:
-    repo = git.Repo(pathlib.Path().absolute())
+    repo = git.Repo(root)
 
 
 # Check if there are any uncommited changes
@@ -95,41 +126,43 @@ printMessage = f"Selected {release_type} release. Updating project..."
 confirm(message, printMessage)
 
 
-# bump version in gradle.properties
-for line in fileinput.input("./analysis/gradle.properties", inplace=True):
-    if "currentVersion=" in line:
-        print(f"currentVersion={new_version}", end="\n")
-        fileinput.close()
-    else:
-        print(line, end="")
+# # bump version in gradle.properties
+# for line in fileinput.input(f"{root}/analysis/gradle.properties", inplace=True):
+#     if "currentVersion=" in line:
+#         print(f"currentVersion={new_version}", end="\n")
+#         fileinput.close()
+#     else:
+#         print(line, end="")
 
-print(f"v{new_version}")
-print("incremented version in ./analysis/gradle.properties")
+# print(f"v{new_version}")
+# print("incremented version in ./analysis/gradle.properties")
 
-# bump version in package.jsons
-subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
-                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
-print("incremented version in ./analysis/node-wrapper/package.json + locks")
+# # bump version in package.jsons
+# subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
+#                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+# print("incremented version in ./analysis/node-wrapper/package.json + locks")
 
-subprocess.run(["npm", "--prefix", "./visualization",
-                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
-print("incremented version in ./visualization/package.json + locks")
+# subprocess.run(["npm", "--prefix", "./visualization",
+#                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+# print("incremented version in ./visualization/package.json + locks")
 
 
 # update changelog
 date = datetime.datetime.now()
-day = date.strftime("%d")
 month = date.strftime("%m")
+day = date.strftime("%d")
+date_formatted = f"{date.year}-{month}-{day}"
 
-with in_place.InPlace("./CHANGELOG.md", encoding="utf-8") as fp:
+
+with in_place.InPlace(f"{root}/CHANGELOG.md", encoding="utf-8") as fp:
     for line in fp:
         if "## [unreleased]" in line:
             fp.write(
-                f"## [{new_version}] - {date.year}-{month}-{day}\n")
+                f"## [{new_version}] - {date_formatted}\n")
         else:
             fp.write(line)
 
-with in_place.InPlace("./CHANGELOG.md", encoding="utf-8") as fp:
+with in_place.InPlace(f"{root}/CHANGELOG.md", encoding="utf-8") as fp:
     line_number = 0
 
     for line in fp:
@@ -141,6 +174,21 @@ with in_place.InPlace("./CHANGELOG.md", encoding="utf-8") as fp:
         line_number = line_number + 1
 
 print("updated ./CHANGELOG.md")
+
+
+# add gh-pages release post
+new_version_formatted = new_version.replace(".", "_")
+release_post = f"{date_formatted}-v{new_version_formatted}.md"
+release_post_path = f"{root}/gh-pages/_posts/release/{release_post}"
+
+with open(release_post_path, "w", encoding="utf-8") as fp:
+    pass
+    fp.write("\n")
+
+with in_place.InPlace(release_post_path, encoding="utf-8") as fp:
+    for line in fp:
+        fp.write(getReleasePost(new_version))
+        break
 
 
 # confirm and make a commit and tag it correctly
