@@ -71,13 +71,13 @@ else:
 
 
 # Check if there are any uncommited changes
-if not repo.is_dirty():
+if repo.is_dirty():
     print("Please commit your changes first and/or ignore untracked files in git. Aborting.")
     quit()
 
 
 # Check if we are on master branch
-if not repo.head != "master":
+if repo.head != "master":
     print("You can only release on master branch. Aborting.")
     quit()
 
@@ -126,25 +126,26 @@ printMessage = f"Selected {release_type} release. Updating project..."
 confirm(message, printMessage)
 
 
-# # bump version in gradle.properties
-# for line in fileinput.input(f"{root}/analysis/gradle.properties", inplace=True):
-#     if "currentVersion=" in line:
-#         print(f"currentVersion={new_version}", end="\n")
-#         fileinput.close()
-#     else:
-#         print(line, end="")
+# bump version in gradle.properties
+for line in fileinput.input(f"{root}/analysis/gradle.properties", inplace=True):
+    if "currentVersion=" in line:
+        print(f"currentVersion={new_version}", end="\n")
+        fileinput.close()
+    else:
+        print(line, end="")
 
-# print(f"v{new_version}")
-# print("incremented version in ./analysis/gradle.properties")
+print(f"v{new_version}")
+print("incremented version in ./analysis/gradle.properties")
 
-# # bump version in package.jsons
-# subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
-#                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
-# print("incremented version in ./analysis/node-wrapper/package.json + locks")
 
-# subprocess.run(["npm", "--prefix", "./visualization",
-#                 "--no-git-tag-version", "version", f"{new_version}"], shell=True)
-# print("incremented version in ./visualization/package.json + locks")
+# bump version in package.jsons
+subprocess.run(["npm", "--prefix", "./analysis/node-wrapper",
+                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+print("incremented version in ./analysis/node-wrapper/package.json + locks")
+
+subprocess.run(["npm", "--prefix", "./visualization",
+                "--no-git-tag-version", "version", f"{new_version}"], shell=True)
+print("incremented version in ./visualization/package.json + locks")
 
 
 # update changelog
