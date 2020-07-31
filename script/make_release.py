@@ -112,11 +112,11 @@ release_type = PyInquirer.prompt(questions)["version"]
 
 if release_type == None:
     quit()
-if release_type == "Major":
+elif release_type == "Major":
     new_version = new_major_version
-if release_type == "Minor":
+elif release_type == "Minor":
     new_version = new_minor_version
-if release_type == "Patch":
+elif release_type == "Patch":
     new_version = new_patch_version
 
 
