@@ -35,7 +35,7 @@ allprojects {
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "de.maibornwolff.codecharta:analysis"
+        property "sonar.projectKey", "maibornwolff-gmbh_codecharta_analysis"
         property "sonar.projectName", "CodeCharta Analysis"
     }
 }
