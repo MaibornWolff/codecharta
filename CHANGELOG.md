@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- After loading an invalid file the filechooser pops up again, so that the user can chose a valid file #1021
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.51.0] - 2020-07-24
