@@ -17,7 +17,9 @@ describe("NodeContextMenu", () => {
 	})
 
 	it("right clicking a folder should open a context menu with color options", async () => {
-		expect(await searchPanelModeSelector.toggleTreeView()).toBeTruthy()
+		const isOpen = await searchPanelModeSelector.toggleTreeView()
+		expect(isOpen).toBeTruthy()
+
 		await mapTreeViewLevel.openContextMenu("/root")
 
 		expect(await contextMenu.hasColorButtons()).toBeTruthy()
