@@ -17,10 +17,10 @@ then
     exit 1
 fi
 
-# Check if we are on master branch
+# Check if we are on main branch
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
-if [[ "$BRANCH" != "master" ]]; then
-  echo 'You can only release on master branch. Aborting.';
+if [[ "$BRANCH" != "main" ]]; then
+  echo 'You can only release on main branch. Aborting.';
   exit 1;
 fi
 
