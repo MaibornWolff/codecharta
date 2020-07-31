@@ -53,11 +53,11 @@ Components that export data from visualisation data to other formats.
 ## Requirements
 
 - Bash or similar
-- JRE 8 (Oracle Java or OpenJDK)
+- JRE 11 (Oracle Java or OpenJDK)
 
 ## Installation via npm
 
-This installs all binaries to run the analysis. Java 8 is required.
+This installs all binaries to run the analysis. Java 11 is required.
 
 `npm install -g codecharta-analysis`
 
