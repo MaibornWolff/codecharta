@@ -37,7 +37,7 @@ describe("RibbonBar", () => {
 		await ribbonBar.focusSomething()
 		const activeBefore = await ribbonBar.getActiveClassName()
 
-		expect(await ribbonBar.togglePanel(panel)).toBeTruthy()
+		expect(await ribbonBar.togglePanel(panel)).toBeFalsy()
 
 		const activeAfter = await ribbonBar.getActiveClassName()
 		expect(activeBefore).not.toBe("ng-scope")
