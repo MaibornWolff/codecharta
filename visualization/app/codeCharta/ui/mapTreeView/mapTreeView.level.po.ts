@@ -12,7 +12,7 @@ export class MapTreeViewLevelPageObject {
 	public async hoverNode(path: string) {
 		await page.waitForSelector(`[id='${path}']`)
 		await page.hover(`[id='${path}']`)
-		await page.waitForSelector(`[id='${path}'] > div .hovered`)
+		await page.waitForSelector(".tree-element-label.hovered")
 	}
 
 	public async nodeExists(path: string) {
