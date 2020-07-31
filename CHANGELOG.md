@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Quality gates on sonarcloud.io are available again #879
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.51.0] - 2020-07-24
