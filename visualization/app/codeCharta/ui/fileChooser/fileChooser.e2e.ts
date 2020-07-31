@@ -7,6 +7,7 @@ describe("FileChooser", () => {
 	let browser, page
 	let fileChooser: FileChooserPageObject
 	let filePanel: FilePanelPageObject
+	let dialogError: DialogErrorPageObject
 
 	beforeAll(async () => {
 		browser = await launch()
@@ -20,17 +21,10 @@ describe("FileChooser", () => {
 		page = await newPage(browser)
 		fileChooser = new FileChooserPageObject(page)
 		filePanel = new FilePanelPageObject(page)
+		dialogError = new DialogErrorPageObject(page)
 
 		await goto(page)
 	})
-
-	async function showErrorDialog() {
-		const dialogErrorPageObject = new DialogErrorPageObject(page)
-		const msg = await dialogErrorPageObject.getMessage()
-		expect(msg).toEqual(" file is empty or invalid")
-		await page.waitFor(2000)
-		return dialogErrorPageObject.clickOk()
-	}
 
 	it("should load another cc.json", async () => {
 		await fileChooser.openFile("./app/codeCharta/assets/sample3.cc.json")
@@ -49,7 +43,11 @@ describe("FileChooser", () => {
 	it("should not load non json file and show the error dialog", async () => {
 		await fileChooser.openFile("./app/codeCharta/assets/logo.png")
 
-		await showErrorDialog()
+		const msg = await dialogError.getMessage()
+		expect(msg).toEqual(" file is empty or invalid")
+
+		await page.waitFor(2000)
+		await dialogError.clickOk()
 
 		expect(await filePanel.getSelectedName()).toEqual("sample1.cc.json")
 	})
