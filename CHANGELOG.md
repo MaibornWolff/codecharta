@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+### Breaking
+
+- CCSH uses Java 11 now ❌
+
 ## [1.51.0] - 2020-07-24
 
 ### Added 🚀
