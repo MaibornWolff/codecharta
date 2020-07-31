@@ -17,7 +17,8 @@
 		"allowJs": false,
 		"strictNullChecks": false,
 		"declaration": false,
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"types": ["puppeteer", "jest-environment-puppeteer", "expect-puppeteer"]
 	},
 	"exclude": ["node_modules"]
 }

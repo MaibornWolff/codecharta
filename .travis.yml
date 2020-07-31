@@ -1,7 +1,7 @@
 os:
   - linux
 
-dist: trusty
+dist: xenial
 
 language: java
 
@@ -9,7 +9,7 @@ services:
   - docker
 
 jdk:
-  - oraclejdk9
+  - openjdk11
 
 env:
   - TRAVIS_NODE_VERSION="12"
@@ -61,7 +61,7 @@ jobs:
         - npm install
       script:
         - npm run build:web
-        - npm run e2e --ci
+        - npm run e2e:ci
     - name: "Analysis Unit and Integration Test"
       before_script:
         - cd analysis

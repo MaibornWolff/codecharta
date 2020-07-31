@@ -1,16 +1,12 @@
-import { Page } from "puppeteer"
-import { delay } from "../../../puppeteer.helper"
-
 export class EdgeChooserPageObject {
-	constructor(private page: Page) {}
-
 	public async open() {
-		await this.page.click("edge-chooser-component md-select")
-		await delay(300)
+		await expect(page).toClick("edge-chooser-component md-select", { timeout: 3000 })
+		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active.md-clickable")
 	}
 
 	public async getMetrics() {
-		return await this.page.$$eval(".edge-metric", metrics => metrics.map(x => x.textContent))
+		await page.waitForSelector(".edge-metric")
+		return await page.$$eval(".edge-metric", metrics => metrics.map(x => x.textContent))
 	}
 
 	public async selectEdgeMetric(metric: string) {

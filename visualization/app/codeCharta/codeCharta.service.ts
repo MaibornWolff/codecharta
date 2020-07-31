@@ -7,7 +7,6 @@ import { StoreService } from "./state/store.service"
 import { addFile, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { setState } from "./state/store/state.actions"
 import { ScenarioHelper } from "./util/scenarioHelper"
 
@@ -38,8 +37,6 @@ export class CodeChartaService {
 				if (!_.isEmpty(e.warning)) {
 					this.dialogService.showValidationWarningDialog(e)
 				}
-
-				this.storeService.dispatch(setIsLoadingFile(false))
 			}
 		})
 
