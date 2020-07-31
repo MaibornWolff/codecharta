@@ -9,6 +9,7 @@ export class SearchPanelModeSelectorPageObject {
 		} else {
 			await page.waitForSelector("#search-panel-card.expanded")
 		}
+		return !wasOpen
 	}
 
 	public async isTreeViewOpen() {

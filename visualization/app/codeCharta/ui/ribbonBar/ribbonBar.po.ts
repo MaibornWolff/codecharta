@@ -17,6 +17,7 @@ export class RibbonBarPageObject {
 		} else {
 			await page.waitForSelector(`#${selector}-card.${this.EXPANDED}`)
 		}
+		return !wasOpen
 	}
 
 	public async focusSomething(): Promise<void> {

@@ -20,7 +20,7 @@ describe("MapTreeViewLevel", () => {
 		it("excluding a building should exclude it from the tree-view as well", async () => {
 			const filePath = "/root/ParentLeaf/smallLeaf.html"
 
-			await searchPanelModeSelector.toggleTreeView()
+			expect(await searchPanelModeSelector.toggleTreeView()).toBeTruthy()
 			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
 			await mapTreeViewLevel.openContextMenu(filePath)
 			await nodeContextMenu.exclude()

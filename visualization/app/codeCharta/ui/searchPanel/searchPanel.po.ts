@@ -11,6 +11,7 @@ export class SearchPanelPageObject {
 		} else {
 			await page.waitForSelector(`#search-panel-card.${this.EXPANDED}`)
 		}
+		return !wasOpen
 	}
 
 	public async isOpen(): Promise<boolean> {

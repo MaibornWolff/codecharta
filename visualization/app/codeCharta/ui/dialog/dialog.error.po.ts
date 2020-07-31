@@ -6,7 +6,6 @@ export class DialogErrorPageObject {
 
 	public async clickOk() {
 		await expect(page).toClick("md-dialog-actions button", { timeout: 3000 })
-
 		await page.waitForSelector("md-dialog-actions button", { visible: false })
 	}
 }

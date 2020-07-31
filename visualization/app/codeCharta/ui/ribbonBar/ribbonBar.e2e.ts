@@ -23,7 +23,8 @@ describe("RibbonBar", () => {
 	})
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
-		await searchPanelModeSelector.toggleTreeView()
+		expect(await searchPanelModeSelector.toggleTreeView()).toBeTruthy()
+
 		await mapTreeViewLevel.hoverNode("/root")
 
 		const actual = await metricChooser.getAreaMetricValue()
@@ -32,11 +33,11 @@ describe("RibbonBar", () => {
 
 	it("focus of ui element should be removed on ribbonBar toggle", async () => {
 		const panel = "color-metric"
-		await ribbonBar.togglePanel(panel)
+		expect(await ribbonBar.togglePanel(panel)).toBeTruthy()
 		await ribbonBar.focusSomething()
 		const activeBefore = await ribbonBar.getActiveClassName()
 
-		await ribbonBar.togglePanel(panel)
+		expect(await ribbonBar.togglePanel(panel)).toBeTruthy()
 
 		const activeAfter = await ribbonBar.getActiveClassName()
 		expect(activeBefore).not.toBe("ng-scope")
@@ -47,13 +48,9 @@ describe("RibbonBar", () => {
 		it("searchPanel", async () => {
 			expect(await searchPanel.isOpen()).toBeFalsy()
 
-			await searchPanel.toggle()
+			expect(await searchPanel.toggle()).toBeTruthy()
 
-			expect(await searchPanel.isOpen()).toBeTruthy()
-
-			await searchPanel.toggle()
-
-			expect(await searchPanel.isOpen()).toBeFalsy()
+			expect(await searchPanel.toggle()).toBeFalsy()
 		})
 
 		it("height-metric cad", async () => {
@@ -61,13 +58,9 @@ describe("RibbonBar", () => {
 
 			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
-			await ribbonBar.togglePanel(panel)
+			expect(await ribbonBar.togglePanel(panel)).toBeTruthy()
 
-			expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
-
-			await ribbonBar.togglePanel(panel)
-
-			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.togglePanel(panel)).toBeFalsy()
 		})
 
 		it("area-metric card", async () => {
@@ -75,13 +68,9 @@ describe("RibbonBar", () => {
 
 			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
-			await ribbonBar.togglePanel(panel)
+			expect(await ribbonBar.togglePanel(panel)).toBeTruthy()
 
-			expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
-
-			await ribbonBar.togglePanel(panel)
-
-			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.togglePanel(panel)).toBeFalsy()
 		})
 
 		it("color-metric card", async () => {
@@ -89,13 +78,9 @@ describe("RibbonBar", () => {
 
 			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
-			await ribbonBar.togglePanel(panel)
+			expect(await ribbonBar.togglePanel(panel)).toBeTruthy()
 
-			expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
-
-			await ribbonBar.togglePanel(panel)
-
-			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.togglePanel(panel)).toBeFalsy()
 		})
 
 		it("edge-metric", async () => {
@@ -103,13 +88,9 @@ describe("RibbonBar", () => {
 
 			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
-			await ribbonBar.togglePanel(panel)
+			expect(await ribbonBar.togglePanel(panel)).toBeTruthy()
 
-			expect(await ribbonBar.isPanelOpen(panel)).toBeTruthy()
-
-			await ribbonBar.togglePanel(panel)
-
-			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
+			expect(await ribbonBar.togglePanel(panel)).toBeFalsy()
 		})
 	})
 })
