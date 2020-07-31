@@ -19,7 +19,7 @@ git:
 
 addons:
   sonarcloud:
-    organization: "maibornwolff"
+    organization: "maibornwolff-gmbh"
     token:
       secure: $SONAR_TOKEN
 
