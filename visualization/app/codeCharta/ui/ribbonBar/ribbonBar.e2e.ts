@@ -23,8 +23,7 @@ describe("RibbonBar", () => {
 	})
 
 	it("hovering over a folder should display the sum of metric of all children", async () => {
-		const isTreeViewOpen = await searchPanelModeSelector.toggleTreeView()
-		expect(isTreeViewOpen).toBeTruthy()
+		await searchPanelModeSelector.toggleTreeView()
 
 		await mapTreeViewLevel.hoverNode("/root")
 
@@ -49,8 +48,6 @@ describe("RibbonBar", () => {
 
 	describe("opening and closing ribbon-bar cards", () => {
 		it("searchPanel", async () => {
-			expect(await searchPanel.isOpen()).toBeFalsy()
-
 			let isSearchPanelOpen = await searchPanel.toggle()
 			expect(isSearchPanelOpen).toBeTruthy()
 
@@ -60,8 +57,6 @@ describe("RibbonBar", () => {
 
 		it("height-metric cad", async () => {
 			const panel = "height-metric"
-
-			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
 			let isHeightSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isHeightSettingsPanelOpen).toBeTruthy()
@@ -73,8 +68,6 @@ describe("RibbonBar", () => {
 		it("area-metric card", async () => {
 			const panel = "area-metric"
 
-			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
-
 			let isAreaSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isAreaSettingsPanelOpen).toBeTruthy()
 
@@ -85,8 +78,6 @@ describe("RibbonBar", () => {
 		it("color-metric card", async () => {
 			const panel = "color-metric"
 
-			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
-
 			let isColorSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isColorSettingsPanelOpen).toBeTruthy()
 
@@ -96,8 +87,6 @@ describe("RibbonBar", () => {
 
 		it("edge-metric", async () => {
 			const panel = "edge-metric"
-
-			expect(await ribbonBar.isPanelOpen(panel)).toBeFalsy()
 
 			let isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isEdgeSettingsPanelOpen).toBeTruthy()
