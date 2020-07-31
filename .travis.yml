@@ -21,7 +21,7 @@ addons:
   sonarcloud:
     organization: "maibornwolff-gmbh"
     token:
-      secure: $SONAR_TOKEN
+      secure: "uAwTxaVmwdm+3ss9ppxC0GfoLLeob5pjeMPtznIwut4/cko7taesPhmjTvxJmIXY8zRx+Fu4ELjEBRKrHekNNEjntuQ9KzQEWLUmmTUAJbkFaKQq9b1b30muXqDGWrFAiOmDXgBRFkCrxIZ3FneozeKjFG5q4tLHjO0NfnlR/6cYBHNJcXty0fxsy7i3A+PFvYszGaj5R2KnRWkHRxImbmtRRDnQ+zR/jk4WT8jZqmLVx+0oPVj5QLEUJRC5s1AeT0xML7NBB0We9TGaAfgf9NuMEXeeKljSlCbYwN4kVIrkuLVNYHnTeSjNLzTRlE/+7B1dFMIsMwQl3IqoWDiYU+6o7+YrNpzig9L4vKnVvS0GDh6rbXQAlmC6wdVMpuR085Nvcb/elcnmXnEE+zL+jRFLUx6TglcHP4QStz9ZMuMGl3aTWZ9Lz2MBrm+0gRV98JsO1JzY5E/isqb0jTuqcaxmfDRVqV9zLUBQEDtsNHphZrT5LUh9JBsOdGdeNXI8UkWgW9gaKgGsx/FwJ+MZVt/ZNzCAgFdbu9yhX7M2RwO20znuFkMqXY6MZ4NRtgTgGp/4jdDukLZZn0HZouGm/vvNEeKvaz36u0W2CG2hEZxoc1y0KlJGS9yexVb9vH3hSp1hMJcvNI0uxCf4frzqFr5kCN4JyFtpADzR3qLVSxQ="
 
 before_install:
   - chmod +x ./analysis/gradlew
