@@ -46,7 +46,7 @@ describe("FileChooser", () => {
 		expect(await page.$eval("#loading-gif-map", el => el["className"])).toContain("ng-hide")
 	})
 
-	it("should not load non json file and throw error Message", async () => {
+	it("should not load non json file and show the error dialog", async () => {
 		await fileChooser.openFile("./app/codeCharta/assets/logo.png")
 
 		await showErrorDialog()
