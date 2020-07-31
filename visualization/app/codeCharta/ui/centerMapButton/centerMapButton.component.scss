@@ -14,12 +14,12 @@ center-map-button-component {
 	}
 
 	.visible {
-		transition: opacity 0.3s linear;
+		transition: opacity 0.1s linear;
 		opacity: 1;
 	}
 
 	.invisible {
-		transition: opacity 0.3s linear;
+		transition: opacity 0.1s linear;
 		opacity: 0;
 	}
 }

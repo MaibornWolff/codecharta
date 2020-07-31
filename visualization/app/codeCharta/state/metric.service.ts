@@ -8,7 +8,6 @@ import { FilesService, FilesSelectionSubscriber } from "./store/files/files.serv
 import { AttributeTypesSubscriber, AttributeTypesService } from "./store/fileSettings/attributeTypes/attributeTypes.service"
 import { fileStatesAvailable, getVisibleFileStates } from "../model/files/files.helper"
 import { FileState } from "../model/files/files"
-import _ from "lodash"
 
 export interface MetricServiceSubscriber {
 	onMetricDataAdded(metricData: MetricData[])
@@ -67,10 +66,8 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	private setNewMetricData() {
 		const newMetricData = this.calculateMetrics()
 		this.addUnaryMetric(newMetricData)
-		if (!_.isEqual(this.metricData, newMetricData)) {
-			this.metricData = newMetricData
-			this.notifyMetricDataAdded()
-		}
+		this.metricData = newMetricData
+		this.notifyMetricDataAdded()
 	}
 
 	private calculateMetrics(): MetricData[] {
@@ -133,10 +130,12 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private addUnaryMetric(metricData: MetricData[]) {
-		metricData.push({
-			name: MetricService.UNARY_METRIC,
-			maxValue: 1
-		})
+		if (!metricData.some(x => x.name === MetricService.UNARY_METRIC)) {
+			metricData.push({
+				name: MetricService.UNARY_METRIC,
+				maxValue: 1
+			})
+		}
 	}
 
 	private notifyMetricDataAdded() {

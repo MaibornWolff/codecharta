@@ -5,7 +5,7 @@ import { defaultState, setState } from "../../state/store/state.actions"
 import { convertToVectors } from "../../util/settingsHelper"
 
 export class ResetSettingsButtonController {
-	private settingsNames: string = ""
+	private settingsNames = ""
 
 	/* @ngInject */
 	constructor(private storeService: StoreService) {}
@@ -47,6 +47,7 @@ export const resetSettingsButtonComponent = {
 	template: require("./resetSettingsButton.component.html"),
 	controller: ResetSettingsButtonController,
 	bindings: {
-		settingsNames: "@"
+		settingsNames: "@",
+		tooltip: "@"
 	}
 }

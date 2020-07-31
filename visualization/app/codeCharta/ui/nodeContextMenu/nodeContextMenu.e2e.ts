@@ -1,16 +1,16 @@
 import { goto, launch, newPage } from "../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
-import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { Browser, Page } from "puppeteer"
-
-jest.setTimeout(10000)
+import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
+import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
 
 describe("NodeContextMenu", () => {
 	let browser: Browser
 	let page: Page
 
-	let settingsPanel: SearchPanelPageObject
 	let contextMenu: NodeContextMenuPageObject
+	let searchPanelModeSelector: SearchPanelModeSelectorPageObject
+	let mapTreeViewLevel: MapTreeViewLevelPageObject
 
 	beforeAll(async () => {
 		browser = await launch()
@@ -22,15 +22,16 @@ describe("NodeContextMenu", () => {
 
 	beforeEach(async () => {
 		page = await newPage(browser)
-		settingsPanel = new SearchPanelPageObject(page)
 		contextMenu = new NodeContextMenuPageObject(page)
+		searchPanelModeSelector = new SearchPanelModeSelectorPageObject(page)
+		mapTreeViewLevel = new MapTreeViewLevelPageObject(page)
 
 		await goto(page)
 	})
 
 	it("right clicking a folder should open a context menu with color options", async () => {
-		await settingsPanel.toggleTreeViewMode()
-		await settingsPanel.rightClickRootNodeInTreeViewSearchPanel()
+		await searchPanelModeSelector.toggleTreeView()
+		await mapTreeViewLevel.openContextMenu("/root")
 
 		expect(await contextMenu.hasColorButtons()).toBeTruthy()
 	})

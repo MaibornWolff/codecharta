@@ -1,19 +1,9 @@
 import angular from "angular"
 import * as d3 from "d3"
-import {
-	CodeMapNode,
-	BlacklistType,
-	BlacklistItem,
-	FileSettings,
-	ExportCCFile,
-	FileMeta,
-	AttributeTypes,
-	Edge,
-	NodeType
-} from "../codeCharta.model"
+import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
-import { stringify } from "querystring"
+import { ExportCCFile } from "../codeCharta.api.model"
 import { MetricService } from "../state/metric.service"
 const clone = require("rfdc")()
 
@@ -101,7 +91,7 @@ export class FileDownloader {
 	}
 
 	private static downloadData(data: ExportCCFile, fileName: string) {
-		let dataJson = stringify(data)
+		let dataJson = JSON.stringify(data)
 		if (typeof data === "object") {
 			dataJson = angular.toJson(data)
 		}

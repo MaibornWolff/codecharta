@@ -1,10 +1,10 @@
-<md-card ng-class="{ expanded: $ctrl._viewModel.isExpanded }" ng-attr-id="search-panel-card">
+<md-card ng-class="{ expanded: $ctrl._viewModel.isExpanded }" ng-attr-id="search-panel-card" ng-mousedown="$event.stopPropagation()">
 	<div class="section">
 		<div class="section-header">
-			<search-bar-component></search-bar-component>
+			<search-bar-component ng-click="$ctrl.openSearchPanel()"></search-bar-component>
 			<search-panel-mode-selector-component></search-panel-mode-selector-component>
 		</div>
-		<span class="section-title" ng-click="$ctrl.toggle()"> Search <i class="fa fa-angle-down"></i> </span>
+		<span class="section-title" ng-click="$ctrl.toggle()"> Search <i class="fa fa-angle-down" title="Show folder structure"></i> </span>
 		<div class="section-body">
 			<blacklist-panel-flatten-component ng-show="$ctrl._viewModel.searchPanelMode === 'flatten'"></blacklist-panel-flatten-component>
 			<blacklist-panel-exclude-component ng-show="$ctrl._viewModel.searchPanelMode === 'exclude'"></blacklist-panel-exclude-component>

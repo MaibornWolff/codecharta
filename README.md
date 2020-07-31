@@ -11,7 +11,7 @@
 CodeCharta is a beautiful tool to help you visualize and understand code. It can combine code metrics from multiple sources and visualize them using 3D tree maps. CodeCharta's two major parts are:
 
 - [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/): Command-Line-Tool for generating visualization data in the form of `.cc.json` files. It includes some pre-defined importers for e.g. SonarQube, SourceMonitor, SCM log information, generic csv data, as well as a command to validate and merge multiple data files.
-- [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/): GUI for visualizing the code metrics inside the `.cc.json` files. The file schema is located [here](/visualization/app/codeCharta/util/schema.json) and we are using the [json-schema v4](https://tools.ietf.org/html/draft-zyp-json-schema-04) format.
+- [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/): GUI to visualize code metrics from `.cc.json` files. Imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
 
 ![Screenshot of visualization](screenshot.png)
 
@@ -56,7 +56,7 @@ Want to have even more information? Please check our [news](https://maibornwolff
 ## Further Information
 
 - [Docs](https://maibornwolff.github.io/codecharta/)
-- [Quickstart Guide](https://maibornwolff.github.io/codecharta/quick-start-guide/)
+- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
 - [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
 - [Sonarqube Visualization](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
 - [Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)

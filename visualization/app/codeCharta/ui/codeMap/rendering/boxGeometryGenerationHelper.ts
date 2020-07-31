@@ -27,8 +27,8 @@ const normals: THREE.Vector3[] = [
 	new THREE.Vector3(0.0, 0.0, 1.0)
 ]
 
-const numSides: number = 6
-const verticesPerSide: number = 4
+const numSides = 6
+const verticesPerSide = 4
 
 export class BoxGeometryGenerationHelper {
 	public static addBoxToVertexData(
@@ -96,7 +96,7 @@ export class BoxGeometryGenerationHelper {
 		positions: THREE.Vector3[],
 		uvs: THREE.Vector2[]
 	): void {
-		for (let i: number = 0; i < verticesPerSide; ++i) {
+		for (let i = 0; i < verticesPerSide; ++i) {
 			positions[sides.right * verticesPerSide + i] = new THREE.Vector3(
 				maxPos.x,
 				positions[sides.left * verticesPerSide + i].y,
@@ -115,7 +115,7 @@ export class BoxGeometryGenerationHelper {
 				minPos.z
 			)
 
-			const epsilon: number = 0.01
+			const epsilon = 0.01
 
 			uvs[sides.right * verticesPerSide + i] = new THREE.Vector2(
 				uvs[sides.left * verticesPerSide + i].x > epsilon ? 0.0 : 1.0,
@@ -146,7 +146,7 @@ export class BoxGeometryGenerationHelper {
 	): void {
 		const deltaRelativeToHeight: number = delta / (maxPos.y - minPos.y)
 
-		for (let side: number = 0; side < numSides; ++side) {
+		for (let side = 0; side < numSides; ++side) {
 			const intermediateIdxBL: number = side * verticesPerSide + vertexLocation.bottomLeft
 			const intermediateIdxTL: number = side * verticesPerSide + vertexLocation.topLeft
 			const intermediateIdxTR: number = side * verticesPerSide + vertexLocation.topRight

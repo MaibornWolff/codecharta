@@ -15,7 +15,60 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Chore 👨‍💻 👩‍💻
+
+## [1.51.0] - 2020-07-24
+
+### Added 🚀
+
+- File chooser now accept ".json" files only to avoid accidentally loading incorrect files
+- Lots of tooltips #1030
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Blacklisting a building would sometimes not update the map #1098
+- Changes made after opening the filechooser and closing it won't be applied #875
+- Edge metric list not always updated correctly when loading a new file #1106
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.50.0] - 2020-07-10
+
+### Added 🚀
+
+- Line between scenario indicator and remove button #1069
+
+### Changed
+
+- Reduced transition time when opening or collapsing parts of the ribbon bar #1043
+- Search Panel will open now when clicking in the search field and collapse when clicking somewhere else #1071
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Opening the same file again will now reload the file and reset the application #1032
+- Improve render performance by persisting color conversions #1034
+- Sorting in tree-view not being applied #1040
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.49.1] - 2020-07-03
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
 - Improved performance significantly when switching between single, multiple and delta
+- Color-Range-Slider sometimes misbehaved when loading a new map or excluding buildings #926
 
 ### Chore 👨‍💻 👩‍💻
 

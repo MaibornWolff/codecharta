@@ -21,12 +21,13 @@ describe("RangeSliderController", () => {
 	let $timeout: ITimeoutService
 	let storeService: StoreService
 	let metricService: MetricService
+	let colorRangeService: ColorRangeService
 	let rangeSliderController: RangeSliderController
 
 	let mapColors: MapColors
 
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController($rootScope, $timeout, storeService, metricService)
+		rangeSliderController = new RangeSliderController($rootScope, $timeout, storeService, metricService, colorRangeService)
 	}
 
 	function restartSystem() {
@@ -36,6 +37,7 @@ describe("RangeSliderController", () => {
 		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 		metricService = getService<MetricService>("metricService")
+		colorRangeService = getService<ColorRangeService>("colorRangeService")
 
 		mapColors = storeService.getState().appSettings.mapColors
 	}
@@ -104,6 +106,25 @@ describe("RangeSliderController", () => {
 			rebuildController()
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, rangeSliderController)
+		})
+	})
+
+	describe("onBlacklistChanged", () => {
+		it("should call reset the colorRange", () => {
+			rangeSliderController["_viewModel"].sliderOptions.ceil = 19
+			colorRangeService.reset = jest.fn()
+
+			rangeSliderController.onBlacklistChanged()
+
+			expect(colorRangeService.reset).toHaveBeenCalled()
+		})
+		it("should not reset the colorRange if maxValue has not changed", () => {
+			rangeSliderController["_viewModel"].sliderOptions.ceil = 100
+			colorRangeService.reset = jest.fn()
+
+			rangeSliderController.onBlacklistChanged()
+
+			expect(colorRangeService.reset).not.toHaveBeenCalled()
 		})
 	})
 

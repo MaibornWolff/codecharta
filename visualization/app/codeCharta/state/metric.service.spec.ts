@@ -90,16 +90,15 @@ describe("MetricService", () => {
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
-		it("should not broadcast a METRIC_DATA_ADDED_EVENT if metricData is still the same", () => {
-			const oldMetricData = metricService.getMetricData()
-
+		it("should add unary metric to metricData", () => {
 			metricService.onFilesSelectionChanged(undefined)
 
-			expect($rootScope.$broadcast).not.toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
-			expect(oldMetricData).toEqual(metricService.getMetricData())
+			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})
 
-		it("should add unary metric to metricData", () => {
+		it("should not add unary metric a second time if the cc.json already contains unary", () => {
+			metricData.push({ name: MetricService.UNARY_METRIC, maxValue: 1 })
+
 			metricService.onFilesSelectionChanged(undefined)
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
@@ -125,19 +124,18 @@ describe("MetricService", () => {
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
-		it("should not broadcast a METRIC_DATA_ADDED_EVENT if metricData is still the same", () => {
-			const oldMetricData = metricService.getMetricData()
-
-			metricService.onFilesSelectionChanged(undefined)
-
-			expect($rootScope.$broadcast).not.toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
-			expect(oldMetricData).toEqual(metricService.getMetricData())
-		})
-
 		it("should add unary metric to metricData", () => {
 			metricService.onBlacklistChanged([])
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBeGreaterThan(0)
+		})
+
+		it("should not add unary metric a second time if the cc.json already contains unary", () => {
+			metricData.push({ name: MetricService.UNARY_METRIC, maxValue: 1 })
+
+			metricService.onFilesSelectionChanged(undefined)
+
+			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})
 	})
 
