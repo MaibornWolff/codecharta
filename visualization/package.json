@@ -136,7 +136,7 @@
 		"babel-loader": "^8.1.0",
 		"bestzip": "^2.1.5",
 		"clean-webpack-plugin": "^3.0.0",
-		"css-loader": "^3.6.0",
+		"css-loader": "^4.2.0",
 		"es6-shim": "^0.35.3",
 		"eslint": "^6.8.0",
 		"eslint-config-prettier": "^6.10.0",
