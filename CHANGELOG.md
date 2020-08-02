@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Quality gates on sonarcloud.io are available again #879
 - Number of incoming and outgoing edges not visible when hovering over a node #1095
 
 ### Chore 👨‍💻 👩‍💻
@@ -51,7 +52,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Reduced transition time when opening or collapsing parts of the ribbon bar #1043
-- Search Panel will open now when clicking in the search field and collapse when clicking somewhere else #1071
+- Search Panel will open now when clicking in the search field and collapse when clicking somewhere else #
 
 ### Removed 🗑
 
