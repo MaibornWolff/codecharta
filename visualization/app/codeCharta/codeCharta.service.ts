@@ -37,7 +37,6 @@ export class CodeChartaService {
 					this.storeService.dispatch(setIsLoadingFile(false))
 					this.dialogService.showValidationErrorDialog(e)
 					printErrors = false
-					return
 				}
 
 				if (!_.isEmpty(e.warning)) {
