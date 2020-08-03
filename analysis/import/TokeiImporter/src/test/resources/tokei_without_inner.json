@@ -1,0 +1,20 @@
+{
+  "Markdown": {
+    "blanks": 0,
+    "code": 1965,
+    "comments": 0,
+    "reports": [
+      {
+        "stats": {
+          "blanks": 0,
+          "code": 450,
+          "comments": 0,
+          "blobs": {}
+        },
+        "name": "foo/bar/CHANGELOG.md"
+      }
+    ],
+    "children": {},
+    "inaccurate": false
+  }
+}

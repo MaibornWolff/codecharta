@@ -20,6 +20,14 @@ class TokeiImporterTest {
     }
 
     @Test
+    fun `reads tokei 12 new json scheme from file`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json", "--pathSeparator=\\"))
+
+        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"rloc\":450"))
+        Assertions.assertThat(true).isEqualTo(false)
+    }
+
+    @Test
     fun `reads tokei piped input`() {
         val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines().joinToString(separator = "") { it }
 
