@@ -15,7 +15,7 @@ import {
 } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
-import { MetricDataService } from "../state/store/metricData/metricData.service"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export class NodeDecorator {
 	public static decorateMap(map: CodeMapNode, metricData: NodeMetricData[], blacklist: BlacklistItem[]) {
@@ -115,7 +115,7 @@ export class NodeDecorator {
 			root.each(node => {
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				node.data.edgeAttributes = !node.data.edgeAttributes ? {} : node.data.edgeAttributes
-				Object.assign(node.data.attributes, { [MetricDataService.UNARY_METRIC]: 1 })
+				Object.assign(node.data.attributes, { [NodeMetricDataService.UNARY_METRIC]: 1 })
 			})
 		}
 	}

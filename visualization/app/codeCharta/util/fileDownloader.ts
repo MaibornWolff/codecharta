@@ -3,8 +3,8 @@ import * as d3 from "d3"
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
-import { MetricDataService } from "../state/store/metricData/metricData.service"
 import { ExportCCFile } from "../codeCharta.api.model"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 const clone = require("rfdc")()
 
 export class FileDownloader {
@@ -76,7 +76,7 @@ export class FileDownloader {
 			if (node.data.type === NodeType.FOLDER) {
 				node.data.attributes = {}
 			} else {
-				delete node.data.attributes[MetricDataService.UNARY_METRIC]
+				delete node.data.attributes[NodeMetricDataService.UNARY_METRIC]
 			}
 		})
 		return copy

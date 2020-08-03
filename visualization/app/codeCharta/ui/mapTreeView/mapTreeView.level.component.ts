@@ -6,7 +6,7 @@ import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { MetricDataService } from "../../state/store/metricData/metricData.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -95,11 +95,11 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public getNodeUnaryValue() {
-		return this.node.attributes[MetricDataService.UNARY_METRIC]
+		return this.node.attributes[NodeMetricDataService.UNARY_METRIC]
 	}
 
 	public getUnaryPercentage() {
-		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[MetricDataService.UNARY_METRIC]
+		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[NodeMetricDataService.UNARY_METRIC]
 		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
 	}
 

@@ -3,9 +3,9 @@ import { calculateNewNodeMetricData, NodeMetricDataAction, setNodeMetricData } f
 import { METRIC_DATA, TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../../util/dataMocks"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { BlacklistType } from "../../../../codeCharta.model"
-import { MetricDataService } from "../metricData.service"
 import _ from "lodash"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
+import { NodeMetricDataService } from "./nodeMetricData.service"
 
 describe("nodeMetricData", () => {
 	let fileState: FileState
@@ -47,7 +47,7 @@ describe("nodeMetricData", () => {
 				{ maxValue: 1000, name: "functions" },
 				{ maxValue: 100, name: "mcc" },
 				{ maxValue: 100, name: "rloc" },
-				{ maxValue: 1, name: MetricDataService.UNARY_METRIC }
+				{ maxValue: 1, name: NodeMetricDataService.UNARY_METRIC }
 			]
 
 			const result = nodeMetricData([], calculateNewNodeMetricData([fileState], []))
@@ -60,7 +60,7 @@ describe("nodeMetricData", () => {
 				{ maxValue: 1000, name: "functions" },
 				{ maxValue: 100, name: "mcc" },
 				{ maxValue: 70, name: "rloc" },
-				{ maxValue: 1, name: MetricDataService.UNARY_METRIC }
+				{ maxValue: 1, name: NodeMetricDataService.UNARY_METRIC }
 			]
 
 			const result = nodeMetricData(
@@ -74,7 +74,7 @@ describe("nodeMetricData", () => {
 		it("should always add unary metric if it's not included yet", () => {
 			const result = nodeMetricData([], calculateNewNodeMetricData([fileState], []))
 
-			expect(result.filter(x => x.name === MetricDataService.UNARY_METRIC)).toHaveLength(1)
+			expect(result.filter(x => x.name === NodeMetricDataService.UNARY_METRIC)).toHaveLength(1)
 		})
 
 		it("should not add unary metric a second time if the cc.json already contains unary", () => {
@@ -82,7 +82,7 @@ describe("nodeMetricData", () => {
 
 			const result = nodeMetricData([], calculateNewNodeMetricData([fileState], []))
 
-			expect(result.filter(x => x.name === MetricDataService.UNARY_METRIC).length).toBe(1)
+			expect(result.filter(x => x.name === NodeMetricDataService.UNARY_METRIC).length).toBe(1)
 		})
 	})
 })

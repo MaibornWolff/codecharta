@@ -4,7 +4,7 @@ import { getVisibleFileStates } from "../../../../model/files/files.helper"
 import { FileState } from "../../../../model/files/files"
 import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { hierarchy, HierarchyNode } from "d3"
-import { MetricDataService } from "../metricData.service"
+import { NodeMetricDataService } from "./nodeMetricData.service"
 
 const clone = require("rfdc")()
 
@@ -77,9 +77,9 @@ function sortByAttributeName(metricData: NodeMetricData[]): NodeMetricData[] {
 }
 
 function addUnaryMetric(metricData: NodeMetricData[]) {
-	if (!metricData.some(x => x.name === MetricDataService.UNARY_METRIC)) {
+	if (!metricData.some(x => x.name === NodeMetricDataService.UNARY_METRIC)) {
 		metricData.push({
-			name: MetricDataService.UNARY_METRIC,
+			name: NodeMetricDataService.UNARY_METRIC,
 			maxValue: 1
 		})
 	}

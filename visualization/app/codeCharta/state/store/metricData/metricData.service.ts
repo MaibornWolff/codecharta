@@ -9,7 +9,6 @@ export interface MetricDataSubscriber {
 }
 
 export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDataSubscriber {
-	public static UNARY_METRIC = "unary"
 	private static METRIC_DATA_COMPLETE = "metric-data-complete"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {

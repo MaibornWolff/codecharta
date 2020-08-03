@@ -13,7 +13,7 @@ import {
 import { NodeDecorator } from "./nodeDecorator"
 import _ from "lodash"
 import { HierarchyNode } from "d3"
-import { MetricDataService } from "../state/store/metricData/metricData.service"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
@@ -414,7 +414,7 @@ describe("nodeDecorator", () => {
 			const h = d3.hierarchy(map)
 
 			h.each(node => {
-				expect(node.data.attributes[MetricDataService.UNARY_METRIC]).toBeDefined()
+				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 
@@ -423,7 +423,7 @@ describe("nodeDecorator", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 			const h = d3.hierarchy(map)
 			h.each(node => {
-				expect(node.data.attributes[MetricDataService.UNARY_METRIC]).toBeDefined()
+				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 	})
