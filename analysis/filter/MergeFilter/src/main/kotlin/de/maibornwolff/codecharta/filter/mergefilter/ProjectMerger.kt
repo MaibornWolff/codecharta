@@ -42,11 +42,11 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
         return if (nodeMerger.javaClass.simpleName == "RecursiveNodeMergerStrategy") {
             getMergedEdges()
         } else {
-            getEdgesOfMasterAndWarnIfDiscards()
+            getEdgesOfMainAndWarnIfDiscards()
         }
     }
 
-    private fun getEdgesOfMasterAndWarnIfDiscards(): MutableList<Edge> {
+    private fun getEdgesOfMainAndWarnIfDiscards(): MutableList<Edge> {
         projects.forEachIndexed { i, project ->
             if (project.edges.isNotEmpty() && i > 0) logger.warn("Edges were not merged. Use recursive strategy to merge edges.")
         }

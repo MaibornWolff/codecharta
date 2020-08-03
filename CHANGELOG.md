@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Rename master branch to main for a more inclusive naming #1117
+
 ### Removed 🗑
 
 ### Fixed 🐞

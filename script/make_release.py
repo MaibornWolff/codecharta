@@ -76,8 +76,8 @@ if repo.is_dirty():
     quit()
 
 
-# Check if we are on master branch
-if repo.head != "master":
+# Check if we are on main branch
+if repo.head != "main":
     print("You can only release on master branch. Aborting.")
     quit()
 
