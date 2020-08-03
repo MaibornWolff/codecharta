@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- File chooser now accept ".json" files only to avoid accidentally loading incorrect files
+- File chooser now accept ".json" files only to avoid accidentally loading incorrect files #1094
 - Lots of tooltips #1030
 
 ### Changed
@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Reduced transition time when opening or collapsing parts of the ribbon bar #1043
-- Search Panel will open now when clicking in the search field and collapse when clicking somewhere else #
+- Search Panel will open now when clicking in the search field and collapse when clicking somewhere else #1071
 
 ### Removed 🗑
 
