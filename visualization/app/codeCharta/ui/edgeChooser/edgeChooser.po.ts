@@ -11,11 +11,12 @@ export class EdgeChooserPageObject {
 
 	public async selectEdgeMetric(metric: string) {
 		await this.open()
-		await this.page.click(`#edge-metric-${metric}`)
+		await expect(page).toClick(`#edge-metric-${metric}`, { timeout: 3000 })
 	}
 
 	public async isEdgeCountAvailable() {
-		const innerText = await this.page.$eval("edge-chooser-component #edge-count", el => el["innerText"])
+		await page.waitForSelector("edge-chooser-component #edge-count")
+		const innerText = await page.$eval("edge-chooser-component #edge-count", el => el["innerText"])
 
 		function containsNumber(string: string): boolean {
 			return /\d/.test(string)
