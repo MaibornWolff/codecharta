@@ -1,8 +1,8 @@
 # CodeCharta
 
-[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
-[![Quality Gate Analysis](https://sonarcloud.io/api/project_badges/measure?project=de.maibornwolff.codecharta%3Aanalysis&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
-[![Quality Gate Visualization](https://sonarcloud.io/api/project_badges/measure?project=de.maibornwolff.codecharta%3Avisualization&metric=alert_status)](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
+[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=main)](https://travis-ci.org/MaibornWolff/codecharta)
+[![Quality Gate Analysis](https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_analysis&metric=alert_status)](https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_analysis)
+[![Quality Gate Visualization](https://sonarcloud.io/api/project_badges/measure?project=maibornwolff-gmbh_codecharta_visualization&metric=alert_status)](https://sonarcloud.io/dashboard?id=maibornwolff-gmbh_codecharta_visualization)
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 

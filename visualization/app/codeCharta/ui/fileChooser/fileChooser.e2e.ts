@@ -1,29 +1,16 @@
-import { goto, newPage, launch } from "../../../puppeteer.helper"
+import { goto } from "../../../puppeteer.helper"
 import { FileChooserPageObject } from "./fileChooser.po"
 import { FilePanelPageObject } from "../filePanel/filePanel.po"
-import { DialogErrorPageObject } from "../dialog/dialog.error.po"
 
 describe("FileChooser", () => {
-	let browser, page
 	let fileChooser: FileChooserPageObject
 	let filePanel: FilePanelPageObject
-	let dialogError: DialogErrorPageObject
-
-	beforeAll(async () => {
-		browser = await launch()
-	})
-
-	afterAll(async () => {
-		await browser.close()
-	})
 
 	beforeEach(async () => {
-		page = await newPage(browser)
-		fileChooser = new FileChooserPageObject(page)
-		filePanel = new FilePanelPageObject(page)
-		dialogError = new DialogErrorPageObject(page)
+		fileChooser = new FileChooserPageObject()
+		filePanel = new FilePanelPageObject()
 
-		await goto(page)
+		await goto()
 	})
 
 	it("should load another cc.json", async () => {
@@ -40,14 +27,8 @@ describe("FileChooser", () => {
 		expect(await page.$eval("#loading-gif-map", el => el["className"])).toContain("ng-hide")
 	})
 
-	it("should not load non json file and show the error dialog", async () => {
+	it("should not load non json file", async () => {
 		await fileChooser.openFile("./app/codeCharta/assets/logo.png")
-
-		const msg = await dialogError.getMessage()
-		expect(msg).toEqual(" file is empty or invalid")
-
-		await page.waitFor(2000)
-		await dialogError.clickOk()
 
 		expect(await filePanel.getSelectedName()).toEqual("sample1.cc.json")
 	})

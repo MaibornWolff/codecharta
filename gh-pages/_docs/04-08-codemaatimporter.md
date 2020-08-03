@@ -36,17 +36,17 @@ The Codemaatimporter, generates visualisation data from CodeMaat Temporal Coupli
    ccsh codemaatimport edges.csv -o edges.cc.json
    ```
 
-4. Aggregate edge-attributes and insert them into the appropriate nodes attribute-list with [EdgeFilter](https://github.com/MaibornWolff/codecharta/blob/master/analysis/filter/EdgeFilter/README.md)
+4. Aggregate edge-attributes and insert them into the appropriate nodes attribute-list with [EdgeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/EdgeFilter/README.md)
    ```bash
    ccsh edgefilter edges.cc.json -o visual_edges.cc.json
    ```
-5. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/master/analysis/filter/MergeFilter/README.md)
+5. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/MergeFilter/README.md)
 
    ```bash
    ccsh merge visual_edges.cc.json metrics.cc.json -o merged.cc.json
    ```
 
-6. Visualizing `merged.cc.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/master/visualization)
+6. Visualizing `merged.cc.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/main/visualization)
 
 ![Image]({{site.baseurl}}/assets/images/docs/codemaat/codemaatimport-modell.png)
 

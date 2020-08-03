@@ -1,0 +1,17 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+gitpython = "*"
+pyinquirer = "*"
+in-place = "*"
+
+[requires]
+python_version = "3.8"
+
+[scripts]
+make_release = "python ./script/make_release.py"
