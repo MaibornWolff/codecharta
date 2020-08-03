@@ -2,7 +2,7 @@ dependencies {
     implementation project(':model')
     implementation project(':filter:MergeFilter')
 
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
 

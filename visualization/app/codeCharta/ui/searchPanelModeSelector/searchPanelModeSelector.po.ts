@@ -1,17 +1,24 @@
-import { Page } from "puppeteer"
-import { delay } from "../../../puppeteer.helper"
-
 export class SearchPanelModeSelectorPageObject {
-	constructor(private page: Page) {}
-
 	public async toggleTreeView() {
-		await this.page.click("#tree-view")
-		await delay(500)
+		const wasOpen = await this.isTreeViewOpen()
+
+		await expect(page).toClick("#tree-view", { timeout: 3000 })
+
+		if (wasOpen) {
+			await page.waitForSelector("#search-panel-card", { visible: false })
+		} else {
+			await page.waitForSelector("#search-panel-card.expanded")
+		}
+		return !wasOpen
 	}
 
 	public async isTreeViewOpen() {
-		const classNames = await this.page.$eval("#tree-view", el => el.className)
+		await page.waitForSelector("#tree-view")
+		const treeViewClassNames = await page.$eval("#tree-view", el => el.className)
 
-		return classNames.includes("current")
+		await page.waitForSelector("#search-panel-card")
+		const searchPanelClassNames = await page.$eval("#search-panel-card", el => el.className)
+
+		return treeViewClassNames.includes("current") && searchPanelClassNames.includes("expanded")
 	}
 }
