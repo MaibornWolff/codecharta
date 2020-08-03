@@ -85,11 +85,11 @@ jobs:
     - name: "Publish Analysis Sonar Results"
       before_script: cd analysis
       script:
-        - ./gradlew build integrationTest
+        - ./gradlew build test integrationTest
         - ./gradlew codeCoverageReport
       deploy:
         - provider: script
-          script: ./gradlew sonarqube
+          script: sonar-scanner
           skip_cleanup: true
           on:
             branch: tech/787/enable-coverage-report

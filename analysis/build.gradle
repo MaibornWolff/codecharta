@@ -11,10 +11,8 @@ buildscript {
 }
 
 plugins {
-    id 'org.sonarqube' version '3.0'
     id 'distribution'
     id "org.jlleitschuh.gradle.ktlint" version "7.2.1"
-    id 'jacoco'
 }
 
 allprojects {
@@ -29,16 +27,6 @@ allprojects {
 
     jacoco {
         toolVersion = jacoco_version
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.projectKey", "maibornwolff-gmbh_codecharta_analysis"
-        property "sonar.projectName", "CodeCharta Analysis"
-        property "sonar.jacoco.reportPath", "./build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml"
-        property 'sonar.java.coveragePlugin', "jacoco"
     }
 }
 
