@@ -33,3 +33,7 @@ export function isDeltaState(fileStates: FileState[]): boolean {
 export function isPartialState(fileStates: FileState[]): boolean {
 	return fileStates.some(x => x.selectedAs === FileSelectionState.Partial)
 }
+
+export function getFileState(ccFile: CCFile): FileState {
+	return { file: ccFile, selectedAs: FileSelectionState.None }
+}
