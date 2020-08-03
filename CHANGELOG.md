@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Support for Tokei 12 new JSON schema #1103
+
 ### Changed
 
 - Rename master branch to main for a more inclusive naming #1117
