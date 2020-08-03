@@ -24,13 +24,18 @@ export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDa
 	}
 
 	public onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
-		if (this.storeService.getState().metricData.edgeMetricData.length > 0) {
+		if (this.edgeMetricsAvailable()) {
 			this.notify()
 		}
 	}
 
 	private notify() {
 		this.$rootScope.$broadcast(MetricDataService.METRIC_DATA_COMPLETE)
+	}
+
+	private edgeMetricsAvailable(): boolean {
+		const edges = this.storeService.getState().fileSettings.edges
+		return edges.length === 0 || (edges.length > 0 && this.storeService.getState().metricData.edgeMetricData.length > 0)
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricDataSubscriber) {

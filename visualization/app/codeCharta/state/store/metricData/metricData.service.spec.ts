@@ -5,9 +5,10 @@ import { EdgeMetricDataService } from "./edgeMetricData/edgeMetricData.service"
 import { setEdgeMetricData } from "./edgeMetricData/edgeMetricData.actions"
 import { setNodeMetricData } from "./nodeMetricData/nodeMetricData.actions"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { EDGE_METRIC_DATA, METRIC_DATA, withMockedEventMethods } from "../../../util/dataMocks"
+import { EDGE_METRIC_DATA, METRIC_DATA, VALID_EDGE, withMockedEventMethods } from "../../../util/dataMocks"
 import { NodeMetricDataService } from "./nodeMetricData/nodeMetricData.service"
 import { StoreService } from "../../store.service"
+import { setEdges } from "../fileSettings/edges/edges.actions"
 
 describe("MetricDataService", () => {
 	let metricDataService: MetricDataService
@@ -76,12 +77,21 @@ describe("MetricDataService", () => {
 			expect($rootScope.$broadcast).toHaveBeenCalledWith(MetricDataService["METRIC_DATA_COMPLETE"])
 		})
 
-		it("should not notify if edge metric data does not exist", () => {
+		it("should not notify if edge metric data does not exist and there are edges in the file", () => {
+			storeService["store"].dispatch(setEdges([VALID_EDGE]))
 			storeService["store"].dispatch(setEdgeMetricData())
 
 			metricDataService.onNodeMetricDataChanged(METRIC_DATA)
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+
+		it("should notify if edges are not available in the files", () => {
+			storeService["store"].dispatch(setEdgeMetricData())
+
+			metricDataService.onNodeMetricDataChanged(METRIC_DATA)
+
+			expect($rootScope.$broadcast).toHaveBeenCalled()
 		})
 	})
 })
