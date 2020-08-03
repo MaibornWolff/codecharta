@@ -19,4 +19,13 @@ export class FileChooserPageObject {
 
 		await fileChooser.cancel()
 	}
+
+	public static async selectFile(path: string) {
+		const fileChooser = await page.waitForFileChooser()
+
+		await fileChooser.accept([path])
+
+		await page.waitForSelector("#loading-gif-file")
+		await page.waitForSelector("#loading-gif-file", { visible: false })
+	}
 }
