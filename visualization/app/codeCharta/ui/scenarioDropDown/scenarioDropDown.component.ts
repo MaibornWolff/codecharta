@@ -37,7 +37,7 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.storeService.getState().metricData.nodeMetricData)
 	}
 
-	public onMetricDataComplete() {
+	public onMetricDataChanged() {
 		this.loadScenarios()
 	}
 

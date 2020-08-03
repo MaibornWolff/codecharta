@@ -82,7 +82,7 @@ export class MetricTypeController
 		this._viewModel.isFolderHovered = false
 	}
 
-	public onMetricDataComplete() {
+	public onMetricDataChanged() {
 		const state = this.storeService.getState()
 		if (this.metricSelection === MetricSelections.edgeMetric) {
 			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])

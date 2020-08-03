@@ -5,11 +5,11 @@ import { EdgeMetricData, NodeMetricData } from "../../../codeCharta.model"
 import { StoreService } from "../../store.service"
 
 export interface MetricDataSubscriber {
-	onMetricDataComplete()
+	onMetricDataChanged()
 }
 
 export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDataSubscriber {
-	private static METRIC_DATA_COMPLETE = "metric-data-complete"
+	private static METRIC_DATA_COMPLETE = "metric-data-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
@@ -39,7 +39,7 @@ export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDa
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricDataSubscriber) {
 		$rootScope.$on(MetricDataService.METRIC_DATA_COMPLETE, () => {
-			subscriber.onMetricDataComplete()
+			subscriber.onMetricDataChanged()
 		})
 	}
 }

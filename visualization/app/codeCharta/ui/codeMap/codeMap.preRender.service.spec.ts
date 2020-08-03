@@ -186,9 +186,9 @@ describe("codeMapPreRenderService", () => {
 		})
 	})
 
-	describe("onMetricDataComplete", () => {
+	describe("onMetricDataChanged", () => {
 		it("should decorate and set a new render map", () => {
-			codeMapPreRenderService.onMetricDataComplete()
+			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
@@ -196,7 +196,7 @@ describe("codeMapPreRenderService", () => {
 		it("should update the isBlacklisted attribute on each node", () => {
 			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
 
-			codeMapPreRenderService.onMetricDataComplete()
+			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(allNodesToBeExcluded()).toBeTruthy()
 		})

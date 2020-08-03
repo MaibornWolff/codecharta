@@ -82,7 +82,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}
 	}
 
-	public onMetricDataComplete() {
+	public onMetricDataChanged() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()

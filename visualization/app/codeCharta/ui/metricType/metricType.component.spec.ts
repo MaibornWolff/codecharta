@@ -119,7 +119,7 @@ describe("MetricTypeController", () => {
 			metricTypeController["metricSelection"] = MetricSelections.heightMetric
 			nodeMetricDataService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
 
-			metricTypeController.onMetricDataComplete()
+			metricTypeController.onMetricDataChanged()
 
 			expect(nodeMetricDataService.getAttributeTypeByMetric).toBeCalledWith("foo")
 			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
@@ -131,7 +131,7 @@ describe("MetricTypeController", () => {
 			metricTypeController["metricSelection"] = MetricSelections.edgeMetric
 			edgeMetricDataService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
 
-			metricTypeController.onMetricDataComplete()
+			metricTypeController.onMetricDataChanged()
 
 			expect(edgeMetricDataService.getAttributeTypeByMetric).toBeCalledWith("foo")
 			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
