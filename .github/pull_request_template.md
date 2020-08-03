@@ -2,7 +2,7 @@
 
 _**Please read the [CONTRIBUTING.md](https://github.com/MaibornWolff/codecharta/blob/main/CONTRIBUTING.md) before opening a PR.**_
 
-Issue: #
+closes: #
 
 ## Description
 
