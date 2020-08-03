@@ -24,7 +24,7 @@ import java.nio.file.Paths
 import java.util.Arrays
 
 @RunWith(Parameterized::class)
-class SCMLogProjectCreatorGoldenMasterTest(
+class SCMLogProjectCreatorGoldenTest(
     val scm: String,
     private val strategy: LogParserStrategy,
     private val containsAuthors: Boolean,
@@ -53,7 +53,7 @@ class SCMLogProjectCreatorGoldenMasterTest(
 
     @Test
     @Throws(Exception::class)
-    fun logParserGoldenMasterTest() {
+    fun logParserGoldenTest() {
         // given
         val projectConverter = ProjectConverter(containsAuthors)
 
