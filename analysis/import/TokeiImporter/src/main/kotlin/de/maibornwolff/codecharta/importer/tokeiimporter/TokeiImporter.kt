@@ -73,7 +73,7 @@ class TokeiImporter(
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
         runBlocking(Dispatchers.Default) {
-            setImporterStrategy(root)
+            determineImporterStrategy(root)
             val languageSummaries = importerStrategy.getLanguageSummaries(root)
             importerStrategy.buildCCJson(languageSummaries, projectBuilder)
         }
@@ -87,7 +87,7 @@ class TokeiImporter(
         return null
     }
 
-    private fun setImporterStrategy(root: JsonElement) {
+    private fun determineImporterStrategy(root: JsonElement) {
         val json = root.asJsonObject
         if (json.has(TOP_LEVEL_OBJECT)) {
             importerStrategy = TokeiInnerStrategy(rootName, pathSeparator)

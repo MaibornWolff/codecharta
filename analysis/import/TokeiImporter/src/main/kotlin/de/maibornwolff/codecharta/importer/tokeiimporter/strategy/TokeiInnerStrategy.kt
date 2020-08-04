@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.tokeiimporter.strategy
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import de.maibornwolff.codecharta.importer.tokeiimporter.AnalysisObject.AnalysisObject
+import de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject.AnalysisObject
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder

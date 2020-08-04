@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.tokeiimporter.AnalysisObject
+package de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject
 
 class AnalysisObjectTwelve(
     val blanks: Int,
