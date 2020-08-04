@@ -16,7 +16,7 @@ We create Pull Requests to master after implementing a feature or fixing a bug. 
 In Travis CI, we defined stages, which group different jobs. Inside a stage, all jobs run in parallel. There is no data persistence between stages, so we have to rebuild our application in each stage. The CI consists of the following stages:
 
 - Testing (which runs all the time)
-- Sonar (only run when a PR was merged with master)
+- Sonar (only run when a PR is merged into `main`)
 - Deploy (only run when executing the make_release.sh)
 
 ### Testing
