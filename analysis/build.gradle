@@ -55,13 +55,6 @@ subprojects {
         testImplementation "com.natpryce:hamkrest:$hamkrest_version"
     }
 
-    test {
-        useJUnitPlatform({
-            includeEngines 'spek2'
-        })
-        useJUnitPlatform()
-    }
-
     compileJava {
         options.compilerArgs += ['--release', '8']
     }
