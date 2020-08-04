@@ -94,7 +94,7 @@ The visualization opens a cc.json and displays a city-like landscape based on th
 
 ### State Management
 
-We use Redux to manage our state. This way we have a single big state that allows us to have one one-directional data flow at a time. Make yourself familiar with the [core-concepts of redux](https://redux.js.org/introduction/core-concepts) first and check out the chart below after.
+We use Redux to manage our state. This way we have a single state that allows us to have a single one-directional data flow at a time. Get familiar with the [core-concepts of redux](https://redux.js.org/introduction/core-concepts) and check out the chart below afterwards.
 
 This chart shows the correct way to update the viewModel of a controller.
 
