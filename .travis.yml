@@ -68,7 +68,6 @@ jobs:
         - chmod +x ./gradlew
       script:
         - ./gradlew build integrationTest
-        - ./gradlew test
 
     - stage: sonar
       name: "Publish Visualization Sonar Results"
