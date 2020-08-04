@@ -1,6 +1,6 @@
 ---
 categories:
-  - Dev-guides
+  - Dev-guide
 tags:
   - puppeteer
   - e2e

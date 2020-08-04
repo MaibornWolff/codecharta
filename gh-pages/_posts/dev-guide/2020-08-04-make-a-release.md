@@ -1,6 +1,6 @@
 ---
 categories:
-  - Dev-guides
+  - Dev-guide
 tags:
   - release
 title: Make a release
