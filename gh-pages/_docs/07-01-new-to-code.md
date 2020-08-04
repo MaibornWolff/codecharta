@@ -98,11 +98,11 @@ We use Redux to manage our state. This way we have a single big state that allow
 
 This chart shows the correct way to update the viewModel of a controller.
 
-![redux]({{site.baseurl}}/assets/images/reference/redux-flow.png)
+![redux]({{site.baseurl}}/assets/images/docs/reference/redux-flow.png)
 
 This chart shows the data flow in our architecture when a new cc.json is opened.
 
-![new-file-imported]({{site.baseurl}}/assets/images/reference/loading-a-new-file-flow.png)
+![new-file-imported]({{site.baseurl}}/assets/images/docs/reference/loading-a-new-file-flow.png)
 
 ### PlopJS
 
