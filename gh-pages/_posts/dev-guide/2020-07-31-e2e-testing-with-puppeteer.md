@@ -121,7 +121,7 @@ Running e2e-tests can lead to timeouts and race conditions depending on how fast
 
 - Before accessing a selector, wait until it's available using `await page.waitForSelector(MY_SELECTOR)`
 - When clicking a button, use `expect(page).toClick(MY_SELECTOR, { timeout: 3000 })`. This function awaits the selector for 3s before throwing an error
-- After clicking a button or changing the state, use `waitForSelector()` to verify, that the new state is rendered before continueing
+- After clicking a button or changing the state, use `waitForSelector()` to verify, that the new state is rendered before continuing
 
 ## Most used functions
 
