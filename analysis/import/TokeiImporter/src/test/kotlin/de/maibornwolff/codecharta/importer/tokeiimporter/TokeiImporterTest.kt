@@ -14,17 +14,16 @@ import java.io.PrintStream
 class TokeiImporterTest {
     @Test
     fun `reads tokei from file`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--pathSeparator=\\"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
     }
 
     @Test
     fun `reads tokei 12 new json scheme from file`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json", "--pathSeparator=\\"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"rloc\":450"))
-        Assertions.assertThat(true).isEqualTo(false)
     }
 
     @Test
@@ -40,14 +39,30 @@ class TokeiImporterTest {
     fun `projectStructure is correct`() {
         val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "") { it }
 
-        val cliResult = executeForOutput(input, arrayOf("--pathSeparator=\\"))
+        val cliResult = executeForOutput(input, arrayOf("--path-separator=\\"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.size).isEqualTo(3)
+        System.out.println("node: " +project.rootNode.children.toMutableList()[0].toString())
         Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
         Assertions.assertThat(project.rootNode.children.toMutableList()[0].attributes["loc"]).isEqualTo(450.0)
         Assertions.assertThat(project.rootNode.children.toMutableList()[2].name).isEqualTo("src")
         Assertions.assertThat(project.rootNode.children.toMutableList()[2].size).isEqualTo(3)
+    }
+
+    @Test
+    fun `tokei 12 projectStructure is correct`() {
+        val input = File("src/test/resources/tokei_without_inner.json").bufferedReader().readLines().joinToString(separator = "") { it }
+
+        val cliResult = executeForOutput(input)
+
+        val project = ProjectDeserializer.deserializeProject(cliResult)
+        Assertions.assertThat(project.rootNode.children.size).isEqualTo(2)
+        Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("make_release.sh")
+        Assertions.assertThat(project.rootNode.children.toMutableList()[0].attributes["rloc"]).isEqualTo(500.0)
+        Assertions.assertThat(project.rootNode.children.toMutableList()[1].attributes["rloc"]).isNull()
+        Assertions.assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
+        Assertions.assertThat(project.rootNode.children.toMutableList()[1].children.toMutableList().size).isEqualTo(2)
     }
 
     @Ignore
@@ -69,7 +84,7 @@ class TokeiImporterTest {
 
     @Test
     fun `handles path separator correctly`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--pathSeparator=\\"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
