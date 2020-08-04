@@ -31,21 +31,6 @@ describe("RibbonBar", () => {
 		expect(actual).toContain("600")
 	})
 
-	it("focus of ui element should be removed on ribbonBar toggle", async () => {
-		const panel = "color-metric"
-		let isColorSettingsPanelOpen = await ribbonBar.togglePanel(panel)
-		expect(isColorSettingsPanelOpen).toBeTruthy()
-		await ribbonBar.focusSomething()
-		const activeBefore = await ribbonBar.getActiveClassName()
-
-		isColorSettingsPanelOpen = await ribbonBar.togglePanel(panel)
-		expect(isColorSettingsPanelOpen).toBeFalsy()
-
-		const activeAfter = await ribbonBar.getActiveClassName()
-		expect(activeBefore).not.toBe("ng-scope")
-		expect(activeAfter).toBe("ng-scope")
-	})
-
 	describe("opening and closing ribbon-bar cards", () => {
 		it("searchPanel", async () => {
 			let isSearchPanelOpen = await searchPanel.toggle()
@@ -94,5 +79,25 @@ describe("RibbonBar", () => {
 			isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(panel)
 			expect(isEdgeSettingsPanelOpen).toBeFalsy()
 		})
+	})
+
+	it("should open a section, open the search bar and close the section again automatically", async () => {
+		const areaPanel = "area-metric"
+		const edgePanel = "edge-metric"
+
+		let isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel)
+		expect(isAreaSettingsPanelOpen).toBeTruthy()
+
+		const isSearchPanelOpen = await searchPanel.toggle()
+		expect(isSearchPanelOpen).toBeTruthy()
+		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeFalsy()
+
+		isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel)
+		expect(isAreaSettingsPanelOpen).toBeTruthy()
+		expect(await searchPanel.isOpen()).toBeFalsy()
+
+		const isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(edgePanel)
+		expect(isEdgeSettingsPanelOpen).toBeTruthy()
+		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeFalsy()
 	})
 })
