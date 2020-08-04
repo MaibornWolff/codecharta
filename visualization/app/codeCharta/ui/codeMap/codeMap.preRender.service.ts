@@ -22,6 +22,8 @@ import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingO
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
+import { PanelSelectionActions } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
+import { PresentationModeActions } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
 const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
@@ -69,7 +71,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			!isActionOfType(actionType, SearchPanelModeActions) &&
 			!isActionOfType(actionType, SortingOrderAscendingActions) &&
 			!isActionOfType(actionType, SortingOptionActions) &&
-			!isActionOfType(actionType, IsAttributeSideBarVisibleActions)
+			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
+			!isActionOfType(actionType, PanelSelectionActions) &&
+			!isActionOfType(actionType, PresentationModeActions)
 		) {
 			this.debounceRendering()
 		}
