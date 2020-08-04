@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 - Quality gates on sonarcloud.io are available again #879
+- Sections under the metric selection will close automatically again when clicking somewhere else in the application #1036
 
 ### Chore 👨‍💻 👩‍💻
 
