@@ -25,7 +25,7 @@ In Travis CI, we defined stages, which group different jobs. Inside a stage, all
 
 ### Sonar
 
-- Publishes Sonar-Analysis-Results to Sonarcloud.io
+- Publishes Sonar-Analysis-Results to [Sonarcloud.io](https://sonarcloud.io)
 
 ### Deploy
 
