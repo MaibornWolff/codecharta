@@ -50,7 +50,7 @@ module.exports = {
 };
 ```
 
-- Pipe console.logs from the browser to the git-bash (Run `enableConsole()` from the `puppeteer.helper.ts` in a test)
+- Pipe console.logs from the browser to the terminal (Run `enableConsole()` from the `puppeteer.helper.ts` in a test).
 
 # Writing e2e tests
 
