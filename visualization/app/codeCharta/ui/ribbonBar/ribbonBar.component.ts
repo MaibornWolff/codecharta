@@ -1,17 +1,30 @@
 import "./ribbonBar.component.scss"
-import $ from "jquery"
+import { IRootScopeService } from "angular"
+import { StoreService } from "../../state/store.service"
+import { PanelSelection } from "../../codeCharta.model"
+import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
+import { PanelSelectionService, PanelSelectionSubscriber } from "../../state/store/appSettings/panelSelection/panelSelection.service"
 
-export class RibbonBarController {
-	private readonly EXPANDED_CLASS = "expanded"
+export class RibbonBarController implements PanelSelectionSubscriber {
+	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {
+		PanelSelectionService.subscribe(this.$rootScope, this)
+	}
 
-	public toggle(event) {
-		const boxElement = $(event.srcElement).closest("md-card")
-		$(document.activeElement).blur()
+	private _viewModel: {
+		panelSelection: PanelSelection
+	} = {
+		panelSelection: PanelSelection.NONE
+	}
 
-		if (boxElement.hasClass(this.EXPANDED_CLASS)) {
-			boxElement.removeClass(this.EXPANDED_CLASS)
+	public onPanelSelectionChanged(panelSelection: PanelSelection) {
+		this._viewModel.panelSelection = panelSelection
+	}
+
+	public toggle(panelSelection: PanelSelection) {
+		if (this._viewModel.panelSelection !== panelSelection && panelSelection !== PanelSelection.NONE) {
+			this.storeService.dispatch(setPanelSelection(panelSelection))
 		} else {
-			boxElement.addClass(this.EXPANDED_CLASS)
+			this.storeService.dispatch(setPanelSelection(PanelSelection.NONE))
 		}
 	}
 }

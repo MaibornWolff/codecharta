@@ -3,7 +3,7 @@ import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { NameDataPair, SearchPanelMode } from "./codeCharta.model"
+import { NameDataPair, PanelSelection, SearchPanelMode } from "./codeCharta.model"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
@@ -12,6 +12,7 @@ import * as codeCharta from "../../package.json"
 import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
 import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { setPanelSelection } from "./state/store/appSettings/panelSelection/panelSelection.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -67,8 +68,13 @@ export class CodeChartaController {
 	}
 
 	public onClick() {
-		if (this.storeService.getState().appSettings.searchPanelMode !== SearchPanelMode.minimized) {
+		const appSettings = this.storeService.getState().appSettings
+		if (appSettings.searchPanelMode !== SearchPanelMode.minimized) {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
+		}
+
+		if (appSettings.panelSelection !== PanelSelection.NONE) {
+			this.storeService.dispatch(setPanelSelection(PanelSelection.NONE))
 		}
 	}
 

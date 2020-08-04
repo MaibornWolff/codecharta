@@ -6,17 +6,18 @@ import {
 	CodeMapNode,
 	Edge,
 	EdgeVisibility,
+	FileMeta,
 	MarkedPackage,
 	MetricData,
 	Node,
 	NodeType,
-	SearchPanelMode,
-	SortingOption,
+	PanelSelection,
 	RecursivePartial,
-	Settings,
-	State,
 	Scenario,
-	FileMeta
+	SearchPanelMode,
+	Settings,
+	SortingOption,
+	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -1149,7 +1150,8 @@ export const STATE: State = {
 		isLoadingFile: true,
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.treeView,
-		isAttributeSideBarVisible: true
+		isAttributeSideBarVisible: true,
+		panelSelection: PanelSelection.AREA_PANEL_OPEN
 	},
 	treeMap: {
 		mapSize: 250
@@ -1199,7 +1201,8 @@ export const DEFAULT_STATE: State = {
 		isLoadingFile: true,
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.minimized,
-		isAttributeSideBarVisible: false
+		isAttributeSideBarVisible: false,
+		panelSelection: PanelSelection.NONE
 	},
 	dynamicSettings: {
 		areaMetric: null,

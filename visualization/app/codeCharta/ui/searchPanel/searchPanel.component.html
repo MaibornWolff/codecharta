@@ -1,4 +1,4 @@
-<md-card ng-class="{ expanded: $ctrl._viewModel.isExpanded }" ng-attr-id="search-panel-card" ng-mousedown="$event.stopPropagation()">
+<md-card ng-class="{ expanded: $ctrl._viewModel.isExpanded }" ng-attr-id="search-panel-card" ng-mouseup="$event.stopPropagation()">
 	<div class="section">
 		<div class="section-header">
 			<search-bar-component ng-click="$ctrl.openSearchPanel()"></search-bar-component>

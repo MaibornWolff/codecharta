@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
@@ -52,6 +53,7 @@ import { IsPresentationModeService } from "./store/appSettings/isPresentationMod
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(PanelSelectionService.name), PanelSelectionService)
 	.service(_.camelCase(CameraTargetService.name), CameraTargetService)
 	.service(_.camelCase(IdToNodeService.name), IdToNodeService)
 	.service(_.camelCase(IdToBuildingService.name), IdToBuildingService)
