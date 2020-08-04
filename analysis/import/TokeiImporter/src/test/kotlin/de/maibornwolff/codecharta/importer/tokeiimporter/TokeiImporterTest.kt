@@ -43,7 +43,6 @@ class TokeiImporterTest {
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.size).isEqualTo(3)
-        System.out.println("node: " +project.rootNode.children.toMutableList()[0].toString())
         Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("CHANGELOG.md")
         Assertions.assertThat(project.rootNode.children.toMutableList()[0].attributes["loc"]).isEqualTo(450.0)
         Assertions.assertThat(project.rootNode.children.toMutableList()[2].name).isEqualTo("src")
