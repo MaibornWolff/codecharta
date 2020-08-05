@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Quality gates on sonarcloud.io are available again #879
 
+### Docs 🔎
+
+- Moved developer guides to our [gh-pages](https://maibornwolff.github.io/codecharta/) #986
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.51.0] - 2020-07-24
