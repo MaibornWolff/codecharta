@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject.AnalysisObject
+import de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject.Stats
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
@@ -23,8 +24,8 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStra
         for (languageEntry in languageSummaries.entrySet()) {
             val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
             if (languageAnalysisObject.hasChildren()) {
-                for (analysisObject in languageAnalysisObject.stats!!) {
-                    addAsNode(analysisObject, projectBuilder)
+                for (stat in languageAnalysisObject.stats!!) {
+                    addAsNode(stat, projectBuilder)
                 }
             }
         }
@@ -34,17 +35,17 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStra
         return root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
     }
 
-    private fun addAsNode(analysisObject: AnalysisObject, projectBuilder: ProjectBuilder) {
-        val sanitizedName = analysisObject.name!!.removePrefix(rootName).replace(pathSeparator, "/")
+    private fun addAsNode(stat: Stats, projectBuilder: ProjectBuilder) {
+        val sanitizedName = stat.name.removePrefix(rootName).replace(pathSeparator, "/")
         val directory = sanitizedName.substringBeforeLast("/")
         val fileName = sanitizedName.substringAfterLast("/")
 
         val node = MutableNode(
                 fileName, attributes = mapOf(
-                "empty_lines" to analysisObject.blanks,
-                "rloc" to analysisObject.code,
-                "comment_lines" to analysisObject.comments,
-                "loc" to analysisObject.lines))
+                "empty_lines" to stat.blanks,
+                "rloc" to stat.code,
+                "comment_lines" to stat.comments,
+                "loc" to stat.lines))
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
     }

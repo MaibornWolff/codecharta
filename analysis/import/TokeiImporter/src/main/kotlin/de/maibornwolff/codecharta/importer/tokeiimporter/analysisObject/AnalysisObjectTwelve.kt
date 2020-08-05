@@ -13,9 +13,9 @@ class AnalysisObjectTwelve(
     }
 }
 
-class Report(val stats: Stats, val name: String)
+class Report(val stats: StatsTwelve, val name: String)
 
-class Stats(val blanks: Int, val code: Int, val comments: Int, val blobs: Blob)
+class StatsTwelve(val blanks: Int, val code: Int, val comments: Int, val blobs: Blob)
 
 class Blob(val blanks: Int?, val code: Int?, val comments: Int?, val blobs: Blob?)
 
