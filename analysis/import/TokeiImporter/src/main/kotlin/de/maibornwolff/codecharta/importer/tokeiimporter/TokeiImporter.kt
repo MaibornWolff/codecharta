@@ -36,7 +36,6 @@ class TokeiImporter(
     private val error: PrintStream = System.err
 ) : Callable<Void> {
 
-    private var TOP_LEVEL_OBJECT: String = "inner"
     private val logger = KotlinLogging.logger {}
 
     private val attributeTypes = AttributeTypes(type = "nodes")
@@ -89,10 +88,10 @@ class TokeiImporter(
 
     private fun determineImporterStrategy(root: JsonElement) {
         val json = root.asJsonObject
-        if (json.has(TOP_LEVEL_OBJECT)) {
-            importerStrategy = TokeiInnerStrategy(rootName, pathSeparator)
+        importerStrategy = if (json.has(TOP_LEVEL_OBJECT)) {
+            TokeiInnerStrategy(rootName, pathSeparator)
         } else {
-            importerStrategy = TokeiTwelveStrategy(rootName, pathSeparator)
+            TokeiTwelveStrategy(rootName, pathSeparator)
         }
     }
 
@@ -141,5 +140,8 @@ class TokeiImporter(
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine.call(TokeiImporter(input, output, error), output, *args)
         }
+
+        @JvmStatic
+        val TOP_LEVEL_OBJECT = "inner"
     }
 }

@@ -3,6 +3,7 @@ package de.maibornwolff.codecharta.importer.tokeiimporter.strategy
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject.AnalysisObject
 import de.maibornwolff.codecharta.importer.tokeiimporter.analysisObject.Stats
 import de.maibornwolff.codecharta.model.MutableNode
@@ -12,7 +13,6 @@ import de.maibornwolff.codecharta.model.ProjectBuilder
 class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStrategy {
     override var rootName = ""
     override var pathSeparator = ""
-    private val TOP_LEVEL_OBJECT = "inner"
 
     init {
         this.rootName = rootName
@@ -32,7 +32,7 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStra
     }
 
     override fun getLanguageSummaries(root: JsonElement): JsonObject {
-        return root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
+        return root.asJsonObject.get(TokeiImporter.TOP_LEVEL_OBJECT).asJsonObject
     }
 
     private fun addAsNode(stat: Stats, projectBuilder: ProjectBuilder) {
