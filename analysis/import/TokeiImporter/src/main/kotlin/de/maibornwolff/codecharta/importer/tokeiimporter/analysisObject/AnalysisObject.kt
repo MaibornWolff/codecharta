@@ -17,5 +17,6 @@ class Stats(
     val blanks: Int,
     val code: Int,
     val comments: Int,
-    val lines: Int, val name: String
+    val lines: Int,
+    val name: String
 )
