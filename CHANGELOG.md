@@ -16,12 +16,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Changed
 
 - Rename master branch to main for a more inclusive naming #1117
+- NodeContextMenu will show up when releasing the right-mouse-button now #1027
 
 ### Removed 🗑
 
 ### Fixed 🐞
 
-- Quality gates on sonarcloud.io are available again #879
+- Quality gates on sonarcloud.io are red #879
+- NodeContextMenu showing up after moving the mouse while holding right-mouse-button #1027
 
 ### Chore 👨‍💻 👩‍💻
 
