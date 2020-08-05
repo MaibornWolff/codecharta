@@ -27,10 +27,10 @@ export class DialogService {
 		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(msg).ok(button))
 	}
 
-	public showErrorDialogAndOpenFileChooser(msg = "An error occurred.", title = "Error", button = "Ok") {
-		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(msg).ok(button)).then(() => {
-			document.getElementById("input-file-id").click()
-		})
+	public async showErrorDialogAndOpenFileChooser(msg = "An error occurred.", title = "Error", button = "Ok") {
+		const prompt = this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(msg).ok(button)
+		await this.$mdDialog.show(prompt)
+		document.getElementById("input-file-id").click()
 	}
 
 	public showValidationWarningDialog(validationResult: CCValidationResult) {
