@@ -9,7 +9,7 @@ Finally, it would be great if you looked at how we give and receive [feedback]({
 
 # Branching / Releasing
 
-We create Pull Requests to the `main` branch after implementing a feature or fixing a bug. There is no release or development branch. We never push on `main` directly. Please take a look at our [contributing guidelines](https://github.com/MaibornWolff/codecharta/blob/master/CONTRIBUTING.md) before you start comitting.
+We create Pull Requests to the `main` branch after implementing a feature or fixing a bug. There is no release or development branch. We never push on `main` directly. Please take a look at our [contributing guidelines](https://github.com/MaibornWolff/codecharta/blob/main/CONTRIBUTING.md) before you start comitting.
 
 # Travis CI
 
@@ -17,7 +17,7 @@ In Travis CI, we defined stages, which group different jobs. Inside a stage, all
 
 - Testing (which runs all the time)
 - Sonar (only run when a PR is merged into `main`)
-- Deploy (only run when executing the make_release.sh)
+- Deploy (run by `make_release.py`)
 
 ### Testing
 
@@ -31,7 +31,7 @@ In Travis CI, we defined stages, which group different jobs. Inside a stage, all
 
 - Deploys the application in a docker container to the github-pages
 - Publishes the new version on npm
-- Publishes a docker container on Docker Hub (not working atm)
+- Publishes a docker container on [Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization)
 
 # Analysis
 
@@ -45,7 +45,7 @@ Don't import the whole codecharta project to IntelliJ when working on the analys
 
 #### Importer
 
-- Retrieves metrics from an external source, such as SonarQube and creates a cc.json
+- Retrieves metrics from external sources, such as `SonarQube` and creates a `cc.json`.
 
 #### Exporter
 

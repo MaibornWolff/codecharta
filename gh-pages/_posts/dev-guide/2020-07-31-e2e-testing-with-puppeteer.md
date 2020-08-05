@@ -19,7 +19,6 @@ When you run e2e tests, puppeteers starts a html-server using the built applicat
 ### IMPORTANT
 
 - Do not run the dev-server while running e2e tests. They share the same build-folder and e2e tests are not executable from a dev-server compiled build.
-- Do not run the tests in a console included in the IDE. I recommend using the git-bash.
 
 ### Running all e2e tests:
 
