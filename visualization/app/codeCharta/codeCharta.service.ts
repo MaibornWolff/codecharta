@@ -5,13 +5,13 @@ import { NodeDecorator } from "./util/nodeDecorator"
 import { ExportBlacklistType, ExportCCFile, OldAttributeTypes } from "./codeCharta.api.model"
 import { StoreService } from "./state/store.service"
 import { resetFiles, setFiles, setSingle } from "./state/store/files/files.actions"
-import { getCCFiles, getFileState } from "./model/files/files.helper"
+import { getCCFiles } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { setState } from "./state/store/state.actions"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { MetricService } from "./state/metric.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { FileState } from "./model/files/files"
+import { FileSelectionState, FileState } from "./model/files/files"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
@@ -54,7 +54,7 @@ export class CodeChartaService {
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
 		const ccFile: CCFile = this.getCCFile(fileName, migratedFile)
 		NodeDecorator.preDecorateFile(ccFile)
-		this.fileStates.push(getFileState(ccFile))
+		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
 	}
 
 	private getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
