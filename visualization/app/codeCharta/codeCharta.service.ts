@@ -22,7 +22,7 @@ export class CodeChartaService {
 	constructor(private storeService: StoreService, private dialogService: DialogService, private metricService: MetricService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]) {
-		for (let nameDataPair of nameDataPairs) {
+		for (const nameDataPair of nameDataPairs) {
 			try {
 				validate(nameDataPair.content)
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
