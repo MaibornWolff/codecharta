@@ -22,28 +22,25 @@ export class CodeChartaService {
 	constructor(private storeService: StoreService, private dialogService: DialogService, private metricService: MetricService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]) {
-		let printErrors = true
-
-		nameDataPairs.forEach((nameDataPair: NameDataPair) => {
-			if (!printErrors) {
-				return
-			}
-
+		for (let nameDataPair of nameDataPairs) {
 			try {
 				validate(nameDataPair.content)
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
 			} catch (e) {
 				if (!_.isEmpty(e.error)) {
+					this.fileStates = []
 					this.storeService.dispatch(setIsLoadingFile(false))
 					this.dialogService.showValidationErrorDialog(e)
-					printErrors = false
+					break
 				}
 
 				if (!_.isEmpty(e.warning)) {
+					this.storeService.dispatch(setIsLoadingFile(false))
+					this.addFile(nameDataPair.fileName, nameDataPair.content)
 					this.dialogService.showValidationWarningDialog(e)
 				}
 			}
-		})
+		}
 
 		if (this.fileStates.length !== 0) {
 			this.storeService.dispatch(resetFiles())
