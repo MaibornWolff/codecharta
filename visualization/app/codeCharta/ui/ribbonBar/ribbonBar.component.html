@@ -9,14 +9,17 @@
 	</div>
 </md-card>
 
-<md-card ng-attr-id="area-metric-card" ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'AREA_PANEL_OPEN' }">
+<md-card
+	ng-attr-id="area-metric-card"
+	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN }"
+>
 	<div class="section">
 		<div class="section-header">
 			<area-metric-chooser-component></area-metric-chooser-component>
 		</div>
 		<span
 			class="section-title"
-			ng-click="$ctrl.toggle('AREA_PANEL_OPEN')"
+			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN)"
 			ng-mouseup="$event.stopPropagation()"
 			title="Show area metric settings"
 			>Size <i class="fa fa-angle-down"></i
@@ -27,14 +30,17 @@
 	</div>
 </md-card>
 
-<md-card ng-attr-id="height-metric-card" ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'HEIGHT_PANEL_OPEN' }">
+<md-card
+	ng-attr-id="height-metric-card"
+	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN }"
+>
 	<div class="section">
 		<div class="section-header">
 			<height-metric-chooser-component></height-metric-chooser-component>
 		</div>
 		<span
 			class="section-title"
-			ng-click="$ctrl.toggle('HEIGHT_PANEL_OPEN')"
+			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN)"
 			ng-mouseup="$event.stopPropagation()"
 			title="Show height metric settings"
 			>Height <i class="fa fa-angle-down"></i
@@ -45,14 +51,17 @@
 	</div>
 </md-card>
 
-<md-card ng-attr-id="color-metric-card" ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'COLOR_PANEL_OPEN' }">
+<md-card
+	ng-attr-id="color-metric-card"
+	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN }"
+>
 	<div class="section">
 		<div class="section-header">
 			<color-metric-chooser-component></color-metric-chooser-component>
 		</div>
 		<span
 			class="section-title"
-			ng-click="$ctrl.toggle('COLOR_PANEL_OPEN')"
+			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN)"
 			ng-mouseup="$event.stopPropagation()"
 			title="Show color metric settings"
 			>Color <i class="fa fa-angle-down"></i
@@ -63,14 +72,17 @@
 	</div>
 </md-card>
 
-<md-card ng-attr-id="edge-metric-card" ng-class="{ expanded: $ctrl._viewModel.panelSelection === 'EDGE_PANEL_OPEN' }">
+<md-card
+	ng-attr-id="edge-metric-card"
+	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN }"
+>
 	<div class="section">
 		<div class="section-header">
 			<edge-chooser-component></edge-chooser-component>
 		</div>
 		<span
 			class="section-title"
-			ng-click="$ctrl.toggle('EDGE_PANEL_OPEN')"
+			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN)"
 			ng-mouseup="$event.stopPropagation()"
 			title="Show edge metric settings"
 		>

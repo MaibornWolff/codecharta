@@ -17,8 +17,10 @@ export class RibbonBarController implements PanelSelectionSubscriber {
 
 	private _viewModel: {
 		panelSelection: PanelSelection
+		panelSelectionValues: typeof PanelSelection
 	} = {
-		panelSelection: PanelSelection.NONE
+		panelSelection: PanelSelection.NONE,
+		panelSelectionValues: PanelSelection
 	}
 
 	public onPanelSelectionChanged(panelSelection: PanelSelection) {
