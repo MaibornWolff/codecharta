@@ -24,9 +24,9 @@
     "reports": [
       {
         "stats": {
-          "blanks": 0,
+          "blanks": 1,
           "code": 450,
-          "comments": 0,
+          "comments": 10,
           "blobs": {}
         },
         "name": "./foo/CHANGELOG.md"

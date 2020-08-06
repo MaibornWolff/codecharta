@@ -27,6 +27,13 @@ class TokeiImporterTest {
     }
 
     @Test
+    fun `tokei 12 should include the loc metric`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json"))
+
+        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":461"))
+    }
+
+    @Test
     fun `reads tokei piped input`() {
         val input = File("src/test/resources/tokei_with_root.json").bufferedReader().readLines().joinToString(separator = "") { it }
 
