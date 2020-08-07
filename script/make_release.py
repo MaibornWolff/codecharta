@@ -220,6 +220,6 @@ message = "The release is now committed and tagged but not pushed. In order to f
 printMessage = "Pushing..."
 confirm(message, printMessage)
 
-repo.remotes.origin.push(tag, "--no-verify")
+repo.remotes.origin.push(tag)
 
 print("Please manually add the latest release notes, as soon as the build is successfully deployed")
