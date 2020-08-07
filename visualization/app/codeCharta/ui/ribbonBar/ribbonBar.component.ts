@@ -1,5 +1,6 @@
 import "./ribbonBar.component.scss"
 import { IRootScopeService } from "angular"
+import $ from "jquery"
 import { StoreService } from "../../state/store.service"
 import { PanelSelection } from "../../codeCharta.model"
 import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
@@ -28,6 +29,7 @@ export class RibbonBarController implements PanelSelectionSubscriber {
 	}
 
 	public toggle(panelSelection: PanelSelection) {
+		$(document.activeElement).blur()
 		if (this._viewModel.panelSelection !== panelSelection) {
 			this.storeService.dispatch(setPanelSelection(panelSelection))
 		} else {
