@@ -20,7 +20,7 @@ title: Using Sonarqube and the Log from Git or Svn to visualize Codecharta's own
 # Getting the Sonarqube data
 
 - Install the latest analysis tools globally `npm i -g codecharta-analysis`
-- Generate visualization data from our CodeCharta Sonarqube analysis `ccsh sonarimport -o sonar.cc.json https://sonarcloud.io de.maibornwolff.codecharta:visualization`. A new file named _sonar.cc.json_ should appear in your working directory.
+- Generate visualization data from our CodeCharta Sonarqube analysis `ccsh sonarimport -o sonar.cc.json https://sonarcloud.io maibornwolff-gmbh_codecharta_visualization`. A new file named _sonar.cc.json_ should appear in your working directory.
 
 This file can already be opened in the [web visualization]({{site.web_visualization_link}}). If you want the information from the SCM log we need to continue a bit...
 
@@ -33,7 +33,7 @@ As the Codecharta project is managed using git, we want to analyze its git meta 
 - Clone the repository `git clone https://github.com/MaibornWolff/codecharta.git` and navigate to it `cd codecharta`
 - Generate a git log file `git log --numstat --raw --topo-order > ../git.log` and navigate back `cd ..`. file and a _git.log_ file.
 - Ensure that the log file is encoded with UTF-8 if you get `java.lang.IllegalArgumentException`
-- Parse the log file `ccsh scmlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o git.cc.json -p de.maibornwolff.codecharta:visualization`. A new file named _git.cc.json_ should appear in your working directory.
+- Parse the log file `ccsh scmlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o git.cc.json -p maibornwolff-gmbh_codecharta_visualization`. A new file named _git.cc.json_ should appear in your working directory.
 
 ## SVN
 
