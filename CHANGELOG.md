@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- After loading an invalid file the filechooser pops up again, so that the user can choose a valid file #1021
 - Quality gates on sonarcloud.io are available again #879
 - Number of incoming and outgoing edges not visible when hovering over a node #1095
 
