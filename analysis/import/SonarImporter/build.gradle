@@ -18,3 +18,7 @@ dependencies {
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
     testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: wiremock_version
 }
+
+test {
+    useJUnitPlatform()
+}
