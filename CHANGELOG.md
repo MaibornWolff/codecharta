@@ -7,10 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
 
-### Breaking ❌
-
-- CCSH uses Java 11 now. Java 9 is likely going to continue to work as before but it is not tested anymore
-
 ### Added 🚀
 
 ### Changed
