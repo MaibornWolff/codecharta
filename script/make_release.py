@@ -3,7 +3,6 @@ import PyInquirer
 import in_place
 import pathlib
 import subprocess
-import fileinput
 import datetime
 
 
@@ -220,6 +219,6 @@ message = "The release is now committed and tagged but not pushed. In order to f
 printMessage = "Pushing..."
 confirm(message, printMessage)
 
-repo.remotes.origin.push(tag)
+subprocess.run(["git", "push", "--follow-tags"], shell=True)
 
 print("Please manually add the latest release notes, as soon as the build is successfully deployed")
