@@ -59,7 +59,8 @@ describe("FileChooser", () => {
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
-	it("should not load a map and show error, " + "when loading a map with warning and a map with error", async () => {
+
+	it("should not load a map and show error, when loading a map with warning and a map with error", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/logo.png"])
 
 		expect(await dialogError.getMessage()).toEqual(" Minor API Version Outdated")
