@@ -57,7 +57,7 @@ Components that export data from visualisation data to other formats.
 
 ## Installation via npm
 
-This installs all binaries to run the analysis. Java 11 is recommended, but Java 8 should still be compatible.
+This installs all binaries to run the analysis. Java 11 is recommended, while Java 8 is still supported.
 
 `npm install -g codecharta-analysis`
 
