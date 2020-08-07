@@ -1,4 +1,4 @@
-﻿# Change Log
+# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- Sections under the metric selection will close automatically again when clicking somewhere else in the application #1036
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.52.0] - 2020-08-07
 
 ### Added 🚀
 
@@ -21,7 +35,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - After loading an invalid file the filechooser pops up again, so that the user can choose a valid file #1021
 - Quality gates on sonarcloud.io are available again #879
-- Sections under the metric selection will close automatically again when clicking somewhere else in the application #1036
 
 ### Docs 🔎
 
