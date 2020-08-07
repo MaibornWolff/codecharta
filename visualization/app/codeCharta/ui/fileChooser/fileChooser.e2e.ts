@@ -17,12 +17,12 @@ describe("FileChooser", () => {
 	})
 
 	it("should load another cc.json", async () => {
-		await fileChooser.openFile(["./app/codeCharta/assets/sample3.cc.json"])
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
 	it("should load multiple cc.json files", async () => {
-		await fileChooser.openFile(["./app/codeCharta/assets/sample3.cc.json", "./app/codeCharta/assets/sample2.cc.json"])
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json", "./app/codeCharta/assets/sample2.cc.json"])
 
 		const loadedMapsName = await filePanel.getAllNames()
 
@@ -31,7 +31,7 @@ describe("FileChooser", () => {
 	})
 
 	it("should keep the old map if opening a file was cancelled", async () => {
-		await fileChooser.openFile(["./app/codeCharta/assets/sample3.cc.json"])
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"])
 		await fileChooser.cancelOpeningFile()
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
@@ -39,35 +39,35 @@ describe("FileChooser", () => {
 	})
 
 	it("should open an invalid file, close the dialog and open a valid file", async () => {
-		await fileChooser.openFile(["./app/codeCharta/assets/logo.png"])
+		await fileChooser.openFiles(["./app/codeCharta/assets/logo.png"])
 		expect(await dialogError.getMessage()).toEqual(" file is empty or invalid")
 
 		await dialogError.clickOk()
 
-		await fileChooser.openFile(["./app/codeCharta/assets/sample3.cc.json"], false)
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
 
 	it("should open an valid and an invalid file, close the dialog and open a valid file", async () => {
-		await fileChooser.openFile(["./app/codeCharta/assets/logo.png", "./app/codeCharta/assets/sample3.cc.json"])
+		await fileChooser.openFiles(["./app/codeCharta/assets/logo.png", "./app/codeCharta/assets/sample3.cc.json"])
 		expect(await dialogError.getMessage()).toEqual(" file is empty or invalid")
 
 		await dialogError.clickOk()
 
-		await fileChooser.openFile(["./app/codeCharta/assets/sample3.cc.json"], false)
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
-	it("should not load a map and show error, when loading a map with warning and a map with error", async () => {
-		await fileChooser.openFile(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/logo.png"])
+	it("should not load a map and show error, " + "when loading a map with warning and a map with error", async () => {
+		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/logo.png"])
 
 		expect(await dialogError.getMessage()).toEqual(" Minor API Version Outdated")
 
 		expect(await dialogError.getMessage()).toEqual(" file is empty or invalid")
 		await dialogError.clickOk()
 
-		await fileChooser.openFile(["./app/codeCharta/assets/sample3.cc.json"], false)
+		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})

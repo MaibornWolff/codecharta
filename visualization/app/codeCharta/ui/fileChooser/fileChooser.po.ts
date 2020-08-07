@@ -1,15 +1,9 @@
 export class FileChooserPageObject {
-	public async openFile(paths: string[], toOpenFileChooser = true) {
-		let fileChooser
-
-		if (toOpenFileChooser) {
-			;[fileChooser] = await Promise.all([
-				page.waitForFileChooser(),
-				expect(page).toClick("file-chooser-directive .toolbar-button", { timeout: 3000 })
-			])
-		} else {
-			fileChooser = await page.waitForFileChooser()
-		}
+	public async openFiles(paths: string[], clickOnFileChooser = true) {
+		const [fileChooser] = await Promise.all([
+			page.waitForFileChooser(),
+			clickOnFileChooser && expect(page).toClick("file-chooser-directive .toolbar-button", { timeout: 3000 })
+		])
 
 		await fileChooser.accept(paths)
 
