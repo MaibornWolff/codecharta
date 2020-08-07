@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Support for Tokei 12 new JSON schema #1103
+
 ### Changed
 
 - Rename master branch to main for a more inclusive naming #1117
@@ -23,6 +25,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - Quality gates on sonarcloud.io are available again #879
 - Number of incoming and outgoing edges not visible when hovering over a node #1095
+
+### Docs 🔎
+
+- Moved developer guides to our [gh-pages](https://maibornwolff.github.io/codecharta/) #986
 
 ### Chore 👨‍💻 👩‍💻
 
