@@ -1,0 +1,47 @@
+{
+  "Bash": {
+    "blanks": 0,
+    "code": 500,
+    "comments": 1,
+    "reports": [
+      {
+        "stats": {
+          "blanks": 0,
+          "code": 500,
+          "comments": 1,
+          "blobs": {}
+        },
+        "name": "./make_release.sh"
+      }
+    ],
+    "children": {},
+    "inaccurate": false
+  },
+  "Markdown": {
+    "blanks": 0,
+    "code": 1250,
+    "comments": 0,
+    "reports": [
+      {
+        "stats": {
+          "blanks": 1,
+          "code": 450,
+          "comments": 10,
+          "blobs": {}
+        },
+        "name": "./foo/CHANGELOG.md"
+      },
+      {
+        "stats": {
+          "blanks": 0,
+          "code": 800,
+          "comments": 0,
+          "blobs": {}
+        },
+        "name": "./foo/CONTRIBUTION.md"
+      }
+    ],
+    "children": {},
+    "inaccurate": false
+  }
+}
