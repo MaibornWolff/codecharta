@@ -3,7 +3,6 @@ import PyInquirer
 import in_place
 import pathlib
 import subprocess
-import fileinput
 import datetime
 
 
@@ -77,8 +76,8 @@ if repo.is_dirty():
 
 
 # Check if we are on main branch
-if repo.head != "main":
-    print("You can only release on master branch. Aborting.")
+if repo.active_branch.name != "main":
+    print("You can only release on main branch. Aborting.")
     quit()
 
 
@@ -210,7 +209,7 @@ confirm(message, printMessage)
 
 repo.index.add([release_post_path, changelog_path, gradle_properties,
                 analysis_package_json, analysis_package_lock_json, visualization_package_json, visualization_package_lock_json])
-repo.index.commit(f"Releasing {new_version}")
+repo.index.commit(f"Releasing {new_version}", skip_hooks=True)
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
 
@@ -220,6 +219,6 @@ message = "The release is now committed and tagged but not pushed. In order to f
 printMessage = "Pushing..."
 confirm(message, printMessage)
 
-repo.remotes.origin.push(tag)
+subprocess.run(["git", "push", "--follow-tags"], shell=True)
 
 print("Please manually add the latest release notes, as soon as the build is successfully deployed")

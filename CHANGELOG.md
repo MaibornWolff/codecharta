@@ -1,4 +1,4 @@
-﻿# Change Log
+# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -9,12 +9,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+- NodeContextMenu will show up when releasing the right-mouse-button now #1027
+
+### Removed 🗑
+
+### Fixed 🐞
+
+- NodeContextMenu showing up after moving the mouse while holding right-mouse-button #1027
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.52.0] - 2020-08-07
+
+### Added 🚀
+
 - Support for Tokei 12 new JSON schema #1103
 
 ### Changed
 
 - Rename master branch to main for a more inclusive naming #1117
-- NodeContextMenu will show up when releasing the right-mouse-button now #1027
 
 ### Removed 🗑
 
@@ -22,7 +37,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 - After loading an invalid file the filechooser pops up again, so that the user can choose a valid file #1021
 - Quality gates on sonarcloud.io are red #879
-- NodeContextMenu showing up after moving the mouse while holding right-mouse-button #1027
 
 ### Docs 🔎
 
