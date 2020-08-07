@@ -8,7 +8,7 @@ tags:
 title: Using Sonarqube and the Log from Git or Svn to visualize Codecharta's own Code
 ---
 
-![flowchart](/assets/images/posts/how-to/analyze-codecharta/Sonar-Git-Merge.drawio.svg)
+![flowchart]({{site.baseurl}}/assets/images/posts/how-to/analyze-codecharta/Sonar-Git-Merge.drawio.svg)
 
 # Prerequisites
 
