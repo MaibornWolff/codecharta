@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.52.0] - 2020-08-07
+
+### Added 🚀
+
 - Support for Tokei 12 new JSON schema #1103
 
 ### Changed
@@ -19,6 +31,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- After loading an invalid file the filechooser pops up again, so that the user can choose a valid file #1021
 - Quality gates on sonarcloud.io are available again #879
 
 ### Docs 🔎
