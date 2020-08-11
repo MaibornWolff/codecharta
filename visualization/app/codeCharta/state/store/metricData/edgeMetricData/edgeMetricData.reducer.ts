@@ -32,15 +32,16 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]): 
 
 function calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): Map<string, Map<string, EdgeMetricCount>> {
 	nodeEdgeMetricsMap = new Map()
-	const pathsPerFileState = getVisibleFileStates(fileStates).map(fileState => CodeMapHelper.getAllPaths(fileState.file.map))
-	const allFilePaths: string[] = [].concat(...pathsPerFileState)
-	getVisibleFileStates(fileStates).forEach(fileState => {
+	const allFilePaths = []
+	for (const fileState of getVisibleFileStates(fileStates)) {
+		allFilePaths.push(...CodeMapHelper.getAllPaths(fileState.file.map))
 		fileState.file.settings.fileSettings.edges.forEach(edge => {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
 				addEdgeToCalculationMap(edge)
 			}
 		})
-	})
+	}
+
 	return nodeEdgeMetricsMap
 }
 
