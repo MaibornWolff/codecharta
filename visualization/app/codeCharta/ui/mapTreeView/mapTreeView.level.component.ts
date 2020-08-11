@@ -79,6 +79,9 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		$event.stopPropagation()
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
 		this._viewModel.isMarked = true
+		document.getElementById("headDiv").addEventListener("scroll", () => {
+			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+		})
 	}
 
 	public onClickNode() {
