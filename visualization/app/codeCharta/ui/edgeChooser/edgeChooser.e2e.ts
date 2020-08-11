@@ -35,7 +35,9 @@ describe("MapTreeViewLevel", () => {
 			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
 			await mapTreeViewLevel.hoverNode("/root/ParentLeaf/smallLeaf.html")
 
-			expect(edgeChooser.isEdgeCountAvailable()).toBeTruthy()
+			const edgeCount = await edgeChooser.getAmountOfEdges()
+
+			expect(edgeCount).toEqual({ incoming: 2, outgoing: 0 })
 		})
 
 		it("should not display the amount of incoming and outgoing edges of buildings for the none metric", async () => {

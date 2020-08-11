@@ -1,3 +1,5 @@
+import { EdgeMetricCount } from "../../codeCharta.model"
+
 export class EdgeChooserPageObject {
 	public async open() {
 		await expect(page).toClick("edge-chooser-component md-select", { timeout: 3000 })
@@ -15,13 +17,24 @@ export class EdgeChooserPageObject {
 	}
 
 	public async isEdgeCountAvailable() {
-		await page.waitForSelector("edge-chooser-component #edge-count")
-		const innerText = await page.$eval("edge-chooser-component #edge-count", el => el["innerText"])
+		const innerText = await this.getEdgeCountInnerText()
 
 		function containsNumber(string: string): boolean {
 			return /\d/.test(string)
 		}
 
 		return containsNumber(innerText)
+	}
+
+	public async getAmountOfEdges(): Promise<EdgeMetricCount> {
+		const innerText = await this.getEdgeCountInnerText()
+		const edgeCount = innerText.split("/")
+
+		return { incoming: parseInt(edgeCount[0]), outgoing: parseInt(edgeCount[1]) }
+	}
+
+	private async getEdgeCountInnerText() {
+		await page.waitForSelector("edge-chooser-component #edge-count")
+		return await page.$eval("edge-chooser-component #edge-count", el => el["innerText"])
 	}
 }
