@@ -62,10 +62,12 @@ function addEdgeToCalculationMap(edge: Edge) {
 }
 
 function getEntryForMetric(edgeMetricName: string): Map<string, EdgeMetricCount> {
-	if (!nodeEdgeMetricsMap.has(edgeMetricName)) {
-		nodeEdgeMetricsMap.set(edgeMetricName, new Map())
+	let nodeEdgeMetric = nodeEdgeMetricsMap.get(edgeMetricName)
+	if (!nodeEdgeMetric) {
+		nodeEdgeMetric = new Map()
+		nodeEdgeMetricsMap.set(edgeMetricName, nodeEdgeMetric)
 	}
-	return nodeEdgeMetricsMap.get(edgeMetricName)
+	return nodeEdgeMetric
 }
 
 function addEdgeToNodes(edgeMetricEntry: Map<string, EdgeMetricCount>, fromNode: string, toNode: string) {
