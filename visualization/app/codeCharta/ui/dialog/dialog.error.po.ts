@@ -8,4 +8,9 @@ export class DialogErrorPageObject {
 		await expect(page).toClick("md-dialog-actions button", { timeout: 3000 })
 		await page.waitForSelector("md-dialog-actions button", { visible: false })
 	}
+
+	public async waitUntilDialogCloses() {
+		await page.waitForSelector(".md-dialog-content-body")
+		await page.waitForSelector(".md-dialog-content-body", { visible: false })
+	}
 }
