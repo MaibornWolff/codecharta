@@ -26,7 +26,6 @@ export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().pay
 function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]): EdgeMetricData[] {
 	calculateEdgeMetricData(fileStates, blacklist)
 	const newEdgeMetricData = getMetricDataFromMap(nodeEdgeMetricsMap)
-	addNoneMetric(newEdgeMetricData)
 	sortNodeEdgeMetricsMap()
 	return newEdgeMetricData
 }
@@ -86,6 +85,8 @@ function createEntryIfNecessary(edgeMetricEntry: EdgeMetricCountMap, nodeName: s
 function getMetricDataFromMap(hashMap: NodeEdgeMetricsMap): EdgeMetricData[] {
 	const metricData: EdgeMetricData[] = []
 
+	nodeEdgeMetricsMap.set(EdgeMetricDataService.NONE_METRIC, new Map())
+
 	hashMap.forEach((occurences: EdgeMetricCountMap, edgeMetric: string) => {
 		let maximumMetricValue = 0
 		occurences.forEach((value: EdgeMetricCount) => {
@@ -111,10 +112,4 @@ function sortNodeEdgeMetricsMap() {
 		})
 	}
 	nodeEdgeMetricsMap = sortedEdgeMetricMap
-}
-
-function addNoneMetric(metricData: EdgeMetricData[]) {
-	if (!metricData.some(x => x.name === EdgeMetricDataService.NONE_METRIC)) {
-		metricData.push({ name: EdgeMetricDataService.NONE_METRIC, maxValue: 0 })
-	}
 }
