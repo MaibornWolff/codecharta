@@ -17,7 +17,7 @@ export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().pay
 		case EdgeMetricDataActions.SET_EDGE_METRIC_DATA:
 			return clone(action.payload)
 		case EdgeMetricDataActions.CALCULATE_NEW_EDGE_METRIC_DATA:
-			return clone(calculateMetrics(action.payload.fileStates, action.payload.blacklist))
+			return calculateMetrics(action.payload.fileStates, action.payload.blacklist)
 		default:
 			return state
 	}
