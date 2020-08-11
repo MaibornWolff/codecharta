@@ -74,13 +74,14 @@ function getEntryForMetric(edgeMetricName: string): Map<string, EdgeMetricCount>
 function addEdgeToNodes(edgeMetricEntry: Map<string, EdgeMetricCount>, fromNode: string, toNode: string) {
 	createEntryIfNecessary(edgeMetricEntry, fromNode)
 	createEntryIfNecessary(edgeMetricEntry, toNode)
-	edgeMetricEntry.get(fromNode).outgoing += 1
-	edgeMetricEntry.get(toNode).incoming += 1
 }
 
 function createEntryIfNecessary(edgeMetricEntry: Map<string, EdgeMetricCount>, nodeName: string) {
-	if (!edgeMetricEntry.has(nodeName)) {
+	const found = edgeMetricEntry.get(nodeName)
+	if (!found) {
 		edgeMetricEntry.set(nodeName, { incoming: 0, outgoing: 0 })
+	} else {
+		edgeMetricEntry.set(nodeName, { incoming: found.incoming + 1, outgoing: found.outgoing + 1 })
 	}
 }
 
