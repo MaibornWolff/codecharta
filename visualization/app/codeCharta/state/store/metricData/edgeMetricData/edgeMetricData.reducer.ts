@@ -7,8 +7,9 @@ import { EdgeMetricDataService } from "./edgeMetricData.service"
 
 const clone = require("rfdc")()
 
+export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
+export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 // Required for performance improvements
-export type NodeEdgeMetricsMap = Map<string, Map<string, EdgeMetricCount>>
 export let nodeEdgeMetricsMap: NodeEdgeMetricsMap
 
 export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().payload, action: EdgeMetricDataAction): EdgeMetricData[] {
@@ -30,7 +31,7 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]): 
 	return newEdgeMetricData
 }
 
-function calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): Map<string, Map<string, EdgeMetricCount>> {
+function calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): NodeEdgeMetricsMap {
 	nodeEdgeMetricsMap = new Map()
 	const allFilePaths = []
 	for (const fileState of getVisibleFileStates(fileStates)) {
@@ -62,7 +63,7 @@ function addEdgeToCalculationMap(edge: Edge) {
 	}
 }
 
-function getEntryForMetric(edgeMetricName: string): Map<string, EdgeMetricCount> {
+function getEntryForMetric(edgeMetricName: string): EdgeMetricCountMap {
 	let nodeEdgeMetric = nodeEdgeMetricsMap.get(edgeMetricName)
 	if (!nodeEdgeMetric) {
 		nodeEdgeMetric = new Map()
@@ -71,23 +72,23 @@ function getEntryForMetric(edgeMetricName: string): Map<string, EdgeMetricCount>
 	return nodeEdgeMetric
 }
 
-function addEdgeToNodes(edgeMetricEntry: Map<string, EdgeMetricCount>, fromNode: string, toNode: string) {
+function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, toNode: string) {
 	createEntryIfNecessary(edgeMetricEntry, fromNode)
 	createEntryIfNecessary(edgeMetricEntry, toNode)
 	edgeMetricEntry.get(fromNode).outgoing += 1
 	edgeMetricEntry.get(toNode).incoming += 1
 }
 
-function createEntryIfNecessary(edgeMetricEntry: Map<string, EdgeMetricCount>, nodeName: string) {
+function createEntryIfNecessary(edgeMetricEntry: EdgeMetricCountMap, nodeName: string) {
 	if (!edgeMetricEntry.has(nodeName)) {
 		edgeMetricEntry.set(nodeName, { incoming: 0, outgoing: 0 })
 	}
 }
 
-function getMetricDataFromMap(hashMap: Map<string, Map<string, EdgeMetricCount>>): EdgeMetricData[] {
+function getMetricDataFromMap(hashMap: NodeEdgeMetricsMap): EdgeMetricData[] {
 	const metricData: EdgeMetricData[] = []
 
-	hashMap.forEach((occurences: any, edgeMetric: any) => {
+	hashMap.forEach((occurences: EdgeMetricCountMap, edgeMetric: string) => {
 		let maximumMetricValue = 0
 		occurences.forEach((value: EdgeMetricCount) => {
 			const combinedValue = value.incoming + value.outgoing

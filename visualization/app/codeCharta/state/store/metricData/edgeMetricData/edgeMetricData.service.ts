@@ -2,19 +2,12 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { calculateNewEdgeMetricData, EdgeMetricDataActions } from "./edgeMetricData.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import {
-	AttributeTypes,
-	AttributeTypeValue,
-	BlacklistItem,
-	CodeMapNode,
-	EdgeMetricCount,
-	EdgeMetricData
-} from "../../../../codeCharta.model"
+import { AttributeTypes, AttributeTypeValue, BlacklistItem, CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { HierarchyNode } from "d3"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
-import { nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
+import { EdgeMetricCountMap, nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
 
 export interface EdgeMetricDataSubscriber {
@@ -81,7 +74,7 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		return highestEdgeCountBuildings
 	}
 
-	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>): Map<string, EdgeMetricCount> {
+	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>): EdgeMetricCountMap {
 		const metricNames = this.getMetricNames().filter(it => !!nodeEdgeMetricsMap.get(it))
 		const nodeEdgeMetrics = new Map()
 
