@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+- Opening NodeContextMenu in Maptree marks the File / Package until it is closed
+
 ### Changed
 
 ### Removed 🗑
