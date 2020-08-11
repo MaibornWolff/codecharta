@@ -46,27 +46,23 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 	}
 
 	public getMetricNames(): string[] {
-		if (!this.storeService.getState().metricData.edgeMetricData) {
-			return []
-		}
-
 		return this.storeService.getState().metricData.edgeMetricData.map(x => x.name)
 	}
 
 	public getAmountOfAffectedBuildings(metricName: string): number {
-		if (!nodeEdgeMetricsMap || !nodeEdgeMetricsMap.has(metricName)) {
-			return 0
-		}
-		return nodeEdgeMetricsMap.get(metricName).size
+		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
+		return nodeEdgeMetrics === undefined ? 0 : nodeEdgeMetrics.size
 	}
 
 	public getNodesWithHighestValue(metricName: string, numberOfNodes: number): string[] {
-		if (!nodeEdgeMetricsMap || !nodeEdgeMetricsMap.has(metricName)) {
+		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
+
+		if (!nodeEdgeMetrics) {
 			return []
 		}
 
 		const highestEdgeCountBuildings: string[] = []
-		const edgeMetricMapKeyIterator = nodeEdgeMetricsMap.get(metricName).keys()
+		const edgeMetricMapKeyIterator = nodeEdgeMetrics.keys()
 		for (let i = 0; i < numberOfNodes; i++) {
 			highestEdgeCountBuildings.push(edgeMetricMapKeyIterator.next().value)
 		}
