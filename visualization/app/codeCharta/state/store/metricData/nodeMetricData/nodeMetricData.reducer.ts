@@ -25,7 +25,6 @@ export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().pay
 
 function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): NodeMetricData[] {
 	const newMetricData = calculateMetrics(fileStates, blacklist)
-	addUnaryMetric(newMetricData)
 	return newMetricData
 }
 
@@ -50,9 +49,10 @@ function buildHashMapFromMetrics(fileStates: FileState[], blacklist: BlacklistIt
 
 function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: Map<string, MaxMetricValuePair>) {
 	const attributes: string[] = Object.keys(node.data.attributes)
-
 	attributes.forEach((metric: string) => {
-		if (!hashMap.has(metric) || hashMap.get(metric).maxValue <= node.data.attributes[metric]) {
+		const maxMetricValuePair = hashMap.get(metric)
+
+		if (!maxMetricValuePair || maxMetricValuePair.maxValue <= node.data.attributes[metric]) {
 			hashMap.set(metric, {
 				maxValue: node.data.attributes[metric]
 			})
@@ -62,6 +62,8 @@ function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: 
 
 function getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>): NodeMetricData[] {
 	const metricData: NodeMetricData[] = []
+
+	hashMap.set(NodeMetricDataService.UNARY_METRIC, { maxValue: 1 })
 
 	hashMap.forEach((value: MaxMetricValuePair, key: string) => {
 		metricData.push({
@@ -74,13 +76,4 @@ function getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>): Nod
 
 function sortByAttributeName(metricData: NodeMetricData[]): NodeMetricData[] {
 	return metricData.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
-}
-
-function addUnaryMetric(metricData: NodeMetricData[]) {
-	if (!metricData.some(x => x.name === NodeMetricDataService.UNARY_METRIC)) {
-		metricData.push({
-			name: NodeMetricDataService.UNARY_METRIC,
-			maxValue: 1
-		})
-	}
 }
