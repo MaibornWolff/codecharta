@@ -9,7 +9,7 @@ const clone = require("rfdc")()
 
 // Required for performance improvements
 export type NodeEdgeMetricsMap = Map<string, Map<string, EdgeMetricCount>>
-export let nodeEdgeMetricsMap: NodeEdgeMetricsMap
+export let nodeEdgeMetricsMap: EdgeMetricCount = new Map()
 
 export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().payload, action: EdgeMetricDataAction): EdgeMetricData[] {
 	switch (action.type) {
