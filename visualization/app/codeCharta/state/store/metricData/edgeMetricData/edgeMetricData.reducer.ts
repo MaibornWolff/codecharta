@@ -24,14 +24,14 @@ export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().pay
 }
 
 function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]): EdgeMetricData[] {
-	const hashMap = calculateEdgeMetricData(fileStates, blacklist)
-	const newEdgeMetricData = getMetricDataFromMap(hashMap)
+	calculateEdgeMetricData(fileStates, blacklist)
+	const newEdgeMetricData = getMetricDataFromMap(nodeEdgeMetricsMap)
 	addNoneMetric(newEdgeMetricData)
 	sortNodeEdgeMetricsMap()
 	return newEdgeMetricData
 }
 
-function calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): NodeEdgeMetricsMap {
+function calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
 	const allFilePaths = []
 	for (const fileState of getVisibleFileStates(fileStates)) {
@@ -42,8 +42,6 @@ function calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistIt
 			}
 		})
 	}
-
-	return nodeEdgeMetricsMap
 }
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: string[], blacklist: BlacklistItem[]): boolean {
