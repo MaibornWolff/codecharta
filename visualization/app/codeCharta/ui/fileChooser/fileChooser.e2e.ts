@@ -64,7 +64,7 @@ describe("FileChooser", () => {
 		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/logo.png"])
 
 		expect(await dialogError.getMessage()).toEqual(" Minor API Version Outdated")
-		await dialogError.waitUntilDialogCloses()
+		await dialogError.waitUntilDialogIsClosed()
 
 		expect(await dialogError.getMessage()).toEqual(" file is empty or invalid")
 		await dialogError.clickOk()

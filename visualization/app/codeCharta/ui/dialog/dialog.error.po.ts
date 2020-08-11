@@ -9,7 +9,7 @@ export class DialogErrorPageObject {
 		await page.waitForSelector("md-dialog-actions button", { visible: false })
 	}
 
-	public async waitUntilDialogCloses() {
+	public async waitUntilDialogIsClosed() {
 		await page.waitForSelector(".md-dialog-content-body")
 		await page.waitForSelector(".md-dialog-content-body", { visible: false })
 	}
