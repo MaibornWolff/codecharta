@@ -46,35 +46,35 @@ export function splitStateActions(action: CCAction): CCAction[] {
 	}
 
 	if (_.values(StateActions).includes(action.type)) {
-		let actions: CCAction[] = []
+		const actions: CCAction[] = []
 
 		// Plop: Split into sub-reducer here
 		if (action.payload.metricData !== undefined) {
-			actions = actions.concat(...splitMetricDataActions(action.payload.metricData))
+			actions.push(...splitMetricDataActions(action.payload.metricData))
 		}
 
 		if (action.payload.lookUp !== undefined) {
-			actions = actions.concat(...splitLookUpActions(action.payload.lookUp))
+			actions.push(...splitLookUpActions(action.payload.lookUp))
 		}
 
 		if (action.payload.dynamicSettings !== undefined) {
-			actions = actions.concat(...splitDynamicSettingsActions(action.payload.dynamicSettings))
+			actions.push(...splitDynamicSettingsActions(action.payload.dynamicSettings))
 		}
 
 		if (action.payload.fileSettings !== undefined) {
-			actions = actions.concat(splitFileSettingsActions(action.payload.fileSettings))
+			actions.push(...splitFileSettingsActions(action.payload.fileSettings))
 		}
 
 		if (action.payload.appSettings !== undefined) {
-			actions = actions.concat(splitAppSettingsActions(action.payload.appSettings))
+			actions.push(...splitAppSettingsActions(action.payload.appSettings))
 		}
 
 		if (action.payload.treeMap !== undefined) {
-			actions = actions.concat(splitTreeMapSettingsActions(action.payload.treeMap))
+			actions.push(...splitTreeMapSettingsActions(action.payload.treeMap))
 		}
 
 		if (action.payload.files !== undefined) {
-			actions = actions.concat(splitFilesAction(action.payload.files))
+			actions.push(...splitFilesAction(action.payload.files))
 		}
 		return actions
 	}
