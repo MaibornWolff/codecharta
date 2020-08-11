@@ -4,7 +4,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { BlacklistType, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { FILE_STATES, STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
+import { FILE_STATES, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import _ from "lodash"
@@ -20,6 +20,7 @@ import { hierarchy } from "d3"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
+import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -61,6 +62,7 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(addFile(fileStates[0].file))
 		storeService.dispatch(setSingleByName(fileStates[0].file.fileMeta.fileName))
 		storeService.dispatch(setBlacklist())
+		storeService.dispatch(setNodeMetricData(METRIC_DATA))
 	}
 
 	function rebuildService() {
