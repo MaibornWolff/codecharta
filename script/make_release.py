@@ -55,7 +55,7 @@ def getLatestChangelogEntry(path):
 
 
 def getReleasePost(version, path):
-    release_post_header = f"---\ncategories:\n\t- Release\ntags:\n\t- gh-pages\n\ntitle: {version}\n---\n\n"
+    release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n\ntitle: {version}\n---\n\n"
     release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
     release_post_content = getLatestChangelogEntry(path)
     return release_post_header + release_post_headline + release_post_content
