@@ -19,11 +19,8 @@ export class EdgeChooserPageObject {
 	public async isEdgeCountAvailable() {
 		const innerText = await this.getEdgeCountInnerText()
 
-		function containsNumber(string: string): boolean {
-			return /\d/.test(string)
-		}
-
-		return containsNumber(innerText)
+		// Check if the text contains a number.
+		return /\d/.test(innerText)
 	}
 
 	public async getAmountOfEdges(): Promise<EdgeMetricCount> {
