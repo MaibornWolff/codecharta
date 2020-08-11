@@ -17,7 +17,7 @@ export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().pay
 		case NodeMetricDataActions.SET_NODE_METRIC_DATA:
 			return clone(action.payload)
 		case NodeMetricDataActions.CALCULATE_NEW_NODE_METRIC_DATA:
-			return clone(setNewMetricData(action.payload.fileStates, action.payload.blacklist))
+			return setNewMetricData(action.payload.fileStates, action.payload.blacklist)
 		default:
 			return state
 	}
