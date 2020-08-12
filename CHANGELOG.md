@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Excluding all buildings froze the application. An error dialog is now displayed instead. #901
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.52.0] - 2020-08-07
