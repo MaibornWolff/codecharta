@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`nodeDecorator decorateMapWithBlacklist should update all flattened and excluded attributes on the map based on the blacklist 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [
+    Object {
+      "attributes": Object {
+        "functions": 10,
+        "mcc": 1,
+        "rloc": 100,
+      },
+      "id": 1,
+      "isExcluded": true,
+      "isFlattened": false,
+      "link": "http://www.google.de",
+      "name": "big leaf",
+      "path": "/root/big leaf",
+      "type": "File",
+    },
+    Object {
+      "attributes": Object {},
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "functions": 100,
+            "mcc": 100,
+            "rloc": 30,
+          },
+          "id": 3,
+          "isExcluded": true,
+          "isFlattened": true,
+          "name": "small leaf",
+          "path": "/root/Parent Leaf/small leaf",
+          "type": "File",
+        },
+        Object {
+          "attributes": Object {
+            "functions": 1000,
+            "mcc": 10,
+            "rloc": 70,
+          },
+          "id": 4,
+          "isExcluded": true,
+          "isFlattened": true,
+          "name": "other small leaf",
+          "path": "/root/Parent Leaf/other small leaf",
+          "type": "File",
+        },
+      ],
+      "id": 2,
+      "isExcluded": true,
+      "isFlattened": true,
+      "name": "Parent Leaf",
+      "path": "/root/Parent Leaf",
+      "type": "Folder",
+    },
+  ],
+  "id": 0,
+  "isExcluded": true,
+  "isFlattened": false,
+  "name": "root",
+  "path": "/root",
+  "type": "Folder",
+}
+`;

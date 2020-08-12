@@ -17,11 +17,10 @@ import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
 
 export class NodeDecorator {
-	public static decorateMap(map: CodeMapNode, metricData: MetricData[], blacklist: BlacklistItem[]) {
+	public static decorateMap(map: CodeMapNode, metricData: MetricData[]) {
 		this.decorateMapWithMissingObjects(map)
 		this.decorateMapWithCompactMiddlePackages(map)
 		this.decorateLeavesWithMissingMetrics(map, metricData)
-		this.decorateMapWithBlacklist(map, blacklist)
 	}
 
 	public static preDecorateFile(file: CCFile) {
@@ -29,7 +28,7 @@ export class NodeDecorator {
 		this.decorateNodesWithIds(file.map)
 	}
 
-	private static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
+	public static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
 		const flattened = ignore()
 		const excluded = ignore()
 
@@ -45,6 +44,29 @@ export class NodeDecorator {
 				node.data.isFlattened = flattened.ignores(path)
 				node.data.isExcluded = excluded.ignores(path)
 			})
+	}
+
+	public static doesExclusionResultInEmptyMap(map: CodeMapNode, blacklist: BlacklistItem[]): boolean {
+		let excludedNodes = 0
+		const flattened = ignore()
+		const excluded = ignore()
+
+		for (const item of blacklist) {
+			const path = CodeMapHelper.transformPath(item.path)
+			item.type === BlacklistType.flatten ? flattened.add(path) : excluded.add(path)
+		}
+
+		const tree = hierarchy(map)
+		const desc = tree.descendants()
+
+		desc.map(node => {
+			const path = CodeMapHelper.transformPath(node.data.path)
+			if (excluded.ignores(path) && CodeMapHelper.isLeaf(node.data)) {
+				excludedNodes++
+			}
+		})
+
+		return excludedNodes === tree.leaves().length
 	}
 
 	private static decorateNodesWithIds(map: CodeMapNode) {

@@ -3,7 +3,10 @@ import _ from "lodash"
 const clone = require("rfdc")()
 
 export function removeItemFromArray(array: any[], item: any): any[] {
-	return array.filter(x => !_.isEqual(x, item))
+	if (item) {
+		return array.filter(x => !_.isEqual(x, item))
+	}
+	return array
 }
 
 export function addItemToArray(array: any[], item: any): any[] {

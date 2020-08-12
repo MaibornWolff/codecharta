@@ -27,6 +27,14 @@ describe("reduxHelper", () => {
 
 			expect(result).toEqual([{ x: 3, y: 4 }])
 		})
+
+		it("should return the old array if the item is undefined", () => {
+			arr.push(obj1)
+
+			const result = removeItemFromArray(arr, undefined)
+
+			expect(result).toEqual([{ x: 1, y: 2 }])
+		})
 	})
 
 	describe("addItemToArray", () => {

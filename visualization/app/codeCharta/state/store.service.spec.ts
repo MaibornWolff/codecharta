@@ -3,7 +3,7 @@ import { StoreService } from "./store.service"
 import { getService, instantiateModule } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { BlacklistItem, BlacklistType } from "../codeCharta.model"
-import { BlacklistAction, BlacklistActions } from "./store/fileSettings/blacklist/blacklist.actions"
+import { BlacklistAction, BlacklistActions, setBlacklist } from "./store/fileSettings/blacklist/blacklist.actions"
 import { DEFAULT_STATE, STATE, withMockedEventMethods } from "../util/dataMocks"
 import { setState } from "./store/state.actions"
 import { setDynamicSettings } from "./store/dynamicSettings/dynamicSettings.actions"
@@ -20,6 +20,8 @@ describe("StoreService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
+
+		storeService.dispatch(setIsLoadingMap(false), true)
 	})
 
 	function restartSystem() {
@@ -124,9 +126,15 @@ describe("StoreService", () => {
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})
 
-		it("should show not the loading-gif when an action is triggered, that changes the loading-gif state", () => {
+		it("should not show the loading-gif when an action is triggered, that changes the loading-gif state", () => {
 			storeService.dispatch(setIsLoadingMap(false))
 			storeService.dispatch(setIsLoadingFile(false))
+
+			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
+		})
+
+		it("should not show the loading-gif when blacklisting an item. This happens later after we verified that the map won't be empty", () => {
+			storeService.dispatch(setBlacklist([]))
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})

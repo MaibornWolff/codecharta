@@ -78,6 +78,10 @@ export class CodeMapHelper {
 		return markingColor
 	}
 
+	public static isLeaf(node: CodeMapNode): boolean {
+		return !node.children || (node.children && node.children.length === 0)
+	}
+
 	private static sortByPathLength(a: MarkedPackage, b: MarkedPackage) {
 		return b.path.length - a.path.length
 	}

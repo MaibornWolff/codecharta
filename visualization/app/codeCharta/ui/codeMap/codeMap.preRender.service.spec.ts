@@ -19,6 +19,7 @@ import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/
 import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3"
+import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -167,10 +168,16 @@ describe("codeMapPreRenderService", () => {
 			expect(codeMapRenderService.render).not.toHaveBeenCalled()
 		})
 
+		it("should not call codeMapRenderService.render for blacklist actions", () => {
+			codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
+
+			expect(codeMapRenderService.render).not.toHaveBeenCalled()
+		})
+
 		it("should show and stop the loadingMapGif", done => {
 			codeMapPreRenderService["showLoadingMapGif"] = jest.fn()
 
-			codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
+			codeMapPreRenderService.onStoreChanged(AreaMetricActions.SET_AREA_METRIC)
 
 			setTimeout(() => {
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
@@ -209,6 +216,38 @@ describe("codeMapPreRenderService", () => {
 			codeMapPreRenderService.onMetricDataAdded(metricData)
 
 			expect(allNodesToBeExcluded()).toBeTruthy()
+		})
+
+		it("should set isMapDecorated to true, to avoid entering this function again unless a new map needs to be decorated", () => {
+			expect(codeMapPreRenderService["isMapDecorated"]).toBeFalsy()
+
+			codeMapPreRenderService.onMetricDataAdded(metricData)
+
+			expect(codeMapPreRenderService["isMapDecorated"]).toBeTruthy()
+		})
+	})
+
+	describe("onBlacklistChanged", () => {
+		it("should decorate an existing map and trigger rendering", done => {
+			NodeDecorator.decorateMap = jest.fn()
+
+			codeMapPreRenderService.onBlacklistChanged(undefined)
+
+			expect(NodeDecorator.decorateMap).not.toHaveBeenCalled()
+			setTimeout(() => {
+				expect(codeMapRenderService.render).toHaveBeenCalled()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
+		})
+	})
+
+	describe("onFilesSelectionChanged", () => {
+		it("should set isMapDecorated to false, because we need to decorate a new map again", () => {
+			codeMapPreRenderService["isMapDecorated"] = false
+
+			codeMapPreRenderService.onFilesSelectionChanged(undefined)
+
+			expect(codeMapPreRenderService["isMapDecorated"]).toBeFalsy()
 		})
 	})
 })

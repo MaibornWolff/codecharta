@@ -1,4 +1,4 @@
-import { addBlacklistItem, BlacklistAction, setBlacklist, removeBlacklistItem } from "./blacklist.actions"
+import { addBlacklistItem, BlacklistAction, setBlacklist, removeBlacklistItem, removeLastBlacklistItem } from "./blacklist.actions"
 import { blacklist } from "./blacklist.reducer"
 import { BlacklistItem, BlacklistType } from "../../../../codeCharta.model"
 
@@ -9,7 +9,7 @@ describe("blacklist", () => {
 		it("should initialize the default state", () => {
 			const result = blacklist(undefined, {} as BlacklistAction)
 
-			expect(result).toEqual([])
+			expect(result).toHaveLength(0)
 		})
 	})
 
@@ -25,7 +25,7 @@ describe("blacklist", () => {
 		it("should remove a blacklist item, that is in the list", () => {
 			const result = blacklist([item], removeBlacklistItem(item))
 
-			expect(result).toEqual([])
+			expect(result).toHaveLength(0)
 		})
 	})
 
@@ -39,7 +39,21 @@ describe("blacklist", () => {
 		it("should set default blacklist", () => {
 			const result = blacklist([item, item], setBlacklist())
 
-			expect(result).toEqual([])
+			expect(result).toHaveLength(0)
+		})
+	})
+
+	describe("Action: REMOVE_LAST_BLACKLIST_ITEM", () => {
+		it("should remove the last blacklist item", () => {
+			const result = blacklist([item], removeLastBlacklistItem())
+
+			expect(result).toHaveLength(0)
+		})
+
+		it("should not remove anything if array is empty", () => {
+			const result = blacklist([], removeLastBlacklistItem())
+
+			expect(result).toHaveLength(0)
 		})
 	})
 })

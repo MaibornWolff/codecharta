@@ -208,4 +208,28 @@ describe("codeMapHelper", () => {
 			expect(result).toBe(expected)
 		})
 	})
+
+	describe("isLeaf", () => {
+		it("should return true, if the children attribute does not exist", () => {
+			testRoot.children = undefined
+
+			const result = CodeMapHelper.isLeaf(testRoot)
+
+			expect(result).toBeTruthy()
+		})
+
+		it("should return true, if the children attribute exist, but it's empty", () => {
+			testRoot.children = []
+
+			const result = CodeMapHelper.isLeaf(testRoot)
+
+			expect(result).toBeTruthy()
+		})
+
+		it("should return false, if the children attribute exist and it's not empty", () => {
+			const result = CodeMapHelper.isLeaf(testRoot)
+
+			expect(result).toBeFalsy()
+		})
+	})
 })

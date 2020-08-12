@@ -1,6 +1,6 @@
 "use strict"
 
-import { CCFile, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CCFile, MetricData, CodeMapNode, FileMeta, BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -22,17 +22,23 @@ import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingO
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
+import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
+
 const clone = require("rfdc")()
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber {
+export class CodeMapPreRenderService
+	implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber, BlacklistSubscriber, FilesSelectionSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
 	private unifiedFileMeta: FileMeta
+	private isMapDecorated = false
 
 	private readonly debounceRendering: () => void
 	private DEBOUNCE_TIME = 0
@@ -47,8 +53,12 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		MetricService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
+		FilesService.subscribe(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 		this.debounceRendering = _.debounce(() => {
-			this.renderAndNotify()
+			if (this.allNecessaryRenderDataAvailable()) {
+				this.renderAndNotify()
+			}
 		}, this.DEBOUNCE_TIME)
 	}
 
@@ -69,7 +79,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			!isActionOfType(actionType, SearchPanelModeActions) &&
 			!isActionOfType(actionType, SortingOrderAscendingActions) &&
 			!isActionOfType(actionType, SortingOptionActions) &&
-			!isActionOfType(actionType, IsAttributeSideBarVisibleActions)
+			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
+			!isActionOfType(actionType, BlacklistActions)
 		) {
 			this.debounceRendering()
 		}
@@ -82,13 +93,20 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public onMetricDataAdded(metricData: MetricData[]) {
-		if (fileStatesAvailable(this.storeService.getState().files)) {
+		if (fileStatesAvailable(this.storeService.getState().files) && !this.isMapDecorated) {
 			this.updateRenderMapAndFileMeta()
-			this.decorateIfPossible()
-			if (this.allNecessaryRenderDataAvailable()) {
-				this.debounceRendering()
-			}
+			this.decorateNewMap()
+			this.debounceRendering()
 		}
+	}
+
+	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+		this.decorateExistingMap()
+		this.debounceRendering()
+	}
+
+	public onFilesSelectionChanged(files: FileState[]) {
+		this.isMapDecorated = false
 	}
 
 	private updateRenderMapAndFileMeta() {
@@ -97,23 +115,28 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		this.unifiedFileMeta = unifiedFile.fileMeta
 	}
 
-	private decorateIfPossible() {
-		const state = this.storeService.getState()
-		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && this.metricService.getMetricData()) {
-			NodeDecorator.decorateMap(this.unifiedMap, this.metricService.getMetricData(), state.fileSettings.blacklist)
-			this.getEdgeMetricsForLeaves(this.unifiedMap)
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
-				this.unifiedMap,
-				state.fileSettings.blacklist,
-				this.metricService.getMetricData(),
-				this.edgeMetricDataService.getMetricData(),
-				isDeltaState(state.files),
-				state.fileSettings.attributeTypes
-			)
-		}
+	private decorateNewMap() {
+		NodeDecorator.decorateMap(this.unifiedMap, this.metricService.getMetricData())
+		this.decorateExistingMap()
+		this.isMapDecorated = true
 	}
 
-	private getEdgeMetricsForLeaves(map: CodeMapNode) {
+	private decorateExistingMap() {
+		const state = this.storeService.getState()
+
+		this.setEdgeMetricsForLeaves(this.unifiedMap)
+		NodeDecorator.decorateParentNodesWithAggregatedAttributes(
+			this.unifiedMap,
+			state.fileSettings.blacklist,
+			this.metricService.getMetricData(),
+			this.edgeMetricDataService.getMetricData(),
+			isDeltaState(state.files),
+			state.fileSettings.attributeTypes
+		)
+		NodeDecorator.decorateMapWithBlacklist(this.unifiedMap, this.storeService.getState().fileSettings.blacklist)
+	}
+
+	private setEdgeMetricsForLeaves(map: CodeMapNode) {
 		if (map && this.edgeMetricDataService.getMetricNames()) {
 			const root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
