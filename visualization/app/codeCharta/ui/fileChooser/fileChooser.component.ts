@@ -11,7 +11,6 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import { resetFiles } from "../../state/store/files/files.actions"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
@@ -52,7 +51,6 @@ export class FileChooserController {
 					this.addNameDataPair(file.name, content)
 
 					if (readFiles === element.files.length) {
-						this.storeService.dispatch(resetFiles())
 						this.setNewData()
 					}
 				}

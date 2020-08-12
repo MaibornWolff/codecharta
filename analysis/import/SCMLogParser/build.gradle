@@ -14,3 +14,7 @@ dependencies {
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 }
+
+test {
+    useJUnitPlatform()
+}

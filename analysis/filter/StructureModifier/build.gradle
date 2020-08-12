@@ -10,3 +10,7 @@ dependencies {
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
 }
+
+test {
+    useJUnitPlatform()
+}
