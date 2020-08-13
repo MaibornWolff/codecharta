@@ -28,4 +28,17 @@ describe("MapTreeViewLevel", () => {
 			expect(await mapTreeViewLevel.nodeExists(filePath)).toBeFalsy()
 		})
 	})
+
+	describe("NodeContextMenu", () => {
+		it("NodeContextMenu path should remain marked when hovering over another mapTreeView Element", async () => {
+			const filePath = "/root/ParentLeaf/smallLeaf.html"
+
+			await searchPanelModeSelector.toggleTreeView()
+			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
+			await mapTreeViewLevel.openContextMenu(filePath)
+			await mapTreeViewLevel.hoverNode("/root/ParentLeaf")
+
+			expect(await mapTreeViewLevel.isNodeMarked(filePath)).toBeTruthy()
+		})
+	})
 })
