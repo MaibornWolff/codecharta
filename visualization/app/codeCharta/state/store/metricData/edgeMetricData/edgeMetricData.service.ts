@@ -56,7 +56,19 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 
 	public getNodesWithHighestValue(metricName: string, amountOfEdgePreviews: number): string[] {
 		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
-		return nodeEdgeMetrics === undefined ? [] : [...nodeEdgeMetrics.keys()].slice(0, amountOfEdgePreviews)
+		const keys = []
+
+		if (nodeEdgeMetrics === undefined) {
+			return keys
+		}
+
+		for (const key of nodeEdgeMetrics.keys()) {
+			keys.push(key)
+			if (keys.length === amountOfEdgePreviews) {
+				break
+			}
+		}
+		return keys
 	}
 
 	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>): EdgeMetricCountMap {
