@@ -9,9 +9,8 @@ import {
 	openAttributeSideBar
 } from "./isAttributeSideBarVisible.actions"
 import { IsAttributeSideBarVisibleService } from "./isAttributeSideBarVisible.service"
-import { CODE_MAP_BUILDING, withMockedEventMethods } from "../../../../util/dataMocks"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 import { ThreeSceneService } from "../../../../ui/codeMap/threeViewer/threeSceneService"
-import _ from "lodash"
 
 describe("IsAttributeSideBarVisibleService", () => {
 	let isAttributeSideBarVisibleService: IsAttributeSideBarVisibleService
@@ -64,9 +63,8 @@ describe("IsAttributeSideBarVisibleService", () => {
 	describe("onBuildingSelected", () => {
 		it("should set isAttributeSideBarVisible to true", () => {
 			storeService.dispatch(closeAttributeSideBar())
-			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 
-			isAttributeSideBarVisibleService.onBuildingSelected(codeMapBuilding)
+			isAttributeSideBarVisibleService.onBuildingSelected()
 
 			expect(storeService.getState().appSettings.isAttributeSideBarVisible).toBeTruthy()
 		})
@@ -92,7 +90,9 @@ describe("IsAttributeSideBarVisibleService", () => {
 
 			isAttributeSideBarVisibleService.onStoreChanged(IsAttributeSideBarVisibleActions.SET_IS_ATTRIBUTE_SIDE_BAR_VISIBLE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("is-attribute-side-bar-visible-changed", { isAttributeSideBarVisible: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("is-attribute-side-bar-visible-changed", {
+				isAttributeSideBarVisible: true
+			})
 		})
 
 		it("should not notify anything on non-is-attribute-side-bar-visible-events", () => {

@@ -2,7 +2,12 @@ package de.maibornwolff.codecharta.importer.crococosmo
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import de.maibornwolff.codecharta.importer.crococosmo.model.*
+import de.maibornwolff.codecharta.importer.crococosmo.model.Attribute
+import de.maibornwolff.codecharta.importer.crococosmo.model.Graph
+import de.maibornwolff.codecharta.importer.crococosmo.model.Node
+import de.maibornwolff.codecharta.importer.crococosmo.model.Schema
+import de.maibornwolff.codecharta.importer.crococosmo.model.SchemaVersion
+import de.maibornwolff.codecharta.importer.crococosmo.model.Version
 import org.junit.jupiter.api.Test
 
 class CrococosmoConverterTest {

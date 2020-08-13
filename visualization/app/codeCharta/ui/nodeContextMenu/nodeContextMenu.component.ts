@@ -2,7 +2,7 @@ import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, MarkedPackage, NodeType } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
@@ -67,11 +67,11 @@ export class NodeContextMenuController
 		this._viewModel.markingColors = mapColors.markingColors
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged() {
 		this.hideNodeContextMenu()
 	}
 
-	public onFocusNode(focusedNodePath: string) {
+	public onFocusNode() {
 		this.hideNodeContextMenu()
 	}
 
@@ -79,7 +79,7 @@ export class NodeContextMenuController
 		this.hideNodeContextMenu()
 	}
 
-	public onMarkedPackagesChanged(markedPackages: MarkedPackage[]) {
+	public onMarkedPackagesChanged() {
 		this.hideNodeContextMenu()
 	}
 
@@ -225,7 +225,7 @@ export class NodeContextMenuController
 	}
 
 	public static subscribeToShowNodeContextMenu($rootScope: IRootScopeService, subscriber: ShowNodeContextMenuSubscriber) {
-		$rootScope.$on(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, (event, data) => {
+		$rootScope.$on(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, (_event, data) => {
 			subscriber.onShowNodeContextMenu(data.path, data.type, data.x, data.y)
 		})
 	}

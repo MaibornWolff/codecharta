@@ -43,20 +43,14 @@ describe("EdgeSettingsPanelController", () => {
 		)
 	}
 
-	function withMockedEdgeMetricDataService(amountOfAffectedBuildings: number = 0) {
-		edgeMetricDataService = edgeSettingsPanelController["edgeMetricDataService"] = jest.fn<EdgeMetricDataService>(() => {
-			return {
-				getAmountOfAffectedBuildings: jest.fn().mockReturnValue(amountOfAffectedBuildings)
-			}
-		})()
+	function withMockedEdgeMetricDataService(amountOfAffectedBuildings = 0) {
+		edgeMetricDataService.getAmountOfAffectedBuildings = jest.fn().mockReturnValue(amountOfAffectedBuildings)
+		edgeSettingsPanelController["edgeMetricDataService"] = edgeMetricDataService
 	}
 
 	function withMockedCodeMapActionsService() {
-		codeMapActionsService = edgeSettingsPanelController["codeMapActionsService"] = jest.fn<CodeMapActionsService>(() => {
-			return {
-				updateEdgePreviews: jest.fn()
-			}
-		})()
+		codeMapActionsService.updateEdgePreviews = jest.fn()
+		edgeSettingsPanelController["codeMapActionsService"] = codeMapActionsService
 	}
 
 	describe("constructor", () => {

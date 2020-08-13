@@ -3,9 +3,9 @@ permalink: /docs/visualization/
 title: "Visualization"
 
 gallery:
-  - url: "/assets/images/docs/visualization/visualization.drawio.png"
-    image_path: "/assets/images/docs/visualization/visualization.drawio.png"
-    title: "Visualization"
+    - url: "/assets/images/docs/visualization/visualization.drawio.png"
+      image_path: "/assets/images/docs/visualization/visualization.drawio.png"
+      title: "Visualization"
 ---
 
 The goal of the CodeCharta visualization is to provide a big picture view of code to **experienced professionals** and then allow them free exploration of the code files and their metrics. We use the _city metaphor_ and represent each file in your source code with a _building_.
@@ -16,9 +16,9 @@ We won't sugar coat it, the visualization can look a bit daunting at first. This
 
 In the center is the map. Each building in it has the attributes **size**, **height** and **color**. Each of these attributes can represent a different metric. This way the visualization allows you to contrast multiple metrics at the same time. A typical metric example is:
 
-- size ![]({{site.baseurl}}/assets/images/vendor/fontawesome/arrows-alt-solid-white.svg){: width="20px"}=_rloc (real lines of code)_
-- height ![]({{site.baseurl}}/assets/images/vendor/fontawesome/arrows-alt-v-solid-white.svg){: width="10px"}=_mcc (McCabe complexity)_
-- color ![]({{site.baseurl}}/assets/images/vendor/fontawesome/paint-brush-solid-white.svg){: width="20px"}=_sonar_cognitive_complexity_
+-   size ![]({{site.baseurl}}/assets/images/vendor/fontawesome/arrows-alt-solid-white.svg){: width="20px"}=_rloc (real lines of code)_
+-   height ![]({{site.baseurl}}/assets/images/vendor/fontawesome/arrows-alt-v-solid-white.svg){: width="10px"}=_mcc (McCabe complexity)_
+-   color ![]({{site.baseurl}}/assets/images/vendor/fontawesome/paint-brush-solid-white.svg){: width="20px"}=_sonar_cognitive_complexity_
 
 > If you want more information what these names mean you can look at the [metrics section]({{site.baseurl}}{% link _docs/05-02-metrics.md %}).
 >

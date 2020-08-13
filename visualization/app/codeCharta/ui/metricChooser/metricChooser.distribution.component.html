@@ -1,4 +1,4 @@
-<md-input-container>
+<md-input-container title="Distribution metric">
 	<i class="fa fa-pie-chart"></i>
 
 	<label></label>
@@ -20,7 +20,7 @@
 			/>
 		</md-select-header>
 		<md-content class="option-group">
-			<md-option ng-repeat="metric in $ctrl._viewModel.metricData" value="{{::metric.name}}">
+			<md-option ng-repeat="metric in $ctrl._viewModel.metricData track by metric.name" value="{{::metric.name}}">
 				{{::metric.name}}
 				<span class="metric-max-value">({{::metric.maxValue}})</span>
 			</md-option>

@@ -18,7 +18,7 @@ import {
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
-import { FileState } from "../../model/files/files"
+import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 
 export class RangeSliderController
 	implements
@@ -26,14 +26,15 @@ export class RangeSliderController
 		ColorRangeSubscriber,
 		InvertColorRangeSubscriber,
 		WhiteColorBuildingsSubscriber,
-		FilesSelectionSubscriber {
+		FilesSelectionSubscriber,
+		BlacklistSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedColorRange: (action: SetColorRangeAction) => void
 
-	private DIGIT_WIDTH: number = 11
-	private MIN_DIGITS: number = 4
-	private MAX_DIGITS: number = 6
-	private FULL_WIDTH_SLIDER: number = 235
+	private DIGIT_WIDTH = 11
+	private MIN_DIGITS = 4
+	private MAX_DIGITS = 6
+	private FULL_WIDTH_SLIDER = 235
 
 	private _viewModel: {
 		colorRangeFrom: number
@@ -50,20 +51,29 @@ export class RangeSliderController
 		private $rootScope: IRootScopeService,
 		private $timeout: ITimeoutService,
 		private storeService: StoreService,
-		private metricService: MetricService
+		private metricService: MetricService,
+		private colorRangeService: ColorRangeService
 	) {
 		ColorMetricService.subscribe(this.$rootScope, this)
 		ColorRangeService.subscribe(this.$rootScope, this)
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 		WhiteColorBuildingsService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
+		BlacklistService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
 		}, RangeSliderController.DEBOUNCE_TIME)
 	}
 
-	public onColorMetricChanged(colorMetric: string) {
+	onBlacklistChanged() {
+		if (this.isMaxMetricValueChanged()) {
+			this.updateMaxMetricValue()
+			this.colorRangeService.reset()
+		}
+	}
+
+	public onColorMetricChanged() {
 		this.updateMaxMetricValue()
 	}
 
@@ -77,16 +87,16 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}
 
-	public onInvertColorRangeChanged(invertColorRange: boolean) {
+	public onInvertColorRangeChanged() {
 		this.updateSliderColors()
 	}
 
-	public onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
+	public onWhiteColorBuildingsChanged() {
 		this.updateSliderColors()
 	}
 
@@ -111,6 +121,11 @@ export class RangeSliderController
 		this._viewModel.sliderOptions.ceil = this.metricService.getMaxMetricByMetricName(
 			this.storeService.getState().dynamicSettings.colorMetric
 		)
+	}
+
+	private isMaxMetricValueChanged() {
+		const newMaxValue: number = this.metricService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
+		return this._viewModel.sliderOptions.ceil !== newMaxValue
 	}
 
 	private initSliderOptions() {

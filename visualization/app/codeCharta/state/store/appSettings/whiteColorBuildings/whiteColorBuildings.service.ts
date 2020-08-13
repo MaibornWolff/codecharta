@@ -25,7 +25,9 @@ export class WhiteColorBuildingsService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(WhiteColorBuildingsService.WHITE_COLOR_BUILDINGS_CHANGED_EVENT, { whiteColorBuildings: newState })
+		this.$rootScope.$broadcast(WhiteColorBuildingsService.WHITE_COLOR_BUILDINGS_CHANGED_EVENT, {
+			whiteColorBuildings: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: WhiteColorBuildingsSubscriber) {

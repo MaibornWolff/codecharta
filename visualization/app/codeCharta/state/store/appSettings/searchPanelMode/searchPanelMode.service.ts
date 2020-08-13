@@ -26,7 +26,9 @@ export class SearchPanelModeService implements StoreSubscriber {
 	}
 
 	private notify(newState: SearchPanelMode) {
-		this.$rootScope.$broadcast(SearchPanelModeService.SEARCH_PANEL_MODE_CHANGED_EVENT, { searchPanelMode: newState })
+		this.$rootScope.$broadcast(SearchPanelModeService.SEARCH_PANEL_MODE_CHANGED_EVENT, {
+			searchPanelMode: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SearchPanelModeSubscriber) {

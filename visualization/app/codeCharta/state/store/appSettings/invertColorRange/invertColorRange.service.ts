@@ -25,7 +25,9 @@ export class InvertColorRangeService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(InvertColorRangeService.INVERT_COLOR_RANGE_CHANGED_EVENT, { invertColorRange: newState })
+		this.$rootScope.$broadcast(InvertColorRangeService.INVERT_COLOR_RANGE_CHANGED_EVENT, {
+			invertColorRange: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: InvertColorRangeSubscriber) {

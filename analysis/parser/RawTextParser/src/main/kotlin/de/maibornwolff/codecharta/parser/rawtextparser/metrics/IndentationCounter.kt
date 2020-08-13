@@ -5,10 +5,12 @@ import de.maibornwolff.codecharta.parser.rawtextparser.model.toBool
 import java.io.PrintStream
 import java.lang.Integer.min
 
-class IndentationCounter(private var maxIndentation: Int = 6,
-                         private var stderr: PrintStream = System.err,
-                         private var verbose: Boolean = false,
-                         private var tabWidth: Int = 0) : Metric {
+class IndentationCounter(
+    private var maxIndentation: Int = 6,
+    private var stderr: PrintStream = System.err,
+    private var verbose: Boolean = false,
+    private var tabWidth: Int = 0
+) : Metric {
 
     private val spaceIndentations = MutableList(maxIndentation * 8 + 1) { 0 }
     private val tabIndentations = MutableList(maxIndentation + 1) { 0 }
@@ -16,6 +18,7 @@ class IndentationCounter(private var maxIndentation: Int = 6,
     override val name = "IndentationLevel"
     override val description = "Number of lines with an indentation level of at least x"
 
+    // TODO no mixed tab/ space possible at line start?
     override fun parseLine(line: String) {
         var tabIndent = line.length - line.trimStart('\t').length
         var spaceIndent = line.length - line.trimStart(' ').length
@@ -36,6 +39,7 @@ class IndentationCounter(private var maxIndentation: Int = 6,
         verbose = parameters["verbose"]?.toBool() ?: verbose
     }
 
+    // TODO tabSize - (offset % tabSize) from the current position
     private fun guessTabWidth(): Int {
         tabWidth = 1
         if (spaceIndentations.sum() == 0) return tabWidth

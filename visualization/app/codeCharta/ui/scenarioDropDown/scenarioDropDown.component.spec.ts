@@ -5,7 +5,6 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { MetricService } from "../../state/metric.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
-import { MetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
@@ -20,7 +19,6 @@ describe("ScenarioDropDownController", () => {
 	let dialogService: DialogService
 	let metricService: MetricService
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let metricData: MetricData[]
 
 	function rebuildController() {
 		scenarioButtonsController = new ScenarioDropDownController(
@@ -40,8 +38,6 @@ describe("ScenarioDropDownController", () => {
 		dialogService = getService<DialogService>("dialogService")
 		metricService = getService<MetricService>("metricService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
-
-		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
 	}
 
 	beforeEach(() => {
@@ -67,7 +63,7 @@ describe("ScenarioDropDownController", () => {
 		it("should call getScenarioItems and set the scenarios in viewmodel correctly", () => {
 			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
-			scenarioButtonsController.onMetricDataAdded(metricData)
+			scenarioButtonsController.onMetricDataAdded()
 
 			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIO_ITEMS)
 		})
@@ -77,7 +73,7 @@ describe("ScenarioDropDownController", () => {
 		it("should call getScenarioHelpers and set the dropDownScenarioItems ", () => {
 			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
-			scenarioButtonsController.onMetricDataAdded(metricData)
+			scenarioButtonsController.onMetricDataAdded()
 
 			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIO_ITEMS)
 		})

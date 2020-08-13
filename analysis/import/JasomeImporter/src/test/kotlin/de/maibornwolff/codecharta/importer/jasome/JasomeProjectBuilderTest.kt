@@ -12,7 +12,7 @@ import org.hamcrest.MatcherAssert
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
 
-class JasomeProjectBuilderTest: Spek({
+class JasomeProjectBuilderTest : Spek({
     describe("JasomeProjectBuilder adding an empty Jasome Project") {
         val projectBuilder = JasomeProjectBuilder()
         val jasomeProject = Project(listOf())
@@ -48,9 +48,9 @@ class JasomeProjectBuilderTest: Spek({
             MatcherAssert.assertThat(leaves.keys, hasItem(Path(listOf("com", "package", "name", "ClassName"))))
         }
 
-        it("contains class") {
+        it("contains class exported to cc.json as file") {
             val node = leaves.values.first()
-            MatcherAssert.assertThat(node.type, `is`(NodeType.Class))
+            MatcherAssert.assertThat(node.type, `is`(NodeType.File))
             MatcherAssert.assertThat(node.name, `is`("ClassName"))
         }
 

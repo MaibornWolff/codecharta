@@ -14,18 +14,22 @@ import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.util.*
+import java.util.Arrays
 
 @RunWith(Parameterized::class)
-class SCMLogProjectCreatorGoldenMasterTest(
-        val scm: String,
-        private val strategy: LogParserStrategy,
-        private val containsAuthors: Boolean,
-        private val logFilename: String,
-        private val expectedProjectFilename: String
+class SCMLogProjectCreatorGoldenTest(
+    val scm: String,
+    private val strategy: LogParserStrategy,
+    private val containsAuthors: Boolean,
+    private val logFilename: String,
+    private val expectedProjectFilename: String
 ) {
 
     companion object {
@@ -49,7 +53,7 @@ class SCMLogProjectCreatorGoldenMasterTest(
 
     @Test
     @Throws(Exception::class)
-    fun logParserGoldenMasterTest() {
+    fun logParserGoldenTest() {
         // given
         val projectConverter = ProjectConverter(containsAuthors)
 

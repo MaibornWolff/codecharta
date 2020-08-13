@@ -1,29 +1,14 @@
-import { goto, puppeteer } from "../../../puppeteer.helper"
-import { Browser, Page } from "puppeteer"
+import { goto } from "../../../puppeteer.helper"
 import { {{properCase name}}PageObject } from "./{{camelCase name}}.po"
-
-
-jest.setTimeout(10000)
 
 describe("{{properCase name}}", () => {
 
-    let browser: Browser
-    let page: Page
     let {{camelCase name}} : {{properCase name}}PageObject
 
-    beforeAll(async () => {
-        browser = await puppeteer.launch({ headless: true })
-    })
-
-    afterAll(async () => {
-        await browser.close()
-    });
-
     beforeEach(async () => {
-    	page = await browser.newPage()
-    	{{camelCase name}} = new {{properCase name}}PageObject(page)
+    	{{camelCase name}} = new {{properCase name}}PageObject()
 
-    	await goto(page)
+    	await goto()
     })
 
     it("should do something", async () => {

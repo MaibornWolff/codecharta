@@ -9,18 +9,11 @@ export class FileNameHelper {
 
 	private static getNewTimestamp(): string {
 		const date: Date = new Date()
-		return (
-			"_" +
-			date
-				.toISOString()
-				.substr(0, 16)
-				.replace("T", "_")
-				.replace(":", "-")
-		)
+		return "_" + date.toISOString().substr(0, 16).replace("T", "_").replace(":", "-")
 	}
 
 	private static getFileNameWithoutTimestamp(fileName: string, isDeltaState: boolean): string {
-		const dateRegex: RegExp = /_\d{4}-\d{1,2}-\d{1,2}_\d{1,2}-\d{1,2}\./
+		const dateRegex = /_\d{4}-\d{1,2}-\d{1,2}_\d{1,2}-\d{1,2}\./
 
 		if (!isDeltaState) {
 			if (dateRegex.test(fileName)) {

@@ -22,10 +22,6 @@ describe("ThreeOrbitControlsService", () => {
 
 	let vector: Vector3
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
@@ -49,23 +45,17 @@ describe("ThreeOrbitControlsService", () => {
 	function withMockedThreeCameraService() {
 		const camera = new PerspectiveCamera(100, 0, 0, 0)
 		camera.position.set(vector.x, vector.y, vector.z)
-		threeCameraService = threeOrbitControlsService["threeCameraService"] = jest.fn<ThreeCameraService>(() => {
-			return {
-				camera
-			}
-		})()
+
+		threeCameraService.camera = camera
+		threeOrbitControlsService["threeCameraService"] = threeCameraService
 	}
 
 	function withMockedThreeSceneService() {
-		threeSceneService = threeOrbitControlsService["threeSceneService"] = jest.fn<ThreeSceneService>(() => {
-			return {
-				scene: {
-					add: jest.fn(),
-					remove: jest.fn()
-				},
-				mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10))
-			}
-		})()
+		threeSceneService.scene.add = jest.fn()
+		threeSceneService.scene.remove = jest.fn()
+		threeSceneService.mapGeometry = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10))
+
+		threeOrbitControlsService["threeSceneService"] = threeSceneService
 	}
 
 	function withMockedControlService() {
@@ -111,7 +101,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			storeService.dispatch(setResetCameraIfNewFileIsLoaded(true))
 
-			threeOrbitControlsService.onFilesSelectionChanged(undefined)
+			threeOrbitControlsService.onFilesSelectionChanged()
 
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 		})
@@ -121,7 +111,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			storeService.dispatch(setResetCameraIfNewFileIsLoaded(false))
 
-			threeOrbitControlsService.onFilesSelectionChanged(undefined)
+			threeOrbitControlsService.onFilesSelectionChanged()
 
 			expect(threeOrbitControlsService.autoFitTo).not.toHaveBeenCalled()
 		})
@@ -143,7 +133,7 @@ describe("ThreeOrbitControlsService", () => {
 
 	describe("onFocusedNode", () => {
 		it("autoFitTo have to be", () => {
-			threeOrbitControlsService.onFocusNode("something")
+			threeOrbitControlsService.onFocusNode()
 			$timeout.flush()
 
 			expect(threeOrbitControlsService.controls.update).toBeCalled()

@@ -5,14 +5,32 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
 import org.junit.Ignore
 import org.junit.jupiter.api.Test
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.InputStream
+import java.io.PrintStream
 
 class TokeiImporterTest {
     @Test
     fun `reads tokei from file`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--pathSeparator=\\"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
 
         Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":450"))
+    }
+
+    @Test
+    fun `reads tokei 12 new json scheme from file`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json"))
+
+        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"rloc\":450"))
+    }
+
+    @Test
+    fun `tokei 12 should include the loc metric`() {
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_without_inner.json"))
+
+        Assertions.assertThat(cliResult).contains(listOf("CHANGELOG.md", "\"loc\":461"))
     }
 
     @Test
@@ -28,7 +46,7 @@ class TokeiImporterTest {
     fun `projectStructure is correct`() {
         val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "") { it }
 
-        val cliResult = executeForOutput(input, arrayOf("--pathSeparator=\\"))
+        val cliResult = executeForOutput(input, arrayOf("--path-separator=\\"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.size).isEqualTo(3)
@@ -36,6 +54,21 @@ class TokeiImporterTest {
         Assertions.assertThat(project.rootNode.children.toMutableList()[0].attributes["loc"]).isEqualTo(450.0)
         Assertions.assertThat(project.rootNode.children.toMutableList()[2].name).isEqualTo("src")
         Assertions.assertThat(project.rootNode.children.toMutableList()[2].size).isEqualTo(3)
+    }
+
+    @Test
+    fun `tokei 12 projectStructure is correct`() {
+        val input = File("src/test/resources/tokei_without_inner.json").bufferedReader().readLines().joinToString(separator = "") { it }
+
+        val cliResult = executeForOutput(input)
+
+        val project = ProjectDeserializer.deserializeProject(cliResult)
+        Assertions.assertThat(project.rootNode.children.size).isEqualTo(2)
+        Assertions.assertThat(project.rootNode.children.toMutableList()[0].name).isEqualTo("make_release.sh")
+        Assertions.assertThat(project.rootNode.children.toMutableList()[0].attributes["rloc"]).isEqualTo(500.0)
+        Assertions.assertThat(project.rootNode.children.toMutableList()[1].attributes["rloc"]).isNull()
+        Assertions.assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
+        Assertions.assertThat(project.rootNode.children.toMutableList()[1].children.toMutableList().size).isEqualTo(2)
     }
 
     @Ignore
@@ -57,7 +90,7 @@ class TokeiImporterTest {
 
     @Test
     fun `handles path separator correctly`() {
-        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--pathSeparator=\\"))
+        val cliResult = executeForOutput("", arrayOf("src/test/resources/tokei_results.json", "--path-separator=\\"))
 
         val project = ProjectDeserializer.deserializeProject(cliResult)
         Assertions.assertThat(project.rootNode.children.toMutableList()[1].name).isEqualTo("foo")
@@ -84,8 +117,9 @@ fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStr
         outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
 fun outputAsString(
-        inputStream: InputStream = System.`in`,
-        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+    inputStream: InputStream = System.`in`,
+    aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+) =
         ByteArrayOutputStream().use { baOutputStream ->
             PrintStream(baOutputStream).use { outputStream ->
                 aMethod(inputStream, outputStream, System.err)

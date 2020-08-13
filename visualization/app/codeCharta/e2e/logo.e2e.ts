@@ -1,28 +1,16 @@
-import { goto, launch, newPage } from "../../puppeteer.helper"
+import { goto } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
-import { Browser, Page } from "puppeteer"
 import packageJson from "../../../package.json"
 
 jest.setTimeout(20000)
 
 describe("CodeCharta logo", () => {
-	let browser: Browser
-	let page: Page
 	let logo: LogoPageObject
 
-	beforeAll(async () => {
-		browser = await launch()
-	})
-
-	afterAll(async () => {
-		await browser.close()
-	})
-
 	beforeEach(async () => {
-		page = await newPage(browser)
-		logo = new LogoPageObject(page)
+		logo = new LogoPageObject()
 
-		await goto(page)
+		await goto()
 	})
 
 	it("should have correct version", async () => {

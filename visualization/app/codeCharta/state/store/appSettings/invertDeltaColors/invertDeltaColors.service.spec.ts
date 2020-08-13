@@ -48,7 +48,9 @@ describe("InvertDeltaColorsService", () => {
 
 			invertDeltaColorsService.onStoreChanged(InvertDeltaColorsActions.SET_INVERT_DELTA_COLORS)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("invert-delta-colors-changed", { invertDeltaColors: true })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("invert-delta-colors-changed", {
+				invertDeltaColors: true
+			})
 		})
 
 		it("should not notify anything on non-invert-delta-colors-events", () => {

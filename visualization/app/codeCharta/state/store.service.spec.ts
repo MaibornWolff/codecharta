@@ -53,7 +53,9 @@ describe("StoreService", () => {
 
 			storeService.dispatch(action)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("store-changed", { actionType: BlacklistActions.ADD_BLACKLIST_ITEM })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("store-changed", {
+				actionType: BlacklistActions.ADD_BLACKLIST_ITEM
+			})
 			expect(storeService.getState().fileSettings.blacklist).toEqual([item])
 		})
 

@@ -10,26 +10,27 @@
 		ng-mouseleave="$ctrl.onMouseLeave()"
 		ng-right-click="$ctrl.openNodeContextMenu($event)"
 		ng-click="$ctrl.onClickNode()"
+		id="{{ ::$ctrl.node.path }}"
 	>
 		<span class="node-type-icon">
 			<span
 				role="img"
 				ng-if="!$ctrl.isLeaf() && !$ctrl._viewModel.isFolderOpened"
 				class="fa fa-folder"
-				ng-style="{'color': $ctrl.getMarkingColor() }"
+				ng-style="{ color: $ctrl.getMarkingColor() }"
 				aria-hidden="true"
 			></span>
 			<span
 				role="img"
 				ng-if="!$ctrl.isLeaf() && $ctrl._viewModel.isFolderOpened"
 				class="fa fa-folder-open"
-				ng-style="{'color': $ctrl.getMarkingColor() }"
+				ng-style="{ color: $ctrl.getMarkingColor() }"
 				aria-hidden="true"
 			></span>
 			<span role="img" ng-if="$ctrl.isLeaf()" class="fa fa-file-o" aria-hidden="true"></span>
 		</span>
 
-		<span class="node-name" ng-class="{'flattened': $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched()}">
+		<span class="node-name" ng-class="{ flattened: $ctrl.node.isFlattened, 'angular-green': $ctrl.isSearched() }">
 			{{::$ctrl.node.name}}
 		</span>
 
@@ -44,7 +45,7 @@
 			<i class="flattened fa fa-eye-slash" ng-if="$ctrl.node.isFlattened" title="Flattened"></i>
 
 			<div class="small-action-button transparent">
-				<md-button class="md-fab" ng-click="$ctrl.openNodeContextMenu($event)">
+				<md-button class="md-fab" ng-click="$ctrl.openNodeContextMenu($event)" title="Open Node-Context-Menu">
 					<i class="fa fa-ellipsis-h"></i>
 				</md-button>
 			</div>

@@ -2,33 +2,17 @@
 
 cd visualization
 
-QNAME=maibornwolff/codecharta-visualization
+# update docker hub repo name after verification
+DOCKER_HUB_REPO=codecharta/codecharta-visualization
+RELEASE_TAG=$DOCKER_HUB_REPO:$TRAVIS_TAG
+LATEST_TAG=$DOCKER_HUB_REPO:latest
 
-GIT_TAG=$QNAME:$TRAVIS_COMMIT
-LATEST_TAG=$QNAME:latest
+echo "Tagging docker release"
+docker tag $DOCKER_HUB_REPO $RELEASE_TAG
+docker tag $DOCKER_HUB_REPO $LATEST_TAG
 
-if [[ $TRAVIS_TAG ]]; then
-    RELEASE_TAG=$QNAME:$TRAVIS_TAG
-    BUILD_TAG=$RELEASE_TAG.$TRAVIS_BUILD_NUMBER
-fi
-
-echo "tag docker image"
-
-docker tag $QNAME $GIT_TAG
-docker tag $QNAME $LATEST_TAG
-
-if [[ $TRAVIS_TAG ]]; then
-    echo "Tagging Release $TRAVIS_TAG"
-    docker tag $QNAME $RELEASE_TAG
-    docker tag $QNAME $BUILD_TAG
-fi
-
-echo "publish at docker hub"
+echo "Publish at Docker Hub"
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-docker push $GIT_TAG
+docker push $RELEASE_TAG
 docker push $LATEST_TAG
 
-if [[ $TRAVIS_TAG ]]; then
-    docker push $RELEASE_TAG
-    docker push $BUILD_TAG
-fi

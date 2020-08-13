@@ -25,7 +25,9 @@ export class SortingOrderAscendingService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(SortingOrderAscendingService.SORTING_ORDER_ASCENDING_CHANGED_EVENT, { sortingOrderAscending: newState })
+		this.$rootScope.$broadcast(SortingOrderAscendingService.SORTING_ORDER_ASCENDING_CHANGED_EVENT, {
+			sortingOrderAscending: newState
+		})
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SortingOrderAscendingSubscriber) {

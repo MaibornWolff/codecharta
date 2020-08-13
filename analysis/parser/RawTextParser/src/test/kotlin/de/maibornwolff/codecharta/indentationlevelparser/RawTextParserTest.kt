@@ -2,36 +2,38 @@ package de.maibornwolff.codecharta.rawtextparser
 
 import com.google.gson.JsonParser
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser.Companion.mainWithInOut
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.InputStream
+import java.io.ByteArrayOutputStream
+import java.io.OutputStreamWriter
+import java.io.PrintStream
 
 class RawTextParserTest {
 
     @Test
     fun `should be able to process single file`() {
-        val result = ByteArrayOutputStream()
         val expectedResultFile = File("src/test/resources/cc_projects/project_3.cc.json").absoluteFile
 
-        RawTextParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/tabs.xyz"))
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/tabs.xyz"))
 
-        val resultJSON = JsonParser().parse(result.toString())
+        val resultJSON = JsonParser().parse(result)
         val expectedJson = JsonParser().parse(expectedResultFile.reader())
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
 
     @Test
     fun `should process project and pass on parameters`() {
-        val result = ByteArrayOutputStream()
         val expectedResultFile = File("src/test/resources/cc_projects/project_4.cc.json").absoluteFile
 
-        RawTextParser.mainWithOutputStream(PrintStream(result), arrayOf("src/test/resources/sampleproject/", "-p=foo", "--tabWidth=2", "--maxIndentationLevel=2", "-e=tabs*."))
+        val result = executeForOutput("", arrayOf("src/test/resources/sampleproject/", "--tab-width=2", "--max-indentation-level=2", "-e=tabs*."))
 
-        val resultJSON = JsonParser().parse(result.toString())
+        val resultJSON = JsonParser().parse(result)
         val expectedJson = JsonParser().parse(expectedResultFile.reader())
         Assertions.assertThat(resultJSON).isEqualTo(expectedJson)
     }
@@ -47,7 +49,7 @@ class RawTextParserTest {
         val expected = ByteArrayOutputStream()
         ProjectSerializer.serializeProject(MergeFilter.mergePipedWithCurrentProject(partialProject2, partialProject1), OutputStreamWriter(PrintStream(expected)))
 
-        val result = executeForOutput(input, arrayOf(fileToParse, "-p="))
+        val result = executeForOutput(input, arrayOf(fileToParse))
 
         val resultJSON = JsonParser().parse(result)
         Assertions.assertThat(resultJSON).isEqualTo(JsonParser().parse(expected.toString()))
@@ -63,8 +65,9 @@ fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStr
         outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
 fun outputAsString(
-        inputStream: InputStream = System.`in`,
-        aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
+    inputStream: InputStream = System.`in`,
+    aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
+) =
         ByteArrayOutputStream().use { baOutputStream ->
             PrintStream(baOutputStream).use { outputStream ->
                 aMethod(inputStream, outputStream, System.err)

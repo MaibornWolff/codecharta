@@ -5,16 +5,13 @@ import { defaultState, setState } from "../../state/store/state.actions"
 import { convertToVectors } from "../../util/settingsHelper"
 
 export class ResetSettingsButtonController {
-	private settingsNames: string = ""
+	private settingsNames = ""
 
 	/* @ngInject */
 	constructor(private storeService: StoreService) {}
 
 	public applyDefaultSettings() {
-		const tokens: string[] = this.settingsNames
-			.replace(/ /g, "")
-			.replace(/\n/g, "")
-			.split(",")
+		const tokens: string[] = this.settingsNames.replace(/ /g, "").replace(/\n/g, "").split(",")
 		const updatedSettings: RecursivePartial<Settings> = {}
 
 		tokens.forEach(token => {
@@ -50,6 +47,7 @@ export const resetSettingsButtonComponent = {
 	template: require("./resetSettingsButton.component.html"),
 	controller: ResetSettingsButtonController,
 	bindings: {
-		settingsNames: "@"
+		settingsNames: "@",
+		tooltip: "@"
 	}
 }

@@ -2,12 +2,10 @@ import { UrlExtractor } from "./util/urlExtractor"
 import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
-import { ScenarioHelper } from "./util/scenarioHelper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { NameDataPair } from "./codeCharta.model"
+import { NameDataPair, SearchPanelMode } from "./codeCharta.model"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
-import { setState } from "./state/store/state.actions"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import packageJson from "../../package.json"
@@ -15,6 +13,7 @@ import { setDelta, setMultiple, setSingle } from "./state/store/files/files.acti
 import { getCCFiles } from "./model/files/files.helper"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
+import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -63,22 +62,21 @@ export class CodeChartaController {
 				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
 			)
 		}
-		this.tryLoadingFiles([{ fileName: "sample1.cc.json", content: sample1 }, { fileName: "sample2.cc.json", content: sample2 }])
+		this.tryLoadingFiles([
+			{ fileName: "sample1.cc.json", content: sample1 },
+			{ fileName: "sample2.cc.json", content: sample2 }
+		])
+	}
+
+	public onClick() {
+		if (this.storeService.getState().appSettings.searchPanelMode !== SearchPanelMode.minimized) {
+			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
+		}
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
 		this.storeService.dispatch(setAppSettings())
-
-		this.codeChartaService
-			.loadFiles(values)
-			.then(() => {
-				this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
-			})
-			.catch(e => {
-				this.storeService.dispatch(setIsLoadingFile(false))
-				console.error(e)
-				this.printErrors(e)
-			})
+		this.codeChartaService.loadFiles(values)
 	}
 
 	private setRenderStateFromUrl() {
@@ -92,10 +90,6 @@ export class CodeChartaController {
 		} else {
 			this.storeService.dispatch(setSingle(files[0]))
 		}
-	}
-
-	private printErrors(errors: Object) {
-		this.dialogService.showErrorDialog(JSON.stringify(errors, null, "\t"))
 	}
 }
 

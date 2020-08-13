@@ -1,4 +1,4 @@
-import { BlacklistItem, BlacklistType, CodeMapNode, MetricData, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
+import { BlacklistType, CodeMapNode, MetricData, AttributeTypeValue } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
@@ -30,15 +30,15 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		AttributeTypesService.subscribe(this.$rootScope, this)
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		this.setNewMetricData()
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged() {
 		this.setNewMetricData()
 	}
 
-	public onAttributeTypesChanged(attributeTypes: AttributeTypes) {
+	public onAttributeTypesChanged() {
 		this.setNewMetricData()
 	}
 
@@ -64,8 +64,9 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	private setNewMetricData() {
-		this.metricData = this.calculateMetrics()
-		this.addUnaryMetric()
+		const newMetricData = this.calculateMetrics()
+		this.addUnaryMetric(newMetricData)
+		this.metricData = newMetricData
 		this.notifyMetricDataAdded()
 	}
 
@@ -128,9 +129,9 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		return metricData.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
 	}
 
-	private addUnaryMetric() {
-		if (!this.metricData.some(x => x.name === MetricService.UNARY_METRIC)) {
-			this.metricData.push({
+	private addUnaryMetric(metricData: MetricData[]) {
+		if (!metricData.some(x => x.name === MetricService.UNARY_METRIC)) {
+			metricData.push({
 				name: MetricService.UNARY_METRIC,
 				maxValue: 1
 			})
@@ -142,7 +143,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
-		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (event, data) => {
+		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (_event, data) => {
 			subscriber.onMetricDataAdded(data)
 		})
 	}

@@ -10,7 +10,8 @@
 		</div>
 		<div class="legend-block">
 			<img ng-src="{{ $ctrl._viewModel.colorIcons.neutral }}" alt="" />
-			&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le; {{ $ctrl._viewModel.colorRange.to | number: 0 }}
+			&ge; {{ $ctrl._viewModel.colorRange.from | number: 0 }} to &le;
+			{{ $ctrl._viewModel.colorRange.to | number: 0 }}
 		</div>
 		<div class="legend-block">
 			<img ng-src="{{ $ctrl._viewModel.colorIcons.negative }}" alt="" />
@@ -46,11 +47,15 @@
 	</div>
 
 	<hr ng-show="$ctrl._viewModel.packageLists[0]" />
-	<div class="legend-block" ng-show="$ctrl._viewModel.packageLists" ng-repeat="packageList in $ctrl._viewModel.packageLists">
+	<div
+		class="legend-block"
+		ng-show="$ctrl._viewModel.packageLists"
+		ng-repeat="packageList in $ctrl._viewModel.packageLists track by $index"
+	>
 		<img ng-src="{{::packageList.colorPixel}}" alt="" />
 		<span
 			class="marked-package {{ $first ? '' : 'set-left-margin' }}"
-			ng-repeat="item in packageList.markedPackages"
+			ng-repeat="item in packageList.markedPackages track by $index"
 			title="{{::item.path}}"
 		>
 			{{::item.path}}{{ $last ? "" : ",&nbsp;" }}
@@ -61,5 +66,6 @@
 	class="panel-button md-raised md-primary cc-shadow"
 	ng-click="$ctrl.toggle()"
 	ng-class="{ sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
+	ng-attr-title="{{ $ctrl._viewModel.isLegendVisible ? 'Hide panel' : 'Show panel' }}"
 	>Legend</md-button
 >

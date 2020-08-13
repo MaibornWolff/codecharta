@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { PerspectiveCamera, Sprite, Vector3, Box3 } from "three"
+import { Sprite, Vector3, Box3 } from "three"
 import { Node, State } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -16,11 +16,11 @@ interface InternalLabel {
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
-	private LABEL_WIDTH_DIVISOR: number = 2100 // empirically gathered
-	private LABEL_HEIGHT_DIVISOR: number = 40 // empirically gathered
+	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
+	private LABEL_HEIGHT_DIVISOR = 40 // empirically gathered
 
 	private currentScale: Vector3 = new THREE.Vector3(1, 1, 1)
-	private resetScale: boolean = false
+	private resetScale = false
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -86,7 +86,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.currentScale.copy(scaling)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera) {
+	public onCameraChanged() {
 		for (const label of this.labels) {
 			this.setLabelSize(label.sprite)
 		}

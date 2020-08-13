@@ -3,13 +3,12 @@ import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model
 import _ from "lodash"
 import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"
-import { clone } from "./clone"
 import packageJson from "../../../package.json"
 
 export class DeltaGenerator {
 	public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
-		const referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(clone(referenceFile.map))
-		const comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(clone(comparisonFile.map))
+		const referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(referenceFile.map)
+		const comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(comparisonFile.map)
 		const hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
 
 		const fileMeta = this.getFileMetaData(referenceFile, comparisonFile)

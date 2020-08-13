@@ -10,6 +10,8 @@ import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
+import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { SearchPanelMode } from "./codeCharta.model"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -133,11 +135,24 @@ describe("codeChartaController", () => {
 		})
 
 		it("should call loadFiles with sample files", () => {
-			const expected = [{ fileName: "sample1.cc.json", content: sample1 }, { fileName: "sample2.cc.json", content: sample2 }]
+			const expected = [
+				{ fileName: "sample1.cc.json", content: sample1 },
+				{ fileName: "sample2.cc.json", content: sample2 }
+			]
 
 			codeChartaController.tryLoadingSampleFiles()
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
+		})
+	})
+
+	describe("onClick", () => {
+		it("should minimize the search panel if it's expanded", () => {
+			storeService.dispatch(setSearchPanelMode(SearchPanelMode.exclude))
+
+			codeChartaController.onClick()
+
+			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 		})
 	})
 })

@@ -1,6 +1,6 @@
 # CodeCharta visualization
 
-[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=master)](https://travis-ci.org/MaibornWolff/codecharta)
+[![Build Status](https://travis-ci.org/MaibornWolff/codecharta.svg?branch=main)](https://travis-ci.org/MaibornWolff/codecharta)
 
 > CodeCharta by [MaibornWolff](https://www.maibornwolff.de)
 
@@ -74,4 +74,4 @@ You can generate the following modules:
 
 [Example Data](/visualization/app/codeCharta/assets/sample1.cc.json)
 
-[JSON Schema](/visualization/app/codeCharta/util/schema.json)
+[JSON Schema](/visualization/app/codeCharta/util/generatedSchema.json)

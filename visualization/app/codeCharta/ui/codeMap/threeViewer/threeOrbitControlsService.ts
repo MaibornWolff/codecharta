@@ -10,7 +10,6 @@ import {
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
-import { FileState } from "../../../model/files/files"
 import * as Three from "three"
 import oc from "three-orbit-controls"
 
@@ -38,7 +37,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onFocusNode(focusedNodePath: string) {
+	public onFocusNode() {
 		this.autoFitTo()
 	}
 
@@ -46,7 +45,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.autoFitTo()
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}
@@ -142,7 +141,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CameraChangeSubscriber) {
-		$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (event: IAngularEvent, camera: PerspectiveCamera) => {
+		$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (_event: IAngularEvent, camera: PerspectiveCamera) => {
 			subscriber.onCameraChanged(camera)
 		})
 	}

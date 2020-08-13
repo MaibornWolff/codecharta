@@ -31,11 +31,11 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 		}
 	}
 
-	public onAreaMetricChanged(areaMetric: string) {
+	public onAreaMetricChanged() {
 		this.reset()
 	}
 
-	public onDynamicMarginChanged(dynamicMargin: boolean) {
+	public onDynamicMarginChanged() {
 		this.reset()
 	}
 
@@ -61,7 +61,7 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MarginSubscriber) {
-		$rootScope.$on(MarginService.MARGIN_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(MarginService.MARGIN_CHANGED_EVENT, (_event, data) => {
 			subscriber.onMarginChanged(data.margin)
 		})
 	}

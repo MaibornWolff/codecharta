@@ -30,7 +30,7 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 		this.camera.lookAt(0, 0, 0)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera) {
+	public onCameraChanged() {
 		this.throttledCameraChange()
 	}
 

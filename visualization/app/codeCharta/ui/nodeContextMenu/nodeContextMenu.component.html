@@ -2,11 +2,12 @@
 	<div ng-if="$ctrl.nodeIsFolder()">
 		<div layout="row" layout-align="center center">
 			<md-button
-				ng-repeat="color in $ctrl._viewModel.markingColors"
+				ng-repeat="color in $ctrl._viewModel.markingColors track by $index"
 				ng-style="{'background-color':'{{ color }}'}"
 				ng-disabled="primary === color && !isPrimary"
 				ng-click="$ctrl.clickColor(color)"
 				class="colorButton"
+				title="Colorize folder"
 			>
 				<i class="fa fa-times" ng-if="$ctrl.isNodeOrParentMarked(color)"></i>
 			</md-button>
@@ -16,13 +17,18 @@
 
 	<div class="button-group">
 		<md-button ng-disabled="true">Node</md-button>
-		<md-button ng-show="!$ctrl.isNodeFocused()" ng-click="$ctrl.focusNode()" title="Only show selected nodes with children-nodes"
+		<md-button
+			ng-show="!$ctrl.isNodeFocused()"
+			ng-click="$ctrl.focusNode()"
+			id="focus-button"
+			title="Only show selected nodes with children-nodes"
 			><i class="fa fa-bullseye"></i> Focus</md-button
 		>
 		<unfocus-button-component ng-show="$ctrl.isNodeOrParentFocused()"></unfocus-button-component>
 		<md-button
 			ng-if="!$ctrl._viewModel.codeMapNode.isFlattened"
 			ng-click="$ctrl.flattenNode()"
+			id="flatten-button"
 			title="Flatten node and children-nodes, but keep an empty space"
 			><i class="fa fa-eye-slash"></i> Flatten</md-button
 		>
@@ -30,7 +36,7 @@
 			><i class="fa fa-eye"></i> Show</md-button
 		>
 
-		<md-button ng-click="$ctrl.excludeNode()" title="Exclude node and children-nodes and reorder the CodeMap"
+		<md-button ng-click="$ctrl.excludeNode()" id="exclude-button" title="Exclude node and children-nodes and reorder the CodeMap"
 			><i class="fa fa-ban"></i> Exclude</md-button
 		>
 	</div>

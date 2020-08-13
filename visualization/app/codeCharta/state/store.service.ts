@@ -24,7 +24,7 @@ export class StoreService {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: CCAction, isSilent: boolean = false) {
+	public dispatch(action: CCAction, isSilent = false) {
 		if (
 			!(
 				isActionOfType(action.type, IsLoadingMapActions) ||

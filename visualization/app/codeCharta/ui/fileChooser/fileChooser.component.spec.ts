@@ -59,23 +59,11 @@ describe("fileChooserController", () => {
 		})()
 	}
 
-	describe("onImportNewFiles", () => {
-		it("should call $apply", () => {
-			fileChooserController.onImportNewFiles({ files: [] })
-
-			expect($rootScope.$apply).toHaveBeenCalled()
-		})
-
-		it("should not set state if no file loaded", () => {
-			fileChooserController.onImportNewFiles({ files: [] })
-
-			expect(storeSevice.getState().appSettings.isLoadingFile).toBeTruthy()
-		})
-	})
-
 	describe("setNewData", () => {
-		it("should call loadFiles", () => {
-			fileChooserController.setNewData(fileName, JSON.stringify(content))
+		it("should call loadFiles with read files", () => {
+			fileChooserController["files"] = [{ fileName, content }]
+
+			fileChooserController.setNewData()
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith([
 				{

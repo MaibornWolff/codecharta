@@ -66,7 +66,9 @@ describe("ColorRangeService", () => {
 
 			colorRangeService.onStoreChanged(ColorRangeActions.SET_COLOR_RANGE)
 
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("color-range-changed", { colorRange: { from: 33, to: 66 } })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("color-range-changed", {
+				colorRange: { from: 33, to: 66 }
+			})
 		})
 
 		it("should not notify anything on non-color-range-events", () => {
@@ -80,7 +82,7 @@ describe("ColorRangeService", () => {
 		it("should reset the color range", () => {
 			withMockedMetricService()
 
-			colorRangeService.onFilesSelectionChanged(undefined)
+			colorRangeService.onFilesSelectionChanged()
 
 			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})

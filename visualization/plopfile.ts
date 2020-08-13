@@ -1,16 +1,11 @@
 import { NodePlopAPI } from "plop"
-import promptFile from "inquirer-file"
-import promptDirectory from "inquirer-directory"
 import { PLOP_STATE_FILE_ACTIONS, PLOP_STATE_VARIABLE_PROMPTS } from "./plop/state"
 import { PLOP_UI_FILE_ACTIONS, PLOP_UI_VARIABLE_PROMPTS } from "./plop/ui"
 import { PLOP_UTIL_FILE_ACTIONS, PLOP_UTIL_VARIABLE_PROMPTS } from "./plop/util"
 import { PLOP_REDUX_FILE_ACTIONS, PLOP_REDUX_VARIABLE_PROMPTS } from "./plop/redux"
 import { PLOP_REDUX_SUBREDUCER_FILE_ACTIONS, PLOP_REDUX_SUBREDUCER_VARIABLE_PROMPTS } from "./plop/reduxSubreducer"
 
-export default function(plop: NodePlopAPI) {
-	plop.setPrompt("directory", promptDirectory)
-	plop.setPrompt("file", promptFile)
-
+export default function (plop: NodePlopAPI) {
 	plop.setGenerator("state service", {
 		description: "an empty service with corresponding test file",
 		prompts: PLOP_STATE_VARIABLE_PROMPTS,

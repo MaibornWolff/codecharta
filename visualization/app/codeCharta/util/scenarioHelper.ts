@@ -1,18 +1,10 @@
 "use strict"
-import {
-	AppSettings,
-	CCLocalStorage,
-	DynamicSettings,
-	MetricData,
-	RecursivePartial,
-	ExportScenario,
-	Scenario,
-	Settings
-} from "../codeCharta.model"
+import { AppSettings, CCLocalStorage, DynamicSettings, MetricData, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import scenarios from "../assets/scenarios.json"
+import { ExportScenario } from "../codeCharta.api.model"
 
 export class ScenarioHelper {
 	private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -29,23 +21,28 @@ export class ScenarioHelper {
 				icons: [
 					{
 						faIconClass: "fa-video-camera",
-						isSaved: !!scenario.camera
+						isSaved: !!scenario.camera,
+						tooltip: "Camera angle"
 					},
 					{
 						faIconClass: "fa-arrows-alt",
-						isSaved: !!scenario.area
+						isSaved: !!scenario.area,
+						tooltip: "Area metric"
 					},
 					{
 						faIconClass: "fa-arrows-v",
-						isSaved: !!scenario.height
+						isSaved: !!scenario.height,
+						tooltip: "Height metric"
 					},
 					{
 						faIconClass: "fa-paint-brush",
-						isSaved: !!scenario.color
+						isSaved: !!scenario.color,
+						tooltip: "Color metric"
 					},
 					{
 						faIconClass: "fa-exchange",
-						isSaved: !!scenario.edge
+						isSaved: !!scenario.edge,
+						tooltip: "Edge metric"
 					}
 				]
 			})

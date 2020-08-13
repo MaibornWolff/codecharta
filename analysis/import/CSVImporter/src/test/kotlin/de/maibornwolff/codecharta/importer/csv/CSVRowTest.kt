@@ -1,7 +1,10 @@
 package de.maibornwolff.codecharta.importer.csv
 
 import de.maibornwolff.codecharta.model.Path
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasSize
 import org.spekframework.spek2.Spek
@@ -10,11 +13,10 @@ import kotlin.test.assertFailsWith
 
 private const val PATH_SEPARATOR = '\\'
 
-class CSVRowTest: Spek({
+class CSVRowTest : Spek({
 
     describe("Using a header with path column") {
         val header = CSVHeader(arrayOf("head1", "head2", "head3", "path", "attrib", "attrib2", ""))
-
 
         it("name of node should be filename from this columnn") {
             val nameExpectedFilenameMap = mapOf(

@@ -1,49 +1,35 @@
-import * as puppeteer from "puppeteer"
-import { CC_URL, newPage } from "../../puppeteer.helper"
+import { CC_URL, goto } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
-import { Browser, Page } from "puppeteer"
 import sample1 from "../assets/sample3.cc.json"
 import sample3 from "../assets/sample3.cc.json"
 
 jest.setTimeout(15000)
 
 describe("codecharta", () => {
-	let browser: Browser
-	let page: Page
+	let dialogError: DialogErrorPageObject
+	let filePanel: FilePanelPageObject
 
 	beforeEach(async () => {
-		browser = await puppeteer.launch({
-			headless: true,
-			args: ["--allow-file-access-from-files"]
-		})
-		page = await newPage(browser)
-	})
+		dialogError = new DialogErrorPageObject()
+		filePanel = new FilePanelPageObject()
 
-	afterEach(async () => {
-		await browser.close()
+		await goto()
 	})
 
 	async function handleErrorDialog() {
-		const dialogErrorPageObject = new DialogErrorPageObject(page)
-		const msg = await dialogErrorPageObject.getMessage()
+		const msg = await dialogError.getMessage()
 		expect(msg).toEqual("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.")
-		await page.waitFor(2000)
-		return dialogErrorPageObject.clickOk()
+		await page.waitForSelector(".md-dialog-container")
+		await dialogError.clickOk()
 	}
 
 	async function checkSelectedFileName(shouldBe: string) {
-		const filePanel = new FilePanelPageObject(page)
-		await page.waitFor(2000)
 		const name = await filePanel.getSelectedName()
 		expect(name).toEqual(shouldBe)
 	}
 
 	async function checkAllFileNames(shouldBe: string[]) {
-		const filePanel = new FilePanelPageObject(page)
-		await page.waitFor(2000)
-		await filePanel.clickChooser()
-		await page.waitFor(2000)
 		const names = await filePanel.getAllNames()
 		expect(names).toEqual(shouldBe)
 	}
@@ -71,13 +57,13 @@ describe("codecharta", () => {
 
 	it("should load data when file parameters in url are valid", async () => {
 		await mockResponses()
-		await page.goto(CC_URL + "?file=fileOne.json&file=fileTwo.json")
+		await goto(CC_URL + "?file=fileOne.json&file=fileTwo.json")
 		await checkSelectedFileName("fileOne.json")
 		await checkAllFileNames(["fileOne.json", "fileTwo.json"])
 	})
 
 	it("should throw errors when file parameters in url are invalid and load sample data instead", async () => {
-		await page.goto(CC_URL + "?file=invalid234")
+		await goto(CC_URL + "?file=invalid234")
 		await handleErrorDialog()
 		await checkSelectedFileName("sample1.cc.json")
 		await checkAllFileNames(["sample1.cc.json", "sample2.cc.json"])

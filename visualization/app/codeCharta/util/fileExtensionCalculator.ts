@@ -102,17 +102,14 @@ export class FileExtensionCalculator {
 
 	public static estimateFileExtension(fileName: string): string {
 		if (fileName.includes(".")) {
-			return fileName
-				.split(".")
-				.reverse()[0]
-				.toLowerCase()
+			return fileName.split(".").reverse()[0].toLowerCase()
 		} else {
 			return FileExtensionCalculator.NO_EXTENSION
 		}
 	}
 
 	public static hashCode(fileExtension: string): number {
-		let hash: number = 0
+		let hash = 0
 		for (let i = 0; i < fileExtension.length; i++) {
 			hash = fileExtension.charCodeAt(i) + ((hash << 5) - hash)
 		}

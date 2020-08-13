@@ -41,7 +41,11 @@ describe("MetricService", () => {
 		storeService.dispatch(addFile(deltaA))
 		storeService.dispatch(addFile(deltaB))
 
-		metricData = [{ name: "rloc", maxValue: 999999 }, { name: "functions", maxValue: 999999 }, { name: "mcc", maxValue: 999999 }]
+		metricData = [
+			{ name: "rloc", maxValue: 999999 },
+			{ name: "functions", maxValue: 999999 },
+			{ name: "mcc", maxValue: 999999 }
+		]
 	}
 
 	function rebuildService() {
@@ -73,19 +77,29 @@ describe("MetricService", () => {
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onFilesSelectionChanged(undefined)
+			metricService.onFilesSelectionChanged()
 
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onFilesSelectionChanged(undefined)
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
+			metricService["metricData"] = []
+
+			metricService.onFilesSelectionChanged()
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
-			metricService.onFilesSelectionChanged(undefined)
+			metricService.onFilesSelectionChanged()
+
+			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
+		})
+
+		it("should not add unary metric a second time if the cc.json already contains unary", () => {
+			metricData.push({ name: MetricService.UNARY_METRIC, maxValue: 1 })
+
+			metricService.onFilesSelectionChanged()
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})
@@ -97,21 +111,31 @@ describe("MetricService", () => {
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onBlacklistChanged([])
+			metricService.onBlacklistChanged()
 
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
 
-		it("should broadcast a METRIC_DATA_ADDED_EVENT", () => {
-			metricService.onBlacklistChanged([])
+		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
+			metricService["metricData"] = []
+
+			metricService.onBlacklistChanged()
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
-			metricService.onBlacklistChanged([])
+			metricService.onBlacklistChanged()
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBeGreaterThan(0)
+		})
+
+		it("should not add unary metric a second time if the cc.json already contains unary", () => {
+			metricData.push({ name: MetricService.UNARY_METRIC, maxValue: 1 })
+
+			metricService.onFilesSelectionChanged()
+
+			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})
 	})
 
@@ -183,7 +207,11 @@ describe("MetricService", () => {
 
 		it("should return an array of metricData sorted by name calculated from visibleFileStates", () => {
 			storeService.dispatch(setSingle(TEST_DELTA_MAP_A))
-			const expected = [{ maxValue: 1000, name: "functions" }, { maxValue: 100, name: "mcc" }, { maxValue: 100, name: "rloc" }]
+			const expected = [
+				{ maxValue: 1000, name: "functions" },
+				{ maxValue: 100, name: "mcc" },
+				{ maxValue: 100, name: "rloc" }
+			]
 
 			const result = metricService["calculateMetrics"]()
 

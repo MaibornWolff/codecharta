@@ -166,7 +166,11 @@ export class NodeDecorator {
 					attributeTypes
 				)
 				if (isDeltaState) {
-					node.data.deltas[metric.name] = this.aggregateLeafMetric(leaves.map(x => x.data.deltas), metric.name, attributeTypes)
+					node.data.deltas[metric.name] = this.aggregateLeafMetric(
+						leaves.map(x => x.data.deltas),
+						metric.name,
+						attributeTypes
+					)
 				}
 			}
 		})

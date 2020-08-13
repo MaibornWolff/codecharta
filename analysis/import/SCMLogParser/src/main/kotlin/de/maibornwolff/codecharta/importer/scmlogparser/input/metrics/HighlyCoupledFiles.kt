@@ -5,7 +5,9 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
-class HighlyCoupledFiles: Metric {
+// TODO track all renames to preserve coupling, preprocessing to prevent exponential growth
+// file named A -> renamed to B, created named file A (bug)
+class HighlyCoupledFiles : Metric {
 
     private var fileName: String = ""
     private var numberOfCommits: Long = 0
@@ -28,19 +30,19 @@ class HighlyCoupledFiles: Metric {
         evaluateIfNecessary()
 
         return simultaneouslyCommittedFiles.values
-                .filter { isHighlyCoupled(it) }
-                .count()
-                .toLong()
+            .filter { isHighlyCoupled(it) }
+            .count()
+            .toLong()
     }
 
     override fun getEdges(): List<Edge> {
         evaluateIfNecessary()
 
         return simultaneouslyCommittedFiles
-                .filter { isHighlyCoupled(it.value) }
-                .map { (coupledFile, value) ->
-                    Edge(fileName, coupledFile, mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble()))
-                }
+            .filter { isHighlyCoupled(it.value) }
+            .map { (coupledFile, value) ->
+                Edge(fileName, coupledFile, mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble()))
+            }
     }
 
     private fun evaluateIfNecessary() {
@@ -48,10 +50,9 @@ class HighlyCoupledFiles: Metric {
 
         commits.forEach { commit ->
             commit.modifications
-                    .filter { it.filename != fileName }
-                    .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
+                .filter { it.filename != fileName }
+                .forEach { simultaneouslyCommittedFiles.merge(it.filename, 1) { x, y -> x + y } }
         }
-
     }
 
     private fun isHighlyCoupled(value: Int): Boolean {

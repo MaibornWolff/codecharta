@@ -36,7 +36,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		}
 	}
 
-	public onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
+	public onSortingOrderAscendingChanged() {
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, null, true)
 	}
 

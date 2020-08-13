@@ -1,24 +1,15 @@
-import { CC_URL, puppeteer, delay, newPage } from "./puppeteer.helper"
-
-jest.setTimeout(10000)
+import { goto } from "./puppeteer.helper"
 
 describe("app", () => {
-	let browser, page
-
-	beforeAll(async () => {
-		browser = await puppeteer.launch()
-		page = await newPage(browser)
-	})
-
-	afterAll(async () => {
-		await browser.close()
+	beforeEach(async () => {
+		await goto()
 	})
 
 	it("should not have errors in console", async () => {
 		page.on("console", msg => {
-			expect(msg._type).not.toBe("error")
+			expect(msg.type).not.toBe("error")
 		})
-		await page.goto(CC_URL)
-		await delay(3000)
+		await goto()
+		await page.waitForSelector("#loading-gif-file", { visible: false })
 	})
 })

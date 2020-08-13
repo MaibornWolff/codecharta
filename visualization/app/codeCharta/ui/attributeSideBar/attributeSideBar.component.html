@@ -72,7 +72,7 @@
 			<div class="metric-box scrollable-content">
 				<table class="secondary-metrics" aria-hidden="true">
 					<th>Secondary Metrics</th>
-					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys">
+					<tr ng-repeat="attributekey in $ctrl._viewModel.secondaryMetricKeys track by $index">
 						<td>
 							<span class="metric-value">{{ $ctrl._viewModel.node.attributes[attributekey] | number: 0 }}</span>
 						</td>

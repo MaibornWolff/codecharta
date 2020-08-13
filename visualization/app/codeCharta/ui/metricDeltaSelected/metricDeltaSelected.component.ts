@@ -9,7 +9,7 @@ import {
 } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 
 export class MetricDeltaSelectedController implements BuildingSelectedEventSubscriber, InvertDeltaColorsSubscriber {
-	private static TIME_TO_INIT_BINDING: number = 50
+	private static TIME_TO_INIT_BINDING = 50
 	private attributekey: string // angular bindings do not accept camelCase
 
 	private _viewModel: {
@@ -40,7 +40,7 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 		this.setDeltaColorClass()
 	}
 
-	public onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
+	public onInvertDeltaColorsChanged() {
 		this.setDeltaColorClass()
 	}
 

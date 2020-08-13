@@ -3,7 +3,7 @@
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper } from "../../util/scenarioHelper"
 import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import { ColorRange, MetricData } from "../../codeCharta.model"
+import { ColorRange } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
@@ -14,7 +14,7 @@ import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitCont
 export interface ScenarioItem {
 	scenarioName: string
 	isScenarioAppliable: boolean
-	icons: { faIconClass: string; isSaved: boolean }[]
+	icons: { faIconClass: string; isSaved: boolean; tooltip: string }[]
 }
 
 export class ScenarioDropDownController implements MetricServiceSubscriber {
@@ -38,7 +38,7 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.metricService.getMetricData())
 	}
 
-	public onMetricDataAdded(metricData: MetricData[]) {
+	public onMetricDataAdded() {
 		this.loadScenarios()
 	}
 

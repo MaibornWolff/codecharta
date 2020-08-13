@@ -52,12 +52,12 @@ Components that export data from visualisation data to other formats.
 
 ## Requirements
 
-- Bash or similar
-- JRE 8 (Oracle Java or OpenJDK)
+-   Bash or similar
+-   JRE 8-11 (Oracle Java or OpenJDK)
 
 ## Installation via npm
 
-This installs all binaries to run the analysis. Java 8 is required.
+This installs all binaries to run the analysis. Java 11 is recommended, while Java 8 is still supported.
 
 `npm install -g codecharta-analysis`
 
@@ -65,10 +65,10 @@ To run it you can call `ccsh`
 
 ## Installation
 
-- Download / build package
-- Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
-- In bash:
-  > ./bin/ccsh -h
+-   Download / build package
+-   Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
+-   In bash:
+    > ./bin/ccsh -h
 
 ## Build
 
@@ -78,11 +78,11 @@ Via gradle:
 
 ## Test
 
-- Unit tests:
+-   Unit tests:
 
 > ./gradlew test
 
-- Integration tests:
+-   Integration tests:
 
 > ./gradlew integrationTest
 

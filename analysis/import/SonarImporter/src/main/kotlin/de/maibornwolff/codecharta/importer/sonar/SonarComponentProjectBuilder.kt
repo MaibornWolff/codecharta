@@ -4,13 +4,18 @@ import de.maibornwolff.codecharta.importer.sonar.model.Component
 import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.importer.sonar.model.Measure
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
-import de.maibornwolff.codecharta.model.*
+import de.maibornwolff.codecharta.model.MutableNode
+import de.maibornwolff.codecharta.model.NodeType
+import de.maibornwolff.codecharta.model.Path
+import de.maibornwolff.codecharta.model.PathFactory
+import de.maibornwolff.codecharta.model.Project
+import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.translator.MetricNameTranslator
 
 class SonarComponentProjectBuilder(
-        private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
-        private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
-        private val usePath: Boolean = false
+    private val sonarCodeURLLinker: SonarCodeURLLinker = SonarCodeURLLinker.NULL,
+    private val translator: MetricNameTranslator = MetricNameTranslator.TRIVIAL,
+    private val usePath: Boolean = false
 ) {
 
     private var totalComponents = 0
@@ -78,7 +83,7 @@ class SonarComponentProjectBuilder(
     private fun createNodeTypeFromQualifier(qualifier: Qualifier): NodeType {
         return when (qualifier) {
             Qualifier.FIL, Qualifier.UTS -> NodeType.File
-            else                         -> NodeType.Folder
+            else -> NodeType.Folder
         }
     }
 
