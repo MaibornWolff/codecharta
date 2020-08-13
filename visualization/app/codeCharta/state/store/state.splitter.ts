@@ -21,7 +21,7 @@ import { splitFilesAction } from "./files/files.splitter"
 
 export function splitStateActions(action: CCAction): CCAction[] {
 	// Plop: Propagate sub-reducer here
-	if (_.values(MetricDataActions).includes(action.type)) {
+	if (Object.values(MetricDataActions).includes(action.type)) {
 		return splitMetricDataActions(action.payload)
 	}
 
