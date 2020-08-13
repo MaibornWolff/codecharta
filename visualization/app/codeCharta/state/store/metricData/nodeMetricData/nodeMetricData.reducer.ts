@@ -61,16 +61,15 @@ function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: 
 }
 
 function getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>): NodeMetricData[] {
-	const metricData: NodeMetricData[] = []
-
-	hashMap.set(NodeMetricDataService.UNARY_METRIC, { maxValue: 1 })
-
+	const metricData: NodeMetricData[] = [{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1 }]
+	
 	hashMap.forEach((value: MaxMetricValuePair, key: string) => {
 		metricData.push({
 			name: key,
 			maxValue: value.maxValue
 		})
 	})
+	hashMap.set(NodeMetricDataService.UNARY_METRIC, { maxValue: 1 })
 	return sortByAttributeName(metricData)
 }
 
