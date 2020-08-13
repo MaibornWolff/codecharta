@@ -10,9 +10,9 @@ Call `script/make_release.py`.
 
 To release a new version please modify the version property of the following files
 
-- analysis/build.properties
-- analysis/node-wrapper/package.json
-- visualization/package.json
+-   analysis/build.properties
+-   analysis/node-wrapper/package.json
+-   visualization/package.json
 
 ### Changelog
 
