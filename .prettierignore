@@ -11,3 +11,5 @@ Dockerfile
 *.glsl
 .*
 *.hbs
+*.kt
+./analysis/test/data
