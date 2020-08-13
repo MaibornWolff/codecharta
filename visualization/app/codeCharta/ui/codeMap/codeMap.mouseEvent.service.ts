@@ -13,7 +13,6 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
-import { FileState } from "../../model/files/files"
 
 interface Coordinates {
 	x: number
@@ -92,7 +91,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 	}
 
@@ -222,25 +221,25 @@ export class CodeMapMouseEventService
 		})
 	}
 
-	public onShouldUnhoverNode(node: CodeMapNode) {
+	public onShouldUnhoverNode() {
 		this.unhoverBuilding()
 		this.highlightedInTreeView = null
 	}
 
 	public static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
-		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (e, data) => {
+		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (_event, data) => {
 			subscriber.onBuildingHovered(data.hoveredBuilding)
 		})
 	}
 
 	public static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
-		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, e => {
+		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, () => {
 			subscriber.onBuildingUnhovered()
 		})
 	}
 
 	public static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (e, data) => {
+		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (_event, data) => {
 			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
 		})
 	}

@@ -14,7 +14,6 @@ import { StoreService } from "../../state/store.service"
 import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
-import { Vector3 } from "three"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
@@ -188,7 +187,7 @@ describe("codeMapPreRenderService", () => {
 
 	describe("onScalingChanged", () => {
 		it("should call codeMapRenderService.render", () => {
-			codeMapPreRenderService.onScalingChanged(new Vector3(1, 2, 3))
+			codeMapPreRenderService.onScalingChanged()
 
 			expect(codeMapRenderService.scaleMap).toHaveBeenCalled()
 		})
@@ -196,7 +195,7 @@ describe("codeMapPreRenderService", () => {
 		it("should show and stop the loadingMapGif", () => {
 			codeMapPreRenderService["showLoadingMapGif"] = jest.fn()
 
-			codeMapPreRenderService.onScalingChanged(new Vector3(1, 2, 3))
+			codeMapPreRenderService.onScalingChanged()
 
 			expect(codeMapPreRenderService["showLoadingMapGif"]).toHaveBeenCalled()
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
@@ -205,7 +204,7 @@ describe("codeMapPreRenderService", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("should decorate and set a new render map", () => {
-			codeMapPreRenderService.onMetricDataAdded(metricData)
+			codeMapPreRenderService.onMetricDataAdded()
 
 			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
@@ -213,7 +212,7 @@ describe("codeMapPreRenderService", () => {
 		it("should update the isBlacklisted attribute on each node", () => {
 			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
 
-			codeMapPreRenderService.onMetricDataAdded(metricData)
+			codeMapPreRenderService.onMetricDataAdded()
 
 			expect(allNodesToBeExcluded()).toBeTruthy()
 		})

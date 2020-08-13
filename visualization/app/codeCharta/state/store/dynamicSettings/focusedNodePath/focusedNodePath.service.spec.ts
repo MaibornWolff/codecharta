@@ -83,7 +83,7 @@ describe("FocusedNodePathService", () => {
 		it("should reset and unfocus node", () => {
 			storeService.dispatch(focusNode("some/path"))
 
-			focusedNodePathService.onFilesSelectionChanged(undefined)
+			focusedNodePathService.onFilesSelectionChanged()
 
 			expect(storeService.getState().dynamicSettings.focusedNodePath).toEqual("")
 		})
