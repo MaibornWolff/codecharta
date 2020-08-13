@@ -220,7 +220,7 @@ describe("codeMapPreRenderService", () => {
 		it("should set isMapDecorated to true, to avoid entering this function again unless a new map needs to be decorated", () => {
 			expect(codeMapPreRenderService["isMapDecorated"]).toBeFalsy()
 
-			codeMapPreRenderService.onMetricDataAdded(metricData)
+			codeMapPreRenderService.onMetricDataAdded()
 
 			expect(codeMapPreRenderService["isMapDecorated"]).toBeTruthy()
 		})
@@ -230,7 +230,7 @@ describe("codeMapPreRenderService", () => {
 		it("should decorate an existing map and trigger rendering", done => {
 			NodeDecorator.decorateMap = jest.fn()
 
-			codeMapPreRenderService.onBlacklistChanged(undefined)
+			codeMapPreRenderService.onBlacklistChanged()
 
 			expect(NodeDecorator.decorateMap).not.toHaveBeenCalled()
 			setTimeout(() => {
@@ -244,7 +244,7 @@ describe("codeMapPreRenderService", () => {
 		it("should set isMapDecorated to false, because we need to decorate a new map again", () => {
 			codeMapPreRenderService["isMapDecorated"] = false
 
-			codeMapPreRenderService.onFilesSelectionChanged(undefined)
+			codeMapPreRenderService.onFilesSelectionChanged()
 
 			expect(codeMapPreRenderService["isMapDecorated"]).toBeFalsy()
 		})
