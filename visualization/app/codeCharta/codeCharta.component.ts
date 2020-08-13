@@ -14,6 +14,7 @@ import { getCCFiles } from "./model/files/files.helper"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
 import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { ExportCCFile } from "./codeCharta.api.model"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -63,8 +64,8 @@ export class CodeChartaController {
 			)
 		}
 		this.tryLoadingFiles([
-			{ fileName: "sample1.cc.json", content: sample1 },
-			{ fileName: "sample2.cc.json", content: sample2 }
+			{ fileName: "sample1.cc.json", content: sample1 as ExportCCFile },
+			{ fileName: "sample2.cc.json", content: sample2 as ExportCCFile }
 		])
 	}
 
