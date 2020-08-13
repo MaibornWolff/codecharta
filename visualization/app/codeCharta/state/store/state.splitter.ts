@@ -25,7 +25,7 @@ export function splitStateActions(action: CCAction): CCAction[] {
 		return splitMetricDataActions(action.payload)
 	}
 
-	if (_.values(LookUpActions).includes(action.type)) {
+	if (Object.values(LookUpActions).includes(action.type)) {
 		return splitLookUpActions(action.payload)
 	}
 
