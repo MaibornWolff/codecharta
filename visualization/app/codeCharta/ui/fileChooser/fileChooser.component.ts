@@ -39,9 +39,7 @@ export class FileChooserController {
 
 				reader.onload = event => {
 					if (isCompressed) {
-						//
-						const zlib = require("zlib") // eslint-disable-line
-						content = zlib.unzipSync(Buffer.from(event.target.result))
+						content = require("zlib").unzipSync(Buffer.from(event.target.result))
 					} else {
 						content = event.target.result
 					}
