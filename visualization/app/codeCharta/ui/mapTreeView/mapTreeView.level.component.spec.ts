@@ -145,6 +145,7 @@ describe("MapTreeViewLevelController", () => {
 
 	describe("openNodeContextMenu", () => {
 		it("should broadcast node context menu events", () => {
+			document.getElementById = jest.fn().mockReturnValue({ addEventListener: jest.fn() })
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
 				NodeType.FOLDER,
