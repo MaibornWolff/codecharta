@@ -10,8 +10,8 @@
 
 CodeCharta is a beautiful tool to help you visualize and understand code. It can combine code metrics from multiple sources and visualize them using 3D tree maps. CodeCharta's two major parts are:
 
-- [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/): Command-Line-Tool for generating visualization data in the form of `.cc.json` files. It includes some pre-defined importers for e.g. SonarQube, SourceMonitor, SCM log information, generic csv data, as well as a command to validate and merge multiple data files.
-- [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/): GUI to visualize code metrics from `.cc.json` files. Imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
+-   [analysis](https://maibornwolff.github.io/codecharta/docs/analysis/): Command-Line-Tool for generating visualization data in the form of `.cc.json` files. It includes some pre-defined importers for e.g. SonarQube, SourceMonitor, SCM log information, generic csv data, as well as a command to validate and merge multiple data files.
+-   [visualization](https://maibornwolff.github.io/codecharta/docs/visualization/): GUI to visualize code metrics from `.cc.json` files. Imported files are validated using JSON Schema as defined in [generatedSchema.json](/visualization/app/codeCharta/util/generatedSchema.json).
 
 ![Screenshot of visualization](screenshot.png)
 
@@ -41,9 +41,9 @@ You can now load this file (top left corner) either in the web or the local visu
 npm i -g codecharta-visualization
 ```
 
-- If you want to analyze a different language or combine java metrics with git metrics, you should take a look at our [Quick-Start Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/).
-- If you want to go further we have multiple [how-tos](https://maibornwolff.github.io/codecharta/categories/#how-to). For example they'll explain how to integrate CodeCharta into your delivery pipeline.
-- If you want to know more about the ccsh api, please check [the ccsh docs](https://maibornwolff.github.io/codecharta/docs/ccsh/).
+-   If you want to analyze a different language or combine java metrics with git metrics, you should take a look at our [Quick-Start Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/).
+-   If you want to go further we have multiple [how-tos](https://maibornwolff.github.io/codecharta/categories/#how-to). For example they'll explain how to integrate CodeCharta into your delivery pipeline.
+-   If you want to know more about the ccsh api, please check [the ccsh docs](https://maibornwolff.github.io/codecharta/docs/ccsh/).
 
 ## Feature request / Bug / Feedback
 
@@ -55,16 +55,16 @@ Want to have even more information? Please check our [news](https://maibornwolff
 
 ## Further Information
 
-- [Docs](https://maibornwolff.github.io/codecharta/)
-- [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
-- [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
-- [Sonarqube Visualization](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
-- [Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
+-   [Docs](https://maibornwolff.github.io/codecharta/)
+-   [Quickstart Guide](https://maibornwolff.github.io/codecharta/docs/quick-start-guide/)
+-   [Coverage](https://maibornwolff.github.io/codecharta/visualization/coverage/lcov-report/)
+-   [Sonarqube Visualization](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Avisualization)
+-   [Sonarqube Analysis](https://sonarcloud.io/dashboard?id=de.maibornwolff.codecharta%3Aanalysis)
 
 ## Tool Information
 
-- [Releases](https://github.com/MaibornWolff/codecharta/releases)
-- [Changelog](CHANGELOG.md)
-- [Contributing](CONTRIBUTING.md)
-- [Code of Conduct](CODE_OF_CONDUCT.md)
-- [License](LICENSE.md)
+-   [Releases](https://github.com/MaibornWolff/codecharta/releases)
+-   [Changelog](CHANGELOG.md)
+-   [Contributing](CONTRIBUTING.md)
+-   [Code of Conduct](CODE_OF_CONDUCT.md)
+-   [License](LICENSE.md)

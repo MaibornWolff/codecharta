@@ -5,9 +5,9 @@ title: "Versioning"
 
 The CodeCharta version number is inspired by [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html). The format is BREAKING.FEATURE.HOTFIX. We increment the
 
-- BREAKING version when we make incompatible API changes
-- FEATURE version when we add functionality in a backwards compatible manner
-- HOTFIX version when we make backwards compatible bug fixes
+-   BREAKING version when we make incompatible API changes
+-   FEATURE version when we add functionality in a backwards compatible manner
+-   HOTFIX version when we make backwards compatible bug fixes
 
 But what is our API? For CodeCharta it is the `.cc.json` and to a lesser degree the interface of the analysis.
 

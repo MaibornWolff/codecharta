@@ -19,9 +19,9 @@ However, if you want to **generate your own** `.cc.json`, you should read this g
 
 Please make sure that you have:
 
-- Java installed
-- [Node](https://nodejs.org/en/) and npm installed
-- CodeCharta installed
+-   Java installed
+-   [Node](https://nodejs.org/en/) and npm installed
+-   CodeCharta installed
 
 There are several ways to [install CodeCharta]({{site.baseurl}}{% link _docs/01-03-installation.md %}). For this tutorial we'll assume you installed it globally via npm:
 

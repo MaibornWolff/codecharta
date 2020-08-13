@@ -18,33 +18,33 @@ The Codemaatimporter, generates visualisation data from CodeMaat Temporal Coupli
 
 1. Create VCS Log file from your project, e.x. with Git
 
-   ````bash
-   git log --pretty=format:'[%h] %an %ad %s' --since=<YYYY/MM/DD> --date=short --numstat > project.log ```
+    ````bash
+    git log --pretty=format:'[%h] %an %ad %s' --since=<YYYY/MM/DD> --date=short --numstat > project.log ```
 
-   ````
+    ````
 
 2. Analyse the Log with [CodeMaat](https://github.com/adamtornhill/code-maat)
 
-   ```bash
-   maat -c git -l project.log -a coupling > edges.csv
+    ```bash
+    maat -c git -l project.log -a coupling > edges.csv
 
-   ```
+    ```
 
 3. Convert csv file to cc.json format with CodeMaatImporter
 
-   ```bash
-   ccsh codemaatimport edges.csv -o edges.cc.json
-   ```
+    ```bash
+    ccsh codemaatimport edges.csv -o edges.cc.json
+    ```
 
 4. Aggregate edge-attributes and insert them into the appropriate nodes attribute-list with [EdgeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/EdgeFilter/README.md)
-   ```bash
-   ccsh edgefilter edges.cc.json -o visual_edges.cc.json
-   ```
+    ```bash
+    ccsh edgefilter edges.cc.json -o visual_edges.cc.json
+    ```
 5. Merge the coupling data with the project metrics file while using the [MergeFilter](https://github.com/MaibornWolff/codecharta/blob/main/analysis/filter/MergeFilter/README.md)
 
-   ```bash
-   ccsh merge visual_edges.cc.json metrics.cc.json -o merged.cc.json
-   ```
+    ```bash
+    ccsh merge visual_edges.cc.json metrics.cc.json -o merged.cc.json
+    ```
 
 6. Visualizing `merged.cc.json` with [Visualization](https://github.com/MaibornWolff/codecharta/tree/main/visualization)
 
