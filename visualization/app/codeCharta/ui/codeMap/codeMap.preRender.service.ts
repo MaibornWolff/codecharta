@@ -1,6 +1,6 @@
 "use strict"
 
-import { CCFile, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CCFile, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -75,13 +75,13 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}
 	}
 
-	public onScalingChanged(scaling) {
+	public onScalingChanged() {
 		if (this.allNecessaryRenderDataAvailable()) {
 			this.scaleMapAndNotify()
 		}
 	}
 
-	public onMetricDataAdded(metricData: MetricData[]) {
+	public onMetricDataAdded() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
@@ -198,7 +198,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
-		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (_event, data) => {
 			subscriber.onRenderMapChanged(data)
 		})
 	}
