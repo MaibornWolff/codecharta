@@ -12,4 +12,16 @@ Dockerfile
 .*
 *.hbs
 *.kt
-./analysis/test/data
+*.txt
+*.gradle
+*.jar
+*.jpg
+*.png
+*.bat
+*.xml
+gradlew
+test
+Gemfile
+Gemfile.lock
+Pipfile
+Pipfile.lock
