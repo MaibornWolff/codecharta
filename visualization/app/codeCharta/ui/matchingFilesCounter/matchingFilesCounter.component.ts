@@ -1,5 +1,5 @@
 import "./matchingFilesCounter.component.scss"
-import { BlacklistType, BlacklistItem, CodeMapNode } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode } from "../../codeCharta.model"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
@@ -31,7 +31,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 		this.updateViewModel()
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged() {
 		this.updateViewModel()
 	}
 

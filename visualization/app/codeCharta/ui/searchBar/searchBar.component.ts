@@ -31,7 +31,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		}, SearchBarController.DEBOUNCE_TIME)
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged() {
 		this.updateViewModel()
 	}
 

@@ -1,4 +1,4 @@
-import { MetricData, BlacklistItem, Edge, BlacklistType, CodeMapNode, EdgeMetricCount, AttributeTypeValue } from "../codeCharta.model"
+import { MetricData, Edge, BlacklistType, CodeMapNode, EdgeMetricCount, AttributeTypeValue } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { HierarchyNode } from "d3"
@@ -6,7 +6,6 @@ import { BlacklistService, BlacklistSubscriber } from "./store/fileSettings/blac
 import { FilesService, FilesSelectionSubscriber } from "./store/files/files.service"
 import { StoreService } from "./store.service"
 import { fileStatesAvailable, getVisibleFileStates } from "../model/files/files.helper"
-import { FileState } from "../model/files/files"
 
 export interface EdgeMetricDataServiceSubscriber {
 	onEdgeMetricDataUpdated(metricData: MetricData[])
@@ -23,11 +22,11 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged() {
 		this.updateEdgeMetrics()
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		this.updateEdgeMetrics()
 	}
 
@@ -153,7 +152,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 
 		hashMap.forEach((occurences: any, edgeMetric: any) => {
 			let maximumMetricValue = 0
-			occurences.forEach((value: EdgeMetricCount, _) => {
+			occurences.forEach((value: EdgeMetricCount) => {
 				const combinedValue = value.incoming + value.outgoing
 				if (combinedValue > maximumMetricValue) {
 					maximumMetricValue = combinedValue
@@ -187,7 +186,7 @@ export class EdgeMetricDataService implements FilesSelectionSubscriber, Blacklis
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricDataServiceSubscriber) {
-		$rootScope.$on(EdgeMetricDataService.EDGE_METRIC_DATA_UPDATED_EVENT, (event, data) => {
+		$rootScope.$on(EdgeMetricDataService.EDGE_METRIC_DATA_UPDATED_EVENT, (_event, data) => {
 			subscriber.onEdgeMetricDataUpdated(data)
 		})
 	}
