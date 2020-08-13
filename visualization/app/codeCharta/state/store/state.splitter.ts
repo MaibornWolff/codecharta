@@ -45,7 +45,7 @@ export function splitStateActions(action: CCAction): CCAction[] {
 		return splitTreeMapSettingsActions(action.payload)
 	}
 
-	if (_.values(StateActions).includes(action.type)) {
+	if (Object.values(StateActions).includes(action.type)) {
 		const actions: CCAction[] = []
 
 		// Plop: Split into sub-reducer here
