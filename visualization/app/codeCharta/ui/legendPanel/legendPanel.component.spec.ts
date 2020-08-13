@@ -129,7 +129,7 @@ describe("LegendPanelController", () => {
 
 	describe("onInvertDeltaColors", () => {
 		it("should update the pixels in viewModel when it is changed", () => {
-			legendPanelController.onInvertDeltaColorsChanged(true)
+			legendPanelController.onInvertDeltaColorsChanged()
 
 			expect(legendPanelController["_viewModel"].colorIcons).toMatchSnapshot()
 		})
@@ -145,7 +145,7 @@ describe("LegendPanelController", () => {
 
 	describe("onWhiteColorBuildings", () => {
 		it("should update the pixels in viewModel when it is changed", () => {
-			legendPanelController.onWhiteColorBuildingsChanged(true)
+			legendPanelController.onWhiteColorBuildingsChanged()
 
 			expect(legendPanelController["_viewModel"].colorIcons).toMatchSnapshot()
 		})

@@ -77,13 +77,13 @@ describe("AreaSettingsPanelController", () => {
 
 	describe("onFilesSelectionChanged", () => {
 		it("should set dynamicMargin to true", () => {
-			areaSettingsPanelController.onFilesSelectionChanged(undefined)
+			areaSettingsPanelController.onFilesSelectionChanged()
 
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})
 
 		it("should update margin and dynamicMargin in store", () => {
-			areaSettingsPanelController.onFilesSelectionChanged(undefined)
+			areaSettingsPanelController.onFilesSelectionChanged()
 
 			expect(storeService.getState().appSettings.dynamicMargin).toBeTruthy()
 		})

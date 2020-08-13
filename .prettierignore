@@ -11,3 +11,17 @@ Dockerfile
 *.glsl
 .*
 *.hbs
+*.kt
+*.txt
+*.gradle
+*.jar
+*.jpg
+*.png
+*.bat
+*.xml
+gradlew
+test
+Gemfile
+Gemfile.lock
+Pipfile
+Pipfile.lock

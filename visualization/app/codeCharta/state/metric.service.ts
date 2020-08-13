@@ -1,4 +1,4 @@
-import { BlacklistItem, BlacklistType, CodeMapNode, MetricData, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
+import { BlacklistType, CodeMapNode, MetricData, AttributeTypeValue } from "../codeCharta.model"
 import { hierarchy, HierarchyNode } from "d3"
 import { IRootScopeService } from "angular"
 import { CodeMapHelper } from "../util/codeMapHelper"
@@ -30,15 +30,15 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 		AttributeTypesService.subscribe(this.$rootScope, this)
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		this.setNewMetricData()
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	public onBlacklistChanged() {
 		this.setNewMetricData()
 	}
 
-	public onAttributeTypesChanged(attributeTypes: AttributeTypes) {
+	public onAttributeTypesChanged() {
 		this.setNewMetricData()
 	}
 
@@ -143,7 +143,7 @@ export class MetricService implements FilesSelectionSubscriber, BlacklistSubscri
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MetricServiceSubscriber) {
-		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (event, data) => {
+		$rootScope.$on(MetricService.METRIC_DATA_ADDED_EVENT, (_event, data) => {
 			subscriber.onMetricDataAdded(data)
 		})
 	}

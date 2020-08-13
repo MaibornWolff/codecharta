@@ -132,7 +132,7 @@ describe("RangeSliderController", () => {
 		it("should set maxMetricValue", () => {
 			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
-			rangeSliderController.onColorMetricChanged("myMetric")
+			rangeSliderController.onColorMetricChanged()
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
@@ -142,7 +142,7 @@ describe("RangeSliderController", () => {
 		it("should set the maxMetricValue", () => {
 			rangeSliderController["updateSliderColors"] = jest.fn()
 
-			rangeSliderController.onInvertColorRangeChanged(false)
+			rangeSliderController.onInvertColorRangeChanged()
 
 			expect(rangeSliderController["updateSliderColors"]).toHaveBeenCalled()
 		})
@@ -152,7 +152,7 @@ describe("RangeSliderController", () => {
 		it("should set the maxMetricValue", () => {
 			rangeSliderController["updateSliderColors"] = jest.fn()
 
-			rangeSliderController.onWhiteColorBuildingsChanged(false)
+			rangeSliderController.onWhiteColorBuildingsChanged()
 
 			expect(rangeSliderController["updateSliderColors"]).toHaveBeenCalled()
 		})
@@ -174,7 +174,7 @@ describe("RangeSliderController", () => {
 				disabled: false
 			}
 
-			rangeSliderController.onColorMetricChanged("mcc")
+			rangeSliderController.onColorMetricChanged()
 
 			setTimeout(() => {
 				expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
@@ -284,7 +284,7 @@ describe("RangeSliderController", () => {
 		it("should set maxMetricValue", () => {
 			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
-			rangeSliderController.onFilesSelectionChanged(storeService.getState().files)
+			rangeSliderController.onFilesSelectionChanged()
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
@@ -292,7 +292,7 @@ describe("RangeSliderController", () => {
 		it("should set sliderOptions.disabled", () => {
 			rangeSliderController["_viewModel"].sliderOptions.disabled = undefined
 
-			rangeSliderController.onFilesSelectionChanged(storeService.getState().files)
+			rangeSliderController.onFilesSelectionChanged()
 
 			setTimeout(() => {
 				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)
