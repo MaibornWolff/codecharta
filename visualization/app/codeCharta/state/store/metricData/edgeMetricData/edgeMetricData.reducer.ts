@@ -70,15 +70,17 @@ function getEntryForMetric(edgeMetricName: string): EdgeMetricCountMap {
 }
 
 function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, toNode: string) {
-	createEntryIfNecessary(edgeMetricEntry, fromNode)
-	createEntryIfNecessary(edgeMetricEntry, toNode)
-	edgeMetricEntry.get(fromNode).outgoing += 1
-	edgeMetricEntry.get(toNode).incoming += 1
-}
-
-function createEntryIfNecessary(edgeMetricEntry: EdgeMetricCountMap, nodeName: string) {
-	if (!edgeMetricEntry.has(nodeName)) {
-		edgeMetricEntry.set(nodeName, { incoming: 0, outgoing: 0 })
+	const fromNodeEdgeMetric = edgeMetricEntry.get(fromNode)
+	if (fromNodeEdgeMetric === undefined) {
+		edgeMetricEntry.set(fromNode, { incoming: 0, outgoing: 1 })
+	} else {
+		fromNodeEdgeMetric.outgoing += 1
+	}
+	const toNodeEdgeMetric = edgeMetricEntry.get(toNode)
+	if (toNodeEdgeMetric === undefined) {
+		edgeMetricEntry.set(toNode, { incoming: 1, outgoing: 0 })
+	} else {
+		toNodeEdgeMetric.incoming += 1
 	}
 }
 
