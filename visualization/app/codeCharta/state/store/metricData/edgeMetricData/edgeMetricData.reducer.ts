@@ -85,9 +85,7 @@ function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, t
 }
 
 function getMetricDataFromMap(hashMap: NodeEdgeMetricsMap): EdgeMetricData[] {
-	const metricData: EdgeMetricData[] = []
-
-	nodeEdgeMetricsMap.set(EdgeMetricDataService.NONE_METRIC, new Map())
+	const metricData: EdgeMetricData[] = [{ name: EdgeMetricDataService.NONE_METRIC, maxValue: 0 }]
 
 	hashMap.forEach((occurences: EdgeMetricCountMap, edgeMetric: string) => {
 		let maximumMetricValue = 0
@@ -99,6 +97,7 @@ function getMetricDataFromMap(hashMap: NodeEdgeMetricsMap): EdgeMetricData[] {
 		})
 		metricData.push({ name: edgeMetric, maxValue: maximumMetricValue })
 	})
+	hashMap.set(EdgeMetricDataService.NONE_METRIC, new Map())
 
 	return metricData
 }
