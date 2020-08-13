@@ -39,6 +39,7 @@ export class CodeChartaController {
 	}
 
 	public loadFileOrSample() {
+		console.log("abc")
 		return this.urlUtils
 			.getFileDataFromQueryParam()
 			.then((data: NameDataPair[]) => {
