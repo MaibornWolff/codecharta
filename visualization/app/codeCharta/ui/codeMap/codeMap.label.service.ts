@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { PerspectiveCamera, Sprite, Vector3, Box3 } from "three"
+import { Sprite, Vector3, Box3 } from "three"
 import { Node, State } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -86,7 +86,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.currentScale.copy(scaling)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera) {
+	public onCameraChanged() {
 		for (const label of this.labels) {
 			this.setLabelSize(label.sprite)
 		}

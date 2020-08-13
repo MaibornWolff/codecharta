@@ -2,7 +2,6 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { FocusedNodePathActions, unfocusNode } from "./focusedNodePath.actions"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
-import { FileState } from "../../../../model/files/files"
 
 export interface FocusNodeSubscriber {
 	onFocusNode(focusedNodePath: string)
@@ -29,7 +28,7 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 		}
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		if (this.storeService.getState().dynamicSettings.focusedNodePath) {
 			this.reset()
 		}
@@ -52,13 +51,13 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 	}
 
 	public static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodeSubscriber) {
-		$rootScope.$on(FocusedNodePathService.FOCUS_NODE_EVENT, (event, data) => {
+		$rootScope.$on(FocusedNodePathService.FOCUS_NODE_EVENT, (_event, data) => {
 			subscriber.onFocusNode(data.focusedNodePath)
 		})
 	}
 
 	public static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodeSubscriber) {
-		$rootScope.$on(FocusedNodePathService.UNFOCUS_NODE_EVENT, (event, data) => {
+		$rootScope.$on(FocusedNodePathService.UNFOCUS_NODE_EVENT, () => {
 			subscriber.onUnfocusNode()
 		})
 	}

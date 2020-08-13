@@ -82,7 +82,7 @@ describe("ColorRangeService", () => {
 		it("should reset the color range", () => {
 			withMockedMetricService()
 
-			colorRangeService.onFilesSelectionChanged(undefined)
+			colorRangeService.onFilesSelectionChanged()
 
 			expect(storeService.getState().dynamicSettings.colorRange).toEqual({ from: 33.33, to: 66.66 })
 		})
