@@ -4,8 +4,6 @@ import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
 import sample1 from "../assets/sample3.cc.json"
 import sample3 from "../assets/sample3.cc.json"
 
-jest.setTimeout(15000)
-
 describe("codecharta", () => {
 	let dialogError: DialogErrorPageObject
 	let filePanel: FilePanelPageObject

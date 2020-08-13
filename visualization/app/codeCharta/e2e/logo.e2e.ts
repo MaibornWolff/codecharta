@@ -2,8 +2,6 @@ import { goto } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
 import packageJson from "../../../package.json"
 
-jest.setTimeout(20000)
-
 describe("CodeCharta logo", () => {
 	let logo: LogoPageObject
 
