@@ -1,7 +1,6 @@
 import "./toolBar.component.scss"
 import { CodeMapMouseEventService, BuildingUnhoveredSubscriber, BuildingHoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
-import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 
 export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {
@@ -16,7 +15,7 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
-	public onBuildingHovered(data: CodeMapBuilding) {
+	public onBuildingHovered() {
 		this._viewModel.isNodeHovered = true
 	}
 

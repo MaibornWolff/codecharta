@@ -1,7 +1,6 @@
 import { IRootScopeService } from "angular"
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "./nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "./edgeMetricData/edgeMetricData.service"
-import { EdgeMetricData, NodeMetricData } from "../../../codeCharta.model"
 import { StoreService } from "../../store.service"
 
 export interface MetricDataSubscriber {
@@ -16,13 +15,13 @@ export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDa
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
+	public onEdgeMetricDataChanged() {
 		if (this.storeService.getState().metricData.nodeMetricData.length > 0) {
 			this.notify()
 		}
 	}
 
-	public onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
+	public onNodeMetricDataChanged() {
 		if (this.edgeMetricsAvailable()) {
 			this.notify()
 		}

@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { NodeMetricDataActions, calculateNewNodeMetricData } from "./nodeMetricData.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { AttributeTypes, AttributeTypeValue, BlacklistItem, NodeMetricData } from "../../../../codeCharta.model"
+import { AttributeTypeValue, BlacklistItem, NodeMetricData } from "../../../../codeCharta.model"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
@@ -37,7 +37,7 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 		this.storeService.dispatch(calculateNewNodeMetricData(this.storeService.getState().files, blacklist))
 	}
 
-	public onAttributeTypesChanged(attributeTypes: AttributeTypes) {
+	public onAttributeTypesChanged() {
 		this.storeService.dispatch(
 			calculateNewNodeMetricData(this.storeService.getState().files, this.storeService.getState().fileSettings.blacklist)
 		)

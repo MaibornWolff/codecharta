@@ -215,7 +215,7 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onFilesSelectionChanged", () => {
 		it("should deselect the building", () => {
-			codeMapMouseEventService.onFilesSelectionChanged(undefined)
+			codeMapMouseEventService.onFilesSelectionChanged()
 
 			expect(threeSceneService.clearSelection).toHaveBeenCalled()
 		})
@@ -499,7 +499,7 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService["unhoverBuilding"] = jest.fn()
 			codeMapMouseEventService["highlightedInTreeView"] = codeMapBuilding
 
-			codeMapMouseEventService.onShouldUnhoverNode(null)
+			codeMapMouseEventService.onShouldUnhoverNode()
 
 			expect(codeMapMouseEventService["unhoverBuilding"]).toHaveBeenCalled()
 		})

@@ -76,7 +76,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}
 	}
 
-	public onScalingChanged(scaling) {
+	public onScalingChanged() {
 		if (this.allNecessaryRenderDataAvailable()) {
 			this.scaleMapAndNotify()
 		}
@@ -200,7 +200,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
-		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (_event, data) => {
 			subscriber.onRenderMapChanged(data)
 		})
 	}

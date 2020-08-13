@@ -33,7 +33,7 @@ describe("ThreeCameraService", () => {
 		it("should update camera", () => {
 			const cameraPosition = threeCameraService.camera.position
 
-			threeCameraService.onCameraChanged(null)
+			threeCameraService.onCameraChanged()
 
 			expect(storeService.getState().appSettings.camera).toEqual(cameraPosition)
 		})
@@ -41,7 +41,7 @@ describe("ThreeCameraService", () => {
 		it("should not call storeService.notify method", () => {
 			storeService["notify"] = jest.fn()
 
-			threeCameraService.onCameraChanged(null)
+			threeCameraService.onCameraChanged()
 
 			expect(storeService["notify"]).not.toHaveBeenCalled()
 		})

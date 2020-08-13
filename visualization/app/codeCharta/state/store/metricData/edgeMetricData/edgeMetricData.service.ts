@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { calculateNewEdgeMetricData, EdgeMetricDataActions } from "./edgeMetricData.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { AttributeTypes, AttributeTypeValue, BlacklistItem, CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
+import { AttributeTypeValue, BlacklistItem, CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { HierarchyNode } from "d3"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
@@ -39,7 +39,7 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		this.storeService.dispatch(calculateNewEdgeMetricData(files, this.storeService.getState().fileSettings.blacklist))
 	}
 
-	public onAttributeTypesChanged(attributeTypes: AttributeTypes) {
+	public onAttributeTypesChanged() {
 		this.storeService.dispatch(
 			calculateNewEdgeMetricData(this.storeService.getState().files, this.storeService.getState().fileSettings.blacklist)
 		)

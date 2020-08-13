@@ -73,7 +73,7 @@ describe("SearchPatternService", () => {
 		it("should reset and set empty searchPattern", () => {
 			storeService.dispatch(setSearchPattern("some/search.pattern*"))
 
-			searchPatternService.onFilesSelectionChanged([])
+			searchPatternService.onFilesSelectionChanged()
 
 			expect(storeService.getState().dynamicSettings.searchPattern).toEqual("")
 		})

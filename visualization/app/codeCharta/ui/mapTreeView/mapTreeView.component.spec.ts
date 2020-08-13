@@ -70,7 +70,7 @@ describe("MapTreeViewController", () => {
 		it("should reverse the sorting order", () => {
 			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
 
-			mapTreeViewController.onSortingOrderAscendingChanged(true)
+			mapTreeViewController.onSortingOrderAscendingChanged()
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED)
 		})

@@ -54,7 +54,7 @@ describe("UnfocusButtonController", () => {
 			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[0].id
 			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[0].path
 
-			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING, 0, 0)
+			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
 
 			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeTruthy()
 			expect(unfocusButtonController["_viewModel"].isParentFocused).toBeFalsy()
@@ -65,7 +65,7 @@ describe("UnfocusButtonController", () => {
 			CODE_MAP_BUILDING.node.id = TEST_DELTA_MAP_A.map.children[1].children[0].id
 			CODE_MAP_BUILDING.node.path = TEST_DELTA_MAP_A.map.children[1].children[0].path
 
-			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING, 0, 0)
+			unfocusButtonController.onBuildingRightClicked(CODE_MAP_BUILDING)
 
 			expect(unfocusButtonController["_viewModel"].isParentFocused).toBeTruthy()
 			expect(unfocusButtonController["_viewModel"].isNodeFocused).toBeFalsy()

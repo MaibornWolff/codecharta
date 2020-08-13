@@ -97,10 +97,9 @@ describe("SearchBarController", () => {
 		})
 
 		it("should update ViewModel when pattern not blacklisted", () => {
-			const blacklist: BlacklistItem[] = []
 			storeService.dispatch(setBlacklist())
 
-			searchBarController.onBlacklistChanged(blacklist)
+			searchBarController.onBlacklistChanged()
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeFalsy()
@@ -113,7 +112,7 @@ describe("SearchBarController", () => {
 			]
 			storeService.dispatch(setBlacklist(blacklist))
 
-			searchBarController.onBlacklistChanged(blacklist)
+			searchBarController.onBlacklistChanged()
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeFalsy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()
@@ -126,7 +125,7 @@ describe("SearchBarController", () => {
 			]
 			storeService.dispatch(setBlacklist(blacklist))
 
-			searchBarController.onBlacklistChanged(blacklist)
+			searchBarController.onBlacklistChanged()
 
 			expect(searchBarController["_viewModel"].isPatternHidden).toBeTruthy()
 			expect(searchBarController["_viewModel"].isPatternExcluded).toBeTruthy()

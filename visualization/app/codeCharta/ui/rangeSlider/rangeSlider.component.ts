@@ -17,7 +17,6 @@ import {
 } from "../../state/store/appSettings/whiteColorBuildings/whiteColorBuildings.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
-import { FileState } from "../../model/files/files"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
@@ -74,7 +73,7 @@ export class RangeSliderController
 		}
 	}
 
-	public onColorMetricChanged(colorMetric: string) {
+	public onColorMetricChanged() {
 		this.updateMaxMetricValue()
 	}
 
@@ -88,16 +87,16 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}
 
-	public onInvertColorRangeChanged(invertColorRange: boolean) {
+	public onInvertColorRangeChanged() {
 		this.updateSliderColors()
 	}
 
-	public onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
+	public onWhiteColorBuildingsChanged() {
 		this.updateSliderColors()
 	}
 

@@ -1,8 +1,8 @@
 ---
 categories:
-  - ADR
+    - ADR
 tags:
-  - analysis
+    - analysis
 title: "ADR 4: Decide Analysis Architecture"
 ---
 
@@ -18,8 +18,8 @@ accepted
 
 The analysis will use a pipes and filters architecture.
 
-- A filter is a small processing step, a mini-program if you so will.
-- A pipe connects the output of one filter with the input of another.
+-   A filter is a small processing step, a mini-program if you so will.
+-   A pipe connects the output of one filter with the input of another.
 
 This architecture can be seen in the Windows and Linux command-line.
 

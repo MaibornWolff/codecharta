@@ -6,7 +6,6 @@ import { getResetColorRange } from "./colorRange.reset"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { FileState } from "../../../../model/files/files"
 import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
 export interface ColorRangeSubscriber {
@@ -33,11 +32,11 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		}
 	}
 
-	public onColorMetricChanged(colorMetric: string) {
+	public onColorMetricChanged() {
 		this.reset()
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	public onFilesSelectionChanged() {
 		this.reset()
 	}
 
@@ -67,7 +66,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: ColorRangeSubscriber) {
-		$rootScope.$on(ColorRangeService.COLOR_RANGE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(ColorRangeService.COLOR_RANGE_CHANGED_EVENT, (_event, data) => {
 			subscriber.onColorRangeChanged(data.colorRange)
 		})
 	}

@@ -1,30 +1,30 @@
 ---
 categories:
-  - How-to
+    - How-to
 tags:
-  - gitlab-ci
-  - sonarimport
-  - windows
+    - gitlab-ci
+    - sonarimport
+    - windows
 title: Integrating CodeCharta into a Gitlab CI on Windows for .net projects
 ---
 
 # Prerequisites
 
-- Gitlab CI Pipeline which [uses a yaml configuration file](https://docs.gitlab.com/ee/ci/yaml/) to run the builds on a windows agent
-- A running [Sonarqube server](https://docs.sonarqube.org/7.4/setup/install-server/)
-- Powershell or similiar
+-   Gitlab CI Pipeline which [uses a yaml configuration file](https://docs.gitlab.com/ee/ci/yaml/) to run the builds on a windows agent
+-   A running [Sonarqube server](https://docs.sonarqube.org/7.4/setup/install-server/)
+-   Powershell or similiar
 
 # Base Configuration
 
 1. Download "[SonarScanner for MSBuild](https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild)" on the build agent.
 
 2. Create three new hidden variables in your Gitlab CI configuration:
-   - SONAR_USER: The sonar user for your builds
-   - SONAR_PW: Its password
-   - SONAR_TOKEN: Its [Sonarqube API token](https://docs.sonarqube.org/7.4/user-guide/user-token/)
+    - SONAR_USER: The sonar user for your builds
+    - SONAR_PW: Its password
+    - SONAR_TOKEN: Its [Sonarqube API token](https://docs.sonarqube.org/7.4/user-guide/user-token/)
 3. _Optional:_ Import the certificate into your build agent's JVM:
-   - Get the certificate by using [openssl](https://superuser.com/questions/97201/how-to-save-a-remote-server-ssl-certificate-locally-as-a-file/641396#641396).
-   - Use the Java keytool to import the certificate e.g. `C:\"Program Files (x86)"\Java\jre1.8.0_40\bin\keytool -importcert -file sonar-cert.cer -alias sonar -keystore C:\"Program Files (x86)"\Java\jre1.8.0_40\lib\security\cacerts`
+    - Get the certificate by using [openssl](https://superuser.com/questions/97201/how-to-save-a-remote-server-ssl-certificate-locally-as-a-file/641396#641396).
+    - Use the Java keytool to import the certificate e.g. `C:\"Program Files (x86)"\Java\jre1.8.0_40\bin\keytool -importcert -file sonar-cert.cer -alias sonar -keystore C:\"Program Files (x86)"\Java\jre1.8.0_40\lib\security\cacerts`
 4. Create a new powershell script similiar to the following in order to run the analysis:
 
 ```
