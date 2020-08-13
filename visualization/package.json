@@ -81,11 +81,6 @@
 		"codecharta-visualization": "cli.js"
 	},
 	"license": "BSD-3-Clause",
-	"husky": {
-		"hooks": {
-			"pre-commit": "npm run lint:fix"
-		}
-	},
 	"dependencies": {
 		"ajv": "^6.12.2",
 		"angular": "^1.8.0",

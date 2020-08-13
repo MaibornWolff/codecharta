@@ -11,11 +11,12 @@
 	"license": "BSD-3-Clause",
 	"scripts": {
 		"format": "prettier --write \"./**/*\"",
-		"format:quick": "pretty-quick --staged"
+		"format:quick": "pretty-quick --staged",
+		"lint:visualization": "cd visualization && npm run lint:fix"
 	},
 	"husky": {
 		"hooks": {
-			"pre-commit": "npm run format:quick",
+			"pre-commit": "npm run lint:visualization && npm run format:quick",
 			"pre-push": "sh ./script/pre-push.sh"
 		}
 	},
