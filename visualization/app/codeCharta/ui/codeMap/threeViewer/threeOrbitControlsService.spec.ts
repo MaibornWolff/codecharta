@@ -101,7 +101,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			storeService.dispatch(setResetCameraIfNewFileIsLoaded(true))
 
-			threeOrbitControlsService.onFilesSelectionChanged(undefined)
+			threeOrbitControlsService.onFilesSelectionChanged()
 
 			expect(threeOrbitControlsService.autoFitTo).toHaveBeenCalled()
 		})
@@ -111,7 +111,7 @@ describe("ThreeOrbitControlsService", () => {
 
 			storeService.dispatch(setResetCameraIfNewFileIsLoaded(false))
 
-			threeOrbitControlsService.onFilesSelectionChanged(undefined)
+			threeOrbitControlsService.onFilesSelectionChanged()
 
 			expect(threeOrbitControlsService.autoFitTo).not.toHaveBeenCalled()
 		})
@@ -133,7 +133,7 @@ describe("ThreeOrbitControlsService", () => {
 
 	describe("onFocusedNode", () => {
 		it("autoFitTo have to be", () => {
-			threeOrbitControlsService.onFocusNode("something")
+			threeOrbitControlsService.onFocusNode()
 			$timeout.flush()
 
 			expect(threeOrbitControlsService.controls.update).toBeCalled()

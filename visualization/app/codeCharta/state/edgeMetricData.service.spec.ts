@@ -121,21 +121,21 @@ describe("EdgeMetricDataService", () => {
 		})
 
 		it("should create correct edge Metrics", () => {
-			edgeMetricDataService.onFilesSelectionChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged()
 
 			expect(edgeMetricDataService.getMetricData().map(x => x.name)).toContain("pairingRate")
 			expect(edgeMetricDataService.getMetricData().map(x => x.name)).toContain("otherMetric")
 		})
 
 		it("should calculate correct maximum value for edge Metrics", () => {
-			edgeMetricDataService.onFilesSelectionChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged()
 
 			expect(edgeMetricDataService.getMetricData().find(x => x.name === "pairingRate").maxValue).toEqual(2)
 			expect(edgeMetricDataService.getMetricData().find(x => x.name === "otherMetric").maxValue).toEqual(1)
 		})
 
 		it("metrics Map should contain correct entries entries", () => {
-			edgeMetricDataService.onFilesSelectionChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged()
 
 			const pairingRateMapKeys = edgeMetricDataService["nodeEdgeMetricsMap"].get("pairingRate").keys()
 			expect(pairingRateMapKeys.next().value).toEqual("/root/Parent Leaf/small leaf")
@@ -144,7 +144,7 @@ describe("EdgeMetricDataService", () => {
 		})
 
 		it("metrics Map should be sorted entries", () => {
-			edgeMetricDataService.onFilesSelectionChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged()
 
 			const pairingRateMap = edgeMetricDataService["nodeEdgeMetricsMap"].get("pairingRate")
 			expect(pairingRateMap.get("/root/Parent Leaf/small leaf")).toEqual({ incoming: 2, outgoing: 0 })
@@ -156,7 +156,7 @@ describe("EdgeMetricDataService", () => {
 	describe("getMetricValuesForNode", () => {
 		it("should return Edge Metric counts for node", () => {
 			storeService.dispatch(setFiles(files))
-			edgeMetricDataService.onFilesSelectionChanged(files)
+			edgeMetricDataService.onFilesSelectionChanged()
 			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
 
 			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node)
