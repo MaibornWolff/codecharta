@@ -1,5 +1,5 @@
 import { IRootScopeService } from "angular"
-import { HideNodeContextMenuSubscriber, NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
+import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode } from "../../codeCharta.model"
@@ -13,7 +13,7 @@ export interface MapTreeViewHoverEventSubscriber {
 	onShouldUnhoverNode(node: CodeMapNode)
 }
 
-export class MapTreeViewLevelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, HideNodeContextMenuSubscriber {
+export class MapTreeViewLevelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private static MAP_TREE_VIEW_HOVER_NODE_EVENT = "should-hover-node"
 	private static MAP_TREE_VIEW_UNHOVER_NODE_EVENT = "should-unhover-node"
 
@@ -39,11 +39,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
-	}
-
-	public onHideNodeContextMenu() {
-		this._viewModel.isMarked = false
 	}
 
 	public getMarkingColor() {
@@ -79,9 +74,13 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		$event.stopPropagation()
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
 		this._viewModel.isMarked = true
-		document.getElementById("headDiv").addEventListener("scroll", () => {
-			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-		})
+		document.getElementById("tree-root").addEventListener("scroll", this.scrollFunction)
+	}
+
+	public scrollFunction = () => {
+		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+		document.getElementById("tree-root").removeEventListener("scroll", this.scrollFunction)
+		this._viewModel.isMarked = false
 	}
 
 	public onClickNode() {
