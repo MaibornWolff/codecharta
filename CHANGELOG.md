@@ -1,4 +1,4 @@
-﻿# Change Log
+# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -11,9 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   NodeContextMenu will show up when releasing the right-mouse-button now #1027
+
 ### Removed 🗑
 
 ### Fixed 🐞
+
+-   NodeContextMenu showing up after moving the mouse while holding right-mouse-button #1027
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -32,7 +36,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   After loading an invalid file the filechooser pops up again, so that the user can choose a valid file #1021
--   Quality gates on sonarcloud.io are available again #879
+-   Quality gates on sonarcloud.io are red #879
 
 ### Docs 🔎
 
