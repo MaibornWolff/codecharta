@@ -11,6 +11,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.53.0] - 2020-08-14
+
+### Added 🚀
+
+### Changed
+
 -   NodeContextMenu will show up when releasing the right-mouse-button now #1027
 
 ### Removed 🗑
