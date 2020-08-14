@@ -1,6 +1,6 @@
 ---
 categories:
-  - ADR
+    - ADR
 title: "ADR 0: We'll write architecture decision records"
 ---
 
@@ -10,11 +10,11 @@ We'll use Architecture Decision Records (ADR) to document our decisions. They ar
 
 An ADR is not a concept or an instruction. It simply remembers the why of our decision. If you need to document a concept (f.ex. how to use angular in our project), you should write a separate document for that. Our ADRs follow the format from Michael Nygard with some additions by [Joel Parker Henderson](https://github.com/joelparkerhenderson/architecture_decision_record):
 
-- The file name and title has a present tense imperative verb phrase. This matches our commit message format.
-- The name should not include a technology but focus on the context for which we picked a technology.
-  - that leaves room to change the tech later.
-- The name starts with the Jekyll date and uses lowercase and underscores for the title.
-- The extension is markdown `md`.
+-   The file name and title has a present tense imperative verb phrase. This matches our commit message format.
+-   The name should not include a technology but focus on the context for which we picked a technology.
+    -   that leaves room to change the tech later.
+-   The name starts with the Jekyll date and uses lowercase and underscores for the title.
+-   The extension is markdown `md`.
 
 # title: <short present tense imperative phrase, less than 50 characters, like a git commit message.>
 

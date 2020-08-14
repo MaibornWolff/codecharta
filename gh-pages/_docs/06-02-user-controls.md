@@ -3,9 +3,9 @@ permalink: /docs/user-controls/
 title: "User Controls"
 
 gallery:
-  - url: "/assets/images/docs/visualization/user-controls.drawio.png"
-    image_path: "/assets/images/docs/visualization/user-controls.drawio.png"
-    title: "User Controls"
+    - url: "/assets/images/docs/visualization/user-controls.drawio.png"
+      image_path: "/assets/images/docs/visualization/user-controls.drawio.png"
+      title: "User Controls"
 ---
 
 {% include gallery %}

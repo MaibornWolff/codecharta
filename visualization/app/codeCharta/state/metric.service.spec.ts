@@ -77,7 +77,7 @@ describe("MetricService", () => {
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onFilesSelectionChanged(undefined)
+			metricService.onFilesSelectionChanged()
 
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
@@ -85,13 +85,13 @@ describe("MetricService", () => {
 		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
 			metricService["metricData"] = []
 
-			metricService.onFilesSelectionChanged(undefined)
+			metricService.onFilesSelectionChanged()
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
-			metricService.onFilesSelectionChanged(undefined)
+			metricService.onFilesSelectionChanged()
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})
@@ -99,7 +99,7 @@ describe("MetricService", () => {
 		it("should not add unary metric a second time if the cc.json already contains unary", () => {
 			metricData.push({ name: MetricService.UNARY_METRIC, maxValue: 1 })
 
-			metricService.onFilesSelectionChanged(undefined)
+			metricService.onFilesSelectionChanged()
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})
@@ -111,7 +111,7 @@ describe("MetricService", () => {
 		})
 
 		it("should set metricData to new calculated metricData", () => {
-			metricService.onBlacklistChanged([])
+			metricService.onBlacklistChanged()
 
 			expect(metricService["metricData"]).toEqual(metricData)
 		})
@@ -119,13 +119,13 @@ describe("MetricService", () => {
 		it("should broadcast a METRIC_DATA_ADDED_EVENT if metricData changed", () => {
 			metricService["metricData"] = []
 
-			metricService.onBlacklistChanged([])
+			metricService.onBlacklistChanged()
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("metric-data-added", metricService.getMetricData())
 		})
 
 		it("should add unary metric to metricData", () => {
-			metricService.onBlacklistChanged([])
+			metricService.onBlacklistChanged()
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBeGreaterThan(0)
 		})
@@ -133,7 +133,7 @@ describe("MetricService", () => {
 		it("should not add unary metric a second time if the cc.json already contains unary", () => {
 			metricData.push({ name: MetricService.UNARY_METRIC, maxValue: 1 })
 
-			metricService.onFilesSelectionChanged(undefined)
+			metricService.onFilesSelectionChanged()
 
 			expect(metricService.getMetricData().filter(x => x.name === MetricService.UNARY_METRIC).length).toBe(1)
 		})

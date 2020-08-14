@@ -145,7 +145,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("onFocusNode", () => {
 		it("should hide the node context menu", () => {
-			nodeContextMenuController.onFocusNode("/root")
+			nodeContextMenuController.onFocusNode()
 
 			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
@@ -161,7 +161,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("onBlacklistChanged", () => {
 		it("should hide the node context menu", () => {
-			nodeContextMenuController.onBlacklistChanged([])
+			nodeContextMenuController.onBlacklistChanged()
 
 			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
@@ -169,7 +169,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("onMarkedPackagesChanged", () => {
 		it("should hide the node context menu", () => {
-			nodeContextMenuController.onMarkedPackagesChanged([])
+			nodeContextMenuController.onMarkedPackagesChanged()
 
 			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})

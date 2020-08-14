@@ -4,7 +4,7 @@ import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
-import { CodeMapNode, Node } from "../../../codeCharta.model"
+import { Node } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 
@@ -52,7 +52,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.scene.add(this.lights)
 	}
 
-	public onRenderMapChanged(map: CodeMapNode) {
+	public onRenderMapChanged() {
 		this.reselectBuilding()
 	}
 
@@ -183,19 +183,19 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, e => {
+		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, () => {
 			subscriber.onBuildingDeselected()
 		})
 	}
 
 	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
-		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (e, selectedBuilding: CodeMapBuilding) => {
+		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (_event, selectedBuilding: CodeMapBuilding) => {
 			subscriber.onBuildingSelected(selectedBuilding)
 		})
 	}
 
 	public static subscribeToCodeMapMeshChangedEvent($rootScope: IRootScopeService, subscriber: CodeMapMeshChangedSubscriber) {
-		$rootScope.$on(this.CODE_MAP_MESH_CHANGED_EVENT, (e, mapMesh: CodeMapMesh) => {
+		$rootScope.$on(this.CODE_MAP_MESH_CHANGED_EVENT, (_event, mapMesh: CodeMapMesh) => {
 			subscriber.onCodeMapMeshChanged(mapMesh)
 		})
 	}

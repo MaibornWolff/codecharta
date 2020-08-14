@@ -40,7 +40,7 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 		this.setDeltaColorClass()
 	}
 
-	public onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
+	public onInvertDeltaColorsChanged() {
 		this.setDeltaColorClass()
 	}
 

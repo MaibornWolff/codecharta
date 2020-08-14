@@ -2,7 +2,6 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { closeAttributeSideBar, IsAttributeSideBarVisibleActions, openAttributeSideBar } from "./isAttributeSideBarVisible.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { CodeMapBuilding } from "../../../../ui/codeMap/rendering/codeMapBuilding"
 import {
 	BuildingDeselectedEventSubscriber,
 	BuildingSelectedEventSubscriber,
@@ -23,7 +22,7 @@ export class IsAttributeSideBarVisibleService
 		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
 	}
 
-	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
+	public onBuildingSelected() {
 		this.storeService.dispatch(openAttributeSideBar())
 	}
 
@@ -48,7 +47,7 @@ export class IsAttributeSideBarVisibleService
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: IsAttributeSideBarVisibleSubscriber) {
-		$rootScope.$on(IsAttributeSideBarVisibleService.IS_ATTRIBUTE_SIDE_BAR_VISIBLE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(IsAttributeSideBarVisibleService.IS_ATTRIBUTE_SIDE_BAR_VISIBLE_CHANGED_EVENT, (_event, data) => {
 			subscriber.onIsAttributeSideBarVisibleChanged(data.isAttributeSideBarVisible)
 		})
 	}

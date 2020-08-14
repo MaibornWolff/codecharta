@@ -74,7 +74,7 @@ export class LegendPanelController
 		this.updatePixelColors()
 	}
 
-	public onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
+	public onInvertDeltaColorsChanged() {
 		this.updatePixelColors()
 	}
 
@@ -86,7 +86,7 @@ export class LegendPanelController
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
-	public onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
+	public onWhiteColorBuildingsChanged() {
 		this.updatePixelColors()
 	}
 

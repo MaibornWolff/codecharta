@@ -1,7 +1,6 @@
 import "./threeViewer.module"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { VALID_NODE, CODE_MAP_BUILDING, TEST_NODES } from "../../../util/dataMocks"
-import { CodeMapNode } from "../../../codeCharta.model"
+import { CODE_MAP_BUILDING, TEST_NODES } from "../../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
@@ -15,7 +14,6 @@ describe("ThreeSceneService", () => {
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 
-	let map: CodeMapNode
 	let codeMapBuilding: CodeMapBuilding
 
 	beforeEach(() => {
@@ -29,7 +27,6 @@ describe("ThreeSceneService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 
-		map = _.cloneDeep(VALID_NODE)
 		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 	}
 
@@ -57,7 +54,7 @@ describe("ThreeSceneService", () => {
 			threeSceneService["selected"] = codeMapBuilding
 			threeSceneService["reselectBuilding"] = jest.fn()
 
-			threeSceneService.onRenderMapChanged(map)
+			threeSceneService.onRenderMapChanged()
 
 			expect(threeSceneService["reselectBuilding"]).toHaveBeenCalled()
 		})

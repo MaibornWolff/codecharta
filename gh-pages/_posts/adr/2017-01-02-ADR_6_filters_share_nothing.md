@@ -1,8 +1,8 @@
 ---
 categories:
-  - ADR
+    - ADR
 tags:
-  - analysis
+    - analysis
 title: "ADR 6: Filters share nothing"
 ---
 
@@ -25,5 +25,5 @@ The model contains only the code to generate a `.cc.json`, not metric parsing co
 
 # Consequences
 
-- Most filters parse different metrics. Code replication can happen but should be negligible.
-- The **shared** model means that code can be shared through it. By explicitly naming this module model instead of **shared** we hope to make it clear that it should only contain model contain and any other code needs to be replicated.
+-   Most filters parse different metrics. Code replication can happen but should be negligible.
+-   The **shared** model means that code can be shared through it. By explicitly naming this module model instead of **shared** we hope to make it clear that it should only contain model contain and any other code needs to be replicated.
