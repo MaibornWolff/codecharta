@@ -103,6 +103,13 @@ export class NodeContextMenuController
 		this.synchronizeAngularTwoWayBinding()
 	}
 
+	public onHideNodeContextMenu(mousePosition = new Vector2(-1, -1)) {
+		if (this.isClickInsideNodeContextMenu(mousePosition)) {
+			this._viewModel.codeMapNode = null
+			this.synchronizeAngularTwoWayBinding()
+		}
+	}
+
 	public calculatePosition(mouseX: number, mouseY: number) {
 		const width = this.$element[0].children[0].clientWidth
 		const height = this.$element[0].children[0].clientHeight
@@ -115,13 +122,6 @@ export class NodeContextMenuController
 	public setPosition(x: number, y: number) {
 		angular.element(this.$element[0].children[0]).css("top", y + "px")
 		angular.element(this.$element[0].children[0]).css("left", x + "px")
-	}
-
-	public onHideNodeContextMenu(mousePosition = new Vector2(-1, -1)) {
-		if (this.isClickInsideNodeContextMenu(mousePosition)) {
-			this._viewModel.codeMapNode = null
-			this.synchronizeAngularTwoWayBinding()
-		}
 	}
 
 	public flattenNode() {
