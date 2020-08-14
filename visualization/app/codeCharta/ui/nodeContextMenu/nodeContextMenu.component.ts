@@ -232,8 +232,8 @@ export class NodeContextMenuController
 		})
 	}
 
-	public static broadcastHideEvent($rootscope: IRootScopeService, mousePosition = new Vector2(-1, -1)) {
-		$rootscope.$broadcast(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT, { mousePosition })
+	public static broadcastHideEvent($rootScope: IRootScopeService, mousePosition = new Vector2(-1, -1)) {
+		$rootScope.$broadcast(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT, { mousePosition })
 	}
 
 	public static subscribeToShowNodeContextMenu($rootScope: IRootScopeService, subscriber: ShowNodeContextMenuSubscriber) {

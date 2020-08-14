@@ -36,7 +36,7 @@ describe("MapTreeViewLevel", () => {
 			await searchPanelModeSelector.toggleTreeView()
 			await mapTreeViewLevel.openFolder("/root/ParentLeaf")
 			await mapTreeViewLevel.openContextMenu(filePath)
-			await mapTreeViewLevel.hoverNode("/root/ParentLeaf")
+			await mapTreeViewLevel.hoverNode("/root/sample1OnlyLeaf.scss")
 
 			expect(await mapTreeViewLevel.isNodeMarked(filePath)).toBeTruthy()
 		})
