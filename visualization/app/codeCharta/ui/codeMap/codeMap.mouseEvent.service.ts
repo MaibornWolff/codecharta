@@ -36,6 +36,13 @@ export enum ClickType {
 	RightClick = 2
 }
 
+export enum CursorType{
+	Default = "default",
+	Grabbing = "grabbing",
+	Pointer = "pointer",
+	Moving = "move"
+}
+
 export class CodeMapMouseEventService
 	implements MapTreeViewHoverEventSubscriber, ViewCubeEventPropagationSubscriber, FilesSelectionSubscriber, BlacklistSubscriber {
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
@@ -161,9 +168,16 @@ export class CodeMapMouseEventService
 	}
 
 	public onDocumentMouseDown(event) {
+		if (event.button === ClickType.RightClick) {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
+		}
+		if(event.button === ClickType.LeftClick && event.detail == 2){
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+		}
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
 		$(document.activeElement).blur()
 	}
+
 
 	public onDocumentMouseUp(event) {
 		if (event.button === ClickType.LeftClick) {
@@ -171,6 +185,11 @@ export class CodeMapMouseEventService
 		} else {
 			this.onRightClick()
 		}
+		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+	}
+
+	public static changeCursorIndicator(cursorIcon: CursorType){
+		document.body.style.cursor = cursorIcon
 	}
 
 	private onRightClick() {
