@@ -42,7 +42,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
 	}
 
-	public onHideNodeContextMenu(mousePosition) {
+	public onHideNodeContextMenu() {
 		this._viewModel.isMarked = false
 	}
 
