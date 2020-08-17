@@ -98,4 +98,10 @@ Notice, that `folder_1` start at `x:5`, `y:5`, because we apply a margin of `5` 
 
 ![Example]({{site.baseurl}}/assets/images/posts/how-to/fixate-folders/fixate-folder-example.jpg)
 
-In order to build a valid custom `.cc.json`, these rules must be followed: - The value `x + width + margin` or `y + height + margin` must be <= 100 - Folders can't overlap and should respect the margin. - Only folders on the root can have the `fixed`-attribute - If at least one folder is `fixed`, all folders on the root must be `fixed` - If `fixed` folders exist, a margin must be specified, otherwise the default of `0` is applied.
+In order to build a valid custom `.cc.json`, these rules must be followed:
+
+-   The value `x + width + margin` or `y + height + margin` must be <= 100
+-   Folders can't overlap and should respect the margin.
+-   Only folders on the root can have the `fixed`-attribute
+-   If at least one folder is `fixed`, all folders on the root must be `fixed`
+-   If `fixed` folders exist, a margin must be specified, otherwise the default of `0` is applied.
