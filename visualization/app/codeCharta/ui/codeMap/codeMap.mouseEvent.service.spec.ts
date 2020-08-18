@@ -1,7 +1,7 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { IRootScopeService, IWindowService } from "angular"
-import { CodeMapMouseEventService, ClickType } from "./codeMap.mouseEvent.service"
+import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouseEvent.service"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
@@ -308,6 +308,25 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
+	describe("changeCursorIndicator", ()=>{
+		it("should set the mouseIcon to grabbing, pointer, moving and default", () =>{
+			document.body.style.cursor = CursorType.Default
+
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
+		})
+
+		it("should set the mouseIcon to default", () =>{
+			document.body.style.cursor = CursorType.Pointer
+
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Default)
+		})
+
+	})
+
 	describe("onDocumentMouseUp", () => {
 		let event
 
@@ -316,13 +335,15 @@ describe("codeMapMouseEventService", () => {
 				event = { button: ClickType.LeftClick }
 			})
 
-			it("should not do anything when no building is hovered and nothing is selected", () => {
+			it("should not do anything when no building is hovered and nothing is selected, but should call changeCursorIndicator with default", () => {
+				CodeMapMouseEventService.changeCursorIndicator = jest.fn()
 				threeSceneService.getHighlightedBuilding = jest.fn()
 				threeSceneService.getSelectedBuilding = jest.fn()
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
 				expect(threeSceneService.selectBuilding).not.toHaveBeenCalled()
+				expect(CodeMapMouseEventService.changeCursorIndicator).toHaveBeenCalledWith(CursorType.Default)
 			})
 
 			it("should call selectBuilding when no building is selected", () => {
@@ -394,6 +415,34 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onDocumentMouseDown", () => {
+		it ("should call changeCursorIndicator with moving as parameter when pressing the right button", ()=>{
+			CodeMapMouseEventService.changeCursorIndicator = jest.fn()
+			const event = {button: ClickType.RightClick}
+
+			codeMapMouseEventService.onDocumentMouseDown(event)
+
+			expect(CodeMapMouseEventService.changeCursorIndicator).toHaveBeenCalledWith(CursorType.Moving)
+		})
+
+		it ("should not call changeCursorIndicator with grabbing as parameter when pressing the left button just once", ()=>{
+			CodeMapMouseEventService.changeCursorIndicator = jest.fn()
+			const event = {button: ClickType.LeftClick, detail: 1}
+
+			codeMapMouseEventService.onDocumentMouseDown(event)
+
+			expect(CodeMapMouseEventService.changeCursorIndicator).not.toHaveBeenCalledWith(CursorType.Grabbing)
+		})
+
+		it ("should call changeCursorIndicator with grabbing as parameter when pressing the left button twice", ()=>{
+			CodeMapMouseEventService.changeCursorIndicator = jest.fn()
+			const event = {button: ClickType.LeftClick, detail: 2}
+
+			codeMapMouseEventService.onDocumentMouseDown(event)
+
+			expect(CodeMapMouseEventService.changeCursorIndicator).toHaveBeenCalledWith(CursorType.Grabbing)
+		})
+
+
 		it("should save the mouse position", () => {
 			const event = { clientX: 10, clientY: 20 }
 
