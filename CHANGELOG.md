@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 - Opening NodeContextMenu in the tree-view marks the node until it is closed #1068 
+- Cursor indicator for different mouse actions #1042
 
 ### Changed
 

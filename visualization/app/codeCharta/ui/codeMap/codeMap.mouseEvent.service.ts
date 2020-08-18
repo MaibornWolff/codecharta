@@ -188,10 +188,6 @@ export class CodeMapMouseEventService
 		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 	}
 
-	public static changeCursorIndicator(cursorIcon: CursorType){
-		document.body.style.cursor = cursorIcon
-	}
-
 	private onRightClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
 
@@ -244,6 +240,10 @@ export class CodeMapMouseEventService
 	private unhoverBuilding() {
 		this.threeSceneService.clearHighlight()
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
+	}
+
+	public static changeCursorIndicator(cursorIcon: CursorType){
+		document.body.style.cursor = cursorIcon
 	}
 
 	public static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
