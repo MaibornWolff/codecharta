@@ -159,7 +159,7 @@ export class CodeMapMouseEventService
 
 	public onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
-		if (highlightedBuilding) {
+		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			const fileSourceLink = highlightedBuilding.node.link
 			if (fileSourceLink) {
 				this.$window.open(fileSourceLink, "_blank")
@@ -206,7 +206,7 @@ export class CodeMapMouseEventService
 
 	private onLeftClick() {
 		this.threeSceneService.clearSelection()
-		if (this.intersectedBuilding) {
+		if (this.intersectedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.threeSceneService.selectBuilding(this.intersectedBuilding)
 		}
 	}
