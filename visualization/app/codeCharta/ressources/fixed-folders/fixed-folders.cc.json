@@ -1,0 +1,196 @@
+{
+	"projectName": "example-project",
+	"apiVersion": "1.2",
+	"nodes": [
+		{
+			"name": "root",
+			"type": "Folder",
+			"attributes": {},
+			"children": [
+				{
+					"name": "folder_1",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_1",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 2
+							},
+							"children": []
+						},
+						{
+							"name": "children_2",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 4
+							},
+							"children": []
+						},
+						{
+							"name": "children_3",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 6
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 5,
+						"y:": 5,
+						"width": 55,
+						"height": 15
+					}
+				},
+				{
+					"name": "folder_2",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_4",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 10
+							},
+							"children": []
+						},
+						{
+							"name": "children_5",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 0
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 5,
+						"y:": 25,
+						"width": 25,
+						"height": 50
+					}
+				},
+				{
+					"name": "folder_3",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_5",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 4
+							},
+							"children": []
+						},
+						{
+							"name": "children_6",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 0
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 35,
+						"y:": 25,
+						"width": 25,
+						"height": 50
+					}
+				},
+				{
+					"name": "folder_4",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_7",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 20
+							},
+							"children": []
+						},
+						{
+							"name": "children_8",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 5
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 65,
+						"y:": 5,
+						"width": 10,
+						"height": 90
+					}
+				},
+				{
+					"name": "folder_5",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_9",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 10
+							},
+							"children": []
+						},
+						{
+							"name": "children_10",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 0
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 80,
+						"y:": 5,
+						"width": 15,
+						"height": 90
+					}
+				},
+				{
+					"name": "folder_6",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_11",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 1
+							},
+							"children": []
+						},
+						{
+							"name": "children_12",
+							"type": "File",
+							"attributes": {
+								"custom_metric": 1
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 5,
+						"y:": 80,
+						"width": 55,
+						"height": 15
+					}
+				}
+			]
+		}
+	],
+	"margin": 5
+}
