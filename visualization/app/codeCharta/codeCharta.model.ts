@@ -22,6 +22,7 @@ export interface CCFile {
 		fileSettings: FileSettings
 	}
 	fileMeta: FileMeta
+	margin?: number
 }
 
 export interface CodeMapNode {
@@ -39,6 +40,12 @@ export interface CodeMapNode {
 	isFlattened?: boolean
 	deltas?: {
 		[key: string]: number
+	}
+	fixed?: {
+		x: number
+		y: number
+		width: number
+		height: number
 	}
 }
 
