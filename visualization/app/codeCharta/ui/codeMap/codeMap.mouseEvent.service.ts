@@ -36,7 +36,7 @@ export enum ClickType {
 	RightClick = 2
 }
 
-export enum CursorType{
+export enum CursorType {
 	Default = "default",
 	Grabbing = "grabbing",
 	Pointer = "pointer",
@@ -171,13 +171,12 @@ export class CodeMapMouseEventService
 		if (event.button === ClickType.RightClick) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
 		}
-		if(event.button === ClickType.LeftClick && event.detail == 2){
+		if (event.button === ClickType.LeftClick && event.detail == 2) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
 		}
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
 		$(document.activeElement).blur()
 	}
-
 
 	public onDocumentMouseUp(event) {
 		if (event.button === ClickType.LeftClick) {
@@ -202,6 +201,7 @@ export class CodeMapMouseEventService
 
 	private onLeftClick() {
 		this.threeSceneService.clearSelection()
+		// track mouse position to prevent opening a link to a building or the sidebar when releasing on a building after moving the map
 		if (this.intersectedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.threeSceneService.selectBuilding(this.intersectedBuilding)
 		}
@@ -242,7 +242,7 @@ export class CodeMapMouseEventService
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}
 
-	public static changeCursorIndicator(cursorIcon: CursorType){
+	public static changeCursorIndicator(cursorIcon: CursorType) {
 		document.body.style.cursor = cursorIcon
 	}
 
