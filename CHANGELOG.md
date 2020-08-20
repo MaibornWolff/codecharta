@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Docs 🔎
+
+-   Added note how to fix missing `sh` command issue when running integration tests on Windows
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.53.0] - 2020-08-14
