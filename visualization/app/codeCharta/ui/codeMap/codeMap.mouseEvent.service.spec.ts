@@ -309,7 +309,7 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("changeCursorIndicator", ()=>{
-		it("should set the mouseIcon to grabbing, pointer, moving and default", () =>{
+		it("should set the mouseIcon to grabbing", () =>{
 			document.body.style.cursor = CursorType.Default
 
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
