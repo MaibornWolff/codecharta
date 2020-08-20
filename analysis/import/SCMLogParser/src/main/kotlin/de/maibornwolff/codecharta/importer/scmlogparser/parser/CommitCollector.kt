@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
+import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import java.util.function.BiConsumer
@@ -10,70 +11,100 @@ import java.util.stream.Collector
 
 internal class CommitCollector private constructor(private val metricsFactory: MetricsFactory) {
 
-    private fun collectCommit(versionControlledFiles: MutableList<VersionControlledFile>, commit: Commit) {
+    private var renamesMap: MutableMap<String, String> = mutableMapOf() // Map<CurrentName, OldestName>
+    private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf() // Map <CurrentName, NumberOfConflicts>
+    private var commitNumber = 0
+
+    private fun collectCommit(versionControlledFiles: MutableMap<String, VersionControlledFile>, commit: Commit) {
         if (commit.isEmpty) {
             return
         }
-        addYetUnknownFilesToVersionControlledFiles(versionControlledFiles, commit.filenames)
-        addCommitMetadataToMatchingVersionControlledFiles(commit, versionControlledFiles)
-    }
+        commitNumber += 1
 
-    private fun addYetUnknownFilesToVersionControlledFiles(
-        versionControlledFiles: MutableList<VersionControlledFile>,
-        filenamesOfCommit: List<String>
-    ) {
-        filenamesOfCommit
-                .filter { !versionControlledFilesContainsFile(versionControlledFiles, it) }
-                .forEach { addYetUnknownFile(versionControlledFiles, it) }
-    }
+        commit.modifications.forEach {
 
-    private fun versionControlledFilesContainsFile(
-        versionControlledFiles: List<VersionControlledFile>,
-        filename: String
-    ): Boolean {
-        return findVersionControlledFileByFilename(versionControlledFiles, filename) != null
-    }
+            //Registers each modification for a given commit, performing different actions depending on the type
+            //to preserve uniqueness a marker is added to the name, following a marker_\\0_marker scheme, for tracking in the map
+            //
+            //Type.ADD: creates a new VCF file, if it doesn't exist, adds it to the VCF map and registers adding
+            //Type.DELETE: selects the tracking name and deletes the file from the VCF map, and rename map if needed
+            //Type.RENAME: Checks for potential rename conflicts and increments the tracking pointer if one is found
+            // -> creates a new rename entry or updates the key to the current name used to track the oldest file name
+            //Type.MODIFY/Type.UNKNOWN: simply registers this modification for the commit
+            val trackName = if (it.oldFilename.isNotEmpty()) it.oldFilename else it.currentFilename
+            val possibleConflictName =
+                if (nameConflictsMap.containsKey(trackName)) {
+                    trackName + "_\\0_" + nameConflictsMap[trackName]
+                } else {
+                    trackName
+                }
 
-    private fun findVersionControlledFileByFilename(
-        versionControlledFiles: List<VersionControlledFile>,
-        filename: String
-    ): VersionControlledFile? {
-        return versionControlledFiles.firstOrNull { it.filename == filename }
-    }
+            val oldestName = renamesMap[possibleConflictName]
+            val VCFName = if (oldestName == null) possibleConflictName else oldestName
 
-    private fun addYetUnknownFile(
-        versionControlledFiles: MutableList<VersionControlledFile>,
-        filenameOfYetUnversionedFile: String
-    ): Boolean {
-        val missingVersionControlledFile = VersionControlledFile(filenameOfYetUnversionedFile, metricsFactory)
-        return versionControlledFiles.add(missingVersionControlledFile)
-    }
+           if(VCFName == "visualization/app/codeCharta/codeMap/codeMapController.js")
+            println("Found")
 
-    private fun addCommitMetadataToMatchingVersionControlledFiles(
-        commit: Commit,
-        versionControlledFiles: List<VersionControlledFile>
-    ) {
-        commit.filenames.mapNotNull { findVersionControlledFileByFilename(versionControlledFiles, it) }
-                .forEach { it.registerCommit(commit) }
+            when (it.type) {
+
+                Modification.Type.ADD -> {
+                    val file = versionControlledFiles[possibleConflictName]
+                    if (file == null) {
+                        val missingVersionControlledFile = VersionControlledFile(possibleConflictName, metricsFactory)
+                        versionControlledFiles[possibleConflictName] = missingVersionControlledFile
+                        missingVersionControlledFile.registerCommit(commit, it)
+                    } else {
+                        versionControlledFiles[VCFName]!!.registerCommit(commit, it)
+                    }
+                }
+
+                Modification.Type.DELETE -> {
+                    val filename = renamesMap[possibleConflictName]
+                    versionControlledFiles.remove(if (filename == null) possibleConflictName else filename)
+                    renamesMap.remove(possibleConflictName)
+
+                }
+                Modification.Type.RENAME -> {
+                    var newVCFFileName = it.currentFilename
+                    if (versionControlledFiles.containsKey(it.currentFilename)) {
+                        val marker = nameConflictsMap[it.currentFilename]
+                        val newMarker = if (marker != null) marker + 1 else 0
+                        newVCFFileName = it.currentFilename + "_\\0_" + newMarker
+                        nameConflictsMap[it.currentFilename] = newMarker
+                    }
+                    if (oldestName != null) {
+                        renamesMap.remove(possibleConflictName)
+                        renamesMap[newVCFFileName] = oldestName
+                    } else {
+                        renamesMap[newVCFFileName] = it.oldFilename
+                    }
+                        versionControlledFiles[VCFName]?.filename = it.currentFilename
+                        versionControlledFiles[VCFName]?.registerCommit(commit, it)
+                }
+                else ->
+                        versionControlledFiles[VCFName]?.registerCommit(commit, it)
+
+            }
+        }
     }
 
     private fun combineForParallelExecution(
-        firstCommits: MutableList<VersionControlledFile>,
-        secondCommits: MutableList<VersionControlledFile>
-    ): MutableList<VersionControlledFile> {
+        firstCommits: MutableMap<String, VersionControlledFile>,
+        secondCommits: MutableMap<String, VersionControlledFile>
+    ): MutableMap<String, VersionControlledFile> {
         throw UnsupportedOperationException("parallel collection of commits not supported")
     }
 
     companion object {
 
-        fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableList<VersionControlledFile>> {
+        fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableMap<String, VersionControlledFile>> {
             val collector = CommitCollector(metricsFactory)
-            return Collector.of(Supplier<MutableList<VersionControlledFile>> { ArrayList() },
-                    BiConsumer<MutableList<VersionControlledFile>, Commit> { versionControlledFiles, commit ->
-                        collector.collectCommit(versionControlledFiles, commit)
-                    }, BinaryOperator<MutableList<VersionControlledFile>> { firstCommits, secondCommits ->
-                collector.combineForParallelExecution(firstCommits, secondCommits)
-            })
+            return Collector.of(Supplier<MutableMap<String, VersionControlledFile>> { mutableMapOf() },
+                BiConsumer<MutableMap<String, VersionControlledFile>, Commit> { versionControlledFiles, commit ->
+                    collector.collectCommit(versionControlledFiles, commit)
+                }, BinaryOperator<MutableMap<String, VersionControlledFile>> { firstCommits, secondCommits ->
+                    collector.combineForParallelExecution(firstCommits, secondCommits)
+                })
         }
     }
 }

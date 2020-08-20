@@ -13,20 +13,24 @@ import java.util.stream.Stream
 /**
  * Parses log lines and generates VersionControlledFiles from them using specific parserStrategy and metricsFactory
  */
-class LogLineParser(private val parserStrategy: LogParserStrategy, private val metricsFactory: MetricsFactory, private val silent: Boolean = false) {
+class LogLineParser(
+    private val parserStrategy: LogParserStrategy,
+    private val metricsFactory: MetricsFactory,
+    private val silent: Boolean = false
+) {
 
     private var numberOfCommitsParsed = 0
 
-    fun parse(logLines: Stream<String>): List<VersionControlledFile> {
+    fun parse(logLines: Stream<String>): MutableMap<String, VersionControlledFile> {
         return logLines.collect(parserStrategy.createLogLineCollector())
-                .map { this.parseCommit(it) }.filter { !it.isEmpty }
-                .collect(CommitCollector.create(metricsFactory))
+            .map { this.parseCommit(it) }.filter { !it.isEmpty }
+            .collect(CommitCollector.create(metricsFactory))
     }
 
     internal fun parseCommit(commitLines: List<String>): Commit {
         return try {
             var author = ""
-            var commitDate = OffsetDateTime.now()
+            var commitDate = OffsetDateTime.MIN
             var modifications: List<Modification> = listOf()
 
             runBlocking(Dispatchers.Default) {
@@ -46,7 +50,7 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
     }
 
     private fun showProgress(date: OffsetDateTime) {
-        System.err.print("\r$numberOfCommitsParsed commits parsed. (Earliest commit from $date)       ")
+        System.err.print("\r$numberOfCommitsParsed commits parsed. (Latest commit from $date)       ")
         numberOfCommitsParsed++
     }
 }

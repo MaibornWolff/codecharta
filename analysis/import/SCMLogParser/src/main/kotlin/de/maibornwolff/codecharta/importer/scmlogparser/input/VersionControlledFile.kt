@@ -10,14 +10,10 @@ class VersionControlledFile internal constructor(
     private var metrics: List<Metric>
 ) {
 
-    // actual filename
-    val actualFilename: String
     val authors = mutableSetOf<String>()
 
-    // current filename in a specific revision, might change in history
+    // the current filename in a specific revision, might change in history
     var filename: String
-        private set
-    private var markedDeleted = false
 
     val metricsMap: Map<String, Number>
         get() = metrics.associateBy({ it.metricName() }, { it.value() })
@@ -31,36 +27,19 @@ class VersionControlledFile internal constructor(
 
     init {
         this.filename = filename
-        this.actualFilename = filename
     }
 
     /**
-     * registers commits in anti-chronological order
+     * registers commits in chronological order
      */
-    fun registerCommit(commit: Commit) {
-        val modification = commit.getModification(filename)
+    fun registerCommit(commit: Commit, modification: Modification) {
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
-        registerModification(modification)
-    }
-
-    private fun registerModification(modification: Modification) {
-        val type = modification.type
-        when (type) {
-            Modification.Type.DELETE -> markedDeleted = true
-            Modification.Type.RENAME -> filename = modification.oldFilename
-            else -> {
-            }
-        }
-        metrics.forEach { it.registerModification(modification) }
-    }
-
-    fun markedDeleted(): Boolean {
-        return markedDeleted
+        metrics.forEach { it.registerModification(modification)}
     }
 
     override fun toString(): String {
-        return "$actualFilename with metrics $metricsMap"
+        return "$filename with metrics $metricsMap"
     }
 
     fun getEdgeList(): List<Edge> {

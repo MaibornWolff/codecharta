@@ -97,7 +97,7 @@ class HighlyCoupledFilesTest {
         metric.registerCommit(commit)
 
         modificationList.stream()
-                .filter { mod -> FILENAME == mod.filename }
+                .filter { mod -> FILENAME == mod.currentFilename }
                 .findFirst()
                 .ifPresent({ metric.registerModification(it) })
     }

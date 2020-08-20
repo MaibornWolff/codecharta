@@ -13,7 +13,7 @@ import kotlin.streams.toList
 
 class GitLogNumstatRawParserStrategy : LogParserStrategy {
     override fun creationCommand(): String {
-        return "git log --numstat --raw --topo-order"
+        return "git log --numstat --raw --topo-order --reverse"
     }
 
     override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> {
@@ -22,7 +22,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
 
     override fun parseAuthor(commitLines: List<String>): String {
         return commitLines
-            .parallelStream()
+            .parallelStream() // take a look here
             .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
             .map { AuthorParser.parseAuthor(it) }
             .toList()
@@ -33,7 +33,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
         return commitLines
             .filter { isFileLine(it) }
             .map { parseModification(it) }
-            .groupingBy { it.filename }
+            .groupingBy { it.currentFilename }
             .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
                 when (aggregatedModification) {
                     null -> mergeModifications(currentModification)
@@ -64,7 +64,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
         }
 
         private fun mergeModifications(vararg a: Modification): Modification {
-            val filename = a[0].filename
+            val filename = a[0].currentFilename
             val additions = a.map { it.additions }.sum()
             val deletions = a.map { it.deletions }.sum()
             val type =

@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser
 
 import de.maibornwolff.codecharta.importer.scmlogparser.converter.ProjectConverter
+import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineParser
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
@@ -20,7 +21,7 @@ class SCMLogProjectCreator(
     private val logLineParser: LogLineParser = LogLineParser(parserStrategy, metricsFactory, silent)
 
     fun parse(lines: Stream<String>): Project {
-        val versionControlledFiles = logLineParser.parse(lines)
+        val versionControlledFiles: MutableMap<String, VersionControlledFile> = logLineParser.parse(lines)
         return projectConverter.convert(versionControlledFiles, metricsFactory)
     }
 }

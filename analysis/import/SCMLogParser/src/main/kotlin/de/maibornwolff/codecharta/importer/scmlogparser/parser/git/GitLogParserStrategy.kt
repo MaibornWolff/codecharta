@@ -13,7 +13,7 @@ import java.util.stream.Stream
 class GitLogParserStrategy : LogParserStrategy {
 
     override fun creationCommand(): String {
-        return "git log --name-status --topo-order"
+        return "git log --name-status --topo-order --reverse"
     }
 
     override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> {

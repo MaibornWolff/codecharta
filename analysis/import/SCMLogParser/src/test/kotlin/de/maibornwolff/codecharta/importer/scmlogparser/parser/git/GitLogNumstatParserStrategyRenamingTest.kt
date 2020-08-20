@@ -41,7 +41,7 @@ class GitLogNumstatParserStrategyRenamingTest(
     fun parseModification() {
         val modification = GitLogNumstatParserStrategy.parseModification(fileLine)
 
-        assertThat(modification).extracting(Function<Modification, Any> { it.filename },
+        assertThat(modification).extracting(Function<Modification, Any> { it.currentFilename },
                 Function<Modification, Any> { it.oldFilename },
                 Function<Modification, Any> { it.type },
                 Function<Modification, Any> { it.additions },

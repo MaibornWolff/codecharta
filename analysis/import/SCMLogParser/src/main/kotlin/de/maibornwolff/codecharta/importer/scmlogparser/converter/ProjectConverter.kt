@@ -19,10 +19,10 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     private fun addVersionControlledFile(projectBuilder: ProjectBuilder, versionControlledFile: VersionControlledFile) {
         val attributes = extractAttributes(versionControlledFile)
         val edges = versionControlledFile.getEdgeList()
-        val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
+        val fileName = versionControlledFile.filename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path = PathFactory.fromFileSystemPath(
-                versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
+                versionControlledFile.filename.substringBeforeLast(PATH_SEPARATOR, ""))
         projectBuilder.insertByPath(path, newNode)
         edges.forEach { projectBuilder.insertEdge(addRootToEdgePaths(it)) }
         versionControlledFile.removeMetricsToFreeMemory()
@@ -42,12 +42,10 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         return edge
     }
 
-    fun convert(versionControlledFiles: List<VersionControlledFile>, metricsFactory: MetricsFactory): Project {
+    fun convert(versionControlledFiles: MutableMap<String, VersionControlledFile>, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
-        versionControlledFiles
-                .filter { vc -> !vc.markedDeleted() }
-                .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+        versionControlledFiles.values.forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))

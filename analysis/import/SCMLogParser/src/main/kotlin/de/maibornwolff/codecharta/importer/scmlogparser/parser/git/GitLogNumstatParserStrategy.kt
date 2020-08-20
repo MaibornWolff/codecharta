@@ -14,7 +14,7 @@ import kotlin.streams.toList
 
 class GitLogNumstatParserStrategy : LogParserStrategy {
     override fun creationCommand(): String {
-        return "git log --numstat --topo-order"
+        return "git log --numstat --topo-order --reverse"
     }
 
     override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> {
