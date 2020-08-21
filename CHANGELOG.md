@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.54.0] - 2020-08-21
+
+### Added 🚀
+
 -   Opening NodeContextMenu in the tree-view marks the node until it is closed #1068
 
 ### Changed
