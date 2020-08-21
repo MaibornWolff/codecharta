@@ -142,6 +142,10 @@ export class CodeMapMouseEventService
 				const from = this.threeSceneService.getHighlightedBuilding()
 				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
+				if (this.intersectedBuilding !== undefined) {
+					CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+				}
+
 				if (from !== to) {
 					this.unhoverBuilding()
 					if (to) {
@@ -213,7 +217,6 @@ export class CodeMapMouseEventService
 
 	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {
 		if (hoveredBuilding) {
-			CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
 			this.hoverBuildingAndChildren(hoveredBuilding)
 		}
 	}
