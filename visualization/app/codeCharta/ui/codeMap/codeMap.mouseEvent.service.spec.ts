@@ -426,7 +426,7 @@ describe("codeMapMouseEventService", () => {
 			expect(document.body.style.cursor).toEqual(CursorType.Moving)
 		})
 
-		it("should not change the cursor to grabbing when pressing the left button just once", () => {
+		it("should change the cursor to grabbing when pressing the left button just once", () => {
 			const event = { button: ClickType.LeftClick }
 
 			codeMapMouseEventService.onDocumentMouseDown(event)

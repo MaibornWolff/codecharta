@@ -159,6 +159,7 @@ export class CodeMapMouseEventService
 
 	public onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+		// check if mouse moved to prevent opening the building link after rotating the map, when the cursor ends on a building
 		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			const fileSourceLink = highlightedBuilding.node.link
 			if (fileSourceLink) {
@@ -189,7 +190,7 @@ export class CodeMapMouseEventService
 
 	private onRightClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
-
+		// check if mouse moved to prevent building from being selected after rotating the map, when the cursor ends on a building
 		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
 				building: highlightedBuilding,
@@ -201,8 +202,7 @@ export class CodeMapMouseEventService
 
 	private onLeftClick() {
 		this.threeSceneService.clearSelection()
-		// track mouse position to prevent opening a link to a building or the sidebar when releasing on a building after moving the map
-		if (this.intersectedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
+		if (this.intersectedBuilding) {
 			this.threeSceneService.selectBuilding(this.intersectedBuilding)
 		}
 	}
