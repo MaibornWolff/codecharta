@@ -171,7 +171,7 @@ export class CodeMapMouseEventService
 		if (event.button === ClickType.RightClick) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
 		}
-		if (event.button === ClickType.LeftClick && event.detail == 2) {
+		if (event.button === ClickType.LeftClick) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
 		}
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
@@ -213,6 +213,7 @@ export class CodeMapMouseEventService
 
 	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {
 		if (hoveredBuilding) {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
 			this.hoverBuildingAndChildren(hoveredBuilding)
 		}
 	}
@@ -238,6 +239,7 @@ export class CodeMapMouseEventService
 	}
 
 	private unhoverBuilding() {
+		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 		this.threeSceneService.clearHighlight()
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}

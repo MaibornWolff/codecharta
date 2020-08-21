@@ -427,17 +427,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not change the cursor to grabbing when pressing the left button just once", () => {
-			CodeMapMouseEventService.changeCursorIndicator = jest.fn()
-			const event = { button: ClickType.LeftClick, detail: 1 }
-
-			codeMapMouseEventService.onDocumentMouseDown(event)
-
-			expect(document.body.style.cursor).not.toEqual(CursorType.Grabbing)
-		})
-
-		it("should change the cursor to grabbing when pressing the left button twice", () => {
-			CodeMapMouseEventService.changeCursorIndicator = jest.fn()
-			const event = { button: ClickType.LeftClick, detail: 2 }
+			const event = { button: ClickType.LeftClick }
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
 
