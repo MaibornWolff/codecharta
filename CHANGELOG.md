@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   bug that caused missing sonarcloud metrics in demo
+-   Missing Sonarcloud metrics in demo
 
 ### Docs 🔎
 
