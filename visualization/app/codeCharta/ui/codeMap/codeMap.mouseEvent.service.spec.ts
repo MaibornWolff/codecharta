@@ -378,7 +378,7 @@ describe("codeMapMouseEventService", () => {
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
-				expect($rootScope.$broadcast).not.toHaveBeenCalled()
+				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
 			})
 
 			it("should not $broadcast a building-right-clicked event when the mouse has moved since last click", () => {
@@ -388,7 +388,7 @@ describe("codeMapMouseEventService", () => {
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
-				expect($rootScope.$broadcast).not.toHaveBeenCalled()
+				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
 			})
 		})
 	})
