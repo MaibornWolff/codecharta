@@ -13,6 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
+import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 
 interface Coordinates {
 	x: number
@@ -163,6 +164,10 @@ export class CodeMapMouseEventService
 	public onDocumentMouseDown(event) {
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
 		$(document.activeElement).blur()
+
+		if (event.button === ClickType.RightClick) {
+			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+		}
 	}
 
 	public onDocumentMouseUp(event) {

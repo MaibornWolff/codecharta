@@ -378,7 +378,7 @@ describe("codeMapMouseEventService", () => {
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
-				expect($rootScope.$broadcast).not.toHaveBeenCalled()
+				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
 			})
 
 			it("should not $broadcast a building-right-clicked event when the mouse has moved since last click", () => {
@@ -388,7 +388,7 @@ describe("codeMapMouseEventService", () => {
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
-				expect($rootScope.$broadcast).not.toHaveBeenCalled()
+				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
 			})
 		})
 	})
@@ -400,6 +400,14 @@ describe("codeMapMouseEventService", () => {
 			codeMapMouseEventService.onDocumentMouseDown(event)
 
 			expect(codeMapMouseEventService["mouseOnLastClick"]).toEqual({ x: event.clientX, y: event.clientY })
+		})
+
+		it("should $broadcast hide-node-context-menu event on-right-mouse-button-down", () => {
+			const event = { button: ClickType.RightClick, clientX: 1, clientY: 2 }
+
+			codeMapMouseEventService.onDocumentMouseDown(event)
+
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu", expect.any(Object))
 		})
 	})
 
