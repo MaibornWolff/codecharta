@@ -393,7 +393,7 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 			name: "first leaf",
 			type: NodeType.FILE,
 			path: "/root/first leaf",
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 100, functions: 10, mcc: 1 },
+			attributes: { [NodeMetricDataService.UNARY_METRIC]: 1, functions: 10, mcc: 1 },
 			isExcluded: false,
 			isFlattened: false
 		},
@@ -401,7 +401,7 @@ export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 			name: "second leaf",
 			type: NodeType.FILE,
 			path: "/root/second leaf",
-			attributes: { [NodeMetricDataService.UNARY_METRIC]: 100, functions: 5, mcc: 1 },
+			attributes: { [NodeMetricDataService.UNARY_METRIC]: 1, functions: 5, mcc: 1 },
 			isExcluded: false,
 			isFlattened: false
 		}
