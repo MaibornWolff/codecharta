@@ -58,13 +58,16 @@ describe("edgeMetricData", () => {
 			expect(pairingRateMapKeys.next().value).toEqual("/root/Parent Leaf/other small leaf")
 		})
 
-		it("metrics Map should be sorted entries", () => {
+		it("metrics map should contain sorted entries by metric name", () => {
 			edgeMetricData([], calculateNewEdgeMetricData(fileStates, []))
 
-			const pairingRateMap = nodeEdgeMetricsMap.get("pairingRate")
-			expect(pairingRateMap.get("/root/Parent Leaf/small leaf")).toEqual({ incoming: 2, outgoing: 0 })
-			const avgCommitsMap = nodeEdgeMetricsMap.get("avgCommits")
-			expect(avgCommitsMap.get("/root/big leaf")).toEqual({ incoming: 0, outgoing: 1 })
+			const keys = Array.from(nodeEdgeMetricsMap.keys())
+
+			expect(keys).toHaveLength(4)
+			expect(keys[1]).toBe("avgCommits")
+			expect(keys[2]).toBe("None")
+			expect(keys[3]).toBe("otherMetric")
+			expect(keys[4]).toBe("pairingRate")
 		})
 	})
 })

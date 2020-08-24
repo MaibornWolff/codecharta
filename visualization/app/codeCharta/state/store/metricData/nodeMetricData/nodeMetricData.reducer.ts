@@ -5,6 +5,7 @@ import { FileState } from "../../../../model/files/files"
 import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { hierarchy, HierarchyNode } from "d3"
 import { NodeMetricDataService } from "./nodeMetricData.service"
+import { sortByMetricName } from "../metricData.reducer"
 
 const clone = require("rfdc")()
 
@@ -61,9 +62,5 @@ function getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>): Nod
 			maxValue: value.maxValue
 		})
 	})
-	return sortByAttributeName(metricData)
-}
-
-function sortByAttributeName(metricData: NodeMetricData[]): NodeMetricData[] {
-	return metricData.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
+	return sortByMetricName(metricData)
 }

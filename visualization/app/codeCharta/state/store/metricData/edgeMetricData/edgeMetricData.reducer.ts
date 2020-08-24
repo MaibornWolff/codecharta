@@ -4,6 +4,7 @@ import { getVisibleFileStates } from "../../../../model/files/files.helper"
 import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { FileState } from "../../../../model/files/files"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
+import { sortByMetricName } from "../metricData.reducer"
 
 const clone = require("rfdc")()
 
@@ -35,7 +36,7 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 		})
 	}
 	const newEdgeMetricData = getMetricDataFromMap()
-	sortNodeEdgeMetricsMap()
+	sortByMetricName(newEdgeMetricData)
 	return newEdgeMetricData
 }
 
@@ -97,17 +98,4 @@ function getMetricDataFromMap(): EdgeMetricData[] {
 	})
 
 	return metricData
-}
-
-function sortNodeEdgeMetricsMap() {
-	const sortedEdgeMetricMap = new Map()
-	if (nodeEdgeMetricsMap) {
-		nodeEdgeMetricsMap.forEach((value, key) => {
-			const sortedMapForMetric = new Map(
-				[...value.entries()].sort((a, b) => b[1].incoming + b[1].outgoing - (a[1].incoming + a[1].outgoing))
-			)
-			sortedEdgeMetricMap.set(key, sortedMapForMetric)
-		})
-	}
-	nodeEdgeMetricsMap = sortedEdgeMetricMap
 }
