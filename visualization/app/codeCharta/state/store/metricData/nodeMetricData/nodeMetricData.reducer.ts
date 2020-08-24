@@ -42,7 +42,7 @@ function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: 
 	attributes.forEach((metric: string) => {
 		const maxMetricValuePair = hashMap.get(metric)
 
-		if (!maxMetricValuePair || maxMetricValuePair.maxValue <= node.data.attributes[metric]) {
+		if (maxMetricValuePair === undefined || maxMetricValuePair.maxValue <= node.data.attributes[metric]) {
 			hashMap.set(metric, {
 				maxValue: node.data.attributes[metric]
 			})
