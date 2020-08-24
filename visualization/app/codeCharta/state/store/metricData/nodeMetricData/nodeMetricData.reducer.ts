@@ -24,16 +24,6 @@ export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().pay
 }
 
 function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): NodeMetricData[] {
-	const newMetricData = calculateMetrics(fileStates, blacklist)
-	return newMetricData
-}
-
-function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]): NodeMetricData[] {
-	const hashMap = buildHashMapFromMetrics(fileStates, blacklist)
-	return getMetricDataFromHashMap(hashMap)
-}
-
-function buildHashMapFromMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	const hashMap: Map<string, MaxMetricValuePair> = new Map()
 
 	getVisibleFileStates(fileStates).forEach((fileState: FileState) => {
@@ -44,7 +34,7 @@ function buildHashMapFromMetrics(fileStates: FileState[], blacklist: BlacklistIt
 			}
 		})
 	})
-	return hashMap
+	return getMetricDataFromHashMap(hashMap)
 }
 
 function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: Map<string, MaxMetricValuePair>) {
@@ -62,7 +52,7 @@ function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: 
 
 function getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>): NodeMetricData[] {
 	const metricData: NodeMetricData[] = [{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1 }]
-	
+
 	hashMap.forEach((value: MaxMetricValuePair, key: string) => {
 		metricData.push({
 			name: key,
