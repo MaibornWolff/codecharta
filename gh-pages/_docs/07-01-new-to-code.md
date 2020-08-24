@@ -82,6 +82,9 @@ Don't import the whole codecharta project to IntelliJ when working on the analys
 -   Run `gradlew.bat test` or `./gradlew test`
 -   Run `gradlew.bat integrationTest` or `./gradlew integrationTest`
 
+The integration tests might fail on windows, because of a missing or unknown `sh` command.
+To make it work, add the path to the Git `sh.exe` (which is normally placed here `C:\<path-to-git>\Git\bin`) to your PATH variable.
+
 **If you want to run the JUnit tests with the IntelliJ-Runner, make sure to go to `File -> Settings ->Build,Execution, Deployment -> Build Tools -> Gradle` and select `Run test using: IntelliJ IDEA`**
 
 ### Linting/Formatting

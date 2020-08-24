@@ -73,7 +73,6 @@ describe("codeMapMouseEventService", () => {
 			storeService
 		)
 
-		codeMapMouseEventService["mouse"] = { x: 0, y: 0 }
 		codeMapMouseEventService["oldMouse"] = { x: 1, y: 1 }
 	}
 
@@ -245,7 +244,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not deselect the building when no building is selected", () => {
-			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
+			threeSceneService.getSelectedBuilding = jest.fn()
 
 			codeMapMouseEventService.onBlacklistChanged([])
 
@@ -256,8 +255,10 @@ describe("codeMapMouseEventService", () => {
 	describe("updateHovering", () => {
 		beforeEach(() => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
-				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(null)
+				checkMouseRayMeshIntersection: jest.fn()
 			})
+			codeMapMouseEventService["transformHTMLToSceneCoordinates"] = jest.fn().mockReturnValue({ x: 0, y: 1 })
+
 			const idToBuilding = new Map<number, CodeMapBuilding>()
 			idToBuilding.set(CODE_MAP_BUILDING.node.id, CODE_MAP_BUILDING)
 			const idToNode = new Map<number, CodeMapNode>()
@@ -284,7 +285,7 @@ describe("codeMapMouseEventService", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
-			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
@@ -304,111 +305,111 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onDocumentMouseUp", () => {
-		beforeEach(() => {
-			codeMapMouseEventService["clickType"] = ClickType.LeftClick
+		let event
+
+		describe("on left click", () => {
+			beforeEach(() => {
+				event = { button: ClickType.LeftClick }
+			})
+
+			it("should not do anything when no building is hovered and nothing is selected", () => {
+				threeSceneService.getHighlightedBuilding = jest.fn()
+				threeSceneService.getSelectedBuilding = jest.fn()
+
+				codeMapMouseEventService.onDocumentMouseUp(event)
+
+				expect(threeSceneService.selectBuilding).not.toHaveBeenCalled()
+			})
+
+			it("should call selectBuilding when no building is selected", () => {
+				threeSceneService.getSelectedBuilding = jest.fn()
+				codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
+
+				codeMapMouseEventService.onDocumentMouseUp(event)
+
+				expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			})
+
+			it("should call selectBuilding when a new building is selected", () => {
+				threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, null, null))
+				codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
+
+				codeMapMouseEventService.onDocumentMouseUp(event)
+
+				expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
+			})
+
+			it("should deselect building, when nothing is highlighted and something is selected", () => {
+				threeSceneService.getHighlightedBuilding = jest.fn()
+
+				codeMapMouseEventService.onDocumentMouseUp(event)
+
+				expect(threeSceneService.clearSelection).toHaveBeenCalled()
+			})
 		})
 
-		it("should not do anything when no building is hovered and nothing is selected", () => {
-			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
-			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
+		describe("on right click", () => {
+			beforeEach(() => {
+				event = { button: ClickType.RightClick, clientX: 0, clientY: 1 }
+			})
 
-			codeMapMouseEventService.onDocumentMouseUp()
+			it("should $broadcast a building-right-clicked event with data", () => {
+				codeMapMouseEventService.onDocumentMouseMove(event)
+				codeMapMouseEventService.onDocumentMouseDown(event)
 
-			expect(threeSceneService.selectBuilding).not.toHaveBeenCalled()
-		})
+				codeMapMouseEventService.onDocumentMouseUp(event)
 
-		it("should call selectBuilding when no building is selected", () => {
-			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(null)
-			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
+				expect($rootScope.$broadcast).toHaveBeenCalledWith("building-right-clicked", {
+					building: codeMapBuilding,
+					x: event.clientX,
+					y: event.clientY
+				})
+			})
 
-			codeMapMouseEventService.onDocumentMouseUp()
+			it("should not $broadcast a building-right-clicked event when no intersection was found", () => {
+				threeSceneService.getHighlightedBuilding = jest.fn()
 
-			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
-		})
+				codeMapMouseEventService.onDocumentMouseMove(event)
+				codeMapMouseEventService.onDocumentMouseDown(event)
 
-		it("should call selectBuilding when a new building is selected", () => {
-			threeSceneService.getSelectedBuilding = jest.fn().mockReturnValue(new CodeMapBuilding(200, null, null, null))
-			codeMapMouseEventService["intersectedBuilding"] = codeMapBuilding
+				codeMapMouseEventService.onDocumentMouseUp(event)
 
-			codeMapMouseEventService.onDocumentMouseUp()
+				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
+			})
 
-			expect(threeSceneService.selectBuilding).toHaveBeenCalledWith(codeMapBuilding)
-		})
+			it("should not $broadcast a building-right-clicked event when the mouse has moved since last click", () => {
+				codeMapMouseEventService.onDocumentMouseMove(event)
+				codeMapMouseEventService.onDocumentMouseDown(event)
+				codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 20 })
 
-		it("should deselect building, when nothing is highlighted and something is selected", () => {
-			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+				codeMapMouseEventService.onDocumentMouseUp(event)
 
-			codeMapMouseEventService.onDocumentMouseUp()
-
-			expect(threeSceneService.clearSelection).toHaveBeenCalled()
+				expect($rootScope.$broadcast).not.toHaveBeenCalledWith("building-right-clicked")
+			})
 		})
 	})
 
 	describe("onDocumentMouseDown", () => {
-		beforeEach(() => {
-			codeMapMouseEventService.onLeftClick = jest.fn()
-			codeMapMouseEventService.onRightClick = jest.fn()
-		})
-
-		it("should call onLeftClick with 0 if event.button is 0", () => {
-			const event = { button: 0 }
+		it("should save the mouse position", () => {
+			const event = { clientX: 10, clientY: 20 }
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
 
-			expect(codeMapMouseEventService.onLeftClick).toHaveBeenCalled()
+			expect(codeMapMouseEventService["mouseOnLastClick"]).toEqual({ x: event.clientX, y: event.clientY })
 		})
 
-		it("should call onRightClick with 2 if event.button is 2", () => {
-			const event = { button: 2 }
+		it("should $broadcast hide-node-context-menu event on-right-mouse-button-down", () => {
+			const event = { button: ClickType.RightClick, clientX: 1, clientY: 2 }
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
 
-			expect(codeMapMouseEventService.onRightClick).toHaveBeenCalledWith(event)
-		})
-	})
-
-	describe("onRightClick", () => {
-		beforeEach(() => {
-			codeMapMouseEventService["intersectionResult"] = { intersectionFound: true }
-		})
-
-		it("should $broadcast a building-right-clicked event with data", () => {
-			const event = { clientX: 0, clientY: 1 }
-			codeMapMouseEventService["clickType"] = ClickType.RightClick
-
-			codeMapMouseEventService.onRightClick(event)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-right-clicked", {
-				building: codeMapBuilding,
-				x: 0,
-				y: 1,
-				event
-			})
-		})
-
-		it("should not $broadcast a building-right-clicked event when no building is highlighted", () => {
-			threeSceneService.getHighlightedBuilding = jest.fn()
-
-			const event = { clientX: 0, clientY: 1 }
-			codeMapMouseEventService["clickType"] = ClickType.RightClick
-
-			codeMapMouseEventService.onRightClick(event)
-
-			expect($rootScope.$broadcast).not.toHaveBeenCalled()
-		})
-	})
-
-	describe("onLeftClick", () => {
-		it("should set clickType to LeftClick", () => {
-			codeMapMouseEventService.onLeftClick()
-
-			expect(codeMapMouseEventService["clickType"]).toBe(ClickType.LeftClick)
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu", expect.any(Object))
 		})
 	})
 
 	describe("onDocumentDoubleClick", () => {
 		it("should return if hovered is null", () => {
-			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.onDocumentDoubleClick()
 
@@ -416,7 +417,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should not do anything if hovered.node.link is null", () => {
-			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapBuilding.setNode({ link: null } as Node)
 
@@ -486,7 +487,7 @@ describe("codeMapMouseEventService", () => {
 
 		it("should call onBuildingHovered", () => {
 			codeMapBuilding.node.path = file.map.path
-			threeSceneService.getHighlightedBuilding = jest.fn().mockReturnValue(null)
+			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.onShouldHoverNode(file.map)
 

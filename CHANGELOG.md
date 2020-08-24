@@ -19,6 +19,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.54.0] - 2020-08-21
+
+### Added 🚀
+
+-   Opening NodeContextMenu in the tree-view marks the node until it is closed #1068
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Missing Sonarcloud metrics in demo
+
+### Docs 🔎
+
+-   Added note how to fix missing `sh` command issue when running integration tests on Windows
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.53.0] - 2020-08-14
+
+### Added 🚀
+
+### Changed
+
+-   NodeContextMenu will show up when releasing the right-mouse-button now #1027
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   NodeContextMenu showing up after moving the mouse while holding right-mouse-button #1027
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.52.0] - 2020-08-07
 
 ### Added 🚀
@@ -34,7 +70,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   After loading an invalid file the filechooser pops up again, so that the user can choose a valid file #1021
--   Quality gates on sonarcloud.io are available again #879
+-   Quality gates on sonarcloud.io are red #879
 
 ### Docs 🔎
 
