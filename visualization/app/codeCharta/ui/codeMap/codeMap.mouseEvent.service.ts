@@ -31,6 +31,10 @@ export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
 
+export interface MapRightClickEventSubscriber {
+	onMapRightClick(x: number, y: number)
+}
+
 export enum ClickType {
 	LeftClick = 0,
 	RightClick = 2
@@ -41,6 +45,7 @@ export class CodeMapMouseEventService
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
+	private static readonly MAP_RIGHT_CLICK_EVENT = "map-right-click-event"
 
 	private highlightedInTreeView: CodeMapBuilding
 	private intersectedBuilding: CodeMapBuilding
@@ -163,6 +168,13 @@ export class CodeMapMouseEventService
 	public onDocumentMouseDown(event) {
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
 		$(document.activeElement).blur()
+
+		if (event.button === ClickType.RightClick) {
+			this.$rootScope.$broadcast(CodeMapMouseEventService.MAP_RIGHT_CLICK_EVENT, {
+				x: this.mouse.x,
+				y: this.mouse.y
+			})
+		}
 	}
 
 	public onDocumentMouseUp(event) {
@@ -242,6 +254,12 @@ export class CodeMapMouseEventService
 	public static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (_event, data) => {
 			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
+		})
+	}
+
+	public static subscribeToMapRightClickEvents($rootScope: IRootScopeService, subscriber: MapRightClickEventSubscriber) {
+		$rootScope.$on(this.MAP_RIGHT_CLICK_EVENT, (_event, data) => {
+			subscriber.onMapRightClick(data.x, data.y)
 		})
 	}
 }
