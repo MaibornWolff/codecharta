@@ -13,7 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
-import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component";
+import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 
 interface Coordinates {
 	x: number

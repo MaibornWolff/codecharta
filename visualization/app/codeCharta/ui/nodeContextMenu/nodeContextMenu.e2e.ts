@@ -2,7 +2,7 @@ import { goto } from "../../../puppeteer.helper"
 import { NodeContextMenuPageObject } from "./nodeContextMenu.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
-import { CodeMapPageObject } from "../codeMap/codeMap.po";
+import { CodeMapPageObject } from "../codeMap/codeMap.po"
 
 describe("NodeContextMenu", () => {
 	let contextMenu: NodeContextMenuPageObject
@@ -14,7 +14,7 @@ describe("NodeContextMenu", () => {
 		contextMenu = new NodeContextMenuPageObject()
 		searchPanelModeSelector = new SearchPanelModeSelectorPageObject()
 		mapTreeViewLevel = new MapTreeViewLevelPageObject()
-        codeMap = new CodeMapPageObject()
+		codeMap = new CodeMapPageObject()
 
 		await goto()
 	})

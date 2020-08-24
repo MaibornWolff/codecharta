@@ -409,7 +409,6 @@ describe("codeMapMouseEventService", () => {
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu", expect.any(Object))
 		})
-
 	})
 
 	describe("onDocumentDoubleClick", () => {
