@@ -206,7 +206,7 @@ export class CodeMapMouseEventService
 
 	private onLeftClick() {
 		this.threeSceneService.clearSelection()
-		if (this.intersectedBuilding) {
+		if (this.intersectedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.threeSceneService.selectBuilding(this.intersectedBuilding)
 		}
 	}
