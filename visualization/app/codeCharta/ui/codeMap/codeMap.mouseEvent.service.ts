@@ -194,7 +194,7 @@ export class CodeMapMouseEventService
 
 	private onRightClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
-		// check if mouse moved to prevent building from being selected after rotating the map, when the cursor ends on a building
+		// check if mouse moved to prevent the node context menu to show up after moving the map, when the cursor ends on a building
 		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
 				building: highlightedBuilding,
