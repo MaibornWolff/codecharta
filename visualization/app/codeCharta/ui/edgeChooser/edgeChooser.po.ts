@@ -27,7 +27,7 @@ export class EdgeChooserPageObject {
 		const innerText = await this.getEdgeCountInnerText()
 		const edgeCount = innerText.split("/")
 
-		return { incoming: parseInt(edgeCount[0]), outgoing: parseInt(edgeCount[1]) }
+		return { incoming: Number(edgeCount[0]), outgoing: Number(edgeCount[1]) }
 	}
 
 	private async getEdgeCountInnerText() {
