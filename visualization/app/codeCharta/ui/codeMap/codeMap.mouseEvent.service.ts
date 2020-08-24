@@ -13,6 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
+import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component";
 
 interface Coordinates {
 	x: number
@@ -31,10 +32,6 @@ export interface BuildingRightClickedEventSubscriber {
 	onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number)
 }
 
-export interface MapRightClickEventSubscriber {
-	onMapRightClick(x: number, y: number)
-}
-
 export enum ClickType {
 	LeftClick = 0,
 	RightClick = 2
@@ -45,7 +42,6 @@ export class CodeMapMouseEventService
 	private static readonly BUILDING_HOVERED_EVENT = "building-hovered"
 	private static readonly BUILDING_UNHOVERED_EVENT = "building-unhovered"
 	private static readonly BUILDING_RIGHT_CLICKED_EVENT = "building-right-clicked"
-	private static readonly MAP_RIGHT_CLICK_EVENT = "map-right-click-event"
 
 	private highlightedInTreeView: CodeMapBuilding
 	private intersectedBuilding: CodeMapBuilding
@@ -170,10 +166,7 @@ export class CodeMapMouseEventService
 		$(document.activeElement).blur()
 
 		if (event.button === ClickType.RightClick) {
-			this.$rootScope.$broadcast(CodeMapMouseEventService.MAP_RIGHT_CLICK_EVENT, {
-				x: this.mouse.x,
-				y: this.mouse.y
-			})
+			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 		}
 	}
 
@@ -254,12 +247,6 @@ export class CodeMapMouseEventService
 	public static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (_event, data) => {
 			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
-		})
-	}
-
-	public static subscribeToMapRightClickEvents($rootScope: IRootScopeService, subscriber: MapRightClickEventSubscriber) {
-		$rootScope.$on(this.MAP_RIGHT_CLICK_EVENT, (_event, data) => {
-			subscriber.onMapRightClick(data.x, data.y)
 		})
 	}
 }

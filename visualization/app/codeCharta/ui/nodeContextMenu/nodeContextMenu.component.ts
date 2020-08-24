@@ -8,7 +8,7 @@ import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService, MapRightClickEventSubscriber } from "../codeMap/codeMap.mouseEvent.service"
+import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { Vector2 } from "three"
 import {
@@ -30,7 +30,6 @@ export interface HideNodeContextMenuSubscriber {
 export class NodeContextMenuController
 	implements
 		BuildingRightClickedEventSubscriber,
-		MapRightClickEventSubscriber,
 		ShowNodeContextMenuSubscriber,
 		HideNodeContextMenuSubscriber,
 		MapColorsSubscriber,
@@ -61,7 +60,6 @@ export class NodeContextMenuController
 	) {
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
-		CodeMapMouseEventService.subscribeToMapRightClickEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
 		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
 		BlacklistService.subscribe($rootScope, this)
@@ -95,10 +93,6 @@ export class NodeContextMenuController
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
 		const nodeType = building.node.isLeaf ? NodeType.FILE : NodeType.FOLDER
 		this.onShowNodeContextMenu(building.node.path, nodeType, x, y)
-	}
-
-	public onMapRightClick(x: number, y: number) {
-		this.hideNodeContextMenu()
 	}
 
 	public onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
