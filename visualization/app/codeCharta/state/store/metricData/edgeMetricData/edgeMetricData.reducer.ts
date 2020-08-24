@@ -23,24 +23,20 @@ export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().pay
 	}
 }
 
-function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]): EdgeMetricData[] {
-	calculateEdgeMetricData(fileStates, blacklist)
-	const newEdgeMetricData = getMetricDataFromMap(nodeEdgeMetricsMap)
-	sortNodeEdgeMetricsMap()
-	return newEdgeMetricData
-}
-
-function calculateEdgeMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
+function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
-	const allFilePaths = []
-	for (const fileState of getVisibleFileStates(fileStates)) {
-		allFilePaths.push(...CodeMapHelper.getAllPaths(fileState.file.map))
+	const allVisibleFileStates = getVisibleFileStates(fileStates)
+	const allFilePaths = allVisibleFileStates.flatMap(fileState => CodeMapHelper.getAllPaths(fileState.file.map))
+	for (const fileState of allVisibleFileStates) {
 		fileState.file.settings.fileSettings.edges.forEach(edge => {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
 				addEdgeToCalculationMap(edge)
 			}
 		})
 	}
+	const newEdgeMetricData = getMetricDataFromMap()
+	sortNodeEdgeMetricsMap()
+	return newEdgeMetricData
 }
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: string[], blacklist: BlacklistItem[]): boolean {
@@ -84,10 +80,10 @@ function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, t
 	}
 }
 
-function getMetricDataFromMap(hashMap: NodeEdgeMetricsMap): EdgeMetricData[] {
+function getMetricDataFromMap(): EdgeMetricData[] {
 	const metricData: EdgeMetricData[] = [{ name: EdgeMetricDataService.NONE_METRIC, maxValue: 0 }]
 
-	hashMap.forEach((occurences: EdgeMetricCountMap, edgeMetric: string) => {
+	nodeEdgeMetricsMap.forEach((occurences: EdgeMetricCountMap, edgeMetric: string) => {
 		let maximumMetricValue = 0
 		occurences.forEach((value: EdgeMetricCount) => {
 			const combinedValue = value.incoming + value.outgoing
@@ -97,7 +93,7 @@ function getMetricDataFromMap(hashMap: NodeEdgeMetricsMap): EdgeMetricData[] {
 		})
 		metricData.push({ name: edgeMetric, maxValue: maximumMetricValue })
 	})
-	hashMap.set(EdgeMetricDataService.NONE_METRIC, new Map())
+	nodeEdgeMetricsMap.set(EdgeMetricDataService.NONE_METRIC, new Map())
 
 	return metricData
 }
