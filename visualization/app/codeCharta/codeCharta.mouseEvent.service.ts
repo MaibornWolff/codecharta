@@ -9,11 +9,11 @@ export class CodeChartaMouseEventService {
 	public closeComponentExcept(fun?: Function) {
 		const functions: Function[] = [this.closeRibbonBarSections, this.closeSearchPanel]
 
-		functions
-			.filter(x => x !== fun)
-			.forEach(fn => {
+		functions.forEach(fn => {
+			if (fn !== fun) {
 				fn.call(this)
-			})
+			}
+		})
 	}
 
 	public closeRibbonBarSections() {
