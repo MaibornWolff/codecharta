@@ -24,6 +24,6 @@
 		}
 	},
 	"testURL": "http://localhost:3000",
-	"preset": "ts-jest",
+	"preset": "./jest-preset.js",
 	"testTimeout": 60000
 }

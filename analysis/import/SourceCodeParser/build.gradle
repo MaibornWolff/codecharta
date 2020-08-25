@@ -16,3 +16,7 @@ dependencies {
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.+'
     testImplementation project(path: ':model', configuration: 'testOutput')
 }
+
+test {
+    useJUnitPlatform()
+}

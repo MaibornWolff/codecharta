@@ -1,9 +1,9 @@
 ---
 categories:
-  - ADR
+    - ADR
 tags:
-  - visualization
-  - javascript
+    - visualization
+    - javascript
 title: "ADR 3: Pick Visualization Language"
 ---
 
@@ -21,6 +21,6 @@ We will use [JavaScript](https://developer.mozilla.org/de/docs/Web/JavaScript). 
 
 # Consequences
 
-- JavaScript does not look like our analysis language and knowledge is not easily transferred.
-- Unlike our analysis language JavaScript does not have static typing, which again makes knowledge transfer harder.
-  - Also static types have been a good choice for larger programs, which the visualization could eventually become.
+-   JavaScript does not look like our analysis language and knowledge is not easily transferred.
+-   Unlike our analysis language JavaScript does not have static typing, which again makes knowledge transfer harder.
+    -   Also static types have been a good choice for larger programs, which the visualization could eventually become.

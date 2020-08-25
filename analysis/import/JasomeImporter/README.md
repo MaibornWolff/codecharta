@@ -6,7 +6,7 @@ Please contact this team concerning questions about Jasome.
 
 ## Usage
 
-Output goes to *stdout* or to a file if specified by '-o'.
+Output goes to _stdout_ or to a file if specified by '-o'.
 
 ### Example
 

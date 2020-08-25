@@ -84,4 +84,4 @@ Then load `output.cc.json` in visualization
 - ./ccsh scmlogparser svn.log --input-format SVN_LOG -o output.cc.json
 ```
 
-- Then load `output.cc.json` in visualization
+-   Then load `output.cc.json` in visualization

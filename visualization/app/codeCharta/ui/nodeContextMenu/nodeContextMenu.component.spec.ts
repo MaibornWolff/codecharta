@@ -82,7 +82,7 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedHideNodeContextMenuMethod() {
-		nodeContextMenuController.hideNodeContextMenu = jest.fn()
+		nodeContextMenuController.onHideNodeContextMenu = jest.fn()
 	}
 
 	describe("constructor", () => {
@@ -145,9 +145,9 @@ describe("nodeContextMenuController", () => {
 
 	describe("onFocusNode", () => {
 		it("should hide the node context menu", () => {
-			nodeContextMenuController.onFocusNode("/root")
+			nodeContextMenuController.onFocusNode()
 
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -155,23 +155,23 @@ describe("nodeContextMenuController", () => {
 		it("should hide the node context menu", () => {
 			nodeContextMenuController.onUnfocusNode()
 
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
 	describe("onBlacklistChanged", () => {
 		it("should hide the node context menu", () => {
-			nodeContextMenuController.onBlacklistChanged([])
+			nodeContextMenuController.onBlacklistChanged()
 
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
 	describe("onMarkedPackagesChanged", () => {
 		it("should hide the node context menu", () => {
-			nodeContextMenuController.onMarkedPackagesChanged([])
+			nodeContextMenuController.onMarkedPackagesChanged()
 
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 

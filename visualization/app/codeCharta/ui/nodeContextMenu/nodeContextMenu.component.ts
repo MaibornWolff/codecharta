@@ -2,7 +2,7 @@ import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapHelper } from "../../util/codeMapHelper"
-import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, MarkedPackage, NodeType } from "../../codeCharta.model"
+import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { addBlacklistItem, removeBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
@@ -23,16 +23,22 @@ export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
 }
 
+export interface HideNodeContextMenuSubscriber {
+	onHideNodeContextMenu(mousePosition: Vector2)
+}
+
 export class NodeContextMenuController
 	implements
 		BuildingRightClickedEventSubscriber,
 		ShowNodeContextMenuSubscriber,
+		HideNodeContextMenuSubscriber,
 		MapColorsSubscriber,
 		FocusNodeSubscriber,
 		UnfocusNodeSubscriber,
 		BlacklistSubscriber,
 		MarkedPackagesSubscriber {
 	private static SHOW_NODE_CONTEXT_MENU_EVENT = "show-node-context-menu"
+	private static HIDE_NODE_CONTEXT_MENU_EVENT = "hide-node-context-menu"
 
 	private _viewModel: {
 		codeMapNode: CodeMapNode
@@ -55,32 +61,33 @@ export class NodeContextMenuController
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
 		NodeContextMenuController.subscribeToShowNodeContextMenu(this.$rootScope, this)
+		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
 		BlacklistService.subscribe($rootScope, this)
 		FocusedNodePathService.subscribeToFocusNode($rootScope, this)
 		FocusedNodePathService.subscribeToUnfocusNode($rootScope, this)
 		MarkedPackagesService.subscribe($rootScope, this)
 
-		document.body.addEventListener("click", event => this.hideNodeContextMenu(event), true)
+		document.body.addEventListener("click", event => NodeContextMenuController.broadcastHideEvent(this.$rootScope, event), true)
 	}
 
 	public onMapColorsChanged(mapColors: MapColors) {
 		this._viewModel.markingColors = mapColors.markingColors
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
-		this.hideNodeContextMenu()
+	public onBlacklistChanged() {
+		this.onHideNodeContextMenu()
 	}
 
-	public onFocusNode(focusedNodePath: string) {
-		this.hideNodeContextMenu()
+	public onFocusNode() {
+		this.onHideNodeContextMenu()
 	}
 
 	public onUnfocusNode() {
-		this.hideNodeContextMenu()
+		this.onHideNodeContextMenu()
 	}
 
-	public onMarkedPackagesChanged(markedPackages: MarkedPackage[]) {
-		this.hideNodeContextMenu()
+	public onMarkedPackagesChanged() {
+		this.onHideNodeContextMenu()
 	}
 
 	public onBuildingRightClicked(building: CodeMapBuilding, x: number, y: number) {
@@ -89,10 +96,18 @@ export class NodeContextMenuController
 	}
 
 	public onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
+		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 		this._viewModel.codeMapNode = CodeMapHelper.getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
 		this.synchronizeAngularTwoWayBinding()
+	}
+
+	public onHideNodeContextMenu(mousePosition = new Vector2(-1, -1)) {
+		if (this.isClickInsideNodeContextMenu(mousePosition)) {
+			this._viewModel.codeMapNode = null
+			this.synchronizeAngularTwoWayBinding()
+		}
 	}
 
 	public calculatePosition(mouseX: number, mouseY: number) {
@@ -107,13 +122,6 @@ export class NodeContextMenuController
 	public setPosition(x: number, y: number) {
 		angular.element(this.$element[0].children[0]).css("top", y + "px")
 		angular.element(this.$element[0].children[0]).css("left", x + "px")
-	}
-
-	public hideNodeContextMenu(mousePosition = new Vector2(-1, -1)) {
-		if (this.isClickInsideNodeContextMenu(mousePosition)) {
-			this._viewModel.codeMapNode = null
-			this.synchronizeAngularTwoWayBinding()
-		}
 	}
 
 	public flattenNode() {
@@ -224,9 +232,19 @@ export class NodeContextMenuController
 		})
 	}
 
+	public static broadcastHideEvent($rootScope: IRootScopeService, mousePosition = new Vector2(-1, -1)) {
+		$rootScope.$broadcast(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT, { mousePosition })
+	}
+
 	public static subscribeToShowNodeContextMenu($rootScope: IRootScopeService, subscriber: ShowNodeContextMenuSubscriber) {
-		$rootScope.$on(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, (event, data) => {
+		$rootScope.$on(NodeContextMenuController.SHOW_NODE_CONTEXT_MENU_EVENT, (_event, data) => {
 			subscriber.onShowNodeContextMenu(data.path, data.type, data.x, data.y)
+		})
+	}
+
+	public static subscribeToHideNodeContextMenu($rootScope: IRootScopeService, subscriber: HideNodeContextMenuSubscriber) {
+		$rootScope.$on(NodeContextMenuController.HIDE_NODE_CONTEXT_MENU_EVENT, (_event, data) => {
+			subscriber.onHideNodeContextMenu(data.mousePosition)
 		})
 	}
 }

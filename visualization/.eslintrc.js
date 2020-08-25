@@ -2,7 +2,14 @@ module.exports = {
 	"env": {
 		"browser": true,
 		"es6": true,
-		"node": true
+		"node": true,
+		"jest": true
+	},
+	"globals": {
+		page: true,
+		browser: true,
+		context: true,
+		jestPuppeteer: true,
 	},
 	"extends": [
 		"eslint:recommended",
@@ -23,7 +30,7 @@ module.exports = {
 		"no-console": ["error", {allow : ["warn", "error"]}],
 		"@typescript-eslint/no-empty-function": ["error", {allow: ["arrowFunctions"]}],
 		"@typescript-eslint/camelcase": ["error", {properties: "never"}],
-		"@typescript-eslint/no-unused-vars": ["error", { "vars": "all", "args": "none"}],
+		"@typescript-eslint/no-unused-vars": ["error"],
 		"object-shorthand": ["error", "always"],
 
 		// Do not apply inappropriate rules below

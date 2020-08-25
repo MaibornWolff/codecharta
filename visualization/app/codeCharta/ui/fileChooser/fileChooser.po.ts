@@ -1,20 +1,22 @@
-import { Page } from "puppeteer"
-import { delay } from "../../../puppeteer.helper"
-
 export class FileChooserPageObject {
-	constructor(private page: Page) {}
+	public async openFiles(paths: string[], clickOnFileChooser = true) {
+		const [fileChooser] = await Promise.all([
+			page.waitForFileChooser(),
+			clickOnFileChooser && expect(page).toClick("file-chooser-directive .toolbar-button", { timeout: 3000 })
+		])
 
-	public async openFile(path: string) {
-		const [fileChooser] = await Promise.all([this.page.waitForFileChooser(), this.page.click("file-chooser-directive .toolbar-button")])
+		await fileChooser.accept(paths)
 
-		await fileChooser.accept([path])
-		await delay(200)
+		await page.waitForSelector("#loading-gif-file")
+		await page.waitForSelector("#loading-gif-file", { visible: false })
 	}
 
 	public async cancelOpeningFile() {
-		const [fileChooser] = await Promise.all([this.page.waitForFileChooser(), this.page.click("file-chooser-directive .toolbar-button")])
+		const [fileChooser] = await Promise.all([
+			page.waitForFileChooser(),
+			expect(page).toClick("file-chooser-directive .toolbar-button", { timeout: 3000 })
+		])
 
 		await fileChooser.cancel()
-		await delay(200)
 	}
 }

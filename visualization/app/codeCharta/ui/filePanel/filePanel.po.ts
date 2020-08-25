@@ -1,18 +1,18 @@
-import { Page } from "puppeteer"
-
 export class FilePanelPageObject {
-	constructor(private page: Page) {}
-
 	public async getSelectedName() {
-		return await this.page.$eval("file-panel-component md-select .md-text", el => el["innerText"])
+		await page.waitForSelector("file-panel-component md-select .md-text")
+		return await page.$eval("file-panel-component md-select .md-text", el => el["innerText"])
 	}
 
 	public async clickChooser() {
-		return this.page.click("file-panel-component md-select")
+		await expect(page).toClick("file-panel-component md-select", { timeout: 3000 })
 	}
 
 	public async getAllNames() {
-		const content = await this.page.$eval(".md-select-menu-container.md-active > md-select-menu", el => el["innerText"])
+		await this.clickChooser()
+
+		await page.waitForSelector(".md-select-menu-container.md-active > md-select-menu")
+		const content = await page.$eval(".md-select-menu-container.md-active > md-select-menu", el => el["innerText"])
 		return content.split("\n")
 	}
 }

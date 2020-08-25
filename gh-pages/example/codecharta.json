@@ -1,1 +1,1227 @@
-{"projectName":"codecharta","apiVersion":"1.0","nodes":[{"name":"root","type":"Folder","attributes":{},"link":"","children":[{"name":"src","type":"Folder","attributes":{},"link":"","children":[{"name":"main","type":"Folder","attributes":{},"link":"","children":[{"name":"java","type":"Folder","attributes":{},"link":"","children":[{"name":"de","type":"Folder","attributes":{},"link":"","children":[{"name":"maibornwolff","type":"Folder","attributes":{},"link":"","children":[{"name":"codecharta","type":"Folder","attributes":{},"link":"","children":[{"name":"importer","type":"Folder","attributes":{},"link":"","children":[{"name":"sonar","type":"Folder","attributes":{"minor_violations":1.0,"complexity":79.0,"duplicated_lines_density":0.0,"duplicated_lines":0.0,"functions":42.0,"classes":6.0,"complexity_in_classes":79.0,"sqale_rating":1.0,"blocker_violations":0.0,"bugs":0.0,"lines_to_cover":123.0,"major_violations":2.0,"branch_coverage":92.5,"overall_branch_coverage":92.5,"duplicated_files":0.0,"ncloc":356.0,"function_complexity":1.8,"directories":1.0,"false_positive_issues":0.0,"line_coverage":82.9,"lines":629.0,"coverage":85.8,"code_smells":3.0,"violations":3.0,"overall_coverage":85.8,"comment_lines_density":0.8,"effort_to_reach_maintainability_rating_a":0.0,"overall_conditions_to_cover":53.0,"class_complexity":13.2,"critical_violations":0.0,"info_violations":0.0,"comment_lines":3.0,"duplicated_blocks":0.0,"files":6.0,"confirmed_issues":0.0,"open_issues":3.0,"conditions_to_cover":53.0,"last_commit_date":1.488563501E12,"file_complexity":13.2,"complexity_in_functions":76.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar","children":[{"name":"SonarImporterException.java","type":"File","attributes":{"coverage":66.7,"complexity":3.0,"functions":3.0,"classes":1.0,"complexity_in_classes":3.0,"overall_coverage":66.7,"comment_lines_density":0.0,"sqale_rating":1.0,"class_complexity":3.0,"lines_to_cover":6.0,"comment_lines":0.0,"ncloc":12.0,"function_complexity":1.0,"files":1.0,"line_coverage":66.7,"lines":45.0,"last_commit_date":1.487372895E12,"file_complexity":3.0,"complexity_in_functions":3.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarImporterException.java","children":[]},{"name":"SonarImporterMain.java","type":"File","attributes":{"complexity":22.0,"functions":11.0,"classes":1.0,"complexity_in_classes":22.0,"comment_lines_density":1.9,"sqale_rating":1.0,"class_complexity":22.0,"comment_lines":2.0,"ncloc":104.0,"function_complexity":2.0,"files":1.0,"lines":156.0,"last_commit_date":1.48794039E12,"file_complexity":22.0,"complexity_in_functions":22.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarImporterMain.java","children":[]},{"name":"SonarImporterParameter.java","type":"File","attributes":{"coverage":0.0,"complexity":7.0,"functions":7.0,"classes":1.0,"complexity_in_classes":7.0,"overall_coverage":0.0,"comment_lines_density":0.0,"sqale_rating":1.0,"class_complexity":7.0,"lines_to_cover":15.0,"comment_lines":0.0,"ncloc":39.0,"function_complexity":1.0,"files":1.0,"line_coverage":0.0,"lines":83.0,"last_commit_date":1.487782603E12,"file_complexity":7.0,"complexity_in_functions":7.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarImporterParameter.java","children":[]},{"name":"SonarReader.java","type":"File","attributes":{"coverage":95.0,"complexity":28.0,"functions":10.0,"classes":1.0,"complexity_in_classes":28.0,"overall_coverage":95.0,"comment_lines_density":0.9,"overall_conditions_to_cover":42.0,"sqale_rating":1.0,"class_complexity":28.0,"lines_to_cover":59.0,"comment_lines":1.0,"branch_coverage":92.9,"overall_branch_coverage":92.9,"ncloc":109.0,"function_complexity":2.8,"files":1.0,"line_coverage":96.6,"lines":164.0,"conditions_to_cover":42.0,"last_commit_date":1.487782603E12,"file_complexity":28.0,"complexity_in_functions":28.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarReader.java","children":[]},{"name":"SonarResourceToProjectConverter.java","type":"File","attributes":{"complexity":15.0,"minor_violations":1.0,"functions":7.0,"classes":1.0,"complexity_in_classes":15.0,"sqale_rating":1.0,"lines_to_cover":29.0,"major_violations":1.0,"branch_coverage":90.9,"overall_branch_coverage":90.9,"ncloc":61.0,"function_complexity":1.7,"line_coverage":93.1,"lines":110.0,"coverage":92.5,"code_smells":2.0,"violations":2.0,"overall_coverage":92.5,"comment_lines_density":0.0,"overall_conditions_to_cover":11.0,"class_complexity":15.0,"comment_lines":0.0,"files":1.0,"open_issues":2.0,"conditions_to_cover":11.0,"last_commit_date":1.488563501E12,"file_complexity":15.0,"complexity_in_functions":12.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarResourceToProjectConverter.java","children":[]},{"name":"dataaccess","type":"Folder","attributes":{"minor_violations":0.0,"complexity":17.0,"duplicated_lines_density":0.0,"duplicated_lines":0.0,"functions":11.0,"classes":2.0,"complexity_in_classes":17.0,"sqale_rating":1.0,"blocker_violations":0.0,"bugs":1.0,"lines_to_cover":53.0,"major_violations":1.0,"branch_coverage":75.0,"overall_branch_coverage":75.0,"duplicated_files":0.0,"ncloc":108.0,"function_complexity":1.5,"directories":1.0,"false_positive_issues":0.0,"line_coverage":92.5,"lines":204.0,"coverage":88.4,"code_smells":0.0,"violations":1.0,"overall_coverage":88.4,"comment_lines_density":6.1,"effort_to_reach_maintainability_rating_a":0.0,"overall_conditions_to_cover":16.0,"class_complexity":8.5,"critical_violations":0.0,"info_violations":0.0,"comment_lines":7.0,"duplicated_blocks":0.0,"files":2.0,"confirmed_issues":0.0,"open_issues":1.0,"conditions_to_cover":16.0,"last_commit_date":1.48794039E12,"file_complexity":8.5,"complexity_in_functions":17.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/dataaccess","children":[{"name":"AuthentificationHandler.java","type":"File","attributes":{"coverage":50.0,"complexity":3.0,"functions":3.0,"classes":1.0,"complexity_in_classes":3.0,"overall_coverage":50.0,"comment_lines_density":7.7,"sqale_rating":1.0,"class_complexity":3.0,"lines_to_cover":4.0,"comment_lines":1.0,"ncloc":12.0,"function_complexity":1.0,"files":1.0,"line_coverage":50.0,"lines":47.0,"last_commit_date":1.48794039E12,"file_complexity":3.0,"complexity_in_functions":3.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/AuthentificationHandler.java","children":[]},{"name":"SonarRESTDatasource.java","type":"File","attributes":{"complexity":14.0,"functions":8.0,"classes":1.0,"complexity_in_classes":14.0,"sqale_rating":1.0,"bugs":1.0,"lines_to_cover":49.0,"major_violations":1.0,"branch_coverage":75.0,"overall_branch_coverage":75.0,"ncloc":96.0,"function_complexity":1.8,"line_coverage":95.9,"lines":157.0,"coverage":90.8,"violations":1.0,"overall_coverage":90.8,"comment_lines_density":5.9,"overall_conditions_to_cover":16.0,"class_complexity":14.0,"comment_lines":6.0,"files":1.0,"open_issues":1.0,"conditions_to_cover":16.0,"last_commit_date":1.48794039E12,"file_complexity":14.0,"complexity_in_functions":14.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/SonarRESTDatasource.java","children":[]}]},{"name":"model","type":"Folder","attributes":{"minor_violations":0.0,"complexity":17.0,"duplicated_lines_density":0.0,"duplicated_lines":0.0,"functions":16.0,"classes":6.0,"complexity_in_classes":17.0,"sqale_rating":1.0,"blocker_violations":0.0,"bugs":0.0,"major_violations":11.0,"duplicated_files":0.0,"ncloc":107.0,"function_complexity":1.1,"directories":1.0,"false_positive_issues":0.0,"lines":333.0,"code_smells":11.0,"violations":11.0,"comment_lines_density":5.3,"effort_to_reach_maintainability_rating_a":0.0,"class_complexity":2.8,"critical_violations":0.0,"info_violations":0.0,"comment_lines":6.0,"duplicated_blocks":0.0,"files":6.0,"confirmed_issues":0.0,"open_issues":11.0,"last_commit_date":1.487869927E12,"file_complexity":2.8,"complexity_in_functions":17.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model","children":[{"name":"MetricObject.java","type":"File","attributes":{"complexity":2.0,"code_smells":10.0,"functions":2.0,"violations":10.0,"classes":1.0,"complexity_in_classes":2.0,"comment_lines_density":3.4,"effort_to_reach_maintainability_rating_a":23.0,"sqale_rating":2.0,"class_complexity":2.0,"major_violations":10.0,"comment_lines":1.0,"ncloc":28.0,"function_complexity":1.0,"files":1.0,"open_issues":10.0,"lines":64.0,"last_commit_date":1.487869927E12,"file_complexity":2.0,"complexity_in_functions":2.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/MetricObject.java","children":[]},{"name":"Metrics.java","type":"File","attributes":{"complexity":1.0,"code_smells":1.0,"functions":1.0,"violations":1.0,"classes":1.0,"complexity_in_classes":1.0,"comment_lines_density":11.1,"sqale_rating":1.0,"class_complexity":1.0,"major_violations":1.0,"comment_lines":1.0,"ncloc":8.0,"function_complexity":1.0,"files":1.0,"open_issues":1.0,"lines":44.0,"last_commit_date":1.487869927E12,"file_complexity":1.0,"complexity_in_functions":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/Metrics.java","children":[]},{"name":"Qualifier.java","type":"File","attributes":{"complexity":0.0,"functions":0.0,"classes":1.0,"complexity_in_classes":0.0,"comment_lines_density":20.0,"sqale_rating":1.0,"class_complexity":0.0,"comment_lines":1.0,"ncloc":4.0,"files":1.0,"lines":38.0,"last_commit_date":1.487869927E12,"file_complexity":0.0,"complexity_in_functions":0.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/Qualifier.java","children":[]},{"name":"Scope.java","type":"File","attributes":{"complexity":0.0,"functions":0.0,"classes":1.0,"complexity_in_classes":0.0,"comment_lines_density":20.0,"sqale_rating":1.0,"class_complexity":0.0,"comment_lines":1.0,"ncloc":4.0,"files":1.0,"lines":38.0,"last_commit_date":1.487869927E12,"file_complexity":0.0,"complexity_in_functions":0.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/Scope.java","children":[]},{"name":"SonarAttribute.java","type":"File","attributes":{"complexity":3.0,"functions":3.0,"classes":1.0,"complexity_in_classes":3.0,"comment_lines_density":6.3,"sqale_rating":1.0,"class_complexity":3.0,"comment_lines":1.0,"ncloc":15.0,"function_complexity":1.0,"files":1.0,"lines":54.0,"last_commit_date":1.487869927E12,"file_complexity":3.0,"complexity_in_functions":3.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/SonarAttribute.java","children":[]},{"name":"SonarResource.java","type":"File","attributes":{"complexity":11.0,"functions":10.0,"classes":1.0,"complexity_in_classes":11.0,"comment_lines_density":2.0,"sqale_rating":1.0,"class_complexity":11.0,"comment_lines":1.0,"ncloc":48.0,"function_complexity":1.1,"files":1.0,"lines":95.0,"last_commit_date":1.487869927E12,"file_complexity":11.0,"complexity_in_functions":11.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/SonarResource.java","children":[]}]},{"name":"SonarXMLImport.java","type":"File","attributes":{"coverage":100.0,"complexity":4.0,"code_smells":1.0,"functions":4.0,"violations":1.0,"classes":1.0,"complexity_in_classes":4.0,"overall_coverage":100.0,"comment_lines_density":0.0,"sqale_rating":1.0,"class_complexity":4.0,"lines_to_cover":14.0,"major_violations":1.0,"comment_lines":0.0,"ncloc":31.0,"function_complexity":1.0,"files":1.0,"open_issues":1.0,"line_coverage":100.0,"lines":71.0,"last_commit_date":1.488563501E12,"file_complexity":4.0,"complexity_in_functions":4.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarXMLImport.java","children":[]}]}]},{"name":"model","type":"Folder","attributes":{"minor_violations":2.0,"complexity":58.0,"duplicated_lines_density":0.0,"duplicated_lines":0.0,"functions":29.0,"classes":4.0,"complexity_in_classes":58.0,"sqale_rating":1.0,"blocker_violations":0.0,"bugs":1.0,"major_violations":11.0,"duplicated_files":0.0,"ncloc":160.0,"function_complexity":1.9,"directories":1.0,"false_positive_issues":0.0,"lines":329.0,"code_smells":14.0,"violations":15.0,"comment_lines_density":1.2,"effort_to_reach_maintainability_rating_a":0.0,"class_complexity":14.5,"critical_violations":2.0,"info_violations":0.0,"comment_lines":2.0,"duplicated_blocks":0.0,"files":4.0,"confirmed_issues":0.0,"open_issues":15.0,"last_commit_date":1.488563501E12,"file_complexity":14.5,"complexity_in_functions":56.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model","children":[{"name":"Node.java","type":"File","attributes":{"minor_violations":2.0,"complexity":36.0,"code_smells":8.0,"functions":14.0,"violations":9.0,"classes":1.0,"complexity_in_classes":36.0,"comment_lines_density":0.0,"sqale_rating":1.0,"class_complexity":36.0,"bugs":1.0,"major_violations":7.0,"comment_lines":0.0,"ncloc":90.0,"function_complexity":2.4,"files":1.0,"open_issues":9.0,"lines":141.0,"last_commit_date":1.488563501E12,"file_complexity":36.0,"complexity_in_functions":34.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model/Node.java","children":[]},{"name":"NodeType.java","type":"File","attributes":{"complexity":0.0,"code_smells":2.0,"functions":0.0,"violations":2.0,"classes":1.0,"complexity_in_classes":0.0,"comment_lines_density":0.0,"sqale_rating":1.0,"class_complexity":0.0,"critical_violations":2.0,"comment_lines":0.0,"ncloc":4.0,"files":1.0,"open_issues":2.0,"lines":35.0,"last_commit_date":1.488563501E12,"file_complexity":0.0,"complexity_in_functions":0.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model/NodeType.java","children":[]},{"name":"Project.java","type":"File","attributes":{"complexity":22.0,"code_smells":4.0,"functions":11.0,"violations":4.0,"classes":1.0,"complexity_in_classes":22.0,"comment_lines_density":0.0,"sqale_rating":1.0,"class_complexity":22.0,"major_violations":4.0,"comment_lines":0.0,"ncloc":59.0,"function_complexity":2.0,"files":1.0,"open_issues":4.0,"lines":107.0,"last_commit_date":1.488563501E12,"file_complexity":22.0,"complexity_in_functions":22.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model/Project.java","children":[]},{"name":"Path.java","type":"File","attributes":{"complexity":0.0,"functions":4.0,"classes":1.0,"complexity_in_classes":0.0,"comment_lines_density":22.2,"sqale_rating":1.0,"class_complexity":0.0,"comment_lines":2.0,"ncloc":7.0,"function_complexity":0.0,"files":1.0,"lines":46.0,"last_commit_date":1.488563501E12,"file_complexity":0.0,"complexity_in_functions":0.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model/Path.java","children":[]}]},{"name":"nodeinserter","type":"Folder","attributes":{"minor_violations":4.0,"complexity":34.0,"duplicated_lines_density":0.0,"duplicated_lines":0.0,"functions":16.0,"classes":2.0,"complexity_in_classes":34.0,"sqale_rating":1.0,"blocker_violations":0.0,"bugs":3.0,"lines_to_cover":49.0,"major_violations":4.0,"branch_coverage":70.0,"overall_branch_coverage":70.0,"duplicated_files":0.0,"ncloc":117.0,"function_complexity":1.6,"directories":1.0,"false_positive_issues":0.0,"line_coverage":85.7,"lines":232.0,"coverage":79.7,"code_smells":5.0,"violations":8.0,"overall_coverage":79.7,"comment_lines_density":10.7,"effort_to_reach_maintainability_rating_a":0.0,"overall_conditions_to_cover":30.0,"class_complexity":17.0,"critical_violations":0.0,"info_violations":0.0,"comment_lines":14.0,"duplicated_blocks":0.0,"files":2.0,"confirmed_issues":0.0,"open_issues":8.0,"conditions_to_cover":30.0,"last_commit_date":1.488563501E12,"file_complexity":17.0,"complexity_in_functions":26.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/nodeinserter","children":[{"name":"FileSystemPath.java","type":"File","attributes":{"complexity":17.0,"minor_violations":3.0,"functions":9.0,"classes":1.0,"complexity_in_classes":17.0,"sqale_rating":1.0,"bugs":3.0,"lines_to_cover":21.0,"major_violations":3.0,"branch_coverage":59.1,"overall_branch_coverage":59.1,"ncloc":53.0,"function_complexity":1.8,"line_coverage":90.5,"lines":99.0,"coverage":74.4,"code_smells":3.0,"violations":6.0,"overall_coverage":74.4,"comment_lines_density":0.0,"overall_conditions_to_cover":22.0,"class_complexity":17.0,"comment_lines":0.0,"files":1.0,"open_issues":6.0,"conditions_to_cover":22.0,"last_commit_date":1.488563501E12,"file_complexity":17.0,"complexity_in_functions":16.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/nodeinserter/FileSystemPath.java","children":[]},{"name":"NodeInserter.java","type":"File","attributes":{"complexity":17.0,"minor_violations":1.0,"functions":7.0,"classes":1.0,"complexity_in_classes":17.0,"sqale_rating":1.0,"lines_to_cover":28.0,"major_violations":1.0,"branch_coverage":100.0,"overall_branch_coverage":100.0,"ncloc":64.0,"function_complexity":1.4,"line_coverage":82.1,"lines":133.0,"coverage":86.1,"code_smells":2.0,"violations":2.0,"overall_coverage":86.1,"comment_lines_density":17.9,"overall_conditions_to_cover":8.0,"class_complexity":17.0,"comment_lines":14.0,"files":1.0,"open_issues":2.0,"conditions_to_cover":8.0,"last_commit_date":1.488563501E12,"file_complexity":17.0,"complexity_in_functions":10.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/nodeinserter/NodeInserter.java","children":[]}]},{"name":"serialization","type":"Folder","attributes":{"minor_violations":0.0,"complexity":6.0,"duplicated_lines_density":0.0,"duplicated_lines":0.0,"functions":6.0,"classes":2.0,"complexity_in_classes":6.0,"sqale_rating":1.0,"blocker_violations":0.0,"bugs":0.0,"lines_to_cover":17.0,"major_violations":1.0,"branch_coverage":25.0,"overall_branch_coverage":25.0,"duplicated_files":0.0,"ncloc":43.0,"function_complexity":1.0,"directories":1.0,"false_positive_issues":0.0,"line_coverage":76.5,"lines":151.0,"coverage":60.0,"code_smells":1.0,"violations":1.0,"overall_coverage":60.0,"comment_lines_density":27.1,"effort_to_reach_maintainability_rating_a":0.0,"overall_conditions_to_cover":8.0,"class_complexity":3.0,"critical_violations":0.0,"info_violations":0.0,"comment_lines":16.0,"duplicated_blocks":0.0,"files":2.0,"confirmed_issues":0.0,"open_issues":1.0,"conditions_to_cover":8.0,"last_commit_date":1.488563501E12,"file_complexity":3.0,"complexity_in_functions":6.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/serialization","children":[{"name":"ProjectDeserializer.java","type":"File","attributes":{"coverage":60.0,"complexity":3.0,"functions":3.0,"classes":1.0,"complexity_in_classes":3.0,"overall_coverage":60.0,"comment_lines_density":29.6,"sqale_rating":1.0,"class_complexity":3.0,"lines_to_cover":5.0,"comment_lines":8.0,"ncloc":19.0,"function_complexity":1.0,"files":1.0,"line_coverage":60.0,"lines":72.0,"last_commit_date":1.488563501E12,"file_complexity":3.0,"complexity_in_functions":3.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/serialization/ProjectDeserializer.java","children":[]},{"name":"ProjectSerializer.java","type":"File","attributes":{"complexity":3.0,"functions":3.0,"classes":1.0,"complexity_in_classes":3.0,"sqale_rating":1.0,"lines_to_cover":12.0,"major_violations":1.0,"branch_coverage":25.0,"overall_branch_coverage":25.0,"ncloc":24.0,"function_complexity":1.0,"line_coverage":83.3,"lines":79.0,"coverage":60.0,"code_smells":1.0,"violations":1.0,"overall_coverage":60.0,"comment_lines_density":25.0,"overall_conditions_to_cover":8.0,"class_complexity":3.0,"comment_lines":8.0,"files":1.0,"open_issues":1.0,"conditions_to_cover":8.0,"last_commit_date":1.488563501E12,"file_complexity":3.0,"complexity_in_functions":3.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/serialization/ProjectSerializer.java","children":[]}]}]}]}]}]}]},{"name":"test","type":"Folder","attributes":{},"link":"","children":[{"name":"java","type":"Folder","attributes":{},"link":"","children":[{"name":"de","type":"Folder","attributes":{},"link":"","children":[{"name":"maibornwolff","type":"Folder","attributes":{},"link":"","children":[{"name":"codecharta","type":"Folder","attributes":{},"link":"","children":[{"name":"importer","type":"Folder","attributes":{},"link":"","children":[{"name":"sonar","type":"Folder","attributes":{"minor_violations":0.0,"code_smells":0.0,"duplicated_lines":0.0,"violations":0.0,"effort_to_reach_maintainability_rating_a":0.0,"sqale_rating":1.0,"critical_violations":0.0,"blocker_violations":0.0,"bugs":0.0,"info_violations":0.0,"major_violations":0.0,"duplicated_blocks":0.0,"duplicated_files":0.0,"confirmed_issues":0.0,"false_positive_issues":0.0,"open_issues":0.0,"last_commit_date":1.488563501E12},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar","children":[{"name":"SonarReaderTest.java","type":"File","attributes":{"last_commit_date":1.487869927E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/SonarReaderTest.java","children":[]},{"name":"SonarResourceToProjectConverterTest.java","type":"File","attributes":{"last_commit_date":1.487782603E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/SonarResourceToProjectConverterTest.java","children":[]},{"name":"dataaccess","type":"Folder","attributes":{"minor_violations":0.0,"code_smells":0.0,"duplicated_lines":0.0,"violations":0.0,"effort_to_reach_maintainability_rating_a":0.0,"sqale_rating":1.0,"critical_violations":0.0,"blocker_violations":0.0,"bugs":0.0,"info_violations":0.0,"major_violations":0.0,"duplicated_blocks":0.0,"duplicated_files":0.0,"confirmed_issues":0.0,"false_positive_issues":0.0,"open_issues":0.0,"last_commit_date":1.48794039E12},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/dataaccess","children":[{"name":"AuthentificationHandlerTest.java","type":"File","attributes":{"last_commit_date":1.487772476E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/AuthentificationHandlerTest.java","children":[]},{"name":"SonarRESTDatasourceIntegrationTest.java","type":"File","attributes":{"last_commit_date":1.48794039E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/SonarRESTDatasourceIntegrationTest.java","children":[]},{"name":"SonarRESTDatasourceTest.java","type":"File","attributes":{"last_commit_date":1.48794039E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/SonarRESTDatasourceTest.java","children":[]}]},{"name":"SonarXMLImporterTest.java","type":"File","attributes":{"last_commit_date":1.488563501E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/SonarXMLImporterTest.java","children":[]}]}]},{"name":"nodeinserter","type":"Folder","attributes":{"minor_violations":0.0,"code_smells":0.0,"duplicated_lines":0.0,"violations":0.0,"effort_to_reach_maintainability_rating_a":0.0,"sqale_rating":1.0,"critical_violations":0.0,"blocker_violations":0.0,"bugs":0.0,"info_violations":0.0,"major_violations":0.0,"duplicated_blocks":0.0,"duplicated_files":0.0,"confirmed_issues":0.0,"false_positive_issues":0.0,"open_issues":0.0,"last_commit_date":1.488563501E12},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/nodeinserter","children":[{"name":"FileSystemPathTest.java","type":"File","attributes":{"last_commit_date":1.488563501E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/nodeinserter/FileSystemPathTest.java","children":[]},{"name":"NodeInserterTest.java","type":"File","attributes":{"last_commit_date":1.488563501E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/nodeinserter/NodeInserterTest.java","children":[]}]},{"name":"serialization","type":"Folder","attributes":{"minor_violations":1.0,"code_smells":1.0,"duplicated_lines":0.0,"violations":1.0,"effort_to_reach_maintainability_rating_a":5.0,"sqale_rating":1.0,"critical_violations":0.0,"blocker_violations":0.0,"bugs":0.0,"info_violations":0.0,"major_violations":0.0,"duplicated_blocks":0.0,"duplicated_files":0.0,"confirmed_issues":0.0,"false_positive_issues":0.0,"open_issues":1.0,"last_commit_date":1.488563501E12},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/serialization","children":[{"name":"ProjectDeserializerTest.java","type":"File","attributes":{"minor_violations":1.0,"code_smells":1.0,"violations":1.0,"open_issues":1.0,"effort_to_reach_maintainability_rating_a":5.0,"last_commit_date":1.488563501E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/serialization/ProjectDeserializerTest.java","children":[]},{"name":"ProjectSerializerTest.java","type":"File","attributes":{"last_commit_date":1.488563501E12,"sqale_rating":1.0},"link":"http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/serialization/ProjectSerializerTest.java","children":[]}]}]}]}]}]}]}]}]}]}
+{
+	"projectName": "codecharta",
+	"apiVersion": "1.0",
+	"nodes": [
+		{
+			"name": "root",
+			"type": "Folder",
+			"attributes": {},
+			"link": "",
+			"children": [
+				{
+					"name": "src",
+					"type": "Folder",
+					"attributes": {},
+					"link": "",
+					"children": [
+						{
+							"name": "main",
+							"type": "Folder",
+							"attributes": {},
+							"link": "",
+							"children": [
+								{
+									"name": "java",
+									"type": "Folder",
+									"attributes": {},
+									"link": "",
+									"children": [
+										{
+											"name": "de",
+											"type": "Folder",
+											"attributes": {},
+											"link": "",
+											"children": [
+												{
+													"name": "maibornwolff",
+													"type": "Folder",
+													"attributes": {},
+													"link": "",
+													"children": [
+														{
+															"name": "codecharta",
+															"type": "Folder",
+															"attributes": {},
+															"link": "",
+															"children": [
+																{
+																	"name": "importer",
+																	"type": "Folder",
+																	"attributes": {},
+																	"link": "",
+																	"children": [
+																		{
+																			"name": "sonar",
+																			"type": "Folder",
+																			"attributes": {
+																				"minor_violations": 1.0,
+																				"complexity": 79.0,
+																				"duplicated_lines_density": 0.0,
+																				"duplicated_lines": 0.0,
+																				"functions": 42.0,
+																				"classes": 6.0,
+																				"complexity_in_classes": 79.0,
+																				"sqale_rating": 1.0,
+																				"blocker_violations": 0.0,
+																				"bugs": 0.0,
+																				"lines_to_cover": 123.0,
+																				"major_violations": 2.0,
+																				"branch_coverage": 92.5,
+																				"overall_branch_coverage": 92.5,
+																				"duplicated_files": 0.0,
+																				"ncloc": 356.0,
+																				"function_complexity": 1.8,
+																				"directories": 1.0,
+																				"false_positive_issues": 0.0,
+																				"line_coverage": 82.9,
+																				"lines": 629.0,
+																				"coverage": 85.8,
+																				"code_smells": 3.0,
+																				"violations": 3.0,
+																				"overall_coverage": 85.8,
+																				"comment_lines_density": 0.8,
+																				"effort_to_reach_maintainability_rating_a": 0.0,
+																				"overall_conditions_to_cover": 53.0,
+																				"class_complexity": 13.2,
+																				"critical_violations": 0.0,
+																				"info_violations": 0.0,
+																				"comment_lines": 3.0,
+																				"duplicated_blocks": 0.0,
+																				"files": 6.0,
+																				"confirmed_issues": 0.0,
+																				"open_issues": 3.0,
+																				"conditions_to_cover": 53.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 13.2,
+																				"complexity_in_functions": 76.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar",
+																			"children": [
+																				{
+																					"name": "SonarImporterException.java",
+																					"type": "File",
+																					"attributes": {
+																						"coverage": 66.7,
+																						"complexity": 3.0,
+																						"functions": 3.0,
+																						"classes": 1.0,
+																						"complexity_in_classes": 3.0,
+																						"overall_coverage": 66.7,
+																						"comment_lines_density": 0.0,
+																						"sqale_rating": 1.0,
+																						"class_complexity": 3.0,
+																						"lines_to_cover": 6.0,
+																						"comment_lines": 0.0,
+																						"ncloc": 12.0,
+																						"function_complexity": 1.0,
+																						"files": 1.0,
+																						"line_coverage": 66.7,
+																						"lines": 45.0,
+																						"last_commit_date": 1.487372895e12,
+																						"file_complexity": 3.0,
+																						"complexity_in_functions": 3.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarImporterException.java",
+																					"children": []
+																				},
+																				{
+																					"name": "SonarImporterMain.java",
+																					"type": "File",
+																					"attributes": {
+																						"complexity": 22.0,
+																						"functions": 11.0,
+																						"classes": 1.0,
+																						"complexity_in_classes": 22.0,
+																						"comment_lines_density": 1.9,
+																						"sqale_rating": 1.0,
+																						"class_complexity": 22.0,
+																						"comment_lines": 2.0,
+																						"ncloc": 104.0,
+																						"function_complexity": 2.0,
+																						"files": 1.0,
+																						"lines": 156.0,
+																						"last_commit_date": 1.48794039e12,
+																						"file_complexity": 22.0,
+																						"complexity_in_functions": 22.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarImporterMain.java",
+																					"children": []
+																				},
+																				{
+																					"name": "SonarImporterParameter.java",
+																					"type": "File",
+																					"attributes": {
+																						"coverage": 0.0,
+																						"complexity": 7.0,
+																						"functions": 7.0,
+																						"classes": 1.0,
+																						"complexity_in_classes": 7.0,
+																						"overall_coverage": 0.0,
+																						"comment_lines_density": 0.0,
+																						"sqale_rating": 1.0,
+																						"class_complexity": 7.0,
+																						"lines_to_cover": 15.0,
+																						"comment_lines": 0.0,
+																						"ncloc": 39.0,
+																						"function_complexity": 1.0,
+																						"files": 1.0,
+																						"line_coverage": 0.0,
+																						"lines": 83.0,
+																						"last_commit_date": 1.487782603e12,
+																						"file_complexity": 7.0,
+																						"complexity_in_functions": 7.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarImporterParameter.java",
+																					"children": []
+																				},
+																				{
+																					"name": "SonarReader.java",
+																					"type": "File",
+																					"attributes": {
+																						"coverage": 95.0,
+																						"complexity": 28.0,
+																						"functions": 10.0,
+																						"classes": 1.0,
+																						"complexity_in_classes": 28.0,
+																						"overall_coverage": 95.0,
+																						"comment_lines_density": 0.9,
+																						"overall_conditions_to_cover": 42.0,
+																						"sqale_rating": 1.0,
+																						"class_complexity": 28.0,
+																						"lines_to_cover": 59.0,
+																						"comment_lines": 1.0,
+																						"branch_coverage": 92.9,
+																						"overall_branch_coverage": 92.9,
+																						"ncloc": 109.0,
+																						"function_complexity": 2.8,
+																						"files": 1.0,
+																						"line_coverage": 96.6,
+																						"lines": 164.0,
+																						"conditions_to_cover": 42.0,
+																						"last_commit_date": 1.487782603e12,
+																						"file_complexity": 28.0,
+																						"complexity_in_functions": 28.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarReader.java",
+																					"children": []
+																				},
+																				{
+																					"name": "SonarResourceToProjectConverter.java",
+																					"type": "File",
+																					"attributes": {
+																						"complexity": 15.0,
+																						"minor_violations": 1.0,
+																						"functions": 7.0,
+																						"classes": 1.0,
+																						"complexity_in_classes": 15.0,
+																						"sqale_rating": 1.0,
+																						"lines_to_cover": 29.0,
+																						"major_violations": 1.0,
+																						"branch_coverage": 90.9,
+																						"overall_branch_coverage": 90.9,
+																						"ncloc": 61.0,
+																						"function_complexity": 1.7,
+																						"line_coverage": 93.1,
+																						"lines": 110.0,
+																						"coverage": 92.5,
+																						"code_smells": 2.0,
+																						"violations": 2.0,
+																						"overall_coverage": 92.5,
+																						"comment_lines_density": 0.0,
+																						"overall_conditions_to_cover": 11.0,
+																						"class_complexity": 15.0,
+																						"comment_lines": 0.0,
+																						"files": 1.0,
+																						"open_issues": 2.0,
+																						"conditions_to_cover": 11.0,
+																						"last_commit_date": 1.488563501e12,
+																						"file_complexity": 15.0,
+																						"complexity_in_functions": 12.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarResourceToProjectConverter.java",
+																					"children": []
+																				},
+																				{
+																					"name": "dataaccess",
+																					"type": "Folder",
+																					"attributes": {
+																						"minor_violations": 0.0,
+																						"complexity": 17.0,
+																						"duplicated_lines_density": 0.0,
+																						"duplicated_lines": 0.0,
+																						"functions": 11.0,
+																						"classes": 2.0,
+																						"complexity_in_classes": 17.0,
+																						"sqale_rating": 1.0,
+																						"blocker_violations": 0.0,
+																						"bugs": 1.0,
+																						"lines_to_cover": 53.0,
+																						"major_violations": 1.0,
+																						"branch_coverage": 75.0,
+																						"overall_branch_coverage": 75.0,
+																						"duplicated_files": 0.0,
+																						"ncloc": 108.0,
+																						"function_complexity": 1.5,
+																						"directories": 1.0,
+																						"false_positive_issues": 0.0,
+																						"line_coverage": 92.5,
+																						"lines": 204.0,
+																						"coverage": 88.4,
+																						"code_smells": 0.0,
+																						"violations": 1.0,
+																						"overall_coverage": 88.4,
+																						"comment_lines_density": 6.1,
+																						"effort_to_reach_maintainability_rating_a": 0.0,
+																						"overall_conditions_to_cover": 16.0,
+																						"class_complexity": 8.5,
+																						"critical_violations": 0.0,
+																						"info_violations": 0.0,
+																						"comment_lines": 7.0,
+																						"duplicated_blocks": 0.0,
+																						"files": 2.0,
+																						"confirmed_issues": 0.0,
+																						"open_issues": 1.0,
+																						"conditions_to_cover": 16.0,
+																						"last_commit_date": 1.48794039e12,
+																						"file_complexity": 8.5,
+																						"complexity_in_functions": 17.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/dataaccess",
+																					"children": [
+																						{
+																							"name": "AuthentificationHandler.java",
+																							"type": "File",
+																							"attributes": {
+																								"coverage": 50.0,
+																								"complexity": 3.0,
+																								"functions": 3.0,
+																								"classes": 1.0,
+																								"complexity_in_classes": 3.0,
+																								"overall_coverage": 50.0,
+																								"comment_lines_density": 7.7,
+																								"sqale_rating": 1.0,
+																								"class_complexity": 3.0,
+																								"lines_to_cover": 4.0,
+																								"comment_lines": 1.0,
+																								"ncloc": 12.0,
+																								"function_complexity": 1.0,
+																								"files": 1.0,
+																								"line_coverage": 50.0,
+																								"lines": 47.0,
+																								"last_commit_date": 1.48794039e12,
+																								"file_complexity": 3.0,
+																								"complexity_in_functions": 3.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/AuthentificationHandler.java",
+																							"children": []
+																						},
+																						{
+																							"name": "SonarRESTDatasource.java",
+																							"type": "File",
+																							"attributes": {
+																								"complexity": 14.0,
+																								"functions": 8.0,
+																								"classes": 1.0,
+																								"complexity_in_classes": 14.0,
+																								"sqale_rating": 1.0,
+																								"bugs": 1.0,
+																								"lines_to_cover": 49.0,
+																								"major_violations": 1.0,
+																								"branch_coverage": 75.0,
+																								"overall_branch_coverage": 75.0,
+																								"ncloc": 96.0,
+																								"function_complexity": 1.8,
+																								"line_coverage": 95.9,
+																								"lines": 157.0,
+																								"coverage": 90.8,
+																								"violations": 1.0,
+																								"overall_coverage": 90.8,
+																								"comment_lines_density": 5.9,
+																								"overall_conditions_to_cover": 16.0,
+																								"class_complexity": 14.0,
+																								"comment_lines": 6.0,
+																								"files": 1.0,
+																								"open_issues": 1.0,
+																								"conditions_to_cover": 16.0,
+																								"last_commit_date": 1.48794039e12,
+																								"file_complexity": 14.0,
+																								"complexity_in_functions": 14.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/SonarRESTDatasource.java",
+																							"children": []
+																						}
+																					]
+																				},
+																				{
+																					"name": "model",
+																					"type": "Folder",
+																					"attributes": {
+																						"minor_violations": 0.0,
+																						"complexity": 17.0,
+																						"duplicated_lines_density": 0.0,
+																						"duplicated_lines": 0.0,
+																						"functions": 16.0,
+																						"classes": 6.0,
+																						"complexity_in_classes": 17.0,
+																						"sqale_rating": 1.0,
+																						"blocker_violations": 0.0,
+																						"bugs": 0.0,
+																						"major_violations": 11.0,
+																						"duplicated_files": 0.0,
+																						"ncloc": 107.0,
+																						"function_complexity": 1.1,
+																						"directories": 1.0,
+																						"false_positive_issues": 0.0,
+																						"lines": 333.0,
+																						"code_smells": 11.0,
+																						"violations": 11.0,
+																						"comment_lines_density": 5.3,
+																						"effort_to_reach_maintainability_rating_a": 0.0,
+																						"class_complexity": 2.8,
+																						"critical_violations": 0.0,
+																						"info_violations": 0.0,
+																						"comment_lines": 6.0,
+																						"duplicated_blocks": 0.0,
+																						"files": 6.0,
+																						"confirmed_issues": 0.0,
+																						"open_issues": 11.0,
+																						"last_commit_date": 1.487869927e12,
+																						"file_complexity": 2.8,
+																						"complexity_in_functions": 17.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model",
+																					"children": [
+																						{
+																							"name": "MetricObject.java",
+																							"type": "File",
+																							"attributes": {
+																								"complexity": 2.0,
+																								"code_smells": 10.0,
+																								"functions": 2.0,
+																								"violations": 10.0,
+																								"classes": 1.0,
+																								"complexity_in_classes": 2.0,
+																								"comment_lines_density": 3.4,
+																								"effort_to_reach_maintainability_rating_a": 23.0,
+																								"sqale_rating": 2.0,
+																								"class_complexity": 2.0,
+																								"major_violations": 10.0,
+																								"comment_lines": 1.0,
+																								"ncloc": 28.0,
+																								"function_complexity": 1.0,
+																								"files": 1.0,
+																								"open_issues": 10.0,
+																								"lines": 64.0,
+																								"last_commit_date": 1.487869927e12,
+																								"file_complexity": 2.0,
+																								"complexity_in_functions": 2.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/MetricObject.java",
+																							"children": []
+																						},
+																						{
+																							"name": "Metrics.java",
+																							"type": "File",
+																							"attributes": {
+																								"complexity": 1.0,
+																								"code_smells": 1.0,
+																								"functions": 1.0,
+																								"violations": 1.0,
+																								"classes": 1.0,
+																								"complexity_in_classes": 1.0,
+																								"comment_lines_density": 11.1,
+																								"sqale_rating": 1.0,
+																								"class_complexity": 1.0,
+																								"major_violations": 1.0,
+																								"comment_lines": 1.0,
+																								"ncloc": 8.0,
+																								"function_complexity": 1.0,
+																								"files": 1.0,
+																								"open_issues": 1.0,
+																								"lines": 44.0,
+																								"last_commit_date": 1.487869927e12,
+																								"file_complexity": 1.0,
+																								"complexity_in_functions": 1.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/Metrics.java",
+																							"children": []
+																						},
+																						{
+																							"name": "Qualifier.java",
+																							"type": "File",
+																							"attributes": {
+																								"complexity": 0.0,
+																								"functions": 0.0,
+																								"classes": 1.0,
+																								"complexity_in_classes": 0.0,
+																								"comment_lines_density": 20.0,
+																								"sqale_rating": 1.0,
+																								"class_complexity": 0.0,
+																								"comment_lines": 1.0,
+																								"ncloc": 4.0,
+																								"files": 1.0,
+																								"lines": 38.0,
+																								"last_commit_date": 1.487869927e12,
+																								"file_complexity": 0.0,
+																								"complexity_in_functions": 0.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/Qualifier.java",
+																							"children": []
+																						},
+																						{
+																							"name": "Scope.java",
+																							"type": "File",
+																							"attributes": {
+																								"complexity": 0.0,
+																								"functions": 0.0,
+																								"classes": 1.0,
+																								"complexity_in_classes": 0.0,
+																								"comment_lines_density": 20.0,
+																								"sqale_rating": 1.0,
+																								"class_complexity": 0.0,
+																								"comment_lines": 1.0,
+																								"ncloc": 4.0,
+																								"files": 1.0,
+																								"lines": 38.0,
+																								"last_commit_date": 1.487869927e12,
+																								"file_complexity": 0.0,
+																								"complexity_in_functions": 0.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/Scope.java",
+																							"children": []
+																						},
+																						{
+																							"name": "SonarAttribute.java",
+																							"type": "File",
+																							"attributes": {
+																								"complexity": 3.0,
+																								"functions": 3.0,
+																								"classes": 1.0,
+																								"complexity_in_classes": 3.0,
+																								"comment_lines_density": 6.3,
+																								"sqale_rating": 1.0,
+																								"class_complexity": 3.0,
+																								"comment_lines": 1.0,
+																								"ncloc": 15.0,
+																								"function_complexity": 1.0,
+																								"files": 1.0,
+																								"lines": 54.0,
+																								"last_commit_date": 1.487869927e12,
+																								"file_complexity": 3.0,
+																								"complexity_in_functions": 3.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/SonarAttribute.java",
+																							"children": []
+																						},
+																						{
+																							"name": "SonarResource.java",
+																							"type": "File",
+																							"attributes": {
+																								"complexity": 11.0,
+																								"functions": 10.0,
+																								"classes": 1.0,
+																								"complexity_in_classes": 11.0,
+																								"comment_lines_density": 2.0,
+																								"sqale_rating": 1.0,
+																								"class_complexity": 11.0,
+																								"comment_lines": 1.0,
+																								"ncloc": 48.0,
+																								"function_complexity": 1.1,
+																								"files": 1.0,
+																								"lines": 95.0,
+																								"last_commit_date": 1.487869927e12,
+																								"file_complexity": 11.0,
+																								"complexity_in_functions": 11.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/model/SonarResource.java",
+																							"children": []
+																						}
+																					]
+																				},
+																				{
+																					"name": "SonarXMLImport.java",
+																					"type": "File",
+																					"attributes": {
+																						"coverage": 100.0,
+																						"complexity": 4.0,
+																						"code_smells": 1.0,
+																						"functions": 4.0,
+																						"violations": 1.0,
+																						"classes": 1.0,
+																						"complexity_in_classes": 4.0,
+																						"overall_coverage": 100.0,
+																						"comment_lines_density": 0.0,
+																						"sqale_rating": 1.0,
+																						"class_complexity": 4.0,
+																						"lines_to_cover": 14.0,
+																						"major_violations": 1.0,
+																						"comment_lines": 0.0,
+																						"ncloc": 31.0,
+																						"function_complexity": 1.0,
+																						"files": 1.0,
+																						"open_issues": 1.0,
+																						"line_coverage": 100.0,
+																						"lines": 71.0,
+																						"last_commit_date": 1.488563501e12,
+																						"file_complexity": 4.0,
+																						"complexity_in_functions": 4.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarXMLImport.java",
+																					"children": []
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "model",
+																	"type": "Folder",
+																	"attributes": {
+																		"minor_violations": 2.0,
+																		"complexity": 58.0,
+																		"duplicated_lines_density": 0.0,
+																		"duplicated_lines": 0.0,
+																		"functions": 29.0,
+																		"classes": 4.0,
+																		"complexity_in_classes": 58.0,
+																		"sqale_rating": 1.0,
+																		"blocker_violations": 0.0,
+																		"bugs": 1.0,
+																		"major_violations": 11.0,
+																		"duplicated_files": 0.0,
+																		"ncloc": 160.0,
+																		"function_complexity": 1.9,
+																		"directories": 1.0,
+																		"false_positive_issues": 0.0,
+																		"lines": 329.0,
+																		"code_smells": 14.0,
+																		"violations": 15.0,
+																		"comment_lines_density": 1.2,
+																		"effort_to_reach_maintainability_rating_a": 0.0,
+																		"class_complexity": 14.5,
+																		"critical_violations": 2.0,
+																		"info_violations": 0.0,
+																		"comment_lines": 2.0,
+																		"duplicated_blocks": 0.0,
+																		"files": 4.0,
+																		"confirmed_issues": 0.0,
+																		"open_issues": 15.0,
+																		"last_commit_date": 1.488563501e12,
+																		"file_complexity": 14.5,
+																		"complexity_in_functions": 56.0
+																	},
+																	"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model",
+																	"children": [
+																		{
+																			"name": "Node.java",
+																			"type": "File",
+																			"attributes": {
+																				"minor_violations": 2.0,
+																				"complexity": 36.0,
+																				"code_smells": 8.0,
+																				"functions": 14.0,
+																				"violations": 9.0,
+																				"classes": 1.0,
+																				"complexity_in_classes": 36.0,
+																				"comment_lines_density": 0.0,
+																				"sqale_rating": 1.0,
+																				"class_complexity": 36.0,
+																				"bugs": 1.0,
+																				"major_violations": 7.0,
+																				"comment_lines": 0.0,
+																				"ncloc": 90.0,
+																				"function_complexity": 2.4,
+																				"files": 1.0,
+																				"open_issues": 9.0,
+																				"lines": 141.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 36.0,
+																				"complexity_in_functions": 34.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model/Node.java",
+																			"children": []
+																		},
+																		{
+																			"name": "NodeType.java",
+																			"type": "File",
+																			"attributes": {
+																				"complexity": 0.0,
+																				"code_smells": 2.0,
+																				"functions": 0.0,
+																				"violations": 2.0,
+																				"classes": 1.0,
+																				"complexity_in_classes": 0.0,
+																				"comment_lines_density": 0.0,
+																				"sqale_rating": 1.0,
+																				"class_complexity": 0.0,
+																				"critical_violations": 2.0,
+																				"comment_lines": 0.0,
+																				"ncloc": 4.0,
+																				"files": 1.0,
+																				"open_issues": 2.0,
+																				"lines": 35.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 0.0,
+																				"complexity_in_functions": 0.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model/NodeType.java",
+																			"children": []
+																		},
+																		{
+																			"name": "Project.java",
+																			"type": "File",
+																			"attributes": {
+																				"complexity": 22.0,
+																				"code_smells": 4.0,
+																				"functions": 11.0,
+																				"violations": 4.0,
+																				"classes": 1.0,
+																				"complexity_in_classes": 22.0,
+																				"comment_lines_density": 0.0,
+																				"sqale_rating": 1.0,
+																				"class_complexity": 22.0,
+																				"major_violations": 4.0,
+																				"comment_lines": 0.0,
+																				"ncloc": 59.0,
+																				"function_complexity": 2.0,
+																				"files": 1.0,
+																				"open_issues": 4.0,
+																				"lines": 107.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 22.0,
+																				"complexity_in_functions": 22.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model/Project.java",
+																			"children": []
+																		},
+																		{
+																			"name": "Path.java",
+																			"type": "File",
+																			"attributes": {
+																				"complexity": 0.0,
+																				"functions": 4.0,
+																				"classes": 1.0,
+																				"complexity_in_classes": 0.0,
+																				"comment_lines_density": 22.2,
+																				"sqale_rating": 1.0,
+																				"class_complexity": 0.0,
+																				"comment_lines": 2.0,
+																				"ncloc": 7.0,
+																				"function_complexity": 0.0,
+																				"files": 1.0,
+																				"lines": 46.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 0.0,
+																				"complexity_in_functions": 0.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/model/Path.java",
+																			"children": []
+																		}
+																	]
+																},
+																{
+																	"name": "nodeinserter",
+																	"type": "Folder",
+																	"attributes": {
+																		"minor_violations": 4.0,
+																		"complexity": 34.0,
+																		"duplicated_lines_density": 0.0,
+																		"duplicated_lines": 0.0,
+																		"functions": 16.0,
+																		"classes": 2.0,
+																		"complexity_in_classes": 34.0,
+																		"sqale_rating": 1.0,
+																		"blocker_violations": 0.0,
+																		"bugs": 3.0,
+																		"lines_to_cover": 49.0,
+																		"major_violations": 4.0,
+																		"branch_coverage": 70.0,
+																		"overall_branch_coverage": 70.0,
+																		"duplicated_files": 0.0,
+																		"ncloc": 117.0,
+																		"function_complexity": 1.6,
+																		"directories": 1.0,
+																		"false_positive_issues": 0.0,
+																		"line_coverage": 85.7,
+																		"lines": 232.0,
+																		"coverage": 79.7,
+																		"code_smells": 5.0,
+																		"violations": 8.0,
+																		"overall_coverage": 79.7,
+																		"comment_lines_density": 10.7,
+																		"effort_to_reach_maintainability_rating_a": 0.0,
+																		"overall_conditions_to_cover": 30.0,
+																		"class_complexity": 17.0,
+																		"critical_violations": 0.0,
+																		"info_violations": 0.0,
+																		"comment_lines": 14.0,
+																		"duplicated_blocks": 0.0,
+																		"files": 2.0,
+																		"confirmed_issues": 0.0,
+																		"open_issues": 8.0,
+																		"conditions_to_cover": 30.0,
+																		"last_commit_date": 1.488563501e12,
+																		"file_complexity": 17.0,
+																		"complexity_in_functions": 26.0
+																	},
+																	"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/nodeinserter",
+																	"children": [
+																		{
+																			"name": "FileSystemPath.java",
+																			"type": "File",
+																			"attributes": {
+																				"complexity": 17.0,
+																				"minor_violations": 3.0,
+																				"functions": 9.0,
+																				"classes": 1.0,
+																				"complexity_in_classes": 17.0,
+																				"sqale_rating": 1.0,
+																				"bugs": 3.0,
+																				"lines_to_cover": 21.0,
+																				"major_violations": 3.0,
+																				"branch_coverage": 59.1,
+																				"overall_branch_coverage": 59.1,
+																				"ncloc": 53.0,
+																				"function_complexity": 1.8,
+																				"line_coverage": 90.5,
+																				"lines": 99.0,
+																				"coverage": 74.4,
+																				"code_smells": 3.0,
+																				"violations": 6.0,
+																				"overall_coverage": 74.4,
+																				"comment_lines_density": 0.0,
+																				"overall_conditions_to_cover": 22.0,
+																				"class_complexity": 17.0,
+																				"comment_lines": 0.0,
+																				"files": 1.0,
+																				"open_issues": 6.0,
+																				"conditions_to_cover": 22.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 17.0,
+																				"complexity_in_functions": 16.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/nodeinserter/FileSystemPath.java",
+																			"children": []
+																		},
+																		{
+																			"name": "NodeInserter.java",
+																			"type": "File",
+																			"attributes": {
+																				"complexity": 17.0,
+																				"minor_violations": 1.0,
+																				"functions": 7.0,
+																				"classes": 1.0,
+																				"complexity_in_classes": 17.0,
+																				"sqale_rating": 1.0,
+																				"lines_to_cover": 28.0,
+																				"major_violations": 1.0,
+																				"branch_coverage": 100.0,
+																				"overall_branch_coverage": 100.0,
+																				"ncloc": 64.0,
+																				"function_complexity": 1.4,
+																				"line_coverage": 82.1,
+																				"lines": 133.0,
+																				"coverage": 86.1,
+																				"code_smells": 2.0,
+																				"violations": 2.0,
+																				"overall_coverage": 86.1,
+																				"comment_lines_density": 17.9,
+																				"overall_conditions_to_cover": 8.0,
+																				"class_complexity": 17.0,
+																				"comment_lines": 14.0,
+																				"files": 1.0,
+																				"open_issues": 2.0,
+																				"conditions_to_cover": 8.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 17.0,
+																				"complexity_in_functions": 10.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/nodeinserter/NodeInserter.java",
+																			"children": []
+																		}
+																	]
+																},
+																{
+																	"name": "serialization",
+																	"type": "Folder",
+																	"attributes": {
+																		"minor_violations": 0.0,
+																		"complexity": 6.0,
+																		"duplicated_lines_density": 0.0,
+																		"duplicated_lines": 0.0,
+																		"functions": 6.0,
+																		"classes": 2.0,
+																		"complexity_in_classes": 6.0,
+																		"sqale_rating": 1.0,
+																		"blocker_violations": 0.0,
+																		"bugs": 0.0,
+																		"lines_to_cover": 17.0,
+																		"major_violations": 1.0,
+																		"branch_coverage": 25.0,
+																		"overall_branch_coverage": 25.0,
+																		"duplicated_files": 0.0,
+																		"ncloc": 43.0,
+																		"function_complexity": 1.0,
+																		"directories": 1.0,
+																		"false_positive_issues": 0.0,
+																		"line_coverage": 76.5,
+																		"lines": 151.0,
+																		"coverage": 60.0,
+																		"code_smells": 1.0,
+																		"violations": 1.0,
+																		"overall_coverage": 60.0,
+																		"comment_lines_density": 27.1,
+																		"effort_to_reach_maintainability_rating_a": 0.0,
+																		"overall_conditions_to_cover": 8.0,
+																		"class_complexity": 3.0,
+																		"critical_violations": 0.0,
+																		"info_violations": 0.0,
+																		"comment_lines": 16.0,
+																		"duplicated_blocks": 0.0,
+																		"files": 2.0,
+																		"confirmed_issues": 0.0,
+																		"open_issues": 1.0,
+																		"conditions_to_cover": 8.0,
+																		"last_commit_date": 1.488563501e12,
+																		"file_complexity": 3.0,
+																		"complexity_in_functions": 6.0
+																	},
+																	"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/serialization",
+																	"children": [
+																		{
+																			"name": "ProjectDeserializer.java",
+																			"type": "File",
+																			"attributes": {
+																				"coverage": 60.0,
+																				"complexity": 3.0,
+																				"functions": 3.0,
+																				"classes": 1.0,
+																				"complexity_in_classes": 3.0,
+																				"overall_coverage": 60.0,
+																				"comment_lines_density": 29.6,
+																				"sqale_rating": 1.0,
+																				"class_complexity": 3.0,
+																				"lines_to_cover": 5.0,
+																				"comment_lines": 8.0,
+																				"ncloc": 19.0,
+																				"function_complexity": 1.0,
+																				"files": 1.0,
+																				"line_coverage": 60.0,
+																				"lines": 72.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 3.0,
+																				"complexity_in_functions": 3.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/serialization/ProjectDeserializer.java",
+																			"children": []
+																		},
+																		{
+																			"name": "ProjectSerializer.java",
+																			"type": "File",
+																			"attributes": {
+																				"complexity": 3.0,
+																				"functions": 3.0,
+																				"classes": 1.0,
+																				"complexity_in_classes": 3.0,
+																				"sqale_rating": 1.0,
+																				"lines_to_cover": 12.0,
+																				"major_violations": 1.0,
+																				"branch_coverage": 25.0,
+																				"overall_branch_coverage": 25.0,
+																				"ncloc": 24.0,
+																				"function_complexity": 1.0,
+																				"line_coverage": 83.3,
+																				"lines": 79.0,
+																				"coverage": 60.0,
+																				"code_smells": 1.0,
+																				"violations": 1.0,
+																				"overall_coverage": 60.0,
+																				"comment_lines_density": 25.0,
+																				"overall_conditions_to_cover": 8.0,
+																				"class_complexity": 3.0,
+																				"comment_lines": 8.0,
+																				"files": 1.0,
+																				"open_issues": 1.0,
+																				"conditions_to_cover": 8.0,
+																				"last_commit_date": 1.488563501e12,
+																				"file_complexity": 3.0,
+																				"complexity_in_functions": 3.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/main/java/de/maibornwolff/codecharta/serialization/ProjectSerializer.java",
+																			"children": []
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "test",
+							"type": "Folder",
+							"attributes": {},
+							"link": "",
+							"children": [
+								{
+									"name": "java",
+									"type": "Folder",
+									"attributes": {},
+									"link": "",
+									"children": [
+										{
+											"name": "de",
+											"type": "Folder",
+											"attributes": {},
+											"link": "",
+											"children": [
+												{
+													"name": "maibornwolff",
+													"type": "Folder",
+													"attributes": {},
+													"link": "",
+													"children": [
+														{
+															"name": "codecharta",
+															"type": "Folder",
+															"attributes": {},
+															"link": "",
+															"children": [
+																{
+																	"name": "importer",
+																	"type": "Folder",
+																	"attributes": {},
+																	"link": "",
+																	"children": [
+																		{
+																			"name": "sonar",
+																			"type": "Folder",
+																			"attributes": {
+																				"minor_violations": 0.0,
+																				"code_smells": 0.0,
+																				"duplicated_lines": 0.0,
+																				"violations": 0.0,
+																				"effort_to_reach_maintainability_rating_a": 0.0,
+																				"sqale_rating": 1.0,
+																				"critical_violations": 0.0,
+																				"blocker_violations": 0.0,
+																				"bugs": 0.0,
+																				"info_violations": 0.0,
+																				"major_violations": 0.0,
+																				"duplicated_blocks": 0.0,
+																				"duplicated_files": 0.0,
+																				"confirmed_issues": 0.0,
+																				"false_positive_issues": 0.0,
+																				"open_issues": 0.0,
+																				"last_commit_date": 1.488563501e12
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar",
+																			"children": [
+																				{
+																					"name": "SonarReaderTest.java",
+																					"type": "File",
+																					"attributes": {
+																						"last_commit_date": 1.487869927e12,
+																						"sqale_rating": 1.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/SonarReaderTest.java",
+																					"children": []
+																				},
+																				{
+																					"name": "SonarResourceToProjectConverterTest.java",
+																					"type": "File",
+																					"attributes": {
+																						"last_commit_date": 1.487782603e12,
+																						"sqale_rating": 1.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/SonarResourceToProjectConverterTest.java",
+																					"children": []
+																				},
+																				{
+																					"name": "dataaccess",
+																					"type": "Folder",
+																					"attributes": {
+																						"minor_violations": 0.0,
+																						"code_smells": 0.0,
+																						"duplicated_lines": 0.0,
+																						"violations": 0.0,
+																						"effort_to_reach_maintainability_rating_a": 0.0,
+																						"sqale_rating": 1.0,
+																						"critical_violations": 0.0,
+																						"blocker_violations": 0.0,
+																						"bugs": 0.0,
+																						"info_violations": 0.0,
+																						"major_violations": 0.0,
+																						"duplicated_blocks": 0.0,
+																						"duplicated_files": 0.0,
+																						"confirmed_issues": 0.0,
+																						"false_positive_issues": 0.0,
+																						"open_issues": 0.0,
+																						"last_commit_date": 1.48794039e12
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/dataaccess",
+																					"children": [
+																						{
+																							"name": "AuthentificationHandlerTest.java",
+																							"type": "File",
+																							"attributes": {
+																								"last_commit_date": 1.487772476e12,
+																								"sqale_rating": 1.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/AuthentificationHandlerTest.java",
+																							"children": []
+																						},
+																						{
+																							"name": "SonarRESTDatasourceIntegrationTest.java",
+																							"type": "File",
+																							"attributes": {
+																								"last_commit_date": 1.48794039e12,
+																								"sqale_rating": 1.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/SonarRESTDatasourceIntegrationTest.java",
+																							"children": []
+																						},
+																						{
+																							"name": "SonarRESTDatasourceTest.java",
+																							"type": "File",
+																							"attributes": {
+																								"last_commit_date": 1.48794039e12,
+																								"sqale_rating": 1.0
+																							},
+																							"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/dataaccess/SonarRESTDatasourceTest.java",
+																							"children": []
+																						}
+																					]
+																				},
+																				{
+																					"name": "SonarXMLImporterTest.java",
+																					"type": "File",
+																					"attributes": {
+																						"last_commit_date": 1.488563501e12,
+																						"sqale_rating": 1.0
+																					},
+																					"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:import:SonarImporter:src/test/java/de/maibornwolff/codecharta/importer/sonar/SonarXMLImporterTest.java",
+																					"children": []
+																				}
+																			]
+																		}
+																	]
+																},
+																{
+																	"name": "nodeinserter",
+																	"type": "Folder",
+																	"attributes": {
+																		"minor_violations": 0.0,
+																		"code_smells": 0.0,
+																		"duplicated_lines": 0.0,
+																		"violations": 0.0,
+																		"effort_to_reach_maintainability_rating_a": 0.0,
+																		"sqale_rating": 1.0,
+																		"critical_violations": 0.0,
+																		"blocker_violations": 0.0,
+																		"bugs": 0.0,
+																		"info_violations": 0.0,
+																		"major_violations": 0.0,
+																		"duplicated_blocks": 0.0,
+																		"duplicated_files": 0.0,
+																		"confirmed_issues": 0.0,
+																		"false_positive_issues": 0.0,
+																		"open_issues": 0.0,
+																		"last_commit_date": 1.488563501e12
+																	},
+																	"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/nodeinserter",
+																	"children": [
+																		{
+																			"name": "FileSystemPathTest.java",
+																			"type": "File",
+																			"attributes": {
+																				"last_commit_date": 1.488563501e12,
+																				"sqale_rating": 1.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/nodeinserter/FileSystemPathTest.java",
+																			"children": []
+																		},
+																		{
+																			"name": "NodeInserterTest.java",
+																			"type": "File",
+																			"attributes": {
+																				"last_commit_date": 1.488563501e12,
+																				"sqale_rating": 1.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/nodeinserter/NodeInserterTest.java",
+																			"children": []
+																		}
+																	]
+																},
+																{
+																	"name": "serialization",
+																	"type": "Folder",
+																	"attributes": {
+																		"minor_violations": 1.0,
+																		"code_smells": 1.0,
+																		"duplicated_lines": 0.0,
+																		"violations": 1.0,
+																		"effort_to_reach_maintainability_rating_a": 5.0,
+																		"sqale_rating": 1.0,
+																		"critical_violations": 0.0,
+																		"blocker_violations": 0.0,
+																		"bugs": 0.0,
+																		"info_violations": 0.0,
+																		"major_violations": 0.0,
+																		"duplicated_blocks": 0.0,
+																		"duplicated_files": 0.0,
+																		"confirmed_issues": 0.0,
+																		"false_positive_issues": 0.0,
+																		"open_issues": 1.0,
+																		"last_commit_date": 1.488563501e12
+																	},
+																	"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/serialization",
+																	"children": [
+																		{
+																			"name": "ProjectDeserializerTest.java",
+																			"type": "File",
+																			"attributes": {
+																				"minor_violations": 1.0,
+																				"code_smells": 1.0,
+																				"violations": 1.0,
+																				"open_issues": 1.0,
+																				"effort_to_reach_maintainability_rating_a": 5.0,
+																				"last_commit_date": 1.488563501e12,
+																				"sqale_rating": 1.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/serialization/ProjectDeserializerTest.java",
+																			"children": []
+																		},
+																		{
+																			"name": "ProjectSerializerTest.java",
+																			"type": "File",
+																			"attributes": {
+																				"last_commit_date": 1.488563501e12,
+																				"sqale_rating": 1.0
+																			},
+																			"link": "http://codequality.maibornwolff.de/code/index?id\u003dde.maibornwolff.codecharta:codecharta:model:src/test/java/de/maibornwolff/codecharta/serialization/ProjectSerializerTest.java",
+																			"children": []
+																		}
+																	]
+																}
+															]
+														}
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
