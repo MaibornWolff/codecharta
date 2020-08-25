@@ -30,11 +30,10 @@ export class RibbonBarController implements PanelSelectionSubscriber {
 
 	public toggle(panelSelection: PanelSelection) {
 		$(document.activeElement).blur()
-		if (this._viewModel.panelSelection !== panelSelection) {
-			this.storeService.dispatch(setPanelSelection(panelSelection))
-		} else {
-			this.storeService.dispatch(setPanelSelection(PanelSelection.NONE))
-		}
+
+		const newSelection = this._viewModel.panelSelection !== panelSelection ? panelSelection : PanelSelection.NONE
+		this.storeService.dispatch(setPanelSelection(newSelection))
+
 		this.codeChartaMouseEventService.closeComponentExcept(this.codeChartaMouseEventService.closeRibbonBarSections)
 	}
 }
