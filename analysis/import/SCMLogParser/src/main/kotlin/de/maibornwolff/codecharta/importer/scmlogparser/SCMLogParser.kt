@@ -25,6 +25,7 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.util.Arrays
 import java.util.concurrent.Callable
+import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
 @CommandLine.Command(
@@ -167,7 +168,25 @@ class SCMLogParser(
 
         @JvmStatic
         fun main(args: Array<String>) {
+            val test = "git ls-tree --name-only".runCommand(File("C:\\Users\\VladimirR\\Documents\\codecharta"))
+            println(test)
             CommandLine.call(SCMLogParser(), System.out, *args)
+        }
+
+        fun String.runCommand(workingDir: File): String? {
+            try {
+                val commands = this.split("\\s".toRegex())
+                val proc = ProcessBuilder(*commands.toTypedArray())
+                    .directory(workingDir)
+                    .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                    .redirectError(ProcessBuilder.Redirect.PIPE)
+                    .start()
+
+                proc.waitFor(60, TimeUnit.MINUTES)
+                return proc.inputStream.bufferedReader().readText()
+            } catch (e: IOException) {
+                error("Invalid git command.")
+            }
         }
 
         @JvmStatic

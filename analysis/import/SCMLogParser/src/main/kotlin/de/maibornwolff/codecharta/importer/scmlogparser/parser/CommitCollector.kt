@@ -42,8 +42,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             val oldestName = renamesMap[possibleConflictName]
             val VCFName = if (oldestName == null) possibleConflictName else oldestName
 
-           if(VCFName == "visualization/app/codeCharta/codeMap/codeMapController.js")
-            println("Found")
+     /*      if(VCFName == "analysis/import/SonarImporter/src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarImporter.java")
+            println("Found")*/
 
             when (it.type) {
 
@@ -64,6 +64,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     renamesMap.remove(possibleConflictName)
 
                 }
+
                 Modification.Type.RENAME -> {
                     var newVCFFileName = it.currentFilename
                     if (versionControlledFiles.containsKey(it.currentFilename)) {
@@ -82,8 +83,11 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                         versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }
                 else ->
-                        versionControlledFiles[VCFName]?.registerCommit(commit, it)
-
+                    try {
+                    versionControlledFiles[VCFName]!!.registerCommit(commit, it)
+                }catch(e: Exception){
+                       // println("Current name: " + it.currentFilename + " old name " + it.oldFilename + " VCF: " + VCFName)
+                }
             }
         }
     }
