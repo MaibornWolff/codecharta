@@ -232,6 +232,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(mapTreeViewLevelController["_viewModel"].isFolderOpened).toBeTruthy()
 		})
+
 		it("should do nothing, if the depth size is not 0", () => {
 			mapTreeViewLevelController["_viewModel"].isFolderOpened = false
 
@@ -239,6 +240,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(mapTreeViewLevelController["_viewModel"].isFolderOpened).toBeFalsy()
 		})
+
 		it("should do nothing, if the depth size is not 0 and the isFolderOpened variable is true", () => {
 			mapTreeViewLevelController["_viewModel"].isFolderOpened = true
 
@@ -266,6 +268,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(result).toBe("50")
 		})
+
 		it("should return the Root-Node Unary-Precentage to 100 percent", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
 
@@ -283,6 +286,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(result).toBeTruthy()
 		})
+
 		it("should return that the current Node is not Root", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
 

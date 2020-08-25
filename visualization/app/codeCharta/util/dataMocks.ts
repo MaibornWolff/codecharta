@@ -383,7 +383,7 @@ export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
 
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
-	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	attributes: { [NodeMetricDataService.UNARY_METRIC]: 2 },
 	type: NodeType.FOLDER,
 	path: "/root",
 	isExcluded: false,
