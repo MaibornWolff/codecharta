@@ -56,5 +56,6 @@ function getMetricDataFromHashMap(hashMap: Map<string, number>): NodeMetricData[
 			maxValue: value
 		})
 	})
-	return sortByMetricName(metricData)
+	sortByMetricName(metricData)
+	return metricData
 }

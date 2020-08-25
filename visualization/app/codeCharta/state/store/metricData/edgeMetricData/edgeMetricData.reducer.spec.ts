@@ -3,6 +3,7 @@ import { calculateNewEdgeMetricData, EdgeMetricDataAction, setEdgeMetricData } f
 import { EDGE_METRIC_DATA, FILE_STATES, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
 import { FileState } from "../../../../model/files/files"
 import _ from "lodash"
+import { EdgeMetricDataService } from "./edgeMetricData.service"
 
 describe("edgeMetricData", () => {
 	let fileStates: FileState[]
@@ -49,25 +50,30 @@ describe("edgeMetricData", () => {
 			expect(result.find(x => x.name === "otherMetric").maxValue).toEqual(1)
 		})
 
-		it("metrics Map should contain correct entries entries", () => {
-			edgeMetricData([], calculateNewEdgeMetricData(fileStates, []))
+		it("should contain the None metric once", () => {
+			const result = edgeMetricData([], calculateNewEdgeMetricData(fileStates, []))
 
-			const pairingRateMapKeys = nodeEdgeMetricsMap.get("pairingRate").keys()
-			expect(pairingRateMapKeys.next().value).toEqual("/root/Parent Leaf/small leaf")
-			expect(pairingRateMapKeys.next().value).toEqual("/root/big leaf")
-			expect(pairingRateMapKeys.next().value).toEqual("/root/Parent Leaf/other small leaf")
+			expect(result.filter(x => x.name === EdgeMetricDataService.NONE_METRIC)).toHaveLength(1)
 		})
 
-		it("metrics map should contain sorted entries by metric name", () => {
+		it("should sort the metrics after calculating them", () => {
+			const result = edgeMetricData([], calculateNewEdgeMetricData(fileStates, []))
+
+			expect(result).toHaveLength(4)
+			expect(result[0].name).toBe("avgCommits")
+			expect(result[1].name).toBe("None")
+			expect(result[2].name).toBe("otherMetric")
+			expect(result[3].name).toBe("pairingRate")
+		})
+
+		it("metrics Map should contain correct entries", () => {
 			edgeMetricData([], calculateNewEdgeMetricData(fileStates, []))
 
-			const keys = Array.from(nodeEdgeMetricsMap.keys())
+			const pairingRateMapKeys = Array.from(nodeEdgeMetricsMap.get("pairingRate").keys())
 
-			expect(keys).toHaveLength(4)
-			expect(keys[1]).toBe("avgCommits")
-			expect(keys[2]).toBe("None")
-			expect(keys[3]).toBe("otherMetric")
-			expect(keys[4]).toBe("pairingRate")
+			expect(pairingRateMapKeys[0]).toEqual("/root/big leaf")
+			expect(pairingRateMapKeys[1]).toEqual("/root/Parent Leaf/small leaf")
+			expect(pairingRateMapKeys[2]).toEqual("/root/Parent Leaf/other small leaf")
 		})
 	})
 })

@@ -11,7 +11,11 @@ const metricData = combineReducers({
 })
 
 export function sortByMetricName(metricData: EdgeMetricData[]) {
-	return metricData.sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0))
+	metricData.sort((a, b) => {
+		const aLower = a.name.toLowerCase()
+		const bLower = b.name.toLowerCase()
+		return aLower > bLower ? 1 : bLower > aLower ? -1 : 0
+	})
 }
 
 export default metricData

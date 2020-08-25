@@ -101,7 +101,7 @@ describe("EdgeMetricDataService", () => {
 		it("should return metric names", () => {
 			const metricNames = edgeMetricDataService.getMetricNames()
 
-			expect(metricNames).toEqual(["pairingRate", "avgCommits", "otherMetric", EdgeMetricDataService.NONE_METRIC])
+			expect(metricNames).toEqual(["avgCommits", EdgeMetricDataService.NONE_METRIC, "otherMetric", "pairingRate"])
 		})
 	})
 
@@ -129,7 +129,7 @@ describe("EdgeMetricDataService", () => {
 		it("should return the correct nodes", () => {
 			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("pairingRate", 2)
 
-			expect(nodePaths).toEqual(["/root/Parent Leaf/small leaf", "/root/big leaf"])
+			expect(nodePaths).toEqual(["/root/big leaf", "/root/Parent Leaf/small leaf"])
 		})
 	})
 
