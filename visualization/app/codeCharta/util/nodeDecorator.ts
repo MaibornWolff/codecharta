@@ -34,7 +34,11 @@ export class NodeDecorator {
 
 		for (const item of blacklist) {
 			const path = CodeMapHelper.transformPath(item.path)
-			item.type === BlacklistType.flatten ? flattened.add(path) : excluded.add(path)
+			if (item.type === BlacklistType.flatten) {
+				flattened.add(path)
+			} else {
+				excluded.add(path)
+			}
 		}
 
 		hierarchy(map)
