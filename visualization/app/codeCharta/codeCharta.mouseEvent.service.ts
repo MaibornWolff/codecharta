@@ -12,8 +12,7 @@ export class CodeChartaMouseEventService {
 		functions
 			.filter(x => x !== fun)
 			.forEach(fn => {
-				fn = fn.bind(this)
-				fn()
+				fn.call(this)
 			})
 	}
 
