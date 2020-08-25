@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
-- Sections under the metric selection will close automatically again when clicking somewhere else in the application #1036
+- Expanded metric selection will close when clicking anywhere outside of that selection #1036
 
 ### Chore 👨‍💻 👩‍💻
 
