@@ -1,20 +1,20 @@
 ---
 categories:
-  - How-to
+    - How-to
 tags:
-  - sourcecodeparser
-  - scmlogparser
-  - merge
+    - sourcecodeparser
+    - scmlogparser
+    - merge
 title: Analyzing a java project and it's gitlog to generate a merged cc.json
 ---
 
 # Prerequisites
 
-- CodeCharta-Visualization installed
-- CodeCharta-Analysis installed
-- git or svn
-- Java installed and correctly configured
-- bash or similiar
+-   CodeCharta-Visualization installed
+-   CodeCharta-Analysis installed
+-   git or svn
+-   Java installed and correctly configured
+-   bash or similiar
 
 # Instructions
 

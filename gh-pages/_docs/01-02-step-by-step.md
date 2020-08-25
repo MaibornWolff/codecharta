@@ -7,11 +7,11 @@ Here we will explain an example to analyze a SonarQube Project and visualize it 
 
 # Run local sonar analysis with a docker container (Mac)
 
-- `brew install sonar-scanner`
-- `docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube`
-- add a correct sonar-project.properties file to the target project
-- run `sonar-scanner` in the projects folder
-- you can now access your sonarqube instance and analysis on localhost:9000
+-   `brew install sonar-scanner`
+-   `docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube`
+-   add a correct sonar-project.properties file to the target project
+-   run `sonar-scanner` in the projects folder
+-   you can now access your sonarqube instance and analysis on localhost:9000
 
 # Analyze a sonarqube project
 
@@ -45,26 +45,26 @@ An output file has been created.
 Open the visualization directory and run the executable. A new window should open now.
 You can also use the [web visualization]({{site.web_visualization_link}}).
 
-- In the top left corner, click on the folder icon.
-- Choose the generated `.cc.json` file from the previous step
+-   In the top left corner, click on the folder icon.
+-   Choose the generated `.cc.json` file from the previous step
 
 Now you can see the analysis of the chosen project visualized in coloured blocks.
 
 Navigation:
 
-- left click and drag -> rotate
-- right click and drag -> move the blocks
-- mousewheel -> zoom in and out
-- click on the view cube in the top right corner to change perspective quickly
+-   left click and drag -> rotate
+-   right click and drag -> move the blocks
+-   mousewheel -> zoom in and out
+-   click on the view cube in the top right corner to change perspective quickly
 
 Change the visualized content:
 
-- try hovering your mouse over wide, tall, red buildings
-- use the ribbon bar to change the metrics and explore if the same building is also bad from a different perspective
-- try searching for `*.ts`
-- then use the three dots to **hide** those, don't worry, we can restore the buildings
-- what buildings are left and do they have interesting metrics
-- click on the eye icon, then remove the `*.ts` query to restore all buildings
-- try excluding `**/ui/*` or `**/vendor/*`, is something interesting left now
+-   try hovering your mouse over wide, tall, red buildings
+-   use the ribbon bar to change the metrics and explore if the same building is also bad from a different perspective
+-   try searching for `*.ts`
+-   then use the three dots to **hide** those, don't worry, we can restore the buildings
+-   what buildings are left and do they have interesting metrics
+-   click on the eye icon, then remove the `*.ts` query to restore all buildings
+-   try excluding `**/ui/*` or `**/vendor/*`, is something interesting left now
 
 ![Image]({{site.baseurl}}/assets/images/docs/step-by-step/visualization.drawio.png)

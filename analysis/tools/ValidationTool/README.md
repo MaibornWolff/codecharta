@@ -1,4 +1,4 @@
-# ValidationTool 
+# ValidationTool
 
 Checks if a given json file conforms to visualisation format.
 
