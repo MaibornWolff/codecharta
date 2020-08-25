@@ -176,16 +176,13 @@ export class CodeMapMouseEventService
 	public onDocumentMouseDown(event) {
 		if (event.button === ClickType.RightClick) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
+			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 		}
 		if (event.button === ClickType.LeftClick) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
 		}
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
 		$(document.activeElement).blur()
-
-		if (event.button === ClickType.RightClick) {
-			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-		}
 	}
 
 	public onDocumentMouseUp(event) {
