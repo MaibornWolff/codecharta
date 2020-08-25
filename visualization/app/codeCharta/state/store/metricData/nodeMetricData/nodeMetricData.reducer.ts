@@ -9,10 +9,6 @@ import { sortByMetricName } from "../metricData.reducer"
 
 const clone = require("rfdc")()
 
-interface MaxMetricValuePair {
-	maxValue: number
-}
-
 export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().payload, action: NodeMetricDataAction): NodeMetricData[] {
 	switch (action.type) {
 		case NodeMetricDataActions.SET_NODE_METRIC_DATA:
@@ -25,7 +21,7 @@ export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().pay
 }
 
 function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): NodeMetricData[] {
-	const hashMap: Map<string, MaxMetricValuePair> = new Map()
+	const hashMap: Map<string, number> = new Map()
 
 	getVisibleFileStates(fileStates).forEach((fileState: FileState) => {
 		const nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
@@ -38,28 +34,26 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): 
 	return getMetricDataFromHashMap(hashMap)
 }
 
-function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: Map<string, MaxMetricValuePair>) {
+function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: Map<string, number>) {
 	const attributes: string[] = Object.keys(node.data.attributes)
 	attributes.forEach((metric: string) => {
-		const maxMetricValuePair = hashMap.get(metric)
+		const maxValue = hashMap.get(metric)
 
-		if (maxMetricValuePair === undefined || maxMetricValuePair.maxValue <= node.data.attributes[metric]) {
-			hashMap.set(metric, {
-				maxValue: node.data.attributes[metric]
-			})
+		if (maxValue === undefined || maxValue <= node.data.attributes[metric]) {
+			hashMap.set(metric, node.data.attributes[metric])
 		}
 	})
 }
 
-function getMetricDataFromHashMap(hashMap: Map<string, MaxMetricValuePair>): NodeMetricData[] {
+function getMetricDataFromHashMap(hashMap: Map<string, number>): NodeMetricData[] {
 	const metricData: NodeMetricData[] = []
 
-	hashMap.set(NodeMetricDataService.UNARY_METRIC, { maxValue: 1 })
+	hashMap.set(NodeMetricDataService.UNARY_METRIC, 1)
 
-	hashMap.forEach((value: MaxMetricValuePair, key: string) => {
+	hashMap.forEach((value: number, key: string) => {
 		metricData.push({
 			name: key,
-			maxValue: value.maxValue
+			maxValue: value
 		})
 	})
 	return sortByMetricName(metricData)
