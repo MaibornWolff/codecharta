@@ -79,7 +79,7 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedHideNodeContextMenuMethod() {
-		nodeContextMenuController.hideNodeContextMenu = jest.fn()
+		nodeContextMenuController.onHideNodeContextMenu = jest.fn()
 	}
 
 	describe("constructor", () => {
@@ -159,7 +159,7 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.flattenNode()
 
 			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -175,7 +175,7 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.showNode()
 
 			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(expected)
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -271,7 +271,7 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.markFolder("color")
 
 			expect(codeMapActionsService.markFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode, "color")
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -280,7 +280,7 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.unmarkFolder()
 
 			expect(codeMapActionsService.unmarkFolder).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode)
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -307,7 +307,7 @@ describe("nodeContextMenuController", () => {
 			nodeContextMenuController.excludeNode()
 
 			expect(storeService.getState().fileSettings.blacklist).toContainEqual(expected)
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
