@@ -1,8 +1,8 @@
 ---
 categories:
-    - ADR
+  - ADR
 tags:
-    - analysis
+  - analysis
 title: "ADR 5: Pick Analysis Cli Library"
 ---
 
@@ -21,4 +21,4 @@ CodeCharta Analysis will be a set of command-line tools that use [PicoCli](https
 
 # Consequences
 
--   A cli is not as intuitive as a well-structured graphical user interface would have been.
+- A cli is not as intuitive as a well-structured graphical user interface would have been.

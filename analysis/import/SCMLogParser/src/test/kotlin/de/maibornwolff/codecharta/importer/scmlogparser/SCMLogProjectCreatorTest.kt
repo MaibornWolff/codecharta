@@ -56,8 +56,7 @@ class SCMLogProjectCreatorTest(
         // then
         assertThat(gitProject)
                 .extracting(Function<Project, Any> { it.size.toLong() })
-                .isEqualTo(expectedProjectSize)
-
+                .containsExactly(expectedProjectSize)
         assertNodesValid(gitProject)
     }
 

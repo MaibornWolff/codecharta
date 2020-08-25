@@ -29,39 +29,39 @@ If you are interested the `newmetrics.cc.json` looks like this:
 
 ```json
 {
-	"projectName": "myproject",
-	"apiVersion": "1.1",
-	"nodes": [
-		{
-			"name": "root",
-			"type": "Folder",
-			"attributes": {},
-			"link": "",
-			"children": [
-				{
-					"name": "File.js",
-					"type": "File",
-					"attributes": { "Metric1": 4.0, "Metric2": 500.0 },
-					"link": "",
-					"children": []
-				},
-				{
-					"name": "service",
-					"type": "Folder",
-					"attributes": {},
-					"link": "",
-					"children": [
-						{
-							"name": "Service1.ts",
-							"type": "File",
-							"attributes": { "Metric1": 40.0, "Metric2": 20.0 },
-							"link": "",
-							"children": []
-						}
-					]
-				}
-			]
-		}
-	]
+  "projectName": "myproject",
+  "apiVersion": "1.1",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "link": "",
+      "children": [
+        {
+          "name": "File.js",
+          "type": "File",
+          "attributes": { "Metric1": 4.0, "Metric2": 500.0 },
+          "link": "",
+          "children": []
+        },
+        {
+          "name": "service",
+          "type": "Folder",
+          "attributes": {},
+          "link": "",
+          "children": [
+            {
+              "name": "Service1.ts",
+              "type": "File",
+              "attributes": { "Metric1": 40.0, "Metric2": 20.0 },
+              "link": "",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
 ```

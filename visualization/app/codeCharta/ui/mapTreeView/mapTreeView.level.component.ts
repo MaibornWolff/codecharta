@@ -1,5 +1,5 @@
 import { IRootScopeService } from "angular"
-import { HideNodeContextMenuSubscriber, NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
+import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode } from "../../codeCharta.model"
@@ -13,7 +13,7 @@ export interface MapTreeViewHoverEventSubscriber {
 	onShouldUnhoverNode(node: CodeMapNode)
 }
 
-export class MapTreeViewLevelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, HideNodeContextMenuSubscriber {
+export class MapTreeViewLevelController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private static MAP_TREE_VIEW_HOVER_NODE_EVENT = "should-hover-node"
 	private static MAP_TREE_VIEW_UNHOVER_NODE_EVENT = "should-unhover-node"
 
@@ -22,12 +22,10 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	private _viewModel: {
 		isHoveredInCodeMap: boolean
 		isHoveredInTreeView: boolean
-		isMarked: boolean
 		isFolderOpened: boolean
 	} = {
 		isHoveredInCodeMap: false,
 		isHoveredInTreeView: false,
-		isMarked: false,
 		isFolderOpened: false
 	}
 
@@ -39,11 +37,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
-		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
 	}
 
-	public onHideNodeContextMenu() {
-		this._viewModel.isMarked = false
+	public getMarkingColor() {
+		const defaultColor = "#000000"
+		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
+		return markingColor ? markingColor : defaultColor
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -72,8 +71,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	public openNodeContextMenu($event) {
 		$event.stopPropagation()
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
-		this._viewModel.isMarked = true
-		document.getElementById("tree-root").addEventListener("scroll", this.scrollFunction)
 	}
 
 	public onClickNode() {
@@ -82,12 +79,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	public isLeaf(node: CodeMapNode = this.node): boolean {
 		return !(node && node.children && node.children.length > 0)
-	}
-
-	public getMarkingColor() {
-		const defaultColor = "#000000"
-		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
-		return markingColor ? markingColor : defaultColor
 	}
 
 	public isSearched(): boolean {
@@ -123,11 +114,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		$rootScope.$on(MapTreeViewLevelController.MAP_TREE_VIEW_UNHOVER_NODE_EVENT, (_event, data) => {
 			subscriber.onShouldUnhoverNode(data)
 		})
-	}
-
-	private scrollFunction = () => {
-		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-		document.getElementById("tree-root").removeEventListener("scroll", this.scrollFunction)
 	}
 }
 

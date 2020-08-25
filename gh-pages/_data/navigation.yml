@@ -1,85 +1,85 @@
 # main links
 main:
-    - title: "Docs"
-      url: /docs/quick-start-guide/
-    - title: "Showcase"
-      url: /showcase/
-    - title: "News"
-      url: /news/
+  - title: "Docs"
+    url: /docs/quick-start-guide/
+  - title: "Showcase"
+    url: /showcase/
+  - title: "News"
+    url: /news/
 
 # docs navigation bar
 docs:
-    - title: Getting Started
-      children:
-          - title: "Quick-Start Guide"
-            url: /docs/quick-start-guide/
-          - title: "Step-by-Step Example"
-            url: /docs/step-by-step/
-          - title: "Installation"
-            url: /docs/installation/
-          - title: "Versioning"
-            url: /docs/versioning/
-          - title: "Price"
-            url: /docs/price/
-          - title: "Feedback"
-            url: /docs/feedback/
+  - title: Getting Started
+    children:
+      - title: "Quick-Start Guide"
+        url: /docs/quick-start-guide/
+      - title: "Step-by-Step Example"
+        url: /docs/step-by-step/
+      - title: "Installation"
+        url: /docs/installation/
+      - title: "Versioning"
+        url: /docs/versioning/
+      - title: "Price"
+        url: /docs/price/
+      - title: "Feedback"
+        url: /docs/feedback/
 
-    - title: How-Tos
-      children:
-          - title: "How-Tos"
-            url: categories/#how-to
+  - title: How-Tos
+    children:
+      - title: "How-Tos"
+        url: categories/#how-to
 
-    - title: Analysis
-      children:
-          - title: "Analysis"
-            url: /docs/analysis/
-          - title: "Metrics"
-            url: /docs/metrics/
-          - title: "CodeCharta Shell"
-            url: /docs/ccsh/
-          - title: "Custom Metrics"
-            url: /docs/custom-metrics/
+  - title: Analysis
+    children:
+      - title: "Analysis"
+        url: /docs/analysis/
+      - title: "Metrics"
+        url: /docs/metrics/
+      - title: "CodeCharta Shell"
+        url: /docs/ccsh/
+      - title: "Custom Metrics"
+        url: /docs/custom-metrics/
 
-    - title: Analysing-Tools
-      children:
-          - title: "Source Code Parser"
-            url: /docs/source-code-parser
-          - title: "Raw Text Parser"
-            url: /docs/raw-text-parser
-          - title: "SCM Log Parser"
-            url: /docs/scm-log-parser
-          - title: "Sonar Importer"
-            url: /docs/sonar-importer
-          - title: "Tokei Importer"
-            url: /docs/tokei-importer
-          - title: "CSV Importer"
-            url: /docs/csv-importer
-          - title: "SourceMonitor Importer"
-            url: /docs/sourcemonitorimporter
-          - title: "Code Maat Importer"
-            url: /docs/codemaatimporter
-          - title: "Jasome Importer"
-            url: /docs/jasomeimporter
-          - title: "Crococosmo Importer"
-            url: /docs/crococosmoimporter
-          - title: "Understand Importer"
-            url: /docs/understandimporter
+  - title: Analysing-Tools
+    children:
+      - title: "Source Code Parser"
+        url: /docs/source-code-parser
+      - title: "Raw Text Parser"
+        url: /docs/raw-text-parser
+      - title: "SCM Log Parser"
+        url: /docs/scm-log-parser
+      - title: "Sonar Importer"
+        url: /docs/sonar-importer
+      - title: "Tokei Importer"
+        url: /docs/tokei-importer
+      - title: "CSV Importer"
+        url: /docs/csv-importer
+      - title: "SourceMonitor Importer"
+        url: /docs/sourcemonitorimporter
+      - title: "Code Maat Importer"
+        url: /docs/codemaatimporter
+      - title: "Jasome Importer"
+        url: /docs/jasomeimporter
+      - title: "Crococosmo Importer"
+        url: /docs/crococosmoimporter
+      - title: "Understand Importer"
+        url: /docs/understandimporter
 
-    - title: Visualization
-      children:
-          - title: "Visualization"
-            url: /docs/visualization/
-          - title: "User Controls"
-            url: /docs/user-controls/
-          - title: "Timeline"
-            url: /docs/timeline/
+  - title: Visualization
+    children:
+      - title: "Visualization"
+        url: /docs/visualization/
+      - title: "User Controls"
+        url: /docs/user-controls/
+      - title: "Timeline"
+        url: /docs/timeline/
 
-    - title: Reference
-      children:
-          - title: "New to this Code?"
-            url: /docs/new-to-code/
+  - title: Reference
+    children:
+      - title: "New to this Code?"
+        url: /docs/new-to-code/
 
-    - title: Meta
-      children:
-          - title: "License"
-            url: /docs/license/
+  - title: Meta
+    children:
+      - title: "License"
+        url: /docs/license/

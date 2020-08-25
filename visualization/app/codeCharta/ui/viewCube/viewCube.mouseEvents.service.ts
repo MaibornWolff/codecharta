@@ -1,8 +1,7 @@
 import * as THREE from "three"
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService, IAngularEvent } from "angular"
 import $ from "jquery"
 import { hierarchy } from "d3"
-import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
 
 export interface ViewCubeEventPropagationSubscriber {
 	onViewCubeEventPropagation(eventType: string, event: MouseEvent)
@@ -103,13 +102,11 @@ export class ViewCubeMouseEventsService {
 
 	private triggerViewCubeHoverEvent(cube: THREE.Mesh) {
 		this.currentlyHovered = cube
-		CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
 		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME, { cube })
 	}
 
 	private triggerViewCubeUnhoverEvent() {
 		this.currentlyHovered = null
-		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_UNHOVER_EVENT_NAME)
 	}
 

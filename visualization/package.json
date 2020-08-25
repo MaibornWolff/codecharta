@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.54.0",
+	"version": "1.52.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -75,12 +75,20 @@
 		"plop": "tsc --esModuleInterop true --outDir ./dist/plop ./plopfile.ts && cd dist/plop && plop",
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "npm run lint -- --fix",
+		"format": "prettier --write \"./**/*\"",
+		"format:quick": "pretty-quick --staged",
 		"schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json"
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
 	},
 	"license": "BSD-3-Clause",
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run lint:fix && npm run format:quick",
+			"pre-push": "sh ./script/pre-push.sh"
+		}
+	},
 	"dependencies": {
 		"ajv": "^6.12.2",
 		"angular": "^1.8.0",
@@ -135,12 +143,15 @@
 		"file-loader": "^6.0.0",
 		"html-loader": "^1.1.0",
 		"html-webpack-plugin": "^4.3.0",
+		"husky": "^4.2.5",
 		"jest": "^26.1.0",
 		"jest-puppeteer": "^4.4.0",
 		"jest-serializer-html": "^7.0.0",
 		"makeshift": "^1.1.0",
 		"node-sass": "^4.13.1",
 		"plop": "^2.7.3",
+		"prettier": "^2.0.5",
+		"pretty-quick": "^2.0.1",
 		"puppeteer": "^5.1.0",
 		"rimraf": "^3.0.2",
 		"sass-loader": "^9.0.1",

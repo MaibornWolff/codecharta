@@ -7,24 +7,24 @@ The Source-Code-Parser is parser to generate code metrics from a source code fil
 
 ## Supported languages
 
--   Java
+- Java
 
 ## Supported Metrics
 
--   rloc: Real lines of code
--   classes
--   functions
--   statements
--   comment_lines
--   mcc: McCabe Complexity / Cyclomatic complexity
--   cognitive_complexity
--   commented_out_code_blocks
--   max_nesting_level
--   code_smell
--   security_hotspot
--   vulnerability
--   bug
--   sonar_issue_other
+- rloc: Real lines of code
+- classes
+- functions
+- statements
+- comment_lines
+- mcc: McCabe Complexity / Cyclomatic complexity
+- cognitive_complexity
+- commented_out_code_blocks
+- max_nesting_level
+- code_smell
+- security_hotspot
+- vulnerability
+- bug
+- sonar_issue_other
 
 ## Parameter and Usage
 

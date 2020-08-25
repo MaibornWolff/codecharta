@@ -1,244 +1,244 @@
 {
-	"$ref": "#/definitions/ExportCCFile",
-	"$schema": "http://json-schema.org/draft-07/schema#",
-	"definitions": {
-		"AttributeTypes": {
-			"properties": {
-				"edges": {
-					"additionalProperties": {
-						"enum": ["absolute", "relative"],
-						"type": "string"
-					},
-					"type": "object"
-				},
-				"nodes": {
-					"additionalProperties": {
-						"enum": ["absolute", "relative"],
-						"type": "string"
-					},
-					"type": "object"
-				}
-			},
-			"type": "object"
-		},
-		"CodeMapNode": {
-			"properties": {
-				"attributes": {
-					"$ref": "#/definitions/KeyValuePair"
-				},
-				"children": {
-					"items": {
-						"$ref": "#/definitions/CodeMapNode"
-					},
-					"type": "array"
-				},
-				"deltas": {
-					"additionalProperties": {
-						"type": "number"
-					},
-					"type": "object"
-				},
-				"edgeAttributes": {
-					"additionalProperties": {
-						"$ref": "#/definitions/EdgeMetricCount"
-					},
-					"type": "object"
-				},
-				"id": {
-					"type": "number"
-				},
-				"isExcluded": {
-					"type": "boolean"
-				},
-				"isFlattened": {
-					"type": "boolean"
-				},
-				"link": {
-					"type": "string"
-				},
-				"name": {
-					"type": "string"
-				},
-				"path": {
-					"type": "string"
-				},
-				"type": {
-					"$ref": "#/definitions/NodeType"
-				}
-			},
-			"required": ["name", "type"],
-			"type": "object"
-		},
-		"Edge": {
-			"properties": {
-				"attributes": {
-					"$ref": "#/definitions/KeyValuePair"
-				},
-				"fromNodeName": {
-					"type": "string"
-				},
-				"toNodeName": {
-					"type": "string"
-				},
-				"visible": {
-					"$ref": "#/definitions/EdgeVisibility"
-				}
-			},
-			"required": ["attributes", "fromNodeName", "toNodeName"],
-			"type": "object"
-		},
-		"EdgeMetricCount": {
-			"properties": {
-				"incoming": {
-					"type": "number"
-				},
-				"outgoing": {
-					"type": "number"
-				}
-			},
-			"required": ["incoming", "outgoing"],
-			"type": "object"
-		},
-		"EdgeVisibility": {
-			"enum": ["both", "from", "none", "to"],
-			"type": "string"
-		},
-		"ExportBlacklistItem": {
-			"properties": {
-				"path": {
-					"type": "string"
-				},
-				"type": {
-					"$ref": "#/definitions/ExportBlacklistType"
-				}
-			},
-			"required": ["path", "type"],
-			"type": "object"
-		},
-		"ExportBlacklistType": {
-			"enum": ["exclude", "hide"],
-			"type": "string"
-		},
-		"ExportCCFile": {
-			"properties": {
-				"apiVersion": {
-					"type": "string"
-				},
-				"attributeTypes": {
-					"anyOf": [
-						{
-							"$ref": "#/definitions/OldAttributeTypes"
-						},
-						{
-							"$ref": "#/definitions/AttributeTypes"
-						}
-					]
-				},
-				"blacklist": {
-					"items": {
-						"$ref": "#/definitions/ExportBlacklistItem"
-					},
-					"type": "array"
-				},
-				"edges": {
-					"items": {
-						"$ref": "#/definitions/Edge"
-					},
-					"type": "array"
-				},
-				"markedPackages": {
-					"items": {
-						"$ref": "#/definitions/MarkedPackage"
-					},
-					"type": "array"
-				},
-				"nodes": {
-					"items": {
-						"$ref": "#/definitions/CodeMapNode"
-					},
-					"type": "array"
-				},
-				"projectName": {
-					"type": "string"
-				}
-			},
-			"required": ["apiVersion", "nodes", "projectName"],
-			"type": "object"
-		},
-		"KeyValuePair": {
-			"additionalProperties": {
-				"type": "number"
-			},
-			"type": "object"
-		},
-		"MarkedPackage": {
-			"properties": {
-				"color": {
-					"type": "string"
-				},
-				"path": {
-					"type": "string"
-				}
-			},
-			"required": ["color", "path"],
-			"type": "object"
-		},
-		"NodeType": {
-			"enum": ["File", "Folder"],
-			"type": "string"
-		},
-		"OldAttributeTypes": {
-			"properties": {
-				"edges": {
-					"additionalItems": {
-						"anyOf": [
-							{
-								"additionalProperties": {
-									"enum": ["absolute", "relative"],
-									"type": "string"
-								},
-								"type": "object"
-							}
-						]
-					},
-					"items": [
-						{
-							"additionalProperties": {
-								"enum": ["absolute", "relative"],
-								"type": "string"
-							},
-							"type": "object"
-						}
-					],
-					"minItems": 1,
-					"type": "array"
-				},
-				"nodes": {
-					"additionalItems": {
-						"anyOf": [
-							{
-								"additionalProperties": {
-									"enum": ["absolute", "relative"],
-									"type": "string"
-								},
-								"type": "object"
-							}
-						]
-					},
-					"items": [
-						{
-							"additionalProperties": {
-								"enum": ["absolute", "relative"],
-								"type": "string"
-							},
-							"type": "object"
-						}
-					],
-					"minItems": 1,
-					"type": "array"
-				}
-			},
-			"type": "object"
-		}
-	}
+  "$ref": "#/definitions/ExportCCFile",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "AttributeTypes": {
+      "properties": {
+        "edges": {
+          "additionalProperties": {
+            "enum": ["absolute", "relative"],
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "nodes": {
+          "additionalProperties": {
+            "enum": ["absolute", "relative"],
+            "type": "string"
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "CodeMapNode": {
+      "properties": {
+        "attributes": {
+          "$ref": "#/definitions/KeyValuePair"
+        },
+        "children": {
+          "items": {
+            "$ref": "#/definitions/CodeMapNode"
+          },
+          "type": "array"
+        },
+        "deltas": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "type": "object"
+        },
+        "edgeAttributes": {
+          "additionalProperties": {
+            "$ref": "#/definitions/EdgeMetricCount"
+          },
+          "type": "object"
+        },
+        "id": {
+          "type": "number"
+        },
+        "isExcluded": {
+          "type": "boolean"
+        },
+        "isFlattened": {
+          "type": "boolean"
+        },
+        "link": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/NodeType"
+        }
+      },
+      "required": ["name", "type"],
+      "type": "object"
+    },
+    "Edge": {
+      "properties": {
+        "attributes": {
+          "$ref": "#/definitions/KeyValuePair"
+        },
+        "fromNodeName": {
+          "type": "string"
+        },
+        "toNodeName": {
+          "type": "string"
+        },
+        "visible": {
+          "$ref": "#/definitions/EdgeVisibility"
+        }
+      },
+      "required": ["attributes", "fromNodeName", "toNodeName"],
+      "type": "object"
+    },
+    "EdgeMetricCount": {
+      "properties": {
+        "incoming": {
+          "type": "number"
+        },
+        "outgoing": {
+          "type": "number"
+        }
+      },
+      "required": ["incoming", "outgoing"],
+      "type": "object"
+    },
+    "EdgeVisibility": {
+      "enum": ["both", "from", "none", "to"],
+      "type": "string"
+    },
+    "ExportBlacklistItem": {
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/ExportBlacklistType"
+        }
+      },
+      "required": ["path", "type"],
+      "type": "object"
+    },
+    "ExportBlacklistType": {
+      "enum": ["exclude", "hide"],
+      "type": "string"
+    },
+    "ExportCCFile": {
+      "properties": {
+        "apiVersion": {
+          "type": "string"
+        },
+        "attributeTypes": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/OldAttributeTypes"
+            },
+            {
+              "$ref": "#/definitions/AttributeTypes"
+            }
+          ]
+        },
+        "blacklist": {
+          "items": {
+            "$ref": "#/definitions/ExportBlacklistItem"
+          },
+          "type": "array"
+        },
+        "edges": {
+          "items": {
+            "$ref": "#/definitions/Edge"
+          },
+          "type": "array"
+        },
+        "markedPackages": {
+          "items": {
+            "$ref": "#/definitions/MarkedPackage"
+          },
+          "type": "array"
+        },
+        "nodes": {
+          "items": {
+            "$ref": "#/definitions/CodeMapNode"
+          },
+          "type": "array"
+        },
+        "projectName": {
+          "type": "string"
+        }
+      },
+      "required": ["apiVersion", "nodes", "projectName"],
+      "type": "object"
+    },
+    "KeyValuePair": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "type": "object"
+    },
+    "MarkedPackage": {
+      "properties": {
+        "color": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        }
+      },
+      "required": ["color", "path"],
+      "type": "object"
+    },
+    "NodeType": {
+      "enum": ["File", "Folder"],
+      "type": "string"
+    },
+    "OldAttributeTypes": {
+      "properties": {
+        "edges": {
+          "additionalItems": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "enum": ["absolute", "relative"],
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "items": [
+            {
+              "additionalProperties": {
+                "enum": ["absolute", "relative"],
+                "type": "string"
+              },
+              "type": "object"
+            }
+          ],
+          "minItems": 1,
+          "type": "array"
+        },
+        "nodes": {
+          "additionalItems": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "enum": ["absolute", "relative"],
+                  "type": "string"
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "items": [
+            {
+              "additionalProperties": {
+                "enum": ["absolute", "relative"],
+                "type": "string"
+              },
+              "type": "object"
+            }
+          ],
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  }
 }

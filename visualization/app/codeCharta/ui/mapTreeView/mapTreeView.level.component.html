@@ -1,12 +1,11 @@
 <div
 	ng-if="!$ctrl.node.isExcluded"
-	class="tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
+	class="{{::$ctrl.depth?'':'tree-root'}} tree-element-{{::$ctrl.depth?$ctrl.depth:0}} {{::$ctrl.isLeaf()?'tree-leaf':'tree-parent'}}"
 	ng-init="$ctrl.openRootFolderByDefault($ctrl.depth)"
-	id="{{::$ctrl.depth?'':'tree-root'}}"
 >
 	<div
 		class="tree-element-label-{{::$ctrl.depth?$ctrl.depth:0}} tree-element-label"
-		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap, marked: $ctrl._viewModel.isMarked }"
+		ng-class="{ hovered: $ctrl._viewModel.isHoveredInCodeMap }"
 		ng-mouseenter="$ctrl.onMouseEnter()"
 		ng-mouseleave="$ctrl.onMouseLeave()"
 		ng-right-click="$ctrl.openNodeContextMenu($event)"

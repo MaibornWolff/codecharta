@@ -1,9 +1,9 @@
 ---
 categories:
-    - How-to
+  - How-to
 tags:
-    - jenkins
-    - sonarimport
+  - jenkins
+  - sonarimport
 title: Integrating CodeCharte into a Jenkins 2 and Sonarqube pipeline
 ---
 
@@ -11,10 +11,10 @@ This writeup documents a way to use CC in a Jenkins 2 Pipeline. CC will take you
 
 # Prerequisites
 
--   Jenkins 2 with a Pipeline for your project
--   An integrated Sonarqube analysis in your pipeline
--   Bash or similar
--   JRE 8 (Oracle Java or OpenJDK)
+- Jenkins 2 with a Pipeline for your project
+- An integrated Sonarqube analysis in your pipeline
+- Bash or similar
+- JRE 8 (Oracle Java or OpenJDK)
 
 # Base Configuration
 
@@ -22,8 +22,8 @@ This writeup documents a way to use CC in a Jenkins 2 Pipeline. CC will take you
 2. Download latest `codecharta-web.zip`, it contains the CodeCharta web-application
 3. Unzip both to a accessible location on your jenkins server. Remember to make the directories readable by the Jenkins user. We will call those directories `ANALYSIS_DIR` and `WEB_DIR` in this guide.
 4. Set your global Jenkins configuration to allow loading resources from your artifact folders
-    - This can be done by executing `System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "")` in the Jenkins Script Console. Warning: This may be a security flaw.
-    - [Further Reading, other methods and security details](https://wiki.jenkins.io/display/JENKINS/Configuring+Content+Security+Policy)
+   - This can be done by executing `System.setProperty("hudson.model.DirectoryBrowserSupport.CSP", "")` in the Jenkins Script Console. Warning: This may be a security flaw.
+   - [Further Reading, other methods and security details](https://wiki.jenkins.io/display/JENKINS/Configuring+Content+Security+Policy)
 5. Set your Markup Formatter to Safe HTML (for rendered HTML in build descriptions) under your Jenkins Security Settings to enable rendering of HTML tags in your descriptions.
 
 # Pipeline Steps

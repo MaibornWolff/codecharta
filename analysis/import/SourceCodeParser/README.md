@@ -4,24 +4,24 @@ A parser to generate code metrics from a source code file or a project folder. I
 
 ## Supported languages
 
--   Java
+- Java
 
 ## Supported Metrics
 
--   rloc: Real lines of code
--   classes
--   functions
--   statements
--   comment_lines
--   mcc: McCabe Complexity / Cyclomatic complexity
--   cognitive_complexity
--   commented_out_code_blocks
--   max_nesting_level
--   code_smell
--   security_hotspot
--   vulnerability
--   bug
--   sonar_issue_other
+- rloc: Real lines of code
+- classes
+- functions
+- statements
+- comment_lines
+- mcc: McCabe Complexity / Cyclomatic complexity
+- cognitive_complexity
+- commented_out_code_blocks
+- max_nesting_level
+- code_smell
+- security_hotspot
+- vulnerability
+- bug
+- sonar_issue_other
 
 ## Run
 
@@ -54,13 +54,13 @@ The resulting project has the project name specified for the SourceCodeParser.
 
 ## Parameters
 
--   --default-excludes (exclude build, target, dist and out folders as well as files/folders starting with '.')
--   -e, --exclude=\<excludePattern> (exclude file/folder from scan according to regex pattern)
--   -f, --format=\<outputFormat> (table or json)
--   -h, --help
--   -i, --no-issues (do not search for sonar issues)
--   -o, --output-file=\<outputFile> (file to write output to, if empty stdout is used)
--   -v, --verbose
+- --default-excludes (exclude build, target, dist and out folders as well as files/folders starting with '.')
+- -e, --exclude=\<excludePattern> (exclude file/folder from scan according to regex pattern)
+- -f, --format=\<outputFormat> (table or json)
+- -h, --help
+- -i, --no-issues (do not search for sonar issues)
+- -o, --output-file=\<outputFile> (file to write output to, if empty stdout is used)
+- -v, --verbose
 
 ## Sonar Plugins
 

@@ -1,0 +1,13 @@
+.idea
+node_modules
+build
+script
+plop-templates
+dist
+assets
+__snapshots__
+*.properties
+Dockerfile
+*.glsl
+.*
+*.hbs

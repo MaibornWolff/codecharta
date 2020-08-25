@@ -4,7 +4,7 @@ This parser analyzes code regardless of the programming language used to generat
 
 ## Metrics
 
--   Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
+- Indentation Level: The number of lines of code of a file, with a certain indentation level or higher.
 
 ## Parameters
 
