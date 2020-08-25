@@ -45,7 +45,11 @@ export class CodeMapHelper {
 	}
 
 	public static numberOfBlacklistedNodes(nodes: Array<CodeMapNode>): number {
-		return nodes.filter(node => node.isExcluded || node.isFlattened).length
+		return nodes.filter(node => this.isBlacklisted(node)).length
+	}
+
+	public static isBlacklisted(node: CodeMapNode): boolean {
+		return node.isExcluded || node.isFlattened
 	}
 
 	public static isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {

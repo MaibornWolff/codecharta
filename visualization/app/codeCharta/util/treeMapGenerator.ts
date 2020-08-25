@@ -8,6 +8,10 @@ import {CodeMapNode, MetricData, Node, State} from "../codeCharta.model"
 // 3. (GroundArea / 100) *
 
 
+// 100 = Ground
+// 1 = Ground / 100
+//
+
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>, height: number, width: number }
 
@@ -63,9 +67,15 @@ export class TreeMapGenerator {
 
     private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedTreeMap {
         const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
-        const nodeLeafs: CodeMapNode[] = hierarchyNode.descendants().map(d => d.data)
-        const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs)
-        const nodesPerSide: number = 2 * Math.sqrt(hierarchyNode.descendants().length - blacklisted)
+        let numberOfNodes = 0
+        let blacklisted = 0
+
+        hierarchyNode.descendants().forEach(x => {
+            CodeMapHelper.isBlacklisted(x.data) && blacklisted++
+            numberOfNodes++
+        })
+
+        const nodesPerSide: number = 2 * Math.sqrt(numberOfNodes - blacklisted)
         const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
         let mapWidth
         let mapHeight
