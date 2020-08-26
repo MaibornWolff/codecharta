@@ -29,19 +29,15 @@ export class TreeMapHelper {
 	}
 
 	public static buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, state: State, isDeltaState: boolean): Node {
-		// TODO: width and length need to vary based on the margin
-		const width = 100
-		const length = 100
-
 		const flattened: boolean = this.isNodeToBeFlat(map, state)
 		const height = 2
 
 		return {
 			name: "root",
 			id: 0,
-			width,
-			height,
-			length,
+			width: 100,
+			height: 2,
+			length: 100,
 			depth: 0,
 			x0: 0,
 			z0: 0,
