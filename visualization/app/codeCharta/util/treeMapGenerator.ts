@@ -63,9 +63,9 @@ export class TreeMapGenerator {
 
     private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedTreeMap {
         const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
-        const nodeLeafs: CodeMapNode[] = hierarchyNode.descendants().map(d => d.data)
-        const blacklisted: number = CodeMapHelper.numberOfBlacklistedNodes(nodeLeafs)
-        const nodesPerSide: number = 2 * Math.sqrt(hierarchyNode.descendants().length - blacklisted)
+        const descendants = hierarchyNode.descendants()
+        const blacklisted = descendants.filter(node => node.data.isExcluded || node.data.isFlattened).length
+        const nodesPerSide: number = 2 * Math.sqrt(descendants.length - blacklisted)
         const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
         let mapWidth
         let mapHeight
