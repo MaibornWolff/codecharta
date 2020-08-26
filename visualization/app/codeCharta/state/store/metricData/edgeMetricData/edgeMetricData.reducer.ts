@@ -27,7 +27,7 @@ export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().pay
 function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
 	const allVisibleFileStates = getVisibleFileStates(fileStates)
-	const allFilePaths = allVisibleFileStates.flatMap(fileState => CodeMapHelper.getAllPaths(fileState.file.map))
+	const allFilePaths = new Set(allVisibleFileStates.flatMap(fileState => CodeMapHelper.getAllPaths(fileState.file.map)))
 	for (const fileState of allVisibleFileStates) {
 		fileState.file.settings.fileSettings.edges.forEach(edge => {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
@@ -40,10 +40,11 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	return newEdgeMetricData
 }
 
-function bothNodesAssociatedAreVisible(edge: Edge, filePaths: string[], blacklist: BlacklistItem[]): boolean {
-	const fromPath = filePaths.find(x => x === edge.fromNodeName)
-	const toPath = filePaths.find(x => x === edge.toNodeName)
-	return fromPath && toPath && isNotBlacklisted(fromPath, blacklist) && isNotBlacklisted(toPath, blacklist)
+function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]): boolean {
+	if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
+		return isNotBlacklisted(edge.fromNodeName, blacklist) && isNotBlacklisted(edge.toNodeName, blacklist)
+	}
+	return false
 }
 
 function isNotBlacklisted(path: string, blacklist: BlacklistItem[]): boolean {
