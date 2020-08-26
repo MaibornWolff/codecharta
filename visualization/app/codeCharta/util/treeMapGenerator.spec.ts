@@ -3,6 +3,9 @@ import { CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES, STATE } from "./dataMocks"
 import _ from "lodash"
+import { NodeDecorator } from "./nodeDecorator"
+import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
+import { CodeChartaService } from "../codeCharta.service"
 
 describe("treeMapGenerator", () => {
 	let map: CodeMapNode
@@ -17,6 +20,7 @@ describe("treeMapGenerator", () => {
 
 	function restartSystem() {
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		NodeDecorator.preDecorateFile(CodeChartaService.getCCFile("someFile", fileWithFixedFolders))
 		state = _.cloneDeep(STATE)
 		codeMapNode = _.cloneDeep(VALID_NODE_WITH_PATH)
 		metricData = _.cloneDeep(METRIC_DATA)
@@ -43,6 +47,12 @@ describe("treeMapGenerator", () => {
 
 		it("root node with two direct children and some grand children", () => {
 			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+
+			expect(nodes).toMatchSnapshot()
+		})
+
+		it("should build the a tree map with valid coordinates using the fixed folder structure", () => {
+			const nodes = TreeMapGenerator.createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
