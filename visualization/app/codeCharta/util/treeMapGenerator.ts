@@ -12,9 +12,19 @@ export class TreeMapGenerator {
 		const heightScale = (s.treeMap.mapSize * 2) / maxHeight
 
 		if (this.hasFixedFolders(map)) {
-			const nodes = this.buildSquarifiedTreeMapsForFixedFolders(map, s, heightScale, maxHeight, isDeltaState)
+			const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
+			const nodes = this.buildSquarifiedTreeMapsForFixedFolders(hierarchyNode.data, s, heightScale, maxHeight, isDeltaState)
+			nodes.unshift(TreeMapHelper.buildRootFolderForFixedFolders(hierarchyNode.data, heightScale, s, isDeltaState))
 
-			nodes.unshift(TreeMapHelper.buildRootFolderForFixedFolders(map, heightScale, s, isDeltaState))
+			// scale nodes based on mapSize and margin
+			const scale = (s.treeMap.mapSize * 2 + this.getNodesPerSide(hierarchyNode) * s.dynamicSettings.margin) / nodes[0].length
+			nodes.forEach(node => {
+				node.x0 *= scale
+				node.y0 *= scale
+				node.width *= scale
+				node.length *= scale
+			})
+
 			return nodes
 		} else {
 			const squarifiedTreeMap = this.getSquarifiedTreeMap(map, s)
@@ -49,9 +59,15 @@ export class TreeMapGenerator {
 				squarifiedNode.x1 = squarifiedNode.x1 * scaleX + fixedFolder.fixed.x
 				squarifiedNode.y0 = squarifiedNode.y0 * scaleY + fixedFolder.fixed.y
 				squarifiedNode.y1 = squarifiedNode.y1 * scaleY + fixedFolder.fixed.y
-				// TODO: Scale edge points as well
-
-				nodes.push(TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState))
+				// TODO: Scale edge points as well, not working yet
+				const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState)
+				/*
+                node.incomingEdgePoint.x = node.incomingEdgePoint.x * scaleX + fixedFolder.fixed.x
+                node.incomingEdgePoint.z = node.incomingEdgePoint.z * scaleY + fixedFolder.fixed.y
+                node.outgoingEdgePoint.x = node.outgoingEdgePoint.x * scaleX + fixedFolder.fixed.x
+                node.outgoingEdgePoint.z = node.outgoingEdgePoint.z * scaleY + fixedFolder.fixed.y
+                */
+				nodes.push(node)
 			})
 		}
 		return nodes
@@ -59,9 +75,7 @@ export class TreeMapGenerator {
 
 	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedTreeMap {
 		const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
-		const descendants = hierarchyNode.descendants()
-		const blacklisted = descendants.filter(node => node.data.isExcluded || node.data.isFlattened).length
-		const nodesPerSide: number = 2 * Math.sqrt(descendants.length - blacklisted)
+		const nodesPerSide = this.getNodesPerSide(hierarchyNode)
 		const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
 		let mapWidth
 		let mapHeight
@@ -74,13 +88,18 @@ export class TreeMapGenerator {
 			mapHeight = s.treeMap.mapSize * 2
 		}
 
-		// TOD: Increase map size and fix margin slider
 		const width = mapWidth + nodesPerSide * s.dynamicSettings.margin
 		const height = mapHeight + nodesPerSide * s.dynamicSettings.margin
 
 		const treeMap: TreemapLayout<CodeMapNode> = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding)
 
 		return { treeMap: treeMap(hierarchyNode.sum(node => this.calculateAreaValue(node, s))), height, width }
+	}
+
+	private static getNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>): number {
+		const descendants = hierarchyNode.descendants()
+		const blacklisted = descendants.filter(node => node.data.isExcluded || node.data.isFlattened).length
+		return 2 * Math.sqrt(descendants.length - blacklisted)
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State): boolean {
