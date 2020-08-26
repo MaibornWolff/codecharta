@@ -64,7 +64,7 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
     }
 
     private fun Set<Path>.findFittingPathOrNull(path: Path): Path? {
-        val matchingLeaf = this.filter { !it.isTrivial }.maxBy { path.fittingEdgesFromTailWith(it) } ?: path
+        val matchingLeaf = this.filter { !it.isTrivial }.maxByOrNull { path.fittingEdgesFromTailWith(it) } ?: path
         return when {
             path.fittingEdgesFromTailWith(matchingLeaf) == 0 -> null
             else -> matchingLeaf
