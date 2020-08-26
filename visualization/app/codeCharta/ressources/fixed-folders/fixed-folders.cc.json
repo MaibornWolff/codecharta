@@ -39,7 +39,7 @@
 					],
 					"fixed": {
 						"x": 5,
-						"y:": 5,
+						"y": 5,
 						"width": 55,
 						"height": 15
 					}
@@ -68,7 +68,7 @@
 					],
 					"fixed": {
 						"x": 5,
-						"y:": 25,
+						"y": 25,
 						"width": 25,
 						"height": 50
 					}
@@ -97,7 +97,7 @@
 					],
 					"fixed": {
 						"x": 35,
-						"y:": 25,
+						"y": 25,
 						"width": 25,
 						"height": 50
 					}
@@ -126,7 +126,7 @@
 					],
 					"fixed": {
 						"x": 65,
-						"y:": 5,
+						"y": 5,
 						"width": 10,
 						"height": 90
 					}
@@ -155,7 +155,7 @@
 					],
 					"fixed": {
 						"x": 80,
-						"y:": 5,
+						"y": 5,
 						"width": 15,
 						"height": 90
 					}
@@ -184,7 +184,7 @@
 					],
 					"fixed": {
 						"x": 5,
-						"y:": 80,
+						"y": 80,
 						"width": 55,
 						"height": 15
 					}
@@ -192,5 +192,22 @@
 			]
 		}
 	],
-	"margin": 5
+	"edges": [
+		{
+			"fromNodeName": "/root/folder_1/children_1",
+			"toNodeName": "/root/folder_2/children_4",
+			"attributes": {
+				"pairingRate": 89,
+				"avgCommits": 34
+			}
+		},
+		{
+			"fromNodeName": "/root/folder_2/children_4",
+			"toNodeName": "/root/folder_3/children_5",
+			"attributes": {
+				"pairingRate": 32,
+				"avgCommits": 17
+			}
+		}
+	]
 }

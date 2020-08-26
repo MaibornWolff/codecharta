@@ -174,7 +174,7 @@ describe("treeMapHelper", () => {
 
 		it("should not be a flat node when no visibleEdges", () => {
 			state.fileSettings.edges = []
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode.data, state)).toBeFalsy()
 		})
 
 		it("should be a flat node when other edges are visible", () => {
@@ -187,7 +187,7 @@ describe("treeMapHelper", () => {
 					visible: EdgeVisibility.both
 				}
 			]
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode.data, state)).toBeTruthy()
 		})
 
 		it("should not be a flat node when it contains edges", () => {
@@ -198,38 +198,38 @@ describe("treeMapHelper", () => {
 					attributes: {}
 				}
 			]
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode.data, state)).toBeFalsy()
 		})
 
 		it("should not be a flat node, because its searched for", () => {
 			state.dynamicSettings.searchedNodePaths = new Set(["/root/Anode"])
 			state.dynamicSettings.searchPattern = "Anode"
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode.data, state)).toBeFalsy()
 		})
 
 		it("should be a flat node, because other nodes are searched for", () => {
 			state.dynamicSettings.searchedNodePaths = new Set(["/root/anotherNode", "/root/anotherNode2"])
 			state.dynamicSettings.searchPattern = "Anode"
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode.data, state)).toBeTruthy()
 		})
 
 		it("should not be a flat node when searchPattern is empty", () => {
 			state.dynamicSettings.searchedNodePaths = new Set(["/root/anotherNode", "/root/anotherNode2"])
 			state.dynamicSettings.searchPattern = ""
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode.data, state)).toBeFalsy()
 		})
 
 		it("should be flat if node is flattened in blacklist", () => {
 			state.fileSettings.blacklist = [{ path: "*Anode", type: BlacklistType.flatten }]
 			squaredNode.data.isFlattened = true
 
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeTruthy()
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode.data, state)).toBeTruthy()
 		})
 
 		it("should not be flat if node is not blacklisted", () => {
 			state.fileSettings.blacklist = []
 
-			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode, state)).toBeFalsy()
+			expect(TreeMapHelper["isNodeToBeFlat"](squaredNode.data, state)).toBeFalsy()
 		})
 	})
 

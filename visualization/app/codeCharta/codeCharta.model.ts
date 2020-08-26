@@ -22,7 +22,6 @@ export interface CCFile {
 		fileSettings: FileSettings
 	}
 	fileMeta: FileMeta
-	margin?: number
 }
 
 export interface CodeMapNode {
