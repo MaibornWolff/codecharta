@@ -42,13 +42,12 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]): boolean {
 	if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
-		return isNotBlacklisted(edge.fromNodeName, blacklist) && isNotBlacklisted(edge.toNodeName, blacklist)
+		return (
+			!CodeMapHelper.isPathBlacklisted(edge.fromNodeName, blacklist, BlacklistType.exclude) &&
+			!CodeMapHelper.isPathBlacklisted(edge.toNodeName, blacklist, BlacklistType.exclude)
+		)
 	}
 	return false
-}
-
-function isNotBlacklisted(path: string, blacklist: BlacklistItem[]): boolean {
-	return !CodeMapHelper.isPathBlacklisted(path, blacklist, BlacklistType.exclude)
 }
 
 function addEdgeToCalculationMap(edge: Edge) {
@@ -74,6 +73,7 @@ function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, t
 	} else {
 		fromNodeEdgeMetric.outgoing += 1
 	}
+
 	const toNodeEdgeMetric = edgeMetricEntry.get(toNode)
 	if (toNodeEdgeMetric === undefined) {
 		edgeMetricEntry.set(toNode, { incoming: 1, outgoing: 0 })
