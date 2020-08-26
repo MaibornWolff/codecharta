@@ -1,4 +1,4 @@
-# Change Log
+﻿# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -9,13 +9,29 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Opening NodeContextMenu in the tree-view marks the node until it is closed #1068 
+-   Cursor indicator for different mouse actions #1042
 
 ### Changed
 
 ### Removed 🗑
 
 ### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.54.0] - 2020-08-21
+
+### Added 🚀
+
+-   Opening NodeContextMenu in the tree-view marks the node until it is closed #1068
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Missing Sonarcloud metrics in demo
 
 ### Docs 🔎
 
