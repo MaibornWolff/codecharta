@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Cursor indicator for different mouse actions #1042
+
 ### Changed
 
 ### Removed 🗑

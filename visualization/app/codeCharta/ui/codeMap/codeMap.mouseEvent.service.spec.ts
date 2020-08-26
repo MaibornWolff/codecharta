@@ -1,7 +1,7 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { IRootScopeService, IWindowService } from "angular"
-import { CodeMapMouseEventService, ClickType } from "./codeMap.mouseEvent.service"
+import { ClickType, CodeMapMouseEventService, CursorType } from "./codeMap.mouseEvent.service"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { ThreeUpdateCycleService } from "./threeViewer/threeUpdateCycleService"
@@ -64,6 +64,7 @@ describe("codeMapMouseEventService", () => {
 
 		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
+		document.body.style.cursor = CursorType.Default
 	}
 
 	function rebuildService() {
@@ -308,12 +309,35 @@ describe("codeMapMouseEventService", () => {
 		})
 	})
 
+	describe("changeCursorIndicator", () => {
+		it("should set the mouseIcon to grabbing", () => {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
+		})
+
+		it("should set the mouseIcon to default", () => {
+			document.body.style.cursor = CursorType.Pointer
+
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Default)
+		})
+	})
+
 	describe("onDocumentMouseUp", () => {
 		let event
 
 		describe("on left click", () => {
 			beforeEach(() => {
 				event = { button: ClickType.LeftClick }
+			})
+			it("should change the cursor to default when the left click is triggered", () => {
+				document.body.style.cursor = CursorType.Pointer
+
+				codeMapMouseEventService.onDocumentMouseUp(event)
+
+				expect(document.body.style.cursor).toEqual(CursorType.Default)
 			})
 
 			it("should not do anything when no building is hovered and nothing is selected", () => {
@@ -394,6 +418,22 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onDocumentMouseDown", () => {
+		it("should the cursor to moving when pressing the right button", () => {
+			const event = { button: ClickType.RightClick }
+
+			codeMapMouseEventService.onDocumentMouseDown(event)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Moving)
+		})
+
+		it("should change the cursor to grabbing when pressing the left button just once", () => {
+			const event = { button: ClickType.LeftClick }
+
+			codeMapMouseEventService.onDocumentMouseDown(event)
+
+			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
+		})
+
 		it("should save the mouse position", () => {
 			const event = { clientX: 10, clientY: 20 }
 
