@@ -29,7 +29,7 @@ class JasomeProjectBuilder() {
             projectBuilder.insertByPath(parentPath, nodeForPackage)
         }
         jasomePackage.classes.orEmpty()
-                .forEach { this.add(jasomePackage.name ?: "", it) }
+            .forEach { this.add(jasomePackage.name ?: "", it) }
         return this
     }
 
@@ -50,17 +50,17 @@ class JasomeProjectBuilder() {
 
     private fun createNode(jasomePackage: Package): MutableNode {
         val attributes =
-                jasomePackage.metrics
-                        ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
-                        ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
+            jasomePackage.metrics
+                ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
+                ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
         return MutableNode(jasomePackage.name!!.substringAfterLast('.'), NodeType.Folder, attributes)
     }
 
     private fun createNode(jasomeClass: Class): MutableNode {
         val attributes =
-                jasomeClass.metrics
-                        ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
-                        ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
+            jasomeClass.metrics
+                ?.filter { !it.name.isNullOrBlank() && !it.value.isNullOrBlank() }
+                ?.associateBy({ it.name!! }, { convertMetricValue(it.value) }) ?: mapOf()
         return MutableNode(jasomeClass.name ?: "", NodeType.File, attributes)
     }
 

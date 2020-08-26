@@ -16,9 +16,9 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "csvexport",
-        description = ["generates csv file with header"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "csvexport",
+    description = ["generates csv file with header"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class CSVExporter : Callable<Void> {
 
@@ -62,8 +62,8 @@ class CSVExporter : Callable<Void> {
         val attributeNames: List<String> = project.rootNode.nodes.flatMap { it.value.attributes.keys }.distinct()
 
         val header = listOf("path", "name", "type")
-                .plus(attributeNames)
-                .plus(List(maxHierarchy, { "dir$it" }))
+            .plus(attributeNames)
+            .plus(List(maxHierarchy, { "dir$it" }))
 
         writer.writeHeaders(header)
 
@@ -76,13 +76,14 @@ class CSVExporter : Callable<Void> {
         val values: List<String> = node.toAttributeList(attributeNames)
 
         val rowWithoutDirs = listOf(path.toPath, node.name, node.type.toString())
-                .plus(values)
+            .plus(values)
         val dirs = path.edgesList.dropLast(1)
 
         return when {
             values.distinct().none { !it.isBlank() } -> listOf()
             dirs.size < maxHierarchy -> rowWithoutDirs.plus(dirs).plus(
-                    List(maxHierarchy - dirs.size, { "" }))
+                List(maxHierarchy - dirs.size, { "" })
+            )
             else -> rowWithoutDirs.plus(dirs.subList(0, maxHierarchy))
         }
     }

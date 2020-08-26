@@ -7,9 +7,9 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "jasomeimport",
-        description = ["generates cc.json from jasome xml file"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "jasomeimport",
+    description = ["generates cc.json from jasome xml file"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class JasomeImporter : Callable<Void> {
 

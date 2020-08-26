@@ -26,8 +26,10 @@ class ErrorResponseFilter : ClientResponseFilter {
 
             try {
                 val gson = GsonBuilder().create()
-                val error = gson.fromJson<ErrorResponse>(InputStreamReader(stream, StandardCharsets.UTF_8),
-                        ErrorResponse::class.java)
+                val error = gson.fromJson<ErrorResponse>(
+                    InputStreamReader(stream, StandardCharsets.UTF_8),
+                    ErrorResponse::class.java
+                )
 
                 var message = "Errors: \n"
                 for (errorEntity in error.errors) {

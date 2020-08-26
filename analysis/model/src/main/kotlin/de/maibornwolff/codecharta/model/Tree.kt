@@ -23,9 +23,9 @@ abstract class Tree<T> {
 
     private val treeNodes: Set<TreeNode<T>>
         get() = setOf(TreeNode(Path.trivialPath(), asTreeNode())) +
-                children.flatMap { child ->
-                    child.treeNodes.map { TreeNode(getPathOfChild(child).concat(it.path), it.node) }
-                }
+            children.flatMap { child ->
+                child.treeNodes.map { TreeNode(getPathOfChild(child).concat(it.path), it.node) }
+            }
 
     val nodes: Map<Path, T>
         get() = treeNodes.map { it.path to it.node }.toMap()

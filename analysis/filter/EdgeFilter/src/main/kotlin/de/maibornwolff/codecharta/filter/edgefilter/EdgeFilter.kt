@@ -6,9 +6,11 @@ import picocli.CommandLine
 import java.io.File
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "edgefilter",
-        description = ["aggregtes edgeAttributes as nodeAttributes into a new cc.json file"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
+@CommandLine.Command(
+    name = "edgefilter",
+    description = ["aggregtes edgeAttributes as nodeAttributes into a new cc.json file"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
 class EdgeFilter : Callable<Void?> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])

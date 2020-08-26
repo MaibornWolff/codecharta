@@ -15,7 +15,8 @@ class ProjectMergerTest : Spek({
 
     describe("filter edges as node attributes") {
         val originalProject = ProjectDeserializer.deserializeProject(
-                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE)))
+            InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE))
+        )
         val project = EdgeProjectBuilder(originalProject, '/').merge()
 
         val parent1 = getChildByName(project.rootNode.children.toMutableList(), "Parent 1")
@@ -76,7 +77,8 @@ class ProjectMergerTest : Spek({
 
     describe("filter edges as node attributes with empty nodes list in testfile") {
         val originalProject = ProjectDeserializer.deserializeProject(
-                InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_2)))
+            InputStreamReader(this.javaClass.classLoader.getResourceAsStream(TEST_EDGES_JSON_FILE_2))
+        )
         val project = EdgeProjectBuilder(originalProject, '/').merge()
 
         val parent1 = getChildByName(project.rootNode.children.toMutableList(), "Parent 1")
