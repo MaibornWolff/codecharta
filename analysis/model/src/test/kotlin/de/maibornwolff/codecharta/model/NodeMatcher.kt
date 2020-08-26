@@ -31,7 +31,7 @@ object NodeMatcher {
     }
 
     private fun linksMatch(n1: Node, n2: Node) =
-            n1.link == n2.link || (n1.link.isNullOrEmpty() && n2.link.isNullOrEmpty())
+        n1.link == n2.link || (n1.link.isNullOrEmpty() && n2.link.isNullOrEmpty())
 
     fun hasNodeAtPath(node: Node, path: Path): Matcher<Node> {
         return object : BaseMatcher<Node>() {
@@ -43,7 +43,7 @@ object NodeMatcher {
 
             override fun matches(item: Any?): Boolean {
                 nodeAtPath = (item as Node).getNodeBy(path) as Node
-                return if (nodeAtPath == null) item == null else match(nodeAtPath!!, node)
+                return if (nodeAtPath == null) false else match(nodeAtPath!!, node)
             }
 
             override fun describeMismatch(item: Any, description: Description) {
