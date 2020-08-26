@@ -13,9 +13,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Edge-Metrics sorted by name now instead of number of incoming and outgoing edges
+
 ### Removed 🗑
 
 ### Fixed 🐞
+
+-   Number of incoming and outgoing edges not visible when hovering over a node #1095
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -82,7 +86,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   File chooser now accept ".json" files only to avoid accidentally loading incorrect files
+-   File chooser now accept ".json" files only to avoid accidentally loading incorrect files #1094
 -   Lots of tooltips #1030
 
 ### Changed

@@ -2,23 +2,22 @@ import "./codeCharta.module"
 import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { BlacklistType, CCFile, MetricData, NodeType } from "./codeCharta.model"
+import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
 import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { MetricService } from "./state/metric.service"
 import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
+import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
 	let storeService: StoreService
 	let dialogService: DialogService
-	let metricService: MetricService
 	let validFileContent: ExportCCFile
-	let metricData: MetricData[]
+	let metricData: NodeMetricData[]
 	const fileName = "someFileName"
 
 	beforeEach(() => {
@@ -38,11 +37,10 @@ describe("codeChartaService", () => {
 		instantiateModule("app.codeCharta")
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
-		metricService = getService<MetricService>("metricService")
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(storeService, dialogService, metricService)
+		codeChartaService = new CodeChartaService(storeService, dialogService)
 	}
 
 	function withMockedDialogService() {
@@ -144,7 +142,7 @@ describe("codeChartaService", () => {
 		})
 
 		it("should load the default scenario after loading a valid file", () => {
-			metricService["metricData"] = metricData
+			storeService.dispatch(setNodeMetricData(metricData))
 
 			codeChartaService.loadFiles([
 				{
@@ -160,7 +158,7 @@ describe("codeChartaService", () => {
 
 		it("should not load the default scenario after loading a valid file, that does not have the required metrics", () => {
 			metricData.pop()
-			metricService["metricData"] = metricData
+			storeService.dispatch(setNodeMetricData(metricData))
 
 			codeChartaService.loadFiles([
 				{

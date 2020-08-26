@@ -27,10 +27,6 @@ describe("fileChooserController", () => {
 		withMockedCodeChartaService()
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.fileChooser")
 

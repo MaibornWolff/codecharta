@@ -3,6 +3,7 @@ import { CCAction } from "../../codeCharta.model"
 import { StateActions } from "./state.actions"
 
 // Plop: Import sub-reducer action here
+import { MetricDataActions } from "./metricData/metricData.actions"
 import { LookUpActions } from "./lookUp/lookUp.actions"
 import { DynamicSettingsActions } from "./dynamicSettings/dynamicSettings.actions"
 import { FileSettingsActions } from "./fileSettings/fileSettings.actions"
@@ -10,6 +11,7 @@ import { AppSettingsActions } from "./appSettings/appSettings.actions"
 import { TreeMapSettingsActions } from "./treeMap/treeMap.actions"
 
 // Plop: Import sub-reducer splitter here
+import { splitMetricDataActions } from "./metricData/metricData.splitter"
 import { splitLookUpActions } from "./lookUp/lookUp.splitter"
 import { splitDynamicSettingsActions } from "./dynamicSettings/dynamicSettings.splitter"
 import { splitFileSettingsActions } from "./fileSettings/fileSettings.splitter"
@@ -19,7 +21,11 @@ import { splitFilesAction } from "./files/files.splitter"
 
 export function splitStateActions(action: CCAction): CCAction[] {
 	// Plop: Propagate sub-reducer here
-	if (_.values(LookUpActions).includes(action.type)) {
+	if (Object.values(MetricDataActions).includes(action.type)) {
+		return splitMetricDataActions(action.payload)
+	}
+
+	if (Object.values(LookUpActions).includes(action.type)) {
 		return splitLookUpActions(action.payload)
 	}
 
@@ -39,32 +45,36 @@ export function splitStateActions(action: CCAction): CCAction[] {
 		return splitTreeMapSettingsActions(action.payload)
 	}
 
-	if (_.values(StateActions).includes(action.type)) {
-		let actions: CCAction[] = []
+	if (Object.values(StateActions).includes(action.type)) {
+		const actions: CCAction[] = []
 
 		// Plop: Split into sub-reducer here
+		if (action.payload.metricData !== undefined) {
+			actions.push(...splitMetricDataActions(action.payload.metricData))
+		}
+
 		if (action.payload.lookUp !== undefined) {
-			actions = actions.concat(...splitLookUpActions(action.payload.lookUp))
+			actions.push(...splitLookUpActions(action.payload.lookUp))
 		}
 
 		if (action.payload.dynamicSettings !== undefined) {
-			actions = actions.concat(...splitDynamicSettingsActions(action.payload.dynamicSettings))
+			actions.push(...splitDynamicSettingsActions(action.payload.dynamicSettings))
 		}
 
 		if (action.payload.fileSettings !== undefined) {
-			actions = actions.concat(splitFileSettingsActions(action.payload.fileSettings))
+			actions.push(...splitFileSettingsActions(action.payload.fileSettings))
 		}
 
 		if (action.payload.appSettings !== undefined) {
-			actions = actions.concat(splitAppSettingsActions(action.payload.appSettings))
+			actions.push(...splitAppSettingsActions(action.payload.appSettings))
 		}
 
 		if (action.payload.treeMap !== undefined) {
-			actions = actions.concat(splitTreeMapSettingsActions(action.payload.treeMap))
+			actions.push(...splitTreeMapSettingsActions(action.payload.treeMap))
 		}
 
 		if (action.payload.files !== undefined) {
-			actions = actions.concat(splitFilesAction(action.payload.files))
+			actions.push(...splitFilesAction(action.payload.files))
 		}
 		return actions
 	}
