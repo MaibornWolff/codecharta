@@ -4,6 +4,9 @@ buildscript {
         maven {
             url 'https://plugins.gradle.org/m2/'
         }
+        maven {
+            url 'https://jitpack.io'
+        }
     }
     dependencies {
         classpath group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlin_version
@@ -11,9 +14,9 @@ buildscript {
 }
 
 plugins {
-    id 'org.sonarqube' version '3.0'
+    id 'org.sonarqube' version "${sonarqube_version}"
     id 'distribution'
-    id "org.jlleitschuh.gradle.ktlint" version "7.2.1"
+    id "org.jlleitschuh.gradle.ktlint" version "${ktlint_version}"
 }
 
 allprojects {
@@ -46,7 +49,7 @@ subprojects {
     dependencies {
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
-        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8'
+        implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: kotlinx_coroutines_version
 
         testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
         testCompile("org.junit.jupiter:junit-jupiter-api:$junit5_version")
