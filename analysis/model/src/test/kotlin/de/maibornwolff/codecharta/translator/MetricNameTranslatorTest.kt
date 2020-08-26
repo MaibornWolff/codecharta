@@ -45,10 +45,12 @@ class MetricNameTranslatorTest : Spek({
     }
 
     describe("A replacer") {
-        val replacer = MetricNameTranslator(mapOf(
+        val replacer = MetricNameTranslator(
+            mapOf(
                 Pair("this", "oooo"),
                 Pair("that", "iiii"),
-                Pair("bla", "blubb"))
+                Pair("bla", "blubb")
+            )
         )
 
         it("should replaceMany") {

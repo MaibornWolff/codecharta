@@ -6,10 +6,10 @@ import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import picocli.CommandLine
 import picocli.CommandLine.call
 import java.io.BufferedWriter
-import java.io.InputStream
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.io.InputStream
 import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.io.Writer
@@ -17,9 +17,9 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "rawtextparser",
-        description = ["generates cc.json from projects or source code files"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "rawtextparser",
+    description = ["generates cc.json from projects or source code files"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class RawTextParser(
     private val input: InputStream = System.`in`,
@@ -99,9 +99,9 @@ class RawTextParser(
 
     private fun assembleParameterMap(): Map<String, Int> {
         return mapOf(
-                "verbose" to verbose.toInt(),
-                "maxIndentationLevel" to maxIndentLvl,
-                "tabWidth" to tabWith
+            "verbose" to verbose.toInt(),
+            "maxIndentationLevel" to maxIndentLvl,
+            "tabWidth" to tabWith
         ).filterValues { it != null }.mapValues { it.value as Int }
     }
 

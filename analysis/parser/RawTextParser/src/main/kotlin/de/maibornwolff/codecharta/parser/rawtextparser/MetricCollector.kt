@@ -14,7 +14,8 @@ class MetricCollector(
     private val exclude: Array<String> = arrayOf(),
     private val fileExtensions: Array<String> = arrayOf(),
     private val parameters: Map<String, Int> = mapOf(),
-    private val metrics: List<String> = listOf()) {
+    private val metrics: List<String> = listOf()
+) {
 
     val MAX_FILE_NAME_PRINT_LENGTH = 30
 
@@ -24,8 +25,9 @@ class MetricCollector(
 
         runBlocking(Dispatchers.Default) {
             root.walk().asSequence()
-                    .filter { it.isFile }
-                    .forEach { launch {
+                .filter { it.isFile }
+                .forEach {
+                    launch {
                         val standardizedPath = "/" + getRelativeFileName(it.toString())
                         val isMatchingFileExtension = fileExtensions.isEmpty() || fileExtensions.contains(standardizedPath.substringAfterLast("."))
                         val isNotExcluded = !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))
@@ -34,7 +36,7 @@ class MetricCollector(
                             projectMetrics[standardizedPath] = parseFile(it)
                         }
                     }
-                    }
+                }
         }
         return projectMetrics
     }
@@ -52,9 +54,9 @@ class MetricCollector(
         if (root.isFile) root = root.parentFile
 
         return root.toPath().toAbsolutePath()
-                .relativize(Paths.get(fileName).toAbsolutePath())
-                .toString()
-                .replace('\\', '/')
+            .relativize(Paths.get(fileName).toAbsolutePath())
+            .toString()
+            .replace('\\', '/')
     }
 
     private fun logProgress(fileName: String) {

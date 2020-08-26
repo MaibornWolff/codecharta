@@ -17,16 +17,19 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
 
     init {
         mergeConditionSatisfied =
-                if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
-                else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
+            if (ignoreCase) { n1: MutableNode, n2: MutableNode -> n1.name.toUpperCase() == n2.name.toUpperCase() }
+            else { n1: MutableNode, n2: MutableNode -> n1.name == n2.name }
     }
 
     override fun mergeNodeLists(nodeLists: List<List<MutableNode>>): List<MutableNode> {
         return if (nodeLists.isEmpty()) listOf()
         else nodeLists.reduce { mergedNodeList, nextNodeList ->
-            nextNodeList.fold(mergedNodeList, { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
-                mergeNodeIfExistentInList(accumulatedNodes, nextNode)
-            })
+            nextNodeList.fold(
+                mergedNodeList,
+                { accumulatedNodes: List<MutableNode>, nextNode: MutableNode ->
+                    mergeNodeIfExistentInList(accumulatedNodes, nextNode)
+                }
+            )
         }
     }
 
@@ -48,8 +51,8 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
     private fun merge(vararg nodes: MutableNode): MutableNode {
         val root = nodes[0].merge(nodes.asList())
         nodes.map { it.nodes }
-                .reduce { total, next -> total.addAll(next) }
-                .forEach { root.insertAt(Path(it.key.edgesList.dropLast(1)), it.value) }
+            .reduce { total, next -> total.addAll(next) }
+            .forEach { root.insertAt(Path(it.key.edgesList.dropLast(1)), it.value) }
         return root
     }
 
@@ -70,14 +73,14 @@ class LeafNodeMergerStrategy(private val addMisfittingNodes: Boolean, ignoreCase
 
     private fun Map<Path, MutableNode>.addAll(nodes: Map<Path, MutableNode>): Map<Path, MutableNode> {
         val newNodes = nodes.filterValues { it.isLeaf }
-                .mapKeys { this.keys.findFittingPathOrNull(it.key) ?: replaceMisfittingPath(it.key) }
-                .filterKeys { !it.isTrivial }
+            .mapKeys { this.keys.findFittingPathOrNull(it.key) ?: replaceMisfittingPath(it.key) }
+            .filterKeys { !it.isTrivial }
         val unchangedNodes = this.filterValues { it.isLeaf }.filterKeys { !newNodes.keys.contains(it) }
 
         return newNodes
-                .plus(unchangedNodes)
-                .mapValues {
-                    if (this[it.key] == null) it.value else it.value.merge(listOf(this[it.key]!!))
-                }
+            .plus(unchangedNodes)
+            .mapValues {
+                if (this[it.key] == null) it.value else it.value.merge(listOf(this[it.key]!!))
+            }
     }
 }

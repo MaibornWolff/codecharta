@@ -20,10 +20,10 @@ class NodeRemover(private val project: Project) {
         }
 
         return ProjectBuilder(
-                removeNodes(pathSegments),
-                removeEdges(paths),
-                copyAttributeTypes(),
-                removeBlacklistItems(paths)
+            removeNodes(pathSegments),
+            removeEdges(paths),
+            copyAttributeTypes(),
+            removeBlacklistItems(paths)
         ).build()
     }
 

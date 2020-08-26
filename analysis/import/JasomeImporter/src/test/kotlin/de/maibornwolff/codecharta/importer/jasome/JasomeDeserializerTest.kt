@@ -11,7 +11,7 @@ class JasomeDeserializerTest : Spek({
 
         context("deserializing a project ") {
             val jasomeProject = jasomeDeserializer.deserializeJasomeXML(
-                    this.javaClass.classLoader.getResourceAsStream("jasome.xml")!!
+                this.javaClass.classLoader.getResourceAsStream("jasome.xml")!!
             )
 
             it("should have packages") {
@@ -19,9 +19,12 @@ class JasomeDeserializerTest : Spek({
             }
 
             it("should have metrics in packages") {
-                MatcherAssert.assertThat(jasomeProject.packages!!.flatMap {
-                    it.metrics ?: listOf()
-                }, hasSize(77))
+                MatcherAssert.assertThat(
+                    jasomeProject.packages!!.flatMap {
+                        it.metrics ?: listOf()
+                    },
+                    hasSize(77)
+                )
             }
 
             it("should have classes") {
@@ -29,11 +32,14 @@ class JasomeDeserializerTest : Spek({
             }
 
             it("should have metrics in classes") {
-                MatcherAssert.assertThat(jasomeProject.packages!!.flatMap {
-                    it.classes?.flatMap {
-                        it.metrics ?: listOf()
-                    } ?: listOf()
-                }, hasSize(1801))
+                MatcherAssert.assertThat(
+                    jasomeProject.packages!!.flatMap {
+                        it.classes?.flatMap {
+                            it.metrics ?: listOf()
+                        } ?: listOf()
+                    },
+                    hasSize(1801)
+                )
             }
         }
     }

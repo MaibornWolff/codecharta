@@ -37,19 +37,22 @@ class SCMLogProjectCreatorGoldenTest(
         @Parameterized.Parameters(name = "{index}: {0}")
         fun data(): Collection<Array<Any>> {
             return Arrays.asList(
-                    arrayOf("svn", SVNLogParserStrategy(), true, "example_svn.log", "expected_svn.json"),
-                    arrayOf("git_numstat", GitLogNumstatRawParserStrategy(), true, "example_git_numstat.log", "expected_git_numstat.json"),
-                    arrayOf("git", GitLogParserStrategy(), false, "example_git.log", "expected_git.json"))
+                arrayOf("svn", SVNLogParserStrategy(), true, "example_svn.log", "expected_svn.json"),
+                arrayOf("git_numstat", GitLogNumstatRawParserStrategy(), true, "example_git_numstat.log", "expected_git_numstat.json"),
+                arrayOf("git", GitLogParserStrategy(), false, "example_git.log", "expected_git.json")
+            )
         }
     }
 
-    private val metricsFactory = MetricsFactory(Arrays.asList(
+    private val metricsFactory = MetricsFactory(
+        Arrays.asList(
             "number_of_authors",
             "number_of_commits",
             "weeks_with_commits",
             "range_of_weeks_with_commits",
             "successive_weeks_with_commits"
-    ))
+        )
+    )
 
     @Test
     @Throws(Exception::class)
