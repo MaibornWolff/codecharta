@@ -4,7 +4,7 @@ import { CodeMapRenderService } from "./codeMap.render.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
-import { Node, MetricData, CodeMapNode, State } from "../../codeCharta.model"
+import { Node, CodeMapNode, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
 import * as _ from "lodash"
@@ -15,12 +15,13 @@ import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { MetricService } from "../../state/metric.service"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
-	let metricService: MetricService
+	let nodeMetricDataService: NodeMetricDataService
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
@@ -28,7 +29,6 @@ describe("codeMapRenderService", () => {
 
 	let state: State
 	let map: CodeMapNode
-	let metricData: MetricData[]
 
 	beforeEach(() => {
 		restartSystem()
@@ -36,34 +36,29 @@ describe("codeMapRenderService", () => {
 		withMockedThreeSceneService()
 		withMockedCodeMapLabelService()
 		withMockedCodeMapArrowService()
-		withMockedMetricService()
-	})
-
-	afterEach(() => {
-		jest.resetAllMocks()
 	})
 
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		storeService = getService<StoreService>("storeService")
-		metricService = getService<MetricService>("metricService")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
 		state = _.cloneDeep(STATE)
-		metricData = _.cloneDeep(METRIC_DATA)
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
-		NodeDecorator.decorateMap(map, metricData)
+		NodeDecorator.decorateMap(map, METRIC_DATA)
 		storeService.dispatch(setState(state))
 		storeService.dispatch(unfocusNode())
+		storeService.dispatch(setNodeMetricData(METRIC_DATA))
 	}
 
 	function rebuildService() {
 		codeMapRenderService = new CodeMapRenderService(
 			storeService,
-			metricService,
+			nodeMetricDataService,
 			threeSceneService,
 			codeMapLabelService,
 			codeMapArrowService
@@ -95,12 +90,6 @@ describe("codeMapRenderService", () => {
 			clearArrows: jest.fn(),
 			addEdgeArrows: jest.fn(),
 			arrows: [new THREE.Object3D()]
-		})()
-	}
-
-	function withMockedMetricService() {
-		metricService = codeMapRenderService["metricService"] = jest.fn().mockReturnValue({
-			getMetricData: jest.fn().mockReturnValue(metricData)
 		})()
 	}
 

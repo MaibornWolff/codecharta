@@ -13,7 +13,7 @@ class CSVHeader(header: Array<String?>) {
     val pathColumn: List<Int>
         get() = headerMap.keys.filter { i ->
             headerMap[i].equals("entity", ignoreCase = true) ||
-            headerMap[i].equals("coupled", ignoreCase = true)
+                headerMap[i].equals("coupled", ignoreCase = true)
         }
 
     init {

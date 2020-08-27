@@ -5,19 +5,20 @@ import {
 	BlacklistItem,
 	CCFile,
 	CodeMapNode,
-	MetricData,
 	EdgeMetricCount,
 	KeyValuePair,
 	AttributeTypes,
 	AttributeTypeValue,
-	BlacklistType
+	BlacklistType,
+	NodeMetricData,
+	EdgeMetricData
 } from "../codeCharta.model"
-import { MetricService } from "../state/metric.service"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export class NodeDecorator {
-	public static decorateMap(map: CodeMapNode, metricData: MetricData[]) {
+	public static decorateMap(map: CodeMapNode, metricData: NodeMetricData[]) {
 		this.decorateMapWithMissingObjects(map)
 		this.decorateMapWithCompactMiddlePackages(map)
 		this.decorateLeavesWithMissingMetrics(map, metricData)
@@ -140,12 +141,12 @@ export class NodeDecorator {
 			root.each(node => {
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				node.data.edgeAttributes = !node.data.edgeAttributes ? {} : node.data.edgeAttributes
-				Object.assign(node.data.attributes, { [MetricService.UNARY_METRIC]: 1 })
+				Object.assign(node.data.attributes, { [NodeMetricDataService.UNARY_METRIC]: 1 })
 			})
 		}
 	}
 
-	private static decorateLeavesWithMissingMetrics(map: CodeMapNode, metricData: MetricData[]) {
+	private static decorateLeavesWithMissingMetrics(map: CodeMapNode, metricData: NodeMetricData[]) {
 		if (map && metricData) {
 			const root = d3.hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
@@ -161,8 +162,8 @@ export class NodeDecorator {
 	public static decorateParentNodesWithAggregatedAttributes(
 		map: CodeMapNode,
 		blacklist: BlacklistItem[],
-		metricData: MetricData[],
-		edgeMetricData: MetricData[],
+		metricData: NodeMetricData[],
+		edgeMetricData: EdgeMetricData[],
 		isDeltaState: boolean,
 		attributeTypes: AttributeTypes
 	) {
@@ -180,7 +181,7 @@ export class NodeDecorator {
 	private static decorateNodeWithAggregatedChildrenMetrics(
 		leaves: HierarchyNode<CodeMapNode>[],
 		node: HierarchyNode<CodeMapNode>,
-		metricData: MetricData[],
+		metricData: NodeMetricData[],
 		isDeltaState: boolean,
 		attributeTypes: AttributeTypes
 	) {
@@ -205,7 +206,7 @@ export class NodeDecorator {
 	private static decorateNodeWithChildrenSumEdgeMetrics(
 		leaves: HierarchyNode<CodeMapNode>[],
 		node: HierarchyNode<CodeMapNode>,
-		edgeMetricData: MetricData[],
+		edgeMetricData: NodeMetricData[],
 		attributeTypes: AttributeTypes
 	) {
 		edgeMetricData.forEach(edgeMetric => {

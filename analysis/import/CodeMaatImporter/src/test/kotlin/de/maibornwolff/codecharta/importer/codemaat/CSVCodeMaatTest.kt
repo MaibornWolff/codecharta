@@ -10,13 +10,15 @@ import org.spekframework.spek2.style.specification.describe
 class CSVCodeMaatTest : Spek({
 
     describe("CSVProjectBuilder for CodeMaat") {
-        val csvProjectBuilder = CSVProjectBuilder('\\', ',',
-                MetricNameTranslator(mapOf(Pair("File Name", "path"))))
+        val csvProjectBuilder = CSVProjectBuilder(
+            '\\', ',',
+            MetricNameTranslator(mapOf(Pair("File Name", "path")))
+        )
 
         context("reading csv lines from CodeMaat") {
             val project = csvProjectBuilder
-                    .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("coupling-codemaat.csv"))
-                    .build()
+                .parseCSVStream(this.javaClass.classLoader.getResourceAsStream("coupling-codemaat.csv"))
+                .build()
 
             it("has correct number of nodes") {
                 assertThat(project.size, `is`(1))
@@ -27,8 +29,10 @@ class CSVCodeMaatTest : Spek({
             }
 
             it("specific edge exists and has correct attribute values") {
-                val edge = getChildByName(project.edges, "/root/analysis/build.gradle",
-                        "/root/analysis/model/build.gradle")
+                val edge = getChildByName(
+                    project.edges, "/root/analysis/build.gradle",
+                    "/root/analysis/model/build.gradle"
+                )
                 val pairingRate = getAttributeValue(edge.attributes, "degree")
                 val avgCommits = getAttributeValue(edge.attributes, "average-revs")
 

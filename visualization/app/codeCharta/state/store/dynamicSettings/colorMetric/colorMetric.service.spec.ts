@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { ColorMetricService } from "./colorMetric.service"
 import { ColorMetricAction, ColorMetricActions, setColorMetric } from "./colorMetric.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
-import { MetricService } from "../../../metric.service"
+import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
 describe("ColorMetricService", () => {
 	let colorMetricService: ColorMetricService
@@ -38,12 +38,12 @@ describe("ColorMetricService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, colorMetricService)
 		})
 
-		it("should subscribe to MetricService", () => {
-			MetricService.subscribe = jest.fn()
+		it("should subscribe to NodeMetricDataService", () => {
+			NodeMetricDataService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, colorMetricService)
+			expect(NodeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, colorMetricService)
 		})
 	})
 
@@ -78,7 +78,7 @@ describe("ColorMetricService", () => {
 				{ name: "d", maxValue: 2 }
 			]
 
-			colorMetricService.onMetricDataAdded(metricData)
+			colorMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("c")
 		})
@@ -86,7 +86,7 @@ describe("ColorMetricService", () => {
 		it("should use first available metric, if less than 2 metrics are available", () => {
 			const metricData = [{ name: "a", maxValue: 1 }]
 
-			colorMetricService.onMetricDataAdded(metricData)
+			colorMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.getState().dynamicSettings.colorMetric).toEqual("a")
 		})
@@ -99,7 +99,7 @@ describe("ColorMetricService", () => {
 				{ name: "rloc", maxValue: 2 }
 			]
 
-			colorMetricService.onMetricDataAdded(metricData)
+			colorMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
@@ -108,7 +108,7 @@ describe("ColorMetricService", () => {
 			storeService.dispatch = jest.fn()
 			const metricData = []
 
-			colorMetricService.onMetricDataAdded(metricData)
+			colorMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})

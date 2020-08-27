@@ -1,13 +1,11 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { BlacklistType, CodeMapNode, FileMeta, MetricData } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { MetricService } from "../../state/metric.service"
 import { FILE_STATES, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
@@ -18,32 +16,31 @@ import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/
 import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { MetricDataService } from "../../state/store/metricData/metricData.service"
+import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let metricService: MetricService
+	let nodeMetricDataService: NodeMetricDataService
 	let codeMapRenderService: CodeMapRenderService
 	let edgeMetricDataService: EdgeMetricDataService
 
 	let fileMeta: FileMeta
 	let map: CodeMapNode
-	let metricData: MetricData[]
 
 	beforeEach(() => {
 		restartSystem()
-		rebuildService()
 		withMockedEventMethods($rootScope)
 		withMockedCodeMapRenderService()
 		withMockedMetricService()
+		rebuildService()
 		withUnifiedMapAndFileMeta()
 		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
-	})
-
-	afterEach(() => {
-		jest.resetAllMocks()
 	})
 
 	function restartSystem() {
@@ -51,7 +48,7 @@ describe("codeMapPreRenderService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		metricService = getService<MetricService>("metricService")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
@@ -65,31 +62,26 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(addFile(fileStates[0].file))
 		storeService.dispatch(setSingleByName(fileStates[0].file.fileMeta.fileName))
 		storeService.dispatch(setBlacklist())
-		metricData = _.cloneDeep(METRIC_DATA)
+		storeService.dispatch(setNodeMetricData(METRIC_DATA))
 	}
 
 	function rebuildService() {
 		codeMapPreRenderService = new CodeMapPreRenderService(
 			$rootScope,
 			storeService,
-			metricService,
+			nodeMetricDataService,
 			codeMapRenderService,
 			edgeMetricDataService
 		)
 	}
 
 	function withMockedCodeMapRenderService() {
-		codeMapRenderService = codeMapPreRenderService["codeMapRenderService"] = jest.fn().mockReturnValue({
-			render: jest.fn(),
-			scaleMap: jest.fn()
-		})()
+		codeMapRenderService.render = jest.fn()
+		codeMapRenderService.scaleMap = jest.fn()
 	}
 
 	function withMockedMetricService() {
-		metricService = codeMapPreRenderService["metricService"] = jest.fn().mockReturnValue({
-			getMetricData: jest.fn().mockReturnValue(metricData),
-			isMetricAvailable: jest.fn().mockReturnValue(true)
-		})()
+		nodeMetricDataService.isMetricAvailable = jest.fn().mockReturnValue(true)
 	}
 
 	function withUnifiedMapAndFileMeta() {
@@ -111,15 +103,15 @@ describe("codeMapPreRenderService", () => {
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			MetricService.subscribe = jest.fn()
+			MetricDataService.subscribe = jest.fn()
 			StoreService.subscribe = jest.fn()
 			ScalingService.subscribe = jest.fn()
 		})
 
-		it("should subscribe to MetricService", () => {
+		it("should subscribe to MetricDataService", () => {
 			rebuildService()
 
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
+			expect(MetricDataService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
 		it("should subscribe to StoreService", () => {
@@ -202,9 +194,9 @@ describe("codeMapPreRenderService", () => {
 		})
 	})
 
-	describe("onMetricDataAdded", () => {
+	describe("onMetricDataChanged", () => {
 		it("should decorate and set a new render map", () => {
-			codeMapPreRenderService.onMetricDataAdded()
+			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
@@ -212,7 +204,7 @@ describe("codeMapPreRenderService", () => {
 		it("should update the isBlacklisted attribute on each node", () => {
 			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
 
-			codeMapPreRenderService.onMetricDataAdded()
+			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(allNodesToBeExcluded()).toBeTruthy()
 		})
@@ -220,7 +212,7 @@ describe("codeMapPreRenderService", () => {
 		it("should set isMapDecorated to true, to avoid entering this function again unless a new map needs to be decorated", () => {
 			expect(codeMapPreRenderService["isMapDecorated"]).toBeFalsy()
 
-			codeMapPreRenderService.onMetricDataAdded()
+			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(codeMapPreRenderService["isMapDecorated"]).toBeTruthy()
 		})

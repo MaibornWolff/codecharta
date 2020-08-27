@@ -6,9 +6,9 @@ import java.io.File
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "crococosmoimport",
-        description = ["generates cc.json from crococosmo xml file"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "crococosmoimport",
+    description = ["generates cc.json from crococosmo xml file"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class CrococosmoImporter : Callable<Void> {
 
@@ -21,8 +21,10 @@ class CrococosmoImporter : Callable<Void> {
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])
     private var help = false
 
-    @CommandLine.Option(names = ["-o", "--output-file"],
-            description = ["output File or prefix for File (or empty for stdout)"])
+    @CommandLine.Option(
+        names = ["-o", "--output-file"],
+        description = ["output File or prefix for File (or empty for stdout)"]
+    )
     private var outputFile: String? = null
 
     override fun call(): Void? {
@@ -41,10 +43,10 @@ class CrococosmoImporter : Callable<Void> {
     }
 
     private fun writer(name: String = "") =
-            when {
-                outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
-                else -> File(outputFile + name).bufferedWriter()
-            }
+        when {
+            outputFile.isNullOrEmpty() -> System.out.bufferedWriter()
+            else -> File(outputFile + name).bufferedWriter()
+        }
 
     companion object {
 

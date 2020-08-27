@@ -25,10 +25,12 @@ class ProjectJsonDeserializer : JsonDeserializer<Project> {
         val apiVersion = jsonNode.get("apiVersion")?.asString ?: Project.API_VERSION
         val edges = context.deserialize<List<Edge>>(jsonNode.get("edges"), listOfEdgesType) ?: listOf()
         val attributeTypes =
-                context.deserialize<Map<String, MutableMap<String, AttributeType>>>(jsonNode.get("attributeTypes"),
-                        mapOfAttributeTypes) ?: mapOf()
+            context.deserialize<Map<String, MutableMap<String, AttributeType>>>(
+                jsonNode.get("attributeTypes"),
+                mapOfAttributeTypes
+            ) ?: mapOf()
         val blacklist =
-                context.deserialize<List<BlacklistItem>>(jsonNode.get("blacklist"), listOfBlacklistType) ?: listOf()
+            context.deserialize<List<BlacklistItem>>(jsonNode.get("blacklist"), listOfBlacklistType) ?: listOf()
 
         return Project(projectName, nodes, apiVersion, edges, attributeTypes, blacklist)
     }
