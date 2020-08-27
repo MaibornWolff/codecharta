@@ -18,6 +18,7 @@ import ignore from "ignore"
 
 export class NodeDecorator {
 	public static decorateMap(map: CodeMapNode, metricData: MetricData[], blacklist: BlacklistItem[]) {
+		this.decorateNodesWithIds(map)
 		this.decorateMapWithMissingObjects(map)
 		this.decorateMapWithCompactMiddlePackages(map)
 		this.decorateLeavesWithMissingMetrics(map, metricData)
@@ -26,7 +27,6 @@ export class NodeDecorator {
 
 	public static preDecorateFile(file: CCFile) {
 		this.decorateMapWithPathAttribute(file)
-		this.decorateNodesWithIds(file.map)
 	}
 
 	private static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
