@@ -522,7 +522,7 @@ export const VALID_EDGE: Edge = {
 
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
-	apiVersion: APIVersions.ONE_POINT_ONE,
+	apiVersion: APIVersions.ONE_POINT_TWO,
 	nodes: [VALID_NODE]
 }
 
@@ -536,7 +536,7 @@ export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
 export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
 	fileName: "noFileName",
 	projectName: "Valid Sample Map Minor API High",
-	apiVersion: "1.2",
+	apiVersion: "1.3",
 	nodes: [VALID_NODE]
 }
 
@@ -556,7 +556,7 @@ export const TEST_FILE_CONTENT_NO_API = {
 export const FILE_META: FileMeta = {
 	fileName: "fileA",
 	projectName: "Sample Project",
-	apiVersion: "1.1"
+	apiVersion: require("../../../package.json").codecharta.apiVersion
 }
 
 export const TEST_FILE_DATA: CCFile = {
@@ -877,7 +877,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
 		projectName: "Sample Project",
-		apiVersion: "1.1"
+		apiVersion: require("../../../package.json").codecharta.apiVersion
 	},
 	map: {
 		name: "root",
@@ -933,7 +933,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	fileMeta: {
 		fileName: "fileB",
 		projectName: "Sample Project",
-		apiVersion: "1.1"
+		apiVersion: require("../../../package.json").codecharta.apiVersion
 	},
 	map: {
 		name: "root",
@@ -1002,7 +1002,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 }
 
 export const TEST_FILE_DATA_DOWNLOADED = {
-	apiVersion: "1.1",
+	apiVersion: require("../../../package.json").codecharta.apiVersion,
 	attributeTypes: {},
 	blacklist: [
 		{ path: "/root/bigLeaf.ts", type: "hide" },

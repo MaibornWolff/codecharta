@@ -6,7 +6,7 @@ describe("AggregationGenerator", () => {
 		fileMeta: {
 			fileName: "file1",
 			projectName: "Sample Project",
-			apiVersion: "1.1"
+			apiVersion: require("../../../package.json").codecharta.apiVersion
 		},
 		map: {
 			name: "root",
@@ -44,7 +44,7 @@ describe("AggregationGenerator", () => {
 		fileMeta: {
 			fileName: "file2",
 			projectName: "Sample Project",
-			apiVersion: "1.1"
+			apiVersion: require("../../../package.json").codecharta.apiVersion
 		},
 		map: {
 			name: "root",

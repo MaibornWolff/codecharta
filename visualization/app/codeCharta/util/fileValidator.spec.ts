@@ -18,7 +18,7 @@ describe("FileValidator", () => {
 	})
 
 	it("API version exists in package.json", () => {
-		expect(require("../../../package.json").codecharta.apiVersion).toEqual("1.1")
+		expect(require("../../../package.json").codecharta.apiVersion).toEqual("1.2")
 	})
 
 	it("should throw on null", () => {

@@ -52,7 +52,7 @@ describe("codeChartaService", () => {
 
 	describe("loadFiles", () => {
 		const expected: CCFile = {
-			fileMeta: { apiVersion: "1.1", fileName, projectName: "Sample Map" },
+			fileMeta: { apiVersion: require("../../package.json").codecharta.apiVersion, fileName, projectName: "Sample Map" },
 			map: {
 				id: 0,
 				attributes: {},
