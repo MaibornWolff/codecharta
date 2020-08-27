@@ -93,7 +93,7 @@
 		"angularjs-slider": "^7.0.0",
 		"color-convert": "^2.0.0",
 		"core-js": "^3.6.5",
-		"d3": "^5.9.2",
+		"d3": "^6.0.0",
 		"font-awesome": "^4.7.0",
 		"ignore": "^5.0.2",
 		"jquery": "^3.3.1",
