@@ -45,7 +45,10 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     fun convert(versionControlledFiles: MutableMap<String, VersionControlledFile>, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
-        versionControlledFiles.values.forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+        //TODO discuss/check performance:
+        versionControlledFiles.values.parallelStream()
+                .filter { !it.isDeleted() }
+                .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))

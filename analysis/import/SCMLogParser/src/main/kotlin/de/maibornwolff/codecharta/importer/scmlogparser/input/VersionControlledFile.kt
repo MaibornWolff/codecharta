@@ -15,15 +15,17 @@ class VersionControlledFile internal constructor(
     // the current filename in a specific revision, might change in history
     var filename: String
 
+    private var deleted: Boolean = false
+
     val metricsMap: Map<String, Number>
         get() = metrics.associateBy({ it.metricName() }, { it.value() })
 
-    constructor(filename: String, metricsFactory: MetricsFactory) : this(filename, metricsFactory.createMetrics())
+    constructor(filename: String, metricsFactory: MetricsFactory): this(filename, metricsFactory.createMetrics())
 
     internal constructor(
-        filename: String,
-        vararg metrics: Metric
-    ) : this(filename, Arrays.asList<Metric>(*metrics))
+            filename: String,
+            vararg metrics: Metric
+                        ): this(filename, Arrays.asList<Metric>(*metrics))
 
     init {
         this.filename = filename
@@ -67,5 +69,17 @@ class VersionControlledFile internal constructor(
 
     fun removeMetricsToFreeMemory() {
         metrics = listOf()
+    }
+
+    fun markDeleted() {
+        deleted = true;
+    }
+
+    fun unmarkDeleted() {
+        deleted = false;
+    }
+
+    fun isDeleted(): Boolean {
+        return deleted;
     }
 }

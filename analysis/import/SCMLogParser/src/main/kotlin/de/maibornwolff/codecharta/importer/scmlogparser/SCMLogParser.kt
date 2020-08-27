@@ -168,8 +168,8 @@ class SCMLogParser(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            val test = "git ls-tree --name-only".runCommand(File("C:\\Users\\VladimirR\\Documents\\codecharta"))
-            println(test)
+            //val test = "git ls-tree --name-only".runCommand(File("C:\\Users\\VladimirR\\Documents\\codecharta"))
+            //println(test)
             CommandLine.call(SCMLogParser(), System.out, *args)
         }
 

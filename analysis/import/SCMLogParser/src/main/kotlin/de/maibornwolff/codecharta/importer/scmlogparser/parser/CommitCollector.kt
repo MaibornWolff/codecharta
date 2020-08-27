@@ -33,21 +33,24 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             //Type.MODIFY/Type.UNKNOWN: simply registers this modification for the commit
             val trackName = if (it.oldFilename.isNotEmpty()) it.oldFilename else it.currentFilename
             val possibleConflictName =
-                if (nameConflictsMap.containsKey(trackName)) {
-                    trackName + "_\\0_" + nameConflictsMap[trackName]
-                } else {
-                    trackName
-                }
+                    if (nameConflictsMap.containsKey(trackName)) {
+                        trackName + "_\\0_" + nameConflictsMap[trackName]
+                    } else {
+                        trackName
+                    }
 
             val oldestName = renamesMap[possibleConflictName]
             val VCFName = if (oldestName == null) possibleConflictName else oldestName
 
-     /*      if(VCFName == "analysis/import/SonarImporter/src/main/java/de/maibornwolff/codecharta/importer/sonar/SonarImporter.java")
-            println("Found")*/
+            if (VCFName == "File1.java")
+                println("Found")
 
             when (it.type) {
 
                 Modification.Type.ADD -> {
+                    if (VCFName == "File1.java")
+                        println("Found")
+
                     val file = versionControlledFiles[possibleConflictName]
                     if (file == null) {
                         val missingVersionControlledFile = VersionControlledFile(possibleConflictName, metricsFactory)
@@ -59,14 +62,21 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 }
 
                 Modification.Type.DELETE -> {
+                    if (VCFName == "File1.java")
+                        println("Found")
+
                     val filename = renamesMap[possibleConflictName]
-                    versionControlledFiles.remove(if (filename == null) possibleConflictName else filename)
+
+                    versionControlledFiles[(if (filename == null) possibleConflictName else filename)]!!.markDeleted()
                     renamesMap.remove(possibleConflictName)
-
                 }
-
                 Modification.Type.RENAME -> {
+                    if (VCFName == "File1.java")
+                        println("Found")
+
                     var newVCFFileName = it.currentFilename
+                    //TODO WHAT if the new name is assigned to an existing and deleted VCF
+                    //TODO conflict logic should be able to handle that conflict.
                     if (versionControlledFiles.containsKey(it.currentFilename)) {
                         val marker = nameConflictsMap[it.currentFilename]
                         val newMarker = if (marker != null) marker + 1 else 0
@@ -76,18 +86,35 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     if (oldestName != null) {
                         renamesMap.remove(possibleConflictName)
                         renamesMap[newVCFFileName] = oldestName
+
+                        versionControlledFiles[oldestName]!!.unmarkDeleted()
                     } else {
                         renamesMap[newVCFFileName] = it.oldFilename
+
+                        //TODO Might be done by VCF Class internally (registerCommit method)
+                        versionControlledFiles[it.oldFilename]!!.unmarkDeleted()
                     }
-                        versionControlledFiles[VCFName]?.filename = it.currentFilename
-                        versionControlledFiles[VCFName]?.registerCommit(commit, it)
+
+                    versionControlledFiles[VCFName]?.filename = it.currentFilename
+                    versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }
-                else ->
-                    try {
-                    versionControlledFiles[VCFName]!!.registerCommit(commit, it)
-                }catch(e: Exception){
-                       // println("Current name: " + it.currentFilename + " old name " + it.oldFilename + " VCF: " + VCFName)
+                else                     -> {
+                    if (VCFName == "File1.java")
+                        println("Found")
+
+                    //TODO Never delete a file from versionControlFiles list
+                    //TODO Mark deleted file as deleted.
+                    //TODO Unmark deleted file if RENAME or MODIFY appears and registerCommit.
+
+                    //TODO ENSURE to filter deleted files from being exported in a cc.json file.
+
+                    //TODO If a file is (deleted) and added later with the same name,
+                    //TODO a deletion is correct and the metrics must be start at 0. (existing conflict handling)
+                    //TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
+                    //TODO consider DElTA Mode and Edge calculation
+                    versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }
+
             }
         }
     }
