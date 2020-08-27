@@ -27,17 +27,10 @@ This attribute will not be generated during the analysis. The user needs to edit
  }
 ```
 
-```json
-"margin": 5
-```
-
 The `fixed`-attribute includes a coordinate `x` and `y`. These represent the top-left corner of the folder. `width`
 defines the length in x-direction and `height` defines the length in y-direction.
 
-The `margin`-attribute defines how far apart those fixated folders should be.
-
-Note, that these numbers represent percentages. The overall map size is therefore `100`. The `margin` is applied around
-the map and between the folders.
+Note, that these numbers represent percentages. The overall map size is therefore `100`.
 
 ## Example
 
@@ -86,8 +79,7 @@ the map and between the folders.
 				}
 			]
 		}
-	],
-	"margin": 5
+	]
 }
 ```
 
@@ -100,8 +92,7 @@ Notice, that `folder_1` start at `x:5`, `y:5`, because we apply a margin of `5` 
 
 In order to build a valid custom `.cc.json`, these rules must be followed:
 
--   The value `x + width + margin` or `y + height + margin` must be <= 100
--   Folders can't overlap and should respect the margin.
--   Only folders on the root can have the `fixed`-attribute
--   If at least one folder is `fixed`, all folders on the root must be `fixed`
--   If `fixed` folders exist, a margin must be specified, otherwise the default of `0` is applied.
+-   The value `x + width` or `y + height` must be in a range of `[0, 100]`.
+-   Folders can't overlap. Applying a margin between folders is recommended.
+-   Only folders on the root can have the `fixed`-attribute.
+-   If at least one folder is `fixed`, all folders on the root must be `fixed`.
