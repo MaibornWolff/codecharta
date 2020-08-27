@@ -12,10 +12,6 @@ describe("codeMapHelper", () => {
 		restartSystem()
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 

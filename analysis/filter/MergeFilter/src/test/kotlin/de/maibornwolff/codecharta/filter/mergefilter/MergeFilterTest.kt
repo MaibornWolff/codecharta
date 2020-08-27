@@ -44,10 +44,11 @@ class MergeFilterTest : Spek({
         context("merging files") {
             System.setOut(PrintStream(outContent))
             MergeFilter.main(
-                    arrayOf(
-                            "src/test/resources/mergeFolderTest/file1.cc.json",
-                            "src/test/resources/mergeFolderTest/file2.cc.json"
-                    )).toString()
+                arrayOf(
+                    "src/test/resources/mergeFolderTest/file1.cc.json",
+                    "src/test/resources/mergeFolderTest/file2.cc.json"
+                )
+            ).toString()
             System.setOut(originalOut)
             val valueInFile1 = "SourceMonCsvConverterTest.java"
             val valueInFile2 = "SourceMonCsvConverter.java"

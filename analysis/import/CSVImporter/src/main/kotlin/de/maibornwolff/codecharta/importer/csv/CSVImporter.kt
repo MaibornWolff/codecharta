@@ -12,9 +12,9 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "csvimport",
-        description = ["generates cc.json from csv with header"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "csvimport",
+    description = ["generates cc.json from csv with header"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class CSVImporter : Callable<Void> {
 

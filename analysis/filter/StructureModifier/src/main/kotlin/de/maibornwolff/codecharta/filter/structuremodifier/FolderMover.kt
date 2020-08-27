@@ -21,10 +21,10 @@ class FolderMover(private val project: Project) {
         }
 
         return ProjectBuilder(
-                moveNodes(moveFrom, moveTo),
-                extractEdges(moveFrom, moveTo),
-                copyAttributeTypes(),
-                copyBlacklist(moveFrom, moveTo)
+            moveNodes(moveFrom, moveTo),
+            extractEdges(moveFrom, moveTo),
+            copyAttributeTypes(),
+            copyBlacklist(moveFrom, moveTo)
         ).build()
     }
 
@@ -38,7 +38,7 @@ class FolderMover(private val project: Project) {
         val rootNode = project.rootNode.toMutableNode()
 
         val newStructure = removeMovedNodeFromStructure(originPath, rootNode)
-                ?: MutableNode("root", type = NodeType.Folder)
+            ?: MutableNode("root", type = NodeType.Folder)
         val newStructureList = listOfNotNull(newStructure)
 
         if (toMove == null) {

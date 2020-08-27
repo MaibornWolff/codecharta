@@ -1,4 +1,4 @@
-import { MetricData, State } from "../codeCharta.model"
+import { NodeMetricData, State } from "../codeCharta.model"
 import { CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES, STATE } from "./dataMocks"
@@ -10,7 +10,7 @@ import { CodeChartaService } from "../codeCharta.service"
 describe("treeMapGenerator", () => {
 	let map: CodeMapNode
 	let state: State
-	let metricData: MetricData[]
+	let metricData: NodeMetricData[]
 	let codeMapNode: CodeMapNode
 	let isDeltaState
 

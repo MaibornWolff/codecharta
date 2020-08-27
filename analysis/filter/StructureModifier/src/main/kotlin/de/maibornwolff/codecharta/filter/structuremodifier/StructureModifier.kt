@@ -10,9 +10,11 @@ import java.io.InputStream
 import java.io.PrintStream
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "modify",
-        description = ["changes the structure of cc.json files"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
+@CommandLine.Command(
+    name = "modify",
+    description = ["changes the structure of cc.json files"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
 class StructureModifier(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,

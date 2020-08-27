@@ -1,8 +1,47 @@
 buildscript {
+    ext {
+        // Dependency versions
+        boon_version = '0.34'
+        commons_lang3_version = '3.11'
+        gson_version = '2.6'
+        jackson_version = '2.11.2'
+        jacoco_version = '0.8.5'
+        jaxb_api_version = '2.3.1'
+        jersey_version = '2.31'
+        json_schema_version = '1.12.1'
+        json_version = '20190722'
+        juniversalchardet_version = '1.0.3'
+        kotlin_logging_version = '1.8.3'
+        kotlin_version = '1.4.0'
+        kotlinx_coroutines_version = '1.3.9'
+        picocli_version = '3.6.1'
+        slf4j_version = '1.7.30'
+        sonar_java_version = '5.14.0.18788'
+        sonarqube_version = '3.0'
+        univocity_parsers_version = '2.9.0'
+
+        // Test dependency versions
+        assertj_version = '3.17.0'
+        hamcrest_version = '1.3'
+        hamkrest_version = '1.7.0.3'
+        junit4_version = '4.12'
+        junit5_version = '5.6.2'
+        junit_platform_version = '1.6.2'
+        ktlint_version = '9.3.0'
+        mockito_core_version = '3.5.7'
+        mockito_kotlin_version = '2.2.0'
+        mokk_version = '1.8.13'
+        spek2_version = '2.0.2'
+        wiremock_version = '2.19.0'
+    }
+
     repositories {
         jcenter()
         maven {
             url 'https://plugins.gradle.org/m2/'
+        }
+        maven {
+            url 'https://jitpack.io'
         }
     }
     dependencies {
@@ -11,9 +50,9 @@ buildscript {
 }
 
 plugins {
-    id 'org.sonarqube' version '3.0'
+    id 'org.sonarqube' version "${sonarqube_version}"
     id 'distribution'
-    id "org.jlleitschuh.gradle.ktlint" version "7.2.1"
+    id "org.jlleitschuh.gradle.ktlint" version "${ktlint_version}"
 }
 
 allprojects {
@@ -46,7 +85,7 @@ subprojects {
     dependencies {
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
-        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8'
+        implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: kotlinx_coroutines_version
 
         testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
         testCompile("org.junit.jupiter:junit-jupiter-api:$junit5_version")

@@ -41,8 +41,8 @@ class VersionControlledFileTest {
         every { metricsFactory.createMetrics() } returns Arrays.asList(metric)
 
         val versionControlledFile = VersionControlledFile(
-                "filename",
-                metricsFactory
+            "filename",
+            metricsFactory
         )
 
         // when
@@ -51,14 +51,14 @@ class VersionControlledFileTest {
         // then
         assertThat(metricsMap).hasSize(1)
         assertThat(versionControlledFile.getMetricValue(metricName))
-                .isEqualTo(1)
+            .isEqualTo(1)
     }
 
     @Test
     fun throwsExceptionIfFileIsNotInCommit() {
         val versionControlledFile = VersionControlledFile(
-                "filename",
-                listOf()
+            "filename",
+            listOf()
         )
 
         val modification = Modification("anotherFilename")
@@ -77,8 +77,8 @@ class VersionControlledFileTest {
         val filename = "filename"
         val author = "An Author"
         val versionControlledFile = VersionControlledFile(
-                filename,
-                Arrays.asList(modificationMetric)
+            filename,
+            Arrays.asList(modificationMetric)
         )
 
         // when
@@ -125,12 +125,12 @@ class VersionControlledFileTest {
 
         // when
         val modifications = Arrays.asList(
-                Modification(filename),
-                Modification(filename, Modification.Type.DELETE),
-                Modification(filename)
+            Modification(filename),
+            Modification(filename, Modification.Type.DELETE),
+            Modification(filename)
         )
         modifications
-                .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
+            .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
 
         // then
         assertThat(versionControlledFile.filename).isEqualTo(filename)
@@ -150,12 +150,12 @@ class VersionControlledFileTest {
         // when
         // anti-chronological ordering
         val modifications = Arrays.asList(
-                Modification(filename),
-                Modification(filename, oldFilename, Modification.Type.RENAME),
-                Modification(oldFilename)
+            Modification(filename),
+            Modification(filename, oldFilename, Modification.Type.RENAME),
+            Modification(oldFilename)
         )
         modifications
-                .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
+            .forEach { mod -> versionControlledFile.registerCommit(createCommit("An Author", mod)) }
 
         // then
         assertThat(versionControlledFile.filename).isEqualTo(oldFilename)

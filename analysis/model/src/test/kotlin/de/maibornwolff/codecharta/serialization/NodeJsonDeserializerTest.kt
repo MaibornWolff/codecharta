@@ -6,7 +6,6 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParseException
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
-import io.mockk.mockk
 import model.src.main.kotlin.de.maibornwolff.codecharta.serialization.NodeJsonDeserializer
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
@@ -32,7 +31,7 @@ class NodeJsonDeserializerTest : Spek({
 
         it("deserialize should throw exception if not given a jsonObject") {
             assertFailsWith(IllegalStateException::class) {
-                deserializer.deserialize(JsonNull.INSTANCE, nodeClass, mockk())
+                deserializer.deserialize(JsonNull.INSTANCE, nodeClass, null)
             }
         }
 
@@ -41,7 +40,7 @@ class NodeJsonDeserializerTest : Spek({
             obj.remove("type")
 
             assertFailsWith(JsonParseException::class) {
-                deserializer.deserialize(obj, nodeClass, mockk())
+                deserializer.deserialize(obj, nodeClass, null)
             }
         }
 
@@ -50,7 +49,7 @@ class NodeJsonDeserializerTest : Spek({
             obj.addProperty("type", "someCrypticType")
 
             assertFailsWith(JsonParseException::class) {
-                deserializer.deserialize(obj, nodeClass, mockk())
+                deserializer.deserialize(obj, nodeClass, null)
             }
         }
 
@@ -59,13 +58,13 @@ class NodeJsonDeserializerTest : Spek({
             obj.remove("name")
 
             assertFailsWith(JsonParseException::class) {
-                deserializer.deserialize(obj, nodeClass, mockk())
+                deserializer.deserialize(obj, nodeClass, null)
             }
         }
 
         it("deserialize should deserialize node") {
             val obj = createMinimalJsonObject()
-            val node = deserializer.deserialize(obj, nodeClass, mockk())
+            val node = deserializer.deserialize(obj, nodeClass, null)
 
             assertThat(node.name, `is`(NAME))
             assertThat(node.type, `is`(TYPE))
@@ -79,7 +78,7 @@ class NodeJsonDeserializerTest : Spek({
             obj.add("children", JsonNull.INSTANCE)
 
             assertFailsWith(IllegalStateException::class) {
-                deserializer.deserialize(obj, nodeClass, mockk())
+                deserializer.deserialize(obj, nodeClass, null)
             }
         }
 
@@ -100,7 +99,7 @@ class NodeJsonDeserializerTest : Spek({
 
             context("deserializing") {
 
-                val node = deserializer.deserialize(obj, nodeClass, mockk())
+                val node = deserializer.deserialize(obj, nodeClass, null)
 
                 it("should deserialize link") {
                     assertThat(node.link, `is`(url))

@@ -4,7 +4,7 @@ import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, Attr
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { ExportCCFile } from "../codeCharta.api.model"
-import { MetricService } from "../state/metric.service"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 const clone = require("rfdc")()
 
 export class FileDownloader {
@@ -76,7 +76,7 @@ export class FileDownloader {
 			if (node.data.type === NodeType.FOLDER) {
 				node.data.attributes = {}
 			} else {
-				delete node.data.attributes[MetricService.UNARY_METRIC]
+				delete node.data.attributes[NodeMetricDataService.UNARY_METRIC]
 			}
 		})
 		return copy

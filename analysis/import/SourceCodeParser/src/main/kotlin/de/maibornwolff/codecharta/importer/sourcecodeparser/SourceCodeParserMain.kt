@@ -18,9 +18,9 @@ import java.nio.file.Paths
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "sourcecodeparser",
-        description = ["generates cc.json from source code"],
-        footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2020, MaibornWolff GmbH"]
+    name = "sourcecodeparser",
+    description = ["generates cc.json from source code"],
+    footer = ["This program uses the SonarJava, which is licensed under the GNU Lesser General Public Library, version 3.\nCopyright(c) 2020, MaibornWolff GmbH"]
 )
 class SourceCodeParserMain(
     private val outputStream: PrintStream,
