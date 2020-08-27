@@ -12,14 +12,14 @@ import java.lang.reflect.Type
 
 internal class NodeJsonDeserializer : JsonDeserializer<Node> {
 
-    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): Node {
+    override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext?): Node {
         val jsonNode = json.asJsonObject
 
         val name = deserializeName(jsonNode)
         val nodeType = deserializeNodeType(jsonNode)
-        val attributes = deserializeAttributes(context, jsonNode)
+        val attributes = deserializeAttributes(jsonNode)
         val link = deserializeLink(jsonNode)
-        val children = deserializeChildren(context, jsonNode)
+        val children = deserializeChildren(jsonNode)
 
         return Node(name, nodeType, attributes, link, children.toSet())
     }
@@ -45,16 +45,16 @@ internal class NodeJsonDeserializer : JsonDeserializer<Node> {
         return nameElement.asString
     }
 
-    private fun deserializeAttributes(context: JsonDeserializationContext, jsonNode: JsonObject): Map<String, Any> {
+    private fun deserializeAttributes(jsonNode: JsonObject): Map<String, Any> {
         val attributes = jsonNode.get("attributes") ?: return mapOf()
 
         val gson = GsonBuilder().create()
         return gson.fromJson<Map<String, Any>>(attributes, Map::class.java)
     }
 
-    private fun deserializeChildren(context: JsonDeserializationContext, jsonNode: JsonObject): List<Node> {
+    private fun deserializeChildren(jsonNode: JsonObject): List<Node> {
         val children = jsonNode.get("children") ?: return listOf()
 
-        return children.asJsonArray.mapTo(ArrayList()) { deserialize(it, Node::class.java, context) }
+        return children.asJsonArray.mapTo(ArrayList()) { deserialize(it, Node::class.java, null) }
     }
 }

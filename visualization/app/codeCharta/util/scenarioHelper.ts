@@ -1,5 +1,5 @@
 "use strict"
-import { AppSettings, CCLocalStorage, DynamicSettings, MetricData, RecursivePartial, Scenario, Settings } from "../codeCharta.model"
+import { AppSettings, CCLocalStorage, DynamicSettings, RecursivePartial, Scenario, Settings, NodeMetricData } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
@@ -10,7 +10,7 @@ export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
 	private static scenarios: Map<String, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
-	public static getScenarioItems(metricData: MetricData[]) {
+	public static getScenarioItems(metricData: NodeMetricData[]) {
 		const scenarioItems: ScenarioItem[] = []
 
 		this.scenarios.forEach(scenario => {
@@ -49,7 +49,7 @@ export class ScenarioHelper {
 		return scenarioItems
 	}
 
-	private static isScenarioAppliable(scenario: RecursivePartial<Scenario>, metricData: MetricData[]) {
+	private static isScenarioAppliable(scenario: RecursivePartial<Scenario>, metricData: NodeMetricData[]) {
 		if (scenario.area && !metricData.find(x => x.name === scenario.area.areaMetric)) {
 			return false
 		}

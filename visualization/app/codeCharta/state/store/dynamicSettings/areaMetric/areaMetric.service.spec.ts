@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { AreaMetricService } from "./areaMetric.service"
 import { AreaMetricAction, AreaMetricActions, setAreaMetric } from "./areaMetric.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
-import { MetricService } from "../../../metric.service"
+import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
 describe("AreaMetricService", () => {
 	let areaMetricService: AreaMetricService
@@ -38,12 +38,12 @@ describe("AreaMetricService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, areaMetricService)
 		})
 
-		it("should subscribe to MetricService", () => {
-			MetricService.subscribe = jest.fn()
+		it("should subscribe to NodeMetricDataService", () => {
+			NodeMetricDataService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, areaMetricService)
+			expect(NodeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, areaMetricService)
 		})
 	})
 
@@ -78,7 +78,7 @@ describe("AreaMetricService", () => {
 				{ name: "d", maxValue: 2 }
 			]
 
-			areaMetricService.onMetricDataAdded(metricData)
+			areaMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.getState().dynamicSettings.areaMetric).toEqual("a")
 		})
@@ -91,7 +91,7 @@ describe("AreaMetricService", () => {
 				{ name: "rloc", maxValue: 2 }
 			]
 
-			areaMetricService.onMetricDataAdded(metricData)
+			areaMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
@@ -100,7 +100,7 @@ describe("AreaMetricService", () => {
 			storeService.dispatch = jest.fn()
 			const metricData = []
 
-			areaMetricService.onMetricDataAdded(metricData)
+			areaMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})

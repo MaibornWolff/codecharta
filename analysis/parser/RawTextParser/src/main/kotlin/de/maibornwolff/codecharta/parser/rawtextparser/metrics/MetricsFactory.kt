@@ -15,7 +15,7 @@ object MetricsFactory {
 
     private fun instantiateAllMetrics(): List<Metric> {
         return listOf(
-                IndentationCounter()
+            IndentationCounter()
         )
     }
 }

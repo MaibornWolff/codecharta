@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`codeMapPreRenderService onMetricDataAdded should decorate and set a new render map 1`] = `
+exports[`codeMapPreRenderService onMetricDataChanged should decorate and set a new render map 1`] = `
 Object {
   "attributes": Object {
     "mcc": 111,

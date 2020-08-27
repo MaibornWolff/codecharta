@@ -50,19 +50,19 @@ open class ProjectBuilder(
 
     fun build(): Project {
         nodes.flatMap { it.nodes.values }
-                .mapNotNull { it.filterChildren(filterRule, false) }
-                .map { it.translateMetrics(metricNameTranslator, false) }
+            .mapNotNull { it.filterChildren(filterRule, false) }
+            .map { it.translateMetrics(metricNameTranslator, false) }
 
         edges.forEach { it.translateMetrics(metricNameTranslator) }
 
         filterEmptyFolders()
 
         val project = Project(
-                DUMMY_PROJECT_NAME,
-                nodes.map { it.toNode() }.toList(),
-                edges = edges.toList(),
-                attributeTypes = attributeTypes.toMap(),
-                blacklist = blacklist.toList()
+            DUMMY_PROJECT_NAME,
+            nodes.map { it.toNode() }.toList(),
+            edges = edges.toList(),
+            attributeTypes = attributeTypes.toMap(),
+            blacklist = blacklist.toList()
         )
 
         System.err.println()

@@ -17,8 +17,8 @@ class JasomeProjectBuilderTest : Spek({
         val projectBuilder = JasomeProjectBuilder()
         val jasomeProject = Project(listOf())
         val project = projectBuilder
-                .add(jasomeProject)
-                .build()
+            .add(jasomeProject)
+            .build()
 
         it("has nodes") {
             MatcherAssert.assertThat(project.size, `is`(1))
@@ -28,19 +28,19 @@ class JasomeProjectBuilderTest : Spek({
     describe("JasomeProjectBuilder adding a Jasome Project with a Class") {
         val projectBuilder = JasomeProjectBuilder()
         val jasomeClass = Class(
-                name = "ClassName",
-                metrics = listOf(Metric("ClTCi", "6,333333333"))
+            name = "ClassName",
+            metrics = listOf(Metric("ClTCi", "6,333333333"))
         )
         val jasomePackage = Package(
-                name = "com.package.name",
-                classes = listOf(jasomeClass),
-                metrics = listOf(Metric("PkgRCi", "2,388888889"))
+            name = "com.package.name",
+            classes = listOf(jasomeClass),
+            metrics = listOf(Metric("PkgRCi", "2,388888889"))
         )
         val jasomeProject = Project(packages = listOf(jasomePackage))
 
         val project = projectBuilder
-                .add(jasomeProject)
-                .build()
+            .add(jasomeProject)
+            .build()
 
         val leaves = project.rootNode.leaves
 
@@ -68,11 +68,11 @@ class JasomeProjectBuilderTest : Spek({
     describe("JasomeProjectBuilder adding an big Jasome Project") {
         val projectBuilder = JasomeProjectBuilder()
         val jasomeProject = JasomeDeserializer().deserializeJasomeXML(
-                this.javaClass.classLoader.getResourceAsStream("jasome.xml")!!
+            this.javaClass.classLoader.getResourceAsStream("jasome.xml")!!
         )
         val project = projectBuilder
-                .add(jasomeProject)
-                .build()
+            .add(jasomeProject)
+            .build()
 
         it("has nodes for classes") {
             MatcherAssert.assertThat(project.size, `is`(45))

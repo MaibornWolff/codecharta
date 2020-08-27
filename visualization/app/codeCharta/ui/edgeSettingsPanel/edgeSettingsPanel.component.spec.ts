@@ -2,7 +2,6 @@ import "./edgeSettingsPanel.module"
 import { EdgeSettingsPanelController } from "./edgeSettingsPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { DEFAULT_STATE } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
@@ -10,6 +9,7 @@ import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/
 import { AmountOfEdgePreviewsService } from "../../state/store/appSettings/amountOfEdgePreviews/amountOfEdgePreviews.service"
 import { EdgeHeightService } from "../../state/store/appSettings/edgeHeight/edgeHeight.service"
 import { ShowOnlyBuildingsWithEdgesService } from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 describe("EdgeSettingsPanelController", () => {
 	let edgeSettingsPanelController: EdgeSettingsPanelController
@@ -20,9 +20,9 @@ describe("EdgeSettingsPanelController", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		rebuildController()
 		withMockedEdgeMetricDataService()
 		withMockedCodeMapActionsService()
+		rebuildController()
 	})
 
 	function restartSystem() {
@@ -45,12 +45,10 @@ describe("EdgeSettingsPanelController", () => {
 
 	function withMockedEdgeMetricDataService(amountOfAffectedBuildings = 0) {
 		edgeMetricDataService.getAmountOfAffectedBuildings = jest.fn().mockReturnValue(amountOfAffectedBuildings)
-		edgeSettingsPanelController["edgeMetricDataService"] = edgeMetricDataService
 	}
 
 	function withMockedCodeMapActionsService() {
 		codeMapActionsService.updateEdgePreviews = jest.fn()
-		edgeSettingsPanelController["codeMapActionsService"] = codeMapActionsService
 	}
 
 	describe("constructor", () => {

@@ -24,8 +24,8 @@ class GsonProvider<T> : MessageBodyReader<T> {
 
     init {
         val builder = GsonBuilder()
-                .serializeNulls()
-                .enableComplexMapKeySerialization()
+            .serializeNulls()
+            .enableComplexMapKeySerialization()
 
         this.gson = builder.create()
     }

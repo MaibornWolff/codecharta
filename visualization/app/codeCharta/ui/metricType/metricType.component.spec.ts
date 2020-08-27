@@ -1,7 +1,6 @@
 import "./metricType.module"
 import { MetricSelections, MetricTypeController } from "./metricType.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { MetricService } from "../../state/metric.service"
 import { IRootScopeService } from "angular"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -11,15 +10,16 @@ import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { setHeightMetric } from "../../state/store/dynamicSettings/heightMetric/heightMetric.actions"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 describe("MetricTypeController", () => {
 	let metricTypeController: MetricTypeController
 	let $rootScope: IRootScopeService
-	let metricService: MetricService
+	let nodeMetricDataService: NodeMetricDataService
 	let storeService: StoreService
 	let edgeMetricDataService: EdgeMetricDataService
 
@@ -32,13 +32,13 @@ describe("MetricTypeController", () => {
 		instantiateModule("app.codeCharta.ui.metricType")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
-		metricService = getService<MetricService>("metricService")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		storeService = getService<StoreService>("storeService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 	}
 
 	function rebuildController() {
-		metricTypeController = new MetricTypeController($rootScope, metricService, edgeMetricDataService, storeService)
+		metricTypeController = new MetricTypeController($rootScope, nodeMetricDataService, edgeMetricDataService, storeService)
 	}
 
 	describe("constructor", () => {
@@ -117,11 +117,11 @@ describe("MetricTypeController", () => {
 			storeService.dispatch(setAttributeTypes({ nodes: {}, edges: { foo: AttributeTypeValue.relative } }))
 			storeService.dispatch(setHeightMetric("foo"))
 			metricTypeController["metricSelection"] = MetricSelections.heightMetric
-			metricService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
+			nodeMetricDataService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
 
-			metricTypeController.onMetricDataAdded()
+			metricTypeController.onMetricDataChanged()
 
-			expect(metricService.getAttributeTypeByMetric).toBeCalledWith("foo")
+			expect(nodeMetricDataService.getAttributeTypeByMetric).toBeCalledWith("foo")
 			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
 		})
 
@@ -131,7 +131,7 @@ describe("MetricTypeController", () => {
 			metricTypeController["metricSelection"] = MetricSelections.edgeMetric
 			edgeMetricDataService.getAttributeTypeByMetric = jest.fn().mockReturnValue(AttributeTypeValue.relative)
 
-			metricTypeController.onMetricDataAdded()
+			metricTypeController.onMetricDataChanged()
 
 			expect(edgeMetricDataService.getAttributeTypeByMetric).toBeCalledWith("foo")
 			expect(metricTypeController["_viewModel"].metricType).toBe(AttributeTypeValue.relative)
