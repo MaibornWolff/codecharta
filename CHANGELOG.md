@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Highlighting buildings in multiple mode now works #956
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.54.0] - 2020-08-21
