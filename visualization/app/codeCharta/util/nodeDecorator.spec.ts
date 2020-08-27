@@ -331,7 +331,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should decorate nodes with a unique id starting from 0", () => {
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMap(file.map, [], [])
 
 			const h = d3.hierarchy(file.map)
 			h.each(node => {
