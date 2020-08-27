@@ -26,10 +26,10 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "tokeiimporter",
-        description = ["generates cc.json from tokei json"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
-                    )
+    name = "tokeiimporter",
+    description = ["generates cc.json from tokei json"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
 class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
@@ -39,10 +39,10 @@ class TokeiImporter(
     private val logger = KotlinLogging.logger {}
 
     private val attributeTypes = AttributeTypes(type = "nodes")
-            .add("rloc", AttributeType.absolute)
-            .add("loc", AttributeType.absolute)
-            .add("empty_lines", AttributeType.absolute)
-            .add("comment_lines", AttributeType.absolute)
+        .add("rloc", AttributeType.absolute)
+        .add("loc", AttributeType.absolute)
+        .add("empty_lines", AttributeType.absolute)
+        .add("comment_lines", AttributeType.absolute)
 
     private lateinit var projectBuilder: ProjectBuilder
 
@@ -80,8 +80,10 @@ class TokeiImporter(
 
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(projectBuilder.build(),
-                filePath) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
+            projectBuilder.build(),
+            filePath
+        ) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
 
         return null
     }

@@ -31,28 +31,29 @@ class SonarComponentProjectBuilder(
     fun addComponentMapsAsNodes(components: ComponentMap): SonarComponentProjectBuilder {
         setTotalComponents(components)
         components.componentList
-                .sortedBy { it.path }
-                .forEach {
-                    this.addComponentAsNode(it)
-                    logProgress()
-                }
+            .sortedBy { it.path }
+            .forEach {
+                this.addComponentAsNode(it)
+                logProgress()
+            }
         return this
     }
 
     fun addComponentAsNode(component: Component): SonarComponentProjectBuilder {
         val node = MutableNode(
-                createNodeName(component),
-                createNodeTypeFromQualifier(component.qualifier!!), createAttributes(component.measures!!),
-                createLink(component))
+            createNodeName(component),
+            createNodeTypeFromQualifier(component.qualifier!!), createAttributes(component.measures!!),
+            createLink(component)
+        )
         projectBuilder.insertByPath(createParentPath(component), node)
         return this
     }
 
     private fun createAttributes(measures: List<Measure>): Map<String, Any> {
         return measures
-                .filter({ this.isMeasureConvertible(it) })
-                .map { this.convertMetricName(it) to this.convertMetricValue(it) }
-                .toMap()
+            .filter({ this.isMeasureConvertible(it) })
+            .map { this.convertMetricName(it) to this.convertMetricValue(it) }
+            .toMap()
     }
 
     private fun convertMetricName(measure: Measure): String {

@@ -1,12 +1,12 @@
 import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap, TreemapLayout } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapHelper } from "./codeMapHelper"
-import { CodeMapNode, MetricData, Node, State } from "../codeCharta.model"
+import { CodeMapNode, Node, NodeMetricData, State } from "../codeCharta.model"
 
 export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
 
-	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: MetricData[], isDeltaState: boolean): Node[] {
+	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: NodeMetricData[], isDeltaState: boolean): Node[] {
 		const squarifiedTreeMap: HierarchyRectangularNode<CodeMapNode> = this.getSquarifiedTreeMap(map, s)
 		const maxHeight = metricData.find(x => x.name == s.dynamicSettings.heightMetric).maxValue
 		const heightScale = (s.treeMap.mapSize * 2) / maxHeight

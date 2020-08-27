@@ -15,10 +15,10 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
     fun merge(): Project {
         return when {
             areAllAPIVersionsCompatible() -> ProjectBuilder(
-                    mergeProjectNodes(),
-                    mergeEdges(),
-                    mergeAttributeTypes(),
-                    mergeBlacklist()
+                mergeProjectNodes(),
+                mergeEdges(),
+                mergeAttributeTypes(),
+                mergeBlacklist()
             ).build()
             else -> throw MergeException("API versions not supported.")
         }
@@ -26,8 +26,8 @@ class ProjectMerger(private val projects: List<Project>, private val nodeMerger:
 
     private fun areAllAPIVersionsCompatible(): Boolean {
         val unsupportedAPIVersions = projects
-                .map { it.apiVersion }
-                .filter { !Project.isAPIVersionCompatible(it) }
+            .map { it.apiVersion }
+            .filter { !Project.isAPIVersionCompatible(it) }
 
         return unsupportedAPIVersions.isEmpty()
     }

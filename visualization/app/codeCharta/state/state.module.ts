@@ -1,6 +1,7 @@
 import angular from "angular"
 // Plop: Append module import here
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
+import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
@@ -43,16 +44,19 @@ import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { InjectorService } from "./injector.service"
 import { StoreService } from "./store.service"
-import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { NodeSearchService } from "./nodeSearch.service"
-import { MetricService } from "./metric.service"
 import "../codeCharta.module"
 import _ from "lodash"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
+import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
+import { MetricDataService } from "./store/metricData/metricData.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(MetricDataService.name), MetricDataService)
+	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
+	.service(_.camelCase(NodeMetricDataService.name), NodeMetricDataService)
 	.service(_.camelCase(PanelSelectionService.name), PanelSelectionService)
 	.service(_.camelCase(CameraTargetService.name), CameraTargetService)
 	.service(_.camelCase(IdToNodeService.name), IdToNodeService)
@@ -97,6 +101,4 @@ angular
 	.service(_.camelCase(BlacklistService.name), BlacklistService)
 	.service(_.camelCase(InjectorService.name), InjectorService)
 	.service(_.camelCase(StoreService.name), StoreService)
-	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(_.camelCase(NodeSearchService.name), NodeSearchService)
-	.service(_.camelCase(MetricService.name), MetricService)

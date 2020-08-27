@@ -18,7 +18,7 @@ class Commit(val author: String, modifications: List<Modification>, val commitDa
 
     private fun filterEmptyFiles(modifications: List<Modification>): List<Modification> {
         return modifications
-                .filter { !it.filename.isEmpty() }
+            .filter { !it.filename.isEmpty() }
     }
 
     fun getModification(filename: String): Modification {

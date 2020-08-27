@@ -2,8 +2,8 @@ import "./attributeTypeSelector.component.scss"
 import { StoreService } from "../../state/store.service"
 import { AttributeTypeValue } from "../../codeCharta.model"
 import { updateAttributeType } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
-import { MetricService } from "../../state/metric.service"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export class AttributeTypeSelectorController {
 	private _viewModel: {
@@ -18,7 +18,7 @@ export class AttributeTypeSelectorController {
 	/* @ngInject */
 	constructor(
 		private storeService: StoreService,
-		private metricService: MetricService,
+		private nodeMetricDataService: NodeMetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {}
 
@@ -42,7 +42,7 @@ export class AttributeTypeSelectorController {
 	private setAggregationSymbol() {
 		const type =
 			this.type === "nodes"
-				? this.metricService.getAttributeTypeByMetric(this.metric)
+				? this.nodeMetricDataService.getAttributeTypeByMetric(this.metric)
 				: this.edgeMetricDataService.getAttributeTypeByMetric(this.metric)
 		switch (type) {
 			case AttributeTypeValue.relative:

@@ -58,10 +58,6 @@ describe("codeChartaController", () => {
 		)
 	}
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
 			getFileDataFromQueryParam: jest.fn().mockReturnValue(Promise.resolve([])),

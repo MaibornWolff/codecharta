@@ -2,15 +2,15 @@ dependencies {
     implementation project(':model')
     implementation project(':filter:MergeFilter')
 
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.11'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: commons_lang3_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
-    compile group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
+    compile group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: juniversalchardet_version
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
-    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.16.1'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 }

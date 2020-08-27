@@ -2,6 +2,8 @@
 
 // Plop: Append service import here
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
+import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
+import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
 import { IdToBuildingService } from "./store/lookUp/idToBuilding/idToBuilding.service"
@@ -44,6 +46,7 @@ import { AreaMetricService } from "./store/dynamicSettings/areaMetric/areaMetric
 import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.service"
 import { NodeSearchService } from "./nodeSearch.service"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
+import { MetricDataService } from "./store/metricData/metricData.service"
 
 export class InjectorService {
 	/* @ngInject */
@@ -51,6 +54,9 @@ export class InjectorService {
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
 		private panelSelectionService: PanelSelectionService,
+		private metricDataService: MetricDataService,
+		private edgeMetricDataService: EdgeMetricDataService,
+		private nodeMetricDataService: NodeMetricDataService,
 		private cameraTargetService: CameraTargetService,
 		private idToNodeService: IdToNodeService,
 		private idToBuildingService: IdToBuildingService,

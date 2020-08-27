@@ -5,7 +5,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.everit.json', name: 'org.everit.json.schema', version: '1.5.1'
+    implementation group: 'com.github.everit-org.json-schema', name: 'org.everit.json.schema', version: json_schema_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version

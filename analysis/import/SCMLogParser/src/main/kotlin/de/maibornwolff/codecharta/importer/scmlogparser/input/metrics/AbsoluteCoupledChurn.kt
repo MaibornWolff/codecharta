@@ -21,8 +21,8 @@ class AbsoluteCoupledChurn : Metric {
 
     override fun registerCommit(commit: Commit) {
         val commitsTotalChurn = commit.modifications
-                .map { it.additions + it.deletions }
-                .sum()
+            .map { it.additions + it.deletions }
+            .sum()
 
         if (commitsTotalChurn > 0) {
             totalChurn += commitsTotalChurn
