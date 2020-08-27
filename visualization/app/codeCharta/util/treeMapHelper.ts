@@ -33,7 +33,7 @@ export class TreeMapHelper {
 		const height = 2
 
 		return {
-			name: "root",
+			name: map.name,
 			id: 0,
 			width: 100,
 			height: 2,
