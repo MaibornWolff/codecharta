@@ -50,12 +50,12 @@ export class CodeChartaService {
 	}
 
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
-		const ccFile: CCFile = this.getCCFile(fileName, migratedFile)
+		const ccFile: CCFile = CodeChartaService.getCCFile(fileName, migratedFile)
 		NodeDecorator.preDecorateFile(ccFile)
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
 	}
 
-	private getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
+	public static getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
 		return {
 			fileMeta: {
 				fileName,
@@ -74,7 +74,7 @@ export class CodeChartaService {
 		}
 	}
 
-	private getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): AttributeTypes {
+	private static getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): AttributeTypes {
 		if (_.isEmpty(attributeTypes) || !attributeTypes || Array.isArray(attributeTypes.nodes) || Array.isArray(attributeTypes.edges)) {
 			return {
 				nodes: {},
@@ -88,7 +88,7 @@ export class CodeChartaService {
 		}
 	}
 
-	private potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
+	private static potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
 		blacklist.forEach(x => {
 			if (x.type === ExportBlacklistType.hide) {
 				x.type = BlacklistType.flatten

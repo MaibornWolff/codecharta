@@ -28,6 +28,39 @@ export class TreeMapHelper {
 		return geomMap
 	}
 
+	public static buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, state: State, isDeltaState: boolean): Node {
+		const flattened: boolean = this.isNodeToBeFlat(map, state)
+		const height = 2
+
+		return {
+			name: map.name,
+			id: 0,
+			width: 100,
+			height: 2,
+			length: 100,
+			depth: 0,
+			x0: 0,
+			z0: 0,
+			y0: 0,
+			isLeaf: false,
+			attributes: map.attributes,
+			edgeAttributes: map.edgeAttributes,
+			deltas: map.deltas,
+			heightDelta:
+				map.deltas && map.deltas[state.dynamicSettings.heightMetric]
+					? heightScale * map.deltas[state.dynamicSettings.heightMetric]
+					: 0,
+			visible: this.isVisible(map, false, state, flattened),
+			path: map.path,
+			link: map.link,
+			markingColor: CodeMapHelper.getMarkingColor(map, state.fileSettings.markedPackages),
+			flat: false,
+			color: this.getBuildingColor(map, state, isDeltaState, flattened),
+			incomingEdgePoint: this.getIncomingEdgePoint(length, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize),
+			outgoingEdgePoint: this.getOutgoingEdgePoint(length, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize)
+		}
+	}
+
 	private static getHeightValue(
 		s: State,
 		squaredNode: HierarchyRectangularNode<CodeMapNode>,
@@ -53,7 +86,7 @@ export class TreeMapHelper {
 		isDeltaState: boolean
 	): Node {
 		const isNodeLeaf = !(squaredNode.children && squaredNode.children.length > 0)
-		const flattened: boolean = this.isNodeToBeFlat(squaredNode, s)
+		const flattened: boolean = this.isNodeToBeFlat(squaredNode.data, s)
 		const heightValue: number = this.getHeightValue(s, squaredNode, maxHeight, flattened)
 		const depth: number = squaredNode.data.path.split("/").length - 2
 		const width = squaredNode.x1 - squaredNode.x0
@@ -121,34 +154,33 @@ export class TreeMapHelper {
 		}
 	}
 
-	private static isNodeToBeFlat(squaredNode: HierarchyRectangularNode<CodeMapNode>, s: State): boolean {
+	private static isNodeToBeFlat(codeMapNode: CodeMapNode, s: State): boolean {
 		let flattened = false
 		if (
 			s.appSettings.showOnlyBuildingsWithEdges &&
 			s.fileSettings.edges &&
 			s.fileSettings.edges.filter(edge => edge.visible).length > 0
 		) {
-			flattened = this.nodeHasNoVisibleEdges(squaredNode, s)
+			flattened = this.nodeHasNoVisibleEdges(codeMapNode, s)
 		}
 
 		if (s.dynamicSettings.searchedNodePaths && s.dynamicSettings.searchPattern && s.dynamicSettings.searchPattern.length > 0) {
-			flattened = s.dynamicSettings.searchedNodePaths.size == 0 ? true : this.isNodeNonSearched(squaredNode, s)
+			flattened = s.dynamicSettings.searchedNodePaths.size == 0 ? true : this.isNodeNonSearched(codeMapNode, s)
 		}
 
-		flattened = squaredNode.data.isFlattened || flattened
+		flattened = codeMapNode.isFlattened || flattened
 		return flattened
 	}
 
-	private static nodeHasNoVisibleEdges(squaredNode: HierarchyRectangularNode<CodeMapNode>, s: State): boolean {
+	private static nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, s: State): boolean {
 		return (
-			squaredNode.data.edgeAttributes[s.dynamicSettings.edgeMetric] === undefined ||
-			s.fileSettings.edges.filter(edge => squaredNode.data.path === edge.fromNodeName || squaredNode.data.path === edge.toNodeName)
-				.length == 0
+			codeMapNode.edgeAttributes[s.dynamicSettings.edgeMetric] === undefined ||
+			s.fileSettings.edges.filter(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName).length == 0
 		)
 	}
 
-	private static isNodeNonSearched(squaredNode: HierarchyRectangularNode<CodeMapNode>, s: State): boolean {
-		return !s.dynamicSettings.searchedNodePaths.has(squaredNode.data.path)
+	private static isNodeNonSearched(squaredNode: CodeMapNode, s: State): boolean {
+		return !s.dynamicSettings.searchedNodePaths.has(squaredNode.path)
 	}
 
 	private static getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean): string {

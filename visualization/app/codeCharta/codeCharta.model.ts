@@ -40,6 +40,12 @@ export interface CodeMapNode {
 	deltas?: {
 		[key: string]: number
 	}
+	fixed?: {
+		x: number
+		y: number
+		width: number
+		height: number
+	}
 }
 
 export enum NodeType {
