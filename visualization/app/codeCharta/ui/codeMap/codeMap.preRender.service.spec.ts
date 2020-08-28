@@ -55,7 +55,7 @@ describe("codeMapPreRenderService", () => {
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 		map.children[1].children = _.slice(map.children[1].children, 0, 2)
 		const fileStates = _.cloneDeep(FILE_STATES)
-		NodeDecorator.preDecorateFile(fileStates[0].file)
+		NodeDecorator.decorateMapWithPathAttribute(fileStates[0].file)
 
 		storeService.dispatch(resetFiles())
 		storeService.dispatch(addFile(fileStates[0].file))

@@ -25,7 +25,7 @@ describe("UnfocusButtonController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 
-		NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
+		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
 		NodeDecorator.decorateMap(TEST_DELTA_MAP_A.map, [], [])
 		const map = new Map([
 			[TEST_DELTA_MAP_A.map.children[0].id, TEST_DELTA_MAP_A.map.children[0]],
