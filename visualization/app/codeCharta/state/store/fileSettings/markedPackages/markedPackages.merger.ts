@@ -2,7 +2,7 @@ import { getUpdatedBlacklistItemPath } from "../../../../util/nodePathHelper"
 import { CCFile, MarkedPackage } from "../../../../codeCharta.model"
 
 export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: boolean): MarkedPackage[] {
-	const markedPackages: MarkedPackage[] = []
+	const markedPackages: Map<string, MarkedPackage> = new Map()
 
 	if (inputFiles.length == 1) {
 		return inputFiles[0].settings.fileSettings.markedPackages
@@ -17,14 +17,9 @@ export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: b
 						: oldMarkedPackages.path,
 					color: oldMarkedPackages.color
 				}
-				const equalMarkedPackages = markedPackages.find(x => x.path == markedPackage.path && x.color == markedPackage.color)
-
-				if (!equalMarkedPackages) {
-					markedPackages.push(markedPackage)
-				}
+				markedPackages.set(`${markedPackage.path}|${markedPackage.color}`, markedPackage)
 			}
 		}
 	}
-
-	return markedPackages
+	return Array.from(markedPackages.values())
 }

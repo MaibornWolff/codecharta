@@ -2,7 +2,7 @@ import { getUpdatedPath } from "../../../../util/nodePathHelper"
 import { CCFile, Edge } from "../../../../codeCharta.model"
 
 export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): Edge[] {
-	const edges: Edge[] = []
+	const edges: Map<string, Edge> = new Map()
 
 	if (inputFiles.length == 1) {
 		return inputFiles[0].settings.fileSettings.edges
@@ -19,18 +19,18 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): 
 					attributes: oldEdge.attributes,
 					visible: oldEdge.visible
 				}
-				const equalEdgeItem = edges.find(e => e.fromNodeName == edge.fromNodeName && e.toNodeName == edge.toNodeName)
+				const equalEdgeItem = edges.get(`${edge.fromNodeName}|${edge.toNodeName}`)
 
-				if (equalEdgeItem) {
+				if (equalEdgeItem !== undefined) {
 					for (const key in edge.attributes) {
 						equalEdgeItem.attributes[key] = edge.attributes[key]
+						edges.set(`${edge.fromNodeName}|${edge.toNodeName}`, equalEdgeItem)
 					}
 				} else {
-					edges.push(edge)
+					edges.set(`${edge.fromNodeName}|${edge.toNodeName}`, edge)
 				}
 			}
 		}
 	}
-
-	return edges
+	return Array.from(edges.values())
 }
