@@ -48,27 +48,42 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             when (it.type) {
 
                 Modification.Type.ADD -> {
+                    // not deleted file > add appears > name conflict
                     if (VCFName == "File1.java")
                         println("Found")
 
-                    val file = versionControlledFiles[possibleConflictName]
+                    // Add new File
+                    val file = versionControlledFiles[VCFName]
                     if (file == null) {
                         val missingVersionControlledFile = VersionControlledFile(possibleConflictName, metricsFactory)
                         versionControlledFiles[possibleConflictName] = missingVersionControlledFile
                         missingVersionControlledFile.registerCommit(commit, it)
                     } else {
-                        versionControlledFiles[VCFName]!!.registerCommit(commit, it)
+                        // Add for existing not deleted file
+                        // is deleted for sure
+                        if (!file.isDeleted()) {
+                            versionControlledFiles[VCFName]!!.registerCommit(commit, it)
+                        }
+
+                        // Add for existing deleted file
+                        // unmark delete
+                        if (file.isDeleted()) {
+                            file.unmarkDeleted()
+                            //TODO Do we need to register a commit in this case?
+                        }
                     }
                 }
 
                 Modification.Type.DELETE -> {
-                    if (VCFName == "File1.java")
+                    if (VCFName == "analysis/import/SCMLogParser/src/main/java/de/maibornwolff/codecharta/importer/scmlogparser/input/metrics/WeightedCoupledChurn.java")
                         println("Found")
 
                     val filename = renamesMap[possibleConflictName]
 
+                    if (versionControlledFiles.size == 545)
+                        println("reached")
                     versionControlledFiles[(if (filename == null) possibleConflictName else filename)]!!.markDeleted()
-                    renamesMap.remove(possibleConflictName)
+                    //renamesMap.remove(possibleConflictName)
                 }
                 Modification.Type.RENAME -> {
                     if (VCFName == "File1.java")
@@ -87,12 +102,13 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                         renamesMap.remove(possibleConflictName)
                         renamesMap[newVCFFileName] = oldestName
 
-                        versionControlledFiles[oldestName]!!.unmarkDeleted()
+                        // this will be done in ADD case later
+                        //versionControlledFiles[oldestName]!!.unmarkDeleted()
                     } else {
                         renamesMap[newVCFFileName] = it.oldFilename
 
                         //TODO Might be done by VCF Class internally (registerCommit method)
-                        versionControlledFiles[it.oldFilename]!!.unmarkDeleted()
+                        //versionControlledFiles[it.oldFilename]!!.unmarkDeleted()
                     }
 
                     versionControlledFiles[VCFName]?.filename = it.currentFilename
@@ -112,6 +128,9 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     //TODO a deletion is correct and the metrics must be start at 0. (existing conflict handling)
                     //TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
                     //TODO consider DElTA Mode and Edge calculation
+                    //versionControlledFiles[VCFName]!!.unmarkDeleted()
+                    if (versionControlledFiles.size == 509)
+                        println("break")
                     versionControlledFiles[VCFName]?.registerCommit(commit, it)
                 }
 
