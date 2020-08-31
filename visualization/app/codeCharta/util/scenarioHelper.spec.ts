@@ -100,7 +100,10 @@ describe("scenarioHelper", () => {
 				}
 			]
 
-			const result = ScenarioHelper.getScenarioItems([])
+			const result = ScenarioHelper.getScenarioItems({
+				nodeMetricData: [{ name: "mcc", maxValue: 56 }],
+				edgeMetricData: [{ name: "pairingRate", maxValue: 47 }]
+			})
 
 			expect(result).toEqual(expected)
 		})
@@ -142,7 +145,10 @@ describe("scenarioHelper", () => {
 				}
 			]
 
-			const result = ScenarioHelper.getScenarioItems([{ name: "mcc", maxValue: 56 }])
+			const result = ScenarioHelper.getScenarioItems({
+				nodeMetricData: [{ name: "mcc", maxValue: 56 }],
+				edgeMetricData: [{ name: "None", maxValue: 0 }]
+			})
 
 			expect(result).toEqual(expected)
 		})
