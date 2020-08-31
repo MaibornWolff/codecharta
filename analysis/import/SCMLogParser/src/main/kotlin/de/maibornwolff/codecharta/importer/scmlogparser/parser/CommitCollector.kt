@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import java.lang.NullPointerException
 import java.util.function.BiConsumer
 import java.util.function.BinaryOperator
 import java.util.function.Supplier
@@ -42,16 +43,9 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             val oldestName = renamesMap[possibleConflictName]
             val VCFName = if (oldestName == null) possibleConflictName else oldestName
 
-            if (VCFName == "File1.java")
-                println("Found")
-
             when (it.type) {
 
                 Modification.Type.ADD -> {
-                    // not deleted file > add appears > name conflict
-                    if (VCFName == "File1.java")
-                        println("Found")
-
                     // Add new File
                     val file = versionControlledFiles[VCFName]
                     if (file == null) {
@@ -75,20 +69,18 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 }
 
                 Modification.Type.DELETE -> {
-                    if (VCFName == "analysis/import/SCMLogParser/src/main/java/de/maibornwolff/codecharta/importer/scmlogparser/input/metrics/WeightedCoupledChurn.java")
-                        println("Found")
-
                     val filename = renamesMap[possibleConflictName]
+                    val tmpFilename = if (filename == null) possibleConflictName else filename
 
-                    if (versionControlledFiles.size == 545)
-                        println("reached")
-                    versionControlledFiles[(if (filename == null) possibleConflictName else filename)]!!.markDeleted()
+                    try {
+                        versionControlledFiles[tmpFilename]!!.markDeleted()
+                    } catch (exc: NullPointerException) {
+                        exc.message;
+                        println(exc.message);
+                    }
                     //renamesMap.remove(possibleConflictName)
                 }
                 Modification.Type.RENAME -> {
-                    if (VCFName == "File1.java")
-                        println("Found")
-
                     var newVCFFileName = it.currentFilename
                     //TODO WHAT if the new name is assigned to an existing and deleted VCF
                     //TODO conflict logic should be able to handle that conflict.
@@ -111,13 +103,15 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                         //versionControlledFiles[it.oldFilename]!!.unmarkDeleted()
                     }
 
-                    versionControlledFiles[VCFName]?.filename = it.currentFilename
-                    versionControlledFiles[VCFName]?.registerCommit(commit, it)
+                    try {
+                        versionControlledFiles[VCFName]!!.filename = it.currentFilename
+                        versionControlledFiles[VCFName]!!.registerCommit(commit, it)
+                    } catch (exc: NullPointerException) {
+                        exc.message;
+                        println(exc.message);
+                    }
                 }
                 else                     -> {
-                    if (VCFName == "File1.java")
-                        println("Found")
-
                     //TODO Never delete a file from versionControlFiles list
                     //TODO Mark deleted file as deleted.
                     //TODO Unmark deleted file if RENAME or MODIFY appears and registerCommit.
@@ -129,9 +123,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     //TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
                     //TODO consider DElTA Mode and Edge calculation
                     //versionControlledFiles[VCFName]!!.unmarkDeleted()
-                    if (versionControlledFiles.size == 509)
-                        println("break")
-                    versionControlledFiles[VCFName]?.registerCommit(commit, it)
+                    versionControlledFiles[VCFName]!!.registerCommit(commit, it)
                 }
 
             }

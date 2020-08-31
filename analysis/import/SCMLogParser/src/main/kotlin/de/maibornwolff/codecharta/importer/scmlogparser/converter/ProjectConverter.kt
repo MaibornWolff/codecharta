@@ -46,7 +46,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val projectBuilder = ProjectBuilder()
 
         //TODO discuss/check performance:
-        versionControlledFiles.values.parallelStream()
+        versionControlledFiles.values
                 .filter { !it.isDeleted() }
                 .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
