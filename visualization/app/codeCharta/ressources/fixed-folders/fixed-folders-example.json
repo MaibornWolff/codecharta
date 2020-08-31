@@ -1,0 +1,386 @@
+{
+	"projectName": "example-project",
+	"apiVersion": "1.1",
+	"nodes": [
+		{
+			"name": "root",
+			"type": "Folder",
+			"attributes": {},
+			"children": [
+				{
+					"name": "folder_1",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_1",
+							"type": "File",
+							"attributes": {
+								"rloc": 200,
+								"mcc": 45
+							},
+							"children": []
+						},
+						{
+							"name": "children_2",
+							"type": "File",
+							"attributes": {
+								"rloc": 400,
+								"mcc": 65
+							},
+							"children": []
+						},
+						{
+							"name": "children_3",
+							"type": "File",
+							"attributes": {
+								"rloc": 600,
+								"mcc": 25
+							},
+							"children": []
+						},
+						{
+							"name": "children_13",
+							"type": "File",
+							"attributes": {
+								"rloc": 95,
+								"mcc": 20
+							},
+							"children": []
+						},
+						{
+							"name": "children_14",
+							"type": "File",
+							"attributes": {
+								"rloc": 66,
+								"mcc": 72
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 5,
+						"y": 5,
+						"width": 55,
+						"height": 15
+					}
+				},
+				{
+					"name": "folder_2",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_4",
+							"type": "File",
+							"attributes": {
+								"rloc": 1000,
+								"mcc": 37
+							},
+							"children": []
+						},
+						{
+							"name": "children_5",
+							"type": "File",
+							"attributes": {
+								"rloc": 800,
+								"mcc": 10
+							},
+							"children": []
+						},
+						{
+							"name": "folder_7",
+							"type": "Folder",
+							"attributes": {},
+							"children": [
+								{
+									"name": "children_15",
+									"type": "File",
+									"attributes": {
+										"rloc": 500,
+										"mcc": 5
+									},
+									"children": []
+								},
+								{
+									"name": "children_16",
+									"type": "File",
+									"attributes": {
+										"rloc": 142,
+										"mcc": 36
+									},
+									"children": []
+								},
+								{
+									"name": "children_17",
+									"type": "File",
+									"attributes": {
+										"rloc": 1531,
+										"mcc": 156
+									},
+									"children": []
+								}
+							]
+						}
+					],
+					"fixed": {
+						"x": 5,
+						"y": 25,
+						"width": 25,
+						"height": 50
+					}
+				},
+				{
+					"name": "folder_3",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_5",
+							"type": "File",
+							"attributes": {
+								"rloc": 450,
+								"mcc": 3
+							},
+							"children": []
+						},
+						{
+							"name": "children_6",
+							"type": "File",
+							"attributes": {
+								"rloc": 132,
+								"mcc": 10
+							},
+							"children": []
+						},
+						{
+							"name": "children_18",
+							"type": "File",
+							"attributes": {
+								"rloc": 2165,
+								"mcc": 168
+							},
+							"children": []
+						},
+						{
+							"name": "children_19",
+							"type": "File",
+							"attributes": {
+								"rloc": 789,
+								"mcc": 71
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 35,
+						"y": 25,
+						"width": 25,
+						"height": 50
+					}
+				},
+				{
+					"name": "folder_4",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_7",
+							"type": "File",
+							"attributes": {
+								"rloc": 200,
+								"mcc": 12
+							},
+							"children": []
+						},
+						{
+							"name": "children_8",
+							"type": "File",
+							"attributes": {
+								"rloc": 500,
+								"mcc": 35
+							},
+							"children": []
+						},
+						{
+							"name": "children_20",
+							"type": "File",
+							"attributes": {
+								"rloc": 516,
+								"mcc": 45
+							},
+							"children": []
+						},
+						{
+							"name": "children_21",
+							"type": "File",
+							"attributes": {
+								"rloc": 948,
+								"mcc": 23
+							},
+							"children": []
+						},
+						{
+							"name": "children_22",
+							"type": "File",
+							"attributes": {
+								"rloc": 1876,
+								"mcc": 65
+							},
+							"children": []
+						},
+						{
+							"name": "children_23",
+							"type": "File",
+							"attributes": {
+								"rloc": 654,
+								"mcc": 58
+							},
+							"children": []
+						},
+						{
+							"name": "children_24",
+							"type": "File",
+							"attributes": {
+								"rloc": 561,
+								"mcc": 66
+							},
+							"children": []
+						},
+						{
+							"name": "children_25",
+							"type": "File",
+							"attributes": {
+								"rloc": 987,
+								"mcc": 145
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 65,
+						"y": 5,
+						"width": 10,
+						"height": 90
+					}
+				},
+				{
+					"name": "folder_5",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_9",
+							"type": "File",
+							"attributes": {
+								"rloc": 100,
+								"mcc": 8
+							},
+							"children": []
+						},
+						{
+							"name": "children_10",
+							"type": "File",
+							"attributes": {
+								"rloc": 265,
+								"mcc": 10
+							},
+							"children": []
+						},
+						{
+							"name": "children_26",
+							"type": "File",
+							"attributes": {
+								"rloc": 123,
+								"mcc": 8
+							},
+							"children": []
+						},
+						{
+							"name": "children_27",
+							"type": "File",
+							"attributes": {
+								"rloc": 113,
+								"mcc": 32
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 80,
+						"y": 5,
+						"width": 15,
+						"height": 90
+					}
+				},
+				{
+					"name": "folder_6",
+					"type": "Folder",
+					"attributes": {},
+					"children": [
+						{
+							"name": "children_11",
+							"type": "File",
+							"attributes": {
+								"rloc": 1200,
+								"mcc": 120
+							},
+							"children": []
+						},
+						{
+							"name": "children_12",
+							"type": "File",
+							"attributes": {
+								"rloc": 100,
+								"mcc": 24
+							},
+							"children": []
+						},
+						{
+							"name": "children_28",
+							"type": "File",
+							"attributes": {
+								"rloc": 612,
+								"mcc": 12
+							},
+							"children": []
+						},
+						{
+							"name": "children_29",
+							"type": "File",
+							"attributes": {
+								"rloc": 3652,
+								"mcc": 15
+							},
+							"children": []
+						}
+					],
+					"fixed": {
+						"x": 5,
+						"y": 80,
+						"width": 55,
+						"height": 15
+					}
+				}
+			]
+		}
+	],
+	"edges": [
+		{
+			"fromNodeName": "/root/folder_1/children_1",
+			"toNodeName": "/root/folder_2/children_4",
+			"attributes": {
+				"pairingRate": 89,
+				"avgCommits": 34
+			}
+		},
+		{
+			"fromNodeName": "/root/folder_2/children_4",
+			"toNodeName": "/root/folder_3/children_5",
+			"attributes": {
+				"pairingRate": 32,
+				"avgCommits": 17
+			}
+		}
+	]
+}
