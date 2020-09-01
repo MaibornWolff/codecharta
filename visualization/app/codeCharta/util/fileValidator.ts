@@ -65,15 +65,15 @@ export function validate(file: ExportCCFile) {
 		case !file:
 			result.error.push(ERROR_MESSAGES.fileIsInvalid.message)
 			result.title = ERROR_MESSAGES.fileIsInvalid.title
-			throw result
+			break
 		case !isValidApiVersion(file):
 			result.error.push(ERROR_MESSAGES.apiVersionIsInvalid.message)
 			result.title = ERROR_MESSAGES.apiVersionIsInvalid.title
-			throw result
+			break
 		case fileHasHigherMajorVersion(file):
 			result.error.push(ERROR_MESSAGES.majorApiVersionIsOutdated.message)
 			result.title = ERROR_MESSAGES.majorApiVersionIsOutdated.title
-			throw result
+			break
 		case fileHasHigherMinorVersion(file):
 			result.warning.push(ERROR_MESSAGES.minorApiVersionOutdated.message)
 			result.title = ERROR_MESSAGES.minorApiVersionOutdated.title
@@ -87,12 +87,10 @@ export function validate(file: ExportCCFile) {
 		if (!valid) {
 			result.error = validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
 			result.title = ERROR_MESSAGES.validationError.title
-			throw result
 		} else {
 			if (file.nodes.length === 0) {
 				result.error.push(ERROR_MESSAGES.nodesEmpty.message)
 				result.title = ERROR_MESSAGES.nodesEmpty.title
-				throw result
 			} else {
 				validateChildrenAreUnique(file.nodes[0], result)
 				validateFixedFolders(file, result)
@@ -122,7 +120,6 @@ function validateChildrenAreUnique(node: CodeMapNode, result: CCValidationResult
 	if (Object.keys(names).length !== node.children.length) {
 		result.error.push(ERROR_MESSAGES.nodesNotUnique.message)
 		result.title = ERROR_MESSAGES.nodesNotUnique.title
-		throw result
 	}
 
 	for (const child of node.children) {
