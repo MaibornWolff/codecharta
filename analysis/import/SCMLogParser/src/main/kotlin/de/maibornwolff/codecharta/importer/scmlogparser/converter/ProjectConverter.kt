@@ -22,7 +22,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val fileName = versionControlledFile.actualFilename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path = PathFactory.fromFileSystemPath(
-                versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, ""))
+            versionControlledFile.actualFilename.substringBeforeLast(PATH_SEPARATOR, "")
+        )
         projectBuilder.insertByPath(path, newNode)
         edges.forEach { projectBuilder.insertEdge(addRootToEdgePaths(it)) }
         versionControlledFile.removeMetricsToFreeMemory()
@@ -30,7 +31,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
 
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
         return when {
-            containsAuthors -> versionControlledFile.metricsMap
+            containsAuthors ->
+                versionControlledFile.metricsMap
                     .plus(Pair("authors", versionControlledFile.authors))
             else -> versionControlledFile.metricsMap
         }
@@ -46,8 +48,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val projectBuilder = ProjectBuilder()
 
         versionControlledFiles
-                .filter { vc -> !vc.markedDeleted() }
-                .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+            .filter { vc -> !vc.markedDeleted() }
+            .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))

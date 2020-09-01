@@ -139,7 +139,7 @@ class SonarComponentProjectBuilderTest {
         val path = "someFileName"
         val component = Component("id", "key", "name", path, Qualifier.FIL)
         val projectBuilder =
-                SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
+            SonarComponentProjectBuilder(SonarCodeURLLinker.NULL, MetricNameTranslator.TRIVIAL, true)
 
         // when
         val project = projectBuilder.addComponentAsNode(component).build()

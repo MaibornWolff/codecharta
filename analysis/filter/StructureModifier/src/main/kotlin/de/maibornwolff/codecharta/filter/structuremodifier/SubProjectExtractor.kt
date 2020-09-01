@@ -17,10 +17,10 @@ class SubProjectExtractor(private val project: Project) {
         this.path = path
         val pathSegments = path.removePrefix("/").split("/").filter { it.isNotEmpty() }
         return ProjectBuilder(
-                addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
-                extractEdges(path),
-                copyAttributeTypes(),
-                copyBlacklist()
+            addRoot(extractNodes(pathSegments, project.rootNode.toMutableNode())),
+            extractEdges(path),
+            copyAttributeTypes(),
+            copyBlacklist()
         ).build()
     }
 
@@ -48,17 +48,17 @@ class SubProjectExtractor(private val project: Project) {
     }
 
     private fun extractEdges(extractionPattern: String): MutableList<Edge> {
-            val trimmedExtractionPattern = "/" + extractionPattern.removeSuffix("/").removePrefix("/")
+        val trimmedExtractionPattern = "/" + extractionPattern.removeSuffix("/").removePrefix("/")
         return extractRenamedEdgesForPattern(trimmedExtractionPattern).toMutableList()
     }
 
     private fun extractRenamedEdgesForPattern(pattern: String): List<Edge> {
         return project.edges.filter { it.fromNodeName.startsWith(pattern) && it.toNodeName.startsWith(pattern) }
-                .map { edge ->
-                    edge.fromNodeName = "/root" + edge.fromNodeName.removePrefix(pattern)
-                    edge.toNodeName = "/root" + edge.toNodeName.removePrefix(pattern)
-                    edge
-                }
+            .map { edge ->
+                edge.fromNodeName = "/root" + edge.fromNodeName.removePrefix(pattern)
+                edge.toNodeName = "/root" + edge.toNodeName.removePrefix(pattern)
+                edge
+            }
     }
 
     private fun copyAttributeTypes(): MutableMap<String, MutableMap<String, AttributeType>> {

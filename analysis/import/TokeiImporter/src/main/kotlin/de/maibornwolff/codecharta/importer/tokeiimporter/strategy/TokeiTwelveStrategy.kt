@@ -40,11 +40,14 @@ class TokeiTwelveStrategy(rootName: String, pathSeparator: String) : ImporterStr
         val fileName = sanitizedName.substringAfterLast("/")
 
         val node = MutableNode(
-                fileName, attributes = mapOf(
+            fileName,
+            attributes = mapOf(
                 "empty_lines" to report.stats.blanks,
                 "rloc" to report.stats.code,
                 "comment_lines" to report.stats.comments,
-                "loc" to report.stats.blanks + report.stats.code + report.stats.comments))
+                "loc" to report.stats.blanks + report.stats.code + report.stats.comments
+            )
+        )
 
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)

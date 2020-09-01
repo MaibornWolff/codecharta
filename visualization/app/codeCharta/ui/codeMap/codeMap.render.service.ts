@@ -7,13 +7,13 @@ import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { CodeMapNode, Node } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
-import { MetricService } from "../../state/metric.service"
 import { isDeltaState } from "../../model/files/files.helper"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export class CodeMapRenderService {
 	constructor(
 		private storeService: StoreService,
-		private metricService: MetricService,
+		private nodeMetricDataService: NodeMetricDataService,
 		private threeSceneService: ThreeSceneService,
 		private codeMapLabelService: CodeMapLabelService,
 		private codeMapArrowService: CodeMapArrowService
@@ -46,7 +46,7 @@ export class CodeMapRenderService {
 		const nodes: Node[] = TreeMapGenerator.createTreemapNodes(
 			map,
 			this.storeService.getState(),
-			this.metricService.getMetricData(),
+			this.storeService.getState().metricData.nodeMetricData,
 			isDeltaState(this.storeService.getState().files)
 		)
 		const filteredNodes: Node[] = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)

@@ -18,7 +18,7 @@ export class CodeMapHelper {
 		return matchingNode ? matchingNode.data : null
 	}
 
-	public static getAllPaths(node: CodeMapNode): Array<String> {
+	public static getAllPaths(node: CodeMapNode): Array<string> {
 		return hierarchy<CodeMapNode>(node)
 			.descendants()
 			.map(node => node.data.path)

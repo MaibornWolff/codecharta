@@ -4,13 +4,13 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { setAttributeTypes } from "../../state/store/fileSettings/attributeTypes/attributeTypes.actions"
 import { AttributeTypeValue } from "../../codeCharta.model"
-import { MetricService } from "../../state/metric.service"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 describe("AttributeTypeSelectorController", () => {
 	let attributeTypeSelectorController: AttributeTypeSelectorController
 	let storeService: StoreService
-	let metricService: MetricService
+	let nodeMetricDataService: NodeMetricDataService
 	let edgeMetricDataService: EdgeMetricDataService
 
 	beforeEach(() => {
@@ -21,12 +21,12 @@ describe("AttributeTypeSelectorController", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.attributeTypeSelector")
 		storeService = getService<StoreService>("storeService")
-		metricService = getService<MetricService>("metricService")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 	}
 
 	function rebuildController() {
-		attributeTypeSelectorController = new AttributeTypeSelectorController(storeService, metricService, edgeMetricDataService)
+		attributeTypeSelectorController = new AttributeTypeSelectorController(storeService, nodeMetricDataService, edgeMetricDataService)
 	}
 
 	describe("setToAbsolute", () => {

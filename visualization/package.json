@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.53.0",
+	"version": "1.55.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -93,7 +93,7 @@
 		"angularjs-slider": "^7.0.0",
 		"color-convert": "^2.0.0",
 		"core-js": "^3.6.5",
-		"d3": "^5.9.2",
+		"d3": "^6.0.0",
 		"font-awesome": "^4.7.0",
 		"ignore": "^5.0.2",
 		"jquery": "^3.3.1",
@@ -105,7 +105,7 @@
 		"shelljs": "^0.8.1",
 		"three": "^0.89.0",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "^0.42.0"
+		"typescript-json-schema": "^0.43.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.4",

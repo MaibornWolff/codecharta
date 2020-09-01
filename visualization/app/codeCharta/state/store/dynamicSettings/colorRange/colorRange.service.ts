@@ -3,10 +3,10 @@ import { IRootScopeService } from "angular"
 import { ColorRangeActions, setColorRange } from "./colorRange.actions"
 import { ColorRange } from "../../../../codeCharta.model"
 import { getResetColorRange } from "./colorRange.reset"
-import { MetricService } from "../../../metric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)
@@ -15,7 +15,11 @@ export interface ColorRangeSubscriber {
 export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FilesSelectionSubscriber {
 	private static COLOR_RANGE_CHANGED_EVENT = "color-range-changed"
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private metricService: MetricService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private nodeMetricDataService: NodeMetricDataService
+	) {
 		StoreService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
@@ -39,7 +43,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 	private tryToResetIfNull() {
 		const colorRange = this.storeService.getState().dynamicSettings.colorRange
 		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
-		const maxMetricValue: number = this.metricService.getMaxMetricByMetricName(colorMetric)
+		const maxMetricValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
 		if (!colorRange.from && !colorRange.to && maxMetricValue) {
 			this.reset()
 		}
@@ -47,7 +51,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 
 	public reset() {
 		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
-		const maxMetricValue: number = this.metricService.getMaxMetricByMetricName(colorMetric)
+		const maxMetricValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
 
 		const newColorRange = getResetColorRange(maxMetricValue)
 		this.storeService.dispatch(setColorRange(newColorRange))

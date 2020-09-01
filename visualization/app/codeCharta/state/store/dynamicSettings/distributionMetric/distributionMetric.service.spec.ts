@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { DistributionMetricService } from "./distributionMetric.service"
 import { DistributionMetricAction, DistributionMetricActions, setDistributionMetric } from "./distributionMetric.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
-import { MetricService } from "../../../metric.service"
+import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
 describe("DistributionMetricService", () => {
 	let distributionMetricService: DistributionMetricService
@@ -38,12 +38,12 @@ describe("DistributionMetricService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, distributionMetricService)
 		})
 
-		it("should subscribe to MetricService", () => {
-			MetricService.subscribe = jest.fn()
+		it("should subscribe to NodeMetricDataService", () => {
+			NodeMetricDataService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, distributionMetricService)
+			expect(NodeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, distributionMetricService)
 		})
 	})
 
@@ -78,7 +78,7 @@ describe("DistributionMetricService", () => {
 				{ name: "d", maxValue: 2 }
 			]
 
-			distributionMetricService.onMetricDataAdded(metricData)
+			distributionMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.getState().dynamicSettings.distributionMetric).toEqual("a")
 		})
@@ -91,7 +91,7 @@ describe("DistributionMetricService", () => {
 				{ name: "rloc", maxValue: 2 }
 			]
 
-			distributionMetricService.onMetricDataAdded(metricData)
+			distributionMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
@@ -100,7 +100,7 @@ describe("DistributionMetricService", () => {
 			storeService.dispatch = jest.fn()
 			const metricData = []
 
-			distributionMetricService.onMetricDataAdded(metricData)
+			distributionMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})

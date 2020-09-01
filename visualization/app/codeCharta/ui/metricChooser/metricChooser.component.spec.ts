@@ -3,13 +3,13 @@ import "./metricChooser.module"
 import { MetricChooserController } from "./metricChooser.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { MetricService } from "../../state/metric.service"
 import { StoreService } from "../../state/store.service"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import { DistributionMetricService } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
-import { MetricData } from "../../codeCharta.model"
+import { NodeMetricData } from "../../codeCharta.model"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 describe("MetricChooserController", () => {
 	let metricChooserController: MetricChooserController
@@ -34,7 +34,7 @@ describe("MetricChooserController", () => {
 		rebuildController()
 	})
 
-	function setMetricData(metricData: MetricData[]) {
+	function setMetricData(metricData: NodeMetricData[]) {
 		metricChooserController["originalMetricData"] = metricData
 		metricChooserController["_viewModel"].metricData = metricData
 	}
@@ -72,12 +72,12 @@ describe("MetricChooserController", () => {
 			expect(DistributionMetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 
-		it("should subscribe to MetricService", () => {
-			MetricService.subscribe = jest.fn()
+		it("should subscribe to NodeMetricDataService", () => {
+			NodeMetricDataService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
+			expect(NodeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, metricChooserController)
 		})
 	})
 
@@ -115,12 +115,12 @@ describe("MetricChooserController", () => {
 
 	describe("onMetricDataAdded", () => {
 		it("metric data should be updated", () => {
-			const metricData = [
+			const metricData: NodeMetricData[] = [
 				{ name: "a", maxValue: 1 },
 				{ name: "b", maxValue: 2 }
 			]
 
-			metricChooserController.onMetricDataAdded(metricData)
+			metricChooserController.onNodeMetricDataChanged(metricData)
 
 			expect(metricChooserController["_viewModel"].metricData).toEqual(metricData)
 		})

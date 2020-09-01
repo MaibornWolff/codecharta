@@ -72,7 +72,8 @@ class JavaSonarAnalyzerTest {
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(
-                metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue("code_smell")).isEqualTo(1)
+            metrics.getFileMetricMap("sonar_issues_java/CodeSmell.java")?.getMetricValue("code_smell")
+        ).isEqualTo(1)
     }
 
     @Test
@@ -110,7 +111,10 @@ class JavaSonarAnalyzerTest {
         val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
-        assertThat(metrics.getFileMetricMap("CommentedOutCode.java")?.getMetricValue(
-                "commented_out_code_blocks")).isEqualTo(3)
+        assertThat(
+            metrics.getFileMetricMap("CommentedOutCode.java")?.getMetricValue(
+                "commented_out_code_blocks"
+            )
+        ).isEqualTo(3)
     }
 }

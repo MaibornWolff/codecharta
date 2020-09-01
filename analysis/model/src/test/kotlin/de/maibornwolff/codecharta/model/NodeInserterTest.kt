@@ -76,8 +76,10 @@ class NodeInserterTest : Spek({
             it("should insert node in leaf position") {
                 assertThat(root.children, hasSize(1))
                 assertThat(root.pathsToLeaves.count(), `is`(1))
-                assertThat(root.toNode(),
-                        hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode")))
+                assertThat(
+                    root.toNode(),
+                    hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode"))
+                )
             }
         }
 
@@ -90,8 +92,10 @@ class NodeInserterTest : Spek({
             it("should insert node in leaf position") {
                 assertThat(root.children, hasSize(1))
                 assertThat(root.pathsToLeaves.count(), `is`(1))
-                assertThat(root.toNode(),
-                        hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode")))
+                assertThat(
+                    root.toNode(),
+                    hasNodeAtPath(nodeForInsertion.toNode(), Path("folder", "subfolder", "insertedNode"))
+                )
             }
         }
     }
