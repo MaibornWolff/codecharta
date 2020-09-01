@@ -32,5 +32,5 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): 
 			}
 		}
 	}
-	return Array.from(edges.values())
+	return [...edges.values()]
 }

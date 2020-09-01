@@ -21,5 +21,5 @@ export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolea
 			}
 		}
 	}
-	return Array.from(blacklist.values())
+	return [...blacklist.values()]
 }

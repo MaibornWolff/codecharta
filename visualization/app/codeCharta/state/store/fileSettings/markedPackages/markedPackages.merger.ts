@@ -21,5 +21,5 @@ export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: b
 			}
 		}
 	}
-	return Array.from(markedPackages.values())
+	return [...markedPackages.values()]
 }
