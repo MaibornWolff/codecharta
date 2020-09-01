@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Improve performance when switching to multiple or delta mode when edges are available
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.55.0] - 2020-08-28
