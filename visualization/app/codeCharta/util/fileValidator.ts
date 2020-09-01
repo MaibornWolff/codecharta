@@ -65,19 +65,18 @@ export function validate(file: ExportCCFile) {
 		case !file:
 			result.error.push(ERROR_MESSAGES.fileIsInvalid.message)
 			result.title = ERROR_MESSAGES.fileIsInvalid.title
-			break
+			throw result
 		case !isValidApiVersion(file):
 			result.error.push(ERROR_MESSAGES.apiVersionIsInvalid.message)
 			result.title = ERROR_MESSAGES.apiVersionIsInvalid.title
-			break
+			throw result
 		case fileHasHigherMajorVersion(file):
 			result.error.push(ERROR_MESSAGES.majorApiVersionIsOutdated.message)
 			result.title = ERROR_MESSAGES.majorApiVersionIsOutdated.title
-			break
+			throw result
 		case fileHasHigherMinorVersion(file):
 			result.warning.push(ERROR_MESSAGES.minorApiVersionOutdated.message)
 			result.title = ERROR_MESSAGES.minorApiVersionOutdated.title
-			break
 	}
 
 	if (result.error.length === 0) {
@@ -88,15 +87,16 @@ export function validate(file: ExportCCFile) {
 		if (!valid) {
 			result.error = validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
 			result.title = ERROR_MESSAGES.validationError.title
+			throw result
 		} else {
 			if (file.nodes.length === 0) {
 				result.error.push(ERROR_MESSAGES.nodesEmpty.message)
 				result.title = ERROR_MESSAGES.nodesEmpty.title
-			} else if (!hasUniqueChildren(file.nodes[0])) {
-				result.error.push(ERROR_MESSAGES.nodesNotUnique.message)
-				result.title = ERROR_MESSAGES.nodesNotUnique.title
+				throw result
+			} else {
+				validateChildrenAreUnique(file.nodes[0], result)
+				validateFixedFolders(file, result)
 			}
-			validateFixedFolders(file, result)
 		}
 	}
 
@@ -111,24 +111,23 @@ function getValidationMessage(error: Ajv.ErrorObject) {
 	return `${errorType} error: ${errorParameter} ${error.message}`
 }
 
-function hasUniqueChildren(node: CodeMapNode): boolean {
+function validateChildrenAreUnique(node: CodeMapNode, result: CCValidationResult) {
 	if (!node.children || node.children.length === 0) {
-		return true
+		return
 	}
 
 	const names = {}
 	node.children.forEach(child => (names[child.name + child.type] = true))
 
 	if (Object.keys(names).length !== node.children.length) {
-		return false
+		result.error.push(ERROR_MESSAGES.nodesNotUnique.message)
+		result.title = ERROR_MESSAGES.nodesNotUnique.title
+		throw result
 	}
 
 	for (const child of node.children) {
-		if (!hasUniqueChildren(child)) {
-			return false
-		}
+		validateChildrenAreUnique(child, result)
 	}
-	return true
 }
 
 function isValidApiVersion(file: ExportCCFile): boolean {
@@ -139,12 +138,12 @@ function isValidApiVersion(file: ExportCCFile): boolean {
 	return hasApiVersion && isValidVersion
 }
 
-function fileHasHigherMajorVersion(file: { apiVersion: string; nodes: CodeMapNode[] }): boolean {
+function fileHasHigherMajorVersion(file: ExportCCFile): boolean {
 	const apiVersion = getAsApiVersion(file.apiVersion)
 	return apiVersion.major > getAsApiVersion(latestApiVersion).major
 }
 
-function fileHasHigherMinorVersion(file: { apiVersion: string; nodes: CodeMapNode[] }): boolean {
+function fileHasHigherMinorVersion(file: ExportCCFile): boolean {
 	const apiVersion = getAsApiVersion(file.apiVersion)
 	return apiVersion.minor > getAsApiVersion(latestApiVersion).minor
 }
@@ -156,67 +155,69 @@ function getAsApiVersion(version: string): ApiVersion {
 	}
 }
 
-function validateFixedFolders(file: { apiVersion: string; nodes: CodeMapNode[] }, result: CCValidationResult) {
-	if (file.nodes && file.nodes.length > 0 && file.nodes[0].children && file.nodes[0].children.length > 0) {
-		return
-	}
-
+function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 	const notFixed: string[] = []
 	const outOfBounds: string[] = []
-	const intersections: { node1: string; node2: string }[] = []
+	const intersections: Set<string> = new Set()
 
 	file.nodes[0].children.forEach(node => {
 		if (node.fixed === undefined) {
 			notFixed.push(node.name)
-		}
-
-		if (isOutOfBounds(node)) {
-			outOfBounds.push(node.name)
-		}
-
-		file.nodes[0].children.forEach(node2 => {
-			if (node !== node2) {
-				if (rectanglesIntersect(node.fixed, node2.fixed)) {
-					intersections.push({ node1: node.name, node2: node2.name })
-				}
+		} else {
+			if (isOutOfBounds(node)) {
+				outOfBounds.push(node.name)
 			}
-		})
+
+			file.nodes[0].children.forEach(node2 => {
+				if (node !== node2 && rectanglesIntersect(node.fixed, node2.fixed)) {
+					if (!intersections.has(`${node2.name} and ${node.name}`)) {
+						intersections.add(`${node.name} and ${node2.name}`)
+					}
+				}
+			})
+		}
 	})
 
 	if (notFixed.length > 0 && notFixed.length !== file.nodes[0].children.length) {
 		result.title = ERROR_MESSAGES.notAllFoldersAreFixed.title
-		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed.message} Found: ${notFixed.toString()}`)
+		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed.message} Found: ${notFixed.join(", ")}`)
 	}
 
 	if (outOfBounds.length > 0) {
 		result.title = ERROR_MESSAGES.fixedFoldersOutOfBounds.title
-		result.error.push(`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: ${outOfBounds.toString()}`)
+		result.error.push(`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: ${outOfBounds.join(", ")}`)
 	}
 
-	if (intersections.length > 0) {
+	if (intersections.size > 0) {
 		result.title = ERROR_MESSAGES.fixedFoldersOverlapped.title
-		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: ${intersections.toString()}`)
+		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: ${[...intersections.values()].join(", ")}`)
 	}
 }
 
-function rectanglesIntersect(node1: Fixed, node2: Fixed): boolean {
-	return (
-		!(node1.x >= node2.x + node2.width || node2.x >= node1.x + node1.width) ||
-		!(node1.y >= node2.y + node2.height || node2.y >= node1.y + node1.height)
-	)
+function rectanglesIntersect(rect1: Fixed, rect2: Fixed): boolean {
+	if (rect1 !== undefined && rect2 !== undefined) {
+		return (
+			isInRectangle(rect1.x, rect1.y, rect2) ||
+			isInRectangle(rect1.x, rect1.y + rect1.height, rect2) ||
+			isInRectangle(rect1.x + rect1.width, rect1.y, rect2) ||
+			isInRectangle(rect1.x + rect1.width, rect1.y + rect1.height, rect2)
+		)
+	}
+}
+
+function isInRectangle(x: number, y: number, rect: Fixed): boolean {
+	return x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height
 }
 
 function isOutOfBounds(node: CodeMapNode): boolean {
-	const xBounds = node.fixed.x + node.fixed.width
-	const yBounds = node.fixed.y + node.fixed.height
 	return (
-		node.fixed.x < 0 ||
-		node.fixed.x > 100 ||
-		node.fixed.y < 0 ||
-		node.fixed.y > 100 ||
-		xBounds < 0 ||
-		xBounds > 100 ||
-		yBounds < 0 ||
-		yBounds > 100
+		outOfRange(node.fixed.x) ||
+		outOfRange(node.fixed.y) ||
+		outOfRange(node.fixed.x + node.fixed.width) ||
+		outOfRange(node.fixed.y + node.fixed.height)
 	)
+}
+
+function outOfRange(num: number) {
+	return num < 0 || num > 100
 }

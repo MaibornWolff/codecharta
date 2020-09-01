@@ -219,156 +219,148 @@ describe("FileValidator", () => {
 		}, expectedError)
 	})
 
-	it("should throw an error, if there are fixed folders, but every folder on root is fixed", () => {
-		file = _.cloneDeep(fileWithFixedFolders)
-		file.nodes[0].children[0].fixed = undefined
+	describe("fixed folders validation", () => {
+		beforeEach(() => {
+			file = _.cloneDeep(fileWithFixedFolders)
+		})
 
-		// TODO: Update Error
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.notAllFoldersAreFixed.title,
-			error: [ERROR_MESSAGES.notAllFoldersAreFixed.message + " Found: "],
-			warning: []
-		}
+		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
+			file.nodes[0].children[0].fixed = undefined
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.notAllFoldersAreFixed.title,
+				error: [ERROR_MESSAGES.notAllFoldersAreFixed.message + " Found: folder_1"],
+				warning: []
+			}
 
-	it("should throw an error, if at least one fixed folder ends up in a negative coordinate", () => {
-		file = _.cloneDeep(fileWithFixedFolders)
-		file.nodes[0].children[0].fixed.x = -5
-		file.nodes[0].children[0].fixed.width = 2
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 
-		// TODO: Update Error
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
-			error: [ERROR_MESSAGES.fixedFoldersOutOfBounds.message + " Found: "],
-			warning: []
-		}
+		it("should throw an error, if at least one fixed folder ends up in a negative coordinate", () => {
+			file.nodes[0].children[0].fixed.x = -5
+			file.nodes[0].children[0].fixed.width = 2
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
+				error: [ERROR_MESSAGES.fixedFoldersOutOfBounds.message + " Found: folder_1"],
+				warning: []
+			}
 
-	it("should throw an error, if at least one fixed folder exceeds the maximum coordinate of 100", () => {
-		file = _.cloneDeep(fileWithFixedFolders)
-		file.nodes[0].children[0].fixed.x = 50
-		file.nodes[0].children[0].fixed.width = 51
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 
-		// TODO: Update Error
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
-			error: [ERROR_MESSAGES.fixedFoldersOutOfBounds.message + " Found: "],
-			warning: []
-		}
+		it("should throw an error, if at least one fixed folder exceeds the maximum coordinate of 100", () => {
+			file.nodes[0].children[0].fixed.x = 99
+			file.nodes[0].children[0].fixed.width = 2
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
+				error: [ERROR_MESSAGES.fixedFoldersOutOfBounds.message + " Found: folder_1"],
+				warning: []
+			}
 
-	it("should throw an error, if two folders horizontally overlap", () => {
-		file = _.cloneDeep(fileWithFixedFolders)
-		file.nodes[0].children[0].fixed = {
-			x: 0,
-			y: 0,
-			width: 10,
-			height: 10
-		}
-		file.nodes[1].children[1].fixed = {
-			x: 5,
-			y: 0,
-			width: 10,
-			height: 10
-		}
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 
-		// TODO: Update Error
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
-			error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: "],
-			warning: []
-		}
+		it("should throw an error, if two folders horizontally overlap", () => {
+			file.nodes[0].children[0].fixed = {
+				x: 0,
+				y: 0,
+				width: 10,
+				height: 10
+			}
+			file.nodes[0].children[1].fixed = {
+				x: 5,
+				y: 1,
+				width: 10,
+				height: 10
+			}
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
+				error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: folder_1 and folder_2"],
+				warning: []
+			}
 
-	it("should throw an error, if two folders vertically overlap", () => {
-		file = _.cloneDeep(fileWithFixedFolders)
-		file.nodes[0].children[0].fixed = {
-			x: 0,
-			y: 0,
-			width: 10,
-			height: 10
-		}
-		file.nodes[1].children[1].fixed = {
-			x: 0,
-			y: 5,
-			width: 10,
-			height: 10
-		}
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 
-		// TODO: Update Error
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
-			error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: "],
-			warning: []
-		}
+		it("should throw an error, if two folders vertically overlap", () => {
+			file.nodes[0].children[0].fixed = {
+				x: 0,
+				y: 0,
+				width: 10,
+				height: 10
+			}
+			file.nodes[0].children[1].fixed = {
+				x: 0,
+				y: 5,
+				width: 10,
+				height: 10
+			}
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
+				error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: folder_1 and folder_2"],
+				warning: []
+			}
 
-	it("should throw an error, if a folder is placed inside another", () => {
-		file = _.cloneDeep(fileWithFixedFolders)
-		file.nodes[0].children[0].fixed = {
-			x: 0,
-			y: 0,
-			width: 10,
-			height: 10
-		}
-		file.nodes[1].children[1].fixed = {
-			x: 1,
-			y: 1,
-			width: 1,
-			height: 1
-		}
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 
-		// TODO: Update Error
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
-			error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: "],
-			warning: []
-		}
+		it("should throw an error, if a folder is placed inside another", () => {
+			file.nodes[0].children[0].fixed = {
+				x: 0,
+				y: 0,
+				width: 10,
+				height: 10
+			}
+			file.nodes[0].children[1].fixed = {
+				x: 1,
+				y: 1,
+				width: 1,
+				height: 1
+			}
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
+				error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: folder_2 and folder_1"],
+				warning: []
+			}
 
-	it("should throw an error, if a folder has the same boundaries as another", () => {
-		file = _.cloneDeep(fileWithFixedFolders)
-		file.nodes[0].children[0].fixed = {
-			x: 0,
-			y: 0,
-			width: 10,
-			height: 10
-		}
-		file.nodes[1].children[1].fixed = file.nodes[0].children[0].fixed
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 
-		// TODO: Update Error
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
-			error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: "],
-			warning: []
-		}
+		it("should throw an error, if a folder has the same boundaries as another", () => {
+			file.nodes[0].children[0].fixed = {
+				x: 0,
+				y: 0,
+				width: 10,
+				height: 10
+			}
+			file.nodes[0].children[1].fixed = file.nodes[0].children[0].fixed
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
+				error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: folder_1 and folder_2"],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 	})
 })
