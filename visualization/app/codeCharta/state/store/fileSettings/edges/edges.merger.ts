@@ -22,9 +22,8 @@ export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): 
 				const equalEdgeItem = edges.get(`${edge.fromNodeName}|${edge.toNodeName}`)
 
 				if (equalEdgeItem !== undefined) {
-					for (const key in edge.attributes) {
+					for (const key of Object.keys(edge.attributes)) {
 						equalEdgeItem.attributes[key] = edge.attributes[key]
-						edges.set(`${edge.fromNodeName}|${edge.toNodeName}`, equalEdgeItem)
 					}
 				} else {
 					edges.set(`${edge.fromNodeName}|${edge.toNodeName}`, edge)
