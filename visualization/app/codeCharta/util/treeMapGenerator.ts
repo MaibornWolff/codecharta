@@ -32,56 +32,46 @@ export class TreeMapGenerator {
 		maxHeight: number,
 		isDeltaState: boolean
 	): Node[] {
-		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(map, heightScale, state, isDeltaState)]
 		const hierarchyNode: HierarchyNode<CodeMapNode> = hierarchy<CodeMapNode>(map)
-		// scale to get the usual mapSize of 500 and higher depending on margin
+
+		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(map, heightScale, state, isDeltaState)]
 		const scale =
 			(state.treeMap.mapSize * 2 + this.getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / nodes[0].length
-		this.scaleNode(nodes[0], scale)
+		this.scaleRoot(nodes[0], scale)
 
 		for (const fixedFolder of map.children) {
 			const squarified = this.getSquarifiedTreeMap(fixedFolder, state)
 			squarified.treeMap.descendants().forEach(squarifiedNode => {
-				this.scaleAndTranslateSquarifiedNode(squarifiedNode, fixedFolder, squarified)
-
-				// TODO: Scale edge points as well, not working yet
+				this.scaleAndTranslateSquarifiedNode(squarifiedNode, fixedFolder, squarified, scale)
 				const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState)
-				this.scaleNode(node, scale)
-
 				nodes.push(node)
 			})
 		}
 		return nodes
 	}
 
-	private static scaleNode(node: Node, scale: number) {
-		node.x0 *= scale
-		node.y0 *= scale
-		node.width *= scale
-		node.length *= scale
-
-		// TODO: Scale edge points as well, not working yet
-		/*
-        node.incomingEdgePoint.x = node.incomingEdgePoint.x * scaleX + fixedFolder.fixed.x
-        node.incomingEdgePoint.z = node.incomingEdgePoint.z * scaleY + fixedFolder.fixed.y
-        node.outgoingEdgePoint.x = node.outgoingEdgePoint.x * scaleX + fixedFolder.fixed.x
-        node.outgoingEdgePoint.z = node.outgoingEdgePoint.z * scaleY + fixedFolder.fixed.y
-        */
-	}
-
 	private static scaleAndTranslateSquarifiedNode(
 		squarifiedNode: HierarchyRectangularNode<CodeMapNode>,
 		fixedFolder: CodeMapNode,
-		squarified: SquarifiedTreeMap
+		squarified: SquarifiedTreeMap,
+		scale: number
 	) {
-		// scale to match coordinates between 0 and 100
+		// Transform coordinates from local folder space to world space (between 0 and 100).
 		const scaleX = fixedFolder.fixed.width / squarified.width
 		const scaleY = fixedFolder.fixed.height / squarified.height
 
-		squarifiedNode.x0 = squarifiedNode.x0 * scaleX + fixedFolder.fixed.x
-		squarifiedNode.x1 = squarifiedNode.x1 * scaleX + fixedFolder.fixed.x
-		squarifiedNode.y0 = squarifiedNode.y0 * scaleY + fixedFolder.fixed.y
-		squarifiedNode.y1 = squarifiedNode.y1 * scaleY + fixedFolder.fixed.y
+		// Scales to usual map-size of 500 matching the three-scene-size
+		squarifiedNode.x0 = (squarifiedNode.x0 * scaleX + fixedFolder.fixed.x) * scale
+		squarifiedNode.x1 = (squarifiedNode.x1 * scaleX + fixedFolder.fixed.x) * scale
+		squarifiedNode.y0 = (squarifiedNode.y0 * scaleY + fixedFolder.fixed.y) * scale
+		squarifiedNode.y1 = (squarifiedNode.y1 * scaleY + fixedFolder.fixed.y) * scale
+	}
+
+	private static scaleRoot(root: Node, scale: number) {
+		root.x0 *= scale
+		root.y0 *= scale
+		root.width *= scale
+		root.length *= scale
 	}
 
 	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedTreeMap {
