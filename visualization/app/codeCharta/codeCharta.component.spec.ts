@@ -46,10 +46,6 @@ describe("codeChartaController", () => {
 		codeChartaController = new CodeChartaController($location, $http, storeService, dialogService, codeChartaService, injectorService)
 	}
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
 			getFileDataFromQueryParam: jest.fn().mockReturnValue(Promise.resolve([])),

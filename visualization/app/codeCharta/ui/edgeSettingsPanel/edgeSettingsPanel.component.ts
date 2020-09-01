@@ -1,6 +1,5 @@
 import "./edgeSettingsPanel.component.scss"
 import { IRootScopeService } from "angular"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { StoreService } from "../../state/store.service"
 import {
@@ -19,6 +18,7 @@ import {
 	ShowOnlyBuildingsWithEdgesSubscriber
 } from "../../state/store/appSettings/showOnlyBuildingsWithEdges/showOnlyBuildingsWithEdges.service"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export class EdgeSettingsPanelController
 	implements EdgeMetricSubscriber, AmountOfEdgePreviewsSubscriber, EdgeHeightSubscriber, ShowOnlyBuildingsWithEdgesSubscriber {

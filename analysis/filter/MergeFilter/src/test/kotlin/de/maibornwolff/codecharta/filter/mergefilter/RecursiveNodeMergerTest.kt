@@ -44,7 +44,7 @@ class RecursiveNodeMergerTest : Spek({
             val child1 = MutableNode("child1", NodeType.File)
             val child2 = MutableNode("child2", NodeType.Folder)
             val child1_littleBitDifferent =
-                    MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
+                MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
             val node1 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1_littleBitDifferent))
             val node2 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1, child2))
 

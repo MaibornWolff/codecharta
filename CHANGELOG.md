@@ -1,4 +1,4 @@
-# Change Log
+﻿# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -14,6 +14,44 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed 🗑
 
 ### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.55.0] - 2020-08-28
+
+### Added 🚀
+
+-   Cursor indicator for different mouse actions #1042
+
+### Changed
+
+-   Edge-Metrics sorted by name now instead of number of incoming and outgoing edges
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Number of incoming and outgoing edges not visible when hovering over a node #1095
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.54.0] - 2020-08-21
+
+### Added 🚀
+
+-   Opening NodeContextMenu in the tree-view marks the node until it is closed #1068
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Missing Sonarcloud metrics in demo
+
+### Docs 🔎
+
+-   Added note how to fix missing `sh` command issue when running integration tests on Windows
 
 ### Chore 👨‍💻 👩‍💻
 
@@ -60,7 +98,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   File chooser now accept ".json" files only to avoid accidentally loading incorrect files
+-   File chooser now accept ".json" files only to avoid accidentally loading incorrect files #1094
 -   Lots of tooltips #1030
 
 ### Changed

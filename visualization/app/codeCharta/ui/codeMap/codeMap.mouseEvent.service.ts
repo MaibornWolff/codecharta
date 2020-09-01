@@ -13,6 +13,7 @@ import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSet
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
 import { hierarchy } from "d3"
+import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 
 interface Coordinates {
 	x: number
@@ -34,6 +35,13 @@ export interface BuildingRightClickedEventSubscriber {
 export enum ClickType {
 	LeftClick = 0,
 	RightClick = 2
+}
+
+export enum CursorType {
+	Default = "default",
+	Grabbing = "grabbing",
+	Pointer = "pointer",
+	Moving = "move"
 }
 
 export class CodeMapMouseEventService
@@ -135,6 +143,10 @@ export class CodeMapMouseEventService
 				const from = this.threeSceneService.getHighlightedBuilding()
 				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
+				if (this.intersectedBuilding !== undefined) {
+					CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+				}
+
 				if (from !== to) {
 					this.unhoverBuilding()
 					if (to) {
@@ -152,7 +164,8 @@ export class CodeMapMouseEventService
 
 	public onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
-		if (highlightedBuilding) {
+		// check if mouse moved to prevent opening the building link after rotating the map, when the cursor ends on a building
+		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			const fileSourceLink = highlightedBuilding.node.link
 			if (fileSourceLink) {
 				this.$window.open(fileSourceLink, "_blank")
@@ -161,6 +174,13 @@ export class CodeMapMouseEventService
 	}
 
 	public onDocumentMouseDown(event) {
+		if (event.button === ClickType.RightClick) {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
+			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
+		}
+		if (event.button === ClickType.LeftClick) {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+		}
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
 		$(document.activeElement).blur()
 	}
@@ -171,11 +191,12 @@ export class CodeMapMouseEventService
 		} else {
 			this.onRightClick()
 		}
+		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 	}
 
 	private onRightClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
-
+		// check if mouse moved to prevent the node context menu to show up after moving the map, when the cursor ends on a building
 		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
 				building: highlightedBuilding,
@@ -187,7 +208,7 @@ export class CodeMapMouseEventService
 
 	private onLeftClick() {
 		this.threeSceneService.clearSelection()
-		if (this.intersectedBuilding) {
+		if (this.intersectedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.threeSceneService.selectBuilding(this.intersectedBuilding)
 		}
 	}
@@ -223,8 +244,13 @@ export class CodeMapMouseEventService
 	}
 
 	private unhoverBuilding() {
+		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 		this.threeSceneService.clearHighlight()
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
+	}
+
+	public static changeCursorIndicator(cursorIcon: CursorType) {
+		document.body.style.cursor = cursorIcon
 	}
 
 	public static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {

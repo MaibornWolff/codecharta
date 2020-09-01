@@ -6,4 +6,5 @@ data class Component(
     val name: String?,
     val path: String?,
     val qualifier: Qualifier?,
-    val measures: MutableList<Measure>? = emptyList<Measure>().toMutableList())
+    val measures: MutableList<Measure>? = emptyList<Measure>().toMutableList()
+)

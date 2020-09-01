@@ -181,9 +181,19 @@ export interface MarkedPackage {
 	color: string
 }
 
-export interface MetricData {
+export interface EdgeMetricData {
 	name: string
 	maxValue: number
+}
+
+export interface NodeMetricData {
+	name: string
+	maxValue: number
+}
+
+export interface MetricData {
+	nodeMetricData: NodeMetricData[]
+	edgeMetricData: EdgeMetricData[]
 }
 
 export interface CCLocalStorage {
@@ -257,6 +267,7 @@ export interface State {
 	treeMap: TreeMapSettings
 	files: FileState[]
 	lookUp: LookUp
+	metricData: MetricData
 }
 
 export interface CCAction extends Action {

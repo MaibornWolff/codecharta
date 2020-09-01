@@ -11,14 +11,15 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
     init {
         if (row.size <= header.pathColumn) {
             throw IllegalArgumentException(
-                    "Row  has no column containing the file path. Should be in ${header.pathColumn} th column.")
+                "Row  has no column containing the file path. Should be in ${header.pathColumn} th column."
+            )
         }
     }
 
     fun pathInTree(): Path {
         return PathFactory.fromFileSystemPath(
-                path.substring(0, path.lastIndexOf(pathSeparator) + 1),
-                pathSeparator
+            path.substring(0, path.lastIndexOf(pathSeparator) + 1),
+            pathSeparator
         )
     }
 
@@ -28,22 +29,22 @@ class CSVRow(private val row: Array<String?>, private val header: CSVHeader, pri
     }
 
     private val path =
-            if (row[header.pathColumn] == null) throw IllegalArgumentException("Row has no path information.")
-            else row[header.pathColumn]!!
+        if (row[header.pathColumn] == null) throw IllegalArgumentException("Row has no path information.")
+        else row[header.pathColumn]!!
 
     private val floatPattern = Pattern.compile("\\d+[,.]?\\d*")
 
     private fun validAttributeOfRow(i: Int) =
-            i < row.size && row[i] != null && floatPattern.matcher(row[i]).matches()
+        i < row.size && row[i] != null && floatPattern.matcher(row[i]).matches()
 
     private fun parseAttributeOfRow(i: Int) =
-            java.lang.Double.parseDouble(row[i]!!.replace(',', '.'))
+        java.lang.Double.parseDouble(row[i]!!.replace(',', '.'))
 
     private val attributes =
-            header.columnNumbers
-                    .filter { validAttributeOfRow(it) }
-                    .associateBy(
-                            { header.getColumnName(it) },
-                            { parseAttributeOfRow(it) }
-                    )
+        header.columnNumbers
+            .filter { validAttributeOfRow(it) }
+            .associateBy(
+                { header.getColumnName(it) },
+                { parseAttributeOfRow(it) }
+            )
 }

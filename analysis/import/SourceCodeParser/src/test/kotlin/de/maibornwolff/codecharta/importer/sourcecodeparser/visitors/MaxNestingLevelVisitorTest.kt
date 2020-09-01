@@ -20,16 +20,17 @@ class MaxNestingLevelVisitorTest {
     private fun getTree(fileName: String): Tree {
         val file = File("$baseDir/$fileName")
         val inputFile: InputFile = TestInputFileBuilder.create("moduleKey", fileName)
-                .setModuleBaseDir(baseDir.toPath())
-                .setCharset(StandardCharsets.UTF_8)
-                .setType(InputFile.Type.MAIN)
-                .setLanguage(Java.KEY)
-                .initMetadata(String(Files.readAllBytes(File("$baseDir/$fileName").toPath()), StandardCharsets.UTF_8))
-                .build()
+            .setModuleBaseDir(baseDir.toPath())
+            .setCharset(StandardCharsets.UTF_8)
+            .setType(InputFile.Type.MAIN)
+            .setLanguage(Java.KEY)
+            .initMetadata(String(Files.readAllBytes(File("$baseDir/$fileName").toPath()), StandardCharsets.UTF_8))
+            .build()
 
         val compilationUnitTree = JavaParser.createParser().parse(file) as CompilationUnitTree
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
-                compilationUnitTree, inputFile, null, null, JavaVersionImpl(), true)
+            compilationUnitTree, inputFile, null, null, JavaVersionImpl(), true
+        )
 
         return defaultJavaFileScannerContext.tree
     }

@@ -4,10 +4,10 @@ import { CodeMapActionsService } from "./codeMap.actions.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode } from "../../codeCharta.model"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { StoreService } from "../../state/store.service"
 import _ from "lodash"
 import { markPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
@@ -33,10 +33,6 @@ describe("CodeMapActionService", () => {
 	beforeEach(() => {
 		restartSystem()
 		rebuildService()
-	})
-
-	afterEach(() => {
-		jest.resetAllMocks()
 	})
 
 	describe("markFolder", () => {

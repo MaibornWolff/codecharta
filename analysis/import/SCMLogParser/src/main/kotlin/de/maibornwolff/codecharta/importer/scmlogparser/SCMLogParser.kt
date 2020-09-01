@@ -31,9 +31,9 @@ import java.util.concurrent.Callable
 import java.util.stream.Stream
 
 @CommandLine.Command(
-        name = "scmlogparser",
-        description = ["generates cc.json from scm log file (git or svn)"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "scmlogparser",
+    description = ["generates cc.json from scm log file (git or svn)"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class SCMLogParser(
     private val input: InputStream = System.`in`,
@@ -68,15 +68,15 @@ class SCMLogParser(
     private val metricsFactory: MetricsFactory
         get() {
             val nonChurnMetrics = Arrays.asList(
-                    "age_in_weeks",
-                    "number_of_authors",
-                    "number_of_commits",
-                    "number_of_renames",
-                    "range_of_weeks_with_commits",
-                    "successive_weeks_of_commits",
-                    "weeks_with_commits",
-                    "highly_coupled_files",
-                    "median_coupled_files"
+                "age_in_weeks",
+                "number_of_authors",
+                "number_of_commits",
+                "number_of_renames",
+                "range_of_weeks_with_commits",
+                "successive_weeks_of_commits",
+                "weeks_with_commits",
+                "highly_coupled_files",
+                "median_coupled_files"
             )
 
             return when (inputFormatNames) {
@@ -90,11 +90,12 @@ class SCMLogParser(
 
         print(" ")
         var project = createProjectFromLog(
-                file!!,
-                logParserStrategy,
-                metricsFactory,
-                addAuthor,
-                silent)
+            file!!,
+            logParserStrategy,
+            metricsFactory,
+            addAuthor,
+            silent
+        )
 
         val pipedProject = ProjectDeserializer.deserializeProject(input)
         if (pipedProject != null) {
@@ -158,11 +159,11 @@ class SCMLogParser(
         println("  Available metrics:")
         runBlocking(Dispatchers.Default) {
             metricsFactory.createMetrics()
-                    .forEach {
-                        launch {
-                            println(String.format(infoFormat, it.metricName(), it.description()))
-                        }
+                .forEach {
+                    launch {
+                        println(String.format(infoFormat, it.metricName(), it.description()))
                     }
+                }
         }
     }
 
