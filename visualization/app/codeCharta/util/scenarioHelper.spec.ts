@@ -1,6 +1,6 @@
 import { ScenarioHelper } from "./scenarioHelper"
 import { RecursivePartial, Scenario, Settings } from "../codeCharta.model"
-import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
+import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_ITEM_WITH_EVERYTHING_SAVED, SCENARIO_WITH_ONLY_HEIGHT } from "./dataMocks"
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
@@ -66,39 +66,7 @@ describe("scenarioHelper", () => {
 		it("should get all the items with its visibility", () => {
 			ScenarioHelper["scenarios"].set("Scenario1", SCENARIO)
 
-			const expected: ScenarioItem[] = [
-				{
-					scenarioName: "Scenario1",
-					isScenarioAppliable: false,
-					icons: [
-						{
-							faIconClass: "fa-video-camera",
-							isSaved: true,
-							tooltip: "Camera angle"
-						},
-						{
-							faIconClass: "fa-arrows-alt",
-							isSaved: true,
-							tooltip: "Area metric"
-						},
-						{
-							faIconClass: "fa-arrows-v",
-							isSaved: true,
-							tooltip: "Height metric"
-						},
-						{
-							faIconClass: "fa-paint-brush",
-							isSaved: true,
-							tooltip: "Color metric"
-						},
-						{
-							faIconClass: "fa-exchange",
-							isSaved: true,
-							tooltip: "Edge metric"
-						}
-					]
-				}
-			]
+			const expected: ScenarioItem[] = SCENARIO_ITEM_WITH_EVERYTHING_SAVED
 
 			const result = ScenarioHelper.getScenarioItems({
 				nodeMetricData: [{ name: "mcc", maxValue: 56 }],
@@ -148,6 +116,22 @@ describe("scenarioHelper", () => {
 			const result = ScenarioHelper.getScenarioItems({
 				nodeMetricData: [{ name: "mcc", maxValue: 56 }],
 				edgeMetricData: [{ name: "None", maxValue: 0 }]
+			})
+
+			expect(result).toEqual(expected)
+		})
+
+		it("should not be appliable when EdgeMetric is not existing", () => {
+			ScenarioHelper["scenarios"].set("Scenario1", SCENARIO)
+
+			const expected: ScenarioItem[] = SCENARIO_ITEM_WITH_EVERYTHING_SAVED
+
+			const result = ScenarioHelper.getScenarioItems({
+				nodeMetricData: [
+					{ name: "mcc", maxValue: 56 },
+					{ name: "rloc", maxValue: 43 }
+				],
+				edgeMetricData: [{ name: "unavailableMetric", maxValue: 0 }]
 			})
 
 			expect(result).toEqual(expected)
