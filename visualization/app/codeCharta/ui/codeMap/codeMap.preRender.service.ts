@@ -123,17 +123,8 @@ export class CodeMapPreRenderService
 	}
 
 	private decorateExistingMap() {
-		const state = this.storeService.getState()
-
 		this.setEdgeMetricsForLeaves(this.unifiedMap)
-		NodeDecorator.decorateParentNodesWithAggregatedAttributes(
-			this.unifiedMap,
-			state.fileSettings.blacklist,
-			state.metricData.nodeMetricData,
-			state.metricData.edgeMetricData,
-			isDeltaState(state.files),
-			state.fileSettings.attributeTypes
-		)
+		NodeDecorator.decorateParentNodesWithAggregatedAttributes(this.unifiedMap, this.storeService.getState())
 		NodeDecorator.decorateMapWithBlacklist(this.unifiedMap, this.storeService.getState().fileSettings.blacklist)
 	}
 

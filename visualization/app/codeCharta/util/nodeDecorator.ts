@@ -9,13 +9,14 @@ import {
 	CCFile,
 	CodeMapNode,
 	EdgeMetricCount,
-	EdgeMetricData,
 	KeyValuePair,
-	NodeMetricData
+	NodeMetricData,
+	State
 } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { isDeltaState } from "../model/files/files.helper"
 
 export class NodeDecorator {
 	public static decorateMap(map: CodeMapNode, metricData: NodeMetricData[]) {
@@ -151,20 +152,13 @@ export class NodeDecorator {
 		}
 	}
 
-	public static decorateParentNodesWithAggregatedAttributes(
-		map: CodeMapNode,
-		blacklist: BlacklistItem[],
-		metricData: NodeMetricData[],
-		edgeMetricData: EdgeMetricData[],
-		isDeltaState: boolean,
-		attributeTypes: AttributeTypes
-	) {
+	public static decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, state: State) {
 		if (map) {
 			const root = d3.hierarchy<CodeMapNode>(map)
 			root.each((node: HierarchyNode<CodeMapNode>) => {
 				const leaves: HierarchyNode<CodeMapNode>[] = node.leaves().filter(x => !x.data.isExcluded)
-				this.decorateNodeWithAggregatedChildrenMetrics(leaves, node, metricData, isDeltaState, attributeTypes)
-				this.decorateNodeWithChildrenSumEdgeMetrics(leaves, node, edgeMetricData, attributeTypes)
+				this.decorateNodeWithAggregatedChildrenMetrics(leaves, node, state)
+				this.decorateNodeWithChildrenSumEdgeMetrics(leaves, node, state)
 			})
 		}
 		return map
@@ -173,22 +167,20 @@ export class NodeDecorator {
 	private static decorateNodeWithAggregatedChildrenMetrics(
 		leaves: HierarchyNode<CodeMapNode>[],
 		node: HierarchyNode<CodeMapNode>,
-		metricData: NodeMetricData[],
-		isDeltaState: boolean,
-		attributeTypes: AttributeTypes
+		state: State
 	) {
-		metricData.forEach(metric => {
+		state.metricData.nodeMetricData.forEach(metric => {
 			if (node.data.children && node.data.children.length > 0) {
 				node.data.attributes[metric.name] = this.aggregateLeafMetric(
 					leaves.map(x => x.data.attributes),
 					metric.name,
-					attributeTypes
+					state.fileSettings.attributeTypes
 				)
-				if (isDeltaState) {
+				if (isDeltaState(state.files)) {
 					node.data.deltas[metric.name] = this.aggregateLeafMetric(
 						leaves.map(x => x.data.deltas),
 						metric.name,
-						attributeTypes
+						state.fileSettings.attributeTypes
 					)
 				}
 			}
@@ -198,12 +190,15 @@ export class NodeDecorator {
 	private static decorateNodeWithChildrenSumEdgeMetrics(
 		leaves: HierarchyNode<CodeMapNode>[],
 		node: HierarchyNode<CodeMapNode>,
-		edgeMetricData: NodeMetricData[],
-		attributeTypes: AttributeTypes
+		state: State
 	) {
-		edgeMetricData.forEach(edgeMetric => {
+		state.metricData.edgeMetricData.forEach(edgeMetric => {
 			if (node.data.children && node.data.children.length > 0) {
-				node.data.edgeAttributes[edgeMetric.name] = this.aggregateLeafEdgeMetric(leaves, edgeMetric.name, attributeTypes)
+				node.data.edgeAttributes[edgeMetric.name] = this.aggregateLeafEdgeMetric(
+					leaves,
+					edgeMetric.name,
+					state.fileSettings.attributeTypes
+				)
 			}
 		})
 	}
