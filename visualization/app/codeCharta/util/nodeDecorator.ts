@@ -64,6 +64,7 @@ export class NodeDecorator {
 
 	public static doesExclusionResultInEmptyMap(map: CodeMapNode, blacklist: BlacklistItem[]): boolean {
 		let excludedNodes = 0
+		let leaves = 0
 		const excluded = ignore()
 
 		for (const item of blacklist) {
@@ -75,14 +76,17 @@ export class NodeDecorator {
 
 		const tree = hierarchy(map)
 
-		tree.descendants().map(node => {
-			const path = CodeMapHelper.transformPath(node.data.path)
-			if (excluded.ignores(path) && CodeMapHelper.isLeaf(node.data)) {
-				excludedNodes++
+		for (const node of tree.descendants()) {
+			if (CodeMapHelper.isLeaf(node.data)) {
+				leaves++
+				const path = CodeMapHelper.transformPath(node.data.path)
+				if (excluded.ignores(path)) {
+					excludedNodes++
+				}
 			}
-		})
+		}
 
-		return excludedNodes === tree.leaves().length
+		return excludedNodes === leaves
 	}
 
 	private static decorateNodesWithIds(map: CodeMapNode) {
