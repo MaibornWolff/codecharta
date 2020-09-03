@@ -3,10 +3,10 @@ updates:
 - package-ecosystem: gradle
   directory: "/analysis"
   schedule:
-    interval: weekly
+    interval: daily
   open-pull-requests-limit: 10
 - package-ecosystem: npm
   directory: "/visualization"
   schedule:
-    interval: weekly
+    interval: daily
   open-pull-requests-limit: 10
