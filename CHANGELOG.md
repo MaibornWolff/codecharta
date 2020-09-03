@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Improve performance when switching to multiple or delta mode when edges are available
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.55.0] - 2020-08-28
+
+### Added 🚀
+
 -   Cursor indicator for different mouse actions #1042
 
 ### Changed
@@ -20,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Number of incoming and outgoing edges not visible when hovering over a node #1095
+-   Highlighting buildings in multiple mode now works #956
 
 ### Chore 👨‍💻 👩‍💻
 
