@@ -14,7 +14,7 @@ buildscript {
         kotlin_logging_version = '1.8.3'
         kotlin_version = '1.4.0'
         kotlinx_coroutines_version = '1.3.9'
-        picocli_version = '3.6.1'
+        picocli_version = '4.5.1'
         slf4j_version = '1.7.30'
         sonar_java_version = '5.14.0.18788'
         sonarqube_version = '3.0'
@@ -81,6 +81,7 @@ sonarqube {
 
 subprojects {
     apply plugin: 'kotlin'
+    apply plugin: 'kotlin-kapt'
 
     dependencies {
         implementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
@@ -92,6 +93,8 @@ subprojects {
         testRuntime("org.junit.jupiter:junit-jupiter-engine:$junit5_version")
         testCompile("org.junit.jupiter:junit-jupiter-params:$junit5_version")
         testImplementation "com.natpryce:hamkrest:$hamkrest_version"
+
+        kapt group: 'info.picocli', name: 'picocli-codegen', version: picocli_version
     }
 
     compileJava {
@@ -107,6 +110,11 @@ subprojects {
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = '1.8'
+    }
+    kapt {
+        arguments {
+            arg("project", "${project.group}/${project.name}")
+        }
     }
 }
 
