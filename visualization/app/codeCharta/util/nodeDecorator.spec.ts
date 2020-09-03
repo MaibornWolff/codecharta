@@ -45,7 +45,7 @@ describe("nodeDecorator", () => {
 			edges: { pairingRate: AttributeTypeValue.relative }
 		}
 		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
-		NodeDecorator.preDecorateFile(file)
+		NodeDecorator.decorateMapWithPathAttribute(file)
 	})
 
 	function allUniqueIds(map: HierarchyNode<CodeMapNode>): boolean {
@@ -162,7 +162,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/middle")
 			expect(map.children.length).toBe(2)
@@ -198,7 +198,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.link).toBe("link1")
 		})
@@ -256,7 +256,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/middle")
 			expect(map.children.length).toBe(1)
@@ -314,7 +314,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/start")
 			expect(map.children.length).toBe(2)
@@ -326,9 +326,9 @@ describe("nodeDecorator", () => {
 		})
 	})
 
-	describe("preDecorateFile", () => {
+	describe("decorateMapWithPathAttribute", () => {
 		it("should decorate nodes with the correct path", () => {
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 
 			const h = d3.hierarchy(file.map)
 			h.each(node => {
@@ -340,7 +340,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should decorate nodes with a unique id starting from 0", () => {
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMap(file.map, [], [])
 
 			const h = d3.hierarchy(file.map)
 			h.each(node => {

@@ -6,7 +6,7 @@ import { CodeMapNode } from "../../../../codeCharta.model"
 
 describe("idToNode", () => {
 	beforeEach(() => {
-		NodeDecorator.preDecorateFile(TEST_FILE_WITH_PATHS)
+		NodeDecorator.decorateMapWithPathAttribute(TEST_FILE_WITH_PATHS)
 	})
 
 	describe("Default State", () => {

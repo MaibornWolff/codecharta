@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Number of incoming and outgoing edges not visible when hovering over a node #1095
+-   Highlighting buildings in multiple mode now works #956
 
 ### Chore 👨‍💻 👩‍💻
 
