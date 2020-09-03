@@ -1,17 +1,17 @@
 "use strict"
 import * as d3 from "d3"
-import { HierarchyNode, hierarchy } from "d3"
+import { hierarchy, HierarchyNode } from "d3"
 import {
+	AttributeTypes,
+	AttributeTypeValue,
 	BlacklistItem,
+	BlacklistType,
 	CCFile,
 	CodeMapNode,
 	EdgeMetricCount,
+	EdgeMetricData,
 	KeyValuePair,
-	AttributeTypes,
-	AttributeTypeValue,
-	BlacklistType,
-	NodeMetricData,
-	EdgeMetricData
+	NodeMetricData
 } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
@@ -53,18 +53,18 @@ export class NodeDecorator {
 
 	public static doesExclusionResultInEmptyMap(map: CodeMapNode, blacklist: BlacklistItem[]): boolean {
 		let excludedNodes = 0
-		const flattened = ignore()
 		const excluded = ignore()
 
 		for (const item of blacklist) {
 			const path = CodeMapHelper.transformPath(item.path)
-			item.type === BlacklistType.flatten ? flattened.add(path) : excluded.add(path)
+			if (item.type === BlacklistType.exclude) {
+				excluded.add(path)
+			}
 		}
 
 		const tree = hierarchy(map)
-		const desc = tree.descendants()
 
-		desc.map(node => {
+		tree.descendants().map(node => {
 			const path = CodeMapHelper.transformPath(node.data.path)
 			if (excluded.ignores(path) && CodeMapHelper.isLeaf(node.data)) {
 				excludedNodes++
