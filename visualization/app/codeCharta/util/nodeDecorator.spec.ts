@@ -46,7 +46,7 @@ describe("nodeDecorator", () => {
 			edges: { pairingRate: AttributeTypeValue.relative }
 		}
 		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
-		NodeDecorator.preDecorateFile(file)
+		NodeDecorator.decorateMapWithPathAttribute(file)
 	})
 
 	function allUniqueIds(map: HierarchyNode<CodeMapNode>): boolean {
@@ -116,7 +116,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData)
 			expect(map.name).toBe("root/middle")
 			expect(map.children.length).toBe(2)
@@ -152,7 +152,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData)
 			expect(map.link).toBe("link1")
 		})
@@ -210,7 +210,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData)
 			expect(map.name).toBe("root/middle")
 			expect(map.children.length).toBe(1)
@@ -268,7 +268,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData)
 			expect(map.name).toBe("root/start")
 			expect(map.children.length).toBe(2)
@@ -296,6 +296,30 @@ describe("nodeDecorator", () => {
 			h.each(node => {
 				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})
+		})
+
+		it("should decorate nodes with a unique id starting from 0", () => {
+			NodeDecorator.decorateMap(file.map, [])
+
+			const h = d3.hierarchy(file.map)
+			h.each(node => {
+				expect(node.data.id).toBeDefined()
+				expect(allUniqueIds(h)).toBeTruthy()
+			})
+			expect(file.map.id).toBe(0)
+		})
+	})
+
+	describe("decorateMapWithPathAttribute", () => {
+		it("should decorate nodes with the correct path", () => {
+			NodeDecorator.decorateMapWithPathAttribute(file)
+
+			d3.hierarchy(file.map).each(node => {
+				expect(node.data.path).toBeDefined()
+			})
+
+			expect(file.map.path).toBe("/root")
+			expect(file.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
 		})
 	})
 
@@ -401,31 +425,6 @@ describe("nodeDecorator", () => {
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(deltaMap, blacklist, metricData, [], true, attributeTypes)
 			const h = d3.hierarchy(deltaMap)
 			expect(h.data.deltas["functions"]).toBe(-3)
-		})
-	})
-
-	describe("preDecorateFile", () => {
-		it("should decorate nodes with the correct path", () => {
-			NodeDecorator.preDecorateFile(file)
-
-			const h = d3.hierarchy(file.map)
-			h.each(node => {
-				expect(node.data.path).toBeDefined()
-			})
-
-			expect(file.map.path).toBe("/root")
-			expect(file.map.children[1].children[0].path).toBe("/root/Parent Leaf/small leaf")
-		})
-
-		it("should decorate nodes with a unique id starting from 0", () => {
-			NodeDecorator.preDecorateFile(file)
-
-			const h = d3.hierarchy(file.map)
-			h.each(node => {
-				expect(node.data.id).toBeDefined()
-				expect(allUniqueIds(h)).toBeTruthy()
-			})
-			expect(file.map.id).toBe(0)
 		})
 	})
 

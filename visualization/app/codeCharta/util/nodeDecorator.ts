@@ -19,14 +19,25 @@ import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/
 
 export class NodeDecorator {
 	public static decorateMap(map: CodeMapNode, metricData: NodeMetricData[]) {
+		this.decorateNodesWithIds(map)
 		this.decorateMapWithMissingObjects(map)
 		this.decorateMapWithCompactMiddlePackages(map)
 		this.decorateLeavesWithMissingMetrics(map, metricData)
 	}
 
-	public static preDecorateFile(file: CCFile) {
-		this.decorateMapWithPathAttribute(file)
-		this.decorateNodesWithIds(file.map)
+	public static decorateMapWithPathAttribute(file: CCFile) {
+		if (file && file.map) {
+			const root = d3.hierarchy<CodeMapNode>(file.map)
+			root.each(node => {
+				node.data.path =
+					"/" +
+					root
+						.path(node)
+						.map(x => x.data.name)
+						.join("/")
+			})
+		}
+		return file
 	}
 
 	public static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
@@ -118,21 +129,6 @@ export class NodeDecorator {
 		if (map) {
 			rec(map)
 		}
-	}
-
-	private static decorateMapWithPathAttribute(file: CCFile) {
-		if (file && file.map) {
-			const root = d3.hierarchy<CodeMapNode>(file.map)
-			root.each(node => {
-				node.data.path =
-					"/" +
-					root
-						.path(node)
-						.map(x => x.data.name)
-						.join("/")
-			})
-		}
-		return file
 	}
 
 	private static decorateMapWithMissingObjects(map: CodeMapNode) {
