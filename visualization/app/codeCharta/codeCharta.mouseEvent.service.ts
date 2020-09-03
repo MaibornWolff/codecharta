@@ -6,14 +6,14 @@ import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/se
 export class CodeChartaMouseEventService {
 	constructor(private storeService: StoreService) {}
 
-	public closeComponentExcept(fun?: Function) {
-		const functions: Function[] = [this.closeRibbonBarSections, this.closeSearchPanel]
+	public closeComponentsExceptCurrent(currentCloseFunction?: Function) {
+		if (currentCloseFunction !== this.closeRibbonBarSections) {
+			this.closeRibbonBarSections()
+		}
 
-		functions.forEach(fn => {
-			if (fn !== fun) {
-				fn.call(this)
-			}
-		})
+		if (currentCloseFunction !== this.closeSearchPanel) {
+			this.closeSearchPanel()
+		}
 	}
 
 	public closeRibbonBarSections() {

@@ -29,7 +29,7 @@ describe("CodeChartaMouseEventService", () => {
 			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 			storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
 
-			codeChartaMouseEventService.closeComponentExcept()
+			codeChartaMouseEventService.closeComponentsExceptCurrent()
 
 			const appSettings = storeService.getState().appSettings
 
@@ -41,7 +41,7 @@ describe("CodeChartaMouseEventService", () => {
 			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 			storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
 
-			codeChartaMouseEventService.closeComponentExcept(codeChartaMouseEventService.closeSearchPanel)
+			codeChartaMouseEventService.closeComponentsExceptCurrent(codeChartaMouseEventService.closeSearchPanel)
 
 			const appSettings = storeService.getState().appSettings
 

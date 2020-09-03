@@ -68,7 +68,7 @@ export class CodeChartaController {
 	}
 
 	public onClick() {
-		this.codeChartaMouseEventService.closeComponentExcept()
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {
