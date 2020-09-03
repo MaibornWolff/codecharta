@@ -134,7 +134,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public onInput(camera: PerspectiveCamera) {
-		this.storeService.dispatch(setCameraTarget(this.controls.target), true)
+		this.storeService.dispatch(setCameraTarget(this.controls.target), { silent: true })
 		this.$rootScope.$broadcast(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, camera)
 	}
 
