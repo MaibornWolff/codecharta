@@ -1,10 +1,10 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { BlacklistType, CCFile, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { BlacklistType, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { FILE_STATES, STATE, TEST_DELTA_MAP_B, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
+import { STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import _ from "lodash"
@@ -13,7 +13,7 @@ import { ScalingService } from "../../state/store/appSettings/scaling/scaling.se
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { addFile, resetFiles, setMultiple, setSingleByName } from "../../state/store/files/files.actions"
+import { addFile, resetFiles, setMultiple, setSingle } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
@@ -54,20 +54,19 @@ describe("codeMapPreRenderService", () => {
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
-		fileMeta = _.cloneDeep(FILE_STATES[0].file.fileMeta)
-		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
-		map.children[1].children = _.slice(map.children[1].children, 0, 2)
+		const deltaA = _.cloneDeep(TEST_DELTA_MAP_A)
+		const deltaB = _.cloneDeep(TEST_DELTA_MAP_B)
 
-		const ccFile: CCFile = _.cloneDeep(TEST_DELTA_MAP_B)
+		NodeDecorator.decorateMapWithPathAttribute(deltaA)
+		NodeDecorator.decorateMapWithPathAttribute(deltaB)
 
-		const fileStates = _.cloneDeep(FILE_STATES)
-		NodeDecorator.decorateMapWithPathAttribute(fileStates[0].file)
-		NodeDecorator.decorateMapWithPathAttribute(ccFile)
+		map = deltaA.map
+		fileMeta = deltaA.fileMeta
 
 		storeService.dispatch(resetFiles())
-		storeService.dispatch(addFile(fileStates[0].file))
-		storeService.dispatch(addFile(ccFile))
-		storeService.dispatch(setSingleByName(fileStates[0].file.fileMeta.fileName))
+		storeService.dispatch(addFile(deltaA))
+		storeService.dispatch(addFile(deltaB))
+		storeService.dispatch(setSingle(deltaA))
 		storeService.dispatch(setBlacklist())
 		storeService.dispatch(calculateNewNodeMetricData(storeService.getState().files, []))
 		storeService.dispatch(calculateNewEdgeMetricData(storeService.getState().files, []))
@@ -249,15 +248,19 @@ describe("codeMapPreRenderService", () => {
 
 	describe("onBlacklistChanged", () => {
 		it("should decorate an existing map and trigger rendering", done => {
-			NodeDecorator.decorateMap = jest.fn()
+			NodeDecorator.decorateMapWithBlacklist = jest.fn()
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes = jest.fn()
+
+			NodeDecorator.decorateMap(map, storeService.getState().metricData.nodeMetricData)
 
 			codeMapPreRenderService.onBlacklistChanged()
 
-			expect(NodeDecorator.decorateMap).not.toHaveBeenCalled()
+			expect(NodeDecorator.decorateParentNodesWithAggregatedAttributes).toHaveBeenCalled()
+			expect(NodeDecorator.decorateMapWithBlacklist).toHaveBeenCalled()
 			setTimeout(() => {
 				expect(codeMapRenderService.render).toHaveBeenCalled()
 				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
 		})
 	})
 

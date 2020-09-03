@@ -44,7 +44,7 @@ describe("codeMapMouseEventService", () => {
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedEventMethods($rootScope)
-		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, [], [])
+		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, [])
 	})
 
 	function restartSystem() {

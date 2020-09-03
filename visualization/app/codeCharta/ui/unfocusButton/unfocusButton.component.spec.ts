@@ -26,7 +26,7 @@ describe("UnfocusButtonController", () => {
 		storeService = getService<StoreService>("storeService")
 
 		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
-		NodeDecorator.decorateMap(TEST_DELTA_MAP_A.map, [], [])
+		NodeDecorator.decorateMap(TEST_DELTA_MAP_A.map, [])
 		const map = new Map([
 			[TEST_DELTA_MAP_A.map.children[0].id, TEST_DELTA_MAP_A.map.children[0]],
 			[TEST_DELTA_MAP_A.map.children[1].id, TEST_DELTA_MAP_A.map.children[1]],

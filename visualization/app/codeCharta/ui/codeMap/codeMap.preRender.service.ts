@@ -6,10 +6,10 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import * as d3 from "d3"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import _ from "lodash"
+import { hierarchy } from "d3"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -138,15 +138,14 @@ export class CodeMapPreRenderService
 	}
 
 	private setEdgeMetricsForLeaves(map: CodeMapNode) {
-		if (map && this.edgeMetricDataService.getMetricNames()) {
-			const root = d3.hierarchy<CodeMapNode>(map)
-			root.leaves().forEach(node => {
+		hierarchy<CodeMapNode>(map)
+			.leaves()
+			.forEach(node => {
 				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
 				for (const edgeMetric of edgeMetrics.keys()) {
 					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
 				}
 			})
-		}
 	}
 
 	private getSelectedFilesAsUnifiedMap(): CCFile {
