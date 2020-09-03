@@ -79,7 +79,7 @@ export class CodeMapHelper {
 	}
 
 	public static isLeaf(node: CodeMapNode): boolean {
-		return !node.children || (node.children && node.children.length === 0)
+		return !(node.children?.length)
 	}
 
 	private static sortByPathLength(a: MarkedPackage, b: MarkedPackage) {
