@@ -224,8 +224,7 @@ describe("codeMapPreRenderService", () => {
 		})
 
 		it("should change map to multiple mode and check that no id exists twice", () => {
-			const files = getCCFiles(storeService.getState().files)
-			storeService.dispatch(setMultiple(files))
+			storeService.dispatch(setMultiple(getCCFiles(storeService.getState().files)))
 
 			codeMapPreRenderService.onMetricDataChanged()
 
