@@ -23,9 +23,9 @@ import { FileSelectionState, FileState } from "../../model/files/files"
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import { BlacklistActions } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
+import { BlacklistActions, removeLastBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
+import { DialogService } from "../dialog/dialog.service"
 
 const clone = require("rfdc")()
 
@@ -33,8 +33,7 @@ export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService
-	implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber, BlacklistSubscriber, FilesSelectionSubscriber {
+export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber, FilesSelectionSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -49,13 +48,13 @@ export class CodeMapPreRenderService
 		private storeService: StoreService,
 		private nodeMetricDataService: NodeMetricDataService,
 		private codeMapRenderService: CodeMapRenderService,
-		private edgeMetricDataService: EdgeMetricDataService
+		private edgeMetricDataService: EdgeMetricDataService,
+		private dialogService: DialogService
 	) {
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
-		BlacklistService.subscribe(this.$rootScope, this)
 		this.debounceRendering = _.debounce(() => {
 			if (this.allNecessaryRenderDataAvailable()) {
 				this.renderAndNotify()
@@ -72,6 +71,13 @@ export class CodeMapPreRenderService
 	}
 
 	public onStoreChanged(actionType: string) {
+		// Listening for blacklist-events here, since we have to revert the
+		// latest blacklist change before the blacklist-subscribers are called
+		if (isActionOfType(actionType, BlacklistActions)) {
+			this.decorateExistingMap()
+			this.debounceRendering()
+		}
+
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
@@ -94,16 +100,11 @@ export class CodeMapPreRenderService
 	}
 
 	public onMetricDataChanged() {
-		if (fileStatesAvailable(this.storeService.getState().files) && !this.isMapDecorated) {
+		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateNewMap()
 			this.debounceRendering()
 		}
-	}
-
-	public onBlacklistChanged() {
-		this.decorateExistingMap()
-		this.debounceRendering()
 	}
 
 	public onFilesSelectionChanged() {
@@ -117,15 +118,24 @@ export class CodeMapPreRenderService
 	}
 
 	private decorateNewMap() {
-		NodeDecorator.decorateMap(this.unifiedMap, this.storeService.getState().metricData.nodeMetricData)
-		this.decorateExistingMap()
-		this.isMapDecorated = true
+		if (!this.isMapDecorated) {
+			NodeDecorator.decorateMap(this.unifiedMap, this.storeService.getState().metricData.nodeMetricData)
+			this.isMapDecorated = true
+			this.decorateExistingMap()
+		}
 	}
 
 	private decorateExistingMap() {
-		this.setEdgeMetricsForLeaves(this.unifiedMap)
-		NodeDecorator.decorateParentNodesWithAggregatedAttributes(this.unifiedMap, this.storeService.getState())
-		NodeDecorator.decorateMapWithBlacklist(this.unifiedMap, this.storeService.getState().fileSettings.blacklist)
+		if (this.isMapDecorated) {
+			this.setEdgeMetricsForLeaves(this.unifiedMap)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(this.unifiedMap, this.storeService.getState())
+			try {
+				NodeDecorator.decorateMapWithBlacklist(this.unifiedMap, this.storeService.getState().fileSettings.blacklist)
+			} catch (e) {
+				this.storeService.dispatch(removeLastBlacklistItem())
+				this.dialogService.showErrorDialog(e.message, "Blacklist Error")
+			}
+		}
 	}
 
 	private setEdgeMetricsForLeaves(map: CodeMapNode) {

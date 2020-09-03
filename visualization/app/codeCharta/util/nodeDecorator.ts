@@ -42,8 +42,10 @@ export class NodeDecorator {
 	}
 
 	public static decorateMapWithBlacklist(map: CodeMapNode, blacklist: BlacklistItem[]) {
+		const mapHistory: Map<string, { isFlattened: boolean; isExcluded: boolean }> = new Map()
 		const flattened = ignore()
 		const excluded = ignore()
+		let nonExcludedLeaves = 0
 
 		for (const item of blacklist) {
 			const path = CodeMapHelper.transformPath(item.path)
@@ -54,32 +56,39 @@ export class NodeDecorator {
 			}
 		}
 
-		hierarchy(map)
-			.descendants()
-			.map(node => {
-				const path = CodeMapHelper.transformPath(node.data.path)
-				node.data.isFlattened = flattened.ignores(path)
-				node.data.isExcluded = excluded.ignores(path)
-			})
-	}
+		const descendants = hierarchy(map).descendants()
+		for (const node of descendants) {
+			const path = CodeMapHelper.transformPath(node.data.path)
+			const isFlattened = flattened.ignores(path)
+			const isExcluded = excluded.ignores(path)
+			if (isFlattened !== node.data.isFlattened || isExcluded !== node.data.isExcluded) {
+				mapHistory.set(node.data.path, { isFlattened: node.data.isFlattened, isExcluded: node.data.isExcluded })
+				node.data.isFlattened = isFlattened
+				node.data.isExcluded = isExcluded
+			}
 
-	public static doesExclusionResultInEmptyMap(map: CodeMapNode, blacklist: BlacklistItem[]): boolean {
-		const excluded = ignore()
-
-		for (const item of blacklist) {
-			const path = CodeMapHelper.transformPath(item.path)
-			if (item.type === BlacklistType.exclude) {
-				excluded.add(path)
+			if (!node.data.isExcluded && CodeMapHelper.isLeaf(node.data)) {
+				nonExcludedLeaves++
 			}
 		}
 
-		for (const node of hierarchy(map).leaves()) {
-			if (!excluded.ignores(CodeMapHelper.transformPath(node.data.path))) {
-				return false
-			}
-		}
+		if (nonExcludedLeaves === 0) {
+			// Revert changes
+			for (const node of descendants) {
+				if (mapHistory.size === 0) {
+					break
+				}
 
-		return true
+				const oldNode = mapHistory.get(node.data.path)
+				if (oldNode !== undefined) {
+					node.data.isFlattened = oldNode.isFlattened
+					node.data.isExcluded = oldNode.isExcluded
+					mapHistory.delete(node.data.path)
+				}
+			}
+
+			throw Error("Excluding all buildings is not possible.")
+		}
 	}
 
 	private static decorateNodesWithIds(map: CodeMapNode) {

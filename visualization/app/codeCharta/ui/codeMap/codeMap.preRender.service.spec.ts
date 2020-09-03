@@ -23,6 +23,8 @@ import { calculateNewNodeMetricData } from "../../state/store/metricData/nodeMet
 import { getCCFiles } from "../../model/files/files.helper"
 import { calculateNewEdgeMetricData } from "../../state/store/metricData/edgeMetricData/edgeMetricData.actions"
 import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
+import { DialogService } from "../dialog/dialog.service"
+import { SearchPanelModeActions } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -31,6 +33,7 @@ describe("codeMapPreRenderService", () => {
 	let nodeMetricDataService: NodeMetricDataService
 	let codeMapRenderService: CodeMapRenderService
 	let edgeMetricDataService: EdgeMetricDataService
+	let dialogService: DialogService
 
 	let fileMeta: FileMeta
 	let map: CodeMapNode
@@ -41,6 +44,7 @@ describe("codeMapPreRenderService", () => {
 		withMockedEventMethods($rootScope)
 		withMockedCodeMapRenderService()
 		withMockedMetricService()
+		withMockedDialogService()
 		withUnifiedMapAndFileMeta()
 		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 	})
@@ -53,6 +57,7 @@ describe("codeMapPreRenderService", () => {
 		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
+		dialogService = getService<DialogService>("dialogService")
 
 		const deltaA = _.cloneDeep(TEST_DELTA_MAP_A)
 		const deltaB = _.cloneDeep(TEST_DELTA_MAP_B)
@@ -78,7 +83,8 @@ describe("codeMapPreRenderService", () => {
 			storeService,
 			nodeMetricDataService,
 			codeMapRenderService,
-			edgeMetricDataService
+			edgeMetricDataService,
+			dialogService
 		)
 	}
 
@@ -91,18 +97,13 @@ describe("codeMapPreRenderService", () => {
 		nodeMetricDataService.isMetricAvailable = jest.fn().mockReturnValue(true)
 	}
 
+	function withMockedDialogService() {
+		dialogService.showErrorDialog = jest.fn()
+	}
+
 	function withUnifiedMapAndFileMeta() {
 		codeMapPreRenderService["unifiedMap"] = map
 		codeMapPreRenderService["unifiedFileMeta"] = fileMeta
-	}
-
-	function allNodesToBeExcluded(): boolean {
-		for (const node of hierarchy(codeMapPreRenderService.getRenderMap()).leaves()) {
-			if (!node.data.isExcluded) {
-				return false
-			}
-		}
-		return true
 	}
 
 	function isIdUnique(): boolean {
@@ -164,25 +165,43 @@ describe("codeMapPreRenderService", () => {
 				expect(storeService.getState().appSettings.isLoadingFile).toBeFalsy()
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 1000)
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
 		})
 
-		it("should not call codeMapRenderService.render for scaling actions", () => {
+		it("should not call codeMapRenderService.render for scaling actions", done => {
 			codeMapPreRenderService.onStoreChanged(ScalingActions.SET_SCALING)
 
-			expect(codeMapRenderService.render).not.toHaveBeenCalled()
+			setTimeout(() => {
+				expect(codeMapRenderService.render).not.toHaveBeenCalled()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
 		})
 
-		it("should not call codeMapRenderService.render for scaling actions", () => {
+		it("should not call codeMapRenderService.render for loading-map-flag actions", done => {
 			codeMapPreRenderService.onStoreChanged(IsLoadingMapActions.SET_IS_LOADING_MAP)
 
-			expect(codeMapRenderService.render).not.toHaveBeenCalled()
+			setTimeout(() => {
+				expect(codeMapRenderService.render).not.toHaveBeenCalled()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
 		})
 
-		it("should not call codeMapRenderService.render for blacklist actions", () => {
+		it("should not call codeMapRenderService.render for search-panel-mode-actions", done => {
+			codeMapPreRenderService.onStoreChanged(SearchPanelModeActions.SET_SEARCH_PANEL_MODE)
+
+			setTimeout(() => {
+				expect(codeMapRenderService.render).not.toHaveBeenCalled()
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
+		})
+
+		it("should not render twice if blacklist changed", done => {
 			codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
 
-			expect(codeMapRenderService.render).not.toHaveBeenCalled()
+			setTimeout(() => {
+				expect(codeMapRenderService.render).toHaveBeenCalledTimes(1)
+				done()
+			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
 		})
 
 		it("should show and stop the loadingMapGif", done => {
@@ -194,6 +213,38 @@ describe("codeMapPreRenderService", () => {
 				expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 				done()
 			}, CodeMapPreRenderService["DEBOUNCE_TIME"])
+		})
+
+		describe("if action was a blacklist-action", () => {
+			beforeEach(() => {
+				NodeDecorator.decorateMap(map, storeService.getState().metricData.nodeMetricData)
+				codeMapPreRenderService["isMapDecorated"] = true
+			})
+
+			it("should decorate an existing map and trigger rendering", done => {
+				codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
+
+				setTimeout(() => {
+					expect(codeMapRenderService.render).toHaveBeenCalled()
+					expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
+					done()
+				}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
+			})
+
+			it("should catch the error if all buildings would be excluded and display the error dialog", done => {
+				storeService.dispatch(addBlacklistItem({ path: "*", type: BlacklistType.exclude }))
+
+				codeMapPreRenderService.onStoreChanged(BlacklistActions.SET_BLACKLIST)
+
+				setTimeout(() => {
+					expect(dialogService.showErrorDialog).toHaveBeenCalledWith(
+						"Excluding all buildings is not possible.",
+						"Blacklist Error"
+					)
+					expect(storeService.getState().fileSettings.blacklist).toHaveLength(0)
+					done()
+				}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
+			})
 		})
 	})
 
@@ -221,14 +272,6 @@ describe("codeMapPreRenderService", () => {
 			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
 
-		it("should update the isBlacklisted attribute on each node", () => {
-			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
-
-			codeMapPreRenderService.onMetricDataChanged()
-
-			expect(allNodesToBeExcluded()).toBeTruthy()
-		})
-
 		it("should change map to multiple mode and check that no id exists twice", () => {
 			storeService.dispatch(setMultiple(getCCFiles(storeService.getState().files)))
 
@@ -243,24 +286,6 @@ describe("codeMapPreRenderService", () => {
 			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(codeMapPreRenderService["isMapDecorated"]).toBeTruthy()
-		})
-	})
-
-	describe("onBlacklistChanged", () => {
-		it("should decorate an existing map and trigger rendering", done => {
-			NodeDecorator.decorateMapWithBlacklist = jest.fn()
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes = jest.fn()
-
-			NodeDecorator.decorateMap(map, storeService.getState().metricData.nodeMetricData)
-
-			codeMapPreRenderService.onBlacklistChanged()
-
-			expect(NodeDecorator.decorateParentNodesWithAggregatedAttributes).toHaveBeenCalled()
-			expect(NodeDecorator.decorateMapWithBlacklist).toHaveBeenCalled()
-			setTimeout(() => {
-				expect(codeMapRenderService.render).toHaveBeenCalled()
-				done()
-			}, CodeMapPreRenderService["DEBOUNCE_TIME"] + 10)
 		})
 	})
 

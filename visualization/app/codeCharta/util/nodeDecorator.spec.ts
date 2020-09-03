@@ -426,28 +426,23 @@ describe("nodeDecorator", () => {
 
 	describe("decorateMapWithBlacklist", () => {
 		it("should update all flattened and excluded attributes on the map based on the blacklist", () => {
-			state.fileSettings.blacklist.push({ path: "*", type: BlacklistType.exclude })
 			state.fileSettings.blacklist.push({ path: "**/Parent Leaf", type: BlacklistType.flatten })
 
 			NodeDecorator.decorateMapWithBlacklist(map, state.fileSettings.blacklist)
 
 			expect(map).toMatchSnapshot()
 		})
-	})
 
-	describe("doesExclusionResultInEmptyMap", () => {
-		it("should return true, if all buildings match at least one pattern in the blacklist", () => {
+		it("should revert the map back to it's previous state, if all buildings will be excluded", () => {
 			const item: BlacklistItem = { path: "*", type: BlacklistType.exclude }
+			const oldMap = _.cloneDeep(map)
 
-			const result = NodeDecorator.doesExclusionResultInEmptyMap(map, [item])
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return false, if at least one building does not match the patterns in the blacklist", () => {
-			const result = NodeDecorator.doesExclusionResultInEmptyMap(map, state.fileSettings.blacklist)
-
-			expect(result).toBeFalsy()
+			try {
+				NodeDecorator.decorateMapWithBlacklist(map, [item])
+			} catch (e) {
+				expect(e.message).toEqual("Excluding all buildings is not possible.")
+				expect(map).toEqual(oldMap)
+			}
 		})
 	})
 })

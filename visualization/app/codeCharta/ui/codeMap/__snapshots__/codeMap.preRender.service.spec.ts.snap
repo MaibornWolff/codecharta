@@ -152,3 +152,156 @@ Object {
   "type": "Folder",
 }
 `;
+
+exports[`codeMapPreRenderService onStoreChanged if action was a blacklist-action should decorate an existing map and trigger rendering 1`] = `
+Object {
+  "attributes": Object {
+    "functions": 1110,
+    "mcc": 111,
+    "rloc": 200,
+    "unary": 3,
+  },
+  "children": Array [
+    Object {
+      "attributes": Object {
+        "functions": 10,
+        "mcc": 1,
+        "rloc": 100,
+        "unary": 1,
+      },
+      "edgeAttributes": Object {
+        "None": undefined,
+        "avgCommits": Object {
+          "incoming": 0,
+          "outgoing": 1,
+        },
+        "otherMetric": undefined,
+        "pairingRate": Object {
+          "incoming": 0,
+          "outgoing": 1,
+        },
+      },
+      "id": 1,
+      "isExcluded": false,
+      "isFlattened": false,
+      "link": "http://www.google.de",
+      "name": "big leaf",
+      "path": "/root/big leaf",
+      "type": "File",
+    },
+    Object {
+      "attributes": Object {
+        "functions": 1100,
+        "mcc": 110,
+        "rloc": 100,
+        "unary": 2,
+      },
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "functions": 100,
+            "mcc": 100,
+            "rloc": 30,
+            "unary": 1,
+          },
+          "edgeAttributes": Object {
+            "None": undefined,
+            "avgCommits": Object {
+              "incoming": 1,
+              "outgoing": 0,
+            },
+            "otherMetric": Object {
+              "incoming": 1,
+              "outgoing": 0,
+            },
+            "pairingRate": Object {
+              "incoming": 2,
+              "outgoing": 0,
+            },
+          },
+          "id": 3,
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "small leaf",
+          "path": "/root/Parent Leaf/small leaf",
+          "type": "File",
+        },
+        Object {
+          "attributes": Object {
+            "functions": 1000,
+            "mcc": 10,
+            "rloc": 70,
+            "unary": 1,
+          },
+          "edgeAttributes": Object {
+            "None": undefined,
+            "avgCommits": undefined,
+            "otherMetric": Object {
+              "incoming": 0,
+              "outgoing": 1,
+            },
+            "pairingRate": Object {
+              "incoming": 0,
+              "outgoing": 1,
+            },
+          },
+          "id": 4,
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "other small leaf",
+          "path": "/root/Parent Leaf/other small leaf",
+          "type": "File",
+        },
+      ],
+      "edgeAttributes": Object {
+        "None": Object {
+          "incoming": 0,
+          "outgoing": 0,
+        },
+        "avgCommits": Object {
+          "incoming": 1,
+          "outgoing": 0,
+        },
+        "otherMetric": Object {
+          "incoming": 1,
+          "outgoing": 1,
+        },
+        "pairingRate": Object {
+          "incoming": 2,
+          "outgoing": 1,
+        },
+      },
+      "id": 2,
+      "isExcluded": false,
+      "isFlattened": false,
+      "name": "Parent Leaf",
+      "path": "/root/Parent Leaf",
+      "type": "Folder",
+    },
+  ],
+  "edgeAttributes": Object {
+    "None": Object {
+      "incoming": 0,
+      "outgoing": 0,
+    },
+    "avgCommits": Object {
+      "incoming": 1,
+      "outgoing": 1,
+    },
+    "otherMetric": Object {
+      "incoming": 1,
+      "outgoing": 1,
+    },
+    "pairingRate": Object {
+      "incoming": 2,
+      "outgoing": 2,
+    },
+  },
+  "id": 0,
+  "isExcluded": false,
+  "isFlattened": false,
+  "name": "root",
+  "path": "/root",
+  "type": "Folder",
+}
+`;
