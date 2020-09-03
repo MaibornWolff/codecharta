@@ -36,7 +36,7 @@ describe("nodeContextMenuController", () => {
 		rebuildController()
 		withMockedHideNodeContextMenuMethod()
 
-		NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
+		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
 	})
 
 	function restartSystem() {
