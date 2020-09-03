@@ -24,7 +24,7 @@ describe("CodeChartaMouseEventService", () => {
 		codeChartaMouseEventService = new CodeChartaMouseEventService(storeService)
 	}
 
-	describe("closeComponentExcept", () => {
+	describe("closeComponentsExceptCurrent", () => {
 		it("should execute all close calls for listed components", () => {
 			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 			storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))

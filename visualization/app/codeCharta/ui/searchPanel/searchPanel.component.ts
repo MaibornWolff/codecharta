@@ -40,7 +40,7 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 		} else {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
 		}
-		this.codeChartaMouseEventService.closeComponentExcept(this.codeChartaMouseEventService.closeSearchPanel)
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent(this.codeChartaMouseEventService.closeSearchPanel)
 	}
 
 	public openSearchPanel() {

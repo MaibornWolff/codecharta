@@ -34,7 +34,7 @@ export class RibbonBarController implements PanelSelectionSubscriber {
 		const newSelection = this._viewModel.panelSelection !== panelSelection ? panelSelection : PanelSelection.NONE
 		this.storeService.dispatch(setPanelSelection(newSelection))
 
-		this.codeChartaMouseEventService.closeComponentExcept(this.codeChartaMouseEventService.closeRibbonBarSections)
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent(this.codeChartaMouseEventService.closeRibbonBarSections)
 	}
 }
 
