@@ -95,4 +95,24 @@ describe("RibbonBar", () => {
 			expect(isEdgeSettingsPanelOpen).toBeFalsy()
 		})
 	})
+
+	it("should open a section, open the search bar and close the section again automatically", async () => {
+		const areaPanel = "area-metric"
+		const edgePanel = "edge-metric"
+
+		let isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel)
+		expect(isAreaSettingsPanelOpen).toBeTruthy()
+
+		const isSearchPanelOpen = await searchPanel.toggle()
+		expect(isSearchPanelOpen).toBeTruthy()
+		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeFalsy()
+
+		isAreaSettingsPanelOpen = await ribbonBar.togglePanel(areaPanel)
+		expect(isAreaSettingsPanelOpen).toBeTruthy()
+		expect(await searchPanel.isOpen()).toBeFalsy()
+
+		const isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(edgePanel)
+		expect(isEdgeSettingsPanelOpen).toBeTruthy()
+		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeFalsy()
+	})
 })
