@@ -55,22 +55,16 @@ export class ScenarioHelper {
 		if (area || color || height) {
 			const nodeMetricSet = new Set(metricData.nodeMetricData.map(data => data.name))
 
-			if (area && !nodeMetricSet.has(area.areaMetric)) {
-				return false
-			}
-			if (color && !nodeMetricSet.has(color.colorMetric)) {
-				return false
-			}
-			if (height && !nodeMetricSet.has(height.heightMetric)) {
+			if (
+				(area && !nodeMetricSet.has(area.areaMetric)) ||
+				(color && !nodeMetricSet.has(color.colorMetric)) ||
+				(height && !nodeMetricSet.has(height.heightMetric))
+			) {
 				return false
 			}
 		}
 
-		if (edge && !metricData.edgeMetricData.find(x => x.name === edge.edgeMetric)) {
-			return false
-		}
-
-		return true
+		return !(edge && !metricData.edgeMetricData.find(x => x.name === edge.edgeMetric))
 	}
 
 	private static getPreLoadScenarios(): Map<String, RecursivePartial<Scenario>> {
