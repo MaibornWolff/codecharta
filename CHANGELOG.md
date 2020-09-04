@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Chore 👨‍💻 👩‍💻
+
+## [1.56.0] - 2020-09-04
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
 -   Improve performance when switching to multiple or delta mode when edges are available
 -   Scenario with EdgeMetric is only appliable when EdgeMetric is existing for the Map #1201
 -   Starting standalone version results in infinite loading loop #1202
