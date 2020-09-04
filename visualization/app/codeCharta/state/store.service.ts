@@ -17,6 +17,10 @@ export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
 }
 
+export interface DispatchOptions {
+	silent: boolean
+}
+
 export class StoreService {
 	private static STORE_CHANGED_EVENT = "store-changed"
 	private store: Store
@@ -26,7 +30,7 @@ export class StoreService {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: CCAction, isSilent = false) {
+	public dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {
 		if (
 			!(
 				isActionOfType(action.type, IsLoadingMapActions) ||
@@ -37,7 +41,7 @@ export class StoreService {
 				isActionOfType(action.type, IsAttributeSideBarVisibleActions) ||
 				isActionOfType(action.type, PanelSelectionActions) ||
 				isActionOfType(action.type, PresentationModeActions) ||
-				isSilent
+				options.silent
 			)
 		) {
 			this.dispatch(setIsLoadingMap(true))
@@ -45,7 +49,7 @@ export class StoreService {
 
 		splitStateActions(action).forEach(atomicAction => {
 			this.store.dispatch(atomicAction)
-			if (!isSilent) {
+			if (!options.silent) {
 				this.notify(atomicAction.type)
 			}
 		})
