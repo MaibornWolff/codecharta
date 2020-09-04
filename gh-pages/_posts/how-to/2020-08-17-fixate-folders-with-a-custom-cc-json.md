@@ -95,6 +95,7 @@ Notice, that `folder_1` start at `x:5`, `y:5`, because we apply a margin of `5` 
 In order to build a valid custom `.cc.json`, these rules must be followed:
 
 -   The value `x + width` or `y + height` must be in a range of `[0, 100]`.
--   Folders can't overlap. Applying a margin between folders is recommended.
+-   Folders may not overlap.
+-   Leaving space between folders (for visibility reasons) is recomended.
 -   Only folders on the root can have the `fixed`-attribute.
 -   If at least one folder is `fixed`, all folders on the root must be `fixed`.
