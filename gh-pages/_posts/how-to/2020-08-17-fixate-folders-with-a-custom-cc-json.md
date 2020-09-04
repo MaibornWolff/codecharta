@@ -32,7 +32,7 @@ Setting this property is restricted to the top level folders and won't have any 
 The `fixed`-attribute includes a coordinate `x` and `y`. These represent the top-left corner of the folder. `width`
 defines the length in x-direction and `height` defines the length in y-direction.
 
-Note, that these numbers represent percentages. The overall map size is therefore `100`.
+The property values must be numbers in the range between 0 and 100. They represent the size of the value in percent.
 
 ## Example
 
