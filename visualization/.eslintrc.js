@@ -42,10 +42,11 @@ module.exports = {
 
         // Do not apply inappropriate rules below
         "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/ban-ts-ignore": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
 
         // TODO fix and remove rules below
         "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/ban-types": "off",
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-var-requires": "off",
