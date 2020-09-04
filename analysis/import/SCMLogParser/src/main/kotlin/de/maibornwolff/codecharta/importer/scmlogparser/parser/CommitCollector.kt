@@ -64,6 +64,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                         missingVersionControlledFile.registerCommit(commit, it)
                     } else {
                         // Add for existing not deleted file
+                        //file is not deleted and not renamed --> mutate()
                         // is deleted for sure
                         if (!file.isDeleted()) {
                             versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
@@ -137,10 +138,25 @@ internal class CommitCollector private constructor(private val metricsFactory: M
         }
     }
 
+
+
     private fun handleMergeCommit(commit: Commit, versionControlledFilesList: VersionControlledFilesList) {
-        val filesInCommit = commit.filenames
 
-
+        commit.modifications.forEach {
+           val file = versionControlledFilesList.get(it.getTrackName())
+            if(file!= null && file.isMutated()){
+                if (file.isDeleted() && it.isTypeAdd()){
+                    file.unmarkDeleted()
+                    file.resetMutation()
+                }
+                else if(file.isDeleted() && it.isTypeDelete()){
+                    file.resetMutation()
+                }
+                else if(it.isTypeModify()){
+                    file.resetMutation()
+                }
+            }
+        }
     }
 
     private fun combineForParallelExecution(

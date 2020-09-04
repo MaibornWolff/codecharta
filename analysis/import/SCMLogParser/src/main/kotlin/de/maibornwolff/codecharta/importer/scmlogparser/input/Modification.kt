@@ -28,6 +28,18 @@ class Modification(
         return type == Type.DELETE
     }
 
+    fun isTypeAdd(): Boolean{
+        return type == Type.ADD
+    }
+
+    fun isTypeModify(): Boolean{
+        return type == Type.MODIFY
+    }
+
+    fun getTrackName(): String{
+        return if (oldFilename.isNotEmpty()) oldFilename else currentFilename
+    }
+
     companion object {
 
         val EMPTY = Modification("")
