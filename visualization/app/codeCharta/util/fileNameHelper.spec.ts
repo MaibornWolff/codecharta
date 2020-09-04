@@ -17,7 +17,6 @@ describe("FileNameHelper", () => {
 
 		it("should insert the valid date", () => {
 			const fileName = "prefix.name.suffix.cc.json"
-			;("prefix.name.suffix.cc")
 			const newFileName = "prefix.name.suffix_" + newDate
 
 			const result = FileNameHelper.getNewFileName(fileName, false)
