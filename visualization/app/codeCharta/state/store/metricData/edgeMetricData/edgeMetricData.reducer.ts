@@ -5,7 +5,6 @@ import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { FileState } from "../../../../model/files/files"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
-import _ from "lodash"
 
 const clone = require("rfdc")()
 
@@ -28,7 +27,7 @@ export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().pay
 function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
 	const allVisibleFileStates = getVisibleFileStates(fileStates)
-	const allFilePaths = new Set(_.flattenDeep(allVisibleFileStates.map(fileState => CodeMapHelper.getAllPaths(fileState.file.map))))
+	const allFilePaths = new Set(allVisibleFileStates.flatMap(fileState => CodeMapHelper.getAllPaths(fileState.file.map)))
 	for (const fileState of allVisibleFileStates) {
 		fileState.file.settings.fileSettings.edges.forEach(edge => {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
