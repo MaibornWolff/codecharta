@@ -40,6 +40,11 @@ class GitLogRawParserStrategy : LogParserStrategy {
                 .first()
     }
 
+    override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
+        //@TODO not implemented yet
+        return false
+    }
+
     companion object {
 
         private const val FILE_LINE_REGEX = ":\\d+\\s+\\d+\\s+\\S+\\s+\\S+\\s+.+"

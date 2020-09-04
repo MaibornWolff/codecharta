@@ -40,6 +40,11 @@ class GitLogParserStrategy : LogParserStrategy {
                 .first()
     }
 
+    override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
+        //@TODO not implemented yet
+        return false
+    }
+
     companion object {
 
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }

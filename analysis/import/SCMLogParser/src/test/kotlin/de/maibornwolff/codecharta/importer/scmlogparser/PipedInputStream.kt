@@ -20,6 +20,7 @@ class PipedInputStream {
     }
 
     @Test
+    @Suppress
     fun `json output does contain files from scan`() {
         assertThat(output).contains(
                 """"name":"example_svn.log""",
@@ -28,6 +29,7 @@ class PipedInputStream {
     }
 
     @Test
+    @Suppress
     fun `json output does contain files from piped project`() {
         assertThat(output).contains(
                 """"name":"FooBar.java"""",

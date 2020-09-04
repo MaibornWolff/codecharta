@@ -38,13 +38,19 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         return commitLines.parallelStream()
-            .filter { it.startsWith(DATE_ROW_INDICATOR) }
-            .map { CommitDateParser.parseCommitDate(it) }
-            .toList()
-            .first()
+                .filter { it.startsWith(DATE_ROW_INDICATOR) }
+                .map { CommitDateParser.parseCommitDate(it) }
+                .toList()
+                .first()
+    }
+
+    override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
+        //@TODO not implemented yet
+        return false
     }
 
     companion object {
+
         private val logger = KotlinLogging.logger {}
 
         private const val STANDARD_FILE_LINE_REGEX = "\\d+\\s+\\d+\\s+\\S+\\s*"

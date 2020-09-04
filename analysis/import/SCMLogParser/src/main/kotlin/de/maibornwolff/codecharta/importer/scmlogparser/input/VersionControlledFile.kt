@@ -16,6 +16,7 @@ class VersionControlledFile internal constructor(
     var filename: String
 
     private var deleted: Boolean = false
+    private var mutated: Boolean = false
 
     val metricsMap: Map<String, Number>
         get() = metrics.associateBy({ it.metricName() }, { it.value() })
@@ -35,9 +36,14 @@ class VersionControlledFile internal constructor(
      * registers commits in chronological order
      */
     fun registerCommit(commit: Commit, modification: Modification) {
+        //@TODO handle other edge cases
+        when (true) {
+            this.isDeleted() && !modification.isTypeDelete() -> this.mutate()
+        }
+
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
-        metrics.forEach { it.registerModification(modification)}
+        metrics.forEach { it.registerModification(modification) }
     }
 
     override fun toString(): String {
@@ -81,5 +87,17 @@ class VersionControlledFile internal constructor(
 
     fun isDeleted(): Boolean {
         return deleted;
+    }
+
+    fun mutate() {
+        mutated = true;
+    }
+
+    fun resetMutation() {
+        mutated = false;
+    }
+
+    fun isMutated(): Boolean {
+        return mutated;
     }
 }

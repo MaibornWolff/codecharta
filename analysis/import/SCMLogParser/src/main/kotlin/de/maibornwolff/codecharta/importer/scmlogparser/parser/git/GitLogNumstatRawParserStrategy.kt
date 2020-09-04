@@ -5,6 +5,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineCollector
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.AuthorParser.AUTHOR_ROW_INDICATOR
 import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.CommitDateParser.DATE_ROW_INDICATOR
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.MergeCommitDetector.MERGE_COMMIT_INDICATOR
 import java.time.OffsetDateTime
 import java.util.function.Predicate
 import java.util.stream.Collector
@@ -41,21 +42,30 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
                 }
             }
             .values
-            .filterNotNull()
-            .toList()
+                .filterNotNull()
+                .toList()
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         return commitLines
-            .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
-            .map { CommitDateParser.parseCommitDate(it) }
-            .first()
+                .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
+                .map { CommitDateParser.parseCommitDate(it) }
+                .first()
+    }
+
+    override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
+        return commitLines
+                .filter { commitLine -> commitLine.startsWith(MERGE_COMMIT_INDICATOR) }
+                .first()
+                .isNotEmpty()
     }
 
     companion object {
+
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
         private fun isFileLine(commitLine: String): Boolean {
-            return GitLogRawParserStrategy.isFileLine(commitLine) || GitLogNumstatParserStrategy.isFileLine(commitLine) }
+            return GitLogRawParserStrategy.isFileLine(commitLine) || GitLogNumstatParserStrategy.isFileLine(commitLine)
+        }
 
         internal fun parseModification(fileLine: String): Modification {
             return if (fileLine.startsWith(":")) {

@@ -16,11 +16,16 @@ internal class CommitCollector private constructor(private val metricsFactory: M
     private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf() // Map <CurrentName, NumberOfConflicts>
     private var commitNumber = 0
 
-    private fun collectCommit(versionControlledFiles: MutableMap<String, VersionControlledFile>, commit: Commit) {
+    private fun collectCommit(versionControlledFilesList: VersionControlledFilesList, commit: Commit) {
         if (commit.isEmpty) {
             return
         }
         commitNumber += 1
+
+        //@TODO (in progress) make this happen! :)
+        //        if (commit.isMergeCommit() && versionControlledFiles.affectedByMergeCommit(commit.modifications)) {
+        //            commit.modifications
+        //        }
 
         commit.modifications.forEach {
 
@@ -47,33 +52,30 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
                 Modification.Type.ADD -> {
                     // Add new File
-                    val file = versionControlledFiles[VCFName]
+                    val file = versionControlledFilesList.get(trackName)
                     if (file == null) {
                         val missingVersionControlledFile = VersionControlledFile(possibleConflictName, metricsFactory)
-                        versionControlledFiles[possibleConflictName] = missingVersionControlledFile
+                        versionControlledFilesList.add(trackName, missingVersionControlledFile)
                         missingVersionControlledFile.registerCommit(commit, it)
                     } else {
                         // Add for existing not deleted file
                         // is deleted for sure
                         if (!file.isDeleted()) {
-                            versionControlledFiles[VCFName]!!.registerCommit(commit, it)
+                            versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                         }
 
                         // Add for existing deleted file
                         // unmark delete
                         if (file.isDeleted()) {
                             file.unmarkDeleted()
-                            //TODO Do we need to register a commit in this case?
+                            //TODO Do we need to register a commit in this case? No :)
                         }
                     }
                 }
 
                 Modification.Type.DELETE -> {
-                    val filename = renamesMap[possibleConflictName]
-                    val tmpFilename = if (filename == null) possibleConflictName else filename
-
                     try {
-                        versionControlledFiles[tmpFilename]!!.markDeleted()
+                        versionControlledFilesList.get(trackName)!!.markDeleted()
                     } catch (exc: NullPointerException) {
                         exc.message;
                         println(exc.message);
@@ -81,35 +83,34 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     //renamesMap.remove(possibleConflictName)
                 }
                 Modification.Type.RENAME -> {
-                    var newVCFFileName = it.currentFilename
-                    //TODO WHAT if the new name is assigned to an existing and deleted VCF
-                    //TODO conflict logic should be able to handle that conflict.
-                    if (versionControlledFiles.containsKey(it.currentFilename)) {
-                        val marker = nameConflictsMap[it.currentFilename]
-                        val newMarker = if (marker != null) marker + 1 else 0
-                        newVCFFileName = it.currentFilename + "_\\0_" + newMarker
-                        nameConflictsMap[it.currentFilename] = newMarker
-                    }
-                    if (oldestName != null) {
-                        renamesMap.remove(possibleConflictName)
-                        renamesMap[newVCFFileName] = oldestName
 
-                        // this will be done in ADD case later
-                        //versionControlledFiles[oldestName]!!.unmarkDeleted()
-                    } else {
-                        renamesMap[newVCFFileName] = it.oldFilename
+                    versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
 
-                        //TODO Might be done by VCF Class internally (registerCommit method)
-                        //versionControlledFiles[it.oldFilename]!!.unmarkDeleted()
-                    }
+                    /*                    var newVCFFileName = it.currentFilename
+                                        //TODO WHAT if the new name is assigned to an existing and deleted VCF
+                                        //TODO conflict logic should be able to handle that conflict.
+                                        if (versionControlledFiles.containsKey(it.currentFilename)) {
+                                            val marker = nameConflictsMap[it.currentFilename]
+                                            val newMarker = if (marker != null) marker + 1 else 0
+                                            newVCFFileName = it.currentFilename + "_\\0_" + newMarker
+                                            nameConflictsMap[it.currentFilename] = newMarker
+                                        }
+                                        if (oldestName != null) {
+                                            renamesMap.remove(possibleConflictName)
+                                            renamesMap[newVCFFileName] = oldestName
 
-                    try {
-                        versionControlledFiles[VCFName]!!.filename = it.currentFilename
-                        versionControlledFiles[VCFName]!!.registerCommit(commit, it)
-                    } catch (exc: NullPointerException) {
-                        exc.message;
-                        println(exc.message);
-                    }
+                                            // this will be done in ADD case later
+                                            //versionControlledFiles[oldestName]!!.unmarkDeleted()
+                                        } else {
+                                            renamesMap[newVCFFileName] = it.oldFilename
+
+                                            //TODO Might be done by VCF Class internally (registerCommit method)
+                                            //versionControlledFiles[it.oldFilename]!!.unmarkDeleted()
+                                        }
+                     */
+
+                    //versionControlledFilesList.get(trackName)!!.filename = it.currentFilename
+                    versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                 }
                 else                     -> {
                     //TODO Never delete a file from versionControlFiles list
@@ -123,7 +124,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     //TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
                     //TODO consider DElTA Mode and Edge calculation
                     //versionControlledFiles[VCFName]!!.unmarkDeleted()
-                    versionControlledFiles[VCFName]!!.registerCommit(commit, it)
+
+                    versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                 }
 
             }
@@ -131,22 +133,28 @@ internal class CommitCollector private constructor(private val metricsFactory: M
     }
 
     private fun combineForParallelExecution(
-        firstCommits: MutableMap<String, VersionControlledFile>,
-        secondCommits: MutableMap<String, VersionControlledFile>
-    ): MutableMap<String, VersionControlledFile> {
+            firstCommits: VersionControlledFilesList,
+            secondCommits: VersionControlledFilesList
+                                           ): VersionControlledFilesList {
         throw UnsupportedOperationException("parallel collection of commits not supported")
     }
 
     companion object {
 
-        fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableMap<String, VersionControlledFile>> {
+        fun create(metricsFactory: MetricsFactory): Collector<Commit, *, VersionControlledFilesList> {
             val collector = CommitCollector(metricsFactory)
-            return Collector.of(Supplier<MutableMap<String, VersionControlledFile>> { mutableMapOf() },
-                BiConsumer<MutableMap<String, VersionControlledFile>, Commit> { versionControlledFiles, commit ->
-                    collector.collectCommit(versionControlledFiles, commit)
-                }, BinaryOperator<MutableMap<String, VersionControlledFile>> { firstCommits, secondCommits ->
-                    collector.combineForParallelExecution(firstCommits, secondCommits)
-                })
+
+            return Collector.of(
+                    Supplier<VersionControlledFilesList> { VersionControlledFilesList() },
+                    BiConsumer<VersionControlledFilesList, Commit> { versionControlledFiles,
+                                                                     commit ->
+                        collector.collectCommit(versionControlledFiles, commit)
+                    },
+                    BinaryOperator<VersionControlledFilesList> { firstCommits,
+                                                                 secondCommits ->
+                        collector.combineForParallelExecution(firstCommits, secondCommits)
+                    }
+                               )
         }
     }
 }

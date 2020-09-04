@@ -168,19 +168,20 @@ class SCMLogParser(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            //val test = "git ls-tree --name-only".runCommand(File("C:\\Users\\VladimirR\\Documents\\codecharta"))
-            //println(test)
             CommandLine.call(SCMLogParser(), System.out, *args)
         }
 
+        //@TODO move to integration tests
+        // function parses given git command. how to use:
+        //val test = "git ls-tree --name-only".runCommand(File("C:\\Users\\VladimirR\\Documents\\codecharta"))
         fun String.runCommand(workingDir: File): String? {
             try {
                 val commands = this.split("\\s".toRegex())
                 val proc = ProcessBuilder(*commands.toTypedArray())
-                    .directory(workingDir)
-                    .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                    .redirectError(ProcessBuilder.Redirect.PIPE)
-                    .start()
+                        .directory(workingDir)
+                        .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                        .redirectError(ProcessBuilder.Redirect.PIPE)
+                        .start()
 
                 proc.waitFor(60, TimeUnit.MINUTES)
                 return proc.inputStream.bufferedReader().readText()

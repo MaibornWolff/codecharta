@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparser.converter
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.VersionControlledFilesList
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
 import de.maibornwolff.codecharta.model.NodeType
@@ -42,11 +43,11 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         return edge
     }
 
-    fun convert(versionControlledFiles: MutableMap<String, VersionControlledFile>, metricsFactory: MetricsFactory): Project {
+    fun convert(versionControlledFiles: VersionControlledFilesList, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
         //TODO discuss/check performance:
-        versionControlledFiles.values
+        versionControlledFiles.getList().values
                 .filter { !it.isDeleted() }
                 .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 

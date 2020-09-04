@@ -21,10 +21,10 @@ class LogLineParser(
 
     private var numberOfCommitsParsed = 0
 
-    fun parse(logLines: Stream<String>): MutableMap<String, VersionControlledFile> {
+    fun parse(logLines: Stream<String>): VersionControlledFilesList {
         return logLines.collect(parserStrategy.createLogLineCollector())
-            .map { this.parseCommit(it) }.filter { !it.isEmpty }
-            .collect(CommitCollector.create(metricsFactory))
+                .map { this.parseCommit(it) }.filter { !it.isEmpty }
+                .collect(CommitCollector.create(metricsFactory))
     }
 
     internal fun parseCommit(commitLines: List<String>): Commit {
@@ -32,17 +32,19 @@ class LogLineParser(
             var author = ""
             var commitDate = OffsetDateTime.MIN
             var modifications: List<Modification> = listOf()
+            var isMergeCommit = false
 
             runBlocking(Dispatchers.Default) {
                 launch {
                     author = parserStrategy.parseAuthor(commitLines)
                     commitDate = parserStrategy.parseDate(commitLines)
                     modifications = parserStrategy.parseModifications(commitLines)
+                    isMergeCommit = parserStrategy.parseIsMergeCommit(commitLines)
                 }
             }
 
             if (!silent) showProgress(commitDate)
-            Commit(author, modifications, commitDate)
+            Commit(author, modifications, commitDate, isMergeCommit)
         } catch (e: NoSuchElementException) {
             System.err.println("Skipped commit with invalid syntax ($commitLines)")
             Commit("", listOf(), OffsetDateTime.now())

@@ -24,7 +24,12 @@ class Modification(
         UNKNOWN
     }
 
+    fun isTypeDelete(): Boolean {
+        return type == Type.DELETE
+    }
+
     companion object {
+
         val EMPTY = Modification("")
     }
 }

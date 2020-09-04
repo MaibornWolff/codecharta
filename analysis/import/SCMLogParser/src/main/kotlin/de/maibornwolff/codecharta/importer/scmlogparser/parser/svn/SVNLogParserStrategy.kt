@@ -20,6 +20,11 @@ class SVNLogParserStrategy : LogParserStrategy {
                 .first()
     }
 
+    override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
+        //@TODO check and support SVN with new merge commit handling
+        return false
+    }
+
     private fun parseCommitDate(metadataLine: String): OffsetDateTime {
         val splittedLine =
                 metadataLine.split(("\\" + METADATA_SEPARATOR).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

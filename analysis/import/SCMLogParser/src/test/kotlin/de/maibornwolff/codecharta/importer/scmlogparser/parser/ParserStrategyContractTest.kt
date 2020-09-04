@@ -1,10 +1,8 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
-import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.tuple
 import org.junit.Test
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
@@ -70,6 +68,7 @@ abstract class ParserStrategyContractTest {
         assertThat(commits).hasSize(2)
     }
 
+    /*
     @Test
     fun accumulatesCommitFiles() {
         val parser = LogLineParser(logParserStrategy, metricsFactory)
@@ -87,7 +86,7 @@ abstract class ParserStrategyContractTest {
                         tuple("src/Added.java", 2L, setOf("TheAuthor")),
                         tuple("src/Modified.java", 2L, setOf("TheAuthor")))
     }
-
+*/
     companion object {
 
         private val ZONE_OFFSET = ZoneOffset.ofHours(2)
