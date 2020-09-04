@@ -100,11 +100,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	public onMetricDataChanged() {
-		if (fileStatesAvailable(this.storeService.getState().files)) {
-			this.updateRenderMapAndFileMeta()
-			this.decorateNewMap()
-			this.debounceRendering()
-		}
+		this.updateRenderMapAndFileMeta()
+		this.decorateNewMap()
+		this.debounceRendering()
 	}
 
 	public onFilesSelectionChanged() {
@@ -118,11 +116,9 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private decorateNewMap() {
-		if (!this.isMapDecorated) {
-			NodeDecorator.decorateMap(this.unifiedMap, this.storeService.getState().metricData.nodeMetricData)
-			this.isMapDecorated = true
-			this.decorateExistingMap()
-		}
+		NodeDecorator.decorateMap(this.unifiedMap, this.storeService.getState().metricData.nodeMetricData)
+		this.isMapDecorated = true
+		this.decorateExistingMap()
 	}
 
 	private decorateExistingMap() {
