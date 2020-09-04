@@ -14,7 +14,9 @@ Notice, that most folders will not be located at the same position as before.
 # Fixate folders
 
 In order to prevent folders from changing locations, we introduced a new attribute to the `.cc.json` called `fixed`.
-This attribute will not be generated during the analysis. The user needs to edit the `.cc.json` by hand.
+This attribute is not auto-generated during the analysis and has to be defined manually by editing the `.cc.json`.
+
+Setting this property is restricted to the top level folders and won't have any effect on sub-folders (folders in folders).
 
 # API
 
