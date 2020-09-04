@@ -36,7 +36,7 @@
 	},
 	"main": "dist/webpack/index.html",
 	"build": {
-		"nwVersion": "0.27.3",
+		"nwVersion": "0.48.1",
 		"output": "./dist/packages/",
 		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
 		"files": "./dist/webpack/**/*",
