@@ -16,6 +16,6 @@ export class IdToBuildingService implements CodeMapMeshChangedSubscriber {
 			idToBuilding.set(x.node.id, x)
 		})
 
-		this.storeService.dispatch(setIdToBuilding(idToBuilding), true)
+		this.storeService.dispatch(setIdToBuilding(idToBuilding), { silent: true })
 	}
 }
