@@ -16,7 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Improve performance when switching to multiple or delta mode when edges are available
--   Scneario with EdgeMetric is only appliable when EdgeMetric is existing for the Map #1201
+-   Scenario with EdgeMetric is only appliable when EdgeMetric is existing for the Map #1201
+-   Starting standalone version results in infinite loading loop #1202
 -   Expanded metric selection will close when clicking anywhere outside of that selection #1036
 
 ### Chore 👨‍💻 👩‍💻
