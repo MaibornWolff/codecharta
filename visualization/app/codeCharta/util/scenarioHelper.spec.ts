@@ -76,13 +76,13 @@ describe("scenarioHelper", () => {
 			expect(result).toEqual(expected)
 		})
 
-		it("should set isScenarioAppliable to true when metric is in metricData", () => {
+		it("should set isScenarioApplicable to true when metric is in metricData", () => {
 			ScenarioHelper["scenarios"].set("Scenario2", SCENARIO_WITH_ONLY_HEIGHT)
 
 			const expected: ScenarioItem[] = [
 				{
 					scenarioName: "Scenario2",
-					isScenarioAppliable: true,
+					isScenarioApplicable: true,
 					icons: [
 						{
 							faIconClass: "fa-video-camera",
@@ -121,7 +121,7 @@ describe("scenarioHelper", () => {
 			expect(result).toEqual(expected)
 		})
 
-		it("should not be appliable when EdgeMetric is not existing", () => {
+		it("should not be applicable when EdgeMetric is not existing", () => {
 			ScenarioHelper["scenarios"].set("Scenario1", SCENARIO)
 
 			const expected: ScenarioItem[] = SCENARIO_ITEM_WITH_EVERYTHING_SAVED

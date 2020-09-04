@@ -13,7 +13,7 @@ import { MetricDataService, MetricDataSubscriber } from "../../state/store/metri
 
 export interface ScenarioItem {
 	scenarioName: string
-	isScenarioAppliable: boolean
+	isScenarioApplicable: boolean
 	icons: { faIconClass: string; isSaved: boolean; tooltip: string }[]
 }
 

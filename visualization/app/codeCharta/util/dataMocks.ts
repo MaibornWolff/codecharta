@@ -1382,12 +1382,12 @@ export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddScenarioContent[] = [
 export const SCENARIO_ITEMS: ScenarioItem[] = [
 	{
 		scenarioName: "Scenario",
-		isScenarioAppliable: true,
+		isScenarioApplicable: true,
 		icons: [{ faIconClass: "fa fa-random", isSaved: false, tooltip: "random" }]
 	},
 	{
 		scenarioName: "Scenario2",
-		isScenarioAppliable: false,
+		isScenarioApplicable: false,
 		icons: [{ faIconClass: "fa fa-some", isSaved: true, tooltip: "some" }]
 	}
 ]
@@ -1395,7 +1395,7 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 export const SCENARIO_ITEM_WITH_EVERYTHING_SAVED: ScenarioItem[] = [
 	{
 		scenarioName: "Scenario1",
-		isScenarioAppliable: false,
+		isScenarioApplicable: false,
 		icons: [
 			{
 				faIconClass: "fa-video-camera",

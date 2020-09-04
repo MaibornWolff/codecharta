@@ -16,7 +16,7 @@ export class ScenarioHelper {
 		this.scenarios.forEach(scenario => {
 			scenarioItems.push({
 				scenarioName: scenario.name,
-				isScenarioAppliable: this.isScenarioAppliable(scenario, metricData),
+				isScenarioApplicable: this.isScenarioApplicable(scenario, metricData),
 				icons: [
 					{
 						faIconClass: "fa-video-camera",
@@ -49,7 +49,7 @@ export class ScenarioHelper {
 		return scenarioItems
 	}
 
-	private static isScenarioAppliable(scenario: RecursivePartial<Scenario>, metricData: MetricData) {
+	private static isScenarioApplicable(scenario: RecursivePartial<Scenario>, metricData: MetricData) {
 		const { area, color, height, edge } = scenario
 
 		if (area || color || height) {
