@@ -74,6 +74,7 @@ class CommitCollectorTest {
 
         //commits
 
+
         //merge commit
 
         //

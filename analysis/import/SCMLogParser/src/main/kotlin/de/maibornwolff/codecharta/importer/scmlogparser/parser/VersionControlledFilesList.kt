@@ -18,6 +18,14 @@ class VersionControlledFilesList {
      */
     private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf()
 
+    fun getBy(fileNameList: List<String>): MutableList<VersionControlledFile?> {
+        var mappedFiles = mutableListOf<VersionControlledFile?>()
+        fileNameList.forEach {
+            mappedFiles.add(get(it))
+        }
+        return mappedFiles
+    }
+
     fun get(key: String): VersionControlledFile? {
         return versionControlledFiles[resolveFileKey(key)]
     }

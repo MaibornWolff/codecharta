@@ -23,9 +23,14 @@ internal class CommitCollector private constructor(private val metricsFactory: M
         commitNumber += 1
 
         //@TODO (in progress) make this happen! :)
-        //        if (commit.isMergeCommit() && versionControlledFiles.affectedByMergeCommit(commit.modifications)) {
-        //            commit.modifications
-        //        }
+        //
+               if (commit.isMergeCommit()){
+                   handleMergeCommit(commit, versionControlledFilesList)
+               }
+
+        //&& versionControlledFiles.affectedByMergeCommit(commit.modifications)) {
+                    commit.modifications
+          //      }
 
         commit.modifications.forEach {
 
@@ -130,6 +135,12 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
             }
         }
+    }
+
+    private fun handleMergeCommit(commit: Commit, versionControlledFilesList: VersionControlledFilesList) {
+        val filesInCommit = commit.filenames
+
+
     }
 
     private fun combineForParallelExecution(
