@@ -1379,47 +1379,50 @@ export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddScenarioContent[] = [
 	}
 ]
 
-export const SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED: AddScenarioContent[] = [
-	{
-		metricType: ScenarioMetricType.AREA_METRIC,
-		metricName: "rloc",
-		savedValues: 48,
-		isSelected: false,
-		isDisabled: false
-	},
-	{
-		metricType: ScenarioMetricType.HEIGHT_METRIC,
-		metricName: "mcc",
-		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
-		isSelected: false,
-		isDisabled: false
-	},
-	{
-		metricType: ScenarioMetricType.COLOR_METRIC,
-		metricName: "mcc",
-		savedValues: { from: 19, to: 67 },
-		isSelected: false,
-		isDisabled: false
-	},
-	{
-		metricType: ScenarioMetricType.EDGE_METRIC,
-		metricName: "pairingRate",
-		savedValues: { edgePreview: 5, edgeHeight: 4 },
-		isSelected: false,
-		isDisabled: false
-	}
-]
-
 export const SCENARIO_ITEMS: ScenarioItem[] = [
 	{
 		scenarioName: "Scenario",
-		isScenarioAppliable: true,
+		isScenarioApplicable: true,
 		icons: [{ faIconClass: "fa fa-random", isSaved: false, tooltip: "random" }]
 	},
 	{
 		scenarioName: "Scenario2",
-		isScenarioAppliable: false,
+		isScenarioApplicable: false,
 		icons: [{ faIconClass: "fa fa-some", isSaved: true, tooltip: "some" }]
+	}
+]
+
+export const SCENARIO_ITEM_WITH_EVERYTHING_SAVED: ScenarioItem[] = [
+	{
+		scenarioName: "Scenario1",
+		isScenarioApplicable: false,
+		icons: [
+			{
+				faIconClass: "fa-video-camera",
+				isSaved: true,
+				tooltip: "Camera angle"
+			},
+			{
+				faIconClass: "fa-arrows-alt",
+				isSaved: true,
+				tooltip: "Area metric"
+			},
+			{
+				faIconClass: "fa-arrows-v",
+				isSaved: true,
+				tooltip: "Height metric"
+			},
+			{
+				faIconClass: "fa-paint-brush",
+				isSaved: true,
+				tooltip: "Color metric"
+			},
+			{
+				faIconClass: "fa-exchange",
+				isSaved: true,
+				tooltip: "Edge metric"
+			}
+		]
 	}
 ]
 
