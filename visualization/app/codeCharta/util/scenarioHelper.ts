@@ -50,16 +50,23 @@ export class ScenarioHelper {
 	}
 
 	private static isScenarioAppliable(scenario: RecursivePartial<Scenario>, metricData: MetricData) {
-		if (scenario.area && !metricData.nodeMetricData.find(x => x.name === scenario.area.areaMetric)) {
-			return false
+		const { area, color, height, edge } = scenario
+
+		if (area || color || height) {
+			const nodeMetricSet = new Set(metricData.nodeMetricData.map(data => data.name))
+
+			if (area && !nodeMetricSet.has(area.areaMetric)) {
+				return false
+			}
+			if (color && !nodeMetricSet.has(color.colorMetric)) {
+				return false
+			}
+			if (height && !nodeMetricSet.has(height.heightMetric)) {
+				return false
+			}
 		}
-		if (scenario.color && !metricData.nodeMetricData.find(x => x.name === scenario.color.colorMetric)) {
-			return false
-		}
-		if (scenario.height && !metricData.nodeMetricData.find(x => x.name === scenario.height.heightMetric)) {
-			return false
-		}
-		if (scenario.edge && !metricData.edgeMetricData.find(x => x.name === scenario.edge.edgeMetric)) {
+
+		if (edge && !metricData.edgeMetricData.find(x => x.name === edge.edgeMetric)) {
 			return false
 		}
 
