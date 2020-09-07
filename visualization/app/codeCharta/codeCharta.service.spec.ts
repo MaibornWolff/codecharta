@@ -54,13 +54,11 @@ describe("codeChartaService", () => {
 		const expected: CCFile = {
 			fileMeta: { apiVersion: require("../../package.json").codecharta.apiVersion, fileName, projectName: "Sample Map" },
 			map: {
-				id: 0,
 				attributes: {},
 				isExcluded: false,
 				isFlattened: false,
 				children: [
 					{
-						id: 1,
 						attributes: { functions: 10, mcc: 1, rloc: 100 },
 						link: "http://www.google.de",
 						name: "big leaf",
@@ -70,11 +68,9 @@ describe("codeChartaService", () => {
 						isFlattened: false
 					},
 					{
-						id: 2,
 						attributes: {},
 						children: [
 							{
-								id: 3,
 								attributes: { functions: 100, mcc: 100, rloc: 30 },
 								name: "small leaf",
 								path: "/root/Parent Leaf/small leaf",
@@ -83,7 +79,6 @@ describe("codeChartaService", () => {
 								isFlattened: false
 							},
 							{
-								id: 4,
 								attributes: { functions: 1000, mcc: 10, rloc: 70 },
 								name: "other small leaf",
 								path: "/root/Parent Leaf/other small leaf",

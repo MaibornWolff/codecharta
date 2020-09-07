@@ -73,7 +73,7 @@ describe("ScenarioDropDownController", () => {
 	describe("applyScenario", () => {
 		it("should call setControl and call store.dispatch with scenarioSettings", () => {
 			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(PARTIAL_SETTINGS)
-			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(true)
+			scenarioButtonsController["isScenarioApplicable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
 
