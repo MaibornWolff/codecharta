@@ -225,7 +225,7 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
-			file.nodes[0].children[0].fixed = undefined
+			file.nodes[0].children[0].fixedPosition = undefined
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.notAllFoldersAreFixed.title,
@@ -239,8 +239,8 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if at least one fixed folder ends up in a negative coordinate", () => {
-			file.nodes[0].children[0].fixed.x = -5
-			file.nodes[0].children[0].fixed.width = 2
+			file.nodes[0].children[0].fixedPosition.left = -5
+			file.nodes[0].children[0].fixedPosition.width = 2
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
@@ -254,8 +254,8 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if at least one fixed folder exceeds the maximum coordinate of 100", () => {
-			file.nodes[0].children[0].fixed.x = 99
-			file.nodes[0].children[0].fixed.width = 2
+			file.nodes[0].children[0].fixedPosition.left = 99
+			file.nodes[0].children[0].fixedPosition.width = 2
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
@@ -269,15 +269,15 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if two folders horizontally overlap", () => {
-			file.nodes[0].children[0].fixed = {
-				x: 0,
-				y: 0,
+			file.nodes[0].children[0].fixedPosition = {
+				left: 0,
+				top: 0,
 				width: 10,
 				height: 10
 			}
-			file.nodes[0].children[1].fixed = {
-				x: 5,
-				y: 1,
+			file.nodes[0].children[1].fixedPosition = {
+				left: 5,
+				top: 1,
 				width: 10,
 				height: 10
 			}
@@ -294,15 +294,15 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if two folders vertically overlap", () => {
-			file.nodes[0].children[0].fixed = {
-				x: 0,
-				y: 0,
+			file.nodes[0].children[0].fixedPosition = {
+				left: 0,
+				top: 0,
 				width: 10,
 				height: 10
 			}
-			file.nodes[0].children[1].fixed = {
-				x: 0,
-				y: 5,
+			file.nodes[0].children[1].fixedPosition = {
+				left: 0,
+				top: 5,
 				width: 10,
 				height: 10
 			}
@@ -319,15 +319,15 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if a folder is placed inside another", () => {
-			file.nodes[0].children[0].fixed = {
-				x: 0,
-				y: 0,
+			file.nodes[0].children[0].fixedPosition = {
+				left: 0,
+				top: 0,
 				width: 10,
 				height: 10
 			}
-			file.nodes[0].children[1].fixed = {
-				x: 1,
-				y: 1,
+			file.nodes[0].children[1].fixedPosition = {
+				left: 1,
+				top: 1,
 				width: 1,
 				height: 1
 			}
@@ -344,13 +344,13 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if a folder has the same boundaries as another", () => {
-			file.nodes[0].children[0].fixed = {
-				x: 0,
-				y: 0,
+			file.nodes[0].children[0].fixedPosition = {
+				left: 0,
+				top: 0,
 				width: 10,
 				height: 10
 			}
-			file.nodes[0].children[1].fixed = file.nodes[0].children[0].fixed
+			file.nodes[0].children[1].fixedPosition = file.nodes[0].children[0].fixedPosition
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,

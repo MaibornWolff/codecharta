@@ -1,4 +1,4 @@
-import { CodeMapNode, Fixed } from "../codeCharta.model"
+import { CodeMapNode, FixedPosition } from "../codeCharta.model"
 import Ajv from "ajv"
 import { ExportCCFile } from "../codeCharta.api.model"
 
@@ -158,7 +158,7 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 	const intersections: Set<string> = new Set()
 
 	file.nodes[0].children.forEach(node => {
-		if (node.fixed === undefined) {
+		if (node.fixedPosition === undefined) {
 			notFixed.push(node.name)
 		} else {
 			if (isOutOfBounds(node)) {
@@ -166,7 +166,7 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 			}
 
 			file.nodes[0].children.forEach(node2 => {
-				if (node !== node2 && rectanglesIntersect(node.fixed, node2.fixed)) {
+				if (node !== node2 && rectanglesIntersect(node.fixedPosition, node2.fixedPosition)) {
 					if (!intersections.has(`${node2.name} and ${node.name}`)) {
 						intersections.add(`${node.name} and ${node2.name}`)
 					}
@@ -191,27 +191,27 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 	}
 }
 
-function rectanglesIntersect(rect1: Fixed, rect2: Fixed): boolean {
+function rectanglesIntersect(rect1: FixedPosition, rect2: FixedPosition): boolean {
 	if (rect1 !== undefined && rect2 !== undefined) {
 		return (
-			isInRectangle(rect1.x, rect1.y, rect2) ||
-			isInRectangle(rect1.x, rect1.y + rect1.height, rect2) ||
-			isInRectangle(rect1.x + rect1.width, rect1.y, rect2) ||
-			isInRectangle(rect1.x + rect1.width, rect1.y + rect1.height, rect2)
+			isInRectangle(rect1.left, rect1.top, rect2) ||
+			isInRectangle(rect1.left, rect1.top + rect1.height, rect2) ||
+			isInRectangle(rect1.left + rect1.width, rect1.top, rect2) ||
+			isInRectangle(rect1.left + rect1.width, rect1.top + rect1.height, rect2)
 		)
 	}
 }
 
-function isInRectangle(x: number, y: number, rect: Fixed): boolean {
-	return x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height
+function isInRectangle(x: number, y: number, rect: FixedPosition): boolean {
+	return x >= rect.left && x <= rect.left + rect.width && y >= rect.top && y <= rect.top + rect.height
 }
 
 function isOutOfBounds(node: CodeMapNode): boolean {
 	return (
-		outOfRange(node.fixed.x) ||
-		outOfRange(node.fixed.y) ||
-		outOfRange(node.fixed.x + node.fixed.width) ||
-		outOfRange(node.fixed.y + node.fixed.height)
+		outOfRange(node.fixedPosition.left) ||
+		outOfRange(node.fixedPosition.top) ||
+		outOfRange(node.fixedPosition.left + node.fixedPosition.width) ||
+		outOfRange(node.fixedPosition.top + node.fixedPosition.height)
 	)
 }
 
