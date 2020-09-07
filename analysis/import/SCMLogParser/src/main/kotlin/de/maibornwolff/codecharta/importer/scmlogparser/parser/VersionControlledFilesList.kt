@@ -65,7 +65,7 @@ class VersionControlledFilesList {
         }
 
         try {
-            get(resolveFileKey(oldFileName))!!.filename = newFileName
+            get(oldFileName)!!.filename = newFileName
         } catch (exc: NullPointerException) {
             print(exc);
         }
