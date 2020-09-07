@@ -20,7 +20,7 @@ describe("treeMapGenerator", () => {
 
 	function restartSystem() {
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
-		NodeDecorator.preDecorateFile(CodeChartaService.getCCFile("someFile", fileWithFixedFolders))
+		NodeDecorator.decorateMapWithPathAttribute(CodeChartaService.getCCFile("someFile", fileWithFixedFolders))
 		state = _.cloneDeep(STATE)
 		codeMapNode = _.cloneDeep(VALID_NODE_WITH_PATH)
 		metricData = _.cloneDeep(METRIC_DATA)
