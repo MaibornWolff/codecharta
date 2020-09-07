@@ -11,6 +11,7 @@ class VersionControlledFile internal constructor(
 ) {
 
     val authors = mutableSetOf<String>()
+    private val renames = mutableSetOf<String>()
 
     // the current filename in a specific revision, might change in history
     var filename: String
@@ -41,6 +42,14 @@ class VersionControlledFile internal constructor(
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
         metrics.forEach { it.registerModification(mod) }
+    }
+
+    fun containsRename(rename: String): Boolean {
+        return renames.contains(rename)
+    }
+
+    fun addRename(rename: String) {
+        renames.add(rename)
     }
 
     override fun toString(): String {

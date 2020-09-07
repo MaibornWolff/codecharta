@@ -1,6 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
+import java.lang.NullPointerException
 
 class VersionControlledFilesList {
 
@@ -47,7 +48,7 @@ class VersionControlledFilesList {
         val possibleConflictName = buildPossibleConflictName(newFileName)
         val oldestName = retrieveOldestName(possibleConflictName)
 
-        if (versionControlledFiles.containsKey(newFileName)) {
+        if (versionControlledFiles.containsKey(newFileName) && !get(oldFileName)!!.containsRename(newFileName)) {
             val marker = nameConflictsMap[newFileName]
             val newMarker = if (marker != null) marker + 1 else 0
             newVCFFileName = newFileName + "_\\0_" + newMarker
@@ -57,11 +58,17 @@ class VersionControlledFilesList {
         if (oldestName != null) {
             renamesMap.remove(possibleConflictName)
             renamesMap[newVCFFileName] = oldestName
+            get(oldestName)!!.addRename(newVCFFileName)
         } else {
             renamesMap[newVCFFileName] = oldFileName
+            get(oldFileName)!!.addRename(newVCFFileName)
         }
 
-        get(resolveFileKey(oldFileName))!!.filename = newFileName
+        try {
+            get(resolveFileKey(oldFileName))!!.filename = newFileName
+        } catch (exc: NullPointerException) {
+            print(exc);
+        }
     }
 
     private fun resolveFileKey(trackName: String): String {

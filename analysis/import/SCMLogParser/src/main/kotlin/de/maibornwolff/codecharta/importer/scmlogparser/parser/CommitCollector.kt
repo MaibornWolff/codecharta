@@ -47,6 +47,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                                 metricsFactory
                                                                                 )
                         versionControlledFilesList.add(trackName, missingVersionControlledFile)
+                        versionControlledFilesList.get(trackName)!!.addRename(trackName)
 
                         it.markInitialAdd()
                         missingVersionControlledFile.registerCommit(commit, it)
@@ -68,6 +69,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 }
 
                 Modification.Type.RENAME -> {
+                    if (it.oldFilename.contains("NodeMergerTest"))
+                        print("here")
                     versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
                     versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                 }
