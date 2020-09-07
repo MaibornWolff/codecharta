@@ -13,7 +13,7 @@ Notice, that most folders will not be located at the same position as before.
 
 # Fixate folders
 
-In order to prevent folders from changing locations, we introduced a new attribute to the `.cc.json` called `fixed`.
+In order to prevent folders from changing locations, we introduced a new attribute to the `.cc.json` called `fixedPosition`.
 This attribute is not auto-generated during the analysis and has to be defined manually by editing the `.cc.json`.
 
 Setting this property is restricted to the top level folders and won't have any effect on sub-folders (folders in folders).
@@ -21,16 +21,13 @@ Setting this property is restricted to the top level folders and won't have any 
 # API
 
 ```json
- "fixed": {
-    "x": 60,
-    "y:": 40,
+ "fixedPosition": {
+    "left": 60,
+    "top:": 40,
     "width": 35,
     "height": 55
  }
 ```
-
-The `fixed`-attribute includes a coordinate `x` and `y`. These represent the top-left corner of the folder. `width`
-defines the length in x-direction and `height` defines the length in y-direction.
 
 The property values must be numbers in the range between 0 and 100. They represent the size of the value in percent.
 
@@ -60,9 +57,9 @@ The property values must be numbers in the range between 0 and 100. They represe
 							"children": []
 						}
 					],
-					"fixed": {
-						"x": 5,
-						"y:": 5,
+					"fixedPosition": {
+						"left": 5,
+						"top:": 5,
 						"width": 50,
 						"height": 30
 					}
@@ -72,9 +69,9 @@ The property values must be numbers in the range between 0 and 100. They represe
 					"type": "Folder",
 					"attributes": {},
 					"children": [],
-					"fixed": {
-						"x": 60,
-						"y:": 40,
+					"fixedPosition": {
+						"left": 60,
+						"top:": 40,
 						"width": 35,
 						"height": 55
 					}
@@ -85,8 +82,10 @@ The property values must be numbers in the range between 0 and 100. They represe
 }
 ```
 
-Notice, that `folder_1` start at `x:5`, `y:5`, because we apply a margin of `5` around the map.
-`folder_2` starts at `x:60`, `y:40`, because `folder_1` ends at `x:55`, `y:35` and we apply another margin of `5` between those.
+Since a margin between folders is recommended, we set the coordinates for the folder in the top-left corner
+to `left: 5` and `top: 5`. The margin between the border of the map and `folder_1` is therefore `5`, but can be chosen at will.
+In order to set the coordinates to adjacent folders, we can again apply any margin between `folder_1` and `folder_2`. We chose
+a margin of `5` again, so that the coordinates of `folder_2` must be `left: 60` and `top: 40`.
 
 ## Restrictions
 
@@ -94,8 +93,9 @@ Notice, that `folder_1` start at `x:5`, `y:5`, because we apply a margin of `5` 
 
 In order to build a valid custom `.cc.json`, these rules must be followed:
 
--   The value `x + width` or `y + height` must be in a range of `[0, 100]`.
+-   The values of `left`, `top`, `width` and `height` must be in range of `[0, 100]
+-   The value `left + width` or `top + height` must be in a range of `[0, 100]`.
 -   Folders may not overlap.
--   Leaving space between folders (for visibility reasons) is recomended.
--   Only folders on the root can have the `fixed`-attribute.
--   If at least one folder is `fixed`, all folders on the root must be `fixed`.
+-   Leaving space between folders (for visibility reasons) is recommended.
+-   Only folders on the root can have the `fixedPosition`-attribute.
+-   If there exists at least on fixated folder, all folders on the root must be fixated.
