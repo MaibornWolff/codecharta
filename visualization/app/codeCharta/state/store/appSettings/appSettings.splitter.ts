@@ -1,6 +1,7 @@
 import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append action splitter import here
+import { splitPanelSelectionAction } from "./panelSelection/panelSelection.splitter"
 import { splitCameraTargetAction } from "./cameraTarget/cameraTarget.splitter"
 import { splitIsAttributeSideBarVisibleAction } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.splitter"
 import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
@@ -28,6 +29,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.panelSelection !== undefined) {
+		actions.push(splitPanelSelectionAction(payload.panelSelection))
+	}
+
 	if (payload.cameraTarget !== undefined) {
 		actions.push(splitCameraTargetAction(payload.cameraTarget))
 	}
