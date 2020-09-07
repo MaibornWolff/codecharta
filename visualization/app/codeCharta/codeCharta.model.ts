@@ -40,12 +40,12 @@ export interface CodeMapNode {
 	deltas?: {
 		[key: string]: number
 	}
-	fixed?: Fixed
+	fixedPosition?: FixedPosition
 }
 
-export interface Fixed {
-	x: number
-	y: number
+export interface FixedPosition {
+	left: number
+	top: number
 	width: number
 	height: number
 }
