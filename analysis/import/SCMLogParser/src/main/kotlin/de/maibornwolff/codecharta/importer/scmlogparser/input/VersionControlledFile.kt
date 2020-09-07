@@ -35,15 +35,15 @@ class VersionControlledFile internal constructor(
     /**
      * registers commits in chronological order
      */
-    fun registerCommit(commit: Commit, modification: Modification) {
-        //@TODO handle other edge cases
+    fun registerCommit(commit: Commit, mod: Modification) {
         when (true) {
-            this.isDeleted() && !modification.isTypeDelete() -> this.mutate()
+            this.isDeleted() && (mod.isTypeModify() || mod.isTypeRename()) -> this.mutate()
+            !commit.isMergeCommit() && !this.isDeleted() && mod.isTypeAdd() && !mod.isInitialAdd() -> this.mutate()
         }
 
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
-        metrics.forEach { it.registerModification(modification) }
+        metrics.forEach { it.registerModification(mod) }
     }
 
     override fun toString(): String {

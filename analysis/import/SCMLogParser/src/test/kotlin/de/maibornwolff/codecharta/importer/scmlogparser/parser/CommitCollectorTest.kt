@@ -35,10 +35,7 @@ class CommitCollectorTest {
         assertTrue(versionControlledFilesList.get(testFileName)!!.isDeleted())
     }
 
-    @Test
-    fun test_given_deleted_file_when_modified_then_flag_as_mutated() {
-        val testFileName = "src/Main.java";
-
+    private fun load_case_add_delete_modify_mutated(testFileName: String): Array<Commit> {
         val addModification = Modification(testFileName, Modification.Type.ADD)
         val deleteModification = Modification(testFileName, Modification.Type.DELETE)
         val modifyModification = Modification(testFileName, Modification.Type.MODIFY)
@@ -47,37 +44,133 @@ class CommitCollectorTest {
         val deleteCommit = Commit("Delete $testFileName", listOf(deleteModification), OffsetDateTime.now())
         val modifyCommit = Commit("Modify $testFileName", listOf(modifyModification), OffsetDateTime.now())
 
+        return arrayOf(addCommit, deleteCommit, modifyCommit)
+    }
+
+    private fun load_case_add_delete_rename_mutated(testFileName: String, newFileName: String): Array<Commit> {
+        val addModification = Modification(testFileName, Modification.Type.ADD)
+        val deleteModification = Modification(testFileName, Modification.Type.DELETE)
+        val renameModification = Modification(newFileName, testFileName, Modification.Type.RENAME)
+
+        val addCommit = Commit("Add $testFileName", listOf(addModification), OffsetDateTime.now())
+        val deleteCommit = Commit("Delete $testFileName", listOf(deleteModification), OffsetDateTime.now())
+        val renameCommit = Commit("Modify $testFileName", listOf(renameModification), OffsetDateTime.now())
+
+        return arrayOf(addCommit, deleteCommit, renameCommit)
+    }
+
+    private fun load_case_add_add_mutated(testFileName: String): Array<Commit> {
+        val addModification1 = Modification(testFileName, Modification.Type.ADD)
+
+        // Optional modifications between the two adds
+        val modifyModification = Modification(testFileName, Modification.Type.MODIFY)
+        val addModification2 = Modification(testFileName, Modification.Type.ADD)
+
+        val addCommit1 = Commit("Add $testFileName", listOf(addModification1), OffsetDateTime.now())
+        val modifyCommit = Commit("Modify $testFileName", listOf(modifyModification), OffsetDateTime.now())
+        val addCommit2 = Commit("Add again $testFileName", listOf(addModification2), OffsetDateTime.now())
+
+        return arrayOf(addCommit1, modifyCommit, addCommit2)
+    }
+
+    @Test
+    fun test_given_deleted_file_when_modified_then_flag_as_mutated() {
+        val testFileName = "src/Main.java";
+
+        val commits = load_case_add_delete_modify_mutated(testFileName)
         val versionControlledFilesList =
-                Stream.of(addCommit, deleteCommit, modifyCommit).collect(CommitCollector.create(metricsFactory))
+                Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
 
         assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(true))
         assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
     }
 
     @Test
-    fun test_given_mutated_file_when_merge_commit_then_resolve_mutated_files() {
+    fun test_given_deleted_file_when_renamed_then_flag_as_mutated() {
+        val testFileName = "src/RenameMe.java";
+        val newFileName = "src/RenamedNewFileName.java"
+
+        val commits = load_case_add_delete_rename_mutated(testFileName, newFileName)
+        val versionControlledFilesList =
+                Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
+
+        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(true))
+        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
+    }
+
+    @Test
+    fun test_given_added_file_when_add_again_then_flag_as_mutated() {
+        val testFileName = "src/Add.java";
+
+        val commits = load_case_add_add_mutated(testFileName)
+        val versionControlledFilesList =
+                Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
+
+        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(false))
+        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
+    }
+
+    @Test
+    fun test_given_added_mutated_file_when_merge_commit_then_modify_and_resolve_mutated_file() {
+        val testFileName = "src/AddCase.java";
+
+        val commits = load_case_add_add_mutated(testFileName)
+        val versionControlledFilesList =
+                Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
+
+        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(false))
+        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
+
+        val modifyModification = Modification(testFileName, Modification.Type.MODIFY)
+        val mergeCommitModify =
+                Commit("Modify by Merge $testFileName", listOf(modifyModification), OffsetDateTime.now(), true)
+
+        val arrayOfCommits = commits + arrayOf(mergeCommitModify)
+        val versionControlledFilesList2 =
+                Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
+
+        assertThat(versionControlledFilesList2.get(testFileName)!!.isDeleted(), equalTo(false))
+        assertThat(versionControlledFilesList2.get(testFileName)!!.isMutated(), equalTo(false))
+    }
+
+    @Test
+    fun test_given_deleted_mutated_file_when_merge_commit_then_add_and_resolve_mutated_file() {
         val testFileName = "src/Main.java";
 
-        val addModification = Modification(testFileName, Modification.Type.ADD)
-        val deleteModification = Modification(testFileName, Modification.Type.DELETE)
-        val modifyModification = Modification(testFileName, Modification.Type.MODIFY)
-
-        val addCommit = Commit("Add $testFileName", listOf(addModification), OffsetDateTime.now())
-        val deleteCommit = Commit("Delete $testFileName", listOf(deleteModification), OffsetDateTime.now())
-        val modifyCommit = Commit("Modify $testFileName", listOf(modifyModification), OffsetDateTime.now())
-
+        val commits = load_case_add_delete_modify_mutated(testFileName)
         val versionControlledFilesList =
-                Stream.of(addCommit, deleteCommit, modifyCommit).collect(CommitCollector.create(metricsFactory))
+                Stream.of(*commits).collect(CommitCollector.create(metricsFactory))
 
         assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(true))
         assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(true))
 
-        //commits
+        val addModification = Modification(testFileName, Modification.Type.ADD)
+        val mergeCommitAdd = Commit("Add by Merge $testFileName", listOf(addModification), OffsetDateTime.now(), true)
 
+        val arrayOfCommits = commits + arrayOf(mergeCommitAdd)
+        val versionControlledFilesList2 =
+                Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
 
-        //merge commit
+        assertThat(versionControlledFilesList2.get(testFileName)!!.isDeleted(), equalTo(false))
+        assertThat(versionControlledFilesList2.get(testFileName)!!.isMutated(), equalTo(false))
+    }
 
-        //
+    @Test
+    fun test_given_deleted_mutated_file_when_merge_commit_then_delete_and_resolve_mutated_file() {
+        val testFileName = "src/DeleteMeAtTheEnd.java";
+
+        val commits = load_case_add_delete_modify_mutated(testFileName)
+
+        val deleteModification = Modification(testFileName, Modification.Type.DELETE)
+        val mergeCommitDelete =
+                Commit("Delete by Merge $testFileName", listOf(deleteModification), OffsetDateTime.now(), true)
+
+        val arrayOfCommits = commits + arrayOf(mergeCommitDelete)
+        val versionControlledFilesList =
+                Stream.of(*arrayOfCommits).collect(CommitCollector.create(metricsFactory))
+
+        assertThat(versionControlledFilesList.get(testFileName)!!.isDeleted(), equalTo(true))
+        assertThat(versionControlledFilesList.get(testFileName)!!.isMutated(), equalTo(false))
     }
 
     //    @Test

@@ -8,12 +8,14 @@ class Modification(
     val type: Type
 ) {
 
-    constructor(filename: String, type: Type) : this(filename, 0, 0, type)
+    private var initialAdd = false
 
-    constructor(filename: String, oldFilename: String, type: Type) : this(filename, oldFilename, 0, 0, type)
+    constructor(filename: String, type: Type): this(filename, 0, 0, type)
+
+    constructor(filename: String, oldFilename: String, type: Type): this(filename, oldFilename, 0, 0, type)
 
     @JvmOverloads
-    constructor(filename: String, additions: Long = 0, deletions: Long = 0, type: Type = Type.UNKNOWN) : this(filename,
+    constructor(filename: String, additions: Long = 0, deletions: Long = 0, type: Type = Type.UNKNOWN): this(filename,
             "", additions, deletions, type)
 
     enum class Type {
@@ -28,16 +30,28 @@ class Modification(
         return type == Type.DELETE
     }
 
-    fun isTypeAdd(): Boolean{
+    fun isTypeAdd(): Boolean {
         return type == Type.ADD
     }
 
-    fun isTypeModify(): Boolean{
+    fun isTypeModify(): Boolean {
         return type == Type.MODIFY
     }
 
-    fun getTrackName(): String{
+    fun isTypeRename(): Boolean {
+        return type == Type.RENAME
+    }
+
+    fun getTrackName(): String {
         return if (oldFilename.isNotEmpty()) oldFilename else currentFilename
+    }
+
+    fun markInitialAdd() {
+        initialAdd = true
+    }
+
+    fun isInitialAdd(): Boolean {
+        return initialAdd
     }
 
     companion object {

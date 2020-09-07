@@ -57,14 +57,8 @@ class VersionControlledFilesList {
         if (oldestName != null) {
             renamesMap.remove(possibleConflictName)
             renamesMap[newVCFFileName] = oldestName
-
-            // this will be done in ADD case later
-            //versionControlledFiles[oldestName]!!.unmarkDeleted()
         } else {
             renamesMap[newVCFFileName] = oldFileName
-
-            //TODO Might be done by VCF Class internally (registerCommit method)
-            //versionControlledFiles[it.oldFilename]!!.unmarkDeleted()
         }
 
         get(resolveFileKey(oldFileName))!!.filename = newFileName
@@ -79,9 +73,9 @@ class VersionControlledFilesList {
     }
 
     /**
-     * If file name has already existed before, created new "salted" name
+     * If file name has already existed before, created new "salted" name to keep track of both files separately.
      */
-    private fun buildPossibleConflictName(trackName: String): String {
+    fun buildPossibleConflictName(trackName: String): String {
         if (nameConflictsMap.containsKey(trackName)) {
             return trackName + "_\\0_" + nameConflictsMap[trackName]
         }

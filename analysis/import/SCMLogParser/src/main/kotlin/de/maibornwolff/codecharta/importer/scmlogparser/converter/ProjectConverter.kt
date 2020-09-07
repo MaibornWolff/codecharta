@@ -46,7 +46,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     fun convert(versionControlledFiles: VersionControlledFilesList, metricsFactory: MetricsFactory): Project {
         val projectBuilder = ProjectBuilder()
 
-        //TODO discuss/check performance:
+        //TODO discuss/check performance
+        //TODO ENSURE to filter deleted AND maybe mutated files as well from being exported in a cc.json file.
         versionControlledFiles.getList().values
                 .filter { !it.isDeleted() }
                 .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
