@@ -71,8 +71,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 Modification.Type.RENAME -> {
                     if (it.oldFilename.contains("NodeMergerTest"))
                         print("here")
-                    versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
                     versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
+                    versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
                 }
 
                 else -> {

@@ -45,7 +45,7 @@ class VersionControlledFilesList {
 
     fun rename(oldFileName: String, newFileName: String) {
         var newVCFFileName = newFileName
-        val possibleConflictName = buildPossibleConflictName(newFileName)
+        val possibleConflictName = buildPossibleConflictName(oldFileName) //newFileName?
         val oldestName = retrieveOldestName(possibleConflictName)
 
         if (versionControlledFiles.containsKey(newFileName) && !get(oldFileName)!!.containsRename(newFileName)) {
@@ -65,7 +65,15 @@ class VersionControlledFilesList {
         }
 
         try {
-            get(oldFileName)!!.filename = newFileName
+            println("stop")
+            if (oldestName != null)
+            {
+                get(oldestName)!!.filename = newFileName
+            }
+            else {
+                get(oldFileName)!!.filename = newFileName
+            }
+          //get(oldFileName)!!.filename = newFileName
         } catch (exc: NullPointerException) {
             print(exc);
         }
