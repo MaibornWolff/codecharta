@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledF
 
 class VersionControlledFilesList {
 
-    private var versionControlledFiles: MutableMap<String, VersionControlledFile> = mutableMapOf();
+    private var versionControlledFiles: MutableMap<String, VersionControlledFile> = mutableMapOf()
 
     /**
      * The key of the map is the current name

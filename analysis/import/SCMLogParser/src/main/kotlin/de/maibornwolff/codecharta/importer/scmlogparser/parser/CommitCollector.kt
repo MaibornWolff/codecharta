@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import java.lang.NullPointerException
 import java.util.function.BiConsumer
 import java.util.function.BinaryOperator
 import java.util.function.Supplier
@@ -26,14 +25,14 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
         commit.modifications.forEach {
 
-            //Registers each modification for a given commit, performing different actions depending on the type
-            //to preserve uniqueness a marker is added to the name, following a marker_\\0_marker scheme, for tracking in the map
-            //TODO @vladimir: Do we still need the comments?
-            //Type.ADD: creates a new VCF file, if it doesn't exist, adds it to the VCF map and registers adding
-            //Type.DELETE: selects the tracking name and deletes the file from the VCF map, and rename map if needed
-            //Type.RENAME: Checks for potential rename conflicts and increments the tracking pointer if one is found
+            // Registers each modification for a given commit, performing different actions depending on the type
+            // to preserve uniqueness a marker is added to the name, following a marker_\\0_marker scheme, for tracking in the map
+            // TODO @vladimir: Do we still need the comments?
+            // Type.ADD: creates a new VCF file, if it doesn't exist, adds it to the VCF map and registers adding
+            // Type.DELETE: selects the tracking name and deletes the file from the VCF map, and rename map if needed
+            // Type.RENAME: Checks for potential rename conflicts and increments the tracking pointer if one is found
             // -> creates a new rename entry or updates the key to the current name used to track the oldest file name
-            //Type.MODIFY/Type.UNKNOWN: simply registers this modification for the commit
+            // Type.MODIFY/Type.UNKNOWN: simply registers this modification for the commit
             val trackName = it.getTrackName()
 
             when (it.type) {
@@ -42,7 +41,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     // Add new File
                     val file = versionControlledFilesList.get(trackName)
                     if (file == null) {
-                        //TODO create VersionControlledFileFactory to hide logic for constructing the conflict name
+                        // TODO create VersionControlledFileFactory to hide logic for constructing the conflict name
                         val missingVersionControlledFile = VersionControlledFile(
                                 versionControlledFilesList.buildPossibleConflictName(trackName),
                                 metricsFactory
@@ -56,7 +55,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                             versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                         }
                         if (file.isDeleted()) {
-                            //TODO Do we need to register a commit in this case? No :)
+                            // TODO Do we need to register a commit in this case? No :)
                             file.unmarkDeleted()
                             file.resetMutation()
                         }
@@ -64,7 +63,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 }
 
                 Modification.Type.DELETE -> {
-                    //TODO registerCommit() needed?
+                    // TODO registerCommit() needed?
                     versionControlledFilesList.get(trackName)!!.markDeleted()
                 }
 
@@ -74,8 +73,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 }
 
                 else -> {
-                    //TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
-                    //TODO consider DElTA Mode and Edge calculation
+                    // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
+                    // TODO consider DElTA Mode and Edge calculation
                     versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                 }
             }

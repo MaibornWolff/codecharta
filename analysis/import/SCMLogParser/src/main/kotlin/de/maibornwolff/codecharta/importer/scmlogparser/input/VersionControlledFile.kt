@@ -23,10 +23,7 @@ class VersionControlledFile internal constructor(
 
     constructor(filename: String, metricsFactory: MetricsFactory): this(filename, metricsFactory.createMetrics())
 
-    internal constructor(
-            filename: String,
-            vararg metrics: Metric
-                        ): this(filename, Arrays.asList<Metric>(*metrics))
+    internal constructor(filename: String, vararg metrics: Metric): this(filename, Arrays.asList<Metric>(*metrics))
 
     init {
         this.filename = filename
@@ -78,26 +75,26 @@ class VersionControlledFile internal constructor(
     }
 
     fun markDeleted() {
-        deleted = true;
+        deleted = true
     }
 
     fun unmarkDeleted() {
-        deleted = false;
+        deleted = false
     }
 
     fun isDeleted(): Boolean {
-        return deleted;
+        return deleted
     }
 
     fun mutate() {
-        mutated = true;
+        mutated = true
     }
 
     fun resetMutation() {
-        mutated = false;
+        mutated = false
     }
 
     fun isMutated(): Boolean {
-        return mutated;
+        return mutated
     }
 }

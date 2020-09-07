@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
-import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

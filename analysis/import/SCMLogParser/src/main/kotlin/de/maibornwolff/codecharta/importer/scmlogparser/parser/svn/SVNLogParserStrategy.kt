@@ -21,7 +21,7 @@ class SVNLogParserStrategy : LogParserStrategy {
     }
 
     override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
-        //@TODO check and support SVN with new merge commit handling
+        // TODO check and support SVN with new merge commit handling
         return false
     }
 

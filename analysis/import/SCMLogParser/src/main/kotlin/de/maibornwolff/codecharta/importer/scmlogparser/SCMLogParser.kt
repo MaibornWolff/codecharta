@@ -171,9 +171,9 @@ class SCMLogParser(
             CommandLine.call(SCMLogParser(), System.out, *args)
         }
 
-        //@TODO move to integration tests
+        // TODO move to integration tests
         // function parses given git command. how to use:
-        //val test = "git ls-tree --name-only".runCommand(File("C:\\Users\\VladimirR\\Documents\\codecharta"))
+        // val test = "git ls-tree --name-only".runCommand(File("C:\\Users\\VladimirR\\Documents\\codecharta"))
         fun String.runCommand(workingDir: File): String? {
             try {
                 val commands = this.split("\\s".toRegex())

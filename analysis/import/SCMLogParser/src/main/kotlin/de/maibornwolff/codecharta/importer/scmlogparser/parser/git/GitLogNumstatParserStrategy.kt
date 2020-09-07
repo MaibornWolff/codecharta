@@ -45,7 +45,7 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
     }
 
     override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
-        //@TODO not implemented yet
+        // TODO not implemented yet
         return false
     }
 
