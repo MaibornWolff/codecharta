@@ -7,7 +7,8 @@ import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 import { ThreeViewerService } from "./threeViewerService"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
 import * as THREE from "three"
-import { OrbitControls, Scene } from "three"
+import { Scene } from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 describe("ThreeViewerService", () => {
 	let threeViewerService: ThreeViewerService

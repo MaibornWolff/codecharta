@@ -2,13 +2,12 @@ import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { Node } from "../../codeCharta.model"
-import { Vector3 } from "three"
+import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { withMockedEventMethods } from "../../util/dataMocks"
-import * as THREE from "three"
 import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
@@ -26,10 +25,10 @@ describe("CodeMapLabelService", () => {
 
 	beforeEach(() => {
 		restartSystem()
+		rebuild()
 		withMockedEventMethods($rootScope)
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
-		rebuild()
 		setCanvasRenderSettings()
 	})
 
@@ -47,17 +46,14 @@ describe("CodeMapLabelService", () => {
 	}
 
 	function withMockedThreeCameraService() {
-		threeCameraService.camera = { position: { distanceTo: jest.fn() } }
+		threeCameraService.camera = new PerspectiveCamera()
+		threeCameraService.camera.position.distanceTo = jest.fn()
 	}
 
 	function withMockedThreeSceneService() {
-		Object.assign(threeSceneService, {
-			mapGeometry: new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10)),
-			labels: {
-				add: jest.fn(),
-				children: jest.fn()
-			}
-		})
+		threeSceneService.mapGeometry = new Group().add(new Mesh(new BoxGeometry(10, 10, 10)))
+		threeSceneService.labels.add = jest.fn()
+		threeSceneService.labels.children = []
 	}
 
 	function setCanvasRenderSettings() {
