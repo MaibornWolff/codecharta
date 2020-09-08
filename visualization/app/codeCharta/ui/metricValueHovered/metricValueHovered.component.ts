@@ -71,9 +71,8 @@ export class MetricValueHoveredController
 			return this.POSITIVE_COLOR
 		} else if (heightDelta < 0) {
 			return this.NEGATIVE_COLOR
-		} else {
-			return this.NEUTRAL_COLOR
 		}
+		return this.NEUTRAL_COLOR
 	}
 
 	//TODO: Check if this is required after finishing redux

@@ -37,10 +37,9 @@ module.exports = {
                 "leadingUnderscore": "allow"
             }
         ],
-        "@typescript-eslint/no-unused-vars":
-            ["error"],
-        "object-shorthand":
-            ["error", "always"],
+        "@typescript-eslint/no-unused-vars": ["error"],
+        "object-shorthand": ["error", "always"],
+        "no-else-return": ["error"],
 
         // Do not apply inappropriate rules below
         "@typescript-eslint/no-use-before-define":

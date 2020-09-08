@@ -112,9 +112,8 @@ function getHeightValue(s: State, squaredNode: HierarchyRectangularNode<CodeMapN
 		return MIN_BUILDING_HEIGHT
 	} else if (s.appSettings.invertHeight) {
 		return maxHeight - heightValue
-	} else {
-		return heightValue
 	}
+	return heightValue
 }
 
 function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, s: State, flattened: boolean): boolean {
@@ -131,17 +130,15 @@ function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, s: State, flat
 function getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
 	if (width > length) {
 		return new Vector3(vector.x - mapSize + width / 4, vector.y + height, vector.z - mapSize + length / 2)
-	} else {
-		return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + length / 4)
 	}
+	return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + length / 4)
 }
 
 function getOutgoingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
 	if (width > length) {
 		return new Vector3(vector.x - mapSize + 0.75 * width, vector.y + height, vector.z - mapSize + length / 2)
-	} else {
-		return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + 0.75 * length)
 	}
+	return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + 0.75 * length)
 }
 
 function isNodeToBeFlat(codeMapNode: CodeMapNode, s: State): boolean {
@@ -173,21 +170,19 @@ function getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, fl
 	const mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
 	if (isDeltaState) {
 		return s.appSettings.mapColors.base
-	} else {
-		const metricValue: number = node.attributes[s.dynamicSettings.colorMetric]
-
-		if (metricValue == null) {
-			return s.appSettings.mapColors.base
-		} else if (flattened) {
-			return s.appSettings.mapColors.flat
-		} else if (metricValue < s.dynamicSettings.colorRange.from) {
-			return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
-		} else if (metricValue > s.dynamicSettings.colorRange.to) {
-			return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
-		} else {
-			return s.appSettings.mapColors.neutral
-		}
 	}
+	const metricValue: number = node.attributes[s.dynamicSettings.colorMetric]
+
+	if (metricValue == null) {
+		return s.appSettings.mapColors.base
+	} else if (flattened) {
+		return s.appSettings.mapColors.flat
+	} else if (metricValue < s.dynamicSettings.colorRange.from) {
+		return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
+	} else if (metricValue > s.dynamicSettings.colorRange.to) {
+		return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
+	}
+	return s.appSettings.mapColors.neutral
 }
 
 export const TreeMapHelper = {

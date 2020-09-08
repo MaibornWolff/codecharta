@@ -13,12 +13,11 @@ export class TreeMapGenerator {
 
 		if (this.hasFixedFolders(map)) {
 			return this.buildSquarifiedTreeMapsForFixedFolders(map, s, heightScale, maxHeight, isDeltaState)
-		} else {
-			const squarifiedTreeMap = this.getSquarifiedTreeMap(map, s)
-			return squarifiedTreeMap.treeMap
-				.descendants()
-				.map(squarifiedNode => TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState))
 		}
+		const squarifiedTreeMap = this.getSquarifiedTreeMap(map, s)
+		return squarifiedTreeMap.treeMap
+			.descendants()
+			.map(squarifiedNode => TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState))
 	}
 
 	private static hasFixedFolders(map: CodeMapNode): boolean {

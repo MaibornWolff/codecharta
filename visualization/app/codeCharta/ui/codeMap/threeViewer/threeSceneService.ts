@@ -164,9 +164,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	public getHighlightedNode(): Node {
 		if (this.getHighlightedBuilding()) {
 			return this.getHighlightedBuilding().node
-		} else {
-			return null
 		}
+		return null
 	}
 
 	private reselectBuilding() {
