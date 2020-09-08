@@ -45,5 +45,5 @@ class ProjectSerializerTest : Spek({
             assertTrue { File("test.cc.json.gz").exists() }
             File("test.cc.json.gz").delete()
         }
-}
+    }
 })

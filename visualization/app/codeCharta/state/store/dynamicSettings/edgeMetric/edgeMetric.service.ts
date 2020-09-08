@@ -1,15 +1,15 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgeMetricActions, setEdgeMetric } from "./edgeMetric.actions"
-import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../../edgeMetricData.service"
-import { MetricData } from "../../../../codeCharta.model"
+import { EdgeMetricData } from "../../../../codeCharta.model"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "../../metricData/edgeMetricData/edgeMetricData.service"
 
 export interface EdgeMetricSubscriber {
 	onEdgeMetricChanged(edgeMetric: string)
 }
 
-export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataServiceSubscriber {
+export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataSubscriber {
 	private static EDGE_METRIC_CHANGED_EVENT = "edge-metric-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -23,7 +23,7 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataService
 		}
 	}
 
-	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
+	public onEdgeMetricDataChanged(edgeMetrics: EdgeMetricData[]) {
 		if (!edgeMetrics.map(x => x.name).includes(this.storeService.getState().dynamicSettings.edgeMetric)) {
 			this.reset()
 		}

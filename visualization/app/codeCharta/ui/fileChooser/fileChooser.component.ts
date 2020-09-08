@@ -11,6 +11,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
+import zlib from "browserify-zlib"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
@@ -39,7 +40,7 @@ export class FileChooserController {
 
 				reader.onload = event => {
 					if (isCompressed) {
-						content = require("zlib").unzipSync(Buffer.from(event.target.result))
+						content = zlib.unzipSync(Buffer.from(event.target.result))
 					} else {
 						content = event.target.result
 					}

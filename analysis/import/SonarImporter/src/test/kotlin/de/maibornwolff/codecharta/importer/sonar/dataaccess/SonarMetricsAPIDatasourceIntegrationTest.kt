@@ -46,11 +46,15 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetrics() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
 
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
@@ -64,16 +68,24 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetricsList() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(2)))
-                .willReturn(aResponse()
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(2)))
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
 
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
@@ -87,11 +99,15 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetrics_if_authenticated() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
 
         // when
         val ds = SonarMetricsAPIDatasource(USERNAME, createBaseUrl())
@@ -105,9 +121,13 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetrics_should_throw_exception_if_unauthorized() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
-                .willReturn(aResponse()
-                        .withStatus(401)))
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(
+                    aResponse()
+                        .withStatus(401)
+                )
+        )
 
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
@@ -120,9 +140,13 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getAvailableMetrics_should_throw_exception_if_return_code_not_oK() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
-                .willReturn(aResponse()
-                        .withStatus(501)))
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1)))
+                .willReturn(
+                    aResponse()
+                        .withStatus(501)
+                )
+        )
 
         // when
         val ds = SonarMetricsAPIDatasource(createBaseUrl())
@@ -135,11 +159,15 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getNumberOfPages_from_server() {
         // given
-        stubFor(get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(METRIC_LIST_URL_PATH(1))).withBasicAuth(USERNAME, "")
+                .willReturn(
+                    aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(createMetricResponseAsJsonString())))
+                        .withBody(createMetricResponseAsJsonString())
+                )
+        )
 
         // when
         val ds = SonarMetricsAPIDatasource(USERNAME, createBaseUrl())
@@ -152,8 +180,10 @@ class SonarMetricsAPIDatasourceIntegrationTest {
     companion object {
 
         private val METRIC_ARRAY =
-                arrayOf("accessors", "blocker_violations", "public_api", "public_documented_api_density",
-                        "public_undocumented_api")
+            arrayOf(
+                "accessors", "blocker_violations", "public_api", "public_documented_api_density",
+                "public_undocumented_api"
+            )
 
         private const val PORT = 8089
         private const val USERNAME = "somename"

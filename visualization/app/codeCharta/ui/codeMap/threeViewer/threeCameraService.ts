@@ -20,7 +20,7 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		this.throttledCameraChange = _.throttle(() => {
-			this.storeService.dispatch(setCamera(this.camera.position), true)
+			this.storeService.dispatch(setCamera(this.camera.position), { silent: true })
 		}, ThreeCameraService.DEBOUNCE_TIME)
 		CameraService.subscribe(this.$rootScope, this)
 	}

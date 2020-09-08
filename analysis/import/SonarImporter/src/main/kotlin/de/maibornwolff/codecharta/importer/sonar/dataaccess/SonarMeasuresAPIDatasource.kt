@@ -37,10 +37,10 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         val flowable = Flowable.fromIterable(metricsList.windowed(MAX_METRICS_IN_ONE_SONARCALL, MAX_METRICS_IN_ONE_SONARCALL, true))
         flowable.flatMap { p ->
             measureBatches++
-                    getMeasures(componentKey, p)
-                            .subscribeOn(Schedulers.computation())
-                }
-                .blockingForEach { componentMap.updateComponent(it) }
+            getMeasures(componentKey, p)
+                .subscribeOn(Schedulers.computation())
+        }
+            .blockingForEach { componentMap.updateComponent(it) }
 
         System.err.println()
         return componentMap
@@ -48,31 +48,34 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
     private fun getMeasures(componentKey: String, sublist: List<String>): Flowable<Component> {
 
-        return Flowable.create({ subscriber ->
-            var page = 1
-            var total: Int
-            do {
-                val measures = getMeasuresFromPage(componentKey, sublist, page)
-                total = measures.paging.total
+        return Flowable.create(
+            { subscriber ->
+                var page = 1
+                var total: Int
+                do {
+                    val measures = getMeasuresFromPage(componentKey, sublist, page)
+                    total = measures.paging.total
 
-                if (measures.components != null) {
-                    measures.components
+                    if (measures.components != null) {
+                        measures.components
                             .filter { c -> c.qualifier == Qualifier.FIL || c.qualifier == Qualifier.UTS }
                             .forEach { subscriber.onNext(it) }
-                }
+                    }
 
-                updateProgress(total)
-            } while (page++ * PAGE_SIZE < total)
-            subscriber.onComplete()
-        }, BackpressureStrategy.BUFFER)
+                    updateProgress(total)
+                } while (page++ * PAGE_SIZE < total)
+                subscriber.onComplete()
+            },
+            BackpressureStrategy.BUFFER
+        )
     }
 
     internal fun getMeasuresFromPage(componentKey: String, metrics: List<String>, pageNumber: Int): Measures {
         val measureAPIRequestURI = createMeasureAPIRequestURI(componentKey, metrics, pageNumber)
 
         val request = client
-                .target(measureAPIRequestURI)
-                .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
+            .target(measureAPIRequestURI)
+            .request(MediaType.APPLICATION_JSON + "; charset=utf-8")
 
         if (!user.isEmpty()) {
             request.header("Authorization", "Basic " + AuthentificationHandler.createAuthTxtBase64Encoded(user))
@@ -111,6 +114,6 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
         private const val PAGE_SIZE = 500
         private const val MAX_METRICS_IN_ONE_SONARCALL = 15
         private const val MEASURES_URL_PATTERN =
-                "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
+            "%s/api/measures/component_tree?baseComponentKey=%s&qualifiers=FIL,UTS&metricKeys=%s&p=%s&ps=$PAGE_SIZE"
     }
 }

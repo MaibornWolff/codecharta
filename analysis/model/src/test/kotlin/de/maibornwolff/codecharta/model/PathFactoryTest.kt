@@ -25,7 +25,7 @@ class PathFactoryTest : Spek({
     describe("paths with leading slash") {
         it("should produce same hierarchical position") {
             val pathsWithoutSlash = listOf(
-                    "file", "subdir/file", "subdir/subdir/file", "subdir/othersubdir/file"
+                "file", "subdir/file", "subdir/subdir/file", "subdir/othersubdir/file"
             )
 
             for (path in pathsWithoutSlash) {

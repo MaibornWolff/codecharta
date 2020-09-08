@@ -209,7 +209,7 @@ confirm(message, printMessage)
 
 repo.index.add([release_post_path, changelog_path, gradle_properties,
                 analysis_package_json, analysis_package_lock_json, visualization_package_json, visualization_package_lock_json])
-subprocess.run(["git", "commit", "-a" "-m", f'"Releasing {new_version}"'], shell=True)
+subprocess.run(["git", "commit", "-a", "-m", f'"Releasing {new_version}"'], shell=True)
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
 

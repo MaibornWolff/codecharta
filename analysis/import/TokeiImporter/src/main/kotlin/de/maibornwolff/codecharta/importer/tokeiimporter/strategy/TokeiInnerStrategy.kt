@@ -41,11 +41,14 @@ class TokeiInnerStrategy(rootName: String, pathSeparator: String) : ImporterStra
         val fileName = sanitizedName.substringAfterLast("/")
 
         val node = MutableNode(
-                fileName, attributes = mapOf(
+            fileName,
+            attributes = mapOf(
                 "empty_lines" to stat.blanks,
                 "rloc" to stat.code,
                 "comment_lines" to stat.comments,
-                "loc" to stat.lines))
+                "loc" to stat.lines
+            )
+        )
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
     }

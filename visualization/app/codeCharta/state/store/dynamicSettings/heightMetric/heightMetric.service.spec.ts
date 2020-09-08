@@ -5,7 +5,7 @@ import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhe
 import { HeightMetricAction, HeightMetricActions, setHeightMetric } from "./heightMetric.actions"
 import { HeightMetricService } from "./heightMetric.service"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
-import { MetricService } from "../../../metric.service"
+import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
 describe("HeightMetricService", () => {
 	let heightMetricService: HeightMetricService
@@ -38,12 +38,12 @@ describe("HeightMetricService", () => {
 			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, heightMetricService)
 		})
 
-		it("should subscribe to MetricService", () => {
-			MetricService.subscribe = jest.fn()
+		it("should subscribe to NodeMetricDataService", () => {
+			NodeMetricDataService.subscribe = jest.fn()
 
 			rebuildService()
 
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, heightMetricService)
+			expect(NodeMetricDataService.subscribe).toHaveBeenCalledWith($rootScope, heightMetricService)
 		})
 	})
 
@@ -78,7 +78,7 @@ describe("HeightMetricService", () => {
 				{ name: "d", maxValue: 2 }
 			]
 
-			heightMetricService.onMetricDataAdded(metricData)
+			heightMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("b")
 		})
@@ -86,7 +86,7 @@ describe("HeightMetricService", () => {
 		it("should use first available metric, if less than 3 metrics are available", () => {
 			const metricData = [{ name: "a", maxValue: 1 }]
 
-			heightMetricService.onMetricDataAdded(metricData)
+			heightMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.getState().dynamicSettings.heightMetric).toEqual("a")
 		})
@@ -99,7 +99,7 @@ describe("HeightMetricService", () => {
 				{ name: "rloc", maxValue: 2 }
 			]
 
-			heightMetricService.onMetricDataAdded(metricData)
+			heightMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})
@@ -108,7 +108,7 @@ describe("HeightMetricService", () => {
 			storeService.dispatch = jest.fn()
 			const metricData = []
 
-			heightMetricService.onMetricDataAdded(metricData)
+			heightMetricService.onNodeMetricDataChanged(metricData)
 
 			expect(storeService.dispatch).not.toHaveBeenCalled()
 		})

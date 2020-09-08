@@ -1,4 +1,4 @@
-﻿# Change Log
+# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -17,6 +17,78 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.56.0] - 2020-09-04
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Improve performance when switching to multiple or delta mode when edges are available
+-   Scenario with EdgeMetric is only appliable when EdgeMetric is existing for the Map #1201
+-   Starting standalone version results in infinite loading loop #1202
+-   Expanded metric selection will close when clicking anywhere outside of that selection #1036
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.55.0] - 2020-08-28
+
+### Added 🚀
+
+-   Cursor indicator for different mouse actions #1042
+
+### Changed
+
+-   Edge-Metrics sorted by name now instead of number of incoming and outgoing edges
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Number of incoming and outgoing edges not visible when hovering over a node #1095
+-   Highlighting buildings in multiple mode now works #956
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.54.0] - 2020-08-21
+
+### Added 🚀
+
+-   Opening NodeContextMenu in the tree-view marks the node until it is closed #1068
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Missing Sonarcloud metrics in demo
+
+### Docs 🔎
+
+-   Added note how to fix missing `sh` command issue when running integration tests on Windows
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.53.0] - 2020-08-14
+
+### Added 🚀
+
+### Changed
+
+-   NodeContextMenu will show up when releasing the right-mouse-button now #1027
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   NodeContextMenu showing up after moving the mouse while holding right-mouse-button #1027
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.52.0] - 2020-08-07
 
 ### Added 🚀
@@ -32,7 +104,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   After loading an invalid file the filechooser pops up again, so that the user can choose a valid file #1021
--   Quality gates on sonarcloud.io are available again #879
+-   Quality gates on sonarcloud.io are red #879
 
 ### Docs 🔎
 
@@ -44,7 +116,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
--   File chooser now accept ".json" files only to avoid accidentally loading incorrect files
+-   File chooser now accept ".json" files only to avoid accidentally loading incorrect files #1094
 -   Lots of tooltips #1030
 
 ### Changed

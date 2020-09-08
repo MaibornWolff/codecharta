@@ -36,7 +36,7 @@ describe("nodeContextMenuController", () => {
 		rebuildController()
 		withMockedHideNodeContextMenuMethod()
 
-		NodeDecorator.preDecorateFile(TEST_DELTA_MAP_A)
+		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
 	})
 
 	function restartSystem() {
@@ -82,7 +82,7 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedHideNodeContextMenuMethod() {
-		nodeContextMenuController.hideNodeContextMenu = jest.fn()
+		nodeContextMenuController.onHideNodeContextMenu = jest.fn()
 	}
 
 	describe("constructor", () => {
@@ -147,7 +147,7 @@ describe("nodeContextMenuController", () => {
 		it("should hide the node context menu", () => {
 			nodeContextMenuController.onFocusNode()
 
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -155,7 +155,7 @@ describe("nodeContextMenuController", () => {
 		it("should hide the node context menu", () => {
 			nodeContextMenuController.onUnfocusNode()
 
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -163,7 +163,7 @@ describe("nodeContextMenuController", () => {
 		it("should hide the node context menu", () => {
 			nodeContextMenuController.onBlacklistChanged()
 
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 
@@ -171,7 +171,7 @@ describe("nodeContextMenuController", () => {
 		it("should hide the node context menu", () => {
 			nodeContextMenuController.onMarkedPackagesChanged()
 
-			expect(nodeContextMenuController.hideNodeContextMenu).toHaveBeenCalled()
+			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
 		})
 	})
 

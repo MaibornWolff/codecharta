@@ -11,7 +11,9 @@ import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
 import sample1 from "./assets/sample1.cc.json"
 import sample2 from "./assets/sample2.cc.json"
 import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
-import { SearchPanelMode } from "./codeCharta.model"
+import { PanelSelection, SearchPanelMode } from "./codeCharta.model"
+import { CodeChartaMouseEventService } from "./codeCharta.mouseEvent.service"
+import { setPanelSelection } from "./state/store/appSettings/panelSelection/panelSelection.actions"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -21,6 +23,7 @@ describe("codeChartaController", () => {
 	let storeService: StoreService
 	let dialogService: DialogService
 	let codeChartaService: CodeChartaService
+	let codeChartaMouseEventService: CodeChartaMouseEventService
 	let injectorService: InjectorService
 
 	beforeEach(() => {
@@ -41,16 +44,21 @@ describe("codeChartaController", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		codeChartaMouseEventService = getService<CodeChartaMouseEventService>("codeChartaMouseEventService")
 		injectorService = getService<InjectorService>("injectorService")
 	}
 
 	function rebuildController() {
-		codeChartaController = new CodeChartaController($location, $http, storeService, dialogService, codeChartaService, injectorService)
+		codeChartaController = new CodeChartaController(
+			$location,
+			$http,
+			storeService,
+			dialogService,
+			codeChartaService,
+			codeChartaMouseEventService,
+			injectorService
+		)
 	}
-
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
 
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
@@ -147,12 +155,16 @@ describe("codeChartaController", () => {
 	})
 
 	describe("onClick", () => {
-		it("should minimize the search panel if it's expanded", () => {
+		it("should minimize all panels", () => {
 			storeService.dispatch(setSearchPanelMode(SearchPanelMode.exclude))
+			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 
 			codeChartaController.onClick()
 
-			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
+			const appSettings = storeService.getState().appSettings
+
+			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
+			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)
 		})
 	})
 })

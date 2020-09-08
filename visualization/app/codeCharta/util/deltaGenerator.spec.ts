@@ -14,8 +14,8 @@ describe("deltaGenerator", () => {
 	})
 
 	it("golden test", () => {
-		NodeDecorator.preDecorateFile(fileA)
-		NodeDecorator.preDecorateFile(fileB)
+		NodeDecorator.decorateMapWithPathAttribute(fileA)
+		NodeDecorator.decorateMapWithPathAttribute(fileB)
 
 		fileA.map.children.push({
 			name: "onlyA",
@@ -84,8 +84,8 @@ describe("deltaGenerator", () => {
 	})
 
 	it("additionalLeaf from fileB should exist in a after calling getDeltaFile, metrics should be 0", () => {
-		NodeDecorator.preDecorateFile(fileA)
-		NodeDecorator.preDecorateFile(fileB)
+		NodeDecorator.decorateMapWithPathAttribute(fileA)
+		NodeDecorator.decorateMapWithPathAttribute(fileB)
 
 		const result = DeltaGenerator.getDeltaFile(fileA, fileB)
 
@@ -95,8 +95,8 @@ describe("deltaGenerator", () => {
 	})
 
 	it("getDeltaFile should result in expected deltaFiles", () => {
-		NodeDecorator.preDecorateFile(fileA)
-		NodeDecorator.preDecorateFile(fileB)
+		NodeDecorator.decorateMapWithPathAttribute(fileA)
+		NodeDecorator.decorateMapWithPathAttribute(fileB)
 
 		const result = DeltaGenerator.getDeltaFile(fileA, fileB)
 

@@ -9,7 +9,6 @@ import { getCCFiles } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { setState } from "./state/store/state.actions"
 import { ScenarioHelper } from "./util/scenarioHelper"
-import { MetricService } from "./state/metric.service"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
 
@@ -19,7 +18,7 @@ export class CodeChartaService {
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 
-	constructor(private storeService: StoreService, private dialogService: DialogService, private metricService: MetricService) {}
+	constructor(private storeService: StoreService, private dialogService: DialogService) {}
 
 	public loadFiles(nameDataPairs: NameDataPair[]) {
 		for (const nameDataPair of nameDataPairs) {
@@ -52,7 +51,7 @@ export class CodeChartaService {
 
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
 		const ccFile: CCFile = this.getCCFile(fileName, migratedFile)
-		NodeDecorator.preDecorateFile(ccFile)
+		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
 	}
 
@@ -101,7 +100,7 @@ export class CodeChartaService {
 	private setDefaultScenario() {
 		const { areaMetric, heightMetric, colorMetric } = ScenarioHelper.getDefaultScenarioSetting().dynamicSettings
 		const names = [areaMetric, heightMetric, colorMetric]
-		const metricNames = new Set(this.metricService.getMetricData().map(x => x.name))
+		const metricNames = new Set(this.storeService.getState().metricData.nodeMetricData.map(x => x.name))
 
 		const existsInMetricData = (metric: string) => metricNames.has(metric)
 

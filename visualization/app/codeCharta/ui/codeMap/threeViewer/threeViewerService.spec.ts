@@ -80,10 +80,6 @@ describe("ThreeViewerService", () => {
 		threeOrbitControlsService = threeViewerService["threeOrbitControlsService"] = jest.fn().mockReturnValue({ init: jest.fn() })()
 	}
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	describe("init", () => {
 		beforeEach(() => {
 			mockThreeJs()

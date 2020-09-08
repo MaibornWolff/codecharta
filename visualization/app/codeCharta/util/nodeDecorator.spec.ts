@@ -1,17 +1,26 @@
 import * as d3 from "d3"
 import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
-import { CCFile, MetricData, BlacklistItem, CodeMapNode, NodeType, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
+import {
+	CCFile,
+	BlacklistItem,
+	CodeMapNode,
+	NodeType,
+	AttributeTypeValue,
+	AttributeTypes,
+	NodeMetricData,
+	EdgeMetricData
+} from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import _ from "lodash"
-import { MetricService } from "../state/metric.service"
 import { HierarchyNode } from "d3"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
 	let map: CodeMapNode
 	let deltaMap: CodeMapNode
-	let metricData: MetricData[]
-	let edgeMetricData: MetricData[]
+	let metricData: NodeMetricData[]
+	let edgeMetricData: EdgeMetricData[]
 	let blacklist: BlacklistItem[]
 	let attributeTypes: AttributeTypes
 
@@ -36,7 +45,7 @@ describe("nodeDecorator", () => {
 			edges: { pairingRate: AttributeTypeValue.relative }
 		}
 		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
-		NodeDecorator.preDecorateFile(file)
+		NodeDecorator.decorateMapWithPathAttribute(file)
 	})
 
 	function allUniqueIds(map: HierarchyNode<CodeMapNode>): boolean {
@@ -153,7 +162,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/middle")
 			expect(map.children.length).toBe(2)
@@ -189,7 +198,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.link).toBe("link1")
 		})
@@ -247,7 +256,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/middle")
 			expect(map.children.length).toBe(1)
@@ -305,7 +314,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/start")
 			expect(map.children.length).toBe(2)
@@ -317,9 +326,9 @@ describe("nodeDecorator", () => {
 		})
 	})
 
-	describe("preDecorateFile", () => {
+	describe("decorateMapWithPathAttribute", () => {
 		it("should decorate nodes with the correct path", () => {
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 
 			const h = d3.hierarchy(file.map)
 			h.each(node => {
@@ -331,7 +340,7 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should decorate nodes with a unique id starting from 0", () => {
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMap(file.map, [], [])
 
 			const h = d3.hierarchy(file.map)
 			h.each(node => {
@@ -405,7 +414,7 @@ describe("nodeDecorator", () => {
 			const h = d3.hierarchy(map)
 
 			h.each(node => {
-				expect(node.data.attributes[MetricService.UNARY_METRIC]).toBeDefined()
+				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 
@@ -414,7 +423,7 @@ describe("nodeDecorator", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 			const h = d3.hierarchy(map)
 			h.each(node => {
-				expect(node.data.attributes[MetricService.UNARY_METRIC]).toBeDefined()
+				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 	})

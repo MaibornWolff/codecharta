@@ -5,6 +5,7 @@ script
 plop-templates
 dist
 assets
+public
 __snapshots__
 *.properties
 Dockerfile
@@ -25,3 +26,5 @@ Gemfile
 Gemfile.lock
 Pipfile
 Pipfile.lock
+_site
+out

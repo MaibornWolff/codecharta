@@ -9,4 +9,8 @@ export class NodeContextMenuPageObject {
 		await expect(page).toClick("#exclude-button", { timeout: 3000 })
 		await page.waitForSelector("#loading-gif-map", { visible: false })
 	}
+
+	public async isClosed() {
+		return await page.waitForSelector("node-context-menu-component", { visible: false })
+	}
 }
