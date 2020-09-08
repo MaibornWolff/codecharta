@@ -5,8 +5,7 @@ import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { FileState } from "../../../../model/files/files"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
-
-const clone = require("rfdc")()
+import { clone } from "../../../../util/clone"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
