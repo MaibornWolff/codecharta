@@ -91,7 +91,7 @@ a margin of `5` again, so that the coordinates of `folder_2` must be `left: 60` 
 
 ![Example]({{site.baseurl}}/assets/images/posts/how-to/fixate-folders/fixate-folder-example.jpg)
 
-In order to build a valid custom `.cc.json`, these rules must be followed:
+The following rules apply in order to build a valid custom `.cc.json`:
 
 -   The values of `left`, `top`, `width` and `height` must be in range of `[0, 100]
 -   The value `left + width` or `top + height` must be in a range of `[0, 100]`.
