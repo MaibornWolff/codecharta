@@ -1,5 +1,5 @@
 import * as THREE from "three"
-import { Sprite, Vector3, Box3 } from "three"
+import { Sprite, Vector3, Box3, Sphere } from "three"
 import { Node, State } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -136,7 +136,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	private setLabelSize(sprite: Sprite, currentLabelWidth: number = undefined) {
-		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere().center
+		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
 		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
 		const resultingLabelWidth = !currentLabelWidth ? sprite.material.map.image.width : currentLabelWidth
 		sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * resultingLabelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
