@@ -11,7 +11,7 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { NameDataPair } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import zlib from "browserify-zlib"
+import zlib from "zlib"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
