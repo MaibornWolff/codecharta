@@ -1,5 +1,4 @@
 "use strict"
-import * as d3 from "d3"
 import { HierarchyNode, hierarchy } from "d3"
 import {
 	BlacklistItem,
@@ -28,7 +27,7 @@ export class NodeDecorator {
 
 	public static decorateMapWithPathAttribute(file: CCFile) {
 		if (file && file.map) {
-			const root = d3.hierarchy<CodeMapNode>(file.map)
+			const root = hierarchy<CodeMapNode>(file.map)
 			root.each(node => {
 				node.data.path =
 					"/" +
@@ -107,7 +106,7 @@ export class NodeDecorator {
 
 	private static decorateMapWithMissingObjects(map: CodeMapNode) {
 		if (map) {
-			const root = d3.hierarchy<CodeMapNode>(map)
+			const root = hierarchy<CodeMapNode>(map)
 			root.each(node => {
 				node.data.attributes = !node.data.attributes ? {} : node.data.attributes
 				node.data.edgeAttributes = !node.data.edgeAttributes ? {} : node.data.edgeAttributes
@@ -118,7 +117,7 @@ export class NodeDecorator {
 
 	private static decorateLeavesWithMissingMetrics(map: CodeMapNode, metricData: NodeMetricData[]) {
 		if (map && metricData) {
-			const root = d3.hierarchy<CodeMapNode>(map)
+			const root = hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				metricData.forEach(metric => {
 					if (node.data.attributes[metric.name] === undefined) {
@@ -138,7 +137,7 @@ export class NodeDecorator {
 		attributeTypes: AttributeTypes
 	) {
 		if (map) {
-			const root = d3.hierarchy<CodeMapNode>(map)
+			const root = hierarchy<CodeMapNode>(map)
 			root.each((node: HierarchyNode<CodeMapNode>) => {
 				const leaves: HierarchyNode<CodeMapNode>[] = node.leaves().filter(x => !x.data.isExcluded)
 				this.decorateNodeWithAggregatedChildrenMetrics(leaves, node, metricData, isDeltaState, attributeTypes)

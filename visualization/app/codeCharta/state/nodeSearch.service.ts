@@ -1,11 +1,11 @@
 import { CodeMapNode } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
-import * as d3 from "d3"
 import { CodeMapHelper } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 import { StoreService } from "./store.service"
 import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { SearchPatternService, SearchPatternSubscriber } from "./store/dynamicSettings/searchPattern/searchPattern.service"
+import { hierarchy } from "d3-hierarchy"
 
 export interface NodeSearchSubscriber {
 	onNodeSearchComplete(searchedNodes: CodeMapNode[])
@@ -35,8 +35,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 		if (searchPattern.length == 0) {
 			return []
 		} else {
-			const nodes = d3
-				.hierarchy(this.codeMapPreRenderService.getRenderMap())
+			const nodes = hierarchy(this.codeMapPreRenderService.getRenderMap())
 				.descendants()
 				.map(d => d.data)
 			return CodeMapHelper.getNodesByGitignorePath(nodes, searchPattern)
