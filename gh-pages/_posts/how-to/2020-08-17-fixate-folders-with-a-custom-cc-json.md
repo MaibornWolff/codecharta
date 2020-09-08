@@ -96,5 +96,4 @@ The following rules apply in order to build a valid custom `.cc.json`:
 -   The value `left + width` or `top + height` must be in a range of `[0, 100]`.
 -   Folders may not overlap.
 -   Leaving space between folders (for visibility reasons) is recommended.
--   Only folders on the root can have the `fixedPosition`-attribute.
--   If there exists at least on fixated folder, all folders on the root must be fixated.
+-   All children of the root folder require the `fixedPosition` attribute.
