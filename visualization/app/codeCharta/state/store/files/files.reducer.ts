@@ -49,9 +49,8 @@ function setSingleByName(state: FileState[], fileName: string): FileState[] {
 	return state.map(x => {
 		if (x.file.fileMeta.fileName === fileName) {
 			return { ...x, selectedAs: FileSelectionState.Single }
-		} else {
-			return { ...x, selectedAs: FileSelectionState.None }
 		}
+		return { ...x, selectedAs: FileSelectionState.None }
 	})
 }
 
@@ -65,9 +64,8 @@ function setDeltaByNames(state: FileState[], referenceFileName: string, comparis
 			return { ...x, selectedAs: FileSelectionState.Reference }
 		} else if (x.file.fileMeta.fileName === comparisonFileName) {
 			return { ...x, selectedAs: FileSelectionState.Comparison }
-		} else {
-			return { ...x, selectedAs: FileSelectionState.None }
 		}
+		return { ...x, selectedAs: FileSelectionState.None }
 	})
 }
 
@@ -79,9 +77,8 @@ function setMultipleByNames(state: FileState[], partialFileNames: string[]): Fil
 	return state.map(x => {
 		if (partialFileNames.includes(x.file.fileMeta.fileName)) {
 			return { ...x, selectedAs: FileSelectionState.Partial }
-		} else {
-			return { ...x, selectedAs: FileSelectionState.None }
 		}
+		return { ...x, selectedAs: FileSelectionState.None }
 	})
 }
 
