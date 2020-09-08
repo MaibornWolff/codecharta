@@ -8,8 +8,8 @@ title: Fixate folders using a custom cc.json
 
 The [Squarified-Tree-Map-Algorithm](https://www.win.tue.nl/~vanwijk/stm.pdf) generates a layout for the visualized map.
 The layout varies depending on the area of each node. Adding a new file to a folder might increase the area of the parent folder,
-so that the algorithm decides that the parent-folder needs to be relocated. Another way to follow this problem is by changing the area-metric.
-Notice, that most folders will not be located at the same position as before.
+so that the algorithm decides that the parent-folder needs to be relocated. Thus, folders may not be located at the same position anymore as before.
+Another way to follow this problem is by changing the area-metric.
 
 # Fixate folders
 
