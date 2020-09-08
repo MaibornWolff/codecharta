@@ -212,7 +212,12 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun buildTree(fileName: String): Tree {
         val compilationUnitTree = JavaParser.createParser().parse(File("$baseDir/$fileName")) as CompilationUnitTree
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
-            compilationUnitTree, getInputFile(fileName), null, null, JavaVersionImpl(), true
+            compilationUnitTree,
+            getInputFile(fileName),
+            null,
+            null,
+            JavaVersionImpl(),
+            true
         )
 
         return defaultJavaFileScannerContext.tree

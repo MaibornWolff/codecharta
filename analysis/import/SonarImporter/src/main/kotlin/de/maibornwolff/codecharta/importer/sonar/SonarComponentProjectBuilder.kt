@@ -42,7 +42,8 @@ class SonarComponentProjectBuilder(
     fun addComponentAsNode(component: Component): SonarComponentProjectBuilder {
         val node = MutableNode(
             createNodeName(component),
-            createNodeTypeFromQualifier(component.qualifier!!), createAttributes(component.measures!!),
+            createNodeTypeFromQualifier(component.qualifier!!),
+            createAttributes(component.measures!!),
             createLink(component)
         )
         projectBuilder.insertByPath(createParentPath(component), node)
