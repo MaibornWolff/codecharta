@@ -17,6 +17,6 @@ export class IdToNodeService implements CodeMapPreRenderServiceSubscriber {
 			idToNode.set(x.data.id, x.data)
 		})
 
-		this.storeService.dispatch(setIdToNode(idToNode), true)
+		this.storeService.dispatch(setIdToNode(idToNode), { silent: true })
 	}
 }

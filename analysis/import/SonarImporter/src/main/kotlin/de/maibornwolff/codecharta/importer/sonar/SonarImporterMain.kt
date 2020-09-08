@@ -33,7 +33,9 @@ class SonarImporterMain(
     private var url: String = "http://localhost"
 
     @CommandLine.Parameters(
-        index = "1", arity = "1..1", paramLabel = "PROJECT_ID",
+        index = "1",
+        arity = "1..1",
+        paramLabel = "PROJECT_ID",
         description = ["sonarqube project id"]
     )
     private var projectId = ""

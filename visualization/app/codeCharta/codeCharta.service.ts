@@ -51,7 +51,7 @@ export class CodeChartaService {
 
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
 		const ccFile: CCFile = this.getCCFile(fileName, migratedFile)
-		NodeDecorator.preDecorateFile(ccFile)
+		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
 	}
 

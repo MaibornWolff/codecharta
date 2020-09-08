@@ -12,7 +12,7 @@ describe("nodeMetricData", () => {
 
 	beforeEach(() => {
 		const file = _.cloneDeep(TEST_DELTA_MAP_A)
-		NodeDecorator.preDecorateFile(file)
+		NodeDecorator.decorateMapWithPathAttribute(file)
 		fileState = {
 			file,
 			selectedAs: FileSelectionState.Single

@@ -69,10 +69,10 @@ To run it you can call `ccsh`
 -   Unzip / untar package in desired destination folder (named CC_INSTALL_DIR)
 -   In bash:
     > ./bin/ccsh -h
-- Activate Bash (TAB) Autocompletion for ccsh command:
+-   Activate Bash (TAB) Autocompletion for ccsh command:
     > source <(./bin/ccsh generate-completion)
-    - Enter `ccsh` and press `TAB` to see available commands
-    - Enter `ccsh <ANY-COMMAND> -` and press `TAB` to see available parameters
+    -   Enter `ccsh` and press `TAB` to see available commands
+    -   Enter `ccsh <ANY-COMMAND> -` and press `TAB` to see available parameters
 
 ## Build
 
