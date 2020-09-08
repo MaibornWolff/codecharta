@@ -43,7 +43,11 @@ class NodeMergerTest : Spek({
             val child1_littleBitDifferent =
                 MutableNode("child1", NodeType.File, mapOf(Pair("someAttribute", 1.0f)), "", setOf())
             val node1 = MutableNode(
-                "Name", NodeType.File, mapOf(), "", setOf(child1_littleBitDifferent),
+                "Name",
+                NodeType.File,
+                mapOf(),
+                "",
+                setOf(child1_littleBitDifferent),
                 nodeMergingStrategy = NodeMaxAttributeMerger()
             )
             val node2 = MutableNode("Name", NodeType.File, mapOf(), "", setOf(child1, child2))

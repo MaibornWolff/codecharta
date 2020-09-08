@@ -49,7 +49,10 @@ class CrococosmoConverter {
             origin.name.isNullOrEmpty() -> convertToNodeList(origin.children.orEmpty(), version)
             else -> setOf(
                 Node(
-                    origin.name, getNodeType(origin), createAttributeListForNode(origin.versions, version), "",
+                    origin.name,
+                    getNodeType(origin),
+                    createAttributeListForNode(origin.versions, version),
+                    "",
                     convertToNodeList(origin.children.orEmpty(), version)
                 )
             )
@@ -68,7 +71,8 @@ class CrococosmoConverter {
         return when {
             correctVersion.isEmpty() -> mapOf()
             correctVersion.last().attribute != null -> correctVersion.last().attribute!!.map(
-                { Pair(it.name, it.value.toFloat()) }).toMap()
+                { Pair(it.name, it.value.toFloat()) }
+            ).toMap()
             else -> mapOf()
         }
     }

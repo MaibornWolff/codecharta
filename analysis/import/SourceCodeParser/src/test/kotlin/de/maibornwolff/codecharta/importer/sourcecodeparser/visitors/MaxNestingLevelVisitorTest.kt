@@ -29,7 +29,12 @@ class MaxNestingLevelVisitorTest {
 
         val compilationUnitTree = JavaParser.createParser().parse(file) as CompilationUnitTree
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
-            compilationUnitTree, inputFile, null, null, JavaVersionImpl(), true
+            compilationUnitTree,
+            inputFile,
+            null,
+            null,
+            JavaVersionImpl(),
+            true
         )
 
         return defaultJavaFileScannerContext.tree

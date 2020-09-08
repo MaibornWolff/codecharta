@@ -42,7 +42,8 @@ class UnderstandCSVRowTest : Spek({
 
                 for (name in nameExpectedFolderWithFileMap.keys) {
                     val path = UnderstandCSVRow(
-                        arrayOf("projectName", "blubb2", "blubb3", name, "", "File"), header,
+                        arrayOf("projectName", "blubb2", "blubb3", name, "", "File"),
+                        header,
                         pathSeparator
                     ).pathInTree()
                     assertThat(path, `is`<Path>(nameExpectedFolderWithFileMap[name]))
@@ -71,7 +72,11 @@ class UnderstandCSVRowTest : Spek({
         context("considering row of unknown kind") {
             val rawRow: Array<String?> =
                 arrayOf(
-                    "projectName", "blubb2", "blubb3", "someDir\\anotherDir\\anotherName", "name",
+                    "projectName",
+                    "blubb2",
+                    "blubb3",
+                    "someDir\\anotherDir\\anotherName",
+                    "name",
                     "someStupidKind"
                 )
             val understandCSVRow = UnderstandCSVRow(rawRow, header, pathSeparator)

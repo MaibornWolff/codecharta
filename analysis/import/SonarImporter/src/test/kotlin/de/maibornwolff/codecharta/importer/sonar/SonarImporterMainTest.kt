@@ -2,7 +2,6 @@ package de.maibornwolff.codecharta.importer.sonar
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
-import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain.Companion.main
