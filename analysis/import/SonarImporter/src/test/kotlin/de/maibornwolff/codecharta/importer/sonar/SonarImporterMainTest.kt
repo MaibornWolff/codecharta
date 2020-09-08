@@ -2,12 +2,14 @@ package de.maibornwolff.codecharta.importer.sonar
 
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterMain.Companion.main
 import de.maibornwolff.codecharta.importer.sonar.dataaccess.SonarMetricsAPIDatasource
 import org.junit.Rule
 import org.junit.Test
+import kotlin.jvm.Throws
 
 class SonarImporterMainTest {
     companion object {
@@ -25,7 +27,7 @@ class SonarImporterMainTest {
     @Throws(Exception::class)
     fun `should call correct url with trailing backslash in URL parameter`() {
         WireMock.stubFor(
-            WireMock.get(WireMock.urlEqualTo(METRIC_LIST_URL_PATH))
+            WireMock.get(urlEqualTo(METRIC_LIST_URL_PATH))
                 .willReturn(
                     WireMock.aResponse()
                         .withStatus(200)
@@ -43,7 +45,7 @@ class SonarImporterMainTest {
     @Throws(Exception::class)
     fun `should call correct url without trailing backslash in URL parameter`() {
         WireMock.stubFor(
-            WireMock.get(WireMock.urlEqualTo(METRIC_LIST_URL_PATH))
+            WireMock.get(urlEqualTo(METRIC_LIST_URL_PATH))
                 .willReturn(
                     WireMock.aResponse()
                         .withStatus(200)
