@@ -87,14 +87,12 @@ export function validate(file: ExportCCFile) {
 		if (!valid) {
 			result.error = validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
 			result.title = ERROR_MESSAGES.validationError.title
+		} else if (file.nodes.length === 0) {
+			result.error.push(ERROR_MESSAGES.nodesEmpty.message)
+			result.title = ERROR_MESSAGES.nodesEmpty.title
 		} else {
-			if (file.nodes.length === 0) {
-				result.error.push(ERROR_MESSAGES.nodesEmpty.message)
-				result.title = ERROR_MESSAGES.nodesEmpty.title
-			} else {
-				validateChildrenAreUnique(file.nodes[0], result)
-				validateFixedFolders(file, result)
-			}
+			validateChildrenAreUnique(file.nodes[0], result)
+			validateFixedFolders(file, result)
 		}
 	}
 
