@@ -30,8 +30,8 @@ function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): 
 	}
 
 	return {
-		nodes: !attributeTypes.nodes ? {} : attributeTypes.nodes,
-		edges: !attributeTypes.edges ? {} : attributeTypes.edges
+		nodes: attributeTypes.nodes ?? {},
+		edges: attributeTypes.edges ?? {}
 	}
 }
 
