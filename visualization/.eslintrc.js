@@ -33,23 +33,33 @@ module.exports = {
             "error",
             {
                 "selector": ["variable", "function"],
-                "format": ["camelCase", "UPPER_CASE"],
+                "format": ["camelCase", "UPPER_CASE", "PascalCase"],
                 "leadingUnderscore": "allow"
             }
         ],
-        "@typescript-eslint/no-unused-vars": ["error"],
-        "object-shorthand": ["error", "always"],
+        "@typescript-eslint/no-unused-vars":
+            ["error"],
+        "object-shorthand":
+            ["error", "always"],
 
         // Do not apply inappropriate rules below
-        "@typescript-eslint/no-use-before-define": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-use-before-define":
+            "off",
+        "@typescript-eslint/ban-ts-comment":
+            "off",
 
         // TODO fix and remove rules below
-        "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/explicit-module-boundary-types": "off",
-        "@typescript-eslint/ban-types": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-var-requires": "off",
-        "@typescript-eslint/consistent-type-assertions": "off",
+        "@typescript-eslint/explicit-function-return-type":
+            "off",
+        "@typescript-eslint/explicit-module-boundary-types":
+            "off",
+        "@typescript-eslint/ban-types":
+            "off",
+        "@typescript-eslint/no-explicit-any":
+            "off",
+        "@typescript-eslint/no-var-requires":
+            "off",
+        "@typescript-eslint/consistent-type-assertions":
+            "off",
     }
 }
