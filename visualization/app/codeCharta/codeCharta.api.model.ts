@@ -32,6 +32,6 @@ export interface ExportScenario {
 }
 
 export interface OldAttributeTypes {
-	nodes?: [{ [key: string]: AttributeTypeValue }]
-	edges?: [{ [key: string]: AttributeTypeValue }]
+	nodes?: [{ [key: string]: AttributeTypeValue }?]
+	edges?: [{ [key: string]: AttributeTypeValue }?]
 }
