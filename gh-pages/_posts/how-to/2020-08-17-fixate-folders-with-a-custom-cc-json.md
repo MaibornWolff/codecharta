@@ -82,10 +82,9 @@ The property values must be numbers in the range between 0 and 100. They represe
 }
 ```
 
-Since a margin between folders is recommended, we set the coordinates for the folder in the top-left corner
-to `left: 5` and `top: 5`. The margin between the border of the map and `folder_1` is therefore `5`, but can be chosen at will.
-In order to set the coordinates to adjacent folders, we can again apply any margin between `folder_1` and `folder_2`. We chose
-a margin of `5` again, so that the coordinates of `folder_2` must be `left: 60` and `top: 40`.
+A margin between folders is recommended. To apply one, set the coordinates for the folder in the top-left corner
+to e.g., `left: 5` and `top: 5`. The margin between the border of the map and `folder_1` is therefore `5`. It may be chosen at will.
+In order to define the coordinates of adjacent folders, apply any margin between `folder_1` and `folder_2`. The example uses a margin of `5`, so that the coordinates of `folder_2` must be `left: 60` and `top: 40`.
 
 ## Restrictions
 
