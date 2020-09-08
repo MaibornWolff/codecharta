@@ -364,9 +364,9 @@ Array [
     "heightDelta": 0,
     "id": 0,
     "incomingEdgePoint": Vector3 {
-      "x": -250,
+      "x": -200,
       "y": 2,
-      "z": -250,
+      "z": -225,
     },
     "isLeaf": false,
     "length": 929.3250516799595,
@@ -374,9 +374,9 @@ Array [
     "markingColor": null,
     "name": "root",
     "outgoingEdgePoint": Vector3 {
-      "x": -250,
+      "x": -200,
       "y": 2,
-      "z": -250,
+      "z": -175,
     },
     "path": "/root",
     "visible": true,
