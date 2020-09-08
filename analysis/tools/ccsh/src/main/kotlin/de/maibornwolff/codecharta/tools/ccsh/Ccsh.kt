@@ -49,7 +49,8 @@ import java.util.concurrent.Callable
 class Ccsh : Callable<Void?> {
 
     @CommandLine.Option(
-        names = ["-v", "--version"], versionHelp = true,
+        names = ["-v", "--version"],
+        versionHelp = true,
         description = ["prints version info and exits"]
     )
     var versionRequested: Boolean = false
