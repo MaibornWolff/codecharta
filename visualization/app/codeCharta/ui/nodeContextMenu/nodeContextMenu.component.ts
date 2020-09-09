@@ -149,9 +149,8 @@ export class NodeContextMenuController
 
 		if (this.isNodeMarked()) {
 			return this.packageMatchesColor(color)
-		} else {
-			return this.packageMatchesColorOfParentMP(color)
 		}
+		return this.packageMatchesColorOfParentMP(color)
 	}
 
 	private isClickInsideNodeContextMenu(mousePosition: Vector2) {

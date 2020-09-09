@@ -13,16 +13,15 @@ export class TreeMapGenerator {
 
 		if (this.hasFixedFolders(map)) {
 			return this.buildSquarifiedTreeMapsForFixedFolders(map, s, heightScale, maxHeight, isDeltaState)
-		} else {
-			const squarifiedTreeMap = this.getSquarifiedTreeMap(map, s)
-			return squarifiedTreeMap.treeMap
-				.descendants()
-				.map(squarifiedNode => TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState))
 		}
+		const squarifiedTreeMap = this.getSquarifiedTreeMap(map, s)
+		return squarifiedTreeMap.treeMap
+			.descendants()
+			.map(squarifiedNode => TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, s, isDeltaState))
 	}
 
 	private static hasFixedFolders(map: CodeMapNode): boolean {
-		return !!map.children[0]?.fixed
+		return !!map.children[0]?.fixedPosition
 	}
 
 	private static buildSquarifiedTreeMapsForFixedFolders(
@@ -57,14 +56,14 @@ export class TreeMapGenerator {
 		scale: number
 	) {
 		// Transform coordinates from local folder space to world space (between 0 and 100).
-		const scaleX = fixedFolder.fixed.width / squarified.width
-		const scaleY = fixedFolder.fixed.height / squarified.height
+		const scaleX = fixedFolder.fixedPosition.width / squarified.width
+		const scaleY = fixedFolder.fixedPosition.height / squarified.height
 
 		// Scales to usual map-size of 500 matching the three-scene-size
-		squarifiedNode.x0 = (squarifiedNode.x0 * scaleX + fixedFolder.fixed.x) * scale
-		squarifiedNode.x1 = (squarifiedNode.x1 * scaleX + fixedFolder.fixed.x) * scale
-		squarifiedNode.y0 = (squarifiedNode.y0 * scaleY + fixedFolder.fixed.y) * scale
-		squarifiedNode.y1 = (squarifiedNode.y1 * scaleY + fixedFolder.fixed.y) * scale
+		squarifiedNode.x0 = (squarifiedNode.x0 * scaleX + fixedFolder.fixedPosition.left) * scale
+		squarifiedNode.x1 = (squarifiedNode.x1 * scaleX + fixedFolder.fixedPosition.left) * scale
+		squarifiedNode.y0 = (squarifiedNode.y0 * scaleY + fixedFolder.fixedPosition.top) * scale
+		squarifiedNode.y1 = (squarifiedNode.y1 * scaleY + fixedFolder.fixedPosition.top) * scale
 	}
 
 	private static scaleRoot(root: Node, scale: number) {
@@ -81,9 +80,9 @@ export class TreeMapGenerator {
 		let mapWidth
 		let mapHeight
 
-		if (map.fixed !== undefined) {
-			mapWidth = map.fixed.width
-			mapHeight = map.fixed.height
+		if (map.fixedPosition !== undefined) {
+			mapWidth = map.fixedPosition.width
+			mapHeight = map.fixedPosition.height
 		} else {
 			mapWidth = s.treeMap.mapSize * 2
 			mapHeight = s.treeMap.mapSize * 2
@@ -104,7 +103,7 @@ export class TreeMapGenerator {
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State): boolean {
-		return node && node.deltas && node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
+		return node?.deltas?.[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
 	}
 
 	private static calculateAreaValue(node: CodeMapNode, s: State): number {

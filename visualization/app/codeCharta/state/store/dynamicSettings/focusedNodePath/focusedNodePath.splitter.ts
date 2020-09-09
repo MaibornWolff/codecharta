@@ -3,7 +3,6 @@ import { FocusedNodePathAction, focusNode, unfocusNode } from "./focusedNodePath
 export function splitFocusedNodePathAction(payload: string): FocusedNodePathAction {
 	if (payload === "") {
 		return unfocusNode()
-	} else {
-		return focusNode(payload)
 	}
+	return focusNode(payload)
 }

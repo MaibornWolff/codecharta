@@ -40,9 +40,9 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						}
 					],
-					fixed: {
-						x: 5,
-						y: 5,
+					fixedPosition: {
+						left: 5,
+						top: 5,
 						width: 55,
 						height: 15
 					}
@@ -69,9 +69,9 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						}
 					],
-					fixed: {
-						x: 5,
-						y: 25,
+					fixedPosition: {
+						left: 5,
+						top: 25,
 						width: 25,
 						height: 50
 					}
@@ -98,9 +98,9 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						}
 					],
-					fixed: {
-						x: 35,
-						y: 25,
+					fixedPosition: {
+						left: 35,
+						top: 25,
 						width: 25,
 						height: 50
 					}
@@ -127,9 +127,9 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						}
 					],
-					fixed: {
-						x: 65,
-						y: 5,
+					fixedPosition: {
+						left: 65,
+						top: 5,
 						width: 10,
 						height: 90
 					}
@@ -156,9 +156,9 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						}
 					],
-					fixed: {
-						x: 80,
-						y: 5,
+					fixedPosition: {
+						left: 80,
+						top: 5,
 						width: 15,
 						height: 90
 					}
@@ -185,9 +185,9 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						}
 					],
-					fixed: {
-						x: 5,
-						y: 80,
+					fixedPosition: {
+						left: 5,
+						top: 80,
 						width: 55,
 						height: 15
 					}

@@ -149,11 +149,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
 			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
 			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
-		} else {
-			const referenceFile = visibleFileStates[0].file
-			const comparisonFile = visibleFileStates[0].file
-			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
 		}
+		const referenceFile = visibleFileStates[0].file
+		const comparisonFile = visibleFileStates[0].file
+		return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
 	}
 
 	private renderAndNotify() {
