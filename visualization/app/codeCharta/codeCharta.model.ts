@@ -29,7 +29,7 @@ export interface CodeMapNode {
 	id?: number
 	type: NodeType
 	children?: CodeMapNode[]
-	attributes?: Record<string, number>
+	attributes?: KeyValuePair
 	edgeAttributes?: {
 		[key: string]: EdgeMetricCount
 	}
@@ -159,7 +159,7 @@ export enum AttributeTypeValue {
 export interface Edge {
 	fromNodeName: string
 	toNodeName: string
-	attributes: Record<string, number>
+	attributes: KeyValuePair
 	visible?: EdgeVisibility
 }
 
@@ -238,6 +238,10 @@ export interface Scenario {
 
 export type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> }
 
+export interface KeyValuePair {
+	[key: string]: number
+}
+
 export interface Node {
 	name: string
 	id: number
@@ -249,8 +253,8 @@ export interface Node {
 	z0: number
 	y0: number
 	isLeaf: boolean
-	deltas: Record<string, number>
-	attributes: Record<string, number>
+	deltas: KeyValuePair
+	attributes: KeyValuePair
 	edgeAttributes: {
 		[key: string]: EdgeMetricCount
 	}

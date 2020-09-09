@@ -6,6 +6,7 @@ import {
 	CCFile,
 	CodeMapNode,
 	EdgeMetricCount,
+	KeyValuePair,
 	AttributeTypes,
 	AttributeTypeValue,
 	BlacklistType,
@@ -185,7 +186,7 @@ export class NodeDecorator {
 		})
 	}
 
-	private static aggregateLeafMetric(metrics: Record<string, number>[], metricName: string, attributeTypes: AttributeTypes): number {
+	private static aggregateLeafMetric(metrics: KeyValuePair[], metricName: string, attributeTypes: AttributeTypes): number {
 		const metricValues: number[] = metrics.map(x => x[metricName]).filter(x => !!x)
 		const attributeType = attributeTypes.nodes[metricName]
 
