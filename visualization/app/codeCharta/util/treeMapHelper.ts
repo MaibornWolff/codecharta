@@ -28,7 +28,7 @@ function buildingArrayToMap(highlighted: CodeMapBuilding[]): Map<number, CodeMap
 }
 
 function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, state: State, isDeltaState: boolean): Node {
-	const flattened: boolean = isNodeToBeFlat(map, state)
+	const flattened: boolean = shouldNodeBeFlat(map, state)
 	const height = FOLDER_HEIGHT
 	const width = 100
 	const length = 100
@@ -67,7 +67,7 @@ function buildNodeFrom(
 	isDeltaState: boolean
 ): Node {
 	const isNodeLeaf = !(squaredNode.children && squaredNode.children.length > 0)
-	const flattened: boolean = isNodeToBeFlat(squaredNode.data, s)
+	const flattened: boolean = shouldNodeBeFlat(squaredNode.data, s)
 	const heightValue: number = getHeightValue(s, squaredNode, maxHeight, flattened)
 	const depth: number = squaredNode.data.path.split("/").length - 2
 	const width = squaredNode.x1 - squaredNode.x0
@@ -141,7 +141,7 @@ function getOutgoingEdgePoint(width: number, height: number, length: number, vec
 	return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + 0.75 * length)
 }
 
-function isNodeToBeFlat(codeMapNode: CodeMapNode, s: State): boolean {
+function shouldNodeBeFlat(codeMapNode: CodeMapNode, s: State): boolean {
 	let flattened = false
 	if (s.appSettings.showOnlyBuildingsWithEdges && s.fileSettings.edges?.filter(edge => edge.visible).length > 0) {
 		flattened = nodeHasNoVisibleEdges(codeMapNode, s)
