@@ -148,7 +148,7 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 	}
 
 	if (intersections.size > 0) {
-		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: ${[...intersections.values()].join(", ")}`)
+		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: ${[...intersections].join(", ")}`)
 	}
 }
 
