@@ -65,6 +65,31 @@ export function validate(file: ExportCCFile) {
 	}
 }
 
+function isValidApiVersion(file: ExportCCFile): boolean {
+	const apiVersion = file.apiVersion
+	const hasApiVersion = apiVersion !== undefined
+	const versionRegExp = new RegExp("[0-9]+\\.[0-9]+")
+	const isValidVersion = versionRegExp.test(apiVersion)
+	return hasApiVersion && isValidVersion
+}
+
+function fileHasHigherMajorVersion(file: ExportCCFile): boolean {
+	const apiVersion = getAsApiVersion(file.apiVersion)
+	return apiVersion.major > getAsApiVersion(latestApiVersion).major
+}
+
+function fileHasHigherMinorVersion(file: ExportCCFile): boolean {
+	const apiVersion = getAsApiVersion(file.apiVersion)
+	return apiVersion.minor > getAsApiVersion(latestApiVersion).minor
+}
+
+function getAsApiVersion(version: string): ApiVersion {
+	return {
+		major: Number(version.split(".")[0]),
+		minor: Number(version.split(".")[1])
+	}
+}
+
 function getValidationMessage(error: Ajv.ErrorObject) {
 	const errorType = error.keyword.charAt(0).toUpperCase() + error.keyword.slice(1)
 	const errorParameter = error.dataPath.slice(1)
@@ -89,31 +114,6 @@ function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidat
 			names.add(`${child.name}|${child.type}`)
 			validateChildrenAreUniqueRecursive(child, result, names)
 		}
-	}
-}
-
-function isValidApiVersion(file: ExportCCFile): boolean {
-	const apiVersion = file.apiVersion
-	const hasApiVersion = apiVersion !== undefined
-	const versionRegExp = new RegExp("[0-9]+\\.[0-9]+")
-	const isValidVersion = versionRegExp.test(apiVersion)
-	return hasApiVersion && isValidVersion
-}
-
-function fileHasHigherMajorVersion(file: ExportCCFile): boolean {
-	const apiVersion = getAsApiVersion(file.apiVersion)
-	return apiVersion.major > getAsApiVersion(latestApiVersion).major
-}
-
-function fileHasHigherMinorVersion(file: ExportCCFile): boolean {
-	const apiVersion = getAsApiVersion(file.apiVersion)
-	return apiVersion.minor > getAsApiVersion(latestApiVersion).minor
-}
-
-function getAsApiVersion(version: string): ApiVersion {
-	return {
-		major: Number(version.split(".")[0]),
-		minor: Number(version.split(".")[1])
 	}
 }
 
