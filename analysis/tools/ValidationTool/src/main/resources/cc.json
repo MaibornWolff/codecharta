@@ -24,7 +24,7 @@
 		"CodeMapNode": {
 			"properties": {
 				"attributes": {
-					"$ref": "#/definitions/Record<string,number>"
+					"$ref": "#/definitions/KeyValuePair"
 				},
 				"children": {
 					"items": {
@@ -75,7 +75,7 @@
 		"Edge": {
 			"properties": {
 				"attributes": {
-					"$ref": "#/definitions/Record<string,number>"
+					"$ref": "#/definitions/KeyValuePair"
 				},
 				"fromNodeName": {
 					"type": "string"
@@ -186,6 +186,12 @@
 			"required": ["height", "left", "top", "width"],
 			"type": "object"
 		},
+		"KeyValuePair": {
+			"additionalProperties": {
+				"type": "number"
+			},
+			"type": "object"
+		},
 		"MarkedPackage": {
 			"properties": {
 				"color": {
@@ -253,10 +259,6 @@
 					"type": "array"
 				}
 			},
-			"type": "object"
-		},
-		"Record<string,number>": {
-			"description": "Construct a type with a set of properties K of type T",
 			"type": "object"
 		}
 	}
