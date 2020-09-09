@@ -113,7 +113,7 @@ describe("StoreService", () => {
 		})
 
 		it("should dispatch an action silently and not notify subscribers", () => {
-			storeService.dispatch(setCamera(), true)
+			storeService.dispatch(setCamera(), { silent: true })
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})
@@ -121,7 +121,7 @@ describe("StoreService", () => {
 		it("should dispatch an action silently and not show the loading-gif", () => {
 			storeService.dispatch(setIsLoadingMap(false))
 
-			storeService.dispatch(setCamera(), true)
+			storeService.dispatch(setCamera(), { silent: true })
 
 			expect(storeService.getState().appSettings.isLoadingMap).toBeFalsy()
 		})

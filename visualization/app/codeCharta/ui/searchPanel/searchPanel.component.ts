@@ -4,6 +4,7 @@ import { SearchPanelMode } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
+import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 
 export class SearchPanelController implements SearchPanelModeSubscriber {
 	private _viewModel: {
@@ -15,7 +16,11 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private codeChartaMouseEventService: CodeChartaMouseEventService
+	) {
 		SearchPanelModeService.subscribe(this.$rootScope, this)
 		this.onSearchPanelModeChanged(SearchPanelMode.minimized)
 	}
@@ -35,6 +40,7 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 		} else {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
 		}
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent(this.codeChartaMouseEventService.closeSearchPanel)
 	}
 
 	public openSearchPanel() {

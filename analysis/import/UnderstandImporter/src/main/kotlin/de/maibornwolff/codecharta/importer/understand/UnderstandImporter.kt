@@ -12,7 +12,8 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "understandimport", description = ["generates cc.json from SciTools (TM) Understand csv"],
+    name = "understandimport",
+    description = ["generates cc.json from SciTools (TM) Understand csv"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class UnderstandImporter : Callable<Void> {

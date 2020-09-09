@@ -1,6 +1,5 @@
+import { clone } from "./clone"
 import _ from "lodash"
-
-const clone = require("rfdc")()
 
 export function removeItemFromArray(array: any[], item: any): any[] {
 	if (item) {

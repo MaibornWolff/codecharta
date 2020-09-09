@@ -10,6 +10,8 @@ import {
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
+import * as Three from "three"
+import oc from "three-orbit-controls"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -126,15 +128,15 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public init(domElement) {
-		const OrbitControls = require("three-orbit-controls")(require("three"))
-		this.controls = new OrbitControls(this.threeCameraService.camera, domElement)
+		const orbitControls = oc(Three)
+		this.controls = new orbitControls(this.threeCameraService.camera, domElement)
 		this.controls.addEventListener("change", () => {
 			this.onInput(this.threeCameraService.camera)
 		})
 	}
 
 	public onInput(camera: PerspectiveCamera) {
-		this.storeService.dispatch(setCameraTarget(this.controls.target), true)
+		this.storeService.dispatch(setCameraTarget(this.controls.target), { silent: true })
 		this.$rootScope.$broadcast(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, camera)
 	}
 

@@ -1,8 +1,7 @@
 import { BlacklistItem } from "../../../../codeCharta.model"
 import { BlacklistAction, BlacklistActions, setBlacklist } from "./blacklist.actions"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
-
-const clone = require("rfdc")()
+import { clone } from "../../../../util/clone"
 
 export function blacklist(state: BlacklistItem[] = setBlacklist().payload, action: BlacklistAction): BlacklistItem[] {
 	switch (action.type) {
