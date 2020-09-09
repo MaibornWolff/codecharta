@@ -55,7 +55,7 @@ export function validate(file: ExportCCFile) {
 		} else if (file.nodes.length === 0) {
 			result.error.push(ERROR_MESSAGES.nodesEmpty)
 		} else {
-			validateChildrenAreUnique(file.nodes[0], result)
+			validateAllNodesAreUnique(file.nodes[0], result)
 			validateFixedFolders(file, result)
 		}
 	}
@@ -71,20 +71,24 @@ function getValidationMessage(error: Ajv.ErrorObject) {
 	return `${errorType} error: ${errorParameter} ${error.message}`
 }
 
-function validateChildrenAreUnique(node: CodeMapNode, result: CCValidationResult) {
+function validateAllNodesAreUnique(node: CodeMapNode, result: CCValidationResult) {
+	const names = new Set<string>()
+	names.add(`${node.name}|${node.type}`)
+	validateChildrenAreUniqueRecursive(node, result, names)
+}
+
+function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidationResult, names: Set<string>) {
 	if (!node.children || node.children.length === 0) {
 		return
 	}
 
-	const names = {}
-	node.children.forEach(child => (names[child.name + child.type] = true))
-
-	if (Object.keys(names).length !== node.children.length) {
-		result.error.push(ERROR_MESSAGES.nodesNotUnique)
-	}
-
 	for (const child of node.children) {
-		validateChildrenAreUnique(child, result)
+		if (names.has(`${child.name}|${child.type}`)) {
+			result.error.push(`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${child.type} with name: ${child.name}`)
+		} else {
+			names.add(`${child.name}|${child.type}`)
+			validateChildrenAreUniqueRecursive(child, result, names)
+		}
 	}
 }
 

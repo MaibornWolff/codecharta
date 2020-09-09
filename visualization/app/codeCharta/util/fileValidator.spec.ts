@@ -133,7 +133,7 @@ describe("FileValidator", () => {
 		file.nodes[0].children[1].type = NodeType.FILE
 
 		const expectedError: CCValidationResult = {
-			error: [ERROR_MESSAGES.nodesNotUnique],
+			error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with name: same`],
 			warning: []
 		}
 
