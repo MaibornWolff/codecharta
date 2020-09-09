@@ -22,7 +22,7 @@ export const ERROR_MESSAGES = {
 	majorApiVersionIsOutdated: "API Version Outdated: Update CodeCharta API Version to match cc.json.",
 	minorApiVersionOutdated: "Minor API Version Outdated.",
 	nodesNotUnique: "Node names in combination with node types are not unique.",
-	nodesEmpty: "The nodes-array must contain at least one valid node.",
+	nodesEmpty: "The nodes array is empty. At least one node is required.",
 	notAllFoldersAreFixed: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed.",
 	fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
 	fixedFoldersOverlapped: "Folders may not overlap."
