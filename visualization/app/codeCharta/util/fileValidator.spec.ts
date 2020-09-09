@@ -10,8 +10,8 @@ import packageJson from "../../../package.json"
 import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
 import assert from "assert"
 import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
-import _ from "lodash"
 import { ExportCCFile } from "../codeCharta.api.model"
+import { clone } from "./clone"
 
 describe("FileValidator", () => {
 	let file: ExportCCFile
@@ -222,7 +222,7 @@ describe("FileValidator", () => {
 
 	describe("fixed folders validation", () => {
 		beforeEach(() => {
-			file = _.cloneDeep(fileWithFixedFolders)
+			file = clone(fileWithFixedFolders)
 		})
 
 		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
