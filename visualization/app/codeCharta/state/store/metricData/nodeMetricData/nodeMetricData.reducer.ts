@@ -6,8 +6,7 @@ import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { hierarchy, HierarchyNode } from "d3"
 import { NodeMetricDataService } from "./nodeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
-
-const clone = require("rfdc")()
+import { clone } from "../../../../util/clone"
 
 export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().payload, action: NodeMetricDataAction): NodeMetricData[] {
 	switch (action.type) {

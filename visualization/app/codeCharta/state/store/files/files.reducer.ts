@@ -1,8 +1,7 @@
 import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles } from "./files.actions"
 import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
-
-const clone = require("rfdc")()
+import { clone } from "../../../util/clone"
 
 export default function files(state: FileState[] = setFiles().payload, action: FilesAction): FileState[] {
 	switch (action.type) {

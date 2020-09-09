@@ -3,6 +3,7 @@ import { AppSettings, CCLocalStorage, DynamicSettings, RecursivePartial, Scenari
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import scenarios from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
 
 export class ScenarioHelper {
@@ -68,7 +69,7 @@ export class ScenarioHelper {
 	}
 
 	private static getPreLoadScenarios(): Map<String, RecursivePartial<Scenario>> {
-		const scenariosAsSettings: ExportScenario[] = this.importScenarios(require("../assets/scenarios.json"))
+		const scenariosAsSettings: ExportScenario[] = this.importScenarios(scenarios)
 		const scenario: Map<String, RecursivePartial<Scenario>> = new Map<String, RecursivePartial<Scenario>>()
 		scenariosAsSettings.forEach(scenarioSettings => {
 			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))
