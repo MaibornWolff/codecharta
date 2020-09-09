@@ -351,7 +351,7 @@ Array [
 ]
 `;
 
-exports[`treeMapGenerator create Treemap nodes should build the a tree map with valid coordinates using the fixed folder structure 1`] = `
+exports[`treeMapGenerator create Treemap nodes should build the tree map with valid coordinates using the fixed folder structure 1`] = `
 Array [
   Object {
     "attributes": Object {},

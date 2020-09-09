@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Compressed `cc.jsons (.gz) not marked as accepted when selecting a file in the file chooser
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.56.0] - 2020-09-04

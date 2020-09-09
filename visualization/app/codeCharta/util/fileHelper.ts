@@ -1,6 +1,5 @@
 import { ExportBlacklistType, ExportCCFile, OldAttributeTypes } from "../codeCharta.api.model"
 import { AttributeTypes, BlacklistItem, BlacklistType, CCFile } from "../codeCharta.model"
-import _ from "lodash"
 
 export function getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
 	return {
@@ -22,7 +21,7 @@ export function getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
 }
 
 function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): AttributeTypes {
-	if (_.isEmpty(attributeTypes) || !attributeTypes || Array.isArray(attributeTypes.nodes) || Array.isArray(attributeTypes.edges)) {
+	if (!attributeTypes || Array.isArray(attributeTypes.nodes) || Array.isArray(attributeTypes.edges)) {
 		return {
 			nodes: {},
 			edges: {}
@@ -30,8 +29,8 @@ function getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): 
 	}
 
 	return {
-		nodes: !attributeTypes.nodes ? {} : attributeTypes.nodes,
-		edges: !attributeTypes.edges ? {} : attributeTypes.edges
+		nodes: attributeTypes.nodes ?? {},
+		edges: attributeTypes.edges ?? {}
 	}
 }
 

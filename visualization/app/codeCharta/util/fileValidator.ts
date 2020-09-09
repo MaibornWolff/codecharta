@@ -1,9 +1,10 @@
 import { CodeMapNode, FixedPosition } from "../codeCharta.model"
 import Ajv from "ajv"
+import packageJson from "../../../package.json"
 import { ExportCCFile } from "../codeCharta.api.model"
+import jsonSchema from "./generatedSchema.json"
 
-const jsonSchema = require("./generatedSchema.json")
-const latestApiVersion = require("../../../package.json").codecharta.apiVersion
+const latestApiVersion = packageJson.codecharta.apiVersion
 
 interface ApiVersion {
 	major: number

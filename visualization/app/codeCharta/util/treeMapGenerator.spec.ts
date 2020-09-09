@@ -51,7 +51,7 @@ describe("treeMapGenerator", () => {
 			expect(nodes).toMatchSnapshot()
 		})
 
-		it("should build the a tree map with valid coordinates using the fixed folder structure", () => {
+		it("should build the tree map with valid coordinates using the fixed folder structure", () => {
 			const nodes = TreeMapGenerator.createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()

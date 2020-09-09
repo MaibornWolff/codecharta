@@ -13,7 +13,8 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "sourcemonitorimport", description = ["generates cc.json from sourcemonitor csv"],
+    name = "sourcemonitorimport",
+    description = ["generates cc.json from sourcemonitor csv"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class SourceMonitorImporter : Callable<Void> {

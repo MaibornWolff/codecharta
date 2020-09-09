@@ -1,6 +1,8 @@
 import { CC_URL, goto } from "../../puppeteer.helper"
 import { DialogErrorPageObject } from "../ui/dialog/dialog.error.po"
 import { FilePanelPageObject } from "../ui/filePanel/filePanel.po"
+import sample1 from "../assets/sample3.cc.json"
+import sample3 from "../assets/sample3.cc.json"
 
 describe("codecharta", () => {
 	let dialogError: DialogErrorPageObject
@@ -37,13 +39,13 @@ describe("codecharta", () => {
 				request.respond({
 					contentType: "application/json",
 					headers: { "Access-Control-Allow-Origin": "*" },
-					body: JSON.stringify(require("../assets/sample2.cc.json"))
+					body: JSON.stringify(sample1)
 				})
 			} else if (request.url().includes("/fileTwo.json")) {
 				request.respond({
 					contentType: "application/json",
 					headers: { "Access-Control-Allow-Origin": "*" },
-					body: JSON.stringify(require("../assets/sample3.cc.json"))
+					body: JSON.stringify(sample3)
 				})
 			} else {
 				request.continue()

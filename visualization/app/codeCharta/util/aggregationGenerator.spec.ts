@@ -1,12 +1,13 @@
 import { CCFile, NodeType, Settings } from "../codeCharta.model"
 import { AggregationGenerator } from "./aggregationGenerator"
+import packageJson from "../../../package.json"
 
 describe("AggregationGenerator", () => {
 	const file1: CCFile = {
 		fileMeta: {
 			fileName: "file1",
 			projectName: "Sample Project",
-			apiVersion: require("../../../package.json").codecharta.apiVersion
+			apiVersion: packageJson.codecharta.apiVersion
 		},
 		map: {
 			name: "root",
@@ -44,7 +45,7 @@ describe("AggregationGenerator", () => {
 		fileMeta: {
 			fileName: "file2",
 			projectName: "Sample Project",
-			apiVersion: require("../../../package.json").codecharta.apiVersion
+			apiVersion: packageJson.codecharta.apiVersion
 		},
 		map: {
 			name: "root",

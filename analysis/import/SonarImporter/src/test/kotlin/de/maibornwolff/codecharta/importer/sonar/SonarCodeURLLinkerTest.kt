@@ -15,8 +15,11 @@ class SonarCodeURLLinkerTest {
         val baseUrl = URL("https://sonarcloud.io")
         val component =
             Component(
-                "", "com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as",
-                "", "", Qualifier.FIL
+                "",
+                "com.adobe%3Aas3corelib%3Asrc%2Fcom%2Fadobe%2Fair%2Fcrypto%2FEncryptionKeyGenerator.as",
+                "",
+                "",
+                Qualifier.FIL
             )
 
         // when

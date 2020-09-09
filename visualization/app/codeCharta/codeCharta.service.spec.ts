@@ -11,6 +11,7 @@ import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
+import packageJson from "../../package.json"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -52,7 +53,7 @@ describe("codeChartaService", () => {
 
 	describe("loadFiles", () => {
 		const expected: CCFile = {
-			fileMeta: { apiVersion: require("../../package.json").codecharta.apiVersion, fileName, projectName: "Sample Map" },
+			fileMeta: { apiVersion: packageJson.codecharta.apiVersion, fileName, projectName: "Sample Map" },
 			map: {
 				attributes: {},
 				isExcluded: false,

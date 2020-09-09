@@ -181,7 +181,10 @@ class SonarMetricsAPIDatasourceIntegrationTest {
 
         private val METRIC_ARRAY =
             arrayOf(
-                "accessors", "blocker_violations", "public_api", "public_documented_api_density",
+                "accessors",
+                "blocker_violations",
+                "public_api",
+                "public_documented_api_density",
                 "public_undocumented_api"
             )
 

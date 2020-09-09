@@ -6,6 +6,7 @@ import {
 	TEST_FILE_CONTENT_NO_API
 } from "./dataMocks"
 import { NodeType } from "../codeCharta.model"
+import packageJson from "../../../package.json"
 import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
 import assert from "assert"
 import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
@@ -21,7 +22,7 @@ describe("FileValidator", () => {
 	})
 
 	it("API version exists in package.json", () => {
-		expect(require("../../../package.json").codecharta.apiVersion).toEqual("1.2")
+		expect(packageJson.codecharta.apiVersion).toEqual("1.2")
 	})
 
 	it("should throw on null", () => {

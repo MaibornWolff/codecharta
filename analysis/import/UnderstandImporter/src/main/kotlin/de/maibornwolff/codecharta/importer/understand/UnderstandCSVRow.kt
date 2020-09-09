@@ -79,7 +79,9 @@ class UnderstandCSVRow(
             isFileRow -> MutableNode(filename, nodeType, attributes)
             nodeType == NodeType.Unknown -> throw IllegalArgumentException("Kind $kind not supported, yet.")
             else -> MutableNode(
-                name, nodeType, attributes,
+                name,
+                nodeType,
+                attributes,
                 nodeMergingStrategy = NodeMaxAttributeMerger(true)
             )
         }

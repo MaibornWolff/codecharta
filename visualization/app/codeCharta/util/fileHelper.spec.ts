@@ -2,7 +2,7 @@ import { ExportBlacklistType, ExportCCFile } from "../codeCharta.api.model"
 import { AttributeTypeValue, BlacklistType } from "../codeCharta.model"
 import { getCCFile } from "./fileHelper"
 import { TEST_FILE_CONTENT } from "./dataMocks"
-const clone = require("rfdc")()
+import { clone } from "./clone"
 
 describe("FileHelper", () => {
 	let fileContent: ExportCCFile
@@ -31,6 +31,22 @@ describe("FileHelper", () => {
 				nodes: [{ mcc: AttributeTypeValue.absolute }],
 				edges: [{ pairingRate: AttributeTypeValue.relative }]
 			}
+
+			const result = getCCFile("fileName", fileContent)
+
+			expect(result.settings.fileSettings.attributeTypes).toEqual({ nodes: {}, edges: {} })
+		})
+
+		it("should return empty attributeTypes", () => {
+			fileContent.attributeTypes = {}
+
+			const result = getCCFile("fileName", fileContent)
+
+			expect(result.settings.fileSettings.attributeTypes).toEqual({ nodes: {}, edges: {} })
+		})
+
+		it("should return empty attributeTypes if the property doesn't exist", () => {
+			fileContent.attributeTypes = undefined
 
 			const result = getCCFile("fileName", fileContent)
 

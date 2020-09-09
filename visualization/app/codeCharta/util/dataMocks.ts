@@ -30,6 +30,7 @@ import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import packageJson from "../../../package.json"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -557,7 +558,7 @@ export const TEST_FILE_CONTENT_NO_API = {
 export const FILE_META: FileMeta = {
 	fileName: "fileA",
 	projectName: "Sample Project",
-	apiVersion: require("../../../package.json").codecharta.apiVersion
+	apiVersion: packageJson.codecharta.apiVersion
 }
 
 export const TEST_FILE_DATA: CCFile = {
@@ -878,7 +879,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
 		projectName: "Sample Project",
-		apiVersion: require("../../../package.json").codecharta.apiVersion
+		apiVersion: packageJson.codecharta.apiVersion
 	},
 	map: {
 		name: "root",
@@ -934,7 +935,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	fileMeta: {
 		fileName: "fileB",
 		projectName: "Sample Project",
-		apiVersion: require("../../../package.json").codecharta.apiVersion
+		apiVersion: packageJson.codecharta.apiVersion
 	},
 	map: {
 		name: "root",
@@ -1003,7 +1004,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 }
 
 export const TEST_FILE_DATA_DOWNLOADED = {
-	apiVersion: require("../../../package.json").codecharta.apiVersion,
+	apiVersion: packageJson.codecharta.apiVersion,
 	attributeTypes: {},
 	blacklist: [
 		{ path: "/root/bigLeaf.ts", type: "hide" },

@@ -4,10 +4,11 @@ import { PARTIAL_SETTINGS, SCENARIO, SCENARIO_ITEM_WITH_EVERYTHING_SAVED, SCENAR
 import { Vector3 } from "three"
 import { ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import scenarioJson from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
 
 describe("scenarioHelper", () => {
-	const scenarios: ExportScenario[] = require("../assets/scenarios.json")
+	const scenarios: ExportScenario[] = scenarioJson
 
 	beforeEach(() => {
 		ScenarioHelper["scenarios"].set("Scenario1", SCENARIO)
