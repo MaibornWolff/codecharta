@@ -140,7 +140,12 @@ function getOutgoingEdgePoint(width: number, height: number, length: number, vec
 }
 
 function shouldNodeBeFlat(codeMapNode: CodeMapNode, s: State): boolean {
+	if (codeMapNode.isFlattened) {
+		return true
+	}
+
 	let flattened = false
+
 	if (s.appSettings.showOnlyBuildingsWithEdges && s.fileSettings.edges?.filter(edge => edge.visible).length > 0) {
 		flattened = nodeHasNoVisibleEdges(codeMapNode, s)
 	}
@@ -149,7 +154,6 @@ function shouldNodeBeFlat(codeMapNode: CodeMapNode, s: State): boolean {
 		flattened = s.dynamicSettings.searchedNodePaths.size == 0 ? true : isNodeNonSearched(codeMapNode, s)
 	}
 
-	flattened = codeMapNode.isFlattened || flattened
 	return flattened
 }
 
