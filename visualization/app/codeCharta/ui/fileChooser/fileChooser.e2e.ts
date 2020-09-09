@@ -75,4 +75,10 @@ describe("FileChooser", () => {
 
 		expect(await filePanel.getSelectedName()).toEqual("sample3.cc.json")
 	})
+
+	it("should be able to open a cc.json with a lower minor api version without a warning", async () => {
+		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_lower_minor_api.cc.json"])
+
+		expect(await filePanel.getSelectedName()).toEqual("sample1_with_lower_minor_api.cc.json")
+	})
 })
