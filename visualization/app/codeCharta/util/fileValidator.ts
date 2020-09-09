@@ -14,70 +14,35 @@ interface ApiVersion {
 export interface CCValidationResult {
 	error: string[]
 	warning: string[]
-	title: string
 }
 
 export const ERROR_MESSAGES = {
-	fileIsInvalid: {
-		title: "Error Loading File",
-		message: "File is empty or invalid."
-	},
-	apiVersionIsInvalid: {
-		title: "Error API Version",
-		message: "API Version is empty or invalid."
-	},
-	majorApiVersionIsOutdated: {
-		title: "Error Major API Version",
-		message: "API Version Outdated: Update CodeCharta API Version to match cc.json."
-	},
-	minorApiVersionOutdated: {
-		title: "Warning Minor API Version",
-		message: "Minor API Version Outdated."
-	},
-	nodesNotUnique: {
-		title: "Error Node Uniques",
-		message: "Node names in combination with node types are not unique."
-	},
-	nodesEmpty: {
-		title: "Error Nodes Empty",
-		message: "The nodes-array must contain at least one valid node."
-	},
-	notAllFoldersAreFixed: {
-		title: "Error All folders must be fixed",
-		message: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed."
-	},
-	fixedFoldersOutOfBounds: {
-		title: "Error Fixed folders out of bounds",
-		message: "Coordinates of fixed folders must be within a range of 0 and 100."
-	},
-	fixedFoldersOverlapped: {
-		title: "Error Fixed folders overlapped",
-		message: "Folders may not overlap."
-	},
-	validationError: {
-		title: "Error Validation"
-	}
+	fileIsInvalid: "File is empty or invalid.",
+	apiVersionIsInvalid: "API Version is empty or invalid.",
+	majorApiVersionIsOutdated: "API Version Outdated: Update CodeCharta API Version to match cc.json.",
+	minorApiVersionOutdated: "Minor API Version Outdated.",
+	nodesNotUnique: "Node names in combination with node types are not unique.",
+	nodesEmpty: "The nodes-array must contain at least one valid node.",
+	notAllFoldersAreFixed: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed.",
+	fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
+	fixedFoldersOverlapped: "Folders may not overlap."
 }
 
 export function validate(file: ExportCCFile) {
-	const result: CCValidationResult = { error: [], warning: [], title: "" }
+	const result: CCValidationResult = { error: [], warning: [] }
 
 	switch (true) {
 		case !file:
-			result.error.push(ERROR_MESSAGES.fileIsInvalid.message)
-			result.title = ERROR_MESSAGES.fileIsInvalid.title
+			result.error.push(ERROR_MESSAGES.fileIsInvalid)
 			break
 		case !isValidApiVersion(file):
-			result.error.push(ERROR_MESSAGES.apiVersionIsInvalid.message)
-			result.title = ERROR_MESSAGES.apiVersionIsInvalid.title
+			result.error.push(ERROR_MESSAGES.apiVersionIsInvalid)
 			break
 		case fileHasHigherMajorVersion(file):
-			result.error.push(ERROR_MESSAGES.majorApiVersionIsOutdated.message)
-			result.title = ERROR_MESSAGES.majorApiVersionIsOutdated.title
+			result.error.push(ERROR_MESSAGES.majorApiVersionIsOutdated)
 			break
 		case fileHasHigherMinorVersion(file):
-			result.warning.push(`${ERROR_MESSAGES.minorApiVersionOutdated.message} Found: ${file.apiVersion}`)
-			result.title = ERROR_MESSAGES.minorApiVersionOutdated.title
+			result.warning.push(`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`)
 	}
 
 	if (result.error.length === 0) {
@@ -87,10 +52,8 @@ export function validate(file: ExportCCFile) {
 
 		if (!valid) {
 			result.error = validate.errors.map((error: Ajv.ErrorObject) => getValidationMessage(error))
-			result.title = ERROR_MESSAGES.validationError.title
 		} else if (file.nodes.length === 0) {
-			result.error.push(ERROR_MESSAGES.nodesEmpty.message)
-			result.title = ERROR_MESSAGES.nodesEmpty.title
+			result.error.push(ERROR_MESSAGES.nodesEmpty)
 		} else {
 			validateChildrenAreUnique(file.nodes[0], result)
 			validateFixedFolders(file, result)
@@ -117,8 +80,7 @@ function validateChildrenAreUnique(node: CodeMapNode, result: CCValidationResult
 	node.children.forEach(child => (names[child.name + child.type] = true))
 
 	if (Object.keys(names).length !== node.children.length) {
-		result.error.push(ERROR_MESSAGES.nodesNotUnique.message)
-		result.title = ERROR_MESSAGES.nodesNotUnique.title
+		result.error.push(ERROR_MESSAGES.nodesNotUnique)
 	}
 
 	for (const child of node.children) {
@@ -175,18 +137,15 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 	})
 
 	if (notFixed.length > 0 && notFixed.length !== file.nodes[0].children.length) {
-		result.title = ERROR_MESSAGES.notAllFoldersAreFixed.title
-		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed.message} Found: ${notFixed.join(", ")}`)
+		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
 	}
 
 	if (outOfBounds.length > 0) {
-		result.title = ERROR_MESSAGES.fixedFoldersOutOfBounds.title
-		result.error.push(`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: ${outOfBounds.join(", ")}`)
+		result.error.push(`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: ${outOfBounds.join(", ")}`)
 	}
 
 	if (intersections.size > 0) {
-		result.title = ERROR_MESSAGES.fixedFoldersOverlapped.title
-		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: ${[...intersections.values()].join(", ")}`)
+		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: ${[...intersections.values()].join(", ")}`)
 	}
 }
 

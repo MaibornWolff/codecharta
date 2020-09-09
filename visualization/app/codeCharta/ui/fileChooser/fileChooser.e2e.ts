@@ -42,7 +42,7 @@ describe("FileChooser", () => {
 
 	it("should open an invalid file, close the dialog and open a valid file", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/assets/logo.png"])
-		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid.message}`)
+		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
 
 		await dialogError.clickOk()
 
@@ -53,7 +53,7 @@ describe("FileChooser", () => {
 
 	it("should open an valid and an invalid file, close the dialog and open a valid file", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/assets/logo.png", "./app/codeCharta/assets/sample3.cc.json"])
-		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid.message}`)
+		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
 
 		await dialogError.clickOk()
 
@@ -65,10 +65,10 @@ describe("FileChooser", () => {
 	it("should not load a map and show error, when loading a map with warning and a map with error", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/logo.png"])
 
-		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated.message}`)
+		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated}`)
 		await dialogError.waitUntilDialogIsClosed()
 
-		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid.message}`)
+		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
 		await dialogError.clickOk()
 
 		await fileChooser.openFiles(["./app/codeCharta/assets/sample3.cc.json"], false)

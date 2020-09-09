@@ -27,8 +27,7 @@ describe("FileValidator", () => {
 
 	it("should throw on null", () => {
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fileIsInvalid.title,
-			error: [ERROR_MESSAGES.fileIsInvalid.message],
+			error: [ERROR_MESSAGES.fileIsInvalid],
 			warning: []
 		}
 
@@ -41,8 +40,7 @@ describe("FileValidator", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_MAJOR_API
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.majorApiVersionIsOutdated.title,
-			error: [ERROR_MESSAGES.majorApiVersionIsOutdated.message],
+			error: [ERROR_MESSAGES.majorApiVersionIsOutdated],
 			warning: []
 		}
 
@@ -55,9 +53,8 @@ describe("FileValidator", () => {
 		file = TEST_FILE_CONTENT_INVALID_MINOR_API
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.minorApiVersionOutdated.title,
 			error: [],
-			warning: [`${ERROR_MESSAGES.minorApiVersionOutdated.message} Found: ${file.apiVersion}`]
+			warning: [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`]
 		}
 
 		assert.throws(() => {
@@ -69,8 +66,7 @@ describe("FileValidator", () => {
 		invalidFile = TEST_FILE_CONTENT_NO_API
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.apiVersionIsInvalid.title,
-			error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+			error: [ERROR_MESSAGES.apiVersionIsInvalid],
 			warning: []
 		}
 
@@ -83,8 +79,7 @@ describe("FileValidator", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_API
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.apiVersionIsInvalid.title,
-			error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+			error: [ERROR_MESSAGES.apiVersionIsInvalid],
 			warning: []
 		}
 
@@ -95,8 +90,7 @@ describe("FileValidator", () => {
 
 	it("should throw on string", () => {
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fileIsInvalid.title,
-			error: [ERROR_MESSAGES.fileIsInvalid.message],
+			error: [ERROR_MESSAGES.fileIsInvalid],
 			warning: []
 		}
 
@@ -139,8 +133,7 @@ describe("FileValidator", () => {
 		file.nodes[0].children[1].type = NodeType.FILE
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.nodesNotUnique.title,
-			error: [ERROR_MESSAGES.nodesNotUnique.message],
+			error: [ERROR_MESSAGES.nodesNotUnique],
 			warning: []
 		}
 
@@ -153,8 +146,7 @@ describe("FileValidator", () => {
 		file.nodes = []
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.nodesEmpty.title,
-			error: [ERROR_MESSAGES.nodesEmpty.message],
+			error: [ERROR_MESSAGES.nodesEmpty],
 			warning: []
 		}
 
@@ -169,7 +161,6 @@ describe("FileValidator", () => {
 		} as any
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.validationError.title,
 			error: [
 				"Required error: nodes[0] should have required property 'name'",
 				"Required error: nodes[0] should have required property 'type'"
@@ -188,7 +179,6 @@ describe("FileValidator", () => {
 		}
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.validationError.title,
 			error: [
 				"Required error: nodes[0] should have required property 'name'",
 				"Required error: nodes[0] should have required property 'type'"
@@ -207,7 +197,6 @@ describe("FileValidator", () => {
 		}
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.validationError.title,
 			error: [
 				"Required error: nodes[0] should have required property 'name'",
 				"Required error: nodes[0] should have required property 'type'"
@@ -234,8 +223,7 @@ describe("FileValidator", () => {
 			folder1.fixedPosition = undefined
 
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.notAllFoldersAreFixed.title,
-				error: [ERROR_MESSAGES.notAllFoldersAreFixed.message + " Found: folder_1"],
+				error: [ERROR_MESSAGES.notAllFoldersAreFixed + " Found: folder_1"],
 				warning: []
 			}
 
@@ -249,8 +237,7 @@ describe("FileValidator", () => {
 			folder1.fixedPosition.width = 7
 
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
-				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
 				warning: []
 			}
 
@@ -264,8 +251,7 @@ describe("FileValidator", () => {
 			folder1.fixedPosition.width = -50
 
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
-				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
 				warning: []
 			}
 
@@ -279,8 +265,7 @@ describe("FileValidator", () => {
 			folder1.fixedPosition.width = 2
 
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
-				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
 				warning: []
 			}
 
@@ -304,9 +289,8 @@ describe("FileValidator", () => {
 			}
 
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
 				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: folder_1 ${JSON.stringify(
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
 						folder1.fixedPosition
 					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
 				],
@@ -333,9 +317,8 @@ describe("FileValidator", () => {
 			}
 
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
 				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: folder_1 ${JSON.stringify(
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
 						folder1.fixedPosition
 					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
 				],
@@ -362,9 +345,8 @@ describe("FileValidator", () => {
 			}
 
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
 				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: folder_2 ${JSON.stringify(
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_2 ${JSON.stringify(
 						folder2.fixedPosition
 					)} and folder_1 ${JSON.stringify(folder1.fixedPosition)}`
 				],
@@ -386,9 +368,8 @@ describe("FileValidator", () => {
 			folder2.fixedPosition = folder1.fixedPosition
 
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
 				error: [
-					`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: folder_1 ${JSON.stringify(
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
 						folder1.fixedPosition
 					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
 				],

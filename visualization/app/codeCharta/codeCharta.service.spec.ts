@@ -170,8 +170,7 @@ describe("codeChartaService", () => {
 
 		it("should show error on invalid file", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fileIsInvalid.title,
-				error: [ERROR_MESSAGES.fileIsInvalid.message],
+				error: [ERROR_MESSAGES.fileIsInvalid],
 				warning: []
 			}
 
@@ -183,8 +182,7 @@ describe("codeChartaService", () => {
 
 		it("should show error on a random string", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.apiVersionIsInvalid.title,
-				error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+				error: [ERROR_MESSAGES.apiVersionIsInvalid],
 				warning: []
 			}
 
@@ -196,7 +194,6 @@ describe("codeChartaService", () => {
 
 		it("should show error if a file is missing a required property", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.validationError.title,
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
 			}
@@ -225,7 +222,6 @@ describe("codeChartaService", () => {
 
 		it("should break the loop after the first invalid file was validated", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.validationError.title,
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
 			}
