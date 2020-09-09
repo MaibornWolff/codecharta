@@ -56,7 +56,7 @@ export function validate(file: ExportCCFile) {
 			result.error.push(ERROR_MESSAGES.nodesEmpty)
 		} else {
 			validateAllNodesAreUnique(file.nodes[0], result)
-			validateFixedFolders(file, result)
+			validateFixedFolders(file.nodes[0], result)
 		}
 	}
 
@@ -117,12 +117,12 @@ function getAsApiVersion(version: string): ApiVersion {
 	}
 }
 
-function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
+function validateFixedFolders(root: CodeMapNode, result: CCValidationResult) {
 	const notFixed: string[] = []
 	const outOfBounds: string[] = []
 	const intersections: Set<string> = new Set()
 
-	for (const node of file.nodes[0].children) {
+	for (const node of root.children) {
 		if (node.fixedPosition === undefined) {
 			notFixed.push(`${node.name}`)
 		} else {
@@ -130,7 +130,7 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 				outOfBounds.push(getFoundFolderMessage(node))
 			}
 
-			for (const node2 of file.nodes[0].children) {
+			for (const node2 of root.children) {
 				if (
 					node2.fixedPosition !== undefined &&
 					node !== node2 &&
@@ -143,7 +143,7 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 		}
 	}
 
-	if (notFixed.length > 0 && notFixed.length !== file.nodes[0].children.length) {
+	if (notFixed.length > 0 && notFixed.length !== root.children.length) {
 		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
 	}
 
