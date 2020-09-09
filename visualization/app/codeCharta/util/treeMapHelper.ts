@@ -144,17 +144,15 @@ function shouldNodeBeFlat(codeMapNode: CodeMapNode, s: State): boolean {
 		return true
 	}
 
-	let flattened = false
+	if (s.dynamicSettings.searchedNodePaths && s.dynamicSettings.searchPattern && s.dynamicSettings.searchPattern.length > 0) {
+		return s.dynamicSettings.searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, s)
+	}
 
 	if (s.appSettings.showOnlyBuildingsWithEdges && s.fileSettings.edges?.filter(edge => edge.visible).length > 0) {
-		flattened = nodeHasNoVisibleEdges(codeMapNode, s)
+		return nodeHasNoVisibleEdges(codeMapNode, s)
 	}
 
-	if (s.dynamicSettings.searchedNodePaths && s.dynamicSettings.searchPattern && s.dynamicSettings.searchPattern.length > 0) {
-		flattened = s.dynamicSettings.searchedNodePaths.size == 0 ? true : isNodeNonSearched(codeMapNode, s)
-	}
-
-	return flattened
+	return false
 }
 
 function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, s: State): boolean {
