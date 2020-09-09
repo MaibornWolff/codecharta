@@ -52,7 +52,7 @@ export const ERROR_MESSAGES = {
 	},
 	fixedFoldersOverlapped: {
 		title: "Error Fixed folders overlapped",
-		message: "Folders can't overlap."
+		message: "Folders may not overlap."
 	},
 	validationError: {
 		title: "Error Validation"
@@ -158,16 +158,16 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 
 	file.nodes[0].children.forEach(node => {
 		if (node.fixedPosition === undefined) {
-			notFixed.push(node.name)
+			notFixed.push(`${node.name}`)
 		} else {
 			if (isOutOfBounds(node)) {
-				outOfBounds.push(node.name)
+				outOfBounds.push(getFoundFolderMessage(node))
 			}
 
 			file.nodes[0].children.forEach(node2 => {
 				if (node !== node2 && rectanglesIntersect(node.fixedPosition, node2.fixedPosition)) {
-					if (!intersections.has(`${node2.name} and ${node.name}`)) {
-						intersections.add(`${node.name} and ${node2.name}`)
+					if (!intersections.has(`${getFoundFolderMessage(node2)} and ${getFoundFolderMessage(node)}`)) {
+						intersections.add(`${getFoundFolderMessage(node)} and ${getFoundFolderMessage(node2)}`)
 					}
 				}
 			})
@@ -188,6 +188,10 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 		result.title = ERROR_MESSAGES.fixedFoldersOverlapped.title
 		result.error.push(`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: ${[...intersections.values()].join(", ")}`)
 	}
+}
+
+function getFoundFolderMessage(node: CodeMapNode): string {
+	return `${node.name} ${JSON.stringify(node.fixedPosition)}`
 }
 
 function rectanglesIntersect(rect1: FixedPosition, rect2: FixedPosition): boolean {

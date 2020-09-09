@@ -5,7 +5,7 @@ import {
 	TEST_FILE_CONTENT_INVALID_MINOR_API,
 	TEST_FILE_CONTENT_NO_API
 } from "./dataMocks"
-import { NodeType } from "../codeCharta.model"
+import { CodeMapNode, NodeType } from "../codeCharta.model"
 import packageJson from "../../../package.json"
 import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
 import assert from "assert"
@@ -221,12 +221,17 @@ describe("FileValidator", () => {
 	})
 
 	describe("fixed folders validation", () => {
+		let folder1: CodeMapNode
+		let folder2: CodeMapNode
+
 		beforeEach(() => {
 			file = clone(fileWithFixedFolders)
+			folder1 = file.nodes[0].children[0]
+			folder2 = file.nodes[0].children[1]
 		})
 
 		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
-			file.nodes[0].children[0].fixedPosition = undefined
+			folder1.fixedPosition = undefined
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.notAllFoldersAreFixed.title,
@@ -240,12 +245,12 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if at least one fixed folder ends up in a negative coordinate", () => {
-			file.nodes[0].children[0].fixedPosition.left = -5
-			file.nodes[0].children[0].fixedPosition.width = 2
+			folder1.fixedPosition.left = -5
+			folder1.fixedPosition.width = 3
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
-				error: [ERROR_MESSAGES.fixedFoldersOutOfBounds.message + " Found: folder_1"],
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
 				warning: []
 			}
 
@@ -255,12 +260,12 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if at least one fixed folder exceeds the maximum coordinate of 100", () => {
-			file.nodes[0].children[0].fixedPosition.left = 99
-			file.nodes[0].children[0].fixedPosition.width = 2
+			folder1.fixedPosition.left = 99
+			folder1.fixedPosition.width = 2
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
-				error: [ERROR_MESSAGES.fixedFoldersOutOfBounds.message + " Found: folder_1"],
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
 				warning: []
 			}
 
@@ -270,13 +275,13 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if two folders horizontally overlap", () => {
-			file.nodes[0].children[0].fixedPosition = {
+			folder1.fixedPosition = {
 				left: 0,
 				top: 0,
 				width: 10,
 				height: 10
 			}
-			file.nodes[0].children[1].fixedPosition = {
+			folder2.fixedPosition = {
 				left: 5,
 				top: 1,
 				width: 10,
@@ -285,7 +290,11 @@ describe("FileValidator", () => {
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
-				error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: folder_1 and folder_2"],
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: folder_1 ${JSON.stringify(
+						folder1.fixedPosition
+					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+				],
 				warning: []
 			}
 
@@ -295,13 +304,13 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if two folders vertically overlap", () => {
-			file.nodes[0].children[0].fixedPosition = {
+			folder1.fixedPosition = {
 				left: 0,
 				top: 0,
 				width: 10,
 				height: 10
 			}
-			file.nodes[0].children[1].fixedPosition = {
+			folder2.fixedPosition = {
 				left: 0,
 				top: 5,
 				width: 10,
@@ -310,7 +319,11 @@ describe("FileValidator", () => {
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
-				error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: folder_1 and folder_2"],
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: folder_1 ${JSON.stringify(
+						folder1.fixedPosition
+					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+				],
 				warning: []
 			}
 
@@ -320,13 +333,13 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if a folder is placed inside another", () => {
-			file.nodes[0].children[0].fixedPosition = {
+			folder1.fixedPosition = {
 				left: 0,
 				top: 0,
 				width: 10,
 				height: 10
 			}
-			file.nodes[0].children[1].fixedPosition = {
+			folder2.fixedPosition = {
 				left: 1,
 				top: 1,
 				width: 1,
@@ -335,7 +348,11 @@ describe("FileValidator", () => {
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
-				error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: folder_2 and folder_1"],
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: folder_2 ${JSON.stringify(
+						folder2.fixedPosition
+					)} and folder_1 ${JSON.stringify(folder1.fixedPosition)}`
+				],
 				warning: []
 			}
 
@@ -345,17 +362,21 @@ describe("FileValidator", () => {
 		})
 
 		it("should throw an error, if a folder has the same boundaries as another", () => {
-			file.nodes[0].children[0].fixedPosition = {
+			folder1.fixedPosition = {
 				left: 0,
 				top: 0,
 				width: 10,
 				height: 10
 			}
-			file.nodes[0].children[1].fixedPosition = file.nodes[0].children[0].fixedPosition
+			folder2.fixedPosition = folder1.fixedPosition
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOverlapped.title,
-				error: [ERROR_MESSAGES.fixedFoldersOverlapped.message + " Found: folder_1 and folder_2"],
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped.message} Found: folder_1 ${JSON.stringify(
+						folder1.fixedPosition
+					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+				],
 				warning: []
 			}
 
