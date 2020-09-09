@@ -65,7 +65,7 @@ describe("FileChooser", () => {
 	it("should not load a map and show error, when loading a map with warning and a map with error", async () => {
 		await fileChooser.openFiles(["./app/codeCharta/ressources/sample1_with_api_warning.cc.json", "./app/codeCharta/assets/logo.png"])
 
-		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated}`)
+		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.minorApiVersionOutdated} Found: 1.5`)
 		await dialogError.waitUntilDialogIsClosed()
 
 		expect(await dialogError.getMessage()).toEqual(` ${ERROR_MESSAGES.fileIsInvalid}`)
