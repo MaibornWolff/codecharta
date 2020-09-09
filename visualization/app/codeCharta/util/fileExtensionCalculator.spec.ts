@@ -1,14 +1,14 @@
-import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { BlacklistType, CodeMapNode, NodeType } from "../codeCharta.model"
 import { VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC, setIsBlacklisted } from "./dataMocks"
 import { HSL } from "./color/hsl"
+import { clone } from "./clone"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
 
 	beforeEach(() => {
-		map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
+		map = clone(VALID_NODE_WITH_PATH_AND_EXTENSION)
 	})
 
 	describe("getFileExtensionDistribution", () => {
