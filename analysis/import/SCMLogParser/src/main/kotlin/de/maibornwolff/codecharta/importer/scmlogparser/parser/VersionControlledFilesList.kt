@@ -59,23 +59,11 @@ class VersionControlledFilesList {
             renamesMap.remove(possibleConflictName)
             renamesMap[newVCFFileName] = oldestName
             get(oldestName)!!.addRename(newVCFFileName)
+            get(oldestName)!!.filename = newFileName
         } else {
             renamesMap[newVCFFileName] = oldFileName
             get(oldFileName)!!.addRename(newVCFFileName)
-        }
-
-        try {
-            println("stop")
-            if (oldestName != null)
-            {
-                get(oldestName)!!.filename = newFileName
-            }
-            else {
-                get(oldFileName)!!.filename = newFileName
-            }
-          //get(oldFileName)!!.filename = newFileName
-        } catch (exc: NullPointerException) {
-            print(exc);
+            get(oldFileName)!!.filename = newFileName
         }
     }
 

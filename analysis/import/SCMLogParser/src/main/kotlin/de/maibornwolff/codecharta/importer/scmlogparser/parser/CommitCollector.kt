@@ -4,6 +4,7 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import java.lang.NullPointerException
 import java.util.function.BiConsumer
 import java.util.function.BinaryOperator
 import java.util.function.Supplier
@@ -47,7 +48,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                                 metricsFactory
                                                                                 )
                         versionControlledFilesList.add(trackName, missingVersionControlledFile)
-                        versionControlledFilesList.get(trackName)!!.addRename(trackName)
+                        missingVersionControlledFile.addRename(trackName)
 
                         it.markInitialAdd()
                         missingVersionControlledFile.registerCommit(commit, it)
@@ -65,12 +66,15 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
                 Modification.Type.DELETE -> {
                     // TODO registerCommit() needed?
-                    versionControlledFilesList.get(trackName)!!.markDeleted()
+                    // TODO It might be a good idea to skip deletes for non-existing files
+                    try {
+                        versionControlledFilesList.get(trackName)!!.markDeleted()
+                    } catch (exc: NullPointerException) {
+                        print("notfounddelete")
+                    }
                 }
 
                 Modification.Type.RENAME -> {
-                    if (it.oldFilename.contains("NodeMergerTest"))
-                        print("here")
                     versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                     versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
                 }
@@ -78,7 +82,19 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 else -> {
                     // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
                     // TODO consider DElTA Mode and Edge calculation
-                    versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
+
+                    // TODO write a unit test for handling a modify for a non-existent (not added) file
+                    var file = versionControlledFilesList.get(trackName)
+                    if (file == null) {
+                        file = VersionControlledFile(
+                                versionControlledFilesList.buildPossibleConflictName(trackName),
+                                metricsFactory
+                                                    )
+                        versionControlledFilesList.add(trackName, file)
+                        file.addRename(trackName)
+                    }
+
+                    file.registerCommit(commit, it)
                 }
             }
         }
