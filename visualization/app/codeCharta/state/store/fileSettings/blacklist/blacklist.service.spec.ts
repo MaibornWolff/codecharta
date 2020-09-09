@@ -20,7 +20,7 @@ describe("BlacklistService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
-		storeService.dispatch(setBlacklist(), true)
+		storeService.dispatch(setBlacklist(), { silent: true })
 	})
 
 	function restartSystem() {
@@ -55,7 +55,7 @@ describe("BlacklistService", () => {
 	describe("onStoreChanged", () => {
 		it("should notify all subscribers with the new blacklist and show the loading gif", () => {
 			const action: BlacklistAction = { type: BlacklistActions.ADD_BLACKLIST_ITEM, payload: item }
-			storeService.dispatch(action, true)
+			storeService.dispatch(action, { silent: true })
 
 			blacklistService.onStoreChanged(BlacklistActions.ADD_BLACKLIST_ITEM)
 

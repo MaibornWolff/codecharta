@@ -21,7 +21,7 @@ describe("StoreService", () => {
 		rebuildService()
 		withMockedEventMethods($rootScope)
 
-		storeService.dispatch(setIsLoadingMap(false), true)
+		storeService.dispatch(setIsLoadingMap(false), { silent: true })
 	})
 
 	function restartSystem() {
