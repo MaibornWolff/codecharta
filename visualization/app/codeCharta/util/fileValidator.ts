@@ -76,7 +76,7 @@ export function validate(file: ExportCCFile) {
 			result.title = ERROR_MESSAGES.majorApiVersionIsOutdated.title
 			break
 		case fileHasHigherMinorVersion(file):
-			result.warning.push(ERROR_MESSAGES.minorApiVersionOutdated.message)
+			result.warning.push(`${ERROR_MESSAGES.minorApiVersionOutdated.message} Found: ${file.apiVersion}`)
 			result.title = ERROR_MESSAGES.minorApiVersionOutdated.title
 	}
 

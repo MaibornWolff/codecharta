@@ -57,7 +57,7 @@ describe("FileValidator", () => {
 		const expectedError: CCValidationResult = {
 			title: ERROR_MESSAGES.minorApiVersionOutdated.title,
 			error: [],
-			warning: [ERROR_MESSAGES.minorApiVersionOutdated.message]
+			warning: [`${ERROR_MESSAGES.minorApiVersionOutdated.message} Found: ${file.apiVersion}`]
 		}
 
 		assert.throws(() => {
