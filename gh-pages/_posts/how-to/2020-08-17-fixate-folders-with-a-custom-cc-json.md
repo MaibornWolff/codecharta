@@ -33,6 +33,8 @@ The property values must be numbers in the range between 0 and 100. They represe
 
 ## Example
 
+![Example]({{site.baseurl}}/assets/images/posts/how-to/fixate-folders/fixated-folder-example.jpg)
+
 ```json
 {
 	"projectName": "example-project",
@@ -44,36 +46,63 @@ The property values must be numbers in the range between 0 and 100. They represe
 			"attributes": {},
 			"children": [
 				{
-					"name": "folder_1",
-					"type": "Folder",
-					"attributes": {},
-					"children": [
-						{
-							"name": "children_1",
-							"type": "File",
-							"attributes": {
-								"custom_metric": 2
-							},
-							"children": []
-						}
-					],
-					"fixedPosition": {
-						"left": 5,
-						"top:": 5,
-						"width": 50,
-						"height": 30
-					}
-				},
-				{
-					"name": "folder_2",
+					"name": "folder_1_red",
 					"type": "Folder",
 					"attributes": {},
 					"children": [],
 					"fixedPosition": {
-						"left": 60,
-						"top:": 40,
-						"width": 35,
-						"height": 55
+						"left": 10,
+						"top": 10,
+						"width": 30,
+						"height": 20
+					}
+				},
+				{
+					"name": "folder_2_orange",
+					"type": "Folder",
+					"attributes": {},
+					"children": [],
+					"fixedPosition": {
+						"left": 50,
+						"top": 10,
+						"width": 40,
+						"height": 20
+					}
+				},
+				{
+					"name": "folder_3_blue",
+					"type": "Folder",
+					"attributes": {},
+					"children": [],
+					"fixedPosition": {
+						"left": 10,
+						"top": 40,
+						"width": 20,
+						"height": 50
+					}
+				},
+				{
+					"name": "folder_4_green",
+					"type": "Folder",
+					"attributes": {},
+					"children": [],
+					"fixedPosition": {
+						"left": 40,
+						"top": 40,
+						"width": 50,
+						"height": 20
+					}
+				},
+				{
+					"name": "folder_5_magenta",
+					"type": "Folder",
+					"attributes": {},
+					"children": [],
+					"fixedPosition": {
+						"left": 40,
+						"top": 70,
+						"width": 50,
+						"height": 20
 					}
 				}
 			]
@@ -83,12 +112,11 @@ The property values must be numbers in the range between 0 and 100. They represe
 ```
 
 A margin between folders is recommended. To apply one, set the coordinates for the folder in the top-left corner
-to e.g., `left: 5` and `top: 5`. The margin between the border of the map and `folder_1` is therefore `5`. It may be chosen at will.
-In order to define the coordinates of adjacent folders, apply any margin between `folder_1` and `folder_2`. The example uses a margin of `5`, so that the coordinates of `folder_2` must be `left: 60` and `top: 40`.
+to e.g., `left: 10` and `top: 10`. The margin between the border of the map and `folder_1` is therefore `10`. It may be chosen at will.
+In order to define the coordinates of adjacent folders, apply any margin between `folder_1` and `folder_2`.
+The example uses a margin of `10`, so that the coordinates of `folder_2` must be `left: 50` and `top: 10`.
 
 ## Restrictions
-
-![Example]({{site.baseurl}}/assets/images/posts/how-to/fixate-folders/fixate-folder-example.jpg)
 
 The following rules apply in order to build a valid custom `.cc.json`:
 
