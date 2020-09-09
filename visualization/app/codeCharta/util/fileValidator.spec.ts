@@ -244,9 +244,24 @@ describe("FileValidator", () => {
 			}, expectedError)
 		})
 
-		it("should throw an error, if at least one fixed folder ends up in a negative coordinate", () => {
+		it("should throw an error, if at least one fixed folder has a padding that is out of bounds", () => {
 			folder1.fixedPosition.left = -5
-			folder1.fixedPosition.width = 3
+			folder1.fixedPosition.width = 7
+
+			const expectedError: CCValidationResult = {
+				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds.message} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if at least one fixed folder has a width or height that is out of bounds", () => {
+			folder1.fixedPosition.left = 10
+			folder1.fixedPosition.width = -50
 
 			const expectedError: CCValidationResult = {
 				title: ERROR_MESSAGES.fixedFoldersOutOfBounds.title,
