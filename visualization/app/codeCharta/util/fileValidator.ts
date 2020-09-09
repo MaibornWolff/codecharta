@@ -40,7 +40,7 @@ export const ERROR_MESSAGES = {
 	},
 	nodesEmpty: {
 		title: "Error Nodes Empty",
-		message: "The nodes-array must contain at least one valid node."
+		message: "The nodes array is empty. At least one node is required."
 	},
 	notAllFoldersAreFixed: {
 		title: "Error All folders must be fixed",
