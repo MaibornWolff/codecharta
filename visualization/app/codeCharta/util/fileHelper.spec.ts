@@ -36,5 +36,21 @@ describe("FileHelper", () => {
 
 			expect(result.settings.fileSettings.attributeTypes).toEqual({ nodes: {}, edges: {} })
 		})
+
+		it("should return empty attributeTypes", () => {
+			fileContent.attributeTypes = {}
+
+			const result = getCCFile("fileName", fileContent)
+
+			expect(result.settings.fileSettings.attributeTypes).toEqual({ nodes: {}, edges: {} })
+		})
+
+		it("should return empty attributeTypes if the property doesn't exist", () => {
+			fileContent.attributeTypes = undefined
+
+			const result = getCCFile("fileName", fileContent)
+
+			expect(result.settings.fileSettings.attributeTypes).toEqual({ nodes: {}, edges: {} })
+		})
 	})
 })
