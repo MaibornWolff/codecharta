@@ -209,15 +209,6 @@ function isInRectangle(x: number, y: number, rect: FixedPosition): boolean {
 	return x >= rect.left && x <= rect.left + rect.width && y >= rect.top && y <= rect.top + rect.height
 }
 
-function isOutOfBounds(node: CodeMapNode): boolean {
-	return (
-		outOfRange(node.fixedPosition.left) ||
-		outOfRange(node.fixedPosition.top) ||
-		outOfRange(node.fixedPosition.left + node.fixedPosition.width) ||
-		outOfRange(node.fixedPosition.top + node.fixedPosition.height)
-	)
-}
-
-function outOfRange(num: number) {
-	return num < 0 || num > 100
+function isOutOfBounds({ fixedPosition: { left, top, width, height } }: CodeMapNode): boolean {
+	return left < 0 || top < 0 || left + width > 100 || top + height > 100 || width < 0 || height < 0
 }
