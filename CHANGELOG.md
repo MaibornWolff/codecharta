@@ -1,4 +1,4 @@
-﻿# Change Log
+# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -6,6 +6,37 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## [unreleased]
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Compressed `cc.jsons (.gz) not marked as accepted when selecting a file in the file chooser
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.56.0] - 2020-09-04
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Improve performance when switching to multiple or delta mode when edges are available
+-   Scenario with EdgeMetric is only appliable when EdgeMetric is existing for the Map #1201
+-   Starting standalone version results in infinite loading loop #1202
+-   Expanded metric selection will close when clicking anywhere outside of that selection #1036
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.55.0] - 2020-08-28
 
 ### Added 🚀
 
@@ -20,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Number of incoming and outgoing edges not visible when hovering over a node #1095
+-   Highlighting buildings in multiple mode now works #956
 
 ### Chore 👨‍💻 👩‍💻
 

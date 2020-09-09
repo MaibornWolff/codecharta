@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
 import { IdToNodeService } from "./store/lookUp/idToNode/idToNode.service"
@@ -56,6 +57,7 @@ angular
 	.service(_.camelCase(MetricDataService.name), MetricDataService)
 	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(_.camelCase(NodeMetricDataService.name), NodeMetricDataService)
+	.service(_.camelCase(PanelSelectionService.name), PanelSelectionService)
 	.service(_.camelCase(CameraTargetService.name), CameraTargetService)
 	.service(_.camelCase(IdToNodeService.name), IdToNodeService)
 	.service(_.camelCase(IdToBuildingService.name), IdToBuildingService)

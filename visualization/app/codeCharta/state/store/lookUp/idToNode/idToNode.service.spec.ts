@@ -16,7 +16,7 @@ describe("IdToNodeService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
-		NodeDecorator.preDecorateFile(TEST_FILE_WITH_PATHS)
+		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, [], [])
 	})
 
 	function restartSystem() {

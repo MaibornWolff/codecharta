@@ -1,7 +1,7 @@
 import { EdgesAction, EdgesActions, setEdges } from "./edges.actions"
 import { Edge } from "../../../../codeCharta.model"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
-const clone = require("rfdc")()
+import { clone } from "../../../../util/clone"
 
 export function edges(state: Edge[] = setEdges().payload, action: EdgesAction): Edge[] {
 	switch (action.type) {

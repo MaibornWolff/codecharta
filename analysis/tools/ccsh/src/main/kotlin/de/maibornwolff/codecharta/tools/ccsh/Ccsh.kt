@@ -16,6 +16,7 @@ import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter
 import de.maibornwolff.codecharta.importer.understand.UnderstandImporter
 import de.maibornwolff.codecharta.parser.rawtextparser.RawTextParser
 import de.maibornwolff.codecharta.tools.validation.ValidationTool
+import picocli.AutoComplete
 import picocli.CommandLine
 import java.util.concurrent.Callable
 
@@ -39,7 +40,8 @@ import java.util.concurrent.Callable
         CodeMaatImporter::class,
         JasomeImporter::class,
         TokeiImporter::class,
-        RawTextParser::class
+        RawTextParser::class,
+        AutoComplete.GenerateCompletion::class
     ],
     versionProvider = Ccsh.ManifestVersionProvider::class,
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
@@ -47,7 +49,8 @@ import java.util.concurrent.Callable
 class Ccsh : Callable<Void?> {
 
     @CommandLine.Option(
-        names = ["-v", "--version"], versionHelp = true,
+        names = ["-v", "--version"],
+        versionHelp = true,
         description = ["prints version info and exits"]
     )
     var versionRequested: Boolean = false

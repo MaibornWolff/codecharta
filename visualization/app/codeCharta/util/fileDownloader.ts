@@ -5,7 +5,7 @@ import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
-const clone = require("rfdc")()
+import { clone } from "./clone"
 
 export class FileDownloader {
 	public static downloadCurrentMap(

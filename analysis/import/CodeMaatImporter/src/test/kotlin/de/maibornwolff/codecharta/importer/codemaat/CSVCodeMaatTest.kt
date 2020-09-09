@@ -11,7 +11,8 @@ class CSVCodeMaatTest : Spek({
 
     describe("CSVProjectBuilder for CodeMaat") {
         val csvProjectBuilder = CSVProjectBuilder(
-            '\\', ',',
+            '\\',
+            ',',
             MetricNameTranslator(mapOf(Pair("File Name", "path")))
         )
 
@@ -30,7 +31,8 @@ class CSVCodeMaatTest : Spek({
 
             it("specific edge exists and has correct attribute values") {
                 val edge = getChildByName(
-                    project.edges, "/root/analysis/build.gradle",
+                    project.edges,
+                    "/root/analysis/build.gradle",
                     "/root/analysis/model/build.gradle"
                 )
                 val pairingRate = getAttributeValue(edge.attributes, "degree")
