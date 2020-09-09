@@ -11,6 +11,8 @@ import {
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+import * as Three from "three"
+import oc from "three-orbit-controls"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
@@ -127,7 +129,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public init(domElement) {
-		const orbitControls = require("three-orbit-controls")(require("three"))
+		const orbitControls = oc(Three)
 		this.controls = new orbitControls(this.threeCameraService.camera, domElement)
 		this.controls.addEventListener("change", () => {
 			this.onInput(this.threeCameraService.camera)

@@ -1,6 +1,5 @@
 import path from "path"
 
-export const puppeteer = require("puppeteer")
 export const CC_URL = `file:${path.join(__dirname, "../dist/webpack/index.html")}`
 
 export async function goto(url: string = CC_URL): Promise<void> {

@@ -22,7 +22,7 @@ When you run e2e tests, puppeteers starts a html-server using the built applicat
 
 ### Running all e2e tests:
 
--   `npm run build`
+-   `npm run build:web`
 -   `npm run e2e` for parallel or `npm run e2e:ci` for sequential execution
 
 ### Running individual e2e tests:

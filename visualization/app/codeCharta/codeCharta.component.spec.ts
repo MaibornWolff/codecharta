@@ -8,6 +8,8 @@ import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
+import sample1 from "./assets/sample1.cc.json"
+import sample2 from "./assets/sample2.cc.json"
 import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { PanelSelection, SearchPanelMode } from "./codeCharta.model"
 import { CodeChartaMouseEventService } from "./codeCharta.mouseEvent.service"
@@ -142,8 +144,8 @@ describe("codeChartaController", () => {
 
 		it("should call loadFiles with sample files", () => {
 			const expected = [
-				{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
-				{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
+				{ fileName: "sample1.cc.json", content: sample1 },
+				{ fileName: "sample2.cc.json", content: sample2 }
 			]
 
 			codeChartaController.tryLoadingSampleFiles()

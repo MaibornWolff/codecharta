@@ -1,5 +1,6 @@
 import { goto } from "../../puppeteer.helper"
 import { LogoPageObject } from "./logo.po"
+import packageJson from "../../../package.json"
 
 describe("CodeCharta logo", () => {
 	let logo: LogoPageObject
@@ -11,7 +12,7 @@ describe("CodeCharta logo", () => {
 	})
 
 	it("should have correct version", async () => {
-		expect(await logo.getVersion()).toBe(require("../../../package.json").version)
+		expect(await logo.getVersion()).toBe(packageJson.version)
 	})
 
 	it("should have correct link", async () => {

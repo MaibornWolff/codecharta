@@ -5,7 +5,7 @@ import { CodeChartaService } from "../codeCharta.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
-const clone = require("rfdc")()
+import { clone } from "./clone"
 
 export class FileDownloader {
 	public static downloadCurrentMap(
