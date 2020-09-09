@@ -10,7 +10,7 @@
 export interface Edge {
 	fromNodeName: string
 	toNodeName: string
-	attributes: KeyValuePair
+	attributes: Record<string, number>
 }
 ```
 

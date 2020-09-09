@@ -1,5 +1,5 @@
 import * as d3 from "d3"
-import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model"
+import { CodeMapNode, CCFile, FileMeta } from "../codeCharta.model"
 import _ from "lodash"
 import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"
@@ -55,14 +55,21 @@ export class DeltaGenerator {
 		return hashMapWithAllNodes
 	}
 
-	private static getNewDeltaNode(node: CodeMapNode, referenceAttr: KeyValuePair, comparisonAttr: KeyValuePair): CodeMapNode {
+	private static getNewDeltaNode(
+		node: CodeMapNode,
+		referenceAttr: Record<string, number>,
+		comparisonAttr: Record<string, number>
+	): CodeMapNode {
 		node.children = []
 		node.deltas = this.getDeltaAttributeList(referenceAttr, comparisonAttr)
 		node.attributes = comparisonAttr
 		return node
 	}
 
-	private static getDeltaAttributeList(referenceAttr: KeyValuePair, comparisonAttr: KeyValuePair): KeyValuePair {
+	private static getDeltaAttributeList(
+		referenceAttr: Record<string, number>,
+		comparisonAttr: Record<string, number>
+	): Record<string, number> {
 		const deltaAttr = {}
 
 		_.keys(comparisonAttr).forEach((key: string) => {
