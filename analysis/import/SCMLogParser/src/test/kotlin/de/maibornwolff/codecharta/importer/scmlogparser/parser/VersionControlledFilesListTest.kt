@@ -5,50 +5,45 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFac
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Test
 import org.junit.Assert.*
+import org.junit.Before
 
 class VersionControlledFilesListTest {
 
     private val metricsFactory = MetricsFactory()
+    private lateinit var vcfList: VersionControlledFilesList
+
+    @Before
+    fun initialize() {
+        vcfList = VersionControlledFilesList(metricsFactory)
+    }
 
     @Test
     fun test_get_vcf_by_key() {
-        val vcfList = VersionControlledFilesList();
         val fileKey = "src/Main.kt"
-        val vcfFile = VersionControlledFile(fileKey, metricsFactory)
-
-        vcfList.add(fileKey, vcfFile)
-
-        assertThat(vcfFile, equalTo(vcfList.get(fileKey)))
+        val vcf = vcfList.addFileBy(fileKey)
+        assertThat(vcf, equalTo(vcfList.get(fileKey)))
 
         val tmpFileName = "src/Main_tmp.kt"
-
         vcfList.rename(fileKey, tmpFileName)
-
-        assertThat(vcfFile, equalTo(vcfList.get(fileKey)))
+        val tmp1 = vcfList.get(fileKey)
+        assertThat(vcf, equalTo(vcfList.get(fileKey)))
 
         val newFileName = "src/Main_new.kt"
-
         vcfList.rename(tmpFileName, newFileName)
-
-        assertThat(vcfFile, equalTo(vcfList.get(tmpFileName)))
+        val tmp2 = vcfList.get(tmpFileName) // retrieve by newFileName?
+        assertThat(vcf, equalTo(vcfList.get(tmpFileName)))
     }
 
     @Test
     fun test_given_vcf_list_when_get_by_file_list_return_corresponding_files() {
-        val vcfList = VersionControlledFilesList();
-
         val mainKey = "src/Main.kt"
-        val mainFile = VersionControlledFile(mainKey, metricsFactory)
+        val mainFile = vcfList.addFileBy(mainKey)
 
         val testKey = "src/Test.kt"
-        val testFile = VersionControlledFile(testKey, metricsFactory)
+        val testFile = vcfList.addFileBy(testKey)
 
         val fileKey = "src/File.kt"
-        val vcfFile = VersionControlledFile(fileKey, metricsFactory)
-
-        vcfList.add(fileKey, vcfFile)
-        vcfList.add(testKey, testFile)
-        vcfList.add(mainKey, mainFile)
+        val vcfFile = vcfList.addFileBy(fileKey)
 
         val filesForNames = vcfList.getBy(mutableListOf(mainKey, fileKey))
 
@@ -58,22 +53,16 @@ class VersionControlledFilesListTest {
 
     @Test
     fun test_given_vcf_list_when_retrieve_renamed_files_then_return_corresponding_files() {
-        val vcfList = VersionControlledFilesList();
-
         val mainKey = "src/Main.kt"
-        val mainFile = VersionControlledFile(mainKey, metricsFactory)
+        val mainFile = vcfList.addFileBy(mainKey)
 
         val testKey = "src/Test.kt"
-        val testFile = VersionControlledFile(testKey, metricsFactory)
+        val testFile = vcfList.addFileBy(testKey)
 
         val fileKey = "src/File.kt"
         val tmpFileKey = "src/File1.kt"
         val newFileKey = "src/File1.1.kt"
-        val vcfFile = VersionControlledFile(fileKey, metricsFactory)
-
-        vcfList.add(fileKey, vcfFile)
-        vcfList.add(testKey, testFile)
-        vcfList.add(mainKey, mainFile)
+        val vcfFile = vcfList.addFileBy(fileKey)
 
         vcfList.rename(fileKey, tmpFileKey)
 
@@ -90,16 +79,12 @@ class VersionControlledFilesListTest {
 
     @Test
     fun test_given_vcf_list_when_retrieve_renamed_files_featuring_rename_conflict_then_return_corresponding_files() {
-        val vcfList = VersionControlledFilesList();
-
         val mainKey = "src/Main.kt"
-        val mainFile = VersionControlledFile(mainKey, metricsFactory)
+        val mainFile = vcfList.addFileBy(mainKey)
 
         val originalFileKey = "src/File.kt"
-        val originalFile = VersionControlledFile(originalFileKey, metricsFactory)
+        val originalFile = vcfList.addFileBy(originalFileKey)
 
-        vcfList.add(mainKey, mainFile)
-        vcfList.add(originalFileKey, originalFile)
         assertThat(mainFile, equalTo(vcfList.get(mainKey)))
         assertThat(originalFile, equalTo(vcfList.get(originalFileKey)))
 
@@ -108,8 +93,7 @@ class VersionControlledFilesListTest {
         assertThat(originalFile, equalTo(vcfList.get(originalFileKey)))
 
         val renamedFileKey = "src/File.kt"
-        val renamedFile = VersionControlledFile(renamedFileKey, metricsFactory)
-        vcfList.add(renamedFileKey, renamedFile)
+        val renamedFile = vcfList.addFileBy(renamedFileKey)
 
         assertThat(renamedFile, equalTo(vcfList.get(renamedFileKey)))
     }

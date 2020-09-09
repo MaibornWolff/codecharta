@@ -25,6 +25,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
         }
 
         commit.modifications.forEach {
+            if (it.currentFilename.isEmpty()) return@forEach
 
             // Registers each modification for a given commit, performing different actions depending on the type
             // to preserve uniqueness a marker is added to the name, following a marker_\\0_marker scheme, for tracking in the map
@@ -42,16 +43,10 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     // Add new File
                     val file = versionControlledFilesList.get(trackName)
                     if (file == null) {
-                        // TODO create VersionControlledFileFactory to hide logic for constructing the conflict name
-                        val missingVersionControlledFile = VersionControlledFile(
-                                versionControlledFilesList.buildPossibleConflictName(trackName),
-                                metricsFactory
-                                                                                )
-                        versionControlledFilesList.add(trackName, missingVersionControlledFile)
-                        missingVersionControlledFile.addRename(trackName)
+                        val missingVCF = versionControlledFilesList.addFileBy(trackName)
 
                         it.markInitialAdd()
-                        missingVersionControlledFile.registerCommit(commit, it)
+                        missingVCF.registerCommit(commit, it)
                     } else {
                         if (!file.isDeleted()) {
                             versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
@@ -67,11 +62,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 Modification.Type.DELETE -> {
                     // TODO registerCommit() needed?
                     // TODO It might be a good idea to skip deletes for non-existing files
-                    try {
-                        versionControlledFilesList.get(trackName)!!.markDeleted()
-                    } catch (exc: NullPointerException) {
-                        print("notfounddelete")
-                    }
+
+                    versionControlledFilesList.get(trackName)!!.markDeleted()
                 }
 
                 Modification.Type.RENAME -> {
@@ -79,19 +71,13 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
                 }
 
-                else -> {
+                else                     -> {
                     // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
                     // TODO consider DElTA Mode and Edge calculation
 
-                    // TODO write a unit test for handling a modify for a non-existent (not added) file
                     var file = versionControlledFilesList.get(trackName)
                     if (file == null) {
-                        file = VersionControlledFile(
-                                versionControlledFilesList.buildPossibleConflictName(trackName),
-                                metricsFactory
-                                                    )
-                        versionControlledFilesList.add(trackName, file)
-                        file.addRename(trackName)
+                        file = versionControlledFilesList.addFileBy(trackName)
                     }
 
                     file.registerCommit(commit, it)
@@ -133,7 +119,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             val collector = CommitCollector(metricsFactory)
 
             return Collector.of(
-                    Supplier<VersionControlledFilesList> { VersionControlledFilesList() },
+                    Supplier<VersionControlledFilesList> { VersionControlledFilesList(metricsFactory) },
                     BiConsumer<VersionControlledFilesList, Commit> { versionControlledFiles,
                                                                      commit ->
                         collector.collectCommit(versionControlledFiles, commit)

@@ -1,9 +1,9 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
-import java.lang.NullPointerException
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
 
-class VersionControlledFilesList {
+class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
 
     private var versionControlledFiles: MutableMap<String, VersionControlledFile> = mutableMapOf()
 
@@ -31,8 +31,12 @@ class VersionControlledFilesList {
         return versionControlledFiles[resolveFileKey(key)]
     }
 
-    fun add(key: String, versionControlledFile: VersionControlledFile) {
-        versionControlledFiles[resolveFileKey(key)] = versionControlledFile
+    fun addFileBy(key: String): VersionControlledFile {
+        val vcf = VersionControlledFile(buildPossibleConflictName(key), metricsFactory)
+        vcf.addRename(key)
+
+        versionControlledFiles[resolveFileKey(key)] = vcf
+        return vcf
     }
 
     /**
