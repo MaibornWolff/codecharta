@@ -47,7 +47,7 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
 		attributes: map.attributes,
 		edgeAttributes: map.edgeAttributes,
 		deltas: map.deltas,
-		heightDelta: map.deltas?.[state.dynamicSettings.heightMetric] ? heightScale * map.deltas[state.dynamicSettings.heightMetric] : 0,
+		heightDelta: (map.deltas?.[state.dynamicSettings.heightMetric] ?? 0) * heightScale,
 		visible: isVisible(map, false, state, flattened),
 		path: map.path,
 		link: map.link,
@@ -91,9 +91,7 @@ function buildNodeFrom(
 		attributes: squaredNode.data.attributes,
 		edgeAttributes: squaredNode.data.edgeAttributes,
 		deltas: squaredNode.data.deltas,
-		heightDelta: squaredNode.data.deltas?.[s.dynamicSettings.heightMetric]
-			? heightScale * squaredNode.data.deltas[s.dynamicSettings.heightMetric]
-			: 0,
+		heightDelta: (squaredNode.data.deltas?.[s.dynamicSettings.heightMetric] ?? 0) * heightScale,
 		visible: isVisible(squaredNode.data, isNodeLeaf, s, flattened),
 		path: squaredNode.data.path,
 		link: squaredNode.data.link,
