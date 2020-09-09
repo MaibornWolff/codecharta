@@ -118,7 +118,7 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 	const outOfBounds: string[] = []
 	const intersections: Set<string> = new Set()
 
-	file.nodes[0].children.forEach(node => {
+	for (const node of file.nodes[0].children) {
 		if (node.fixedPosition === undefined) {
 			notFixed.push(`${node.name}`)
 		} else {
@@ -126,15 +126,18 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 				outOfBounds.push(getFoundFolderMessage(node))
 			}
 
-			file.nodes[0].children.forEach(node2 => {
-				if (node !== node2 && rectanglesIntersect(node.fixedPosition, node2.fixedPosition)) {
-					if (!intersections.has(`${getFoundFolderMessage(node2)} and ${getFoundFolderMessage(node)}`)) {
-						intersections.add(`${getFoundFolderMessage(node)} and ${getFoundFolderMessage(node2)}`)
-					}
+			for (const node2 of file.nodes[0].children) {
+				if (
+					node2.fixedPosition !== undefined &&
+					node !== node2 &&
+					rectanglesIntersect(node.fixedPosition, node2.fixedPosition) &&
+					!intersections.has(`${getFoundFolderMessage(node2)} and ${getFoundFolderMessage(node)}`)
+				) {
+					intersections.add(`${getFoundFolderMessage(node)} and ${getFoundFolderMessage(node2)}`)
 				}
-			})
+			}
 		}
-	})
+	}
 
 	if (notFixed.length > 0 && notFixed.length !== file.nodes[0].children.length) {
 		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
@@ -154,14 +157,12 @@ function getFoundFolderMessage(node: CodeMapNode): string {
 }
 
 function rectanglesIntersect(rect1: FixedPosition, rect2: FixedPosition): boolean {
-	if (rect1 !== undefined && rect2 !== undefined) {
-		return (
-			isInRectangle(rect1.left, rect1.top, rect2) ||
-			isInRectangle(rect1.left, rect1.top + rect1.height, rect2) ||
-			isInRectangle(rect1.left + rect1.width, rect1.top, rect2) ||
-			isInRectangle(rect1.left + rect1.width, rect1.top + rect1.height, rect2)
-		)
-	}
+	return (
+		isInRectangle(rect1.left, rect1.top, rect2) ||
+		isInRectangle(rect1.left, rect1.top + rect1.height, rect2) ||
+		isInRectangle(rect1.left + rect1.width, rect1.top, rect2) ||
+		isInRectangle(rect1.left + rect1.width, rect1.top + rect1.height, rect2)
+	)
 }
 
 function isInRectangle(x: number, y: number, rect: FixedPosition): boolean {
