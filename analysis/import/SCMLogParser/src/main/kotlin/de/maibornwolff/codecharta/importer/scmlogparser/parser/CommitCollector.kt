@@ -4,7 +4,6 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import java.lang.NullPointerException
 import java.util.function.BiConsumer
 import java.util.function.BinaryOperator
 import java.util.function.Supplier
@@ -51,6 +50,12 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                             versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                         }
                         if (file.isDeleted()) {
+                            // a file is re-added after its deletion on master
+                            //TODO what if a new file is created in the merge commit that has the same name?
+                            //TODO is this possible/feasible?
+                            if(commit.isMergeCommit()){
+                                file.unmarkDeleted()
+                            }
                             // If a file is deleted and a new one with same name is added, replace deleted one.
                             val replacingVCF = versionControlledFilesList.addFileBy(trackName)
                             it.markInitialAdd()
