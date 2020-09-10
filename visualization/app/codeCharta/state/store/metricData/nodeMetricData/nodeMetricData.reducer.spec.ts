@@ -3,15 +3,15 @@ import { calculateNewNodeMetricData, NodeMetricDataAction, setNodeMetricData } f
 import { METRIC_DATA, TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../../util/dataMocks"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { BlacklistType } from "../../../../codeCharta.model"
-import _ from "lodash"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
 import { NodeMetricDataService } from "./nodeMetricData.service"
+import { clone } from "../../../../util/clone"
 
 describe("nodeMetricData", () => {
 	let fileState: FileState
 
 	beforeEach(() => {
-		const file = _.cloneDeep(TEST_DELTA_MAP_A)
+		const file = clone(TEST_DELTA_MAP_A)
 		NodeDecorator.decorateMapWithPathAttribute(file)
 		fileState = {
 			file,

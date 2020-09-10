@@ -11,7 +11,6 @@ import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.com
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
 import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEventMethods } from "../../util/dataMocks"
-import _ from "lodash"
 import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
@@ -19,6 +18,8 @@ import { StoreService } from "../../state/store.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
+import { clone } from "../../util/clone"
+import _ from "lodash"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -59,7 +60,7 @@ describe("codeMapMouseEventService", () => {
 		storeService = getService<StoreService>("storeService")
 
 		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
-		file = _.cloneDeep(TEST_FILE_WITH_PATHS)
+		file = clone(TEST_FILE_WITH_PATHS)
 		document.body.style.cursor = CursorType.Default
 	}
 

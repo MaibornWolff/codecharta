@@ -5,6 +5,7 @@ import { NodeDecorator } from "./nodeDecorator"
 import _ from "lodash"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { FileSelectionState } from "../model/files/files"
+import { clone } from "./clone"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
@@ -13,10 +14,10 @@ describe("nodeDecorator", () => {
 	let state: State
 
 	beforeEach(() => {
-		file = _.cloneDeep(TEST_DELTA_MAP_A)
+		file = clone(TEST_DELTA_MAP_A)
 		map = file.map
-		deltaMap = _.cloneDeep(VALID_NODE_WITH_PATH_AND_DELTAS)
-		state = _.cloneDeep(DEFAULT_STATE)
+		deltaMap = clone(VALID_NODE_WITH_PATH_AND_DELTAS)
+		state = clone(DEFAULT_STATE)
 		state.metricData.nodeMetricData = [
 			{ name: "rloc", maxValue: 999999 },
 			{ name: "functions", maxValue: 999999 },
@@ -33,7 +34,7 @@ describe("nodeDecorator", () => {
 			nodes: { functions: AttributeTypeValue.relative, rloc: AttributeTypeValue.absolute },
 			edges: { pairingRate: AttributeTypeValue.relative }
 		}
-		state.fileSettings.blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
+		state.fileSettings.blacklist = clone(STATE.fileSettings.blacklist)
 		state.files = [{ selectedAs: FileSelectionState.Single, file }]
 		NodeDecorator.decorateMapWithPathAttribute(file)
 	})

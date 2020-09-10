@@ -7,7 +7,6 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { STATE, TEST_DELTA_MAP_A, TEST_DELTA_MAP_B, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
@@ -25,6 +24,7 @@ import { calculateNewEdgeMetricData } from "../../state/store/metricData/edgeMet
 import { AreaMetricActions } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
 import { DialogService } from "../dialog/dialog.service"
 import { SearchPanelModeActions } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { clone } from "../../util/clone"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -59,8 +59,8 @@ describe("codeMapPreRenderService", () => {
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		dialogService = getService<DialogService>("dialogService")
 
-		const deltaA = _.cloneDeep(TEST_DELTA_MAP_A)
-		const deltaB = _.cloneDeep(TEST_DELTA_MAP_B)
+		const deltaA = clone(TEST_DELTA_MAP_A)
+		const deltaB = clone(TEST_DELTA_MAP_B)
 
 		NodeDecorator.decorateMapWithPathAttribute(deltaA)
 		NodeDecorator.decorateMapWithPathAttribute(deltaB)

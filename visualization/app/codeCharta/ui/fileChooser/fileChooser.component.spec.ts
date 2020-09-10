@@ -6,8 +6,8 @@ import { CodeChartaService } from "../../codeCharta.service"
 import { DialogService } from "../dialog/dialog.service"
 import { FileChooserController } from "./fileChooser.component"
 import { TEST_FILE_CONTENT, withMockedEventMethods } from "../../util/dataMocks"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
+import { clone } from "../../util/clone"
 
 describe("fileChooserController", () => {
 	let fileChooserController: FileChooserController
@@ -36,7 +36,7 @@ describe("fileChooserController", () => {
 		storeSevice = getService<StoreService>("storeService")
 
 		fileName = "someFile.json"
-		content = _.cloneDeep(TEST_FILE_CONTENT)
+		content = clone(TEST_FILE_CONTENT)
 	}
 
 	function rebuildController() {
