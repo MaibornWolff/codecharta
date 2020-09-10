@@ -10,7 +10,7 @@ import {
 	EdgeMetricData
 } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
-import { HierarchyNode } from "d3"
+import { HierarchyNode, hierarchy } from "d3"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { clone } from "./clone"
 
