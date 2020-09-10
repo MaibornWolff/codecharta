@@ -23,7 +23,9 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         val fileName = versionControlledFile.filename.substringAfterLast(PATH_SEPARATOR)
         val newNode = MutableNode(fileName, NodeType.File, attributes, "", mutableSetOf())
         val path = PathFactory.fromFileSystemPath(
-                versionControlledFile.filename.substringBeforeLast(PATH_SEPARATOR, ""))
+            versionControlledFile.filename.substringBeforeLast(PATH_SEPARATOR, "")
+        )
+
         projectBuilder.insertByPath(path, newNode)
         edges.forEach { projectBuilder.insertEdge(addRootToEdgePaths(it)) }
         versionControlledFile.removeMetricsToFreeMemory()
@@ -31,7 +33,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
 
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
         return when {
-            containsAuthors -> versionControlledFile.metricsMap
+            containsAuthors ->
+                versionControlledFile.metricsMap
                     .plus(Pair("authors", versionControlledFile.authors))
             else -> versionControlledFile.metricsMap
         }
@@ -49,8 +52,8 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         // TODO discuss/check performance
         // TODO ENSURE to filter deleted AND maybe mutated files as well from being exported in a cc.json file.
         versionControlledFiles.getList().values
-                .filter { !it.isDeleted() }
-                .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+            .filter { !it.isDeleted() }
+            .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))

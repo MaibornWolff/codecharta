@@ -24,10 +24,6 @@ describe("CodeMapArrowService", () => {
 		withMockedThreeSceneService()
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 

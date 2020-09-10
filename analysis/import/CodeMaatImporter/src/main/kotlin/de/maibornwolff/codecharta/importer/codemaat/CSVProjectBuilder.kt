@@ -23,8 +23,8 @@ class CSVProjectBuilder(
 
     private val includeRows: (Array<String>) -> Boolean = { true }
     private val projectBuilder = ProjectBuilder()
-            .withMetricTranslator(metricNameTranslator)
-            .addAttributeTypes(attributeTypes)
+        .withMetricTranslator(metricNameTranslator)
+        .addAttributeTypes(attributeTypes)
 
     fun parseCSVStream(inStream: InputStream): ProjectBuilder {
         val parser = createParser(inStream)

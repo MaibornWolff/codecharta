@@ -23,8 +23,8 @@ class PipedInputStream {
     @Suppress
     fun `json output does contain files from scan`() {
         assertThat(output).contains(
-                """"name":"example_svn.log""",
-                """"name":"SVNLogParserStrategy.kt"""
+            """"name":"example_svn.log""",
+            """"name":"SVNLogParserStrategy.kt"""
         )
     }
 
@@ -32,27 +32,27 @@ class PipedInputStream {
     @Suppress
     fun `json output does contain files from piped project`() {
         assertThat(output).contains(
-                """"name":"FooBar.java"""",
-                """"coverage":0.0"""
+            """"name":"FooBar.java"""",
+            """"coverage":0.0"""
         )
     }
 
     private fun executeForOutput(input: String, args: Array<String> = emptyArray()) =
-            outputAsString(input) { inputStream, outputStream, errorStream ->
-                mainWithInOut(inputStream, outputStream, errorStream, args)
-            }
+        outputAsString(input) { inputStream, outputStream, errorStream ->
+            mainWithInOut(inputStream, outputStream, errorStream, args)
+        }
 
     private fun outputAsString(input: String, aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit) =
-            outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
+        outputAsString(ByteArrayInputStream(input.toByteArray()), aMethod)
 
     private fun outputAsString(
         inputStream: InputStream = System.`in`,
         aMethod: (input: InputStream, output: PrintStream, error: PrintStream) -> Unit
     ) =
-            ByteArrayOutputStream().use { baOutputStream ->
-                PrintStream(baOutputStream).use { outputStream ->
-                    aMethod(inputStream, outputStream, System.err)
-                }
-                baOutputStream.toString()
+        ByteArrayOutputStream().use { baOutputStream ->
+            PrintStream(baOutputStream).use { outputStream ->
+                aMethod(inputStream, outputStream, System.err)
             }
+            baOutputStream.toString()
+        }
 }

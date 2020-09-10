@@ -28,6 +28,7 @@
 				ng-repeat="metric in $ctrl._viewModel.edgeMetricData track by metric.name"
 				value="{{::metric.name}}"
 				class="edge-metric"
+				id="edge-metric-{{::metric.name}}"
 			>
 				{{::metric.name}}
 				<span class="metric-max-value">({{::metric.maxValue}})</span>
@@ -38,7 +39,7 @@
 	</md-select>
 
 	<div class="metric-value" ng-show="$ctrl._viewModel.hoveredEdgeValue">
-		<div class="rounded-box">
+		<div class="rounded-box" id="edge-count">
 			<metric-type-component metric-selection="edgeMetric"></metric-type-component>
 			{{ ($ctrl._viewModel.hoveredEdgeValue.incoming | number) || "-" }} /
 			{{ ($ctrl._viewModel.hoveredEdgeValue.outgoing | number) || "-" }}

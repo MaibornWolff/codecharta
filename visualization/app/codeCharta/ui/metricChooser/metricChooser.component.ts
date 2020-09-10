@@ -1,7 +1,6 @@
 import "./metricChooser.component.scss"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { MetricData } from "../../codeCharta.model"
-import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
+import { NodeMetricData } from "../../codeCharta.model"
 import $ from "jquery"
 import { StoreService } from "../../state/store.service"
 import { setAreaMetric } from "../../state/store/dynamicSettings/areaMetric/areaMetric.actions"
@@ -15,13 +14,14 @@ import {
 	DistributionMetricService,
 	DistributionMetricSubscriber
 } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.service"
+import { NodeMetricDataService, NodeMetricDataSubscriber } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export class MetricChooserController
-	implements MetricServiceSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
-	private originalMetricData: MetricData[]
+	implements NodeMetricDataSubscriber, AreaMetricSubscriber, HeightMetricSubscriber, ColorMetricSubscriber, DistributionMetricSubscriber {
+	private originalMetricData: NodeMetricData[]
 
 	private _viewModel: {
-		metricData: MetricData[]
+		metricData: NodeMetricData[]
 		areaMetric: string
 		colorMetric: string
 		heightMetric: string
@@ -42,7 +42,7 @@ export class MetricChooserController
 		HeightMetricService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		DistributionMetricService.subscribe(this.$rootScope, this)
-		MetricService.subscribe(this.$rootScope, this)
+		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
@@ -61,9 +61,9 @@ export class MetricChooserController
 		this._viewModel.distributionMetric = distributionMetric
 	}
 
-	public onMetricDataAdded(metricData: MetricData[]) {
-		this._viewModel.metricData = metricData
-		this.originalMetricData = metricData
+	public onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
+		this._viewModel.metricData = nodeMetricData
+		this.originalMetricData = nodeMetricData
 	}
 
 	public filterMetricData() {

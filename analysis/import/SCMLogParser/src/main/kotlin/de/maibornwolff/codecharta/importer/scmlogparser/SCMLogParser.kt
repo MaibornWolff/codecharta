@@ -14,6 +14,9 @@ import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserS
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.mozilla.universalchardet.UniversalDetector
 import picocli.CommandLine
 import java.io.File
@@ -157,10 +160,14 @@ class SCMLogParser(
     private fun printMetricInfo() {
         val infoFormat = "  \t%s:\t %s"
         println("  Available metrics:")
-        metricsFactory.createMetrics()
-            .forEach {
-                println(String.format(infoFormat, it.metricName(), it.description()))
-            }
+        runBlocking(Dispatchers.Default) {
+            metricsFactory.createMetrics()
+                .forEach {
+                    launch {
+                        println(String.format(infoFormat, it.metricName(), it.description()))
+                    }
+                }
+        }
     }
 
     companion object {

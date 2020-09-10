@@ -22,8 +22,8 @@ class LogLineParser(
 
     fun parse(logLines: Stream<String>): VersionControlledFilesList {
         return logLines.collect(parserStrategy.createLogLineCollector())
-                .map { this.parseCommit(it) }.filter { !it.isEmpty }
-                .collect(CommitCollector.create(metricsFactory))
+            .map { this.parseCommit(it) }.filter { !it.isEmpty }
+            .collect(CommitCollector.create(metricsFactory))
     }
 
     internal fun parseCommit(commitLines: List<String>): Commit {

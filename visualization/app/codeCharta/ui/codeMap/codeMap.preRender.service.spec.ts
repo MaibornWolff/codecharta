@@ -1,13 +1,11 @@
 import "./codeMap.module"
 import "../../codeCharta.module"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { BlacklistType, CodeMapNode, FileMeta, MetricData } from "../../codeCharta.model"
+import { BlacklistType, CCFile, CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { MetricService } from "../../state/metric.service"
-import { FILE_STATES, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
+import { FILE_STATES, STATE, TEST_DELTA_MAP_B, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import _ from "lodash"
 import { StoreService } from "../../state/store.service"
@@ -15,21 +13,26 @@ import { ScalingService } from "../../state/store/appSettings/scaling/scaling.se
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
-import { addFile, resetFiles, setSingleByName } from "../../state/store/files/files.actions"
+import { addFile, resetFiles, setMultiple, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { hierarchy } from "d3"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { MetricDataService } from "../../state/store/metricData/metricData.service"
+import { calculateNewNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
+import { getCCFiles } from "../../model/files/files.helper"
+import { calculateNewEdgeMetricData } from "../../state/store/metricData/edgeMetricData/edgeMetricData.actions"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
-	let metricService: MetricService
+	let nodeMetricDataService: NodeMetricDataService
 	let codeMapRenderService: CodeMapRenderService
 	let edgeMetricDataService: EdgeMetricDataService
 
 	let fileMeta: FileMeta
 	let map: CodeMapNode
-	let metricData: MetricData[]
 
 	beforeEach(() => {
 		restartSystem()
@@ -41,54 +44,51 @@ describe("codeMapPreRenderService", () => {
 		storeService.dispatch(setDynamicSettings(STATE.dynamicSettings))
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
-		metricService = getService<MetricService>("metricService")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
 		fileMeta = _.cloneDeep(FILE_STATES[0].file.fileMeta)
 		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
 		map.children[1].children = _.slice(map.children[1].children, 0, 2)
+
+		const ccFile: CCFile = _.cloneDeep(TEST_DELTA_MAP_B)
+
 		const fileStates = _.cloneDeep(FILE_STATES)
-		NodeDecorator.preDecorateFile(fileStates[0].file)
+		NodeDecorator.decorateMapWithPathAttribute(fileStates[0].file)
+		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 
 		storeService.dispatch(resetFiles())
 		storeService.dispatch(addFile(fileStates[0].file))
+		storeService.dispatch(addFile(ccFile))
 		storeService.dispatch(setSingleByName(fileStates[0].file.fileMeta.fileName))
 		storeService.dispatch(setBlacklist())
-		metricData = _.cloneDeep(METRIC_DATA)
+		storeService.dispatch(calculateNewNodeMetricData(storeService.getState().files, []))
+		storeService.dispatch(calculateNewEdgeMetricData(storeService.getState().files, []))
 	}
 
 	function rebuildService() {
 		codeMapPreRenderService = new CodeMapPreRenderService(
 			$rootScope,
 			storeService,
-			metricService,
+			nodeMetricDataService,
 			codeMapRenderService,
 			edgeMetricDataService
 		)
 	}
 
 	function withMockedCodeMapRenderService() {
-		codeMapRenderService = codeMapPreRenderService["codeMapRenderService"] = jest.fn().mockReturnValue({
-			render: jest.fn(),
-			scaleMap: jest.fn()
-		})()
+		codeMapRenderService.render = jest.fn()
+		codeMapRenderService.scaleMap = jest.fn()
 	}
 
 	function withMockedMetricService() {
-		metricService = codeMapPreRenderService["metricService"] = jest.fn().mockReturnValue({
-			getMetricData: jest.fn().mockReturnValue(metricData),
-			isMetricAvailable: jest.fn().mockReturnValue(true)
-		})()
+		nodeMetricDataService.isMetricAvailable = jest.fn().mockReturnValue(true)
 	}
 
 	function withUnifiedMapAndFileMeta() {
@@ -97,28 +97,41 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function allNodesToBeExcluded(): boolean {
+		for (const node of hierarchy(codeMapPreRenderService.getRenderMap()).leaves()) {
+			if (!node.data.isExcluded) {
+				return false
+			}
+		}
+		return true
+	}
+
+	function isIdUnique(): boolean {
+		let isIdUnique = true
+		const idBuildingSet: Map<number, string> = new Map()
+
 		hierarchy(codeMapPreRenderService.getRenderMap())
-			.leaves()
+			.descendants()
 			.forEach(node => {
-				if (!node.data.isExcluded) {
-					return false
+				if (idBuildingSet.has(node.data.id)) {
+					isIdUnique = false
+				} else {
+					idBuildingSet.set(node.data.id, node.data.path)
 				}
 			})
-
-		return true
+		return isIdUnique
 	}
 
 	describe("constructor", () => {
 		beforeEach(() => {
-			MetricService.subscribe = jest.fn()
+			MetricDataService.subscribe = jest.fn()
 			StoreService.subscribe = jest.fn()
 			ScalingService.subscribe = jest.fn()
 		})
 
-		it("should subscribe to MetricService", () => {
+		it("should subscribe to MetricDataService", () => {
 			rebuildService()
 
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
+			expect(MetricDataService.subscribe).toHaveBeenCalledWith($rootScope, codeMapPreRenderService)
 		})
 
 		it("should subscribe to StoreService", () => {
@@ -195,9 +208,9 @@ describe("codeMapPreRenderService", () => {
 		})
 	})
 
-	describe("onMetricDataAdded", () => {
+	describe("onMetricDataChanged", () => {
 		it("should decorate and set a new render map", () => {
-			codeMapPreRenderService.onMetricDataAdded()
+			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(codeMapPreRenderService.getRenderMap()).toMatchSnapshot()
 		})
@@ -205,9 +218,17 @@ describe("codeMapPreRenderService", () => {
 		it("should update the isBlacklisted attribute on each node", () => {
 			storeService.dispatch(addBlacklistItem({ path: map.path, type: BlacklistType.exclude }))
 
-			codeMapPreRenderService.onMetricDataAdded()
+			codeMapPreRenderService.onMetricDataChanged()
 
 			expect(allNodesToBeExcluded()).toBeTruthy()
+		})
+
+		it("should change map to multiple mode and check that no id exists twice", () => {
+			storeService.dispatch(setMultiple(getCCFiles(storeService.getState().files)))
+
+			codeMapPreRenderService.onMetricDataChanged()
+
+			expect(isIdUnique()).toBeTruthy()
 		})
 	})
 })

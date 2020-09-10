@@ -44,11 +44,7 @@ describe("codeMapMouseEventService", () => {
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedEventMethods($rootScope)
-		NodeDecorator.preDecorateFile(TEST_FILE_WITH_PATHS)
-	})
-
-	afterEach(() => {
-		jest.resetAllMocks()
+		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, [], [])
 	})
 
 	function restartSystem() {

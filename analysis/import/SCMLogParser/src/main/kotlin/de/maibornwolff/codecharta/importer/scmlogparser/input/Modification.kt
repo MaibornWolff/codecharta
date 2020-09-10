@@ -10,13 +10,15 @@ class Modification(
 
     private var initialAdd = false
 
-    constructor(filename: String, type: Type): this(filename, 0, 0, type)
+    constructor(filename: String, type: Type) : this(filename, 0, 0, type)
 
-    constructor(filename: String, oldFilename: String, type: Type): this(filename, oldFilename, 0, 0, type)
+    constructor(filename: String, oldFilename: String, type: Type) : this(filename, oldFilename, 0, 0, type)
 
     @JvmOverloads
-    constructor(filename: String, additions: Long = 0, deletions: Long = 0, type: Type = Type.UNKNOWN): this(filename,
-            "", additions, deletions, type)
+    constructor(filename: String, additions: Long = 0, deletions: Long = 0, type: Type = Type.UNKNOWN) : this(
+        filename,
+        "", additions, deletions, type
+    )
 
     enum class Type {
         ADD,

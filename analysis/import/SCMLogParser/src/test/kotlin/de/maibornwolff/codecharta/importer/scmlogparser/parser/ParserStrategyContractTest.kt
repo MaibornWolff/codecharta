@@ -21,7 +21,7 @@ abstract class ParserStrategyContractTest {
      * whereby one filename is duplicated; "src/Main.java","src/Main.java","src/Util.java"
      *
      * @return the test data as a List<String>
-    </String> */
+     </String> */
     protected abstract val fullCommit: List<String>
 
     protected abstract val logParserStrategy: LogParserStrategy
@@ -33,11 +33,13 @@ abstract class ParserStrategyContractTest {
         val parser = LogLineParser(logParserStrategy, metricsFactory)
         val commit = parser.parseCommit(fullCommit)
         assertThat(commit)
-                .extracting(java.util.function.Function<Commit, Any> { it.author },
-                        java.util.function.Function<Commit, Any> { it.commitDate })
-                .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
+            .extracting(
+                java.util.function.Function<Commit, Any> { it.author },
+                java.util.function.Function<Commit, Any> { it.commitDate }
+            )
+            .containsExactly("TheAuthor", OffsetDateTime.of(2017, 5, 9, 19, 57, 57, 0, ZONE_OFFSET))
         assertThat(commit.filenames)
-                .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
+            .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
     }
 
     @Test
@@ -76,15 +78,18 @@ abstract class ParserStrategyContractTest {
         val logLines = Stream.concat(fullCommit.stream(), fullCommit.stream())
         val files = parser.parse(logLines)
         assertThat(files)
-                .extracting(java.util.function.Function<VersionControlledFile, Any> { it.filename },
-                        java.util.function.Function<VersionControlledFile, Any> { f ->
-                            f.getMetricValue("number_of_commits")
-                        },
-                        java.util.function.Function<VersionControlledFile, Any> { it.authors })
-                .containsExactlyInAnyOrder(
-                        tuple("src/Deleted.java", 2L, setOf("TheAuthor")),
-                        tuple("src/Added.java", 2L, setOf("TheAuthor")),
-                        tuple("src/Modified.java", 2L, setOf("TheAuthor")))
+            .extracting(
+                java.util.function.Function<VersionControlledFile, Any> { it.filename },
+                java.util.function.Function<VersionControlledFile, Any> { f ->
+                    f.getMetricValue("number_of_commits")
+                },
+                java.util.function.Function<VersionControlledFile, Any> { it.authors }
+            )
+            .containsExactlyInAnyOrder(
+                tuple("src/Deleted.java", 2L, setOf("TheAuthor")),
+                tuple("src/Added.java", 2L, setOf("TheAuthor")),
+                tuple("src/Modified.java", 2L, setOf("TheAuthor"))
+            )
     }
 */
     companion object {

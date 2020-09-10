@@ -37,8 +37,13 @@ class GitLogNumstatParserStrategyTest : ParserStrategyContractTest() {
 
     @Test
     fun parsesFilenamesFromUnusualFileMetadata() {
+<<<<<<< HEAD
         assertThat(GitLogNumstatParserStrategy.parseModification("0\t10\tsrc/Main.java").currentFilename)
                 .isEqualTo("src/Main.java")
+=======
+        assertThat(GitLogNumstatParserStrategy.parseModification("0\t10\tsrc/Main.java").filename)
+            .isEqualTo("src/Main.java")
+>>>>>>> main
     }
 
     @Test
@@ -50,12 +55,13 @@ class GitLogNumstatParserStrategyTest : ParserStrategyContractTest() {
     companion object {
 
         private val FULL_COMMIT = asList(
-                "commit ca1fe2ba3be4",
-                "Author: TheAuthor <mail@example.com>",
-                "Date:   Tue May 9 19:57:57 2017 +0200",
-                "    the commit message",
-                "10 0 src/Added.java",
-                "2 1 src/Modified.java",
-                "0 20 src/Deleted.java")
+            "commit ca1fe2ba3be4",
+            "Author: TheAuthor <mail@example.com>",
+            "Date:   Tue May 9 19:57:57 2017 +0200",
+            "    the commit message",
+            "10 0 src/Added.java",
+            "2 1 src/Modified.java",
+            "0 20 src/Deleted.java"
+        )
     }
 }

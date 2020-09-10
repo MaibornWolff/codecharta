@@ -21,8 +21,8 @@ class UnderstandProjectBuilder(
     private val filterRule: (MutableNode) -> Boolean = { it.type == NodeType.File || it.type == NodeType.Folder }
 
     private val projectBuilder = ProjectBuilder()
-            .withMetricTranslator(understandReplacement)
-            .withFilter(filterRule)
+        .withMetricTranslator(understandReplacement)
+        .withFilter(filterRule)
 
     private var rowNumber = 1
 
@@ -33,84 +33,84 @@ class UnderstandProjectBuilder(
             val aggregationMap = mutableMapOf<String, (Any, Any) -> Any>()
 
             listOf(
-                    "CountDeclClass",
-                    "CountDeclClassMethod",
-                    "CountDeclClassVariable",
-                    "CountDeclExecutableUnit",
-                    "CountDeclFile",
-                    "CountDeclFunction",
-                    "CountDeclInstanceMethod",
-                    "CountDeclInstanceVariable",
-                    "CountDeclInstanceVariableInternal",
-                    "CountDeclInstanceVariableProtectedInternal",
-                    "CountDeclMethod",
-                    "CountDeclMethodAll",
-                    "CountDeclMethodConst",
-                    "CountDeclMethodDefault",
-                    "CountDeclMethodFriend",
-                    "CountDeclMethodInternal",
-                    "CountDeclMethodPrivate",
-                    "CountDeclMethodProtected",
-                    "CountDeclMethodProtectedInternal",
-                    "CountDeclMethodPublic",
-                    "CountDeclMethodStrictPrivate",
-                    "CountDeclMethodStrictPublished",
-                    "CountDeclModule",
-                    "CountDeclProgUnit",
-                    "CountDeclSubprogram",
-                    "CountLine",
-                    "CountLine_Html",
-                    "CountLine_Javascript",
-                    "CountLine_Php",
-                    "CountLineBlank",
-                    "CountLineBlank_Html",
-                    "CountLineBlank_Javascript",
-                    "CountLineBlank_Php",
-                    "CountLineCode",
-                    "CountLineCode_Javascript",
-                    "CountLineCode_Php",
-                    "CountLineCodeDecl",
-                    "CountLineCodeExe",
-                    "CountLineComment",
-                    "CountLineComment_Html",
-                    "CountLineComment_Javascript",
-                    "CountLineComment_Php",
-                    "CountLineInactive",
-                    "CountLinePreprocessor",
-                    "CountPath",
-                    "CountPathLog",
-                    "CountSemicolon",
-                    "CountStmt",
-                    "CountStmtDecl",
-                    "CountStmtDecl_Javascript",
-                    "CountStmtDecl_Php",
-                    "CountStmtExe",
-                    "CountStmtExe_Javascript",
-                    "CountStmtExe_Php",
-                    "Knots",
-                    "SumCyclomatic",
-                    "SumCyclomaticModified",
-                    "SumCyclomaticStrict",
-                    "SumEssential"
+                "CountDeclClass",
+                "CountDeclClassMethod",
+                "CountDeclClassVariable",
+                "CountDeclExecutableUnit",
+                "CountDeclFile",
+                "CountDeclFunction",
+                "CountDeclInstanceMethod",
+                "CountDeclInstanceVariable",
+                "CountDeclInstanceVariableInternal",
+                "CountDeclInstanceVariableProtectedInternal",
+                "CountDeclMethod",
+                "CountDeclMethodAll",
+                "CountDeclMethodConst",
+                "CountDeclMethodDefault",
+                "CountDeclMethodFriend",
+                "CountDeclMethodInternal",
+                "CountDeclMethodPrivate",
+                "CountDeclMethodProtected",
+                "CountDeclMethodProtectedInternal",
+                "CountDeclMethodPublic",
+                "CountDeclMethodStrictPrivate",
+                "CountDeclMethodStrictPublished",
+                "CountDeclModule",
+                "CountDeclProgUnit",
+                "CountDeclSubprogram",
+                "CountLine",
+                "CountLine_Html",
+                "CountLine_Javascript",
+                "CountLine_Php",
+                "CountLineBlank",
+                "CountLineBlank_Html",
+                "CountLineBlank_Javascript",
+                "CountLineBlank_Php",
+                "CountLineCode",
+                "CountLineCode_Javascript",
+                "CountLineCode_Php",
+                "CountLineCodeDecl",
+                "CountLineCodeExe",
+                "CountLineComment",
+                "CountLineComment_Html",
+                "CountLineComment_Javascript",
+                "CountLineComment_Php",
+                "CountLineInactive",
+                "CountLinePreprocessor",
+                "CountPath",
+                "CountPathLog",
+                "CountSemicolon",
+                "CountStmt",
+                "CountStmtDecl",
+                "CountStmtDecl_Javascript",
+                "CountStmtDecl_Php",
+                "CountStmtExe",
+                "CountStmtExe_Javascript",
+                "CountStmtExe_Php",
+                "Knots",
+                "SumCyclomatic",
+                "SumCyclomaticModified",
+                "SumCyclomaticStrict",
+                "SumEssential"
             ).forEach {
                 aggregationMap[it] = getSumOrFirst()
             }
 
             listOf(
-                    "CountClassBase",
-                    "CountClassCoupled",
-                    "CountClassDerived",
-                    "CountInput",
-                    "CountOutput",
-                    "MaxCyclomatic",
-                    "MaxCyclomaticModified",
-                    "MaxCyclomaticStrict",
-                    "MaxEssential",
-                    "MaxEssentialKnots",
-                    "MaxEssentialStrictModified",
-                    "MaxInheritanceTree",
-                    "MaxNesting",
-                    "PercentLackOfCohesion"
+                "CountClassBase",
+                "CountClassCoupled",
+                "CountClassDerived",
+                "CountInput",
+                "CountOutput",
+                "MaxCyclomatic",
+                "MaxCyclomaticModified",
+                "MaxCyclomaticStrict",
+                "MaxEssential",
+                "MaxEssentialKnots",
+                "MaxEssentialStrictModified",
+                "MaxInheritanceTree",
+                "MaxNesting",
+                "PercentLackOfCohesion"
             ).forEach {
                 aggregationMap[it] = getMaxValOrFirst()
             }
@@ -172,17 +172,18 @@ class UnderstandProjectBuilder(
     }
 
     private fun MutableNode.addAggregatedAttributes(
-        aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()): Map<String, Any> {
+        aggregationRules: Map<String, (Any, Any) -> Any> = emptyMap()
+    ): Map<String, Any> {
         if (!children.isEmpty()) {
 
             if (isAggregationType(type)) {
                 attributes = attributes.mergeReduce(
-                        children.map { it.addAggregatedAttributes(aggregationRules) }
-                                .reduce { acc, map -> map.mergeReduce(acc, aggregationRules) }
+                    children.map { it.addAggregatedAttributes(aggregationRules) }
+                        .reduce { acc, map -> map.mergeReduce(acc, aggregationRules) }
                 ) { x, _ -> x }
             } else {
                 children.map { it.addAggregatedAttributes(aggregationRules) }
-                        .reduce { acc, map -> map.mergeReduce(acc, aggregationRules) }
+                    .reduce { acc, map -> map.mergeReduce(acc, aggregationRules) }
             }
         }
 

@@ -90,15 +90,21 @@ class HighlyCoupledFilesTest {
 
     private fun registerModifications(metric: Metric, vararg filenames: String) {
         val modificationList = Arrays.stream(filenames)
-                .map<Modification>({ Modification(it) })
-                .collect(Collectors.toList())
+            .map<Modification>({ Modification(it) })
+            .collect(Collectors.toList())
 
         val commit = Commit("author", modificationList, OffsetDateTime.now())
         metric.registerCommit(commit)
 
         modificationList.stream()
+<<<<<<< HEAD
                 .filter { mod -> FILENAME == mod.currentFilename }
                 .findFirst()
                 .ifPresent({ metric.registerModification(it) })
+=======
+            .filter { mod -> FILENAME == mod.filename }
+            .findFirst()
+            .ifPresent({ metric.registerModification(it) })
+>>>>>>> main
     }
 }

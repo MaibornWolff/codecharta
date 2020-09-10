@@ -47,55 +47,80 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
     @Test
     fun aggregateNumstatAndRaw() {
         val commitLines = asList(
-                "commit ca1fe2ba3be4",
-                "Author: TheAuthor <mail@example.com>",
-                "Date:   Tue May 9 19:57:57 2017 +0200",
-                "    the commit message",
-                "10 0 src/Added.java",
-                ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java")
+            "commit ca1fe2ba3be4",
+            "Author: TheAuthor <mail@example.com>",
+            "Date:   Tue May 9 19:57:57 2017 +0200",
+            "    the commit message",
+            "10 0 src/Added.java",
+            ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java"
+        )
         val modifications = parserStrategy.parseModifications(commitLines)
         assertThat(modifications).hasSize(1)
         val modification = modifications[0]
+<<<<<<< HEAD
         assertThat(modification).extracting(Function<Modification, Any> { it.currentFilename },
                 Function<Modification, Any> { it.oldFilename },
                 Function<Modification, Any> { it.type },
                 Function<Modification, Any> { it.additions },
                 Function<Modification, Any> { it.deletions })
                 .containsExactly("src/Added.java", "", Modification.Type.ADD, 10L, 0L)
+=======
+        assertThat(modification).extracting(
+            Function<Modification, Any> { it.filename },
+            Function<Modification, Any> { it.oldFilename },
+            Function<Modification, Any> { it.type },
+            Function<Modification, Any> { it.additions },
+            Function<Modification, Any> { it.deletions }
+        )
+            .containsExactly("src/Added.java", "", Modification.Type.ADD, 10L, 0L)
+>>>>>>> main
     }
 
     @Test
     fun aggregateNumstatAndRawWithRename() {
         val commitLines = asList(
-                "commit ca1fe2ba3be4",
-                "Author: TheAuthor <mail@example.com>",
-                "Date:   Tue May 9 19:57:57 2017 +0200",
-                "    the commit message",
-                "9 2 src/{RenameOld.java => RenameNew.java}",
-                ":100644 100644 e7ab6f3... 0c5845c... R079 src/RenameOld.java src/RenameNew.java")
+            "commit ca1fe2ba3be4",
+            "Author: TheAuthor <mail@example.com>",
+            "Date:   Tue May 9 19:57:57 2017 +0200",
+            "    the commit message",
+            "9 2 src/{RenameOld.java => RenameNew.java}",
+            ":100644 100644 e7ab6f3... 0c5845c... R079 src/RenameOld.java src/RenameNew.java"
+        )
         val modifications = parserStrategy.parseModifications(commitLines)
         assertThat(modifications).hasSize(1)
         val modification = modifications[0]
+<<<<<<< HEAD
         assertThat(modification).extracting(Function<Modification, Any> { it.currentFilename },
                 Function<Modification, Any> { it.oldFilename },
                 Function<Modification, Any> { it.type },
                 Function<Modification, Any> { it.additions },
                 Function<Modification, Any> { it.deletions })
                 .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9L, 2L)
+=======
+        assertThat(modification).extracting(
+            Function<Modification, Any> { it.filename },
+            Function<Modification, Any> { it.oldFilename },
+            Function<Modification, Any> { it.type },
+            Function<Modification, Any> { it.additions },
+            Function<Modification, Any> { it.deletions }
+        )
+            .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9L, 2L)
+>>>>>>> main
     }
 
     companion object {
 
         private val FULL_COMMIT = asList(
-                "commit ca1fe2ba3be4",
-                "Author: TheAuthor <mail@example.com>",
-                "Date:   Tue May 9 19:57:57 2017 +0200",
-                "    the commit message",
-                "10 0 src/Added.java",
-                "2 1 src/Modified.java",
-                "0 20 src/Deleted.java",
-                ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java",
-                ":100644 100644 6c30570... 79b6243... M  src/Modified.java",
-                ":100644 100644 64d6a85... 8c57f3d... D  src/Deleted.java")
+            "commit ca1fe2ba3be4",
+            "Author: TheAuthor <mail@example.com>",
+            "Date:   Tue May 9 19:57:57 2017 +0200",
+            "    the commit message",
+            "10 0 src/Added.java",
+            "2 1 src/Modified.java",
+            "0 20 src/Deleted.java",
+            ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java",
+            ":100644 100644 6c30570... 79b6243... M  src/Modified.java",
+            ":100644 100644 64d6a85... 8c57f3d... D  src/Deleted.java"
+        )
     }
 }

@@ -53,7 +53,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                             // a file is re-added after its deletion on master
                             //TODO what if a new file is created in the merge commit that has the same name?
                             //TODO is this possible/feasible?
-                            if(commit.isMergeCommit()){
+                            if (commit.isMergeCommit()) {
                                 file.unmarkDeleted()
                             }
                             // If a file is deleted and a new one with same name is added, replace deleted one.
@@ -73,7 +73,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
                 Modification.Type.RENAME -> {
                     var fileToBeRenamed: VersionControlledFile? =
-                            versionControlledFilesList.get(trackName) ?: return@forEach
+                        versionControlledFilesList.get(trackName) ?: return@forEach
 
                     try {
                         fileToBeRenamed!!.registerCommit(commit, it)
@@ -83,7 +83,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
                 }
 
-                else                     -> {
+                else -> {
                     // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
                     // TODO consider DElTA Mode and Edge calculation
 
@@ -123,9 +123,9 @@ internal class CommitCollector private constructor(private val metricsFactory: M
     }
 
     private fun combineForParallelExecution(
-            firstCommits: VersionControlledFilesList,
-            secondCommits: VersionControlledFilesList
-                                           ): VersionControlledFilesList {
+        firstCommits: VersionControlledFilesList,
+        secondCommits: VersionControlledFilesList
+    ): VersionControlledFilesList {
         throw UnsupportedOperationException("parallel collection of commits not supported")
     }
 
@@ -135,16 +135,16 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             val collector = CommitCollector(metricsFactory)
 
             return Collector.of(
-                    Supplier<VersionControlledFilesList> { VersionControlledFilesList(metricsFactory) },
-                    BiConsumer<VersionControlledFilesList, Commit> { versionControlledFiles,
-                                                                     commit ->
-                        collector.collectCommit(versionControlledFiles, commit)
-                    },
-                    BinaryOperator<VersionControlledFilesList> { firstCommits,
-                                                                 secondCommits ->
-                        collector.combineForParallelExecution(firstCommits, secondCommits)
-                    }
-                               )
+                Supplier<VersionControlledFilesList> { VersionControlledFilesList(metricsFactory) },
+                BiConsumer<VersionControlledFilesList, Commit> { versionControlledFiles,
+                    commit ->
+                    collector.collectCommit(versionControlledFiles, commit)
+                },
+                BinaryOperator<VersionControlledFilesList> { firstCommits,
+                    secondCommits ->
+                    collector.combineForParallelExecution(firstCommits, secondCommits)
+                }
+            )
         }
     }
 }

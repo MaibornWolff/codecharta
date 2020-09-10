@@ -1,7 +1,7 @@
 import { createFileAction, createInputPromt, modifyFileAction } from "./plopHelper"
 
-const TEMPLATE_DIR: string = "reduxSubreducer"
-const DESTINATION_DIR: string = "state/store/{{camelCase name}}"
+const TEMPLATE_DIR = "reduxSubreducer"
+const DESTINATION_DIR = "state/store/{{camelCase name}}"
 
 export const PLOP_REDUX_SUBREDUCER_VARIABLE_PROMPTS = [createInputPromt("name", "Name (e.x. dynamicSettings):")]
 
@@ -50,6 +50,6 @@ export const PLOP_REDUX_SUBREDUCER_FILE_ACTIONS = [
 		path: "state/store/state.splitter.ts",
 		pattern: /(\/\/ Plop: Split into sub-reducer here)/gi,
 		template:
-			"$1\r\n\t\tif (action.payload.{{camelCase name}} !== undefined) {\n\t\t\tactions = actions.concat(...split{{properCase name}}Actions(action.payload.{{camelCase name}}))\n\t\t}\n"
+			"$1\r\n\t\tif (action.payload.{{camelCase name}} !== undefined) {\n\t\t\tactions.push(...split{{properCase name}}Actions(action.payload.{{camelCase name}}))\n\t\t}\n"
 	})
 ]

@@ -57,23 +57,35 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getComponentMap_from_server_if_no_authentication_needed_and_result_is_paged() {
         // given
-        stubFor(get(urlEqualTo(URL_PATH))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH))
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createPagedResponseString(1))))
+                        .withBody(createPagedResponseString(1))
+                )
+        )
 
-        stubFor(get(urlEqualTo(URL_PATH_SECOND_PAGE))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH_SECOND_PAGE))
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createPagedResponseString(2))))
+                        .withBody(createPagedResponseString(2))
+                )
+        )
 
-        stubFor(get(urlEqualTo(URL_PATH_THIRD_PAGE))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH_THIRD_PAGE))
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createPagedResponseString(3))))
+                        .withBody(createPagedResponseString(3))
+                )
+        )
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
@@ -88,23 +100,35 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getMeasures_page_from_server_if_no_authentication_needed_and_result_is_paged() {
         // given
-        stubFor(get(urlEqualTo(URL_PATH))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH))
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createPagedResponseString(1))))
+                        .withBody(createPagedResponseString(1))
+                )
+        )
 
-        stubFor(get(urlEqualTo(URL_PATH_SECOND_PAGE))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH_SECOND_PAGE))
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createPagedResponseString(2))))
+                        .withBody(createPagedResponseString(2))
+                )
+        )
 
-        stubFor(get(urlEqualTo(URL_PATH_THIRD_PAGE))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH_THIRD_PAGE))
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createPagedResponseString(3))))
+                        .withBody(createPagedResponseString(3))
+                )
+        )
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
@@ -123,11 +147,15 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getMeasures_from_server_if_no_authentication_needed() {
         // given
-        stubFor(get(urlEqualTo(URL_PATH))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH))
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createResponseString())))
+                        .withBody(createResponseString())
+                )
+        )
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
@@ -141,11 +169,15 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getMeasures_from_server_if_authenticated() {
         // given
-        stubFor(get(urlEqualTo(URL_PATH)).withBasicAuth(USERNAME, "")
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH)).withBasicAuth(USERNAME, "")
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createResponseString())))
+                        .withBody(createResponseString())
+                )
+        )
 
         // when
         val ds = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
@@ -161,9 +193,14 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         // given
         val error = ErrorEntity("some Error")
         val errorResponse = ErrorResponse(arrayOf(error))
-        stubFor(get(urlEqualTo(URL_PATH)).withBasicAuth(USERNAME, "")
-                .willReturn(ResponseDefinitionBuilder.like(
-                        jsonResponse(errorResponse, 400))))
+        stubFor(
+            get(urlEqualTo(URL_PATH)).withBasicAuth(USERNAME, "")
+                .willReturn(
+                    ResponseDefinitionBuilder.like(
+                        jsonResponse(errorResponse, 400)
+                    )
+                )
+        )
 
         // when
         val ds = SonarMeasuresAPIDatasource(USERNAME, createBaseUrl())
@@ -175,7 +212,7 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     fun createMeasureAPIRequestURI() {
         // given
         val expectedMeasuresAPIRequestURI =
-                URI(createBaseUrl().toString() + "/api/measures/component_tree?baseComponentKey=&qualifiers=FIL,UTS&metricKeys=coverage&p=0&ps=500")
+            URI(createBaseUrl().toString() + "/api/measures/component_tree?baseComponentKey=&qualifiers=FIL,UTS&metricKeys=coverage&p=0&ps=500")
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
@@ -211,11 +248,15 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
     @Throws(Exception::class)
     fun getComponents_from_server_if_no_authentication_needed() {
         // given
-        stubFor(get(urlEqualTo(URL_PATH))
-                .willReturn(aResponse()
+        stubFor(
+            get(urlEqualTo(URL_PATH))
+                .willReturn(
+                    aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withStatus(200)
-                        .withBody(createResponseString())))
+                        .withBody(createResponseString())
+                )
+        )
 
         // when
         val ds = SonarMeasuresAPIDatasource("", createBaseUrl())
@@ -231,11 +272,11 @@ class SonarMeasuresAPIDatasourceIntegrationTest {
         private const val PROJECT_KEY = "someProject"
         private val GSON = GsonBuilder().create()
         private const val URL_PATH =
-                "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=$PAGE_SIZE"
+            "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=1&ps=$PAGE_SIZE"
         private const val URL_PATH_SECOND_PAGE =
-                "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=2&ps=$PAGE_SIZE"
+            "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=2&ps=$PAGE_SIZE"
         private const val URL_PATH_THIRD_PAGE =
-                "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=3&ps=$PAGE_SIZE"
+            "/api/measures/component_tree?baseComponentKey=$PROJECT_KEY&qualifiers=FIL,UTS&metricKeys=coverage&p=3&ps=$PAGE_SIZE"
 
         private fun createBaseUrl(): URL {
             try {

@@ -80,8 +80,10 @@ class TokeiImporter(
 
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(projectBuilder.build(),
-            filePath) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
+            projectBuilder.build(),
+            filePath
+        ) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
 
         return null
     }

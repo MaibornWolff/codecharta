@@ -60,9 +60,9 @@ class VersionControlledFile internal constructor(
     fun getEdgeList(): List<Edge> {
         val edgeList = mutableListOf<Edge>()
         metrics.flatMap { it.getEdges() }
-                .forEach { edge ->
-                    addEdgeToEdgeList(edge, edgeList)
-                }
+            .forEach { edge ->
+                addEdgeToEdgeList(edge, edgeList)
+            }
         return edgeList
     }
 

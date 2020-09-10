@@ -39,8 +39,8 @@ class VersionControlledFileTest {
         every { metricsFactory.createMetrics() } returns Arrays.asList(metric)
 
         val versionControlledFile = VersionControlledFile(
-                "filename",
-                metricsFactory
+            "filename",
+            metricsFactory
         )
 
         // when
@@ -49,14 +49,14 @@ class VersionControlledFileTest {
         // then
         assertThat(metricsMap).hasSize(1)
         assertThat(versionControlledFile.getMetricValue(metricName))
-                .isEqualTo(1)
+            .isEqualTo(1)
     }
 
     @Test
     fun throwsExceptionIfFileIsNotInCommit() {
         val versionControlledFile = VersionControlledFile(
-                "filename",
-                listOf()
+            "filename",
+            listOf()
         )
 
         val modification = Modification("anotherFilename")
@@ -75,8 +75,8 @@ class VersionControlledFileTest {
         val filename = "filename"
         val author = "An Author"
         val versionControlledFile = VersionControlledFile(
-                filename,
-                Arrays.asList(modificationMetric)
+            filename,
+            Arrays.asList(modificationMetric)
         )
 
         // when

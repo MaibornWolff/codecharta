@@ -1,7 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar
 
 import de.maibornwolff.codecharta.importer.sonar.model.Component
-
 import java.net.URL
 
 open class SonarCodeURLLinker {

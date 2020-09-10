@@ -12,7 +12,7 @@ class CSVHeader(private val header: Array<String?>, private val pathColumnName: 
 
     val pathColumn: Int
         get() = headerMap.keys.firstOrNull { i -> headerMap[i].equals(pathColumnName, ignoreCase = true) }
-                ?: headerMap.keys.first()
+            ?: headerMap.keys.first()
 
     init {
         headerMap = HashMap()
