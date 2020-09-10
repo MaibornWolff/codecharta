@@ -10,9 +10,9 @@ import {
 	EdgeMetricData
 } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
-import _ from "lodash"
-import { hierarchy, HierarchyNode } from "d3"
+import { HierarchyNode } from "d3"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { clone } from "./clone"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
@@ -24,9 +24,9 @@ describe("nodeDecorator", () => {
 	let attributeTypes: AttributeTypes
 
 	beforeEach(() => {
-		file = _.cloneDeep(TEST_DELTA_MAP_A)
+		file = clone(TEST_DELTA_MAP_A)
 		map = file.map
-		deltaMap = _.cloneDeep(VALID_NODE_WITH_PATH_AND_DELTAS)
+		deltaMap = clone(VALID_NODE_WITH_PATH_AND_DELTAS)
 		metricData = [
 			{ name: "rloc", maxValue: 999999 },
 			{ name: "functions", maxValue: 999999 },
@@ -43,7 +43,7 @@ describe("nodeDecorator", () => {
 			nodes: { functions: AttributeTypeValue.relative, rloc: AttributeTypeValue.absolute },
 			edges: { pairingRate: AttributeTypeValue.relative }
 		}
-		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
+		blacklist = clone(STATE.fileSettings.blacklist)
 		NodeDecorator.decorateMapWithPathAttribute(file)
 	})
 

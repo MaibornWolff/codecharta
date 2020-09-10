@@ -2,15 +2,15 @@ import { edgeMetricData, nodeEdgeMetricsMap } from "./edgeMetricData.reducer"
 import { calculateNewEdgeMetricData, EdgeMetricDataAction, setEdgeMetricData } from "./edgeMetricData.actions"
 import { EDGE_METRIC_DATA, FILE_STATES, VALID_NODE_WITH_PATH } from "../../../../util/dataMocks"
 import { FileState } from "../../../../model/files/files"
-import _ from "lodash"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
+import { clone } from "../../../../util/clone"
 
 describe("edgeMetricData", () => {
 	let fileStates: FileState[]
 
 	beforeEach(() => {
-		fileStates = _.cloneDeep(FILE_STATES)
-		fileStates[0].file.map = _.cloneDeep(VALID_NODE_WITH_PATH)
+		fileStates = clone(FILE_STATES)
+		fileStates[0].file.map = clone(VALID_NODE_WITH_PATH)
 	})
 
 	describe("Default State", () => {

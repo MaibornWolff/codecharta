@@ -5,10 +5,10 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { setInvertDeltaColors } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.actions"
+import _ from "lodash"
 
 describe("MetricDeltaSelectedController", () => {
 	let metricDeltaSelectedController: MetricDeltaSelectedController
