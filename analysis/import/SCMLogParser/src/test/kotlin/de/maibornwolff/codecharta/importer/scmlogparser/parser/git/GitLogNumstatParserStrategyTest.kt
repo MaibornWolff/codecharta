@@ -37,13 +37,8 @@ class GitLogNumstatParserStrategyTest : ParserStrategyContractTest() {
 
     @Test
     fun parsesFilenamesFromUnusualFileMetadata() {
-<<<<<<< HEAD
         assertThat(GitLogNumstatParserStrategy.parseModification("0\t10\tsrc/Main.java").currentFilename)
                 .isEqualTo("src/Main.java")
-=======
-        assertThat(GitLogNumstatParserStrategy.parseModification("0\t10\tsrc/Main.java").filename)
-            .isEqualTo("src/Main.java")
->>>>>>> main
     }
 
     @Test

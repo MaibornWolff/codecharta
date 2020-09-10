@@ -65,13 +65,9 @@ class GitLogParserStrategyTest : ParserStrategyContractTest() {
     @Test
     fun parsesFilenamesFromUnusualFileMetadata() {
         assertThat(GitLogParserStrategy.parseModification("")).isEqualTo(Modification.EMPTY)
-<<<<<<< HEAD
         assertThat(GitLogParserStrategy.parseModification("  src/Main.java").currentFilename)
                 .isEqualTo("src/Main.java")
-=======
-        assertThat(GitLogParserStrategy.parseModification("  src/Main.java").filename)
-            .isEqualTo("src/Main.java")
->>>>>>> main
+
     }
 
     companion object {
