@@ -39,6 +39,7 @@ class VersionControlledFile internal constructor(
             !commit.isMergeCommit() && !this.isDeleted() && mod.isTypeAdd() && !mod.isInitialAdd() -> this.mutate()
         }
 
+        // TODO improve performance - do not iterate metrics collection twice
         metrics.forEach { it.registerCommit(commit) }
         authors.add(commit.author)
         metrics.forEach { it.registerModification(mod) }

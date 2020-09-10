@@ -44,7 +44,6 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                     val file = versionControlledFilesList.get(trackName)
                     if (file == null) {
                         val missingVCF = versionControlledFilesList.addFileBy(trackName)
-
                         it.markInitialAdd()
                         missingVCF.registerCommit(commit, it)
                     } else {
@@ -52,9 +51,10 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                             versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
                         }
                         if (file.isDeleted()) {
-                            // TODO Do we need to register a commit in this case? No :)
-                            file.unmarkDeleted()
-                            file.resetMutation()
+                            // If a file is deleted and a new one with same name is added, replace deleted one.
+                            val replacingVCF = versionControlledFilesList.addFileBy(trackName)
+                            it.markInitialAdd()
+                            replacingVCF.registerCommit(commit, it)
                         }
                     }
                 }
@@ -67,7 +67,14 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 }
 
                 Modification.Type.RENAME -> {
-                    versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
+                    var fileToBeRenamed: VersionControlledFile? =
+                            versionControlledFilesList.get(trackName) ?: return@forEach
+
+                    try {
+                        fileToBeRenamed!!.registerCommit(commit, it)
+                    } catch (exc: NullPointerException) {
+                        print("next")
+                    }
                     versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
                 }
 
@@ -101,6 +108,10 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             } else if (file.isDeleted() && it.isTypeDelete()) {
                 file.resetMutation()
             } else if (it.isTypeModify()) {
+                // Add -> Add -> Merge both files will result in Modify
+                file.resetMutation()
+            } else if (it.isTypeDelete()) {
+                // Add -> Add -> Merge files: delete one will result in Delete
                 file.resetMutation()
             }
         }

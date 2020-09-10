@@ -19,21 +19,22 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
      */
     private var nameConflictsMap: MutableMap<String, Int> = mutableMapOf()
 
-    fun getBy(fileNameList: List<String>): MutableList<VersionControlledFile?> {
-        var mappedFiles = mutableListOf<VersionControlledFile?>()
-        fileNameList.forEach {
-            mappedFiles.add(get(it))
-        }
-        return mappedFiles
-    }
-
     fun get(key: String): VersionControlledFile? {
         return versionControlledFiles[resolveFileKey(key)]
     }
 
     fun addFileBy(key: String): VersionControlledFile {
-        val vcf = VersionControlledFile(buildPossibleConflictName(key), metricsFactory)
-        vcf.addRename(key)
+        var newVCFFileName = key
+
+        if (versionControlledFiles.containsKey(key) && !versionControlledFiles[key]!!.isDeleted()) {
+            val marker = nameConflictsMap[key]
+            val newMarker = if (marker != null) marker + 1 else 0
+            newVCFFileName = key + "_\\0_" + newMarker
+            nameConflictsMap[key] = newMarker
+        }
+
+        val vcf = VersionControlledFile(newVCFFileName, metricsFactory)
+        vcf.addRename(newVCFFileName)
 
         versionControlledFiles[resolveFileKey(key)] = vcf
         return vcf
@@ -52,7 +53,22 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         val possibleConflictName = buildPossibleConflictName(oldFileName) //newFileName?
         val oldestName = retrieveOldestName(possibleConflictName)
 
-        if (versionControlledFiles.containsKey(newFileName) && !get(oldFileName)!!.containsRename(newFileName)) {
+        if (
+                versionControlledFiles.containsKey(newFileName) &&
+                versionControlledFiles[newFileName]!!.isDeleted()
+        ) {
+            // Clear the corresponding maps for file which will be replaced
+            renamesMap.remove(versionControlledFiles[newFileName]!!.filename)
+            nameConflictsMap.remove(buildPossibleConflictName(newFileName))
+
+            // Replace deleted file with new file which has been added now
+            versionControlledFiles.remove(newFileName)
+        }
+
+        if (
+                versionControlledFiles.containsKey(newFileName) &&
+                !get(oldFileName)!!.containsRename(newFileName)
+        ) {
             val marker = nameConflictsMap[newFileName]
             val newMarker = if (marker != null) marker + 1 else 0
             newVCFFileName = newFileName + "_\\0_" + newMarker
@@ -62,12 +78,15 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         if (oldestName != null) {
             renamesMap.remove(possibleConflictName)
             renamesMap[newVCFFileName] = oldestName
-            get(oldestName)!!.addRename(newVCFFileName)
-            get(oldestName)!!.filename = newFileName
+
+            versionControlledFiles[oldestName]!!.addRename(newVCFFileName)
+            versionControlledFiles[oldestName]!!.filename = newFileName
         } else {
             renamesMap[newVCFFileName] = oldFileName
-            get(oldFileName)!!.addRename(newVCFFileName)
-            get(oldFileName)!!.filename = newFileName
+
+            val notYetRenamedFile = versionControlledFiles[oldFileName]!!
+            notYetRenamedFile.addRename(newVCFFileName)
+            notYetRenamedFile.filename = newFileName
         }
     }
 
@@ -82,7 +101,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     /**
      * If file name has already existed before, created new "salted" name to keep track of both files separately.
      */
-    fun buildPossibleConflictName(trackName: String): String {
+    private fun buildPossibleConflictName(trackName: String): String {
         if (nameConflictsMap.containsKey(trackName)) {
             return trackName + "_\\0_" + nameConflictsMap[trackName]
         }
