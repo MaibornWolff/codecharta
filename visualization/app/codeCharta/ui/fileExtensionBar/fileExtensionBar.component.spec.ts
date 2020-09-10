@@ -1,5 +1,4 @@
 import "./fileExtensionBar.module"
-import _ from "lodash"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import {
@@ -16,6 +15,8 @@ import { StoreService } from "../../state/store.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
+import { clone } from "../../util/clone"
+import _ from "lodash"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
@@ -144,7 +145,7 @@ describe("FileExtensionBarController", () => {
 
 	describe("highlightBarHoveredBuildings", () => {
 		beforeEach(() => {
-			const map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
+			const map = clone(VALID_NODE_WITH_PATH_AND_EXTENSION)
 			map.children.push({
 				name: "README.md",
 				type: NodeType.FILE,

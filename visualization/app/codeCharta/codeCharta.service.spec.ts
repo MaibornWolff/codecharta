@@ -3,7 +3,6 @@ import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
 import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
-import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
@@ -12,6 +11,7 @@ import { DialogService } from "./ui/dialog/dialog.service"
 import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import packageJson from "../../package.json"
+import { clone } from "./util/clone"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -26,8 +26,8 @@ describe("codeChartaService", () => {
 		rebuildService()
 		withMockedDialogService()
 
-		validFileContent = _.cloneDeep(TEST_FILE_CONTENT)
-		metricData = _.cloneDeep([
+		validFileContent = clone(TEST_FILE_CONTENT)
+		metricData = clone([
 			{ name: "mcc", maxValue: 1 },
 			{ name: "rloc", maxValue: 2 }
 		])

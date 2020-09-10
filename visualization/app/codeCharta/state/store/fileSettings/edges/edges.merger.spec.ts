@@ -1,7 +1,7 @@
 import { getMergedEdges } from "./edges.merger"
 import { TEST_FILE_DATA } from "../../../../util/dataMocks"
-import _ from "lodash"
 import { CCFile, Edge } from "../../../../codeCharta.model"
+import { clone } from "../../../../util/clone"
 
 describe("EdgesMerger", () => {
 	describe("getMergedEdges", () => {
@@ -14,11 +14,11 @@ describe("EdgesMerger", () => {
 		let file2: CCFile
 
 		beforeEach(() => {
-			file1 = _.cloneDeep(TEST_FILE_DATA)
+			file1 = clone(TEST_FILE_DATA)
 			file1.fileMeta.fileName = "file1"
 			file1.settings.fileSettings.edges = []
 
-			file2 = _.cloneDeep(TEST_FILE_DATA)
+			file2 = clone(TEST_FILE_DATA)
 			file2.fileMeta.fileName = "file2"
 			file2.settings.fileSettings.edges = []
 

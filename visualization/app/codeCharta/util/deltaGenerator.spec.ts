@@ -1,16 +1,16 @@
-import _ from "lodash"
 import { DeltaGenerator } from "./deltaGenerator"
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "./dataMocks"
 import { CCFile, NodeType } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
+import { clone } from "./clone"
 
 describe("deltaGenerator", () => {
 	let fileA: CCFile
 	let fileB: CCFile
 
 	beforeEach(() => {
-		fileA = _.cloneDeep(TEST_DELTA_MAP_A)
-		fileB = _.cloneDeep(TEST_DELTA_MAP_B)
+		fileA = clone(TEST_DELTA_MAP_A)
+		fileB = clone(TEST_DELTA_MAP_B)
 	})
 
 	it("golden test", () => {
