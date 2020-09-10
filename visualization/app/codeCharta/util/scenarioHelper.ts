@@ -138,10 +138,9 @@ export class ScenarioHelper {
 		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarios"))
 		if (ccLocalStorage) {
 			return new Map(ccLocalStorage.scenarios)
-		} else {
-			this.setScenariosToLocalStorage(this.getPreLoadScenarios())
-			return this.getPreLoadScenarios()
 		}
+		this.setScenariosToLocalStorage(this.getPreLoadScenarios())
+		return this.getPreLoadScenarios()
 	}
 
 	public static addScenario(newScenario: RecursivePartial<Scenario>) {

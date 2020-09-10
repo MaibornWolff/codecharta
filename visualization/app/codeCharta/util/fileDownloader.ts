@@ -57,9 +57,8 @@ export class FileDownloader {
 	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
 		if (Object.keys(attributeTypes.edges).length === 0 && Object.keys(attributeTypes.nodes).length === 0) {
 			return {}
-		} else {
-			return attributeTypes
 		}
+		return attributeTypes
 	}
 
 	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType): BlacklistItem[] {
