@@ -28,7 +28,7 @@ function buildingArrayToMap(highlighted: CodeMapBuilding[]): Map<number, CodeMap
 }
 
 function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, state: State, isDeltaState: boolean): Node {
-	const flattened: boolean = shouldNodeBeFlat(map, state)
+	const flattened: boolean = isNodeFlat(map, state)
 	const height = FOLDER_HEIGHT
 	const width = 100
 	const length = 100
@@ -67,7 +67,7 @@ function buildNodeFrom(
 	isDeltaState: boolean
 ): Node {
 	const isNodeLeaf = !(squaredNode.children && squaredNode.children.length > 0)
-	const flattened: boolean = shouldNodeBeFlat(squaredNode.data, s)
+	const flattened: boolean = isNodeFlat(squaredNode.data, s)
 	const heightValue: number = getHeightValue(s, squaredNode, maxHeight, flattened)
 	const depth: number = squaredNode.data.path.split("/").length - 2
 	const width = squaredNode.x1 - squaredNode.x0
@@ -108,21 +108,24 @@ function getHeightValue(s: State, squaredNode: HierarchyRectangularNode<CodeMapN
 
 	if (flattened) {
 		return MIN_BUILDING_HEIGHT
-	} else if (s.appSettings.invertHeight) {
+	}
+
+	if (s.appSettings.invertHeight) {
 		return maxHeight - heightValue
 	}
 	return heightValue
 }
 
 function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, s: State, flattened: boolean): boolean {
-	let isVisible = true
-	if (s.dynamicSettings.focusedNodePath.length > 0) {
-		isVisible = squaredNode.path.includes(s.dynamicSettings.focusedNodePath)
-	}
 	if (squaredNode.isExcluded || (isNodeLeaf && s.appSettings.hideFlatBuildings && flattened)) {
-		isVisible = false
+		return false
 	}
-	return isVisible
+
+	if (s.dynamicSettings.focusedNodePath.length > 0) {
+		return squaredNode.path.includes(s.dynamicSettings.focusedNodePath)
+	}
+
+	return true
 }
 
 function getIncomingEdgePoint(width: number, height: number, length: number, vector: Vector3, mapSize: number) {
@@ -139,7 +142,7 @@ function getOutgoingEdgePoint(width: number, height: number, length: number, vec
 	return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + 0.75 * length)
 }
 
-function shouldNodeBeFlat(codeMapNode: CodeMapNode, s: State): boolean {
+function isNodeFlat(codeMapNode: CodeMapNode, s: State): boolean {
 	if (codeMapNode.isFlattened) {
 		return true
 	}
