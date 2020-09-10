@@ -24,7 +24,7 @@ class IntegrationTest {
         val path = System.getProperty("user.dir")
         val separator = System.getProperty("file.separator")
 
-       return path.substringBefore("$separator analysis")
+       return path.substringBeforeLast(separator)
     }
 
     fun buildFileTree(gitCommand: String, workingDir: File) {
