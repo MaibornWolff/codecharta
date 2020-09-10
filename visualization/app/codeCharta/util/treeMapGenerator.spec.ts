@@ -2,6 +2,7 @@ import { NodeMetricData, State } from "../codeCharta.model"
 import { CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES, STATE } from "./dataMocks"
+import { clone } from "./clone"
 import _ from "lodash"
 import { NodeDecorator } from "./nodeDecorator"
 import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
@@ -19,11 +20,11 @@ describe("treeMapGenerator", () => {
 	})
 
 	function restartSystem() {
-		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		map = clone(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMapWithPathAttribute(getCCFile("someFile", fileWithFixedFolders))
 		state = _.cloneDeep(STATE)
-		codeMapNode = _.cloneDeep(VALID_NODE_WITH_PATH)
-		metricData = _.cloneDeep(METRIC_DATA)
+		codeMapNode = clone(VALID_NODE_WITH_PATH)
+		metricData = clone(METRIC_DATA)
 		isDeltaState = false
 		state.dynamicSettings.focusedNodePath = ""
 	}

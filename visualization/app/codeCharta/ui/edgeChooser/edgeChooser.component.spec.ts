@@ -5,10 +5,10 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import _ from "lodash"
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
