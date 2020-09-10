@@ -25,7 +25,8 @@ export const ERROR_MESSAGES = {
 	nodesEmpty: "The nodes array is empty. At least one node is required.",
 	notAllFoldersAreFixed: "If at least one direct sub-folder of root is marked as fixed, all direct sub-folders of root must be fixed.",
 	fixedFoldersOutOfBounds: "Coordinates of fixed folders must be within a range of 0 and 100.",
-	fixedFoldersOverlapped: "Folders may not overlap."
+	fixedFoldersOverlapped: "Folders may not overlap.",
+	fixedFoldersNotAllowed: "Fixated folders may not be defined in API-Version < 1.2."
 }
 
 export function validate(file: ExportCCFile) {
@@ -56,7 +57,7 @@ export function validate(file: ExportCCFile) {
 			result.error.push(ERROR_MESSAGES.nodesEmpty)
 		} else {
 			validateAllNodesAreUnique(file.nodes[0], result)
-			validateFixedFolders(file.nodes[0], result)
+			validateFixedFolders(file, result)
 		}
 	}
 
@@ -117,20 +118,26 @@ function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidat
 	}
 }
 
-function validateFixedFolders(root: CodeMapNode, result: CCValidationResult) {
+function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 	const notFixed: string[] = []
 	const outOfBounds: string[] = []
 	const intersections: Set<string> = new Set()
 
-	for (const node of root.children) {
+	for (const node of file.nodes[0].children) {
 		if (node.fixedPosition === undefined) {
 			notFixed.push(`${node.name}`)
 		} else {
+			const apiVersion = getAsApiVersion(file.apiVersion)
+			if (apiVersion.major < 1 || (apiVersion.major === 1 && apiVersion.minor < 2)) {
+				result.error.push(`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: ${file.apiVersion}`)
+				return
+			}
+
 			if (isOutOfBounds(node)) {
 				outOfBounds.push(getFoundFolderMessage(node))
 			}
 
-			for (const node2 of root.children) {
+			for (const node2 of file.nodes[0].children) {
 				if (
 					node2.fixedPosition !== undefined &&
 					node !== node2 &&
@@ -143,7 +150,7 @@ function validateFixedFolders(root: CodeMapNode, result: CCValidationResult) {
 		}
 	}
 
-	if (notFixed.length > 0 && notFixed.length !== root.children.length) {
+	if (notFixed.length > 0 && notFixed.length !== file.nodes[0].children.length) {
 		result.error.push(`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: ${notFixed.join(", ")}`)
 	}
 

@@ -10,7 +10,7 @@ import packageJson from "../../../package.json"
 import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
 import assert from "assert"
 import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
-import { ExportCCFile } from "../codeCharta.api.model"
+import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { clone } from "./clone"
 
 describe("FileValidator", () => {
@@ -373,6 +373,32 @@ describe("FileValidator", () => {
 						folder1.fixedPosition
 					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
 				],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if the major api version is smaller and fixed folders were defined", () => {
+			file.apiVersion = APIVersions.ZERO_POINT_ONE
+
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 0.1`],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if the minor api version is smaller and fixed folders were defined", () => {
+			file.apiVersion = APIVersions.ONE_POINT_ONE
+
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 1.1`],
 				warning: []
 			}
 
