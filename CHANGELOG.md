@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   `cc.json` version updated to `1.2`
 -   `fixedPosition` as a new property in the `cc.json` that allows to fixate folders in the map
 
 ### Changed
