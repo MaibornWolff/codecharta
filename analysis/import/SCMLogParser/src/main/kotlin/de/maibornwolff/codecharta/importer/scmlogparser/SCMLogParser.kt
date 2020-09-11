@@ -28,7 +28,6 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.util.Arrays
 import java.util.concurrent.Callable
-import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
 @CommandLine.Command(
@@ -47,6 +46,9 @@ class SCMLogParser(
 
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
+
+    @CommandLine.Option(names= ["-n" ,"--git-names"], arity = "1", paramLabel = "FILE", description = ["compress output File to gzip format"])
+    private var nameFile : File? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
@@ -86,14 +88,13 @@ class SCMLogParser(
             }
         }
 
-    private val filesInLog = mutableListOf<String>()
-
     @Throws(IOException::class)
     override fun call(): Void? {
 
         print(" ")
         var project = createProjectFromLog(
             file!!,
+            nameFile!!,
             logParserStrategy,
             metricsFactory,
             addAuthor,
@@ -126,49 +127,29 @@ class SCMLogParser(
         }
     }
 
-    //TODO will not be needed if a log is provided by the user, maybe not part of SCMLogParser
-    private fun executeGitCommand(gitCommand: String, workingDir: File, list: MutableList<String>) {
-        try {
-            val commands = gitCommand.split("\\s".toRegex())
-            val proc = ProcessBuilder(*commands.toTypedArray())
-                .directory(workingDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
+    private fun readFileNameListFile(path :File) : MutableList<String>{
+        val inputStream: InputStream = path.inputStream()
+        val lineList = mutableListOf<String>()
 
-            proc.waitFor(60, TimeUnit.SECONDS)
+        inputStream.bufferedReader().forEachLine { lineList.add(it) }
 
-            proc.inputStream.bufferedReader().useLines { lines ->
-                lines.forEach {
-                    list.add(it)
-                }
-            }
-        } catch (e: IOException) {
-            error("Invalid git command.")
-        }
-    }
-
-    //TODO this only works for CodeCharta, change by introducing reader
-    private fun convertPathCodeCharta(): String {
-        val path = System.getProperty("user.dir")
-        val separator = System.getProperty("file.separator")
-
-        return path.substringBeforeLast(separator)
+        return lineList
     }
 
     private fun createProjectFromLog(
         pathToLog: File,
+        pathToNameTree: File,
         parserStrategy: LogParserStrategy,
         metricsFactory: MetricsFactory,
         containsAuthors: Boolean,
         silent: Boolean = false
     ): Project {
+        val namesInProject = readFileNameListFile(pathToNameTree)
         val encoding = guessEncoding(pathToLog) ?: "UTF-8"
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
-        executeGitCommand("git ls-files ", File(convertPathCodeCharta()), filesInLog)
-        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines, filesInLog)
+        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines, namesInProject)
     }
 
     // not implemented yet #738
