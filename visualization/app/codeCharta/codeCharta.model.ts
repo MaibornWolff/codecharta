@@ -218,7 +218,7 @@ export interface Scenario {
 	}
 	height: {
 		heightMetric: string
-		heightSlider: number
+		heightSlider: Vector3
 		labelSlider: number
 	}
 	color: {

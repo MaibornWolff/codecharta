@@ -1,6 +1,5 @@
 import { CodeMapNode } from "../codeCharta.model"
-import * as d3 from "d3"
-import { HierarchyNode } from "d3"
+import { hierarchy, HierarchyNode } from "d3"
 import { HSL } from "./color/hsl"
 
 export interface MetricDistribution {
@@ -26,7 +25,7 @@ export class FileExtensionCalculator {
 
 	private static getAbsoluteDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
 		const distribution: MetricDistribution[] = []
-		d3.hierarchy(map)
+		hierarchy(map)
 			.leaves()
 			.forEach((node: HierarchyNode<CodeMapNode>) => {
 				if (!node.data.isExcluded) {

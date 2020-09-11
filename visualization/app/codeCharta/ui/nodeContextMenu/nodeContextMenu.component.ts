@@ -67,7 +67,11 @@ export class NodeContextMenuController
 		FocusedNodePathService.subscribeToUnfocusNode($rootScope, this)
 		MarkedPackagesService.subscribe($rootScope, this)
 
-		document.body.addEventListener("click", event => NodeContextMenuController.broadcastHideEvent(this.$rootScope, event), true)
+		document.body.addEventListener(
+			"click",
+			event => NodeContextMenuController.broadcastHideEvent(this.$rootScope, new Vector2(event.x, event.y)),
+			true
+		)
 	}
 
 	public onMapColorsChanged(mapColors: MapColors) {

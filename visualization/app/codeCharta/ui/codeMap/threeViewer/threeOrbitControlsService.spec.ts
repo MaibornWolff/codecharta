@@ -4,13 +4,13 @@ import { ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { ThreeCameraService } from "./threeCameraService"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService, ITimeoutService } from "angular"
-import * as THREE from "three"
-import { OrbitControls, PerspectiveCamera, Vector3 } from "three"
+import { BoxGeometry, Group, Mesh, PerspectiveCamera, Vector3 } from "three"
 import { StoreService } from "../../../state/store.service"
 import { FocusedNodePathService } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { setResetCameraIfNewFileIsLoaded } from "../../../state/store/appSettings/resetCameraIfNewFileIsLoaded/resetCameraIfNewFileIsLoaded.actions"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { FilesService } from "../../../state/store/files/files.service"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 describe("ThreeOrbitControlsService", () => {
 	let threeOrbitControlsService: ThreeOrbitControlsService
@@ -47,20 +47,17 @@ describe("ThreeOrbitControlsService", () => {
 		camera.position.set(vector.x, vector.y, vector.z)
 
 		threeCameraService.camera = camera
-		threeOrbitControlsService["threeCameraService"] = threeCameraService
 	}
 
 	function withMockedThreeSceneService() {
 		threeSceneService.scene.add = jest.fn()
 		threeSceneService.scene.remove = jest.fn()
-		threeSceneService.mapGeometry = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10))
-
-		threeOrbitControlsService["threeSceneService"] = threeSceneService
+		threeSceneService.mapGeometry = new Group().add(new Mesh(new BoxGeometry(10, 10, 10)))
 	}
 
 	function withMockedControlService() {
 		threeOrbitControlsService.controls = {
-			target: new THREE.Vector3(1, 1, 1)
+			target: new Vector3(1, 1, 1)
 		} as OrbitControls
 		threeOrbitControlsService.controls.update = jest.fn()
 	}
@@ -119,7 +116,7 @@ describe("ThreeOrbitControlsService", () => {
 
 	it("rotateCameraInVectorDirection ", () => {
 		threeOrbitControlsService.controls = {
-			target: new THREE.Vector3(0, 0, 0)
+			target: new Vector3(0, 0, 0)
 		} as OrbitControls
 		const vector = { x: 0, y: 1, z: 0 }
 

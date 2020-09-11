@@ -1,5 +1,4 @@
-import * as THREE from "three"
-import { Sprite, Vector3, Box3 } from "three"
+import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial } from "three"
 import { Node, State } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
@@ -9,8 +8,8 @@ import { ColorConverter } from "../../util/color/colorConverter"
 import { StoreService } from "../../state/store.service"
 
 interface InternalLabel {
-	sprite: THREE.Sprite
-	line: THREE.Line | null
+	sprite: Sprite
+	line: Line | null
 	heightValue: number
 }
 
@@ -19,7 +18,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 40 // empirically gathered
 
-	private currentScale: Vector3 = new THREE.Vector3(1, 1, 1)
+	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
 
 	constructor(
@@ -66,7 +65,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		const scaling: Vector3 = this.storeService.getState().appSettings.scaling
 		if (this.resetScale) {
 			this.resetScale = false
-			this.currentScale = new THREE.Vector3(1, 1, 1)
+			this.currentScale = new Vector3(1, 1, 1)
 		}
 
 		for (const label of this.labels) {
@@ -77,10 +76,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 				.multiply(scaling.clone())
 				.add(labelHeightDifference.clone())
 
-			//cast is a workaround for the compiler. Attribute vertices does exist on geometry
-			//but it is missing in the mapping file for TypeScript.
-			;(<any>label.line.geometry).vertices[0].divide(this.currentScale.clone()).multiply(scaling.clone())
-			;(<any>label.line.geometry).vertices[1].copy(label.sprite.position)
+			// Attribute vertices does exist on geometry but it is missing in the mapping file for TypeScript.
+			label.line.geometry["vertices"][0].divide(this.currentScale.clone()).multiply(scaling.clone())
+			label.line.geometry["vertices"][1].copy(label.sprite.position)
 			label.line.geometry.translate(0, 0, 0)
 		}
 		this.currentScale.copy(scaling)
@@ -120,12 +118,12 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ctx.textBaseline = "middle"
 		ctx.fillText(message, canvas.width / 2, canvas.height / 2)
 
-		const texture = new THREE.Texture(canvas)
-		texture.minFilter = THREE.LinearFilter // NearestFilter;
+		const texture = new Texture(canvas)
+		texture.minFilter = LinearFilter // NearestFilter;
 		texture.needsUpdate = true
 
-		const spriteMaterial = new THREE.SpriteMaterial({ map: texture })
-		const sprite = new THREE.Sprite(spriteMaterial)
+		const spriteMaterial = new SpriteMaterial({ map: texture })
+		const sprite = new Sprite(spriteMaterial)
 		this.setLabelSize(sprite, canvas.width)
 
 		return {
@@ -136,21 +134,21 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	private setLabelSize(sprite: Sprite, currentLabelWidth: number = undefined) {
-		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere().center
+		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
 		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
 		const resultingLabelWidth = !currentLabelWidth ? sprite.material.map.image.width : currentLabelWidth
 		sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * resultingLabelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
 	}
 
-	private makeLine(x: number, y: number, z: number): THREE.Line {
-		const material = new THREE.LineBasicMaterial({
+	private makeLine(x: number, y: number, z: number): Line {
+		const material = new LineBasicMaterial({
 			color: this.storeService.getState().appSettings.mapColors.angularGreen,
 			linewidth: 2
 		})
 
-		const geometry = new THREE.Geometry()
-		geometry.vertices.push(new THREE.Vector3(x, y, z), new THREE.Vector3(x, y + 60, z))
+		const geometry = new Geometry()
+		geometry.vertices.push(new Vector3(x, y, z), new Vector3(x, y + 60, z))
 
-		return new THREE.Line(geometry, material)
+		return new Line(geometry, material)
 	}
 }
