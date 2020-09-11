@@ -11,7 +11,7 @@ export class MetricChooserPageObject {
 	}
 
 	public async isMetricChooserVisible() {
-		return page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active")
+		return page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active", { visible: true })
 	}
 
 	public async getAreaMetricValue(): Promise<number> {
