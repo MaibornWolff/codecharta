@@ -4,7 +4,6 @@ import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CODE_MAP_BUILDING, TEST_NODE_LEAF } from "../../util/dataMocks"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
-import _ from "lodash"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
@@ -14,6 +13,8 @@ import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetri
 import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { StoreService } from "../../state/store.service"
 import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
+import { clone } from "../../util/clone"
+import _ from "lodash"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
@@ -217,7 +218,7 @@ describe("AttributeSideBarController", () => {
 
 	describe("updateSortedMetricKeysWithoutPrimaryMetrics", () => {
 		beforeEach(() => {
-			attributeSideBarController["_viewModel"].node = _.cloneDeep(TEST_NODE_LEAF)
+			attributeSideBarController["_viewModel"].node = clone(TEST_NODE_LEAF)
 			attributeSideBarController["_viewModel"].node.attributes = {
 				a: 1,
 				b: 2,

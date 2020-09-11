@@ -41,7 +41,7 @@ export class CodeMapGeometricDescription {
 			box.translate(boxTranslation)
 
 			if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) {
-				const intersectionPoint: Vector3 = ray.intersectBox(box)
+				const intersectionPoint: Vector3 = ray.intersectBox(box, new Vector3())
 
 				if (intersectionPoint) {
 					const intersectionDistance: number = intersectionPoint.distanceTo(ray.origin)

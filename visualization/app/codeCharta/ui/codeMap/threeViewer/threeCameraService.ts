@@ -1,6 +1,5 @@
 "use strict"
 
-import * as THREE from "three"
 import { PerspectiveCamera, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
@@ -20,7 +19,7 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		this.throttledCameraChange = _.throttle(() => {
-			this.storeService.dispatch(setCamera(this.camera.position), true)
+			this.storeService.dispatch(setCamera(this.camera.position), { silent: true })
 		}, ThreeCameraService.DEBOUNCE_TIME)
 		CameraService.subscribe(this.$rootScope, this)
 	}
@@ -36,7 +35,7 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 
 	public init(containerWidth: number, containerHeight: number) {
 		const aspect = containerWidth / containerHeight
-		this.camera = new THREE.PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
+		this.camera = new PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
 		this.setPosition()
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}

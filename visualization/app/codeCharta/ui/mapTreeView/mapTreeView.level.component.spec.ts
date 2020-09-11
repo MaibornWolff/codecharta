@@ -13,12 +13,13 @@ import {
 	VALID_NODE_WITH_ROOT_UNARY,
 	withMockedEventMethods
 } from "../../util/dataMocks"
-import _ from "lodash"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { clone } from "../../util/clone"
+import _ from "lodash"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -63,7 +64,7 @@ describe("MapTreeViewLevelController", () => {
 			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 			codeMapBuilding.node.path = "somePath"
 
-			codeMapNode = _.cloneDeep(VALID_NODE_WITH_PATH)
+			codeMapNode = clone(VALID_NODE_WITH_PATH)
 			codeMapNode.path = "somePath"
 		})
 

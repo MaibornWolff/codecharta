@@ -1,4 +1,3 @@
-import * as THREE from "three"
 import { WebGLRenderer } from "three"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
@@ -27,7 +26,7 @@ export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {}
 
 	public init(containerWidth: number, containerHeight: number) {
-		this.renderer = new THREE.WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
+		this.renderer = new WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		this.renderer.setSize(containerWidth, containerHeight)
 		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)

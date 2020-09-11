@@ -13,7 +13,7 @@ import { MetricDataService, MetricDataSubscriber } from "../../state/store/metri
 
 export interface ScenarioItem {
 	scenarioName: string
-	isScenarioAppliable: boolean
+	isScenarioApplicable: boolean
 	icons: { faIconClass: string; isSaved: boolean; tooltip: string }[]
 }
 
@@ -34,7 +34,7 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 	}
 
 	public loadScenarios() {
-		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.storeService.getState().metricData.nodeMetricData)
+		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.storeService.getState().metricData)
 	}
 
 	public onMetricDataChanged() {

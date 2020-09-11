@@ -1,11 +1,11 @@
 import angular from "angular"
-import * as d3 from "d3"
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
-const clone = require("rfdc")()
+import { hierarchy } from "d3-hierarchy"
+import { clone } from "./clone"
 
 export class FileDownloader {
 	public static downloadCurrentMap(
@@ -57,9 +57,8 @@ export class FileDownloader {
 	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
 		if (Object.keys(attributeTypes.edges).length === 0 && Object.keys(attributeTypes.nodes).length === 0) {
 			return {}
-		} else {
-			return attributeTypes
 		}
+		return attributeTypes
 	}
 
 	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType): BlacklistItem[] {
@@ -68,7 +67,7 @@ export class FileDownloader {
 
 	private static undecorateMap(map: CodeMapNode): CodeMapNode {
 		const copy: CodeMapNode = clone(map)
-		d3.hierarchy(copy).each(node => {
+		hierarchy(copy).each(node => {
 			delete node.data.isExcluded
 			delete node.data.isFlattened
 			delete node.data.edgeAttributes

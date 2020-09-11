@@ -6,8 +6,8 @@ import { ThreeRendererService } from "./threeRendererService"
 import { ThreeUpdateCycleService } from "./threeUpdateCycleService"
 import { ThreeViewerService } from "./threeViewerService"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import * as THREE from "three"
-import { OrbitControls, Scene } from "three"
+import { PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 
 describe("ThreeViewerService", () => {
 	let threeViewerService: ThreeViewerService
@@ -49,16 +49,16 @@ describe("ThreeViewerService", () => {
 	}
 
 	function mockThreeJs() {
-		threeCameraService.camera = new THREE.PerspectiveCamera()
+		threeCameraService.camera = new PerspectiveCamera()
 		threeCameraService.camera.lookAt = jest.fn()
 		threeCameraService.camera.updateProjectionMatrix = jest.fn()
-		threeRendererService.renderer = { domElement: null } as THREE.WebGLRenderer
+		threeRendererService.renderer = { domElement: null } as WebGLRenderer
 		threeRendererService.renderer.setSize = jest.fn()
 		threeRendererService.renderer.render = jest.fn()
 		threeOrbitControlsService.controls = { enableKeys: null } as OrbitControls
 		threeOrbitControlsService.controls.update = jest.fn()
 		threeUpdateCycleService.update = jest.fn()
-		threeSceneService.scene = { position: new THREE.Vector3(1, 2, 3) } as Scene
+		threeSceneService.scene = { position: new Vector3(1, 2, 3) } as Scene
 		threeSceneService.scene.add = jest.fn()
 		threeSceneService.scene.updateMatrixWorld = jest.fn()
 		window.addEventListener = jest.fn()

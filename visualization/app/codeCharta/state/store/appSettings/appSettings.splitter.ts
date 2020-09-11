@@ -1,6 +1,8 @@
 import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../codeCharta.model"
+import { Vector3 } from "three"
 
 // Plop: Append action splitter import here
+import { splitPanelSelectionAction } from "./panelSelection/panelSelection.splitter"
 import { splitCameraTargetAction } from "./cameraTarget/cameraTarget.splitter"
 import { splitIsAttributeSideBarVisibleAction } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.splitter"
 import { splitSortingOrderAscendingAction } from "./sortingOrderAscending/sortingOrderAscending.splitter"
@@ -28,8 +30,12 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.panelSelection !== undefined) {
+		actions.push(splitPanelSelectionAction(payload.panelSelection))
+	}
+
 	if (payload.cameraTarget !== undefined) {
-		actions.push(splitCameraTargetAction(payload.cameraTarget))
+		actions.push(splitCameraTargetAction(payload.cameraTarget as Vector3))
 	}
 
 	if (payload.isAttributeSideBarVisible !== undefined) {
@@ -93,11 +99,11 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>):
 	}
 
 	if (payload.camera !== undefined) {
-		actions.push(splitCameraAction(payload.camera))
+		actions.push(splitCameraAction(payload.camera as Vector3))
 	}
 
 	if (payload.scaling !== undefined) {
-		actions.push(splitScalingAction(payload.scaling))
+		actions.push(splitScalingAction(payload.scaling as Vector3))
 	}
 
 	if (payload.edgeHeight !== undefined) {

@@ -1,24 +1,20 @@
-import * as THREE from "three"
 import { getBaseMaterialEdge, getBaseMaterialVertices, getBaseMaterialFace } from "./viewCube.materials"
+import { BoxGeometry, Group, Mesh } from "three"
 
 export class ViewCubemeshGenerator {
 	public static buildCube(edgeToFaceRatio: number) {
 		const middleEdgeSize = 1 / edgeToFaceRatio
 		const verticeSize = (1 - middleEdgeSize) / 2
 
-		const cubeEdgeGeometry = new THREE.BoxGeometry(middleEdgeSize, verticeSize, verticeSize)
-		const cubeVerticeGeometry = new THREE.BoxGeometry(verticeSize, verticeSize, verticeSize)
-		const cubeFaceGeometry = new THREE.BoxGeometry(middleEdgeSize, middleEdgeSize, verticeSize)
+		const cubeEdgeGeometry = new BoxGeometry(middleEdgeSize, verticeSize, verticeSize)
+		const cubeVerticeGeometry = new BoxGeometry(verticeSize, verticeSize, verticeSize)
+		const cubeFaceGeometry = new BoxGeometry(middleEdgeSize, middleEdgeSize, verticeSize)
 
 		return ViewCubemeshGenerator.buildCubeGroup(cubeEdgeGeometry, cubeVerticeGeometry, cubeFaceGeometry)
 	}
 
-	private static buildCubeGroup(
-		cubeEdgeGeometry: THREE.BoxGeometry,
-		cubeVerticeGeometry: THREE.BoxGeometry,
-		cubeFaceGeometry: THREE.BoxGeometry
-	) {
-		const group = new THREE.Group()
+	private static buildCubeGroup(cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry, cubeFaceGeometry: BoxGeometry) {
+		const group = new Group()
 		const {
 			group: fullFaceFront,
 			topLeft: topLeftFront,
@@ -115,11 +111,7 @@ export class ViewCubemeshGenerator {
 		}
 	}
 
-	private static buildMiddleRing(
-		cubeFaceGeometry: THREE.BoxGeometry,
-		cubeEdgeGeometry: THREE.BoxGeometry,
-		cubeVerticeGeometry: THREE.BoxGeometry
-	) {
+	private static buildMiddleRing(cubeFaceGeometry: BoxGeometry, cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry) {
 		const {
 			group: middleFaceLeft,
 			left: topLeftMiddle,
@@ -132,8 +124,8 @@ export class ViewCubemeshGenerator {
 			right: bottomRightMiddle,
 			center: middleRightMiddle
 		} = ViewCubemeshGenerator.buildMiddleFace(cubeFaceGeometry, cubeEdgeGeometry)
-		const faceCenterTop = new THREE.Mesh(cubeFaceGeometry, getBaseMaterialFace())
-		const faceCenterBottom = new THREE.Mesh(cubeFaceGeometry, getBaseMaterialFace())
+		const faceCenterTop = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
+		const faceCenterBottom = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
 		const offset = cubeEdgeGeometry.parameters.width / 2 + cubeVerticeGeometry.parameters.width / 2
 		middleFaceLeft.position.x -= offset
 		middleFaceLeft.rotation.x = Math.PI / 2
@@ -145,7 +137,7 @@ export class ViewCubemeshGenerator {
 		faceCenterBottom.rotation.x = Math.PI / 2
 		faceCenterTop.position.y += offset
 		faceCenterTop.rotation.x = Math.PI / 2
-		const group = new THREE.Group()
+		const group = new Group()
 		group.add(middleFaceLeft)
 		group.add(middleFaceRight)
 		group.add(faceCenterBottom)
@@ -164,11 +156,7 @@ export class ViewCubemeshGenerator {
 		}
 	}
 
-	private static buildFullFace(
-		cubeEdgeGeometry: THREE.BoxGeometry,
-		cubeVerticeGeometry: THREE.BoxGeometry,
-		cubeFaceGeometry: THREE.BoxGeometry
-	) {
+	private static buildFullFace(cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry, cubeFaceGeometry: BoxGeometry) {
 		const { group: topEdge, left: topLeft, right: topRight, center: topCenter } = ViewCubemeshGenerator.buildFullEdge(
 			cubeEdgeGeometry,
 			cubeVerticeGeometry
@@ -185,7 +173,7 @@ export class ViewCubemeshGenerator {
 
 			cubeEdgeGeometry
 		)
-		const group = new THREE.Group()
+		const group = new Group()
 		group.add(topEdge)
 		group.add(bottomEdge)
 		group.add(middleFace)
@@ -203,14 +191,14 @@ export class ViewCubemeshGenerator {
 		}
 	}
 
-	private static buildMiddleFace(cubeFaceGeometry: THREE.BoxGeometry, cubeEdgeGeometry: THREE.BoxGeometry) {
-		const faceCenter = new THREE.Mesh(cubeFaceGeometry, getBaseMaterialFace())
-		const edgeLeft = new THREE.Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
-		const edgeRight = new THREE.Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+	private static buildMiddleFace(cubeFaceGeometry: BoxGeometry, cubeEdgeGeometry: BoxGeometry) {
+		const faceCenter = new Mesh(cubeFaceGeometry, getBaseMaterialFace())
+		const edgeLeft = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+		const edgeRight = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
 		const offset = cubeFaceGeometry.parameters.height / 2 + cubeEdgeGeometry.parameters.height / 2
 		edgeLeft.position.y -= offset
 		edgeRight.position.y += offset
-		const group = new THREE.Group()
+		const group = new Group()
 		group.rotation.z = Math.PI / 2
 		group.add(faceCenter)
 		group.add(edgeLeft)
@@ -223,14 +211,14 @@ export class ViewCubemeshGenerator {
 		}
 	}
 
-	private static buildFullEdge(cubeEdgeGeometry: THREE.BoxGeometry, cubeVerticeGeometry: THREE.BoxGeometry) {
-		const edgeCenter = new THREE.Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
-		const verticeLeft = new THREE.Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
-		const verticeRight = new THREE.Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
+	private static buildFullEdge(cubeEdgeGeometry: BoxGeometry, cubeVerticeGeometry: BoxGeometry) {
+		const edgeCenter = new Mesh(cubeEdgeGeometry, getBaseMaterialEdge())
+		const verticeLeft = new Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
+		const verticeRight = new Mesh(cubeVerticeGeometry, getBaseMaterialVertices())
 		const offset = cubeEdgeGeometry.parameters.width / 2 + cubeVerticeGeometry.parameters.width / 2
 		verticeLeft.position.x -= offset
 		verticeRight.position.x += offset
-		const group = new THREE.Group()
+		const group = new Group()
 		group.add(edgeCenter)
 		group.add(verticeLeft)
 		group.add(verticeRight)

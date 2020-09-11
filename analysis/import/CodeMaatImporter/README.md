@@ -53,7 +53,7 @@ app/testVille.html, app/codeCharta.html, 42, 8
 $ cat edges.cc.json
 {
   "projectName": "Sample Project with edges",
-  "apiVersion": "1.1",
+  "apiVersion": "1.2",
   "nodes": [
     {
       "name": "root",
@@ -93,7 +93,7 @@ $ cat edges.cc.json
 $ cat visual_edges.cc.json
 {
   "projectName": "Sample Project with edges",
-  "apiVersion": "1.1",
+  "apiVersion": "1.2",
   "nodes": [
     {
       "name": "root",

@@ -1,8 +1,7 @@
 import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles } from "./files.actions"
 import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
-
-const clone = require("rfdc")()
+import { clone } from "../../../util/clone"
 
 export default function files(state: FileState[] = setFiles().payload, action: FilesAction): FileState[] {
 	switch (action.type) {
@@ -49,9 +48,8 @@ function setSingleByName(state: FileState[], fileName: string): FileState[] {
 	return state.map(x => {
 		if (x.file.fileMeta.fileName === fileName) {
 			return { ...x, selectedAs: FileSelectionState.Single }
-		} else {
-			return { ...x, selectedAs: FileSelectionState.None }
 		}
+		return { ...x, selectedAs: FileSelectionState.None }
 	})
 }
 
@@ -65,9 +63,8 @@ function setDeltaByNames(state: FileState[], referenceFileName: string, comparis
 			return { ...x, selectedAs: FileSelectionState.Reference }
 		} else if (x.file.fileMeta.fileName === comparisonFileName) {
 			return { ...x, selectedAs: FileSelectionState.Comparison }
-		} else {
-			return { ...x, selectedAs: FileSelectionState.None }
 		}
+		return { ...x, selectedAs: FileSelectionState.None }
 	})
 }
 
@@ -79,9 +76,8 @@ function setMultipleByNames(state: FileState[], partialFileNames: string[]): Fil
 	return state.map(x => {
 		if (partialFileNames.includes(x.file.fileMeta.fileName)) {
 			return { ...x, selectedAs: FileSelectionState.Partial }
-		} else {
-			return { ...x, selectedAs: FileSelectionState.None }
 		}
+		return { ...x, selectedAs: FileSelectionState.None }
 	})
 }
 
