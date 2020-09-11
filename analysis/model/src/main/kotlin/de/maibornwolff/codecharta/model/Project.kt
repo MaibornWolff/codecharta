@@ -33,7 +33,7 @@ class Project(
 
     companion object {
         private const val API_VERSION_MAJOR = "1"
-        private const val API_VERSION_MINOR = "1"
+        private const val API_VERSION_MINOR = "2"
         const val API_VERSION = "$API_VERSION_MAJOR.$API_VERSION_MINOR"
 
         fun isAPIVersionCompatible(apiVersion: String): Boolean {

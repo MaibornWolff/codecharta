@@ -28,7 +28,7 @@ class ProjectMergerTest : Spek({
             val projectName = "test"
             val projects = listOf(
                 Project(projectName, apiVersion = "1.0"),
-                Project(projectName, apiVersion = "1.1")
+                Project(projectName, apiVersion = "1.2")
             )
 
             it("should merge projects") {

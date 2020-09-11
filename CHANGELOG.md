@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   New API version 1.2 not set correctly in analysis
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.57.1] - 2020-09-11
