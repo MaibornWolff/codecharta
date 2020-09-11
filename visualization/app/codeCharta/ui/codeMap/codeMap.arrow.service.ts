@@ -23,12 +23,7 @@ export class CodeMapArrowService
 	}
 
 	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None" && !selectedBuilding.node.flat) {
-			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
-		}
-		this.scale()
+		this.showArrowsOfBuilding(selectedBuilding)
 	}
 
 	public onBuildingDeselected() {
@@ -40,12 +35,7 @@ export class CodeMapArrowService
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None" && !hoveredBuilding.node.flat) {
-			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
-		}
-		this.scale()
+		this.showArrowsOfBuilding(hoveredBuilding)
 	}
 
 	public onBuildingUnhovered() {
@@ -113,16 +103,26 @@ export class CodeMapArrowService
 		}
 	}
 
+	private showArrowsOfBuilding(codeMapBuilding: CodeMapBuilding) {
+		const state = this.storeService.getState()
+		if (state.dynamicSettings.edgeMetric !== "None" && !codeMapBuilding.node.flat) {
+			this.clearArrows()
+			this.showEdgesOfBuildings(state.fileSettings.edges)
+		}
+		this.scale()
+	}
+
 	private showEdgesOfBuildings(edges: Edge[]) {
-		const node = this.threeSceneService.getHighlightedNode()
-		if (this.threeSceneService.getSelectedBuilding() && node) {
-			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
-			this.buildPairingEdges(node, edges)
-		} else if (node) {
-			this.buildPairingEdges(node, edges)
-		} else if (this.threeSceneService.getSelectedBuilding()) {
-			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
-		} else {
+		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+		const highlightedBuilding = this.threeSceneService.getHighlightedNode()
+
+		if (selectedBuilding) {
+			this.buildPairingEdges(selectedBuilding.node, edges)
+		}
+		if (highlightedBuilding) {
+			this.buildPairingEdges(highlightedBuilding, edges)
+		}
+		if (!selectedBuilding && !highlightedBuilding) {
 			this.addEdgePreview(
 				null,
 				edges.filter(x => x.visible != EdgeVisibility.none)
