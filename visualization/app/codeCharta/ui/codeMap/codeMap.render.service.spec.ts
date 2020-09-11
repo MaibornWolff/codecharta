@@ -8,8 +8,7 @@ import { Node, CodeMapNode, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { Vector3 } from "three"
-import * as THREE from "three"
+import { Object3D, Vector3 } from "three"
 import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setState } from "../../state/store/state.actions"
@@ -90,7 +89,7 @@ describe("codeMapRenderService", () => {
 			scale: jest.fn(),
 			clearArrows: jest.fn(),
 			addEdgeArrows: jest.fn(),
-			arrows: [new THREE.Object3D()]
+			arrows: [new Object3D()]
 		})()
 	}
 

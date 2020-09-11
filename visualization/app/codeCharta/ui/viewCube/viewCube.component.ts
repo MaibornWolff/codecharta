@@ -1,17 +1,28 @@
 import "./viewCube.component.scss"
-import * as THREE from "three"
-import { PerspectiveCamera } from "three"
+import {
+	AmbientLight,
+	AxesHelper,
+	BoxHelper,
+	Color,
+	DirectionalLight,
+	Group,
+	Mesh,
+	PerspectiveCamera,
+	Scene,
+	Vector3,
+	WebGLRenderer
+} from "three"
 import { IRootScopeService } from "angular"
 import { ViewCubemeshGenerator } from "./viewCube.meshGenerator"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { ViewCubeEventSubscriber, ViewCubeMouseEventsService } from "./viewCube.mouseEvents.service"
 
 export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEventSubscriber {
-	private lights: THREE.Group
-	private cubeGroup: THREE.Group
-	private camera: THREE.PerspectiveCamera
-	private renderer: THREE.WebGLRenderer
-	private scene: THREE.Scene
+	private lights: Group
+	private cubeGroup: Group
+	private camera: PerspectiveCamera
+	private renderer: WebGLRenderer
+	private scene: Scene
 	private WIDTH = 200
 	private HEIGHT = 200
 	private LENGTH_VIEWCUBE = 1
@@ -45,7 +56,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	private initAxesHelper() {
-		const axesHelper = new THREE.AxesHelper(1.3)
+		const axesHelper = new AxesHelper(1.3)
 		const centerOffset = -(this.LENGTH_VIEWCUBE / 2) + 0.01
 		axesHelper.position.x += centerOffset
 		axesHelper.position.y += centerOffset
@@ -62,7 +73,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.cubeDefinition.middle = middle
 		this.cubeDefinition.back = back
 
-		const cubeBoundingBox = new THREE.BoxHelper(this.cubeGroup, new THREE.Color(0x000000))
+		const cubeBoundingBox = new BoxHelper(this.cubeGroup, new Color(0x000000))
 
 		this.scene.add(this.cubeGroup)
 		this.scene.add(cubeBoundingBox)
@@ -73,13 +84,13 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.setCameraPosition(newCameraPosition)
 	}
 
-	private setCameraPosition(cameraPosition: THREE.Vector3) {
+	private setCameraPosition(cameraPosition: Vector3) {
 		this.camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z)
 		this.camera.lookAt(0, 0, 0)
 		this.camera.updateProjectionMatrix()
 	}
 
-	private calculateCameraPosition(camera: THREE.PerspectiveCamera) {
+	private calculateCameraPosition(camera: PerspectiveCamera) {
 		const codeMapTargetVector = this.threeOrbitControlsService.controls.target.clone()
 		const codeMapCameraPosition = camera.position.clone()
 		return codeMapCameraPosition.sub(codeMapTargetVector).normalize().multiplyScalar(3)
@@ -98,11 +109,11 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	private initScene() {
-		this.scene = new THREE.Scene()
+		this.scene = new Scene()
 	}
 
 	private initRenderer($element: any) {
-		this.renderer = new THREE.WebGLRenderer({
+		this.renderer = new WebGLRenderer({
 			alpha: true,
 			antialias: true
 		})
@@ -111,24 +122,24 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	private initCamera() {
-		this.camera = new THREE.PerspectiveCamera(45, this.WIDTH / this.HEIGHT, 0.1, 1000)
+		this.camera = new PerspectiveCamera(45, this.WIDTH / this.HEIGHT, 0.1, 1000)
 		this.camera.position.z = 4
 	}
 
-	public onCubeHovered(cube: THREE.Mesh) {
+	public onCubeHovered(cube: Mesh) {
 		this.hoverInfo = {
 			cube,
 			originalMaterial: cube.material
 		}
-		this.hoverInfo.cube.material.emissive = new THREE.Color(0xffffff)
+		this.hoverInfo.cube.material.emissive = new Color(0xffffff)
 	}
 
 	public onCubeUnhovered() {
-		this.hoverInfo.cube.material.emissive = new THREE.Color(0x000000)
+		this.hoverInfo.cube.material.emissive = new Color(0x000000)
 		this.hoverInfo.cube = null
 	}
 
-	public onCubeClicked(cube: THREE.Mesh) {
+	public onCubeClicked(cube: Mesh) {
 		switch (cube) {
 			case this.cubeDefinition.front.top.middle:
 				this.threeOrbitControlsService.rotateCameraInVectorDirection(0, -1, -1)
@@ -220,27 +231,13 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 	}
 
 	private initLights() {
-		this.lights = new THREE.Group()
-		const ambilight = new THREE.AmbientLight(0x707070, 1.2) // soft white light
-		const light1 = new THREE.DirectionalLight(0xe0e0e0, 0.4)
+		this.lights = new Group()
+		const ambilight = new AmbientLight(0x707070, 1.2) // soft white light
+		const light1 = new DirectionalLight(0xe0e0e0, 0.4)
 		light1.position.set(50, 10, 8).normalize()
-		light1.castShadow = false
-		light1.shadow.camera.right = 5
-		light1.shadow.camera.left = -5
-		light1.shadow.camera.top = 5
-		light1.shadow.camera.bottom = -5
-		light1.shadow.camera.near = 2
-		light1.shadow.camera.far = 100
 
-		const light2 = new THREE.DirectionalLight(0xe0e0e0, 0.4)
+		const light2 = new DirectionalLight(0xe0e0e0, 0.4)
 		light2.position.set(-50, 10, -8).normalize()
-		light2.castShadow = false
-		light2.shadow.camera.right = 5
-		light2.shadow.camera.left = -5
-		light2.shadow.camera.top = 5
-		light2.shadow.camera.bottom = -5
-		light2.shadow.camera.near = 2
-		light2.shadow.camera.far = 100
 
 		this.lights.add(ambilight)
 		this.lights.add(light1)

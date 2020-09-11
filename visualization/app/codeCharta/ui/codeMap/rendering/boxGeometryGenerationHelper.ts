@@ -1,6 +1,6 @@
-import * as THREE from "three"
 import { IntermediateVertexData } from "./intermediateVertexData"
 import { BoxMeasures } from "./geometryGenerator"
+import { Vector2, Vector3 } from "three"
 
 enum sides {
 	left = 0,
@@ -18,13 +18,13 @@ enum vertexLocation {
 	bottomRight = 3
 }
 
-const normals: THREE.Vector3[] = [
-	new THREE.Vector3(-1.0, 0.0, 0.0),
-	new THREE.Vector3(1.0, 0.0, 0.0),
-	new THREE.Vector3(0.0, -1.0, 0.0),
-	new THREE.Vector3(0.0, 1.0, 0.0),
-	new THREE.Vector3(0.0, 0.0, -1.0),
-	new THREE.Vector3(0.0, 0.0, 1.0)
+const normals: Vector3[] = [
+	new Vector3(-1.0, 0.0, 0.0),
+	new Vector3(1.0, 0.0, 0.0),
+	new Vector3(0.0, -1.0, 0.0),
+	new Vector3(0.0, 1.0, 0.0),
+	new Vector3(0.0, 0.0, -1.0),
+	new Vector3(0.0, 0.0, 1.0)
 ]
 
 const numSides = 6
@@ -38,78 +38,69 @@ export class BoxGeometryGenerationHelper {
 		subGeomIdx: number,
 		delta: number
 	): void {
-		const minPos: THREE.Vector3 = new THREE.Vector3(measures.x, measures.y, measures.z)
-		const maxPos: THREE.Vector3 = new THREE.Vector3(
-			measures.x + measures.width,
-			measures.y + measures.height,
-			measures.z + measures.depth
-		)
+		const minPos: Vector3 = new Vector3(measures.x, measures.y, measures.z)
+		const maxPos: Vector3 = new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 
-		const uvs: THREE.Vector2[] = new Array<THREE.Vector2>()
-		const positions: THREE.Vector3[] = new Array<THREE.Vector3>()
+		const uvs: Vector2[] = new Array<Vector2>()
+		const positions: Vector3[] = new Array<Vector3>()
 
 		BoxGeometryGenerationHelper.createPositionsUVs(minPos, maxPos, positions, uvs)
 		BoxGeometryGenerationHelper.createVerticesAndFaces(minPos, maxPos, color, delta, subGeomIdx, positions, uvs, data)
 	}
-	private static createPositionsUVs(
-		minPos: THREE.Vector3,
-		maxPos: THREE.Vector3,
-		positions: THREE.Vector3[],
-		uvs: THREE.Vector2[]
-	): void {
+	private static createPositionsUVs(minPos: Vector3, maxPos: Vector3, positions: Vector3[], uvs: Vector2[]): void {
 		//Left Vertices
-		positions[sides.left * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(minPos.x, minPos.y, minPos.z)
-		positions[sides.left * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(minPos.x, maxPos.y, minPos.z)
-		positions[sides.left * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(minPos.x, maxPos.y, maxPos.z)
-		positions[sides.left * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(minPos.x, minPos.y, maxPos.z)
-		uvs[sides.left * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector2(1.0, 0.0)
-		uvs[sides.left * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector2(1.0, 1.0)
-		uvs[sides.left * verticesPerSide + vertexLocation.topRight] = new THREE.Vector2(0.0, 1.0)
-		uvs[sides.left * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector2(0.0, 0.0)
+		positions[sides.left * verticesPerSide + vertexLocation.bottomLeft] = new Vector3(minPos.x, minPos.y, minPos.z)
+		positions[sides.left * verticesPerSide + vertexLocation.topLeft] = new Vector3(minPos.x, maxPos.y, minPos.z)
+		positions[sides.left * verticesPerSide + vertexLocation.topRight] = new Vector3(minPos.x, maxPos.y, maxPos.z)
+		positions[sides.left * verticesPerSide + vertexLocation.bottomRight] = new Vector3(minPos.x, minPos.y, maxPos.z)
+		uvs[sides.left * verticesPerSide + vertexLocation.bottomLeft] = new Vector2(1.0, 0.0)
+		uvs[sides.left * verticesPerSide + vertexLocation.topLeft] = new Vector2(1.0, 1.0)
+		uvs[sides.left * verticesPerSide + vertexLocation.topRight] = new Vector2(0.0, 1.0)
+		uvs[sides.left * verticesPerSide + vertexLocation.bottomRight] = new Vector2(0.0, 0.0)
 
 		//Bottom Vertices
-		positions[sides.bottom * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(minPos.x, minPos.y, minPos.z)
-		positions[sides.bottom * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(minPos.x, minPos.y, maxPos.z)
-		positions[sides.bottom * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(maxPos.x, minPos.y, maxPos.z)
-		positions[sides.bottom * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(maxPos.x, minPos.y, minPos.z)
-		uvs[sides.bottom * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector2(0.0, 1.0)
-		uvs[sides.bottom * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector2(1.0, 1.0)
-		uvs[sides.bottom * verticesPerSide + vertexLocation.topRight] = new THREE.Vector2(1.0, 0.0)
-		uvs[sides.bottom * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector2(0.0, 0.0)
+		positions[sides.bottom * verticesPerSide + vertexLocation.bottomLeft] = new Vector3(minPos.x, minPos.y, minPos.z)
+		positions[sides.bottom * verticesPerSide + vertexLocation.topLeft] = new Vector3(minPos.x, minPos.y, maxPos.z)
+		positions[sides.bottom * verticesPerSide + vertexLocation.topRight] = new Vector3(maxPos.x, minPos.y, maxPos.z)
+		positions[sides.bottom * verticesPerSide + vertexLocation.bottomRight] = new Vector3(maxPos.x, minPos.y, minPos.z)
+		uvs[sides.bottom * verticesPerSide + vertexLocation.bottomLeft] = new Vector2(0.0, 1.0)
+		uvs[sides.bottom * verticesPerSide + vertexLocation.topLeft] = new Vector2(1.0, 1.0)
+		uvs[sides.bottom * verticesPerSide + vertexLocation.topRight] = new Vector2(1.0, 0.0)
+		uvs[sides.bottom * verticesPerSide + vertexLocation.bottomRight] = new Vector2(0.0, 0.0)
 
 		//Back Vertices
-		positions[sides.back * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector3(maxPos.x, minPos.y, maxPos.z)
-		positions[sides.back * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector3(minPos.x, minPos.y, maxPos.z)
-		positions[sides.back * verticesPerSide + vertexLocation.topRight] = new THREE.Vector3(minPos.x, maxPos.y, maxPos.z)
-		positions[sides.back * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector3(maxPos.x, maxPos.y, maxPos.z)
-		uvs[sides.back * verticesPerSide + vertexLocation.bottomLeft] = new THREE.Vector2(0.0, 0.0)
-		uvs[sides.back * verticesPerSide + vertexLocation.topLeft] = new THREE.Vector2(1.0, 0.0)
-		uvs[sides.back * verticesPerSide + vertexLocation.topRight] = new THREE.Vector2(1.0, 1.0)
-		uvs[sides.back * verticesPerSide + vertexLocation.bottomRight] = new THREE.Vector2(0.0, 1.0)
+		positions[sides.back * verticesPerSide + vertexLocation.bottomLeft] = new Vector3(maxPos.x, minPos.y, maxPos.z)
+		positions[sides.back * verticesPerSide + vertexLocation.topLeft] = new Vector3(minPos.x, minPos.y, maxPos.z)
+		positions[sides.back * verticesPerSide + vertexLocation.topRight] = new Vector3(minPos.x, maxPos.y, maxPos.z)
+		positions[sides.back * verticesPerSide + vertexLocation.bottomRight] = new Vector3(maxPos.x, maxPos.y, maxPos.z)
+		uvs[sides.back * verticesPerSide + vertexLocation.bottomLeft] = new Vector2(0.0, 0.0)
+		uvs[sides.back * verticesPerSide + vertexLocation.topLeft] = new Vector2(1.0, 0.0)
+		uvs[sides.back * verticesPerSide + vertexLocation.topRight] = new Vector2(1.0, 1.0)
+		uvs[sides.back * verticesPerSide + vertexLocation.bottomRight] = new Vector2(0.0, 1.0)
 
 		BoxGeometryGenerationHelper.createFrontFacingPositionsUVsFromBackFacingData(minPos, maxPos, positions, uvs)
 	}
 
 	private static createFrontFacingPositionsUVsFromBackFacingData(
-		minPos: THREE.Vector3,
-		maxPos: THREE.Vector3,
-		positions: THREE.Vector3[],
-		uvs: THREE.Vector2[]
+		minPos: Vector3,
+		maxPos: Vector3,
+		positions: Vector3[],
+		uvs: Vector2[]
 	): void {
 		for (let i = 0; i < verticesPerSide; ++i) {
-			positions[sides.right * verticesPerSide + i] = new THREE.Vector3(
+			positions[sides.right * verticesPerSide + i] = new Vector3(
 				maxPos.x,
 				positions[sides.left * verticesPerSide + i].y,
 				positions[sides.left * verticesPerSide + i].z
 			)
 
-			positions[sides.top * verticesPerSide + i] = new THREE.Vector3(
+			positions[sides.top * verticesPerSide + i] = new Vector3(
 				positions[sides.bottom * verticesPerSide + i].x,
 				maxPos.y,
 				positions[sides.bottom * verticesPerSide + i].z
 			)
 
-			positions[sides.front * verticesPerSide + i] = new THREE.Vector3(
+			positions[sides.front * verticesPerSide + i] = new Vector3(
 				positions[sides.back * verticesPerSide + i].x,
 				positions[sides.back * verticesPerSide + i].y,
 				minPos.z
@@ -117,17 +108,17 @@ export class BoxGeometryGenerationHelper {
 
 			const epsilon = 0.01
 
-			uvs[sides.right * verticesPerSide + i] = new THREE.Vector2(
+			uvs[sides.right * verticesPerSide + i] = new Vector2(
 				uvs[sides.left * verticesPerSide + i].x > epsilon ? 0.0 : 1.0,
 				uvs[sides.left * verticesPerSide + i].y
 			)
 
-			uvs[sides.top * verticesPerSide + i] = new THREE.Vector2(
+			uvs[sides.top * verticesPerSide + i] = new Vector2(
 				uvs[sides.bottom * verticesPerSide + i].x,
 				uvs[sides.bottom * verticesPerSide + i].y
 			)
 
-			uvs[sides.front * verticesPerSide + i] = new THREE.Vector2(
+			uvs[sides.front * verticesPerSide + i] = new Vector2(
 				uvs[sides.back * verticesPerSide + i].x > epsilon ? 0.0 : 1.0,
 				uvs[sides.back * verticesPerSide + i].y
 			)
@@ -135,13 +126,13 @@ export class BoxGeometryGenerationHelper {
 	}
 
 	private static createVerticesAndFaces(
-		minPos: THREE.Vector3,
-		maxPos: THREE.Vector3,
+		minPos: Vector3,
+		maxPos: Vector3,
 		color: string,
 		delta: number,
 		subGeomIdx: number,
-		positions: THREE.Vector3[],
-		uvs: THREE.Vector2[],
+		positions: Vector3[],
+		uvs: Vector2[],
 		data: IntermediateVertexData
 	): void {
 		const deltaRelativeToHeight: number = delta / (maxPos.y - minPos.y)
