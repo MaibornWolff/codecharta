@@ -9,7 +9,7 @@ import java.util.function.BinaryOperator
 import java.util.function.Supplier
 import java.util.stream.Collector
 
-internal class CommitCollector private constructor(private val metricsFactory: MetricsFactory) {
+internal class CommitCollector {
 
     private var commitNumber = 0
 
@@ -73,13 +73,9 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
                 Modification.Type.RENAME -> {
                     var fileToBeRenamed: VersionControlledFile? =
-                        versionControlledFilesList.get(trackName) ?: return@forEach
+                            versionControlledFilesList.get(trackName) ?: return@forEach
 
-                    try {
-                        fileToBeRenamed!!.registerCommit(commit, it)
-                    } catch (exc: NullPointerException) {
-                        print("next")
-                    }
+                    fileToBeRenamed!!.registerCommit(commit, it)
                     versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
                 }
 
@@ -118,6 +114,14 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             } else if (it.isTypeDelete()) {
                 // Add -> Add -> Merge files: delete one will result in Delete
                 file.resetMutation()
+            } else if (it.isTypeAdd()) {
+                // Do not handle redundant Add modifications for the same file.
+                // Why is this happening?
+            } else {
+                System.err.println(
+                        "\nUnhandled Edge Case in MergeCommit: deleted: %s, mutated: %s, modification type: %s, initalAdd: %s, file: %s"
+                                .format(file.isDeleted(), file.isMutated(), it.type, it.isInitialAdd(), file.filename)
+                                  )
             }
         }
     }
@@ -132,7 +136,7 @@ internal class CommitCollector private constructor(private val metricsFactory: M
     companion object {
 
         fun create(metricsFactory: MetricsFactory): Collector<Commit, *, VersionControlledFilesList> {
-            val collector = CommitCollector(metricsFactory)
+            val collector = CommitCollector()
 
             return Collector.of(
                 Supplier<VersionControlledFilesList> { VersionControlledFilesList(metricsFactory) },
