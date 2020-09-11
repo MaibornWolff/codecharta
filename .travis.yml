@@ -48,13 +48,12 @@ jobs:
   fast_finish: true
   include:
     - stage: test
-      name: "Visualization Unit Test and Linter"
+      name: "Visualization Unit Test"
       before_script:
         - cd visualization
         - npm install
       script:
         - npm run test --ci
-        - npm run lint
     - name: "Visualization E2E Test"
       before_script:
         - cd visualization
