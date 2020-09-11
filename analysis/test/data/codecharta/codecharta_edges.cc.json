@@ -20983,7 +20983,7 @@
       ]
     }
   ],
-  "apiVersion": "1.1",
+  "apiVersion": "1.2",
   "edges": [
     {
       "fromNodeName": "/root/analysis/import/SourceCodeParser/src/test/kotlin/de/maibornwolff/codecharta/importer/sourcecodeparser/oop/core/extract/HelloWorldTest.kt",

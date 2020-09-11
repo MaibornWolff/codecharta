@@ -11,7 +11,7 @@ import { FilesService } from "../../files/files.service"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
 import { FileState } from "../../../../model/files/files"
-import _ from "lodash"
+import { clone } from "../../../../util/clone"
 
 describe("EdgeMetricDataService", () => {
 	let edgeMetricDataService: EdgeMetricDataService
@@ -35,8 +35,8 @@ describe("EdgeMetricDataService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 
-		files = _.cloneDeep(FILE_STATES)
-		files[0].file.map = _.cloneDeep(VALID_NODE_WITH_PATH)
+		files = clone(FILE_STATES)
+		files[0].file.map = clone(VALID_NODE_WITH_PATH)
 	}
 
 	function rebuildService() {

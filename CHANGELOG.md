@@ -1,4 +1,4 @@
-﻿# Change Log
+# Change Log
 
 All notable changes to this project will be documented in this file.
 
@@ -15,7 +15,59 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   New API version 1.2 not set correctly in analysis
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.57.1] - 2020-09-11
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Validation of unique filenames not checking for the complete path and instead throwing an error on duplicate filename
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.57.0] - 2020-09-11
+
+### Added 🚀
+
+-   `fixedPosition` as a new property in the `cc.json` that allows to fixate folders in the map
+
+### Changed
+
+-   `cc.json` version updated to `1.2`
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Compressed `cc.jsons (.gz) not marked as accepted when selecting a file in the file chooser
+
+### Docs 🔎
+
+-   [How-To: Fixate Folders in the `cc.json`](https://maibornwolff.github.io//codecharta/how-to/fixate_folders_with_a_custom_cc_json/)
+-   CC-Json-API changes
+
+## [1.56.0] - 2020-09-04
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
 -   Improve performance when switching to multiple or delta mode when edges are available
+-   Scenario with EdgeMetric is only appliable when EdgeMetric is existing for the Map #1201
+-   Starting standalone version results in infinite loading loop #1202
+-   Expanded metric selection will close when clicking anywhere outside of that selection #1036
 
 ### Chore 👨‍💻 👩‍💻
 

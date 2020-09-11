@@ -44,6 +44,9 @@
 					},
 					"type": "object"
 				},
+				"fixedPosition": {
+					"$ref": "#/definitions/FixedPosition"
+				},
 				"id": {
 					"type": "number"
 				},
@@ -165,6 +168,24 @@
 			"required": ["apiVersion", "nodes", "projectName"],
 			"type": "object"
 		},
+		"FixedPosition": {
+			"properties": {
+				"height": {
+					"type": "number"
+				},
+				"left": {
+					"type": "number"
+				},
+				"top": {
+					"type": "number"
+				},
+				"width": {
+					"type": "number"
+				}
+			},
+			"required": ["height", "left", "top", "width"],
+			"type": "object"
+		},
 		"KeyValuePair": {
 			"additionalProperties": {
 				"type": "number"
@@ -210,7 +231,7 @@
 							"type": "object"
 						}
 					],
-					"minItems": 1,
+					"minItems": 0,
 					"type": "array"
 				},
 				"nodes": {
@@ -234,7 +255,7 @@
 							"type": "object"
 						}
 					],
-					"minItems": 1,
+					"minItems": 0,
 					"type": "array"
 				}
 			},

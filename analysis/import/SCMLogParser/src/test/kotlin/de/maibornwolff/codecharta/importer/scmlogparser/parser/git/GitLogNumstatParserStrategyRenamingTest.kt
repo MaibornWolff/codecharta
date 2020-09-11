@@ -22,7 +22,8 @@ class GitLogNumstatParserStrategyRenamingTest(
         fun data(): Collection<Array<Any>> {
             return Arrays.asList(
                 arrayOf<Any>(
-                    "1 2 src/{RenameOld.java => RenameNew.java}", "src/RenameOld.java",
+                    "1 2 src/{RenameOld.java => RenameNew.java}",
+                    "src/RenameOld.java",
                     "src/RenameNew.java"
                 ),
                 arrayOf<Any>("1 2 {old => new}/Rename.java", "old/Rename.java", "new/Rename.java"),

@@ -22,6 +22,7 @@ import { MetricDataService } from "../../state/store/metricData/metricData.servi
 import { calculateNewNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { getCCFiles } from "../../model/files/files.helper"
 import { calculateNewEdgeMetricData } from "../../state/store/metricData/edgeMetricData/edgeMetricData.actions"
+import { clone } from "../../util/clone"
 
 describe("codeMapPreRenderService", () => {
 	let codeMapPreRenderService: CodeMapPreRenderService
@@ -53,13 +54,13 @@ describe("codeMapPreRenderService", () => {
 		codeMapRenderService = getService<CodeMapRenderService>("codeMapRenderService")
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 
-		fileMeta = _.cloneDeep(FILE_STATES[0].file.fileMeta)
-		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		fileMeta = clone(FILE_STATES[0].file.fileMeta)
+		map = clone(TEST_FILE_WITH_PATHS.map)
 		map.children[1].children = _.slice(map.children[1].children, 0, 2)
 
-		const ccFile: CCFile = _.cloneDeep(TEST_DELTA_MAP_B)
+		const ccFile: CCFile = clone(TEST_DELTA_MAP_B)
 
-		const fileStates = _.cloneDeep(FILE_STATES)
+		const fileStates = clone(FILE_STATES)
 		NodeDecorator.decorateMapWithPathAttribute(fileStates[0].file)
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 

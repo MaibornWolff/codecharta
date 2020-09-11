@@ -6,18 +6,19 @@ import {
 	CodeMapNode,
 	Edge,
 	EdgeVisibility,
+	FileMeta,
 	MarkedPackage,
 	Node,
 	NodeType,
-	SearchPanelMode,
-	SortingOption,
+	PanelSelection,
 	RecursivePartial,
-	Settings,
-	State,
 	Scenario,
-	FileMeta,
 	NodeMetricData,
-	EdgeMetricData
+	EdgeMetricData,
+	SearchPanelMode,
+	Settings,
+	SortingOption,
+	State
 } from "../codeCharta.model"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
@@ -29,6 +30,7 @@ import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import packageJson from "../../../package.json"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -522,7 +524,7 @@ export const VALID_EDGE: Edge = {
 
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
-	apiVersion: APIVersions.ONE_POINT_ONE,
+	apiVersion: APIVersions.ONE_POINT_TWO,
 	nodes: [VALID_NODE]
 }
 
@@ -536,7 +538,7 @@ export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
 export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
 	fileName: "noFileName",
 	projectName: "Valid Sample Map Minor API High",
-	apiVersion: "1.2",
+	apiVersion: "1.3",
 	nodes: [VALID_NODE]
 }
 
@@ -556,7 +558,7 @@ export const TEST_FILE_CONTENT_NO_API = {
 export const FILE_META: FileMeta = {
 	fileName: "fileA",
 	projectName: "Sample Project",
-	apiVersion: "1.1"
+	apiVersion: packageJson.codecharta.apiVersion
 }
 
 export const TEST_FILE_DATA: CCFile = {
@@ -877,7 +879,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
 		projectName: "Sample Project",
-		apiVersion: "1.1"
+		apiVersion: packageJson.codecharta.apiVersion
 	},
 	map: {
 		name: "root",
@@ -933,7 +935,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 	fileMeta: {
 		fileName: "fileB",
 		projectName: "Sample Project",
-		apiVersion: "1.1"
+		apiVersion: packageJson.codecharta.apiVersion
 	},
 	map: {
 		name: "root",
@@ -1002,7 +1004,7 @@ export const TEST_DELTA_MAP_B: CCFile = {
 }
 
 export const TEST_FILE_DATA_DOWNLOADED = {
-	apiVersion: "1.1",
+	apiVersion: packageJson.codecharta.apiVersion,
 	attributeTypes: {},
 	blacklist: [
 		{ path: "/root/bigLeaf.ts", type: "hide" },
@@ -1159,7 +1161,8 @@ export const STATE: State = {
 		isLoadingFile: true,
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.treeView,
-		isAttributeSideBarVisible: true
+		isAttributeSideBarVisible: true,
+		panelSelection: PanelSelection.AREA_PANEL_OPEN
 	},
 	treeMap: {
 		mapSize: 250
@@ -1213,7 +1216,8 @@ export const DEFAULT_STATE: State = {
 		isLoadingFile: true,
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.minimized,
-		isAttributeSideBarVisible: false
+		isAttributeSideBarVisible: false,
+		panelSelection: PanelSelection.NONE
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -1376,47 +1380,50 @@ export const SCENARIO_ATTRIBUTE_CONTENT_WITHOUT_CAMERA: AddScenarioContent[] = [
 	}
 ]
 
-export const SCENARIO_ATTRIBUTE_CONTENT_NONE_SELECTED: AddScenarioContent[] = [
-	{
-		metricType: ScenarioMetricType.AREA_METRIC,
-		metricName: "rloc",
-		savedValues: 48,
-		isSelected: false,
-		isDisabled: false
-	},
-	{
-		metricType: ScenarioMetricType.HEIGHT_METRIC,
-		metricName: "mcc",
-		savedValues: { heightSlider: new Vector3(1, 1.8, 1), labelSlider: 31 },
-		isSelected: false,
-		isDisabled: false
-	},
-	{
-		metricType: ScenarioMetricType.COLOR_METRIC,
-		metricName: "mcc",
-		savedValues: { from: 19, to: 67 },
-		isSelected: false,
-		isDisabled: false
-	},
-	{
-		metricType: ScenarioMetricType.EDGE_METRIC,
-		metricName: "pairingRate",
-		savedValues: { edgePreview: 5, edgeHeight: 4 },
-		isSelected: false,
-		isDisabled: false
-	}
-]
-
 export const SCENARIO_ITEMS: ScenarioItem[] = [
 	{
 		scenarioName: "Scenario",
-		isScenarioAppliable: true,
+		isScenarioApplicable: true,
 		icons: [{ faIconClass: "fa fa-random", isSaved: false, tooltip: "random" }]
 	},
 	{
 		scenarioName: "Scenario2",
-		isScenarioAppliable: false,
+		isScenarioApplicable: false,
 		icons: [{ faIconClass: "fa fa-some", isSaved: true, tooltip: "some" }]
+	}
+]
+
+export const SCENARIO_ITEM_WITH_EVERYTHING_SAVED: ScenarioItem[] = [
+	{
+		scenarioName: "Scenario1",
+		isScenarioApplicable: false,
+		icons: [
+			{
+				faIconClass: "fa-video-camera",
+				isSaved: true,
+				tooltip: "Camera angle"
+			},
+			{
+				faIconClass: "fa-arrows-alt",
+				isSaved: true,
+				tooltip: "Area metric"
+			},
+			{
+				faIconClass: "fa-arrows-v",
+				isSaved: true,
+				tooltip: "Height metric"
+			},
+			{
+				faIconClass: "fa-paint-brush",
+				isSaved: true,
+				tooltip: "Color metric"
+			},
+			{
+				faIconClass: "fa-exchange",
+				isSaved: true,
+				tooltip: "Edge metric"
+			}
+		]
 	}
 ]
 

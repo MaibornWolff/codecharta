@@ -7,10 +7,8 @@ import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { Node, CodeMapNode, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
-import * as _ from "lodash"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import { Vector3 } from "three"
-import * as THREE from "three"
+import { Object3D, Vector3 } from "three"
 import { StoreService } from "../../state/store.service"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
 import { setState } from "../../state/store/state.actions"
@@ -18,6 +16,8 @@ import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
+import { clone } from "../../util/clone"
+import _ from "lodash"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
@@ -48,7 +48,7 @@ describe("codeMapRenderService", () => {
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
 		state = _.cloneDeep(STATE)
-		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		map = clone(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, METRIC_DATA, [])
 		storeService.dispatch(setState(state))
 		storeService.dispatch(unfocusNode())
@@ -89,7 +89,7 @@ describe("codeMapRenderService", () => {
 			scale: jest.fn(),
 			clearArrows: jest.fn(),
 			addEdgeArrows: jest.fn(),
-			arrows: [new THREE.Object3D()]
+			arrows: [new Object3D()]
 		})()
 	}
 

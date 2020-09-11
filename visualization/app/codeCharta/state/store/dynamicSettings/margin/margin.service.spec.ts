@@ -11,7 +11,7 @@ import { DynamicMarginService } from "../../appSettings/dynamicMargin/dynamicMar
 import { setDynamicMargin } from "../../appSettings/dynamicMargin/dynamicMargin.actions"
 import { setAreaMetric } from "../areaMetric/areaMetric.actions"
 import { CodeMapNode } from "../../../../codeCharta.model"
-import _ from "lodash"
+import { clone } from "../../../../util/clone"
 
 describe("MarginService", () => {
 	let marginService: MarginService
@@ -34,7 +34,7 @@ describe("MarginService", () => {
 		storeService = getService<StoreService>("storeService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
 
-		map = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		map = clone(TEST_FILE_WITH_PATHS.map)
 	}
 
 	function rebuildService() {

@@ -5,26 +5,29 @@ import {
 	TEST_FILE_CONTENT_INVALID_MINOR_API,
 	TEST_FILE_CONTENT_NO_API
 } from "./dataMocks"
-import { NodeType } from "../codeCharta.model"
+import { CodeMapNode, NodeType } from "../codeCharta.model"
+import packageJson from "../../../package.json"
 import { CCValidationResult, ERROR_MESSAGES, validate } from "./fileValidator"
 import assert from "assert"
+import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
+import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
+import { clone } from "./clone"
 
 describe("FileValidator", () => {
-	let file
+	let file: ExportCCFile
 	let invalidFile
 
 	beforeEach(() => {
-		file = TEST_FILE_CONTENT
+		file = clone(TEST_FILE_CONTENT)
 	})
 
 	it("API version exists in package.json", () => {
-		expect(require("../../../package.json").codecharta.apiVersion).toEqual("1.1")
+		expect(packageJson.codecharta.apiVersion).toEqual("1.2")
 	})
 
 	it("should throw on null", () => {
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fileIsInvalid.title,
-			error: [ERROR_MESSAGES.fileIsInvalid.message],
+			error: [ERROR_MESSAGES.fileIsInvalid],
 			warning: []
 		}
 
@@ -37,8 +40,7 @@ describe("FileValidator", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_MAJOR_API
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.majorApiVersionIsOutdated.title,
-			error: [ERROR_MESSAGES.majorApiVersionIsOutdated.message],
+			error: [ERROR_MESSAGES.majorApiVersionIsOutdated],
 			warning: []
 		}
 
@@ -51,9 +53,8 @@ describe("FileValidator", () => {
 		file = TEST_FILE_CONTENT_INVALID_MINOR_API
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.minorApiVersionOutdated.title,
 			error: [],
-			warning: [ERROR_MESSAGES.minorApiVersionOutdated.message]
+			warning: [`${ERROR_MESSAGES.minorApiVersionOutdated} Found: ${file.apiVersion}`]
 		}
 
 		assert.throws(() => {
@@ -65,8 +66,7 @@ describe("FileValidator", () => {
 		invalidFile = TEST_FILE_CONTENT_NO_API
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.apiVersionIsInvalid.title,
-			error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+			error: [ERROR_MESSAGES.apiVersionIsInvalid],
 			warning: []
 		}
 
@@ -79,8 +79,7 @@ describe("FileValidator", () => {
 		invalidFile = TEST_FILE_CONTENT_INVALID_API
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.apiVersionIsInvalid.title,
-			error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+			error: [ERROR_MESSAGES.apiVersionIsInvalid],
 			warning: []
 		}
 
@@ -91,8 +90,7 @@ describe("FileValidator", () => {
 
 	it("should throw on string", () => {
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.fileIsInvalid.title,
-			error: [ERROR_MESSAGES.fileIsInvalid.message],
+			error: [ERROR_MESSAGES.fileIsInvalid],
 			warning: []
 		}
 
@@ -135,8 +133,7 @@ describe("FileValidator", () => {
 		file.nodes[0].children[1].type = NodeType.FILE
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.nodesNotUnique.title,
-			error: [ERROR_MESSAGES.nodesNotUnique.message],
+			error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/same`],
 			warning: []
 		}
 
@@ -146,11 +143,10 @@ describe("FileValidator", () => {
 	})
 
 	it("should throw when nodes are empty", () => {
-		file.nodes[0] = []
+		file.nodes = []
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.validationError.title,
-			error: ["Type error: nodes[0] should be object"],
+			error: [ERROR_MESSAGES.nodesEmpty],
 			warning: []
 		}
 
@@ -162,10 +158,9 @@ describe("FileValidator", () => {
 	it("should throw if nodes is not a node and therefore has no name or id", () => {
 		file.nodes[0] = {
 			something: "something"
-		}
+		} as any
 
 		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.validationError.title,
 			error: [
 				"Required error: nodes[0] should have required property 'name'",
 				"Required error: nodes[0] should have required property 'type'"
@@ -178,41 +173,202 @@ describe("FileValidator", () => {
 		}, expectedError)
 	})
 
-	it("attributes should not allow whitespaces", () => {
-		file.nodes[0].attributes = {
-			"tes t1": 0
-		}
+	describe("fixed folders validation", () => {
+		let folder1: CodeMapNode
+		let folder2: CodeMapNode
 
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.validationError.title,
-			error: [
-				"Required error: nodes[0] should have required property 'name'",
-				"Required error: nodes[0] should have required property 'type'"
-			],
-			warning: []
-		}
+		beforeEach(() => {
+			file = clone(fileWithFixedFolders)
+			folder1 = file.nodes[0].children[0]
+			folder2 = file.nodes[0].children[1]
+		})
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
+		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
+			folder1.fixedPosition = undefined
 
-	it("attributes should not allow special characters", () => {
-		file.nodes[0].attributes = {
-			"tes)t1": 0
-		}
+			const expectedError: CCValidationResult = {
+				error: [ERROR_MESSAGES.notAllFoldersAreFixed + " Found: folder_1"],
+				warning: []
+			}
 
-		const expectedError: CCValidationResult = {
-			title: ERROR_MESSAGES.validationError.title,
-			error: [
-				"Required error: nodes[0] should have required property 'name'",
-				"Required error: nodes[0] should have required property 'type'"
-			],
-			warning: []
-		}
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
+		it("should throw an error, if at least one fixed folder has a padding that is out of bounds", () => {
+			folder1.fixedPosition.left = -5
+			folder1.fixedPosition.width = 7
+
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if at least one fixed folder has a width or height that is out of bounds", () => {
+			folder1.fixedPosition.left = 10
+			folder1.fixedPosition.width = -50
+
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if at least one fixed folder exceeds the maximum coordinate of 100", () => {
+			folder1.fixedPosition.left = 99
+			folder1.fixedPosition.width = 2
+
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.fixedFoldersOutOfBounds} Found: folder_1 ${JSON.stringify(folder1.fixedPosition)}`],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if two folders horizontally overlap", () => {
+			folder1.fixedPosition = {
+				left: 0,
+				top: 0,
+				width: 10,
+				height: 10
+			}
+			folder2.fixedPosition = {
+				left: 5,
+				top: 1,
+				width: 10,
+				height: 10
+			}
+
+			const expectedError: CCValidationResult = {
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
+						folder1.fixedPosition
+					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+				],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if two folders vertically overlap", () => {
+			folder1.fixedPosition = {
+				left: 0,
+				top: 0,
+				width: 10,
+				height: 10
+			}
+			folder2.fixedPosition = {
+				left: 0,
+				top: 5,
+				width: 10,
+				height: 10
+			}
+
+			const expectedError: CCValidationResult = {
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
+						folder1.fixedPosition
+					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+				],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if a folder is placed inside another", () => {
+			folder1.fixedPosition = {
+				left: 0,
+				top: 0,
+				width: 10,
+				height: 10
+			}
+			folder2.fixedPosition = {
+				left: 1,
+				top: 1,
+				width: 1,
+				height: 1
+			}
+
+			const expectedError: CCValidationResult = {
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_2 ${JSON.stringify(
+						folder2.fixedPosition
+					)} and folder_1 ${JSON.stringify(folder1.fixedPosition)}`
+				],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if a folder has the same boundaries as another", () => {
+			folder1.fixedPosition = {
+				left: 0,
+				top: 0,
+				width: 10,
+				height: 10
+			}
+			folder2.fixedPosition = folder1.fixedPosition
+
+			const expectedError: CCValidationResult = {
+				error: [
+					`${ERROR_MESSAGES.fixedFoldersOverlapped} Found: folder_1 ${JSON.stringify(
+						folder1.fixedPosition
+					)} and folder_2 ${JSON.stringify(folder2.fixedPosition)}`
+				],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if the major api version is smaller and fixed folders were defined", () => {
+			file.apiVersion = APIVersions.ZERO_POINT_ONE
+
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 0.1`],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
+
+		it("should throw an error, if the minor api version is smaller and fixed folders were defined", () => {
+			file.apiVersion = APIVersions.ONE_POINT_ONE
+
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.fixedFoldersNotAllowed} Found: 1.1`],
+				warning: []
+			}
+
+			assert.throws(() => {
+				validate(file)
+			}, expectedError)
+		})
 	})
 })

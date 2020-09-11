@@ -17,7 +17,10 @@ class Modification(
     @JvmOverloads
     constructor(filename: String, additions: Long = 0, deletions: Long = 0, type: Type = Type.UNKNOWN) : this(
         filename,
-        "", additions, deletions, type
+        "",
+        additions,
+        deletions,
+        type
     )
 
     enum class Type {

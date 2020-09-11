@@ -5,9 +5,9 @@ import { CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService } from "angular"
-import _ from "lodash"
 import { StoreService } from "../../../state/store.service"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
+import _ from "lodash"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService

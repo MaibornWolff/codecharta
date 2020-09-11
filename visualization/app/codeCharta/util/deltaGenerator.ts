@@ -1,8 +1,9 @@
-import * as d3 from "d3"
 import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model"
 import _ from "lodash"
 import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"
+import { hierarchy } from "d3-hierarchy"
+import packageJson from "../../../package.json"
 
 export class DeltaGenerator {
 	public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
@@ -18,7 +19,7 @@ export class DeltaGenerator {
 	private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode): Map<string, CodeMapNode> {
 		const hashMap = new Map<string, CodeMapNode>()
 
-		d3.hierarchy(rootNode)
+		hierarchy(rootNode)
 			.descendants()
 			.map(x => x.data)
 			.forEach((node: CodeMapNode) => {
@@ -83,7 +84,7 @@ export class DeltaGenerator {
 				FileNameHelper.withoutCCJsonExtension(referenceFile.fileMeta.fileName) +
 				"_and_" +
 				FileNameHelper.withoutCCJsonExtension(comparisonFile.fileMeta.fileName),
-			apiVersion: require("../../../package.json").codecharta.apiVersion,
+			apiVersion: packageJson.codecharta.apiVersion,
 			projectName: "delta_between_" + referenceFile.fileMeta.projectName + "_and_" + comparisonFile.fileMeta.projectName
 		}
 	}

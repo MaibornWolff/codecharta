@@ -1,8 +1,9 @@
 "use strict"
-import { AppSettings, CCLocalStorage, DynamicSettings, RecursivePartial, Scenario, Settings, NodeMetricData } from "../codeCharta.model"
+import { AppSettings, CCLocalStorage, DynamicSettings, RecursivePartial, Scenario, Settings, MetricData } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
+import scenarios from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
 
 export class ScenarioHelper {
@@ -10,13 +11,13 @@ export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
 	private static scenarios: Map<String, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
-	public static getScenarioItems(metricData: NodeMetricData[]) {
+	public static getScenarioItems(metricData: MetricData) {
 		const scenarioItems: ScenarioItem[] = []
 
 		this.scenarios.forEach(scenario => {
 			scenarioItems.push({
 				scenarioName: scenario.name,
-				isScenarioAppliable: this.isScenarioAppliable(scenario, metricData),
+				isScenarioApplicable: this.isScenarioApplicable(scenario, metricData),
 				icons: [
 					{
 						faIconClass: "fa-video-camera",
@@ -49,22 +50,26 @@ export class ScenarioHelper {
 		return scenarioItems
 	}
 
-	private static isScenarioAppliable(scenario: RecursivePartial<Scenario>, metricData: NodeMetricData[]) {
-		if (scenario.area && !metricData.find(x => x.name === scenario.area.areaMetric)) {
-			return false
-		}
-		if (scenario.color && !metricData.find(x => x.name === scenario.color.colorMetric)) {
-			return false
-		}
-		if (scenario.height && !metricData.find(x => x.name === scenario.height.heightMetric)) {
-			return false
+	private static isScenarioApplicable(scenario: RecursivePartial<Scenario>, metricData: MetricData) {
+		const { area, color, height, edge } = scenario
+
+		if (area || color || height) {
+			const nodeMetricSet = new Set(metricData.nodeMetricData.map(data => data.name))
+
+			if (
+				(area && !nodeMetricSet.has(area.areaMetric)) ||
+				(color && !nodeMetricSet.has(color.colorMetric)) ||
+				(height && !nodeMetricSet.has(height.heightMetric))
+			) {
+				return false
+			}
 		}
 
-		return true
+		return !(edge && !metricData.edgeMetricData.find(x => x.name === edge.edgeMetric))
 	}
 
 	private static getPreLoadScenarios(): Map<String, RecursivePartial<Scenario>> {
-		const scenariosAsSettings: ExportScenario[] = this.importScenarios(require("../assets/scenarios.json"))
+		const scenariosAsSettings: ExportScenario[] = this.importScenarios(scenarios)
 		const scenario: Map<String, RecursivePartial<Scenario>> = new Map<String, RecursivePartial<Scenario>>()
 		scenariosAsSettings.forEach(scenarioSettings => {
 			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))
@@ -133,10 +138,9 @@ export class ScenarioHelper {
 		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarios"))
 		if (ccLocalStorage) {
 			return new Map(ccLocalStorage.scenarios)
-		} else {
-			this.setScenariosToLocalStorage(this.getPreLoadScenarios())
-			return this.getPreLoadScenarios()
 		}
+		this.setScenariosToLocalStorage(this.getPreLoadScenarios())
+		return this.getPreLoadScenarios()
 	}
 
 	public static addScenario(newScenario: RecursivePartial<Scenario>) {

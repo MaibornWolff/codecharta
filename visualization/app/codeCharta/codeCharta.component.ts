@@ -3,15 +3,18 @@ import { IHttpService, ILocationService } from "angular"
 import "./codeCharta.component.scss"
 import { CodeChartaService } from "./codeCharta.service"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { NameDataPair, SearchPanelMode } from "./codeCharta.model"
+import { NameDataPair } from "./codeCharta.model"
 import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
-import * as codeCharta from "../../package.json"
+import packageJson from "../../package.json"
 import { setDelta, setMultiple, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
-import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { CodeChartaMouseEventService } from "./codeCharta.mouseEvent.service"
+import sample1 from "./assets/sample1.cc.json"
+import sample2 from "./assets/sample2.cc.json"
+import { ExportCCFile } from "./codeCharta.api.model"
 
 export class CodeChartaController {
 	private _viewModel: {
@@ -29,10 +32,11 @@ export class CodeChartaController {
 		private storeService: StoreService,
 		private dialogService: DialogService,
 		private codeChartaService: CodeChartaService,
+		private codeChartaMouseEventService: CodeChartaMouseEventService,
 		// @ts-ignore
 		private injectorService: InjectorService // We have to inject it somewhere
 	) {
-		this._viewModel.version = codeCharta.version
+		this._viewModel.version = packageJson.version
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
@@ -61,15 +65,13 @@ export class CodeChartaController {
 			)
 		}
 		this.tryLoadingFiles([
-			{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
-			{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
+			{ fileName: "sample1.cc.json", content: sample1 as ExportCCFile },
+			{ fileName: "sample2.cc.json", content: sample2 as ExportCCFile }
 		])
 	}
 
 	public onClick() {
-		if (this.storeService.getState().appSettings.searchPanelMode !== SearchPanelMode.minimized) {
-			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
-		}
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 
 	private tryLoadingFiles(values: NameDataPair[]) {

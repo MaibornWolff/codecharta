@@ -15,7 +15,8 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-    name = "codemaatimport", description = ["generates cc.json from codemaat coupling csv"],
+    name = "codemaatimport",
+    description = ["generates cc.json from codemaat coupling csv"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class CodeMaatImporter : Callable<Void> {

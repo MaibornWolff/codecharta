@@ -2,7 +2,7 @@ import { CodeMapHelper } from "./codeMapHelper"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
 import { TEST_FILE_WITH_PATHS } from "./dataMocks"
-import _ from "lodash"
+import { clone } from "./clone"
 
 describe("codeMapHelper", () => {
 	let testRoot: CodeMapNode
@@ -15,7 +15,7 @@ describe("codeMapHelper", () => {
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
-		testRoot = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		testRoot = clone(TEST_FILE_WITH_PATHS.map)
 		blacklist = []
 	}
 
@@ -60,29 +60,10 @@ describe("codeMapHelper", () => {
 	})
 
 	describe("getAnyCodeMapNodeFromPath", () => {
-		it("should call getCodeMapNodeFromPath with type File at the beginning of call", () => {
-			CodeMapHelper.getCodeMapNodeFromPath = jest.fn()
+		it("should return the node that matches the path exactly", () => {
+			const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root/big leaf", testRoot)
 
-			CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", NodeType.FILE, testRoot)
-		})
-
-		it("should call getCodeMapNodeFromPath with type Folder when no file was found and return null", () => {
-			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(null)
-
-			const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", NodeType.FOLDER, testRoot)
-			expect(result).toBeNull()
-		})
-
-		it("should return the first file found by getCodeMapNodeFromPath", () => {
-			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(testRoot)
-
-			const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-			expect(result).toEqual(testRoot)
+			expect(result).toEqual(testRoot.children[0])
 		})
 	})
 

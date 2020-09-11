@@ -3,7 +3,6 @@ import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
 import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
-import _ from "lodash"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
@@ -11,6 +10,8 @@ import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
+import packageJson from "../../package.json"
+import { clone } from "./util/clone"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
@@ -25,8 +26,8 @@ describe("codeChartaService", () => {
 		rebuildService()
 		withMockedDialogService()
 
-		validFileContent = _.cloneDeep(TEST_FILE_CONTENT)
-		metricData = _.cloneDeep([
+		validFileContent = clone(TEST_FILE_CONTENT)
+		metricData = clone([
 			{ name: "mcc", maxValue: 1 },
 			{ name: "rloc", maxValue: 2 }
 		])
@@ -52,7 +53,7 @@ describe("codeChartaService", () => {
 
 	describe("loadFiles", () => {
 		const expected: CCFile = {
-			fileMeta: { apiVersion: "1.1", fileName, projectName: "Sample Map" },
+			fileMeta: { apiVersion: packageJson.codecharta.apiVersion, fileName, projectName: "Sample Map" },
 			map: {
 				attributes: {},
 				isExcluded: false,
@@ -169,8 +170,7 @@ describe("codeChartaService", () => {
 
 		it("should show error on invalid file", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fileIsInvalid.title,
-				error: [ERROR_MESSAGES.fileIsInvalid.message],
+				error: [ERROR_MESSAGES.fileIsInvalid],
 				warning: []
 			}
 
@@ -182,8 +182,7 @@ describe("codeChartaService", () => {
 
 		it("should show error on a random string", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.apiVersionIsInvalid.title,
-				error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+				error: [ERROR_MESSAGES.apiVersionIsInvalid],
 				warning: []
 			}
 
@@ -195,7 +194,6 @@ describe("codeChartaService", () => {
 
 		it("should show error if a file is missing a required property", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.validationError.title,
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
 			}
@@ -224,7 +222,6 @@ describe("codeChartaService", () => {
 
 		it("should break the loop after the first invalid file was validated", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.validationError.title,
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
 			}
@@ -239,6 +236,42 @@ describe("codeChartaService", () => {
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+		})
+
+		it("should not show a validation error if filenames are duplicated when their path is different", () => {
+			validFileContent.nodes[0].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
+			expect(storeService.getState().files).toHaveLength(1)
+		})
+
+		it("should show a validation error if two files in a folder have the same name", () => {
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/Parent Leaf/duplicate`],
+				warning: []
+			}
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+		})
+
+		it("should not show a validation error if two files in a folder have the same name but different type", () => {
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[0].type = NodeType.FILE
+			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[1].type = NodeType.FOLDER
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
+			expect(storeService.getState().files).toHaveLength(1)
 		})
 	})
 })

@@ -61,7 +61,8 @@ class GitLogRawParserStrategy : LogParserStrategy {
 
             return if (status == Status.RENAMED) {
                 Modification(
-                    lineParts[6].trim({ it <= ' ' }), lineParts[5].trim({ it <= ' ' }),
+                    lineParts[6].trim({ it <= ' ' }),
+                    lineParts[5].trim({ it <= ' ' }),
                     status.toModificationType()
                 )
             } else Modification(lineParts[5].trim({ it <= ' ' }), status.toModificationType())

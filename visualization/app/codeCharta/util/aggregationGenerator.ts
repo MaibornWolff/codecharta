@@ -2,6 +2,7 @@ import { CodeMapNode, CCFile, NodeType } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 import { FileNameHelper } from "./fileNameHelper"
 import { getUpdatedPath } from "./nodePathHelper"
+import packageJson from "../../../package.json"
 
 export class AggregationGenerator {
 	private static projectNameArray: string[] = []
@@ -26,7 +27,7 @@ export class AggregationGenerator {
 			fileMeta: {
 				projectName: "project_aggregation_of_" + this.projectNameArray.join("_and_"),
 				fileName: "file_aggregation_of_" + this.fileNameArray.join("_and_"),
-				apiVersion: require("../../../package.json").codecharta.apiVersion
+				apiVersion: packageJson.codecharta.apiVersion
 			},
 			map: {
 				name: CodeChartaService.ROOT_NAME,

@@ -68,7 +68,8 @@ class GitLogParserStrategy : LogParserStrategy {
             val lineParts = fileLine.split("\\s+".toRegex())
 
             return if (status == Status.RENAMED) Modification(
-                lineParts[2].trim(), lineParts[1].trim(),
+                lineParts[2].trim(),
+                lineParts[1].trim(),
                 status.toModificationType()
             )
             else Modification(lineParts[1].trim(), status.toModificationType())

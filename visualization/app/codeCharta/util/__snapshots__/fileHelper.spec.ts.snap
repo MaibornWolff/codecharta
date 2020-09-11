@@ -1,0 +1,74 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FileHelper getCCFile should build a CCFile 1`] = `
+Object {
+  "fileMeta": Object {
+    "apiVersion": "1.2",
+    "fileName": "fileName",
+    "projectName": "Sample Map",
+  },
+  "map": Object {
+    "attributes": Object {},
+    "children": Array [
+      Object {
+        "attributes": Object {
+          "functions": 10,
+          "mcc": 1,
+          "rloc": 100,
+        },
+        "isExcluded": false,
+        "isFlattened": false,
+        "link": "http://www.google.de",
+        "name": "big leaf",
+        "type": "File",
+      },
+      Object {
+        "attributes": Object {},
+        "children": Array [
+          Object {
+            "attributes": Object {
+              "functions": 100,
+              "mcc": 100,
+              "rloc": 30,
+            },
+            "isExcluded": false,
+            "isFlattened": false,
+            "name": "small leaf",
+            "type": "File",
+          },
+          Object {
+            "attributes": Object {
+              "functions": 1000,
+              "mcc": 10,
+              "rloc": 70,
+            },
+            "isExcluded": false,
+            "isFlattened": false,
+            "name": "other small leaf",
+            "type": "File",
+          },
+        ],
+        "isExcluded": false,
+        "isFlattened": false,
+        "name": "Parent Leaf",
+        "type": "Folder",
+      },
+    ],
+    "isExcluded": false,
+    "isFlattened": false,
+    "name": "root",
+    "type": "Folder",
+  },
+  "settings": Object {
+    "fileSettings": Object {
+      "attributeTypes": Object {
+        "edges": Object {},
+        "nodes": Object {},
+      },
+      "blacklist": Array [],
+      "edges": Array [],
+      "markedPackages": Array [],
+    },
+  },
+}
+`;

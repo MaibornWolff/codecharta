@@ -1,13 +1,13 @@
 import { VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH, VALID_NODE_WITH_PATH } from "./dataMocks"
 import { CodeMapNode } from "../codeCharta.model"
 import { MapBuilder } from "./mapBuilder"
-import _ from "lodash"
+import { clone } from "./clone"
 
 describe("mapBuilder", () => {
 	let rootNode: CodeMapNode
 
 	beforeEach(() => {
-		rootNode = _.cloneDeep(VALID_NODE_WITH_PATH)
+		rootNode = clone(VALID_NODE_WITH_PATH)
 	})
 
 	function buildHashMap(rootNode: CodeMapNode): Map<string, CodeMapNode> {
@@ -29,7 +29,7 @@ describe("mapBuilder", () => {
 		})
 
 		it("should create a valid delta map with empty folders in between", () => {
-			rootNode = _.cloneDeep(VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH)
+			rootNode = clone(VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH)
 			const hashMap = buildHashMap(rootNode)
 
 			expect(MapBuilder.createCodeMapFromHashMap(hashMap)).toMatchSnapshot()

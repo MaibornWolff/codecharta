@@ -5,9 +5,9 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { CodeMapNode } from "../../codeCharta.model"
 import { VALID_NODE_WITH_PATH } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
-import _ from "lodash"
 import { markPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { clone } from "../../util/clone"
 
 describe("CodeMapActionService", () => {
 	let codeMapActionsService: CodeMapActionsService
@@ -22,7 +22,7 @@ describe("CodeMapActionService", () => {
 		edgeMetricDataService = getService<EdgeMetricDataService>("edgeMetricDataService")
 		storeService = getService<StoreService>("storeService")
 
-		nodeA = _.cloneDeep(VALID_NODE_WITH_PATH)
+		nodeA = clone(VALID_NODE_WITH_PATH)
 		storeService.dispatch(setMarkedPackages())
 	}
 

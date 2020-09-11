@@ -39,7 +39,8 @@ class JSONMetricWriter(private val writer: Writer, private val filePath: String,
         }
 
         val node = MutableNode(
-            fileName, attributes = metrics.value.fileMetrics
+            fileName,
+            attributes = metrics.value.fileMetrics
         )
         val path = PathFactory.fromFileSystemPath(directory)
         projectBuilder.insertByPath(path, node)
