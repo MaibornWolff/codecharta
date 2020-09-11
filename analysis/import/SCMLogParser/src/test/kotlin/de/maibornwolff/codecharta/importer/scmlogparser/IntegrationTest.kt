@@ -1,6 +1,10 @@
 package de.maibornwolff.codecharta.importer.scmlogparser
 
-import org.junit.jupiter.api.BeforeAll
+import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineParser
+import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
+import io.mockk.mockk
+import org.junit.Assert.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.io.IOException
@@ -9,25 +13,20 @@ import java.util.concurrent.TimeUnit
 class IntegrationTest {
     private var filenamesInGitRepo = mutableListOf<String>()
 
-    // TODO get directory of the project, right now workingDir is one step to deep, stepping up will make it CC specific
-    // TODO right now I left it as CC specific, look into Gradle Project configuration to get main Project Path
-
-    @BeforeAll
-    fun setup(){
+    fun setup() {
 
         val path = convertPathCodeCharta()
-        buildFileTree("git ls-files ",File(path))
-
+        executeGitCommand("git ls-files ", File(path), filenamesInGitRepo)
     }
 
-    fun convertPathCodeCharta():String {
+    fun convertPathCodeCharta(): String {
         val path = System.getProperty("user.dir")
         val separator = System.getProperty("file.separator")
 
-       return path.substringBeforeLast(separator)
+        return path.substringBeforeLast(separator)
     }
 
-    fun buildFileTree(gitCommand: String, workingDir: File) {
+    fun executeGitCommand(gitCommand: String, workingDir: File, list: MutableList<String>){
         try {
             val commands = gitCommand.split("\\s".toRegex())
             val proc = ProcessBuilder(*commands.toTypedArray())
@@ -37,10 +36,11 @@ class IntegrationTest {
                 .start()
 
             proc.waitFor(60, TimeUnit.SECONDS)
-            return proc.inputStream.bufferedReader().useLines { lines ->
-                lines.forEach {
-                    filenamesInGitRepo.add(it)
-                }
+
+                proc.inputStream.bufferedReader().useLines { lines ->
+                    lines.forEach {
+                        list.add(it)
+                    }
             }
         } catch (e: IOException) {
             error("Invalid git command.")
@@ -48,14 +48,22 @@ class IntegrationTest {
     }
 
     @Test
-    fun test_given_list_of_all_files_in_project_when_parsing_corresponding_git_log_then_both_list_contents_are_equal(){
-        //TODO call parser with log, need to generate log, maybe in place using gitCommand or directly via posix if we write to file
-        //Runtime.getRuntime().exec("git log -m --topo-order --raw --reverse > git.log")
-        //TODO remove unnecessary files that are not part of the project according to our logic
-        //versionControlledFiles.filter{!isMutated() && !isDeleted()}
-        //TODO map files to current names, resulting in a list of strings
-        //val versionControlledFileNames= versionControlledFiles.values.map{file -> file.filename}
-        //TODO compare the two lists, should be equal
-        //assertThat("both lists contain the same filenames", filenamesInGitRepo, containsInAnyOrder(versionControlledFileNames))
+    fun test_given_list_of_all_files_in_project_when_parsing_corresponding_git_log_then_both_list_contents_are_equal() {
+        //TODO we don't write to file anymore to prevent unnecessary I/O, but I can roll that back if we happen to need it
+        setup()
+        val logPath = convertPathCodeCharta()
+        val gitLog = mutableListOf<String>()
+        executeGitCommand("git log -m --topo-order --raw --reverse", File(logPath), gitLog)
+        val parserStrategy = mockk<LogParserStrategy>()
+        val metricsFactory = mockk<MetricsFactory>()
+
+        //TODO no answer found, mocking doesnt work
+        val parser = LogLineParser(parserStrategy, metricsFactory)
+        val vcFList = parser.parse(gitLog.stream())
+        val namesInVCF :List<String> = vcFList.getList().values.filter{!it.isDeleted() && !it.isMutated()}.map { file -> file.filename }
+
+        //TODO assertThat from hamcrest doesnt work
+        assertTrue(namesInVCF.size == filenamesInGitRepo.size &&
+            namesInVCF.containsAll(filenamesInGitRepo) && filenamesInGitRepo.containsAll(namesInVCF))
     }
 }

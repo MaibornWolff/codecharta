@@ -28,6 +28,7 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.util.Arrays
 import java.util.concurrent.Callable
+import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 
 @CommandLine.Command(
@@ -85,6 +86,8 @@ class SCMLogParser(
             }
         }
 
+    private val filesInLog = mutableListOf<String>()
+
     @Throws(IOException::class)
     override fun call(): Void? {
 
@@ -123,6 +126,36 @@ class SCMLogParser(
         }
     }
 
+    //TODO will not be needed if a log is provided by the user, maybe not part of SCMLogParser
+    private fun executeGitCommand(gitCommand: String, workingDir: File, list: MutableList<String>) {
+        try {
+            val commands = gitCommand.split("\\s".toRegex())
+            val proc = ProcessBuilder(*commands.toTypedArray())
+                .directory(workingDir)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE)
+                .redirectError(ProcessBuilder.Redirect.PIPE)
+                .start()
+
+            proc.waitFor(60, TimeUnit.SECONDS)
+
+            proc.inputStream.bufferedReader().useLines { lines ->
+                lines.forEach {
+                    list.add(it)
+                }
+            }
+        } catch (e: IOException) {
+            error("Invalid git command.")
+        }
+    }
+
+    //TODO this only works for CodeCharta, change by introducing reader
+    private fun convertPathCodeCharta(): String {
+        val path = System.getProperty("user.dir")
+        val separator = System.getProperty("file.separator")
+
+        return path.substringBeforeLast(separator)
+    }
+
     private fun createProjectFromLog(
         pathToLog: File,
         parserStrategy: LogParserStrategy,
@@ -134,7 +167,8 @@ class SCMLogParser(
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
-        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines)
+        executeGitCommand("git ls-files ", File(convertPathCodeCharta()), filesInLog)
+        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines, filesInLog)
     }
 
     // not implemented yet #738
