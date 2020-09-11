@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Chore 👨‍💻 👩‍💻
+
+## [1.57.1] - 2020-09-11
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
 -   Validation of unique filenames not checking for the complete path and instead throwing an error on duplicate filename
 
 ### Chore 👨‍💻 👩‍💻
