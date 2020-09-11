@@ -82,7 +82,7 @@ export const fileWithFixedFolders: ExportCCFile = {
 					attributes: {},
 					children: [
 						{
-							name: "children_5",
+							name: "children_6",
 							type: NodeType.FILE,
 							attributes: {
 								custom_metric: 4
@@ -90,7 +90,7 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						},
 						{
-							name: "children_6",
+							name: "children_7",
 							type: NodeType.FILE,
 							attributes: {
 								custom_metric: 0
@@ -111,7 +111,7 @@ export const fileWithFixedFolders: ExportCCFile = {
 					attributes: {},
 					children: [
 						{
-							name: "children_7",
+							name: "children_8",
 							type: NodeType.FILE,
 							attributes: {
 								custom_metric: 20
@@ -119,7 +119,7 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						},
 						{
-							name: "children_8",
+							name: "children_9",
 							type: NodeType.FILE,
 							attributes: {
 								custom_metric: 5
@@ -140,7 +140,7 @@ export const fileWithFixedFolders: ExportCCFile = {
 					attributes: {},
 					children: [
 						{
-							name: "children_9",
+							name: "children_10",
 							type: NodeType.FILE,
 							attributes: {
 								custom_metric: 10
@@ -148,7 +148,7 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						},
 						{
-							name: "children_10",
+							name: "children_11",
 							type: NodeType.FILE,
 							attributes: {
 								custom_metric: 0
@@ -169,7 +169,7 @@ export const fileWithFixedFolders: ExportCCFile = {
 					attributes: {},
 					children: [
 						{
-							name: "children_11",
+							name: "children_12",
 							type: NodeType.FILE,
 							attributes: {
 								custom_metric: 1
@@ -177,7 +177,7 @@ export const fileWithFixedFolders: ExportCCFile = {
 							children: []
 						},
 						{
-							name: "children_12",
+							name: "children_13",
 							type: NodeType.FILE,
 							attributes: {
 								custom_metric: 1

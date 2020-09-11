@@ -10,6 +10,7 @@ import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
 import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
 import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
+import packageJson from "../../package.json"
 import { clone } from "./util/clone"
 
 describe("codeChartaService", () => {
@@ -52,7 +53,7 @@ describe("codeChartaService", () => {
 
 	describe("loadFiles", () => {
 		const expected: CCFile = {
-			fileMeta: { apiVersion: "1.1", fileName, projectName: "Sample Map" },
+			fileMeta: { apiVersion: packageJson.codecharta.apiVersion, fileName, projectName: "Sample Map" },
 			map: {
 				attributes: {},
 				isExcluded: false,
@@ -169,8 +170,7 @@ describe("codeChartaService", () => {
 
 		it("should show error on invalid file", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fileIsInvalid.title,
-				error: [ERROR_MESSAGES.fileIsInvalid.message],
+				error: [ERROR_MESSAGES.fileIsInvalid],
 				warning: []
 			}
 
@@ -182,8 +182,7 @@ describe("codeChartaService", () => {
 
 		it("should show error on a random string", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.apiVersionIsInvalid.title,
-				error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+				error: [ERROR_MESSAGES.apiVersionIsInvalid],
 				warning: []
 			}
 
@@ -195,7 +194,6 @@ describe("codeChartaService", () => {
 
 		it("should show error if a file is missing a required property", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.validationError.title,
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
 			}
@@ -224,7 +222,6 @@ describe("codeChartaService", () => {
 
 		it("should break the loop after the first invalid file was validated", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.validationError.title,
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
 			}

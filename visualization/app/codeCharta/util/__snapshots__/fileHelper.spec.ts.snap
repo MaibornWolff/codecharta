@@ -3,7 +3,7 @@
 exports[`FileHelper getCCFile should build a CCFile 1`] = `
 Object {
   "fileMeta": Object {
-    "apiVersion": "1.1",
+    "apiVersion": "1.2",
     "fileName": "fileName",
     "projectName": "Sample Map",
   },

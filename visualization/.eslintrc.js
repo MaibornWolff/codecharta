@@ -40,6 +40,7 @@ module.exports = {
         "@typescript-eslint/no-unused-vars": ["error"],
         "object-shorthand": ["error", "always"],
         "no-else-return": ["error"],
+        "no-lonely-if": ["error"],
 
         // Do not apply inappropriate rules below
         "@typescript-eslint/no-use-before-define":

@@ -71,10 +71,8 @@ export class ViewCubeMouseEventsService {
 		if (cube) {
 			if (this.currentlyHovered && cube.uuid !== this.currentlyHovered.uuid) {
 				this.triggerViewCubeUnhoverEvent()
-			} else {
-				if (!this.currentlyHovered) {
-					this.triggerViewCubeHoverEvent(cube)
-				}
+			} else if (!this.currentlyHovered) {
+				this.triggerViewCubeHoverEvent(cube)
 			}
 		} else {
 			if (this.currentlyHovered) {
