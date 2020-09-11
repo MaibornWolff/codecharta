@@ -51,7 +51,7 @@ class ProjectConverter(private val containsAuthors: Boolean) {
 
         // TODO discuss/check performance
         versionControlledFiles.getList().values
-            .filter {filesInLog.contains(it.filename)} //TODO do we need to check for isDeleted()? I would say no
+            .filter {!it.isDeleted() || filesInLog.contains(it.filename)} //TODO do we need to check for isDeleted()? I would say no
             .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
