@@ -34,12 +34,11 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	private findSearchedNodes(searchPattern: string): CodeMapNode[] {
 		if (searchPattern.length == 0) {
 			return []
-		} else {
-			const nodes = hierarchy(this.codeMapPreRenderService.getRenderMap())
-				.descendants()
-				.map(d => d.data)
-			return CodeMapHelper.getNodesByGitignorePath(nodes, searchPattern)
 		}
+		const nodes = hierarchy(this.codeMapPreRenderService.getRenderMap())
+			.descendants()
+			.map(d => d.data)
+		return CodeMapHelper.getNodesByGitignorePath(nodes, searchPattern)
 	}
 
 	private applySettingsSearchedNodePaths() {

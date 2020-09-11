@@ -38,7 +38,7 @@ export class DialogService {
 
 		const htmlMessage = this.buildHtmlMessage(warningSymbol, validationResult.warning)
 
-		this.showErrorDialog(htmlMessage, validationResult.title)
+		this.showErrorDialog(htmlMessage, "Validation Warning")
 	}
 
 	public showValidationErrorDialog(validationResult: CCValidationResult) {
@@ -46,7 +46,7 @@ export class DialogService {
 
 		const htmlMessage = this.buildHtmlMessage(errorSymbol, validationResult.error)
 
-		this.showErrorDialogAndOpenFileChooser(htmlMessage, validationResult.title)
+		this.showErrorDialogAndOpenFileChooser(htmlMessage, "Validation Error")
 	}
 
 	private buildHtmlMessage(symbol: string, validationResult: string[]): string {

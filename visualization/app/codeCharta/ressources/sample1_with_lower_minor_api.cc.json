@@ -1,6 +1,6 @@
 {
-	"projectName": "Sample Project with different edges",
-	"apiVersion": "1.2",
+	"projectName": "Sample Project with Edges",
+	"apiVersion": "1.1",
 	"nodes": [
 		{
 			"name": "root",
@@ -68,26 +68,29 @@
 			"fromNodeName": "/root/bigLeaf.ts",
 			"toNodeName": "/root/ParentLeaf/smallLeaf.html",
 			"attributes": {
-				"pairingRate": 89
+				"pairingRate": 89,
+				"avgCommits": 34
 			}
 		},
 		{
 			"fromNodeName": "/root/sample1OnlyLeaf.scss",
 			"toNodeName": "/root/ParentLeaf/smallLeaf.html",
 			"attributes": {
-				"pairingRate": 32
+				"pairingRate": 32,
+				"avgCommits": 17
 			}
 		},
 		{
 			"fromNodeName": "/root/ParentLeaf/otherSmallLeaf.ts",
 			"toNodeName": "/root/bigLeaf.ts",
 			"attributes": {
-				"pairingRate": 65
+				"pairingRate": 65,
+				"avgCommits": 22
 			}
 		}
 	],
 	"attributeTypes": {
 		"nodes": { "rloc": "absolute", "functions": "absolute", "mcc": "absolute", "pairingRate": "relative" },
-		"edges": { "pairingRate": "relative" }
+		"edges": { "pairingRate": "relative", "avgCommits": "absolute" }
 	}
 }

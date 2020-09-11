@@ -1,8 +1,8 @@
 import { validate } from "./util/fileValidator"
-import { AttributeTypes, BlacklistItem, BlacklistType, CCFile, NameDataPair } from "./codeCharta.model"
+import { CCFile, NameDataPair } from "./codeCharta.model"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
-import { ExportBlacklistType, ExportCCFile, OldAttributeTypes } from "./codeCharta.api.model"
+import { ExportCCFile } from "./codeCharta.api.model"
 import { StoreService } from "./state/store.service"
 import { resetFiles, setFiles, setSingle } from "./state/store/files/files.actions"
 import { getCCFiles } from "./model/files/files.helper"
@@ -11,6 +11,7 @@ import { setState } from "./state/store/state.actions"
 import { ScenarioHelper } from "./util/scenarioHelper"
 import { setIsLoadingFile } from "./state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { FileSelectionState, FileState } from "./model/files/files"
+import { getCCFile } from "./util/fileHelper"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
@@ -50,51 +51,9 @@ export class CodeChartaService {
 	}
 
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
-		const ccFile: CCFile = this.getCCFile(fileName, migratedFile)
+		const ccFile: CCFile = getCCFile(fileName, migratedFile)
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
-	}
-
-	private getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
-		return {
-			fileMeta: {
-				fileName,
-				projectName: fileContent.projectName,
-				apiVersion: fileContent.apiVersion
-			},
-			settings: {
-				fileSettings: {
-					edges: fileContent.edges || [],
-					attributeTypes: this.getAttributeTypes(fileContent.attributeTypes),
-					blacklist: this.potentiallyUpdateBlacklistTypes(fileContent.blacklist || []),
-					markedPackages: fileContent.markedPackages || []
-				}
-			},
-			map: fileContent.nodes[0]
-		}
-	}
-
-	private getAttributeTypes(attributeTypes: AttributeTypes | OldAttributeTypes): AttributeTypes {
-		if (_.isEmpty(attributeTypes) || !attributeTypes || Array.isArray(attributeTypes.nodes) || Array.isArray(attributeTypes.edges)) {
-			return {
-				nodes: {},
-				edges: {}
-			}
-		}
-
-		return {
-			nodes: !attributeTypes.nodes ? {} : attributeTypes.nodes,
-			edges: !attributeTypes.edges ? {} : attributeTypes.edges
-		}
-	}
-
-	private potentiallyUpdateBlacklistTypes(blacklist): BlacklistItem[] {
-		blacklist.forEach(x => {
-			if (x.type === ExportBlacklistType.hide) {
-				x.type = BlacklistType.flatten
-			}
-		})
-		return blacklist
 	}
 
 	private setDefaultScenario() {

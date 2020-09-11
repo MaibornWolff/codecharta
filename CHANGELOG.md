@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   `fixedPosition` as a new property in the `cc.json` that allows to fixate folders in the map
+
 ### Changed
+
+-   `cc.json` version updated to `1.2`
 
 ### Removed 🗑
 
@@ -17,7 +21,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Compressed `cc.jsons (.gz) not marked as accepted when selecting a file in the file chooser
 
-### Chore 👨‍💻 👩‍💻
+### Docs 🔎
+
+-   [How-To: Fixate Folders in the `cc.json`](https://maibornwolff.github.io//codecharta/how-to/fixate_folders_with_a_custom_cc_json/)
+-   CC-Json-API changes
 
 ## [1.56.0] - 2020-09-04
 
