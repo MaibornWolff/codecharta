@@ -1,5 +1,4 @@
-import * as THREE from "three"
-import { Scene } from "three"
+import { AmbientLight, DirectionalLight, Scene } from "three"
 import { Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
@@ -29,7 +28,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	public labels: Group
 	public edgeArrows: Group
 	public mapGeometry: Group
-	private lights: Group
+	private readonly lights: Group
 	private mapMesh: CodeMapMesh
 
 	private selected: CodeMapBuilding = null
@@ -38,11 +37,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 
-		this.scene = new THREE.Scene()
-		this.mapGeometry = new THREE.Group()
-		this.lights = new THREE.Group()
-		this.labels = new THREE.Group()
-		this.edgeArrows = new THREE.Group()
+		this.scene = new Scene()
+		this.mapGeometry = new Group()
+		this.lights = new Group()
+		this.labels = new Group()
+		this.edgeArrows = new Group()
 
 		this.initLights()
 
@@ -98,26 +97,12 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public initLights() {
-		const ambilight = new THREE.AmbientLight(0x707070) // soft white light
-		const light1 = new THREE.DirectionalLight(0xe0e0e0, 1)
+		const ambilight = new AmbientLight(0x707070) // soft white light
+		const light1 = new DirectionalLight(0xe0e0e0, 1)
 		light1.position.set(50, 10, 8).normalize()
-		light1.castShadow = false
-		light1.shadow.camera.right = 5
-		light1.shadow.camera.left = -5
-		light1.shadow.camera.top = 5
-		light1.shadow.camera.bottom = -5
-		light1.shadow.camera.near = 2
-		light1.shadow.camera.far = 100
 
-		const light2 = new THREE.DirectionalLight(0xe0e0e0, 1)
+		const light2 = new DirectionalLight(0xe0e0e0, 1)
 		light2.position.set(-50, 10, -8).normalize()
-		light2.castShadow = false
-		light2.shadow.camera.right = 5
-		light2.shadow.camera.left = -5
-		light2.shadow.camera.top = 5
-		light2.shadow.camera.bottom = -5
-		light2.shadow.camera.near = 2
-		light2.shadow.camera.far = 100
 
 		this.lights.add(ambilight)
 		this.lights.add(light1)
@@ -164,9 +149,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	public getHighlightedNode(): Node {
 		if (this.getHighlightedBuilding()) {
 			return this.getHighlightedBuilding().node
-		} else {
-			return null
 		}
+		return null
 	}
 
 	private reselectBuilding() {

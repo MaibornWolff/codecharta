@@ -6,7 +6,6 @@ import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import * as d3 from "d3"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import _ from "lodash"
@@ -26,6 +25,7 @@ import { PresentationModeActions } from "../../state/store/appSettings/isPresent
 import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { hierarchy } from "d3-hierarchy"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -121,7 +121,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
 		if (map && this.edgeMetricDataService.getMetricNames()) {
-			const root = d3.hierarchy<CodeMapNode>(map)
+			const root = hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
 				for (const edgeMetric of edgeMetrics.keys()) {
@@ -149,11 +149,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
 			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
 			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
-		} else {
-			const referenceFile = visibleFileStates[0].file
-			const comparisonFile = visibleFileStates[0].file
-			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
 		}
+		const referenceFile = visibleFileStates[0].file
+		const comparisonFile = visibleFileStates[0].file
+		return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
 	}
 
 	private renderAndNotify() {

@@ -1,4 +1,3 @@
-import * as d3 from "d3"
 import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
 import {
 	CCFile,
@@ -11,7 +10,7 @@ import {
 	EdgeMetricData
 } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
-import { HierarchyNode } from "d3"
+import { HierarchyNode, hierarchy } from "d3"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { clone } from "./clone"
 
@@ -111,7 +110,7 @@ describe("nodeDecorator", () => {
 			metricData.push({ name: "some", maxValue: 999999 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBe(0)
@@ -126,7 +125,7 @@ describe("nodeDecorator", () => {
 			metricData.push({ name: "some", maxValue: 999999 })
 
 			NodeDecorator.decorateMap(map, metricData, [])
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBe(0)
@@ -330,7 +329,7 @@ describe("nodeDecorator", () => {
 		it("should decorate nodes with the correct path", () => {
 			NodeDecorator.decorateMapWithPathAttribute(file)
 
-			const h = d3.hierarchy(file.map)
+			const h = hierarchy(file.map)
 			h.each(node => {
 				expect(node.data.path).toBeDefined()
 			})
@@ -342,7 +341,7 @@ describe("nodeDecorator", () => {
 		it("should decorate nodes with a unique id starting from 0", () => {
 			NodeDecorator.decorateMap(file.map, [], [])
 
-			const h = d3.hierarchy(file.map)
+			const h = hierarchy(file.map)
 			h.each(node => {
 				expect(node.data.id).toBeDefined()
 				expect(allUniqueIds(h)).toBeTruthy()
@@ -359,7 +358,7 @@ describe("nodeDecorator", () => {
 
 			NodeDecorator.decorateMap(map, metricData, [])
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBeDefined()
@@ -369,7 +368,7 @@ describe("nodeDecorator", () => {
 		it("all nodes should have an attribute list with listed and available metrics", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes["rloc"]).toBeDefined()
@@ -380,7 +379,7 @@ describe("nodeDecorator", () => {
 		it("folders should have sum attributes of children for absolute metrics", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			expect(h.data.attributes["rloc"]).toBe(200)
 			expect(h.children[0].data.attributes["rloc"]).toBe(100)
 		})
@@ -388,14 +387,14 @@ describe("nodeDecorator", () => {
 		it("folders should have median attributes of children for relative metrics", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			expect(h.data.attributes["functions"]).toBe(100)
 		})
 
 		it("folders should have sum delta values of children for absolute metrics", () => {
 			NodeDecorator.decorateMap(deltaMap, metricData, [])
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(deltaMap, blacklist, metricData, [], true, attributeTypes)
-			const h = d3.hierarchy(deltaMap)
+			const h = hierarchy(deltaMap)
 			expect(h.data.deltas["rloc"]).toBe(295)
 			expect(h.children[0].data.deltas["rloc"]).toBe(300)
 			expect(h.children[2].data.deltas["rloc"]).toBe(145)
@@ -404,14 +403,14 @@ describe("nodeDecorator", () => {
 		it("folders should have median delta values of children for relative metrics", () => {
 			NodeDecorator.decorateMap(deltaMap, metricData, [])
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(deltaMap, blacklist, metricData, [], true, attributeTypes)
-			const h = d3.hierarchy(deltaMap)
+			const h = hierarchy(deltaMap)
 			expect(h.data.deltas["functions"]).toBe(-3)
 		})
 
 		it("maps with no attribute nodes should be accepted and an attributes member added", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 
 			h.each(node => {
 				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
@@ -421,7 +420,7 @@ describe("nodeDecorator", () => {
 		it("all nodes should have a unary attribute", () => {
 			map.children[0].attributes = {}
 			NodeDecorator.decorateMap(map, metricData, [])
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			h.each(node => {
 				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})

@@ -67,7 +67,11 @@ export class NodeContextMenuController
 		FocusedNodePathService.subscribeToUnfocusNode($rootScope, this)
 		MarkedPackagesService.subscribe($rootScope, this)
 
-		document.body.addEventListener("click", event => NodeContextMenuController.broadcastHideEvent(this.$rootScope, event), true)
+		document.body.addEventListener(
+			"click",
+			event => NodeContextMenuController.broadcastHideEvent(this.$rootScope, new Vector2(event.x, event.y)),
+			true
+		)
 	}
 
 	public onMapColorsChanged(mapColors: MapColors) {
@@ -149,9 +153,8 @@ export class NodeContextMenuController
 
 		if (this.isNodeMarked()) {
 			return this.packageMatchesColor(color)
-		} else {
-			return this.packageMatchesColorOfParentMP(color)
 		}
+		return this.packageMatchesColorOfParentMP(color)
 	}
 
 	private isClickInsideNodeContextMenu(mousePosition: Vector2) {
