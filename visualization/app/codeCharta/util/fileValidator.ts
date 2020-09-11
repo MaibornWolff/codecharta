@@ -100,20 +100,21 @@ function getValidationMessage(error: Ajv.ErrorObject) {
 function validateAllNodesAreUnique(node: CodeMapNode, result: CCValidationResult) {
 	const names = new Set<string>()
 	names.add(`${node.name}|${node.type}`)
-	validateChildrenAreUniqueRecursive(node, result, names)
+	validateChildrenAreUniqueRecursive(node, result, names, `/${node.name}`)
 }
 
-function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidationResult, names: Set<string>) {
+function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidationResult, names: Set<string>, subPath: string) {
 	if (!node.children || node.children.length === 0) {
 		return
 	}
 
 	for (const child of node.children) {
-		if (names.has(`${child.name}|${child.type}`)) {
-			result.error.push(`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${child.type} with name: ${child.name}`)
+		const path = `${subPath}/${child.name}`
+		if (names.has(`${path}|${child.type}`)) {
+			result.error.push(`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of ${child.type} with path: ${path}`)
 		} else {
-			names.add(`${child.name}|${child.type}`)
-			validateChildrenAreUniqueRecursive(child, result, names)
+			names.add(`${path}|${child.type}`)
+			validateChildrenAreUniqueRecursive(child, result, names, path)
 		}
 	}
 }
