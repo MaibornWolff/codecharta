@@ -23,7 +23,8 @@ export enum ExportBlacklistType {
 export enum APIVersions {
 	ZERO_POINT_ONE = "0.1",
 	ONE_POINT_ZERO = "1.0",
-	ONE_POINT_ONE = "1.1"
+	ONE_POINT_ONE = "1.1",
+	ONE_POINT_TWO = "1.2"
 }
 
 export interface ExportScenario {
@@ -32,6 +33,6 @@ export interface ExportScenario {
 }
 
 export interface OldAttributeTypes {
-	nodes?: [{ [key: string]: AttributeTypeValue }]
-	edges?: [{ [key: string]: AttributeTypeValue }]
+	nodes?: [{ [key: string]: AttributeTypeValue }?]
+	edges?: [{ [key: string]: AttributeTypeValue }?]
 }

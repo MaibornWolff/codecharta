@@ -15,9 +15,42 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Compressed `cc.jsons (.gz) not marked as accepted when selecting a file in the file chooser
+### Chore 👨‍💻 👩‍💻
+
+## [1.57.1] - 2020-09-11
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Validation of unique filenames not checking for the complete path and instead throwing an error on duplicate filename
 
 ### Chore 👨‍💻 👩‍💻
+
+## [1.57.0] - 2020-09-11
+
+### Added 🚀
+
+-   `fixedPosition` as a new property in the `cc.json` that allows to fixate folders in the map
+
+### Changed
+
+-   `cc.json` version updated to `1.2`
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Compressed `cc.jsons (.gz) not marked as accepted when selecting a file in the file chooser
+
+### Docs 🔎
+
+-   [How-To: Fixate Folders in the `cc.json`](https://maibornwolff.github.io//codecharta/how-to/fixate_folders_with_a_custom_cc_json/)
+-   CC-Json-API changes
 
 ## [1.56.0] - 2020-09-04
 
