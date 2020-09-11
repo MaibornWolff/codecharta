@@ -40,6 +40,7 @@ export class CodeChartaController {
 		this.urlUtils = new UrlExtractor(this.$location, this.$http)
 		this.storeService.dispatch(setIsLoadingFile(true))
 		this.loadFileOrSample()
+		console.log("Just a linting error to test the action")
 	}
 
 	public loadFileOrSample() {
