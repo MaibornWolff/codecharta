@@ -47,7 +47,7 @@ class SCMLogParser(
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
 
-    @CommandLine.Option(names= ["-n" ,"--git-names"], arity = "1", paramLabel = "FILE", description = ["compress output File to gzip format"])
+    @CommandLine.Option(names= ["-n" ,"--file-name-list"], arity = "1", paramLabel = "FILE", description = ["list of all file names in current git project"])
     private var nameFile : File? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
