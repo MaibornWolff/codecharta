@@ -110,7 +110,6 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
-				state.fileSettings.blacklist,
 				nodeMetricData,
 				this.storeService.getState().metricData.edgeMetricData,
 				isDeltaState(state.files),
@@ -120,7 +119,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
-		if (map && this.edgeMetricDataService.getMetricNames()) {
+		if (this.edgeMetricDataService.getMetricNames()) {
 			const root = hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
