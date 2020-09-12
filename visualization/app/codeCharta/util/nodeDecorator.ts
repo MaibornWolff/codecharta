@@ -94,16 +94,11 @@ export class NodeDecorator {
 		if (file?.map) {
 			const root = hierarchy<CodeMapNode>(file.map)
 			root.each(node => {
-				// TODO: This could be simplified. It is possible to get the current
-				// path without using `root.path()`.
-				const nodePath = root.path(node)
-				let path = "/"
-				const last = nodePath.pop()
-				for (const { data } of nodePath) {
-					path += `${data.name}/`
+				if (node.parent) {
+					node.data.path = `${node.parent.data.path}/${node.data.name}` 
+				} else {
+					node.data.path = `/${node.data.name}`
 				}
-				path += last.data.name
-				node.data.path = path
 			})
 		}
 		return file
