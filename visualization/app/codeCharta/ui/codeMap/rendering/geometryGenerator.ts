@@ -31,6 +31,10 @@ export class GeometryGenerator {
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 
+		// TODO: It is possible to significantly improve the overall drawing
+		// performance by preventing intermediate transformations such as arrays
+		// that are later on converted to typed arrays. Thus, no
+		// `IntermediateVertexData` should be created.
 		for (let i = 0; i < nodes.length; ++i) {
 			const n: Node = nodes[i]
 
@@ -135,49 +139,45 @@ export class GeometryGenerator {
 	}
 
 	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: Material): Mesh {
-		const numVertices: number = data.positions.length
+		const numVertices = data.positions.length
 		const dimension = 3
 		const uvDimension = 2
+		const size = numVertices * dimension
 
-		const positions: Float32Array = new Float32Array(numVertices * dimension)
-		const normals: Float32Array = new Float32Array(numVertices * dimension)
+		const positions: Float32Array = new Float32Array(size)
+		const normals: Float32Array = new Float32Array(size)
 		const uvs: Float32Array = new Float32Array(numVertices * uvDimension)
-		const colors: Float32Array = new Float32Array(numVertices * dimension)
-		const deltaColors: Float32Array = new Float32Array(numVertices * dimension)
-		const ids: Float32Array = new Float32Array(numVertices)
-		const deltas: Float32Array = new Float32Array(numVertices)
+		const colors: Float32Array = new Float32Array(size)
 
 		for (let i = 0; i < numVertices; ++i) {
-			positions[i * dimension + 0] = data.positions[i].x
-			positions[i * dimension + 1] = data.positions[i].y
-			positions[i * dimension + 2] = data.positions[i].z
+			const pos = i * dimension
+			const pos1 = pos + 1
+			const pos2 = pos1 + 1
 
-			normals[i * dimension + 0] = data.normals[i].x
-			normals[i * dimension + 1] = data.normals[i].y
-			normals[i * dimension + 2] = data.normals[i].z
+			const dataPosition = data.positions[i]
+			positions[pos] = dataPosition.x
+			positions[pos1] = dataPosition.y
+			positions[pos2] = dataPosition.z
 
-			uvs[i * uvDimension + 0] = data.uvs[i].x
-			uvs[i * uvDimension + 1] = data.uvs[i].y
+			const dataNormal = data.normals[i]
+			normals[pos] = dataNormal.x
+			normals[pos1] = dataNormal.y
+			normals[pos2] = dataNormal.z
+
+			const uvPos = i * uvDimension
+			uvs[uvPos] = data.uvs[i].x
+			uvs[uvPos + 1] = data.uvs[i].y
 
 			const color: Vector3 = ColorConverter.getVector3(data.colors[i])
-
-			colors[i * dimension + 0] = color.x
-			colors[i * dimension + 1] = color.y
-			colors[i * dimension + 2] = color.z
-
-			deltaColors[i * dimension + 0] = color.x
-			deltaColors[i * dimension + 1] = color.y
-			deltaColors[i * dimension + 2] = color.z
-
-			ids[i] = data.subGeometryIdx[i]
-			deltas[i] = data.deltas[i]
+			colors[pos] = color.x
+			colors[pos1] = color.y
+			colors[pos2] = color.z
 		}
 
-		const indices: Uint32Array = new Uint32Array(data.indices.length)
-
-		for (let i = 0; i < data.indices.length; ++i) {
-			indices[i] = data.indices[i]
-		}
+		const deltaColors: Float32Array = new Float32Array(colors)
+		const indices: Uint32Array = new Uint32Array(data.indices)
+		const ids: Float32Array = new Float32Array(data.subGeometryIdx)
+		const deltas: Float32Array = new Float32Array(data.deltas)
 
 		const geometry: BufferGeometry = new BufferGeometry()
 
