@@ -108,6 +108,7 @@ export class CodeMapActionsService {
 	private removeMarkedPackage(markedPackage: MarkedPackage) {
 		const indexToRemove = this.storeService.getState().fileSettings.markedPackages.indexOf(markedPackage)
 		if (indexToRemove > -1) {
+			// TODO: Stop mutating the store entries.
 			this.storeService.getState().fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
 		this.storeService.dispatch(unmarkPackage(markedPackage))

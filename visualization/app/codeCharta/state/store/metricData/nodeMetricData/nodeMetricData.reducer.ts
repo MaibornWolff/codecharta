@@ -6,12 +6,11 @@ import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { hierarchy, HierarchyNode } from "d3"
 import { NodeMetricDataService } from "./nodeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
-import { clone } from "../../../../util/clone"
 
 export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().payload, action: NodeMetricDataAction): NodeMetricData[] {
 	switch (action.type) {
 		case NodeMetricDataActions.SET_NODE_METRIC_DATA:
-			return clone(action.payload)
+			return action.payload
 		case NodeMetricDataActions.CALCULATE_NEW_NODE_METRIC_DATA:
 			return setNewMetricData(action.payload.fileStates, action.payload.blacklist)
 		default:

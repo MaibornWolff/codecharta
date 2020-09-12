@@ -9,9 +9,7 @@ export function removeItemFromArray(array: any[], item: any): any[] {
 
 export function addItemToArray(array: any[], item: any): any[] {
 	if (!arrayContainsItem(array, item)) {
-		const copy = [...array]
-		copy.push(clone(item))
-		return copy
+		return [...array, clone(item)]
 	}
 	return array
 }

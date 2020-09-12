@@ -1,12 +1,11 @@
 import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles } from "./files.actions"
 import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
-import { clone } from "../../../util/clone"
 
 export default function files(state: FileState[] = setFiles().payload, action: FilesAction): FileState[] {
 	switch (action.type) {
 		case NewFilesImportedActions.SET_FILES:
-			return clone(action.payload)
+			return action.payload
 		case NewFilesImportedActions.ADD_FILE:
 			return addFile(state, action.payload)
 		case NewFilesImportedActions.RESET_FILES:
@@ -41,7 +40,7 @@ function resetSelection(state: FileState[]): FileState[] {
 }
 
 function addFile(state: FileState[], file: CCFile): FileState[] {
-	return [...state, { file: clone(file), selectedAs: FileSelectionState.None }]
+	return [...state, { file, selectedAs: FileSelectionState.None }]
 }
 
 function setSingleByName(state: FileState[], fileName: string): FileState[] {

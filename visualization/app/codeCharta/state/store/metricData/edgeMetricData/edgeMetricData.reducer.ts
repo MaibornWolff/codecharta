@@ -5,7 +5,6 @@ import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { FileState } from "../../../../model/files/files"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
-import { clone } from "../../../../util/clone"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
@@ -15,7 +14,7 @@ export let nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().payload, action: EdgeMetricDataAction): EdgeMetricData[] {
 	switch (action.type) {
 		case EdgeMetricDataActions.SET_EDGE_METRIC_DATA:
-			return clone(action.payload)
+			return action.payload
 		case EdgeMetricDataActions.CALCULATE_NEW_EDGE_METRIC_DATA:
 			return calculateMetrics(action.payload.fileStates, action.payload.blacklist)
 		default:
