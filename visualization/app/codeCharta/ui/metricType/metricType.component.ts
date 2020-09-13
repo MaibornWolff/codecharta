@@ -55,23 +55,27 @@ export class MetricTypeController
 	}
 
 	public onAreaMetricChanged(areaMetric: string) {
-		this.metricSelection == MetricSelections.areaMetric &&
-			(this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(areaMetric))
+		if (this.metricSelection === MetricSelections.areaMetric) {
+			this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(areaMetric)
+		}
 	}
 
 	public onHeightMetricChanged(heightMetric: string) {
-		this.metricSelection == MetricSelections.heightMetric &&
-			(this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(heightMetric))
+		if (this.metricSelection === MetricSelections.heightMetric) {
+			this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(heightMetric)
+		}
 	}
 
 	public onColorMetricChanged(colorMetric: string) {
-		this.metricSelection == MetricSelections.colorMetric &&
-			(this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(colorMetric))
+		if (this.metricSelection === MetricSelections.colorMetric) {
+			this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(colorMetric)
+		}
 	}
 
 	public onEdgeMetricChanged(edgeMetric: string) {
-		this.metricSelection == MetricSelections.edgeMetric &&
-			(this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric))
+		if (this.metricSelection === MetricSelections.edgeMetric) {
+			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric)
+		}
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {

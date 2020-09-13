@@ -4,7 +4,7 @@ import { BlacklistItem, CCFile } from "../../../../codeCharta.model"
 export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolean): BlacklistItem[] {
 	const blacklist: Map<string, BlacklistItem> = new Map()
 
-	if (inputFiles.length == 1) {
+	if (inputFiles.length === 1) {
 		return inputFiles[0].settings.fileSettings.blacklist
 	}
 

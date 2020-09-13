@@ -1,7 +1,7 @@
 import { ColorRangeAction, ColorRangeActions, setColorRange } from "./colorRange.actions"
 import { ColorRange } from "../../../../codeCharta.model"
 
-export function colorRange(state: ColorRange = setColorRange().payload, action: ColorRangeAction): ColorRange {
+export function colorRange(state: ColorRange = setColorRange().payload, action: ColorRangeAction) {
 	switch (action.type) {
 		case ColorRangeActions.SET_COLOR_RANGE:
 			return action.payload

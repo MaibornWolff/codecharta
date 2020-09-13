@@ -11,6 +11,7 @@ import {
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+// eslint-disable-next-line no-duplicate-imports
 import * as Three from "three"
 import oc from "three-orbit-controls"
 
@@ -53,7 +54,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	public setControlTarget() {
-		const cameraTarget: Vector3 = this.storeService.getState().appSettings.cameraTarget
+		const { cameraTarget } = this.storeService.getState().appSettings
 		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
 	}
 
@@ -67,7 +68,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.$timeout(() => {
 			const boundingSphere = this.getBoundingSphere()
 
-			const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
+			const len = this.cameraPerspectiveLengthCalculation(boundingSphere)
 			const cameraReference = this.threeCameraService.camera
 
 			cameraReference.position.set(boundingSphere.center.x + len, len, boundingSphere.center.z + len)

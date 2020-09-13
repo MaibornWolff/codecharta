@@ -42,7 +42,7 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataSubscri
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricSubscriber) {
-		$rootScope.$on(EdgeMetricService.EDGE_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(EdgeMetricService.EDGE_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onEdgeMetricChanged(data.edgeMetric)
 		})
 	}

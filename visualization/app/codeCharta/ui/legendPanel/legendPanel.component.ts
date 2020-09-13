@@ -43,7 +43,7 @@ export class LegendPanelController
 		colorRange: ColorRange
 		invertColorRange: boolean
 		packageLists: PackageList[]
-		colorIcons: any
+		colorIcons: Record<string, string>
 	} = {
 		isLegendVisible: false,
 		isSideBarVisible: null,
@@ -97,7 +97,7 @@ export class LegendPanelController
 	private updatePixelColors() {
 		this._viewModel.isDeltaState = isDeltaState(this.storeService.getState().files)
 
-		const mapColors = this.storeService.getState().appSettings.mapColors
+		const { mapColors } = this.storeService.getState().appSettings
 		this._viewModel.colorIcons.selected = this.getImage(mapColors.selected)
 		this._viewModel.colorIcons.incomingEdge = this.getImage(mapColors.incomingEdge)
 		this._viewModel.colorIcons.outgoingEdge = this.getImage(mapColors.outgoingEdge)
@@ -122,7 +122,7 @@ export class LegendPanelController
 		this._viewModel.colorIcons.negativeDelta = this.getImage(mapColors.negativeDelta)
 	}
 
-	private getImage(color: string): string {
+	private getImage(color: string) {
 		return ColorConverter.getImageDataUri(color)
 	}
 
@@ -149,11 +149,11 @@ export class LegendPanelController
 	}
 
 	private insertMPIntoPackageList(mp: MarkedPackage, colorPixel: string) {
-		this._viewModel.packageLists.filter(packageList => packageList.colorPixel == colorPixel)[0].markedPackages.push(mp)
+		this._viewModel.packageLists.find(packageList => packageList.colorPixel === colorPixel).markedPackages.push(mp)
 	}
 
 	private isColorPixelInPackageLists(colorPixel: string) {
-		return this._viewModel.packageLists.filter(mpList => mpList.colorPixel == colorPixel).length > 0
+		return this._viewModel.packageLists.filter(mpList => mpList.colorPixel === colorPixel).length > 0
 	}
 }
 

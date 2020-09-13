@@ -161,7 +161,7 @@ describe("codeChartaController", () => {
 
 			codeChartaController.onClick()
 
-			const appSettings = storeService.getState().appSettings
+			const { appSettings } = storeService.getState()
 
 			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)

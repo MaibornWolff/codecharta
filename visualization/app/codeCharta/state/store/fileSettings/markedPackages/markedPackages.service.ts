@@ -46,7 +46,7 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MarkedPackagesSubscriber) {
-		$rootScope.$on(MarkedPackagesService.MARKED_PACKAGES_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(MarkedPackagesService.MARKED_PACKAGES_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onMarkedPackagesChanged(data.markedPackages)
 		})
 	}

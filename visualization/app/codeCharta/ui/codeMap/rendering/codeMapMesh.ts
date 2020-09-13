@@ -1,5 +1,5 @@
 import { CodeMapShaderStrings } from "./codeMapShaderStrings"
-import { BuildResult, GeometryGenerator } from "./geometryGenerator"
+import { GeometryGenerator } from "./geometryGenerator"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { Node, State } from "../../../codeCharta.model"
@@ -26,10 +26,10 @@ export class CodeMapMesh {
 		this.initMaterial()
 
 		this.geomGen = new GeometryGenerator()
-		const buildRes: BuildResult = this.geomGen.build(nodes, this.material, state, isDeltaState)
+		const buildResult = this.geomGen.build(nodes, this.material, state, isDeltaState)
 
-		this.threeMesh = buildRes.mesh
-		this.mapGeomDesc = buildRes.desc
+		this.threeMesh = buildResult.mesh
+		this.mapGeomDesc = buildResult.desc
 
 		this.initDeltaColorsOnMesh(state)
 	}
@@ -44,11 +44,11 @@ export class CodeMapMesh {
 		}
 	}
 
-	public getThreeMesh(): Mesh {
+	public getThreeMesh() {
 		return this.threeMesh
 	}
 
-	public selectBuilding(building: CodeMapBuilding, selected: CodeMapBuilding, color: string) {
+	public selectBuilding(building: CodeMapBuilding, color: string) {
 		building.setColor(color)
 		this.setVertexColor(building.id, building.getColorVector(), building.getDefaultDeltaColorVector())
 		this.updateVertices()
@@ -60,15 +60,15 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	public getMeshDescription(): CodeMapGeometricDescription {
+	public getMeshDescription() {
 		return this.mapGeomDesc
 	}
 
-	public getBuildingByPath(path: string): CodeMapBuilding {
+	public getBuildingByPath(path: string) {
 		return this.mapGeomDesc.getBuildingByPath(path)
 	}
 
-	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera): CodeMapBuilding {
+	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera) {
 		const ray: Ray = this.calculatePickingRay(mouse, camera)
 		return this.getMeshDescription().intersect(ray)
 	}
@@ -93,7 +93,7 @@ export class CodeMapMesh {
 	}
 
 	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
-		const mapSize = state.treeMap.mapSize
+		const { mapSize } = state.treeMap
 		if (state.appSettings.isPresentationMode) {
 			const distance = highlighted[0].getCenterPoint(mapSize).distanceTo(building.getCenterPoint(mapSize))
 			this.decreaseLightnessByDistance(building, distance)
@@ -171,7 +171,7 @@ export class CodeMapMesh {
 		this.threeMesh.geometry["attributes"].deltaColor.needsUpdate = true
 	}
 
-	private initMaterial(): void {
+	private initMaterial() {
 		const uniforms = UniformsUtils.merge([UniformsLib["lights"]])
 
 		const shaderCode: CodeMapShaderStrings = new CodeMapShaderStrings()
@@ -184,8 +184,8 @@ export class CodeMapMesh {
 		})
 	}
 
-	private calculatePickingRay(mouse: MousePos, camera: Camera): Ray {
-		const ray: Ray = new Ray()
+	private calculatePickingRay(mouse: MousePos, camera: Camera) {
+		const ray = new Ray()
 		ray.origin.setFromMatrixPosition(camera.matrixWorld)
 		ray.direction.set(mouse.x, mouse.y, 0.5).unproject(camera).sub(ray.origin).normalize()
 

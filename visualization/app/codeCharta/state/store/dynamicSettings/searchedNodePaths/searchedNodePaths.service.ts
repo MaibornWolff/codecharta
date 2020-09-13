@@ -31,7 +31,7 @@ export class SearchedNodePathsService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SearchedNodePathsSubscriber) {
-		$rootScope.$on(SearchedNodePathsService.SEARCHED_NODE_PATHS_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SearchedNodePathsService.SEARCHED_NODE_PATHS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onSearchedNodePathsChanged(data.searchedNodePaths)
 		})
 	}

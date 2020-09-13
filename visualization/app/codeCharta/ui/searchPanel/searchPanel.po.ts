@@ -14,9 +14,9 @@ export class SearchPanelPageObject {
 		return !wasOpen
 	}
 
-	public async isOpen(): Promise<boolean> {
+	public async isOpen() {
 		await page.waitForSelector("#search-panel-card")
-		const classNames = await page.$eval("#search-panel-card", el => el["className"])
+		const classNames = await page.$eval("#search-panel-card", element => element["className"])
 		return classNames.includes(this.EXPANDED)
 	}
 }

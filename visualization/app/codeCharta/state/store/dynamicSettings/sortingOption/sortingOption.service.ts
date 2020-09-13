@@ -30,7 +30,7 @@ export class SortingOptionService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SortingOptionSubscriber) {
-		$rootScope.$on(SortingOptionService.SORTING_OPTION_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SortingOptionService.SORTING_OPTION_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onSortingOptionChanged(data.sortingOption)
 		})
 	}

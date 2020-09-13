@@ -54,13 +54,13 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	}
 
 	private updateViewModel() {
-		const blacklist = this.storeService.getState().fileSettings.blacklist
+		const { blacklist } = this.storeService.getState().fileSettings
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
 	}
 
-	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {
-		return blacklist.some(x => this._viewModel.searchPattern == x.path && blacklistType == x.type)
+	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType) {
+		return blacklist.some(x => this._viewModel.searchPattern === x.path && blacklistType === x.type)
 	}
 
 	private resetSearchPattern() {

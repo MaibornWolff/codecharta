@@ -1,16 +1,14 @@
 "use strict"
-import { ILocationService, IHttpService, IHttpResponse } from "angular"
+import { ILocationService, IHttpService } from "angular"
 import { NameDataPair } from "../codeCharta.model"
 import { ExportCCFile } from "../codeCharta.api.model"
 
 export class UrlExtractor {
-	private static OK_CODE = 200
-
 	constructor(private $location: ILocationService, private $http: IHttpService) {}
 
-	public getParameterByName(name: string): string {
+	getParameterByName(name: string) {
 		const sanitizedName = name.replace(/[[\]]/g, "\\$&")
-		const regex = new RegExp("[?&]" + sanitizedName + "(=([^&#]*)|&|#|$)"),
+		const regex = new RegExp(`[?&]${sanitizedName}(=([^&#]*)|&|#|$)`),
 			results = regex.exec(this.$location.absUrl())
 
 		if (!results) {
@@ -22,44 +20,31 @@ export class UrlExtractor {
 		return decodeURIComponent(results[2].replace(/\+/g, " "))
 	}
 
-	public getFileDataFromQueryParam(): Promise<NameDataPair[]> {
-		let fileNames = this.$location.search().file
+	async getFileDataFromQueryParam() {
+		let fileNames: string | string[] = this.$location.search().file
 
 		if (!fileNames) {
-			fileNames = []
+			return []
 		}
-
-		if (fileNames.push === undefined) {
+		if (!Array.isArray(fileNames)) {
 			fileNames = [fileNames]
 		}
 
-		const fileReadingTasks = []
-
-		fileNames.forEach(fileName => {
-			fileReadingTasks.push(
-				new Promise((resolve, reject) => {
-					this.getFileDataFromFile(fileName).then(resolve, reject)
-				})
-			)
-		})
-
-		return Promise.all(fileReadingTasks)
+		return Promise.all(
+			fileNames.map(async fileName => {
+				return this.getFileDataFromFile(fileName)
+			})
+		)
 	}
 
-	public getFileDataFromFile(file: string): Promise<NameDataPair> {
-		return new Promise((resolve, reject) => {
-			if (file && file.length > 0) {
-				this.$http.get(file).then((response: IHttpResponse<Object>) => {
-					if (response.status === UrlExtractor.OK_CODE) {
-						Object.assign(response.data, { fileName: file })
-						resolve({ fileName: file, content: response.data as ExportCCFile })
-					} else {
-						reject()
-					}
-				}, reject)
-			} else {
-				reject()
-			}
-		})
+	async getFileDataFromFile(fileName: string): Promise<NameDataPair> {
+		if (!fileName) {
+			throw new Error(`Filename is missing`)
+		}
+		const response = await this.$http.get(fileName)
+		if (response.status >= 200 && response.status < 300) {
+			return { fileName, content: response.data as ExportCCFile }
+		}
+		throw new Error(`Could not load file "${fileName}"`)
 	}
 }

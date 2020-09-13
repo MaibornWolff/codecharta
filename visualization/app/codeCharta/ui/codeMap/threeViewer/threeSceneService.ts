@@ -1,9 +1,7 @@
-import { AmbientLight, DirectionalLight, Scene } from "three"
-import { Group } from "three"
+import { AmbientLight, DirectionalLight, Scene, Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
-import { Node } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 
@@ -79,7 +77,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	public selectBuilding(building: CodeMapBuilding) {
 		const color = this.storeService.getState().appSettings.mapColors.selected
-		this.getMapMesh().selectBuilding(building, this.selected, color)
+		this.getMapMesh().selectBuilding(building, color)
 		this.selected = building
 		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
@@ -110,7 +108,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	public setMapMesh(mesh: CodeMapMesh) {
-		const mapSize = this.storeService.getState().treeMap.mapSize
+		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
 
 		while (this.mapGeometry.children.length > 0) {
@@ -118,35 +116,35 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		}
 
 		this.mapGeometry.position.x = -mapSize
-		this.mapGeometry.position.y = 0.0
+		this.mapGeometry.position.y = 0
 		this.mapGeometry.position.z = -mapSize
 
 		this.mapGeometry.add(this.mapMesh.getThreeMesh())
 		this.notifyMapMeshChanged()
 	}
 
-	public getMapMesh(): CodeMapMesh {
+	public getMapMesh() {
 		return this.mapMesh
 	}
 
 	public scale() {
-		const mapSize = this.storeService.getState().treeMap.mapSize
+		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
 
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
-		this.mapGeometry.position.set(-mapSize * scale.x, 0.0, -mapSize * scale.z)
+		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
 		this.mapMesh.setScale(scale)
 	}
 
-	public getSelectedBuilding(): CodeMapBuilding {
+	public getSelectedBuilding() {
 		return this.selected
 	}
 
-	public getHighlightedBuilding(): CodeMapBuilding {
+	public getHighlightedBuilding() {
 		return this.highlighted[0]
 	}
 
-	public getHighlightedNode(): Node {
+	public getHighlightedNode() {
 		if (this.getHighlightedBuilding()) {
 			return this.getHighlightedBuilding().node
 		}

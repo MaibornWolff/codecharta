@@ -1,7 +1,7 @@
 export class DialogErrorPageObject {
 	public async getMessage() {
 		await page.waitForSelector(".md-dialog-content-body")
-		return await page.$eval(".md-dialog-content-body", el => el["innerText"])
+		return page.$eval(".md-dialog-content-body", element => element["innerText"])
 	}
 
 	public async clickOk() {

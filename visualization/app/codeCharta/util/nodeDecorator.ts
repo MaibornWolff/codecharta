@@ -45,10 +45,8 @@ export class NodeDecorator {
 
 		const defaultAttributes = { [NodeMetricDataService.UNARY_METRIC]: 1 }
 		const defaultLeafAttributes = { ...defaultAttributes }
-		if (metricData?.length) {
-			for (const { name } of metricData) {
-				defaultLeafAttributes[name] = 0
-			}
+		for (const { name } of metricData) {
+			defaultLeafAttributes[name] = 0
 		}
 
 		for (const { data } of root.descendants()) {
@@ -56,7 +54,7 @@ export class NodeDecorator {
 			id++
 			if (data.attributes) {
 				data.attributes[NodeMetricDataService.UNARY_METRIC] = 1
-				if (metricData?.length && !hasChildren(data)) {
+				if (!hasChildren(data)) {
 					for (const metric of metricData) {
 						if (data.attributes[metric.name] === undefined) {
 							data.attributes[metric.name] = 0
@@ -91,16 +89,14 @@ export class NodeDecorator {
 	}
 
 	public static decorateMapWithPathAttribute(file: CCFile) {
-		if (file?.map) {
-			const root = hierarchy<CodeMapNode>(file.map)
-			root.each(node => {
-				if (node.parent) {
-					node.data.path = `${node.parent.data.path}/${node.data.name}` 
-				} else {
-					node.data.path = `/${node.data.name}`
-				}
-			})
-		}
+		const root = hierarchy<CodeMapNode>(file.map)
+		root.each(node => {
+			if (node.parent) {
+				node.data.path = `${node.parent.data.path}/${node.data.name}`
+			} else {
+				node.data.path = `/${node.data.name}`
+			}
+		})
 		return file
 	}
 
@@ -113,7 +109,7 @@ export class NodeDecorator {
 	) {
 		const root = hierarchy<CodeMapNode>(map)
 		root.each((node: HierarchyNode<CodeMapNode>) => {
-			let edgeMetrics;
+			let edgeMetrics
 			const { data } = node
 
 			if (!hasChildren(data)) {
@@ -143,19 +139,16 @@ export class NodeDecorator {
 			// work.
 			for (const { data } of node.leaves()) {
 				if (data.isExcluded) {
-					continue;
+					continue
 				}
 				leafAttributes.push(data.attributes)
 				if (data.deltas !== undefined) {
 					leafDeltas.push(data.deltas)
 				}
-				if (!data.edgeAttributes) {
-					continue;
-				}
 				// Optimize for the common case
 				for (const [name, value] of Object.entries(data.edgeAttributes)) {
 					if (!value) {
-						continue;
+						continue
 					}
 					if (attributeTypes.edges[name] === AttributeTypeValue.relative) {
 						// Use the median after collecting all entries.
@@ -177,32 +170,24 @@ export class NodeDecorator {
 			}
 
 			for (const { name } of metricData) {
-				data.attributes[name] = this.aggregateLeafMetric(
-					leafAttributes,
-					name,
-					attributeTypes
-				)
+				data.attributes[name] = this.aggregateLeafMetric(leafAttributes, name, attributeTypes)
 				if (isDeltaState) {
-					data.deltas[name] = this.aggregateLeafMetric(
-						leafDeltas,
-						name,
-						attributeTypes
-					)
+					data.deltas[name] = this.aggregateLeafMetric(leafDeltas, name, attributeTypes)
 				}
 			}
 
 			if (edgeMetrics) {
 				for (const [name, value] of Object.entries(edgeMetrics)) {
-					const temp = value as Record<string, number[]>
-					data.edgeAttributes[name].incoming = this.median(temp.incoming)
-					data.edgeAttributes[name].outgoing = this.median(temp.outgoing)
+					const temporary = value as Record<string, number[]>
+					data.edgeAttributes[name].incoming = this.median(temporary.incoming)
+					data.edgeAttributes[name].outgoing = this.median(temporary.outgoing)
 				}
 			}
 		})
 		return map
 	}
 
-	private static aggregateLeafMetric(metrics: KeyValuePair[], metricName: string, attributeTypes: AttributeTypes): number {
+	private static aggregateLeafMetric(metrics: KeyValuePair[], metricName: string, attributeTypes: AttributeTypes) {
 		if (attributeTypes.nodes[metricName] === AttributeTypeValue.relative) {
 			const metricValues: number[] = []
 			for (const metric of metrics) {
@@ -211,7 +196,7 @@ export class NodeDecorator {
 					metricValues.push(number)
 				}
 			}
-	
+
 			if (metricValues.length === 0) {
 				return 0
 			}
@@ -221,7 +206,7 @@ export class NodeDecorator {
 		return metrics.reduce((partialSum, a) => partialSum + (a[metricName] ?? 0), 0)
 	}
 
-	private static median(numbers: number[]): number {
+	private static median(numbers: number[]) {
 		const middle = (numbers.length - 1) / 2
 		numbers.sort((a, b) => a - b)
 		return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2

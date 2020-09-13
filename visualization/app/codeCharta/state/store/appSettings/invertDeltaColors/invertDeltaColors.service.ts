@@ -31,7 +31,7 @@ export class InvertDeltaColorsService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: InvertDeltaColorsSubscriber) {
-		$rootScope.$on(InvertDeltaColorsService.INVERT_DELTA_COLORS_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(InvertDeltaColorsService.INVERT_DELTA_COLORS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onInvertDeltaColorsChanged(data.invertDeltaColors)
 		})
 	}

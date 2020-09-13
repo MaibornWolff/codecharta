@@ -1,9 +1,9 @@
 export class RibbonBarPageObject {
 	private EXPANDED = "expanded"
 
-	public async isPanelOpen(selector: string): Promise<boolean> {
+	public async isPanelOpen(selector: string) {
 		await page.waitForSelector(`#${selector}-card`)
-		const classNames = await page.$eval(`#${selector}-card`, el => el["className"])
+		const classNames = await page.$eval(`#${selector}-card`, element => element["className"])
 		return classNames.includes(this.EXPANDED)
 	}
 
@@ -20,14 +20,14 @@ export class RibbonBarPageObject {
 		return !wasOpen
 	}
 
-	public async focusSomething(): Promise<void> {
+	public async focusSomething() {
 		await page.evaluate(() => {
 			const element = <HTMLElement>document.getElementsByClassName("md-ink-ripple")[0]
 			element.focus()
 		})
 	}
 
-	public async getActiveClassName(): Promise<string> {
+	public async getActiveClassName() {
 		return page.evaluate(() => document.activeElement.className)
 	}
 }

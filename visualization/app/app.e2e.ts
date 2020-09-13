@@ -6,8 +6,8 @@ describe("app", () => {
 	})
 
 	it("should not have errors in console", async () => {
-		page.on("console", msg => {
-			expect(msg.type).not.toBe("error")
+		page.on("console", message => {
+			expect(message.type).not.toBe("error")
 		})
 		await goto()
 		await page.waitForSelector("#loading-gif-file", { visible: false })

@@ -47,12 +47,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		this._viewModel.isHoveredInCodeMap = !!(
-			this.node &&
-			this.node.path &&
-			hoveredBuilding.node &&
-			hoveredBuilding.node.path === this.node.path
-		)
+		this._viewModel.isHoveredInCodeMap = Boolean(this.node?.path && hoveredBuilding.node?.path === this.node.path)
 	}
 
 	public onBuildingUnhovered() {
@@ -80,8 +75,8 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		this._viewModel.isFolderOpened = !this._viewModel.isFolderOpened
 	}
 
-	public isLeaf(node: CodeMapNode = this.node): boolean {
-		return !(node && node.children && node.children.length > 0)
+	public isLeaf(node: CodeMapNode = this.node) {
+		return !(node?.children?.length > 0)
 	}
 
 	public getMarkingColor() {
@@ -90,15 +85,15 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return markingColor ? markingColor : defaultColor
 	}
 
-	public isSearched(): boolean {
-		if (this.node != null && this.storeService.getState().dynamicSettings.searchedNodePaths) {
+	public isSearched() {
+		if (this.node && this.storeService.getState().dynamicSettings.searchedNodePaths) {
 			return this.storeService.getState().dynamicSettings.searchedNodePaths.has(this.node.path)
 		}
 		return false
 	}
 
 	public openRootFolderByDefault(depth: number) {
-		if (depth == 0) {
+		if (depth === 0) {
 			this._viewModel.isFolderOpened = true
 		}
 	}

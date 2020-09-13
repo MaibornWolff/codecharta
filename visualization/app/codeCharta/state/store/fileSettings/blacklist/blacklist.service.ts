@@ -46,7 +46,7 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
-		$rootScope.$on(BlacklistService.BLACKLIST_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(BlacklistService.BLACKLIST_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onBlacklistChanged(data.blacklist)
 		})
 	}

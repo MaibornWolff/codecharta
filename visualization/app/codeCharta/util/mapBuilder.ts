@@ -2,14 +2,14 @@ import { CodeMapNode, NodeType } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 
 export class MapBuilder {
-	public static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>): CodeMapNode {
-		let rootNode: CodeMapNode = this.getEmptyRootNode()
+	public static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {
+		let rootNode = this.getEmptyRootNode()
 		const sortedNodes = this.getHashMapSortedByPath(hashMapWithAllNodes)
 
 		sortedNodes.forEach((node: CodeMapNode, path: string) => {
 			node.children = []
-			const parentNode: CodeMapNode = this.getParentNode(sortedNodes, path, rootNode)
-			if (node.path == CodeChartaService.ROOT_PATH) {
+			const parentNode = this.getParentNode(sortedNodes, path, rootNode)
+			if (node.path === CodeChartaService.ROOT_PATH) {
 				rootNode = node
 			} else {
 				parentNode.children.push(node)
@@ -28,12 +28,12 @@ export class MapBuilder {
 		}
 	}
 
-	private static getHashMapSortedByPath(hashMap: Map<string, CodeMapNode>): Map<string, CodeMapNode> {
+	private static getHashMapSortedByPath(hashMap: Map<string, CodeMapNode>) {
 		return new Map([...hashMap.entries()].sort((a, b) => a[0].length - b[0].length))
 	}
 
-	private static getParentPath(path: string): string {
-		return path.substring(0, path.lastIndexOf("/"))
+	private static getParentPath(path: string) {
+		return path.slice(0, Math.max(0, path.lastIndexOf("/")))
 	}
 
 	private static getParentNode(sortedHashMap: Map<string, CodeMapNode>, path: string, rootNode: CodeMapNode): CodeMapNode {
@@ -43,8 +43,9 @@ export class MapBuilder {
 
 		const parentPath = this.getParentPath(path)
 
-		if (sortedHashMap.has(parentPath)) {
-			return sortedHashMap.get(parentPath)
+		const node = sortedHashMap.get(parentPath)
+		if (node) {
+			return node
 		}
 
 		return this.getParentNode(sortedHashMap, parentPath, rootNode)

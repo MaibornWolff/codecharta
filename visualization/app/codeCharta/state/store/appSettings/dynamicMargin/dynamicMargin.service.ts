@@ -29,7 +29,7 @@ export class DynamicMarginService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: DynamicMarginSubscriber) {
-		$rootScope.$on(DynamicMarginService.DYNAMIC_MARGIN_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(DynamicMarginService.DYNAMIC_MARGIN_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onDynamicMarginChanged(data.dynamicMargin)
 		})
 	}

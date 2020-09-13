@@ -7,7 +7,7 @@ import {
 export function isAttributeSideBarVisible(
 	state: boolean = setIsAttributeSideBarVisible().payload,
 	action: IsAttributeSideBarVisibleAction
-): boolean {
+) {
 	switch (action.type) {
 		case IsAttributeSideBarVisibleActions.OPEN_ATTRIBUTE_SIDE_BAR:
 			return true

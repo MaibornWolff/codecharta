@@ -31,7 +31,7 @@ export class ColorMetricService implements StoreSubscriber, NodeMetricDataSubscr
 	}
 
 	public reset(nodeMetricData: NodeMetricData[]) {
-		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
+		const { colorMetric } = this.storeService.getState().dynamicSettings
 
 		if (isMetricUnavailable(nodeMetricData, colorMetric)) {
 			const newColorMetric = getMetricNameFromIndexOrLast(nodeMetricData, 2)
@@ -48,7 +48,7 @@ export class ColorMetricService implements StoreSubscriber, NodeMetricDataSubscr
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: ColorMetricSubscriber) {
-		$rootScope.$on(ColorMetricService.COLOR_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(ColorMetricService.COLOR_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onColorMetricChanged(data.colorMetric)
 		})
 	}

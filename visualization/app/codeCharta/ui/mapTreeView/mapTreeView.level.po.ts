@@ -17,7 +17,7 @@ export class MapTreeViewLevelPageObject {
 	}
 
 	public async nodeExists(path: string) {
-		return !!(await page.$(`[id='${path}']`))
+		return Boolean(await page.$(`[id='${path}']`))
 	}
 
 	public async isNodeMarked(path: string) {

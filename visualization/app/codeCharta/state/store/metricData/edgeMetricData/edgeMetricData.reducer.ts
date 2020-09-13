@@ -11,7 +11,7 @@ export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 // Required for performance improvements
 export let nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
-export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().payload, action: EdgeMetricDataAction): EdgeMetricData[] {
+export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().payload, action: EdgeMetricDataAction) {
 	switch (action.type) {
 		case EdgeMetricDataActions.SET_EDGE_METRIC_DATA:
 			return action.payload
@@ -38,7 +38,7 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	return newEdgeMetricData
 }
 
-function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]): boolean {
+function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]) {
 	if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
 		return (
 			!CodeMapHelper.isPathBlacklisted(edge.fromNodeName, blacklist, BlacklistType.exclude) &&
@@ -55,7 +55,7 @@ function addEdgeToCalculationMap(edge: Edge) {
 	}
 }
 
-function getEntryForMetric(edgeMetricName: string): EdgeMetricCountMap {
+function getEntryForMetric(edgeMetricName: string) {
 	let nodeEdgeMetric = nodeEdgeMetricsMap.get(edgeMetricName)
 	if (!nodeEdgeMetric) {
 		nodeEdgeMetric = new Map()
@@ -80,7 +80,7 @@ function addEdgeToNodes(edgeMetricEntry: EdgeMetricCountMap, fromNode: string, t
 	}
 }
 
-function getMetricDataFromMap(): EdgeMetricData[] {
+function getMetricDataFromMap() {
 	const metricData: EdgeMetricData[] = []
 
 	nodeEdgeMetricsMap.set(EdgeMetricDataService.NONE_METRIC, new Map())

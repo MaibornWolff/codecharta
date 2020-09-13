@@ -30,7 +30,7 @@ export class PanelSelectionService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: PanelSelectionSubscriber) {
-		$rootScope.$on(PanelSelectionService.PANEL_SELECTION_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(PanelSelectionService.PANEL_SELECTION_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onPanelSelectionChanged(data.panelSelection)
 		})
 	}

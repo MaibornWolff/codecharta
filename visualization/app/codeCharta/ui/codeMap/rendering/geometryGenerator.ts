@@ -21,7 +21,7 @@ export interface BuildResult {
 }
 
 export class GeometryGenerator {
-	private static MINIMAL_BUILDING_HEIGHT = 1.0
+	private static MINIMAL_BUILDING_HEIGHT = 1
 
 	private floorGradient: string[]
 
@@ -35,9 +35,7 @@ export class GeometryGenerator {
 		// performance by preventing intermediate transformations such as arrays
 		// that are later on converted to typed arrays. Thus, no
 		// `IntermediateVertexData` should be created.
-		for (let i = 0; i < nodes.length; ++i) {
-			const n: Node = nodes[i]
-
+		for (const [i, n] of nodes.entries()) {
 			if (!n.isLeaf) {
 				this.addFloor(data, n, i, desc)
 			} else {
@@ -51,7 +49,7 @@ export class GeometryGenerator {
 		}
 	}
 
-	private getMaxNodeDepth(nodes: Node[]): number {
+	private getMaxNodeDepth(nodes: Node[]) {
 		let max = 0
 		nodes.forEach(node => {
 			max = Math.max(node.depth, max)
@@ -70,7 +68,7 @@ export class GeometryGenerator {
 		}
 	}
 
-	private ensureMinHeightIfUnlessDeltaNegative(height: number, delta: number): number {
+	private ensureMinHeightIfUnlessDeltaNegative(height: number, delta: number) {
 		return delta <= 0 ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT)
 	}
 
@@ -90,7 +88,7 @@ export class GeometryGenerator {
 			)
 		)
 
-		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, 0.0)
+		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, 0)
 	}
 
 	private getMarkingColorWithGradient(n: Node) {
@@ -109,11 +107,11 @@ export class GeometryGenerator {
 		desc: CodeMapGeometricDescription,
 		state: State,
 		isDeltaState: boolean
-	): void {
+	) {
 		const measures: BoxMeasures = this.mapNodeToLocalBox(n)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
 
-		let renderDelta = 0.0
+		let renderDelta = 0
 
 		if (isDeltaState && n.deltas && n.deltas[state.dynamicSettings.heightMetric] && n.heightDelta) {
 			renderDelta = n.heightDelta //set the transformed render delta
@@ -138,18 +136,18 @@ export class GeometryGenerator {
 		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, n.color, idx, renderDelta)
 	}
 
-	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: Material): Mesh {
-		const numVertices = data.positions.length
+	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: Material) {
+		const numberVertices = data.positions.length
 		const dimension = 3
 		const uvDimension = 2
-		const size = numVertices * dimension
+		const size = numberVertices * dimension
 
 		const positions: Float32Array = new Float32Array(size)
 		const normals: Float32Array = new Float32Array(size)
-		const uvs: Float32Array = new Float32Array(numVertices * uvDimension)
+		const uvs: Float32Array = new Float32Array(numberVertices * uvDimension)
 		const colors: Float32Array = new Float32Array(size)
 
-		for (let i = 0; i < numVertices; ++i) {
+		for (let i = 0; i < numberVertices; ++i) {
 			const pos = i * dimension
 			const pos1 = pos + 1
 			const pos2 = pos1 + 1

@@ -39,7 +39,7 @@ export class RangeSliderController
 	private _viewModel: {
 		colorRangeFrom: number
 		colorRangeTo: number
-		sliderOptions: any
+		sliderOptions: Record<string, any>
 	} = {
 		colorRangeFrom: null,
 		colorRangeTo: null,
@@ -163,9 +163,9 @@ export class RangeSliderController
 		const fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		const toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
-		$("range-slider-component #rangeFromInputField").css("width", fromWidth + "px")
-		$("range-slider-component #rangeToInputField").css("width", toWidth + "px")
-		$("range-slider-component #colorSlider").css("width", this.FULL_WIDTH_SLIDER - fromWidth - toWidth + "px")
+		$("range-slider-component #rangeFromInputField").css("width", `${fromWidth}px`)
+		$("range-slider-component #rangeToInputField").css("width", `${toWidth}px`)
+		$("range-slider-component #colorSlider").css("width", `${this.FULL_WIDTH_SLIDER - fromWidth - toWidth}px`)
 	}
 
 	private updateSliderColors() {
@@ -175,7 +175,7 @@ export class RangeSliderController
 	}
 
 	private getGreyRangeColors() {
-		const lightGrey = this.storeService.getState().appSettings.mapColors.lightGrey
+		const { lightGrey } = this.storeService.getState().appSettings.mapColors
 		return {
 			left: lightGrey,
 			middle: lightGrey,
@@ -184,7 +184,7 @@ export class RangeSliderController
 	}
 
 	private getColoredRangeColors() {
-		const appSettings = this.storeService.getState().appSettings
+		const { appSettings } = this.storeService.getState()
 		const mapColorPositive = appSettings.whiteColorBuildings ? appSettings.mapColors.lightGrey : appSettings.mapColors.positive
 
 		return {
@@ -200,9 +200,9 @@ export class RangeSliderController
 		const middleSection = slider.find(".rz-selection")
 		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
 
-		leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
-		middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
-		rightSection.css("cssText", "background: " + rangeColors.right + ";")
+		leftSection.css("cssText", `background: ${rangeColors.left} !important; width: ${rangeFromPercentage}%;`)
+		middleSection.css("cssText", `background: ${rangeColors.middle} !important;`)
+		rightSection.css("cssText", `background: ${rangeColors.right};`)
 	}
 }
 

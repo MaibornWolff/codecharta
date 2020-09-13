@@ -64,7 +64,7 @@ export class StoreService {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {
-		$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onStoreChanged(data.actionType)
 		})
 	}

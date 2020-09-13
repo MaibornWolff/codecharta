@@ -29,7 +29,7 @@ export class MapSizeService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MapSizeSubscriber) {
-		$rootScope.$on(MapSizeService.MAP_SIZE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(MapSizeService.MAP_SIZE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onMapSizeChanged(data.mapSize)
 		})
 	}

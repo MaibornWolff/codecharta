@@ -4,7 +4,7 @@ import { CCFile, MarkedPackage } from "../../../../codeCharta.model"
 export function getMergedMarkedPackages(inputFiles: CCFile[], withUpdatedPath: boolean): MarkedPackage[] {
 	const markedPackages: Map<string, MarkedPackage> = new Map()
 
-	if (inputFiles.length == 1) {
+	if (inputFiles.length === 1) {
 		return inputFiles[0].settings.fileSettings.markedPackages
 	}
 

@@ -82,7 +82,7 @@ export class CodeMapMouseEventService
 	}
 
 	public onShouldHoverNode(node: CodeMapNode) {
-		const buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
+		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
 				this.hoverBuilding(building)
@@ -213,7 +213,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	private hasMouseMoved(mouse: Coordinates): boolean {
+	private hasMouseMoved(mouse: Coordinates) {
 		return this.mouse.x !== mouse.x || this.mouse.y !== mouse.y
 	}
 
@@ -231,7 +231,7 @@ export class CodeMapMouseEventService
 	}
 
 	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
-		const lookUp = this.storeService.getState().lookUp
+		const { lookUp } = this.storeService.getState()
 		const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
 		hierarchy(codeMapNode).each(x => {
 			const building = lookUp.idToBuilding.get(x.data.id)

@@ -23,12 +23,12 @@ export class DialogService {
 		this.$mdDialog.show(dialog)
 	}
 
-	public showErrorDialog(msg = "An error occurred.", title = "Error", button = "Ok") {
-		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(msg).ok(button))
+	public showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
+		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
-	public async showErrorDialogAndOpenFileChooser(msg = "An error occurred.", title = "Error", button = "Ok") {
-		const prompt = this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(msg).ok(button)
+	public async showErrorDialogAndOpenFileChooser(message = "An error occurred.", title = "Error", button = "Ok") {
+		const prompt = this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button)
 		await this.$mdDialog.show(prompt)
 		document.getElementById("input-file-id").click()
 	}
@@ -49,7 +49,7 @@ export class DialogService {
 		this.showErrorDialogAndOpenFileChooser(htmlMessage, "Validation Error")
 	}
 
-	private buildHtmlMessage(symbol: string, validationResult: string[]): string {
+	private buildHtmlMessage(symbol: string, validationResult: string[]) {
 		return `<p>${validationResult.map(message => symbol + message).join("<br>")}</p>`
 	}
 }

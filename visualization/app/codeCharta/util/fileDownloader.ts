@@ -15,7 +15,7 @@ export class FileDownloader {
 		downloadSettingsNames: string[],
 		fileName: string
 	) {
-		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
+		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
 		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
@@ -54,18 +54,18 @@ export class FileDownloader {
 		return mergedBlacklist
 	}
 
-	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
+	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes) {
 		if (Object.keys(attributeTypes.edges).length === 0 && Object.keys(attributeTypes.nodes).length === 0) {
 			return {}
 		}
 		return attributeTypes
 	}
 
-	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType): BlacklistItem[] {
-		return blacklist.filter(x => x.type == type)
+	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType) {
+		return blacklist.filter(x => x.type === type)
 	}
 
-	private static undecorateMap(map: CodeMapNode): CodeMapNode {
+	private static undecorateMap(map: CodeMapNode) {
 		const copy: CodeMapNode = clone(map)
 		hierarchy(copy).each(node => {
 			delete node.data.isExcluded
@@ -81,7 +81,7 @@ export class FileDownloader {
 		return copy
 	}
 
-	private static undecorateEdges(edges: Edge[]): Edge[] {
+	private static undecorateEdges(edges: Edge[]) {
 		const copy: Edge[] = clone(edges)
 		for (const edge of copy) {
 			delete edge.visible

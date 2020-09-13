@@ -31,7 +31,7 @@ export class IsWhiteBackgroundService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: IsWhiteBackgroundSubscriber) {
-		$rootScope.$on(IsWhiteBackgroundService.IS_WHITE_BACKGROUND_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(IsWhiteBackgroundService.IS_WHITE_BACKGROUND_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onIsWhiteBackgroundChanged(data.isWhiteBackground)
 		})
 	}

@@ -31,7 +31,7 @@ export class InvertColorRangeService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: InvertColorRangeSubscriber) {
-		$rootScope.$on(InvertColorRangeService.INVERT_COLOR_RANGE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(InvertColorRangeService.INVERT_COLOR_RANGE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onInvertColorRangeChanged(data.invertColorRange)
 		})
 	}

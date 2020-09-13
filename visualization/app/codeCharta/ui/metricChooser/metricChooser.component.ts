@@ -79,7 +79,7 @@ export class MetricChooserController
 
 	public focusInputField(idName: string) {
 		this.$timeout(() => {
-			$(".metric-search." + idName).focus()
+			$(`.metric-search.${idName}`).focus()
 		}, 200)
 	}
 

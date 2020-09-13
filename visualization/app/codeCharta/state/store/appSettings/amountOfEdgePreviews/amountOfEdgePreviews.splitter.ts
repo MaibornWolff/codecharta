@@ -1,5 +1,5 @@
-import { AmountOfEdgePreviewsAction, setAmountOfEdgePreviews } from "./amountOfEdgePreviews.actions"
+import { setAmountOfEdgePreviews } from "./amountOfEdgePreviews.actions"
 
-export function splitAmountOfEdgePreviewsAction(payload: number): AmountOfEdgePreviewsAction {
+export function splitAmountOfEdgePreviewsAction(payload: number) {
 	return setAmountOfEdgePreviews(payload)
 }

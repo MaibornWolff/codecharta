@@ -4,7 +4,7 @@ import { CCFile, Edge } from "../../../../codeCharta.model"
 export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): Edge[] {
 	const edges: Map<string, Edge> = new Map()
 
-	if (inputFiles.length == 1) {
+	if (inputFiles.length === 1) {
 		return inputFiles[0].settings.fileSettings.edges
 	}
 

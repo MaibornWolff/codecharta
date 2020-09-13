@@ -31,8 +31,8 @@ export class MetricDataService implements NodeMetricDataSubscriber, EdgeMetricDa
 		this.$rootScope.$broadcast(MetricDataService.METRIC_DATA_COMPLETE)
 	}
 
-	private edgeMetricsAvailable(): boolean {
-		const edges = this.storeService.getState().fileSettings.edges
+	private edgeMetricsAvailable() {
+		const { edges } = this.storeService.getState().fileSettings
 		return edges.length === 0 || (edges.length > 0 && this.storeService.getState().metricData.edgeMetricData.length > 0)
 	}
 

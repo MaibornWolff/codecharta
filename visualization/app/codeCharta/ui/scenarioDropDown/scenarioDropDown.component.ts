@@ -56,9 +56,9 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 	public removeScenario(scenarioName) {
 		if (scenarioName !== "Complexity") {
 			ScenarioHelper.deleteScenario(scenarioName)
-			this.dialogService.showErrorDialog(scenarioName + " deleted.", "Info")
+			this.dialogService.showErrorDialog(`${scenarioName} deleted.`, "Info")
 		} else {
-			this.dialogService.showErrorDialog(scenarioName + " cannot be deleted as it is the default Scenario.", "Error")
+			this.dialogService.showErrorDialog(`${scenarioName} cannot be deleted as it is the default Scenario.`, "Error")
 		}
 	}
 }

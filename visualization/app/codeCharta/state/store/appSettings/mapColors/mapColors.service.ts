@@ -30,7 +30,7 @@ export class MapColorsService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: MapColorsSubscriber) {
-		$rootScope.$on(MapColorsService.MAP_COLORS_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(MapColorsService.MAP_COLORS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onMapColorsChanged(data.mapColors)
 		})
 	}

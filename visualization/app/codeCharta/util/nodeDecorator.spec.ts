@@ -1,13 +1,5 @@
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
-import {
-	CCFile,
-	CodeMapNode,
-	NodeType,
-	AttributeTypeValue,
-	AttributeTypes,
-	NodeMetricData,
-	EdgeMetricData
-} from "../codeCharta.model"
+import { CCFile, CodeMapNode, NodeType, AttributeTypeValue, AttributeTypes, NodeMetricData, EdgeMetricData } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
 import { HierarchyNode, hierarchy } from "d3"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
@@ -23,7 +15,7 @@ describe("nodeDecorator", () => {
 
 	beforeEach(() => {
 		file = clone(TEST_DELTA_MAP_A)
-		map = file.map
+		;({ map } = file)
 		deltaMap = clone(VALID_NODE_WITH_PATH_AND_DELTAS)
 		metricData = [
 			{ name: "rloc", maxValue: 999999 },
@@ -44,15 +36,16 @@ describe("nodeDecorator", () => {
 		NodeDecorator.decorateMapWithPathAttribute(file)
 	})
 
-	function allUniqueIds(map: HierarchyNode<CodeMapNode>): boolean {
+	function allUniqueIds(map: HierarchyNode<CodeMapNode>) {
 		const ids = new Set()
+		let isUnique = true
 		map.each(node => {
 			if (ids.has(node.id)) {
-				return false
+				isUnique = false
 			}
 			ids.add(node.id)
 		})
-		return true
+		return isUnique
 	}
 
 	describe("decorateMap", () => {

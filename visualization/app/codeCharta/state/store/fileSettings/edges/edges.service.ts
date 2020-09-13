@@ -46,7 +46,7 @@ export class EdgesService implements StoreSubscriber, FilesSelectionSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: EdgesSubscriber) {
-		$rootScope.$on(EdgesService.EDGES_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(EdgesService.EDGES_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onEdgesChanged(data.edges)
 		})
 	}

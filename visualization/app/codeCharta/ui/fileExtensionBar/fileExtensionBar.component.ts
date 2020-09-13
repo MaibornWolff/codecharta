@@ -34,16 +34,13 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 			.getMeshDescription()
 			.buildings.filter(building => building.node.isLeaf)
 
-		const visibleFileExtensions: string[] = this._viewModel.distribution
-			.filter(metric => metric.fileExtension !== "other")
-			.map(metric => metric.fileExtension)
+		const visibleFileExtensions = new Set(
+			this._viewModel.distribution.filter(metric => metric.fileExtension !== "other").map(metric => metric.fileExtension)
+		)
 
 		buildings.forEach(building => {
 			const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
-			if (
-				buildingExtension === hoveredExtension ||
-				(hoveredExtension === "other" && !visibleFileExtensions.includes(buildingExtension))
-			) {
+			if (buildingExtension === hoveredExtension || (hoveredExtension === "other" && !visibleFileExtensions.has(buildingExtension))) {
 				this.threeSceneService.addBuildingToHighlightingList(building)
 			}
 		})
@@ -63,7 +60,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	private setNewDistribution(map: CodeMapNode) {
-		const distributionMetric = this.storeService.getState().dynamicSettings.distributionMetric
+		const { distributionMetric } = this.storeService.getState().dynamicSettings
 		this._viewModel.distribution = FileExtensionCalculator.getMetricDistribution(map, distributionMetric)
 	}
 

@@ -21,7 +21,7 @@ export class IntermediateVertexData {
 		this.indices = new Array<number>()
 	}
 
-	public addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIdx: number, delta: number): number {
+	public addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIdx: number, delta: number) {
 		this.positions.push(pos)
 		this.normals.push(normal)
 		this.uvs.push(uv)
@@ -32,7 +32,7 @@ export class IntermediateVertexData {
 		return this.positions.length - 1
 	}
 
-	public addFace(i0: number, i1: number, i2: number): void {
+	public addFace(i0: number, i1: number, i2: number) {
 		this.indices.push(i0, i1, i2)
 	}
 }

@@ -31,7 +31,7 @@ export class DistributionMetricService implements StoreSubscriber, NodeMetricDat
 	}
 
 	public reset(metricData: NodeMetricData[]) {
-		const distributionMetric = this.storeService.getState().dynamicSettings.distributionMetric
+		const { distributionMetric } = this.storeService.getState().dynamicSettings
 
 		if (isMetricUnavailable(metricData, distributionMetric)) {
 			const newDistributionMetric = getMetricNameFromIndexOrLast(metricData, 0)
@@ -50,7 +50,7 @@ export class DistributionMetricService implements StoreSubscriber, NodeMetricDat
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
-		$rootScope.$on(DistributionMetricService.DISTRIBUTION_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(DistributionMetricService.DISTRIBUTION_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onDistributionMetricChanged(data.distributionMetric)
 		})
 	}

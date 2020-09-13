@@ -29,7 +29,7 @@ export class EdgeHeightService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeHeightSubscriber) {
-		$rootScope.$on(EdgeHeightService.EDGE_HEIGHT_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(EdgeHeightService.EDGE_HEIGHT_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onEdgeHeightChanged(data.edgeHeight)
 		})
 	}

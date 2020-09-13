@@ -505,7 +505,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should add property node", () => {
-			codeMapBuilding.setNode(undefined)
+			codeMapBuilding.setNode(CODE_MAP_BUILDING.node)
 			codeMapBuilding.parent = codeMapBuilding
 			codeMapBuilding.parent.setNode(TEST_NODE_ROOT)
 

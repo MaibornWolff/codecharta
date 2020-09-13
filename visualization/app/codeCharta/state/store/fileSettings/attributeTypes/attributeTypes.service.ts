@@ -48,7 +48,7 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: AttributeTypesSubscriber) {
-		$rootScope.$on(AttributeTypesService.ATTRIBUTE_TYPES_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(AttributeTypesService.ATTRIBUTE_TYPES_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onAttributeTypesChanged(data.attributeTypes)
 		})
 	}

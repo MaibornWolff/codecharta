@@ -31,7 +31,7 @@ export class AreaMetricService implements StoreSubscriber, NodeMetricDataSubscri
 	}
 
 	public reset(nodeMetricData: NodeMetricData[]) {
-		const areaMetric = this.storeService.getState().dynamicSettings.areaMetric
+		const { areaMetric } = this.storeService.getState().dynamicSettings
 
 		if (isMetricUnavailable(nodeMetricData, areaMetric)) {
 			const newAreaMetric = getMetricNameFromIndexOrLast(nodeMetricData, 0)
@@ -48,7 +48,7 @@ export class AreaMetricService implements StoreSubscriber, NodeMetricDataSubscri
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: AreaMetricSubscriber) {
-		$rootScope.$on(AreaMetricService.AREA_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(AreaMetricService.AREA_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onAreaMetricChanged(data.areaMetric)
 		})
 	}

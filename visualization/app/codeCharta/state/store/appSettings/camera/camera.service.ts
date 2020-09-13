@@ -31,7 +31,7 @@ export class CameraService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: CameraSubscriber) {
-		$rootScope.$on(CameraService.CAMERA_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(CameraService.CAMERA_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onStoreCameraChanged(data.camera)
 		})
 	}

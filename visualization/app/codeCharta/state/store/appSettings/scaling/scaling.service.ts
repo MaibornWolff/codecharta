@@ -30,7 +30,7 @@ export class ScalingService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: ScalingSubscriber) {
-		$rootScope.$on(ScalingService.SCALING_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(ScalingService.SCALING_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onScalingChanged(data.scaling)
 		})
 	}

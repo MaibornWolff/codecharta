@@ -30,7 +30,7 @@ export class FilesService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: FilesSelectionSubscriber) {
-		$rootScope.$on(FilesService.FILES_SELECTION_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(FilesService.FILES_SELECTION_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onFilesSelectionChanged(data.files)
 		})
 	}

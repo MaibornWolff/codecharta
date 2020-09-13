@@ -124,8 +124,8 @@ export class NodeContextMenuController
 	}
 
 	public setPosition(x: number, y: number) {
-		angular.element(this.$element[0].children[0]).css("top", y + "px")
-		angular.element(this.$element[0].children[0]).css("left", x + "px")
+		angular.element(this.$element[0].children[0]).css("top", `${y}px`)
+		angular.element(this.$element[0].children[0]).css("left", `${x}px`)
 	}
 
 	public flattenNode() {
@@ -146,7 +146,7 @@ export class NodeContextMenuController
 		}
 	}
 
-	public isNodeOrParentMarked(color: string): boolean {
+	public isNodeOrParentMarked(color?: string) {
 		if (!color || !this._viewModel.codeMapNode) {
 			return false
 		}
@@ -167,21 +167,21 @@ export class NodeContextMenuController
 		)
 	}
 
-	private isNodeMarked(): boolean {
-		return this.storeService.getState().fileSettings.markedPackages.some(mp => mp.path == this._viewModel.codeMapNode.path)
+	private isNodeMarked() {
+		return this.storeService.getState().fileSettings.markedPackages.some(mp => mp.path === this._viewModel.codeMapNode.path)
 	}
 
-	private packageMatchesColor(color: string): boolean {
+	private packageMatchesColor(color: string) {
 		return this.storeService
 			.getState()
-			.fileSettings.markedPackages.some(mp => mp.path == this._viewModel.codeMapNode.path && mp.color == color)
+			.fileSettings.markedPackages.some(mp => mp.path === this._viewModel.codeMapNode.path && mp.color === color)
 	}
 
-	private packageMatchesColorOfParentMP(color: string): boolean {
+	private packageMatchesColorOfParentMP(color: string) {
 		const parentMP = this.codeMapActionsService.getParentMP(this._viewModel.codeMapNode.path)
-		return !!this.storeService
-			.getState()
-			.fileSettings.markedPackages.find(mp => parentMP && mp.path == parentMP.path && mp.color == color)
+		return Boolean(
+			this.storeService.getState().fileSettings.markedPackages.find(mp => parentMP && mp.path === parentMP.path && mp.color === color)
+		)
 	}
 
 	public markFolder(color: string) {
@@ -196,17 +196,16 @@ export class NodeContextMenuController
 		this.storeService.dispatch(focusNode(this._viewModel.codeMapNode.path))
 	}
 
-	public isNodeOrParentFocused(): boolean {
-		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
-		if (this._viewModel.codeMapNode && focusedNodePath) {
-			return this._viewModel.codeMapNode.path.includes(focusedNodePath)
-		}
+	public isNodeOrParentFocused() {
+		const { focusedNodePath } = this.storeService.getState().dynamicSettings
+		return Boolean(focusedNodePath && this._viewModel.codeMapNode?.path.includes(focusedNodePath))
 	}
 
-	public isNodeFocused(): boolean {
+	public isNodeFocused() {
 		if (this._viewModel.codeMapNode) {
 			return this._viewModel.codeMapNode.path === this.storeService.getState().dynamicSettings.focusedNodePath
 		}
+		return false
 	}
 
 	public excludeNode() {
@@ -219,7 +218,7 @@ export class NodeContextMenuController
 	}
 
 	public nodeIsFolder() {
-		return this._viewModel.codeMapNode && this._viewModel.codeMapNode.children && this._viewModel.codeMapNode.children.length > 0
+		return this._viewModel.codeMapNode?.children?.length > 0
 	}
 
 	private synchronizeAngularTwoWayBinding() {

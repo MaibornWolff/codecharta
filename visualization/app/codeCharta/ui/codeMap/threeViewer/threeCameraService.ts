@@ -41,7 +41,7 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 	}
 
 	public setPosition() {
-		const camera = this.storeService.getState().appSettings.camera
+		const { camera } = this.storeService.getState().appSettings
 		this.camera.position.set(camera.x, camera.y, camera.z)
 	}
 }

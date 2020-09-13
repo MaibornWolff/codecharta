@@ -31,8 +31,8 @@ export class NodeSearchService implements SearchPatternSubscriber {
 		this.applySettingsSearchedNodePaths()
 	}
 
-	private findSearchedNodes(searchPattern: string): CodeMapNode[] {
-		if (searchPattern.length == 0) {
+	private findSearchedNodes(searchPattern: string) {
+		if (searchPattern.length === 0) {
 			return []
 		}
 		const nodes = hierarchy(this.codeMapPreRenderService.getRenderMap())
@@ -42,7 +42,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	}
 
 	private applySettingsSearchedNodePaths() {
-		const newSearchedNodePaths = this.searchedNodes.length == 0 ? [] : this.searchedNodes.map(x => x.path)
+		const newSearchedNodePaths = this.searchedNodes.map(x => x.path)
 		this.storeService.dispatch(setSearchedNodePaths(new Set(newSearchedNodePaths)))
 	}
 
@@ -51,7 +51,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: NodeSearchSubscriber) {
-		$rootScope.$on(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, (event, data) => {
+		$rootScope.$on(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, (_event_, data) => {
 			subscriber.onNodeSearchComplete(data)
 		})
 	}

@@ -36,7 +36,7 @@ export class DialogGlobalSettingsController
 	}
 
 	private initDialogOnClick() {
-		const appSettings = this.storeService.getState().appSettings
+		const { appSettings } = this.storeService.getState()
 		this.onHideFlatBuildingsChanged(appSettings.hideFlatBuildings)
 		this.onIsWhiteBackgroundChanged(appSettings.isWhiteBackground)
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)

@@ -29,7 +29,7 @@ export class IsLoadingFileService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: IsLoadingFileSubscriber) {
-		$rootScope.$on(IsLoadingFileService.IS_LOADING_FILE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(IsLoadingFileService.IS_LOADING_FILE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onIsLoadingFileChanged(data.isLoadingFile)
 		})
 	}

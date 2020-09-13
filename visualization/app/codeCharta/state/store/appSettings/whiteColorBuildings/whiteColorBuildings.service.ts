@@ -31,7 +31,7 @@ export class WhiteColorBuildingsService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: WhiteColorBuildingsSubscriber) {
-		$rootScope.$on(WhiteColorBuildingsService.WHITE_COLOR_BUILDINGS_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(WhiteColorBuildingsService.WHITE_COLOR_BUILDINGS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onWhiteColorBuildingsChanged(data.whiteColorBuildings)
 		})
 	}

@@ -21,7 +21,7 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 
 	public onBuildingRightClicked(building: CodeMapBuilding) {
 		const codeMapNode = this.storeService.getState().lookUp.idToNode.get(building.node.id)
-		const focusedNodePath = this.storeService.getState().dynamicSettings.focusedNodePath
+		const { focusedNodePath } = this.storeService.getState().dynamicSettings
 		this._viewModel.isNodeFocused = codeMapNode.path === focusedNodePath
 		this._viewModel.isParentFocused = codeMapNode.path.includes(focusedNodePath) && codeMapNode.path !== focusedNodePath
 	}

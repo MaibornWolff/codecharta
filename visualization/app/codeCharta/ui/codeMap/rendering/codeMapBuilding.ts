@@ -22,7 +22,7 @@ export class CodeMapBuilding {
 		this._node = node
 	}
 
-	public getCenterPoint(mapSize: number): Vector3 {
+	public getCenterPoint(mapSize: number) {
 		return new Vector3(
 			this._node.x0 - mapSize + this._node.width / 2,
 			this._node.z0 + this._node.height,
@@ -33,32 +33,38 @@ export class CodeMapBuilding {
 	public decreaseLightness(value: number) {
 		const defaultColorHSL = ColorConverter.hexToHSL(this._defaultColor)
 		defaultColorHSL.decreaseLightness(value)
-		defaultColorHSL.getLightness() < 10
-			? defaultColorHSL.setLightness(10)
-			: defaultColorHSL.setLightness(defaultColorHSL.getLightness())
+		if (defaultColorHSL.getLightness() < 10) {
+			defaultColorHSL.setLightness(10)
+		} else {
+			defaultColorHSL.setLightness(defaultColorHSL.getLightness())
+		}
 		this._color = defaultColorHSL.toHex()
 
 		if (this._node.deltas) {
 			const deltaColorHSL = ColorConverter.hexToHSL(this._defaultDeltaColor)
 			deltaColorHSL.decreaseLightness(value)
-			deltaColorHSL.getLightness() < 10 ? deltaColorHSL.setLightness(10) : deltaColorHSL.setLightness(deltaColorHSL.getLightness())
+			if (deltaColorHSL.getLightness() < 10) {
+				deltaColorHSL.setLightness(10)
+			} else {
+				deltaColorHSL.setLightness(deltaColorHSL.getLightness())
+			}
 			this._deltaColor = deltaColorHSL.toHex()
 		}
 	}
 
-	public getColorVector(): Vector3 {
+	public getColorVector() {
 		return ColorConverter.getVector3(this._color)
 	}
 
-	public getDefaultColorVector(): Vector3 {
+	public getDefaultColorVector() {
 		return ColorConverter.getVector3(this._defaultColor)
 	}
 
-	public getDeltaColorVector(): Vector3 {
+	public getDeltaColorVector() {
 		return ColorConverter.getVector3(this._deltaColor)
 	}
 
-	public getDefaultDeltaColorVector(): Vector3 {
+	public getDefaultDeltaColorVector() {
 		return ColorConverter.getVector3(this._defaultDeltaColor)
 	}
 
@@ -71,27 +77,27 @@ export class CodeMapBuilding {
 		return this._id === building._id
 	}
 
-	public get id(): number {
+	public get id() {
 		return this._id
 	}
 
-	public get boundingBox(): Box3 {
+	public get boundingBox() {
 		return this._boundingBox
 	}
 
-	public get color(): string {
+	public get color() {
 		return this._color
 	}
 
-	public get node(): Node {
+	public get node() {
 		return this._node
 	}
 
-	public get deltaColor(): string {
+	public get deltaColor() {
 		return this._deltaColor
 	}
 
-	public get defaultDeltaColor(): string {
+	public get defaultDeltaColor() {
 		return this._defaultDeltaColor
 	}
 

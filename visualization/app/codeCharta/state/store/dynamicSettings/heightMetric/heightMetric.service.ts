@@ -31,7 +31,7 @@ export class HeightMetricService implements StoreSubscriber, NodeMetricDataSubsc
 	}
 
 	public reset(nodeMetricData: NodeMetricData[]) {
-		const heightMetric = this.storeService.getState().dynamicSettings.heightMetric
+		const { heightMetric } = this.storeService.getState().dynamicSettings
 
 		if (isMetricUnavailable(nodeMetricData, heightMetric)) {
 			const newHeightMetric = getMetricNameFromIndexOrLast(nodeMetricData, 1)
@@ -48,7 +48,7 @@ export class HeightMetricService implements StoreSubscriber, NodeMetricDataSubsc
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: HeightMetricSubscriber) {
-		$rootScope.$on(HeightMetricService.HEIGHT_METRIC_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(HeightMetricService.HEIGHT_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onHeightMetricChanged(data.heightMetric)
 		})
 	}

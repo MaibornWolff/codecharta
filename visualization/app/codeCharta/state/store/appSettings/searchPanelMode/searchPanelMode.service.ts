@@ -32,7 +32,7 @@ export class SearchPanelModeService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SearchPanelModeSubscriber) {
-		$rootScope.$on(SearchPanelModeService.SEARCH_PANEL_MODE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SearchPanelModeService.SEARCH_PANEL_MODE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onSearchPanelModeChanged(data.searchPanelMode)
 		})
 	}

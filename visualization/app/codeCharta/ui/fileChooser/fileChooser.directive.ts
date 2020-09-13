@@ -13,6 +13,6 @@ export class FileChooserDirective {
 	 * Links the unique id to the scope id and increments it
 	 */
 	public link($scope) {
-		$scope.id = "fileChooser" + this.uniqueId++
+		$scope.id = `fileChooser${this.uniqueId++}`
 	}
 }

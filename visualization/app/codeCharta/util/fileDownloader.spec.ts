@@ -15,7 +15,7 @@ describe("fileDownloader", () => {
 
 	beforeEach(() => {
 		map = VALID_NODE_DECORATED
-		fileMeta = TEST_FILE_DATA.fileMeta
+		;({ fileMeta } = TEST_FILE_DATA)
 		filesettings = TEST_FILE_DATA.settings.fileSettings
 		filesettings.edges = VALID_EDGES_DECORATED
 		filesettings.blacklist = [

@@ -3,8 +3,7 @@ import "../../state/state.module"
 
 import angular from "angular"
 
-import { blacklistPanelFlattenComponent } from "./blacklistPanel.component"
-import { blacklistPanelExcludeComponent } from "./blacklistPanel.component"
+import { blacklistPanelFlattenComponent, blacklistPanelExcludeComponent } from "./blacklistPanel.component"
 
 angular
 	.module("app.codeCharta.ui.blacklistPanel", ["app.codeCharta.state"])

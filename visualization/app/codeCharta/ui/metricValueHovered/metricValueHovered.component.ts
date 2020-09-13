@@ -69,7 +69,8 @@ export class MetricValueHoveredController
 
 		if (heightDelta > 0) {
 			return this.POSITIVE_COLOR
-		} else if (heightDelta < 0) {
+		}
+		if (heightDelta < 0) {
 			return this.NEGATIVE_COLOR
 		}
 		return this.NEUTRAL_COLOR

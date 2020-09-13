@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { NodeMetricDataActions, calculateNewNodeMetricData } from "./nodeMetricData.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { AttributeTypeValue, BlacklistItem, NodeMetricData } from "../../../../codeCharta.model"
+import { BlacklistItem, NodeMetricData } from "../../../../codeCharta.model"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
@@ -43,20 +43,20 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 		)
 	}
 
-	public getMetrics(): string[] {
+	public getMetrics() {
 		return this.storeService.getState().metricData.nodeMetricData.map(x => x.name)
 	}
 
-	public isMetricAvailable(metricName: string): boolean {
-		return this.storeService.getState().metricData.nodeMetricData.some(x => x.name == metricName)
+	public isMetricAvailable(metricName: string) {
+		return this.storeService.getState().metricData.nodeMetricData.some(x => x.name === metricName)
 	}
 
-	public getMaxMetricByMetricName(metricName: string): number {
-		const metric: NodeMetricData = this.storeService.getState().metricData.nodeMetricData.find(x => x.name == metricName)
+	public getMaxMetricByMetricName(metricName: string) {
+		const metric: NodeMetricData = this.storeService.getState().metricData.nodeMetricData.find(x => x.name === metricName)
 		return metric?.maxValue
 	}
 
-	public getAttributeTypeByMetric(metricName: string): AttributeTypeValue {
+	public getAttributeTypeByMetric(metricName: string) {
 		return this.storeService.getState().fileSettings.attributeTypes.nodes[metricName]
 	}
 
@@ -69,7 +69,7 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: NodeMetricDataSubscriber) {
-		$rootScope.$on(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onNodeMetricDataChanged(data.nodeMetricData)
 		})
 	}

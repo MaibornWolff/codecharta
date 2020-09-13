@@ -15,7 +15,7 @@ import { getCCFile } from "./util/fileHelper"
 
 export class CodeChartaService {
 	public static ROOT_NAME = "root"
-	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
+	public static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
 	public static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 
@@ -26,17 +26,17 @@ export class CodeChartaService {
 			try {
 				validate(nameDataPair.content)
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
-			} catch (e) {
-				if (!_.isEmpty(e.error)) {
+			} catch (error) {
+				if (!_.isEmpty(error.error)) {
 					this.fileStates = []
 					this.storeService.dispatch(setIsLoadingFile(false))
-					this.dialogService.showValidationErrorDialog(e)
+					this.dialogService.showValidationErrorDialog(error)
 					break
 				}
 
-				if (!_.isEmpty(e.warning)) {
+				if (!_.isEmpty(error.warning)) {
 					this.addFile(nameDataPair.fileName, nameDataPair.content)
-					this.dialogService.showValidationWarningDialog(e)
+					this.dialogService.showValidationWarningDialog(error)
 				}
 			}
 		}
@@ -61,9 +61,7 @@ export class CodeChartaService {
 		const names = [areaMetric, heightMetric, colorMetric]
 		const metricNames = new Set(this.storeService.getState().metricData.nodeMetricData.map(x => x.name))
 
-		const existsInMetricData = (metric: string) => metricNames.has(metric)
-
-		if (names.every(existsInMetricData)) {
+		if (names.every(metric => metricNames.has(metric))) {
 			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
 		}
 	}

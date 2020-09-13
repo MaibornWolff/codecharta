@@ -8,7 +8,7 @@ const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
 const HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
 
-function countNodes(node: { children?: any }): number {
+function countNodes(node: { children?: unknown[] }) {
 	let count = 1
 	if (node.children && node.children.length > 0) {
 		for (let i = 0; i < node.children.length; i++) {
@@ -18,8 +18,8 @@ function countNodes(node: { children?: any }): number {
 	return count
 }
 
-function buildingArrayToMap(highlighted: CodeMapBuilding[]): Map<number, CodeMapBuilding> {
-	const geomMap = new Map()
+function buildingArrayToMap(highlighted: CodeMapBuilding[]) {
+	const geomMap = new Map<number, CodeMapBuilding>()
 	highlighted.forEach(building => {
 		geomMap.set(building.id, building)
 	})
@@ -27,7 +27,7 @@ function buildingArrayToMap(highlighted: CodeMapBuilding[]): Map<number, CodeMap
 	return geomMap
 }
 
-function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, state: State, isDeltaState: boolean): Node {
+function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, state: State, isDeltaState: boolean) {
 	const flattened: boolean = isNodeFlat(map, state)
 	const height = FOLDER_HEIGHT
 	const width = 100
@@ -56,7 +56,7 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
 		color: getBuildingColor(map, state, isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize),
 		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize)
-	}
+	} as Node
 }
 
 function buildNodeFrom(
@@ -65,7 +65,7 @@ function buildNodeFrom(
 	maxHeight: number,
 	s: State,
 	isDeltaState: boolean
-): Node {
+) {
 	const isNodeLeaf = !(squaredNode.children && squaredNode.children.length > 0)
 	const flattened: boolean = isNodeFlat(squaredNode.data, s)
 	const heightValue: number = getHeightValue(s, squaredNode, maxHeight, flattened)
@@ -73,8 +73,8 @@ function buildNodeFrom(
 	const width = squaredNode.x1 - squaredNode.x0
 	const height = Math.abs(isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) : FOLDER_HEIGHT)
 	const length = squaredNode.y1 - squaredNode.y0
-	const x0 = squaredNode.x0
-	const y0 = squaredNode.y0
+	const { x0 } = squaredNode
+	const { y0 } = squaredNode
 	const z0 = depth * FOLDER_HEIGHT
 
 	return {
@@ -100,10 +100,10 @@ function buildNodeFrom(
 		color: getBuildingColor(squaredNode.data, s, isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),
 		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize)
-	}
+	} as Node
 }
 
-function getHeightValue(s: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean): number {
+function getHeightValue(s: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {
 	const heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
 
 	if (flattened) {
@@ -116,7 +116,7 @@ function getHeightValue(s: State, squaredNode: HierarchyRectangularNode<CodeMapN
 	return heightValue
 }
 
-function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, s: State, flattened: boolean): boolean {
+function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, s: State, flattened: boolean) {
 	if (squaredNode.isExcluded || (isNodeLeaf && s.appSettings.hideFlatBuildings && flattened)) {
 		return false
 	}
@@ -142,7 +142,7 @@ function getOutgoingEdgePoint(width: number, height: number, length: number, vec
 	return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + 0.75 * length)
 }
 
-function isNodeFlat(codeMapNode: CodeMapNode, s: State): boolean {
+function isNodeFlat(codeMapNode: CodeMapNode, s: State) {
 	if (codeMapNode.isFlattened) {
 		return true
 	}
@@ -151,38 +151,41 @@ function isNodeFlat(codeMapNode: CodeMapNode, s: State): boolean {
 		return s.dynamicSettings.searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, s)
 	}
 
-	if (s.appSettings.showOnlyBuildingsWithEdges && s.fileSettings.edges?.filter(edge => edge.visible).length > 0) {
+	if (s.appSettings.showOnlyBuildingsWithEdges && s.fileSettings.edges.filter(edge => edge.visible).length > 0) {
 		return nodeHasNoVisibleEdges(codeMapNode, s)
 	}
 
 	return false
 }
 
-function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, s: State): boolean {
+function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, s: State) {
 	return (
 		codeMapNode.edgeAttributes[s.dynamicSettings.edgeMetric] === undefined ||
-		s.fileSettings.edges.filter(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName).length == 0
+		s.fileSettings.edges.filter(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName).length === 0
 	)
 }
 
-function isNodeNonSearched(squaredNode: CodeMapNode, s: State): boolean {
+function isNodeNonSearched(squaredNode: CodeMapNode, s: State) {
 	return !s.dynamicSettings.searchedNodePaths.has(squaredNode.path)
 }
 
-function getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean): string {
+function getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean) {
 	const mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
 	if (isDeltaState) {
 		return s.appSettings.mapColors.base
 	}
 	const metricValue: number = node.attributes[s.dynamicSettings.colorMetric]
 
-	if (metricValue == null) {
+	if (metricValue === undefined) {
 		return s.appSettings.mapColors.base
-	} else if (flattened) {
+	}
+	if (flattened) {
 		return s.appSettings.mapColors.flat
-	} else if (metricValue < s.dynamicSettings.colorRange.from) {
+	}
+	if (metricValue < s.dynamicSettings.colorRange.from) {
 		return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
-	} else if (metricValue > s.dynamicSettings.colorRange.to) {
+	}
+	if (metricValue > s.dynamicSettings.colorRange.to) {
 		return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
 	}
 	return s.appSettings.mapColors.neutral

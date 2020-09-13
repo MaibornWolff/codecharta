@@ -31,7 +31,7 @@ export class SortingOrderAscendingService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: SortingOrderAscendingSubscriber) {
-		$rootScope.$on(SortingOrderAscendingService.SORTING_ORDER_ASCENDING_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(SortingOrderAscendingService.SORTING_ORDER_ASCENDING_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onSortingOrderAscendingChanged(data.sortingOrderAscending)
 		})
 	}

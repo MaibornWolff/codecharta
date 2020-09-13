@@ -3,7 +3,7 @@ import convert from "color-convert"
 export class HSL {
 	constructor(private h: number, private s: number, private l: number) {}
 
-	public toHex(): string {
+	public toHex() {
 		return `#${convert.hsl.hex([this.h, this.s, this.l])}`
 	}
 
@@ -19,7 +19,7 @@ export class HSL {
 		this.l = value
 	}
 
-	public toString(): string {
+	public toString() {
 		return `hsl(${this.h}, ${this.s}%, ${this.l}%)`
 	}
 }

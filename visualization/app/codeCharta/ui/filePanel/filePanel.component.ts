@@ -82,12 +82,12 @@ export class FilePanelController implements FilesSelectionSubscriber {
 			this._viewModel.renderState = FileSelectionState.Comparison
 
 			this._viewModel.selectedFileNames.delta.reference =
-				visibleFileStates.length == 2
+				visibleFileStates.length === 2
 					? visibleFileStates.find(x => x.selectedAs === FileSelectionState.Reference).file.fileMeta.fileName
 					: visibleFileStates[0].file.fileMeta.fileName
 
 			this._viewModel.selectedFileNames.delta.comparison =
-				visibleFileStates.length == 2
+				visibleFileStates.length === 2
 					? visibleFileStates.find(x => x.selectedAs === FileSelectionState.Comparison).file.fileMeta.fileName
 					: visibleFileStates[0].file.fileMeta.fileName
 		} else {
@@ -147,16 +147,18 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		this.onPartialFilesChange(invertedFileNames)
 	}
 
-	private getLastVisibleFileName(): string {
+	private getLastVisibleFileName() {
 		if (this.lastRenderState === FileSelectionState.Single) {
 			return this._viewModel.selectedFileNames.single
-		} else if (this.lastRenderState === FileSelectionState.Partial) {
+		}
+		if (this.lastRenderState === FileSelectionState.Partial) {
 			const visibleFileStates = getVisibleFileStates(this._viewModel.files)
 			if (fileStatesAvailable(this._viewModel.files)) {
 				return visibleFileStates[0].file.fileMeta.fileName
 			}
 			return this._viewModel.files[0].file.fileMeta.fileName
-		} else if (this.lastRenderState === FileSelectionState.Comparison) {
+		}
+		if (this.lastRenderState === FileSelectionState.Comparison) {
 			return this._viewModel.selectedFileNames.delta.reference
 		}
 	}

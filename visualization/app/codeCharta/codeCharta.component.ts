@@ -42,20 +42,19 @@ export class CodeChartaController {
 		this.loadFileOrSample()
 	}
 
-	public loadFileOrSample() {
-		return this.urlUtils
-			.getFileDataFromQueryParam()
-			.then((data: NameDataPair[]) => {
-				if (data.length > 0) {
-					this.tryLoadingFiles(data)
-					this.setRenderStateFromUrl()
-				} else {
-					this.tryLoadingSampleFiles()
-				}
-			})
-			.catch(() => {
+	async loadFileOrSample() {
+		try {
+			const data = await this.urlUtils.getFileDataFromQueryParam()
+			if (data.length > 0) {
+				this.tryLoadingFiles(data)
+				this.setRenderStateFromUrl()
+			} else {
 				this.tryLoadingSampleFiles()
-			})
+			}
+		} catch (error) {
+			console.error(error)
+			this.tryLoadingSampleFiles()
+		}
 	}
 
 	public tryLoadingSampleFiles() {

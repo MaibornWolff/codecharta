@@ -2,7 +2,7 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { calculateNewEdgeMetricData, EdgeMetricDataActions } from "./edgeMetricData.actions"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { AttributeTypeValue, BlacklistItem, CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
+import { BlacklistItem, CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
 import { HierarchyNode } from "d3"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
@@ -45,18 +45,18 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		)
 	}
 
-	public getMetricNames(): string[] {
+	public getMetricNames() {
 		return this.storeService.getState().metricData.edgeMetricData.map(x => x.name)
 	}
 
-	public getAmountOfAffectedBuildings(metricName: string): number {
+	public getAmountOfAffectedBuildings(metricName: string) {
 		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
 		return nodeEdgeMetrics === undefined ? 0 : nodeEdgeMetrics.size
 	}
 
-	public getNodesWithHighestValue(metricName: string, amountOfEdgePreviews: number): string[] {
+	public getNodesWithHighestValue(metricName: string, amountOfEdgePreviews: number) {
 		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
-		const keys = []
+		const keys: string[] = []
 
 		if (nodeEdgeMetrics === undefined) {
 			return keys
@@ -71,8 +71,8 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		return keys
 	}
 
-	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>): EdgeMetricCountMap {
-		const nodeEdgeMetrics = new Map()
+	public getMetricValuesForNode(node: HierarchyNode<CodeMapNode>) {
+		const nodeEdgeMetrics: EdgeMetricCountMap = new Map()
 
 		for (const metricName of this.getMetricNames()) {
 			const edgeMetricCount = nodeEdgeMetricsMap.get(metricName)
@@ -84,7 +84,7 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		return nodeEdgeMetrics
 	}
 
-	public getAttributeTypeByMetric(metricName: string): AttributeTypeValue {
+	public getAttributeTypeByMetric(metricName: string) {
 		return this.storeService.getState().fileSettings.attributeTypes.edges[metricName]
 	}
 
@@ -97,7 +97,7 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricDataSubscriber) {
-		$rootScope.$on(EdgeMetricDataService.EDGE_METRIC_DATA_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(EdgeMetricDataService.EDGE_METRIC_DATA_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onEdgeMetricDataChanged(data.edgeMetricData)
 		})
 	}

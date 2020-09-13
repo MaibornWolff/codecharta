@@ -29,7 +29,7 @@ export class InvertHeightService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: InvertHeightSubscriber) {
-		$rootScope.$on(InvertHeightService.INVERT_HEIGHT_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(InvertHeightService.INVERT_HEIGHT_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onInvertHeightChanged(data.invertHeight)
 		})
 	}

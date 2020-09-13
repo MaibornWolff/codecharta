@@ -8,7 +8,7 @@ export class EdgeChooserPageObject {
 
 	public async getMetrics() {
 		await page.waitForSelector(".edge-metric")
-		return await page.$$eval(".edge-metric", metrics => metrics.map(x => x.textContent))
+		return page.$$eval(".edge-metric", metrics => metrics.map(x => x.textContent))
 	}
 
 	public async selectEdgeMetric(metric: string) {
@@ -32,6 +32,6 @@ export class EdgeChooserPageObject {
 
 	private async getEdgeCountInnerText() {
 		await page.waitForSelector("edge-chooser-component #edge-count")
-		return await page.$eval("edge-chooser-component #edge-count", el => el["innerText"])
+		return page.$eval("edge-chooser-component #edge-count", element => element["innerText"])
 	}
 }

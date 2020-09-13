@@ -10,7 +10,7 @@ describe("colorConverter", () => {
 	describe("convertHexToNumber", () => {
 		it("should return that the input can't be a number", () => {
 			const result = ColorConverter.convertHexToNumber("string")
-			const expected = NaN
+			const expected = Number.NaN
 
 			expect(result).toBe(expected)
 		})

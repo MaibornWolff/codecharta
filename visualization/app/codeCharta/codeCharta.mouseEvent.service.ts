@@ -6,6 +6,7 @@ import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/se
 export class CodeChartaMouseEventService {
 	constructor(private storeService: StoreService) {}
 
+	// eslint-disable-next-line @typescript-eslint/ban-types
 	public closeComponentsExceptCurrent(currentCloseFunction?: Function) {
 		if (currentCloseFunction !== this.closeRibbonBarSections) {
 			this.closeRibbonBarSections()

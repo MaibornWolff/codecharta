@@ -60,7 +60,8 @@ function setDeltaByNames(state: FileState[], referenceFileName: string, comparis
 	return state.map(x => {
 		if (x.file.fileMeta.fileName === referenceFileName) {
 			return { ...x, selectedAs: FileSelectionState.Reference }
-		} else if (x.file.fileMeta.fileName === comparisonFileName) {
+		}
+		if (x.file.fileMeta.fileName === comparisonFileName) {
 			return { ...x, selectedAs: FileSelectionState.Comparison }
 		}
 		return { ...x, selectedAs: FileSelectionState.None }

@@ -31,7 +31,7 @@ describe("CodeChartaMouseEventService", () => {
 
 			codeChartaMouseEventService.closeComponentsExceptCurrent()
 
-			const appSettings = storeService.getState().appSettings
+			const { appSettings } = storeService.getState()
 
 			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)
 			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
@@ -43,7 +43,7 @@ describe("CodeChartaMouseEventService", () => {
 
 			codeChartaMouseEventService.closeComponentsExceptCurrent(codeChartaMouseEventService.closeSearchPanel)
 
-			const appSettings = storeService.getState().appSettings
+			const { appSettings } = storeService.getState()
 
 			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)
 			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)

@@ -11,6 +11,6 @@ export class NodeContextMenuPageObject {
 	}
 
 	public async isClosed() {
-		return await page.waitForSelector("node-context-menu-component", { visible: false })
+		return page.waitForSelector("node-context-menu-component", { visible: false })
 	}
 }

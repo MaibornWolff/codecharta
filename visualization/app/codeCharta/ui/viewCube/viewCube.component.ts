@@ -112,13 +112,13 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.scene = new Scene()
 	}
 
-	private initRenderer($element: any) {
+	private initRenderer($element: unknown) {
 		this.renderer = new WebGLRenderer({
 			alpha: true,
 			antialias: true
 		})
 		this.renderer.setSize(this.WIDTH, this.HEIGHT)
-		$element[0].appendChild(this.renderer.domElement)
+		$element[0].append(this.renderer.domElement)
 	}
 
 	private initCamera() {

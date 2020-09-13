@@ -29,7 +29,7 @@ export class IsLoadingMapService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: IsLoadingMapSubscriber) {
-		$rootScope.$on(IsLoadingMapService.IS_LOADING_MAP_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(IsLoadingMapService.IS_LOADING_MAP_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onIsLoadingMapChanged(data.isLoadingMap)
 		})
 	}

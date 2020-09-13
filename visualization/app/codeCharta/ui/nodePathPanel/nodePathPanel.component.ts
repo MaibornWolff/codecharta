@@ -19,7 +19,7 @@ export class NodePathPanelController implements BuildingHoveredSubscriber, Build
 	}
 
 	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		this._viewModel.hoveredNodePath = hoveredBuilding.node.path.substr(1).split("/")
+		this._viewModel.hoveredNodePath = hoveredBuilding.node.path.slice(1).split("/")
 		this._viewModel.hoveredNodeIsFile = hoveredBuilding.node.isLeaf
 	}
 
