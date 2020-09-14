@@ -1,7 +1,10 @@
 name: Auto approve and merge PRs by dependabot
 
 on:
-  pull_request
+  pull_request:
+  check_suite:
+    types:
+      - completed
 
 jobs:
   autoapprove:
