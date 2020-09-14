@@ -73,7 +73,7 @@ internal class CommitCollector {
 
                 Modification.Type.RENAME -> {
                     var fileToBeRenamed: VersionControlledFile? =
-                            versionControlledFilesList.get(trackName) ?: return@forEach
+                        versionControlledFilesList.get(trackName) ?: return@forEach
 
                     fileToBeRenamed!!.registerCommit(commit, it)
                     versionControlledFilesList.rename(it.oldFilename, it.currentFilename)
@@ -119,9 +119,9 @@ internal class CommitCollector {
                 // Why is this happening?
             } else {
                 System.err.println(
-                        "\nUnhandled Edge Case in MergeCommit: deleted: %s, mutated: %s, modification type: %s, initalAdd: %s, file: %s"
-                                .format(file.isDeleted(), file.isMutated(), it.type, it.isInitialAdd(), file.filename)
-                                  )
+                    "\nUnhandled Edge Case in MergeCommit: deleted: %s, mutated: %s, modification type: %s, initalAdd: %s, file: %s"
+                        .format(file.isDeleted(), file.isMutated(), it.type, it.isInitialAdd(), file.filename)
+                )
             }
         }
     }
