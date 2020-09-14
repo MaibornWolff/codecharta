@@ -1,11 +1,11 @@
-package de.maibornwolff.codecharta.importer.scmlogparser
+package de.maibornwolff.codecharta.importer.scmlogparserv2
 
-import de.maibornwolff.codecharta.importer.scmlogparser.converter.ProjectConverter
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogParserStrategy
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatRawParserStrategy
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogParserStrategy
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.svn.SVNLogParserStrategy
+import de.maibornwolff.codecharta.importer.scmlogparserv2.converter.ProjectConverter
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogParserStrategy
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.GitLogNumstatRawParserStrategy
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.GitLogParserStrategy
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer

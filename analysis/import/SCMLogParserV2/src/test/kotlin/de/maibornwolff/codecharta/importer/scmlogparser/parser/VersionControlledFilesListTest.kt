@@ -1,6 +1,6 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.parser
+package de.maibornwolff.codecharta.importer.scmlogparserv2.parser
 
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import org.hamcrest.CoreMatchers.equalTo
 import org.junit.Test
 import org.junit.Assert.*

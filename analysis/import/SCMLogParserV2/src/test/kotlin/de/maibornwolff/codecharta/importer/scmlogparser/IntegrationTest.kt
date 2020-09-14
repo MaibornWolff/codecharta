@@ -1,8 +1,8 @@
-package de.maibornwolff.codecharta.importer.scmlogparser
+package de.maibornwolff.codecharta.importer.scmlogparserv2
 
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.LogLineParser
-import de.maibornwolff.codecharta.importer.scmlogparser.parser.git.GitLogNumstatRawParserStrategy
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogLineParser
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.GitLogNumstatRawParserStrategy
 import org.hamcrest.CoreMatchers.hasItem
 import org.junit.Assert
 import org.junit.jupiter.api.Test

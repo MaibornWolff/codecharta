@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
+package de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test

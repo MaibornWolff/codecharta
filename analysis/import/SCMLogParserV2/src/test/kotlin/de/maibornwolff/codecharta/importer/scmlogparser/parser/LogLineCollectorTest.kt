@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.parser
+package de.maibornwolff.codecharta.importer.scmlogparserv2.parser
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy

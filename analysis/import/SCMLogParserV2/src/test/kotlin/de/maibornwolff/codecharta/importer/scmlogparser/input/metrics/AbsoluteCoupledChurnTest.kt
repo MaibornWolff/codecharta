@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.input.metrics
+package de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics
 
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Commit
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.time.OffsetDateTime

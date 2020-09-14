@@ -1,11 +1,11 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.parser
+package de.maibornwolff.codecharta.importer.scmlogparserv2.parser
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
-import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Commit
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.VersionControlledFile
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import org.hamcrest.CoreMatchers.*
 import org.junit.Test
 import java.time.OffsetDateTime

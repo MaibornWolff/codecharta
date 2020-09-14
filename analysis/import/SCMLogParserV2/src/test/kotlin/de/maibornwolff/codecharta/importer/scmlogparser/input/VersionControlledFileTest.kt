@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.input
+package de.maibornwolff.codecharta.importer.scmlogparserv2.input
 
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.Metric
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.Metric
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

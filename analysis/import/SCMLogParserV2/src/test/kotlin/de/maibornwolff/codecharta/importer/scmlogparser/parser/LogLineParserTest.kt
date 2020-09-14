@@ -1,7 +1,7 @@
-package de.maibornwolff.codecharta.importer.scmlogparser.parser
+package de.maibornwolff.codecharta.importer.scmlogparserv2.parser
 
-import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
-import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
+import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
