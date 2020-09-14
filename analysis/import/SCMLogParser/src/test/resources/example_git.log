@@ -1,0 +1,24 @@
+commit e531172591d2858c560f7403e4e4c73adaa5aa00
+Author: Dominik Ufer <dominik.ufer@maibornwolff.de>
+Date:   Sun Jun 18 14:03:20 2017 +0200
+
+    deleted a file, modified another
+
+M	afolder/fileinfolder
+D	somefile
+
+commit a562e7cb24faad1bb80100bc26e73098e6cec706
+Author: Dominik Ufer <dominik.ufer@maibornwolff.de>
+Date:   Sun Jun 18 14:00:41 2017 +0200
+
+    added a file in folder
+
+A	afolder/fileinfolder
+
+commit 67bfa046c8c1258f597c147c848e735e2ac963b9
+Author: Dominik Ufer <dominik.ufer@maibornwolff.de>
+Date:   Sun Jun 18 13:58:41 2017 +0200
+
+    initial commit
+
+A	somefile

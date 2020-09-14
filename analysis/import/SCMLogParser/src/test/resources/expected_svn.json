@@ -1,0 +1,80 @@
+{
+  "projectName": "SCMLogParser",
+  "apiVersion": "1.1",
+  "nodes": [
+    {
+      "name": "root",
+      "type": "Folder",
+      "attributes": {},
+      "link": "",
+      "children": [
+        {
+          "name": "src",
+          "type": "Folder",
+          "attributes": {},
+          "link": "",
+          "children": [
+            {
+              "name": "innerFolder",
+              "type": "Folder",
+              "attributes": {},
+              "link": "",
+              "children": [
+                {
+                  "name": "BestClassEver.java",
+                  "type": "File",
+                  "attributes": {
+                    "weeks_with_commits": 1,
+                    "range_of_weeks_with_commits": 1,
+                    "number_of_commits": 5,
+                    "successive_weeks_with_commits": 1,
+                    "number_of_authors": 2,
+                    "authors": [
+                      "MartinSc",
+                      "AlexH"
+                    ]
+                  },
+                  "link": "",
+                  "children": []
+                },
+                {
+                  "name": "Main.java",
+                  "type": "File",
+                  "attributes": {
+                    "weeks_with_commits": 1,
+                    "range_of_weeks_with_commits": 1,
+                    "number_of_commits": 2,
+                    "successive_weeks_with_commits": 1,
+                    "number_of_authors": 1,
+                    "authors": [
+                      "MartinSc"
+                    ]
+                  },
+                  "link": "",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "name": "srcFolderTest.txt",
+              "type": "File",
+              "attributes": {
+                "weeks_with_commits": 1,
+                "range_of_weeks_with_commits": 1,
+                "number_of_commits": 4,
+                "successive_weeks_with_commits": 1,
+                "number_of_authors": 2,
+                "authors": [
+                  "MartinSc",
+                  "AlexH"
+                ]
+              },
+              "link": "",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
