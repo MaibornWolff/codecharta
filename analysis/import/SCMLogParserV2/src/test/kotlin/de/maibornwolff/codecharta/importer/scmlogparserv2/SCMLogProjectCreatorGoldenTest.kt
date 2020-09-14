@@ -4,8 +4,6 @@ import de.maibornwolff.codecharta.importer.scmlogparserv2.converter.ProjectConve
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogParserStrategy
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.GitLogNumstatRawParserStrategy
-import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.GitLogParserStrategy
-import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.svn.SVNLogParserStrategy
 import de.maibornwolff.codecharta.model.Project
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
@@ -35,9 +33,7 @@ class SCMLogProjectCreatorGoldenTest(
         @Parameterized.Parameters(name = "{index}: {0}")
         fun data(): Collection<Array<Any>> {
             return Arrays.asList(
-                arrayOf("svn", SVNLogParserStrategy(), true, "example_svn.log", "expected_svn.json"),
-                arrayOf("git_numstat", GitLogNumstatRawParserStrategy(), true, "example_git_numstat.log", "expected_git_numstat.json"),
-                arrayOf("git", GitLogParserStrategy(), false, "example_git.log", "expected_git.json")
+                arrayOf("git", GitLogNumstatRawParserStrategy(), false, "example_git.log", "expected_git.json")
             )
         }
     }

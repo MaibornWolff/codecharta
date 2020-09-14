@@ -2,7 +2,7 @@
 
 if [[ $1=="-h" ]]; then
   echo "Generates anonymous log for CodeCharta"
-  echo "  inherits all options from git log --numstat --raw --topo-order"
+  echo "  inherits all options from git log --numstat --raw --topo-order --reverse -m"
   exit 0
 fi
 
@@ -12,7 +12,7 @@ rm -f ${HASHMAP_FILE}
 COUNTER=1
 
 # main functionality
-gitlog=`git log --numstat --raw --topo-order "$@"`
+gitlog=`git log --numstat --raw --topo-order --reverse -m "$@"`
 
 while read -r line; do
   if [[ "$line" =~ ^Author.*\<.*\>$ ]]; then

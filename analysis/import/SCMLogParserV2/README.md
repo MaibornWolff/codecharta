@@ -1,6 +1,6 @@
-# SCMLogParser
+# SCMLogParserV2 - Status: unstable/experimental!
 
-Generates visualisation data from repository (Git or SVN) logs. It supports the following metrics per file:
+Generates visualisation data from git repository logs. It supports the following metrics per file:
 
 | Metric                 | Description                                                                           |
 | ---------------------- | ------------------------------------------------------------------------------------- |
@@ -25,21 +25,17 @@ The names of authors are saved when the --add-author flag is set.
 
 ### Creating the repository log for metric generation
 
-| SCM | Log format          | Command for log creation               | tracks renames | ignores deleted files | supports code churn |
-| --- | ------------------- | -------------------------------------- | -------------- | --------------------- | ------------------- |
-| git | GIT_LOG             | `git log --name-status --topo-order`   | yes            | yes                   | no                  |
-| git | GIT_LOG_NUMSTAT     | `git log --numstat --topo-order`       | yes            | no                    | yes                 |
-| git | GIT_LOG_NUMSTAT_RAW | `git log --numstat --raw --topo-order` | yes            | yes                   | yes                 |
-| git | GIT_LOG_RAW         | `git log --raw --topo-order`           | yes            | yes                   | no                  |
-| SVN | SVN_LOG             | `svn log --verbose`                    | yes            | yes                   | no                  |
+| SCM | Log format          | Command for log creation                              | tracks renames | ignores deleted files | supports code churn |
+| --- | ------------------- | ----------------------------------------------------- | -------------- | --------------------- | ------------------- |
+| git | GIT_LOG             | `git log --numstat --raw --topo-order --reverse -m`   | yes            | yes                   | yes                 |
 
-You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG_NUMSTAT_RAW for usage with CodeCharta.
+You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG for usage with CodeCharta.
 
 ### Executing the SCMLogParser
 
 See `ccsh -h` for help. Standard usage:
 
-> `ccsh scmlogparser <log_file> --input-format [GIT_LOG|GIT_LOG_NUMSTAT|GIT_LOG_NUMSTAT_RAW|GIT_LOG_RAW|SVN_LOG]`
+> `ccsh scmlogparserv2 <log_file> --input-format [GIT_LOG]`
 
 The result is written as JSON to standard out or into an output file (if specified by `-o` option).
 
@@ -49,13 +45,6 @@ The resulting project has the project name specified for the SCMLogParser.
 ### Example using Git
 
 -   `cd <my_git_project>`
--   `git log --numstat --raw --topo-order > git.log` (or `anongit > git.log`)
--   `./ccsh scmlogparser git.log --input-format GIT_LOG_NUMSTAT_RAW -o output.cc.json`
--   load `output.cc.json` in visualization
-
-### Example using SVN
-
--   `cd <my_svn_project>`
--   `svn log --verbose > svn.log`
--   `./ccsh scmlogparser svn.log --input-format SVN_LOG -o output.cc.json`
+-   `git log --numstat --raw --topo-order --reverse -m > git.log` (or `anongit > git.log`)
+-   `./ccsh scmlogparserv2 git.log --input-format GIT_LOG -o output.cc.json`
 -   load `output.cc.json` in visualization

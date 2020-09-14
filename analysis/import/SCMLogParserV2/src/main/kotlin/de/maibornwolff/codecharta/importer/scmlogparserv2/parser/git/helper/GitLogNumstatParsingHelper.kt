@@ -1,54 +1,9 @@
-package de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git
+package de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.helper
 
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
-import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogLineCollector
-import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogParserStrategy
-import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.AuthorParser.AUTHOR_ROW_INDICATOR
-import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.CommitDateParser.DATE_ROW_INDICATOR
 import mu.KotlinLogging
-import java.time.OffsetDateTime
-import java.util.function.Predicate
-import java.util.stream.Collector
-import java.util.stream.Stream
-import kotlin.streams.toList
 
-class GitLogNumstatParserStrategy : LogParserStrategy {
-    override fun creationCommand(): String {
-        return "git log --numstat --topo-order --reverse"
-    }
-
-    override fun createLogLineCollector(): Collector<String, *, Stream<List<String>>> {
-        return LogLineCollector.create(GIT_COMMIT_SEPARATOR_TEST)
-    }
-
-    override fun parseAuthor(commitLines: List<String>): String {
-        return commitLines.parallelStream()
-            .filter { it.startsWith(AUTHOR_ROW_INDICATOR) }
-            .map { AuthorParser.parseAuthor(it) }
-            .toList()
-            .first()
-    }
-
-    override fun parseModifications(commitLines: List<String>): List<Modification> {
-        return commitLines
-            .filter { isFileLine(it) }
-            .map { parseModification(it) }
-            .filter { it !== Modification.EMPTY }
-    }
-
-    override fun parseDate(commitLines: List<String>): OffsetDateTime {
-        return commitLines.parallelStream()
-                .filter { it.startsWith(DATE_ROW_INDICATOR) }
-                .map { CommitDateParser.parseCommitDate(it) }
-                .toList()
-                .first()
-    }
-
-    override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
-        // TODO not implemented yet
-        return false
-    }
-
+class GitLogNumstatParsingHelper {
     companion object {
 
         private val logger = KotlinLogging.logger {}
@@ -58,7 +13,6 @@ class GitLogNumstatParserStrategy : LogParserStrategy {
         private const val RENAMING_SEPARATOR = "=>"
         private const val STANDARD_FILE_LINE_SPLITTER = "\\s+"
         private const val RENAME_FILE_LINE_SPLITTER = "[{}\\s+]"
-        private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
 
         internal fun isFileLine(commitLine: String): Boolean {
             return commitLine.length >= 5 &&

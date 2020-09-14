@@ -1,4 +1,4 @@
-package de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git
+package de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.helper
 
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
 import org.assertj.core.api.Assertions.assertThat
@@ -9,7 +9,7 @@ import java.util.Arrays
 import java.util.function.Function
 
 @RunWith(Parameterized::class)
-class GitLogNumstatParserStrategyRenamingTest(
+class GitLogNumstatParsingHelperRenamingTest(
     private val fileLine: String,
     private val oldFilename: String,
     private val newFilename: String
@@ -38,12 +38,12 @@ class GitLogNumstatParserStrategyRenamingTest(
 
     @Test
     fun isFileline() {
-        assertThat(GitLogNumstatParserStrategy.isFileLine(fileLine)).isTrue()
+        assertThat(GitLogNumstatParsingHelper.isFileLine(fileLine)).isTrue()
     }
 
     @Test
     fun parseModification() {
-        val modification = GitLogNumstatParserStrategy.parseModification(fileLine)
+        val modification = GitLogNumstatParsingHelper.parseModification(fileLine)
 
         assertThat(modification).extracting(Function<Modification, Any> { it.currentFilename },
                 Function<Modification, Any> { it.oldFilename },

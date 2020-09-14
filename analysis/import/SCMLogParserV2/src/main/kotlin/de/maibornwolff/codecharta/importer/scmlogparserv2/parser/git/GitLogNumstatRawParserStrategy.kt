@@ -6,6 +6,8 @@ import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogParserStrate
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.AuthorParser.AUTHOR_ROW_INDICATOR
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.CommitDateParser.DATE_ROW_INDICATOR
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.MergeCommitDetector.MERGE_COMMIT_INDICATOR
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.helper.GitLogNumstatParsingHelper
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.helper.GitLogRawParsingHelper
 import java.time.OffsetDateTime
 import java.util.function.Predicate
 import java.util.stream.Collector
@@ -42,34 +44,34 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
                 }
             }
             .values
-                .filterNotNull()
-                .toList()
+            .filterNotNull()
+            .toList()
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         return commitLines
-                .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
-                .map { CommitDateParser.parseCommitDate(it) }
-                .first()
+            .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
+            .map { CommitDateParser.parseCommitDate(it) }
+            .first()
     }
 
     override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
         return commitLines
-                .filter { commitLine -> commitLine.startsWith(MERGE_COMMIT_INDICATOR) }
-                .isNotEmpty()
+            .filter { commitLine -> commitLine.startsWith(MERGE_COMMIT_INDICATOR) }
+            .isNotEmpty()
     }
 
     companion object {
 
         private val GIT_COMMIT_SEPARATOR_TEST = Predicate<String> { logLine -> logLine.startsWith("commit") }
         private fun isFileLine(commitLine: String): Boolean {
-            return GitLogRawParserStrategy.isFileLine(commitLine) || GitLogNumstatParserStrategy.isFileLine(commitLine)
+            return GitLogRawParsingHelper.isFileLine(commitLine) || GitLogNumstatParsingHelper.isFileLine(commitLine)
         }
 
         internal fun parseModification(fileLine: String): Modification {
             return if (fileLine.startsWith(":")) {
-                GitLogRawParserStrategy.parseModification(fileLine)
-            } else GitLogNumstatParserStrategy.parseModification(fileLine)
+                GitLogRawParsingHelper.parseModification(fileLine)
+            } else GitLogNumstatParsingHelper.parseModification(fileLine)
         }
 
         private fun mergeModifications(vararg a: Modification): Modification {
