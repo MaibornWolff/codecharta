@@ -17,6 +17,7 @@ jobs:
       - name: automerge
         uses: "pascalgn/automerge-action@f81beb99aef41bb55ad072857d43073fba833a98"
         env:
-          - GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          - MERGE_LABELS: "dependencies"
-          - MERGE_METHOD: "rebase"
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "dependencies"
+          MERGE_METHOD: "squash"
+          UPDATE_METHOD: "rebase"
