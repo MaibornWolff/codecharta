@@ -38,14 +38,12 @@ describe("nodeDecorator", () => {
 
 	function allUniqueIds(map: HierarchyNode<CodeMapNode>) {
 		const ids = new Set()
-		let isUnique = true
-		map.each(node => {
-			if (ids.has(node.id)) {
-				isUnique = false
-			}
-			ids.add(node.id)
+		let count = 0
+		map.eachAfter(({ data }) => {
+			count++
+			ids.add(data.id)
 		})
-		return isUnique
+		return count === ids.size
 	}
 
 	describe("decorateMap", () => {
@@ -334,8 +332,8 @@ describe("nodeDecorator", () => {
 			const h = hierarchy(file.map)
 			h.each(node => {
 				expect(node.data.id).toBeDefined()
-				expect(allUniqueIds(h)).toBeTruthy()
 			})
+			expect(allUniqueIds(h)).toBeTruthy()
 			expect(file.map.id).toBe(0)
 		})
 	})

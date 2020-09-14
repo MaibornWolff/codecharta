@@ -5,8 +5,8 @@ const MIN_MARGIN = 15
 const MAX_MARGIN = 100
 const MARGIN_FACTOR = 4
 
-export function getResetMargin(dynamicMargin: boolean, map: CodeMapNode, areaMetric: string) {
-	if (dynamicMargin) {
+export function getResetMargin(dynamicMargin: boolean, areaMetric: string, map?: CodeMapNode) {
+	if (dynamicMargin && map) {
 		return calculateMargin(map, areaMetric)
 	}
 	return 0
