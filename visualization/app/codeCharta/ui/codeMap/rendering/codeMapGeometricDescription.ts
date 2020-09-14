@@ -44,7 +44,7 @@ export class CodeMapGeometricDescription {
 				const intersectionPoint: Vector3 = ray.intersectBox(box, new Vector3())
 
 				if (intersectionPoint) {
-					const intersectionDistance: number = intersectionPoint.distanceTo(ray.origin)
+					const intersectionDistance = intersectionPoint.distanceTo(ray.origin)
 
 					if (intersectionDistance < leastIntersectedDistance) {
 						leastIntersectedDistance = intersectionDistance

@@ -1,5 +1,5 @@
-import { ResetCameraIfNewFileIsLoadedAction, setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded.actions"
+import { setResetCameraIfNewFileIsLoaded } from "./resetCameraIfNewFileIsLoaded.actions"
 
-export function splitResetCameraIfNewFileIsLoadedAction(payload: boolean): ResetCameraIfNewFileIsLoadedAction {
+export function splitResetCameraIfNewFileIsLoadedAction(payload: boolean) {
 	return setResetCameraIfNewFileIsLoaded(payload)
 }

@@ -133,14 +133,14 @@ export class BoxGeometryGenerationHelper {
 		uvs: Vector2[],
 		data: IntermediateVertexData
 	) {
-		const deltaRelativeToHeight: number = delta / (maxPos.y - minPos.y)
+		const deltaRelativeToHeight = delta / (maxPos.y - minPos.y)
 
 		for (let side = 0; side < numberSides; ++side) {
-			const intermediateIdxBL: number = side * verticesPerSide + vertexLocation.bottomLeft
-			const intermediateIdxTL: number = side * verticesPerSide + vertexLocation.topLeft
-			const intermediateIdxTR: number = side * verticesPerSide + vertexLocation.topRight
-			const intermediateIdxBR: number = side * verticesPerSide + vertexLocation.bottomRight
-			const indexBottomLeft: number = data.addVertex(
+			const intermediateIdxBL = side * verticesPerSide + vertexLocation.bottomLeft
+			const intermediateIdxTL = side * verticesPerSide + vertexLocation.topLeft
+			const intermediateIdxTR = side * verticesPerSide + vertexLocation.topRight
+			const intermediateIdxBR = side * verticesPerSide + vertexLocation.bottomRight
+			const indexBottomLeft = data.addVertex(
 				positions[intermediateIdxBL],
 				normals[side],
 				uvs[intermediateIdxBL],
@@ -148,7 +148,7 @@ export class BoxGeometryGenerationHelper {
 				subGeomIdx,
 				deltaRelativeToHeight
 			)
-			const indexTopLeft: number = data.addVertex(
+			const indexTopLeft = data.addVertex(
 				positions[intermediateIdxTL],
 				normals[side],
 				uvs[intermediateIdxTL],
@@ -156,7 +156,7 @@ export class BoxGeometryGenerationHelper {
 				subGeomIdx,
 				deltaRelativeToHeight
 			)
-			const indexTopRight: number = data.addVertex(
+			const indexTopRight = data.addVertex(
 				positions[intermediateIdxTR],
 				normals[side],
 				uvs[intermediateIdxTR],
@@ -164,7 +164,7 @@ export class BoxGeometryGenerationHelper {
 				subGeomIdx,
 				deltaRelativeToHeight
 			)
-			const indexBottomRight: number = data.addVertex(
+			const indexBottomRight = data.addVertex(
 				positions[intermediateIdxBR],
 				normals[side],
 				uvs[intermediateIdxBR],
@@ -172,8 +172,8 @@ export class BoxGeometryGenerationHelper {
 				subGeomIdx,
 				deltaRelativeToHeight
 			)
-			const dimension: number = Math.floor(side / 2)
-			const positiveFacing: boolean = normals[side].getComponent(dimension) > 0
+			const dimension = Math.floor(side / 2)
+			const positiveFacing = normals[side].getComponent(dimension) > 0
 			if (!positiveFacing) {
 				data.addFace(indexBottomLeft, indexTopRight, indexTopLeft)
 				data.addFace(indexBottomLeft, indexBottomRight, indexTopRight)

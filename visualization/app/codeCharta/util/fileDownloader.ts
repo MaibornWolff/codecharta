@@ -16,7 +16,7 @@ export class FileDownloader {
 		fileName: string
 	) {
 		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
-		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
+		const newFileNameWithExtension = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
 
@@ -66,7 +66,7 @@ export class FileDownloader {
 	}
 
 	private static undecorateMap(map: CodeMapNode) {
-		const copy: CodeMapNode = clone(map)
+		const copy = clone(map)
 		hierarchy(copy).each(node => {
 			delete node.data.isExcluded
 			delete node.data.isFlattened
@@ -82,7 +82,7 @@ export class FileDownloader {
 	}
 
 	private static undecorateEdges(edges: Edge[]) {
-		const copy: Edge[] = clone(edges)
+		const copy = clone(edges)
 		for (const edge of copy) {
 			delete edge.visible
 		}

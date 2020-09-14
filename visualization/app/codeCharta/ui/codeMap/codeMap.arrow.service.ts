@@ -91,8 +91,8 @@ export class CodeMapArrowService
 		}
 
 		for (const edge of edges) {
-			const originNode: Node = this.map.get(edge.fromNodeName)
-			const targetNode: Node = this.map.get(edge.toNodeName)
+			const originNode = this.map.get(edge.fromNodeName)
+			const targetNode = this.map.get(edge.toNodeName)
 			if (originNode && targetNode && edge.visible !== EdgeVisibility.none && edge.visible) {
 				const curveScale = 100 * this.storeService.getState().appSettings.edgeHeight
 				const curve = this.createCurve(originNode, targetNode, curveScale)
@@ -129,8 +129,8 @@ export class CodeMapArrowService
 
 	private buildPairingEdges(node: Node, edges: Edge[]) {
 		for (const edge of edges) {
-			const originNode: Node = this.map.get(edge.fromNodeName)
-			const targetNode: Node = this.map.get(edge.toNodeName)
+			const originNode = this.map.get(edge.fromNodeName)
+			const targetNode = this.map.get(edge.toNodeName)
 			if (originNode && targetNode && originNode.path === node.path) {
 				this.addArrow(targetNode, originNode, true)
 			} else if (originNode && targetNode && targetNode.path === node.path) {
@@ -150,7 +150,7 @@ export class CodeMapArrowService
 	}
 
 	private highlightBuilding(node: Node) {
-		const building: CodeMapBuilding = this.threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath(node.path)
+		const building = this.threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath(node.path)
 		this.threeSceneService.addBuildingToHighlightingList(building)
 	}
 

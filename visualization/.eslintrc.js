@@ -38,7 +38,7 @@ module.exports = {
                 "leadingUnderscore": "allow"
             }
         ],
-        "@typescript-eslint/no-empty-function": ["error",  {allow: ["arrowFunctions"] }],
+        "@typescript-eslint/no-empty-function": ["error",  { allow: ["arrowFunctions"] }],
         "@typescript-eslint/no-unnecessary-type-arguments": "error",
         "@typescript-eslint/no-unused-expressions": "error",
         "@typescript-eslint/no-unused-vars": ["error"],
@@ -47,7 +47,7 @@ module.exports = {
         "@typescript-eslint/prefer-string-starts-ends-with": "error",
         "@typescript-eslint/promise-function-async": "error",
 
-        "no-console": ["error", {allow: ["warn", "error"]}],
+        "no-console": ["error", { allow: ["warn", "error"] }],
         "no-duplicate-imports": "error",
         "no-else-return": ["error", { allowElseIf: false }],
         "no-implicit-coercion": "error",
@@ -58,7 +58,7 @@ module.exports = {
         "prefer-destructuring": ["error", {
             "AssignmentExpression": {
               "array": false,
-              "object": true
+              "object": false
             }
         }],
         "prefer-regex-literals": "error",
@@ -77,6 +77,7 @@ module.exports = {
         "unicorn/no-null": "off",
         "unicorn/no-object-as-default-parameter": "off",
         "unicorn/no-reduce": "off",
+        "unicorn/prefer-add-event-listener": "off",
         "unicorn/prefer-query-selector": "off",
         "unicorn/prefer-node-append": "off",
     }

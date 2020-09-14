@@ -69,8 +69,9 @@ export class AggregationGenerator {
 	private static extractNodeFromMap(inputMap: CCFile) {
 		const outputNode: CodeMapNode = {
 			name: inputMap.fileMeta.fileName,
-			children: inputMap.map.children
-		} as CodeMapNode
+			children: inputMap.map.children,
+			type: inputMap.map.type
+		}
 
 		if (inputMap.map.path) {
 			outputNode.path = getUpdatedPath(inputMap.fileMeta.fileName, inputMap.map.path)

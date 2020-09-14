@@ -5,7 +5,7 @@ import {
 } from "./resetCameraIfNewFileIsLoaded.actions"
 
 export function resetCameraIfNewFileIsLoaded(
-	state: boolean = setResetCameraIfNewFileIsLoaded().payload,
+	state = setResetCameraIfNewFileIsLoaded().payload,
 	action: ResetCameraIfNewFileIsLoadedAction
 ) {
 	switch (action.type) {

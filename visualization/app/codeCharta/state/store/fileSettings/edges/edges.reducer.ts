@@ -1,8 +1,7 @@
 import { EdgesAction, EdgesActions, setEdges } from "./edges.actions"
-import { Edge } from "../../../../codeCharta.model"
 import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
 
-export function edges(state: Edge[] = setEdges().payload, action: EdgesAction): Edge[] {
+export function edges(state = setEdges().payload, action: EdgesAction) {
 	switch (action.type) {
 		case EdgesActions.SET_EDGES:
 			return action.payload

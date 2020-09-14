@@ -7,7 +7,7 @@ import { hierarchy, HierarchyNode } from "d3"
 import { NodeMetricDataService } from "./nodeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
 
-export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().payload, action: NodeMetricDataAction) {
+export function nodeMetricData(state = setNodeMetricData().payload, action: NodeMetricDataAction) {
 	switch (action.type) {
 		case NodeMetricDataActions.SET_NODE_METRIC_DATA:
 			return action.payload

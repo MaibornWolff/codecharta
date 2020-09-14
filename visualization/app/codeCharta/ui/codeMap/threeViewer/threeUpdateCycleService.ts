@@ -1,3 +1,5 @@
+// TODO: Do not use `Function` as type. See the eslint description for further
+// informations.
 /* eslint-disable @typescript-eslint/ban-types */
 export class ThreeUpdateCycleService {
 	private updatables: Function[] = []
@@ -7,6 +9,6 @@ export class ThreeUpdateCycleService {
 	}
 
 	public update() {
-		this.updatables.forEach((u: Function) => u())
+		this.updatables.forEach(u => u())
 	}
 }

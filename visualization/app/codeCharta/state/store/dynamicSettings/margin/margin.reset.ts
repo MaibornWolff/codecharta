@@ -24,6 +24,6 @@ function calculateMargin(map: CodeMapNode, areaMetric: string) {
 		}
 	})
 
-	const margin: number = MARGIN_FACTOR * Math.round(Math.sqrt(totalArea / numberOfBuildings))
+	const margin = MARGIN_FACTOR * Math.round(Math.sqrt(totalArea / numberOfBuildings))
 	return Math.min(MAX_MARGIN, Math.max(MIN_MARGIN, margin))
 }

@@ -39,7 +39,7 @@ describe("RangeSliderController", () => {
 		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		colorRangeService = getService<ColorRangeService>("colorRangeService")
 
-		;({ mapColors } = storeService.getState().appSettings)
+		mapColors = storeService.getState().appSettings.mapColors
 	}
 
 	beforeEach(() => {

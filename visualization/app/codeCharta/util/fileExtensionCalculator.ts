@@ -29,8 +29,8 @@ export class FileExtensionCalculator {
 			.leaves()
 			.forEach(node => {
 				if (!node.data.isExcluded) {
-					const fileExtension: string = this.estimateFileExtension(node.data.name)
-					const metricValue: number = node.data.attributes[metric]
+					const fileExtension = this.estimateFileExtension(node.data.name)
+					const metricValue = node.data.attributes[metric]
 					const matchingFileExtensionObject = distribution.find(x => x.fileExtension === fileExtension)
 
 					if (matchingFileExtensionObject) {
@@ -44,7 +44,7 @@ export class FileExtensionCalculator {
 	}
 
 	private static decorateDistributionWithRelativeMetricValue(distribution: MetricDistribution[]) {
-		const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
+		const sumOfAllMetricValues = this.getSumOfAllMetrics(distribution)
 		if (sumOfAllMetricValues === 0) {
 			return [this.getNoneExtension()]
 		}

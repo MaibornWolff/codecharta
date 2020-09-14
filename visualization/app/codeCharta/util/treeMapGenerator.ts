@@ -76,7 +76,7 @@ export class TreeMapGenerator {
 	private static getSquarifiedTreeMap(map: CodeMapNode, s: State): SquarifiedTreeMap {
 		const hierarchyNode = hierarchy(map)
 		const nodesPerSide = this.getEstimatedNodesPerSide(hierarchyNode)
-		const padding: number = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
+		const padding = s.dynamicSettings.margin * TreeMapGenerator.PADDING_SCALING_FACTOR
 		let mapWidth
 		let mapHeight
 

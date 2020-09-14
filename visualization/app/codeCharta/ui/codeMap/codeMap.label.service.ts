@@ -1,5 +1,5 @@
 import { Sprite, Vector3, Box3, Sphere, LineBasicMaterial, Line, Geometry, LinearFilter, Texture, SpriteMaterial } from "three"
-import { Node, State } from "../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer/threeOrbitControlsService"
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
@@ -32,17 +32,17 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 	}
 
 	public addLabel(node: Node) {
-		const state: State = this.storeService.getState()
+		const state = this.storeService.getState()
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
-			const x: number = node.x0 - state.treeMap.mapSize
-			const y: number = node.z0
-			const z: number = node.y0 - state.treeMap.mapSize
+			const x = node.x0 - state.treeMap.mapSize
+			const y = node.z0
+			const z = node.y0 - state.treeMap.mapSize
 
-			const labelX: number = x + node.width / 2
-			const labelY: number = y + node.height
-			const labelZ: number = z + node.length / 2
+			const labelX = x + node.width / 2
+			const labelY = y + node.height
+			const labelZ = z + node.length / 2
 
-			const label: InternalLabel = this.makeText(`${node.name}: ${node.attributes[state.dynamicSettings.heightMetric]}`, 30)
+			const label = this.makeText(`${node.name}: ${node.attributes[state.dynamicSettings.heightMetric]}`, 30)
 			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelZ)
 

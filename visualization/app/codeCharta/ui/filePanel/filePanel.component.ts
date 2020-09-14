@@ -140,7 +140,7 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	}
 
 	public invertPartialFileSelection() {
-		const invertedFileNames: string[] = this._viewModel.files
+		const invertedFileNames = this._viewModel.files
 			.map(x => x.file.fileMeta.fileName)
 			.filter(x => !this._viewModel.selectedFileNames.partial.includes(x))
 

@@ -124,9 +124,7 @@ export class RangeSliderController
 	}
 
 	private isMaxMetricValueChanged() {
-		const newMaxValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(
-			this.storeService.getState().dynamicSettings.colorMetric
-		)
+		const newMaxValue = this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
 		return this._viewModel.sliderOptions.ceil !== newMaxValue
 	}
 

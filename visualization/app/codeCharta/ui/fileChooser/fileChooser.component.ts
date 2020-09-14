@@ -27,17 +27,17 @@ export class FileChooserController {
 					reader.readAsText(file, "UTF-8")
 				}
 
-				reader.addEventListener("loadstart", () => {
+				reader.onloadstart = () => {
 					this.storeService.dispatch(setIsLoadingFile(true))
-				})
+				}
 
-				reader.addEventListener("load", event => {
+				reader.onload = event => {
 					if (isCompressed) {
 						content = zlib.unzipSync(Buffer.from(event.target.result))
 					} else {
 						content = event.target.result
 					}
-				})
+				}
 				reader.onloadend = () => {
 					readFiles++
 					this.addNameDataPair(file.name, content)

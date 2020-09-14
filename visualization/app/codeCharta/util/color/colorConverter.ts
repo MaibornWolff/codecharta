@@ -32,17 +32,17 @@ export class ColorConverter {
 
 	public static convertNumberToHex(colorNumber: number) {
 		const hexColor = colorNumber.toString(16)
-		const zeros: string = "0".repeat(6 - hexColor.length)
+		const zeros = "0".repeat(6 - hexColor.length)
 		return `#${zeros}${hexColor}`
 	}
 
 	public static convertHexToRgba(hex: string, opacity = 1) {
-		const rgbColor: number[] = this.encodeHex(hex)
+		const rgbColor = this.encodeHex(hex)
 		return `rgba(${rgbColor.join(",")},${opacity})`
 	}
 
 	public static convertHexToColorObject(hex: string) {
-		const rgbColor: number[] = this.encodeHex(hex)
+		const rgbColor = this.encodeHex(hex)
 		return new Color(...rgbColor)
 	}
 
@@ -72,9 +72,9 @@ export class ColorConverter {
 	}
 
 	public static gradient(startColor: string, endColor: string, steps: number) {
-		const start: Color = this.convertHexToColorObject(startColor)
-		const end: Color = this.convertHexToColorObject(endColor)
-		const diff: Color = end.sub(start)
+		const start = this.convertHexToColorObject(startColor)
+		const end = this.convertHexToColorObject(endColor)
+		const diff = end.sub(start)
 		const stepsArray: string[] = []
 
 		for (let i = 0; i <= steps; i++) {
@@ -86,8 +86,8 @@ export class ColorConverter {
 	}
 
 	public static getImageDataUri(hex: string) {
-		const rgbColor: number[] = this.encodeHex(hex)
-		const encodedRGBColor: string = this.encodeRGB(rgbColor[0], rgbColor[1], rgbColor[2])
+		const rgbColor = this.encodeHex(hex)
+		const encodedRGBColor = this.encodeRGB(rgbColor[0], rgbColor[1], rgbColor[2])
 		return this.generatePixel(encodedRGBColor)
 	}
 

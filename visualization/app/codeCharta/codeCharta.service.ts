@@ -1,5 +1,5 @@
 import { validate } from "./util/fileValidator"
-import { CCFile, NameDataPair } from "./codeCharta.model"
+import { NameDataPair } from "./codeCharta.model"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { ExportCCFile } from "./codeCharta.api.model"
@@ -51,7 +51,7 @@ export class CodeChartaService {
 	}
 
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
-		const ccFile: CCFile = getCCFile(fileName, migratedFile)
+		const ccFile = getCCFile(fileName, migratedFile)
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
 	}

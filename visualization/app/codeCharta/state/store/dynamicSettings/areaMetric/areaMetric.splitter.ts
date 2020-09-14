@@ -1,5 +1,5 @@
-import { AreaMetricAction, setAreaMetric } from "./areaMetric.actions"
+import { setAreaMetric } from "./areaMetric.actions"
 
-export function splitAreaMetricAction(payload: string): AreaMetricAction {
+export function splitAreaMetricAction(payload: string) {
 	return setAreaMetric(payload)
 }

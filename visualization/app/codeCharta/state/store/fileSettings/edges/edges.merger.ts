@@ -1,7 +1,7 @@
 import { getUpdatedPath } from "../../../../util/nodePathHelper"
 import { CCFile, Edge } from "../../../../codeCharta.model"
 
-export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean): Edge[] {
+export function getMergedEdges(inputFiles: CCFile[], withUpdatedPath: boolean) {
 	const edges: Map<string, Edge> = new Map()
 
 	if (inputFiles.length === 1) {

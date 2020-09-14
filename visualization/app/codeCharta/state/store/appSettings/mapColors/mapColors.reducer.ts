@@ -1,7 +1,6 @@
 import { MapColorsAction, MapColorsActions, setMapColors } from "./mapColors.actions"
-import { MapColors } from "../../../../codeCharta.model"
 
-export function mapColors(state: MapColors = setMapColors().payload, action: MapColorsAction): MapColors {
+export function mapColors(state = setMapColors().payload, action: MapColorsAction) {
 	switch (action.type) {
 		case MapColorsActions.SET_MAP_COLORS:
 			return { ...state, ...action.payload }

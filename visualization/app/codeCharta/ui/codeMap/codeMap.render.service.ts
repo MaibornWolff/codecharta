@@ -18,7 +18,7 @@ export class CodeMapRenderService {
 	) {}
 
 	public render(map: CodeMapNode) {
-		const sortedNodes: Node[] = this.getSortedNodes(map)
+		const sortedNodes = this.getSortedNodes(map)
 		this.setNewMapMesh(sortedNodes)
 		this.setLabels(sortedNodes)
 		this.setArrows(sortedNodes)
@@ -26,11 +26,7 @@ export class CodeMapRenderService {
 	}
 
 	private setNewMapMesh(sortedNodes) {
-		const mapMesh: CodeMapMesh = new CodeMapMesh(
-			sortedNodes,
-			this.storeService.getState(),
-			isDeltaState(this.storeService.getState().files)
-		)
+		const mapMesh = new CodeMapMesh(sortedNodes, this.storeService.getState(), isDeltaState(this.storeService.getState().files))
 		this.threeSceneService.setMapMesh(mapMesh)
 	}
 

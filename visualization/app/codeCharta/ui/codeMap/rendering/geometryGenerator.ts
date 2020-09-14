@@ -26,8 +26,8 @@ export class GeometryGenerator {
 	private floorGradient: string[]
 
 	public build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
-		const data: IntermediateVertexData = new IntermediateVertexData()
-		const desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(state.treeMap.mapSize)
+		const data = new IntermediateVertexData()
+		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 
@@ -74,7 +74,7 @@ export class GeometryGenerator {
 
 	private addFloor(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription) {
 		const color = this.getMarkingColorWithGradient(n)
-		const measures: BoxMeasures = this.mapNodeToLocalBox(n)
+		const measures = this.mapNodeToLocalBox(n)
 
 		desc.add(
 			new CodeMapBuilding(
@@ -108,7 +108,7 @@ export class GeometryGenerator {
 		state: State,
 		isDeltaState: boolean
 	) {
-		const measures: BoxMeasures = this.mapNodeToLocalBox(n)
+		const measures = this.mapNodeToLocalBox(n)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
 
 		let renderDelta = 0
@@ -177,7 +177,7 @@ export class GeometryGenerator {
 		const ids: Float32Array = new Float32Array(data.subGeometryIdx)
 		const deltas: Float32Array = new Float32Array(data.deltas)
 
-		const geometry: BufferGeometry = new BufferGeometry()
+		const geometry = new BufferGeometry()
 
 		geometry.setAttribute("position", new BufferAttribute(positions, dimension))
 		geometry.setAttribute("normal", new BufferAttribute(normals, dimension))

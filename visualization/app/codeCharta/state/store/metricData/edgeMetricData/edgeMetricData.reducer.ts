@@ -11,7 +11,7 @@ export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
 // Required for performance improvements
 export let nodeEdgeMetricsMap: NodeEdgeMetricsMap = new Map()
 
-export function edgeMetricData(state: EdgeMetricData[] = setEdgeMetricData().payload, action: EdgeMetricDataAction) {
+export function edgeMetricData(state = setEdgeMetricData().payload, action: EdgeMetricDataAction) {
 	switch (action.type) {
 		case EdgeMetricDataActions.SET_EDGE_METRIC_DATA:
 			return action.payload

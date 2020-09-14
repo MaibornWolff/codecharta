@@ -8,9 +8,9 @@ export class CodeMapActionsService {
 	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {}
 
 	public markFolder(node: CodeMapNode, color: string) {
-		const newMP: MarkedPackage = this.getNewMarkedPackage(node.path, color)
-		const clickedMP: MarkedPackage = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === newMP.path)
-		const parentMP: MarkedPackage = this.getParentMP(newMP.path)
+		const newMP = this.getNewMarkedPackage(node.path, color)
+		const clickedMP = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === newMP.path)
+		const parentMP = this.getParentMP(newMP.path)
 
 		this.handleUpdatingMarkedPackages(newMP, clickedMP, parentMP)
 	}
@@ -33,12 +33,12 @@ export class CodeMapActionsService {
 	}
 
 	public unmarkFolder(node: CodeMapNode) {
-		const clickedMP: MarkedPackage = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === node.path)
+		const clickedMP = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === node.path)
 
 		if (clickedMP) {
 			this.removeMarkedPackage(clickedMP)
 		} else {
-			const parentMP: MarkedPackage = this.getParentMP(node.path)
+			const parentMP = this.getParentMP(node.path)
 			this.removeMarkedPackage(parentMP)
 		}
 	}
@@ -86,7 +86,7 @@ export class CodeMapActionsService {
 	}
 
 	private removeChildrenMPWithSameColor(newMP: MarkedPackage) {
-		const allChildrenMP: MarkedPackage[] = this.getAllChildrenMP(newMP.path)
+		const allChildrenMP = this.getAllChildrenMP(newMP.path)
 		allChildrenMP.forEach(childPackage => {
 			const parentMP = this.getParentMP(childPackage.path)
 			if (parentMP && parentMP.color === childPackage.color) {

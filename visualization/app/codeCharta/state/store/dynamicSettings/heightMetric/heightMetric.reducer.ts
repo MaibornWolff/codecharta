@@ -1,6 +1,6 @@
 import { HeightMetricAction, HeightMetricActions, setHeightMetric } from "./heightMetric.actions"
 
-export function heightMetric(state: string = setHeightMetric().payload, action: HeightMetricAction) {
+export function heightMetric(state = setHeightMetric().payload, action: HeightMetricAction) {
 	switch (action.type) {
 		case HeightMetricActions.SET_HEIGHT_METRIC:
 			return action.payload

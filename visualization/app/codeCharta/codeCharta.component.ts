@@ -79,7 +79,7 @@ export class CodeChartaController {
 	}
 
 	private setRenderStateFromUrl() {
-		const renderState: string = this.urlUtils.getParameterByName("mode")
+		const renderState = this.urlUtils.getParameterByName("mode")
 		const files = getCCFiles(this.storeService.getState().files)
 
 		if (renderState === "Delta" && files.length >= 2) {

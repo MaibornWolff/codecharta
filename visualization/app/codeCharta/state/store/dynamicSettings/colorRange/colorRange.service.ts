@@ -43,7 +43,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 	private tryToResetIfNull() {
 		const { colorRange } = this.storeService.getState().dynamicSettings
 		const { colorMetric } = this.storeService.getState().dynamicSettings
-		const maxMetricValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
+		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
 		if (!colorRange.from && !colorRange.to && maxMetricValue) {
 			this.reset()
 		}
@@ -51,7 +51,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 
 	public reset() {
 		const { colorMetric } = this.storeService.getState().dynamicSettings
-		const maxMetricValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
+		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
 
 		const newColorRange = getResetColorRange(maxMetricValue)
 		this.storeService.dispatch(setColorRange(newColorRange))

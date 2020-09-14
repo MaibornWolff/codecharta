@@ -15,7 +15,7 @@ describe("nodeDecorator", () => {
 
 	beforeEach(() => {
 		file = clone(TEST_DELTA_MAP_A)
-		;({ map } = file)
+		map = file.map
 		deltaMap = clone(VALID_NODE_WITH_PATH_AND_DELTAS)
 		metricData = [
 			{ name: "rloc", maxValue: 999999 },

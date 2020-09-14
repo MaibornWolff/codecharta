@@ -31,7 +31,7 @@ export class DeltaGenerator {
 		const hashMapWithAllNodes: Map<string, CodeMapNode> = new Map<string, CodeMapNode>()
 
 		comparisonHashMap.forEach((comparisonNode: CodeMapNode, path: string) => {
-			const referenceNode: CodeMapNode = referenceHashMap.get(path)
+			const referenceNode = referenceHashMap.get(path)
 			if (referenceNode) {
 				const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, comparisonNode.attributes)
 				hashMapWithAllNodes.set(path, newNode)

@@ -52,7 +52,7 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	public getMaxMetricByMetricName(metricName: string) {
-		const metric: NodeMetricData = this.storeService.getState().metricData.nodeMetricData.find(x => x.name === metricName)
+		const metric = this.storeService.getState().metricData.nodeMetricData.find(x => x.name === metricName)
 		return metric?.maxValue
 	}
 

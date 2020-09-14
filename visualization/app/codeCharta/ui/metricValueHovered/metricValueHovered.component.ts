@@ -65,7 +65,7 @@ export class MetricValueHoveredController
 	}
 
 	private getHoveredDeltaColor() {
-		const heightDelta: number = this._viewModel.hoveredNode.deltas[this._viewModel.heightMetric]
+		const heightDelta = this._viewModel.hoveredNode.deltas[this._viewModel.heightMetric]
 
 		if (heightDelta > 0) {
 			return this.POSITIVE_COLOR

@@ -31,9 +31,7 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	private merge(files: FileState[]) {
-		const allAttributeTypes: AttributeTypes[] = getVisibleFileStates(files)
-			.map(x => x.file)
-			.map(x => x.settings.fileSettings.attributeTypes)
+		const allAttributeTypes = getVisibleFileStates(files).map(({ file }) => file.settings.fileSettings.attributeTypes)
 
 		const mergedAttributeTypes = getMergedAttributeTypes(allAttributeTypes)
 		this.storeService.dispatch(setAttributeTypes(mergedAttributeTypes))

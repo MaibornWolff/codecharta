@@ -1,7 +1,6 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MarginActions, setMargin } from "./margin.actions"
-import { CodeMapNode } from "../../../../codeCharta.model"
 import { getResetMargin } from "./margin.reset"
 import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../appSettings/dynamicMargin/dynamicMargin.service"
@@ -40,7 +39,7 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 	}
 
 	public reset() {
-		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
+		const map = this.codeMapPreRenderService.getRenderMap()
 		const { areaMetric } = this.storeService.getState().dynamicSettings
 		const { margin } = this.storeService.getState().dynamicSettings
 		const { dynamicMargin } = this.storeService.getState().appSettings

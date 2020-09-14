@@ -69,7 +69,7 @@ export class CodeMapMesh {
 	}
 
 	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera) {
-		const ray: Ray = this.calculatePickingRay(mouse, camera)
+		const ray = this.calculatePickingRay(mouse, camera)
 		return this.getMeshDescription().intersect(ray)
 	}
 
@@ -104,7 +104,7 @@ export class CodeMapMesh {
 
 	public clearHighlight(selected: CodeMapBuilding) {
 		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
-			const currentBuilding: CodeMapBuilding = this.mapGeomDesc.buildings[i]
+			const currentBuilding = this.mapGeomDesc.buildings[i]
 			if (!this.isBuildingSelected(selected, currentBuilding)) {
 				this.setVertexColor(
 					currentBuilding.id,

@@ -6,6 +6,8 @@ import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/se
 export class CodeChartaMouseEventService {
 	constructor(private storeService: StoreService) {}
 
+	// TODO: Do not use `Function` as type. See the eslint description for further
+	// informations.
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	public closeComponentsExceptCurrent(currentCloseFunction?: Function) {
 		if (currentCloseFunction !== this.closeRibbonBarSections) {

@@ -28,7 +28,7 @@ function buildingArrayToMap(highlighted: CodeMapBuilding[]) {
 }
 
 function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, state: State, isDeltaState: boolean) {
-	const flattened: boolean = isNodeFlat(map, state)
+	const flattened = isNodeFlat(map, state)
 	const height = FOLDER_HEIGHT
 	const width = 100
 	const length = 100
@@ -67,9 +67,9 @@ function buildNodeFrom(
 	isDeltaState: boolean
 ) {
 	const isNodeLeaf = !(squaredNode.children && squaredNode.children.length > 0)
-	const flattened: boolean = isNodeFlat(squaredNode.data, s)
-	const heightValue: number = getHeightValue(s, squaredNode, maxHeight, flattened)
-	const depth: number = squaredNode.data.path.split("/").length - 2
+	const flattened = isNodeFlat(squaredNode.data, s)
+	const heightValue = getHeightValue(s, squaredNode, maxHeight, flattened)
+	const depth = squaredNode.data.path.split("/").length - 2
 	const width = squaredNode.x1 - squaredNode.x0
 	const height = Math.abs(isNodeLeaf ? Math.max(heightScale * heightValue, MIN_BUILDING_HEIGHT) : FOLDER_HEIGHT)
 	const length = squaredNode.y1 - squaredNode.y0
@@ -174,7 +174,7 @@ function getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, fl
 	if (isDeltaState) {
 		return s.appSettings.mapColors.base
 	}
-	const metricValue: number = node.attributes[s.dynamicSettings.colorMetric]
+	const metricValue = node.attributes[s.dynamicSettings.colorMetric]
 
 	if (metricValue === undefined) {
 		return s.appSettings.mapColors.base

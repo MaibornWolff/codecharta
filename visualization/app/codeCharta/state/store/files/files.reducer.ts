@@ -2,7 +2,7 @@ import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles }
 import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
 
-export default function files(state: FileState[] = setFiles().payload, action: FilesAction): FileState[] {
+export default function files(state = setFiles().payload, action: FilesAction) {
 	switch (action.type) {
 		case NewFilesImportedActions.SET_FILES:
 			return action.payload
@@ -39,7 +39,7 @@ function resetSelection(state: FileState[]): FileState[] {
 	})
 }
 
-function addFile(state: FileState[], file: CCFile): FileState[] {
+function addFile(state: FileState[], file: CCFile) {
 	return [...state, { file, selectedAs: FileSelectionState.None }]
 }
 
@@ -52,7 +52,7 @@ function setSingleByName(state: FileState[], fileName: string): FileState[] {
 	})
 }
 
-function setSingle(state: FileState[], file: CCFile): FileState[] {
+function setSingle(state: FileState[], file: CCFile) {
 	return setSingleByName(state, file.fileMeta.fileName)
 }
 
@@ -68,7 +68,7 @@ function setDeltaByNames(state: FileState[], referenceFileName: string, comparis
 	})
 }
 
-function setDelta(state: FileState[], reference: CCFile, comparison: CCFile): FileState[] {
+function setDelta(state: FileState[], reference: CCFile, comparison: CCFile) {
 	return setDeltaByNames(state, reference.fileMeta.fileName, comparison.fileMeta.fileName)
 }
 

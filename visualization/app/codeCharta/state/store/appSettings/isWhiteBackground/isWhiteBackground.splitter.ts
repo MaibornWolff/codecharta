@@ -1,5 +1,5 @@
-import { IsWhiteBackgroundAction, setIsWhiteBackground } from "./isWhiteBackground.actions"
+import { setIsWhiteBackground } from "./isWhiteBackground.actions"
 
-export function splitIsWhiteBackgroundAction(payload: boolean): IsWhiteBackgroundAction {
+export function splitIsWhiteBackgroundAction(payload: boolean) {
 	return setIsWhiteBackground(payload)
 }
