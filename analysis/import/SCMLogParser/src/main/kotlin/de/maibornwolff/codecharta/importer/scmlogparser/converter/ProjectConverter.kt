@@ -31,8 +31,9 @@ class ProjectConverter(private val containsAuthors: Boolean) {
 
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
         return when {
-            containsAuthors -> versionControlledFile.metricsMap
-                .plus(Pair("authors", versionControlledFile.authors))
+            containsAuthors ->
+                versionControlledFile.metricsMap
+                    .plus(Pair("authors", versionControlledFile.authors))
             else -> versionControlledFile.metricsMap
         }
     }

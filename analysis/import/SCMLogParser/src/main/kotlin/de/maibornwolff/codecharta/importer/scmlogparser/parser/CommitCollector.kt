@@ -68,12 +68,16 @@ internal class CommitCollector private constructor(private val metricsFactory: M
 
         fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableList<VersionControlledFile>> {
             val collector = CommitCollector(metricsFactory)
-            return Collector.of(Supplier<MutableList<VersionControlledFile>> { ArrayList() },
-                BiConsumer<MutableList<VersionControlledFile>, Commit> { versionControlledFiles, commit ->
+            return Collector.of(
+                Supplier<MutableList<VersionControlledFile>> { ArrayList() },
+                BiConsumer<MutableList<VersionControlledFile>, Commit> { versionControlledFiles,
+                    commit ->
                     collector.collectCommit(versionControlledFiles, commit)
-                }, BinaryOperator<MutableList<VersionControlledFile>> { firstCommits, secondCommits ->
+                }, BinaryOperator<MutableList<VersionControlledFile>> { firstCommits,
+                    secondCommits ->
                     collector.combineForParallelExecution(firstCommits, secondCommits)
-                })
+                }
+            )
         }
     }
 }

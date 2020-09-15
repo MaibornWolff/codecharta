@@ -55,7 +55,9 @@ class GitLogRawParserStrategy : LogParserStrategy {
             val status = Status.byCharacter(lineParts[4].trim({ it <= ' ' })[0])
 
             return if (status == Status.RENAMED) {
-                Modification(lineParts[6].trim({ it <= ' ' }), lineParts[5].trim({ it <= ' ' }),
+                Modification(
+                    lineParts[6].trim({ it <= ' ' }),
+                    lineParts[5].trim({ it <= ' ' }),
                     status.toModificationType()
                 )
             } else Modification(lineParts[5].trim({ it <= ' ' }), status.toModificationType())
