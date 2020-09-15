@@ -73,7 +73,8 @@ internal class CommitCollector private constructor(private val metricsFactory: M
                 BiConsumer<MutableList<VersionControlledFile>, Commit> { versionControlledFiles,
                     commit ->
                     collector.collectCommit(versionControlledFiles, commit)
-                }, BinaryOperator<MutableList<VersionControlledFile>> { firstCommits,
+                },
+                BinaryOperator<MutableList<VersionControlledFile>> { firstCommits,
                     secondCommits ->
                     collector.combineForParallelExecution(firstCommits, secondCommits)
                 }
