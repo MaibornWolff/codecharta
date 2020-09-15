@@ -14,7 +14,7 @@ class GitLogNumstatParsingHelper {
         private const val STANDARD_FILE_LINE_SPLITTER = "\\s+"
         private const val RENAME_FILE_LINE_SPLITTER = "[{}\\s+]"
 
-        internal fun isFileLine(commitLine: String): Boolean {
+        fun isFileLine(commitLine: String): Boolean {
             return commitLine.length >= 5 &&
                 (
                     commitLine.matches(STANDARD_FILE_LINE_REGEX.toRegex()) ||
@@ -22,7 +22,7 @@ class GitLogNumstatParsingHelper {
                     )
         }
 
-        internal fun parseModification(fileLine: String): Modification {
+        fun parseModification(fileLine: String): Modification {
             if (fileLine.matches(STANDARD_FILE_LINE_REGEX.toRegex())) {
                 return parseStandardModification(fileLine)
             } else if (fileLine.matches(RENAME_FILE_LINE_REGEX.toRegex())) {

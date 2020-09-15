@@ -1,6 +1,5 @@
 package de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.helper
 
-import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.helper.GitLogNumstatParsingHelper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 

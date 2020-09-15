@@ -30,7 +30,7 @@ import java.util.stream.Stream
     description = ["EXPERIMENTAL git log parser - generates cc.json from git log file"],
     footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
-class SCMLogParser(
+class SCMLogParserV2(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
@@ -180,12 +180,12 @@ class SCMLogParser(
 
         @JvmStatic
         fun main(args: Array<String>) {
-            CommandLine.call(SCMLogParser(), System.out, *args)
+            CommandLine.call(SCMLogParserV2(), System.out, *args)
         }
 
         @JvmStatic
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(SCMLogParser(input, output, error), output, *args)
+            CommandLine.call(SCMLogParserV2(input, output, error), output, *args)
         }
 
         private fun guessEncoding(pathToLog: File): String? {

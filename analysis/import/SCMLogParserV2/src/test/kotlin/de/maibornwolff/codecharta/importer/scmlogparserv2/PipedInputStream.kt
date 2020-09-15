@@ -1,6 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparserv2
 
-import de.maibornwolff.codecharta.importer.scmlogparserv2.SCMLogParser.Companion.mainWithInOut
+import de.maibornwolff.codecharta.importer.scmlogparserv2.SCMLogParserV2.Companion.mainWithInOut
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import java.io.ByteArrayInputStream

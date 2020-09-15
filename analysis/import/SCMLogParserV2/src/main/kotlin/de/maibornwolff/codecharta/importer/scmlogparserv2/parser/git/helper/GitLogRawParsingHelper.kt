@@ -9,11 +9,11 @@ class GitLogRawParsingHelper {
         private const val FILE_LINE_REGEX = ":\\d+\\s+\\d+\\s+\\S+\\s+\\S+\\s+.+"
         private const val FILE_LINE_SPLITTER = "\\s+"
 
-        internal fun isFileLine(commitLine: String): Boolean {
+        fun isFileLine(commitLine: String): Boolean {
             return commitLine.length >= 5 && commitLine.matches(FILE_LINE_REGEX.toRegex())
         }
 
-        internal fun parseModification(fileLine: String): Modification {
+        fun parseModification(fileLine: String): Modification {
             val lineParts = fileLine.split(FILE_LINE_SPLITTER.toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
             val status = Status.byCharacter(lineParts[4].trim({ it <= ' ' })[0])
 
