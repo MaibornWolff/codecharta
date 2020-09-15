@@ -15,7 +15,7 @@ export class MapColorsService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, MapColorsActions)) {
 			this.notify(this.select())
 		}
@@ -29,7 +29,7 @@ export class MapColorsService implements StoreSubscriber {
 		this.$rootScope.$broadcast(MapColorsService.MAP_COLORS_CHANGED_EVENT, { mapColors: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: MapColorsSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: MapColorsSubscriber) {
 		$rootScope.$on(MapColorsService.MAP_COLORS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onMapColorsChanged(data.mapColors)
 		})

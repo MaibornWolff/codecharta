@@ -33,18 +33,18 @@ export class DialogAddScenarioSettingsComponent {
 		this.initDialogFields()
 	}
 
-	public hide() {
+	hide() {
 		this.$mdDialog.hide()
 	}
 
-	public addScenario() {
+	addScenario() {
 		const selectedScenarioAttributes = this._viewModel.scenarioContent.filter(x => x.isSelected)
 		const newScenario = ScenarioHelper.createNewScenario(this._viewModel.scenarioName, selectedScenarioAttributes)
 		ScenarioHelper.addScenario(newScenario)
 		this.hide()
 	}
 
-	public isNewScenarioValid() {
+	isNewScenarioValid() {
 		return (
 			this.isAnyScenarioContentSelected() &&
 			!this.isScenarioNameEmpty() &&

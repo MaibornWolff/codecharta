@@ -13,7 +13,7 @@ export interface NodeMetricDataSubscriber {
 }
 
 export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
-	public static UNARY_METRIC = "unary"
+	static UNARY_METRIC = "unary"
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -23,40 +23,40 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 		AttributeTypesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, NodeMetricDataActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged(files: FileState[]) {
 		this.storeService.dispatch(calculateNewNodeMetricData(files, this.storeService.getState().fileSettings.blacklist))
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this.storeService.dispatch(calculateNewNodeMetricData(this.storeService.getState().files, blacklist))
 	}
 
-	public onAttributeTypesChanged() {
+	onAttributeTypesChanged() {
 		this.storeService.dispatch(
 			calculateNewNodeMetricData(this.storeService.getState().files, this.storeService.getState().fileSettings.blacklist)
 		)
 	}
 
-	public getMetrics() {
+	getMetrics() {
 		return this.storeService.getState().metricData.nodeMetricData.map(x => x.name)
 	}
 
-	public isMetricAvailable(metricName: string) {
+	isMetricAvailable(metricName: string) {
 		return this.storeService.getState().metricData.nodeMetricData.some(x => x.name === metricName)
 	}
 
-	public getMaxMetricByMetricName(metricName: string) {
+	getMaxMetricByMetricName(metricName: string) {
 		const metric = this.storeService.getState().metricData.nodeMetricData.find(x => x.name === metricName)
 		return metric?.maxValue
 	}
 
-	public getAttributeTypeByMetric(metricName: string) {
+	getAttributeTypeByMetric(metricName: string) {
 		return this.storeService.getState().fileSettings.attributeTypes.nodes[metricName]
 	}
 
@@ -68,7 +68,7 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 		this.$rootScope.$broadcast(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, { nodeMetricData: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: NodeMetricDataSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: NodeMetricDataSubscriber) {
 		$rootScope.$on(NodeMetricDataService.NODE_METRIC_DATA_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onNodeMetricDataChanged(data.nodeMetricData)
 		})

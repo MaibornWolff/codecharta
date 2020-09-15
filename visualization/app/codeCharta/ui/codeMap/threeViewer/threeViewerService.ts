@@ -15,7 +15,7 @@ export class ThreeViewerService {
 		private threeUpdateCycleService: ThreeUpdateCycleService
 	) {}
 
-	public init(canvasElement: Element) {
+	init(canvasElement: Element) {
 		this.threeCameraService.init(window.innerWidth, window.innerHeight)
 
 		this.threeCameraService.camera.lookAt(this.threeSceneService.scene.position)
@@ -33,26 +33,26 @@ export class ThreeViewerService {
 		window.addEventListener("focusout", event => this.onFocusOut(event))
 	}
 
-	public onWindowResize() {
+	onWindowResize() {
 		this.threeSceneService.scene.updateMatrixWorld(false)
 		this.threeRendererService.renderer.setSize(window.innerWidth, window.innerHeight)
 		this.threeCameraService.camera.aspect = window.innerWidth / window.innerHeight
 		this.threeCameraService.camera.updateProjectionMatrix()
 	}
 
-	public onFocusIn(event) {
+	onFocusIn(event) {
 		if (event.target.nodeName === "INPUT") {
 			this.threeOrbitControlsService.controls.enableKeys = false
 		}
 	}
 
-	public onFocusOut(event) {
+	onFocusOut(event) {
 		if (event.target.nodeName === "INPUT") {
 			this.threeOrbitControlsService.controls.enableKeys = true
 		}
 	}
 
-	public animate() {
+	animate() {
 		requestAnimationFrame(() => this.animate())
 		this.threeRendererService.renderer.render(this.threeSceneService.scene, this.threeCameraService.camera)
 		this.threeOrbitControlsService.controls.update()

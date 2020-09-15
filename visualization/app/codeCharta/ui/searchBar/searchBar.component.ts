@@ -31,25 +31,25 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		}, SearchBarController.DEBOUNCE_TIME)
 	}
 
-	public onBlacklistChanged() {
+	onBlacklistChanged() {
 		this.updateViewModel()
 	}
 
-	public onSearchPatternChanged(searchPattern: string) {
+	onSearchPatternChanged(searchPattern: string) {
 		this._viewModel.searchPattern = searchPattern
 		this.updateViewModel()
 	}
 
-	public handleSearchPatternChange() {
+	handleSearchPatternChange() {
 		this.applyDebouncedSearchPattern()
 	}
 
-	public onClickBlacklistPattern(blacklistType: BlacklistType) {
+	onClickBlacklistPattern(blacklistType: BlacklistType) {
 		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.searchPattern, type: blacklistType }))
 		this.resetSearchPattern()
 	}
 
-	public isSearchPatternEmpty() {
+	isSearchPatternEmpty() {
 		return this._viewModel.searchPattern === ""
 	}
 

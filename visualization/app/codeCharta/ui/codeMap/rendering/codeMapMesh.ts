@@ -12,10 +12,10 @@ export interface MousePos {
 }
 
 export class CodeMapMesh {
-	public static readonly NUM_OF_COLOR_VECTOR_FIELDS = 3
-	public static readonly NUM_OF_VERTICES = 24
-	public static readonly LIGHTNESS_INCREASE = -10
-	public static readonly LIGHTNESS_DECREASE = 20
+	static readonly NUM_OF_COLOR_VECTOR_FIELDS = 3
+	static readonly NUM_OF_VERTICES = 24
+	static readonly LIGHTNESS_INCREASE = -10
+	static readonly LIGHTNESS_DECREASE = 20
 
 	private threeMesh: Mesh
 	private material: ShaderMaterial
@@ -44,40 +44,40 @@ export class CodeMapMesh {
 		}
 	}
 
-	public getThreeMesh() {
+	getThreeMesh() {
 		return this.threeMesh
 	}
 
-	public selectBuilding(building: CodeMapBuilding, color: string) {
+	selectBuilding(building: CodeMapBuilding, color: string) {
 		building.setColor(color)
 		this.setVertexColor(building.id, building.getColorVector(), building.getDefaultDeltaColorVector())
 		this.updateVertices()
 	}
 
-	public clearSelection(selected: CodeMapBuilding) {
+	clearSelection(selected: CodeMapBuilding) {
 		selected.resetColor()
 		this.setVertexColor(selected.id, selected.getDefaultColorVector(), selected.getDefaultDeltaColorVector())
 		this.updateVertices()
 	}
 
-	public getMeshDescription() {
+	getMeshDescription() {
 		return this.mapGeomDesc
 	}
 
-	public getBuildingByPath(path: string) {
+	getBuildingByPath(path: string) {
 		return this.mapGeomDesc.getBuildingByPath(path)
 	}
 
-	public checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera) {
+	checkMouseRayMeshIntersection(mouse: MousePos, camera: Camera) {
 		const ray = this.calculatePickingRay(mouse, camera)
 		return this.getMeshDescription().intersect(ray)
 	}
 
-	public setScale(scale: Vector3) {
+	setScale(scale: Vector3) {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	public highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State) {
+	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State) {
 		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
 		this.mapGeomDesc.buildings.forEach(building => {
 			if (!this.isBuildingSelected(selected, building)) {
@@ -102,7 +102,7 @@ export class CodeMapMesh {
 		}
 	}
 
-	public clearHighlight(selected: CodeMapBuilding) {
+	clearHighlight(selected: CodeMapBuilding) {
 		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
 			const currentBuilding = this.mapGeomDesc.buildings[i]
 			if (!this.isBuildingSelected(selected, currentBuilding)) {

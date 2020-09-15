@@ -31,7 +31,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	public addLabel(node: Node) {
+	addLabel(node: Node) {
 		const state = this.storeService.getState()
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
 			const x = node.x0 - state.treeMap.mapSize
@@ -54,14 +54,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.resetScale = true
 	}
 
-	public clearLabels() {
+	clearLabels() {
 		this.labels = []
 		while (this.threeSceneService.labels.children.length > 0) {
 			this.threeSceneService.labels.children.pop()
 		}
 	}
 
-	public scale() {
+	scale() {
 		const { scaling } = this.storeService.getState().appSettings
 		if (this.resetScale) {
 			this.resetScale = false
@@ -84,7 +84,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		this.currentScale.copy(scaling)
 	}
 
-	public onCameraChanged() {
+	onCameraChanged() {
 		for (const label of this.labels) {
 			this.setLabelSize(label.sprite)
 		}

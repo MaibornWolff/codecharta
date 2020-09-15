@@ -16,13 +16,13 @@ export class SearchPatternService implements StoreSubscriber, FilesSelectionSubs
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, SearchPatternActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onFilesSelectionChanged() {
+	onFilesSelectionChanged() {
 		this.storeService.dispatch(setSearchPattern())
 	}
 
@@ -34,7 +34,7 @@ export class SearchPatternService implements StoreSubscriber, FilesSelectionSubs
 		this.$rootScope.$broadcast(SearchPatternService.SEARCH_PATTERN_CHANGED_EVENT, { searchPattern: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: SearchPatternSubscriber) {
 		$rootScope.$on(SearchPatternService.SEARCH_PATTERN_CHANGED_EVENT, (_event, data) => {
 			subscriber.onSearchPatternChanged(data.searchPattern)
 		})

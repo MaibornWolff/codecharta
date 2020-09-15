@@ -14,7 +14,7 @@ export class EdgeHeightService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, EdgeHeightActions)) {
 			this.notify(this.select())
 		}
@@ -28,7 +28,7 @@ export class EdgeHeightService implements StoreSubscriber {
 		this.$rootScope.$broadcast(EdgeHeightService.EDGE_HEIGHT_CHANGED_EVENT, { edgeHeight: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeHeightSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: EdgeHeightSubscriber) {
 		$rootScope.$on(EdgeHeightService.EDGE_HEIGHT_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onEdgeHeightChanged(data.edgeHeight)
 		})

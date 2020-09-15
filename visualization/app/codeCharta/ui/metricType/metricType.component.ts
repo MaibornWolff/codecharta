@@ -54,39 +54,39 @@ export class MetricTypeController
 		MetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public onAreaMetricChanged(areaMetric: string) {
+	onAreaMetricChanged(areaMetric: string) {
 		if (this.metricSelection === MetricSelections.areaMetric) {
 			this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(areaMetric)
 		}
 	}
 
-	public onHeightMetricChanged(heightMetric: string) {
+	onHeightMetricChanged(heightMetric: string) {
 		if (this.metricSelection === MetricSelections.heightMetric) {
 			this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(heightMetric)
 		}
 	}
 
-	public onColorMetricChanged(colorMetric: string) {
+	onColorMetricChanged(colorMetric: string) {
 		if (this.metricSelection === MetricSelections.colorMetric) {
 			this._viewModel.metricType = this.nodeMetricDataService.getAttributeTypeByMetric(colorMetric)
 		}
 	}
 
-	public onEdgeMetricChanged(edgeMetric: string) {
+	onEdgeMetricChanged(edgeMetric: string) {
 		if (this.metricSelection === MetricSelections.edgeMetric) {
 			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(edgeMetric)
 		}
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		this._viewModel.isFolderHovered = hoveredBuilding.node && !hoveredBuilding.node.isLeaf
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		this._viewModel.isFolderHovered = false
 	}
 
-	public onMetricDataChanged() {
+	onMetricDataChanged() {
 		const state = this.storeService.getState()
 		if (this.metricSelection === MetricSelections.edgeMetric) {
 			this._viewModel.metricType = this.edgeMetricDataService.getAttributeTypeByMetric(state.dynamicSettings[this.metricSelection])

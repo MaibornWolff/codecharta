@@ -18,19 +18,19 @@ export class DistributionMetricService implements StoreSubscriber, NodeMetricDat
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, DistributionMetricActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
+	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
 		if (isAnyMetricAvailable(nodeMetricData)) {
 			this.reset(nodeMetricData)
 		}
 	}
 
-	public reset(metricData: NodeMetricData[]) {
+	reset(metricData: NodeMetricData[]) {
 		const { distributionMetric } = this.storeService.getState().dynamicSettings
 
 		if (isMetricUnavailable(metricData, distributionMetric)) {
@@ -49,7 +49,7 @@ export class DistributionMetricService implements StoreSubscriber, NodeMetricDat
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: DistributionMetricSubscriber) {
 		$rootScope.$on(DistributionMetricService.DISTRIBUTION_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onDistributionMetricChanged(data.distributionMetric)
 		})

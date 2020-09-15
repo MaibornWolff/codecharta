@@ -14,7 +14,7 @@ export class SearchedNodePathsService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, SearchedNodePathsActions)) {
 			this.notify(this.select())
 		}
@@ -30,7 +30,7 @@ export class SearchedNodePathsService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: SearchedNodePathsSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: SearchedNodePathsSubscriber) {
 		$rootScope.$on(SearchedNodePathsService.SEARCHED_NODE_PATHS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onSearchedNodePathsChanged(data.searchedNodePaths)
 		})

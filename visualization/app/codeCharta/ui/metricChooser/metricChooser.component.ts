@@ -45,57 +45,57 @@ export class MetricChooserController
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public onAreaMetricChanged(areaMetric: string) {
+	onAreaMetricChanged(areaMetric: string) {
 		this._viewModel.areaMetric = areaMetric
 	}
 
-	public onHeightMetricChanged(heightMetric: string) {
+	onHeightMetricChanged(heightMetric: string) {
 		this._viewModel.heightMetric = heightMetric
 	}
 
-	public onColorMetricChanged(colorMetric: string) {
+	onColorMetricChanged(colorMetric: string) {
 		this._viewModel.colorMetric = colorMetric
 	}
 
-	public onDistributionMetricChanged(distributionMetric: string) {
+	onDistributionMetricChanged(distributionMetric: string) {
 		this._viewModel.distributionMetric = distributionMetric
 	}
 
-	public onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
+	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
 		this._viewModel.metricData = nodeMetricData
 		this.originalMetricData = nodeMetricData
 	}
 
-	public filterMetricData() {
+	filterMetricData() {
 		this._viewModel.metricData = this.originalMetricData.filter(metric =>
 			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
 		)
 	}
 
-	public clearSearchTerm() {
+	clearSearchTerm() {
 		this._viewModel.searchTerm = ""
 		this._viewModel.metricData = this.originalMetricData
 	}
 
-	public focusInputField(idName: string) {
+	focusInputField(idName: string) {
 		this.$timeout(() => {
 			$(`.metric-search.${idName}`).focus()
 		}, 200)
 	}
 
-	public applySettingsAreaMetric() {
+	applySettingsAreaMetric() {
 		this.storeService.dispatch(setAreaMetric(this._viewModel.areaMetric))
 	}
 
-	public applySettingsColorMetric() {
+	applySettingsColorMetric() {
 		this.storeService.dispatch(setColorMetric(this._viewModel.colorMetric))
 	}
 
-	public applySettingsHeightMetric() {
+	applySettingsHeightMetric() {
 		this.storeService.dispatch(setHeightMetric(this._viewModel.heightMetric))
 	}
 
-	public applySettingsDistributionMetric() {
+	applySettingsDistributionMetric() {
 		this.storeService.dispatch(setDistributionMetric(this._viewModel.distributionMetric))
 	}
 }

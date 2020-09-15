@@ -6,7 +6,7 @@ export class ColorConverter {
 	private static colorToVector3Map = new Map<string, Vector3>()
 	private static hexToNumberMap = new Map<string, number>()
 
-	public static getVector3(color: string) {
+	static getVector3(color: string) {
 		let vector = this.colorToVector3Map.get(color)
 		if (vector === undefined) {
 			vector = ColorConverter.colorToVector3(color)
@@ -16,7 +16,7 @@ export class ColorConverter {
 		return vector
 	}
 
-	public static getNumber(hex: string) {
+	static getNumber(hex: string) {
 		let number = this.hexToNumberMap.get(hex)
 		if (number === undefined) {
 			number = ColorConverter.convertHexToNumber(hex)
@@ -26,44 +26,44 @@ export class ColorConverter {
 		return number
 	}
 
-	public static convertHexToNumber(hex: string) {
+	static convertHexToNumber(hex: string) {
 		return Number(hex.replace("#", "0x"))
 	}
 
-	public static convertNumberToHex(colorNumber: number) {
+	static convertNumberToHex(colorNumber: number) {
 		const hexColor = colorNumber.toString(16)
 		const zeros = "0".repeat(6 - hexColor.length)
 		return `#${zeros}${hexColor}`
 	}
 
-	public static convertHexToRgba(hex: string, opacity = 1) {
+	static convertHexToRgba(hex: string, opacity = 1) {
 		const rgbColor = this.encodeHex(hex)
 		return `rgba(${rgbColor.join(",")},${opacity})`
 	}
 
-	public static convertHexToColorObject(hex: string) {
+	static convertHexToColorObject(hex: string) {
 		const rgbColor = this.encodeHex(hex)
 		return new Color(...rgbColor)
 	}
 
-	public static convertColorToHex(colorObject: Color) {
+	static convertColorToHex(colorObject: Color) {
 		return (
 			String(String(`#${Math.round(colorObject.r).toString(16)}`) + Math.round(colorObject.g).toString(16)) +
 			Math.round(colorObject.b).toString(16)
 		)
 	}
 
-	public static hexToHSL(hex: string) {
+	static hexToHSL(hex: string) {
 		const hsl = convert.hex.hsl(hex)
 		return new HSL(hsl[0], hsl[1], hsl[2])
 	}
 
-	public static colorToVector3(color: string) {
+	static colorToVector3(color: string) {
 		const convertedColor = ColorConverter.convertHexToNumber(color)
 		return new Vector3(((convertedColor >> 16) & 0xff) / 255, ((convertedColor >> 8) & 0xff) / 255, (convertedColor & 0xff) / 255)
 	}
 
-	public static vector3ToRGB(vector: Vector3) {
+	static vector3ToRGB(vector: Vector3) {
 		const r = Math.floor(vector.x * 255)
 		const g = Math.floor(vector.y * 255)
 		const b = Math.floor(vector.z * 255)
@@ -71,7 +71,7 @@ export class ColorConverter {
 		return new Color(r, g, b)
 	}
 
-	public static gradient(startColor: string, endColor: string, steps: number) {
+	static gradient(startColor: string, endColor: string, steps: number) {
 		const start = this.convertHexToColorObject(startColor)
 		const end = this.convertHexToColorObject(endColor)
 		const diff = end.sub(start)
@@ -85,7 +85,7 @@ export class ColorConverter {
 		return stepsArray
 	}
 
-	public static getImageDataUri(hex: string) {
+	static getImageDataUri(hex: string) {
 		const rgbColor = this.encodeHex(hex)
 		const encodedRGBColor = this.encodeRGB(rgbColor[0], rgbColor[1], rgbColor[2])
 		return this.generatePixel(encodedRGBColor)

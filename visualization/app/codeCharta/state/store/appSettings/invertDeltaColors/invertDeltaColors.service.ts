@@ -14,7 +14,7 @@ export class InvertDeltaColorsService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, InvertDeltaColorsActions)) {
 			this.notify(this.select())
 		}
@@ -30,7 +30,7 @@ export class InvertDeltaColorsService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: InvertDeltaColorsSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: InvertDeltaColorsSubscriber) {
 		$rootScope.$on(InvertDeltaColorsService.INVERT_DELTA_COLORS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onInvertDeltaColorsChanged(data.invertDeltaColors)
 		})

@@ -10,7 +10,7 @@ export class CodeMapBuilding {
 	private _deltaColor: string
 	private _defaultDeltaColor: string
 	private _node: Node
-	public parent: CodeMapBuilding
+	parent: CodeMapBuilding
 
 	constructor(id: number, box: Box3, node: Node, color: string) {
 		this._id = id
@@ -22,7 +22,7 @@ export class CodeMapBuilding {
 		this._node = node
 	}
 
-	public getCenterPoint(mapSize: number) {
+	getCenterPoint(mapSize: number) {
 		return new Vector3(
 			this._node.x0 - mapSize + this._node.width / 2,
 			this._node.z0 + this._node.height,
@@ -30,7 +30,7 @@ export class CodeMapBuilding {
 		)
 	}
 
-	public decreaseLightness(value: number) {
+	decreaseLightness(value: number) {
 		const defaultColorHSL = ColorConverter.hexToHSL(this._defaultColor)
 		defaultColorHSL.decreaseLightness(value)
 		if (defaultColorHSL.getLightness() < 10) {
@@ -52,64 +52,64 @@ export class CodeMapBuilding {
 		}
 	}
 
-	public getColorVector() {
+	getColorVector() {
 		return ColorConverter.getVector3(this._color)
 	}
 
-	public getDefaultColorVector() {
+	getDefaultColorVector() {
 		return ColorConverter.getVector3(this._defaultColor)
 	}
 
-	public getDeltaColorVector() {
+	getDeltaColorVector() {
 		return ColorConverter.getVector3(this._deltaColor)
 	}
 
-	public getDefaultDeltaColorVector() {
+	getDefaultDeltaColorVector() {
 		return ColorConverter.getVector3(this._defaultDeltaColor)
 	}
 
-	public resetColor() {
+	resetColor() {
 		this._color = this._defaultColor
 		this._deltaColor = this._defaultDeltaColor
 	}
 
-	public equals(building: CodeMapBuilding) {
+	equals(building: CodeMapBuilding) {
 		return this._id === building._id
 	}
 
-	public get id() {
+	get id() {
 		return this._id
 	}
 
-	public get boundingBox() {
+	get boundingBox() {
 		return this._boundingBox
 	}
 
-	public get color() {
+	get color() {
 		return this._color
 	}
 
-	public get node() {
+	get node() {
 		return this._node
 	}
 
-	public get deltaColor() {
+	get deltaColor() {
 		return this._deltaColor
 	}
 
-	public get defaultDeltaColor() {
+	get defaultDeltaColor() {
 		return this._defaultDeltaColor
 	}
 
-	public setColor(color: string) {
+	setColor(color: string) {
 		this._color = color
 	}
 
-	public setNode(node: Node) {
+	setNode(node: Node) {
 		this._node = node
 	}
 
-	public setDeltaColor(color: string) {
+	setDeltaColor(color: string) {
 		this._defaultDeltaColor = color
 		this._deltaColor = color
 	}

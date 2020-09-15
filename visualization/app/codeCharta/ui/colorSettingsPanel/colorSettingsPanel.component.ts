@@ -43,27 +43,27 @@ export class ColorSettingsPanelController
 		InvertColorRangeService.subscribe(this.$rootScope, this)
 	}
 
-	public onInvertColorRangeChanged(invertColorRange: boolean) {
+	onInvertColorRangeChanged(invertColorRange: boolean) {
 		this._viewModel.invertColorRange = invertColorRange
 	}
 
-	public onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
+	onInvertDeltaColorsChanged(invertDeltaColors: boolean) {
 		this._viewModel.invertDeltaColors = invertDeltaColors
 	}
 
-	public onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
+	onWhiteColorBuildingsChanged(whiteColorBuildings: boolean) {
 		this._viewModel.whiteColorBuildings = whiteColorBuildings
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.isDeltaState = isDeltaState(files)
 	}
 
-	public invertColorRange() {
+	invertColorRange() {
 		this.storeService.dispatch(setInvertColorRange(this._viewModel.invertColorRange))
 	}
 
-	public invertDeltaColors() {
+	invertDeltaColors() {
 		const { positiveDelta } = this.storeService.getState().appSettings.mapColors
 		const { negativeDelta } = this.storeService.getState().appSettings.mapColors
 
@@ -77,7 +77,7 @@ export class ColorSettingsPanelController
 		)
 	}
 
-	public applyWhiteColorBuildings() {
+	applyWhiteColorBuildings() {
 		this.storeService.dispatch(setWhiteColorBuildings(this._viewModel.whiteColorBuildings))
 	}
 }

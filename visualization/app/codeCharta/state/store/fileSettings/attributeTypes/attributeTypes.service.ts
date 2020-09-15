@@ -20,13 +20,13 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, AttributeTypesActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged(files: FileState[]) {
 		this.merge(files)
 	}
 
@@ -45,7 +45,7 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 		this.$rootScope.$broadcast(AttributeTypesService.ATTRIBUTE_TYPES_CHANGED_EVENT, { attributeTypes: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: AttributeTypesSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: AttributeTypesSubscriber) {
 		$rootScope.$on(AttributeTypesService.ATTRIBUTE_TYPES_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onAttributeTypesChanged(data.attributeTypes)
 		})

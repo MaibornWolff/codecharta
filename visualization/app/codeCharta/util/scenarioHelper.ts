@@ -11,7 +11,7 @@ export class ScenarioHelper {
 	//TODO: Move Scenarios to Redux Store
 	private static scenarios: Map<string, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
-	public static getScenarioItems(metricData: MetricData) {
+	static getScenarioItems(metricData: MetricData) {
 		const scenarioItems: ScenarioItem[] = []
 
 		this.scenarios.forEach(scenario => {
@@ -142,12 +142,12 @@ export class ScenarioHelper {
 		return this.getPreLoadScenarios()
 	}
 
-	public static addScenario(newScenario: RecursivePartial<Scenario>) {
+	static addScenario(newScenario: RecursivePartial<Scenario>) {
 		this.scenarios.set(newScenario.name, newScenario)
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	public static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
+	static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
 		const newScenario: RecursivePartial<Scenario> = { name: scenarioName }
 
 		scenarioAttributes.forEach(attribute => {
@@ -195,16 +195,16 @@ export class ScenarioHelper {
 		return newScenario
 	}
 
-	public static deleteScenario(scenarioName: string) {
+	static deleteScenario(scenarioName: string) {
 		this.scenarios.delete(scenarioName)
 		this.setScenariosToLocalStorage(this.scenarios)
 	}
 
-	public static getDefaultScenarioSetting() {
+	static getDefaultScenarioSetting() {
 		return this.getScenarioSettingsByName("Complexity")
 	}
 
-	public static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
+	static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
 		const scenario: RecursivePartial<Scenario> = this.scenarios.get(name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
@@ -242,14 +242,14 @@ export class ScenarioHelper {
 		return { appSettings: partialAppSettings, dynamicSettings: partialDynamicSettings }
 	}
 
-	public static importScenarios(scenarios: ExportScenario[]) {
+	static importScenarios(scenarios: ExportScenario[]) {
 		scenarios.forEach(scenario => {
 			convertToVectors(scenario.settings)
 		})
 		return scenarios
 	}
 
-	public static isScenarioExisting(scenarioName: string) {
+	static isScenarioExisting(scenarioName: string) {
 		return this.scenarios.has(scenarioName)
 	}
 }

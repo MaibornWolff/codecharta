@@ -7,7 +7,7 @@ export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>
 export class TreeMapGenerator {
 	private static PADDING_SCALING_FACTOR = 0.4
 
-	public static createTreemapNodes(map: CodeMapNode, s: State, metricData: NodeMetricData[], isDeltaState: boolean) {
+	static createTreemapNodes(map: CodeMapNode, s: State, metricData: NodeMetricData[], isDeltaState: boolean) {
 		const maxHeight = metricData.find(x => x.name === s.dynamicSettings.heightMetric).maxValue
 		const heightScale = (s.treeMap.mapSize * 2) / maxHeight
 

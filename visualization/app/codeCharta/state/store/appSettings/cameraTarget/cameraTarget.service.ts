@@ -15,7 +15,7 @@ export class CameraTargetService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, CameraTargetActions)) {
 			this.notify(this.select())
 		}
@@ -29,7 +29,7 @@ export class CameraTargetService implements StoreSubscriber {
 		this.$rootScope.$broadcast(CameraTargetService.CAMERA_TARGET_CHANGED_EVENT, { cameraTarget: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: CameraTargetSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: CameraTargetSubscriber) {
 		$rootScope.$on(CameraTargetService.CAMERA_TARGET_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onStoreCameraTargetChanged(data.cameraTarget)
 		})

@@ -35,12 +35,12 @@ export class MetricDeltaSelectedController implements BuildingSelectedEventSubsc
 		}, MetricDeltaSelectedController.TIME_TO_INIT_BINDING)
 	}
 
-	public onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
+	onBuildingSelected(selectedBuilding?: CodeMapBuilding) {
 		this.setDeltaValue(selectedBuilding)
 		this.setDeltaColorClass()
 	}
 
-	public onInvertDeltaColorsChanged() {
+	onInvertDeltaColorsChanged() {
 		this.setDeltaColorClass()
 	}
 

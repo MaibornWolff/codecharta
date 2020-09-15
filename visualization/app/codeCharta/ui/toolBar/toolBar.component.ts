@@ -15,11 +15,11 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
-	public onBuildingHovered() {
+	onBuildingHovered() {
 		this._viewModel.isNodeHovered = true
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		this._viewModel.isNodeHovered = false
 	}
 }

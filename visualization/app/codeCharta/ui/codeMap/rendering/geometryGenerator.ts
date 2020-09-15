@@ -25,7 +25,7 @@ export class GeometryGenerator {
 
 	private floorGradient: string[]
 
-	public build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
+	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
 		const data = new IntermediateVertexData()
 		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
 

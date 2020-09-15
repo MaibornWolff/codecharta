@@ -2,7 +2,7 @@ import { CodeMapNode, NodeType } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 
 export class MapBuilder {
-	public static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {
+	static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {
 		let rootNode = this.getEmptyRootNode()
 		const sortedNodes = this.getHashMapSortedByPath(hashMapWithAllNodes)
 

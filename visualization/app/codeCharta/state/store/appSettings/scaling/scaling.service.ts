@@ -15,7 +15,7 @@ export class ScalingService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, ScalingActions)) {
 			this.notify(this.select())
 		}
@@ -29,7 +29,7 @@ export class ScalingService implements StoreSubscriber {
 		this.$rootScope.$broadcast(ScalingService.SCALING_CHANGED_EVENT, { scaling: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: ScalingSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: ScalingSubscriber) {
 		$rootScope.$on(ScalingService.SCALING_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onScalingChanged(data.scaling)
 		})

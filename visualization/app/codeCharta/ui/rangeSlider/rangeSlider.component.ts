@@ -73,11 +73,11 @@ export class RangeSliderController
 		}
 	}
 
-	public onColorMetricChanged() {
+	onColorMetricChanged() {
 		this.updateMaxMetricValue()
 	}
 
-	public onColorRangeChanged(colorRange: ColorRange) {
+	onColorRangeChanged(colorRange: ColorRange) {
 		this.updateViewModel(colorRange)
 
 		this.$timeout(() => {
@@ -87,26 +87,26 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFilesSelectionChanged() {
+	onFilesSelectionChanged() {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}
 
-	public onInvertColorRangeChanged() {
+	onInvertColorRangeChanged() {
 		this.updateSliderColors()
 	}
 
-	public onWhiteColorBuildingsChanged() {
+	onWhiteColorBuildingsChanged() {
 		this.updateSliderColors()
 	}
 
-	public onFromSliderChange() {
+	onFromSliderChange() {
 		this._viewModel.colorRangeFrom = Math.min(this._viewModel.sliderOptions.ceil - 1, this._viewModel.colorRangeFrom)
 		this._viewModel.colorRangeTo = Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1)
 		this.applyColorRange()
 	}
 
-	public onToSliderChange() {
+	onToSliderChange() {
 		this._viewModel.colorRangeFrom = Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
 		this._viewModel.colorRangeTo = Math.min(this._viewModel.sliderOptions.ceil, Math.max(1, this._viewModel.colorRangeTo))
 		this.applyColorRange()

@@ -5,7 +5,7 @@ import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
 
 export class DeltaGenerator {
-	public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
+	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
 		const referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(referenceFile.map)
 		const comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(comparisonFile.map)
 		const hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)

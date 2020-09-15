@@ -29,17 +29,17 @@ export class CodeMapController implements IsAttributeSideBarVisibleSubscriber, I
 		IsLoadingFileService.subscribe(this.$rootScope, this)
 	}
 
-	public $postLink() {
+	$postLink() {
 		this.threeViewerService.init(this.$element[0].children[0])
 		this.threeViewerService.animate()
 		this.codeMapMouseEventService.start()
 	}
 
-	public onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
+	onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
-	public onIsLoadingFileChanged(isLoadingFile: boolean) {
+	onIsLoadingFileChanged(isLoadingFile: boolean) {
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
 	}

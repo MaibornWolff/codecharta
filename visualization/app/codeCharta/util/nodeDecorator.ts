@@ -20,7 +20,7 @@ function hasChildren(node) {
 }
 
 export class NodeDecorator {
-	public static decorateMap(map: CodeMapNode, metricData: NodeMetricData[], blacklist: BlacklistItem[]) {
+	static decorateMap(map: CodeMapNode, metricData: NodeMetricData[], blacklist: BlacklistItem[]) {
 		const root = hierarchy<CodeMapNode>(map)
 
 		const flattened = ignore()
@@ -88,7 +88,7 @@ export class NodeDecorator {
 		}
 	}
 
-	public static decorateMapWithPathAttribute(file: CCFile) {
+	static decorateMapWithPathAttribute(file: CCFile) {
 		const root = hierarchy<CodeMapNode>(file.map)
 		root.each(node => {
 			if (node.parent) {
@@ -100,7 +100,7 @@ export class NodeDecorator {
 		return file
 	}
 
-	public static decorateParentNodesWithAggregatedAttributes(
+	static decorateParentNodesWithAggregatedAttributes(
 		map: CodeMapNode,
 		metricData: NodeMetricData[],
 		edgeMetricData: EdgeMetricData[],

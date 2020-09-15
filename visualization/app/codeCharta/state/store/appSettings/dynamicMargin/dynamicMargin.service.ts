@@ -14,7 +14,7 @@ export class DynamicMarginService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, DynamicMarginActions)) {
 			this.notify(this.select())
 		}
@@ -28,7 +28,7 @@ export class DynamicMarginService implements StoreSubscriber {
 		this.$rootScope.$broadcast(DynamicMarginService.DYNAMIC_MARGIN_CHANGED_EVENT, { dynamicMargin: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: DynamicMarginSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: DynamicMarginSubscriber) {
 		$rootScope.$on(DynamicMarginService.DYNAMIC_MARGIN_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onDynamicMarginChanged(data.dynamicMargin)
 		})

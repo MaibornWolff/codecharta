@@ -3,23 +3,23 @@ import convert from "color-convert"
 export class HSL {
 	constructor(private h: number, private s: number, private l: number) {}
 
-	public toHex() {
+	toHex() {
 		return `#${convert.hsl.hex([this.h, this.s, this.l])}`
 	}
 
-	public decreaseLightness(value: number) {
+	decreaseLightness(value: number) {
 		this.l -= value
 	}
 
-	public getLightness() {
+	getLightness() {
 		return this.l
 	}
 
-	public setLightness(value: number) {
+	setLightness(value: number) {
 		this.l = value
 	}
 
-	public toString() {
+	toString() {
 		return `hsl(${this.h}, ${this.s}%, ${this.l}%)`
 	}
 }

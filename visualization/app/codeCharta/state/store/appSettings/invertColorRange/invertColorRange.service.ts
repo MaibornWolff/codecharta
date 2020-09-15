@@ -14,7 +14,7 @@ export class InvertColorRangeService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, InvertColorRangeActions)) {
 			this.notify(this.select())
 		}
@@ -30,7 +30,7 @@ export class InvertColorRangeService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: InvertColorRangeSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: InvertColorRangeSubscriber) {
 		$rootScope.$on(InvertColorRangeService.INVERT_COLOR_RANGE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onInvertColorRangeChanged(data.invertColorRange)
 		})

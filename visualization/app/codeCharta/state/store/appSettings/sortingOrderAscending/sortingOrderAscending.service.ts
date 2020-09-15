@@ -14,7 +14,7 @@ export class SortingOrderAscendingService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, SortingOrderAscendingActions)) {
 			this.notify(this.select())
 		}
@@ -30,7 +30,7 @@ export class SortingOrderAscendingService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: SortingOrderAscendingSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: SortingOrderAscendingSubscriber) {
 		$rootScope.$on(SortingOrderAscendingService.SORTING_ORDER_ASCENDING_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onSortingOrderAscendingChanged(data.sortingOrderAscending)
 		})

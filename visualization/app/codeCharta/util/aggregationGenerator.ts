@@ -8,7 +8,7 @@ export class AggregationGenerator {
 	private static projectNameArray: string[] = []
 	private static fileNameArray: string[] = []
 
-	public static getAggregationFile(inputFiles: CCFile[]) {
+	static getAggregationFile(inputFiles: CCFile[]) {
 		if (inputFiles.length === 1) {
 			return inputFiles[0]
 		}

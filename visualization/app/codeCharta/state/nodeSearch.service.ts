@@ -25,7 +25,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 		SearchPatternService.subscribe(this.$rootScope, this)
 	}
 
-	public onSearchPatternChanged(searchPattern: string) {
+	onSearchPatternChanged(searchPattern: string) {
 		this.searchedNodes = this.findSearchedNodes(searchPattern)
 		this.notifyNodeSearchComplete()
 		this.applySettingsSearchedNodePaths()
@@ -50,7 +50,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 		this.$rootScope.$broadcast(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, this.searchedNodes)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: NodeSearchSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: NodeSearchSubscriber) {
 		$rootScope.$on(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, (_event_, data) => {
 			subscriber.onNodeSearchComplete(data)
 		})

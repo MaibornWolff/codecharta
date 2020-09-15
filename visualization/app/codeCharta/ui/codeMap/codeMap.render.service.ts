@@ -17,7 +17,7 @@ export class CodeMapRenderService {
 		private codeMapArrowService: CodeMapArrowService
 	) {}
 
-	public render(map: CodeMapNode) {
+	render(map: CodeMapNode) {
 		const sortedNodes = this.getSortedNodes(map)
 		this.setNewMapMesh(sortedNodes)
 		this.setLabels(sortedNodes)
@@ -30,7 +30,7 @@ export class CodeMapRenderService {
 		this.threeSceneService.setMapMesh(mapMesh)
 	}
 
-	public scaleMap() {
+	scaleMap() {
 		this.threeSceneService.scale()
 		this.codeMapLabelService.scale()
 		this.codeMapArrowService.scale()

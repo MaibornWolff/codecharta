@@ -42,31 +42,31 @@ export class DialogGlobalSettingsController
 		this.onResetCameraIfNewFileIsLoadedChanged(appSettings.resetCameraIfNewFileIsLoaded)
 	}
 
-	public onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
+	onHideFlatBuildingsChanged(hideFlatBuildings: boolean) {
 		this._viewModel.hideFlatBuildings = hideFlatBuildings
 	}
 
-	public onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
+	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		this._viewModel.isWhiteBackground = isWhiteBackground
 	}
 
-	public onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
+	onResetCameraIfNewFileIsLoadedChanged(resetCameraIfNewFileIsLoaded: boolean) {
 		this._viewModel.resetCameraIfNewFileIsLoaded = resetCameraIfNewFileIsLoaded
 	}
 
-	public applySettingsHideFlatBuildings() {
+	applySettingsHideFlatBuildings() {
 		this.storeService.dispatch(setHideFlatBuildings(this._viewModel.hideFlatBuildings))
 	}
 
-	public applySettingsResetCamera() {
+	applySettingsResetCamera() {
 		this.storeService.dispatch(setResetCameraIfNewFileIsLoaded(this._viewModel.resetCameraIfNewFileIsLoaded))
 	}
 
-	public applySettingsIsWhiteBackground() {
+	applySettingsIsWhiteBackground() {
 		this.storeService.dispatch(setIsWhiteBackground(this._viewModel.isWhiteBackground))
 	}
 
-	public hide() {
+	hide() {
 		this.$mdDialog.hide()
 	}
 }

@@ -17,19 +17,19 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataSubscri
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, EdgeMetricActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onEdgeMetricDataChanged(edgeMetrics: EdgeMetricData[]) {
+	onEdgeMetricDataChanged(edgeMetrics: EdgeMetricData[]) {
 		if (!edgeMetrics.map(x => x.name).includes(this.storeService.getState().dynamicSettings.edgeMetric)) {
 			this.reset()
 		}
 	}
 
-	public reset() {
+	reset() {
 		this.storeService.dispatch(setEdgeMetric("None"))
 	}
 
@@ -41,7 +41,7 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataSubscri
 		this.$rootScope.$broadcast(EdgeMetricService.EDGE_METRIC_CHANGED_EVENT, { edgeMetric: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricSubscriber) {
 		$rootScope.$on(EdgeMetricService.EDGE_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onEdgeMetricChanged(data.edgeMetric)
 		})

@@ -3,7 +3,7 @@ import { CodeChartaService } from "../codeCharta.service"
 export class FileNameHelper {
 	private static JSON_EXTENSION = ".json"
 
-	public static getNewFileName(fileName: string, isDeltaState: boolean) {
+	static getNewFileName(fileName: string, isDeltaState: boolean) {
 		return this.getFileNameWithoutTimestamp(fileName, isDeltaState) + this.getNewTimestamp()
 	}
 
@@ -29,7 +29,7 @@ export class FileNameHelper {
 		return fileName
 	}
 
-	public static withoutCCJsonExtension(fileName: string) {
+	static withoutCCJsonExtension(fileName: string) {
 		return fileName.replace(".cc", "").replace(this.JSON_EXTENSION, "")
 	}
 }

@@ -14,7 +14,7 @@ export class AmountOfTopLabelsService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, AmountOfTopLabelsActions)) {
 			this.notify(this.select())
 		}
@@ -30,7 +30,7 @@ export class AmountOfTopLabelsService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: AmountOfTopLabelsSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: AmountOfTopLabelsSubscriber) {
 		$rootScope.$on(AmountOfTopLabelsService.AMOUNT_OF_TOP_LABELS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onAmountOfTopLabelsChanged(data.amountOfTopLabels)
 		})

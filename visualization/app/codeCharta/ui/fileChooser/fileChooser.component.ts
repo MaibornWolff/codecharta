@@ -13,7 +13,7 @@ export class FileChooserController {
 	/* @ngInject */
 	constructor(private $scope, private codeChartaService: CodeChartaService, private storeService: StoreService) {}
 
-	public onImportNewFiles(element) {
+	onImportNewFiles(element) {
 		this.$scope.$apply(() => {
 			let content
 			let readFiles = 0
@@ -50,7 +50,7 @@ export class FileChooserController {
 		})
 	}
 
-	public setNewData() {
+	setNewData() {
 		this.codeChartaService.loadFiles(this.files)
 		this.files = []
 	}

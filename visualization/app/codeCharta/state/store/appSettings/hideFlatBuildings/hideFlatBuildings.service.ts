@@ -14,7 +14,7 @@ export class HideFlatBuildingsService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, HideFlatBuildingsActions)) {
 			this.notify(this.select())
 		}
@@ -30,7 +30,7 @@ export class HideFlatBuildingsService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: HideFlatBuildingsSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: HideFlatBuildingsSubscriber) {
 		$rootScope.$on(HideFlatBuildingsService.HIDE_FLAT_BUILDINGS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onHideFlatBuildingsChanged(data.hideFlatBuildings)
 		})

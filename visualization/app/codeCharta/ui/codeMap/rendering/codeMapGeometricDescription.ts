@@ -12,23 +12,23 @@ export class CodeMapGeometricDescription {
 		this.scales = new Vector3(1, 1, 1)
 	}
 
-	public add(building: CodeMapBuilding) {
+	add(building: CodeMapBuilding) {
 		this._buildings.push(building)
 	}
 
-	public get buildings() {
+	get buildings() {
 		return this._buildings
 	}
 
-	public setScales(scales: Vector3) {
+	setScales(scales: Vector3) {
 		this.scales = scales
 	}
 
-	public getBuildingByPath(path: string) {
+	getBuildingByPath(path: string) {
 		return this.buildings.find(x => x.node.path === path)
 	}
 
-	public intersect(ray: Ray) {
+	intersect(ray: Ray) {
 		let intersectedBuilding: CodeMapBuilding
 		let leastIntersectedDistance = Infinity
 

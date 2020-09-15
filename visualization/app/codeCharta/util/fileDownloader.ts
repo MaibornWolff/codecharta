@@ -8,7 +8,7 @@ import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
 
 export class FileDownloader {
-	public static downloadCurrentMap(
+	static downloadCurrentMap(
 		map: CodeMapNode,
 		fileMeta: FileMeta,
 		fileSettings: FileSettings,

@@ -26,12 +26,12 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
+	onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
 		this.searchedNodeLeaves = this.getSearchedNodeLeaves(searchedNodes)
 		this.updateViewModel()
 	}
 
-	public onBlacklistChanged() {
+	onBlacklistChanged() {
 		this.updateViewModel()
 	}
 

@@ -79,7 +79,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.scene.add(cubeBoundingBox)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera) {
+	onCameraChanged(camera: PerspectiveCamera) {
 		const newCameraPosition = this.calculateCameraPosition(camera)
 		this.setCameraPosition(newCameraPosition)
 	}
@@ -126,7 +126,7 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.camera.position.z = 4
 	}
 
-	public onCubeHovered(cube: Mesh) {
+	onCubeHovered(cube: Mesh) {
 		this.hoverInfo = {
 			cube,
 			originalMaterial: cube.material
@@ -134,12 +134,12 @@ export class ViewCubeController implements CameraChangeSubscriber, ViewCubeEvent
 		this.hoverInfo.cube.material.emissive = new Color(0xffffff)
 	}
 
-	public onCubeUnhovered() {
+	onCubeUnhovered() {
 		this.hoverInfo.cube.material.emissive = new Color(0x000000)
 		this.hoverInfo.cube = null
 	}
 
-	public onCubeClicked(cube: Mesh) {
+	onCubeClicked(cube: Mesh) {
 		switch (cube) {
 			case this.cubeDefinition.front.top.middle:
 				this.threeOrbitControlsService.rotateCameraInVectorDirection(0, -1, -1)

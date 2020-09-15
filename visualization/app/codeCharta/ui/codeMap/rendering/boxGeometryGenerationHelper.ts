@@ -31,7 +31,7 @@ const numberSides = 6
 const verticesPerSide = 4
 
 export class BoxGeometryGenerationHelper {
-	public static addBoxToVertexData(
+	static addBoxToVertexData(
 		data: IntermediateVertexData,
 		measures: BoxMeasures,
 		color: string,

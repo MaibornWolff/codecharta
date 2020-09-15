@@ -37,19 +37,19 @@ export class MetricValueHoveredController
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
-	public onAreaMetricChanged(areaMetric: string) {
+	onAreaMetricChanged(areaMetric: string) {
 		this._viewModel.areaMetric = areaMetric
 	}
 
-	public onHeightMetricChanged(heightMetric: string) {
+	onHeightMetricChanged(heightMetric: string) {
 		this._viewModel.heightMetric = heightMetric
 	}
 
-	public onColorMetricChanged(colorMetric: string) {
+	onColorMetricChanged(colorMetric: string) {
 		this._viewModel.colorMetric = colorMetric
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		if (hoveredBuilding.node) {
 			this._viewModel.hoveredNode = hoveredBuilding.node
 			if (hoveredBuilding.node.deltas) {
@@ -59,7 +59,7 @@ export class MetricValueHoveredController
 		this.synchronizeAngularTwoWayBinding()
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		this._viewModel.hoveredNode = null
 		this.synchronizeAngularTwoWayBinding()
 	}

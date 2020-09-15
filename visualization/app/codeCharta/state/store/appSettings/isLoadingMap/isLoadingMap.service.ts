@@ -14,7 +14,7 @@ export class IsLoadingMapService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, IsLoadingMapActions)) {
 			this.notify(this.select())
 		}
@@ -28,7 +28,7 @@ export class IsLoadingMapService implements StoreSubscriber {
 		this.$rootScope.$broadcast(IsLoadingMapService.IS_LOADING_MAP_CHANGED_EVENT, { isLoadingMap: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: IsLoadingMapSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: IsLoadingMapSubscriber) {
 		$rootScope.$on(IsLoadingMapService.IS_LOADING_MAP_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onIsLoadingMapChanged(data.isLoadingMap)
 		})

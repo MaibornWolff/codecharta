@@ -20,13 +20,13 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, BlacklistActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged(files: FileState[]) {
 		this.merge(files)
 	}
 
@@ -45,7 +45,7 @@ export class BlacklistService implements StoreSubscriber, FilesSelectionSubscrib
 		this.$rootScope.$broadcast(BlacklistService.BLACKLIST_CHANGED_EVENT, { blacklist: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: BlacklistSubscriber) {
 		$rootScope.$on(BlacklistService.BLACKLIST_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onBlacklistChanged(data.blacklist)
 		})

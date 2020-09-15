@@ -27,7 +27,7 @@ export class ViewCubeMouseEventsService {
 
 	constructor(private $rootScope: IRootScopeService) {}
 
-	public init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
+	init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		this.cubeGroup = cubeGroup
 		this.camera = camera
 		this.renderer = renderer
@@ -115,7 +115,7 @@ export class ViewCubeMouseEventsService {
 		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME, { cube })
 	}
 
-	public static subscribeToEventPropagation($rootScope: IRootScopeService, subscriber: ViewCubeEventPropagationSubscriber) {
+	static subscribeToEventPropagation($rootScope: IRootScopeService, subscriber: ViewCubeEventPropagationSubscriber) {
 		$rootScope.$on(
 			ViewCubeMouseEventsService.VIEW_CUBE_EVENT_PROPAGATION_EVENT_NAME,
 			(_event_, parameters: { type: string; e: MouseEvent }) => {
@@ -124,7 +124,7 @@ export class ViewCubeMouseEventsService {
 		)
 	}
 
-	public static subscribeToViewCubeMouseEvents($rootScope: IRootScopeService, subscriber: ViewCubeEventSubscriber) {
+	static subscribeToViewCubeMouseEvents($rootScope: IRootScopeService, subscriber: ViewCubeEventSubscriber) {
 		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME, (_event_, parameters: { cube: Mesh }) => {
 			subscriber.onCubeHovered(parameters.cube)
 		})

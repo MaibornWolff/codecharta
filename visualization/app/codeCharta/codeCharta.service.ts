@@ -14,14 +14,14 @@ import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 
 export class CodeChartaService {
-	public static ROOT_NAME = "root"
-	public static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
-	public static readonly CC_FILE_EXTENSION = ".cc.json"
+	static ROOT_NAME = "root"
+	static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
+	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 
 	constructor(private storeService: StoreService, private dialogService: DialogService) {}
 
-	public loadFiles(nameDataPairs: NameDataPair[]) {
+	loadFiles(nameDataPairs: NameDataPair[]) {
 		for (const nameDataPair of nameDataPairs) {
 			try {
 				validate(nameDataPair.content)

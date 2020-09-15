@@ -33,15 +33,15 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 		MetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public loadScenarios() {
+	loadScenarios() {
 		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.storeService.getState().metricData)
 	}
 
-	public onMetricDataChanged() {
+	onMetricDataChanged() {
 		this.loadScenarios()
 	}
 
-	public applyScenario(scenarioName: string) {
+	applyScenario(scenarioName: string) {
 		const scenarioSettings = ScenarioHelper.getScenarioSettingsByName(scenarioName)
 
 		this.storeService.dispatch(setState(scenarioSettings))
@@ -49,11 +49,11 @@ export class ScenarioDropDownController implements MetricDataSubscriber {
 		this.threeOrbitControlsService.setControlTarget()
 	}
 
-	public showAddScenarioSettings() {
+	showAddScenarioSettings() {
 		this.dialogService.showAddScenarioSettings()
 	}
 
-	public removeScenario(scenarioName) {
+	removeScenario(scenarioName) {
 		if (scenarioName !== "Complexity") {
 			ScenarioHelper.deleteScenario(scenarioName)
 			this.dialogService.showErrorDialog(`${scenarioName} deleted.`, "Info")

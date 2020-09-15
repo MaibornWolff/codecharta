@@ -21,7 +21,7 @@ export class CodeMapArrowService
 		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
 	}
 
-	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
+	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		const state = this.storeService.getState()
 		if (state.dynamicSettings.edgeMetric !== "None" && !selectedBuilding.node.flat) {
 			this.clearArrows()
@@ -30,7 +30,7 @@ export class CodeMapArrowService
 		this.scale()
 	}
 
-	public onBuildingDeselected() {
+	onBuildingDeselected() {
 		this.clearArrows()
 		this.addEdgePreview(
 			null,
@@ -38,7 +38,7 @@ export class CodeMapArrowService
 		)
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		const state = this.storeService.getState()
 		if (state.dynamicSettings.edgeMetric !== "None" && !hoveredBuilding.node.flat) {
 			this.clearArrows()
@@ -47,7 +47,7 @@ export class CodeMapArrowService
 		this.scale()
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		const state = this.storeService.getState()
 		if (state.dynamicSettings.edgeMetric !== "None") {
 			this.clearArrows()
@@ -56,14 +56,14 @@ export class CodeMapArrowService
 		this.scale()
 	}
 
-	public clearArrows() {
+	clearArrows() {
 		this.arrows = []
 		while (this.threeSceneService.edgeArrows.children.length > 0) {
 			this.threeSceneService.edgeArrows.children.pop()
 		}
 	}
 
-	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
+	addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
 		const state = this.storeService.getState()
 		const curveScale = 100 * state.appSettings.edgeHeight
 
@@ -85,7 +85,7 @@ export class CodeMapArrowService
 		}
 	}
 
-	public addEdgePreview(nodes: Node[], edges: Edge[]) {
+	addEdgePreview(nodes: Node[], edges: Edge[]) {
 		if (nodes) {
 			this.map = this.getNodesAsMap(nodes)
 		}
@@ -101,7 +101,7 @@ export class CodeMapArrowService
 		}
 	}
 
-	public scale() {
+	scale() {
 		const { scaling } = this.storeService.getState().appSettings
 		for (const arrow of this.arrows) {
 			arrow.scale.x = scaling.x

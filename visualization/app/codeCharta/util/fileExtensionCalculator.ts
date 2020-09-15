@@ -14,7 +14,7 @@ export class FileExtensionCalculator {
 	private static readonly OTHER_EXTENSION = "other"
 	private static OTHER_GROUP_THRESHOLD_VALUE = 3
 
-	public static getMetricDistribution(map: CodeMapNode, metric: string) {
+	static getMetricDistribution(map: CodeMapNode, metric: string) {
 		let distribution: MetricDistribution[] = this.getAbsoluteDistribution(map, metric)
 		distribution = this.decorateDistributionWithRelativeMetricValue(distribution)
 		distribution.sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
@@ -99,14 +99,14 @@ export class FileExtensionCalculator {
 		return distribution.reduce((partialSum, a) => partialSum + a.absoluteMetricValue, 0)
 	}
 
-	public static estimateFileExtension(fileName: string) {
+	static estimateFileExtension(fileName: string) {
 		if (fileName.includes(".")) {
 			return fileName.split(".").reverse()[0].toLowerCase()
 		}
 		return FileExtensionCalculator.NO_EXTENSION
 	}
 
-	public static hashCode(fileExtension: string) {
+	static hashCode(fileExtension: string) {
 		let hash = 0
 		for (let i = 0; i < fileExtension.length; i++) {
 			hash = fileExtension.charCodeAt(i) + ((hash << 5) - hash)
@@ -114,12 +114,12 @@ export class FileExtensionCalculator {
 		return hash
 	}
 
-	public static numberToHsl(hashCode: number) {
+	static numberToHsl(hashCode: number) {
 		const shortened = hashCode % 360
 		return new HSL(shortened, 40, 50)
 	}
 
-	public static getNoneExtension(): MetricDistribution {
+	static getNoneExtension(): MetricDistribution {
 		return {
 			fileExtension: FileExtensionCalculator.NO_EXTENSION,
 			absoluteMetricValue: null,

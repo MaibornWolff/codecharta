@@ -64,33 +64,33 @@ export class LegendPanelController
 		InvertDeltaColorsService.subscribe(this.$rootScope, this)
 	}
 
-	public onColorRangeChanged(colorRange: ColorRange) {
+	onColorRangeChanged(colorRange: ColorRange) {
 		this._viewModel.colorRange = colorRange
 		this.updatePixelColors()
 	}
 
-	public onInvertColorRangeChanged(invertColorRange: boolean) {
+	onInvertColorRangeChanged(invertColorRange: boolean) {
 		this._viewModel.invertColorRange = invertColorRange
 		this.updatePixelColors()
 	}
 
-	public onInvertDeltaColorsChanged() {
+	onInvertDeltaColorsChanged() {
 		this.updatePixelColors()
 	}
 
-	public onMarkedPackagesChanged(markedPackages: MarkedPackage[]) {
+	onMarkedPackagesChanged(markedPackages: MarkedPackage[]) {
 		this.setMarkedPackageLists(markedPackages)
 	}
 
-	public onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
+	onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
-	public onWhiteColorBuildingsChanged() {
+	onWhiteColorBuildingsChanged() {
 		this.updatePixelColors()
 	}
 
-	public toggle() {
+	toggle() {
 		this._viewModel.isLegendVisible = !this._viewModel.isLegendVisible
 	}
 

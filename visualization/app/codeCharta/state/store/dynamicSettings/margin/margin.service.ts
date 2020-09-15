@@ -24,21 +24,21 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 		DynamicMarginService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, MarginActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onAreaMetricChanged() {
+	onAreaMetricChanged() {
 		this.reset()
 	}
 
-	public onDynamicMarginChanged() {
+	onDynamicMarginChanged() {
 		this.reset()
 	}
 
-	public reset() {
+	reset() {
 		const map = this.codeMapPreRenderService.getRenderMap()
 		const { areaMetric, margin } = this.storeService.getState().dynamicSettings
 		const { dynamicMargin } = this.storeService.getState().appSettings
@@ -58,7 +58,7 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 		this.$rootScope.$broadcast(MarginService.MARGIN_CHANGED_EVENT, { margin: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: MarginSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: MarginSubscriber) {
 		$rootScope.$on(MarginService.MARGIN_CHANGED_EVENT, (_event, data) => {
 			subscriber.onMarginChanged(data.margin)
 		})

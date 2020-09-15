@@ -7,7 +7,7 @@ import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricDa
 export class CodeMapActionsService {
 	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {}
 
-	public markFolder(node: CodeMapNode, color: string) {
+	markFolder(node: CodeMapNode, color: string) {
 		const newMP = this.getNewMarkedPackage(node.path, color)
 		const clickedMP = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === newMP.path)
 		const parentMP = this.getParentMP(newMP.path)
@@ -32,7 +32,7 @@ export class CodeMapActionsService {
 		return !(mp1 && mp2 && mp1.color === mp2.color)
 	}
 
-	public unmarkFolder(node: CodeMapNode) {
+	unmarkFolder(node: CodeMapNode) {
 		const clickedMP = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === node.path)
 
 		if (clickedMP) {
@@ -43,7 +43,7 @@ export class CodeMapActionsService {
 		}
 	}
 
-	public updateEdgePreviews() {
+	updateEdgePreviews() {
 		const state = this.storeService.getState()
 		const { edges } = state.fileSettings
 		const { edgeMetric } = state.dynamicSettings
@@ -69,7 +69,7 @@ export class CodeMapActionsService {
 		this.storeService.dispatch(setEdges(edges))
 	}
 
-	public getParentMP(path: string) {
+	getParentMP(path: string) {
 		const sortedParentMP = this.storeService
 			.getState()
 			.fileSettings.markedPackages.filter(p => path.includes(p.path) && p.path !== path)

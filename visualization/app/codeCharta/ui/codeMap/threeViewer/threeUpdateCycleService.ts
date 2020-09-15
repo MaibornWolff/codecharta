@@ -4,11 +4,11 @@
 export class ThreeUpdateCycleService {
 	private updatables: Function[] = []
 
-	public register(onUpdate: Function) {
+	register(onUpdate: Function) {
 		this.updatables.push(onUpdate)
 	}
 
-	public update() {
+	update() {
 		this.updatables.forEach(u => u())
 	}
 }

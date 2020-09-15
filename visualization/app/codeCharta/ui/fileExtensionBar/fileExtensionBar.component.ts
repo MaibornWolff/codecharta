@@ -22,13 +22,13 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
-	public onRenderMapChanged(map: CodeMapNode) {
+	onRenderMapChanged(map: CodeMapNode) {
 		this.setNewDistribution(map)
 		this.setColorForEachExtension()
 		this.potentiallyAddNoneExtension()
 	}
 
-	public onHoverFileExtensionBar(hoveredExtension: string) {
+	onHoverFileExtensionBar(hoveredExtension: string) {
 		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 
 		const visibleFileExtensions = new Set()
@@ -53,15 +53,15 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		this.threeSceneService.highlightBuildings()
 	}
 
-	public onUnhoverFileExtensionBar() {
+	onUnhoverFileExtensionBar() {
 		this.threeSceneService.clearHighlight()
 	}
 
-	public toggleExtensiveMode() {
+	toggleExtensiveMode() {
 		this._viewModel.isExtensiveMode = !this._viewModel.isExtensiveMode
 	}
 
-	public togglePercentageAbsoluteValues() {
+	togglePercentageAbsoluteValues() {
 		this._viewModel.isAbsoluteValueVisible = !this._viewModel.isAbsoluteValueVisible
 	}
 

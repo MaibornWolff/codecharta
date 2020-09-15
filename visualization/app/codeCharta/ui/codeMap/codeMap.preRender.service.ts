@@ -55,15 +55,15 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}, this.DEBOUNCE_TIME)
 	}
 
-	public getRenderMap() {
+	getRenderMap() {
 		return this.unifiedMap
 	}
 
-	public getRenderFileMeta() {
+	getRenderFileMeta() {
 		return this.unifiedFileMeta
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
@@ -80,13 +80,13 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}
 	}
 
-	public onScalingChanged() {
+	onScalingChanged() {
 		if (this.allNecessaryRenderDataAvailable()) {
 			this.scaleMapAndNotify()
 		}
 	}
 
-	public onMetricDataChanged() {
+	onMetricDataChanged() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
@@ -207,7 +207,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.unifiedMap)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
 		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (_event, data) => {
 			subscriber.onRenderMapChanged(data)
 		})

@@ -10,7 +10,7 @@ export class ResetSettingsButtonController {
 	/* @ngInject */
 	constructor(private storeService: StoreService) {}
 
-	public applyDefaultSettings() {
+	applyDefaultSettings() {
 		const tokens = this.settingsNames.replace(/ |\n/g, "").split(",")
 		const updatedSettings: RecursivePartial<Settings> = {}
 

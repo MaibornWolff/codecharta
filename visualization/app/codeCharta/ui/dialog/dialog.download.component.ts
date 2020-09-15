@@ -38,11 +38,11 @@ export class DialogDownloadController {
 		this.initDialogFields()
 	}
 
-	public hide() {
+	hide() {
 		this.$mdDialog.hide()
 	}
 
-	public download() {
+	download() {
 		FileDownloader.downloadCurrentMap(
 			this.codeMapPreRenderService.getRenderMap(),
 			this.codeMapPreRenderService.getRenderFileMeta(),
