@@ -2,9 +2,6 @@ name: Auto approve and merge PRs by dependabot
 
 on:
   pull_request:
-  check_suite:
-    types:
-      - completed
 
 jobs:
   autoapprove:
@@ -29,6 +26,7 @@ jobs:
         if: github.actor == 'dependabot[bot]' || github.actor == 'dependabot-preview[bot]'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
           MERGE_LABELS: dependencies
           MERGE_METHOD: rebase
+          MERGE_RETRIES: 10
+          MERGE_RETRY_SLEEP: 300000
