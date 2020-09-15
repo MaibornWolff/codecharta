@@ -30,7 +30,7 @@ buildscript {
         ktlint_version = '9.4.0'
         mockito_core_version = '3.5.7'
         mockito_kotlin_version = '2.2.0'
-        mokk_version = '1.8.13'
+        mokk_version = '1.10.0'
         spek2_version = '2.0.2'
         wiremock_version = '2.19.0'
     }
