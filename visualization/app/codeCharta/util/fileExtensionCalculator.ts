@@ -27,10 +27,10 @@ export class FileExtensionCalculator {
 		const distribution: MetricDistribution[] = []
 		hierarchy(map)
 			.leaves()
-			.forEach(node => {
-				if (!node.data.isExcluded) {
-					const fileExtension = this.estimateFileExtension(node.data.name)
-					const metricValue = node.data.attributes[metric]
+			.forEach(({ data }) => {
+				if (!data.isExcluded) {
+					const fileExtension = this.estimateFileExtension(data.name)
+					const metricValue = data.attributes[metric]
 					const matchingFileExtensionObject = distribution.find(x => x.fileExtension === fileExtension)
 
 					if (matchingFileExtensionObject) {

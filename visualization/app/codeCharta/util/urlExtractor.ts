@@ -23,9 +23,6 @@ export class UrlExtractor {
 	async getFileDataFromQueryParam() {
 		let fileNames: string | string[] = this.$location.search().file
 
-		if (!fileNames) {
-			return []
-		}
 		if (!Array.isArray(fileNames)) {
 			fileNames = [fileNames]
 		}

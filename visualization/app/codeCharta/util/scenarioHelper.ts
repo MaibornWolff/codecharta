@@ -70,7 +70,7 @@ export class ScenarioHelper {
 
 	private static getPreLoadScenarios() {
 		const scenariosAsSettings = this.importScenarios(scenarios)
-		const scenario = new Map<string, RecursivePartial<Scenario>>()
+		const scenario: Map<string, RecursivePartial<Scenario>> = new Map()
 		scenariosAsSettings.forEach(scenarioSettings => {
 			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))
 		})
@@ -79,8 +79,7 @@ export class ScenarioHelper {
 
 	private static transformScenarioAsSettingsToScenario(scenarioAsSettings: ExportScenario) {
 		const scenario: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
-		const { dynamicSettings } = scenarioAsSettings.settings
-		const { appSettings } = scenarioAsSettings.settings
+		const { dynamicSettings, appSettings } = scenarioAsSettings.settings
 
 		for (const scenarioKey in dynamicSettings) {
 			switch (scenarioKey) {

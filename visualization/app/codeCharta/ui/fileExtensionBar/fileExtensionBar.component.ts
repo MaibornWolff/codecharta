@@ -29,21 +29,27 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	public onHoverFileExtensionBar(hoveredExtension: string) {
-		const buildings = this.threeSceneService
-			.getMapMesh()
-			.getMeshDescription()
-			.buildings.filter(building => building.node.isLeaf)
+		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 
-		const visibleFileExtensions = new Set(
-			this._viewModel.distribution.filter(metric => metric.fileExtension !== "other").map(metric => metric.fileExtension)
-		)
+		const visibleFileExtensions = new Set()
+		for (const metric of this._viewModel.distribution) {
+			if (metric.fileExtension !== "other") {
+				visibleFileExtensions.add(metric.fileExtension)
+			}
+		}
 
 		buildings.forEach(building => {
-			const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
-			if (buildingExtension === hoveredExtension || (hoveredExtension === "other" && !visibleFileExtensions.has(buildingExtension))) {
-				this.threeSceneService.addBuildingToHighlightingList(building)
+			if (building.node.isLeaf) {
+				const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
+				if (
+					buildingExtension === hoveredExtension ||
+					(hoveredExtension === "other" && !visibleFileExtensions.has(buildingExtension))
+				) {
+					this.threeSceneService.addBuildingToHighlightingList(building)
+				}
 			}
 		})
+
 		this.threeSceneService.highlightBuildings()
 	}
 
@@ -66,7 +72,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private setColorForEachExtension() {
 		this._viewModel.distribution.forEach(x => {
-			x.color = x.color ? x.color : FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(x.fileExtension)).toString()
+			x.color = x.color ?? FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(x.fileExtension)).toString()
 		})
 	}
 

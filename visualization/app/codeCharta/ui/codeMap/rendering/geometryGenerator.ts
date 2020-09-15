@@ -142,10 +142,10 @@ export class GeometryGenerator {
 		const uvDimension = 2
 		const size = numberVertices * dimension
 
-		const positions: Float32Array = new Float32Array(size)
-		const normals: Float32Array = new Float32Array(size)
-		const uvs: Float32Array = new Float32Array(numberVertices * uvDimension)
-		const colors: Float32Array = new Float32Array(size)
+		const positions = new Float32Array(size)
+		const normals = new Float32Array(size)
+		const uvs = new Float32Array(numberVertices * uvDimension)
+		const colors = new Float32Array(size)
 
 		for (let i = 0; i < numberVertices; ++i) {
 			const pos = i * dimension
@@ -172,10 +172,10 @@ export class GeometryGenerator {
 			colors[pos2] = color.z
 		}
 
-		const deltaColors: Float32Array = new Float32Array(colors)
-		const indices: Uint32Array = new Uint32Array(data.indices)
-		const ids: Float32Array = new Float32Array(data.subGeometryIdx)
-		const deltas: Float32Array = new Float32Array(data.deltas)
+		const deltaColors = new Float32Array(colors)
+		const indices = new Uint32Array(data.indices)
+		const ids = new Float32Array(data.subGeometryIdx)
+		const deltas = new Float32Array(data.deltas)
 
 		const geometry = new BufferGeometry()
 

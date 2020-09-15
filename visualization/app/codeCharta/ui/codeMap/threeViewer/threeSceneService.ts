@@ -6,7 +6,7 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 
 export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(selectedBuilding: CodeMapBuilding)
+	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
 }
 
 export interface BuildingDeselectedEventSubscriber {

@@ -65,7 +65,7 @@ function buildNodeFrom(
 	maxHeight: number,
 	s: State,
 	isDeltaState: boolean
-) {
+): Node {
 	const isNodeLeaf = !(squaredNode.children && squaredNode.children.length > 0)
 	const flattened = isNodeFlat(squaredNode.data, s)
 	const heightValue = getHeightValue(s, squaredNode, maxHeight, flattened)
@@ -100,7 +100,7 @@ function buildNodeFrom(
 		color: getBuildingColor(squaredNode.data, s, isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),
 		outgoingEdgePoint: getOutgoingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize)
-	} as Node
+	}
 }
 
 function getHeightValue(s: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {

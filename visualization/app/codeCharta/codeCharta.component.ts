@@ -45,23 +45,17 @@ export class CodeChartaController {
 	async loadFileOrSample() {
 		try {
 			const data = await this.urlUtils.getFileDataFromQueryParam()
-			if (data.length > 0) {
-				this.tryLoadingFiles(data)
-				this.setRenderStateFromUrl()
-			} else {
-				this.tryLoadingSampleFiles()
-			}
+			this.tryLoadingFiles(data)
+			this.setRenderStateFromUrl()
 		} catch (error) {
-			console.error(error)
-			this.tryLoadingSampleFiles()
+			this.tryLoadingSampleFiles(error)
 		}
 	}
 
-	public tryLoadingSampleFiles() {
+	public tryLoadingSampleFiles(error: Error) {
 		if (this.urlUtils.getParameterByName("file")) {
-			this.dialogService.showErrorDialog(
-				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
-			)
+			const message = `One or more files from the given file URL parameter could not be loaded. Loading sample files instead.\n\n${error.message}`
+			this.dialogService.showErrorDialog(message)
 		}
 		this.tryLoadingFiles([
 			{ fileName: "sample1.cc.json", content: sample1 as ExportCCFile },
