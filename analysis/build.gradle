@@ -100,7 +100,7 @@ task integrationTest(type: Exec) {
     args '-c', "./golden_test.sh $version"
 }
 
-task codeCoverageReport(type: JacocoReport) {
+task jacocoTestReport(type: JacocoReport) {
 
     // Gather execution data from all subprojects
     executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
@@ -112,13 +112,13 @@ task codeCoverageReport(type: JacocoReport) {
 
     reports {
         xml.enabled true
-        html.enabled true
+        html.enabled false
         csv.enabled false
     }
 }
 
 // always run the tests before generating the report
-codeCoverageReport.dependsOn {
+jacocoTestReport.dependsOn {
     subprojects*.test
 }
 
