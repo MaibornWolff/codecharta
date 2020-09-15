@@ -20,6 +20,7 @@ Components that import data from an external source, e.g. SonarQube, and generat
 | Jasome                   | [JasomeImporter](import/JasomeImporter/README.md)         |
 | SCITools' Understand CSV | [UnderstandImporter](import/UnderstandImporter/README.md) |
 | SCM log                  | [SCMLogParser](import/SCMLogParser/README.md)             |
+| SCM log v2 (experimental)| [SCMLogParser](import/SCMLogParserV2/README.md)           |
 | SonarQube                | [SonarImporter](import/SonarImporter/README.md)           |
 | Source Code              | [SourceCodeParser](import/SourceCodeParser/README.md)     |
 | SourceMonitor CSV        | [SourceMonitorImporter](import/CSVImporter/README.md)     |
