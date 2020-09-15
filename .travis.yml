@@ -86,7 +86,7 @@ jobs:
       before_script: cd analysis
       script:
         - ./gradlew build test integrationTest
-        - ./gradlew codeCoverageReport
+        - ./gradlew jacocoTestReport
       deploy:
         - provider: script
           script: sonar-scanner
