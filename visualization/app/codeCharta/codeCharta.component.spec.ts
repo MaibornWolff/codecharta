@@ -136,7 +136,7 @@ describe("codeChartaController", () => {
 
 		it("should call showErrorDialog when no file is found", () => {
 			const expected =
-				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead.\n\nActual error message"
+				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead. Actual error message"
 
 			codeChartaController.tryLoadingSampleFiles(new Error("Actual error message"))
 
