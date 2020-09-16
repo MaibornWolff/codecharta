@@ -38,7 +38,10 @@ describe("codecharta", () => {
 
 	async function handleErrorDialog() {
 		const message = await dialogError.getMessage()
-		expect(message).toEqual("One or more files from the given file URL parameter could not be loaded. Loading sample files instead. undefined")
+		// TODO: Printing undefined should not happen during runtime. Check the mocks again.
+		expect(message).toEqual(
+			"One or more files from the given file URL parameter could not be loaded. Loading sample files instead. undefined"
+		)
 		await page.waitForSelector(".md-dialog-container")
 		await dialogError.clickOk()
 	}
