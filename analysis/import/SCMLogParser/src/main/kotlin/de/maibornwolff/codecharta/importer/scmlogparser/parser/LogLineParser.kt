@@ -54,3 +54,4 @@ class LogLineParser(
         numberOfCommitsParsed++
     }
 }
+

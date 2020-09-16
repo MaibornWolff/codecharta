@@ -32,7 +32,8 @@ class CommitCollectorTest {
             .extracting(
                 Function<VersionControlledFile, Any> { it.filename },
                 Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
-                Function<VersionControlledFile, Any> { it.authors })
+                Function<VersionControlledFile, Any> { it.authors }
+            )
             .containsExactly(
                 tuple("src/Main.java", 1L, setOf("TheAuthor")),
                 tuple("src/Util.java", 2L, HashSet(asList("TheAuthor", "AnotherAuthor")))
