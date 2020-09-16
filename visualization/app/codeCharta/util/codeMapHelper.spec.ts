@@ -39,23 +39,23 @@ describe("codeMapHelper", () => {
 		})
 
 		it("should return the node that matches path and type", () => {
-			const expected = testRoot.children[1]
+			const [, expected] = testRoot.children
 
 			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FOLDER, testRoot)
 
 			expect(result).toEqual(expected)
 		})
 
-		it("should return null if no node matches path and type", () => {
+		it("should return undefined if no node matches path and type", () => {
 			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Uncle Leaf", NodeType.FOLDER, testRoot)
 
-			expect(result).toBeNull()
+			expect(result).toBeUndefined()
 		})
 
-		it("should return null if a node only matches path", () => {
+		it("should return undefined if a node only matches path", () => {
 			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FILE, testRoot)
 
-			expect(result).toBeNull()
+			expect(result).toBeUndefined()
 		})
 	})
 
@@ -153,16 +153,16 @@ describe("codeMapHelper", () => {
 			markedPackages.push({ path: "/root/big leaf", color: "0x000002" })
 		}
 
-		it("should return null if no markedPackages are provided", () => {
+		it("should return undefined if no markedPackages are provided", () => {
 			const result = CodeMapHelper.getMarkingColor(testRoot, null)
 
-			expect(result).toBeNull()
+			expect(result).toBeUndefined()
 		})
 
-		it("should return null if no node does not exist in markedPackages", () => {
+		it("should return undefined if no node does not exist in markedPackages", () => {
 			const result = CodeMapHelper.getMarkingColor(testRoot, markedPackages)
 
-			expect(result).toBeNull()
+			expect(result).toBeUndefined()
 		})
 
 		it("should return node color if node exists in markedPackages", () => {

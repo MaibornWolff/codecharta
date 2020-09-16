@@ -1,6 +1,6 @@
 "use strict"
 
-import { CCFile, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
@@ -55,15 +55,15 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}, this.DEBOUNCE_TIME)
 	}
 
-	public getRenderMap(): CodeMapNode {
+	getRenderMap() {
 		return this.unifiedMap
 	}
 
-	public getRenderFileMeta(): FileMeta {
+	getRenderFileMeta() {
 		return this.unifiedFileMeta
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
@@ -80,13 +80,13 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}
 	}
 
-	public onScalingChanged() {
+	onScalingChanged() {
 		if (this.allNecessaryRenderDataAvailable()) {
 			this.scaleMapAndNotify()
 		}
 	}
 
-	public onMetricDataChanged() {
+	onMetricDataChanged() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
@@ -104,13 +104,12 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 
 	private decorateIfPossible() {
 		const state = this.storeService.getState()
-		const nodeMetricData = state.metricData.nodeMetricData
+		const { nodeMetricData } = state.metricData
 		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && nodeMetricData) {
 			NodeDecorator.decorateMap(this.unifiedMap, nodeMetricData, state.fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
-				state.fileSettings.blacklist,
 				nodeMetricData,
 				this.storeService.getState().metricData.edgeMetricData,
 				isDeltaState(state.files),
@@ -120,7 +119,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
-		if (map && this.edgeMetricDataService.getMetricNames()) {
+		if (this.edgeMetricDataService.getMetricNames()) {
 			const root = hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
@@ -131,28 +130,34 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		}
 	}
 
-	private getSelectedFilesAsUnifiedMap(): CCFile {
-		const files = this.storeService.getState().files
+	private getSelectedFilesAsUnifiedMap() {
+		const { files } = this.storeService.getState()
 		const visibleFileStates = clone(getVisibleFileStates(files))
 
 		if (isSingleState(files)) {
 			return visibleFileStates[0].file
-		} else if (isPartialState(files)) {
+		}
+		if (isPartialState(files)) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
-		} else if (isDeltaState(files)) {
+		}
+		if (isDeltaState(files)) {
 			return this.getDeltaFile(visibleFileStates)
 		}
 	}
 
-	private getDeltaFile(visibleFileStates: FileState[]): CCFile {
-		if (visibleFileStates.length == 2) {
-			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
-			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
-			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
+	private getDeltaFile(visibleFileStates: FileState[]) {
+		if (visibleFileStates.length === 2) {
+			let [reference, comparison] = visibleFileStates
+			if (reference.selectedAs !== FileSelectionState.Reference) {
+				const temporary = reference
+				comparison = reference
+				reference = temporary
+			}
+			return DeltaGenerator.getDeltaFile(reference.file, comparison.file)
 		}
-		const referenceFile = visibleFileStates[0].file
-		const comparisonFile = visibleFileStates[0].file
-		return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
+		// Compare with itself. This is somewhat questionable.
+		const [{ file }] = visibleFileStates
+		return DeltaGenerator.getDeltaFile(file, file)
 	}
 
 	private renderAndNotify() {
@@ -167,7 +172,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		this.removeLoadingGifs()
 	}
 
-	private allNecessaryRenderDataAvailable(): boolean {
+	private allNecessaryRenderDataAvailable() {
 		return (
 			fileStatesAvailable(this.storeService.getState().files) &&
 			this.storeService.getState().metricData.nodeMetricData !== null &&
@@ -179,7 +184,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private areChosenMetricsInMetricData() {
-		const dynamicSettings = this.storeService.getState().dynamicSettings
+		const { dynamicSettings } = this.storeService.getState()
 		return (
 			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.areaMetric) &&
 			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.colorMetric) &&
@@ -202,7 +207,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.unifiedMap)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
 		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (_event, data) => {
 			subscriber.onRenderMapChanged(data)
 		})

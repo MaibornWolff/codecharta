@@ -1,5 +1,5 @@
-import { DynamicMarginAction, setDynamicMargin } from "./dynamicMargin.actions"
+import { setDynamicMargin } from "./dynamicMargin.actions"
 
-export function splitDynamicMarginAction(payload: boolean): DynamicMarginAction {
+export function splitDynamicMarginAction(payload: boolean) {
 	return setDynamicMargin(payload)
 }

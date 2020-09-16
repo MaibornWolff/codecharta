@@ -6,7 +6,10 @@ import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/se
 export class CodeChartaMouseEventService {
 	constructor(private storeService: StoreService) {}
 
-	public closeComponentsExceptCurrent(currentCloseFunction?: Function) {
+	// TODO: Do not use `Function` as type. See the eslint description for further
+	// informations.
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	closeComponentsExceptCurrent(currentCloseFunction?: Function) {
 		if (currentCloseFunction !== this.closeRibbonBarSections) {
 			this.closeRibbonBarSections()
 		}
@@ -16,13 +19,13 @@ export class CodeChartaMouseEventService {
 		}
 	}
 
-	public closeRibbonBarSections() {
+	closeRibbonBarSections() {
 		if (this.storeService.getState().appSettings.panelSelection !== PanelSelection.NONE) {
 			this.storeService.dispatch(setPanelSelection(PanelSelection.NONE))
 		}
 	}
 
-	public closeSearchPanel() {
+	closeSearchPanel() {
 		if (this.storeService.getState().appSettings.searchPanelMode !== SearchPanelMode.minimized) {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
 		}

@@ -7,32 +7,32 @@ import {
 } from "../../../state/store/appSettings/isWhiteBackground/isWhiteBackground.service"
 
 export class ThreeRendererService implements IsWhiteBackgroundSubscriber {
-	public static BACKGROUND_COLOR = {
+	static BACKGROUND_COLOR = {
 		white: 0xffffff,
 		normal: 0xeeeedd
 	}
 
-	public static CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
+	static CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.normal
 
-	public static CLEAR_ALPHA = 1
+	static CLEAR_ALPHA = 1
 
-	public static RENDER_OPTIONS = {
+	static RENDER_OPTIONS = {
 		antialias: true,
 		preserveDrawingBuffer: true
 	}
 
-	public renderer: WebGLRenderer
+	renderer: WebGLRenderer
 
 	constructor(private storeService: StoreService, private $rootScope: IRootScopeService) {}
 
-	public init(containerWidth: number, containerHeight: number) {
+	init(containerWidth: number, containerHeight: number) {
 		this.renderer = new WebGLRenderer(ThreeRendererService.RENDER_OPTIONS)
 		IsWhiteBackgroundService.subscribe(this.$rootScope, this)
 		this.renderer.setSize(containerWidth, containerHeight)
 		this.onIsWhiteBackgroundChanged(this.storeService.getState().appSettings.isWhiteBackground)
 	}
 
-	public onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
+	onIsWhiteBackgroundChanged(isWhiteBackground: boolean) {
 		if (isWhiteBackground) {
 			ThreeRendererService.CLEAR_COLOR = ThreeRendererService.BACKGROUND_COLOR.white
 		} else {

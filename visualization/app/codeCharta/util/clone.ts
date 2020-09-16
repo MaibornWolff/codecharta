@@ -1,5 +1,5 @@
 import rfdc from "rfdc"
 
-export function clone(content: any): any {
+export function clone<T>(content: T): T {
 	return rfdc()(content)
 }

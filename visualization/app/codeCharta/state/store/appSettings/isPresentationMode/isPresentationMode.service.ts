@@ -14,7 +14,7 @@ export class IsPresentationModeService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, PresentationModeActions)) {
 			this.notify(this.select())
 		}
@@ -30,8 +30,8 @@ export class IsPresentationModeService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: IsPresentationModeSubscriber) {
-		$rootScope.$on(IsPresentationModeService.PRESENTATION_MODE_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: IsPresentationModeSubscriber) {
+		$rootScope.$on(IsPresentationModeService.PRESENTATION_MODE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onPresentationModeChanged(data.isPresentationMode)
 		})
 	}

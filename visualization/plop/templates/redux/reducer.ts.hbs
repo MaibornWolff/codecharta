@@ -1,10 +1,10 @@
 import { {{properCase name}}Action, {{properCase name}}Actions, set{{properCase name}} } from "./{{camelCase name}}.actions"
 import { clone } from "../../../util/clone"
 
-export function {{camelCase name}}(state: {{type}} = set{{properCase name}}().payload, action: {{properCase name}}Action): {{type}} {
+export function {{camelCase name}}(state = set{{properCase name}}().payload, action: {{properCase name}}Action) {
 	switch (action.type) {
 		case {{properCase name}}Actions.SET_{{constantCase name}}:
-			return clone(action.payload) //TODO: clone not required for primitives
+			return action.payload
 		default:
 			return state
 	}

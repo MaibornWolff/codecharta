@@ -25,33 +25,32 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, ColorRangeActions)) {
 			this.notify(this.select())
 			this.tryToResetIfNull()
 		}
 	}
 
-	public onColorMetricChanged() {
+	onColorMetricChanged() {
 		this.reset()
 	}
 
-	public onFilesSelectionChanged() {
+	onFilesSelectionChanged() {
 		this.reset()
 	}
 
 	private tryToResetIfNull() {
-		const colorRange = this.storeService.getState().dynamicSettings.colorRange
-		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
-		const maxMetricValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
+		const { colorRange, colorMetric } = this.storeService.getState().dynamicSettings
+		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
 		if (!colorRange.from && !colorRange.to && maxMetricValue) {
 			this.reset()
 		}
 	}
 
-	public reset() {
-		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
-		const maxMetricValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
+	reset() {
+		const { colorMetric } = this.storeService.getState().dynamicSettings
+		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
 
 		const newColorRange = getResetColorRange(maxMetricValue)
 		this.storeService.dispatch(setColorRange(newColorRange))
@@ -65,7 +64,7 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		this.$rootScope.$broadcast(ColorRangeService.COLOR_RANGE_CHANGED_EVENT, { colorRange: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: ColorRangeSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: ColorRangeSubscriber) {
 		$rootScope.$on(ColorRangeService.COLOR_RANGE_CHANGED_EVENT, (_event, data) => {
 			subscriber.onColorRangeChanged(data.colorRange)
 		})

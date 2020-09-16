@@ -38,49 +38,49 @@ export class EdgeChooserController
 		EdgeMetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
+	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
 		this._viewModel.edgeMetricData = edgeMetricData
 		this.originalEdgeMetricData = edgeMetricData
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		if (hoveredBuilding.node && hoveredBuilding.node.edgeAttributes) {
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		if (hoveredBuilding.node?.edgeAttributes) {
 			this._viewModel.hoveredEdgeValue = hoveredBuilding.node.edgeAttributes[this._viewModel.edgeMetric]
 		} else {
 			this._viewModel.hoveredEdgeValue = null
 		}
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		this._viewModel.hoveredEdgeValue = null
 	}
 
-	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.edgeMetric = edgeMetric == null ? EdgeMetricDataService.NONE_METRIC : edgeMetric
+	onEdgeMetricChanged(edgeMetric?: string) {
+		this._viewModel.edgeMetric = edgeMetric || EdgeMetricDataService.NONE_METRIC
 		this.codeMapActionsService.updateEdgePreviews()
 	}
 
-	public onEdgeMetricSelected() {
+	onEdgeMetricSelected() {
 		this.storeService.dispatch(setEdgeMetric(this._viewModel.edgeMetric))
 	}
 
-	public noEdgesAvailable() {
+	noEdgesAvailable() {
 		return this._viewModel.edgeMetricData.length <= 1
 	}
 
-	public filterMetricData() {
+	filterMetricData() {
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(metric =>
 			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
 		)
 	}
 
-	public focusInputField() {
+	focusInputField() {
 		this.$timeout(() => {
 			$(".metric-search").focus()
 		}, 200)
 	}
 
-	public clearSearchTerm() {
+	clearSearchTerm() {
 		this._viewModel.searchTerm = ""
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData
 	}

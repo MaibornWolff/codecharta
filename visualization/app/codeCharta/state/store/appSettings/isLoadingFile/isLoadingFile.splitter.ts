@@ -1,5 +1,5 @@
-import { IsLoadingFileAction, setIsLoadingFile } from "./isLoadingFile.actions"
+import { setIsLoadingFile } from "./isLoadingFile.actions"
 
-export function splitIsLoadingFileAction(payload: boolean): IsLoadingFileAction {
+export function splitIsLoadingFileAction(payload: boolean) {
 	return setIsLoadingFile(payload)
 }

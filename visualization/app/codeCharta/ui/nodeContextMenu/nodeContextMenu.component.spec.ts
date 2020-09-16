@@ -272,7 +272,7 @@ describe("nodeContextMenuController", () => {
 
 	describe("currentFolderIsMarkedWithColor", () => {
 		it("should return false, if color is undefined", () => {
-			const result = nodeContextMenuController.isNodeOrParentMarked(undefined)
+			const result = nodeContextMenuController.isNodeOrParentMarked()
 
 			expect(result).toBeFalsy()
 		})

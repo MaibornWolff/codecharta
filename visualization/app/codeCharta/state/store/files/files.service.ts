@@ -15,7 +15,7 @@ export class FilesService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, FilesSelectionActions)) {
 			this.notify(this.select())
 		}
@@ -29,8 +29,8 @@ export class FilesService implements StoreSubscriber {
 		this.$rootScope.$broadcast(FilesService.FILES_SELECTION_CHANGED_EVENT, { files: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: FilesSelectionSubscriber) {
-		$rootScope.$on(FilesService.FILES_SELECTION_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: FilesSelectionSubscriber) {
+		$rootScope.$on(FilesService.FILES_SELECTION_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onFilesSelectionChanged(data.files)
 		})
 	}

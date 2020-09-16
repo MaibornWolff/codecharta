@@ -14,7 +14,7 @@ export class InvertHeightService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, InvertHeightActions)) {
 			this.notify(this.select())
 		}
@@ -28,8 +28,8 @@ export class InvertHeightService implements StoreSubscriber {
 		this.$rootScope.$broadcast(InvertHeightService.INVERT_HEIGHT_CHANGED_EVENT, { invertHeight: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: InvertHeightSubscriber) {
-		$rootScope.$on(InvertHeightService.INVERT_HEIGHT_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: InvertHeightSubscriber) {
+		$rootScope.$on(InvertHeightService.INVERT_HEIGHT_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onInvertHeightChanged(data.invertHeight)
 		})
 	}

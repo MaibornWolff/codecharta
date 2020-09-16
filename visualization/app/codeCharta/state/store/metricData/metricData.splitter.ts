@@ -4,7 +4,7 @@ import { RecursivePartial, CCAction, MetricData, EdgeMetricData } from "../../..
 import { splitEdgeMetricDataAction } from "./edgeMetricData/edgeMetricData.splitter"
 import { splitNodeMetricDataAction } from "./nodeMetricData/nodeMetricData.splitter"
 
-export function splitMetricDataActions(payload: RecursivePartial<MetricData>): CCAction[] {
+export function splitMetricDataActions(payload: RecursivePartial<MetricData>) {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here

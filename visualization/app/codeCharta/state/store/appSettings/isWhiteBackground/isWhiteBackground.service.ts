@@ -14,7 +14,7 @@ export class IsWhiteBackgroundService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, IsWhiteBackgroundActions)) {
 			this.notify(this.select())
 		}
@@ -30,8 +30,8 @@ export class IsWhiteBackgroundService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: IsWhiteBackgroundSubscriber) {
-		$rootScope.$on(IsWhiteBackgroundService.IS_WHITE_BACKGROUND_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: IsWhiteBackgroundSubscriber) {
+		$rootScope.$on(IsWhiteBackgroundService.IS_WHITE_BACKGROUND_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onIsWhiteBackgroundChanged(data.isWhiteBackground)
 		})
 	}

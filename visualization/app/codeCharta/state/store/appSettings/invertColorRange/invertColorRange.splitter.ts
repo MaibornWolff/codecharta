@@ -1,5 +1,5 @@
-import { InvertColorRangeAction, setInvertColorRange } from "./invertColorRange.actions"
+import { setInvertColorRange } from "./invertColorRange.actions"
 
-export function splitInvertColorRangeAction(payload: boolean): InvertColorRangeAction {
+export function splitInvertColorRangeAction(payload: boolean) {
 	return setInvertColorRange(payload)
 }

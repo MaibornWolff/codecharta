@@ -1,6 +1,6 @@
-import { AttributeTypesAction, setAttributeTypes } from "./attributeTypes.actions"
+import { setAttributeTypes } from "./attributeTypes.actions"
 import { AttributeTypes } from "../../../../codeCharta.model"
 
-export function splitAttributeTypesAction(payload: AttributeTypes): AttributeTypesAction {
+export function splitAttributeTypesAction(payload: AttributeTypes) {
 	return setAttributeTypes(payload)
 }

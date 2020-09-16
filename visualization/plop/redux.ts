@@ -1,7 +1,7 @@
 import { createFileAction, createInputPromt, modifyFileAction } from "./plopHelper"
 
-const TEMPLATE_DIR: string = "redux"
-const DESTINATION_DIR: string = "state/store/{{camelCase subreducer}}/{{camelCase name}}"
+const TEMPLATE_DIR = "redux"
+const DESTINATION_DIR = "state/store/{{camelCase subreducer}}/{{camelCase name}}"
 
 export const PLOP_REDUX_VARIABLE_PROMPTS = [
 	createInputPromt("name", "Property Name (e.x. areaMetric):"),

@@ -179,15 +179,14 @@ describe("FileValidator", () => {
 
 		beforeEach(() => {
 			file = clone(fileWithFixedFolders)
-			folder1 = file.nodes[0].children[0]
-			folder2 = file.nodes[0].children[1]
+			;[folder1, folder2] = file.nodes[0].children
 		})
 
 		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
 			folder1.fixedPosition = undefined
 
 			const expectedError: CCValidationResult = {
-				error: [ERROR_MESSAGES.notAllFoldersAreFixed + " Found: folder_1"],
+				error: [`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: folder_1`],
 				warning: []
 			}
 

@@ -31,15 +31,15 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		}, AreaSettingsPanelController.DEBOUNCE_TIME)
 	}
 
-	public onDynamicMarginChanged(dynamicMargin: boolean) {
+	onDynamicMarginChanged(dynamicMargin: boolean) {
 		this._viewModel.dynamicMargin = dynamicMargin
 	}
 
-	public onMarginChanged(margin: number) {
+	onMarginChanged(margin: number) {
 		this._viewModel.margin = margin
 	}
 
-	public onFilesSelectionChanged() {
+	onFilesSelectionChanged() {
 		this._viewModel.dynamicMargin = true
 		this.applyDynamicMargin()
 	}
@@ -48,7 +48,7 @@ export class AreaSettingsPanelController implements FilesSelectionSubscriber, Dy
 		this.storeService.dispatch(setDynamicMargin(this._viewModel.dynamicMargin))
 	}
 
-	public onChangeMarginSlider() {
+	onChangeMarginSlider() {
 		this.applyDebouncedMargin()
 		this.storeService.dispatch(setDynamicMargin(false))
 	}
