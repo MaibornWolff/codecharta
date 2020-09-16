@@ -50,12 +50,12 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
 
     fun rename(oldFileName: String, newFileName: String) {
         var newVCFFileName = newFileName
-        val possibleConflictName = buildPossibleConflictName(oldFileName) //newFileName?
+        val possibleConflictName = buildPossibleConflictName(oldFileName) // newFileName?
         val oldestName = retrieveOldestName(possibleConflictName)
 
         if (
-                versionControlledFiles.containsKey(newFileName) &&
-                versionControlledFiles[newFileName]!!.isDeleted()
+            versionControlledFiles.containsKey(newFileName) &&
+            versionControlledFiles[newFileName]!!.isDeleted()
         ) {
             // Clear the corresponding maps for file which will be replaced
             renamesMap.remove(versionControlledFiles[newFileName]!!.filename)
@@ -66,8 +66,8 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         }
 
         if (
-                versionControlledFiles.containsKey(newFileName) &&
-                !get(oldFileName)!!.containsRename(newFileName)
+            versionControlledFiles.containsKey(newFileName) &&
+            !get(oldFileName)!!.containsRename(newFileName)
         ) {
             val marker = nameConflictsMap[newFileName]
             val newMarker = if (marker != null) marker + 1 else 0

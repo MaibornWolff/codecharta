@@ -6,11 +6,13 @@ import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.instanceOf
+import org.junit.Assert.assertThat
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.time.OffsetDateTime
 import java.util.stream.Stream
-import org.junit.Assert.*
 
 class CommitCollectorTest {
 
@@ -60,7 +62,7 @@ class CommitCollectorTest {
 
     @Test
     fun test_given_delete_modification_then_flag_file_as_deleted() {
-        val testFileName = "src/Main.java";
+        val testFileName = "src/Main.java"
 
         val addModification = Modification(testFileName, Modification.Type.ADD)
         val deleteModification = Modification(testFileName, Modification.Type.DELETE)
@@ -76,7 +78,7 @@ class CommitCollectorTest {
 
     @Test
     fun test_given_deleted_file_when_modified_then_flag_as_mutated() {
-        val testFileName = "src/Main.java";
+        val testFileName = "src/Main.java"
 
         val commits = load_case_add_delete_modify_mutated(testFileName)
         val versionControlledFilesList =
@@ -88,7 +90,7 @@ class CommitCollectorTest {
 
     @Test
     fun test_given_deleted_file_when_renamed_then_flag_as_mutated() {
-        val testFileName = "src/RenameMe.java";
+        val testFileName = "src/RenameMe.java"
         val newFileName = "src/RenamedNewFileName.java"
 
         val commits = load_case_add_delete_rename_mutated(testFileName, newFileName)
@@ -101,7 +103,7 @@ class CommitCollectorTest {
 
     @Test
     fun test_given_added_file_when_add_again_then_flag_as_mutated() {
-        val testFileName = "src/Add.java";
+        val testFileName = "src/Add.java"
 
         val commits = load_case_add_add_mutated(testFileName)
         val versionControlledFilesList =
@@ -113,7 +115,7 @@ class CommitCollectorTest {
 
     @Test
     fun test_given_added_mutated_file_when_merge_commit_then_modify_and_resolve_mutated_file() {
-        val testFileName = "src/AddCase.java";
+        val testFileName = "src/AddCase.java"
 
         val commits = load_case_add_add_mutated(testFileName)
         val versionControlledFilesList =
@@ -136,7 +138,7 @@ class CommitCollectorTest {
 
     @Test
     fun test_given_deleted_mutated_file_when_merge_commit_then_add_and_resolve_mutated_file() {
-        val testFileName = "src/Main.java";
+        val testFileName = "src/Main.java"
 
         val commits = load_case_add_delete_modify_mutated(testFileName)
         val versionControlledFilesList =
@@ -158,7 +160,7 @@ class CommitCollectorTest {
 
     @Test
     fun test_given_deleted_mutated_file_when_merge_commit_then_delete_and_resolve_mutated_file() {
-        val testFileName = "src/DeleteMeAtTheEnd.java";
+        val testFileName = "src/DeleteMeAtTheEnd.java"
 
         val commits = load_case_add_delete_modify_mutated(testFileName)
 
@@ -176,7 +178,7 @@ class CommitCollectorTest {
 
     @Test
     fun test_given_not_already_added_file_when_modify_then_add_file_first_and_do_not_crash() {
-        val testFileName = "src/NonExistingFileYet.java";
+        val testFileName = "src/NonExistingFileYet.java"
 
         val modifyModification = Modification(testFileName, Modification.Type.MODIFY)
         val modifyCommit =

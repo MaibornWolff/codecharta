@@ -47,8 +47,8 @@ abstract class ParserStrategyContractTest {
         val modifications = logParserStrategy.parseModifications(fullCommit)
         assertThat(modifications).hasSize(3)
         assertThat(modifications)
-                .extracting<String, RuntimeException> { it.currentFilename }
-                .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
+            .extracting<String, RuntimeException> { it.currentFilename }
+            .containsExactlyInAnyOrder("src/Added.java", "src/Modified.java", "src/Deleted.java")
     }
 
     @Test

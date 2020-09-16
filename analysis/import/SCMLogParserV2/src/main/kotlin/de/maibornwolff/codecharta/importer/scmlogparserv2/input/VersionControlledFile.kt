@@ -22,9 +22,9 @@ class VersionControlledFile internal constructor(
     val metricsMap: Map<String, Number>
         get() = metrics.associateBy({ it.metricName() }, { it.value() })
 
-    constructor(filename: String, metricsFactory: MetricsFactory): this(filename, metricsFactory.createMetrics())
+    constructor(filename: String, metricsFactory: MetricsFactory) : this(filename, metricsFactory.createMetrics())
 
-    internal constructor(filename: String, vararg metrics: Metric): this(filename, Arrays.asList<Metric>(*metrics))
+    internal constructor(filename: String, vararg metrics: Metric) : this(filename, Arrays.asList<Metric>(*metrics))
 
     init {
         this.filename = filename

@@ -61,12 +61,12 @@ class SCMLogProjectCreatorGoldenTest(
         val logStream = Files.lines(Paths.get(resource!!.toURI()))
 
         // when
-        //val svnProject = svnSCMLogProjectCreator.parse(logStream)
+        // val svnProject = svnSCMLogProjectCreator.parse(logStream)
         // This step is necessary because the comparison of the attribute map in MutableNode fails if the project is used directly;
-       // val svnProjectForComparison = serializeAndDeserializeProject(svnProject)
+        // val svnProjectForComparison = serializeAndDeserializeProject(svnProject)
 
         // then
-      //  Assert.assertThat(svnProjectForComparison, ProjectMatcher.matchesProjectUpToVersion(expectedProject))
+        //  Assert.assertThat(svnProjectForComparison, ProjectMatcher.matchesProjectUpToVersion(expectedProject))
     }
 
     @Throws(IOException::class)

@@ -50,8 +50,8 @@ class HighlyCoupledFiles : Metric {
 
         commits.forEach { commit ->
             commit.modifications
-                    .filter { it.currentFilename != fileName }
-                    .forEach { simultaneouslyCommittedFiles.merge(it.currentFilename, 1) { x, y -> x + y } }
+                .filter { it.currentFilename != fileName }
+                .forEach { simultaneouslyCommittedFiles.merge(it.currentFilename, 1) { x, y -> x + y } }
         }
     }
 

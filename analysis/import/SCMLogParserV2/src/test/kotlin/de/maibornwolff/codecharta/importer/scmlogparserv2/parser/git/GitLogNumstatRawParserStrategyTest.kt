@@ -57,12 +57,14 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
         val modifications = parserStrategy.parseModifications(commitLines)
         assertThat(modifications).hasSize(1)
         val modification = modifications[0]
-        assertThat(modification).extracting(Function<Modification, Any> { it.currentFilename },
-                Function<Modification, Any> { it.oldFilename },
-                Function<Modification, Any> { it.type },
-                Function<Modification, Any> { it.additions },
-                Function<Modification, Any> { it.deletions })
-                .containsExactly("src/Added.java", "", Modification.Type.ADD, 10L, 0L)
+        assertThat(modification).extracting(
+            Function<Modification, Any> { it.currentFilename },
+            Function<Modification, Any> { it.oldFilename },
+            Function<Modification, Any> { it.type },
+            Function<Modification, Any> { it.additions },
+            Function<Modification, Any> { it.deletions }
+        )
+            .containsExactly("src/Added.java", "", Modification.Type.ADD, 10L, 0L)
     }
 
     @Test
@@ -78,12 +80,14 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
         val modifications = parserStrategy.parseModifications(commitLines)
         assertThat(modifications).hasSize(1)
         val modification = modifications[0]
-        assertThat(modification).extracting(Function<Modification, Any> { it.currentFilename },
-                Function<Modification, Any> { it.oldFilename },
-                Function<Modification, Any> { it.type },
-                Function<Modification, Any> { it.additions },
-                Function<Modification, Any> { it.deletions })
-                .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9L, 2L)
+        assertThat(modification).extracting(
+            Function<Modification, Any> { it.currentFilename },
+            Function<Modification, Any> { it.oldFilename },
+            Function<Modification, Any> { it.type },
+            Function<Modification, Any> { it.additions },
+            Function<Modification, Any> { it.deletions }
+        )
+            .containsExactly("src/RenameNew.java", "src/RenameOld.java", Modification.Type.RENAME, 9L, 2L)
     }
 
     companion object {

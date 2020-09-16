@@ -46,12 +46,16 @@ class ProjectConverter(private val containsAuthors: Boolean) {
         return edge
     }
 
-    fun convert(versionControlledFiles: VersionControlledFilesList, metricsFactory: MetricsFactory, filesInLog : List<String>): Project {
+    fun convert(
+        versionControlledFiles: VersionControlledFilesList,
+        metricsFactory: MetricsFactory,
+        filesInLog: List<String>
+    ): Project {
         val projectBuilder = ProjectBuilder()
 
         // TODO discuss/check performance
         versionControlledFiles.getList().values
-            .filter {!it.isDeleted() || filesInLog.contains(it.filename)} //TODO do we need to check for isDeleted()? I would say no
+            .filter { !it.isDeleted() || filesInLog.contains(it.filename) } // TODO do we need to check for isDeleted()? I would say no
             .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()

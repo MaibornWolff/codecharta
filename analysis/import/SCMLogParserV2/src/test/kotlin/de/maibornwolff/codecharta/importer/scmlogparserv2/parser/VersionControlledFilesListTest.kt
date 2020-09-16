@@ -2,9 +2,9 @@ package de.maibornwolff.codecharta.importer.scmlogparserv2.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import org.hamcrest.CoreMatchers.equalTo
-import org.junit.Test
-import org.junit.Assert.*
+import org.junit.Assert.assertThat
 import org.junit.Before
+import org.junit.Test
 
 class VersionControlledFilesListTest {
 

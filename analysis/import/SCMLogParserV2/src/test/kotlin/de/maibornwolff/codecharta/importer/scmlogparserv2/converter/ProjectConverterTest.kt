@@ -1,16 +1,10 @@
 package de.maibornwolff.codecharta.importer.scmlogparserv2.converter
 
-import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
-import de.maibornwolff.codecharta.importer.scmlogparserv2.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import io.mockk.every
 import io.mockk.mockk
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
-import org.junit.Test
-import java.time.OffsetDateTime
-import java.util.Arrays
 
 class ProjectConverterTest {
 

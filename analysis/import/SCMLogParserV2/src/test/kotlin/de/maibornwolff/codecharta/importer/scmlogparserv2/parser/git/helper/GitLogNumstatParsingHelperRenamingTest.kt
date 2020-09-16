@@ -45,11 +45,13 @@ class GitLogNumstatParsingHelperRenamingTest(
     fun parseModification() {
         val modification = GitLogNumstatParsingHelper.parseModification(fileLine)
 
-        assertThat(modification).extracting(Function<Modification, Any> { it.currentFilename },
-                Function<Modification, Any> { it.oldFilename },
-                Function<Modification, Any> { it.type },
-                Function<Modification, Any> { it.additions },
-                Function<Modification, Any> { it.deletions })
-                .containsExactly(newFilename, oldFilename, Modification.Type.RENAME, 1L, 2L)
+        assertThat(modification).extracting(
+            Function<Modification, Any> { it.currentFilename },
+            Function<Modification, Any> { it.oldFilename },
+            Function<Modification, Any> { it.type },
+            Function<Modification, Any> { it.additions },
+            Function<Modification, Any> { it.deletions }
+        )
+            .containsExactly(newFilename, oldFilename, Modification.Type.RENAME, 1L, 2L)
     }
 }

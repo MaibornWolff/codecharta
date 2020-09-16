@@ -51,8 +51,8 @@ internal class CommitCollector {
                         }
                         if (file.isDeleted()) {
                             // a file is re-added after its deletion on master
-                            //TODO what if a new file is created in the merge commit that has the same name?
-                            //TODO is this possible/feasible?
+                            // TODO what if a new file is created in the merge commit that has the same name?
+                            // TODO is this possible/feasible?
                             if (commit.isMergeCommit()) {
                                 file.unmarkDeleted()
                             }

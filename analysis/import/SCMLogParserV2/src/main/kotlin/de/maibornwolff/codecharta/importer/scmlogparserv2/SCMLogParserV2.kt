@@ -42,8 +42,13 @@ class SCMLogParserV2(
     @CommandLine.Parameters(arity = "1", paramLabel = "FILE", description = ["file to parse"])
     private var file: File? = null
 
-    @CommandLine.Option(names= ["-n" ,"--file-name-list"], arity = "1", paramLabel = "FILE", description = ["list of all file names in current git project"])
-    private var nameFile : File? = null
+    @CommandLine.Option(
+        names = ["-n", "--file-name-list"],
+        arity = "1",
+        paramLabel = "FILE",
+        description = ["list of all file names in current git project"]
+    )
+    private var nameFile: File? = null
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])
     private var outputFile = ""
@@ -118,7 +123,7 @@ class SCMLogParserV2(
         }
     }
 
-    private fun readFileNameListFile(path :File) : MutableList<String>{
+    private fun readFileNameListFile(path: File): MutableList<String> {
         val inputStream: InputStream = path.inputStream()
         val lineList = mutableListOf<String>()
 
@@ -140,7 +145,10 @@ class SCMLogParserV2(
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
-        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(lines, namesInProject)
+        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(
+            lines,
+            namesInProject
+        )
     }
 
     // not implemented yet #738
