@@ -27,20 +27,20 @@ export class SearchPanelModeSelectorController implements SearchPatternSubscribe
 		SearchPanelModeService.subscribe(this.$rootScope, this)
 	}
 
-	public onSearchPatternChanged(searchPattern: string) {
+	onSearchPatternChanged(searchPattern: string) {
 		this._viewModel.searchFieldIsEmpty = searchPattern === ""
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this._viewModel.flattenListLength = blacklist.filter(x => x.type === BlacklistType.flatten).length
 		this._viewModel.excludeListLength = blacklist.filter(x => x.type === BlacklistType.exclude).length
 	}
 
-	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
+	onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
 		this._viewModel.searchPanelMode = searchPanelMode
 	}
 
-	public onToggleSearchPanelMode(searchPanelMode: SearchPanelMode) {
+	onToggleSearchPanelMode(searchPanelMode: SearchPanelMode) {
 		if (searchPanelMode === this._viewModel.searchPanelMode) {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
 		} else {

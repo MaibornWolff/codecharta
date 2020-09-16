@@ -1,5 +1,5 @@
-import { SearchPatternAction, setSearchPattern } from "./searchPattern.actions"
+import { setSearchPattern } from "./searchPattern.actions"
 
-export function splitSearchPatternAction(payload: string): SearchPatternAction {
+export function splitSearchPatternAction(payload: string) {
 	return setSearchPattern(payload)
 }

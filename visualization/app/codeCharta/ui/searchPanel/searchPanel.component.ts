@@ -25,7 +25,7 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 		this.onSearchPanelModeChanged(SearchPanelMode.minimized)
 	}
 
-	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
+	onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
 		if (searchPanelMode === SearchPanelMode.minimized) {
 			this._viewModel.isExpanded = false
 		} else {
@@ -34,7 +34,7 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 		}
 	}
 
-	public toggle() {
+	toggle() {
 		if (this._viewModel.isExpanded) {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
 		} else {
@@ -43,7 +43,7 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 		this.codeChartaMouseEventService.closeComponentsExceptCurrent(this.codeChartaMouseEventService.closeSearchPanel)
 	}
 
-	public openSearchPanel() {
+	openSearchPanel() {
 		this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
 	}
 }

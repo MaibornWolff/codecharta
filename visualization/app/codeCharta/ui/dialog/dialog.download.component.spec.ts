@@ -45,13 +45,13 @@ describe("DialogDownloadController", () => {
 	}
 
 	function getFilteredFileContent(name: DownloadCheckboxNames) {
-		return dialogDownloadController["_viewModel"].fileContent.find(x => x.name == name)
+		return dialogDownloadController["_viewModel"].fileContent.find(x => x.name === name)
 	}
 
 	describe("constructor", () => {
 		describe("fileName", () => {
 			it("should set correct fileName", () => {
-				expect(dialogDownloadController["_viewModel"].fileName).toEqual("fileA_" + newDate)
+				expect(dialogDownloadController["_viewModel"].fileName).toEqual(`fileA_${newDate}`)
 			})
 		})
 

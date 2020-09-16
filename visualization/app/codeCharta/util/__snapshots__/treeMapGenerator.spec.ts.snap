@@ -20,7 +20,7 @@ Array [
     "isLeaf": true,
     "length": 596,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "root",
     "outgoingEdgePoint": Vector3 {
       "x": 48,
@@ -57,7 +57,7 @@ Array [
     "isLeaf": false,
     "length": 666.2768775266122,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "root",
     "outgoingEdgePoint": Vector3 {
       "x": 83.13843876330611,
@@ -93,7 +93,7 @@ Array [
     "isLeaf": true,
     "length": 627.8768775266121,
     "link": "http://www.google.de",
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "big leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 83.13843876330606,
@@ -125,7 +125,7 @@ Array [
     "isLeaf": true,
     "length": 627.8768775266121,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "Parent Leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 406.6768775266122,
@@ -162,7 +162,7 @@ Array [
     "isLeaf": false,
     "length": 735.151015307185,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "root",
     "outgoingEdgePoint": Vector3 {
       "x": 117.57550765359252,
@@ -198,7 +198,7 @@ Array [
     "isLeaf": true,
     "length": 338.7755076535925,
     "link": "http://www.google.de",
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "big leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 291.76326148038873,
@@ -230,7 +230,7 @@ Array [
     "isLeaf": false,
     "length": 338.77550765359246,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "Parent Leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 291.76326148038873,
@@ -266,7 +266,7 @@ Array [
     "isLeaf": true,
     "length": 300.37550765359236,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "small leaf",
     "outgoingEdgePoint": Vector3 {
       "x": -119.56734770392222,
@@ -302,7 +302,7 @@ Array [
     "isLeaf": true,
     "length": 300.37550765359236,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "other small leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 332.97958762842757,
@@ -334,7 +334,7 @@ Array [
     "isLeaf": true,
     "length": 300.37550765359236,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "empty folder",
     "outgoingEdgePoint": Vector3 {
       "x": 456.351015307185,
@@ -371,7 +371,7 @@ Array [
     "isLeaf": false,
     "length": 929.3250516799595,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "root",
     "outgoingEdgePoint": Vector3 {
       "x": -200,
@@ -403,7 +403,7 @@ Array [
     "isLeaf": false,
     "length": 139.39875775199394,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "folder_1",
     "outgoingEdgePoint": Vector3 {
       "x": 179.81283640198131,
@@ -437,7 +437,7 @@ Array [
     "isLeaf": true,
     "length": 0,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_1",
     "outgoingEdgePoint": Vector3 {
       "x": 159.94710250372148,
@@ -471,7 +471,7 @@ Array [
     "isLeaf": true,
     "length": 0,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_2",
     "outgoingEdgePoint": Vector3 {
       "x": 159.94710250372148,
@@ -505,7 +505,7 @@ Array [
     "isLeaf": true,
     "length": 0,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_3",
     "outgoingEdgePoint": Vector3 {
       "x": 159.94710250372148,
@@ -537,7 +537,7 @@ Array [
     "isLeaf": false,
     "length": 464.6625258399798,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "folder_2",
     "outgoingEdgePoint": Vector3 {
       "x": -87.36811595600707,
@@ -571,7 +571,7 @@ Array [
     "isLeaf": true,
     "length": 382.16160758967044,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_4",
     "outgoingEdgePoint": Vector3 {
       "x": -191.8732678385811,
@@ -605,7 +605,7 @@ Array [
     "isLeaf": true,
     "length": 382.16160758967044,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_5",
     "outgoingEdgePoint": Vector3 {
       "x": -191.8732678385811,
@@ -637,7 +637,7 @@ Array [
     "isLeaf": false,
     "length": 464.6625258399798,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "folder_3",
     "outgoingEdgePoint": Vector3 {
       "x": 191.4293995479808,
@@ -671,7 +671,7 @@ Array [
     "isLeaf": true,
     "length": 382.16160758967044,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_6",
     "outgoingEdgePoint": Vector3 {
       "x": 86.92424766540677,
@@ -705,7 +705,7 @@ Array [
     "isLeaf": true,
     "length": 382.16160758967044,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_7",
     "outgoingEdgePoint": Vector3 {
       "x": 86.92424766540677,
@@ -737,7 +737,7 @@ Array [
     "isLeaf": false,
     "length": 836.3925465119636,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "folder_4",
     "outgoingEdgePoint": Vector3 {
       "x": 400.5275361759717,
@@ -771,7 +771,7 @@ Array [
     "isLeaf": true,
     "length": 711.06920834727,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_8",
     "outgoingEdgePoint": Vector3 {
       "x": 359.12236739451646,
@@ -805,7 +805,7 @@ Array [
     "isLeaf": true,
     "length": 711.06920834727,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_9",
     "outgoingEdgePoint": Vector3 {
       "x": 359.12236739451646,
@@ -837,7 +837,7 @@ Array [
     "isLeaf": false,
     "length": 836.3925465119636,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "folder_5",
     "outgoingEdgePoint": Vector3 {
       "x": 563.1594202199647,
@@ -871,7 +871,7 @@ Array [
     "isLeaf": true,
     "length": 711.06920834727,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_10",
     "outgoingEdgePoint": Vector3 {
       "x": 500.84227394129766,
@@ -905,7 +905,7 @@ Array [
     "isLeaf": true,
     "length": 711.06920834727,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_11",
     "outgoingEdgePoint": Vector3 {
       "x": 500.84227394129766,
@@ -937,7 +937,7 @@ Array [
     "isLeaf": false,
     "length": 139.3987577519939,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "folder_6",
     "outgoingEdgePoint": Vector3 {
       "x": 179.81283640198131,
@@ -971,7 +971,7 @@ Array [
     "isLeaf": true,
     "length": 0,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_12",
     "outgoingEdgePoint": Vector3 {
       "x": 157.63773917665077,
@@ -1005,7 +1005,7 @@ Array [
     "isLeaf": true,
     "length": 0,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "children_13",
     "outgoingEdgePoint": Vector3 {
       "x": 157.63773917665077,

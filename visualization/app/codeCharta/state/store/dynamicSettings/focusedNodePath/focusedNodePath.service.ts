@@ -20,7 +20,7 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (actionType === FocusedNodePathActions.FOCUS_NODE) {
 			this.notifyFocus(this.select())
 		} else if (actionType === FocusedNodePathActions.UNFOCUS_NODE) {
@@ -28,13 +28,13 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 		}
 	}
 
-	public onFilesSelectionChanged() {
+	onFilesSelectionChanged() {
 		if (this.storeService.getState().dynamicSettings.focusedNodePath) {
 			this.reset()
 		}
 	}
 
-	public reset() {
+	reset() {
 		this.storeService.dispatch(unfocusNode())
 	}
 
@@ -50,13 +50,13 @@ export class FocusedNodePathService implements StoreSubscriber, FilesSelectionSu
 		this.$rootScope.$broadcast(FocusedNodePathService.UNFOCUS_NODE_EVENT)
 	}
 
-	public static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodeSubscriber) {
+	static subscribeToFocusNode($rootScope: IRootScopeService, subscriber: FocusNodeSubscriber) {
 		$rootScope.$on(FocusedNodePathService.FOCUS_NODE_EVENT, (_event, data) => {
 			subscriber.onFocusNode(data.focusedNodePath)
 		})
 	}
 
-	public static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodeSubscriber) {
+	static subscribeToUnfocusNode($rootScope: IRootScopeService, subscriber: UnfocusNodeSubscriber) {
 		$rootScope.$on(FocusedNodePathService.UNFOCUS_NODE_EVENT, () => {
 			subscriber.onUnfocusNode()
 		})

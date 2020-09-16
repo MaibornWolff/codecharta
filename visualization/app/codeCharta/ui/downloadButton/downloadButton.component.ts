@@ -5,7 +5,7 @@ export class DownloadButtonController {
 	/* @ngInject */
 	constructor(private dialogService: DialogService) {}
 
-	public downloadFile() {
+	downloadFile() {
 		this.dialogService.showDownloadDialog()
 	}
 }

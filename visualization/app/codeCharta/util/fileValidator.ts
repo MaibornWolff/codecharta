@@ -66,20 +66,20 @@ export function validate(file: ExportCCFile) {
 	}
 }
 
-function isValidApiVersion(file: ExportCCFile): boolean {
-	const apiVersion = file.apiVersion
+function isValidApiVersion(file: ExportCCFile) {
+	const { apiVersion } = file
 	const hasApiVersion = apiVersion !== undefined
-	const versionRegExp = new RegExp("[0-9]+\\.[0-9]+")
+	const versionRegExp = /\d+\.\d+/
 	const isValidVersion = versionRegExp.test(apiVersion)
 	return hasApiVersion && isValidVersion
 }
 
-function fileHasHigherMajorVersion(file: ExportCCFile): boolean {
+function fileHasHigherMajorVersion(file: ExportCCFile) {
 	const apiVersion = getAsApiVersion(file.apiVersion)
 	return apiVersion.major > getAsApiVersion(latestApiVersion).major
 }
 
-function fileHasHigherMinorVersion(file: ExportCCFile): boolean {
+function fileHasHigherMinorVersion(file: ExportCCFile) {
 	const apiVersion = getAsApiVersion(file.apiVersion)
 	return apiVersion.minor > getAsApiVersion(latestApiVersion).minor
 }
@@ -164,11 +164,11 @@ function validateFixedFolders(file: ExportCCFile, result: CCValidationResult) {
 	}
 }
 
-function getFoundFolderMessage(node: CodeMapNode): string {
+function getFoundFolderMessage(node: CodeMapNode) {
 	return `${node.name} ${JSON.stringify(node.fixedPosition)}`
 }
 
-function rectanglesIntersect(rect1: FixedPosition, rect2: FixedPosition): boolean {
+function rectanglesIntersect(rect1: FixedPosition, rect2: FixedPosition) {
 	return (
 		isInRectangle(rect1.left, rect1.top, rect2) ||
 		isInRectangle(rect1.left, rect1.top + rect1.height, rect2) ||
@@ -177,10 +177,10 @@ function rectanglesIntersect(rect1: FixedPosition, rect2: FixedPosition): boolea
 	)
 }
 
-function isInRectangle(x: number, y: number, rect: FixedPosition): boolean {
+function isInRectangle(x: number, y: number, rect: FixedPosition) {
 	return x >= rect.left && x <= rect.left + rect.width && y >= rect.top && y <= rect.top + rect.height
 }
 
-function isOutOfBounds({ fixedPosition: { left, top, width, height } }: CodeMapNode): boolean {
+function isOutOfBounds({ fixedPosition: { left, top, width, height } }: CodeMapNode) {
 	return left < 0 || top < 0 || left + width > 100 || top + height > 100 || width < 0 || height < 0
 }

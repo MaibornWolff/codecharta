@@ -1,5 +1,5 @@
-import { HeightMetricAction, setHeightMetric } from "./heightMetric.actions"
+import { setHeightMetric } from "./heightMetric.actions"
 
-export function splitHeightMetricAction(payload: string): HeightMetricAction {
+export function splitHeightMetricAction(payload: string) {
 	return setHeightMetric(payload)
 }

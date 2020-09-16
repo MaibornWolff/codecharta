@@ -15,12 +15,12 @@ import { setFileSettings } from "./fileSettings/fileSettings.actions"
 import { ScalingActions } from "./appSettings/scaling/scaling.actions"
 import { setAppSettings } from "./appSettings/appSettings.actions"
 
+function getItemsOfType(array: CCAction[], actionTypes: string[]) {
+	return array.filter(action => actionTypes.some(type => type === action.type))
+}
+
 describe("state.splitter", () => {
 	describe("setState", () => {
-		function getItemsOfType(array: CCAction[], actionTypes: string[]) {
-			return array.filter(action => actionTypes.some(type => type === action.type))
-		}
-
 		it("should return 3 atomic actions", () => {
 			const partialState: RecursivePartial<State> = {
 				dynamicSettings: {

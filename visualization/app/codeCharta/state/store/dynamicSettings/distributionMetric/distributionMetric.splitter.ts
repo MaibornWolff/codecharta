@@ -1,5 +1,5 @@
-import { DistributionMetricAction, setDistributionMetric } from "./distributionMetric.actions"
+import { setDistributionMetric } from "./distributionMetric.actions"
 
-export function splitDistributionMetricAction(payload: string): DistributionMetricAction {
+export function splitDistributionMetricAction(payload: string) {
 	return setDistributionMetric(payload)
 }

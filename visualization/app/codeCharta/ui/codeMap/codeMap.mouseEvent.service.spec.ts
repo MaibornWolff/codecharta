@@ -10,7 +10,7 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, TEST_NODE_ROOT, withMockedEventMethods } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
@@ -502,16 +502,6 @@ describe("codeMapMouseEventService", () => {
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(codeMapBuilding)
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
-		})
-
-		it("should add property node", () => {
-			codeMapBuilding.setNode(undefined)
-			codeMapBuilding.parent = codeMapBuilding
-			codeMapBuilding.parent.setNode(TEST_NODE_ROOT)
-
-			codeMapMouseEventService["hoverBuilding"](codeMapBuilding)
-
-			expect(codeMapBuilding.node).toEqual(codeMapBuilding.parent.node)
 		})
 	})
 

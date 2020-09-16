@@ -20,8 +20,8 @@ describe("CodeCharta logo", () => {
 	})
 
 	it("should have correct image as logo", async () => {
-		const src = await logo.getImageSrc()
-		const viewSource = await page.goto(src)
+		const source = await logo.getImageSrc()
+		const viewSource = await page.goto(source)
 		expect(await viewSource.buffer()).toMatchSnapshot()
 	})
 })

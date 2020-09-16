@@ -39,7 +39,7 @@ export class RangeSliderController
 	private _viewModel: {
 		colorRangeFrom: number
 		colorRangeTo: number
-		sliderOptions: any
+		sliderOptions: Record<string, any>
 	} = {
 		colorRangeFrom: null,
 		colorRangeTo: null,
@@ -73,11 +73,11 @@ export class RangeSliderController
 		}
 	}
 
-	public onColorMetricChanged() {
+	onColorMetricChanged() {
 		this.updateMaxMetricValue()
 	}
 
-	public onColorRangeChanged(colorRange: ColorRange) {
+	onColorRangeChanged(colorRange: ColorRange) {
 		this.updateViewModel(colorRange)
 
 		this.$timeout(() => {
@@ -87,26 +87,26 @@ export class RangeSliderController
 		}, 0)
 	}
 
-	public onFilesSelectionChanged() {
+	onFilesSelectionChanged() {
 		this.updateMaxMetricValue()
 		this.updateDisabledSliderOption()
 	}
 
-	public onInvertColorRangeChanged() {
+	onInvertColorRangeChanged() {
 		this.updateSliderColors()
 	}
 
-	public onWhiteColorBuildingsChanged() {
+	onWhiteColorBuildingsChanged() {
 		this.updateSliderColors()
 	}
 
-	public onFromSliderChange() {
+	onFromSliderChange() {
 		this._viewModel.colorRangeFrom = Math.min(this._viewModel.sliderOptions.ceil - 1, this._viewModel.colorRangeFrom)
 		this._viewModel.colorRangeTo = Math.max(this._viewModel.colorRangeTo, this._viewModel.colorRangeFrom + 1)
 		this.applyColorRange()
 	}
 
-	public onToSliderChange() {
+	onToSliderChange() {
 		this._viewModel.colorRangeFrom = Math.min(this._viewModel.colorRangeTo - 1, this._viewModel.colorRangeFrom)
 		this._viewModel.colorRangeTo = Math.min(this._viewModel.sliderOptions.ceil, Math.max(1, this._viewModel.colorRangeTo))
 		this.applyColorRange()
@@ -124,9 +124,7 @@ export class RangeSliderController
 	}
 
 	private isMaxMetricValueChanged() {
-		const newMaxValue: number = this.nodeMetricDataService.getMaxMetricByMetricName(
-			this.storeService.getState().dynamicSettings.colorMetric
-		)
+		const newMaxValue = this.nodeMetricDataService.getMaxMetricByMetricName(this.storeService.getState().dynamicSettings.colorMetric)
 		return this._viewModel.sliderOptions.ceil !== newMaxValue
 	}
 
@@ -163,9 +161,9 @@ export class RangeSliderController
 		const fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		const toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 
-		$("range-slider-component #rangeFromInputField").css("width", fromWidth + "px")
-		$("range-slider-component #rangeToInputField").css("width", toWidth + "px")
-		$("range-slider-component #colorSlider").css("width", this.FULL_WIDTH_SLIDER - fromWidth - toWidth + "px")
+		$("range-slider-component #rangeFromInputField").css("width", `${fromWidth}px`)
+		$("range-slider-component #rangeToInputField").css("width", `${toWidth}px`)
+		$("range-slider-component #colorSlider").css("width", `${this.FULL_WIDTH_SLIDER - fromWidth - toWidth}px`)
 	}
 
 	private updateSliderColors() {
@@ -175,7 +173,7 @@ export class RangeSliderController
 	}
 
 	private getGreyRangeColors() {
-		const lightGrey = this.storeService.getState().appSettings.mapColors.lightGrey
+		const { lightGrey } = this.storeService.getState().appSettings.mapColors
 		return {
 			left: lightGrey,
 			middle: lightGrey,
@@ -184,7 +182,7 @@ export class RangeSliderController
 	}
 
 	private getColoredRangeColors() {
-		const appSettings = this.storeService.getState().appSettings
+		const { appSettings } = this.storeService.getState()
 		const mapColorPositive = appSettings.whiteColorBuildings ? appSettings.mapColors.lightGrey : appSettings.mapColors.positive
 
 		return {
@@ -200,9 +198,9 @@ export class RangeSliderController
 		const middleSection = slider.find(".rz-selection")
 		const rightSection = slider.find(".rz-right-out-selection .rz-bar")
 
-		leftSection.css("cssText", "background: " + rangeColors.left + " !important; width: " + rangeFromPercentage + "%;")
-		middleSection.css("cssText", "background: " + rangeColors.middle + " !important;")
-		rightSection.css("cssText", "background: " + rangeColors.right + ";")
+		leftSection.css("cssText", `background: ${rangeColors.left} !important; width: ${rangeFromPercentage}%;`)
+		middleSection.css("cssText", `background: ${rangeColors.middle} !important;`)
+		rightSection.css("cssText", `background: ${rangeColors.right};`)
 	}
 }
 

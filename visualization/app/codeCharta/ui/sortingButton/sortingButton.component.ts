@@ -18,11 +18,11 @@ export class SortingButtonController implements SortingOrderAscendingSubscriber 
 		SortingOrderAscendingService.subscribe(this.$rootScope, this)
 	}
 
-	public onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
+	onSortingOrderAscendingChanged(sortingOrderAscending: boolean) {
 		this._viewModel.orderAscending = sortingOrderAscending
 	}
 
-	public onButtonClick() {
+	onButtonClick() {
 		this.storeService.dispatch(setSortingOrderAscending(!this._viewModel.orderAscending))
 	}
 }

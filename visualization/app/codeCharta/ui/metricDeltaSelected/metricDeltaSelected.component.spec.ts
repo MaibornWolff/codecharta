@@ -68,7 +68,7 @@ describe("MetricDeltaSelectedController", () => {
 			storeService.dispatch(setInvertDeltaColors(true))
 			metricDeltaSelectedController["_viewModel"].deltaValue = 1
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("red")
 		})
@@ -77,7 +77,7 @@ describe("MetricDeltaSelectedController", () => {
 			storeService.dispatch(setInvertDeltaColors(true))
 			metricDeltaSelectedController["_viewModel"].deltaValue = -1
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("green")
 		})
@@ -86,7 +86,7 @@ describe("MetricDeltaSelectedController", () => {
 			storeService.dispatch(setInvertDeltaColors(false))
 			metricDeltaSelectedController["_viewModel"].deltaValue = 1
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("green")
 		})
@@ -95,7 +95,7 @@ describe("MetricDeltaSelectedController", () => {
 			storeService.dispatch(setInvertDeltaColors(false))
 			metricDeltaSelectedController["_viewModel"].deltaValue = -1
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("red")
 		})
@@ -105,7 +105,7 @@ describe("MetricDeltaSelectedController", () => {
 
 			metricDeltaSelectedController.onBuildingSelected(codeMapBuilding)
 
-			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(null)
+			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(undefined)
 		})
 
 		it("should set deltaValue to existing metric value", () => {
@@ -120,7 +120,7 @@ describe("MetricDeltaSelectedController", () => {
 		it("should not change viewModel", () => {
 			metricDeltaSelectedController["_viewModel"].deltaValue = 17
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].deltaValue).toEqual(17)
 		})
@@ -131,7 +131,7 @@ describe("MetricDeltaSelectedController", () => {
 			storeService.dispatch(setInvertDeltaColors(true))
 			metricDeltaSelectedController["_viewModel"].deltaValue = 1
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("red")
 		})
@@ -140,7 +140,7 @@ describe("MetricDeltaSelectedController", () => {
 			storeService.dispatch(setInvertDeltaColors(true))
 			metricDeltaSelectedController["_viewModel"].deltaValue = -1
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("green")
 		})
@@ -149,7 +149,7 @@ describe("MetricDeltaSelectedController", () => {
 			storeService.dispatch(setInvertDeltaColors(false))
 			metricDeltaSelectedController["_viewModel"].deltaValue = 1
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("green")
 		})
@@ -158,7 +158,7 @@ describe("MetricDeltaSelectedController", () => {
 			storeService.dispatch(setInvertDeltaColors(false))
 			metricDeltaSelectedController["_viewModel"].deltaValue = -1
 
-			metricDeltaSelectedController.onBuildingSelected(undefined)
+			metricDeltaSelectedController.onBuildingSelected()
 
 			expect(metricDeltaSelectedController["_viewModel"].colorClass).toEqual("red")
 		})

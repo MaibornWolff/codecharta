@@ -3,6 +3,10 @@ import { TEST_NODE_ROOT } from "../../../util/dataMocks"
 import { Vector3 } from "three"
 import { ColorConverter } from "../../../util/color/colorConverter"
 
+function mockColorConverter() {
+	ColorConverter.colorToVector3 = jest.fn().mockReturnValue(new Vector3(0, 1, 2))
+}
+
 describe("CodeMapBuilding", () => {
 	let building: CodeMapBuilding
 	let building1: CodeMapBuilding
@@ -17,10 +21,6 @@ describe("CodeMapBuilding", () => {
 		building1 = new CodeMapBuilding(0, null, TEST_NODE_ROOT, "#DDCC00")
 		building2 = new CodeMapBuilding(1, null, TEST_NODE_ROOT, "#820E0E")
 	})
-
-	function mockColorConverter() {
-		ColorConverter.colorToVector3 = jest.fn().mockReturnValue(new Vector3(0, 1, 2))
-	}
 
 	describe("getCenterPoint", () => {
 		it("should return the center point of a building", () => {

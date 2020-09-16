@@ -15,7 +15,7 @@ export class PanelSelectionService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, PanelSelectionActions)) {
 			this.notify(this.select())
 		}
@@ -29,8 +29,8 @@ export class PanelSelectionService implements StoreSubscriber {
 		this.$rootScope.$broadcast(PanelSelectionService.PANEL_SELECTION_CHANGED_EVENT, { panelSelection: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: PanelSelectionSubscriber) {
-		$rootScope.$on(PanelSelectionService.PANEL_SELECTION_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: PanelSelectionSubscriber) {
+		$rootScope.$on(PanelSelectionService.PANEL_SELECTION_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onPanelSelectionChanged(data.panelSelection)
 		})
 	}

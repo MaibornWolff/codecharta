@@ -72,7 +72,7 @@ describe("RibbonBarController", () => {
 
 			ribbonBarController.toggle(PanelSelection.COLOR_PANEL_OPEN)
 
-			const appSettings = storeService.getState().appSettings
+			const { appSettings } = storeService.getState()
 
 			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 			expect(appSettings.panelSelection).toEqual(PanelSelection.COLOR_PANEL_OPEN)

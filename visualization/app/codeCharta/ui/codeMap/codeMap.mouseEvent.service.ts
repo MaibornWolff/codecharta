@@ -73,7 +73,7 @@ export class CodeMapMouseEventService
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public start() {
+	start() {
 		this.threeRendererService.renderer.domElement.addEventListener("mousemove", () => this.onDocumentMouseMove(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mouseup", () => this.onDocumentMouseUp(event))
 		this.threeRendererService.renderer.domElement.addEventListener("mousedown", () => this.onDocumentMouseDown(event))
@@ -81,8 +81,8 @@ export class CodeMapMouseEventService
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
-	public onShouldHoverNode(node: CodeMapNode) {
-		const buildings: CodeMapBuilding[] = this.threeSceneService.getMapMesh().getMeshDescription().buildings
+	onShouldHoverNode(node: CodeMapNode) {
+		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 		buildings.forEach(building => {
 			if (building.node.path === node.path) {
 				this.hoverBuilding(building)
@@ -91,12 +91,12 @@ export class CodeMapMouseEventService
 		})
 	}
 
-	public onShouldUnhoverNode() {
+	onShouldUnhoverNode() {
 		this.unhoverBuilding()
 		this.highlightedInTreeView = null
 	}
 
-	public onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
+	onViewCubeEventPropagation(eventType: string, event: MouseEvent) {
 		switch (eventType) {
 			case "mousemove":
 				this.onDocumentMouseMove(event)
@@ -113,11 +113,11 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onFilesSelectionChanged() {
+	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
 		if (selectedBuilding) {
 			const isSelectedBuildingBlacklisted = CodeMapHelper.isPathHiddenOrExcluded(selectedBuilding.node.path, blacklist)
@@ -129,7 +129,7 @@ export class CodeMapMouseEventService
 		this.unhoverBuilding()
 	}
 
-	public updateHovering() {
+	updateHovering() {
 		if (this.hasMouseMoved(this.oldMouse)) {
 			this.oldMouse.x = this.mouse.x
 			this.oldMouse.y = this.mouse.y
@@ -157,12 +157,12 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onDocumentMouseMove(event) {
+	onDocumentMouseMove(event) {
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
 	}
 
-	public onDocumentDoubleClick() {
+	onDocumentDoubleClick() {
 		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
 		// check if mouse moved to prevent opening the building link after rotating the map, when the cursor ends on a building
 		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
@@ -173,7 +173,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	public onDocumentMouseDown(event) {
+	onDocumentMouseDown(event) {
 		if (event.button === ClickType.RightClick) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
 			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
@@ -185,7 +185,7 @@ export class CodeMapMouseEventService
 		$(document.activeElement).blur()
 	}
 
-	public onDocumentMouseUp(event) {
+	onDocumentMouseUp(event) {
 		if (event.button === ClickType.LeftClick) {
 			this.onLeftClick()
 		} else {
@@ -213,7 +213,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	private hasMouseMoved(mouse: Coordinates): boolean {
+	private hasMouseMoved(mouse: Coordinates) {
 		return this.mouse.x !== mouse.x || this.mouse.y !== mouse.y
 	}
 
@@ -231,7 +231,7 @@ export class CodeMapMouseEventService
 	}
 
 	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
-		const lookUp = this.storeService.getState().lookUp
+		const { lookUp } = this.storeService.getState()
 		const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
 		hierarchy(codeMapNode).each(x => {
 			const building = lookUp.idToBuilding.get(x.data.id)
@@ -249,23 +249,23 @@ export class CodeMapMouseEventService
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}
 
-	public static changeCursorIndicator(cursorIcon: CursorType) {
+	static changeCursorIndicator(cursorIcon: CursorType) {
 		document.body.style.cursor = cursorIcon
 	}
 
-	public static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
+	static subscribeToBuildingHovered($rootScope: IRootScopeService, subscriber: BuildingHoveredSubscriber) {
 		$rootScope.$on(this.BUILDING_HOVERED_EVENT, (_event, data) => {
 			subscriber.onBuildingHovered(data.hoveredBuilding)
 		})
 	}
 
-	public static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
+	static subscribeToBuildingUnhovered($rootScope: IRootScopeService, subscriber: BuildingUnhoveredSubscriber) {
 		$rootScope.$on(this.BUILDING_UNHOVERED_EVENT, () => {
 			subscriber.onBuildingUnhovered()
 		})
 	}
 
-	public static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
+	static subscribeToBuildingRightClickedEvents($rootScope: IRootScopeService, subscriber: BuildingRightClickedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_RIGHT_CLICKED_EVENT, (_event, data) => {
 			subscriber.onBuildingRightClicked(data.building, data.x, data.y)
 		})
