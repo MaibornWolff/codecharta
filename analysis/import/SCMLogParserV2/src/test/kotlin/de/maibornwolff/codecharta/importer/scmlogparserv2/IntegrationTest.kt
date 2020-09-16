@@ -5,49 +5,13 @@ import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogLineParser
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.GitLogNumstatRawParserStrategy
 import org.hamcrest.CoreMatchers.hasItem
 import org.junit.Assert
+import org.junit.Test
 import java.io.File
-import java.io.IOException
+import java.io.InputStream
 import java.util.Arrays
-import java.util.concurrent.TimeUnit
 
 // TODO not working yet, we can't handle logs in place
-// right now it breaks the application
 class IntegrationTest {
-    private var filenamesInGitRepo = mutableListOf<String>()
-
-    fun setup() {
-
-        val path = convertPathCodeCharta()
-        executeGitCommand("git ls-files ", File(path), filenamesInGitRepo)
-    }
-
-    fun convertPathCodeCharta(): String {
-        val path = System.getProperty("user.dir")
-        val separator = System.getProperty("file.separator")
-
-        return path.substringBeforeLast(separator)
-    }
-
-    fun executeGitCommand(gitCommand: String, workingDir: File, list: MutableList<String>) {
-        try {
-            val commands = gitCommand.split("\\s".toRegex())
-            val proc = ProcessBuilder(*commands.toTypedArray())
-                .directory(workingDir)
-                .redirectOutput(ProcessBuilder.Redirect.PIPE)
-                .redirectError(ProcessBuilder.Redirect.PIPE)
-                .start()
-
-            proc.waitFor(60, TimeUnit.SECONDS)
-
-            proc.inputStream.bufferedReader().useLines { lines ->
-                lines.forEach {
-                    list.add(it)
-                }
-            }
-        } catch (e: IOException) {
-            error("Invalid git command.")
-        }
-    }
 
     private val metricsFactory = MetricsFactory(
         Arrays.asList(
@@ -59,25 +23,48 @@ class IntegrationTest {
         )
     )
 
+    private fun readFileNameListFile(path: File): MutableList<String> {
+        val inputStream: InputStream = path.inputStream()
+        val lineList = mutableListOf<String>()
+
+        inputStream.bufferedReader().forEachLine { lineList.add(it) }
+
+        return lineList
+    }
+
     // TODO make test working :)
-    // @Test
+    @Test
     fun test_given_list_of_all_files_in_project_when_parsing_corresponding_git_log_then_both_list_contents_are_equal() {
         // TODO we don't write to file anymore to prevent unnecessary I/O, but I can roll that back if we happen to need it
-        setup()
-        val logPath = convertPathCodeCharta()
-        val gitLog = mutableListOf<String>()
-        executeGitCommand("git log --numstat --raw --topo-order --reverse -m", File(logPath), gitLog)
-        // TODO LogParserStrategy concrete/ mocked object
+        // this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv")
+
+        //Git-names in Repo
+        val resourceName = "names-in-git-repo.txt"
+        val classLoader = javaClass.classLoader
+        val file = File(classLoader.getResource(resourceName)!!.file)
+        val project_name_list = readFileNameListFile(file)
+
+        //parsed git-log
         val parserStrategy = GitLogNumstatRawParserStrategy()
-
-        // TODO no answer found, mocking doesnt work
+        val codeChartaLog = this.javaClass.classLoader.getResourceAsStream("codeCharta.log")
         val parser = LogLineParser(parserStrategy, metricsFactory)
-        val vcFList = parser.parse(gitLog.stream())
-        val namesInVCF: List<String> = vcFList.getList().values.filter { !it.isDeleted() || filenamesInGitRepo.contains(it.filename) }.map { file -> file.filename }
+        val codeList = mutableListOf<String>()
+        codeChartaLog.bufferedReader().forEachLine { codeList.add(it) }
+        val vcFList = parser.parse(codeList.stream())
+        val namesInVCF: List<String> =
+            vcFList.getList().values.filter { project_name_list.contains(it.filename) }
+                .map { file -> file.filename }
 
-        // TODO assertThat from hamcrest doesnt work
+        val newList = project_name_list.filter { element ->
+            !namesInVCF.contains(element)
+        }
+
+        for (e in newList) {
+            println(e)
+        }
+
         for (item in namesInVCF) {
-            Assert.assertThat(filenamesInGitRepo, hasItem(item))
+            Assert.assertThat(project_name_list, hasItem(item))
         }
     }
 }
