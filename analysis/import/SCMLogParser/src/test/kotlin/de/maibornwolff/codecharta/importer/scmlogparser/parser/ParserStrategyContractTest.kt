@@ -23,7 +23,7 @@ abstract class ParserStrategyContractTest {
      * whereby one filename is duplicated; "src/Main.java","src/Main.java","src/Util.java"
      *
      * @return the test data as a List<String>
-    </String> */
+     * </String> */
     protected abstract val fullCommit: List<String>
 
     protected abstract val logParserStrategy: LogParserStrategy
@@ -96,4 +96,3 @@ abstract class ParserStrategyContractTest {
         private val ZONE_OFFSET = ZoneOffset.ofHours(2)
     }
 }
-

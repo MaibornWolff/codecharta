@@ -51,4 +51,3 @@ class GitLogNumstatParserStrategyRenamingTest(
             .containsExactly(newFilename, oldFilename, Modification.Type.RENAME, 1L, 2L)
     }
 }
-
