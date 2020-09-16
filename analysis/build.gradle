@@ -13,6 +13,7 @@ buildscript {
 plugins {
     id 'distribution'
     id "org.jlleitschuh.gradle.ktlint" version "7.2.1"
+    id "org.sonarqube" version "3.0"
 }
 
 allprojects {
@@ -22,6 +23,7 @@ allprojects {
     repositories.addAll(rootProject.getBuildscript().getRepositories())
 
     apply plugin: 'jacoco'
+    apply plugin: 'org.sonarqube'
     apply plugin: 'maven'
     apply plugin: "org.jlleitschuh.gradle.ktlint"
 
