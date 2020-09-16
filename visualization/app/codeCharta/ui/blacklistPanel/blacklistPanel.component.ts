@@ -18,12 +18,12 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 		BlacklistService.subscribe(this.$rootScope, this)
 	}
 
-	public onBlacklistChanged(blacklist: BlacklistItem[]) {
+	onBlacklistChanged(blacklist: BlacklistItem[]) {
 		this._viewModel.flatten = blacklist.filter(x => x.type === BlacklistType.flatten)
 		this._viewModel.exclude = blacklist.filter(x => x.type === BlacklistType.exclude)
 	}
 
-	public removeBlacklistEntry(entry: BlacklistItem) {
+	removeBlacklistEntry(entry: BlacklistItem) {
 		this.storeService.dispatch(removeBlacklistItem(entry))
 	}
 }

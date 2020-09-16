@@ -1,12 +1,11 @@
 import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model"
-import _ from "lodash"
 import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
 
 export class DeltaGenerator {
-	public static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile): CCFile {
+	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
 		const referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(referenceFile.map)
 		const comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(comparisonFile.map)
 		const hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
@@ -16,27 +15,23 @@ export class DeltaGenerator {
 		return this.getNewCCFileWithDeltas(map, fileMeta)
 	}
 
-	private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode): Map<string, CodeMapNode> {
+	private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode) {
 		const hashMap = new Map<string, CodeMapNode>()
 
 		hierarchy(rootNode)
 			.descendants()
-			.map(x => x.data)
-			.forEach((node: CodeMapNode) => {
-				node.children = []
-				hashMap.set(node.path, node)
+			.forEach(({ data }) => {
+				data.children = []
+				hashMap.set(data.path, data)
 			})
 		return hashMap
 	}
 
-	private static getHashMapWithAllNodes(
-		referenceHashMap: Map<string, CodeMapNode>,
-		comparisonHashMap: Map<string, CodeMapNode>
-	): Map<string, CodeMapNode> {
+	private static getHashMapWithAllNodes(referenceHashMap: Map<string, CodeMapNode>, comparisonHashMap: Map<string, CodeMapNode>) {
 		const hashMapWithAllNodes: Map<string, CodeMapNode> = new Map<string, CodeMapNode>()
 
 		comparisonHashMap.forEach((comparisonNode: CodeMapNode, path: string) => {
-			const referenceNode: CodeMapNode = referenceHashMap.get(path)
+			const referenceNode = referenceHashMap.get(path)
 			if (referenceNode) {
 				const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, comparisonNode.attributes)
 				hashMapWithAllNodes.set(path, newNode)
@@ -55,37 +50,35 @@ export class DeltaGenerator {
 		return hashMapWithAllNodes
 	}
 
-	private static getNewDeltaNode(node: CodeMapNode, referenceAttr: KeyValuePair, comparisonAttr: KeyValuePair): CodeMapNode {
+	private static getNewDeltaNode(node: CodeMapNode, referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
 		node.children = []
-		node.deltas = this.getDeltaAttributeList(referenceAttr, comparisonAttr)
-		node.attributes = comparisonAttr
+		node.deltas = this.getDeltaAttributeList(referenceAttribute, comparisonAttribute)
+		node.attributes = comparisonAttribute
 		return node
 	}
 
-	private static getDeltaAttributeList(referenceAttr: KeyValuePair, comparisonAttr: KeyValuePair): KeyValuePair {
-		const deltaAttr = {}
+	private static getDeltaAttributeList(referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
+		const deltaAttribute: KeyValuePair = {}
 
-		_.keys(comparisonAttr).forEach((key: string) => {
-			deltaAttr[key] = referenceAttr[key] ? comparisonAttr[key] - referenceAttr[key] : comparisonAttr[key]
+		Object.keys(comparisonAttribute).forEach((key: string) => {
+			deltaAttribute[key] = referenceAttribute[key] ? comparisonAttribute[key] - referenceAttribute[key] : comparisonAttribute[key]
 		})
 
-		_.keys(referenceAttr).forEach((key: string) => {
-			if (!comparisonAttr[key]) {
-				deltaAttr[key] = -referenceAttr[key]
+		Object.keys(referenceAttribute).forEach((key: string) => {
+			if (!comparisonAttribute[key]) {
+				deltaAttribute[key] = -referenceAttribute[key]
 			}
 		})
-		return deltaAttr
+		return deltaAttribute
 	}
 
 	private static getFileMetaData(referenceFile: CCFile, comparisonFile: CCFile): FileMeta {
 		return {
-			fileName:
-				"delta_between_" +
-				FileNameHelper.withoutCCJsonExtension(referenceFile.fileMeta.fileName) +
-				"_and_" +
-				FileNameHelper.withoutCCJsonExtension(comparisonFile.fileMeta.fileName),
+			fileName: `delta_between_${FileNameHelper.withoutCCJsonExtension(
+				referenceFile.fileMeta.fileName
+			)}_and_${FileNameHelper.withoutCCJsonExtension(comparisonFile.fileMeta.fileName)}`,
 			apiVersion: packageJson.codecharta.apiVersion,
-			projectName: "delta_between_" + referenceFile.fileMeta.projectName + "_and_" + comparisonFile.fileMeta.projectName
+			projectName: `delta_between_${referenceFile.fileMeta.projectName}_and_${comparisonFile.fileMeta.projectName}`
 		}
 	}
 

@@ -1,5 +1,5 @@
 import { CodeMapNode } from "../codeCharta.model"
-import { hierarchy, HierarchyNode } from "d3"
+import { hierarchy } from "d3"
 import { HSL } from "./color/hsl"
 
 export interface MetricDistribution {
@@ -12,9 +12,9 @@ export interface MetricDistribution {
 export class FileExtensionCalculator {
 	private static readonly NO_EXTENSION = "None"
 	private static readonly OTHER_EXTENSION = "other"
-	private static OTHER_GROUP_THRESHOLD_VALUE = 3.0
+	private static OTHER_GROUP_THRESHOLD_VALUE = 3
 
-	public static getMetricDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
+	static getMetricDistribution(map: CodeMapNode, metric: string) {
 		let distribution: MetricDistribution[] = this.getAbsoluteDistribution(map, metric)
 		distribution = this.decorateDistributionWithRelativeMetricValue(distribution)
 		distribution.sort((a, b) => b.absoluteMetricValue - a.absoluteMetricValue)
@@ -23,14 +23,14 @@ export class FileExtensionCalculator {
 		return distribution
 	}
 
-	private static getAbsoluteDistribution(map: CodeMapNode, metric: string): MetricDistribution[] {
+	private static getAbsoluteDistribution(map: CodeMapNode, metric: string) {
 		const distribution: MetricDistribution[] = []
 		hierarchy(map)
 			.leaves()
-			.forEach((node: HierarchyNode<CodeMapNode>) => {
-				if (!node.data.isExcluded) {
-					const fileExtension: string = this.estimateFileExtension(node.data.name)
-					const metricValue: number = node.data.attributes[metric]
+			.forEach(({ data }) => {
+				if (!data.isExcluded) {
+					const fileExtension = this.estimateFileExtension(data.name)
+					const metricValue = data.attributes[metric]
 					const matchingFileExtensionObject = distribution.find(x => x.fileExtension === fileExtension)
 
 					if (matchingFileExtensionObject) {
@@ -43,12 +43,12 @@ export class FileExtensionCalculator {
 		return distribution
 	}
 
-	private static decorateDistributionWithRelativeMetricValue(distribution: MetricDistribution[]): MetricDistribution[] {
-		const sumOfAllMetricValues: number = this.getSumOfAllMetrics(distribution)
+	private static decorateDistributionWithRelativeMetricValue(distribution: MetricDistribution[]) {
+		const sumOfAllMetricValues = this.getSumOfAllMetrics(distribution)
 		if (sumOfAllMetricValues === 0) {
 			return [this.getNoneExtension()]
 		}
-		distribution.forEach((x: MetricDistribution) => {
+		distribution.forEach(x => {
 			if (x.absoluteMetricValue !== 0) {
 				x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100
 			}
@@ -57,11 +57,11 @@ export class FileExtensionCalculator {
 		return distribution
 	}
 
-	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]): MetricDistribution[] {
+	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]) {
 		const otherExtension: MetricDistribution = this.getOtherExtension()
 		const visibleDistributions: MetricDistribution[] = []
 
-		distribution.forEach((x: MetricDistribution) => {
+		distribution.forEach(x => {
 			if (x.relativeMetricValue > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
 				visibleDistributions.push(x)
 			} else {
@@ -95,18 +95,18 @@ export class FileExtensionCalculator {
 		}
 	}
 
-	private static getSumOfAllMetrics(distribution: MetricDistribution[]): number {
-		return distribution.map(x => x.absoluteMetricValue).reduce((partialSum, a) => partialSum + a)
+	private static getSumOfAllMetrics(distribution: MetricDistribution[]) {
+		return distribution.reduce((partialSum, a) => partialSum + a.absoluteMetricValue, 0)
 	}
 
-	public static estimateFileExtension(fileName: string): string {
+	static estimateFileExtension(fileName: string) {
 		if (fileName.includes(".")) {
 			return fileName.split(".").reverse()[0].toLowerCase()
 		}
 		return FileExtensionCalculator.NO_EXTENSION
 	}
 
-	public static hashCode(fileExtension: string): number {
+	static hashCode(fileExtension: string) {
 		let hash = 0
 		for (let i = 0; i < fileExtension.length; i++) {
 			hash = fileExtension.charCodeAt(i) + ((hash << 5) - hash)
@@ -114,12 +114,12 @@ export class FileExtensionCalculator {
 		return hash
 	}
 
-	public static numberToHsl(hashCode: number): HSL {
+	static numberToHsl(hashCode: number) {
 		const shortened = hashCode % 360
 		return new HSL(shortened, 40, 50)
 	}
 
-	public static getNoneExtension() {
+	static getNoneExtension(): MetricDistribution {
 		return {
 			fileExtension: FileExtensionCalculator.NO_EXTENSION,
 			absoluteMetricValue: null,

@@ -78,7 +78,7 @@ describe("SearchPanelController", () => {
 
 			searchPanelModeController.toggle()
 
-			const appSettings = storeService.getState().appSettings
+			const { appSettings } = storeService.getState()
 
 			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
 			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)

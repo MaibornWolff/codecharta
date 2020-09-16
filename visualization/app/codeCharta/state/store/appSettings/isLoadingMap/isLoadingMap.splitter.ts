@@ -1,5 +1,5 @@
-import { IsLoadingMapAction, setIsLoadingMap } from "./isLoadingMap.actions"
+import { setIsLoadingMap } from "./isLoadingMap.actions"
 
-export function splitIsLoadingMapAction(payload: boolean): IsLoadingMapAction {
+export function splitIsLoadingMapAction(payload: boolean) {
 	return setIsLoadingMap(payload)
 }

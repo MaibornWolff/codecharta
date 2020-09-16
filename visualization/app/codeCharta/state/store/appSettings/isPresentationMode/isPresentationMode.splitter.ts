@@ -1,5 +1,5 @@
-import { PresentationModeAction, setPresentationMode } from "./isPresentationMode.actions"
+import { setPresentationMode } from "./isPresentationMode.actions"
 
-export function splitIsPresentationModeAction(payload: boolean): PresentationModeAction {
+export function splitIsPresentationModeAction(payload: boolean) {
 	return setPresentationMode(payload)
 }

@@ -22,15 +22,15 @@ export class AttributeTypeSelectorController {
 		private edgeMetricDataService: EdgeMetricDataService
 	) {}
 
-	public $onInit() {
+	$onInit() {
 		this.setAggregationSymbol()
 	}
 
-	public setToAbsolute(metricName: string, category: string) {
+	setToAbsolute(metricName: string, category: string) {
 		this.setAttributeType(metricName, category, AttributeTypeValue.absolute)
 	}
 
-	public setToRelative(metricName: string, category: string) {
+	setToRelative(metricName: string, category: string) {
 		this.setAttributeType(metricName, category, AttributeTypeValue.relative)
 	}
 

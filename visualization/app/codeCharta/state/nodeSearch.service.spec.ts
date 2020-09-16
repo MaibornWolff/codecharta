@@ -69,7 +69,7 @@ describe("NodeSearchService", () => {
 		it("should update searched paths", () => {
 			nodeSearchService.onSearchPatternChanged("small leaf")
 
-			expect(Array.from(storeService.getState().dynamicSettings.searchedNodePaths)).toEqual(["/root/Parent Leaf/small leaf"])
+			expect([...storeService.getState().dynamicSettings.searchedNodePaths]).toEqual(["/root/Parent Leaf/small leaf"])
 		})
 	})
 })

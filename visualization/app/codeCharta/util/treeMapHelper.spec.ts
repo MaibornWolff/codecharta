@@ -102,7 +102,7 @@ describe("TreeMapHelper", () => {
 					color
 				}
 			]
-			expect(buildNode().markingColor).toEqual(null)
+			expect(buildNode().markingColor).toEqual(undefined)
 		})
 
 		it("should be visible if it's a children of the focused node path", () => {

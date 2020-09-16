@@ -14,7 +14,7 @@ export class MapSizeService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, MapSizeActions)) {
 			this.notify(this.select())
 		}
@@ -28,8 +28,8 @@ export class MapSizeService implements StoreSubscriber {
 		this.$rootScope.$broadcast(MapSizeService.MAP_SIZE_CHANGED_EVENT, { mapSize: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: MapSizeSubscriber) {
-		$rootScope.$on(MapSizeService.MAP_SIZE_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: MapSizeSubscriber) {
+		$rootScope.$on(MapSizeService.MAP_SIZE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onMapSizeChanged(data.mapSize)
 		})
 	}

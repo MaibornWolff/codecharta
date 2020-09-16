@@ -6,7 +6,7 @@ import { splitEdgesAction } from "./edges/edges.splitter"
 import { splitAttributeTypesAction } from "./attributeTypes/attributeTypes.splitter"
 import { splitBlacklistAction } from "./blacklist/blacklist.splitter"
 
-export function splitFileSettingsActions(payload: RecursivePartial<FileSettings>): CCAction[] {
+export function splitFileSettingsActions(payload: RecursivePartial<FileSettings>) {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here

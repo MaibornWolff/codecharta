@@ -22,7 +22,7 @@ Array [
     "isLeaf": false,
     "length": 735.151015307185,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "root",
     "outgoingEdgePoint": Vector3 {
       "x": 117.57550765359252,
@@ -59,7 +59,7 @@ Array [
     "isLeaf": true,
     "length": 338.7755076535925,
     "link": "http://www.google.de",
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "big leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 291.76326148038873,
@@ -93,7 +93,7 @@ Array [
     "isLeaf": false,
     "length": 338.77550765359246,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "Parent Leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 291.76326148038873,
@@ -130,7 +130,7 @@ Array [
     "isLeaf": true,
     "length": 300.37550765359236,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "small leaf",
     "outgoingEdgePoint": Vector3 {
       "x": -119.56734770392222,
@@ -167,7 +167,7 @@ Array [
     "isLeaf": true,
     "length": 300.37550765359236,
     "link": undefined,
-    "markingColor": null,
+    "markingColor": undefined,
     "name": "other small leaf",
     "outgoingEdgePoint": Vector3 {
       "x": 332.97958762842757,

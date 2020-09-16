@@ -2,28 +2,28 @@ import { addItemToArray, isActionOfType, removeItemFromArray } from "./reduxHelp
 import { ScalingActions } from "../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingFileActions } from "../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 
+function mutateObject(object: Record<string, number>) {
+	object.x = 10000
+}
+
 describe("reduxHelper", () => {
-	let obj1: { x: number; y: number }
-	let obj2: { x: number; y: number }
-	let arr: { x: number; y: number }[]
+	let object1: { x: number; y: number }
+	let object2: { x: number; y: number }
+	let array: { x: number; y: number }[]
 
 	beforeEach(() => {
-		obj1 = { x: 1, y: 2 }
-		obj2 = { x: 3, y: 4 }
-		arr = []
+		object1 = { x: 1, y: 2 }
+		object2 = { x: 3, y: 4 }
+		array = []
 	})
-
-	function mutateObject(obj: any) {
-		obj.x = 10000
-	}
 
 	describe("removeItemFromArray", () => {
 		it("should deepClone an array and remove the item", () => {
-			arr.push(obj1)
-			arr.push(obj2)
+			array.push(object1)
+			array.push(object2)
 
-			const result = removeItemFromArray(arr, obj1)
-			mutateObject(obj1)
+			const result = removeItemFromArray(array, object1)
+			mutateObject(object1)
 
 			expect(result).toEqual([{ x: 3, y: 4 }])
 		})
@@ -31,11 +31,11 @@ describe("reduxHelper", () => {
 
 	describe("addItemToArray", () => {
 		it("should shallow copy an array and push a cloned item to it", () => {
-			arr.push(obj1)
+			array.push(object1)
 
-			const result = addItemToArray(arr, obj2)
-			mutateObject(obj1)
-			mutateObject(obj2)
+			const result = addItemToArray(array, object2)
+			mutateObject(object1)
+			mutateObject(object2)
 
 			expect(result).toEqual([
 				{ x: 10000, y: 2 },

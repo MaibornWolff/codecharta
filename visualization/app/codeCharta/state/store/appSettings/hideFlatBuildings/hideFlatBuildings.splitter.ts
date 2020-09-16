@@ -1,5 +1,5 @@
-import { HideFlatBuildingsAction, setHideFlatBuildings } from "./hideFlatBuildings.actions"
+import { setHideFlatBuildings } from "./hideFlatBuildings.actions"
 
-export function splitHideFlatBuildingsAction(payload: boolean): HideFlatBuildingsAction {
+export function splitHideFlatBuildingsAction(payload: boolean) {
 	return setHideFlatBuildings(payload)
 }

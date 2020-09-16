@@ -1,5 +1,5 @@
-import { setWhiteColorBuildings, WhiteColorBuildingsAction } from "./whiteColorBuildings.actions"
+import { setWhiteColorBuildings } from "./whiteColorBuildings.actions"
 
-export function splitWhiteColorBuildingsAction(payload: boolean): WhiteColorBuildingsAction {
+export function splitWhiteColorBuildingsAction(payload: boolean) {
 	return setWhiteColorBuildings(payload)
 }

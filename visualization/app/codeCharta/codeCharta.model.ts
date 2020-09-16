@@ -207,7 +207,7 @@ export interface MetricData {
 
 export interface CCLocalStorage {
 	version: string
-	scenarios: [String, RecursivePartial<Scenario>][]
+	scenarios: [string, RecursivePartial<Scenario>][]
 }
 
 export interface Scenario {
@@ -253,7 +253,7 @@ export interface Node {
 	z0: number
 	y0: number
 	isLeaf: boolean
-	deltas: KeyValuePair
+	deltas?: KeyValuePair
 	attributes: KeyValuePair
 	edgeAttributes: {
 		[key: string]: EdgeMetricCount

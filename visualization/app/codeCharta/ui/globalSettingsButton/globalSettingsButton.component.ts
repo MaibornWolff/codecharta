@@ -5,7 +5,7 @@ export class GlobalSettingsButtonController {
 	/* @ngInject */
 	constructor(private dialogService: DialogService) {}
 
-	public showGlobalSettings() {
+	showGlobalSettings() {
 		this.dialogService.showGlobalSettingsDialog()
 	}
 }

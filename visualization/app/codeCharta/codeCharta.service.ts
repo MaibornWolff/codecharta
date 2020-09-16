@@ -1,5 +1,5 @@
 import { validate } from "./util/fileValidator"
-import { CCFile, NameDataPair } from "./codeCharta.model"
+import { NameDataPair } from "./codeCharta.model"
 import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { ExportCCFile } from "./codeCharta.api.model"
@@ -14,29 +14,29 @@ import { FileSelectionState, FileState } from "./model/files/files"
 import { getCCFile } from "./util/fileHelper"
 
 export class CodeChartaService {
-	public static ROOT_NAME = "root"
-	public static ROOT_PATH = "/" + CodeChartaService.ROOT_NAME
-	public static readonly CC_FILE_EXTENSION = ".cc.json"
+	static ROOT_NAME = "root"
+	static ROOT_PATH = `/${CodeChartaService.ROOT_NAME}`
+	static readonly CC_FILE_EXTENSION = ".cc.json"
 	private fileStates: FileState[] = []
 
 	constructor(private storeService: StoreService, private dialogService: DialogService) {}
 
-	public loadFiles(nameDataPairs: NameDataPair[]) {
+	loadFiles(nameDataPairs: NameDataPair[]) {
 		for (const nameDataPair of nameDataPairs) {
 			try {
 				validate(nameDataPair.content)
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
-			} catch (e) {
-				if (!_.isEmpty(e.error)) {
+			} catch (error) {
+				if (!_.isEmpty(error.error)) {
 					this.fileStates = []
 					this.storeService.dispatch(setIsLoadingFile(false))
-					this.dialogService.showValidationErrorDialog(e)
+					this.dialogService.showValidationErrorDialog(error)
 					break
 				}
 
-				if (!_.isEmpty(e.warning)) {
+				if (!_.isEmpty(error.warning)) {
 					this.addFile(nameDataPair.fileName, nameDataPair.content)
-					this.dialogService.showValidationWarningDialog(e)
+					this.dialogService.showValidationWarningDialog(error)
 				}
 			}
 		}
@@ -51,7 +51,7 @@ export class CodeChartaService {
 	}
 
 	private addFile(fileName: string, migratedFile: ExportCCFile) {
-		const ccFile: CCFile = getCCFile(fileName, migratedFile)
+		const ccFile = getCCFile(fileName, migratedFile)
 		NodeDecorator.decorateMapWithPathAttribute(ccFile)
 		this.fileStates.push({ file: ccFile, selectedAs: FileSelectionState.None })
 	}
@@ -61,9 +61,7 @@ export class CodeChartaService {
 		const names = [areaMetric, heightMetric, colorMetric]
 		const metricNames = new Set(this.storeService.getState().metricData.nodeMetricData.map(x => x.name))
 
-		const existsInMetricData = (metric: string) => metricNames.has(metric)
-
-		if (names.every(existsInMetricData)) {
+		if (names.every(metric => metricNames.has(metric))) {
 			this.storeService.dispatch(setState(ScenarioHelper.getDefaultScenarioSetting()))
 		}
 	}

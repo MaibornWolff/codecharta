@@ -30,7 +30,7 @@ export class StoreService {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {
+	dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {
 		if (
 			!(
 				isActionOfType(action.type, IsLoadingMapActions) ||
@@ -55,7 +55,7 @@ export class StoreService {
 		})
 	}
 
-	public getState(): State {
+	getState(): State {
 		return this.store.getState()
 	}
 
@@ -63,8 +63,8 @@ export class StoreService {
 		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {
-		$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {
+		$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onStoreChanged(data.actionType)
 		})
 	}

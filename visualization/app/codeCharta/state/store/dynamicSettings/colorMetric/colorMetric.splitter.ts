@@ -1,5 +1,5 @@
-import { ColorMetricAction, setColorMetric } from "./colorMetric.actions"
+import { setColorMetric } from "./colorMetric.actions"
 
-export function splitColorMetricAction(payload: string): ColorMetricAction {
+export function splitColorMetricAction(payload: string) {
 	return setColorMetric(payload)
 }
