@@ -102,6 +102,13 @@ task integrationTest(type: Exec) {
     args '-c', "./golden_test.sh $version"
 }
 
+sonarqube {
+    properties {
+        // Coverage report path obviously needs absolute path to be imported by SonarCloud
+        property("sonar.coverage.jacoco.xmlReportPaths", project.buildDir.absolutePath + "/reports/jacoco/jacocoTestReport/jacocoTestReport.xml")
+    }
+}
+
 task jacocoTestReport(type: JacocoReport) {
 
     // Gather execution data from all subprojects
