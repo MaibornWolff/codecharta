@@ -1,4 +1,6 @@
-# API-Changelog
+# CC-Json schema changelog
+
+All notable changes to the `cc.json`-schema will be documented in this file.
 
 ## 1.1
 
