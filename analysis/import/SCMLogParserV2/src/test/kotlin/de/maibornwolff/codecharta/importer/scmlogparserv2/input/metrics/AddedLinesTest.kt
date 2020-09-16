@@ -71,3 +71,4 @@ class AddedLinesTest {
         assertThat(metric.value()).isEqualTo(0L)
     }
 }
+

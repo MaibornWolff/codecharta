@@ -29,7 +29,8 @@ class CommitCollectorTest {
         val secondCommit = Commit("AnotherAuthor", modificationsByFilename("src/Util.java"), commitDate)
         val commits = Stream.of(firstCommit, secondCommit).collect(CommitCollector.create(metricsFactory))
         assertThat(commits)
-            .extracting(Function<VersionControlledFile, Any> { it.filename },
+            .extracting(
+                Function<VersionControlledFile, Any> { it.filename },
                 Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
                 Function<VersionControlledFile, Any> { it.authors })
             .containsExactly(
