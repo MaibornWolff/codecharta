@@ -87,6 +87,7 @@ jobs:
       script:
         - ./gradlew build test integrationTest
         - ./gradlew jacocoTestReport
+        - ./gradlew sonarqube
       deploy:
         - provider: script
           script: sonar-scanner
