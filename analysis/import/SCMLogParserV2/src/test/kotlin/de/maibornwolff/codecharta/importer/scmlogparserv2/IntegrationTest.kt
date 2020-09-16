@@ -38,13 +38,13 @@ class IntegrationTest {
         // TODO we don't write to file anymore to prevent unnecessary I/O, but I can roll that back if we happen to need it
         // this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv")
 
-        //Git-names in Repo
+        // Git-names in Repo
         val resourceName = "names-in-git-repo.txt"
         val classLoader = javaClass.classLoader
         val file = File(classLoader.getResource(resourceName)!!.file)
         val project_name_list = readFileNameListFile(file)
 
-        //parsed git-log
+        // parsed git-log
         val parserStrategy = GitLogNumstatRawParserStrategy()
         val codeChartaLog = this.javaClass.classLoader.getResourceAsStream("codeCharta.log")
         val parser = LogLineParser(parserStrategy, metricsFactory)
