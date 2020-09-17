@@ -35,7 +35,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         }
 
         val vcf = VersionControlledFile(newVCFFileName, metricsFactory)
-        vcf.addRename(newVCFFileName)
+        vcf.addRename(newVCFFileName.substringBefore("_\\0_"))
 
         versionControlledFiles[resolveFileKey(key)] = vcf
         return vcf
