@@ -65,8 +65,8 @@ class IntegrationTest {
             !namesInVCF.contains(element)
         }
 
-        for (e in newList) {
-            println(e)
+        for (item in newList) {
+            println("Mssing: $item")
         }
 
         for (item in namesInVCF) {
