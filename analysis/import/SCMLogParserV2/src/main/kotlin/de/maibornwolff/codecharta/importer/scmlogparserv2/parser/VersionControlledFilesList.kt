@@ -26,6 +26,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     fun addFileBy(key: String): VersionControlledFile {
         var newVCFFileName = key
 
+        // TODO the file is NOT deleted, but renamed, so adding it will not result in a new entry
         if (versionControlledFiles.containsKey(key) && !versionControlledFiles[key]!!.isDeleted()) {
             val marker = nameConflictsMap[key]
             val newMarker = if (marker != null) marker + 1 else 0

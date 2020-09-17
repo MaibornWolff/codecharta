@@ -39,15 +39,23 @@ internal class CommitCollector {
             when (it.type) {
 
                 Modification.Type.ADD -> {
+
                     // Add new File
                     val file = versionControlledFilesList.get(trackName)
+
                     if (file == null) {
                         val missingVCF = versionControlledFilesList.addFileBy(trackName)
                         it.markInitialAdd()
                         missingVCF.registerCommit(commit, it)
                     } else {
                         if (!file.isDeleted()) {
-                            versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
+                            if (it.currentFilename != file.filename) {
+                                val newVCF = versionControlledFilesList.addFileBy(trackName)
+                                it.markInitialAdd()
+                                newVCF.registerCommit(commit, it)
+                            } else {
+                                versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
+                            }
                         }
                         if (file.isDeleted()) {
                             // a file is re-added after its deletion on master

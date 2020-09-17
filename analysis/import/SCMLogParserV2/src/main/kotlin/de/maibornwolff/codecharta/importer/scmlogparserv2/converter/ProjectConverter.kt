@@ -53,6 +53,11 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     ): Project {
         val projectBuilder = ProjectBuilder()
 
+        versionControlledFiles.getList().values
+            .forEach {
+                it.filename = it.filename.substringBefore("_\\0_")
+            }
+
         // TODO discuss/check performance
         versionControlledFiles.getList().values
             .filter { filesInLog.contains(it.filename) } // TODO do we need to check for isDeleted()? I would say no

@@ -51,6 +51,12 @@ class IntegrationTest {
         val codeList = mutableListOf<String>()
         codeChartaLog.bufferedReader().forEachLine { codeList.add(it) }
         val vcFList = parser.parse(codeList.stream())
+
+        vcFList.getList().values
+            .forEach {
+                it.filename = it.filename.substringBefore("_\\0_")
+            }
+
         val namesInVCF: List<String> =
             vcFList.getList().values.filter { project_name_list.contains(it.filename) }
                 .map { file -> file.filename }
