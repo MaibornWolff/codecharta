@@ -20,13 +20,13 @@ export class EdgesService implements StoreSubscriber, FilesSelectionSubscriber {
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, EdgesActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged(files: FileState[]) {
 		this.merge(files)
 	}
 
@@ -45,8 +45,8 @@ export class EdgesService implements StoreSubscriber, FilesSelectionSubscriber {
 		this.$rootScope.$broadcast(EdgesService.EDGES_CHANGED_EVENT, { edges: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: EdgesSubscriber) {
-		$rootScope.$on(EdgesService.EDGES_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: EdgesSubscriber) {
+		$rootScope.$on(EdgesService.EDGES_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onEdgesChanged(data.edges)
 		})
 	}

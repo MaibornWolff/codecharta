@@ -38,16 +38,16 @@ export class DialogDownloadController {
 		this.initDialogFields()
 	}
 
-	public hide() {
+	hide() {
 		this.$mdDialog.hide()
 	}
 
-	public download() {
+	download() {
 		FileDownloader.downloadCurrentMap(
 			this.codeMapPreRenderService.getRenderMap(),
 			this.codeMapPreRenderService.getRenderFileMeta(),
 			this.storeService.getState().fileSettings,
-			this._viewModel.fileContent.filter(x => x.isSelected == true).map(x => x.name),
+			this._viewModel.fileContent.filter(x => x.isSelected === true).map(x => x.name),
 			this._viewModel.fileName
 		)
 		this.hide()
@@ -62,7 +62,7 @@ export class DialogDownloadController {
 	}
 
 	private setFileContentList() {
-		const fileSettings = this.storeService.getState().fileSettings
+		const { fileSettings } = this.storeService.getState()
 		this.pushFileContent(DownloadCheckboxNames.edges, fileSettings.edges.length)
 		this.pushFileContent(DownloadCheckboxNames.markedPackages, fileSettings.markedPackages.length)
 		this.pushFileContent(DownloadCheckboxNames.excludes, this.getFilteredBlacklistLength(BlacklistType.exclude))
@@ -70,7 +70,7 @@ export class DialogDownloadController {
 	}
 
 	private getFilteredBlacklistLength(blacklistType: BlacklistType) {
-		return this.storeService.getState().fileSettings.blacklist.filter(x => x.type == blacklistType).length
+		return this.storeService.getState().fileSettings.blacklist.filter(x => x.type === blacklistType).length
 	}
 
 	private pushFileContent(name: string, numberOfListItems: number) {
@@ -78,7 +78,7 @@ export class DialogDownloadController {
 			name,
 			numberOfListItems,
 			isSelected: numberOfListItems > 0,
-			isDisabled: !numberOfListItems || numberOfListItems == 0
+			isDisabled: !numberOfListItems
 		})
 	}
 
@@ -97,7 +97,7 @@ export class DialogDownloadController {
 	}
 
 	private getAmountOfAttributeTypes() {
-		const attributeTypes = this.storeService.getState().fileSettings.attributeTypes
+		const { attributeTypes } = this.storeService.getState().fileSettings
 		let sum = 0
 		sum += attributeTypes.nodes ? Object.keys(attributeTypes.nodes).length : 0
 		sum += attributeTypes.edges ? Object.keys(attributeTypes.edges).length : 0

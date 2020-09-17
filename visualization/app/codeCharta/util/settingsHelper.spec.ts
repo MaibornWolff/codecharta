@@ -17,7 +17,7 @@ describe("SettingsHelper", () => {
 				}
 			}
 
-			convertToVectors((partialState as any) as RecursivePartial<State>)
+			convertToVectors(partialState as RecursivePartial<State>)
 
 			expect(partialState).toEqual(expected)
 		})
@@ -41,7 +41,7 @@ describe("SettingsHelper", () => {
 				}
 			}
 
-			convertToVectors((partialState as any) as RecursivePartial<State>)
+			convertToVectors(partialState as RecursivePartial<State>)
 
 			expect(partialState).toEqual(expected)
 		})

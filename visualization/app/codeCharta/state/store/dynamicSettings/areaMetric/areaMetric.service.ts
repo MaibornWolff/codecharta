@@ -18,20 +18,20 @@ export class AreaMetricService implements StoreSubscriber, NodeMetricDataSubscri
 		NodeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, AreaMetricActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
+	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
 		if (isAnyMetricAvailable(nodeMetricData)) {
 			this.reset(nodeMetricData)
 		}
 	}
 
-	public reset(nodeMetricData: NodeMetricData[]) {
-		const areaMetric = this.storeService.getState().dynamicSettings.areaMetric
+	reset(nodeMetricData: NodeMetricData[]) {
+		const { areaMetric } = this.storeService.getState().dynamicSettings
 
 		if (isMetricUnavailable(nodeMetricData, areaMetric)) {
 			const newAreaMetric = getMetricNameFromIndexOrLast(nodeMetricData, 0)
@@ -47,8 +47,8 @@ export class AreaMetricService implements StoreSubscriber, NodeMetricDataSubscri
 		this.$rootScope.$broadcast(AreaMetricService.AREA_METRIC_CHANGED_EVENT, { areaMetric: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: AreaMetricSubscriber) {
-		$rootScope.$on(AreaMetricService.AREA_METRIC_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: AreaMetricSubscriber) {
+		$rootScope.$on(AreaMetricService.AREA_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onAreaMetricChanged(data.areaMetric)
 		})
 	}

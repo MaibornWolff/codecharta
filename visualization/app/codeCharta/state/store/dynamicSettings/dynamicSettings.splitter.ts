@@ -13,7 +13,7 @@ import { splitDistributionMetricAction } from "./distributionMetric/distribution
 import { splitColorMetricAction } from "./colorMetric/colorMetric.splitter"
 import { splitAreaMetricAction } from "./areaMetric/areaMetric.splitter"
 
-export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSettings>): CCAction[] {
+export function splitDynamicSettingsActions(payload: RecursivePartial<DynamicSettings>) {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here

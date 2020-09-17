@@ -5,7 +5,7 @@ import { splitIdToNodeAction } from "./idToNode/idToNode.splitter"
 import { splitIdToBuildingAction } from "./idToBuilding/idToBuilding.splitter"
 import { CodeMapBuilding } from "../../../ui/codeMap/rendering/codeMapBuilding"
 
-export function splitLookUpActions(payload: RecursivePartial<LookUp>): CCAction[] {
+export function splitLookUpActions(payload: RecursivePartial<LookUp>) {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here

@@ -18,12 +18,12 @@ export class NodePathPanelController implements BuildingHoveredSubscriber, Build
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		this._viewModel.hoveredNodePath = hoveredBuilding.node.path.substr(1).split("/")
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		this._viewModel.hoveredNodePath = hoveredBuilding.node.path.slice(1).split("/")
 		this._viewModel.hoveredNodeIsFile = hoveredBuilding.node.isLeaf
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		this._viewModel.hoveredNodePath = []
 	}
 }

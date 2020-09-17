@@ -1,5 +1,5 @@
 export class FileChooserPageObject {
-	public async openFiles(paths: string[], clickOnFileChooser = true) {
+	async openFiles(paths: string[], clickOnFileChooser = true) {
 		const [fileChooser] = await Promise.all([
 			page.waitForFileChooser(),
 			clickOnFileChooser && expect(page).toClick("file-chooser-directive .toolbar-button", { timeout: 3000 })
@@ -11,7 +11,7 @@ export class FileChooserPageObject {
 		await page.waitForSelector("#loading-gif-file", { visible: false })
 	}
 
-	public async cancelOpeningFile() {
+	async cancelOpeningFile() {
 		const [fileChooser] = await Promise.all([
 			page.waitForFileChooser(),
 			expect(page).toClick("file-chooser-directive .toolbar-button", { timeout: 3000 })

@@ -21,7 +21,7 @@ describe("CodeMapLabelService", () => {
 	let codeMapLabelService: CodeMapLabelService
 	let createElementOrigin
 	let sampleLeaf: Node
-	let canvasCtxMock
+	let canvasContextMock
 
 	beforeEach(() => {
 		restartSystem()
@@ -72,7 +72,7 @@ describe("CodeMapLabelService", () => {
 			children: []
 		} as undefined) as Node
 
-		canvasCtxMock = {
+		canvasContextMock = {
 			font: "",
 			measureText: jest.fn(),
 			fillRect: jest.fn(),
@@ -84,11 +84,11 @@ describe("CodeMapLabelService", () => {
 
 		document.createElement = jest.fn().mockReturnValue({
 			getContext: () => {
-				return canvasCtxMock
+				return canvasContextMock
 			}
 		})
 
-		canvasCtxMock.measureText.mockReturnValue({ width: 10 })
+		canvasContextMock.measureText.mockReturnValue({ width: 10 })
 	}
 
 	afterEach(() => {

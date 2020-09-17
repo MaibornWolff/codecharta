@@ -24,7 +24,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		SortingOrderAscendingService.subscribe(this.$rootScope, this)
 	}
 
-	public onSortingOptionChanged(sortingOption: SortingOption) {
+	onSortingOptionChanged(sortingOption: SortingOption) {
 		if (sortingOption === SortingOption.NUMBER_OF_FILES) {
 			this._viewModel.rootNode = this.applySortOrderChange(
 				this._viewModel.rootNode,
@@ -36,11 +36,11 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		}
 	}
 
-	public onSortingOrderAscendingChanged() {
+	onSortingOrderAscendingChanged() {
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, null, true)
 	}
 
-	public onRenderMapChanged(map: CodeMapNode) {
+	onRenderMapChanged(map: CodeMapNode) {
 		if (map === this._viewModel.rootNode) {
 			// needed to prevent flashing since event is triggered 4 times
 			return

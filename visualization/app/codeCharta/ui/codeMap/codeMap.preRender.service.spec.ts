@@ -97,7 +97,7 @@ describe("codeMapPreRenderService", () => {
 		codeMapPreRenderService["unifiedFileMeta"] = fileMeta
 	}
 
-	function allNodesToBeExcluded(): boolean {
+	function allNodesToBeExcluded() {
 		for (const node of hierarchy(codeMapPreRenderService.getRenderMap()).leaves()) {
 			if (!node.data.isExcluded) {
 				return false
@@ -106,7 +106,7 @@ describe("codeMapPreRenderService", () => {
 		return true
 	}
 
-	function isIdUnique(): boolean {
+	function isIdUnique() {
 		let isIdUnique = true
 		const idBuildingSet: Map<number, string> = new Map()
 

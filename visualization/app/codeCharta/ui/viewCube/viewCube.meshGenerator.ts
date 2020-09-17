@@ -2,7 +2,7 @@ import { getBaseMaterialEdge, getBaseMaterialVertices, getBaseMaterialFace } fro
 import { BoxGeometry, Group, Mesh } from "three"
 
 export class ViewCubemeshGenerator {
-	public static buildCube(edgeToFaceRatio: number) {
+	static buildCube(edgeToFaceRatio: number) {
 		const middleEdgeSize = 1 / edgeToFaceRatio
 		const verticeSize = (1 - middleEdgeSize) / 2
 

@@ -14,14 +14,12 @@ import { setScaling } from "../../state/store/appSettings/scaling/scaling.action
 import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { clone } from "../../util/clone"
 import _ from "lodash"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
-	let nodeMetricDataService: NodeMetricDataService
 	let codeMapRenderService: CodeMapRenderService
 	let threeSceneService: ThreeSceneService
 	let codeMapLabelService: CodeMapLabelService
@@ -42,7 +40,6 @@ describe("codeMapRenderService", () => {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		storeService = getService<StoreService>("storeService")
-		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
@@ -56,13 +53,7 @@ describe("codeMapRenderService", () => {
 	}
 
 	function rebuildService() {
-		codeMapRenderService = new CodeMapRenderService(
-			storeService,
-			nodeMetricDataService,
-			threeSceneService,
-			codeMapLabelService,
-			codeMapArrowService
-		)
+		codeMapRenderService = new CodeMapRenderService(storeService, threeSceneService, codeMapLabelService, codeMapArrowService)
 		codeMapRenderService["showCouplingArrows"] = jest.fn()
 	}
 

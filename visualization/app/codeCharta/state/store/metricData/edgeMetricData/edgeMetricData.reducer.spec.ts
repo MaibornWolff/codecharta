@@ -69,7 +69,7 @@ describe("edgeMetricData", () => {
 		it("metrics Map should contain correct entries", () => {
 			edgeMetricData([], calculateNewEdgeMetricData(fileStates, []))
 
-			const pairingRateMapKeys = Array.from(nodeEdgeMetricsMap.get("pairingRate").keys())
+			const pairingRateMapKeys = [...nodeEdgeMetricsMap.get("pairingRate").keys()]
 
 			expect(pairingRateMapKeys[0]).toEqual("/root/big leaf")
 			expect(pairingRateMapKeys[1]).toEqual("/root/Parent Leaf/small leaf")

@@ -18,12 +18,12 @@ export class LoadingGifController implements IsLoadingFileSubscriber, IsLoadingM
 		IsLoadingMapService.subscribe(this.$rootScope, this)
 	}
 
-	public onIsLoadingFileChanged(isLoadingFile: boolean) {
+	onIsLoadingFileChanged(isLoadingFile: boolean) {
 		this._viewModel.isLoadingFile = isLoadingFile
 		this.synchronizeAngularTwoWayBinding()
 	}
 
-	public onIsLoadingMapChanged(isLoadingMap: boolean) {
+	onIsLoadingMapChanged(isLoadingMap: boolean) {
 		this._viewModel.isLoadingMap = isLoadingMap
 		this.synchronizeAngularTwoWayBinding()
 	}

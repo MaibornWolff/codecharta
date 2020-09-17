@@ -23,7 +23,7 @@ Object {
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "markingColor": null,
+  "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
     "x": 199,
@@ -60,7 +60,7 @@ Object {
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "markingColor": null,
+  "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
     "x": 199,
@@ -97,7 +97,7 @@ Object {
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "markingColor": null,
+  "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
     "x": 199,
@@ -134,7 +134,7 @@ Object {
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "markingColor": null,
+  "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
     "x": 199,

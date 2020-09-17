@@ -1,5 +1,5 @@
-import { InvertHeightAction, setInvertHeight } from "./invertHeight.actions"
+import { setInvertHeight } from "./invertHeight.actions"
 
-export function splitInvertHeightAction(payload: boolean): InvertHeightAction {
+export function splitInvertHeightAction(payload: boolean) {
 	return setInvertHeight(payload)
 }
