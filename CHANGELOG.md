@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Improve overall performance for loading and rendering maps
+-   Improve error messages when a file can't be loaded with the URL parameters
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.57.2] - 2020-09-11
