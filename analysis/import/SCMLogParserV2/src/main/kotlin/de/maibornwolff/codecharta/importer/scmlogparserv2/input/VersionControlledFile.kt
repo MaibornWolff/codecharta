@@ -28,6 +28,7 @@ class VersionControlledFile internal constructor(
 
     init {
         this.filename = filename
+        addRename(filename)
     }
 
     /**
