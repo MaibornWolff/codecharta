@@ -31,13 +31,7 @@ const numberSides = 6
 const verticesPerSide = 4
 
 export class BoxGeometryGenerationHelper {
-	static addBoxToVertexData(
-		data: IntermediateVertexData,
-		measures: BoxMeasures,
-		color: string,
-		subGeomIdx: number,
-		delta: number
-	) {
+	static addBoxToVertexData(data: IntermediateVertexData, measures: BoxMeasures, color: string, subGeomIdx: number, delta: number) {
 		const minPos: Vector3 = new Vector3(measures.x, measures.y, measures.z)
 		const maxPos: Vector3 = new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 
