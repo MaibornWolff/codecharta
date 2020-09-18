@@ -58,12 +58,7 @@ internal class CommitCollector {
                             }
                         }
                         if (file.isDeleted()) {
-                            // a file is re-added after its deletion on master
-                            // TODO what if a new file is created in the merge commit that has the same name?
-                            // TODO is this possible/feasible?
-                            if (commit.isMergeCommit()) {
-                                file.unmarkDeleted()
-                            }
+
                             // If a file is deleted and a new one with same name is added, replace deleted one.
                             val replacingVCF = versionControlledFilesList.addFileBy(trackName)
                             it.markInitialAdd()
