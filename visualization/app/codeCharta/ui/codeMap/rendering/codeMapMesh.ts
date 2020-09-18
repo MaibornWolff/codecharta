@@ -36,10 +36,10 @@ export class CodeMapMesh {
 
 	private initDeltaColorsOnMesh(state: State) {
 		if (this.mapGeomDesc.buildings[0].node.deltas) {
-			this.mapGeomDesc.buildings.forEach(building => {
+			for (const building of this.mapGeomDesc.buildings) {
 				this.setNewDeltaColor(building, state)
 				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
-			})
+			}
 			this.updateVertices()
 		}
 	}
@@ -79,7 +79,7 @@ export class CodeMapMesh {
 
 	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State) {
 		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
-		this.mapGeomDesc.buildings.forEach(building => {
+		for (const building of this.mapGeomDesc.buildings) {
 			if (!this.isBuildingSelected(selected, building)) {
 				if (highlightBuildingMap.get(building.id)) {
 					building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
@@ -88,7 +88,7 @@ export class CodeMapMesh {
 				}
 				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
 			}
-		})
+		}
 		this.updateVertices()
 	}
 
@@ -174,7 +174,7 @@ export class CodeMapMesh {
 	private initMaterial() {
 		const uniforms = UniformsUtils.merge([UniformsLib["lights"]])
 
-		const shaderCode: CodeMapShaderStrings = new CodeMapShaderStrings()
+		const shaderCode = new CodeMapShaderStrings()
 
 		this.material = new ShaderMaterial({
 			vertexShader: shaderCode.vertexShaderCode,

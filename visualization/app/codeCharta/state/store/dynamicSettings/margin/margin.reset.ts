@@ -17,12 +17,12 @@ function calculateMargin(map: CodeMapNode, areaMetric: string) {
 	let numberOfBuildings = 0
 	let totalArea = 0
 
-	leaves.forEach(node => {
+	for (const { data } of leaves) {
 		numberOfBuildings++
-		if (node.data.attributes?.[areaMetric]) {
-			totalArea += node.data.attributes[areaMetric]
+		if (data.attributes?.[areaMetric]) {
+			totalArea += data.attributes[areaMetric]
 		}
-	})
+	}
 
 	const margin = MARGIN_FACTOR * Math.round(Math.sqrt(totalArea / numberOfBuildings))
 	return Math.min(MAX_MARGIN, Math.max(MIN_MARGIN, margin))

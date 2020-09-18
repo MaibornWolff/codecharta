@@ -55,15 +55,16 @@ export class AggregationGenerator {
 	}
 
 	private static aggregateRootAttributes(outputFile: CCFile) {
-		outputFile.map.children.forEach(child => {
+		for (const child of outputFile.map.children) {
 			const { attributes } = child
+			// TODO: Remove `in` usage (in general throughout the code)
 			for (const key in attributes) {
 				if (!(key in outputFile.map.attributes)) {
 					outputFile.map.attributes[key] = 0
 				}
 				outputFile.map.attributes[key] += attributes[key]
 			}
-		})
+		}
 	}
 
 	private static extractNodeFromMap(inputMap: CCFile) {

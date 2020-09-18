@@ -27,11 +27,14 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	const allVisibleFileStates = getVisibleFileStates(fileStates)
 	const allFilePaths = new Set(allVisibleFileStates.flatMap(fileState => CodeMapHelper.getAllPaths(fileState.file.map)))
 	for (const fileState of allVisibleFileStates) {
-		fileState.file.settings.fileSettings.edges.forEach(edge => {
+		for (const edge of fileState.file.settings.fileSettings.edges) {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
-				addEdgeToCalculationMap(edge)
+				for (const edgeMetric of Object.keys(edge.attributes)) {
+					const edgeMetricEntry = getEntryForMetric(edgeMetric)
+					addEdgeToNodes(edgeMetricEntry, edge.fromNodeName, edge.toNodeName)
+				}
 			}
-		})
+		}
 	}
 	const newEdgeMetricData = getMetricDataFromMap()
 	sortByMetricName(newEdgeMetricData)
@@ -46,13 +49,6 @@ function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, black
 		)
 	}
 	return false
-}
-
-function addEdgeToCalculationMap(edge: Edge) {
-	for (const edgeMetric of Object.keys(edge.attributes)) {
-		const edgeMetricEntry = getEntryForMetric(edgeMetric)
-		addEdgeToNodes(edgeMetricEntry, edge.fromNodeName, edge.toNodeName)
-	}
 }
 
 function getEntryForMetric(edgeMetricName: string) {
@@ -85,16 +81,16 @@ function getMetricDataFromMap() {
 
 	nodeEdgeMetricsMap.set(EdgeMetricDataService.NONE_METRIC, new Map())
 
-	nodeEdgeMetricsMap.forEach((occurences: EdgeMetricCountMap, edgeMetric: string) => {
+	for (const [edgeMetric, occurrences] of nodeEdgeMetricsMap) {
 		let maximumMetricValue = 0
-		occurences.forEach((value: EdgeMetricCount) => {
+		for (const value of occurrences.values()) {
 			const combinedValue = value.incoming + value.outgoing
 			if (combinedValue > maximumMetricValue) {
 				maximumMetricValue = combinedValue
 			}
-		})
+		}
 		metricData.push({ name: edgeMetric, maxValue: maximumMetricValue })
-	})
+	}
 
 	return metricData
 }

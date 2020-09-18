@@ -81,14 +81,14 @@ export class CodeMapMouseEventService
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
 
-	onShouldHoverNode(node: CodeMapNode) {
+	onShouldHoverNode({ path }: CodeMapNode) {
 		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
-		buildings.forEach(building => {
-			if (building.node.path === node.path) {
+		for (const building of buildings) {
+			if (building.node.path === path) {
 				this.hoverBuilding(building)
 				this.highlightedInTreeView = building
 			}
-		})
+		}
 	}
 
 	onShouldUnhoverNode() {

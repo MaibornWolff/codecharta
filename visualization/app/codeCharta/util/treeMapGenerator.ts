@@ -40,11 +40,11 @@ export class TreeMapGenerator {
 
 		for (const fixedFolder of map.children) {
 			const squarified = this.getSquarifiedTreeMap(fixedFolder, state)
-			squarified.treeMap.descendants().forEach(squarifiedNode => {
+			for (const squarifiedNode of squarified.treeMap.descendants()) {
 				this.scaleAndTranslateSquarifiedNode(squarifiedNode, fixedFolder, squarified, scale)
 				const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState)
 				nodes.push(node)
-			})
+			}
 		}
 		return nodes
 	}

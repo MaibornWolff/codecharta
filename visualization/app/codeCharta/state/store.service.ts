@@ -47,12 +47,12 @@ export class StoreService {
 			this.dispatch(setIsLoadingMap(true))
 		}
 
-		splitStateActions(action).forEach(atomicAction => {
+		for (const atomicAction of splitStateActions(action)) {
 			this.store.dispatch(atomicAction)
 			if (!options.silent) {
 				this.notify(atomicAction.type)
 			}
-		})
+		}
 	}
 
 	getState(): State {

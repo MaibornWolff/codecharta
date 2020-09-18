@@ -46,14 +46,15 @@ function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: 
 function getMetricDataFromHashMap(hashMap: Map<string, number>) {
 	const metricData: NodeMetricData[] = []
 
+	// TODO: Remove the unary metric.
 	hashMap.set(NodeMetricDataService.UNARY_METRIC, 1)
 
-	hashMap.forEach((value: number, key: string) => {
+	for (const [key, value] of hashMap) {
 		metricData.push({
 			name: key,
 			maxValue: value
 		})
-	})
+	}
 	sortByMetricName(metricData)
 	return metricData
 }
