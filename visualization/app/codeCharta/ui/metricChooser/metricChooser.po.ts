@@ -1,12 +1,10 @@
 export class MetricChooserPageObject {
 	async openHeightMetricChooser() {
 		await expect(page).toClick("height-metric-chooser-component md-select", { timeout: 3000 })
-		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active")
+		await page.waitForSelector(".md-select-menu-container.ribbonBarDropdown.md-active", { visible: true })
 	}
 
 	async clickOnHeightMetricSearch() {
-		await expect(page).toClick("md-backdrop", { button: "middle", timeout: 3000 })
-
 		await expect(page).toClick(".metric-search.height-metric", { timeout: 3000 })
 	}
 
