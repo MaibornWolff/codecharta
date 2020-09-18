@@ -53,14 +53,45 @@ class ProjectConverter(private val containsAuthors: Boolean) {
     ): Project {
         val projectBuilder = ProjectBuilder()
 
-        versionControlledFiles.getList().values
+        val vcFList = versionControlledFiles.getList()
+
+        vcFList.values
             .forEach {
                 it.filename = it.filename.substringBefore("_\\0_")
             }
 
+        val occurrencesPerFilename = vcFList.values.groupingBy { it.filename }.eachCount()
+
+        val duplicateFilenames = occurrencesPerFilename.filterValues { it > 1 }
+
+        val trackingNamesPerFilename = mutableMapOf<String, Set<String>>()
+        duplicateFilenames.keys.forEach { element ->
+            trackingNamesPerFilename[element] = vcFList.keys.filter {
+                vcFList[it]?.filename == element
+            }.toSet()
+        }
+
+        trackingNamesPerFilename.keys.forEach { elem ->
+            var choosenElement = ""
+            trackingNamesPerFilename[elem]?.forEach {
+                if (!vcFList[it]?.isDeleted()!!) {
+                    choosenElement = it
+                }
+            }
+            if (choosenElement == "") {
+                choosenElement = trackingNamesPerFilename[elem]?.last().toString()
+            }
+
+            trackingNamesPerFilename[elem]?.forEach {
+                if (it != choosenElement)
+                    vcFList.remove(it)
+            }
+        }
+
         // TODO discuss/check performance
-        versionControlledFiles.getList().values
-            .filter { filesInLog.contains(it.filename) } // TODO do we need to check for isDeleted()? I would say no
+        // TODO move to versionControlledFilesList
+        vcFList.values
+            .filter { filesInLog.contains(it.filename) }
             .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()

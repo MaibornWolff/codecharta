@@ -95,6 +95,7 @@ internal class CommitCollector {
                 }
             }
         }
+
     }
 
     private fun handleMergeCommit(commit: Commit, versionControlledFilesList: VersionControlledFilesList) {

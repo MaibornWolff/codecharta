@@ -33,16 +33,47 @@ class IntegrationTest {
     }
 
     private fun emulateProjectConverter(
-        vcFList: VersionControlledFilesList,
+        versionControlledFiles: VersionControlledFilesList,
         project_name_list: List<String>
     ): List<String> {
 
-        vcFList.getList().values
+        val vcFList = versionControlledFiles.getList()
+
+        vcFList.values
             .forEach {
                 it.filename = it.filename.substringBefore("_\\0_")
             }
 
-        return vcFList.getList().values.filter { project_name_list.contains(it.filename) }
+        val occurrencesPerFilename = vcFList.values.groupingBy { it.filename }.eachCount()
+
+        val duplicateFilenames = occurrencesPerFilename.filterValues { it > 1 }
+
+        val trackingNamesPerFilename = mutableMapOf<String, Set<String>>()
+        duplicateFilenames.keys.forEach { element ->
+            trackingNamesPerFilename[element] = vcFList.keys.filter {
+                vcFList[it]?.filename == element
+            }.toSet()
+        }
+
+        trackingNamesPerFilename.keys.forEach { elem ->
+            var choosenElement = ""
+            trackingNamesPerFilename[elem]?.forEach {
+                if (!vcFList[it]?.isDeleted()!!) {
+                    choosenElement = it
+                }
+            }
+            if (choosenElement == "") {
+                choosenElement = trackingNamesPerFilename[elem]?.last().toString()
+            }
+
+            trackingNamesPerFilename[elem]?.forEach {
+                if (it != choosenElement)
+                    vcFList.remove(it)
+            }
+        }
+
+        return vcFList.values
+            .filter { project_name_list.contains(it.filename) }
             .map { file -> file.filename }
     }
 
@@ -73,8 +104,14 @@ class IntegrationTest {
             println("Mssing: $item")
         }
 
+        Assert.assertEquals(project_name_list.size, namesInVCF.size)
+
         for (item in namesInVCF) {
             Assert.assertThat(project_name_list, hasItem(item))
+        }
+
+        for (item in project_name_list) {
+            Assert.assertThat(namesInVCF, hasItem(item))
         }
     }
 }
