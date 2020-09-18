@@ -29,6 +29,7 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	for (const fileState of allVisibleFileStates) {
 		for (const edge of fileState.file.settings.fileSettings.edges) {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
+				// TODO: We likely only need the attributes once per file.
 				for (const edgeMetric of Object.keys(edge.attributes)) {
 					const edgeMetricEntry = getEntryForMetric(edgeMetric)
 					addEdgeToNodes(edgeMetricEntry, edge.fromNodeName, edge.toNodeName)

@@ -57,9 +57,8 @@ export class CodeMapArrowService
 
 	clearArrows() {
 		this.arrows = []
-		while (this.threeSceneService.edgeArrows.children.length > 0) {
-			this.threeSceneService.edgeArrows.children.pop()
-		}
+		// Remove all children
+		this.threeSceneService.edgeArrows.children.length = 0
 	}
 
 	addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
@@ -90,9 +89,9 @@ export class CodeMapArrowService
 		}
 
 		for (const edge of edges) {
-			const originNode = this.map.get(edge.fromNodeName)
-			const targetNode = this.map.get(edge.toNodeName)
-			if (originNode && targetNode && edge.visible !== EdgeVisibility.none && edge.visible) {
+			if (edge.visible && edge.visible !== EdgeVisibility.none) {
+				const originNode = this.map.get(edge.fromNodeName)
+				const targetNode = this.map.get(edge.toNodeName)
 				const curveScale = 100 * this.storeService.getState().appSettings.edgeHeight
 				const curve = this.createCurve(originNode, targetNode, curveScale)
 				this.previewMode(curve, edge.visible)
@@ -140,9 +139,11 @@ export class CodeMapArrowService
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
 			const targetNode = this.map.get(edge.toNodeName)
-			if (originNode && targetNode && node.has(originNode.path)) {
+			if (node.has(originNode.path)) {
 				this.addArrow(targetNode, originNode, true)
-			} else if (originNode && targetNode && node.has(targetNode.path)) {
+			// TODO: Check if the second if case is actually necessary. Edges should
+			// always have valid recipients.
+			} else if (node.has(targetNode.path)) {
 				this.addArrow(targetNode, originNode, false)
 			}
 		}
@@ -186,7 +187,7 @@ export class CodeMapArrowService
 	}
 
 	private getNodesAsMap(nodes: Node[]) {
-		const map = new Map<string, Node>()
+		const map: Map<string, Node> = new Map()
 		nodes.forEach(node => map.set(node.path, node))
 		return map
 	}
@@ -200,10 +201,7 @@ export class CodeMapArrowService
 			pointsPreviews = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
 			arrowColor = this.storeService.getState().appSettings.mapColors.incomingEdge
 		} else {
-			pointsPreviews = points
-				.reverse()
-				.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
-				.reverse()
+			pointsPreviews = points.slice(0, points.length - (bezierPoints + 1 - this.VERTICES_PER_LINE))
 			arrowColor = this.storeService.getState().appSettings.mapColors.outgoingEdge
 		}
 

@@ -34,17 +34,30 @@ function transformPath(toTransform: string) {
 	return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
-function getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string) {
-	const ignoredNodePaths = ignore()
-		.add(transformPath(gitignorePath))
-		.filter(nodes.map(n => transformPath(n.path)))
-	//TODO: Review again once we use a isBlacklisted attribute in our CodeMapNodes
-	const set = new Set(ignoredNodePaths)
-	return nodes.filter(n => !set.has(transformPath(n.path)))
+function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
+	gitignorePath = gitignorePath.trim()
+	if (gitignorePath.length === 0) {
+		return []
+	}
+	const nodes = hierarchy(root).descendants()
+	const ignoredNodePaths = ignore().add(transformPath(gitignorePath))
+	const filtered = []
+	for (const { data } of nodes) {
+		if (ignoredNodePaths.ignores(transformPath(data.path))) {
+			filtered.push(data)
+		}
+	}
+	return filtered
 }
 
 function numberOfBlacklistedNodes(nodes: Array<CodeMapNode>) {
-	return nodes.filter(node => isBlacklisted(node)).length
+	let count = 0
+	for (const node of nodes) {
+		if (isBlacklisted(node)) {
+			count++
+		}
+	}
+	return count
 }
 
 function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>) {
@@ -55,27 +68,28 @@ function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: 
 	if (blacklist.length === 0) {
 		return false
 	}
-
-	const ig = ignore().add(blacklist.filter(b => b.type === type).map(ex => transformPath(ex.path)))
+	const ig = ignore()
+	for (const entry of blacklist) {
+		if (entry.type === type) {
+			ig.add(transformPath(entry.path))
+		}
+	}
 	return ig.ignores(transformPath(path))
 }
 
 function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]) {
-	let markingColor: string
-
 	if (markedPackages) {
-		const markedParentPackages = markedPackages.filter(mp => node.path.includes(mp.path))
+		let longestPathParentPackage: MarkedPackage
+		for (const markedPackage of markedPackages) {
+			if (node.path.includes(markedPackage.path) && (!longestPathParentPackage || longestPathParentPackage.path.length < markedPackage.path.length)) {
+				longestPathParentPackage = markedPackage
+			}
+		}
 
-		if (markedParentPackages.length > 0) {
-			markedParentPackages.sort((a, b) => sortByPathLength(a, b))
-			markingColor = markedParentPackages[0].color
+		if (longestPathParentPackage) {
+			return longestPathParentPackage.color
 		}
 	}
-	return markingColor
-}
-
-function sortByPathLength(a: MarkedPackage, b: MarkedPackage) {
-	return b.path.length - a.path.length
 }
 
 function isBlacklisted(node: CodeMapNode) {

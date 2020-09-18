@@ -195,11 +195,11 @@ export class CodeMapMouseEventService
 	}
 
 	private onRightClick() {
-		const highlightedBuilding = this.threeSceneService.getHighlightedBuilding()
+		const building = this.threeSceneService.getHighlightedBuilding()
 		// check if mouse moved to prevent the node context menu to show up after moving the map, when the cursor ends on a building
-		if (highlightedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
+		if (building && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
-				building: highlightedBuilding,
+				building,
 				x: this.mouse.x,
 				y: this.mouse.y
 			})
@@ -233,8 +233,8 @@ export class CodeMapMouseEventService
 	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
 		const { lookUp } = this.storeService.getState()
 		const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
-		hierarchy(codeMapNode).each(x => {
-			const building = lookUp.idToBuilding.get(x.data.id)
+		hierarchy(codeMapNode).each(({ data }) => {
+			const building = lookUp.idToBuilding.get(data.id)
 			if (building) {
 				this.threeSceneService.addBuildingToHighlightingList(building)
 			}

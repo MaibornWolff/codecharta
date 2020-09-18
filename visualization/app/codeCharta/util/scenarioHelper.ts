@@ -81,7 +81,7 @@ export class ScenarioHelper {
 		const scenario: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
 		const { dynamicSettings, appSettings } = scenarioAsSettings.settings
 
-		for (const scenarioKey in dynamicSettings) {
+		for (const scenarioKey of Object.keys(dynamicSettings)) {
 			switch (scenarioKey) {
 				case "areaMetric": {
 					scenario.area = {
@@ -208,7 +208,7 @@ export class ScenarioHelper {
 		const scenario: RecursivePartial<Scenario> = this.scenarios.get(name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
-		for (const scenarioKey in scenario) {
+		for (const scenarioKey of Object.keys(scenario)) {
 			switch (scenarioKey) {
 				case "area": {
 					partialDynamicSettings.areaMetric = scenario.area.areaMetric

@@ -1618,13 +1618,12 @@ export function withMockedEventMethods($rootScope: IRootScopeService) {
 }
 
 export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
-	hierarchy(map)
-		.leaves()
-		.forEach(node => {
-			if (paths.includes(node.data.path)) {
-				setBlacklistFlagByType(node.data, type, true)
-			}
-		})
+	const pathsSet = new Set(paths)
+	for (const { data } of hierarchy(map).leaves()) {
+		if (pathsSet.has(data.path)) {
+			setBlacklistFlagByType(data, type, true)
+		}
+	}
 }
 
 function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {

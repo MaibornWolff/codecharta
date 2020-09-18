@@ -1,33 +1,17 @@
 import { CodeMapHelper } from "./codeMapHelper"
-import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
+import { CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
 import { TEST_FILE_WITH_PATHS } from "./dataMocks"
 import { clone } from "./clone"
 
 describe("codeMapHelper", () => {
 	let testRoot: CodeMapNode
-	let blacklist: BlacklistItem[]
 
 	beforeEach(() => {
-		restartSystem()
-	})
-
-	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
 		testRoot = clone(TEST_FILE_WITH_PATHS.map)
-		blacklist = []
-	}
-
-	function addRootToBlacklist() {
-		blacklist.push({ path: testRoot.path, type: BlacklistType.exclude })
-		testRoot.isExcluded = true
-	}
-
-	function addSubNodeToBlacklist() {
-		blacklist.push({ path: testRoot.children[0].path, type: BlacklistType.exclude })
-		testRoot.children[0].isExcluded = true
-	}
+	})
 
 	describe("getCodeMapNodeFromPath", () => {
 		it("should return the root if path matches path of root", () => {
@@ -85,13 +69,13 @@ describe("codeMapHelper", () => {
 		it("should return the ignored leaf if parent folder is provided", () => {
 			const expected = [testRoot.children[1].children[1]]
 
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children[1].children, "/root/Parent Leaf/other small leaf")
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children[1], "/root/Parent Leaf/other small leaf")
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should return an empty array if no direct children are found with path", () => {
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children, "/root/Parent Leaf/other small leaf")
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, "/root/Parent Leaf/other small leaf")
 
 			expect(result).toEqual([])
 		})
@@ -99,7 +83,7 @@ describe("codeMapHelper", () => {
 		it("should return all children if root is ignored", () => {
 			const expected = testRoot.children
 
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children, "/root")
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, "/root")
 
 			expect(result).toEqual(expected)
 		})
@@ -107,7 +91,7 @@ describe("codeMapHelper", () => {
 		it("should return all children of subfolder if root/subfolder is ignored", () => {
 			const expected = [testRoot.children[1]]
 
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children, "/root/Parent Leaf")
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, "/root/Parent Leaf")
 
 			expect(result).toEqual(expected)
 		})
@@ -121,7 +105,7 @@ describe("codeMapHelper", () => {
 		})
 
 		it("should return 1 if only one node is blacklisted and provided for nodes", () => {
-			addRootToBlacklist()
+			testRoot.isExcluded = true
 
 			const result = CodeMapHelper.numberOfBlacklistedNodes([testRoot])
 
@@ -129,7 +113,7 @@ describe("codeMapHelper", () => {
 		})
 
 		it("should return 1 if only one sub-node is blacklisted and but root and sub-node are provided for nodes", () => {
-			addSubNodeToBlacklist()
+			testRoot.children[0].isExcluded = true
 
 			const result = CodeMapHelper.numberOfBlacklistedNodes([testRoot, testRoot.children[0]])
 

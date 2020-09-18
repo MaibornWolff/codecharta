@@ -11,11 +11,8 @@ export class IdToNodeService implements CodeMapPreRenderServiceSubscriber {
 	}
 
 	onRenderMapChanged(map: CodeMapNode) {
-		const idToNode = new Map<number, CodeMapNode>()
-		idToNode.set(map.id, map)
-		hierarchy(map).each(x => {
-			idToNode.set(x.data.id, x.data)
-		})
+		const idToNode: Map<number, CodeMapNode> = new Map([[map.id, map]])
+		hierarchy(map).each(({ data }) => idToNode.set(data.id, data))
 
 		this.storeService.dispatch(setIdToNode(idToNode), { silent: true })
 	}

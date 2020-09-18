@@ -1,4 +1,4 @@
-import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap, TreemapLayout } from "d3"
+import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapNode, Node, NodeMetricData, State } from "../codeCharta.model"
 
@@ -91,15 +91,20 @@ export class TreeMapGenerator {
 		const width = mapWidth + nodesPerSide * s.dynamicSettings.margin
 		const height = mapHeight + nodesPerSide * s.dynamicSettings.margin
 
-		const treeMap: TreemapLayout<CodeMapNode> = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding)
+		const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding)
 
 		return { treeMap: treeMap(hierarchyNode.sum(node => this.calculateAreaValue(node, s))), height, width }
 	}
 
 	private static getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {
-		const descendants = hierarchyNode.descendants()
-		const blacklisted = descendants.filter(node => node.data.isExcluded || node.data.isFlattened).length
-		return 2 * Math.sqrt(descendants.length - blacklisted)
+		const nodes = hierarchyNode.descendants()
+		let blacklistedCount = 0
+		for (const { data } of nodes) {
+			if (data.isExcluded || data.isFlattened) {
+				blacklistedCount++
+			}
+		}
+		return 2 * Math.sqrt(nodes.length - blacklistedCount)
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State) {

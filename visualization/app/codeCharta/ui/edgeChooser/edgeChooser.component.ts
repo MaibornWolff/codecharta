@@ -69,8 +69,9 @@ export class EdgeChooserController
 	}
 
 	filterMetricData() {
-		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(metric =>
-			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
+		const searchTerm = this._viewModel.searchTerm.toLowerCase()
+		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(({ name }) =>
+			name.toLowerCase().includes(searchTerm)
 		)
 	}
 

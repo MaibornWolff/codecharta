@@ -138,18 +138,16 @@ export class LegendPanelController
 	private setMarkedPackageLists(markedPackages: MarkedPackage[]) {
 		if (markedPackages) {
 			this._viewModel.packageLists = []
-			markedPackages.forEach(mp => this.handleMarkedPackage(mp))
-		}
-	}
+			for (const markedPackage of markedPackages) {
+				const colorPixel = ColorConverter.getImageDataUri(markedPackage.color)
 
-	private handleMarkedPackage(mp: MarkedPackage) {
-		const colorPixel = ColorConverter.getImageDataUri(mp.color)
-
-		if (this.isColorPixelInPackageLists(colorPixel)) {
-			this.insertMPIntoPackageList(mp, colorPixel)
-		} else {
-			const packageList: PackageList = { colorPixel, markedPackages: [mp] }
-			this.addNewPackageList(packageList)
+				if (this.isColorPixelInPackageLists(colorPixel)) {
+					this.insertMPIntoPackageList(markedPackage, colorPixel)
+				} else {
+					const packageList: PackageList = { colorPixel, markedPackages: [markedPackage] }
+					this.addNewPackageList(packageList)
+				}
+			}
 		}
 	}
 
@@ -162,7 +160,7 @@ export class LegendPanelController
 	}
 
 	private isColorPixelInPackageLists(colorPixel: string) {
-		return this._viewModel.packageLists.filter(mpList => mpList.colorPixel === colorPixel).length > 0
+		return !!this._viewModel.packageLists.find(mpList => mpList.colorPixel === colorPixel)
 	}
 }
 
