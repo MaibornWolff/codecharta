@@ -14,7 +14,7 @@ export class ScenarioHelper {
 	static getScenarioItems(metricData: MetricData) {
 		const scenarioItems: ScenarioItem[] = []
 
-		this.scenarios.forEach(scenario => {
+		for (const scenario of this.scenarios.values()) {
 			scenarioItems.push({
 				scenarioName: scenario.name,
 				isScenarioApplicable: this.isScenarioApplicable(scenario, metricData),
@@ -46,7 +46,7 @@ export class ScenarioHelper {
 					}
 				]
 			})
-		})
+		}
 		return scenarioItems
 	}
 
@@ -71,9 +71,9 @@ export class ScenarioHelper {
 	private static getPreLoadScenarios() {
 		const scenariosAsSettings = this.importScenarios(scenarios)
 		const scenario: Map<string, RecursivePartial<Scenario>> = new Map()
-		scenariosAsSettings.forEach(scenarioSettings => {
-			scenario.set(scenarioSettings.name, this.transformScenarioAsSettingsToScenario(scenarioSettings))
-		})
+		for (const setting of scenariosAsSettings) {
+			scenario.set(setting.name, this.transformScenarioAsSettingsToScenario(setting))
+		}
 		return scenario
 	}
 
@@ -150,7 +150,7 @@ export class ScenarioHelper {
 	static createNewScenario(scenarioName: string, scenarioAttributes: AddScenarioContent[]) {
 		const newScenario: RecursivePartial<Scenario> = { name: scenarioName }
 
-		scenarioAttributes.forEach(attribute => {
+		for (const attribute of scenarioAttributes) {
 			switch (attribute.metricType) {
 				case ScenarioMetricType.CAMERA_POSITION: {
 					newScenario.camera = {
@@ -190,7 +190,7 @@ export class ScenarioHelper {
 					break
 				}
 			}
-		})
+		}
 
 		return newScenario
 	}
@@ -243,9 +243,9 @@ export class ScenarioHelper {
 	}
 
 	static importScenarios(scenarios: ExportScenario[]) {
-		scenarios.forEach(scenario => {
+		for (const scenario of scenarios) {
 			convertToVectors(scenario.settings)
-		})
+		}
 		return scenarios
 	}
 

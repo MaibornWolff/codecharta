@@ -38,7 +38,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 			}
 		}
 
-		buildings.forEach(building => {
+		for (const building of buildings) {
 			if (building.node.isLeaf) {
 				const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
 				if (
@@ -48,7 +48,7 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 					this.threeSceneService.addBuildingToHighlightingList(building)
 				}
 			}
-		})
+		}
 
 		this.threeSceneService.highlightBuildings()
 	}
@@ -71,9 +71,9 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 	}
 
 	private setColorForEachExtension() {
-		this._viewModel.distribution.forEach(x => {
-			x.color = x.color ?? FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(x.fileExtension)).toString()
-		})
+		for (const metric of this._viewModel.distribution) {
+			metric.color = metric.color ?? FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(metric.fileExtension)).toString()
+		}
 	}
 
 	private potentiallyAddNoneExtension() {

@@ -18,12 +18,10 @@ export class DeltaGenerator {
 	private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode) {
 		const hashMap = new Map<string, CodeMapNode>()
 
-		hierarchy(rootNode)
-			.descendants()
-			.forEach(({ data }) => {
-				data.children = []
-				hashMap.set(data.path, data)
-			})
+		for (const { data } of hierarchy(rootNode).descendants()) {
+			data.children = []
+			hashMap.set(data.path, data)
+		}
 		return hashMap
 	}
 
@@ -41,12 +39,12 @@ export class DeltaGenerator {
 			}
 		})
 
-		referenceHashMap.forEach((referenceNode: CodeMapNode, path: string) => {
+		for (const [path, referenceNode] of referenceHashMap) {
 			if (!comparisonHashMap.get(path)) {
 				const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, {})
 				hashMapWithAllNodes.set(newNode.path, newNode)
 			}
-		})
+		}
 		return hashMapWithAllNodes
 	}
 
@@ -60,15 +58,15 @@ export class DeltaGenerator {
 	private static getDeltaAttributeList(referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
 		const deltaAttribute: KeyValuePair = {}
 
-		Object.keys(comparisonAttribute).forEach((key: string) => {
+		for (const key of Object.keys(comparisonAttribute)) {
 			deltaAttribute[key] = referenceAttribute[key] ? comparisonAttribute[key] - referenceAttribute[key] : comparisonAttribute[key]
-		})
+		}
 
-		Object.keys(referenceAttribute).forEach((key: string) => {
+		for (const key of Object.keys(referenceAttribute)) {
 			if (!comparisonAttribute[key]) {
 				deltaAttribute[key] = -referenceAttribute[key]
 			}
-		})
+		}
 		return deltaAttribute
 	}
 

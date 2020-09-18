@@ -48,27 +48,27 @@ export class FileExtensionCalculator {
 		if (sumOfAllMetricValues === 0) {
 			return [this.getNoneExtension()]
 		}
-		distribution.forEach(x => {
-			if (x.absoluteMetricValue !== 0) {
-				x.relativeMetricValue = (x.absoluteMetricValue / sumOfAllMetricValues) * 100
+		for (const metric of distribution) {
+			if (metric.absoluteMetricValue !== 0) {
+				metric.relativeMetricValue = (metric.absoluteMetricValue / sumOfAllMetricValues) * 100
 			}
-		})
+		}
 
 		return distribution
 	}
 
 	private static getMetricDistributionWithOthers(distribution: MetricDistribution[]) {
-		const otherExtension: MetricDistribution = this.getOtherExtension()
+		const otherExtension = this.getOtherExtension()
 		const visibleDistributions: MetricDistribution[] = []
 
-		distribution.forEach(x => {
-			if (x.relativeMetricValue > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
-				visibleDistributions.push(x)
+		for (const metric of distribution) {
+			if (metric.relativeMetricValue > FileExtensionCalculator.OTHER_GROUP_THRESHOLD_VALUE) {
+				visibleDistributions.push(metric)
 			} else {
-				otherExtension.absoluteMetricValue += x.absoluteMetricValue
-				otherExtension.relativeMetricValue += x.relativeMetricValue
+				otherExtension.absoluteMetricValue += metric.absoluteMetricValue
+				otherExtension.relativeMetricValue += metric.relativeMetricValue
 			}
-		})
+		}
 
 		if (otherExtension.relativeMetricValue > 0) {
 			visibleDistributions.push(otherExtension)
@@ -77,7 +77,7 @@ export class FileExtensionCalculator {
 		return visibleDistributions
 	}
 
-	private static getOtherExtension() {
+	private static getOtherExtension(): MetricDistribution {
 		return {
 			fileExtension: FileExtensionCalculator.OTHER_EXTENSION,
 			absoluteMetricValue: null,

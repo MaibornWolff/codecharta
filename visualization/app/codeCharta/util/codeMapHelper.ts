@@ -3,21 +3,21 @@ import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../cod
 import ignore from "ignore"
 
 function getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
-	const matchingNode = hierarchy<CodeMapNode>(root)
+	const matchingNode = hierarchy(root)
 		.descendants()
 		.find(({ data }) => data.path === path)
 	return matchingNode?.data
 }
 
 function getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode) {
-	const matchingNode = hierarchy<CodeMapNode>(root)
+	const matchingNode = hierarchy(root)
 		.descendants()
 		.find(({ data }) => data.path === path && data.type === nodeType)
 	return matchingNode?.data
 }
 
 function getAllPaths(node: CodeMapNode) {
-	return hierarchy<CodeMapNode>(node)
+	return hierarchy(node)
 		.descendants()
 		.map(({ data }) => data.path)
 }

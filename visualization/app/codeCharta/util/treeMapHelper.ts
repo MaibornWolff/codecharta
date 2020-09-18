@@ -19,10 +19,11 @@ function countNodes(node: { children?: unknown[] }) {
 }
 
 function buildingArrayToMap(highlighted: CodeMapBuilding[]) {
-	const geomMap = new Map<number, CodeMapBuilding>()
-	highlighted.forEach(building => {
+	const geomMap: Map<number, CodeMapBuilding> = new Map()
+
+	for (const building of highlighted) {
 		geomMap.set(building.id, building)
-	})
+	}
 
 	return geomMap
 }

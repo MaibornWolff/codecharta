@@ -14,16 +14,18 @@ export class ResetSettingsButtonController {
 		const tokens = this.settingsNames.replace(/ |\n/g, "").split(",")
 		const updatedSettings: RecursivePartial<Settings> = {}
 
-		tokens.forEach(token => {
+		for (const token of tokens) {
 			const steps = token.split(".")
 
 			let defaultSettingsPointer = defaultState
+			// TODO: This intermediate variable should be obsolete
 			let updatedSettingsPointer = updatedSettings
 
 			steps.forEach((step, index) => {
+				// TODO: Check if this could be improved performance wise.
 				if (defaultSettingsPointer[step] !== undefined) {
 					if (!updatedSettingsPointer[step]) {
-						Object.assign(updatedSettingsPointer, { [step]: {} })
+						updatedSettingsPointer[step] = {}
 					}
 					if (index === steps.length - 1) {
 						updatedSettingsPointer[step] = defaultSettingsPointer[step]
@@ -33,7 +35,7 @@ export class ResetSettingsButtonController {
 					}
 				}
 			})
-		})
+		}
 
 		if (Object.keys(updatedSettings).length > 0) {
 			convertToVectors(updatedSettings)
