@@ -62,9 +62,9 @@ export class NodeDecorator {
 					}
 				}
 			} else if (hasChildren(data)) {
-				data.attributes = defaultAttributes
+				data.attributes = { ...defaultAttributes }
 			} else {
-				data.attributes = defaultLeafAttributes
+				data.attributes = { ...defaultLeafAttributes }
 			}
 			data.edgeAttributes = data.edgeAttributes ?? {}
 
