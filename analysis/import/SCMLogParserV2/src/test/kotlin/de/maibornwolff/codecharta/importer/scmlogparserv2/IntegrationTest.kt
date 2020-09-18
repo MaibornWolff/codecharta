@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparserv2
 
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogLineParser
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.VersionControlledFilesList
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.GitLogNumstatRawParserStrategy
 import org.hamcrest.CoreMatchers.hasItem
 import org.junit.Assert
@@ -10,7 +11,6 @@ import java.io.File
 import java.io.InputStream
 import java.util.Arrays
 
-// TODO not working yet, we can't handle logs in place
 class IntegrationTest {
 
     private val metricsFactory = MetricsFactory(
@@ -32,11 +32,22 @@ class IntegrationTest {
         return lineList
     }
 
-    // TODO make test working :)
+    private fun emulateProjectConverter(
+        vcFList: VersionControlledFilesList,
+        project_name_list: List<String>
+    ): List<String> {
+
+        vcFList.getList().values
+            .forEach {
+                it.filename = it.filename.substringBefore("_\\0_")
+            }
+
+        return vcFList.getList().values.filter { project_name_list.contains(it.filename) }
+            .map { file -> file.filename }
+    }
+
     @Test
     fun test_given_list_of_all_files_in_project_when_parsing_corresponding_git_log_then_both_list_contents_are_equal() {
-        // TODO we don't write to file anymore to prevent unnecessary I/O, but I can roll that back if we happen to need it
-        // this.javaClass.classLoader.getResourceAsStream("sourcemonitor.csv")
 
         // Git-names in Repo
         val resourceName = "names-in-git-repo.txt"
@@ -52,14 +63,7 @@ class IntegrationTest {
         codeChartaLog.bufferedReader().forEachLine { codeList.add(it) }
         val vcFList = parser.parse(codeList.stream())
 
-        vcFList.getList().values
-            .forEach {
-                it.filename = it.filename.substringBefore("_\\0_")
-            }
-
-        val namesInVCF: List<String> =
-            vcFList.getList().values.filter { project_name_list.contains(it.filename) }
-                .map { file -> file.filename }
+        val namesInVCF = emulateProjectConverter(vcFList, project_name_list)
 
         val newList = project_name_list.filter { element ->
             !namesInVCF.contains(element)
