@@ -28,7 +28,7 @@ class VersionControlledFile internal constructor(
 
     init {
         this.filename = filename
-        addRename(filename)
+        addRename(filename.substringBefore("_\\0_"))
     }
 
     /**
