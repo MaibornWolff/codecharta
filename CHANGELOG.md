@@ -15,6 +15,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Chore 👨‍💻 👩‍💻
+
+## [1.57.3] - 2020-09-18
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
 -   Improve overall performance for loading and rendering maps
 -   Improve error messages when a file can't be loaded with the URL parameters
 
