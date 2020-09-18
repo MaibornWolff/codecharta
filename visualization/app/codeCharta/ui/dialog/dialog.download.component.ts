@@ -70,7 +70,13 @@ export class DialogDownloadController {
 	}
 
 	private getFilteredBlacklistLength(blacklistType: BlacklistType) {
-		return this.storeService.getState().fileSettings.blacklist.filter(x => x.type === blacklistType).length
+		let count = 0
+		for (const entry of this.storeService.getState().fileSettings.blacklist) {
+			if (entry.type === blacklistType) {
+				count++
+			}
+		}
+		return count
 	}
 
 	private pushFileContent(name: string, numberOfListItems: number) {

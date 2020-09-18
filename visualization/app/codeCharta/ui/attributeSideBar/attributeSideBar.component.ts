@@ -99,8 +99,9 @@ export class AttributeSideBarController
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
 		if (this._viewModel.node) {
-			this._viewModel.secondaryMetricKeys = _.keys(this._viewModel.node.attributes)
-				.filter(x => !_.values(this._viewModel.primaryMetricKeys.node).includes(x))
+			const metricValues = new Set(Object.values(this._viewModel.primaryMetricKeys.node))
+			this._viewModel.secondaryMetricKeys = Object.keys(this._viewModel.node.attributes)
+				.filter(key => !metricValues.has(key))
 				.sort()
 		}
 	}

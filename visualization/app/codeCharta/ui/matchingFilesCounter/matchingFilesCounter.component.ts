@@ -27,7 +27,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 	}
 
 	onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
-		this.searchedNodeLeaves = this.getSearchedNodeLeaves(searchedNodes)
+		this.searchedNodeLeaves = searchedNodes.filter(node => !(node.children && node.children.length > 0))
 		this.updateViewModel()
 	}
 
@@ -41,14 +41,14 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 		this._viewModel.excludeCount = this.getBlacklistedFileCount(BlacklistType.exclude)
 	}
 
-	private getSearchedNodeLeaves(searchedNodes: CodeMapNode[]) {
-		return searchedNodes.filter(node => !(node.children && node.children.length > 0))
-	}
-
 	private getBlacklistedFileCount(blacklistType: BlacklistType) {
-		return this.searchedNodeLeaves.filter(node =>
-			CodeMapHelper.isPathBlacklisted(node.path, this.storeService.getState().fileSettings.blacklist, blacklistType)
-		).length
+		const blacklist = this.storeService.getState().fileSettings.blacklist
+		return this.searchedNodeLeaves.reduce((count, { path }) => {
+			if (CodeMapHelper.isPathBlacklisted(path, blacklist, blacklistType)) {
+				count++
+			}
+			return count
+		}, 0)
 	}
 }
 

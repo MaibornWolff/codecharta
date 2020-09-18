@@ -81,15 +81,15 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		} else if (this._viewModel.isDeltaState) {
 			this._viewModel.renderState = FileSelectionState.Comparison
 
-			this._viewModel.selectedFileNames.delta.reference =
-				visibleFileStates.length === 2
-					? visibleFileStates.find(x => x.selectedAs === FileSelectionState.Reference).file.fileMeta.fileName
-					: visibleFileStates[0].file.fileMeta.fileName
-
-			this._viewModel.selectedFileNames.delta.comparison =
-				visibleFileStates.length === 2
-					? visibleFileStates.find(x => x.selectedAs === FileSelectionState.Comparison).file.fileMeta.fileName
-					: visibleFileStates[0].file.fileMeta.fileName
+			let reference = visibleFileStates[0].file.fileMeta.fileName
+			let comparison = visibleFileStates[visibleFileStates.length - 1].file.fileMeta.fileName
+			if (visibleFileStates[0].selectedAs === FileSelectionState.Comparison) {
+				const temp = comparison
+				comparison = reference
+				reference = temp
+			}
+			this._viewModel.selectedFileNames.delta.reference = reference
+			this._viewModel.selectedFileNames.delta.comparison = comparison
 		} else {
 			this._viewModel.renderState = FileSelectionState.Partial
 			this._viewModel.selectedFileNames.partial = visibleFileStates.map(x => x.file.fileMeta.fileName)
@@ -140,9 +140,14 @@ export class FilePanelController implements FilesSelectionSubscriber {
 	}
 
 	invertPartialFileSelection() {
-		const invertedFileNames = this._viewModel.files
-			.map(x => x.file.fileMeta.fileName)
-			.filter(x => !this._viewModel.selectedFileNames.partial.includes(x))
+		const invertedFileNames: string[] = []
+		const partialFileNames = new Set(this._viewModel.selectedFileNames.partial)
+
+		for (const { file: { fileMeta: { fileName } } } of this._viewModel.files) {
+			if (!partialFileNames.has(fileName)) {
+				invertedFileNames.push(fileName)
+			}
+		}
 
 		this.onPartialFilesChange(invertedFileNames)
 	}

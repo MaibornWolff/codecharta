@@ -6,9 +6,11 @@ import packageJson from "../../../package.json"
 
 export class DeltaGenerator {
 	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
-		const referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(referenceFile.map)
-		const comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(comparisonFile.map)
-		const hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
+		// TODO: Only generate a single map for one side. The other side may use
+		// that map during iteration as reference.
+		const referenceHashMap = this.getCodeMapNodesAsHashMap(referenceFile.map)
+		const comparisonHashMap = this.getCodeMapNodesAsHashMap(comparisonFile.map)
+		const hashMapWithAllNodes = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
 
 		const fileMeta = this.getFileMetaData(referenceFile, comparisonFile)
 		const map = MapBuilder.createCodeMapFromHashMap(hashMapWithAllNodes)
@@ -16,7 +18,7 @@ export class DeltaGenerator {
 	}
 
 	private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode) {
-		const hashMap = new Map<string, CodeMapNode>()
+		const hashMap: Map<string, CodeMapNode> = new Map()
 
 		for (const { data } of hierarchy(rootNode).descendants()) {
 			data.children = []
@@ -26,18 +28,18 @@ export class DeltaGenerator {
 	}
 
 	private static getHashMapWithAllNodes(referenceHashMap: Map<string, CodeMapNode>, comparisonHashMap: Map<string, CodeMapNode>) {
-		const hashMapWithAllNodes: Map<string, CodeMapNode> = new Map<string, CodeMapNode>()
+		const hashMapWithAllNodes: Map<string, CodeMapNode> = new Map()
+		let newNode: CodeMapNode
 
-		comparisonHashMap.forEach((comparisonNode: CodeMapNode, path: string) => {
+		for (const [path, comparisonNode] of comparisonHashMap) {
 			const referenceNode = referenceHashMap.get(path)
 			if (referenceNode) {
-				const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, comparisonNode.attributes)
-				hashMapWithAllNodes.set(path, newNode)
+				newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, comparisonNode.attributes)
 			} else {
-				const newNode = this.getNewDeltaNode(comparisonNode, {}, comparisonNode.attributes)
-				hashMapWithAllNodes.set(path, newNode)
+				newNode = this.getNewDeltaNode(comparisonNode, {}, comparisonNode.attributes)
 			}
-		})
+			hashMapWithAllNodes.set(path, newNode)
+		}
 
 		for (const [path, referenceNode] of referenceHashMap) {
 			if (!comparisonHashMap.get(path)) {

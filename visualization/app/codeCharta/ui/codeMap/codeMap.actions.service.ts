@@ -48,34 +48,50 @@ export class CodeMapActionsService {
 		const { edges } = state.fileSettings
 		const { edgeMetric } = state.dynamicSettings
 		const numberOfEdgesToDisplay = state.appSettings.amountOfEdgePreviews
-		const edgePreviewNodes = this.edgeMetricDataService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
+		const edgePreviewNodes = new Set(this.edgeMetricDataService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay))
 
-		edges.forEach(edge => {
-			if (
-				(edgePreviewNodes.includes(edge.fromNodeName) || edgePreviewNodes.includes(edge.toNodeName)) &&
-				Object.keys(edge.attributes).includes(edgeMetric)
-			) {
-				edge.visible = EdgeVisibility.both
-				if (!edgePreviewNodes.includes(edge.fromNodeName)) {
-					edge.visible = EdgeVisibility.to
-				} else if (!edgePreviewNodes.includes(edge.toNodeName)) {
-					edge.visible = EdgeVisibility.from
+		for (const edge of edges) {
+			if (Object.prototype.hasOwnProperty.call(edge.attributes, edgeMetric)) {
+				const hasFromNodeEdgePreview = edgePreviewNodes.has(edge.fromNodeName)
+				const hasToNodeEdgePreview = edgePreviewNodes.has(edge.toNodeName)
+				if (hasFromNodeEdgePreview !== hasToNodeEdgePreview) {
+					if (hasFromNodeEdgePreview) {
+						edge.visible = EdgeVisibility.from
+					} else {
+						edge.visible = EdgeVisibility.to
+					}
+				} else if (hasFromNodeEdgePreview) {
+					edge.visible = EdgeVisibility.both
+				} else {
+					edge.visible = EdgeVisibility.none
 				}
 			} else {
 				edge.visible = EdgeVisibility.none
 			}
-		})
+		}
 
 		this.storeService.dispatch(setEdges(edges))
 	}
 
 	getParentMP(path: string) {
-		const sortedParentMP = this.storeService
+		const parentMP = this.storeService
 			.getState()
-			.fileSettings.markedPackages.filter(p => path.includes(p.path) && p.path !== path)
-			.sort((a, b) => b.path.length - a.path.length)
+			// TODO: Check if this logic is actually correct. The path should probably
+			// only be checked from the path start on instead of using `includes()`.
+			// The same applies to `removeChildrenMPWithSameColor()`.
+			.fileSettings.markedPackages.filter(p => p.path !== path && path.includes(p.path))
 
-		return sortedParentMP.length > 0 ? sortedParentMP[0] : null
+		if (parentMP.length === 0) {
+			return null
+		}
+
+		let longestPathMarkedPackage = parentMP.pop()
+		for (const markedPackage of parentMP) {
+			if (longestPathMarkedPackage.path.length < markedPackage.path.length) {
+				longestPathMarkedPackage = markedPackage
+			}
+		}
+		return longestPathMarkedPackage
 	}
 
 	private getNewMarkedPackage(path: string, color: string): MarkedPackage {
@@ -85,18 +101,16 @@ export class CodeMapActionsService {
 		}
 	}
 
-	private removeChildrenMPWithSameColor(newMP: MarkedPackage) {
-		const allChildrenMP = this.getAllChildrenMP(newMP.path)
-		allChildrenMP.forEach(childPackage => {
-			const parentMP = this.getParentMP(childPackage.path)
-			if (parentMP && parentMP.color === childPackage.color) {
-				this.removeMarkedPackage(childPackage)
+	private removeChildrenMPWithSameColor({ path }: MarkedPackage) {
+		const { markedPackages } = this.storeService.getState().fileSettings
+		for (const markedPackage of markedPackages) {
+			if (markedPackage.path !== path && markedPackage.path.includes(path)) {
+				const parentMP = this.getParentMP(markedPackage.path)
+				if (parentMP && parentMP.color === markedPackage.color) {
+					this.removeMarkedPackage(markedPackage)
+				}
 			}
-		})
-	}
-
-	private getAllChildrenMP(path: string) {
-		return this.storeService.getState().fileSettings.markedPackages.filter(p => p.path !== path && p.path.includes(path))
+		}
 	}
 
 	private addMarkedPackage(markedPackage: MarkedPackage) {

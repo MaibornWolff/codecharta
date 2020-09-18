@@ -35,15 +35,6 @@ Object {
           "type": "File",
         },
         Object {
-          "attributes": Object {},
-          "children": Array [],
-          "isExcluded": false,
-          "isFlattened": false,
-          "name": "empty folder",
-          "path": "/root/Parent Leaf/empty folder",
-          "type": "Folder",
-        },
-        Object {
           "attributes": Object {
             "functions": 1000,
             "mcc": 10,
@@ -55,6 +46,15 @@ Object {
           "name": "other small leaf",
           "path": "/root/Parent Leaf/other small leaf",
           "type": "File",
+        },
+        Object {
+          "attributes": Object {},
+          "children": Array [],
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "empty folder",
+          "path": "/root/Parent Leaf/empty folder",
+          "type": "Folder",
         },
       ],
       "isExcluded": false,
@@ -107,15 +107,6 @@ Object {
           "type": "File",
         },
         Object {
-          "attributes": Object {},
-          "children": Array [],
-          "isExcluded": false,
-          "isFlattened": false,
-          "name": "empty folder",
-          "path": "/root/in/between/Parent Leaf/empty folder",
-          "type": "Folder",
-        },
-        Object {
           "attributes": Object {
             "functions": 1000,
             "mcc": 10,
@@ -127,6 +118,15 @@ Object {
           "name": "other small leaf",
           "path": "/root/in/between/Parent Leaf/other small leaf",
           "type": "File",
+        },
+        Object {
+          "attributes": Object {},
+          "children": Array [],
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "empty folder",
+          "path": "/root/in/between/Parent Leaf/empty folder",
+          "type": "Folder",
         },
       ],
       "isExcluded": false,

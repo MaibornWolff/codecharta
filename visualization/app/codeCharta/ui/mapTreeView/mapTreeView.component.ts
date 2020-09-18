@@ -10,6 +10,12 @@ import { SortingOptionService, SortingOptionSubscriber } from "../../state/store
 import { clone } from "../../util/clone"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
+// Constants
+const REVERSE_ORDER = true
+const KEEP_ORDER = false
+
+type CompareFunction = (a: CodeMapNode, b: CodeMapNode) => number
+
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
 	private _viewModel: {
 		rootNode: CodeMapNode
@@ -25,19 +31,17 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 	}
 
 	onSortingOptionChanged(sortingOption: SortingOption) {
+		let compareFunction: CompareFunction
 		if (sortingOption === SortingOption.NUMBER_OF_FILES) {
-			this._viewModel.rootNode = this.applySortOrderChange(
-				this._viewModel.rootNode,
-				(a, b) => b.attributes[NodeMetricDataService.UNARY_METRIC] - a.attributes[NodeMetricDataService.UNARY_METRIC],
-				false
-			)
+			compareFunction = (a, b) => b.attributes[NodeMetricDataService.UNARY_METRIC] - a.attributes[NodeMetricDataService.UNARY_METRIC]
 		} else {
-			this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? -1 : 1), false)
+			compareFunction = (a, b) => (b.name > a.name ? -1 : 1)
 		}
+		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, KEEP_ORDER, compareFunction)
 	}
 
 	onSortingOrderAscendingChanged() {
-		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, null, true)
+		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, REVERSE_ORDER)
 	}
 
 	onRenderMapChanged(map: CodeMapNode) {
@@ -51,35 +55,47 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
 
-	private applySortOrderChange(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number, reverse: boolean) {
+	private applySortOrderChange(node: CodeMapNode, reverse: boolean, compareFn?: CompareFunction) {
 		if (!node) {
 			return
 		}
 		for (let i = 0; i < node.children.length; i++) {
 			if (node.children[i].type === NodeType.FOLDER) {
-				node.children[i] = this.applySortOrderChange(node.children[i], compareFn, reverse)
+				node.children[i] = this.applySortOrderChange(node.children[i], reverse, compareFn)
 			}
 		}
-		if (!reverse) {
-			node.children = this.groupFilesAndFolders(node, compareFn)
-		} else {
+		if (reverse) {
 			node.children.reverse()
+		} else {
+			node.children = this.groupFilesAndFolders(node, compareFn)
 		}
 		return node
 	}
 
-	private groupFilesAndFolders(node: CodeMapNode, compareFn: (a: CodeMapNode, b: CodeMapNode) => number) {
-		const folders = node.children.filter(node => node.type === NodeType.FOLDER)
-		const files = node.children.filter(node => node.type === NodeType.FILE)
+	private groupFilesAndFolders(node: CodeMapNode, compareFn: CompareFunction) {
+		const folders: CodeMapNode[] = []
+		const files: CodeMapNode[] = []
+
+		for (const child of node.children) {
+			if (child.type === NodeType.FOLDER) {
+				folders.push(child)
+			} else {
+				files.push(child)
+			}
+		}
+
+		// Reverse the sort order if required.
+		if (this.storeService.getState().appSettings.sortingOrderAscending) {
+			const actualComparator = compareFn
+			compareFn = (a, b) => -1 * actualComparator(a, b)
+		}
 
 		folders.sort(compareFn)
 		files.sort(compareFn)
 
-		if (this.storeService.getState().appSettings.sortingOrderAscending) {
-			return folders.concat(files).reverse()
-		}
+		folders.push(...files)
 
-		return folders.concat(files)
+		return folders
 	}
 
 	private synchronizeAngularTwoWayBinding() {

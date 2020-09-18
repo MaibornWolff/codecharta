@@ -1,14 +1,22 @@
 import { clone } from "./clone"
 import _ from "lodash"
 
-export function removeItemFromArray<T>(array: T[], item: T) {
-	return array.filter(x => {
-		return !_.isEqual(x, item)
-	})
+export function removeItemFromArray<T>(array: T[], searchItem: T) {
+	const newArray: T[] = []
+	let search = true
+	for (const item of array) {
+		if (search && _.isEqual(item, searchItem)) {
+			search = false
+		} else {
+			newArray.push(item)
+		}
+	}
+	return newArray
 }
 
 export function addItemToArray<T>(array: T[], item: T) {
 	if (!arrayContainsItem(array, item)) {
+		// TODO: Check if the clone is actually necessary here. It is probably not necessary.
 		return [...array, clone(item)]
 	}
 	return array

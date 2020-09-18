@@ -1,53 +1,35 @@
-import { CodeMapNode, NodeType } from "../codeCharta.model"
+import { CodeMapNode } from "../codeCharta.model"
 import { CodeChartaService } from "../codeCharta.service"
 
 export class MapBuilder {
+	// TODO: Check if it's fine to keep this unordered.
 	static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {
-		let rootNode = this.getEmptyRootNode()
-		const sortedNodes = this.getHashMapSortedByPath(hashMapWithAllNodes)
-
-		sortedNodes.forEach((node: CodeMapNode, path: string) => {
+		let rootNode: CodeMapNode
+		for (const [path, node] of hashMapWithAllNodes) {
 			node.children = []
-			const parentNode = this.getParentNode(sortedNodes, path, rootNode)
+			const parentNode = this.getParentNode(hashMapWithAllNodes, path)
 			if (node.path === CodeChartaService.ROOT_PATH) {
 				rootNode = node
 			} else {
 				parentNode.children.push(node)
 			}
-		})
+		}
 		return rootNode
 	}
 
-	private static getEmptyRootNode(): CodeMapNode {
-		return {
-			name: CodeChartaService.ROOT_NAME,
-			path: CodeChartaService.ROOT_PATH,
-			type: NodeType.FOLDER,
-			children: [],
-			attributes: {}
-		}
-	}
-
-	private static getHashMapSortedByPath(hashMap: Map<string, CodeMapNode>) {
-		return new Map([...hashMap.entries()].sort((a, b) => a[0].length - b[0].length))
-	}
-
-	private static getParentPath(path: string) {
-		return path.slice(0, Math.max(0, path.lastIndexOf("/")))
-	}
-
-	private static getParentNode(sortedHashMap: Map<string, CodeMapNode>, path: string, rootNode: CodeMapNode): CodeMapNode {
+	private static getParentNode(hashMap: Map<string, CodeMapNode>, path: string): CodeMapNode {
 		if (path === CodeChartaService.ROOT_PATH) {
-			return rootNode
+			return
 		}
 
-		const parentPath = this.getParentPath(path)
+		// TODO: Check what happens with Windows paths.
+		const parentPath = path.slice(0, path.lastIndexOf("/"))
 
-		const node = sortedHashMap.get(parentPath)
+		const node = hashMap.get(parentPath)
 		if (node) {
 			return node
 		}
 
-		return this.getParentNode(sortedHashMap, parentPath, rootNode)
+		return this.getParentNode(hashMap, parentPath)
 	}
 }

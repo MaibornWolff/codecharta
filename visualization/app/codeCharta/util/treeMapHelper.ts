@@ -104,26 +104,26 @@ function buildNodeFrom(
 	}
 }
 
-function getHeightValue(s: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {
-	const heightValue = squaredNode.data.attributes[s.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
-
+function getHeightValue(state: State, squaredNode: HierarchyRectangularNode<CodeMapNode>, maxHeight: number, flattened: boolean) {
 	if (flattened) {
 		return MIN_BUILDING_HEIGHT
 	}
 
-	if (s.appSettings.invertHeight) {
+	const heightValue = squaredNode.data.attributes[state.dynamicSettings.heightMetric] || HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND
+
+	if (state.appSettings.invertHeight) {
 		return maxHeight - heightValue
 	}
 	return heightValue
 }
 
-function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, s: State, flattened: boolean) {
-	if (squaredNode.isExcluded || (isNodeLeaf && s.appSettings.hideFlatBuildings && flattened)) {
+function isVisible(squaredNode: CodeMapNode, isNodeLeaf: boolean, state: State, flattened: boolean) {
+	if (squaredNode.isExcluded || (isNodeLeaf && state.appSettings.hideFlatBuildings && flattened)) {
 		return false
 	}
 
-	if (s.dynamicSettings.focusedNodePath.length > 0) {
-		return squaredNode.path.includes(s.dynamicSettings.focusedNodePath)
+	if (state.dynamicSettings.focusedNodePath.length > 0) {
+		return squaredNode.path.includes(state.dynamicSettings.focusedNodePath)
 	}
 
 	return true
@@ -143,53 +143,53 @@ function getOutgoingEdgePoint(width: number, height: number, length: number, vec
 	return new Vector3(vector.x - mapSize + width / 2, vector.y + height, vector.z - mapSize + 0.75 * length)
 }
 
-function isNodeFlat(codeMapNode: CodeMapNode, s: State) {
+function isNodeFlat(codeMapNode: CodeMapNode, state: State) {
 	if (codeMapNode.isFlattened) {
 		return true
 	}
 
-	if (s.dynamicSettings.searchedNodePaths && s.dynamicSettings.searchPattern && s.dynamicSettings.searchPattern.length > 0) {
-		return s.dynamicSettings.searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, s)
+	if (state.dynamicSettings.searchedNodePaths && state.dynamicSettings.searchPattern?.length > 0) {
+		return state.dynamicSettings.searchedNodePaths.size === 0 || isNodeNonSearched(codeMapNode, state)
 	}
 
-	if (s.appSettings.showOnlyBuildingsWithEdges && s.fileSettings.edges.filter(edge => edge.visible).length > 0) {
-		return nodeHasNoVisibleEdges(codeMapNode, s)
+	if (state.appSettings.showOnlyBuildingsWithEdges && state.fileSettings.edges.find(edge => edge.visible)) {
+		return nodeHasNoVisibleEdges(codeMapNode, state)
 	}
 
 	return false
 }
 
-function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, s: State) {
+function nodeHasNoVisibleEdges(codeMapNode: CodeMapNode, state: State) {
 	return (
-		codeMapNode.edgeAttributes[s.dynamicSettings.edgeMetric] === undefined ||
-		s.fileSettings.edges.filter(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName).length === 0
+		codeMapNode.edgeAttributes[state.dynamicSettings.edgeMetric] === undefined ||
+		!state.fileSettings.edges.find(edge => codeMapNode.path === edge.fromNodeName || codeMapNode.path === edge.toNodeName)
 	)
 }
 
-function isNodeNonSearched(squaredNode: CodeMapNode, s: State) {
-	return !s.dynamicSettings.searchedNodePaths.has(squaredNode.path)
+function isNodeNonSearched(squaredNode: CodeMapNode, state: State) {
+	return !state.dynamicSettings.searchedNodePaths.has(squaredNode.path)
 }
 
-function getBuildingColor(node: CodeMapNode, s: State, isDeltaState: boolean, flattened: boolean) {
-	const mapColorPositive = s.appSettings.whiteColorBuildings ? s.appSettings.mapColors.lightGrey : s.appSettings.mapColors.positive
+function getBuildingColor(node: CodeMapNode, state: State, isDeltaState: boolean, flattened: boolean) {
 	if (isDeltaState) {
-		return s.appSettings.mapColors.base
+		return state.appSettings.mapColors.base
 	}
-	const metricValue = node.attributes[s.dynamicSettings.colorMetric]
+	const metricValue = node.attributes[state.dynamicSettings.colorMetric]
 
 	if (metricValue === undefined) {
-		return s.appSettings.mapColors.base
+		return state.appSettings.mapColors.base
 	}
 	if (flattened) {
-		return s.appSettings.mapColors.flat
+		return state.appSettings.mapColors.flat
 	}
-	if (metricValue < s.dynamicSettings.colorRange.from) {
-		return s.appSettings.invertColorRange ? s.appSettings.mapColors.negative : mapColorPositive
+	const mapColorPositive = state.appSettings.whiteColorBuildings ? state.appSettings.mapColors.lightGrey : state.appSettings.mapColors.positive
+	if (metricValue < state.dynamicSettings.colorRange.from) {
+		return state.appSettings.invertColorRange ? state.appSettings.mapColors.negative : mapColorPositive
 	}
-	if (metricValue > s.dynamicSettings.colorRange.to) {
-		return s.appSettings.invertColorRange ? mapColorPositive : s.appSettings.mapColors.negative
+	if (metricValue > state.dynamicSettings.colorRange.to) {
+		return state.appSettings.invertColorRange ? mapColorPositive : state.appSettings.mapColors.negative
 	}
-	return s.appSettings.mapColors.neutral
+	return state.appSettings.mapColors.neutral
 }
 
 export const TreeMapHelper = {

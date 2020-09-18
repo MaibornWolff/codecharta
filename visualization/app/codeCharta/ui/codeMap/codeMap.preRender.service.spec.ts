@@ -107,19 +107,15 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function isIdUnique() {
-		let isIdUnique = true
 		const idBuildingSet: Map<number, string> = new Map()
 
-		hierarchy(codeMapPreRenderService.getRenderMap())
-			.descendants()
-			.forEach(node => {
-				if (idBuildingSet.has(node.data.id)) {
-					isIdUnique = false
-				} else {
-					idBuildingSet.set(node.data.id, node.data.path)
-				}
-			})
-		return isIdUnique
+		for (const node of hierarchy(codeMapPreRenderService.getRenderMap()).descendants()) {
+			if (idBuildingSet.has(node.data.id)) {
+				return false
+			}
+			idBuildingSet.set(node.data.id, node.data.path)
+		}
+		return true
 	}
 
 	describe("constructor", () => {

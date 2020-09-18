@@ -175,8 +175,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			fileStatesAvailable(this.storeService.getState().files) &&
 			this.storeService.getState().metricData.nodeMetricData !== null &&
 			this.areChosenMetricsInMetricData() &&
-			_.values(this.storeService.getState().dynamicSettings).every(x => {
-				return x !== null && _.values(x).every(x => x !== null)
+			Object.values(this.storeService.getState().dynamicSettings).every(x => {
+				return x !== null && Object.values(x).every(x => x)
 			})
 		)
 	}

@@ -35,11 +35,4 @@ describe("mapBuilder", () => {
 			expect(MapBuilder.createCodeMapFromHashMap(hashMap)).toMatchSnapshot()
 		})
 	})
-
-	describe("getParentPath", () => {
-		it("should cut the end of the last encountered slash", () => {
-			expect(MapBuilder["getParentPath"]("/root/nodeA")).toEqual("/root")
-			expect(MapBuilder["getParentPath"]("/root/nodeA/nodeB")).toEqual("/root/nodeA")
-		})
-	})
 })
