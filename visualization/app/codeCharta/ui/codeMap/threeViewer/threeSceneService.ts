@@ -1,14 +1,12 @@
-import { AmbientLight, DirectionalLight, Scene } from "three"
-import { Group } from "three"
+import { AmbientLight, DirectionalLight, Scene, Group } from "three"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
-import { Node } from "../../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 
 export interface BuildingSelectedEventSubscriber {
-	onBuildingSelected(selectedBuilding: CodeMapBuilding)
+	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
 }
 
 export interface BuildingDeselectedEventSubscriber {
@@ -24,10 +22,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 	private static readonly BUILDING_DESELECTED_EVENT = "building-deselected"
 	private static readonly CODE_MAP_MESH_CHANGED_EVENT = "code-map-mesh-changed"
 
-	public scene: Scene
-	public labels: Group
-	public edgeArrows: Group
-	public mapGeometry: Group
+	scene: Scene
+	labels: Group
+	edgeArrows: Group
+	mapGeometry: Group
 	private readonly lights: Group
 	private mapMesh: CodeMapMesh
 
@@ -51,41 +49,41 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.scene.add(this.lights)
 	}
 
-	public onRenderMapChanged() {
+	onRenderMapChanged() {
 		this.reselectBuilding()
 	}
 
-	public highlightBuildings() {
+	highlightBuildings() {
 		const state = this.storeService.getState()
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state)
 	}
 
-	public highlightSingleBuilding(building: CodeMapBuilding) {
+	highlightSingleBuilding(building: CodeMapBuilding) {
 		this.highlighted = []
 		this.addBuildingToHighlightingList(building)
 		this.highlightBuildings()
 	}
 
-	public addBuildingToHighlightingList(building: CodeMapBuilding) {
+	addBuildingToHighlightingList(building: CodeMapBuilding) {
 		this.highlighted.push(building)
 	}
 
-	public clearHighlight() {
+	clearHighlight() {
 		if (this.getMapMesh()) {
 			this.getMapMesh().clearHighlight(this.selected)
 			this.highlighted = []
 		}
 	}
 
-	public selectBuilding(building: CodeMapBuilding) {
+	selectBuilding(building: CodeMapBuilding) {
 		const color = this.storeService.getState().appSettings.mapColors.selected
-		this.getMapMesh().selectBuilding(building, this.selected, color)
+		this.getMapMesh().selectBuilding(building, color)
 		this.selected = building
 		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
 	}
 
-	public clearSelection() {
+	clearSelection() {
 		if (this.selected) {
 			this.getMapMesh().clearSelection(this.selected)
 			this.$rootScope.$broadcast(ThreeSceneService.BUILDING_DESELECTED_EVENT)
@@ -96,7 +94,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.selected = null
 	}
 
-	public initLights() {
+	initLights() {
 		const ambilight = new AmbientLight(0x707070) // soft white light
 		const light1 = new DirectionalLight(0xe0e0e0, 1)
 		light1.position.set(50, 10, 8).normalize()
@@ -109,8 +107,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.lights.add(light2)
 	}
 
-	public setMapMesh(mesh: CodeMapMesh) {
-		const mapSize = this.storeService.getState().treeMap.mapSize
+	setMapMesh(mesh: CodeMapMesh) {
+		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
 
 		while (this.mapGeometry.children.length > 0) {
@@ -118,35 +116,35 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		}
 
 		this.mapGeometry.position.x = -mapSize
-		this.mapGeometry.position.y = 0.0
+		this.mapGeometry.position.y = 0
 		this.mapGeometry.position.z = -mapSize
 
 		this.mapGeometry.add(this.mapMesh.getThreeMesh())
 		this.notifyMapMeshChanged()
 	}
 
-	public getMapMesh(): CodeMapMesh {
+	getMapMesh() {
 		return this.mapMesh
 	}
 
-	public scale() {
-		const mapSize = this.storeService.getState().treeMap.mapSize
+	scale() {
+		const { mapSize } = this.storeService.getState().treeMap
 		const scale = this.storeService.getState().appSettings.scaling
 
 		this.mapGeometry.scale.set(scale.x, scale.y, scale.z)
-		this.mapGeometry.position.set(-mapSize * scale.x, 0.0, -mapSize * scale.z)
+		this.mapGeometry.position.set(-mapSize * scale.x, 0, -mapSize * scale.z)
 		this.mapMesh.setScale(scale)
 	}
 
-	public getSelectedBuilding(): CodeMapBuilding {
+	getSelectedBuilding() {
 		return this.selected
 	}
 
-	public getHighlightedBuilding(): CodeMapBuilding {
+	getHighlightedBuilding() {
 		return this.highlighted[0]
 	}
 
-	public getHighlightedNode(): Node {
+	getHighlightedNode() {
 		if (this.getHighlightedBuilding()) {
 			return this.getHighlightedBuilding().node
 		}
@@ -166,19 +164,19 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.$rootScope.$broadcast(ThreeSceneService.CODE_MAP_MESH_CHANGED_EVENT, this.mapMesh)
 	}
 
-	public static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
+	static subscribeToBuildingDeselectedEvents($rootScope: IRootScopeService, subscriber: BuildingDeselectedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_DESELECTED_EVENT, () => {
 			subscriber.onBuildingDeselected()
 		})
 	}
 
-	public static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
+	static subscribeToBuildingSelectedEvents($rootScope: IRootScopeService, subscriber: BuildingSelectedEventSubscriber) {
 		$rootScope.$on(this.BUILDING_SELECTED_EVENT, (_event, selectedBuilding: CodeMapBuilding) => {
 			subscriber.onBuildingSelected(selectedBuilding)
 		})
 	}
 
-	public static subscribeToCodeMapMeshChangedEvent($rootScope: IRootScopeService, subscriber: CodeMapMeshChangedSubscriber) {
+	static subscribeToCodeMapMeshChangedEvent($rootScope: IRootScopeService, subscriber: CodeMapMeshChangedSubscriber) {
 		$rootScope.$on(this.CODE_MAP_MESH_CHANGED_EVENT, (_event, mapMesh: CodeMapMesh) => {
 			subscriber.onCodeMapMeshChanged(mapMesh)
 		})

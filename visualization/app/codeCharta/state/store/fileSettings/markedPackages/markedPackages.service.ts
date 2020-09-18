@@ -20,13 +20,13 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSub
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, MarkedPackagesActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onFilesSelectionChanged(fileStates: FileState[]) {
+	onFilesSelectionChanged(fileStates: FileState[]) {
 		this.merge(fileStates)
 	}
 
@@ -45,8 +45,8 @@ export class MarkedPackagesService implements StoreSubscriber, FilesSelectionSub
 		this.$rootScope.$broadcast(MarkedPackagesService.MARKED_PACKAGES_CHANGED_EVENT, { markedPackages: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: MarkedPackagesSubscriber) {
-		$rootScope.$on(MarkedPackagesService.MARKED_PACKAGES_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: MarkedPackagesSubscriber) {
+		$rootScope.$on(MarkedPackagesService.MARKED_PACKAGES_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onMarkedPackagesChanged(data.markedPackages)
 		})
 	}

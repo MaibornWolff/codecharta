@@ -17,7 +17,7 @@ describe("scenarioHelper", () => {
 
 	describe("importScenarios", () => {
 		it("should convert vectors when importing scenarios", () => {
-			scenarios[0].settings.appSettings.camera = { x: 0, y: 1, z: 2 } as any
+			scenarios[0].settings.appSettings.camera = { x: 0, y: 1, z: 2 } as Vector3
 			expect(scenarios[0].settings.appSettings.camera.clone).toBeUndefined()
 
 			const result = ScenarioHelper.importScenarios(scenarios)
@@ -26,7 +26,7 @@ describe("scenarioHelper", () => {
 		})
 
 		it("should assume 0 as default value if only one dimension is given", () => {
-			scenarios[0].settings.appSettings.camera = { y: 24 } as any
+			scenarios[0].settings.appSettings.camera = { y: 24 } as Vector3
 			expect(scenarios[0].settings.appSettings.camera.clone).toBeUndefined()
 
 			const result = ScenarioHelper.importScenarios(scenarios)
@@ -155,7 +155,7 @@ describe("scenarioHelper", () => {
 		})
 		it("should add the new Scenario into the scenarios", () => {
 			ScenarioHelper.addScenario(SCENARIO)
-			const lastScenarioOfScenarios: RecursivePartial<Scenario> = Array.from(ScenarioHelper["scenarios"].values()).pop()
+			const lastScenarioOfScenarios: RecursivePartial<Scenario> = [...ScenarioHelper["scenarios"].values()].pop()
 
 			expect(lastScenarioOfScenarios).toEqual(SCENARIO)
 		})
@@ -238,14 +238,14 @@ describe("scenarioHelper", () => {
 			ScenarioHelper["scenarios"].set("Scenario", { name: "Scenario", area: { areaMetric: "mcc", margin: 48 } })
 			ScenarioHelper.deleteScenario("Scenario")
 
-			expect(ScenarioHelper["scenarios"]).toEqual(new Map<String, RecursivePartial<Scenario>>())
+			expect(ScenarioHelper["scenarios"]).toEqual(new Map<string, RecursivePartial<Scenario>>())
 		})
 
 		it("should not delete an Element when it doesn't exist ", () => {
 			ScenarioHelper["scenarios"].set("Scenario", { name: "Scenario", area: { areaMetric: "mcc", margin: 48 } })
 
 			ScenarioHelper.deleteScenario("UnknownScenario")
-			const expected = new Map<String, RecursivePartial<Scenario>>()
+			const expected = new Map<string, RecursivePartial<Scenario>>()
 			expected.set("Scenario", { name: "Scenario", area: { areaMetric: "mcc", margin: 48 } })
 
 			expect(ScenarioHelper["scenarios"]).toEqual(expected)
@@ -263,7 +263,7 @@ describe("scenarioHelper", () => {
 			ScenarioHelper["scenarios"].set("Scenario3", { name: "Scenario3", color: { colorMetric: "mcc" } })
 
 			ScenarioHelper.deleteScenario("Scenario2")
-			const expected = new Map<String, RecursivePartial<Scenario>>()
+			const expected = new Map<string, RecursivePartial<Scenario>>()
 			expected.set("Scenario1", { name: "Scenario1", area: { areaMetric: "rloc", margin: 48 } })
 			expected.set("Scenario3", { name: "Scenario3", color: { colorMetric: "mcc" } })
 

@@ -2,38 +2,39 @@ import { hierarchy } from "d3-hierarchy"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../codeCharta.model"
 import ignore from "ignore"
 
-function getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode): CodeMapNode {
+function getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
 	const matchingNode = hierarchy<CodeMapNode>(root)
 		.descendants()
-		.find(node => node.data.path === path)
-	return matchingNode ? matchingNode.data : null
+		.find(({ data }) => data.path === path)
+	return matchingNode?.data
 }
 
-function getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode): CodeMapNode {
+function getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode) {
 	const matchingNode = hierarchy<CodeMapNode>(root)
 		.descendants()
-		.find(node => node.data.path === path && node.data.type === nodeType)
-	return matchingNode ? matchingNode.data : null
+		.find(({ data }) => data.path === path && data.type === nodeType)
+	return matchingNode?.data
 }
 
-function getAllPaths(node: CodeMapNode): Array<string> {
+function getAllPaths(node: CodeMapNode) {
 	return hierarchy<CodeMapNode>(node)
 		.descendants()
-		.map(node => node.data.path)
+		.map(({ data }) => data.path)
 }
 
-function transformPath(toTransform: string): string {
-	let removeNumberOfCharactersFromStart = 0
+function transformPath(toTransform: string) {
+	let removeNumberOfCharactersFromStart = 2
 
-	if (toTransform.startsWith("./")) {
-		removeNumberOfCharactersFromStart = 2
-	} else if (toTransform.startsWith("/")) {
+	if (toTransform.startsWith("/")) {
 		removeNumberOfCharactersFromStart = 1
+	} else if (!toTransform.startsWith("./")) {
+		return toTransform
 	}
-	return toTransform.substring(removeNumberOfCharactersFromStart)
+
+	return toTransform.slice(removeNumberOfCharactersFromStart)
 }
 
-function getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string): CodeMapNode[] {
+function getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: string) {
 	const ignoredNodePaths = ignore()
 		.add(transformPath(gitignorePath))
 		.filter(nodes.map(n => transformPath(n.path)))
@@ -42,15 +43,15 @@ function getNodesByGitignorePath(nodes: Array<CodeMapNode>, gitignorePath: strin
 	return nodes.filter(n => !set.has(transformPath(n.path)))
 }
 
-function numberOfBlacklistedNodes(nodes: Array<CodeMapNode>): number {
+function numberOfBlacklistedNodes(nodes: Array<CodeMapNode>) {
 	return nodes.filter(node => isBlacklisted(node)).length
 }
 
-function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>): boolean {
+function isPathHiddenOrExcluded(path: string, blacklist: Array<BlacklistItem>) {
 	return isPathBlacklisted(path, blacklist, BlacklistType.exclude) || isPathBlacklisted(path, blacklist, BlacklistType.flatten)
 }
 
-function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType): boolean {
+function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: BlacklistType) {
 	if (blacklist.length === 0) {
 		return false
 	}
@@ -59,8 +60,8 @@ function isPathBlacklisted(path: string, blacklist: Array<BlacklistItem>, type: 
 	return ig.ignores(transformPath(path))
 }
 
-function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]): string {
-	let markingColor: string = null
+function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]) {
+	let markingColor: string
 
 	if (markedPackages) {
 		const markedParentPackages = markedPackages.filter(mp => node.path.includes(mp.path))
@@ -77,7 +78,7 @@ function sortByPathLength(a: MarkedPackage, b: MarkedPackage) {
 	return b.path.length - a.path.length
 }
 
-function isBlacklisted(node: CodeMapNode): boolean {
+function isBlacklisted(node: CodeMapNode) {
 	return node.isExcluded || node.isFlattened
 }
 

@@ -1,5 +1,5 @@
-import { IsAttributeSideBarVisibleAction, setIsAttributeSideBarVisible } from "./isAttributeSideBarVisible.actions"
+import { setIsAttributeSideBarVisible } from "./isAttributeSideBarVisible.actions"
 
-export function splitIsAttributeSideBarVisibleAction(payload: boolean): IsAttributeSideBarVisibleAction {
+export function splitIsAttributeSideBarVisibleAction(payload: boolean) {
 	return setIsAttributeSideBarVisible(payload)
 }

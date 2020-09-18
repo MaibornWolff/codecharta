@@ -22,15 +22,15 @@ export class IsAttributeSideBarVisibleService
 		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
 	}
 
-	public onBuildingSelected() {
+	onBuildingSelected() {
 		this.storeService.dispatch(openAttributeSideBar())
 	}
 
-	public onBuildingDeselected() {
+	onBuildingDeselected() {
 		this.storeService.dispatch(closeAttributeSideBar())
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, IsAttributeSideBarVisibleActions)) {
 			this.notify(this.select())
 		}
@@ -46,7 +46,7 @@ export class IsAttributeSideBarVisibleService
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: IsAttributeSideBarVisibleSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: IsAttributeSideBarVisibleSubscriber) {
 		$rootScope.$on(IsAttributeSideBarVisibleService.IS_ATTRIBUTE_SIDE_BAR_VISIBLE_CHANGED_EVENT, (_event, data) => {
 			subscriber.onIsAttributeSideBarVisibleChanged(data.isAttributeSideBarVisible)
 		})

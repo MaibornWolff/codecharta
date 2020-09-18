@@ -1,6 +1,6 @@
-import { FocusedNodePathAction, focusNode, unfocusNode } from "./focusedNodePath.actions"
+import { focusNode, unfocusNode } from "./focusedNodePath.actions"
 
-export function splitFocusedNodePathAction(payload: string): FocusedNodePathAction {
+export function splitFocusedNodePathAction(payload: string) {
 	if (payload === "") {
 		return unfocusNode()
 	}

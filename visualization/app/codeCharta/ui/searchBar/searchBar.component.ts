@@ -31,36 +31,36 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 		}, SearchBarController.DEBOUNCE_TIME)
 	}
 
-	public onBlacklistChanged() {
+	onBlacklistChanged() {
 		this.updateViewModel()
 	}
 
-	public onSearchPatternChanged(searchPattern: string) {
+	onSearchPatternChanged(searchPattern: string) {
 		this._viewModel.searchPattern = searchPattern
 		this.updateViewModel()
 	}
 
-	public handleSearchPatternChange() {
+	handleSearchPatternChange() {
 		this.applyDebouncedSearchPattern()
 	}
 
-	public onClickBlacklistPattern(blacklistType: BlacklistType) {
+	onClickBlacklistPattern(blacklistType: BlacklistType) {
 		this.storeService.dispatch(addBlacklistItem({ path: this._viewModel.searchPattern, type: blacklistType }))
 		this.resetSearchPattern()
 	}
 
-	public isSearchPatternEmpty() {
+	isSearchPatternEmpty() {
 		return this._viewModel.searchPattern === ""
 	}
 
 	private updateViewModel() {
-		const blacklist = this.storeService.getState().fileSettings.blacklist
+		const { blacklist } = this.storeService.getState().fileSettings
 		this._viewModel.isPatternExcluded = this.isPatternBlacklisted(blacklist, BlacklistType.exclude)
 		this._viewModel.isPatternHidden = this.isPatternBlacklisted(blacklist, BlacklistType.flatten)
 	}
 
-	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType): boolean {
-		return blacklist.some(x => this._viewModel.searchPattern == x.path && blacklistType == x.type)
+	private isPatternBlacklisted(blacklist: BlacklistItem[], blacklistType: BlacklistType) {
+		return blacklist.some(x => this._viewModel.searchPattern === x.path && blacklistType === x.type)
 	}
 
 	private resetSearchPattern() {

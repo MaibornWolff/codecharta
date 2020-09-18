@@ -26,7 +26,7 @@ import { splitAmountOfEdgePreviewsAction } from "./amountOfEdgePreviews/amountOf
 import { splitAmountOfTopLabelsAction } from "./amountOfTopLabels/amountOfTopLabels.splitter"
 import { splitIsPresentationModeAction } from "./isPresentationMode/isPresentationMode.splitter"
 
-export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>): CCAction[] {
+export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here

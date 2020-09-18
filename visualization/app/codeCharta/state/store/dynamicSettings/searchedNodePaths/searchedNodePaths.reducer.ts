@@ -1,9 +1,9 @@
 import { SearchedNodePathsAction, SearchedNodePathsActions, setSearchedNodePaths } from "./searchedNodePaths.actions"
 
-export function searchedNodePaths(state: Set<string> = setSearchedNodePaths().payload, action: SearchedNodePathsAction): Set<string> {
+export function searchedNodePaths(state = setSearchedNodePaths().payload, action: SearchedNodePathsAction) {
 	switch (action.type) {
 		case SearchedNodePathsActions.SET_SEARCHED_NODE_PATHS:
-			return new Set(Array.from(action.payload))
+			return new Set([...action.payload])
 		default:
 			return state
 	}

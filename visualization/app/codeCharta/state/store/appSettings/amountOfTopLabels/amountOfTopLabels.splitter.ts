@@ -1,5 +1,5 @@
-import { AmountOfTopLabelsAction, setAmountOfTopLabels } from "./amountOfTopLabels.actions"
+import { setAmountOfTopLabels } from "./amountOfTopLabels.actions"
 
-export function splitAmountOfTopLabelsAction(payload: number): AmountOfTopLabelsAction {
+export function splitAmountOfTopLabelsAction(payload: number) {
 	return setAmountOfTopLabels(payload)
 }

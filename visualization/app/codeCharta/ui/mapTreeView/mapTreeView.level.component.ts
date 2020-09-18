@@ -42,81 +42,76 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		NodeContextMenuController.subscribeToHideNodeContextMenu(this.$rootScope, this)
 	}
 
-	public onHideNodeContextMenu() {
+	onHideNodeContextMenu() {
 		this._viewModel.isMarked = false
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		this._viewModel.isHoveredInCodeMap = !!(
-			this.node &&
-			this.node.path &&
-			hoveredBuilding.node &&
-			hoveredBuilding.node.path === this.node.path
-		)
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		this._viewModel.isHoveredInCodeMap = Boolean(this.node?.path && hoveredBuilding.node?.path === this.node.path)
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		this._viewModel.isHoveredInCodeMap = false
 	}
 
-	public onMouseEnter() {
+	onMouseEnter() {
 		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, this.node)
 		this._viewModel.isHoveredInTreeView = true
 	}
 
-	public onMouseLeave() {
+	onMouseLeave() {
 		this.$rootScope.$broadcast(MapTreeViewLevelController.MAP_TREE_VIEW_UNHOVER_NODE_EVENT, this.node)
 		this._viewModel.isHoveredInTreeView = false
 	}
 
-	public openNodeContextMenu($event) {
+	openNodeContextMenu($event) {
 		$event.stopPropagation()
 		NodeContextMenuController.broadcastShowEvent(this.$rootScope, this.node.path, this.node.type, $event.clientX, $event.clientY)
 		this._viewModel.isMarked = true
 		document.getElementById("tree-root").addEventListener("scroll", this.scrollFunction)
 	}
 
-	public onClickNode() {
+	onClickNode() {
 		this._viewModel.isFolderOpened = !this._viewModel.isFolderOpened
 	}
 
-	public isLeaf(node: CodeMapNode = this.node): boolean {
-		return !(node && node.children && node.children.length > 0)
+	isLeaf(node: CodeMapNode = this.node) {
+		return !(node?.children?.length > 0)
 	}
 
-	public getMarkingColor() {
+	getMarkingColor() {
 		const defaultColor = "#000000"
 		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
 	}
 
-	public isSearched(): boolean {
-		if (this.node != null && this.storeService.getState().dynamicSettings.searchedNodePaths) {
+	isSearched() {
+		if (this.node && this.storeService.getState().dynamicSettings.searchedNodePaths) {
 			return this.storeService.getState().dynamicSettings.searchedNodePaths.has(this.node.path)
 		}
 		return false
 	}
 
-	public openRootFolderByDefault(depth: number) {
-		if (depth == 0) {
+	openRootFolderByDefault(depth: number) {
+		if (depth === 0) {
 			this._viewModel.isFolderOpened = true
 		}
 	}
 
-	public getNodeUnaryValue() {
+	getNodeUnaryValue() {
 		return this.node.attributes[NodeMetricDataService.UNARY_METRIC]
 	}
 
-	public getUnaryPercentage() {
+	getUnaryPercentage() {
 		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[NodeMetricDataService.UNARY_METRIC]
 		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
 	}
 
-	public isRoot() {
+	isRoot() {
 		return this.node.path.split("/").length === 2
 	}
 
-	public static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
+	static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
 		$rootScope.$on(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, (_event, data) => {
 			subscriber.onShouldHoverNode(data)
 		})

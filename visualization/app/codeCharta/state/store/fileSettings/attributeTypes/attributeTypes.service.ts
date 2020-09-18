@@ -20,20 +20,18 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, AttributeTypesActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged(files: FileState[]) {
 		this.merge(files)
 	}
 
 	private merge(files: FileState[]) {
-		const allAttributeTypes: AttributeTypes[] = getVisibleFileStates(files)
-			.map(x => x.file)
-			.map(x => x.settings.fileSettings.attributeTypes)
+		const allAttributeTypes = getVisibleFileStates(files).map(({ file }) => file.settings.fileSettings.attributeTypes)
 
 		const mergedAttributeTypes = getMergedAttributeTypes(allAttributeTypes)
 		this.storeService.dispatch(setAttributeTypes(mergedAttributeTypes))
@@ -47,8 +45,8 @@ export class AttributeTypesService implements StoreSubscriber, FilesSelectionSub
 		this.$rootScope.$broadcast(AttributeTypesService.ATTRIBUTE_TYPES_CHANGED_EVENT, { attributeTypes: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: AttributeTypesSubscriber) {
-		$rootScope.$on(AttributeTypesService.ATTRIBUTE_TYPES_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: AttributeTypesSubscriber) {
+		$rootScope.$on(AttributeTypesService.ATTRIBUTE_TYPES_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onAttributeTypesChanged(data.attributeTypes)
 		})
 	}

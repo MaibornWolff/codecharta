@@ -1,7 +1,7 @@
 import { createFileAction, createInputPromt, modifyFileAction } from "./plopHelper"
 
-const TEMPLATE_DIR: string = "ui"
-const DESTINATION_DIR: string = "ui/{{camelCase name}}"
+const TEMPLATE_DIR = "ui"
+const DESTINATION_DIR = "ui/{{camelCase name}}"
 
 export const PLOP_UI_VARIABLE_PROMPTS = [createInputPromt("name", "Name:")]
 

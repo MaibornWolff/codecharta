@@ -14,7 +14,7 @@ export class ShowOnlyBuildingsWithEdgesService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, ShowOnlyBuildingsWithEdgesActions)) {
 			this.notify(this.select())
 		}
@@ -30,8 +30,8 @@ export class ShowOnlyBuildingsWithEdgesService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: ShowOnlyBuildingsWithEdgesSubscriber) {
-		$rootScope.$on(ShowOnlyBuildingsWithEdgesService.SHOW_ONLY_BUILDINGS_WITH_EDGES_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: ShowOnlyBuildingsWithEdgesSubscriber) {
+		$rootScope.$on(ShowOnlyBuildingsWithEdgesService.SHOW_ONLY_BUILDINGS_WITH_EDGES_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onShowOnlyBuildingsWithEdgesChanged(data.showOnlyBuildingsWithEdges)
 		})
 	}

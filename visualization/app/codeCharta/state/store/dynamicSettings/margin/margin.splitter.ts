@@ -1,5 +1,5 @@
-import { MarginAction, setMargin } from "./margin.actions"
+import { setMargin } from "./margin.actions"
 
-export function splitMarginAction(payload: number): MarginAction {
+export function splitMarginAction(payload: number) {
 	return setMargin(payload)
 }

@@ -1,12 +1,11 @@
 import { FilesAction, FilesSelectionActions, NewFilesImportedActions, setFiles } from "./files.actions"
 import { CCFile } from "../../../codeCharta.model"
 import { FileSelectionState, FileState } from "../../../model/files/files"
-import { clone } from "../../../util/clone"
 
-export default function files(state: FileState[] = setFiles().payload, action: FilesAction): FileState[] {
+export default function files(state = setFiles().payload, action: FilesAction) {
 	switch (action.type) {
 		case NewFilesImportedActions.SET_FILES:
-			return clone(action.payload)
+			return action.payload
 		case NewFilesImportedActions.ADD_FILE:
 			return addFile(state, action.payload)
 		case NewFilesImportedActions.RESET_FILES:
@@ -40,8 +39,8 @@ function resetSelection(state: FileState[]): FileState[] {
 	})
 }
 
-function addFile(state: FileState[], file: CCFile): FileState[] {
-	return [...state, { file: clone(file), selectedAs: FileSelectionState.None }]
+function addFile(state: FileState[], file: CCFile) {
+	return [...state, { file, selectedAs: FileSelectionState.None }]
 }
 
 function setSingleByName(state: FileState[], fileName: string): FileState[] {
@@ -53,7 +52,7 @@ function setSingleByName(state: FileState[], fileName: string): FileState[] {
 	})
 }
 
-function setSingle(state: FileState[], file: CCFile): FileState[] {
+function setSingle(state: FileState[], file: CCFile) {
 	return setSingleByName(state, file.fileMeta.fileName)
 }
 
@@ -61,14 +60,15 @@ function setDeltaByNames(state: FileState[], referenceFileName: string, comparis
 	return state.map(x => {
 		if (x.file.fileMeta.fileName === referenceFileName) {
 			return { ...x, selectedAs: FileSelectionState.Reference }
-		} else if (x.file.fileMeta.fileName === comparisonFileName) {
+		}
+		if (x.file.fileMeta.fileName === comparisonFileName) {
 			return { ...x, selectedAs: FileSelectionState.Comparison }
 		}
 		return { ...x, selectedAs: FileSelectionState.None }
 	})
 }
 
-function setDelta(state: FileState[], reference: CCFile, comparison: CCFile): FileState[] {
+function setDelta(state: FileState[], reference: CCFile, comparison: CCFile) {
 	return setDeltaByNames(state, reference.fileMeta.fileName, comparison.fileMeta.fileName)
 }
 

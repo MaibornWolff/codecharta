@@ -21,11 +21,11 @@ export class SortingOptionController implements SortingOptionSubscriber {
 		this._viewModel.sortingOptions = _.values(SortingOption)
 	}
 
-	public onSortingOptionChanged(sortingOption: SortingOption) {
+	onSortingOptionChanged(sortingOption: SortingOption) {
 		this._viewModel.sortingOption = sortingOption
 	}
 
-	public onChange() {
+	onChange() {
 		this.storeService.dispatch(setSortingOption(this._viewModel.sortingOption))
 	}
 }

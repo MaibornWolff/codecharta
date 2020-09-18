@@ -63,37 +63,37 @@ export class AttributeSideBarController
 		IsAttributeSideBarVisibleService.subscribe(this.$rootScope, this)
 	}
 
-	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
+	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this._viewModel.node = selectedBuilding.node
 		this._viewModel.fileName = this.codeMapPreRenderService.getRenderFileMeta().fileName
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
-	public onAreaMetricChanged(areaMetric: string) {
+	onAreaMetricChanged(areaMetric: string) {
 		this._viewModel.primaryMetricKeys.node.area = areaMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
-	public onHeightMetricChanged(heightMetric: string) {
+	onHeightMetricChanged(heightMetric: string) {
 		this._viewModel.primaryMetricKeys.node.height = heightMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
-	public onColorMetricChanged(colorMetric: string) {
+	onColorMetricChanged(colorMetric: string) {
 		this._viewModel.primaryMetricKeys.node.color = colorMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
-	public onEdgeMetricChanged(edgeMetric: string) {
+	onEdgeMetricChanged(edgeMetric: string) {
 		this._viewModel.primaryMetricKeys.edge.edge = edgeMetric
 		this.updateSortedMetricKeysWithoutPrimaryMetrics()
 	}
 
-	public onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
+	onIsAttributeSideBarVisibleChanged(isAttributeSideBarVisible: boolean) {
 		this._viewModel.isSideBarVisible = isAttributeSideBarVisible
 	}
 
-	public onClickCloseSideBar() {
+	onClickCloseSideBar() {
 		this.storeService.dispatch(closeAttributeSideBar())
 	}
 
