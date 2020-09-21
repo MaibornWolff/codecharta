@@ -22,7 +22,11 @@ export class CodeMapArrowService
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		this.showArrowsOfBuilding(selectedBuilding)
+		if (this.isEdgeAppliableForBuilding(selectedBuilding)) {
+			this.clearArrows()
+			this.showEdgesOfBuildings(this.storeService.getState().fileSettings.edges)
+		}
+		this.scale()
 	}
 
 	onBuildingDeselected() {
@@ -34,7 +38,11 @@ export class CodeMapArrowService
 	}
 
 	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		this.showArrowsOfBuilding(hoveredBuilding)
+		if (this.isEdgeAppliableForBuilding(hoveredBuilding)) {
+			this.clearArrows()
+			this.showEdgesOfBuildings(this.storeService.getState().fileSettings.edges, hoveredBuilding)
+		}
+		this.scale()
 	}
 
 	onBuildingUnhovered() {
@@ -100,26 +108,20 @@ export class CodeMapArrowService
 		}
 	}
 
-	private showArrowsOfBuilding(codeMapBuilding: CodeMapBuilding) {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None" && !codeMapBuilding.node.flat) {
-			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
-		}
-		this.scale()
+	private isEdgeAppliableForBuilding(codeMapBuilding: CodeMapBuilding) {
+		return this.storeService.getState().dynamicSettings.edgeMetric !== "None" && !codeMapBuilding.node.flat
 	}
 
-	private showEdgesOfBuildings(edges: Edge[]) {
+	private showEdgesOfBuildings(edges: Edge[], hoveredbuilding?: CodeMapBuilding) {
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
-		const highlightedBuilding = this.threeSceneService.getHighlightedNode()
 
 		if (selectedBuilding) {
 			this.buildPairingEdges(selectedBuilding.node, edges)
 		}
-		if (highlightedBuilding) {
-			this.buildPairingEdges(highlightedBuilding, edges)
+		if (hoveredbuilding) {
+			this.buildPairingEdges(hoveredbuilding.node, edges)
 		}
-		if (!selectedBuilding && !highlightedBuilding) {
+		if (!selectedBuilding && !hoveredbuilding) {
 			this.addEdgePreview(
 				null,
 				edges.filter(x => x.visible !== EdgeVisibility.none)
