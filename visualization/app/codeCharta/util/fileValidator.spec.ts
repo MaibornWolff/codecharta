@@ -18,7 +18,7 @@ describe("FileValidator", () => {
 	let invalidFile
 
 	beforeEach(() => {
-		file = TEST_FILE_CONTENT
+		file = clone(TEST_FILE_CONTENT)
 	})
 
 	it("API version exists in package.json", () => {
@@ -133,7 +133,7 @@ describe("FileValidator", () => {
 		file.nodes[0].children[1].type = NodeType.FILE
 
 		const expectedError: CCValidationResult = {
-			error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with name: same`],
+			error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/same`],
 			warning: []
 		}
 
@@ -173,57 +173,20 @@ describe("FileValidator", () => {
 		}, expectedError)
 	})
 
-	it("attributes should not allow whitespaces", () => {
-		file.nodes[0].attributes = {
-			"tes t1": 0
-		}
-
-		const expectedError: CCValidationResult = {
-			error: [
-				"Required error: nodes[0] should have required property 'name'",
-				"Required error: nodes[0] should have required property 'type'"
-			],
-			warning: []
-		}
-
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
-
-	it("attributes should not allow special characters", () => {
-		file.nodes[0].attributes = {
-			"tes)t1": 0
-		}
-
-		const expectedError: CCValidationResult = {
-			error: [
-				"Required error: nodes[0] should have required property 'name'",
-				"Required error: nodes[0] should have required property 'type'"
-			],
-			warning: []
-		}
-
-		assert.throws(() => {
-			validate(file)
-		}, expectedError)
-	})
-
 	describe("fixed folders validation", () => {
 		let folder1: CodeMapNode
 		let folder2: CodeMapNode
 
 		beforeEach(() => {
 			file = clone(fileWithFixedFolders)
-			folder1 = file.nodes[0].children[0]
-			folder2 = file.nodes[0].children[1]
+			;[folder1, folder2] = file.nodes[0].children
 		})
 
 		it("should throw an error, if there are fixed folders, but not every folder on root is fixed", () => {
 			folder1.fixedPosition = undefined
 
 			const expectedError: CCValidationResult = {
-				error: [ERROR_MESSAGES.notAllFoldersAreFixed + " Found: folder_1"],
+				error: [`${ERROR_MESSAGES.notAllFoldersAreFixed} Found: folder_1`],
 				warning: []
 			}
 

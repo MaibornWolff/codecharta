@@ -1,5 +1,5 @@
-import { SortingOrderAscendingAction, setSortingOrderAscending } from "./sortingOrderAscending.actions"
+import { setSortingOrderAscending } from "./sortingOrderAscending.actions"
 
-export function splitSortingOrderAscendingAction(payload: boolean): SortingOrderAscendingAction {
+export function splitSortingOrderAscendingAction(payload: boolean) {
 	return setSortingOrderAscending(payload)
 }

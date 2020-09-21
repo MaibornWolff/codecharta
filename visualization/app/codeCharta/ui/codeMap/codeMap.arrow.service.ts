@@ -1,6 +1,5 @@
 import { BuildingDeselectedEventSubscriber, BuildingSelectedEventSubscriber, ThreeSceneService } from "./threeViewer/threeSceneService"
-import { Node, EdgeVisibility } from "../../codeCharta.model"
-import { Edge } from "../../codeCharta.model"
+import { Node, EdgeVisibility, Edge } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
@@ -11,7 +10,7 @@ import { StoreService } from "../../state/store.service"
 export class CodeMapArrowService
 	implements BuildingSelectedEventSubscriber, BuildingDeselectedEventSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private VERTICES_PER_LINE = 5
-	private map: Map<String, Node>
+	private map: Map<string, Node>
 	private arrows: Object3D[]
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private threeSceneService: ThreeSceneService) {
@@ -22,23 +21,23 @@ export class CodeMapArrowService
 		ThreeSceneService.subscribeToBuildingDeselectedEvents(this.$rootScope, this)
 	}
 
-	public onBuildingSelected(selectedBuilding: CodeMapBuilding) {
+	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		this.showArrowsOfBuilding(selectedBuilding)
 	}
 
-	public onBuildingDeselected() {
+	onBuildingDeselected() {
 		this.clearArrows()
 		this.addEdgePreview(
 			null,
-			this.storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
+			this.storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
 		)
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		this.showArrowsOfBuilding(hoveredBuilding)
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		const state = this.storeService.getState()
 		if (state.dynamicSettings.edgeMetric !== "None") {
 			this.clearArrows()
@@ -47,22 +46,20 @@ export class CodeMapArrowService
 		this.scale()
 	}
 
-	public clearArrows() {
+	clearArrows() {
 		this.arrows = []
 		while (this.threeSceneService.edgeArrows.children.length > 0) {
 			this.threeSceneService.edgeArrows.children.pop()
 		}
 	}
 
-	public addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean): void {
+	addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
 		const state = this.storeService.getState()
 		const curveScale = 100 * state.appSettings.edgeHeight
 
 		if (
-			arrowTargetNode.attributes &&
-			arrowTargetNode.attributes[state.dynamicSettings.heightMetric] &&
-			arrowOriginNode.attributes &&
-			arrowOriginNode.attributes[state.dynamicSettings.heightMetric]
+			arrowTargetNode.attributes?.[state.dynamicSettings.heightMetric] &&
+			arrowOriginNode.attributes?.[state.dynamicSettings.heightMetric]
 		) {
 			const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
 
@@ -78,14 +75,14 @@ export class CodeMapArrowService
 		}
 	}
 
-	public addEdgePreview(nodes: Node[], edges: Edge[]) {
+	addEdgePreview(nodes: Node[], edges: Edge[]) {
 		if (nodes) {
 			this.map = this.getNodesAsMap(nodes)
 		}
 
 		for (const edge of edges) {
-			const originNode: Node = this.map.get(edge.fromNodeName)
-			const targetNode: Node = this.map.get(edge.toNodeName)
+			const originNode = this.map.get(edge.fromNodeName)
+			const targetNode = this.map.get(edge.toNodeName)
 			if (originNode && targetNode && edge.visible !== EdgeVisibility.none && edge.visible) {
 				const curveScale = 100 * this.storeService.getState().appSettings.edgeHeight
 				const curve = this.createCurve(originNode, targetNode, curveScale)
@@ -94,8 +91,8 @@ export class CodeMapArrowService
 		}
 	}
 
-	public scale() {
-		const scaling = this.storeService.getState().appSettings.scaling
+	scale() {
+		const { scaling } = this.storeService.getState().appSettings
 		for (const arrow of this.arrows) {
 			arrow.scale.x = scaling.x
 			arrow.scale.y = scaling.y
@@ -125,15 +122,15 @@ export class CodeMapArrowService
 		if (!selectedBuilding && !highlightedBuilding) {
 			this.addEdgePreview(
 				null,
-				edges.filter(x => x.visible != EdgeVisibility.none)
+				edges.filter(x => x.visible !== EdgeVisibility.none)
 			)
 		}
 	}
 
 	private buildPairingEdges(node: Node, edges: Edge[]) {
 		for (const edge of edges) {
-			const originNode: Node = this.map.get(edge.fromNodeName)
-			const targetNode: Node = this.map.get(edge.toNodeName)
+			const originNode = this.map.get(edge.fromNodeName)
+			const targetNode = this.map.get(edge.toNodeName)
 			if (originNode && targetNode && originNode.path === node.path) {
 				this.addArrow(targetNode, originNode, true)
 			} else if (originNode && targetNode && targetNode.path === node.path) {
@@ -153,7 +150,7 @@ export class CodeMapArrowService
 	}
 
 	private highlightBuilding(node: Node) {
-		const building: CodeMapBuilding = this.threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath(node.path)
+		const building = this.threeSceneService.getMapMesh().getMeshDescription().getBuildingByPath(node.path)
 		this.threeSceneService.addBuildingToHighlightingList(building)
 	}
 
@@ -179,7 +176,7 @@ export class CodeMapArrowService
 		}
 	}
 
-	private getNodesAsMap(nodes: Node[]): Map<string, Node> {
+	private getNodesAsMap(nodes: Node[]) {
 		const map = new Map<string, Node>()
 		nodes.forEach(node => map.set(node.path, node))
 		return map
@@ -220,15 +217,15 @@ export class CodeMapArrowService
 	}
 
 	private buildArrow(points: Vector3[], ARROW_COLOR = 0, headLength = 10, headWidth = 10) {
-		const dir = points[points.length - 1]
+		const direction = points[points.length - 1]
 			.clone()
 			.sub(points[points.length - 2].clone())
 			.normalize()
 
 		const origin = points[points.length - 1].clone()
-		if (dir.y < 0) {
+		if (direction.y < 0) {
 			origin.y += headLength + 1
 		}
-		return new ArrowHelper(dir, origin, headLength + 1, ARROW_COLOR, headLength, headWidth)
+		return new ArrowHelper(direction, origin, headLength + 1, ARROW_COLOR, headLength, headWidth)
 	}
 }

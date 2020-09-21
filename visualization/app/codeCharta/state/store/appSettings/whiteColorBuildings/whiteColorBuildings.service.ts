@@ -14,7 +14,7 @@ export class WhiteColorBuildingsService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, WhiteColorBuildingsActions)) {
 			this.notify(this.select())
 		}
@@ -30,8 +30,8 @@ export class WhiteColorBuildingsService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: WhiteColorBuildingsSubscriber) {
-		$rootScope.$on(WhiteColorBuildingsService.WHITE_COLOR_BUILDINGS_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: WhiteColorBuildingsSubscriber) {
+		$rootScope.$on(WhiteColorBuildingsService.WHITE_COLOR_BUILDINGS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onWhiteColorBuildingsChanged(data.whiteColorBuildings)
 		})
 	}

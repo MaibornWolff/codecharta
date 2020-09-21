@@ -1,6 +1,6 @@
 const OUTSIDE_DIST = "../../"
-const APP_BASE: string = OUTSIDE_DIST + "app/codeCharta/"
-const TEMPLATE_DIRECTORY: string = OUTSIDE_DIST + "plop/templates/"
+const APP_BASE = OUTSIDE_DIST + "app/codeCharta/"
+const TEMPLATE_DIRECTORY = OUTSIDE_DIST + "plop/templates/"
 const FILE_NAME_SEPARATOR = "."
 const PATH_SEPARATOR = "/"
 const NAME = "{{camelCase name}}"

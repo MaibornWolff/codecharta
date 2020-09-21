@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.57.0",
+	"version": "1.57.3",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -132,6 +132,7 @@
 		"es6-shim": "^0.35.3",
 		"eslint": "^7.8.1",
 		"eslint-config-prettier": "^6.11.0",
+		"eslint-plugin-unicorn": "^21.0.0",
 		"file-loader": "^6.0.0",
 		"html-loader": "^1.1.0",
 		"html-webpack-plugin": "^4.3.0",

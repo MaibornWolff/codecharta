@@ -1,4 +1,4 @@
-import { IAngularEvent, IRootScopeService } from "angular"
+import { IRootScopeService } from "angular"
 import $ from "jquery"
 import { hierarchy } from "d3"
 import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
@@ -27,7 +27,7 @@ export class ViewCubeMouseEventsService {
 
 	constructor(private $rootScope: IRootScopeService) {}
 
-	public init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
+	init(cubeGroup: Group, camera: PerspectiveCamera, renderer: WebGLRenderer) {
 		this.cubeGroup = cubeGroup
 		this.camera = camera
 		this.renderer = renderer
@@ -52,7 +52,7 @@ export class ViewCubeMouseEventsService {
 		const ray = new Raycaster()
 		ray.setFromCamera(vector, this.camera)
 		const h = hierarchy<Group>(this.cubeGroup)
-		const intersection = ray.intersectObjects(h.leaves().map(x => x.data))[0]
+		const [intersection] = ray.intersectObjects(h.leaves().map(x => x.data))
 		return intersection ? (intersection.object as Mesh) : null
 	}
 
@@ -115,26 +115,26 @@ export class ViewCubeMouseEventsService {
 		this.$rootScope.$broadcast(ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME, { cube })
 	}
 
-	public static subscribeToEventPropagation($rootScope: IRootScopeService, subscriber: ViewCubeEventPropagationSubscriber) {
+	static subscribeToEventPropagation($rootScope: IRootScopeService, subscriber: ViewCubeEventPropagationSubscriber) {
 		$rootScope.$on(
 			ViewCubeMouseEventsService.VIEW_CUBE_EVENT_PROPAGATION_EVENT_NAME,
-			(event: IAngularEvent, params: { type: string; e: MouseEvent }) => {
-				subscriber.onViewCubeEventPropagation(params.type, params.e)
+			(_event_, parameters: { type: string; e: MouseEvent }) => {
+				subscriber.onViewCubeEventPropagation(parameters.type, parameters.e)
 			}
 		)
 	}
 
-	public static subscribeToViewCubeMouseEvents($rootScope: IRootScopeService, subscriber: ViewCubeEventSubscriber) {
-		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME, (event: IAngularEvent, params: { cube: Mesh }) => {
-			subscriber.onCubeHovered(params.cube)
+	static subscribeToViewCubeMouseEvents($rootScope: IRootScopeService, subscriber: ViewCubeEventSubscriber) {
+		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_HOVER_EVENT_NAME, (_event_, parameters: { cube: Mesh }) => {
+			subscriber.onCubeHovered(parameters.cube)
 		})
 
 		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_UNHOVER_EVENT_NAME, () => {
 			subscriber.onCubeUnhovered()
 		})
 
-		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME, (event: IAngularEvent, params: { cube: Mesh }) => {
-			subscriber.onCubeClicked(params.cube)
+		$rootScope.$on(ViewCubeMouseEventsService.VIEW_CUBE_CLICK_EVENT_NAME, (_event_, parameters: { cube: Mesh }) => {
+			subscriber.onCubeClicked(parameters.cube)
 		})
 	}
 }

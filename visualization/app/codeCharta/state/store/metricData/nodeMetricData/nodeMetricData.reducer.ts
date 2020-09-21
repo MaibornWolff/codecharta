@@ -6,12 +6,11 @@ import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { hierarchy, HierarchyNode } from "d3"
 import { NodeMetricDataService } from "./nodeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
-import { clone } from "../../../../util/clone"
 
-export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().payload, action: NodeMetricDataAction): NodeMetricData[] {
+export function nodeMetricData(state = setNodeMetricData().payload, action: NodeMetricDataAction) {
 	switch (action.type) {
 		case NodeMetricDataActions.SET_NODE_METRIC_DATA:
-			return clone(action.payload)
+			return action.payload
 		case NodeMetricDataActions.CALCULATE_NEW_NODE_METRIC_DATA:
 			return setNewMetricData(action.payload.fileStates, action.payload.blacklist)
 		default:
@@ -19,11 +18,11 @@ export function nodeMetricData(state: NodeMetricData[] = setNodeMetricData().pay
 	}
 }
 
-function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): NodeMetricData[] {
+function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	const hashMap: Map<string, number> = new Map()
 
 	getVisibleFileStates(fileStates).forEach((fileState: FileState) => {
-		const nodes: HierarchyNode<CodeMapNode>[] = hierarchy(fileState.file.map).leaves()
+		const nodes = hierarchy(fileState.file.map).leaves()
 		nodes.forEach((node: HierarchyNode<CodeMapNode>) => {
 			if (node.data.path && !CodeMapHelper.isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)) {
 				addMaxMetricValuesToHashMap(node, hashMap)
@@ -34,7 +33,7 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]): 
 }
 
 function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: Map<string, number>) {
-	const attributes: string[] = Object.keys(node.data.attributes)
+	const attributes = Object.keys(node.data.attributes)
 	attributes.forEach((metric: string) => {
 		const maxValue = hashMap.get(metric)
 
@@ -44,7 +43,7 @@ function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: 
 	})
 }
 
-function getMetricDataFromHashMap(hashMap: Map<string, number>): NodeMetricData[] {
+function getMetricDataFromHashMap(hashMap: Map<string, number>) {
 	const metricData: NodeMetricData[] = []
 
 	hashMap.set(NodeMetricDataService.UNARY_METRIC, 1)

@@ -24,11 +24,11 @@ export class RibbonBarController implements PanelSelectionSubscriber {
 		panelSelectionValues: PanelSelection
 	}
 
-	public onPanelSelectionChanged(panelSelection: PanelSelection) {
+	onPanelSelectionChanged(panelSelection: PanelSelection) {
 		this._viewModel.panelSelection = panelSelection
 	}
 
-	public toggle(panelSelection: PanelSelection) {
+	toggle(panelSelection: PanelSelection) {
 		$(document.activeElement).blur()
 
 		const newSelection = this._viewModel.panelSelection !== panelSelection ? panelSelection : PanelSelection.NONE

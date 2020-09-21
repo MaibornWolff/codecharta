@@ -186,7 +186,7 @@ describe("codeChartaService", () => {
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, content: ("string" as any) as ExportCCFile }])
+			codeChartaService.loadFiles([{ fileName, content: ("string" as unknown) as ExportCCFile }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
@@ -236,6 +236,42 @@ describe("codeChartaService", () => {
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+		})
+
+		it("should not show a validation error if filenames are duplicated when their path is different", () => {
+			validFileContent.nodes[0].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
+			expect(storeService.getState().files).toHaveLength(1)
+		})
+
+		it("should show a validation error if two files in a folder have the same name", () => {
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/Parent Leaf/duplicate`],
+				warning: []
+			}
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+		})
+
+		it("should not show a validation error if two files in a folder have the same name but different type", () => {
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[0].type = NodeType.FILE
+			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[1].type = NodeType.FOLDER
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
+			expect(storeService.getState().files).toHaveLength(1)
 		})
 	})
 })

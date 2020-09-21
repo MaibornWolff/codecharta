@@ -14,7 +14,7 @@ export class AmountOfEdgePreviewsService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, AmountOfEdgePreviewsActions)) {
 			this.notify(this.select())
 		}
@@ -30,8 +30,8 @@ export class AmountOfEdgePreviewsService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: AmountOfEdgePreviewsSubscriber) {
-		$rootScope.$on(AmountOfEdgePreviewsService.AMOUNT_OF_EDGE_PREVIEWS_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: AmountOfEdgePreviewsSubscriber) {
+		$rootScope.$on(AmountOfEdgePreviewsService.AMOUNT_OF_EDGE_PREVIEWS_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onAmountOfEdgePreviewsChanged(data.amountOfEdgePreviews)
 		})
 	}

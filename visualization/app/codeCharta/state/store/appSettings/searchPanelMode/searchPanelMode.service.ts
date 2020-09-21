@@ -15,7 +15,7 @@ export class SearchPanelModeService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, SearchPanelModeActions)) {
 			this.notify(this.select())
 		}
@@ -31,8 +31,8 @@ export class SearchPanelModeService implements StoreSubscriber {
 		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: SearchPanelModeSubscriber) {
-		$rootScope.$on(SearchPanelModeService.SEARCH_PANEL_MODE_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: SearchPanelModeSubscriber) {
+		$rootScope.$on(SearchPanelModeService.SEARCH_PANEL_MODE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onSearchPanelModeChanged(data.searchPanelMode)
 		})
 	}

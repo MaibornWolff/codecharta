@@ -1,5 +1,4 @@
 import "./dialog.component.scss"
-import { AppSettings, DynamicSettings, RecursivePartial, Scenario } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
 
@@ -8,7 +7,7 @@ export interface AddScenarioContent {
 	metricName: string
 	isSelected: boolean
 	isDisabled: boolean
-	savedValues: any
+	savedValues: unknown
 }
 
 export enum ScenarioMetricType {
@@ -34,21 +33,18 @@ export class DialogAddScenarioSettingsComponent {
 		this.initDialogFields()
 	}
 
-	public hide() {
+	hide() {
 		this.$mdDialog.hide()
 	}
 
-	public addScenario() {
-		const selectedScenarioAttributes: AddScenarioContent[] = this._viewModel.scenarioContent.filter(x => x.isSelected == true)
-		const newScenario: RecursivePartial<Scenario> = ScenarioHelper.createNewScenario(
-			this._viewModel.scenarioName,
-			selectedScenarioAttributes
-		)
+	addScenario() {
+		const selectedScenarioAttributes = this._viewModel.scenarioContent.filter(x => x.isSelected)
+		const newScenario = ScenarioHelper.createNewScenario(this._viewModel.scenarioName, selectedScenarioAttributes)
 		ScenarioHelper.addScenario(newScenario)
 		this.hide()
 	}
 
-	public isNewScenarioValid() {
+	isNewScenarioValid() {
 		return (
 			this.isAnyScenarioContentSelected() &&
 			!this.isScenarioNameEmpty() &&
@@ -69,8 +65,8 @@ export class DialogAddScenarioSettingsComponent {
 	}
 
 	private setScenarioContentList() {
-		const dynamicSettings: DynamicSettings = this.storeService.getState().dynamicSettings
-		const appSettings: AppSettings = this.storeService.getState().appSettings
+		const { dynamicSettings } = this.storeService.getState()
+		const { appSettings } = this.storeService.getState()
 		this.pushScenarioContent(ScenarioMetricType.CAMERA_POSITION, "", {
 			camera: appSettings.camera,
 			cameraTarget: appSettings.cameraTarget
@@ -87,7 +83,7 @@ export class DialogAddScenarioSettingsComponent {
 		})
 	}
 
-	private pushScenarioContent(metricType: ScenarioMetricType, metricName: string, savedValues?: any) {
+	private pushScenarioContent(metricType: ScenarioMetricType, metricName: string, savedValues?: unknown) {
 		this._viewModel.scenarioContent.push({
 			metricType,
 			metricName,

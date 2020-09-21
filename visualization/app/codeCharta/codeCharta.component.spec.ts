@@ -106,7 +106,7 @@ describe("codeChartaController", () => {
 		it("should call tryLoadingSampleFiles when data is an empty array", async () => {
 			await codeChartaController.loadFileOrSample()
 
-			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalled()
+			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalledWith(new Error("Filename is missing"))
 		})
 
 		it("should call loadFiles when data is not an empty array", async () => {
@@ -129,7 +129,7 @@ describe("codeChartaController", () => {
 
 	describe("tryLoadingSampleFiles", () => {
 		it("should call getParameterByName with 'file'", () => {
-			codeChartaController.tryLoadingSampleFiles()
+			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
 
 			expect(codeChartaController["urlUtils"].getParameterByName).toHaveBeenCalledWith("file")
 		})
@@ -137,9 +137,9 @@ describe("codeChartaController", () => {
 		it("should call showErrorDialog when no file is found", () => {
 			const expected = "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
 
-			codeChartaController.tryLoadingSampleFiles()
+			codeChartaController.tryLoadingSampleFiles(new Error("Actual error message"))
 
-			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected)
+			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected, "Error (Actual error message)")
 		})
 
 		it("should call loadFiles with sample files", () => {
@@ -148,7 +148,7 @@ describe("codeChartaController", () => {
 				{ fileName: "sample2.cc.json", content: sample2 }
 			]
 
-			codeChartaController.tryLoadingSampleFiles()
+			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
 		})
@@ -161,7 +161,7 @@ describe("codeChartaController", () => {
 
 			codeChartaController.onClick()
 
-			const appSettings = storeService.getState().appSettings
+			const { appSettings } = storeService.getState()
 
 			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
 			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)

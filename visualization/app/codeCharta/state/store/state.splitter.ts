@@ -19,7 +19,7 @@ import { splitAppSettingsActions } from "./appSettings/appSettings.splitter"
 import { splitTreeMapSettingsActions } from "./treeMap/treeMap.splitter"
 import { splitFilesAction } from "./files/files.splitter"
 
-export function splitStateActions(action: CCAction): CCAction[] {
+export function splitStateActions(action: CCAction) {
 	// Plop: Propagate sub-reducer here
 	if (Object.values(MetricDataActions).includes(action.type)) {
 		return splitMetricDataActions(action.payload)

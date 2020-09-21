@@ -3,7 +3,7 @@ import { RecursivePartial, CCAction, TreeMapSettings } from "../../../codeCharta
 // Plop: Append action splitter import here
 import { splitMapSizeAction } from "./mapSize/mapSize.splitter"
 
-export function splitTreeMapSettingsActions(payload: RecursivePartial<TreeMapSettings>): CCAction[] {
+export function splitTreeMapSettingsActions(payload: RecursivePartial<TreeMapSettings>) {
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here

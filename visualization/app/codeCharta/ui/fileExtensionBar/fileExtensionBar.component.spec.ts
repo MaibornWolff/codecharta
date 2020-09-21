@@ -121,7 +121,7 @@ describe("FileExtensionBarController", () => {
 
 			fileExtensionBarController.toggleExtensiveMode()
 
-			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeTruthy
+			expect(fileExtensionBarController["_viewModel"].isExtensiveMode).toBeTruthy()
 		})
 	})
 

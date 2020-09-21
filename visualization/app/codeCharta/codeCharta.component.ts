@@ -42,27 +42,26 @@ export class CodeChartaController {
 		this.loadFileOrSample()
 	}
 
-	public loadFileOrSample() {
-		return this.urlUtils
-			.getFileDataFromQueryParam()
-			.then((data: NameDataPair[]) => {
-				if (data.length > 0) {
-					this.tryLoadingFiles(data)
-					this.setRenderStateFromUrl()
-				} else {
-					this.tryLoadingSampleFiles()
-				}
-			})
-			.catch(() => {
-				this.tryLoadingSampleFiles()
-			})
+	async loadFileOrSample() {
+		try {
+			const data = await this.urlUtils.getFileDataFromQueryParam()
+			this.tryLoadingFiles(data)
+			this.setRenderStateFromUrl()
+		} catch (error) {
+			this.tryLoadingSampleFiles(error)
+		}
 	}
 
-	public tryLoadingSampleFiles() {
+	tryLoadingSampleFiles(error: Error & { statusText?: string; status?: number }) {
 		if (this.urlUtils.getParameterByName("file")) {
-			this.dialogService.showErrorDialog(
-				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
-			)
+			const message = "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
+			let title = "Error"
+			if (error.message) {
+				title += ` (${error.message})`
+			} else if (error.statusText && error.status) {
+				title += ` (${error.status}: ${error.statusText})`
+			}
+			this.dialogService.showErrorDialog(message, title)
 		}
 		this.tryLoadingFiles([
 			{ fileName: "sample1.cc.json", content: sample1 as ExportCCFile },
@@ -70,7 +69,7 @@ export class CodeChartaController {
 		])
 	}
 
-	public onClick() {
+	onClick() {
 		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 
@@ -80,7 +79,7 @@ export class CodeChartaController {
 	}
 
 	private setRenderStateFromUrl() {
-		const renderState: string = this.urlUtils.getParameterByName("mode")
+		const renderState = this.urlUtils.getParameterByName("mode")
 		const files = getCCFiles(this.storeService.getState().files)
 
 		if (renderState === "Delta" && files.length >= 2) {
