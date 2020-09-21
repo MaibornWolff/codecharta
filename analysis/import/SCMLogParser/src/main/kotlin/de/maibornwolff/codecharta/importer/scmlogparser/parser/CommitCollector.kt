@@ -10,10 +10,6 @@ import java.util.stream.Collector
 
 internal class CommitCollector private constructor(private val metricsFactory: MetricsFactory) {
 
-    private fun codeSmellCausingFunction() {
-        println("to test sonarqube analysis")
-    }
-
     private fun collectCommit(versionControlledFiles: MutableList<VersionControlledFile>, commit: Commit) {
         if (commit.isEmpty) {
             return
