@@ -79,8 +79,6 @@ jobs:
         - provider: script
           script: sonar-scanner
           skip_cleanup: true
-          on:
-            branch: tech/787/enable-coverage-report
 
     - name: "Publish Analysis Sonar Results"
       before_script: cd analysis
@@ -91,8 +89,6 @@ jobs:
         - provider: script
           script: sonar-scanner
           skip_cleanup: true
-          on:
-            branch: tech/787/enable-coverage-report
 
     - stage: deploy
       script:
@@ -143,6 +139,6 @@ jobs:
 stages:
   - test
   - name: sonar
-    if: true OR branch = main AND type != pull_request
+    if: branch = main AND type != pull_request
   - name: deploy
     if: tag IS present
