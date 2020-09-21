@@ -46,7 +46,7 @@ describe("codeMapRenderService", () => {
 
 		state = _.cloneDeep(STATE)
 		map = clone(TEST_FILE_WITH_PATHS.map)
-		NodeDecorator.decorateMap(map, METRIC_DATA, [])
+		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
 		storeService.dispatch(setState(state))
 		storeService.dispatch(unfocusNode())
 		storeService.dispatch(setNodeMetricData(METRIC_DATA))

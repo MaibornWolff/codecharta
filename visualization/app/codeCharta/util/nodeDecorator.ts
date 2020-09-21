@@ -1,28 +1,17 @@
 "use strict"
-import { HierarchyNode, hierarchy } from "d3"
-import {
-	BlacklistItem,
-	CCFile,
-	CodeMapNode,
-	KeyValuePair,
-	AttributeTypes,
-	AttributeTypeValue,
-	BlacklistType,
-	NodeMetricData,
-	EdgeMetricData
-} from "../codeCharta.model"
+import { hierarchy } from "d3"
+import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
-function hasChildren(node) {
-	return node.children?.length > 0
+enum MedianSelectors {
+	MEDIAN = "MEDIAN",
+	DELTA = "DELTA",
+	INCOMING = "INCOMING",
+	OUTGOING = "OUTGOING"
 }
-
 export class NodeDecorator {
-	static decorateMap(map: CodeMapNode, metricData: NodeMetricData[], blacklist: BlacklistItem[]) {
-		const root = hierarchy<CodeMapNode>(map)
-
+	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 		const flattened = ignore()
 		const excluded = ignore()
 
@@ -41,32 +30,42 @@ export class NodeDecorator {
 			}
 		}
 
-		let id = 0
+		const { nodeMetricData, edgeMetricData } = metricData
 
-		const defaultAttributes = { [NodeMetricDataService.UNARY_METRIC]: 1 }
-		const defaultLeafAttributes = { ...defaultAttributes }
-		for (const { name } of metricData) {
-			defaultLeafAttributes[name] = 0
+		const defaultEdgeAttributes = {}
+		for (const { name } of edgeMetricData) {
+			defaultEdgeAttributes[name] = { incoming: 0, outgoing: 0 }
 		}
 
-		for (const { data } of root.descendants()) {
+		const defaultNodeAttributes = {}
+		for (const { name } of nodeMetricData) {
+			defaultNodeAttributes[name] = 0
+		}
+
+		let id = 0
+		hierarchy(map).each(({ data }) => {
 			data.id = id
 			id++
+
 			if (data.attributes) {
-				data.attributes[NodeMetricDataService.UNARY_METRIC] = 1
-				if (!hasChildren(data)) {
-					for (const metric of metricData) {
-						if (data.attributes[metric.name] === undefined) {
-							data.attributes[metric.name] = 0
-						}
+				for (const metric of nodeMetricData) {
+					if (data.attributes[metric.name] === undefined) {
+						data.attributes[metric.name] = 0
 					}
 				}
-			} else if (hasChildren(data)) {
-				data.attributes = defaultAttributes
 			} else {
-				data.attributes = defaultLeafAttributes
+				data.attributes = { ...defaultNodeAttributes }
 			}
-			data.edgeAttributes = data.edgeAttributes ?? {}
+
+			if (data.edgeAttributes) {
+				for (const metric of edgeMetricData) {
+					if (data.edgeAttributes[metric.name] === undefined) {
+						data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
+					}
+				}
+			} else {
+				data.edgeAttributes = { ...defaultEdgeAttributes }
+			}
 
 			if (blacklist.length !== 0) {
 				const path = CodeMapHelper.transformPath(data.path)
@@ -85,12 +84,11 @@ export class NodeDecorator {
 					data.link = child.link
 				}
 			}
-		}
+		})
 	}
 
 	static decorateMapWithPathAttribute(file: CCFile) {
-		const root = hierarchy<CodeMapNode>(file.map)
-		root.each(node => {
+		hierarchy(file.map).each(node => {
 			if (node.parent) {
 				node.data.path = `${node.parent.data.path}/${node.data.name}`
 			} else {
@@ -100,115 +98,195 @@ export class NodeDecorator {
 		return file
 	}
 
-	static decorateParentNodesWithAggregatedAttributes(
-		map: CodeMapNode,
-		metricData: NodeMetricData[],
-		edgeMetricData: EdgeMetricData[],
-		isDeltaState: boolean,
-		attributeTypes: AttributeTypes
-	) {
-		const root = hierarchy<CodeMapNode>(map)
-		root.each((node: HierarchyNode<CodeMapNode>) => {
-			let edgeMetrics
-			const { data } = node
+	static decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
+		const medians: Map<string, number[]> = new Map()
 
-			if (!hasChildren(data)) {
+		const attributeKeys = Object.keys(map.attributes)
+		const edgeKeys = Object.keys(map.edgeAttributes)
+		hierarchy(map).eachAfter(({ data, parent }) => {
+			// skip root
+			if (data.isExcluded || !parent) {
 				return
 			}
 
-			for (const { name } of edgeMetricData) {
-				data.edgeAttributes[name] = { incoming: 0, outgoing: 0 }
+			for (const name of attributeKeys) {
+				const selector = `${name}${data.path}`
+				const parentSelector = `${name}${parent.data.path}`
+				if (attributeTypes.nodes[name] === AttributeTypeValue.relative) {
+					if (!isLeaf(data)) {
+						// Set Median to parents
+						const numbers = medians.get(`${MedianSelectors.MEDIAN}${selector}`)
+						if (numbers !== undefined) {
+							data.attributes[name] = getMedian(numbers)
+
+							const median = medians.get(`${MedianSelectors.MEDIAN}${parentSelector}`)
+							if (median === undefined) {
+								medians.set(`${MedianSelectors.MEDIAN}${parentSelector}`, numbers)
+							} else {
+								pushSortedArray(median, numbers)
+							}
+						}
+
+						if (isDeltaState) {
+							const deltaNumbers = medians.get(`${MedianSelectors.DELTA}${selector}`)
+							if (deltaNumbers !== undefined) {
+								data.deltas[name] = getMedian(deltaNumbers)
+
+								const median = medians.get(`${MedianSelectors.DELTA}${parentSelector}`)
+								if (median === undefined) {
+									medians.set(`${MedianSelectors.DELTA}${parentSelector}`, deltaNumbers)
+								} else {
+									pushSortedArray(median, deltaNumbers)
+								}
+							}
+						}
+					}
+
+					// Collect medians
+					const median = medians.get(`${MedianSelectors.MEDIAN}${parentSelector}`)
+					if (median === undefined) {
+						medians.set(`${MedianSelectors.MEDIAN}${parentSelector}`, [data.attributes[name]])
+					} else if (isLeaf(data)) {
+						pushSorted(median, data.attributes[name])
+					}
+					if (isDeltaState) {
+						const median = medians.get(`${MedianSelectors.DELTA}${parentSelector}`)
+						if (median === undefined) {
+							medians.set(`${MedianSelectors.DELTA}${parentSelector}`, [data.deltas[name]])
+						} else if (isLeaf(data)) {
+							pushSorted(median, data.deltas[name])
+						}
+					}
+				} else {
+					parent.data.attributes[name] += data.attributes[name]
+					if (isDeltaState) {
+						parent.data.deltas[name] = parent.data.deltas[name] ?? 0
+						parent.data.deltas[name] += data.deltas[name] ?? 0
+					}
+				}
 			}
-			const leafAttributes = []
-			const leafDeltas = []
-			// TODO: This provides a huge potential for optimization. The algorithm
-			// should be linear instead of O(n * m) [root.each() * node.leaves()] by
-			// using a depth first algorithm. Each current node tracks all
-			// `attributes`, `deltas` and `edgeAttributes` of the outer nodes
-			// combined. That way there's no need to traverse any node more than once.
-			//
-			// It is also possible to aggregate the stats linear. It's straight
-			// forward for non-median stats (the common case): these are just counted
-			// together. A map should be used to track the different depth.
-			// Calculating the median is more complex, both memory and computational
-			// wise. Instead of calculating the stats together of all outer nodes, an
-			// array of these should be collected (only if required!). New entries are
-			// then added to the array where they fit using array.splice. That way
-			// finding the median is linear instead of O(n log n). It is likely
-			// possible to optimize the latter further but that is probably too much
-			// work.
-			for (const { data } of node.leaves()) {
-				if (data.isExcluded) {
+
+			for (const name of edgeKeys) {
+				const value = data.edgeAttributes[name]
+
+				// Skip 0 values
+				if (!value) {
 					continue
 				}
-				leafAttributes.push(data.attributes)
-				if (data.deltas !== undefined) {
-					leafDeltas.push(data.deltas)
-				}
-				// Optimize for the common case
-				for (const [name, value] of Object.entries(data.edgeAttributes)) {
-					if (!value) {
-						continue
-					}
-					if (attributeTypes.edges[name] === AttributeTypeValue.relative) {
-						// Use the median after collecting all entries.
-						if (edgeMetrics === undefined) {
-							edgeMetrics = {}
-						}
-						if (edgeMetrics[name] === undefined) {
-							edgeMetrics[name] = { incoming: [value.incoming], outgoing: [value.outgoing] }
-						} else {
-							edgeMetrics[name].incoming.push(value.incoming)
-							edgeMetrics[name].outgoing.push(value.outgoing)
-						}
-					} else {
-						// Set directly
-						node.data.edgeAttributes[name].incoming += value.incoming
-						node.data.edgeAttributes[name].outgoing += value.outgoing
-					}
-				}
-			}
 
-			for (const { name } of metricData) {
-				data.attributes[name] = this.aggregateLeafMetric(leafAttributes, name, attributeTypes)
-				if (isDeltaState) {
-					data.deltas[name] = this.aggregateLeafMetric(leafDeltas, name, attributeTypes)
-				}
-			}
+				const selector = `${name}${data.path}`
+				const parentSelector = `${name}${parent.data.path}`
 
-			if (edgeMetrics) {
-				for (const [name, value] of Object.entries(edgeMetrics)) {
-					const temporary = value as Record<string, number[]>
-					data.edgeAttributes[name].incoming = this.median(temporary.incoming)
-					data.edgeAttributes[name].outgoing = this.median(temporary.outgoing)
+				if (attributeTypes.edges[name] === AttributeTypeValue.relative) {
+					// Set median to parents
+					if (!isLeaf(data)) {
+						const incomingNumbers = medians.get(`${MedianSelectors.INCOMING}${selector}`)
+						if (incomingNumbers !== undefined) {
+							data.edgeAttributes[name].incoming = getMedian(incomingNumbers)
+
+							const median = medians.get(`${MedianSelectors.INCOMING}${parentSelector}`)
+							if (median === undefined) {
+								medians.set(`${MedianSelectors.INCOMING}${parentSelector}`, incomingNumbers)
+							} else {
+								pushSortedArray(median, incomingNumbers)
+							}
+						}
+
+						const outgoingNumbers = medians.get(`${MedianSelectors.OUTGOING}${selector}`)
+						if (outgoingNumbers !== undefined) {
+							data.edgeAttributes[name].outgoing = getMedian(outgoingNumbers)
+
+							const median = medians.get(`${MedianSelectors.OUTGOING}${parentSelector}`)
+							if (median === undefined) {
+								medians.set(`${MedianSelectors.OUTGOING}${parentSelector}`, outgoingNumbers)
+							} else {
+								pushSortedArray(median, outgoingNumbers)
+							}
+						}
+					}
+
+					// Collect incoming edges
+					const incomingMedians = medians.get(`${MedianSelectors.INCOMING}${parentSelector}`)
+					if (incomingMedians === undefined) {
+						medians.set(`${MedianSelectors.INCOMING}${parentSelector}`, [value.incoming])
+					} else if (isLeaf(data)) {
+						pushSorted(incomingMedians, value.incoming)
+					}
+
+					// Collect outgoing edged
+					const outgoingMedians = medians.get(`${MedianSelectors.OUTGOING}${parentSelector}`)
+					if (incomingMedians === undefined) {
+						medians.set(`${MedianSelectors.OUTGOING}${parentSelector}`, [value.outgoing])
+					} else if (isLeaf(data)) {
+						pushSorted(outgoingMedians, value.outgoing)
+					}
+				} else {
+					// console.log(`Summing from ${  data.path  } to ${  parent.data.path}`)
+					// console.log("map before:", JSON.stringify(map))
+					parent.data.edgeAttributes[name].incoming += value.incoming
+					// console.log("map after", JSON.stringify(map))
+					parent.data.edgeAttributes[name].outgoing += value.outgoing
 				}
 			}
 		})
-		return map
-	}
 
-	private static aggregateLeafMetric(metrics: KeyValuePair[], metricName: string, attributeTypes: AttributeTypes) {
-		if (attributeTypes.nodes[metricName] === AttributeTypeValue.relative) {
-			const metricValues: number[] = []
-			for (const metric of metrics) {
-				const number = metric[metricName]
-				if (number) {
-					metricValues.push(number)
-				}
+		// Set Median for root node
+		for (const name of edgeKeys) {
+			if (attributeTypes.edges[name] === AttributeTypeValue.relative) {
+				map.edgeAttributes[name].incoming = getMedian(medians.get(`${MedianSelectors.INCOMING}${name}${map.path}`))
+				map.edgeAttributes[name].outgoing = getMedian(medians.get(`${MedianSelectors.OUTGOING}${name}${map.path}`))
 			}
-
-			if (metricValues.length === 0) {
-				return 0
-			}
-			return this.median(metricValues)
 		}
 
-		return metrics.reduce((partialSum, a) => partialSum + (a[metricName] ?? 0), 0)
+		for (const name of attributeKeys) {
+			if (attributeTypes.nodes[name] === AttributeTypeValue.relative) {
+				map.attributes[name] = getMedian(medians.get(`${MedianSelectors.MEDIAN}${name}${map.path}`))
+				if (isDeltaState) {
+					map.deltas[name] = getMedian(medians.get(`${MedianSelectors.DELTA}${name}${map.path}`))
+				}
+			}
+		}
 	}
+}
 
-	private static median(numbers: number[]) {
-		const middle = (numbers.length - 1) / 2
-		numbers.sort((a, b) => a - b)
-		return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
+function isLeaf(node: CodeMapNode) {
+	return !node.children || node.children.length === 0
+}
+
+function getMedian(numbers: number[]) {
+	const middle = (numbers.length - 1) / 2
+	return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
+}
+
+function pushSorted(numbers: number[], number: number) {
+	for (let i = 0; i < numbers.length; i++) {
+		if (numbers[i] > number) {
+			numbers.splice(i, 0, number)
+			return
+		}
 	}
+	numbers.push(number)
+}
+
+function pushSortedArray(numbers: number[], toPush: number[]) {
+	let j = 0
+	for (let i = 0; i < numbers.length; i++) {
+		let pushCount = 0
+
+		while (numbers[i] > toPush[j]) {
+			pushCount++
+			j++
+			if (j === toPush.length) {
+				break
+			}
+		}
+
+		if (pushCount > 0) {
+			numbers.splice(i, 0, ...toPush.slice(j - pushCount, j))
+			if (j === toPush.length) {
+				return
+			}
+		}
+	}
+	numbers.push(...toPush.slice(j))
 }
