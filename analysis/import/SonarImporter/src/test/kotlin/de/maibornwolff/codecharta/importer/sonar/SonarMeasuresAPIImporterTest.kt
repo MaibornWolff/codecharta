@@ -9,8 +9,8 @@ import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
 import io.mockk.every
 import io.mockk.mockk
 import org.hamcrest.Matchers.`is`
-import org.hamcrest.Matchers.not
 import org.hamcrest.Matchers.hasSize
+import org.hamcrest.Matchers.not
 import org.hamcrest.Matchers.nullValue
 import org.junit.Assert.assertThat
 import org.junit.Test
@@ -62,7 +62,7 @@ class SonarMeasuresAPIImporterTest {
 
         // when
         val project =
-                sonar.getProjectFromMeasureAPI("testProject", metrics)
+            sonar.getProjectFromMeasureAPI("testProject", metrics)
 
         // then
         assertThat(project, not(nullValue()))

@@ -2,9 +2,8 @@ import "../../../state.module"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
-import { MapColorsAction, MapColorsActions } from "./mapColors.actions"
+import { MapColorsAction, MapColorsActions, defaultMapColors } from "./mapColors.actions"
 import { MapColorsService } from "./mapColors.service"
-import { defaultMapColors } from "./mapColors.actions"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("MapColorsService", () => {

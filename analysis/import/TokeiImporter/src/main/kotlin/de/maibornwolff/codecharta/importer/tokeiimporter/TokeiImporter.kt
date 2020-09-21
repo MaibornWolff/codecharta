@@ -1,12 +1,12 @@
 package de.maibornwolff.codecharta.importer.tokeiimporter
 
-import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonParser
+import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.ImporterStrategy
+import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiInnerStrategy
+import de.maibornwolff.codecharta.importer.tokeiimporter.strategy.TokeiTwelveStrategy
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.AttributeTypes
-import de.maibornwolff.codecharta.model.MutableNode
-import de.maibornwolff.codecharta.model.PathFactory
 import de.maibornwolff.codecharta.model.ProjectBuilder
 import de.maibornwolff.codecharta.serialization.ProjectSerializer
 import de.maibornwolff.codecharta.serialization.mapLines
@@ -26,23 +26,23 @@ import java.io.Writer
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "tokeiimporter",
-        description = ["generates cc.json from tokei json"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "tokeiimporter",
+    description = ["generates cc.json from tokei json"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class TokeiImporter(
     private val input: InputStream = System.`in`,
     private val output: PrintStream = System.out,
     private val error: PrintStream = System.err
 ) : Callable<Void> {
-    private var TOP_LEVEL_OBJECT: String = "inner"
+
     private val logger = KotlinLogging.logger {}
 
     private val attributeTypes = AttributeTypes(type = "nodes")
-            .add("rloc", AttributeType.absolute)
-            .add("loc", AttributeType.absolute)
-            .add("empty_lines", AttributeType.absolute)
-            .add("comment_lines", AttributeType.absolute)
+        .add("rloc", AttributeType.absolute)
+        .add("loc", AttributeType.absolute)
+        .add("empty_lines", AttributeType.absolute)
+        .add("comment_lines", AttributeType.absolute)
 
     private lateinit var projectBuilder: ProjectBuilder
 
@@ -64,46 +64,37 @@ class TokeiImporter(
     @CommandLine.Parameters(arity = "0..1", paramLabel = "FILE", description = ["tokei generated json"])
     private var file: File? = null
 
+    private lateinit var importerStrategy: ImporterStrategy
+
     @Throws(IOException::class)
     override fun call(): Void? {
         print(" ")
         projectBuilder = ProjectBuilder()
         val root = getInput() ?: return null
-runBlocking(Dispatchers.Default) {
-    val languageSummaries = root.asJsonObject.get(TOP_LEVEL_OBJECT).asJsonObject
-    val gson = Gson()
-    for (languageEntry in languageSummaries.entrySet()) {
-            val languageAnalysisObject = gson.fromJson(languageEntry.value, AnalysisObject::class.java)
-            if (languageAnalysisObject.hasChildren()) {
-                for (analysisObject in languageAnalysisObject.stats!!) {
-                    addAsNode(analysisObject)
-                }
-            }
-    }
-}
+        runBlocking(Dispatchers.Default) {
+            determineImporterStrategy(root)
+            val languageSummaries = importerStrategy.getLanguageSummaries(root)
+            importerStrategy.buildCCJson(languageSummaries, projectBuilder)
+        }
         projectBuilder.addAttributeTypes(attributeTypes)
 
         val filePath = outputFile?.absolutePath ?: "notSpecified"
 
-        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(projectBuilder.build(), filePath) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
+        if (compress && filePath != "notSpecified") ProjectSerializer.serializeAsCompressedFile(
+            projectBuilder.build(),
+            filePath
+        ) else ProjectSerializer.serializeProject(projectBuilder.build(), writer())
 
         return null
     }
 
-    private fun addAsNode(analysisObject: AnalysisObject) {
-        val sanitizedName = analysisObject.name!!.removePrefix(rootName).replace(pathSeparator, "/")
-        val directory = sanitizedName.substringBeforeLast("/")
-        val fileName = sanitizedName.substringAfterLast("/")
-
-        val node = MutableNode(
-                fileName, attributes = mapOf(
-                "empty_lines" to analysisObject.blanks,
-                "rloc" to analysisObject.code,
-                "comment_lines" to analysisObject.comments,
-                "loc" to analysisObject.lines)
-        )
-        val path = PathFactory.fromFileSystemPath(directory)
-        projectBuilder.insertByPath(path, node)
+    private fun determineImporterStrategy(root: JsonElement) {
+        val json = root.asJsonObject
+        importerStrategy = if (json.has(TOP_LEVEL_OBJECT)) {
+            TokeiInnerStrategy(rootName, pathSeparator)
+        } else {
+            TokeiTwelveStrategy(rootName, pathSeparator)
+        }
     }
 
     private fun getInput(): JsonElement? {
@@ -151,5 +142,8 @@ runBlocking(Dispatchers.Default) {
         fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
             CommandLine.call(TokeiImporter(input, output, error), output, *args)
         }
+
+        @JvmStatic
+        val TOP_LEVEL_OBJECT = "inner"
     }
 }

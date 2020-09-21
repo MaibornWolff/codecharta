@@ -3,33 +3,25 @@ import "../codeMap/threeViewer/threeViewer.module"
 import { ScenarioDropDownController } from "./scenarioDropDown.component"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { MetricService } from "../../state/metric.service"
 import { ScenarioHelper } from "../../util/scenarioHelper"
-import { MetricData } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
-import { PARTIAL_SETTINGS, SCENARIO_ITEMS } from "../../util/dataMocks"
+import { METRIC_DATA, PARTIAL_SETTINGS, SCENARIO_ITEMS } from "../../util/dataMocks"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
+import { MetricDataService } from "../../state/store/metricData/metricData.service"
 
 describe("ScenarioDropDownController", () => {
 	let scenarioButtonsController: ScenarioDropDownController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let dialogService: DialogService
-	let metricService: MetricService
 	let threeOrbitControlsService: ThreeOrbitControlsService
-	let metricData: MetricData[]
 
 	function rebuildController() {
-		scenarioButtonsController = new ScenarioDropDownController(
-			$rootScope,
-			storeService,
-			dialogService,
-			metricService,
-			threeOrbitControlsService
-		)
+		scenarioButtonsController = new ScenarioDropDownController($rootScope, storeService, dialogService, threeOrbitControlsService)
 	}
 
 	function restartSystem() {
@@ -38,14 +30,9 @@ describe("ScenarioDropDownController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
-		metricService = getService<MetricService>("metricService")
 		threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
 
-		metricData = [
-			{ name: "rloc", maxValue: 999999 },
-			{ name: "functions", maxValue: 999999 },
-			{ name: "mcc", maxValue: 999999 }
-		]
+		storeService.dispatch(setNodeMetricData(METRIC_DATA))
 	}
 
 	beforeEach(() => {
@@ -53,17 +40,13 @@ describe("ScenarioDropDownController", () => {
 		rebuildController()
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	describe("constructor", () => {
-		it("should subscribe to MetricService on construction", () => {
-			MetricService.subscribe = jest.fn()
+		it("should subscribe to MetricDataService", () => {
+			MetricDataService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(MetricService.subscribe).toHaveBeenCalledWith($rootScope, scenarioButtonsController)
+			expect(MetricDataService.subscribe).toHaveBeenCalledWith($rootScope, scenarioButtonsController)
 		})
 	})
 
@@ -71,7 +54,7 @@ describe("ScenarioDropDownController", () => {
 		it("should call getScenarioItems and set the scenarios in viewmodel correctly", () => {
 			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
-			scenarioButtonsController.onMetricDataAdded(metricData)
+			scenarioButtonsController.onMetricDataChanged()
 
 			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIO_ITEMS)
 		})
@@ -81,7 +64,7 @@ describe("ScenarioDropDownController", () => {
 		it("should call getScenarioHelpers and set the dropDownScenarioItems ", () => {
 			ScenarioHelper.getScenarioItems = jest.fn().mockReturnValue(SCENARIO_ITEMS)
 
-			scenarioButtonsController.onMetricDataAdded(metricData)
+			scenarioButtonsController.onMetricDataChanged()
 
 			expect(scenarioButtonsController["_viewModel"].dropDownScenarioItems).toEqual(SCENARIO_ITEMS)
 		})
@@ -90,7 +73,7 @@ describe("ScenarioDropDownController", () => {
 	describe("applyScenario", () => {
 		it("should call setControl and call store.dispatch with scenarioSettings", () => {
 			ScenarioHelper.getScenarioSettingsByName = jest.fn().mockReturnValue(PARTIAL_SETTINGS)
-			scenarioButtonsController["isScenarioAppliable"] = jest.fn().mockReturnValue(true)
+			scenarioButtonsController["isScenarioApplicable"] = jest.fn().mockReturnValue(true)
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
 

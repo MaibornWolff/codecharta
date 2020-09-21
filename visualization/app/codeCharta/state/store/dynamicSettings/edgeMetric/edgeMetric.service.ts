@@ -1,15 +1,15 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { EdgeMetricActions, setEdgeMetric } from "./edgeMetric.actions"
-import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../../edgeMetricData.service"
-import { MetricData } from "../../../../codeCharta.model"
+import { EdgeMetricData } from "../../../../codeCharta.model"
 import { isActionOfType } from "../../../../util/reduxHelper"
+import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "../../metricData/edgeMetricData/edgeMetricData.service"
 
 export interface EdgeMetricSubscriber {
 	onEdgeMetricChanged(edgeMetric: string)
 }
 
-export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataServiceSubscriber {
+export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataSubscriber {
 	private static EDGE_METRIC_CHANGED_EVENT = "edge-metric-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -17,19 +17,19 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataService
 		EdgeMetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, EdgeMetricActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
+	onEdgeMetricDataChanged(edgeMetrics: EdgeMetricData[]) {
 		if (!edgeMetrics.map(x => x.name).includes(this.storeService.getState().dynamicSettings.edgeMetric)) {
 			this.reset()
 		}
 	}
 
-	public reset() {
+	reset() {
 		this.storeService.dispatch(setEdgeMetric("None"))
 	}
 
@@ -41,8 +41,8 @@ export class EdgeMetricService implements StoreSubscriber, EdgeMetricDataService
 		this.$rootScope.$broadcast(EdgeMetricService.EDGE_METRIC_CHANGED_EVENT, { edgeMetric: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricSubscriber) {
-		$rootScope.$on(EdgeMetricService.EDGE_METRIC_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: EdgeMetricSubscriber) {
+		$rootScope.$on(EdgeMetricService.EDGE_METRIC_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onEdgeMetricChanged(data.edgeMetric)
 		})
 	}

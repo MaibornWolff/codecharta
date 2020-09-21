@@ -2,22 +2,22 @@
 
 import "./scenarioDropDown.component.scss"
 import { ScenarioHelper } from "../../util/scenarioHelper"
-import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
-import { ColorRange, MetricData } from "../../codeCharta.model"
+import { ColorRange } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { DialogService } from "../dialog/dialog.service"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
+import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
 
 export interface ScenarioItem {
 	scenarioName: string
-	isScenarioAppliable: boolean
+	isScenarioApplicable: boolean
 	icons: { faIconClass: string; isSaved: boolean; tooltip: string }[]
 }
 
-export class ScenarioDropDownController implements MetricServiceSubscriber {
+export class ScenarioDropDownController implements MetricDataSubscriber {
 	private _viewModel: {
 		dropDownScenarioItems: ScenarioItem[]
 	} = {
@@ -28,21 +28,20 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private dialogService: DialogService,
-		private metricService: MetricService,
 		private threeOrbitControlsService: ThreeOrbitControlsService
 	) {
-		MetricService.subscribe(this.$rootScope, this)
+		MetricDataService.subscribe(this.$rootScope, this)
 	}
 
-	public loadScenarios() {
-		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.metricService.getMetricData())
+	loadScenarios() {
+		this._viewModel.dropDownScenarioItems = ScenarioHelper.getScenarioItems(this.storeService.getState().metricData)
 	}
 
-	public onMetricDataAdded(metricData: MetricData[]) {
+	onMetricDataChanged() {
 		this.loadScenarios()
 	}
 
-	public applyScenario(scenarioName: string) {
+	applyScenario(scenarioName: string) {
 		const scenarioSettings = ScenarioHelper.getScenarioSettingsByName(scenarioName)
 
 		this.storeService.dispatch(setState(scenarioSettings))
@@ -50,16 +49,16 @@ export class ScenarioDropDownController implements MetricServiceSubscriber {
 		this.threeOrbitControlsService.setControlTarget()
 	}
 
-	public showAddScenarioSettings() {
+	showAddScenarioSettings() {
 		this.dialogService.showAddScenarioSettings()
 	}
 
-	public removeScenario(scenarioName) {
+	removeScenario(scenarioName) {
 		if (scenarioName !== "Complexity") {
 			ScenarioHelper.deleteScenario(scenarioName)
-			this.dialogService.showErrorDialog(scenarioName + " deleted.", "Info")
+			this.dialogService.showErrorDialog(`${scenarioName} deleted.`, "Info")
 		} else {
-			this.dialogService.showErrorDialog(scenarioName + " cannot be deleted as it is the default Scenario.", "Error")
+			this.dialogService.showErrorDialog(`${scenarioName} cannot be deleted as it is the default Scenario.`, "Error")
 		}
 	}
 }

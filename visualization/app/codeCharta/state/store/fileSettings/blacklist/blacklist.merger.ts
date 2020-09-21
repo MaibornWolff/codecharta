@@ -1,10 +1,10 @@
 import { getUpdatedBlacklistItemPath } from "../../../../util/nodePathHelper"
 import { BlacklistItem, CCFile } from "../../../../codeCharta.model"
 
-export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolean): BlacklistItem[] {
-	const blacklist: BlacklistItem[] = []
+export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolean) {
+	const blacklist: Map<string, BlacklistItem> = new Map()
 
-	if (inputFiles.length == 1) {
+	if (inputFiles.length === 1) {
 		return inputFiles[0].settings.fileSettings.blacklist
 	}
 
@@ -17,13 +17,9 @@ export function getMergedBlacklist(inputFiles: CCFile[], withUpdatedPath: boolea
 						: oldBlacklistItem.path,
 					type: oldBlacklistItem.type
 				}
-				const equalBlacklistItems = blacklist.find(b => b.path == blacklistItem.path && b.type == blacklistItem.type)
-
-				if (!equalBlacklistItems) {
-					blacklist.push(blacklistItem)
-				}
+				blacklist.set(`${blacklistItem.path}|${blacklistItem.type}`, blacklistItem)
 			}
 		}
 	}
-	return blacklist
+	return [...blacklist.values()]
 }

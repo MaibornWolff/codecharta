@@ -3,7 +3,6 @@ import PyInquirer
 import in_place
 import pathlib
 import subprocess
-import fileinput
 import datetime
 
 
@@ -56,7 +55,7 @@ def getLatestChangelogEntry(path):
 
 
 def getReleasePost(version, path):
-    release_post_header = f"---\ncategories:\n\t- Release\ntags:\n\t- gh-pages\n\ntitle: {version}\n---\n\n"
+    release_post_header = f"---\ncategories:\n  - Release\ntags:\n  - gh-pages\n\ntitle: {version}\n---\n\n"
     release_post_headline = "{{page.title}} is live and ready for [download](https://github.com/MaibornWolff/codecharta/releases/tag/{{page.title}}). This version brings the following:\n\n"
     release_post_content = getLatestChangelogEntry(path)
     return release_post_header + release_post_headline + release_post_content
@@ -77,8 +76,8 @@ if repo.is_dirty():
 
 
 # Check if we are on main branch
-if repo.head != "main":
-    print("You can only release on master branch. Aborting.")
+if repo.active_branch.name != "main":
+    print("You can only release on main branch. Aborting.")
     quit()
 
 
@@ -210,7 +209,7 @@ confirm(message, printMessage)
 
 repo.index.add([release_post_path, changelog_path, gradle_properties,
                 analysis_package_json, analysis_package_lock_json, visualization_package_json, visualization_package_lock_json])
-repo.index.commit(f"Releasing {new_version}")
+subprocess.run(["git", "commit", "-a", "-m", f'"Releasing {new_version}"'], shell=True)
 tag = repo.create_tag(new_version, ref="HEAD",
                       message=f"Releasing {new_version}")
 
@@ -220,6 +219,6 @@ message = "The release is now committed and tagged but not pushed. In order to f
 printMessage = "Pushing..."
 confirm(message, printMessage)
 
-repo.remotes.origin.push(tag)
+subprocess.run(["git", "push", "--follow-tags"], shell=True)
 
 print("Please manually add the latest release notes, as soon as the build is successfully deployed")

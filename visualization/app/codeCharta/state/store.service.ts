@@ -10,9 +10,15 @@ import { isActionOfType } from "../util/reduxHelper"
 import { SortingOrderAscendingActions } from "./store/appSettings/sortingOrderAscending/sortingOrderAscending.actions"
 import { SortingOptionActions } from "./store/dynamicSettings/sortingOption/sortingOption.actions"
 import { IsAttributeSideBarVisibleActions } from "./store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
+import { PanelSelectionActions } from "./store/appSettings/panelSelection/panelSelection.actions"
+import { PresentationModeActions } from "./store/appSettings/isPresentationMode/isPresentationMode.actions"
 
 export interface StoreSubscriber {
 	onStoreChanged(actionType: string)
+}
+
+export interface DispatchOptions {
+	silent: boolean
 }
 
 export class StoreService {
@@ -24,7 +30,7 @@ export class StoreService {
 		this.store = createStore(rootReducer)
 	}
 
-	public dispatch(action: CCAction, isSilent = false) {
+	dispatch(action: CCAction, options: DispatchOptions = { silent: false }) {
 		if (
 			!(
 				isActionOfType(action.type, IsLoadingMapActions) ||
@@ -33,7 +39,9 @@ export class StoreService {
 				isActionOfType(action.type, SearchPanelModeActions) ||
 				isActionOfType(action.type, SortingOptionActions) ||
 				isActionOfType(action.type, IsAttributeSideBarVisibleActions) ||
-				isSilent
+				isActionOfType(action.type, PanelSelectionActions) ||
+				isActionOfType(action.type, PresentationModeActions) ||
+				options.silent
 			)
 		) {
 			this.dispatch(setIsLoadingMap(true))
@@ -41,13 +49,13 @@ export class StoreService {
 
 		splitStateActions(action).forEach(atomicAction => {
 			this.store.dispatch(atomicAction)
-			if (!isSilent) {
+			if (!options.silent) {
 				this.notify(atomicAction.type)
 			}
 		})
 	}
 
-	public getState(): State {
+	getState(): State {
 		return this.store.getState()
 	}
 
@@ -55,8 +63,8 @@ export class StoreService {
 		this.$rootScope.$broadcast(StoreService.STORE_CHANGED_EVENT, { actionType })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {
-		$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: StoreSubscriber) {
+		$rootScope.$on(StoreService.STORE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onStoreChanged(data.actionType)
 		})
 	}

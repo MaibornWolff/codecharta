@@ -40,6 +40,14 @@ export interface CodeMapNode {
 	deltas?: {
 		[key: string]: number
 	}
+	fixedPosition?: FixedPosition
+}
+
+export interface FixedPosition {
+	left: number
+	top: number
+	width: number
+	height: number
 }
 
 export enum NodeType {
@@ -109,6 +117,7 @@ export interface AppSettings {
 	sortingOrderAscending: boolean
 	searchPanelMode: SearchPanelMode
 	isAttributeSideBarVisible: boolean
+	panelSelection: PanelSelection
 }
 
 export interface TreeMapSettings {
@@ -181,14 +190,24 @@ export interface MarkedPackage {
 	color: string
 }
 
-export interface MetricData {
+export interface EdgeMetricData {
 	name: string
 	maxValue: number
 }
 
+export interface NodeMetricData {
+	name: string
+	maxValue: number
+}
+
+export interface MetricData {
+	nodeMetricData: NodeMetricData[]
+	edgeMetricData: EdgeMetricData[]
+}
+
 export interface CCLocalStorage {
 	version: string
-	scenarios: [String, RecursivePartial<Scenario>][]
+	scenarios: [string, RecursivePartial<Scenario>][]
 }
 
 export interface Scenario {
@@ -199,7 +218,7 @@ export interface Scenario {
 	}
 	height: {
 		heightMetric: string
-		heightSlider: number
+		heightSlider: Vector3
 		labelSlider: number
 	}
 	color: {
@@ -234,7 +253,7 @@ export interface Node {
 	z0: number
 	y0: number
 	isLeaf: boolean
-	deltas: KeyValuePair
+	deltas?: KeyValuePair
 	attributes: KeyValuePair
 	edgeAttributes: {
 		[key: string]: EdgeMetricCount
@@ -257,6 +276,7 @@ export interface State {
 	treeMap: TreeMapSettings
 	files: FileState[]
 	lookUp: LookUp
+	metricData: MetricData
 }
 
 export interface CCAction extends Action {
@@ -266,4 +286,12 @@ export interface CCAction extends Action {
 export interface LookUp {
 	idToNode: Map<number, CodeMapNode>
 	idToBuilding: Map<number, CodeMapBuilding>
+}
+
+export enum PanelSelection {
+	AREA_PANEL_OPEN = "AREA_PANEL_OPEN",
+	HEIGHT_PANEL_OPEN = "HEIGHT_PANEL_OPEN",
+	COLOR_PANEL_OPEN = "COLOR_PANEL_OPEN",
+	EDGE_PANEL_OPEN = "EDGE_PANEL_OPEN",
+	NONE = "NONE"
 }

@@ -79,6 +79,8 @@ jobs:
         - provider: script
           script: sonar-scanner
           skip_cleanup: true
+          on:
+            branch: main
 
     - name: "Publish Analysis Sonar Results"
       before_script: cd analysis
@@ -89,6 +91,8 @@ jobs:
         - provider: script
           script: sonar-scanner
           skip_cleanup: true
+          on:
+            branch: main
 
     - stage: deploy
       script:
@@ -106,6 +110,7 @@ jobs:
           skip_cleanup: true
           on:
             tags: true
+            branch: main
 
         # publishes visualization npm package
         - provider: script
@@ -113,6 +118,7 @@ jobs:
           skip_cleanup: true
           on:
             tags: true
+            branch: main
 
         # publishes analysis npm package
         - provider: script
@@ -120,6 +126,7 @@ jobs:
           skip_cleanup: true
           on:
             tags: true
+            branch: main
 
         # commits the gh-pages directory to the gh-pages branch. Does not ignore built ressources
         - provider: pages
@@ -128,6 +135,7 @@ jobs:
           local_dir: "gh-pages"
           on:
             tags: true
+            branch: main
 
         # publishes visualization docker image
         - provider: script
@@ -135,6 +143,7 @@ jobs:
           skip_cleanup: true
           on:
             tags: true
+            branch: main
 
 stages:
   - test

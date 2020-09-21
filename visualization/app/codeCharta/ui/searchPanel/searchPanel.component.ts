@@ -4,6 +4,7 @@ import { SearchPanelMode } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
 import { SearchPanelModeService, SearchPanelModeSubscriber } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.service"
+import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 
 export class SearchPanelController implements SearchPanelModeSubscriber {
 	private _viewModel: {
@@ -15,12 +16,16 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private codeChartaMouseEventService: CodeChartaMouseEventService
+	) {
 		SearchPanelModeService.subscribe(this.$rootScope, this)
 		this.onSearchPanelModeChanged(SearchPanelMode.minimized)
 	}
 
-	public onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
+	onSearchPanelModeChanged(searchPanelMode: SearchPanelMode) {
 		if (searchPanelMode === SearchPanelMode.minimized) {
 			this._viewModel.isExpanded = false
 		} else {
@@ -29,15 +34,16 @@ export class SearchPanelController implements SearchPanelModeSubscriber {
 		}
 	}
 
-	public toggle() {
+	toggle() {
 		if (this._viewModel.isExpanded) {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.minimized))
 		} else {
 			this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
 		}
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent(this.codeChartaMouseEventService.closeSearchPanel)
 	}
 
-	public openSearchPanel() {
+	openSearchPanel() {
 		this.storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
 	}
 }

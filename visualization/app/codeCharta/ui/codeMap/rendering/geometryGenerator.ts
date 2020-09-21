@@ -1,10 +1,10 @@
-import * as THREE from "three"
 import { Node, State } from "../../../codeCharta.model"
 import { CodeMapGeometricDescription } from "./codeMapGeometricDescription"
 import { CodeMapBuilding } from "./codeMapBuilding"
 import { IntermediateVertexData } from "./intermediateVertexData"
 import { BoxGeometryGenerationHelper } from "./boxGeometryGenerationHelper"
 import { ColorConverter } from "../../../util/color/colorConverter"
+import { Mesh, BufferGeometry, Material, Box3, Vector3, BufferAttribute } from "three"
 
 export interface BoxMeasures {
 	x: number
@@ -16,24 +16,26 @@ export interface BoxMeasures {
 }
 
 export interface BuildResult {
-	mesh: THREE.Mesh
+	mesh: Mesh
 	desc: CodeMapGeometricDescription
 }
 
 export class GeometryGenerator {
-	private static MINIMAL_BUILDING_HEIGHT = 1.0
+	private static MINIMAL_BUILDING_HEIGHT = 1
 
 	private floorGradient: string[]
 
-	public build(nodes: Node[], material: THREE.Material, state: State, isDeltaState: boolean): BuildResult {
-		const data: IntermediateVertexData = new IntermediateVertexData()
-		const desc: CodeMapGeometricDescription = new CodeMapGeometricDescription(state.treeMap.mapSize)
+	build(nodes: Node[], material: Material, state: State, isDeltaState: boolean): BuildResult {
+		const data = new IntermediateVertexData()
+		const desc = new CodeMapGeometricDescription(state.treeMap.mapSize)
 
 		this.floorGradient = ColorConverter.gradient("#333333", "#DDDDDD", this.getMaxNodeDepth(nodes))
 
-		for (let i = 0; i < nodes.length; ++i) {
-			const n: Node = nodes[i]
-
+		// TODO: It is possible to significantly improve the overall drawing
+		// performance by preventing intermediate transformations such as arrays
+		// that are later on converted to typed arrays. Thus, no
+		// `IntermediateVertexData` should be created.
+		for (const [i, n] of nodes.entries()) {
 			if (!n.isLeaf) {
 				this.addFloor(data, n, i, desc)
 			} else {
@@ -47,7 +49,7 @@ export class GeometryGenerator {
 		}
 	}
 
-	private getMaxNodeDepth(nodes: Node[]): number {
+	private getMaxNodeDepth(nodes: Node[]) {
 		let max = 0
 		nodes.forEach(node => {
 			max = Math.max(node.depth, max)
@@ -66,27 +68,27 @@ export class GeometryGenerator {
 		}
 	}
 
-	private ensureMinHeightIfUnlessDeltaNegative(height: number, delta: number): number {
+	private ensureMinHeightIfUnlessDeltaNegative(height: number, delta: number) {
 		return delta <= 0 ? height : Math.max(height, GeometryGenerator.MINIMAL_BUILDING_HEIGHT)
 	}
 
 	private addFloor(data: IntermediateVertexData, n: Node, idx: number, desc: CodeMapGeometricDescription) {
 		const color = this.getMarkingColorWithGradient(n)
-		const measures: BoxMeasures = this.mapNodeToLocalBox(n)
+		const measures = this.mapNodeToLocalBox(n)
 
 		desc.add(
 			new CodeMapBuilding(
 				idx,
-				new THREE.Box3(
-					new THREE.Vector3(measures.x, measures.y, measures.z),
-					new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
+				new Box3(
+					new Vector3(measures.x, measures.y, measures.z),
+					new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 				),
 				n,
 				color
 			)
 		)
 
-		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, 0.0)
+		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, color, idx, 0)
 	}
 
 	private getMarkingColorWithGradient(n: Node) {
@@ -94,9 +96,8 @@ export class GeometryGenerator {
 			const markingColorAsNumber = ColorConverter.getNumber(n.markingColor)
 			const markingColorWithGradient = markingColorAsNumber & (n.depth % 2 === 0 ? 0xdddddd : 0xffffff)
 			return ColorConverter.convertNumberToHex(markingColorWithGradient)
-		} else {
-			return this.floorGradient[n.depth]
 		}
+		return this.floorGradient[n.depth]
 	}
 
 	private addBuilding(
@@ -106,11 +107,11 @@ export class GeometryGenerator {
 		desc: CodeMapGeometricDescription,
 		state: State,
 		isDeltaState: boolean
-	): void {
-		const measures: BoxMeasures = this.mapNodeToLocalBox(n)
+	) {
+		const measures = this.mapNodeToLocalBox(n)
 		measures.height = this.ensureMinHeightIfUnlessDeltaNegative(n.height, n.heightDelta)
 
-		let renderDelta = 0.0
+		let renderDelta = 0
 
 		if (isDeltaState && n.deltas && n.deltas[state.dynamicSettings.heightMetric] && n.heightDelta) {
 			renderDelta = n.heightDelta //set the transformed render delta
@@ -123,9 +124,9 @@ export class GeometryGenerator {
 		desc.add(
 			new CodeMapBuilding(
 				idx,
-				new THREE.Box3(
-					new THREE.Vector3(measures.x, measures.y, measures.z),
-					new THREE.Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
+				new Box3(
+					new Vector3(measures.x, measures.y, measures.z),
+					new Vector3(measures.x + measures.width, measures.y + measures.height, measures.z + measures.depth)
 				),
 				n,
 				n.color
@@ -135,63 +136,59 @@ export class GeometryGenerator {
 		BoxGeometryGenerationHelper.addBoxToVertexData(data, measures, n.color, idx, renderDelta)
 	}
 
-	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: THREE.Material): THREE.Mesh {
-		const numVertices: number = data.positions.length
+	private buildMeshFromIntermediateVertexData(data: IntermediateVertexData, material: Material) {
+		const numberVertices = data.positions.length
 		const dimension = 3
 		const uvDimension = 2
+		const size = numberVertices * dimension
 
-		const positions: Float32Array = new Float32Array(numVertices * dimension)
-		const normals: Float32Array = new Float32Array(numVertices * dimension)
-		const uvs: Float32Array = new Float32Array(numVertices * uvDimension)
-		const colors: Float32Array = new Float32Array(numVertices * dimension)
-		const deltaColors: Float32Array = new Float32Array(numVertices * dimension)
-		const ids: Float32Array = new Float32Array(numVertices)
-		const deltas: Float32Array = new Float32Array(numVertices)
+		const positions = new Float32Array(size)
+		const normals = new Float32Array(size)
+		const uvs = new Float32Array(numberVertices * uvDimension)
+		const colors = new Float32Array(size)
 
-		for (let i = 0; i < numVertices; ++i) {
-			positions[i * dimension + 0] = data.positions[i].x
-			positions[i * dimension + 1] = data.positions[i].y
-			positions[i * dimension + 2] = data.positions[i].z
+		for (let i = 0; i < numberVertices; ++i) {
+			const pos = i * dimension
+			const pos1 = pos + 1
+			const pos2 = pos1 + 1
 
-			normals[i * dimension + 0] = data.normals[i].x
-			normals[i * dimension + 1] = data.normals[i].y
-			normals[i * dimension + 2] = data.normals[i].z
+			const dataPosition = data.positions[i]
+			positions[pos] = dataPosition.x
+			positions[pos1] = dataPosition.y
+			positions[pos2] = dataPosition.z
 
-			uvs[i * uvDimension + 0] = data.uvs[i].x
-			uvs[i * uvDimension + 1] = data.uvs[i].y
+			const dataNormal = data.normals[i]
+			normals[pos] = dataNormal.x
+			normals[pos1] = dataNormal.y
+			normals[pos2] = dataNormal.z
 
-			const color: THREE.Vector3 = ColorConverter.getVector3(data.colors[i])
+			const uvPos = i * uvDimension
+			uvs[uvPos] = data.uvs[i].x
+			uvs[uvPos + 1] = data.uvs[i].y
 
-			colors[i * dimension + 0] = color.x
-			colors[i * dimension + 1] = color.y
-			colors[i * dimension + 2] = color.z
-
-			deltaColors[i * dimension + 0] = color.x
-			deltaColors[i * dimension + 1] = color.y
-			deltaColors[i * dimension + 2] = color.z
-
-			ids[i] = data.subGeometryIdx[i]
-			deltas[i] = data.deltas[i]
+			const color: Vector3 = ColorConverter.getVector3(data.colors[i])
+			colors[pos] = color.x
+			colors[pos1] = color.y
+			colors[pos2] = color.z
 		}
 
-		const indices: Uint32Array = new Uint32Array(data.indices.length)
+		const deltaColors = new Float32Array(colors)
+		const indices = new Uint32Array(data.indices)
+		const ids = new Float32Array(data.subGeometryIdx)
+		const deltas = new Float32Array(data.deltas)
 
-		for (let i = 0; i < data.indices.length; ++i) {
-			indices[i] = data.indices[i]
-		}
+		const geometry = new BufferGeometry()
 
-		const geometry: THREE.BufferGeometry = new THREE.BufferGeometry()
+		geometry.setAttribute("position", new BufferAttribute(positions, dimension))
+		geometry.setAttribute("normal", new BufferAttribute(normals, dimension))
+		geometry.setAttribute("uv", new BufferAttribute(uvs, uvDimension))
+		geometry.setAttribute("color", new BufferAttribute(colors, dimension))
+		geometry.setAttribute("deltaColor", new BufferAttribute(deltaColors, dimension))
+		geometry.setAttribute("subGeomIdx", new BufferAttribute(ids, 1))
+		geometry.setAttribute("delta", new BufferAttribute(deltas, 1))
 
-		geometry.addAttribute("position", new THREE.BufferAttribute(positions, dimension))
-		geometry.addAttribute("normal", new THREE.BufferAttribute(normals, dimension))
-		geometry.addAttribute("uv", new THREE.BufferAttribute(uvs, uvDimension))
-		geometry.addAttribute("color", new THREE.BufferAttribute(colors, dimension))
-		geometry.addAttribute("deltaColor", new THREE.BufferAttribute(deltaColors, dimension))
-		geometry.addAttribute("subGeomIdx", new THREE.BufferAttribute(ids, 1))
-		geometry.addAttribute("delta", new THREE.BufferAttribute(deltas, 1))
+		geometry.setIndex(new BufferAttribute(indices, 1))
 
-		geometry.setIndex(new THREE.BufferAttribute(indices, 1))
-
-		return new THREE.Mesh(geometry, material)
+		return new Mesh(geometry, material)
 	}
 }

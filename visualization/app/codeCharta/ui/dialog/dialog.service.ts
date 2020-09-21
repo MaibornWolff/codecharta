@@ -7,49 +7,49 @@ export class DialogService {
 	/* @ngInject */
 	constructor(private $mdDialog) {}
 
-	public showDownloadDialog() {
+	showDownloadDialog() {
 		this.showCustomDialog(dialogDownloadComponent)
 	}
 
-	public showGlobalSettingsDialog() {
+	showGlobalSettingsDialog() {
 		this.showCustomDialog(dialogGlobalSettingsComponent)
 	}
 
-	public showAddScenarioSettings() {
+	showAddScenarioSettings() {
 		this.showCustomDialog(addScenarioSettingsComponent)
 	}
 
-	public showCustomDialog(dialog) {
+	showCustomDialog(dialog) {
 		this.$mdDialog.show(dialog)
 	}
 
-	public showErrorDialog(msg = "An error occurred.", title = "Error", button = "Ok") {
-		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(msg).ok(button))
+	showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
+		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
-	public showPromptDialog(msg: string, initial: string, placeholder: string = initial, title = "Prompt", button = "Ok"): Promise<any> {
-		const prompt = this.$mdDialog.prompt().title(title).textContent(msg).initialValue(initial).placeholder(placeholder).ok(button)
-
-		return this.$mdDialog.show(prompt)
+	async showErrorDialogAndOpenFileChooser(message = "An error occurred.", title = "Error", button = "Ok") {
+		const prompt = this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button)
+		await this.$mdDialog.show(prompt)
+		document.getElementById("input-file-id").click()
 	}
 
-	public showValidationWarningDialog(validationResult: CCValidationResult) {
+	showValidationWarningDialog(validationResult: CCValidationResult) {
 		const warningSymbol = '<i class="fa fa-exclamation-triangle"></i> '
 
 		const htmlMessage = this.buildHtmlMessage(warningSymbol, validationResult.warning)
 
-		this.showErrorDialog(htmlMessage, validationResult.title)
+		this.showErrorDialog(htmlMessage, "Validation Warning")
 	}
 
-	public showValidationErrorDialog(validationResult: CCValidationResult) {
+	showValidationErrorDialog(validationResult: CCValidationResult) {
 		const errorSymbol = '<i class="fa fa-exclamation-circle"></i> '
 
 		const htmlMessage = this.buildHtmlMessage(errorSymbol, validationResult.error)
 
-		this.showErrorDialog(htmlMessage, validationResult.title)
+		this.showErrorDialogAndOpenFileChooser(htmlMessage, "Validation Error")
 	}
 
-	private buildHtmlMessage(symbol: string, validationResult: string[]): string {
+	private buildHtmlMessage(symbol: string, validationResult: string[]) {
 		return `<p>${validationResult.map(message => symbol + message).join("<br>")}</p>`
 	}
 }

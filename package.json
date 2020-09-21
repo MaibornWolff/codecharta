@@ -1,12 +1,28 @@
 {
-  "author": "MaibornWolff GmbH <dist_intern_codecharta@maibornwolff.de>",
-  "homepage": "https://maibornwolff.github.io/codecharta/",
-  "bugs": {
-    "url": "https://github.com/MaibornWolff/codecharta/issues",
-    "email": "dist_intern_codecharta@maibornwolff.de"
-  },
-  "name": "codecharta",
-  "version": "0.0.2",
-  "description": "MaibornWolff CodeCharta placeholder",
-  "license": "BSD-3-Clause"
+	"author": "MaibornWolff GmbH <dist_intern_codecharta@maibornwolff.de>",
+	"homepage": "https://maibornwolff.github.io/codecharta/",
+	"bugs": {
+		"url": "https://github.com/MaibornWolff/codecharta/issues",
+		"email": "dist_intern_codecharta@maibornwolff.de"
+	},
+	"name": "codecharta",
+	"version": "0.0.2",
+	"description": "MaibornWolff CodeCharta placeholder",
+	"license": "BSD-3-Clause",
+	"scripts": {
+		"format": "prettier --write \"./**/*\"",
+		"format:quick": "pretty-quick --staged",
+		"lint:visualization": "cd visualization && npm run lint:fix"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run lint:visualization && npm run format:quick",
+			"pre-push": "sh ./script/pre-push.sh"
+		}
+	},
+	"devDependencies": {
+		"husky": "^4.2.5",
+		"prettier": "^2.1.0",
+		"pretty-quick": "^3.0.0"
+	}
 }

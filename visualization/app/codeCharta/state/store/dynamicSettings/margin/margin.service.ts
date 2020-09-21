@@ -1,7 +1,6 @@
 import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { MarginActions, setMargin } from "./margin.actions"
-import { CodeMapNode } from "../../../../codeCharta.model"
 import { getResetMargin } from "./margin.reset"
 import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 import { DynamicMarginService, DynamicMarginSubscriber } from "../../appSettings/dynamicMargin/dynamicMargin.service"
@@ -25,27 +24,26 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 		DynamicMarginService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, MarginActions)) {
 			this.notify(this.select())
 		}
 	}
 
-	public onAreaMetricChanged(areaMetric: string) {
+	onAreaMetricChanged() {
 		this.reset()
 	}
 
-	public onDynamicMarginChanged(dynamicMargin: boolean) {
+	onDynamicMarginChanged() {
 		this.reset()
 	}
 
-	public reset() {
-		const map: CodeMapNode = this.codeMapPreRenderService.getRenderMap()
-		const areaMetric = this.storeService.getState().dynamicSettings.areaMetric
-		const margin = this.storeService.getState().dynamicSettings.margin
-		const dynamicMargin = this.storeService.getState().appSettings.dynamicMargin
+	reset() {
+		const map = this.codeMapPreRenderService.getRenderMap()
+		const { areaMetric, margin } = this.storeService.getState().dynamicSettings
+		const { dynamicMargin } = this.storeService.getState().appSettings
 
-		const newMargin = getResetMargin(dynamicMargin, map, areaMetric)
+		const newMargin = getResetMargin(dynamicMargin, areaMetric, map)
 
 		if (newMargin && newMargin !== margin) {
 			this.storeService.dispatch(setMargin(newMargin))
@@ -60,8 +58,8 @@ export class MarginService implements StoreSubscriber, DynamicMarginSubscriber, 
 		this.$rootScope.$broadcast(MarginService.MARGIN_CHANGED_EVENT, { margin: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: MarginSubscriber) {
-		$rootScope.$on(MarginService.MARGIN_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: MarginSubscriber) {
+		$rootScope.$on(MarginService.MARGIN_CHANGED_EVENT, (_event, data) => {
 			subscriber.onMarginChanged(data.margin)
 		})
 	}

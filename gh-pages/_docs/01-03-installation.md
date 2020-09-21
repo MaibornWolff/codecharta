@@ -81,13 +81,13 @@ npm start
 
 # Docker Hub Install
 
-The visualization is [published to Docker Hub](https://hub.docker.com/r/maibornwolff/codecharta-visualization).
+The visualization is [published to Docker Hub](https://hub.docker.com/r/codecharta/codecharta-visualization).
 
 ## Visualization
 
 ```bash
 # run visualization with
-docker run -p 80:8080 maibornwolff/codecharta-visualization
+docker run -p 80:8080 codecharta/codecharta-visualization
 ```
 
 # Github Release

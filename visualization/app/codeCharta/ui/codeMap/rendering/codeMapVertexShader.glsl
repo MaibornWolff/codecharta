@@ -23,10 +23,6 @@ struct GeometricContext {
 struct DirectionalLight {
     vec3 direction;
     vec3 color;
-    int shadow;
-    float shadowBias;
-    float shadowRadius;
-    vec2 shadowMapSize;
 };
 
 struct IncidentLight {

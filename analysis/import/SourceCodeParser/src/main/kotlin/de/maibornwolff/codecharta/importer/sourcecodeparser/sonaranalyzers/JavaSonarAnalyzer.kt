@@ -131,11 +131,11 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         val javaTestClasspath = JavaTestClasspath(mapSettings, sensorContext.fileSystem())
         val fileLinesContextFactory = NullFileLinesContextFactory()
         sonarComponents = SonarComponents(
-                fileLinesContextFactory,
-                sensorContext.fileSystem(),
-                javaClasspath,
-                javaTestClasspath,
-                checkFactory
+            fileLinesContextFactory,
+            sensorContext.fileSystem(),
+            javaClasspath,
+            javaTestClasspath,
+            checkFactory
         )
         sonarComponents.setSensorContext(this.sensorContext)
     }
@@ -146,23 +146,23 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     private fun getInputFile(fileName: String): InputFile {
         return TestInputFileBuilder.create("moduleKey", fileName)
-                .setModuleBaseDir(baseDir.toPath())
-                .setCharset(StandardCharsets.UTF_8)
-                .setType(InputFile.Type.MAIN)
-                .setLanguage(Java.KEY)
-                .initMetadata(fileContent(File("$baseDir/$fileName"), StandardCharsets.UTF_8))
-                .build()
+            .setModuleBaseDir(baseDir.toPath())
+            .setCharset(StandardCharsets.UTF_8)
+            .setType(InputFile.Type.MAIN)
+            .setLanguage(Java.KEY)
+            .initMetadata(fileContent(File("$baseDir/$fileName"), StandardCharsets.UTF_8))
+            .build()
     }
 
     override fun executeScan() {
         runBlocking {
             launch {
                 val javaSquidSensor = JavaSquidSensor(
-                        sonarComponents,
-                        sensorContext.fileSystem(),
-                        DefaultJavaResourceLocator(javaClasspath),
-                        mapSettings,
-                        NoSonarFilter()
+                    sonarComponents,
+                    sensorContext.fileSystem(),
+                    DefaultJavaResourceLocator(javaClasspath),
+                    mapSettings,
+                    NoSonarFilter()
                 )
                 javaSquidSensor.execute(sensorContext)
             }
@@ -171,11 +171,11 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     private fun retrieveIssues(): HashMap<String, Int> {
         val issues: HashMap<String, Int> = hashMapOf(
-                "bug" to 0,
-                "vulnerability" to 0,
-                "code_smell" to 0,
-                "security_hotspot" to 0,
-                "sonar_issue_other" to 0
+            "bug" to 0,
+            "vulnerability" to 0,
+            "code_smell" to 0,
+            "security_hotspot" to 0,
+            "sonar_issue_other" to 0
         )
 
         sensorContext.allIssues().forEach {
@@ -212,7 +212,13 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun buildTree(fileName: String): Tree {
         val compilationUnitTree = JavaParser.createParser().parse(File("$baseDir/$fileName")) as CompilationUnitTree
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
-                compilationUnitTree, getInputFile(fileName), null, null, JavaVersionImpl(), true)
+            compilationUnitTree,
+            getInputFile(fileName),
+            null,
+            null,
+            JavaVersionImpl(),
+            true
+        )
 
         return defaultJavaFileScannerContext.tree
     }

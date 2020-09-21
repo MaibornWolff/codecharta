@@ -1,7 +1,6 @@
 import "./rangeSlider.module"
 
 import { RangeSliderController } from "./rangeSlider.component"
-import { MetricService } from "../../state/metric.service"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
@@ -15,19 +14,20 @@ import { WhiteColorBuildingsService } from "../../state/store/appSettings/whiteC
 import { TEST_DELTA_MAP_A, TEST_DELTA_MAP_B } from "../../util/dataMocks"
 import { addFile, resetFiles, setDelta, setSingle } from "../../state/store/files/files.actions"
 import { FilesService } from "../../state/store/files/files.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 describe("RangeSliderController", () => {
 	let $rootScope: IRootScopeService
 	let $timeout: ITimeoutService
 	let storeService: StoreService
-	let metricService: MetricService
+	let nodeMetricDataService: NodeMetricDataService
 	let colorRangeService: ColorRangeService
 	let rangeSliderController: RangeSliderController
 
 	let mapColors: MapColors
 
 	function rebuildController() {
-		rangeSliderController = new RangeSliderController($rootScope, $timeout, storeService, metricService, colorRangeService)
+		rangeSliderController = new RangeSliderController($rootScope, $timeout, storeService, nodeMetricDataService, colorRangeService)
 	}
 
 	function restartSystem() {
@@ -36,7 +36,7 @@ describe("RangeSliderController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
-		metricService = getService<MetricService>("metricService")
+		nodeMetricDataService = getService<NodeMetricDataService>("nodeMetricDataService")
 		colorRangeService = getService<ColorRangeService>("colorRangeService")
 
 		mapColors = storeService.getState().appSettings.mapColors
@@ -44,20 +44,13 @@ describe("RangeSliderController", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		rebuildController()
 		withMockedMetricService()
+		rebuildController()
 		initFiles()
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function withMockedMetricService() {
-		metricService = rangeSliderController["metricService"] = jest.fn().mockReturnValue({
-			getMaxMetricByMetricName: jest.fn().mockReturnValue(100),
-			getMetricData: jest.fn().mockReturnValue({})
-		})()
+		nodeMetricDataService.getMaxMetricByMetricName = jest.fn().mockReturnValue(100)
 	}
 
 	function initFiles() {
@@ -132,7 +125,7 @@ describe("RangeSliderController", () => {
 		it("should set maxMetricValue", () => {
 			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
-			rangeSliderController.onColorMetricChanged("myMetric")
+			rangeSliderController.onColorMetricChanged()
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
@@ -142,7 +135,7 @@ describe("RangeSliderController", () => {
 		it("should set the maxMetricValue", () => {
 			rangeSliderController["updateSliderColors"] = jest.fn()
 
-			rangeSliderController.onInvertColorRangeChanged(false)
+			rangeSliderController.onInvertColorRangeChanged()
 
 			expect(rangeSliderController["updateSliderColors"]).toHaveBeenCalled()
 		})
@@ -152,7 +145,7 @@ describe("RangeSliderController", () => {
 		it("should set the maxMetricValue", () => {
 			rangeSliderController["updateSliderColors"] = jest.fn()
 
-			rangeSliderController.onWhiteColorBuildingsChanged(false)
+			rangeSliderController.onWhiteColorBuildingsChanged()
 
 			expect(rangeSliderController["updateSliderColors"]).toHaveBeenCalled()
 		})
@@ -174,7 +167,7 @@ describe("RangeSliderController", () => {
 				disabled: false
 			}
 
-			rangeSliderController.onColorMetricChanged("mcc")
+			rangeSliderController.onColorMetricChanged()
 
 			setTimeout(() => {
 				expect(JSON.stringify(rangeSliderController["_viewModel"].sliderOptions)).toEqual(JSON.stringify(expected))
@@ -284,7 +277,7 @@ describe("RangeSliderController", () => {
 		it("should set maxMetricValue", () => {
 			rangeSliderController["_viewModel"].sliderOptions.ceil = undefined
 
-			rangeSliderController.onFilesSelectionChanged(storeService.getState().files)
+			rangeSliderController.onFilesSelectionChanged()
 
 			expect(rangeSliderController["_viewModel"].sliderOptions.ceil).toEqual(100)
 		})
@@ -292,7 +285,7 @@ describe("RangeSliderController", () => {
 		it("should set sliderOptions.disabled", () => {
 			rangeSliderController["_viewModel"].sliderOptions.disabled = undefined
 
-			rangeSliderController.onFilesSelectionChanged(storeService.getState().files)
+			rangeSliderController.onFilesSelectionChanged()
 
 			setTimeout(() => {
 				expect(rangeSliderController["_viewModel"].sliderOptions.disabled).toEqual(false)

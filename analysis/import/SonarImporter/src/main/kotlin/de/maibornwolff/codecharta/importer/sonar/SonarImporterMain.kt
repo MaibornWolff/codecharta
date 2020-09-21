@@ -16,9 +16,9 @@ import java.net.URL
 import java.util.concurrent.Callable
 
 @CommandLine.Command(
-        name = "sonarimport",
-        description = ["generates cc.json from metric data from SonarQube"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+    name = "sonarimport",
+    description = ["generates cc.json from metric data from SonarQube"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
 )
 class SonarImporterMain(
     private val input: InputStream = System.`in`,
@@ -32,8 +32,12 @@ class SonarImporterMain(
     @CommandLine.Parameters(index = "0", paramLabel = "URL", description = ["url of sonarqube server"])
     private var url: String = "http://localhost"
 
-    @CommandLine.Parameters(index = "1", arity = "1..1", paramLabel = "PROJECT_ID",
-            description = ["sonarqube project id"])
+    @CommandLine.Parameters(
+        index = "1",
+        arity = "1..1",
+        paramLabel = "PROJECT_ID",
+        description = ["sonarqube project id"]
+    )
     private var projectId = ""
 
     @CommandLine.Option(names = ["-o", "--output-file"], description = ["output File (or empty for stdout)"])

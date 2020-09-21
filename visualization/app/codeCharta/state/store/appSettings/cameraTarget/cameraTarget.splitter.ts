@@ -1,6 +1,6 @@
 import { Vector3 } from "three"
-import { CameraTargetAction, setCameraTarget } from "./cameraTarget.actions"
+import { setCameraTarget } from "./cameraTarget.actions"
 
-export function splitCameraTargetAction(payload: Vector3): CameraTargetAction {
+export function splitCameraTargetAction(payload: Vector3) {
 	return setCameraTarget(payload)
 }

@@ -1,6 +1,7 @@
 import { getService } from "../../../mocks/ng.mockhelper"
 import { ILocationService, IHttpService } from "angular"
 import { UrlExtractor } from "./urlExtractor"
+import assert from "assert"
 
 describe("urlExtractor", () => {
 	let urlExtractor: UrlExtractor
@@ -32,10 +33,6 @@ describe("urlExtractor", () => {
 		})
 	}
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	describe("getParameterByName", () => {
 		it("should return fileName for given parameter name 'file'", () => {
 			const result = urlExtractor.getParameterByName("file")
@@ -55,10 +52,10 @@ describe("urlExtractor", () => {
 		it("should return an empty array when file is undefined", async () => {
 			$location.search = jest.fn().mockReturnValue({})
 
-			const result = await urlExtractor.getFileDataFromQueryParam()
-			const expected = []
-
-			expect(result).toEqual(expected)
+			await assert.rejects(urlExtractor.getFileDataFromQueryParam(), {
+				name: "Error",
+				message: "Filename is missing"
+			})
 		})
 
 		it("should create an array when file is defined but not as an array", async () => {
@@ -76,7 +73,7 @@ describe("urlExtractor", () => {
 			expect(urlExtractor.getFileDataFromFile).toHaveBeenCalledWith({ data: "some data" })
 		})
 
-		it("should return an array of resolved file data", () => {
+		it("should return an array of resolved file data", async () => {
 			$location.search = jest.fn().mockReturnValue({ file: ["some data", "some more"] })
 
 			urlExtractor.getFileDataFromFile = jest.fn().mockImplementation(async (fileName: string) => fileName)
@@ -86,7 +83,7 @@ describe("urlExtractor", () => {
 			return expect(urlExtractor.getFileDataFromQueryParam()).resolves.toEqual(expected)
 		})
 
-		it("should return the first filename rejected", () => {
+		it("should return the first filename rejected", async () => {
 			$location.search = jest.fn().mockReturnValue({ file: ["some data", "some more"] })
 
 			urlExtractor.getFileDataFromFile = jest.fn(fileName => {
@@ -100,25 +97,25 @@ describe("urlExtractor", () => {
 	})
 
 	describe("getFileDataFromFile", () => {
-		it("should reject if file is not existing ", () => {
-			return expect(urlExtractor.getFileDataFromFile(null)).rejects.toEqual(undefined)
+		it("should reject if file is not existing ", async () => {
+			return expect(urlExtractor.getFileDataFromFile(null)).rejects.toEqual(new Error("Filename is missing"))
 		})
 
-		it("should reject if file length is 0 ", () => {
-			return expect(urlExtractor.getFileDataFromFile("")).rejects.toEqual(undefined)
+		it("should reject if file length is 0 ", async () => {
+			return expect(urlExtractor.getFileDataFromFile("")).rejects.toEqual(new Error("Filename is missing"))
 		})
 
-		it("should resolve data and return an object with content and fileName", () => {
+		it("should resolve data and return an object with content and fileName", async () => {
 			const expected = { content: "some data", fileName: "test.json" }
 			return expect(urlExtractor.getFileDataFromFile("test.json")).resolves.toEqual(expected)
 		})
 
-		it("should reject if statuscode is not 200", async () => {
+		it("should reject if statuscode is not 2xx", async () => {
 			$http.get = jest.fn().mockImplementation(async () => {
-				return { data: "some data", status: 201 }
+				return { data: "some data", status: 301 }
 			})
 
-			return expect(urlExtractor.getFileDataFromFile("test.json")).rejects.toEqual(undefined)
+			return expect(urlExtractor.getFileDataFromFile("test.json")).rejects.toEqual(new Error(`Could not load file "test.json"`))
 		})
 	})
 })

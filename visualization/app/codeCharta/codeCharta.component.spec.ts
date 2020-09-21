@@ -8,8 +8,12 @@ import { InjectorService } from "./state/injector.service"
 import { StoreService } from "./state/store.service"
 import { setAppSettings } from "./state/store/appSettings/appSettings.actions"
 import { ThreeCameraService } from "./ui/codeMap/threeViewer/threeCameraService"
+import sample1 from "./assets/sample1.cc.json"
+import sample2 from "./assets/sample2.cc.json"
 import { setSearchPanelMode } from "./state/store/appSettings/searchPanelMode/searchPanelMode.actions"
-import { SearchPanelMode } from "./codeCharta.model"
+import { PanelSelection, SearchPanelMode } from "./codeCharta.model"
+import { CodeChartaMouseEventService } from "./codeCharta.mouseEvent.service"
+import { setPanelSelection } from "./state/store/appSettings/panelSelection/panelSelection.actions"
 
 describe("codeChartaController", () => {
 	let codeChartaController: CodeChartaController
@@ -19,6 +23,7 @@ describe("codeChartaController", () => {
 	let storeService: StoreService
 	let dialogService: DialogService
 	let codeChartaService: CodeChartaService
+	let codeChartaMouseEventService: CodeChartaMouseEventService
 	let injectorService: InjectorService
 
 	beforeEach(() => {
@@ -39,16 +44,21 @@ describe("codeChartaController", () => {
 		threeCameraService = getService<ThreeCameraService>("threeCameraService")
 		dialogService = getService<DialogService>("dialogService")
 		codeChartaService = getService<CodeChartaService>("codeChartaService")
+		codeChartaMouseEventService = getService<CodeChartaMouseEventService>("codeChartaMouseEventService")
 		injectorService = getService<InjectorService>("injectorService")
 	}
 
 	function rebuildController() {
-		codeChartaController = new CodeChartaController($location, $http, storeService, dialogService, codeChartaService, injectorService)
+		codeChartaController = new CodeChartaController(
+			$location,
+			$http,
+			storeService,
+			dialogService,
+			codeChartaService,
+			codeChartaMouseEventService,
+			injectorService
+		)
 	}
-
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
 
 	function withMockedUrlUtils() {
 		codeChartaController["urlUtils"] = jest.fn().mockReturnValue({
@@ -96,7 +106,7 @@ describe("codeChartaController", () => {
 		it("should call tryLoadingSampleFiles when data is an empty array", async () => {
 			await codeChartaController.loadFileOrSample()
 
-			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalled()
+			expect(codeChartaController.tryLoadingSampleFiles).toHaveBeenCalledWith(new Error("Filename is missing"))
 		})
 
 		it("should call loadFiles when data is not an empty array", async () => {
@@ -119,38 +129,43 @@ describe("codeChartaController", () => {
 
 	describe("tryLoadingSampleFiles", () => {
 		it("should call getParameterByName with 'file'", () => {
-			codeChartaController.tryLoadingSampleFiles()
+			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
 
 			expect(codeChartaController["urlUtils"].getParameterByName).toHaveBeenCalledWith("file")
 		})
 
 		it("should call showErrorDialog when no file is found", () => {
-			const expected = "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
+			const expected =
+				"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
 
-			codeChartaController.tryLoadingSampleFiles()
+			codeChartaController.tryLoadingSampleFiles(new Error("Actual error message"))
 
-			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected)
+			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expected, "Error (Actual error message)")
 		})
 
 		it("should call loadFiles with sample files", () => {
 			const expected = [
-				{ fileName: "sample1.cc.json", content: require("./assets/sample1.cc.json") },
-				{ fileName: "sample2.cc.json", content: require("./assets/sample2.cc.json") }
+				{ fileName: "sample1.cc.json", content: sample1 },
+				{ fileName: "sample2.cc.json", content: sample2 }
 			]
 
-			codeChartaController.tryLoadingSampleFiles()
+			codeChartaController.tryLoadingSampleFiles(new Error("Ignored"))
 
 			expect(codeChartaService.loadFiles).toHaveBeenCalledWith(expected)
 		})
 	})
 
 	describe("onClick", () => {
-		it("should minimize the search panel if it's expanded", () => {
+		it("should minimize all panels", () => {
 			storeService.dispatch(setSearchPanelMode(SearchPanelMode.exclude))
+			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
 
 			codeChartaController.onClick()
 
-			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
+			const { appSettings } = storeService.getState()
+
+			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
+			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)
 		})
 	})
 })

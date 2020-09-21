@@ -1,24 +1,22 @@
-import * as d3 from "d3"
-import { STATE, TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
-import { CCFile, MetricData, BlacklistItem, CodeMapNode, NodeType, AttributeTypeValue, AttributeTypes } from "../codeCharta.model"
+import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH_AND_DELTAS } from "./dataMocks"
+import { CCFile, CodeMapNode, NodeType, AttributeTypeValue, AttributeTypes, NodeMetricData, EdgeMetricData } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
-import _ from "lodash"
-import { MetricService } from "../state/metric.service"
-import { HierarchyNode } from "d3"
+import { HierarchyNode, hierarchy } from "d3"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { clone } from "./clone"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
 	let map: CodeMapNode
 	let deltaMap: CodeMapNode
-	let metricData: MetricData[]
-	let edgeMetricData: MetricData[]
-	let blacklist: BlacklistItem[]
+	let metricData: NodeMetricData[]
+	let edgeMetricData: EdgeMetricData[]
 	let attributeTypes: AttributeTypes
 
 	beforeEach(() => {
-		file = _.cloneDeep(TEST_DELTA_MAP_A)
+		file = clone(TEST_DELTA_MAP_A)
 		map = file.map
-		deltaMap = _.cloneDeep(VALID_NODE_WITH_PATH_AND_DELTAS)
+		deltaMap = clone(VALID_NODE_WITH_PATH_AND_DELTAS)
 		metricData = [
 			{ name: "rloc", maxValue: 999999 },
 			{ name: "functions", maxValue: 999999 },
@@ -35,35 +33,33 @@ describe("nodeDecorator", () => {
 			nodes: { functions: AttributeTypeValue.relative, rloc: AttributeTypeValue.absolute },
 			edges: { pairingRate: AttributeTypeValue.relative }
 		}
-		blacklist = _.cloneDeep(STATE.fileSettings.blacklist)
-		NodeDecorator.preDecorateFile(file)
+		NodeDecorator.decorateMapWithPathAttribute(file)
 	})
 
-	function allUniqueIds(map: HierarchyNode<CodeMapNode>): boolean {
+	function allUniqueIds(map: HierarchyNode<CodeMapNode>) {
 		const ids = new Set()
-		map.each(node => {
-			if (ids.has(node.id)) {
-				return false
-			}
-			ids.add(node.id)
+		let count = 0
+		map.eachAfter(({ data }) => {
+			count++
+			ids.add(data.id)
 		})
-		return true
+		return count === ids.size
 	}
 
 	describe("decorateMap", () => {
 		it("should aggregate given absolute metrics correctly", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
 
-			expect(map.attributes["rloc"]).toBe(200)
-			expect(map.attributes["mcc"]).toBe(111)
+			expect(map.attributes.rloc).toBe(200)
+			expect(map.attributes.mcc).toBe(111)
 		})
 
 		it("should aggregate given relative metrics correctly", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
 
-			expect(map.attributes["functions"]).toBe(100)
+			expect(map.attributes.functions).toBe(100)
 		})
 
 		it("should aggregate absolute edge metrics correctly", () => {
@@ -71,10 +67,10 @@ describe("nodeDecorator", () => {
 			map.children[1].children[0].edgeAttributes = { avgCommits: { incoming: 10, outgoing: 10 } }
 			NodeDecorator.decorateMap(map, metricData, [])
 
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, edgeMetricData, false, attributeTypes)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, edgeMetricData, false, attributeTypes)
 
-			expect(map.edgeAttributes["avgCommits"].incoming).toBe(22)
-			expect(map.edgeAttributes["avgCommits"].outgoing).toBe(23)
+			expect(map.edgeAttributes.avgCommits.incoming).toBe(22)
+			expect(map.edgeAttributes.avgCommits.outgoing).toBe(23)
 		})
 
 		it("should aggregate given relative edge metrics correctly", () => {
@@ -82,19 +78,19 @@ describe("nodeDecorator", () => {
 			map.children[1].children[0].edgeAttributes = { pairingRate: { incoming: 10, outgoing: 10 } }
 			NodeDecorator.decorateMap(map, metricData, [])
 
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, edgeMetricData, false, attributeTypes)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, edgeMetricData, false, attributeTypes)
 
-			expect(map.edgeAttributes["pairingRate"].incoming).toBe(11)
-			expect(map.edgeAttributes["pairingRate"].outgoing).toBe(11.5)
+			expect(map.edgeAttributes.pairingRate.incoming).toBe(11)
+			expect(map.edgeAttributes.pairingRate.outgoing).toBe(11.5)
 		})
 
 		it("should aggregate missing metrics correctly", () => {
 			metricData.push({ name: "some", maxValue: 999999 })
 			NodeDecorator.decorateMap(map, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
 
-			expect(map.attributes["rloc"]).toBe(200)
-			expect(map.attributes["some"]).toBe(0)
+			expect(map.attributes.rloc).toBe(200)
+			expect(map.attributes.some).toBe(0)
 			expect(map.attributes["some other attribute"]).not.toBeDefined()
 		})
 
@@ -102,7 +98,7 @@ describe("nodeDecorator", () => {
 			metricData.push({ name: "some", maxValue: 999999 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBe(0)
@@ -117,7 +113,7 @@ describe("nodeDecorator", () => {
 			metricData.push({ name: "some", maxValue: 999999 })
 
 			NodeDecorator.decorateMap(map, metricData, [])
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			h.leaves().forEach(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBe(0)
@@ -153,7 +149,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/middle")
 			expect(map.children.length).toBe(2)
@@ -189,7 +185,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.link).toBe("link1")
 		})
@@ -247,7 +243,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/middle")
 			expect(map.children.length).toBe(1)
@@ -305,7 +301,7 @@ describe("nodeDecorator", () => {
 					]
 				}
 			]
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 			NodeDecorator.decorateMap(map, metricData, [])
 			expect(map.name).toBe("root/start")
 			expect(map.children.length).toBe(2)
@@ -317,11 +313,11 @@ describe("nodeDecorator", () => {
 		})
 	})
 
-	describe("preDecorateFile", () => {
+	describe("decorateMapWithPathAttribute", () => {
 		it("should decorate nodes with the correct path", () => {
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMapWithPathAttribute(file)
 
-			const h = d3.hierarchy(file.map)
+			const h = hierarchy(file.map)
 			h.each(node => {
 				expect(node.data.path).toBeDefined()
 			})
@@ -331,13 +327,13 @@ describe("nodeDecorator", () => {
 		})
 
 		it("should decorate nodes with a unique id starting from 0", () => {
-			NodeDecorator.preDecorateFile(file)
+			NodeDecorator.decorateMap(file.map, [], [])
 
-			const h = d3.hierarchy(file.map)
+			const h = hierarchy(file.map)
 			h.each(node => {
 				expect(node.data.id).toBeDefined()
-				expect(allUniqueIds(h)).toBeTruthy()
 			})
+			expect(allUniqueIds(h)).toBeTruthy()
 			expect(file.map.id).toBe(0)
 		})
 	})
@@ -349,8 +345,8 @@ describe("nodeDecorator", () => {
 			metricData.push({ name: "some", maxValue: 999999 })
 
 			NodeDecorator.decorateMap(map, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
-			const h = d3.hierarchy(map)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
+			const h = hierarchy(map)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
 				expect(node.data.attributes.some).toBeDefined()
@@ -359,34 +355,34 @@ describe("nodeDecorator", () => {
 
 		it("all nodes should have an attribute list with listed and available metrics", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
-			const h = d3.hierarchy(map)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
+			const h = hierarchy(map)
 			h.each(node => {
 				expect(node.data.attributes).toBeDefined()
-				expect(node.data.attributes["rloc"]).toBeDefined()
+				expect(node.data.attributes.rloc).toBeDefined()
 				expect(node.data.attributes["functions"]).toBeDefined()
 			})
 		})
 
 		it("folders should have sum attributes of children for absolute metrics", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
-			const h = d3.hierarchy(map)
-			expect(h.data.attributes["rloc"]).toBe(200)
-			expect(h.children[0].data.attributes["rloc"]).toBe(100)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
+			const h = hierarchy(map)
+			expect(h.data.attributes.rloc).toBe(200)
+			expect(h.children[0].data.attributes.rloc).toBe(100)
 		})
 
 		it("folders should have median attributes of children for relative metrics", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, blacklist, metricData, [], false, attributeTypes)
-			const h = d3.hierarchy(map)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
+			const h = hierarchy(map)
 			expect(h.data.attributes["functions"]).toBe(100)
 		})
 
 		it("folders should have sum delta values of children for absolute metrics", () => {
 			NodeDecorator.decorateMap(deltaMap, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(deltaMap, blacklist, metricData, [], true, attributeTypes)
-			const h = d3.hierarchy(deltaMap)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(deltaMap, metricData, [], true, attributeTypes)
+			const h = hierarchy(deltaMap)
 			expect(h.data.deltas["rloc"]).toBe(295)
 			expect(h.children[0].data.deltas["rloc"]).toBe(300)
 			expect(h.children[2].data.deltas["rloc"]).toBe(145)
@@ -394,28 +390,62 @@ describe("nodeDecorator", () => {
 
 		it("folders should have median delta values of children for relative metrics", () => {
 			NodeDecorator.decorateMap(deltaMap, metricData, [])
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(deltaMap, blacklist, metricData, [], true, attributeTypes)
-			const h = d3.hierarchy(deltaMap)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(deltaMap, metricData, [], true, attributeTypes)
+			const h = hierarchy(deltaMap)
 			expect(h.data.deltas["functions"]).toBe(-3)
 		})
 
 		it("maps with no attribute nodes should be accepted and an attributes member added", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 
 			h.each(node => {
-				expect(node.data.attributes[MetricService.UNARY_METRIC]).toBeDefined()
+				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})
 		})
 
 		it("all nodes should have a unary attribute", () => {
 			map.children[0].attributes = {}
 			NodeDecorator.decorateMap(map, metricData, [])
-			const h = d3.hierarchy(map)
+			const h = hierarchy(map)
 			h.each(node => {
-				expect(node.data.attributes[MetricService.UNARY_METRIC]).toBeDefined()
+				expect(node.data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
 			})
+		})
+
+		it("nodes with missing attribute property should be aggregated correctly with default values", () => {
+			map.children.push({
+				name: "Parent Leaf",
+				type: NodeType.FOLDER,
+				attributes: {},
+				isExcluded: false,
+				isFlattened: false,
+				children: [
+					{
+						name: "small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 30, functions: 100, mcc: 100 },
+						isExcluded: false,
+						isFlattened: false
+					},
+					{
+						name: "other small leaf",
+						type: NodeType.FILE,
+						attributes: { rloc: 70, functions: 1000, mcc: 10 },
+						isExcluded: false,
+						isFlattened: false
+					}
+				]
+			})
+			map.attributes = undefined
+			map.children[1].attributes = undefined
+			map.children[2].attributes = undefined
+			NodeDecorator.decorateMap(map, metricData, [])
+
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
+
+			expect(map).toMatchSnapshot()
 		})
 	})
 })

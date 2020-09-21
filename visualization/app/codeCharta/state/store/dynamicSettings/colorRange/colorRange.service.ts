@@ -3,11 +3,10 @@ import { IRootScopeService } from "angular"
 import { ColorRangeActions, setColorRange } from "./colorRange.actions"
 import { ColorRange } from "../../../../codeCharta.model"
 import { getResetColorRange } from "./colorRange.reset"
-import { MetricService } from "../../../metric.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../colorMetric/colorMetric.service"
 import { FilesService, FilesSelectionSubscriber } from "../../files/files.service"
 import { isActionOfType } from "../../../../util/reduxHelper"
-import { FileState } from "../../../../model/files/files"
+import { NodeMetricDataService } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
 export interface ColorRangeSubscriber {
 	onColorRangeChanged(colorRange: ColorRange)
@@ -16,39 +15,42 @@ export interface ColorRangeSubscriber {
 export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber, FilesSelectionSubscriber {
 	private static COLOR_RANGE_CHANGED_EVENT = "color-range-changed"
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private metricService: MetricService) {
+	constructor(
+		private $rootScope: IRootScopeService,
+		private storeService: StoreService,
+		private nodeMetricDataService: NodeMetricDataService
+	) {
 		StoreService.subscribe(this.$rootScope, this)
 		ColorMetricService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, ColorRangeActions)) {
 			this.notify(this.select())
 			this.tryToResetIfNull()
 		}
 	}
 
-	public onColorMetricChanged(colorMetric: string) {
+	onColorMetricChanged() {
 		this.reset()
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged() {
 		this.reset()
 	}
 
 	private tryToResetIfNull() {
-		const colorRange = this.storeService.getState().dynamicSettings.colorRange
-		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
-		const maxMetricValue: number = this.metricService.getMaxMetricByMetricName(colorMetric)
+		const { colorRange, colorMetric } = this.storeService.getState().dynamicSettings
+		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
 		if (!colorRange.from && !colorRange.to && maxMetricValue) {
 			this.reset()
 		}
 	}
 
-	public reset() {
-		const colorMetric = this.storeService.getState().dynamicSettings.colorMetric
-		const maxMetricValue: number = this.metricService.getMaxMetricByMetricName(colorMetric)
+	reset() {
+		const { colorMetric } = this.storeService.getState().dynamicSettings
+		const maxMetricValue = this.nodeMetricDataService.getMaxMetricByMetricName(colorMetric)
 
 		const newColorRange = getResetColorRange(maxMetricValue)
 		this.storeService.dispatch(setColorRange(newColorRange))
@@ -62,8 +64,8 @@ export class ColorRangeService implements StoreSubscriber, ColorMetricSubscriber
 		this.$rootScope.$broadcast(ColorRangeService.COLOR_RANGE_CHANGED_EVENT, { colorRange: newState })
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: ColorRangeSubscriber) {
-		$rootScope.$on(ColorRangeService.COLOR_RANGE_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: ColorRangeSubscriber) {
+		$rootScope.$on(ColorRangeService.COLOR_RANGE_CHANGED_EVENT, (_event, data) => {
 			subscriber.onColorRangeChanged(data.colorRange)
 		})
 	}

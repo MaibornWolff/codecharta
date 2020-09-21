@@ -1,6 +1,6 @@
 import { ThreeCameraService } from "./threeCameraService"
 import { IRootScopeService, IAngularEvent, ITimeoutService } from "angular"
-import { Box3, CubeGeometry, Mesh, MeshNormalMaterial, OrbitControls, PerspectiveCamera, Vector3 } from "three"
+import { Box3, Mesh, MeshNormalMaterial, PerspectiveCamera, Vector3, Sphere, BoxGeometry } from "three"
 import { ThreeSceneService } from "./threeSceneService"
 import { StoreService } from "../../../state/store.service"
 import {
@@ -10,18 +10,21 @@ import {
 } from "../../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
 import { FilesService, FilesSelectionSubscriber } from "../../../state/store/files/files.service"
 import { setCameraTarget } from "../../../state/store/appSettings/cameraTarget/cameraTarget.actions"
-import { FileState } from "../../../model/files/files"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
+// eslint-disable-next-line no-duplicate-imports
+import * as Three from "three"
+import oc from "three-orbit-controls"
 
 export interface CameraChangeSubscriber {
 	onCameraChanged(camera: PerspectiveCamera)
 }
 
 export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNodeSubscriber, FilesSelectionSubscriber {
-	public static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
+	static CAMERA_CHANGED_EVENT_NAME = "camera-changed"
 	private static AUTO_FIT_TIMEOUT = 0
 
-	public controls: OrbitControls
-	public defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
+	controls: OrbitControls
+	defaultCameraPosition: Vector3 = new Vector3(0, 0, 0)
 
 	/* ngInject */
 	constructor(
@@ -36,36 +39,36 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		FilesService.subscribe(this.$rootScope, this)
 	}
 
-	public onFocusNode(focusedNodePath: string) {
+	onFocusNode() {
 		this.autoFitTo()
 	}
 
-	public onUnfocusNode() {
+	onUnfocusNode() {
 		this.autoFitTo()
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged() {
 		if (this.storeService.getState().appSettings.resetCameraIfNewFileIsLoaded) {
 			this.autoFitTo()
 		}
 	}
 
-	public setControlTarget() {
-		const cameraTarget: Vector3 = this.storeService.getState().appSettings.cameraTarget
+	setControlTarget() {
+		const { cameraTarget } = this.storeService.getState().appSettings
 		this.controls.target.set(cameraTarget.x, cameraTarget.y, cameraTarget.z)
 	}
 
-	public rotateCameraInVectorDirection(x: number, y: number, z: number) {
+	rotateCameraInVectorDirection(x: number, y: number, z: number) {
 		const zoom = this.getZoom()
 		this.lookAtDirectionFromTarget(x, y, z)
 		this.applyOldZoom(zoom)
 	}
 
-	public autoFitTo() {
+	autoFitTo() {
 		this.$timeout(() => {
 			const boundingSphere = this.getBoundingSphere()
 
-			const len: number = this.cameraPerspectiveLengthCalculation(boundingSphere)
+			const len = this.cameraPerspectiveLengthCalculation(boundingSphere)
 			const cameraReference = this.threeCameraService.camera
 
 			cameraReference.position.set(boundingSphere.center.x + len, len, boundingSphere.center.z + len)
@@ -98,13 +101,13 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 	}
 
 	private getBoundingSphere() {
-		return new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere()
+		return new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere())
 	}
 
 	private lookAtDirectionFromTarget(x: number, y: number, z: number) {
 		this.threeCameraService.camera.position.set(this.controls.target.x, this.controls.target.y, this.controls.target.z)
 
-		const alignmentCube = new Mesh(new CubeGeometry(20, 20, 20), new MeshNormalMaterial())
+		const alignmentCube = new Mesh(new BoxGeometry(20, 20, 20), new MeshNormalMaterial())
 
 		this.threeSceneService.scene.add(alignmentCube)
 
@@ -114,7 +117,7 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		alignmentCube.translateY(y)
 		alignmentCube.translateZ(z)
 
-		this.threeCameraService.camera.lookAt(alignmentCube.getWorldPosition())
+		this.threeCameraService.camera.lookAt(alignmentCube.getWorldPosition(alignmentCube.position))
 		this.threeSceneService.scene.remove(alignmentCube)
 	}
 
@@ -126,21 +129,21 @@ export class ThreeOrbitControlsService implements FocusNodeSubscriber, UnfocusNo
 		this.threeCameraService.camera.translateZ(oldZoom)
 	}
 
-	public init(domElement) {
-		const OrbitControls = require("three-orbit-controls")(require("three"))
-		this.controls = new OrbitControls(this.threeCameraService.camera, domElement)
+	init(domElement) {
+		const orbitControls = oc(Three)
+		this.controls = new orbitControls(this.threeCameraService.camera, domElement)
 		this.controls.addEventListener("change", () => {
 			this.onInput(this.threeCameraService.camera)
 		})
 	}
 
-	public onInput(camera: PerspectiveCamera) {
-		this.storeService.dispatch(setCameraTarget(this.controls.target), true)
+	onInput(camera: PerspectiveCamera) {
+		this.storeService.dispatch(setCameraTarget(this.controls.target), { silent: true })
 		this.$rootScope.$broadcast(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, camera)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: CameraChangeSubscriber) {
-		$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (event: IAngularEvent, camera: PerspectiveCamera) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: CameraChangeSubscriber) {
+		$rootScope.$on(ThreeOrbitControlsService.CAMERA_CHANGED_EVENT_NAME, (_event: IAngularEvent, camera: PerspectiveCamera) => {
 			subscriber.onCameraChanged(camera)
 		})
 	}

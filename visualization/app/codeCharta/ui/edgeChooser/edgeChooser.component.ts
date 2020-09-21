@@ -1,7 +1,6 @@
 import "./edgeChooser.component.scss"
-import { MetricData, EdgeMetricCount } from "../../codeCharta.model"
+import { EdgeMetricCount, EdgeMetricData } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
-import { EdgeMetricDataService, EdgeMetricDataServiceSubscriber } from "../../state/edgeMetricData.service"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { CodeMapMouseEventService, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import $ from "jquery"
@@ -9,13 +8,14 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import { setEdgeMetric } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.actions"
 import { EdgeMetricService, EdgeMetricSubscriber } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
+import { EdgeMetricDataService, EdgeMetricDataSubscriber } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 
 export class EdgeChooserController
-	implements EdgeMetricDataServiceSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
-	private originalEdgeMetricData: MetricData[]
+	implements EdgeMetricDataSubscriber, EdgeMetricSubscriber, BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
+	private originalEdgeMetricData: EdgeMetricData[]
 
 	private _viewModel: {
-		edgeMetricData: MetricData[]
+		edgeMetricData: EdgeMetricData[]
 		edgeMetric: string
 		hoveredEdgeValue: EdgeMetricCount
 		searchTerm: string
@@ -38,49 +38,49 @@ export class EdgeChooserController
 		EdgeMetricService.subscribe(this.$rootScope, this)
 	}
 
-	public onEdgeMetricDataUpdated(edgeMetrics: MetricData[]) {
-		this._viewModel.edgeMetricData = edgeMetrics
-		this.originalEdgeMetricData = edgeMetrics
+	onEdgeMetricDataChanged(edgeMetricData: EdgeMetricData[]) {
+		this._viewModel.edgeMetricData = edgeMetricData
+		this.originalEdgeMetricData = edgeMetricData
 	}
 
-	public onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		if (hoveredBuilding.node && hoveredBuilding.node.edgeAttributes) {
+	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
+		if (hoveredBuilding.node?.edgeAttributes) {
 			this._viewModel.hoveredEdgeValue = hoveredBuilding.node.edgeAttributes[this._viewModel.edgeMetric]
 		} else {
 			this._viewModel.hoveredEdgeValue = null
 		}
 	}
 
-	public onBuildingUnhovered() {
+	onBuildingUnhovered() {
 		this._viewModel.hoveredEdgeValue = null
 	}
 
-	public onEdgeMetricChanged(edgeMetric: string) {
-		this._viewModel.edgeMetric = edgeMetric == null ? "None" : edgeMetric
+	onEdgeMetricChanged(edgeMetric?: string) {
+		this._viewModel.edgeMetric = edgeMetric || EdgeMetricDataService.NONE_METRIC
 		this.codeMapActionsService.updateEdgePreviews()
 	}
 
-	public onEdgeMetricSelected() {
+	onEdgeMetricSelected() {
 		this.storeService.dispatch(setEdgeMetric(this._viewModel.edgeMetric))
 	}
 
-	public noEdgesAvailable() {
+	noEdgesAvailable() {
 		return this._viewModel.edgeMetricData.length <= 1
 	}
 
-	public filterMetricData() {
+	filterMetricData() {
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(metric =>
 			metric.name.toLowerCase().includes(this._viewModel.searchTerm.toLowerCase())
 		)
 	}
 
-	public focusInputField() {
+	focusInputField() {
 		this.$timeout(() => {
 			$(".metric-search").focus()
 		}, 200)
 	}
 
-	public clearSearchTerm() {
+	clearSearchTerm() {
 		this._viewModel.searchTerm = ""
 		this._viewModel.edgeMetricData = this.originalEdgeMetricData
 	}

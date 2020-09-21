@@ -13,12 +13,13 @@ import {
 	VALID_NODE_WITH_ROOT_UNARY,
 	withMockedEventMethods
 } from "../../util/dataMocks"
-import _ from "lodash"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
-import { MetricService } from "../../state/metric.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { clone } from "../../util/clone"
+import _ from "lodash"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController
@@ -29,9 +30,9 @@ describe("MapTreeViewLevelController", () => {
 
 	beforeEach(() => {
 		restartSystem()
-		rebuildController()
 		withMockedCodeMapPreRenderService()
 		withMockedEventMethods($rootScope)
+		rebuildController()
 	})
 
 	function restartSystem() {
@@ -53,7 +54,6 @@ describe("MapTreeViewLevelController", () => {
 
 	function withMockedCodeMapPreRenderService() {
 		codeMapPreRenderService.getRenderMap = jest.fn().mockReturnValue(VALID_NODE_WITH_ROOT_UNARY)
-		mapTreeViewLevelController["codeMapPreRenderService"] = codeMapPreRenderService
 	}
 
 	describe("onBuildingHovered", () => {
@@ -64,7 +64,7 @@ describe("MapTreeViewLevelController", () => {
 			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
 			codeMapBuilding.node.path = "somePath"
 
-			codeMapNode = _.cloneDeep(VALID_NODE_WITH_PATH)
+			codeMapNode = clone(VALID_NODE_WITH_PATH)
 			codeMapNode.path = "somePath"
 		})
 
@@ -144,7 +144,8 @@ describe("MapTreeViewLevelController", () => {
 	})
 
 	describe("openNodeContextMenu", () => {
-		it("should broadcast node context menu events", () => {
+		it("should open NodeContextMenu and mark the folder", () => {
+			document.getElementById = jest.fn().mockReturnValue({ addEventListener: jest.fn() })
 			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
 				NodeType.FOLDER,
@@ -160,6 +161,7 @@ describe("MapTreeViewLevelController", () => {
 			mapTreeViewLevelController.openNodeContextMenu($event)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-node-context-menu", context)
+			expect(mapTreeViewLevelController["_viewModel"].isMarked).toBeTruthy()
 		})
 	})
 
@@ -231,6 +233,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(mapTreeViewLevelController["_viewModel"].isFolderOpened).toBeTruthy()
 		})
+
 		it("should do nothing, if the depth size is not 0", () => {
 			mapTreeViewLevelController["_viewModel"].isFolderOpened = false
 
@@ -238,6 +241,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(mapTreeViewLevelController["_viewModel"].isFolderOpened).toBeFalsy()
 		})
+
 		it("should do nothing, if the depth size is not 0 and the isFolderOpened variable is true", () => {
 			mapTreeViewLevelController["_viewModel"].isFolderOpened = true
 
@@ -253,7 +257,7 @@ describe("MapTreeViewLevelController", () => {
 
 			const result = mapTreeViewLevelController.getNodeUnaryValue()
 
-			expect(result).toBe(VALID_NODE_WITH_METRICS.attributes[MetricService.UNARY_METRIC])
+			expect(result).toBe(VALID_NODE_WITH_METRICS.attributes[NodeMetricDataService.UNARY_METRIC])
 		})
 	})
 
@@ -265,6 +269,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(result).toBe("50")
 		})
+
 		it("should return the Root-Node Unary-Precentage to 100 percent", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
 
@@ -282,6 +287,7 @@ describe("MapTreeViewLevelController", () => {
 
 			expect(result).toBeTruthy()
 		})
+
 		it("should return that the current Node is not Root", () => {
 			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
 

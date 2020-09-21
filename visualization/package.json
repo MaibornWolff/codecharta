@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.51.0",
+	"version": "1.57.3",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -25,7 +25,7 @@
 		"cli.js"
 	],
 	"codecharta": {
-		"apiVersion": "1.1"
+		"apiVersion": "1.2"
 	},
 	"window": {
 		"icon": "app/icon.png",
@@ -36,7 +36,7 @@
 	},
 	"main": "dist/webpack/index.html",
 	"build": {
-		"nwVersion": "0.27.3",
+		"nwVersion": "0.48.1",
 		"output": "./dist/packages/",
 		"outputPattern": "codecharta-visualization-${VERSION}-${PLATFORM}-${ARCH}",
 		"files": "./dist/webpack/**/*",
@@ -75,20 +75,12 @@
 		"plop": "tsc --esModuleInterop true --outDir ./dist/plop ./plopfile.ts && cd dist/plop && plop",
 		"lint": "eslint \"app/**/*.ts\"",
 		"lint:fix": "npm run lint -- --fix",
-		"format": "prettier --write \"./**/*\"",
-		"format:quick": "pretty-quick --staged",
 		"schema:generate": "typescript-json-schema ./app/codeCharta/codeCharta.model.ts ExportCCFile --required --topRef --out app/codeCharta/util/generatedSchema.json"
 	},
 	"bin": {
 		"codecharta-visualization": "cli.js"
 	},
 	"license": "BSD-3-Clause",
-	"husky": {
-		"hooks": {
-			"pre-commit": "npm run lint:fix && npm run format:quick",
-			"pre-push": "sh ./script/pre-push.sh"
-		}
-	},
 	"dependencies": {
 		"ajv": "^6.12.2",
 		"angular": "^1.8.0",
@@ -101,7 +93,7 @@
 		"angularjs-slider": "^7.0.0",
 		"color-convert": "^2.0.0",
 		"core-js": "^3.6.5",
-		"d3": "^5.9.2",
+		"d3": "^6.0.0",
 		"font-awesome": "^4.7.0",
 		"ignore": "^5.0.2",
 		"jquery": "^3.3.1",
@@ -111,9 +103,9 @@
 		"redux": "^4.0.4",
 		"rfdc": "^1.1.4",
 		"shelljs": "^0.8.1",
-		"three": "^0.89.0",
+		"three": "^0.120.1",
 		"three-orbit-controls": "^82.1.0",
-		"typescript-json-schema": "^0.42.0"
+		"typescript-json-schema": "^0.43.0"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.10.4",
@@ -131,34 +123,32 @@
 		"@types/lodash": "^4.14.123",
 		"@types/node": "^14.0.14",
 		"@types/puppeteer": "^3.0.1",
-		"@typescript-eslint/eslint-plugin": "^2.23.0",
-		"@typescript-eslint/parser": "^2.23.0",
+		"@typescript-eslint/eslint-plugin": "^4.0.1",
+		"@typescript-eslint/parser": "^4.0.1",
 		"babel-loader": "^8.1.0",
 		"bestzip": "^2.1.5",
 		"clean-webpack-plugin": "^3.0.0",
 		"css-loader": "^4.2.0",
 		"es6-shim": "^0.35.3",
-		"eslint": "^6.8.0",
-		"eslint-config-prettier": "^6.10.0",
+		"eslint": "^7.8.1",
+		"eslint-config-prettier": "^6.11.0",
+		"eslint-plugin-unicorn": "^21.0.0",
 		"file-loader": "^6.0.0",
 		"html-loader": "^1.1.0",
 		"html-webpack-plugin": "^4.3.0",
-		"husky": "^4.2.5",
 		"jest": "^26.1.0",
 		"jest-puppeteer": "^4.4.0",
 		"jest-serializer-html": "^7.0.0",
 		"makeshift": "^1.1.0",
 		"node-sass": "^4.13.1",
 		"plop": "^2.7.3",
-		"prettier": "^2.0.5",
-		"pretty-quick": "^2.0.1",
 		"puppeteer": "^5.1.0",
 		"rimraf": "^3.0.2",
-		"sass-loader": "^9.0.1",
+		"sass-loader": "^10.0.1",
 		"style-loader": "^1.2.1",
 		"ts-jest": "^26.1.1",
-		"ts-loader": "^7.0.5",
-		"typescript": "^3.8.3",
+		"ts-loader": "^8.0.3",
+		"typescript": "^4.0.2",
 		"webpack": "^4.41.2",
 		"webpack-cli": "^3.3.10",
 		"webpack-dev-server": "^3.11.0",

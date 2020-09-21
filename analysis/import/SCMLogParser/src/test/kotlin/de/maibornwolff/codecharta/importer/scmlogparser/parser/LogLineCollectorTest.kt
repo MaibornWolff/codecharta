@@ -21,7 +21,8 @@ class LogLineCollectorTest {
         val logLines = Stream.of("commit 1", "commit 2")
         val commitSeparatorTest = Predicate<String> { logLine -> logLine == "some commit separator" }
         assertThatThrownBy { logLines.collect(LogLineCollector.create(commitSeparatorTest)) }.isInstanceOf(
-                IllegalArgumentException::class.java)
+            IllegalArgumentException::class.java
+        )
     }
 
     @Test

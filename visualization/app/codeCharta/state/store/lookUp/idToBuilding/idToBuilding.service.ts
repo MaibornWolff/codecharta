@@ -10,12 +10,12 @@ export class IdToBuildingService implements CodeMapMeshChangedSubscriber {
 		ThreeSceneService.subscribeToCodeMapMeshChangedEvent(this.$rootScope, this)
 	}
 
-	public onCodeMapMeshChanged(mapMesh: CodeMapMesh) {
+	onCodeMapMeshChanged(mapMesh: CodeMapMesh) {
 		const idToBuilding = new Map<number, CodeMapBuilding>()
 		mapMesh.getMeshDescription().buildings.forEach(x => {
 			idToBuilding.set(x.node.id, x)
 		})
 
-		this.storeService.dispatch(setIdToBuilding(idToBuilding), true)
+		this.storeService.dispatch(setIdToBuilding(idToBuilding), { silent: true })
 	}
 }

@@ -1,5 +1,5 @@
 {
-  "projectName": "foo",
+  "projectName": "",
   "nodes": [
     {
       "name": "root",
@@ -14,23 +14,23 @@
           "link": "",
           "children": [
             {
-              "name": "spaces_3.xyz",
-              "type": "File",
-              "attributes": {
-                "indentation_level_0+": 5,
-                "indentation_level_1+": 3,
-                "indentation_level_2+": 3
-              },
-              "link": "",
-              "children": []
-            },
-            {
               "name": "spaces_4.xyz",
               "type": "File",
               "attributes": {
                 "indentation_level_0+": 7,
                 "indentation_level_1+": 4,
                 "indentation_level_2+": 4
+              },
+              "link": "",
+              "children": []
+            },
+            {
+              "name": "spaces_3.xyz",
+              "type": "File",
+              "attributes": {
+                "indentation_level_0+": 5,
+                "indentation_level_1+": 3,
+                "indentation_level_2+": 3
               },
               "link": "",
               "children": []
@@ -51,7 +51,7 @@
       ]
     }
   ],
-  "apiVersion": "1.1",
+  "apiVersion": "1.2",
   "edges": [],
   "attributeTypes": {},
   "blacklist": []

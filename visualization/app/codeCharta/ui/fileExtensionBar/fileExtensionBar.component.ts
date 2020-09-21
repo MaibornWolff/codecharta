@@ -22,54 +22,57 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
 	}
 
-	public onRenderMapChanged(map: CodeMapNode) {
+	onRenderMapChanged(map: CodeMapNode) {
 		this.setNewDistribution(map)
 		this.setColorForEachExtension()
 		this.potentiallyAddNoneExtension()
 	}
 
-	public onHoverFileExtensionBar(hoveredExtension: string) {
-		const buildings = this.threeSceneService
-			.getMapMesh()
-			.getMeshDescription()
-			.buildings.filter(building => building.node.isLeaf)
+	onHoverFileExtensionBar(hoveredExtension: string) {
+		const { buildings } = this.threeSceneService.getMapMesh().getMeshDescription()
 
-		const visibleFileExtensions: string[] = this._viewModel.distribution
-			.filter(metric => metric.fileExtension !== "other")
-			.map(metric => metric.fileExtension)
+		const visibleFileExtensions = new Set()
+		for (const metric of this._viewModel.distribution) {
+			if (metric.fileExtension !== "other") {
+				visibleFileExtensions.add(metric.fileExtension)
+			}
+		}
 
 		buildings.forEach(building => {
-			const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
-			if (
-				buildingExtension === hoveredExtension ||
-				(hoveredExtension === "other" && !visibleFileExtensions.includes(buildingExtension))
-			) {
-				this.threeSceneService.addBuildingToHighlightingList(building)
+			if (building.node.isLeaf) {
+				const buildingExtension = FileExtensionCalculator.estimateFileExtension(building.node.name)
+				if (
+					buildingExtension === hoveredExtension ||
+					(hoveredExtension === "other" && !visibleFileExtensions.has(buildingExtension))
+				) {
+					this.threeSceneService.addBuildingToHighlightingList(building)
+				}
 			}
 		})
+
 		this.threeSceneService.highlightBuildings()
 	}
 
-	public onUnhoverFileExtensionBar() {
+	onUnhoverFileExtensionBar() {
 		this.threeSceneService.clearHighlight()
 	}
 
-	public toggleExtensiveMode() {
+	toggleExtensiveMode() {
 		this._viewModel.isExtensiveMode = !this._viewModel.isExtensiveMode
 	}
 
-	public togglePercentageAbsoluteValues() {
+	togglePercentageAbsoluteValues() {
 		this._viewModel.isAbsoluteValueVisible = !this._viewModel.isAbsoluteValueVisible
 	}
 
 	private setNewDistribution(map: CodeMapNode) {
-		const distributionMetric = this.storeService.getState().dynamicSettings.distributionMetric
+		const { distributionMetric } = this.storeService.getState().dynamicSettings
 		this._viewModel.distribution = FileExtensionCalculator.getMetricDistribution(map, distributionMetric)
 	}
 
 	private setColorForEachExtension() {
 		this._viewModel.distribution.forEach(x => {
-			x.color = x.color ? x.color : FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(x.fileExtension)).toString()
+			x.color = x.color ?? FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(x.fileExtension)).toString()
 		})
 	}
 

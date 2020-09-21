@@ -1,5 +1,5 @@
-import { MapSizeAction, setMapSize } from "./mapSize.actions"
+import { setMapSize } from "./mapSize.actions"
 
-export function splitMapSizeAction(payload: number): MapSizeAction {
+export function splitMapSizeAction(payload: number) {
 	return setMapSize(payload)
 }

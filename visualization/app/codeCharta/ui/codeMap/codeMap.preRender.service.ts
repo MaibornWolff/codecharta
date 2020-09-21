@@ -1,14 +1,11 @@
 "use strict"
 
-import { CCFile, MetricData, CodeMapNode, FileMeta } from "../../codeCharta.model"
+import { CodeMapNode, FileMeta } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { AggregationGenerator } from "../../util/aggregationGenerator"
-import { MetricService, MetricServiceSubscriber } from "../../state/metric.service"
 import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
-import { EdgeMetricDataService } from "../../state/edgeMetricData.service"
-import * as d3 from "d3"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
 import _ from "lodash"
@@ -22,13 +19,19 @@ import { SortingOptionActions } from "../../state/store/dynamicSettings/sortingO
 import { IsAttributeSideBarVisibleActions } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { fileStatesAvailable, getVisibleFileStates, isDeltaState, isPartialState, isSingleState } from "../../model/files/files.helper"
 import { FileSelectionState, FileState } from "../../model/files/files"
-const clone = require("rfdc")()
+import { clone } from "../../util/clone"
+import { PanelSelectionActions } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
+import { PresentationModeActions } from "../../state/store/appSettings/isPresentationMode/isPresentationMode.actions"
+import { MetricDataService, MetricDataSubscriber } from "../../state/store/metricData/metricData.service"
+import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { hierarchy } from "d3-hierarchy"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
 }
 
-export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSubscriber, ScalingSubscriber {
+export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubscriber, ScalingSubscriber {
 	private static RENDER_MAP_CHANGED_EVENT = "render-map-changed"
 
 	private unifiedMap: CodeMapNode
@@ -40,11 +43,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	constructor(
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
-		private metricService: MetricService,
+		private nodeMetricDataService: NodeMetricDataService,
 		private codeMapRenderService: CodeMapRenderService,
 		private edgeMetricDataService: EdgeMetricDataService
 	) {
-		MetricService.subscribe(this.$rootScope, this)
+		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
 		this.debounceRendering = _.debounce(() => {
@@ -52,15 +55,15 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}, this.DEBOUNCE_TIME)
 	}
 
-	public getRenderMap(): CodeMapNode {
+	getRenderMap() {
 		return this.unifiedMap
 	}
 
-	public getRenderFileMeta(): FileMeta {
+	getRenderFileMeta() {
 		return this.unifiedFileMeta
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (
 			this.allNecessaryRenderDataAvailable() &&
 			!isActionOfType(actionType, ScalingActions) &&
@@ -69,19 +72,21 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 			!isActionOfType(actionType, SearchPanelModeActions) &&
 			!isActionOfType(actionType, SortingOrderAscendingActions) &&
 			!isActionOfType(actionType, SortingOptionActions) &&
-			!isActionOfType(actionType, IsAttributeSideBarVisibleActions)
+			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
+			!isActionOfType(actionType, PanelSelectionActions) &&
+			!isActionOfType(actionType, PresentationModeActions)
 		) {
 			this.debounceRendering()
 		}
 	}
 
-	public onScalingChanged(scaling) {
+	onScalingChanged() {
 		if (this.allNecessaryRenderDataAvailable()) {
 			this.scaleMapAndNotify()
 		}
 	}
 
-	public onMetricDataAdded(metricData: MetricData[]) {
+	onMetricDataChanged() {
 		if (fileStatesAvailable(this.storeService.getState().files)) {
 			this.updateRenderMapAndFileMeta()
 			this.decorateIfPossible()
@@ -99,14 +104,14 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 
 	private decorateIfPossible() {
 		const state = this.storeService.getState()
-		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && this.metricService.getMetricData()) {
-			NodeDecorator.decorateMap(this.unifiedMap, this.metricService.getMetricData(), state.fileSettings.blacklist)
+		const { nodeMetricData } = state.metricData
+		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && nodeMetricData) {
+			NodeDecorator.decorateMap(this.unifiedMap, nodeMetricData, state.fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
-				state.fileSettings.blacklist,
-				this.metricService.getMetricData(),
-				this.edgeMetricDataService.getMetricData(),
+				nodeMetricData,
+				this.storeService.getState().metricData.edgeMetricData,
 				isDeltaState(state.files),
 				state.fileSettings.attributeTypes
 			)
@@ -114,8 +119,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
-		if (map && this.edgeMetricDataService.getMetricNames()) {
-			const root = d3.hierarchy<CodeMapNode>(map)
+		if (this.edgeMetricDataService.getMetricNames()) {
+			const root = hierarchy<CodeMapNode>(map)
 			root.leaves().forEach(node => {
 				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
 				for (const edgeMetric of edgeMetrics.keys()) {
@@ -125,29 +130,34 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		}
 	}
 
-	private getSelectedFilesAsUnifiedMap(): CCFile {
-		const files = this.storeService.getState().files
+	private getSelectedFilesAsUnifiedMap() {
+		const { files } = this.storeService.getState()
 		const visibleFileStates = clone(getVisibleFileStates(files))
 
 		if (isSingleState(files)) {
 			return visibleFileStates[0].file
-		} else if (isPartialState(files)) {
+		}
+		if (isPartialState(files)) {
 			return AggregationGenerator.getAggregationFile(visibleFileStates.map(x => x.file))
-		} else if (isDeltaState(files)) {
+		}
+		if (isDeltaState(files)) {
 			return this.getDeltaFile(visibleFileStates)
 		}
 	}
 
-	private getDeltaFile(visibleFileStates: FileState[]): CCFile {
-		if (visibleFileStates.length == 2) {
-			const referenceFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Reference).file
-			const comparisonFile = visibleFileStates.find(x => x.selectedAs == FileSelectionState.Comparison).file
-			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
-		} else {
-			const referenceFile = visibleFileStates[0].file
-			const comparisonFile = visibleFileStates[0].file
-			return DeltaGenerator.getDeltaFile(referenceFile, comparisonFile)
+	private getDeltaFile(visibleFileStates: FileState[]) {
+		if (visibleFileStates.length === 2) {
+			let [reference, comparison] = visibleFileStates
+			if (reference.selectedAs !== FileSelectionState.Reference) {
+				const temporary = reference
+				comparison = reference
+				reference = temporary
+			}
+			return DeltaGenerator.getDeltaFile(reference.file, comparison.file)
 		}
+		// Compare with itself. This is somewhat questionable.
+		const [{ file }] = visibleFileStates
+		return DeltaGenerator.getDeltaFile(file, file)
 	}
 
 	private renderAndNotify() {
@@ -162,10 +172,10 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		this.removeLoadingGifs()
 	}
 
-	private allNecessaryRenderDataAvailable(): boolean {
+	private allNecessaryRenderDataAvailable() {
 		return (
 			fileStatesAvailable(this.storeService.getState().files) &&
-			this.metricService.getMetricData() !== null &&
+			this.storeService.getState().metricData.nodeMetricData !== null &&
 			this.areChosenMetricsInMetricData() &&
 			_.values(this.storeService.getState().dynamicSettings).every(x => {
 				return x !== null && _.values(x).every(x => x !== null)
@@ -174,11 +184,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 	}
 
 	private areChosenMetricsInMetricData() {
-		const dynamicSettings = this.storeService.getState().dynamicSettings
+		const { dynamicSettings } = this.storeService.getState()
 		return (
-			this.metricService.isMetricAvailable(dynamicSettings.areaMetric) &&
-			this.metricService.isMetricAvailable(dynamicSettings.colorMetric) &&
-			this.metricService.isMetricAvailable(dynamicSettings.heightMetric)
+			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.areaMetric) &&
+			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.colorMetric) &&
+			this.nodeMetricDataService.isMetricAvailable(dynamicSettings.heightMetric)
 		)
 	}
 
@@ -197,8 +207,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricServiceSu
 		this.$rootScope.$broadcast(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, this.unifiedMap)
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
-		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (event, data) => {
+	static subscribe($rootScope: IRootScopeService, subscriber: CodeMapPreRenderServiceSubscriber) {
+		$rootScope.$on(CodeMapPreRenderService.RENDER_MAP_CHANGED_EVENT, (_event, data) => {
 			subscriber.onRenderMapChanged(data)
 		})
 	}

@@ -5,10 +5,10 @@ import { IRootScopeService, ITimeoutService } from "angular"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { Node } from "../../codeCharta.model"
 import { CODE_MAP_BUILDING } from "../../util/dataMocks"
-import _ from "lodash"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
+import _ from "lodash"
 
 describe("MetricValueHoveredController", () => {
 	let metricValueHoveredController: MetricValueHoveredController
@@ -106,7 +106,7 @@ describe("MetricValueHoveredController", () => {
 			metricValueHoveredController["_viewModel"].colorMetric = "color"
 
 			metricValueHoveredController.onBuildingHovered(codeMapBuilding)
-			const node: Node = metricValueHoveredController["_viewModel"]["hoveredNode"]
+			const node: Node = metricValueHoveredController["_viewModel"].hoveredNode
 
 			expect(node.deltas).toBe(undefined)
 			expect(node.attributes["area"]).toBe(10)
@@ -122,7 +122,7 @@ describe("MetricValueHoveredController", () => {
 
 			metricValueHoveredController.onBuildingHovered(deltaBuilding)
 
-			const node: Node = metricValueHoveredController["_viewModel"]["hoveredNode"]
+			const node: Node = metricValueHoveredController["_viewModel"].hoveredNode
 			expect(node.deltas["area"]).toBe(40)
 			expect(node.attributes["area"]).toBe(10)
 			expect(node.deltas["color"]).toBe(60)
@@ -134,8 +134,8 @@ describe("MetricValueHoveredController", () => {
 		it("hovered delta color should be neutral color if hoveredHeigtDelta is 0", () => {
 			withMockedBuildingTransitions()
 			metricValueHoveredController["_viewModel"].heightMetric = "height"
-			metricValueHoveredController["_viewModel"]["hoveredNode"] = deltaBuilding.node as Node
-			metricValueHoveredController["_viewModel"]["hoveredNode"]["deltas"]["height"] = 0
+			metricValueHoveredController["_viewModel"].hoveredNode = deltaBuilding.node as Node
+			metricValueHoveredController["_viewModel"].hoveredNode["deltas"]["height"] = 0
 
 			metricValueHoveredController.onBuildingHovered(deltaBuilding)
 
@@ -145,8 +145,8 @@ describe("MetricValueHoveredController", () => {
 		it("hovered delta color should be positive color if hoveredHeigtDelta is 2", () => {
 			withMockedBuildingTransitions()
 			metricValueHoveredController["_viewModel"].heightMetric = "height"
-			metricValueHoveredController["_viewModel"]["hoveredNode"] = deltaBuilding.node as Node
-			metricValueHoveredController["_viewModel"]["hoveredNode"]["deltas"]["height"] = 2
+			metricValueHoveredController["_viewModel"].hoveredNode = deltaBuilding.node as Node
+			metricValueHoveredController["_viewModel"].hoveredNode["deltas"]["height"] = 2
 
 			metricValueHoveredController.onBuildingHovered(deltaBuilding)
 
@@ -156,8 +156,8 @@ describe("MetricValueHoveredController", () => {
 		it("hovered delta color should be negative color if hoveredHeigtDelta is -2", () => {
 			withMockedBuildingTransitions()
 			metricValueHoveredController["_viewModel"].heightMetric = "height"
-			metricValueHoveredController["_viewModel"]["hoveredNode"] = deltaBuilding.node as Node
-			metricValueHoveredController["_viewModel"]["hoveredNode"]["deltas"]["height"] = -2
+			metricValueHoveredController["_viewModel"].hoveredNode = deltaBuilding.node as Node
+			metricValueHoveredController["_viewModel"].hoveredNode["deltas"]["height"] = -2
 
 			metricValueHoveredController.onBuildingHovered(deltaBuilding)
 
@@ -169,7 +169,7 @@ describe("MetricValueHoveredController", () => {
 		it("should set hoveredNode to null if data incomplete", () => {
 			metricValueHoveredController.onBuildingUnhovered()
 
-			expect(metricValueHoveredController["_viewModel"]["hoveredNode"]).toBe(null)
+			expect(metricValueHoveredController["_viewModel"].hoveredNode).toBe(null)
 		})
 	})
 })

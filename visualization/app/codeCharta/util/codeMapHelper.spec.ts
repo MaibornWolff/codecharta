@@ -2,7 +2,7 @@ import { CodeMapHelper } from "./codeMapHelper"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
 import { TEST_FILE_WITH_PATHS } from "./dataMocks"
-import _ from "lodash"
+import { clone } from "./clone"
 
 describe("codeMapHelper", () => {
 	let testRoot: CodeMapNode
@@ -12,14 +12,10 @@ describe("codeMapHelper", () => {
 		restartSystem()
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
-		testRoot = _.cloneDeep(TEST_FILE_WITH_PATHS.map)
+		testRoot = clone(TEST_FILE_WITH_PATHS.map)
 		blacklist = []
 	}
 
@@ -43,50 +39,31 @@ describe("codeMapHelper", () => {
 		})
 
 		it("should return the node that matches path and type", () => {
-			const expected = testRoot.children[1]
+			const [, expected] = testRoot.children
 
 			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FOLDER, testRoot)
 
 			expect(result).toEqual(expected)
 		})
 
-		it("should return null if no node matches path and type", () => {
+		it("should return undefined if no node matches path and type", () => {
 			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Uncle Leaf", NodeType.FOLDER, testRoot)
 
-			expect(result).toBeNull()
+			expect(result).toBeUndefined()
 		})
 
-		it("should return null if a node only matches path", () => {
+		it("should return undefined if a node only matches path", () => {
 			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FILE, testRoot)
 
-			expect(result).toBeNull()
+			expect(result).toBeUndefined()
 		})
 	})
 
 	describe("getAnyCodeMapNodeFromPath", () => {
-		it("should call getCodeMapNodeFromPath with type File at the beginning of call", () => {
-			CodeMapHelper.getCodeMapNodeFromPath = jest.fn()
+		it("should return the node that matches the path exactly", () => {
+			const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root/big leaf", testRoot)
 
-			CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", NodeType.FILE, testRoot)
-		})
-
-		it("should call getCodeMapNodeFromPath with type Folder when no file was found and return null", () => {
-			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(null)
-
-			const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith("/root", NodeType.FOLDER, testRoot)
-			expect(result).toBeNull()
-		})
-
-		it("should return the first file found by getCodeMapNodeFromPath", () => {
-			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(testRoot)
-
-			const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root", testRoot)
-
-			expect(result).toEqual(testRoot)
+			expect(result).toEqual(testRoot.children[0])
 		})
 	})
 
@@ -176,16 +153,16 @@ describe("codeMapHelper", () => {
 			markedPackages.push({ path: "/root/big leaf", color: "0x000002" })
 		}
 
-		it("should return null if no markedPackages are provided", () => {
+		it("should return undefined if no markedPackages are provided", () => {
 			const result = CodeMapHelper.getMarkingColor(testRoot, null)
 
-			expect(result).toBeNull()
+			expect(result).toBeUndefined()
 		})
 
-		it("should return null if no node does not exist in markedPackages", () => {
+		it("should return undefined if no node does not exist in markedPackages", () => {
 			const result = CodeMapHelper.getMarkingColor(testRoot, markedPackages)
 
-			expect(result).toBeNull()
+			expect(result).toBeUndefined()
 		})
 
 		it("should return node color if node exists in markedPackages", () => {

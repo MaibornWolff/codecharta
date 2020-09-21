@@ -1,11 +1,9 @@
 import { ColorRangeAction, ColorRangeActions, setColorRange } from "./colorRange.actions"
-import { ColorRange } from "../../../../codeCharta.model"
-const clone = require("rfdc")()
 
-export function colorRange(state: ColorRange = setColorRange().payload, action: ColorRangeAction): ColorRange {
+export function colorRange(state = setColorRange().payload, action: ColorRangeAction) {
 	switch (action.type) {
 		case ColorRangeActions.SET_COLOR_RANGE:
-			return clone(action.payload)
+			return action.payload
 		default:
 			return state
 	}

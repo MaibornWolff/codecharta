@@ -12,23 +12,23 @@ export class CodeMapGeometricDescription {
 		this.scales = new Vector3(1, 1, 1)
 	}
 
-	public add(building: CodeMapBuilding): void {
+	add(building: CodeMapBuilding) {
 		this._buildings.push(building)
 	}
 
-	public get buildings(): CodeMapBuilding[] {
+	get buildings() {
 		return this._buildings
 	}
 
-	public setScales(scales: Vector3) {
+	setScales(scales: Vector3) {
 		this.scales = scales
 	}
 
-	public getBuildingByPath(path: string) {
+	getBuildingByPath(path: string) {
 		return this.buildings.find(x => x.node.path === path)
 	}
 
-	public intersect(ray: Ray): CodeMapBuilding {
+	intersect(ray: Ray) {
 		let intersectedBuilding: CodeMapBuilding
 		let leastIntersectedDistance = Infinity
 
@@ -41,10 +41,10 @@ export class CodeMapGeometricDescription {
 			box.translate(boxTranslation)
 
 			if (this.rayIntersectsAxisAlignedBoundingBox(ray, box)) {
-				const intersectionPoint: Vector3 = ray.intersectBox(box)
+				const intersectionPoint: Vector3 = ray.intersectBox(box, new Vector3())
 
 				if (intersectionPoint) {
-					const intersectionDistance: number = intersectionPoint.distanceTo(ray.origin)
+					const intersectionDistance = intersectionPoint.distanceTo(ray.origin)
 
 					if (intersectionDistance < leastIntersectedDistance) {
 						leastIntersectedDistance = intersectionDistance
@@ -57,7 +57,7 @@ export class CodeMapGeometricDescription {
 		return intersectedBuilding
 	}
 
-	private rayIntersectsAxisAlignedBoundingBox(ray: Ray, box: Box3): boolean {
+	private rayIntersectsAxisAlignedBoundingBox(ray: Ray, box: Box3) {
 		const tx1 = (box.min.x - ray.origin.x) * (1 / ray.direction.x)
 		const tx2 = (box.max.x - ray.origin.x) * (1 / ray.direction.x)
 

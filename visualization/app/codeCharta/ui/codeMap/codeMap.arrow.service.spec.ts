@@ -24,10 +24,6 @@ describe("CodeMapArrowService", () => {
 		withMockedThreeSceneService()
 	})
 
-	afterEach(() => {
-		jest.resetAllMocks()
-	})
-
 	function restartSystem() {
 		instantiateModule("app.codeCharta.ui.codeMap")
 
@@ -152,7 +148,7 @@ describe("CodeMapArrowService", () => {
 
 	describe("addEdgePreview", () => {
 		beforeEach(() => {
-			codeMapArrowService["map"] = new Map<String, Node>()
+			codeMapArrowService["map"] = new Map<string, Node>()
 			codeMapArrowService["map"].get = jest.fn(() => {
 				return INCOMING_NODE
 			})
@@ -160,14 +156,14 @@ describe("CodeMapArrowService", () => {
 		})
 		it("should create and edge Preview of one", () => {
 			const nodes: Node[] = [OUTGOING_NODE]
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
+			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
 
 			codeMapArrowService.addEdgePreview(nodes, edges)
 
 			expect(codeMapArrowService["map"].size).toEqual(1)
 		})
 		it("should create and no edge Preview at all", () => {
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible != EdgeVisibility.none)
+			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
 
 			codeMapArrowService.addEdgePreview(null, edges)
 

@@ -1,22 +1,22 @@
 import angular from "angular"
-import * as d3 from "d3"
 import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, AttributeTypes, Edge, NodeType } from "../codeCharta.model"
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { ExportCCFile } from "../codeCharta.api.model"
-import { MetricService } from "../state/metric.service"
-const clone = require("rfdc")()
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import { hierarchy } from "d3-hierarchy"
+import { clone } from "./clone"
 
 export class FileDownloader {
-	public static downloadCurrentMap(
+	static downloadCurrentMap(
 		map: CodeMapNode,
 		fileMeta: FileMeta,
 		fileSettings: FileSettings,
 		downloadSettingsNames: string[],
 		fileName: string
 	) {
-		const exportCCFile: ExportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
-		const newFileNameWithExtension: string = fileName + CodeChartaService.CC_FILE_EXTENSION
+		const exportCCFile = this.getProjectDataAsCCJsonFormat(map, fileMeta, fileSettings, downloadSettingsNames)
+		const newFileNameWithExtension = fileName + CodeChartaService.CC_FILE_EXTENSION
 		this.downloadData(exportCCFile, newFileNameWithExtension)
 	}
 
@@ -54,21 +54,20 @@ export class FileDownloader {
 		return mergedBlacklist
 	}
 
-	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes): AttributeTypes | {} {
+	private static getAttributeTypesForJSON(attributeTypes: AttributeTypes) {
 		if (Object.keys(attributeTypes.edges).length === 0 && Object.keys(attributeTypes.nodes).length === 0) {
 			return {}
-		} else {
-			return attributeTypes
 		}
+		return attributeTypes
 	}
 
-	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType): BlacklistItem[] {
-		return blacklist.filter(x => x.type == type)
+	private static getFilteredBlacklist(blacklist: BlacklistItem[], type: BlacklistType) {
+		return blacklist.filter(x => x.type === type)
 	}
 
-	private static undecorateMap(map: CodeMapNode): CodeMapNode {
-		const copy: CodeMapNode = clone(map)
-		d3.hierarchy(copy).each(node => {
+	private static undecorateMap(map: CodeMapNode) {
+		const copy = clone(map)
+		hierarchy(copy).each(node => {
 			delete node.data.isExcluded
 			delete node.data.isFlattened
 			delete node.data.edgeAttributes
@@ -76,14 +75,14 @@ export class FileDownloader {
 			if (node.data.type === NodeType.FOLDER) {
 				node.data.attributes = {}
 			} else {
-				delete node.data.attributes[MetricService.UNARY_METRIC]
+				delete node.data.attributes[NodeMetricDataService.UNARY_METRIC]
 			}
 		})
 		return copy
 	}
 
-	private static undecorateEdges(edges: Edge[]): Edge[] {
-		const copy: Edge[] = clone(edges)
+	private static undecorateEdges(edges: Edge[]) {
+		const copy = clone(edges)
 		for (const edge of copy) {
 			delete edge.visible
 		}

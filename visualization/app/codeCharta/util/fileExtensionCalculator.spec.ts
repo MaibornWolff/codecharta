@@ -1,14 +1,14 @@
-import _ from "lodash"
 import { FileExtensionCalculator, MetricDistribution } from "./fileExtensionCalculator"
 import { BlacklistType, CodeMapNode, NodeType } from "../codeCharta.model"
 import { VALID_NODE_WITH_PATH_AND_EXTENSION, VALID_NODE_WITHOUT_RLOC_METRIC, setIsBlacklisted } from "./dataMocks"
 import { HSL } from "./color/hsl"
+import { clone } from "./clone"
 
 describe("FileExtensionCalculator", () => {
 	let map: CodeMapNode
 
 	beforeEach(() => {
-		map = _.cloneDeep(VALID_NODE_WITH_PATH_AND_EXTENSION)
+		map = clone(VALID_NODE_WITH_PATH_AND_EXTENSION)
 	})
 
 	describe("getFileExtensionDistribution", () => {
@@ -168,7 +168,7 @@ describe("FileExtensionCalculator", () => {
 				}
 			]
 			map.children.push(...additionalChildren)
-			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 2.0
+			FileExtensionCalculator["OTHER_GROUP_THRESHOLD_VALUE"] = 2
 
 			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
 
@@ -179,19 +179,19 @@ describe("FileExtensionCalculator", () => {
 	describe("estimateFileExtension", () => {
 		it("should return correct lower-cased file extension", () => {
 			const fileName = "fileName.JAVA"
-			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
+			const result = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("java")
 		})
 
 		it("should return correct file extension when filename contains multiple points", () => {
 			const fileName = "prefix.name.suffix.json"
-			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
+			const result = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("json")
 		})
 
 		it("should return 'none' as extension, as there does not exist any", () => {
 			const fileName = "name_without_extension"
-			const result: string = FileExtensionCalculator["estimateFileExtension"](fileName)
+			const result = FileExtensionCalculator["estimateFileExtension"](fileName)
 			expect(result).toEqual("None")
 		})
 	})

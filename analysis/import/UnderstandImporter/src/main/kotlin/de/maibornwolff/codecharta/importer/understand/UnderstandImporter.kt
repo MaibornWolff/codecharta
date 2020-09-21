@@ -11,8 +11,11 @@ import java.io.OutputStreamWriter
 import java.io.Writer
 import java.util.concurrent.Callable
 
-@CommandLine.Command(name = "understandimport", description = ["generates cc.json from SciTools (TM) Understand csv"],
-        footer = ["Copyright(c) 2020, MaibornWolff GmbH"])
+@CommandLine.Command(
+    name = "understandimport",
+    description = ["generates cc.json from SciTools (TM) Understand csv"],
+    footer = ["Copyright(c) 2020, MaibornWolff GmbH"]
+)
 class UnderstandImporter : Callable<Void> {
 
     @CommandLine.Option(names = ["-h", "--help"], usageHelp = true, description = ["displays this help and exits"])

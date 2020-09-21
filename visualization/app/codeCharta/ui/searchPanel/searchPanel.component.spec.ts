@@ -2,13 +2,17 @@ import "./searchPanel.module"
 import { SearchPanelController } from "./searchPanel.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
-import { SearchPanelMode } from "../../codeCharta.model"
+import { PanelSelection, SearchPanelMode } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
+import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
+import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMode/searchPanelMode.actions"
+import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 
 describe("SearchPanelController", () => {
 	let searchPanelModeController: SearchPanelController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
+	let codeChartaMouseEventService: CodeChartaMouseEventService
 
 	beforeEach(() => {
 		restartSystem()
@@ -19,10 +23,11 @@ describe("SearchPanelController", () => {
 		instantiateModule("app.codeCharta.ui.searchPanel")
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		codeChartaMouseEventService = getService<CodeChartaMouseEventService>("codeChartaMouseEventService")
 	}
 
 	function rebuildController() {
-		searchPanelModeController = new SearchPanelController($rootScope, storeService)
+		searchPanelModeController = new SearchPanelController($rootScope, storeService, codeChartaMouseEventService)
 	}
 
 	describe("constructor", () => {
@@ -65,6 +70,18 @@ describe("SearchPanelController", () => {
 			searchPanelModeController.toggle()
 
 			expect(storeService.getState().appSettings.searchPanelMode).toEqual(SearchPanelMode.minimized)
+		})
+
+		it("should minimize all other panels except the search panel", () => {
+			storeService.dispatch(setSearchPanelMode(SearchPanelMode.treeView))
+			storeService.dispatch(setPanelSelection(PanelSelection.AREA_PANEL_OPEN))
+
+			searchPanelModeController.toggle()
+
+			const { appSettings } = storeService.getState()
+
+			expect(appSettings.searchPanelMode).toEqual(SearchPanelMode.treeView)
+			expect(appSettings.panelSelection).toEqual(PanelSelection.NONE)
 		})
 	})
 

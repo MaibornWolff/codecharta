@@ -1,6 +1,5 @@
 "use strict"
 
-import * as THREE from "three"
 import { PerspectiveCamera, Vector3 } from "three"
 import { IRootScopeService } from "angular"
 import _ from "lodash"
@@ -10,39 +9,39 @@ import { setCamera } from "../../../state/store/appSettings/camera/camera.action
 import { CameraService, CameraSubscriber } from "../../../state/store/appSettings/camera/camera.service"
 
 export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscriber {
-	public static VIEW_ANGLE = 45
-	public static NEAR = 100
-	public static FAR = 200000 //TODO optimize renderer for far objects
+	static VIEW_ANGLE = 45
+	static NEAR = 100
+	static FAR = 200000 //TODO optimize renderer for far objects
 	private static DEBOUNCE_TIME = 400
 	private readonly throttledCameraChange: () => void
 
-	public camera: PerspectiveCamera
+	camera: PerspectiveCamera
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		this.throttledCameraChange = _.throttle(() => {
-			this.storeService.dispatch(setCamera(this.camera.position), true)
+			this.storeService.dispatch(setCamera(this.camera.position), { silent: true })
 		}, ThreeCameraService.DEBOUNCE_TIME)
 		CameraService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreCameraChanged(camera: Vector3) {
+	onStoreCameraChanged(camera: Vector3) {
 		this.camera.position.set(camera.x, camera.y, camera.z)
 		this.camera.lookAt(0, 0, 0)
 	}
 
-	public onCameraChanged(camera: PerspectiveCamera) {
+	onCameraChanged() {
 		this.throttledCameraChange()
 	}
 
-	public init(containerWidth: number, containerHeight: number) {
+	init(containerWidth: number, containerHeight: number) {
 		const aspect = containerWidth / containerHeight
-		this.camera = new THREE.PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
+		this.camera = new PerspectiveCamera(ThreeCameraService.VIEW_ANGLE, aspect, ThreeCameraService.NEAR, ThreeCameraService.FAR)
 		this.setPosition()
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	public setPosition() {
-		const camera = this.storeService.getState().appSettings.camera
+	setPosition() {
+		const { camera } = this.storeService.getState().appSettings
 		this.camera.position.set(camera.x, camera.y, camera.z)
 	}
 }

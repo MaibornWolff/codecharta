@@ -1,5 +1,5 @@
-import { SearchedNodePathsAction, setSearchedNodePaths } from "./searchedNodePaths.actions"
+import { setSearchedNodePaths } from "./searchedNodePaths.actions"
 
-export function splitSearchedNodePathsAction(payload: Set<string>): SearchedNodePathsAction {
+export function splitSearchedNodePathsAction(payload: Set<string>) {
 	return setSearchedNodePaths(payload)
 }

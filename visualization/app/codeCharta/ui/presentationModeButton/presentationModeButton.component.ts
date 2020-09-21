@@ -19,11 +19,11 @@ export class PresentationModeButtonController implements IsPresentationModeSubsc
 		IsPresentationModeService.subscribe(this.$rootScope, this)
 	}
 
-	public onPresentationModeChanged(isPresentationMode: boolean) {
+	onPresentationModeChanged(isPresentationMode: boolean) {
 		this._viewModel.isEnabled = isPresentationMode
 	}
 
-	public toggleMode() {
+	toggleMode() {
 		this.storeService.dispatch(setPresentationMode(!this._viewModel.isEnabled))
 	}
 }

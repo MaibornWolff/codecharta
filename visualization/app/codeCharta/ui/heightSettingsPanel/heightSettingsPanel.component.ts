@@ -50,31 +50,31 @@ export class HeightSettingsPanelController
 		}, HeightSettingsPanelController.DEBOUNCE_TIME)
 	}
 
-	public onAmountOfTopLabelsChanged(amountOfTopLabels: number) {
+	onAmountOfTopLabelsChanged(amountOfTopLabels: number) {
 		this._viewModel.amountOfTopLabels = amountOfTopLabels
 	}
 
-	public onInvertHeightChanged(invertHeight: boolean) {
+	onInvertHeightChanged(invertHeight: boolean) {
 		this._viewModel.invertHeight = invertHeight
 	}
 
-	public onScalingChanged(scaling) {
+	onScalingChanged(scaling) {
 		this._viewModel.scalingY = scaling.y
 	}
 
-	public onFilesSelectionChanged(files: FileState[]) {
+	onFilesSelectionChanged(files: FileState[]) {
 		this._viewModel.isDeltaState = isDeltaState(files)
 	}
 
-	public applySettingsAmountOfTopLabels() {
+	applySettingsAmountOfTopLabels() {
 		this.applyDebouncedTopLabels()
 	}
 
-	public applySettingsInvertHeight() {
+	applySettingsInvertHeight() {
 		this.storeService.dispatch(setInvertHeight(this._viewModel.invertHeight))
 	}
 
-	public applySettingsScaling() {
+	applySettingsScaling() {
 		const oldScaling = this.storeService.getState().appSettings.scaling
 		const newScaling = new Vector3(oldScaling.x, this._viewModel.scalingY, oldScaling.z)
 

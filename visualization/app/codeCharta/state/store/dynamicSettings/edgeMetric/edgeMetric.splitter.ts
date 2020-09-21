@@ -1,5 +1,5 @@
-import { EdgeMetricAction, setEdgeMetric } from "./edgeMetric.actions"
+import { setEdgeMetric } from "./edgeMetric.actions"
 
-export function splitEdgeMetricAction(payload: string): EdgeMetricAction {
+export function splitEdgeMetricAction(payload: string) {
 	return setEdgeMetric(payload)
 }

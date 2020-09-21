@@ -10,10 +10,10 @@ import {
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME,
 	VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY
 } from "../../util/dataMocks"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { SortingOrderAscendingService } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
+import { clone } from "../../util/clone"
 
 describe("MapTreeViewController", () => {
 	let mapTreeViewController: MapTreeViewController
@@ -34,7 +34,7 @@ describe("MapTreeViewController", () => {
 		$timeout = getService<ITimeoutService>("$timeout")
 		storeService = getService<StoreService>("storeService")
 
-		mapWithMultipleFolders = _.cloneDeep(VALID_NODE_WITH_MULTIPLE_FOLDERS)
+		mapWithMultipleFolders = clone(VALID_NODE_WITH_MULTIPLE_FOLDERS)
 	}
 
 	function rebuildController() {
@@ -70,7 +70,7 @@ describe("MapTreeViewController", () => {
 		it("should reverse the sorting order", () => {
 			mapTreeViewController["_viewModel"].rootNode = mapWithMultipleFolders
 
-			mapTreeViewController.onSortingOrderAscendingChanged(true)
+			mapTreeViewController.onSortingOrderAscendingChanged()
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_REVERSED)
 		})

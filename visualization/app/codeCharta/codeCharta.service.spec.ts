@@ -2,23 +2,23 @@ import "./codeCharta.module"
 import { CodeChartaService } from "./codeCharta.service"
 import { getService, instantiateModule } from "../../mocks/ng.mockhelper"
 import { TEST_FILE_CONTENT } from "./util/dataMocks"
-import { BlacklistType, CCFile, MetricData, NodeType } from "./codeCharta.model"
-import _ from "lodash"
+import { BlacklistType, CCFile, NodeMetricData, NodeType } from "./codeCharta.model"
 import { StoreService } from "./state/store.service"
 import { resetFiles } from "./state/store/files/files.actions"
 import { ExportBlacklistType, ExportCCFile } from "./codeCharta.api.model"
 import { getCCFiles, isSingleState } from "./model/files/files.helper"
 import { DialogService } from "./ui/dialog/dialog.service"
-import { MetricService } from "./state/metric.service"
 import { CCValidationResult, ERROR_MESSAGES } from "./util/fileValidator"
+import { setNodeMetricData } from "./state/store/metricData/nodeMetricData/nodeMetricData.actions"
+import packageJson from "../../package.json"
+import { clone } from "./util/clone"
 
 describe("codeChartaService", () => {
 	let codeChartaService: CodeChartaService
 	let storeService: StoreService
 	let dialogService: DialogService
-	let metricService: MetricService
 	let validFileContent: ExportCCFile
-	let metricData: MetricData[]
+	let metricData: NodeMetricData[]
 	const fileName = "someFileName"
 
 	beforeEach(() => {
@@ -26,8 +26,8 @@ describe("codeChartaService", () => {
 		rebuildService()
 		withMockedDialogService()
 
-		validFileContent = _.cloneDeep(TEST_FILE_CONTENT)
-		metricData = _.cloneDeep([
+		validFileContent = clone(TEST_FILE_CONTENT)
+		metricData = clone([
 			{ name: "mcc", maxValue: 1 },
 			{ name: "rloc", maxValue: 2 }
 		])
@@ -38,11 +38,10 @@ describe("codeChartaService", () => {
 		instantiateModule("app.codeCharta")
 		storeService = getService<StoreService>("storeService")
 		dialogService = getService<DialogService>("dialogService")
-		metricService = getService<MetricService>("metricService")
 	}
 
 	function rebuildService() {
-		codeChartaService = new CodeChartaService(storeService, dialogService, metricService)
+		codeChartaService = new CodeChartaService(storeService, dialogService)
 	}
 
 	function withMockedDialogService() {
@@ -54,15 +53,13 @@ describe("codeChartaService", () => {
 
 	describe("loadFiles", () => {
 		const expected: CCFile = {
-			fileMeta: { apiVersion: "1.1", fileName, projectName: "Sample Map" },
+			fileMeta: { apiVersion: packageJson.codecharta.apiVersion, fileName, projectName: "Sample Map" },
 			map: {
-				id: 0,
 				attributes: {},
 				isExcluded: false,
 				isFlattened: false,
 				children: [
 					{
-						id: 1,
 						attributes: { functions: 10, mcc: 1, rloc: 100 },
 						link: "http://www.google.de",
 						name: "big leaf",
@@ -72,11 +69,9 @@ describe("codeChartaService", () => {
 						isFlattened: false
 					},
 					{
-						id: 2,
 						attributes: {},
 						children: [
 							{
-								id: 3,
 								attributes: { functions: 100, mcc: 100, rloc: 30 },
 								name: "small leaf",
 								path: "/root/Parent Leaf/small leaf",
@@ -85,7 +80,6 @@ describe("codeChartaService", () => {
 								isFlattened: false
 							},
 							{
-								id: 4,
 								attributes: { functions: 1000, mcc: 10, rloc: 70 },
 								name: "other small leaf",
 								path: "/root/Parent Leaf/other small leaf",
@@ -144,7 +138,7 @@ describe("codeChartaService", () => {
 		})
 
 		it("should load the default scenario after loading a valid file", () => {
-			metricService["metricData"] = metricData
+			storeService.dispatch(setNodeMetricData(metricData))
 
 			codeChartaService.loadFiles([
 				{
@@ -160,7 +154,7 @@ describe("codeChartaService", () => {
 
 		it("should not load the default scenario after loading a valid file, that does not have the required metrics", () => {
 			metricData.pop()
-			metricService["metricData"] = metricData
+			storeService.dispatch(setNodeMetricData(metricData))
 
 			codeChartaService.loadFiles([
 				{
@@ -176,8 +170,7 @@ describe("codeChartaService", () => {
 
 		it("should show error on invalid file", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.fileIsInvalid.title,
-				error: [ERROR_MESSAGES.fileIsInvalid.message],
+				error: [ERROR_MESSAGES.fileIsInvalid],
 				warning: []
 			}
 
@@ -189,12 +182,11 @@ describe("codeChartaService", () => {
 
 		it("should show error on a random string", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.apiVersionIsInvalid.title,
-				error: [ERROR_MESSAGES.apiVersionIsInvalid.message],
+				error: [ERROR_MESSAGES.apiVersionIsInvalid],
 				warning: []
 			}
 
-			codeChartaService.loadFiles([{ fileName, content: ("string" as any) as ExportCCFile }])
+			codeChartaService.loadFiles([{ fileName, content: ("string" as unknown) as ExportCCFile }])
 
 			expect(storeService.getState().files).toHaveLength(0)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
@@ -202,7 +194,6 @@ describe("codeChartaService", () => {
 
 		it("should show error if a file is missing a required property", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.validationError.title,
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
 			}
@@ -231,7 +222,6 @@ describe("codeChartaService", () => {
 
 		it("should break the loop after the first invalid file was validated", () => {
 			const expectedError: CCValidationResult = {
-				title: ERROR_MESSAGES.validationError.title,
 				error: ["Required error:  should have required property 'projectName'"],
 				warning: []
 			}
@@ -246,6 +236,42 @@ describe("codeChartaService", () => {
 
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
 			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+		})
+
+		it("should not show a validation error if filenames are duplicated when their path is different", () => {
+			validFileContent.nodes[0].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
+			expect(storeService.getState().files).toHaveLength(1)
+		})
+
+		it("should show a validation error if two files in a folder have the same name", () => {
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
+			const expectedError: CCValidationResult = {
+				error: [`${ERROR_MESSAGES.nodesNotUnique} Found duplicate of File with path: /root/Parent Leaf/duplicate`],
+				warning: []
+			}
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(1)
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledWith(expectedError)
+		})
+
+		it("should not show a validation error if two files in a folder have the same name but different type", () => {
+			validFileContent.nodes[0].children[1].children[0].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[0].type = NodeType.FILE
+			validFileContent.nodes[0].children[1].children[1].name = "duplicate"
+			validFileContent.nodes[0].children[1].children[1].type = NodeType.FOLDER
+
+			codeChartaService.loadFiles([{ fileName, content: validFileContent }])
+
+			expect(dialogService.showValidationErrorDialog).toHaveBeenCalledTimes(0)
+			expect(storeService.getState().files).toHaveLength(1)
 		})
 	})
 })

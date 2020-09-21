@@ -22,22 +22,22 @@ class GitLogRawParserStrategy : LogParserStrategy {
 
     override fun parseAuthor(commitLines: List<String>): String {
         return commitLines
-                .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
-                .map { AuthorParser.parseAuthor(it) }
-                .first()
+            .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
+            .map { AuthorParser.parseAuthor(it) }
+            .first()
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
         return commitLines
-                .filter { isFileLine(it) }
-                .map { parseModification(it) }
+            .filter { isFileLine(it) }
+            .map { parseModification(it) }
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
         return commitLines
-                .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
-                .map { CommitDateParser.parseCommitDate(it) }
-                .first()
+            .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
+            .map { CommitDateParser.parseCommitDate(it) }
+            .first()
     }
 
     companion object {
@@ -55,8 +55,11 @@ class GitLogRawParserStrategy : LogParserStrategy {
             val status = Status.byCharacter(lineParts[4].trim({ it <= ' ' })[0])
 
             return if (status == Status.RENAMED) {
-                Modification(lineParts[6].trim({ it <= ' ' }), lineParts[5].trim({ it <= ' ' }),
-                        status.toModificationType())
+                Modification(
+                    lineParts[6].trim({ it <= ' ' }),
+                    lineParts[5].trim({ it <= ' ' }),
+                    status.toModificationType()
+                )
             } else Modification(lineParts[5].trim({ it <= ' ' }), status.toModificationType())
         }
     }

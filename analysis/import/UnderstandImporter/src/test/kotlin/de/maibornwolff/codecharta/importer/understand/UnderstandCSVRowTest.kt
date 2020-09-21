@@ -16,14 +16,14 @@ class UnderstandCSVRowTest : Spek({
 
     describe("Using a valid header with path column") {
         val header =
-                UnderstandCSVHeader(arrayOf("head1", "head2", "head3", "File", "Name", "Kind", "attrib", "attrib2", ""))
+            UnderstandCSVHeader(arrayOf("head1", "head2", "head3", "File", "Name", "Kind", "attrib", "attrib2", ""))
 
         context("considering row of kind file") {
             it("name should be filename from this columnn") {
                 val nameExpectedFilenameMap = mapOf(
-                        Pair("someNodeName", "someNodeName"),
-                        Pair("someDir\\someName", "someName"),
-                        Pair("someDir\\anotherDir\\anotherName", "anotherName")
+                    Pair("someNodeName", "someNodeName"),
+                    Pair("someDir\\someName", "someName"),
+                    Pair("someDir\\anotherDir\\anotherName", "anotherName")
                 )
 
                 for (name in nameExpectedFilenameMap.keys) {
@@ -35,14 +35,17 @@ class UnderstandCSVRowTest : Spek({
 
             it("path in Tree should be absolute file name from this column") {
                 val nameExpectedFolderWithFileMap = mapOf(
-                        Pair("someNodeName", Path.TRIVIAL),
-                        Pair("someDir\\someName", Path(listOf("someDir"))),
-                        Pair("someDir\\anotherDir\\anotherName", Path(listOf("someDir", "anotherDir")))
+                    Pair("someNodeName", Path.TRIVIAL),
+                    Pair("someDir\\someName", Path(listOf("someDir"))),
+                    Pair("someDir\\anotherDir\\anotherName", Path(listOf("someDir", "anotherDir")))
                 )
 
                 for (name in nameExpectedFolderWithFileMap.keys) {
-                    val path = UnderstandCSVRow(arrayOf("projectName", "blubb2", "blubb3", name, "", "File"), header,
-                            pathSeparator).pathInTree()
+                    val path = UnderstandCSVRow(
+                        arrayOf("projectName", "blubb2", "blubb3", name, "", "File"),
+                        header,
+                        pathSeparator
+                    ).pathInTree()
                     assertThat(path, `is`<Path>(nameExpectedFolderWithFileMap[name]))
                 }
             }
@@ -51,7 +54,7 @@ class UnderstandCSVRowTest : Spek({
         context("considering row of kind class") {
             val name = "class name"
             val rawRow: Array<String?> =
-                    arrayOf("projectName", "blubb2", "blubb3", "someDir\\anotherDir\\anotherName", name, "Class")
+                arrayOf("projectName", "blubb2", "blubb3", "someDir\\anotherDir\\anotherName", name, "Class")
             val understandCSVRow = UnderstandCSVRow(rawRow, header, pathSeparator)
 
             it("name of class node should match name column") {
@@ -59,15 +62,23 @@ class UnderstandCSVRowTest : Spek({
             }
 
             it("path in Tree should be location of file") {
-                assertThat(understandCSVRow.pathInTree(),
-                        `is`<Path>(Path(listOf("someDir", "anotherDir", "anotherName"))))
+                assertThat(
+                    understandCSVRow.pathInTree(),
+                    `is`<Path>(Path(listOf("someDir", "anotherDir", "anotherName")))
+                )
             }
         }
 
         context("considering row of unknown kind") {
             val rawRow: Array<String?> =
-                    arrayOf("projectName", "blubb2", "blubb3", "someDir\\anotherDir\\anotherName", "name",
-                            "someStupidKind")
+                arrayOf(
+                    "projectName",
+                    "blubb2",
+                    "blubb3",
+                    "someDir\\anotherDir\\anotherName",
+                    "name",
+                    "someStupidKind"
+                )
             val understandCSVRow = UnderstandCSVRow(rawRow, header, pathSeparator)
 
             it("transforming toNode should throw exception") {
@@ -77,8 +88,10 @@ class UnderstandCSVRowTest : Spek({
             }
 
             it("path in Tree should be location of file") {
-                assertThat(understandCSVRow.pathInTree(),
-                        `is`<Path>(Path(listOf("someDir", "anotherDir", "anotherName"))))
+                assertThat(
+                    understandCSVRow.pathInTree(),
+                    `is`<Path>(Path(listOf("someDir", "anotherDir", "anotherName")))
+                )
             }
         }
 

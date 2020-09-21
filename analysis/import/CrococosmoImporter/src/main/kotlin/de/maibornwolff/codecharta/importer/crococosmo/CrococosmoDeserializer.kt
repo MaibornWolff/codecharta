@@ -3,7 +3,6 @@ package de.maibornwolff.codecharta.importer.crococosmo
 import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import de.maibornwolff.codecharta.importer.crococosmo.model.Graph
-
 import java.io.IOException
 import java.io.InputStream
 

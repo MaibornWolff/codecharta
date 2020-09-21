@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`treeMapHelper build node deltas 1`] = `
+exports[`TreeMapHelper build node deltas 1`] = `
 Object {
   "attributes": Object {
     "theHeight": 100,
@@ -23,7 +23,7 @@ Object {
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "markingColor": null,
+  "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
     "x": 199,
@@ -39,7 +39,7 @@ Object {
 }
 `;
 
-exports[`treeMapHelper build node invertHeight 1`] = `
+exports[`TreeMapHelper build node invertHeight 1`] = `
 Object {
   "attributes": Object {
     "theHeight": 100,
@@ -60,7 +60,7 @@ Object {
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "markingColor": null,
+  "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
     "x": 199,
@@ -76,7 +76,7 @@ Object {
 }
 `;
 
-exports[`treeMapHelper build node minimal 1`] = `
+exports[`TreeMapHelper build node minimal 1`] = `
 Object {
   "attributes": Object {
     "theHeight": 100,
@@ -97,7 +97,7 @@ Object {
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "markingColor": null,
+  "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
     "x": 199,
@@ -113,7 +113,7 @@ Object {
 }
 `;
 
-exports[`treeMapHelper build node should set lowest possible height caused by other visible edge pairs 1`] = `
+exports[`TreeMapHelper build node should set lowest possible height caused by other visible edge pairs 1`] = `
 Object {
   "attributes": Object {
     "theHeight": 100,
@@ -134,7 +134,7 @@ Object {
   "isLeaf": true,
   "length": 400,
   "link": undefined,
-  "markingColor": null,
+  "markingColor": undefined,
   "name": "Anode",
   "outgoingEdgePoint": Vector3 {
     "x": 199,
