@@ -85,7 +85,7 @@ jobs:
     - name: "Publish Analysis Sonar Results"
       before_script: cd analysis
       script:
-        - ./gradlew build test integrationTest
+        - ./gradlew build integrationTest
         - ./gradlew jacocoTestReport
       deploy:
         - provider: script
