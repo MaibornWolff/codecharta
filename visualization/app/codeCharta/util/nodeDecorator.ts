@@ -10,6 +10,12 @@ enum MedianSelectors {
 	INCOMING = "INCOMING",
 	OUTGOING = "OUTGOING"
 }
+
+/*enum EdgeType {
+	INCOMING = "incoming",
+	OUTGOING = "outgoing"
+}*/
+
 export class NodeDecorator {
 	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 		const flattened = ignore()
@@ -31,40 +37,35 @@ export class NodeDecorator {
 		}
 
 		const { nodeMetricData, edgeMetricData } = metricData
-
-		const defaultEdgeAttributes = {}
-		for (const { name } of edgeMetricData) {
-			defaultEdgeAttributes[name] = { incoming: 0, outgoing: 0 }
-		}
-
-		const defaultNodeAttributes = {}
-		for (const { name } of nodeMetricData) {
-			defaultNodeAttributes[name] = 0
-		}
-
 		let id = 0
 		hierarchy(map).each(({ data }) => {
 			data.id = id
 			id++
 
-			if (data.attributes) {
-				for (const metric of nodeMetricData) {
-					if (data.attributes[metric.name] === undefined) {
-						data.attributes[metric.name] = 0
-					}
-				}
-			} else {
-				data.attributes = { ...defaultNodeAttributes }
+			if (data.attributes === undefined) {
+				data.attributes = {}
 			}
 
-			if (data.edgeAttributes) {
-				for (const metric of edgeMetricData) {
-					if (data.edgeAttributes[metric.name] === undefined) {
-						data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
+			for (const metric of nodeMetricData) {
+				if (data.attributes[metric.name] === undefined) {
+					data.attributes[metric.name] = 0
+				}
+
+				if (data.deltas !== undefined) {
+					if (data.deltas[metric.name] === undefined) {
+						data.deltas[metric.name] = 0
 					}
 				}
-			} else {
-				data.edgeAttributes = { ...defaultEdgeAttributes }
+			}
+
+			if (data.edgeAttributes === undefined) {
+				data.edgeAttributes = {}
+			}
+
+			for (const metric of edgeMetricData) {
+				if (data.edgeAttributes[metric.name] === undefined) {
+					data.edgeAttributes[metric.name] = { incoming: 0, outgoing: 0 }
+				}
 			}
 
 			if (blacklist.length !== 0) {
@@ -143,13 +144,16 @@ export class NodeDecorator {
 					}
 
 					// Collect medians
-					const median = medians.get(`${MedianSelectors.MEDIAN}${parentSelector}`)
-					if (median === undefined) {
-						medians.set(`${MedianSelectors.MEDIAN}${parentSelector}`, [data.attributes[name]])
-					} else if (isLeaf(data)) {
-						pushSorted(median, data.attributes[name])
+					if (data.attributes[name] !== 0) {
+						const median = medians.get(`${MedianSelectors.MEDIAN}${parentSelector}`)
+						if (median === undefined) {
+							medians.set(`${MedianSelectors.MEDIAN}${parentSelector}`, [data.attributes[name]])
+						} else if (isLeaf(data)) {
+							pushSorted(median, data.attributes[name])
+						}
 					}
-					if (isDeltaState) {
+
+					if (isDeltaState && data.deltas[name] !== 0) {
 						const median = medians.get(`${MedianSelectors.DELTA}${parentSelector}`)
 						if (median === undefined) {
 							medians.set(`${MedianSelectors.DELTA}${parentSelector}`, [data.deltas[name]])
@@ -169,7 +173,6 @@ export class NodeDecorator {
 			for (const name of edgeKeys) {
 				const value = data.edgeAttributes[name]
 
-				// Skip 0 values
 				if (!value) {
 					continue
 				}
@@ -206,25 +209,26 @@ export class NodeDecorator {
 					}
 
 					// Collect incoming edges
-					const incomingMedians = medians.get(`${MedianSelectors.INCOMING}${parentSelector}`)
-					if (incomingMedians === undefined) {
-						medians.set(`${MedianSelectors.INCOMING}${parentSelector}`, [value.incoming])
-					} else if (isLeaf(data)) {
-						pushSorted(incomingMedians, value.incoming)
+					if (value.incoming !== 0) {
+						const incomingMedians = medians.get(`${MedianSelectors.INCOMING}${parentSelector}`)
+						if (incomingMedians === undefined) {
+							medians.set(`${MedianSelectors.INCOMING}${parentSelector}`, [value.incoming])
+						} else if (isLeaf(data)) {
+							pushSorted(incomingMedians, value.incoming)
+						}
 					}
 
-					// Collect outgoing edged
-					const outgoingMedians = medians.get(`${MedianSelectors.OUTGOING}${parentSelector}`)
-					if (incomingMedians === undefined) {
-						medians.set(`${MedianSelectors.OUTGOING}${parentSelector}`, [value.outgoing])
-					} else if (isLeaf(data)) {
-						pushSorted(outgoingMedians, value.outgoing)
+					// Collect outgoing edges
+					if (value.outgoing !== 0) {
+						const outgoingMedians = medians.get(`${MedianSelectors.OUTGOING}${parentSelector}`)
+						if (outgoingMedians === undefined) {
+							medians.set(`${MedianSelectors.OUTGOING}${parentSelector}`, [value.outgoing])
+						} else if (isLeaf(data)) {
+							pushSorted(outgoingMedians, value.outgoing)
+						}
 					}
 				} else {
-					// console.log(`Summing from ${  data.path  } to ${  parent.data.path}`)
-					// console.log("map before:", JSON.stringify(map))
 					parent.data.edgeAttributes[name].incoming += value.incoming
-					// console.log("map after", JSON.stringify(map))
 					parent.data.edgeAttributes[name].outgoing += value.outgoing
 				}
 			}
@@ -249,11 +253,41 @@ export class NodeDecorator {
 	}
 }
 
+/*function collectEdgeMediansOnParent(medians: Map<string, number[]>, selector: string, child: CodeMapNode, metricName: string, type: string) {
+	const collectedMedians = medians.get(selector)
+	if (collectedMedians === undefined) {
+		medians.set(selector, [child.edgeAttributes[metricName][type]])
+	} else if (isLeaf(child)) {
+		pushSorted(collectedMedians, child.edgeAttributes[metricName][type])
+	}
+}*/
+
+/*function collectNodeMediansOnParent(medians: Map<string, number[]>, selector: string, child: CodeMapNode, metricName: string, isDeltaState: boolean) {
+	const collectedMedians = medians.get(selector)
+	if (collectedMedians === undefined) {
+		medians.set(selector, [child.attributes[metricName]])
+	} else if (isLeaf(child)) {
+		pushSorted(collectedMedians, child.attributes[metricName])
+	}
+	if (isDeltaState) {
+		const median = medians.get(`${MedianSelectors.DELTA}${parentSelector}`)
+		if (median === undefined) {
+			medians.set(`${MedianSelectors.DELTA}${parentSelector}`, [data.deltas[metricName]])
+		} else if (isLeaf(child)) {
+			pushSorted(median, child.deltas[metricName])
+		}
+	}
+}*/
+
 function isLeaf(node: CodeMapNode) {
 	return !node.children || node.children.length === 0
 }
 
 function getMedian(numbers: number[]) {
+	if (numbers === undefined || numbers.length === 0) {
+		return 0
+	}
+
 	const middle = (numbers.length - 1) / 2
 	return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
 }
