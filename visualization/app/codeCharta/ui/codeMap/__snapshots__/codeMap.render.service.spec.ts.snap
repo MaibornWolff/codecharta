@@ -4,9 +4,10 @@ exports[`codeMapRenderService getSortedNodes should get sorted Nodes as array 1`
 Array [
   Object {
     "attributes": Object {
-      "unary": 1,
+      "mcc": 0,
+      "rloc": 0,
     },
-    "color": "#666666",
+    "color": "#DDDDDD",
     "deltas": undefined,
     "depth": 0,
     "edgeAttributes": Object {},
@@ -41,7 +42,6 @@ Array [
       "functions": 10,
       "mcc": 1,
       "rloc": 100,
-      "unary": 1,
     },
     "color": "#DDDDDD",
     "deltas": undefined,
@@ -75,9 +75,10 @@ Array [
   },
   Object {
     "attributes": Object {
-      "unary": 1,
+      "mcc": 0,
+      "rloc": 0,
     },
-    "color": "#666666",
+    "color": "#DDDDDD",
     "deltas": undefined,
     "depth": 1,
     "edgeAttributes": Object {},
@@ -112,7 +113,6 @@ Array [
       "functions": 100,
       "mcc": 100,
       "rloc": 30,
-      "unary": 1,
     },
     "color": "#820E0E",
     "deltas": undefined,
@@ -149,7 +149,6 @@ Array [
       "functions": 1000,
       "mcc": 10,
       "rloc": 70,
-      "unary": 1,
     },
     "color": "#DDDDDD",
     "deltas": undefined,
