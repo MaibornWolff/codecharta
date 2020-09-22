@@ -424,39 +424,5 @@ describe("nodeDecorator", () => {
 			expect(map.attributes.some).toBe(0)
 			expect(map.attributes["some other attribute"]).not.toBeDefined()
 		})
-
-		it("nodes with missing attribute property should be aggregated correctly with default values", () => {
-			map.children.push({
-				name: "Parent Leaf",
-				type: NodeType.FOLDER,
-				attributes: {},
-				isExcluded: false,
-				isFlattened: false,
-				children: [
-					{
-						name: "small leaf",
-						type: NodeType.FILE,
-						attributes: { rloc: 30, functions: 100, mcc: 100 },
-						isExcluded: false,
-						isFlattened: false
-					},
-					{
-						name: "other small leaf",
-						type: NodeType.FILE,
-						attributes: { rloc: 70, functions: 1000, mcc: 10 },
-						isExcluded: false,
-						isFlattened: false
-					}
-				]
-			})
-			map.attributes = undefined
-			map.children[1].attributes = undefined
-			map.children[2].attributes = undefined
-			NodeDecorator.decorateMap(map, metricData, [])
-
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, metricData, [], false, attributeTypes)
-
-			expect(map).toMatchSnapshot()
-		})
 	})
 })
