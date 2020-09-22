@@ -84,10 +84,12 @@ jobs:
 
     - name: "Publish Analysis Sonar Results"
       before_script: cd analysis
-      script: ./gradlew build integrationTest
+      script:
+        - ./gradlew build integrationTest
+        - ./gradlew jacocoTestReport
       deploy:
         - provider: script
-          script: ./gradlew sonarqube
+          script: sonar-scanner
           skip_cleanup: true
           on:
             branch: main

@@ -52,10 +52,16 @@ export class CodeChartaController {
 		}
 	}
 
-	tryLoadingSampleFiles(error: Error) {
+	tryLoadingSampleFiles(error: Error & { statusText?: string; status?: number }) {
 		if (this.urlUtils.getParameterByName("file")) {
-			const message = `One or more files from the given file URL parameter could not be loaded. Loading sample files instead. ${error.message}`
-			this.dialogService.showErrorDialog(message)
+			const message = "One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
+			let title = "Error"
+			if (error.message) {
+				title += ` (${error.message})`
+			} else if (error.statusText && error.status) {
+				title += ` (${error.status}: ${error.statusText})`
+			}
+			this.dialogService.showErrorDialog(message, title)
 		}
 		this.tryLoadingFiles([
 			{ fileName: "sample1.cc.json", content: sample1 as ExportCCFile },
