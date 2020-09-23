@@ -27,7 +27,8 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform {
-        includeEngines 'spek2'
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
     }
 }

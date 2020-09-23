@@ -5,3 +5,9 @@ dependencies {
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
     implementation group: 'io.fastjson', name: 'boon', version: boon_version
 }
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
