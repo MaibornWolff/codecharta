@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.scmlogparserv2
 
 import de.maibornwolff.codecharta.filter.mergefilter.MergeFilter
-import de.maibornwolff.codecharta.importer.scmlogparserv2.InputFormatNames.GIT_LOG
+import de.maibornwolff.codecharta.importer.scmlogparserv2.InputFormatNames.GIT_LOG_NUMSTAT_RAW_REVERSED
 import de.maibornwolff.codecharta.importer.scmlogparserv2.converter.ProjectConverter
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogParserStrategy
@@ -58,8 +58,12 @@ class SCMLogParserV2(
     @CommandLine.Option(names = ["--silent"], description = ["suppress command line output during process"])
     private var silent = false
 
-    @CommandLine.Option(names = ["--input-format"], description = ["input format for parsing"])
-    private var inputFormatNames: InputFormatNames = GIT_LOG
+    @CommandLine.Option(
+        names = ["--input-format"],
+        description = ["input format for parsing, optional only one type is currently supported"],
+        defaultValue = "GIT_LOG_NUMSTAT_RAW_REVERSED"
+    )
+    private var inputFormatNames: InputFormatNames = GIT_LOG_NUMSTAT_RAW_REVERSED
 
     @CommandLine.Option(names = ["--add-author"], description = ["add an array of authors to every file"])
     private var addAuthor = false
@@ -82,7 +86,7 @@ class SCMLogParserV2(
             )
 
             return when (inputFormatNames) {
-                GIT_LOG -> MetricsFactory(nonChurnMetrics)
+                GIT_LOG_NUMSTAT_RAW_REVERSED -> MetricsFactory(nonChurnMetrics)
             }
         }
 
@@ -117,7 +121,7 @@ class SCMLogParserV2(
 
     private fun getLogParserStrategyByInputFormat(formatName: InputFormatNames): LogParserStrategy {
         return when (formatName) {
-            GIT_LOG -> GitLogNumstatRawParserStrategy()
+            GIT_LOG_NUMSTAT_RAW_REVERSED -> GitLogNumstatRawParserStrategy()
         }
     }
 

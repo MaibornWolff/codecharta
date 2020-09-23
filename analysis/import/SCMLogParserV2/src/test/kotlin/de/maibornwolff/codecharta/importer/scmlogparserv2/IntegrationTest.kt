@@ -51,7 +51,7 @@ class IntegrationTest {
 
         val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList.getList(), project_name_list)
 
-        val namesInVCF = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { file -> file.filename }
+        val namesInVCF = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { versionControlledFile -> versionControlledFile.filename }
 
         val newList = project_name_list.filter { element ->
             !namesInVCF.contains(element)
