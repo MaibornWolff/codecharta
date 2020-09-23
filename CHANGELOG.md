@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Metric-Settings-Panels closed when clicking an option inside the panel #1258
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.57.3] - 2020-09-18
