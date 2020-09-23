@@ -44,7 +44,7 @@ export class NodeDecorator {
 
 		const { nodeMetricData, edgeMetricData } = metricData
 		let id = 0
-		hierarchy(map).each(({ data }) => {
+		for (const { data } of hierarchy(map).descendants()) {
 			data.id = id
 			id++
 
@@ -95,7 +95,7 @@ export class NodeDecorator {
 					data.link = child.link
 				}
 			}
-		})
+		}
 	}
 
 	static decorateMapWithPathAttribute(file: CCFile) {
