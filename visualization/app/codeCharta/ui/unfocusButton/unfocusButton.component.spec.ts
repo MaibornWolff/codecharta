@@ -4,7 +4,7 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { focusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
-import { CODE_MAP_BUILDING, TEST_DELTA_MAP_A } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, DEFAULT_STATE, TEST_DELTA_MAP_A } from "../../util/dataMocks"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
@@ -26,7 +26,7 @@ describe("UnfocusButtonController", () => {
 		storeService = getService<StoreService>("storeService")
 
 		NodeDecorator.decorateMapWithPathAttribute(TEST_DELTA_MAP_A)
-		NodeDecorator.decorateMap(TEST_DELTA_MAP_A.map, [], [])
+		NodeDecorator.decorateMap(TEST_DELTA_MAP_A.map, DEFAULT_STATE.metricData, [])
 		const map = new Map([
 			[TEST_DELTA_MAP_A.map.children[0].id, TEST_DELTA_MAP_A.map.children[0]],
 			[TEST_DELTA_MAP_A.map.children[1].id, TEST_DELTA_MAP_A.map.children[1]],

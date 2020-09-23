@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Improve loading and rendering maps performance
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.57.3] - 2020-09-18
