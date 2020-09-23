@@ -23,4 +23,8 @@ export class MapTreeViewLevelPageObject {
 	async isNodeMarked(path: string) {
 		return page.waitForSelector(`[id='${path}'].marked`)
 	}
+
+	async getNumberOfFiles(path: string) {
+		return page.$eval(`[id='${path}'] .unary-number`, element => Number(element["innerText"].split(" ")[0]))
+	}
 }

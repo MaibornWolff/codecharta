@@ -38,9 +38,7 @@ describe("codecharta", () => {
 
 	async function handleErrorDialog() {
 		const message = await dialogError.getMessage()
-		expect(message).toEqual(
-			"One or more files from the given file URL parameter could not be loaded. Loading sample files instead."
-		)
+		expect(message).toEqual("One or more files from the given file URL parameter could not be loaded. Loading sample files instead.")
 		await page.waitForSelector(".md-dialog-container")
 		await dialogError.clickOk()
 	}
