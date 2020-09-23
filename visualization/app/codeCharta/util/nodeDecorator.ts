@@ -239,19 +239,21 @@ function setNodeMediansToParent(
 	metricName: string,
 	isDeltaState: boolean
 ) {
-	if (!isLeaf(child)) {
-		const numbers = medians.get(`${MedianSelectors.MEDIAN}${selector}`)
-		if (numbers !== undefined) {
-			child.attributes[metricName] = getMedian(numbers)
-			setMediansToParents(medians, `${MedianSelectors.MEDIAN}${parentSelector}`, numbers)
-		}
+	if (isLeaf(child)) {
+		return
+	}
 
-		if (isDeltaState) {
-			const deltaNumbers = medians.get(`${MedianSelectors.DELTA}${selector}`)
-			if (deltaNumbers !== undefined) {
-				child.deltas[metricName] = getMedian(deltaNumbers)
-				setMediansToParents(medians, `${MedianSelectors.DELTA}${parentSelector}`, deltaNumbers)
-			}
+	const numbers = medians.get(`${MedianSelectors.MEDIAN}${selector}`)
+	if (numbers !== undefined) {
+		child.attributes[metricName] = getMedian(numbers)
+		setMediansToParents(medians, `${MedianSelectors.MEDIAN}${parentSelector}`, numbers)
+	}
+
+	if (isDeltaState) {
+		const deltaNumbers = medians.get(`${MedianSelectors.DELTA}${selector}`)
+		if (deltaNumbers !== undefined) {
+			child.deltas[metricName] = getMedian(deltaNumbers)
+			setMediansToParents(medians, `${MedianSelectors.DELTA}${parentSelector}`, deltaNumbers)
 		}
 	}
 }
@@ -264,12 +266,14 @@ function setEdgeMediansToParent(
 	metricName: string,
 	type: EdgeAttributeType
 ) {
-	if (!isLeaf(child)) {
-		const numbers = medians.get(selector)
-		if (numbers !== undefined) {
-			child.edgeAttributes[metricName][type] = getMedian(numbers)
-			setMediansToParents(medians, parentSelector, numbers)
-		}
+	if (isLeaf(child)) {
+		return
+	}
+
+	const numbers = medians.get(selector)
+	if (numbers !== undefined) {
+		child.edgeAttributes[metricName][type] = getMedian(numbers)
+		setMediansToParents(medians, parentSelector, numbers)
 	}
 }
 
