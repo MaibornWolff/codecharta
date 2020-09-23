@@ -45,6 +45,7 @@ class MetricCollector(
         val metrics = MetricsFactory.create(metrics, parameters)
 
         file
+            .bufferedReader()
             .useLines { it.toList() }
             .forEach { line -> metrics.forEach { it.parseLine(line) } }
 
