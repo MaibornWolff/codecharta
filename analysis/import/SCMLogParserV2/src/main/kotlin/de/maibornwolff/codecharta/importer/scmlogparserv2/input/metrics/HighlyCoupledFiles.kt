@@ -5,8 +5,6 @@ import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Modification
 import de.maibornwolff.codecharta.model.AttributeType
 import de.maibornwolff.codecharta.model.Edge
 
-// TODO track all renames to preserve coupling, preprocessing to prevent exponential growth
-// file named A -> renamed to B, created named file A (bug)
 class HighlyCoupledFiles : Metric {
 
     private var fileName: String = ""

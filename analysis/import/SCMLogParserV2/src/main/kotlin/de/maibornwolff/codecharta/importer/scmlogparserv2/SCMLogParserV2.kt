@@ -191,11 +191,6 @@ class SCMLogParserV2(
             CommandLine.call(SCMLogParserV2(), System.out, *args)
         }
 
-        @JvmStatic
-        fun mainWithInOut(input: InputStream, output: PrintStream, error: PrintStream, args: Array<String>) {
-            CommandLine.call(SCMLogParserV2(input, output, error), output, *args)
-        }
-
         private fun guessEncoding(pathToLog: File): String? {
             val inputStream = pathToLog.inputStream()
             val buffer = ByteArray(4096)

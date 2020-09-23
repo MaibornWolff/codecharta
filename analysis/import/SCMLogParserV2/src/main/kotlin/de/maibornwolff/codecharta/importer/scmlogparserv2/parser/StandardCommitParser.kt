@@ -14,51 +14,24 @@ class StandardCommitParser : CommitParser {
         commit.modifications.forEach {
             if (it.currentFilename.isEmpty()) return@forEach
 
-            // Registers each modification for a given commit, performing different actions depending on the type
-            // to preserve uniqueness a marker is added to the name, following a marker_\\0_marker scheme, for tracking in the map
-            // TODO @vladimir: Do we still need the comments?
-            // Type.ADD: creates a new VCF file, if it doesn't exist, adds it to the VCF map and registers adding
-            // Type.DELETE: selects the tracking name and deletes the file from the VCF map, and rename map if needed
-            // Type.RENAME: Checks for potential rename conflicts and increments the tracking pointer if one is found
-            // -> creates a new rename entry or updates the key to the current name used to track the oldest file name
-            // Type.MODIFY/Type.UNKNOWN: simply registers this modification for the commit
             val trackName = it.getTrackName()
 
             when (it.type) {
 
                 Modification.Type.ADD -> {
-
-                    // Add new File
                     val file = versionControlledFilesList.get(trackName)
-
-                    if (file == null) {
-                        val missingVCF = versionControlledFilesList.addFileBy(trackName)
+                    if (file != null && !file.isDeleted() && it.currentFilename == file.filename) {
+                        versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
+                    }
+                    else{
+                        val vcfToBeAddedOrReplaced = versionControlledFilesList.addFileBy(trackName)
                         it.markInitialAdd()
-                        missingVCF.registerCommit(commit, it)
-                    } else {
-                        if (!file.isDeleted()) {
-                            if (it.currentFilename != file.filename) {
-                                val newVCF = versionControlledFilesList.addFileBy(trackName)
-                                it.markInitialAdd()
-                                newVCF.registerCommit(commit, it)
-                            } else {
-                                versionControlledFilesList.get(trackName)!!.registerCommit(commit, it)
-                            }
-                        }
-                        if (file.isDeleted()) {
-
-                            // If a file is deleted and a new one with same name is added, replace deleted one.
-                            val replacingVCF = versionControlledFilesList.addFileBy(trackName)
-                            it.markInitialAdd()
-                            replacingVCF.registerCommit(commit, it)
-                        }
+                        vcfToBeAddedOrReplaced.registerCommit(commit, it)
                     }
                 }
 
                 Modification.Type.DELETE -> {
-                    // TODO registerCommit() needed?
-                    // TODO It might be a good idea to skip deletes for non-existing files
-
+                    // TODO registerCommit() needed? @Ruben do we want to track deleted and then reverted files as author and commit amount
                     versionControlledFilesList.get(trackName)!!.markDeleted()
                 }
 
@@ -71,17 +44,16 @@ class StandardCommitParser : CommitParser {
                 }
 
                 else -> {
-                    // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows?
-                    // TODO consider DElTA Mode and Edge calculation
+                    // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows? (refer line 52)
 
                     var file = versionControlledFilesList.get(trackName)
                     if (file == null) {
                         file = versionControlledFilesList.addFileBy(trackName)
                     }
-
                     file.registerCommit(commit, it)
                 }
             }
         }
     }
+
 }

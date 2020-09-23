@@ -2,6 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparserv2.converter
 
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.VersionControlledFilesInGitProject
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.VersionControlledFilesList
 import de.maibornwolff.codecharta.model.Edge
 import de.maibornwolff.codecharta.model.MutableNode
@@ -55,44 +56,12 @@ class ProjectConverter(private val containsAuthors: Boolean) {
 
         val vcFList = versionControlledFiles.getList()
 
-        vcFList.values
+        val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList, filesInLog)
+
+        versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject()
             .forEach {
-                it.filename = it.filename.substringBefore("_\\0_")
-            }
-
-        val occurrencesPerFilename = vcFList.values.groupingBy { it.filename }.eachCount()
-
-        val duplicateFilenames = occurrencesPerFilename.filterValues { it > 1 }
-
-        val trackingNamesPerFilename = mutableMapOf<String, Set<String>>()
-        duplicateFilenames.keys.forEach { element ->
-            trackingNamesPerFilename[element] = vcFList.keys.filter {
-                vcFList[it]?.filename == element
-            }.toSet()
-        }
-
-        trackingNamesPerFilename.keys.forEach { elem ->
-            var choosenElement = ""
-            trackingNamesPerFilename[elem]?.forEach {
-                if (!vcFList[it]?.isDeleted()!!) {
-                    choosenElement = it
-                }
-            }
-            if (choosenElement == "") {
-                choosenElement = trackingNamesPerFilename[elem]?.last().toString()
-            }
-
-            trackingNamesPerFilename[elem]?.forEach {
-                if (it != choosenElement)
-                    vcFList.remove(it)
-            }
-        }
-
-        // TODO discuss/check performance
-        // TODO move to versionControlledFilesList
-        vcFList.values
-            .filter { filesInLog.contains(it.filename) }
-            .forEach { vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+                    //TODO Coroutines?
+                    vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
 
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))

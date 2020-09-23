@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.scmlogparserv2
 
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.LogLineParser
-import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.VersionControlledFilesList
+import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.VersionControlledFilesInGitProject
 import de.maibornwolff.codecharta.importer.scmlogparserv2.parser.git.GitLogNumstatRawParserStrategy
 import org.hamcrest.CoreMatchers.hasItem
 import org.junit.Assert
@@ -32,51 +32,6 @@ class IntegrationTest {
         return lineList
     }
 
-    private fun emulateProjectConverter(
-        versionControlledFiles: VersionControlledFilesList,
-        project_name_list: List<String>
-    ): List<String> {
-
-        val vcFList = versionControlledFiles.getList()
-
-        vcFList.values
-            .forEach {
-                it.filename = it.filename.substringBefore("_\\0_")
-            }
-
-        val occurrencesPerFilename = vcFList.values.groupingBy { it.filename }.eachCount()
-
-        val duplicateFilenames = occurrencesPerFilename.filterValues { it > 1 }
-
-        val trackingNamesPerFilename = mutableMapOf<String, Set<String>>()
-        duplicateFilenames.keys.forEach { element ->
-            trackingNamesPerFilename[element] = vcFList.keys.filter {
-                vcFList[it]?.filename == element
-            }.toSet()
-        }
-
-        trackingNamesPerFilename.keys.forEach { elem ->
-            var choosenElement = ""
-            trackingNamesPerFilename[elem]?.forEach {
-                if (!vcFList[it]?.isDeleted()!!) {
-                    choosenElement = it
-                }
-            }
-            if (choosenElement == "") {
-                choosenElement = trackingNamesPerFilename[elem]?.last().toString()
-            }
-
-            trackingNamesPerFilename[elem]?.forEach {
-                if (it != choosenElement)
-                    vcFList.remove(it)
-            }
-        }
-
-        return vcFList.values
-            .filter { project_name_list.contains(it.filename) }
-            .map { file -> file.filename }
-    }
-
     @Test
     fun test_given_list_of_all_files_in_project_when_parsing_corresponding_git_log_then_both_list_contents_are_equal() {
 
@@ -94,7 +49,9 @@ class IntegrationTest {
         codeChartaLog.bufferedReader().forEachLine { codeList.add(it) }
         val vcFList = parser.parse(codeList.stream())
 
-        val namesInVCF = emulateProjectConverter(vcFList, project_name_list)
+        val versionControlledFilesInGitProject = VersionControlledFilesInGitProject(vcFList.getList(), project_name_list)
+
+        val namesInVCF = versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject().map { file -> file.filename }
 
         val newList = project_name_list.filter { element ->
             !namesInVCF.contains(element)

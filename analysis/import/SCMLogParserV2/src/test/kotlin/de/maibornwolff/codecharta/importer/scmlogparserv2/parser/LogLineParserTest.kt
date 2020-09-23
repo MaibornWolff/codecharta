@@ -30,6 +30,7 @@ class LogLineParserTest {
         every { parserStrategy.parseAuthor(any()) } returns author
         every { parserStrategy.parseDate(any()) } returns commitDate
         every { parserStrategy.parseModifications(input) } returns filenames.map { Modification(it) }
+        every {parserStrategy.parseIsMergeCommit(input)} returns false
 
         val parser = LogLineParser(parserStrategy, metricsFactory)
 

@@ -7,7 +7,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-import org.junit.jupiter.api.Assertions
 import java.time.OffsetDateTime
 import java.util.Arrays
 
@@ -50,21 +49,6 @@ class VersionControlledFileTest {
         assertThat(metricsMap).hasSize(1)
         assertThat(versionControlledFile.getMetricValue(metricName))
             .isEqualTo(1)
-    }
-
-    @Test
-    fun throwsExceptionIfFileIsNotInCommit() {
-        val versionControlledFile = VersionControlledFile(
-            "filename",
-            listOf()
-        )
-
-        val modification = Modification("anotherFilename")
-        val commit = createCommit("An Author", modification)
-
-        Assertions.assertThrows(IllegalStateException::class.java) {
-            versionControlledFile.registerCommit(commit, modification)
-        }
     }
 
     @Test

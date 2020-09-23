@@ -26,7 +26,6 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     fun addFileBy(key: String): VersionControlledFile {
         var newVCFFileName = key
 
-        // TODO the file is NOT deleted, but renamed, so adding it will not result in a new entry
         if (hasNameConflict(key)) {
             newVCFFileName = handleNameConflict(key)
         }
@@ -49,10 +48,6 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         return key + "_\\0_" + newMarker
     }
 
-    /**
-     * @TODO Decorate MutableMap instead of returning the internal list
-     * @Deprecated since now
-     */
     fun getList(): MutableMap<String, VersionControlledFile> {
         return versionControlledFiles
     }
