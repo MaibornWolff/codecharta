@@ -17,11 +17,12 @@ class MetricCollector(
     private val metrics: List<String> = listOf()
 ) {
 
+    private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
+
     val MAX_FILE_NAME_PRINT_LENGTH = 30
 
     fun parse(): Map<String, FileMetrics> {
         val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
-        val excludePatterns = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
         runBlocking(Dispatchers.Default) {
             root.walk().asSequence()
@@ -29,16 +30,27 @@ class MetricCollector(
                 .forEach {
                     launch {
                         val standardizedPath = "/" + getRelativeFileName(it.toString())
-                        val isMatchingFileExtension = fileExtensions.isEmpty() || fileExtensions.contains(standardizedPath.substringAfterLast("."))
-                        val isNotExcluded = !(exclude.isNotEmpty() && excludePatterns.containsMatchIn(standardizedPath))
-                        if (it.isFile && isNotExcluded && isMatchingFileExtension) {
+
+                        if (
+                            !isPathExcluded(standardizedPath) &&
+                            isParsableFileExtension(standardizedPath)
+                        ) {
                             logProgress(it.name)
                             projectMetrics[standardizedPath] = parseFile(it)
                         }
                     }
                 }
         }
+
         return projectMetrics
+    }
+
+    private fun isParsableFileExtension(path: String): Boolean {
+        return fileExtensions.isEmpty() || fileExtensions.contains(path.substringAfterLast("."))
+    }
+
+    private fun isPathExcluded(path: String): Boolean {
+        return exclude.isNotEmpty() && excludePatterns.containsMatchIn(path)
     }
 
     private fun parseFile(file: File): FileMetrics {
