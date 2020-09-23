@@ -41,4 +41,14 @@ describe("MapTreeViewLevel", () => {
 			expect(await mapTreeViewLevel.isNodeMarked(filePath)).toBeTruthy()
 		})
 	})
+
+	describe("Number of Files", () => {
+		it("should show the correct number of files in a folder", async () => {
+			const folder = "/root/ParentLeaf"
+			await searchPanelModeSelector.toggleTreeView()
+			await mapTreeViewLevel.hoverNode(folder)
+
+			expect(await mapTreeViewLevel.getNumberOfFiles(folder)).toBe(2)
+		})
+	})
 })

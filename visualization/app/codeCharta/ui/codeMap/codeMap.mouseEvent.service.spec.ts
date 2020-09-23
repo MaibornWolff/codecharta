@@ -10,7 +10,7 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CODE_MAP_BUILDING, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, DEFAULT_STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
@@ -45,7 +45,7 @@ describe("codeMapMouseEventService", () => {
 		withMockedThreeCameraService()
 		withMockedThreeSceneService()
 		withMockedEventMethods($rootScope)
-		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, [], [])
+		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, DEFAULT_STATE.metricData, [])
 	})
 
 	function restartSystem() {

@@ -3,7 +3,7 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { IdToNodeService } from "./idToNode.service"
-import { TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../../../util/dataMocks"
+import { DEFAULT_STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../../../util/dataMocks"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
 import { CodeMapPreRenderService } from "../../../../ui/codeMap/codeMap.preRender.service"
 
@@ -16,7 +16,7 @@ describe("IdToNodeService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
-		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, [], [])
+		NodeDecorator.decorateMap(TEST_FILE_WITH_PATHS.map, DEFAULT_STATE.metricData, [])
 	})
 
 	function restartSystem() {
