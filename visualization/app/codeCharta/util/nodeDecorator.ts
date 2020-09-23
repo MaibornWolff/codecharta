@@ -52,6 +52,10 @@ export class NodeDecorator {
 				data.attributes = {}
 			}
 
+			if (isLeaf(data)) {
+				data.attributes[NodeMetricDataService.UNARY_METRIC] = 1
+			}
+
 			for (const metric of nodeMetricData) {
 				if (data.attributes[metric.name] === undefined) {
 					data.attributes[metric.name] = 0
@@ -62,10 +66,6 @@ export class NodeDecorator {
 						data.deltas[metric.name] = 0
 					}
 				}
-			}
-
-			if (isLeaf(data)) {
-				data.attributes[NodeMetricDataService.UNARY_METRIC] = 1
 			}
 
 			if (data.edgeAttributes === undefined) {

@@ -6,7 +6,7 @@ import { CodeMapLabelService } from "./codeMap.label.service"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
 import { Node, CodeMapNode, State } from "../../codeCharta.model"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
-import { METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
+import { DEFAULT_STATE, METRIC_DATA, STATE, TEST_FILE_WITH_PATHS, TEST_NODES, VALID_EDGES } from "../../util/dataMocks"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { Object3D, Vector3 } from "three"
 import { StoreService } from "../../state/store.service"
@@ -47,6 +47,7 @@ describe("codeMapRenderService", () => {
 		state = _.cloneDeep(STATE)
 		map = clone(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
+		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
 		storeService.dispatch(setState(state))
 		storeService.dispatch(unfocusNode())
 		storeService.dispatch(setNodeMetricData(METRIC_DATA))
