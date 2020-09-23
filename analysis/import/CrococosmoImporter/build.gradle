@@ -6,6 +6,7 @@ dependencies {
     implementation group: 'io.fastjson', name: 'boon', version: boon_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 
+    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
     testImplementation project(path: ':model', configuration: 'testOutput')
 }
 

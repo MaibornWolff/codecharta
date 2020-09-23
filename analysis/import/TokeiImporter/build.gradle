@@ -8,8 +8,8 @@ dependencies {
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
+    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
-    testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 }

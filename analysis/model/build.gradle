@@ -11,6 +11,8 @@ dependencies {
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
+
+    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
@@ -18,6 +20,9 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
 
+    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek2_version") {
+        exclude group: 'org.jetbrains.kotlin'
+    }
     testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 }
 
@@ -44,7 +49,9 @@ jacocoTestReport {
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform{
+        includeEngines 'spek2'
+    }
     testLogging {
         events "passed", "skipped", "failed"
     }
