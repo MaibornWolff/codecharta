@@ -3,7 +3,7 @@ package de.maibornwolff.codecharta.importer.tokeiimporter
 import de.maibornwolff.codecharta.importer.tokeiimporter.TokeiImporter.Companion.mainWithInOut
 import de.maibornwolff.codecharta.serialization.ProjectDeserializer
 import org.assertj.core.api.Assertions
-import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
@@ -71,7 +71,7 @@ class TokeiImporterTest {
         Assertions.assertThat(project.rootNode.children.toMutableList()[1].children.toMutableList().size).isEqualTo(2)
     }
 
-    @Ignore
+    @Disabled
     @Test
     fun `reads project piped input multiline`() {
         val input = File("src/test/resources/tokei_results.json").bufferedReader().readLines().joinToString(separator = "\n") { it }

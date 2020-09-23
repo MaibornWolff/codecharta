@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.filter.structuremodifier
 
 import org.assertj.core.api.Assertions
-import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -36,7 +36,7 @@ class StructureModifierTest {
         Assertions.assertThat(errorStream.toString()).contains("invalid_project.cc.json is not a valid project")
     }
 
-    @Ignore
+    @Disabled
     @Test
     fun `reads project piped input multiline`() {
         val input = File("src/test/resources/sample_project.cc.json").bufferedReader().readLines().joinToString(separator = "\n") { it }
