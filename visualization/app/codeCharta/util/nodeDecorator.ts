@@ -3,6 +3,7 @@ import { hierarchy } from "d3"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 enum MedianSelectors {
 	MEDIAN = "MEDIAN",
@@ -61,6 +62,10 @@ export class NodeDecorator {
 						data.deltas[metric.name] = 0
 					}
 				}
+			}
+
+			if (isLeaf(data)) {
+				data.attributes[NodeMetricDataService.UNARY_METRIC] = 1
 			}
 
 			if (data.edgeAttributes === undefined) {

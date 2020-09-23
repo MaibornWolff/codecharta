@@ -12,6 +12,7 @@ import {
 import { NodeDecorator } from "./nodeDecorator"
 import { HierarchyNode, hierarchy } from "d3"
 import { clone } from "./clone"
+import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 describe("nodeDecorator", () => {
 	let file: CCFile
@@ -290,6 +291,20 @@ describe("nodeDecorator", () => {
 			})
 			expect(allUniqueIds(h)).toBeTruthy()
 			expect(file.map.id).toBe(0)
+		})
+
+		it("all nodes should have a unary attribute and all leaves should have it set to 1", () => {
+			metricData.nodeMetricData.push({ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1 })
+
+			NodeDecorator.decorateMap(map, metricData, [])
+
+			const h = hierarchy(map)
+			h.each(({ data }) => {
+				expect(data.attributes[NodeMetricDataService.UNARY_METRIC]).toBeDefined()
+			})
+			h.leaves().forEach(({ data }) => {
+				expect(data.attributes[NodeMetricDataService.UNARY_METRIC]).toBe(1)
+			})
 		})
 	})
 
