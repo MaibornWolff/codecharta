@@ -5,19 +5,19 @@ import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
-enum MedianSelectors {
+const enum MedianSelectors {
 	MEDIAN = "MEDIAN",
 	DELTA = "DELTA",
 	INCOMING = "INCOMING",
 	OUTGOING = "OUTGOING"
 }
 
-enum EdgeAttributeType {
+const enum EdgeAttributeType {
 	INCOMING = "incoming",
 	OUTGOING = "outgoing"
 }
 
-enum NodeAttributeType {
+const enum NodeAttributeType {
 	ATTRIBUTES = "attributes",
 	DELTAS = "deltas"
 }
@@ -113,7 +113,7 @@ export class NodeDecorator {
 		const medians: Map<string, number[]> = new Map()
 		// TODO: Combine decorateMap, decorateMapWithPathAttribute and this one and
 		// remove the Object.keys calls from then on. They are identical to the
-		// `nodeMetricData` and `edgeMetricData` names. 
+		// `nodeMetricData` and `edgeMetricData` names.
 		const attributeKeys = Object.keys(map.attributes)
 		const edgeKeys = Object.keys(map.edgeAttributes)
 		hierarchy(map).eachAfter(({ data, parent }) => {
