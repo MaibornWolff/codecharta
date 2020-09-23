@@ -57,26 +57,18 @@ internal class CommitCollector private constructor(private val metricsFactory: M
             .forEach { it.registerCommit(commit) }
     }
 
-    private fun combineForParallelExecution(
-        firstCommits: MutableList<VersionControlledFile>,
-        secondCommits: MutableList<VersionControlledFile>
-    ): MutableList<VersionControlledFile> {
-        throw UnsupportedOperationException("parallel collection of commits not supported")
-    }
-
     companion object {
 
         fun create(metricsFactory: MetricsFactory): Collector<Commit, *, MutableList<VersionControlledFile>> {
             val collector = CommitCollector(metricsFactory)
             return Collector.of(
-                Supplier<MutableList<VersionControlledFile>> { ArrayList() },
-                BiConsumer<MutableList<VersionControlledFile>, Commit> { versionControlledFiles,
+                { ArrayList() },
+                { versionControlledFiles,
                     commit ->
                     collector.collectCommit(versionControlledFiles, commit)
                 },
-                BinaryOperator<MutableList<VersionControlledFile>> { firstCommits,
-                    secondCommits ->
-                    collector.combineForParallelExecution(firstCommits, secondCommits)
+                { _, _ ->
+                    throw UnsupportedOperationException("parallel collection of commits not supported")
                 }
             )
         }

@@ -52,14 +52,14 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
         fun create(commitSeparatorTest: Predicate<String>): Collector<String, *, Stream<List<String>>> {
             val collector = LogLineCollector(commitSeparatorTest)
             return Collector.of<String, MutableList<MutableList<String>>, Stream<List<String>>>(
-                Supplier<MutableList<MutableList<String>>> { ArrayList() },
-                BiConsumer<MutableList<MutableList<String>>, String> { commits, logLine ->
+                { ArrayList() },
+                { commits, logLine ->
                     collector.collectLogLine(commits, logLine)
                 },
-                BinaryOperator<MutableList<MutableList<String>>> { _, _ ->
+                { _, _ ->
                     throw UnsupportedOperationException("parallel collection of log lines not supported")
                 },
-                Function<MutableList<MutableList<String>>, Stream<List<String>>> {
+                {
                     collector.removeIncompleteCommits(it).map { it.toList() }
                 }
             )
