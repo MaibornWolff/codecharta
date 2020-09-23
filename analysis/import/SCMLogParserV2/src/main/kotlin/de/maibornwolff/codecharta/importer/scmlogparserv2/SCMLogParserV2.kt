@@ -21,7 +21,6 @@ import java.io.OutputStreamWriter
 import java.io.PrintStream
 import java.nio.charset.Charset
 import java.nio.file.Files
-import java.util.Arrays
 import java.util.concurrent.Callable
 import java.util.stream.Stream
 
@@ -70,7 +69,7 @@ class SCMLogParserV2(
 
     private val metricsFactory: MetricsFactory
         get() {
-            val nonChurnMetrics = Arrays.asList(
+            val nonChurnMetrics = listOf(
                 "age_in_weeks",
                 "number_of_authors",
                 "number_of_commits",
@@ -84,7 +83,6 @@ class SCMLogParserV2(
 
             return when (inputFormatNames) {
                 GIT_LOG -> MetricsFactory(nonChurnMetrics)
-                else -> MetricsFactory()
             }
         }
 

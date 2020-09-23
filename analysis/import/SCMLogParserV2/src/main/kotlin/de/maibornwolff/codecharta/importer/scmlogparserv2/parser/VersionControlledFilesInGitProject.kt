@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.scmlogparserv2.input.VersionControlle
 
 class VersionControlledFilesInGitProject(private val vcFList: MutableMap<String, VersionControlledFile>, private val filesInGitLog: List<String>) {
 
-    fun removeSaltFromFilenames() {
+    private fun removeSaltFromFilenames() {
         vcFList.values
             .forEach {
                 it.filename = it.filename.substringBefore("_\\0_")
@@ -27,18 +27,18 @@ class VersionControlledFilesInGitProject(private val vcFList: MutableMap<String,
 
     private fun removeDuplicates(trackingNamesPerFilename: MutableMap<String, Set<String>>) {
         trackingNamesPerFilename.keys.forEach { elem ->
-            var choosenElement = ""
+            var chooseElement = ""
             trackingNamesPerFilename[elem]?.forEach {
                 if (!vcFList[it]?.isDeleted()!!) {
-                    choosenElement = it
+                    chooseElement = it
                 }
             }
-            if (choosenElement == "") {
-                choosenElement = trackingNamesPerFilename[elem]?.last().toString()
+            if (chooseElement == "") {
+                chooseElement = trackingNamesPerFilename[elem]?.last().toString()
             }
 
             trackingNamesPerFilename[elem]?.forEach {
-                if (it != choosenElement)
+                if (it != chooseElement)
                     vcFList.remove(it)
             }
         }

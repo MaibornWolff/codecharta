@@ -44,7 +44,6 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
                 }
             }
             .values
-            .filterNotNull()
             .toList()
     }
 
@@ -56,9 +55,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     }
 
     override fun parseIsMergeCommit(commitLines: List<String>): Boolean {
-        return commitLines
-            .filter { commitLine -> commitLine.startsWith(MERGE_COMMIT_INDICATOR) }
-            .isNotEmpty()
+        return commitLines.any { commitLine -> commitLine.startsWith(MERGE_COMMIT_INDICATOR) }
     }
 
     companion object {

@@ -43,7 +43,7 @@ class StandardCommitParser : CommitParser {
                 }
 
                 else -> {
-                    // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows? (refer line 52)
+                    // TODO Do we have to register delete commits if a RENAME OR MODIFY commit follows? (refer line 33)
 
                     var file = versionControlledFilesList.get(trackName)
                     if (file == null) {

@@ -6,7 +6,7 @@ import java.util.stream.Collector
 
 internal class CommitCollector {
 
-    var commitParsers = listOf<CommitParser>(StandardCommitParser(), MergeCommitParser())
+    private var commitParsers = listOf(StandardCommitParser(), MergeCommitParser())
 
     private fun collectCommit(versionControlledFilesList: VersionControlledFilesList, commit: Commit) {
         commitParsers.forEach {

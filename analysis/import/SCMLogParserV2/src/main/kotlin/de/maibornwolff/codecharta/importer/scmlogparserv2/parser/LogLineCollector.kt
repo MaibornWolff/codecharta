@@ -40,7 +40,7 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
     }
 
     private fun removeIncompleteCommits(commits: MutableList<MutableList<String>>): Stream<MutableList<String>> {
-        return commits.stream().filter { commit -> !commit.isEmpty() }
+        return commits.stream().filter { commit -> commit.isNotEmpty() }
     }
 
     companion object {
@@ -55,8 +55,8 @@ class LogLineCollector private constructor(private val isCommitSeparator: Predic
                 { _, _ ->
                     throw UnsupportedOperationException("parallel collection of log lines not supported")
                 },
-                {
-                    collector.removeIncompleteCommits(it).map { it.toList() }
+                { mutableList ->
+                    collector.removeIncompleteCommits(mutableList).map { it.toList() }
                 }
             )
         }

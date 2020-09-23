@@ -19,8 +19,8 @@ class GitLogNumstatParsingHelperTest {
     }
 
     @Test
-    fun isFilelineWorksForStandardExamples() {
-        assertThat(GitLogNumstatParsingHelper.isFileLine("0\t10\tsrc/Main.java")).isTrue()
-        assertThat(GitLogNumstatParsingHelper.isFileLine("0\t10\tsrc/Main.java ")).isTrue()
+    fun isFileLineWorksForStandardExamples() {
+        assertThat(GitLogNumstatParsingHelper.isFileLine("0\t10\tsrc/Main.java")).isTrue
+        assertThat(GitLogNumstatParsingHelper.isFileLine("0\t10\tsrc/Main.java ")).isTrue
     }
 }
