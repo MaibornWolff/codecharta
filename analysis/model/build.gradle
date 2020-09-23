@@ -7,14 +7,13 @@ repositories {
 dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
-    implementation group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
-    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
@@ -49,8 +48,7 @@ jacocoTestReport {
 }
 
 test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
+    useJUnitPlatform {
+        includeEngines 'spek2'
     }
 }

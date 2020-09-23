@@ -23,9 +23,9 @@ dependencies {
     }
     testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 }
+
 test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
+    useJUnitPlatform {
+        includeEngines 'spek2'
     }
 }
