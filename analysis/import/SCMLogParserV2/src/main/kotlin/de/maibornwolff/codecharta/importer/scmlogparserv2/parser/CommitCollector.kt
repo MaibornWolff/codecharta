@@ -2,9 +2,6 @@ package de.maibornwolff.codecharta.importer.scmlogparserv2.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.metrics.MetricsFactory
-import java.util.function.BiConsumer
-import java.util.function.BinaryOperator
-import java.util.function.Supplier
 import java.util.stream.Collector
 
 internal class CommitCollector {

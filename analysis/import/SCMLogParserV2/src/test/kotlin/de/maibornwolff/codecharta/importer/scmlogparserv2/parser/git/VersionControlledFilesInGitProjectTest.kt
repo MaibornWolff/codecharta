@@ -9,8 +9,8 @@ import org.junit.Test
 
 class VersionControlledFilesInGitProjectTest {
 
-  private val metricsFactory = MetricsFactory()
-  private lateinit var vcfList : VersionControlledFilesList
+    private val metricsFactory = MetricsFactory()
+    private lateinit var vcfList: VersionControlledFilesList
 
     @Before
     fun initialize() {
@@ -18,7 +18,7 @@ class VersionControlledFilesInGitProjectTest {
     }
 
     @Test
-    fun test_given_vcf_with_files_not_in_project_remove_not_existing_files(){
+    fun test_given_vcf_with_files_not_in_project_remove_not_existing_files() {
 
         vcfList.addFileBy("src/Main.kt")
         vcfList.addFileBy("src/incorrectFile.kt")
@@ -36,7 +36,7 @@ class VersionControlledFilesInGitProjectTest {
     }
 
     @Test
-    fun test_given_vcf_with_duplicates_then_remove_salt_and_only_keep_most_recent_file(){
+    fun test_given_vcf_with_duplicates_then_remove_salt_and_only_keep_most_recent_file() {
 
         vcfList.addFileBy("src/Main.kt")
 
@@ -45,7 +45,7 @@ class VersionControlledFilesInGitProjectTest {
         vcfList.addFileBy("src/Main.kt")
 
         val testFilenamesInVCF = vcfList.getList().values.map { file -> file.filename }
-        assertThat(testFilenamesInVCF).containsExactlyInAnyOrder("src/Main.kt" , "src/Main.kt_\\0_0")
+        assertThat(testFilenamesInVCF).containsExactlyInAnyOrder("src/Main.kt", "src/Main.kt_\\0_0")
 
         val vcfFile = vcfList.get("src/Main.kt")
         assertThat(vcfFile?.filename).isEqualTo("src/Main.kt_\\0_0")
@@ -64,9 +64,8 @@ class VersionControlledFilesInGitProjectTest {
         assertThat(namesAfterFiltering).doesNotContain(oldFile)
     }
 
-
     @Test
-    fun test_given_vcf_with_duplicates_with_second_deleted_then_deleted_file(){
+    fun test_given_vcf_with_duplicates_with_second_deleted_then_deleted_file() {
 
         vcfList.addFileBy("src/Main.kt")
 
@@ -92,5 +91,4 @@ class VersionControlledFilesInGitProjectTest {
         assertThat(namesAfterFiltering).containsExactlyInAnyOrder(keepFile)
         assertThat(namesAfterFiltering).doesNotContain(deleteFile)
     }
-
 }

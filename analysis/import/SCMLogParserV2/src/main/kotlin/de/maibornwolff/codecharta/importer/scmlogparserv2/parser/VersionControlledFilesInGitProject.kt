@@ -2,16 +2,16 @@ package de.maibornwolff.codecharta.importer.scmlogparserv2.parser
 
 import de.maibornwolff.codecharta.importer.scmlogparserv2.input.VersionControlledFile
 
-class VersionControlledFilesInGitProject(private val vcFList :MutableMap<String, VersionControlledFile>, private val filesInGitLog: List<String>) {
+class VersionControlledFilesInGitProject(private val vcFList: MutableMap<String, VersionControlledFile>, private val filesInGitLog: List<String>) {
 
-    fun removeSaltFromFilenames(){
+    fun removeSaltFromFilenames() {
         vcFList.values
             .forEach {
                 it.filename = it.filename.substringBefore("_\\0_")
             }
     }
 
-    private fun findDuplicates() : MutableMap<String, Set<String>>{
+    private fun findDuplicates(): MutableMap<String, Set<String>> {
         val occurrencesPerFilename = vcFList.values.groupingBy { it.filename }.eachCount()
 
         val duplicateFilenames = occurrencesPerFilename.filterValues { it > 1 }
@@ -22,10 +22,10 @@ class VersionControlledFilesInGitProject(private val vcFList :MutableMap<String,
                 vcFList[it]?.filename == element
             }.toSet()
         }
-    return trackingNamesPerFilename
+        return trackingNamesPerFilename
     }
 
-    private fun removeDuplicates(trackingNamesPerFilename : MutableMap<String, Set<String>>){
+    private fun removeDuplicates(trackingNamesPerFilename: MutableMap<String, Set<String>>) {
         trackingNamesPerFilename.keys.forEach { elem ->
             var choosenElement = ""
             trackingNamesPerFilename[elem]?.forEach {
@@ -44,17 +44,13 @@ class VersionControlledFilesInGitProject(private val vcFList :MutableMap<String,
         }
     }
 
-    fun getListOfVCFilesMatchingGitProject() : List<VersionControlledFile>{
+    fun getListOfVCFilesMatchingGitProject(): List<VersionControlledFile> {
 
         removeSaltFromFilenames()
         val trackingNamesPerFilename = findDuplicates()
         removeDuplicates(trackingNamesPerFilename)
 
-     return  vcFList.values
+        return vcFList.values
             .filter { filesInGitLog.contains(it.filename) }
     }
-
-
-
-
 }

@@ -60,8 +60,10 @@ class ProjectConverter(private val containsAuthors: Boolean) {
 
         versionControlledFilesInGitProject.getListOfVCFilesMatchingGitProject()
             .forEach {
-                    //TODO Coroutines?
-                    vcFile -> addVersionControlledFile(projectBuilder, vcFile) }
+                // TODO Coroutines?
+                vcFile ->
+                addVersionControlledFile(projectBuilder, vcFile)
+            }
 
         val metrics = metricsFactory.createMetrics()
         projectBuilder.addAttributeTypes(AttributeTypesFactory.createNodeAttributeTypes(metrics))
