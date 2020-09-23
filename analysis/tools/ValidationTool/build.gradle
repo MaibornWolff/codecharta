@@ -13,14 +13,12 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin'
     }
 
-    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spek2_version") {
-        exclude group: 'org.jetbrains.kotlin'
-    }
     testRuntimeOnly group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: kotlin_version
 }
 
 test {
-    useJUnitPlatform {
-        includeEngines 'spek2'
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
     }
 }
