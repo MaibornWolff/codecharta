@@ -8,7 +8,7 @@ class GitLogRawParsingHelperTest {
 
     @Test
     fun parsesFilenameFromFileMetadata() {
-        val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... M  src/Main.java"
+        val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... M\tsrc/Main.java"
         val modification = GitLogRawParsingHelper.parseModification(fileMetadata)
         assertThat(modification.currentFilename).isEqualTo("src/Main.java")
         assertThat(modification.type).isEqualTo(Modification.Type.MODIFY)
@@ -16,7 +16,7 @@ class GitLogRawParsingHelperTest {
 
     @Test
     fun parsesFilenameFromFileMetadataWithRename() {
-        val fileMetadata = ":100644 100644 e7ab6f3... 0c5845c... R079 srcs/Main.java src/Main.java"
+        val fileMetadata = ":100644 100644 e7ab6f3... 0c5845c... R079\tsrcs/Main.java\tsrc/Main.java"
         val modification = GitLogRawParsingHelper.parseModification(fileMetadata)
         assertThat(modification.currentFilename).isEqualTo("src/Main.java")
         assertThat(modification.oldFilename).isEqualTo("srcs/Main.java")
@@ -25,7 +25,7 @@ class GitLogRawParsingHelperTest {
 
     @Test
     fun parsesFilenameFromAddedFile() {
-        val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... A  src/Main.java"
+        val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Main.java"
         val modification = GitLogRawParsingHelper.parseModification(fileMetadata)
         assertThat(modification.currentFilename).isEqualTo("src/Main.java")
         assertThat(modification.type).isEqualTo(Modification.Type.ADD)
@@ -33,7 +33,7 @@ class GitLogRawParsingHelperTest {
 
     @Test
     fun parsesFilenameFromDeletedFile() {
-        val fileMetadata = ":100644 100644 64d6a85... 8c57f3d... D  src/Util.java"
+        val fileMetadata = ":100644 100644 64d6a85... 8c57f3d... D\tsrc/Util.java"
         val modification = GitLogRawParsingHelper.parseModification(fileMetadata)
         assertThat(modification.currentFilename).isEqualTo("src/Util.java")
         assertThat(modification.type).isEqualTo(Modification.Type.DELETE)

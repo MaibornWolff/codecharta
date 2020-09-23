@@ -39,7 +39,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
 
     @Test
     fun parsesFilenameFromFileMetadataRaw() {
-        val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java"
+        val fileMetadata = ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java"
         val modification = GitLogNumstatRawParserStrategy.parseModification(fileMetadata)
         assertThat(modification.currentFilename).isEqualTo("src/Added.java")
     }
@@ -52,7 +52,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
             "Date:   Tue May 9 19:57:57 2017 +0200",
             "    the commit message",
             "10 0 src/Added.java",
-            ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java"
+            ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java"
         )
         val modifications = parserStrategy.parseModifications(commitLines)
         assertThat(modifications).hasSize(1)
@@ -75,7 +75,7 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
             "Date:   Tue May 9 19:57:57 2017 +0200",
             "    the commit message",
             "9 2 src/{RenameOld.java => RenameNew.java}",
-            ":100644 100644 e7ab6f3... 0c5845c... R079 src/RenameOld.java src/RenameNew.java"
+            ":100644 100644 e7ab6f3... 0c5845c... R079\tsrc/RenameOld.java\tsrc/RenameNew.java"
         )
         val modifications = parserStrategy.parseModifications(commitLines)
         assertThat(modifications).hasSize(1)
@@ -100,9 +100,9 @@ class GitLogNumstatRawParserStrategyTest : ParserStrategyContractTest() {
             "10 0 src/Added.java",
             "2 1 src/Modified.java",
             "0 20 src/Deleted.java",
-            ":100644 100644 afb6ce4... b1c5aa3... A  src/Added.java",
-            ":100644 100644 6c30570... 79b6243... M  src/Modified.java",
-            ":100644 100644 64d6a85... 8c57f3d... D  src/Deleted.java"
+            ":100644 100644 afb6ce4... b1c5aa3... A\tsrc/Added.java",
+            ":100644 100644 6c30570... 79b6243... M\tsrc/Modified.java",
+            ":100644 100644 64d6a85... 8c57f3d... D\tsrc/Deleted.java"
         )
     }
 }
