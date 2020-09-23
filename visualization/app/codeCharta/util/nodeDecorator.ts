@@ -106,6 +106,9 @@ export class NodeDecorator {
 
 	static decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
 		const medians: Map<string, number[]> = new Map()
+		// TODO: Combine decorateMap, decorateMapWithPathAttribute and this one and
+		// remove the Object.keys calls from then on. They are identical to the
+		// `nodeMetricData` and `edgeMetricData` names. 
 		const attributeKeys = Object.keys(map.attributes)
 		const edgeKeys = Object.keys(map.edgeAttributes)
 		hierarchy(map).eachAfter(({ data, parent }) => {
