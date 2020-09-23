@@ -43,7 +43,9 @@ class MetricCollector(
 
     private fun parseFile(file: File): FileMetrics {
         val metrics = MetricsFactory.create(metrics, parameters)
-        file.readLines().stream().parallel().forEach { line -> metrics.forEach { it.parseLine(line) } }
+        // TODO: Do not use readLines() for huge files!
+        file.readLines().forEach { line -> metrics.forEach { it.parseLine(line) } }
+
         return metrics.map { it.getValue() }.reduceRight { current: FileMetrics, acc: FileMetrics ->
             acc.metricMap.putAll(current.metricMap)
             acc
