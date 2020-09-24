@@ -12,6 +12,7 @@ import assert from "assert"
 import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { clone } from "./clone"
+import { hierarchy } from "d3"
 
 describe("FileValidator", () => {
 	let file: ExportCCFile
@@ -165,6 +166,21 @@ describe("FileValidator", () => {
 				"Required error: nodes[0] should have required property 'name'",
 				"Required error: nodes[0] should have required property 'type'"
 			],
+			warning: []
+		}
+
+		assert.throws(() => {
+			validate(file)
+		}, expectedError)
+	})
+
+	it("should throw not a single file has attribute keys defined", () => {
+		hierarchy(file.nodes[0]).each(({ data }) => {
+			data.attributes = {}
+		})
+
+		const expectedError: CCValidationResult = {
+			error: [ERROR_MESSAGES.metricDataUnavailable],
 			warning: []
 		}
 
