@@ -4,6 +4,7 @@ import { SearchPanelPageObject } from "../searchPanel/searchPanel.po"
 import { MetricChooserPageObject } from "../metricChooser/metricChooser.po"
 import { SearchPanelModeSelectorPageObject } from "../searchPanelModeSelector/searchPanelModeSelector.po"
 import { MapTreeViewLevelPageObject } from "../mapTreeView/mapTreeView.level.po"
+import { AreaSettingsPanelPageObject } from "../areaSettingsPanel/areaSettingsPanel.po"
 
 describe("RibbonBar", () => {
 	let searchPanel: SearchPanelPageObject
@@ -114,5 +115,15 @@ describe("RibbonBar", () => {
 		const isEdgeSettingsPanelOpen = await ribbonBar.togglePanel(edgePanel)
 		expect(isEdgeSettingsPanelOpen).toBeTruthy()
 		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeFalsy()
+	})
+
+	it("should open a section and keep it open after clicking a button inside it", async () => {
+		const areaPanel = "area-metric"
+
+		await ribbonBar.togglePanel(areaPanel)
+		expect(AreaSettingsPanelPageObject.isDynamicMarginEnabled()).toBeTruthy()
+		expect(await AreaSettingsPanelPageObject.toggleDynamicMargin()).toBeFalsy()
+
+		expect(await ribbonBar.isPanelOpen(areaPanel)).toBeTruthy()
 	})
 })
