@@ -12,6 +12,7 @@
 <md-card
 	ng-attr-id="area-metric-card"
 	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN }"
+	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
@@ -20,7 +21,6 @@
 		<span
 			class="section-title"
 			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN)"
-			ng-mouseup="$event.stopPropagation()"
 			title="Show area metric settings"
 			>Size <i class="fa fa-angle-down"></i
 		></span>
@@ -33,6 +33,7 @@
 <md-card
 	ng-attr-id="height-metric-card"
 	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN }"
+	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
@@ -41,7 +42,6 @@
 		<span
 			class="section-title"
 			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN)"
-			ng-mouseup="$event.stopPropagation()"
 			title="Show height metric settings"
 			>Height <i class="fa fa-angle-down"></i
 		></span>
@@ -54,6 +54,7 @@
 <md-card
 	ng-attr-id="color-metric-card"
 	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN }"
+	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
@@ -62,7 +63,6 @@
 		<span
 			class="section-title"
 			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN)"
-			ng-mouseup="$event.stopPropagation()"
 			title="Show color metric settings"
 			>Color <i class="fa fa-angle-down"></i
 		></span>
@@ -75,6 +75,7 @@
 <md-card
 	ng-attr-id="edge-metric-card"
 	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN }"
+	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
@@ -83,7 +84,6 @@
 		<span
 			class="section-title"
 			ng-click="$ctrl.toggle($ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN)"
-			ng-mouseup="$event.stopPropagation()"
 			title="Show edge metric settings"
 		>
 			Edges <i class="fa fa-angle-down"></i>
