@@ -20,10 +20,10 @@
         "invertColorRange": false
       },
       "dynamicSettings": {
-        "areaMetric": "unary",
+        "areaMetric": "Average Complexity*",
         "heightMetric": "Average Complexity*",
         "colorMetric": "Average Complexity*",
-        "distributionMetric": "unary"
+        "distributionMetric": "Average Complexity*"
       }
     }
   },
