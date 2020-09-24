@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Validation for files with no metrics specified on any node
+
 ### Changed
 
 ### Removed 🗑
