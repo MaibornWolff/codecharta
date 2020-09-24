@@ -35,7 +35,7 @@
 			{{::$ctrl.node.name}}
 		</span>
 
-		<span class="unary-number" ng-if="!$ctrl.isLeaf()">
+		<span class="number-of-files" ng-if="!$ctrl.isLeaf()">
 			<span ng-if="!$ctrl._viewModel.isHoveredInCodeMap">{{ ::$ctrl.getNumberOfFilesPercentage() }}%</span>
 			<span ng-if="$ctrl._viewModel.isHoveredInCodeMap"
 				>{{ ::$ctrl.getNumberOfFiles() }} File

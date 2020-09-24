@@ -25,6 +25,6 @@ export class MapTreeViewLevelPageObject {
 	}
 
 	async getNumberOfFiles(path: string) {
-		return page.$eval(`[id='${path}'] .unary-number`, element => Number(element["innerText"].split(" ")[0]))
+		return page.$eval(`[id='${path}'] .number-of-files`, element => Number(element["innerText"].split(" ")[0]))
 	}
 }
