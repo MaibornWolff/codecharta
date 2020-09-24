@@ -118,7 +118,7 @@ describe("nodeDecorator", () => {
 			expect(map.children[1].name).toBe("b")
 		})
 
-		it("should collect links correctly", () => {
+		it("should collect links", () => {
 			map.link = "link0"
 			map.children = [
 				{
@@ -153,7 +153,7 @@ describe("nodeDecorator", () => {
 			expect(map.link).toBe("link1")
 		})
 
-		it("should collect paths correctly", () => {
+		it("should collect paths", () => {
 			map.path = "/root"
 			map.children = [
 				{
@@ -375,7 +375,7 @@ describe("nodeDecorator", () => {
 			expect(h.data.deltas.functions).toBe(-3)
 		})
 
-		it("should aggregate given absolute metrics correctly", () => {
+		it("should aggregate given absolute metrics", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, attributeTypes)
@@ -384,7 +384,7 @@ describe("nodeDecorator", () => {
 			expect(map.attributes.mcc).toBe(111)
 		})
 
-		it("should aggregate given relative metrics correctly", () => {
+		it("should aggregate given relative metrics", () => {
 			NodeDecorator.decorateMap(map, metricData, [])
 
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, attributeTypes)
@@ -392,7 +392,7 @@ describe("nodeDecorator", () => {
 			expect(map.attributes.functions).toBe(100)
 		})
 
-		it("should aggregate absolute edge metrics correctly", () => {
+		it("should aggregate absolute edge metrics", () => {
 			map.children[0].edgeAttributes = { avgCommits: { incoming: 12, outgoing: 13 } }
 			map.children[1].children[0].edgeAttributes = { avgCommits: { incoming: 10, outgoing: 10 } }
 			NodeDecorator.decorateMap(map, metricData, [])
@@ -403,7 +403,7 @@ describe("nodeDecorator", () => {
 			expect(map.edgeAttributes.avgCommits.outgoing).toBe(23)
 		})
 
-		it("should aggregate given relative edge metrics correctly", () => {
+		it("should aggregate given relative edge metrics", () => {
 			map.children[0].edgeAttributes = { pairingRate: { incoming: 12, outgoing: 13 } }
 			map.children[1].children[0].edgeAttributes = { pairingRate: { incoming: 10, outgoing: 10 } }
 			NodeDecorator.decorateMap(map, metricData, [])
@@ -414,7 +414,7 @@ describe("nodeDecorator", () => {
 			expect(map.edgeAttributes.pairingRate.outgoing).toBe(11.5)
 		})
 
-		it("should aggregate missing metrics correctly", () => {
+		it("should aggregate missing metrics", () => {
 			nodeMetricData.push({ name: "some", maxValue: 999999 })
 			NodeDecorator.decorateMap(map, metricData, [])
 
@@ -423,6 +423,18 @@ describe("nodeDecorator", () => {
 			expect(map.attributes.rloc).toBe(200)
 			expect(map.attributes.some).toBe(0)
 			expect(map.attributes["some other attribute"]).not.toBeDefined()
+		})
+
+		it("should sum up the descendant files", () => {
+			NodeDecorator.decorateMap(map, metricData, [])
+
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, attributeTypes)
+
+			expect(map.descendants).toBe(3)
+			expect(map.children[0].descendants).toBe(0)
+			expect(map.children[1].descendants).toBe(2)
+			expect(map.children[1].children[0].descendants).toBe(0)
+			expect(map.children[1].children[1].descendants).toBe(0)
 		})
 	})
 })
