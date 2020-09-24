@@ -8,7 +8,7 @@ dependencies {
     implementation group: 'com.github.everit-org.json-schema', name: 'org.everit.json.schema', version: json_schema_version
     implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 
-    testImplementation('org.junit.jupiter:junit-jupiter:5.6.0')
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
