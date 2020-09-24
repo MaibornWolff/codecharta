@@ -1,9 +1,8 @@
 "use strict"
-import { hierarchy } from "d3"
+import { hierarchy, HierarchyNode } from "d3"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 const enum MedianSelectors {
 	MEDIAN = "MEDIAN",
@@ -46,14 +45,11 @@ export class NodeDecorator {
 		let id = 0
 		for (const { data } of hierarchy(map).descendants()) {
 			data.id = id
+			data.descendants = 0
 			id++
 
 			if (data.attributes === undefined) {
 				data.attributes = {}
-			}
-
-			if (isLeaf(data)) {
-				data.attributes[NodeMetricDataService.UNARY_METRIC] = 1
 			}
 
 			for (const metric of nodeMetricData) {
@@ -106,7 +102,6 @@ export class NodeDecorator {
 				node.data.path = `/${node.data.name}`
 			}
 		})
-		return file
 	}
 
 	static decorateParentNodesWithAggregatedAttributes(map: CodeMapNode, isDeltaState: boolean, attributeTypes: AttributeTypes) {
@@ -121,6 +116,8 @@ export class NodeDecorator {
 			if (data.isExcluded || !parent) {
 				return
 			}
+
+			sumDescendants(data, parent)
 
 			for (const name of attributeKeys) {
 				const selector = `${name}${data.path}`
@@ -339,4 +336,12 @@ function pushSortedArray(numbers: number[], toPush: number[]) {
 		}
 	}
 	numbers.push(...toPush.slice(j))
+}
+
+function sumDescendants(node: CodeMapNode, parent: HierarchyNode<CodeMapNode>) {
+	if (isLeaf(node)) {
+		parent.data.descendants++
+	} else {
+		parent.data.descendants += node.descendants
+	}
 }

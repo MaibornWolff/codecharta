@@ -3,7 +3,6 @@ import { CodeMapNode, BlacklistType, BlacklistItem, FileSettings, FileMeta, Attr
 import { DownloadCheckboxNames } from "../ui/dialog/dialog.download.component"
 import { CodeChartaService } from "../codeCharta.service"
 import { ExportCCFile } from "../codeCharta.api.model"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
 
@@ -74,8 +73,6 @@ export class FileDownloader {
 			delete node.data.path
 			if (node.data.type === NodeType.FOLDER) {
 				node.data.attributes = {}
-			} else {
-				delete node.data.attributes[NodeMetricDataService.UNARY_METRIC]
 			}
 		})
 		return copy

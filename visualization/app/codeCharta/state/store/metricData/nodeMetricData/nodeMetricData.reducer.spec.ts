@@ -1,10 +1,9 @@
 import { nodeMetricData } from "./nodeMetricData.reducer"
 import { calculateNewNodeMetricData, NodeMetricDataAction, setNodeMetricData } from "./nodeMetricData.actions"
-import { METRIC_DATA, TEST_DELTA_MAP_A, VALID_NODE_WITH_ROOT_UNARY } from "../../../../util/dataMocks"
+import { METRIC_DATA, TEST_DELTA_MAP_A } from "../../../../util/dataMocks"
 import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { BlacklistType } from "../../../../codeCharta.model"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
-import { NodeMetricDataService } from "./nodeMetricData.service"
 import { clone } from "../../../../util/clone"
 
 describe("nodeMetricData", () => {
@@ -46,8 +45,7 @@ describe("nodeMetricData", () => {
 			const expected = [
 				{ maxValue: 1000, name: "functions" },
 				{ maxValue: 100, name: "mcc" },
-				{ maxValue: 100, name: "rloc" },
-				{ maxValue: 1, name: NodeMetricDataService.UNARY_METRIC }
+				{ maxValue: 100, name: "rloc" }
 			]
 
 			const result = nodeMetricData([], calculateNewNodeMetricData([fileState], []))
@@ -59,8 +57,7 @@ describe("nodeMetricData", () => {
 			const expected = [
 				{ maxValue: 1000, name: "functions" },
 				{ maxValue: 100, name: "mcc" },
-				{ maxValue: 70, name: "rloc" },
-				{ maxValue: 1, name: NodeMetricDataService.UNARY_METRIC }
+				{ maxValue: 70, name: "rloc" }
 			]
 
 			const result = nodeMetricData(
@@ -69,20 +66,6 @@ describe("nodeMetricData", () => {
 			)
 
 			expect(result).toEqual(expected)
-		})
-
-		it("should always add unary metric if it's not included yet", () => {
-			const result = nodeMetricData([], calculateNewNodeMetricData([fileState], []))
-
-			expect(result.filter(x => x.name === NodeMetricDataService.UNARY_METRIC)).toHaveLength(1)
-		})
-
-		it("should not add unary metric a second time if the cc.json already contains unary", () => {
-			fileState.file.map = VALID_NODE_WITH_ROOT_UNARY
-
-			const result = nodeMetricData([], calculateNewNodeMetricData([fileState], []))
-
-			expect(result.filter(x => x.name === NodeMetricDataService.UNARY_METRIC).length).toBe(1)
 		})
 	})
 })

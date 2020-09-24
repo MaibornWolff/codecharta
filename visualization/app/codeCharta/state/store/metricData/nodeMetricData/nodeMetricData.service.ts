@@ -13,7 +13,6 @@ export interface NodeMetricDataSubscriber {
 }
 
 export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
-	static UNARY_METRIC = "unary"
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {

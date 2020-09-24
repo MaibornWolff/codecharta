@@ -6,7 +6,6 @@ Object {
     "functions": 1110,
     "mcc": 111,
     "rloc": 200,
-    "unary": 3,
   },
   "children": Array [
     Object {
@@ -14,8 +13,8 @@ Object {
         "functions": 10,
         "mcc": 1,
         "rloc": 100,
-        "unary": 1,
       },
+      "descendants": 0,
       "edgeAttributes": Object {
         "None": undefined,
         "avgCommits": Object {
@@ -41,7 +40,6 @@ Object {
         "functions": 1100,
         "mcc": 110,
         "rloc": 100,
-        "unary": 2,
       },
       "children": Array [
         Object {
@@ -49,8 +47,8 @@ Object {
             "functions": 100,
             "mcc": 100,
             "rloc": 30,
-            "unary": 1,
           },
+          "descendants": 0,
           "edgeAttributes": Object {
             "None": undefined,
             "avgCommits": Object {
@@ -78,8 +76,8 @@ Object {
             "functions": 1000,
             "mcc": 10,
             "rloc": 70,
-            "unary": 1,
           },
+          "descendants": 0,
           "edgeAttributes": Object {
             "None": undefined,
             "avgCommits": undefined,
@@ -100,6 +98,7 @@ Object {
           "type": "File",
         },
       ],
+      "descendants": 2,
       "edgeAttributes": Object {
         "None": Object {
           "incoming": 0,
@@ -126,6 +125,7 @@ Object {
       "type": "Folder",
     },
   ],
+  "descendants": 3,
   "edgeAttributes": Object {
     "None": Object {
       "incoming": 0,

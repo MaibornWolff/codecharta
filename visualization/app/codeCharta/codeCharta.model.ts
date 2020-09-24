@@ -41,6 +41,7 @@ export interface CodeMapNode {
 		[key: string]: number
 	}
 	fixedPosition?: FixedPosition
+	descendants?: number
 }
 
 export interface FixedPosition {

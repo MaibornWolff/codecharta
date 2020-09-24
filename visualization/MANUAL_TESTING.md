@@ -354,21 +354,6 @@
 
 ## When
 
--
-
-## Then
-
--   metric list contains all map metrics and the unary metric
-
-# Scenario: settingspanel sections
-
-## Given
-
--   CC is running
--   metrics section is open
-
-## When
-
 -   user changes metrics
 
 ## Then

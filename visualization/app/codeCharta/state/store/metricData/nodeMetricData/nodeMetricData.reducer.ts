@@ -4,7 +4,6 @@ import { getVisibleFileStates } from "../../../../model/files/files.helper"
 import { FileState } from "../../../../model/files/files"
 import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { hierarchy, HierarchyNode } from "d3"
-import { NodeMetricDataService } from "./nodeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
 
 export function nodeMetricData(state = setNodeMetricData().payload, action: NodeMetricDataAction) {
@@ -45,8 +44,6 @@ function addMaxMetricValuesToHashMap(node: HierarchyNode<CodeMapNode>, hashMap: 
 
 function getMetricDataFromHashMap(hashMap: Map<string, number>) {
 	const metricData: NodeMetricData[] = []
-
-	hashMap.set(NodeMetricDataService.UNARY_METRIC, 1)
 
 	hashMap.forEach((value: number, key: string) => {
 		metricData.push({

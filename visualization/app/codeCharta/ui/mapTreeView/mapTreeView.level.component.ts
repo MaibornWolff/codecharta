@@ -6,7 +6,6 @@ import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
-import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 export interface MapTreeViewHoverEventSubscriber {
 	onShouldHoverNode(node: CodeMapNode)
@@ -82,7 +81,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	getMarkingColor() {
 		const defaultColor = "#000000"
 		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
-		return markingColor ? markingColor : defaultColor
+		return markingColor ?? defaultColor
 	}
 
 	isSearched() {
@@ -98,13 +97,13 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		}
 	}
 
-	getNodeUnaryValue() {
-		return this.node.attributes[NodeMetricDataService.UNARY_METRIC]
+	getNumberOfFiles() {
+		return this.node.descendants
 	}
 
-	getUnaryPercentage() {
-		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[NodeMetricDataService.UNARY_METRIC]
-		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
+	getNumberOfFilesPercentage() {
+		const totalFiles = this.codeMapPreRenderService.getRenderMap().descendants
+		return ((100 * this.getNumberOfFiles()) / totalFiles).toFixed(0)
 	}
 
 	isRoot() {
