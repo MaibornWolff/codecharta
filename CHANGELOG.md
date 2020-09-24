@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Removed 🗑
 
+-   Automatically added unary metric
+
 ### Fixed 🐞
 
 -   Improve loading and rendering maps performance
