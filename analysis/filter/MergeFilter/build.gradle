@@ -15,7 +15,6 @@ dependencies {
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
         exclude group: 'org.jetbrains.kotlin'
     }
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 
@@ -26,7 +25,7 @@ dependencies {
 }
 
 test {
-    useJUnitPlatform{
+    useJUnitPlatform {
         includeEngines 'spek2'
     }
     testLogging {
