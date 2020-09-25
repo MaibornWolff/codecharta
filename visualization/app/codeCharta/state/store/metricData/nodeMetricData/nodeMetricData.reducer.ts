@@ -5,6 +5,7 @@ import { FileState } from "../../../../model/files/files"
 import { CodeMapHelper } from "../../../../util/codeMapHelper"
 import { hierarchy, HierarchyNode } from "d3"
 import { sortByMetricName } from "../metricData.reducer"
+import { ERROR_MESSAGES } from "../../../../util/fileValidator"
 
 export function nodeMetricData(state = setNodeMetricData().payload, action: NodeMetricDataAction) {
 	switch (action.type) {
@@ -27,6 +28,10 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 				addMaxMetricValuesToHashMap(node, hashMap)
 			}
 		})
+
+		if (hashMap.size === 0) {
+			throw new Error(ERROR_MESSAGES.metricDataUnavailable)
+		}
 	})
 	return getMetricDataFromHashMap(hashMap)
 }

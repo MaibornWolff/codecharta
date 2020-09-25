@@ -3,7 +3,6 @@ import Ajv from "ajv"
 import packageJson from "../../../package.json"
 import { ExportCCFile } from "../codeCharta.api.model"
 import jsonSchema from "./generatedSchema.json"
-import { hierarchy } from "d3"
 
 const latestApiVersion = packageJson.codecharta.apiVersion
 
@@ -59,7 +58,6 @@ export function validate(file: ExportCCFile) {
 			result.error.push(ERROR_MESSAGES.nodesEmpty)
 		} else {
 			validateAllNodesAreUnique(file.nodes[0], result)
-			validateMetricDataAvailable(file.nodes[0], result)
 			validateFixedFolders(file, result)
 		}
 	}
@@ -98,22 +96,6 @@ function getValidationMessage(error: Ajv.ErrorObject) {
 	const errorType = error.keyword.charAt(0).toUpperCase() + error.keyword.slice(1)
 	const errorParameter = error.dataPath.slice(1)
 	return `${errorType} error: ${errorParameter} ${error.message}`
-}
-
-function validateMetricDataAvailable(node: CodeMapNode, result: CCValidationResult) {
-	let isMetricDataAvailable = false
-	hierarchy(node).each(({ data }) => {
-		if (isMetricDataAvailable) {
-			return
-		}
-		if (Object.keys(data.attributes).length > 0) {
-			isMetricDataAvailable = true
-		}
-	})
-
-	if (!isMetricDataAvailable) {
-		result.error.push(`${ERROR_MESSAGES.metricDataUnavailable}`)
-	}
 }
 
 function validateAllNodesAreUnique(node: CodeMapNode, result: CCValidationResult) {

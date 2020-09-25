@@ -7,6 +7,7 @@ import { FilesSelectionSubscriber, FilesService } from "../../files/files.servic
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService, AttributeTypesSubscriber } from "../../fileSettings/attributeTypes/attributeTypes.service"
 import { FileState } from "../../../../model/files/files"
+import { DialogService } from "../../../../ui/dialog/dialog.service"
 
 export interface NodeMetricDataSubscriber {
 	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[])
@@ -15,7 +16,7 @@ export interface NodeMetricDataSubscriber {
 export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSubscriber, BlacklistSubscriber, AttributeTypesSubscriber {
 	private static NODE_METRIC_DATA_CHANGED_EVENT = "node-metric-data-changed"
 
-	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
+	constructor(private $rootScope: IRootScopeService, private storeService: StoreService, private dialogService: DialogService) {
 		StoreService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
@@ -29,7 +30,11 @@ export class NodeMetricDataService implements StoreSubscriber, FilesSelectionSub
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
-		this.storeService.dispatch(calculateNewNodeMetricData(files, this.storeService.getState().fileSettings.blacklist))
+		try {
+			this.storeService.dispatch(calculateNewNodeMetricData(files, this.storeService.getState().fileSettings.blacklist))
+		} catch (error) {
+			this.dialogService.showErrorDialog(error.message, "Could not load metrics")
+		}
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {

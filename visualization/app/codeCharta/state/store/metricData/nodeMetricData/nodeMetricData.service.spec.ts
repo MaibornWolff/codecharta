@@ -4,17 +4,22 @@ import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { NodeMetricDataAction, NodeMetricDataActions, setNodeMetricData } from "./nodeMetricData.actions"
 import { NodeMetricDataService } from "./nodeMetricData.service"
-import { METRIC_DATA, STATE, withMockedEventMethods } from "../../../../util/dataMocks"
+import { FILE_STATES, METRIC_DATA, STATE, withMockedEventMethods } from "../../../../util/dataMocks"
 import { setState } from "../../state.actions"
 import { AttributeTypeValue, NodeMetricData } from "../../../../codeCharta.model"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../files/files.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"
+import { DialogService } from "../../../../ui/dialog/dialog.service"
+import { hierarchy } from "d3-hierarchy"
+import { clone } from "../../../../util/clone"
+import { ERROR_MESSAGES } from "../../../../util/fileValidator"
 
 describe("NodeMetricDataService", () => {
 	let nodeMetricDataService: NodeMetricDataService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
+	let dialogService: DialogService
 
 	const metricData: NodeMetricData[] = [
 		{ name: "rloc", maxValue: 999999 },
@@ -26,6 +31,7 @@ describe("NodeMetricDataService", () => {
 		restartSystem()
 		rebuildService()
 		withMockedEventMethods($rootScope)
+		withMockedDialogService()
 	})
 
 	function restartSystem() {
@@ -33,12 +39,17 @@ describe("NodeMetricDataService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		dialogService = getService<DialogService>("dialogService")
 
 		storeService.dispatch(setNodeMetricData(metricData))
 	}
 
 	function rebuildService() {
-		nodeMetricDataService = new NodeMetricDataService($rootScope, storeService)
+		nodeMetricDataService = new NodeMetricDataService($rootScope, storeService, dialogService)
+	}
+
+	function withMockedDialogService() {
+		dialogService.showErrorDialog = jest.fn()
 	}
 
 	describe("constructor", () => {
@@ -92,6 +103,17 @@ describe("NodeMetricDataService", () => {
 			nodeMetricDataService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+	})
+
+	describe("onFilesSelectionChanged", () => {
+		it("should show the error dialog if no metrics were found during metric calculation", () => {
+			const fileState = clone(FILE_STATES[0])
+			hierarchy(fileState.file.map).each(({ data }) => (data.attributes = {}))
+
+			nodeMetricDataService.onFilesSelectionChanged([fileState])
+
+			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(ERROR_MESSAGES.metricDataUnavailable, "Could not load metrics")
 		})
 	})
 

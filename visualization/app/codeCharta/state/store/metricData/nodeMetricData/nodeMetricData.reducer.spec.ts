@@ -5,6 +5,9 @@ import { FileSelectionState, FileState } from "../../../../model/files/files"
 import { BlacklistType } from "../../../../codeCharta.model"
 import { NodeDecorator } from "../../../../util/nodeDecorator"
 import { clone } from "../../../../util/clone"
+import { hierarchy } from "d3-hierarchy"
+import assert from "assert"
+import { ERROR_MESSAGES } from "../../../../util/fileValidator"
 
 describe("nodeMetricData", () => {
 	let fileState: FileState
@@ -66,6 +69,17 @@ describe("nodeMetricData", () => {
 			)
 
 			expect(result).toEqual(expected)
+		})
+
+		it("should throw an error if no metric data is available", () => {
+			hierarchy(fileState.file.map).each(({ data }) => (data.attributes = {}))
+
+			assert.throws(
+				() => {
+					nodeMetricData([], calculateNewNodeMetricData([fileState], []))
+				},
+				{ message: ERROR_MESSAGES.metricDataUnavailable }
+			)
 		})
 	})
 })
