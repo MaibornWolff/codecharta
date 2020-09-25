@@ -117,12 +117,13 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
-		if (this.edgeMetricDataService.getMetricNames()) {
+		const names = this.edgeMetricDataService.getMetricNames()
+		if (names.length) {
 			const nodes = hierarchy(map).leaves()
 			for (const node of nodes) {
-				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
-				for (const edgeMetric of edgeMetrics.keys()) {
-					node.data.edgeAttributes[edgeMetric] = edgeMetrics.get(edgeMetric)
+				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node, names)
+				for (const [key, value] of edgeMetrics) {
+					node.data.edgeAttributes[key] = value
 				}
 			}
 		}
