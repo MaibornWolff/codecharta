@@ -135,11 +135,12 @@ describe("EdgeMetricDataService", () => {
 
 	describe("getMetricValuesForNode", () => {
 		it("should return Edge Metric counts for node", () => {
+			const metricNames = ["pairingRate"]
 			const node = { data: { path: "/root/big leaf" } } as HierarchyNode<CodeMapNode>
 
-			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node)
+			const metricsForNode = edgeMetricDataService.getMetricValuesForNode(node, metricNames)
 
-			expect(metricsForNode.get("pairingRate")).toEqual({ incoming: 0, outgoing: 1 })
+			expect(metricsForNode.get(metricNames[0])).toEqual({ incoming: 0, outgoing: 1 })
 		})
 	})
 })

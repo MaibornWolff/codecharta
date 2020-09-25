@@ -71,10 +71,10 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 		return keys
 	}
 
-	getMetricValuesForNode(node: HierarchyNode<CodeMapNode>) {
+	getMetricValuesForNode(node: HierarchyNode<CodeMapNode>, metricNames: string[]) {
 		const nodeEdgeMetrics: EdgeMetricCountMap = new Map()
 
-		for (const metricName of this.getMetricNames()) {
+		for (const metricName of metricNames) {
 			const edgeMetricCount = nodeEdgeMetricsMap.get(metricName)
 			if (edgeMetricCount) {
 				nodeEdgeMetrics.set(metricName, edgeMetricCount.get(node.data.path))
