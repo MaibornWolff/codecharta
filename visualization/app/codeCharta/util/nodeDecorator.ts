@@ -45,8 +45,11 @@ export class NodeDecorator {
 		let id = 0
 		for (const { data } of hierarchy(map).descendants()) {
 			data.id = id
-			data.descendants = 0
 			id++
+
+			if (!isLeaf(data)) {
+				data.descendants = 0
+			}
 
 			if (data.attributes === undefined) {
 				data.attributes = {}

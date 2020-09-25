@@ -8,6 +8,7 @@ import {
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import { clone } from "../../util/clone"
+import { CodeMapHelper } from "../../util/codeMapHelper"
 
 export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber, SortingOptionSubscriber, SortingOrderAscendingSubscriber {
 	private _viewModel: {
@@ -25,7 +26,11 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 
 	onSortingOptionChanged(sortingOption: SortingOption) {
 		if (sortingOption === SortingOption.NUMBER_OF_FILES) {
-			this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => b.descendants - a.descendants, false)
+			this._viewModel.rootNode = this.applySortOrderChange(
+				this._viewModel.rootNode,
+				(a, b) => CodeMapHelper.getDescendants(b) - CodeMapHelper.getDescendants(a),
+				false
+			)
 		} else {
 			this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, (a, b) => (b.name > a.name ? -1 : 1), false)
 		}

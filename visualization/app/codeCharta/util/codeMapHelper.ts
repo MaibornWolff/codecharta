@@ -74,6 +74,10 @@ function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]) {
 	return markingColor
 }
 
+function getDescendants(node: CodeMapNode) {
+	return node.descendants ?? 0
+}
+
 function sortByPathLength(a: MarkedPackage, b: MarkedPackage) {
 	return b.path.length - a.path.length
 }
@@ -91,5 +95,6 @@ export const CodeMapHelper = {
 	numberOfBlacklistedNodes,
 	isPathHiddenOrExcluded,
 	isPathBlacklisted,
-	getMarkingColor
+	getMarkingColor,
+	getDescendants
 }

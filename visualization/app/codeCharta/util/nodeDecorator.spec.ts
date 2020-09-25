@@ -431,10 +431,10 @@ describe("nodeDecorator", () => {
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, attributeTypes)
 
 			expect(map.descendants).toBe(3)
-			expect(map.children[0].descendants).toBe(0)
+			expect(map.children[0].descendants).not.toBeDefined()
 			expect(map.children[1].descendants).toBe(2)
-			expect(map.children[1].children[0].descendants).toBe(0)
-			expect(map.children[1].children[1].descendants).toBe(0)
+			expect(map.children[1].children[0].descendants).not.toBeDefined()
+			expect(map.children[1].children[1].descendants).not.toBeDefined()
 		})
 	})
 })

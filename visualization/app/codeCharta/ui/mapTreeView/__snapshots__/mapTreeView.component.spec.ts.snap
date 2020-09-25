@@ -19,7 +19,6 @@ Object {
             "mcc": 10,
             "rloc": 70,
           },
-          "descendants": 0,
           "edgeAttributes": Object {
             "average_commits": Object {
               "incoming": 0,
@@ -43,7 +42,6 @@ Object {
             "mcc": 100,
             "rloc": 30,
           },
-          "descendants": 0,
           "edgeAttributes": Object {
             "average_commits": Object {
               "incoming": 0,
@@ -86,7 +84,6 @@ Object {
         "mcc": 1,
         "rloc": 100,
       },
-      "descendants": 0,
       "edgeAttributes": Object {
         "average_commits": Object {
           "incoming": 0,
@@ -145,7 +142,6 @@ Object {
             "mcc": 10,
             "rloc": 70,
           },
-          "descendants": 0,
           "edgeAttributes": Object {
             "average_commits": Object {
               "incoming": 0,
@@ -169,7 +165,6 @@ Object {
             "mcc": 100,
             "rloc": 30,
           },
-          "descendants": 0,
           "edgeAttributes": Object {
             "average_commits": Object {
               "incoming": 0,
@@ -212,7 +207,6 @@ Object {
         "mcc": 1,
         "rloc": 100,
       },
-      "descendants": 0,
       "edgeAttributes": Object {
         "average_commits": Object {
           "incoming": 0,
@@ -271,7 +265,6 @@ Object {
             "mcc": 100,
             "rloc": 30,
           },
-          "descendants": 0,
           "edgeAttributes": Object {
             "average_commits": Object {
               "incoming": 0,
@@ -295,7 +288,6 @@ Object {
             "mcc": 10,
             "rloc": 70,
           },
-          "descendants": 0,
           "edgeAttributes": Object {
             "average_commits": Object {
               "incoming": 0,
@@ -338,7 +330,6 @@ Object {
         "mcc": 1,
         "rloc": 100,
       },
-      "descendants": 0,
       "edgeAttributes": Object {
         "average_commits": Object {
           "incoming": 0,
@@ -397,7 +388,6 @@ Object {
             "mcc": 10,
             "rloc": 70,
           },
-          "descendants": 0,
           "edgeAttributes": Object {
             "average_commits": Object {
               "incoming": 0,
@@ -421,7 +411,6 @@ Object {
             "mcc": 100,
             "rloc": 30,
           },
-          "descendants": 0,
           "edgeAttributes": Object {
             "average_commits": Object {
               "incoming": 0,
@@ -464,7 +453,6 @@ Object {
         "mcc": 1,
         "rloc": 100,
       },
-      "descendants": 0,
       "edgeAttributes": Object {
         "average_commits": Object {
           "incoming": 0,

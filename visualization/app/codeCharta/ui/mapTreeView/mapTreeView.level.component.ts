@@ -98,7 +98,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	getNumberOfFiles() {
-		return this.node.descendants
+		return CodeMapHelper.getDescendants(this.node)
 	}
 
 	getNumberOfFilesPercentage() {
