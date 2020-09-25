@@ -11,9 +11,9 @@ dependencies {
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
 
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
-testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
-    testCompile group: 'com.nhaarman.mockitokotlin2', name: 'mockito-kotlin', version: mockito_kotlin_version
-    testCompile group: 'org.mockito', name: 'mockito-core', version: mockito_core_version
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
+    testImplementation group: 'com.nhaarman.mockitokotlin2', name: 'mockito-kotlin', version: mockito_kotlin_version
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: mockito_core_version
     testImplementation project(path: ':model', configuration: 'testOutput')
 }
 
