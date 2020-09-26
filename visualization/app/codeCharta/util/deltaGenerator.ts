@@ -34,23 +34,23 @@ export class DeltaGenerator {
 		for (const [path, comparisonNode] of comparisonHashMap) {
 			const referenceNode = referenceHashMap.get(path)
 			if (referenceNode) {
-				newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, comparisonNode.attributes)
+				newNode = this.setDeltaProperties(referenceNode, referenceNode.attributes, comparisonNode.attributes)
 			} else {
-				newNode = this.getNewDeltaNode(comparisonNode, {}, comparisonNode.attributes)
+				newNode = this.setDeltaProperties(comparisonNode, {}, comparisonNode.attributes)
 			}
 			hashMapWithAllNodes.set(path, newNode)
 		}
 
 		for (const [path, referenceNode] of referenceHashMap) {
 			if (!comparisonHashMap.get(path)) {
-				const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, {})
+				const newNode = this.setDeltaProperties(referenceNode, referenceNode.attributes, {})
 				hashMapWithAllNodes.set(newNode.path, newNode)
 			}
 		}
 		return hashMapWithAllNodes
 	}
 
-	private static getNewDeltaNode(node: CodeMapNode, referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
+	private static setDeltaProperties(node: CodeMapNode, referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
 		node.children = []
 		node.deltas = this.getDeltaAttributeList(referenceAttribute, comparisonAttribute)
 		node.attributes = comparisonAttribute

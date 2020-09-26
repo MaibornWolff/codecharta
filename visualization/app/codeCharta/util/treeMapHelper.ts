@@ -10,9 +10,9 @@ const HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
 
 function countNodes(node: { children?: unknown[] }) {
 	let count = 1
-	if (node.children && node.children.length > 0) {
-		for (let i = 0; i < node.children.length; i++) {
-			count += countNodes(node.children[i])
+	if (node.children) {
+		for (const child of node.children) {
+			count += countNodes(child)
 		}
 	}
 	return count

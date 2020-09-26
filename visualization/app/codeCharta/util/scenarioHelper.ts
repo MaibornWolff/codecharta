@@ -81,44 +81,36 @@ export class ScenarioHelper {
 		const scenario: RecursivePartial<Scenario> = { name: scenarioAsSettings.name }
 		const { dynamicSettings, appSettings } = scenarioAsSettings.settings
 
-		for (const scenarioKey of Object.keys(dynamicSettings)) {
-			switch (scenarioKey) {
-				case "areaMetric": {
-					scenario.area = {
-						areaMetric: dynamicSettings.areaMetric,
-						margin: dynamicSettings.margin
-					}
-					break
-				}
-				case "heightMetric": {
-					scenario.height = {
-						heightMetric: dynamicSettings.heightMetric,
-						labelSlider: appSettings.amountOfTopLabels,
-						heightSlider: appSettings.scaling
-					}
-					break
-				}
-				case "colorMetric": {
-					scenario.color = {
-						colorMetric: dynamicSettings.colorMetric,
-						colorRange: dynamicSettings.colorRange
-					}
-					break
-				}
-				case "edgeMetric": {
-					scenario.edge = {
-						edgeMetric: dynamicSettings.edgeMetric,
-						edgeHeight: appSettings.edgeHeight,
-						edgePreview: appSettings.amountOfEdgePreviews
-					}
-					break
-				}
+		if (dynamicSettings.areaMetric !== undefined) {
+			scenario.area = {
+				areaMetric: dynamicSettings.areaMetric,
+				margin: dynamicSettings.margin
 			}
-			if (appSettings.camera) {
-				scenario.camera = {
-					camera: appSettings.camera,
-					cameraTarget: appSettings.cameraTarget
-				}
+		}
+		if (dynamicSettings.heightMetric !== undefined) {
+			scenario.height = {
+				heightMetric: dynamicSettings.heightMetric,
+				labelSlider: appSettings.amountOfTopLabels,
+				heightSlider: appSettings.scaling
+			}
+		}
+		if (dynamicSettings.colorMetric !== undefined) {
+			scenario.color = {
+				colorMetric: dynamicSettings.colorMetric,
+				colorRange: dynamicSettings.colorRange
+			}
+		}
+		if (dynamicSettings.edgeMetric !== undefined) {
+			scenario.edge = {
+				edgeMetric: dynamicSettings.edgeMetric,
+				edgeHeight: appSettings.edgeHeight,
+				edgePreview: appSettings.amountOfEdgePreviews
+			}
+		}
+		if (appSettings.camera) {
+			scenario.camera = {
+				camera: appSettings.camera,
+				cameraTarget: appSettings.cameraTarget
 			}
 		}
 
@@ -138,8 +130,9 @@ export class ScenarioHelper {
 		if (ccLocalStorage) {
 			return new Map(ccLocalStorage.scenarios)
 		}
-		this.setScenariosToLocalStorage(this.getPreLoadScenarios())
-		return this.getPreLoadScenarios()
+		const scenarios = this.getPreLoadScenarios()
+		this.setScenariosToLocalStorage(scenarios)
+		return scenarios
 	}
 
 	static addScenario(newScenario: RecursivePartial<Scenario>) {
@@ -189,6 +182,8 @@ export class ScenarioHelper {
 					}
 					break
 				}
+				default:
+					throw new Error(`Unknown metric type "${attribute.metricType}" detected`)
 			}
 		}
 
@@ -205,37 +200,32 @@ export class ScenarioHelper {
 	}
 
 	static getScenarioSettingsByName(name: string): RecursivePartial<Settings> {
-		const scenario: RecursivePartial<Scenario> = this.scenarios.get(name)
+		const scenario = this.scenarios.get(name)
 		const partialDynamicSettings: RecursivePartial<DynamicSettings> = {}
 		const partialAppSettings: RecursivePartial<AppSettings> = {}
-		for (const scenarioKey of Object.keys(scenario)) {
-			switch (scenarioKey) {
-				case "area": {
-					partialDynamicSettings.areaMetric = scenario.area.areaMetric
-					partialDynamicSettings.margin = scenario.area.margin
-					break
-				}
-				case "height": {
-					partialDynamicSettings.heightMetric = scenario.height.heightMetric
-					partialAppSettings.amountOfTopLabels = scenario.height.labelSlider
-					partialAppSettings.scaling = scenario.height.heightSlider
-					break
-				}
-				case "color": {
-					partialDynamicSettings.colorMetric = scenario.color.colorMetric
-					partialDynamicSettings.colorRange = scenario.color.colorRange
-					break
-				}
-				case "edge": {
-					partialDynamicSettings.edgeMetric = scenario.edge.edgeMetric
-					partialAppSettings.edgeHeight = scenario.edge.edgeHeight
-					partialAppSettings.amountOfEdgePreviews = scenario.edge.edgePreview
-					break
-				}
-				case "camera": {
-					partialAppSettings.camera = scenario.camera.camera
-					partialAppSettings.cameraTarget = scenario.camera.cameraTarget
-				}
+
+		if (scenario) {
+			if (scenario.area) {
+				partialDynamicSettings.areaMetric = scenario.area.areaMetric
+				partialDynamicSettings.margin = scenario.area.margin
+			}
+			if (scenario.height) {
+				partialDynamicSettings.heightMetric = scenario.height.heightMetric
+				partialAppSettings.amountOfTopLabels = scenario.height.labelSlider
+				partialAppSettings.scaling = scenario.height.heightSlider
+			}
+			if (scenario.color) {
+				partialDynamicSettings.colorMetric = scenario.color.colorMetric
+				partialDynamicSettings.colorRange = scenario.color.colorRange
+			}
+			if (scenario.edge) {
+				partialDynamicSettings.edgeMetric = scenario.edge.edgeMetric
+				partialAppSettings.edgeHeight = scenario.edge.edgeHeight
+				partialAppSettings.amountOfEdgePreviews = scenario.edge.edgePreview
+			}
+			if (scenario.camera) {
+				partialAppSettings.camera = scenario.camera.camera
+				partialAppSettings.cameraTarget = scenario.camera.cameraTarget
 			}
 		}
 
