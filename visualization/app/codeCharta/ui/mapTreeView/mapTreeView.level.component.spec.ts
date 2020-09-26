@@ -278,22 +278,4 @@ describe("MapTreeViewLevelController", () => {
 			expect(result).toBe("100")
 		})
 	})
-
-	describe("isRoot", () => {
-		it("should return that the current Node is a Root", () => {
-			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY
-
-			const result = mapTreeViewLevelController.isRoot()
-
-			expect(result).toBeTruthy()
-		})
-
-		it("should return that the current Node is not Root", () => {
-			mapTreeViewLevelController["node"] = VALID_NODE_WITH_ROOT_UNARY.children[0]
-
-			const result = mapTreeViewLevelController.isRoot()
-
-			expect(result).toBeFalsy()
-		})
-	})
 })
