@@ -198,7 +198,7 @@ export class NodeContextMenuController
 
 	isNodeOrParentFocused() {
 		const { focusedNodePath } = this.storeService.getState().dynamicSettings
-		return Boolean(focusedNodePath && this._viewModel.codeMapNode?.path.includes(focusedNodePath))
+		return Boolean(focusedNodePath && this._viewModel.codeMapNode?.path.startsWith(focusedNodePath))
 	}
 
 	isNodeFocused() {

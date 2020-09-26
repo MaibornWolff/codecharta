@@ -19,18 +19,20 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
-		const flattened: BlacklistItem[] = []
-		const excluded: BlacklistItem[] = []
+		// Use a set to uniquify the entries
+		const flattened: Set<BlacklistItem> = new Set()
+		const excluded: Set<BlacklistItem> = new Set()
 
 		for (const item of blacklist) {
 			if (item.type === BlacklistType.flatten) {
-				flattened.push(item)
+				flattened.add(item)
 			} else {
-				excluded.push(item)
+				excluded.add(item)
 			}
 		}
-		this._viewModel.flatten = flattened
-		this._viewModel.exclude = excluded
+
+		this._viewModel.flatten = [...flattened]
+		this._viewModel.exclude = [...excluded]
 	}
 
 	removeBlacklistEntry(entry: BlacklistItem) {
