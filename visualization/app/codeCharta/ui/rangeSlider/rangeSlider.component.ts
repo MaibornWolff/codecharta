@@ -4,7 +4,7 @@ import { ColorRange } from "../../codeCharta.model"
 import { IRootScopeService, ITimeoutService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setColorRange, SetColorRangeAction } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
-import _ from "lodash"
+import debounce from "lodash.debounce"
 import { ColorRangeService, ColorRangeSubscriber } from "../../state/store/dynamicSettings/colorRange/colorRange.service"
 import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 import {
@@ -61,7 +61,7 @@ export class RangeSliderController
 		FilesService.subscribe(this.$rootScope, this)
 		BlacklistService.subscribe(this.$rootScope, this)
 
-		this.applyDebouncedColorRange = _.debounce((action: SetColorRangeAction) => {
+		this.applyDebouncedColorRange = debounce((action: SetColorRangeAction) => {
 			this.storeService.dispatch(action)
 		}, RangeSliderController.DEBOUNCE_TIME)
 	}

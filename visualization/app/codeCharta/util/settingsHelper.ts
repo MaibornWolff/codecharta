@@ -1,4 +1,3 @@
-import _ from "lodash"
 import { RecursivePartial, Settings } from "../codeCharta.model"
 import { Vector3 } from "three"
 
@@ -6,19 +5,17 @@ export function convertToVectors(settings: RecursivePartial<Settings>) {
 	const DEFAULT_VALUE = 1
 
 	for (const key of Object.keys(settings)) {
-		if (_.isObject(settings[key])) {
-			const xExists = settings[key]["x"] !== undefined
-			const yExists = settings[key]["y"] !== undefined
-			const zExists = settings[key]["z"] !== undefined
-
-			if (xExists || yExists || zExists) {
+		if (typeof settings[key] === "object" && settings[key] !== null) {
+			const { x, y, z } = settings[key]
+			if (x !== undefined || y !== undefined || z !== undefined) {
 				settings[key] = new Vector3(
-					xExists ? settings[key].x : DEFAULT_VALUE,
-					yExists ? settings[key].y : DEFAULT_VALUE,
-					zExists ? settings[key].z : DEFAULT_VALUE
+					x ?? DEFAULT_VALUE,
+					y ?? DEFAULT_VALUE,
+					z ?? DEFAULT_VALUE
 				)
+			} else {
+				convertToVectors(settings[key])
 			}
-			convertToVectors(settings[key])
 		}
 	}
 }

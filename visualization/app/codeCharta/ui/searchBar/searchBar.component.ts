@@ -3,7 +3,7 @@ import { BlacklistType, BlacklistItem } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
 import { setSearchPattern } from "../../state/store/dynamicSettings/searchPattern/searchPattern.actions"
-import _ from "lodash"
+import debounce from "lodash.debounce"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
 import { SearchPatternService, SearchPatternSubscriber } from "../../state/store/dynamicSettings/searchPattern/searchPattern.service"
@@ -26,7 +26,7 @@ export class SearchBarController implements BlacklistSubscriber, SearchPatternSu
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		BlacklistService.subscribe(this.$rootScope, this)
 		SearchPatternService.subscribe(this.$rootScope, this)
-		this.applyDebouncedSearchPattern = _.debounce(() => {
+		this.applyDebouncedSearchPattern = debounce(() => {
 			this.updateSearchPattern()
 		}, SearchBarController.DEBOUNCE_TIME)
 	}
