@@ -224,9 +224,9 @@ export class CodeMapMouseEventService
 	}
 
 	private transformHTMLToSceneCoordinates(): Coordinates {
-		const topOffset = $(this.threeRendererService.renderer.domElement).offset().top - $(window).scrollTop()
+		const rect = this.threeRendererService.renderer.domElement.getBoundingClientRect();
 		const x = (this.mouse.x / this.threeRendererService.renderer.domElement.width) * 2 - 1
-		const y = -((this.mouse.y - topOffset) / this.threeRendererService.renderer.domElement.height) * 2 + 1
+		const y = -((this.mouse.y - rect.top) / this.threeRendererService.renderer.domElement.height) * 2 + 1
 		return { x, y }
 	}
 

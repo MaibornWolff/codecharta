@@ -1,5 +1,4 @@
 import { IRootScopeService } from "angular"
-import $ from "jquery"
 import { hierarchy } from "d3"
 import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
@@ -57,13 +56,10 @@ export class ViewCubeMouseEventsService {
 	}
 
 	private transformIntoCanvasVector(event: MouseEvent) {
-		const topOffset = $(this.renderer.domElement).offset().top - $(window).scrollTop()
-		const leftOffset = $(this.renderer.domElement).offset().left - $(window).scrollLeft()
-		const mouse = {
-			x: ((event.clientX - leftOffset) / this.renderer.domElement.width) * 2 - 1,
-			y: -((event.clientY - topOffset) / this.renderer.domElement.height) * 2 + 1
-		}
-		return new Vector2(mouse.x, mouse.y)
+		var rect = this.renderer.domElement.getBoundingClientRect();
+		const x = ((event.clientX - rect.left) / this.renderer.domElement.width) * 2 - 1
+		const y = -((event.clientY - rect.top) / this.renderer.domElement.height) * 2 + 1
+		return new Vector2(x, y)
 	}
 
 	private onDocumentMouseMove(event: MouseEvent) {

@@ -107,10 +107,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
 	}
 
-	isRoot() {
-		return this.node.path.split("/").length === 2
-	}
-
 	static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {
 		$rootScope.$on(MapTreeViewLevelController.MAP_TREE_VIEW_HOVER_NODE_EVENT, (_event, data) => {
 			subscriber.onShouldHoverNode(data)
