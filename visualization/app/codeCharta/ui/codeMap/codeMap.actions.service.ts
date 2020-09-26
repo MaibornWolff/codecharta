@@ -76,10 +76,7 @@ export class CodeMapActionsService {
 	getParentMP(path: string) {
 		const parentMP = this.storeService
 			.getState()
-			// TODO: Check if this logic is actually correct. The path should probably
-			// only be checked from the path start on instead of using `includes()`.
-			// The same applies to `removeChildrenMPWithSameColor()`.
-			.fileSettings.markedPackages.filter(p => p.path !== path && path.includes(p.path))
+			.fileSettings.markedPackages.filter(p => p.path !== path && path.startsWith(p.path))
 
 		if (parentMP.length === 0) {
 			return null
@@ -104,7 +101,7 @@ export class CodeMapActionsService {
 	private removeChildrenMPWithSameColor({ path }: MarkedPackage) {
 		const { markedPackages } = this.storeService.getState().fileSettings
 		for (const markedPackage of markedPackages) {
-			if (markedPackage.path !== path && markedPackage.path.includes(path)) {
+			if (markedPackage.path !== path && markedPackage.path.startsWith(path)) {
 				const parentMP = this.getParentMP(markedPackage.path)
 				if (parentMP && parentMP.color === markedPackage.color) {
 					this.removeMarkedPackage(markedPackage)
