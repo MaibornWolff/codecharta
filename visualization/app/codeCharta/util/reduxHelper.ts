@@ -1,11 +1,11 @@
 import { clone } from "./clone"
-import _ from "lodash"
+import isEqual from "lodash.isequal"
 
 export function removeItemFromArray<T>(array: T[], searchItem: T) {
 	const newArray: T[] = []
 	let search = true
 	for (const item of array) {
-		if (search && _.isEqual(item, searchItem)) {
+		if (search && isEqual(item, searchItem)) {
 			search = false
 		} else {
 			newArray.push(item)
@@ -27,5 +27,5 @@ export function isActionOfType(actionType: string, actions) {
 }
 
 function arrayContainsItem<T>(array: T[], item: T) {
-	return array.some(x => _.isEqual(x, item))
+	return array.some(x => isEqual(x, item))
 }

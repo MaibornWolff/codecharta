@@ -8,7 +8,7 @@ import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
-import _ from "lodash"
+import debounce from "lodash.debounce"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -50,7 +50,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
-		this.debounceRendering = _.debounce(() => {
+		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
 	}

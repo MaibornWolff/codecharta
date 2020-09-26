@@ -2,7 +2,7 @@
 
 import { PerspectiveCamera, Vector3 } from "three"
 import { IRootScopeService } from "angular"
-import _ from "lodash"
+import throttle from "lodash.throttle"
 import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeOrbitControlsService"
 import { StoreService } from "../../../state/store.service"
 import { setCamera } from "../../../state/store/appSettings/camera/camera.actions"
@@ -18,7 +18,7 @@ export class ThreeCameraService implements CameraChangeSubscriber, CameraSubscri
 	camera: PerspectiveCamera
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
-		this.throttledCameraChange = _.throttle(() => {
+		this.throttledCameraChange = throttle(() => {
 			this.storeService.dispatch(setCamera(this.camera.position), { silent: true })
 		}, ThreeCameraService.DEBOUNCE_TIME)
 		CameraService.subscribe(this.$rootScope, this)
