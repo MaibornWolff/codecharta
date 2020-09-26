@@ -35,6 +35,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 		this.storeService.dispatch(setSearchedNodePaths(new Set(newSearchedNodePaths)))
 	}
 
+	// TODO: These events are never listened upon. There are likely a lot of events fired like that.
 	private notifyNodeSearchComplete() {
 		this.$rootScope.$broadcast(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, this.searchedNodes)
 	}

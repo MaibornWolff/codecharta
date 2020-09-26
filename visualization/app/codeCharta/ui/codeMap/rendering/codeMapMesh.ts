@@ -103,8 +103,7 @@ export class CodeMapMesh {
 	}
 
 	clearHighlight(selected: CodeMapBuilding) {
-		for (let i = 0; i < this.mapGeomDesc.buildings.length; i++) {
-			const currentBuilding = this.mapGeomDesc.buildings[i]
+		for (const currentBuilding of this.mapGeomDesc.buildings) {
 			if (!this.isBuildingSelected(selected, currentBuilding)) {
 				this.setVertexColor(
 					currentBuilding.id,

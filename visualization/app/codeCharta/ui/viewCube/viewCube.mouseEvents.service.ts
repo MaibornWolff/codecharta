@@ -51,7 +51,7 @@ export class ViewCubeMouseEventsService {
 		const vector = this.transformIntoCanvasVector(event)
 		const ray = new Raycaster()
 		ray.setFromCamera(vector, this.camera)
-		const h = hierarchy<Group>(this.cubeGroup)
+		const h = hierarchy(this.cubeGroup)
 		const [intersection] = ray.intersectObjects(h.leaves().map(x => x.data))
 		return intersection ? (intersection.object as Mesh) : null
 	}

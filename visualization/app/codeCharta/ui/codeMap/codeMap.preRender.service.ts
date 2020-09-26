@@ -103,15 +103,14 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private decorateIfPossible() {
-		const state = this.storeService.getState()
-		const { metricData } = state
-		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && metricData.nodeMetricData) {
-			NodeDecorator.decorateMap(this.unifiedMap, metricData, state.fileSettings.blacklist)
+		const { metricData, files, fileSettings } = this.storeService.getState()
+		if (this.unifiedMap && this.unifiedFileMeta && fileStatesAvailable(files) && metricData.nodeMetricData) {
+			NodeDecorator.decorateMap(this.unifiedMap, metricData, fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
 			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
 				this.unifiedMap,
-				isDeltaState(state.files),
-				state.fileSettings.attributeTypes
+				isDeltaState(files),
+				fileSettings.attributeTypes
 			)
 		}
 	}
@@ -173,8 +172,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 
 	private allNecessaryRenderDataAvailable() {
 		return (
-			fileStatesAvailable(this.storeService.getState().files) &&
 			this.storeService.getState().metricData.nodeMetricData !== null &&
+			fileStatesAvailable(this.storeService.getState().files) &&
 			this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {
 				return x !== null && Object.values(x).every(x => x)

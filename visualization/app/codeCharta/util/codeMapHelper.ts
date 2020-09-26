@@ -81,7 +81,7 @@ function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]) {
 	if (markedPackages) {
 		let longestPathParentPackage: MarkedPackage
 		for (const markedPackage of markedPackages) {
-			if (node.path.includes(markedPackage.path) && (!longestPathParentPackage || longestPathParentPackage.path.length < markedPackage.path.length)) {
+			if ((!longestPathParentPackage || longestPathParentPackage.path.length < markedPackage.path.length) && node.path.startsWith(markedPackage.path)) {
 				longestPathParentPackage = markedPackage
 			}
 		}

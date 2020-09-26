@@ -44,7 +44,7 @@ export const PLOP_REDUX_SUBREDUCER_FILE_ACTIONS = [
 		path: "state/store/state.splitter.ts",
 		pattern: /(\/\/ Plop: Propagate sub-reducer here)/gi,
 		template:
-			"$1\r\n\tif (Object.values({{properCase name}}Actions).includes(action.type)) {\n\t\treturn split{{properCase name}}Actions(action.payload)\n\t}\n"
+			"$1\r\n\tif ({{properCase name}}Actions[action.type] !== undefined) {\n\t\treturn split{{properCase name}}Actions(action.payload)\n\t}\n"
 	}),
 	modifyFileAction({
 		path: "state/store/state.splitter.ts",

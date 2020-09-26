@@ -49,14 +49,11 @@ export class CodeMapRenderService {
 
 	private setLabels(sortedNodes: Node[]) {
 		this.codeMapLabelService.clearLabels()
-		for (
-			let i = 0, numberAdded = 0;
-			i < sortedNodes.length && numberAdded < this.storeService.getState().appSettings.amountOfTopLabels;
-			++i
-		) {
+		let { amountOfTopLabels } = this.storeService.getState().appSettings
+		for (let i = 0; i < sortedNodes.length && amountOfTopLabels !== 0; i++) {
 			if (sortedNodes[i].isLeaf) {
 				this.codeMapLabelService.addLabel(sortedNodes[i])
-				++numberAdded
+				amountOfTopLabels -= 1
 			}
 		}
 	}

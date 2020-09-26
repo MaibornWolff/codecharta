@@ -1,5 +1,7 @@
 import { CodeChartaService } from "../codeCharta.service"
 
+const dateRegex = /_\d{4}(?:-\d{1,2}){2}_\d{1,2}-\d{1,2}\./
+
 export class FileNameHelper {
 	private static JSON_EXTENSION = ".json"
 
@@ -13,11 +15,10 @@ export class FileNameHelper {
 	}
 
 	private static getFileNameWithoutTimestamp(fileName: string, isDeltaState: boolean) {
-		const dateRegex = /_\d{4}(?:-\d{1,2}){2}_\d{1,2}-\d{1,2}\./
-
 		if (!isDeltaState) {
-			if (dateRegex.test(fileName)) {
-				return fileName.slice(0, Math.max(0, dateRegex.exec(fileName).index))
+			const dateMatch = dateRegex.exec(fileName)
+			if (dateMatch) {
+				return fileName.slice(0, dateMatch.index)
 			}
 			if (fileName.includes(CodeChartaService.CC_FILE_EXTENSION)) {
 				return fileName.slice(0, Math.max(0, fileName.search(CodeChartaService.CC_FILE_EXTENSION)))
