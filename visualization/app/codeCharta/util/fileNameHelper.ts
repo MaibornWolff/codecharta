@@ -20,17 +20,17 @@ export class FileNameHelper {
 			if (dateMatch) {
 				return fileName.slice(0, dateMatch.index)
 			}
-			if (fileName.includes(CodeChartaService.CC_FILE_EXTENSION)) {
-				return fileName.slice(0, Math.max(0, fileName.search(CodeChartaService.CC_FILE_EXTENSION)))
+			if (fileName.endsWith(CodeChartaService.CC_FILE_EXTENSION)) {
+				return fileName.slice(0, -CodeChartaService.CC_FILE_EXTENSION.length)
 			}
-			if (fileName.includes(FileNameHelper.JSON_EXTENSION)) {
-				return fileName.slice(0, Math.max(0, fileName.search(FileNameHelper.JSON_EXTENSION)))
+			if (fileName.endsWith(FileNameHelper.JSON_EXTENSION)) {
+				return fileName.slice(0, -FileNameHelper.JSON_EXTENSION.length)
 			}
 		}
 		return fileName
 	}
 
 	static withoutCCJsonExtension(fileName: string) {
-		return fileName.replace(".cc", "").replace(this.JSON_EXTENSION, "")
+		return fileName.replace(/(\.cc)?\.json?$/, "")
 	}
 }
