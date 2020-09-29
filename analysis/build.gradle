@@ -87,6 +87,12 @@ subprojects {
         kapt group: 'info.picocli', name: 'picocli-codegen', version: picocli_version
     }
 
+    test{
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+    }
+
     compileJava {
         options.compilerArgs += ['--release', '8']
     }

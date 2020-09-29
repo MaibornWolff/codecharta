@@ -30,7 +30,4 @@ test {
     useJUnitPlatform {
         includeEngines 'spek2'
     }
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
 }

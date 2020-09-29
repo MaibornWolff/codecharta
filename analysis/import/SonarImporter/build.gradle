@@ -21,7 +21,4 @@ testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: hamcre
 
 test {
     useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
 }

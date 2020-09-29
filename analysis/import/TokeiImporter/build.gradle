@@ -16,7 +16,4 @@ testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: 
 
 test {
     useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
 }
