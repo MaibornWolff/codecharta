@@ -12,8 +12,8 @@ dependencies {
     runtime group: 'org.glassfish.jersey.inject', name: 'jersey-hk2', version: jersey_version
     runtime group: 'com.sun.activation', name: 'javax.activation', version: '1.2.0'
 
-    testImplementation group: 'junit', name: 'junit', version: junit4_version
-    testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: hamcrest_version
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
+testImplementation group: 'org.hamcrest', name: 'hamcrest-core', version: hamcrest_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
     testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: wiremock_version
