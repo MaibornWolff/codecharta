@@ -12,13 +12,11 @@ import org.sonar.plugins.java.api.tree.Tree
 import java.io.File
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
-import java.util.Collections
 
 class MaxNestingLevelVisitorTest {
     private val baseDir = File("src/test/resources/max-nesting-level").absoluteFile
 
     private fun getTree(fileName: String): Tree {
-        val file = File("$baseDir/$fileName")
         val inputFile: InputFile = TestInputFileBuilder.create("moduleKey", fileName)
             .setModuleBaseDir(baseDir.toPath())
             .setCharset(StandardCharsets.UTF_8)
@@ -27,7 +25,7 @@ class MaxNestingLevelVisitorTest {
             .initMetadata(String(Files.readAllBytes(File("$baseDir/$fileName").toPath()), StandardCharsets.UTF_8))
             .build()
 
-        val compilationUnitTree = JParser.parse(JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(), Collections.singletonList(file))
+        val compilationUnitTree = JParser.parse(JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(), listOf(File(javaClass.classLoader.getResource("max-nesting-level")!!.file)))
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
             compilationUnitTree,
             inputFile,
@@ -39,7 +37,6 @@ class MaxNestingLevelVisitorTest {
 
         return defaultJavaFileScannerContext.tree
     }
-
 
     @Test
     fun getMaxNestingLevelOfNestedIfs() {

@@ -117,4 +117,16 @@ class JavaSonarAnalyzerTest {
             )
         ).isEqualTo(3)
     }
+
+    @Test
+    fun `java 14 code should be parsable`() {
+        val fileList = ArrayList<String>()
+        fileList.add("Java14.java")
+
+        val javaSourceCodeAnalyzer = JavaSonarAnalyzer()
+        val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
+
+        assertThat(metrics.projectMetrics).containsKey("Java14.java")
+        assertThat(metrics.getFileMetricMap("Java14.java")?.getMetricValue("rloc")).isEqualTo(10)
+    }
 }

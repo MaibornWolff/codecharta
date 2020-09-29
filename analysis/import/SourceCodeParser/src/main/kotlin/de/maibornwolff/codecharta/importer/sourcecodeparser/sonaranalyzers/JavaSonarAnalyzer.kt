@@ -41,8 +41,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.PrintStream
 import java.nio.charset.StandardCharsets
-import java.util.Arrays
-import java.util.Collections
 
 class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) : SonarAnalyzer(verbose, searchIssues) {
 
@@ -51,8 +49,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     lateinit var baseClassPathDir: File
     val MAX_FILE_NAME_PRINT_LENGTH = 30
 
-    private val SONAR_VERSION_MAJOR = 7
-    private val SONAR_VERSION_MINOR = 3
+    private val SONAR_VERSION_MAJOR = 8
+    private val SONAR_VERSION_MINOR = 4
 
     private lateinit var javaClasspath: JavaClasspath
     private lateinit var sonarComponents: SonarComponents
@@ -200,8 +198,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         return issues
     }
 
-    private fun retrieveAdditionalMetrics(fileName: String): HashMap<String, Int> {
-        val additionalMetrics: HashMap<String, Int> = hashMapOf()
+    private fun retrieveAdditionalMetrics(fileName: String): MutableMap<String, Int> {
+        val additionalMetrics: MutableMap<String, Int> = mutableMapOf()
 
         val tree: Tree
         try {
@@ -211,7 +209,9 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
             return hashMapOf()
         }
 
-        val commentedOutBlocks = sensorContext.allIssues().filter { it.ruleKey().rule() == "CommentedOutCodeLine" }
+        val commentedOutBlocks = sensorContext.allIssues().filter {
+            it.ruleKey().rule() == "S125" // RuleKey for CommentedOutCodeBlocks
+        }
         additionalMetrics["commented_out_code_blocks"] = commentedOutBlocks.size
         addMetricsFromVisitors(tree, additionalMetrics)
 
@@ -221,7 +221,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun buildTree(fileName: String): Tree {
         val inputFile = getInputFile(fileName)
 
-        val compilationUnitTree = JParser.parse(JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(), Arrays.asList(File("target/test-classes"), File("target/classes")))
+        val compilationUnitTree = JParser.parse(JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(), listOf(File("")))
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
             compilationUnitTree,
             inputFile,
@@ -234,7 +234,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         return defaultJavaFileScannerContext.tree
     }
 
-    private fun addMetricsFromVisitors(tree: Tree, additionalMetrics: HashMap<String, Int>) {
+    private fun addMetricsFromVisitors(tree: Tree, additionalMetrics: MutableMap<String, Int>) {
         additionalMetrics["max_nesting_level"] = MaxNestingLevelVisitor().getMaxNestingLevel(tree)
     }
 
