@@ -46,7 +46,6 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     override val FILE_EXTENSION = "java"
     override lateinit var baseDir: File
-    lateinit var baseClassPathDir: File
     val MAX_FILE_NAME_PRINT_LENGTH = 30
 
     private val SONAR_VERSION_MAJOR = 8
