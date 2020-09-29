@@ -1,4 +1,6 @@
 public class Java14 {
+    record Scale(int x, int y) { }
+
     public void foo(int num) {
         switch (num) {
             case 1, 2, 3 -> System.out.println(6);

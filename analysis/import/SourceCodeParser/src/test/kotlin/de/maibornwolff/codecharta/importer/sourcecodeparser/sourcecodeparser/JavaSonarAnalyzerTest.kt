@@ -127,6 +127,6 @@ class JavaSonarAnalyzerTest {
         val metrics = javaSourceCodeAnalyzer.scanFiles(fileList, File(path))
 
         assertThat(metrics.projectMetrics).containsKey("Java14.java")
-        assertThat(metrics.getFileMetricMap("Java14.java")?.getMetricValue("rloc")).isEqualTo(10)
+        assertThat(metrics.getFileMetricMap("Java14.java")?.getMetricValue("statements")).isEqualTo(1)
     }
 }
