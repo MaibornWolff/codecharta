@@ -7,6 +7,7 @@ dependencies {
     implementation group: 'org.json', name: 'json', version: json_version
     implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
 
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
 }
 
