@@ -3,7 +3,7 @@
 	ng-class="{ visible: $ctrl._viewModel.isLegendVisible, sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
 >
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
-		<div class="legend-block bold" ng-if="$ctrl._viewModel.colorMetric">
+		<div class="legend-block bold">
 			{{ $ctrl._viewModel.colorMetric }}:
 		</div>
 		<div class="legend-block">
