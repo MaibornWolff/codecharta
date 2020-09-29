@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add active color metric to the top of the legend panel #1278
+
 ### Changed
 
 ### Removed 🗑
