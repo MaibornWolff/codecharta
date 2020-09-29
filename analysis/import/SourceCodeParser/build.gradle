@@ -15,6 +15,7 @@ dependencies {
     testCompile group: 'com.nhaarman.mockitokotlin2', name: 'mockito-kotlin', version: mockito_kotlin_version
     testCompile group: 'org.mockito', name: 'mockito-core', version: mockito_core_version
     testImplementation project(path: ':model', configuration: 'testOutput')
+    testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5_version
 }
 
 test {
