@@ -13,11 +13,7 @@ dependencies {
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
     testImplementation group: 'io.mockk', name: 'mockk', version: mokk_version
     testImplementation project(path: ':model', configuration: 'testOutput')
-    //testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-coroutines-experimental-compat', version: '1.4.20-dev-523'
-
     testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: junit5_version
-
-
 }
 
 test {
