@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   SourceCodeParser: Java 14 Support #1277
+
 ### Changed
 
 ### Removed 🗑
