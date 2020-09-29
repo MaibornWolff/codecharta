@@ -13,7 +13,7 @@ dependencies {
     implementation group: 'io.github.microutils', name: 'kotlin-logging', version: kotlin_logging_version
 
     runtime group: 'org.slf4j', name: 'slf4j-simple', version: slf4j_version
-
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: junit5_version
     testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
     testImplementation group: 'org.hamcrest', name: 'hamcrest-library', version: hamcrest_version
     testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spek2_version") {
