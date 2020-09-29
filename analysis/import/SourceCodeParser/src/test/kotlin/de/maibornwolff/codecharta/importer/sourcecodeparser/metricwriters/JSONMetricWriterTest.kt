@@ -5,7 +5,7 @@ import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.FileMetricMa
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import org.assertj.core.api.Assertions
 import org.json.JSONObject
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.OutputStreamWriter

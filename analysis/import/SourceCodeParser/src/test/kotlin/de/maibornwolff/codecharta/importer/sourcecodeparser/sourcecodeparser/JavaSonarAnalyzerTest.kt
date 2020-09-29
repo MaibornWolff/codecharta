@@ -2,7 +2,7 @@ package de.maibornwolff.codecharta.importer.sourcecodeparser.sourcecodeparser
 
 import de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers.JavaSonarAnalyzer
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.File
 
 class JavaSonarAnalyzerTest {
