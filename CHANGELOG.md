@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Add active color metric to the top of the legend panel #1278
 -   SourceCodeParser: Java 14 Support #1277
 
 ### Changed
