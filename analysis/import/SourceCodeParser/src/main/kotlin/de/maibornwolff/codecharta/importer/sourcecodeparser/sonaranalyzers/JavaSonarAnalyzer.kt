@@ -133,15 +133,13 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     override fun buildSonarComponents() {
         val checkFactory = CheckFactory(this.activeRules)
         val javaTestClasspath = JavaTestClasspath(mapSettings, sensorContext.fileSystem())
-        val fileLinesContextFactory = NullFileLinesContextFactory()
-        val postAnalysisIssueFilter = PostAnalysisIssueFilter() // TODO: Check if this needs to be set
         sonarComponents = SonarComponents(
-            fileLinesContextFactory,
+            NullFileLinesContextFactory(),
             sensorContext.fileSystem(),
             javaClasspath,
             javaTestClasspath,
             checkFactory,
-            postAnalysisIssueFilter
+            PostAnalysisIssueFilter()
         )
         sonarComponents.setSensorContext(this.sensorContext)
     }
@@ -220,8 +218,12 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     private fun buildTree(fileName: String): Tree {
         val inputFile = getInputFile(fileName)
+        // This enables the whole project to contain the binaries. It's a sneaky workaround to
+        // not specify the folder, because it might be unknown. We could accept a CLI parameter
+        // to handle this. Not doing so might result in a performance issue.
+        val classPaths = listOf(File(""))
 
-        val compilationUnitTree = JParser.parse(JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(), listOf(File("")))
+        val compilationUnitTree = JParser.parse(JParser.MAXIMUM_SUPPORTED_JAVA_VERSION, inputFile.filename(), inputFile.contents(), classPaths)
         val defaultJavaFileScannerContext = DefaultJavaFileScannerContext(
             compilationUnitTree,
             inputFile,
