@@ -196,6 +196,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     }
 
     private fun retrieveAdditionalMetrics(fileName: String): MutableMap<String, Int> {
+        val COMMENTED_OUT_CODE_BLOCKS_RULE_KEY = "S125"
         val additionalMetrics: MutableMap<String, Int> = mutableMapOf()
 
         val tree: Tree
@@ -207,7 +208,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
         }
 
         val commentedOutBlocks = sensorContext.allIssues().filter {
-            it.ruleKey().rule() == "S125" // RuleKey for CommentedOutCodeBlocks
+            it.ruleKey().rule() == COMMENTED_OUT_CODE_BLOCKS_RULE_KEY
         }
         additionalMetrics["commented_out_code_blocks"] = commentedOutBlocks.size
         addMetricsFromVisitors(tree, additionalMetrics)
