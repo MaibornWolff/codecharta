@@ -1,0 +1,261 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should only highlight small leaf when big leaf is selected 1`] = `
+Array [
+  CodeMapBuilding {
+    "_boundingBox": Box3 {
+      "max": Vector3 {
+        "x": 6,
+        "y": 8,
+        "z": 10,
+      },
+      "min": Vector3 {
+        "x": 5,
+        "y": 6,
+        "z": 7,
+      },
+    },
+    "_color": "#AABBCC",
+    "_defaultColor": "#AABBCC",
+    "_defaultDeltaColor": "#000000",
+    "_deltaColor": "#000000",
+    "_id": 1,
+    "_node": Object {
+      "attributes": Object {
+        "a": 20,
+        "b": 15,
+        "mcc": 14,
+      },
+      "color": "#AABBCC",
+      "deltas": Object {
+        "a": 1,
+        "b": 2,
+      },
+      "depth": 4,
+      "edgeAttributes": Object {
+        "a": Object {
+          "incoming": 2,
+          "outgoing": 666,
+        },
+      },
+      "flat": false,
+      "height": 2,
+      "heightDelta": 20,
+      "id": 2,
+      "incomingEdgePoint": Vector3 {
+        "x": 1,
+        "y": 2,
+        "z": 3,
+      },
+      "isLeaf": true,
+      "length": 3,
+      "link": "NO_LINK",
+      "markingColor": "0xFFFFFF",
+      "name": "root/small leaf",
+      "outgoingEdgePoint": Vector3 {
+        "x": 1,
+        "y": 2,
+        "z": 3,
+      },
+      "path": "/root/Parent Leaf/small leaf",
+      "visible": true,
+      "width": 1,
+      "x0": 5,
+      "y0": 7,
+      "z0": 6,
+    },
+  },
+  CodeMapBuilding {
+    "_boundingBox": Box3 {
+      "max": Vector3 {
+        "x": 6,
+        "y": 8,
+        "z": 10,
+      },
+      "min": Vector3 {
+        "x": 5,
+        "y": 6,
+        "z": 7,
+      },
+    },
+    "_color": "#AABBCC",
+    "_defaultColor": "#AABBCC",
+    "_defaultDeltaColor": "#000000",
+    "_deltaColor": "#000000",
+    "_id": 1,
+    "_node": Object {
+      "attributes": Object {
+        "a": 20,
+        "b": 15,
+        "mcc": 14,
+      },
+      "color": "#AABBCC",
+      "deltas": Object {
+        "a": 1,
+        "b": 2,
+      },
+      "depth": 4,
+      "edgeAttributes": Object {
+        "a": Object {
+          "incoming": 2,
+          "outgoing": 666,
+        },
+      },
+      "flat": false,
+      "height": 2,
+      "heightDelta": 20,
+      "id": 2,
+      "incomingEdgePoint": Vector3 {
+        "x": 1,
+        "y": 2,
+        "z": 3,
+      },
+      "isLeaf": true,
+      "length": 3,
+      "link": "NO_LINK",
+      "markingColor": "0xFFFFFF",
+      "name": "root/small leaf",
+      "outgoingEdgePoint": Vector3 {
+        "x": 1,
+        "y": 2,
+        "z": 3,
+      },
+      "path": "/root/Parent Leaf/small leaf",
+      "visible": true,
+      "width": 1,
+      "x0": 5,
+      "y0": 7,
+      "z0": 6,
+    },
+  },
+  CodeMapBuilding {
+    "_boundingBox": Box3 {
+      "max": Vector3 {
+        "x": 6,
+        "y": 8,
+        "z": 10,
+      },
+      "min": Vector3 {
+        "x": 5,
+        "y": 6,
+        "z": 7,
+      },
+    },
+    "_color": "#AABBCC",
+    "_defaultColor": "#AABBCC",
+    "_defaultDeltaColor": "#000000",
+    "_deltaColor": "#000000",
+    "_id": 1,
+    "_node": Object {
+      "attributes": Object {
+        "a": 20,
+        "b": 15,
+        "mcc": 14,
+      },
+      "color": "#AABBCC",
+      "deltas": Object {
+        "a": 1,
+        "b": 2,
+      },
+      "depth": 4,
+      "edgeAttributes": Object {
+        "a": Object {
+          "incoming": 2,
+          "outgoing": 666,
+        },
+      },
+      "flat": false,
+      "height": 2,
+      "heightDelta": 20,
+      "id": 2,
+      "incomingEdgePoint": Vector3 {
+        "x": 1,
+        "y": 2,
+        "z": 3,
+      },
+      "isLeaf": true,
+      "length": 3,
+      "link": "NO_LINK",
+      "markingColor": "0xFFFFFF",
+      "name": "root/small leaf",
+      "outgoingEdgePoint": Vector3 {
+        "x": 1,
+        "y": 2,
+        "z": 3,
+      },
+      "path": "/root/Parent Leaf/small leaf",
+      "visible": true,
+      "width": 1,
+      "x0": 5,
+      "y0": 7,
+      "z0": 6,
+    },
+  },
+]
+`;
+
+exports[`CodeMapArrowService Arrow Behaviour when selecting and hovering a building should only highlight small leaf when big leaf is selected 2`] = `
+CodeMapBuilding {
+  "_boundingBox": Box3 {
+    "max": Vector3 {
+      "x": -Infinity,
+      "y": -Infinity,
+      "z": -Infinity,
+    },
+    "min": Vector3 {
+      "x": Infinity,
+      "y": Infinity,
+      "z": Infinity,
+    },
+  },
+  "_color": "#EB8319",
+  "_defaultColor": "#ddcc00",
+  "_defaultDeltaColor": "#000000",
+  "_deltaColor": "#000000",
+  "_id": 1,
+  "_node": Object {
+    "attributes": Object {
+      "a": 20,
+      "b": 15,
+      "mcc": 14,
+    },
+    "color": "#AABBCC",
+    "deltas": Object {
+      "a": 1,
+      "b": 2,
+    },
+    "depth": 4,
+    "edgeAttributes": Object {
+      "a": Object {
+        "incoming": 2,
+        "outgoing": 666,
+      },
+    },
+    "flat": false,
+    "height": 2,
+    "heightDelta": 20,
+    "id": 1,
+    "incomingEdgePoint": Vector3 {
+      "x": 1,
+      "y": 2,
+      "z": 3,
+    },
+    "isLeaf": true,
+    "length": 3,
+    "link": "NO_LINK",
+    "markingColor": "0xFFFFFF",
+    "name": "root/big leaf",
+    "outgoingEdgePoint": Vector3 {
+      "x": 1,
+      "y": 2,
+      "z": 3,
+    },
+    "path": "/root/big leaf",
+    "visible": true,
+    "width": 1,
+    "x0": 5,
+    "y0": 7,
+    "z0": 6,
+  },
+}
+`;
