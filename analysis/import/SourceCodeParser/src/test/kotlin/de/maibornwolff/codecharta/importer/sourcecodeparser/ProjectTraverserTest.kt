@@ -1,7 +1,7 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.io.File
 
 class ProjectTraverserTest {
@@ -13,7 +13,7 @@ class ProjectTraverserTest {
         val javaFiles = projectTraverser.getFileListByExtension("java")
         val pythonFiles = projectTraverser.getFileListByExtension("py")
 
-        assertThat(javaFiles.size).isEqualTo(3)
+        assertThat(javaFiles.size).isEqualTo(4)
         assertThat(pythonFiles.size).isEqualTo(1)
     }
 
