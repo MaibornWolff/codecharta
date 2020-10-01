@@ -113,13 +113,17 @@ export class CodeMapArrowService
 	}
 
 	private showEdgesOfBuildings(edges: Edge[], hoveredbuilding?: CodeMapBuilding) {
+		const buildings: Map<string, Node> = new Map()
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
 
 		if (selectedBuilding) {
-			this.buildPairingEdges(selectedBuilding.node, edges)
+			buildings.set(selectedBuilding.node.path, this.threeSceneService.getSelectedBuilding().node)
 		}
 		if (hoveredbuilding) {
-			this.buildPairingEdges(hoveredbuilding.node, edges)
+			buildings.set(hoveredbuilding.node.path, hoveredbuilding.node)
+		}
+		if (buildings.size > 0) {
+			this.buildPairingEdges(buildings, edges)
 		}
 		if (!selectedBuilding && !hoveredbuilding) {
 			this.addEdgePreview(
@@ -129,13 +133,13 @@ export class CodeMapArrowService
 		}
 	}
 
-	private buildPairingEdges(node: Node, edges: Edge[]) {
+	private buildPairingEdges(node: Map<string, Node>, edges: Edge[]) {
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
 			const targetNode = this.map.get(edge.toNodeName)
-			if (originNode && targetNode && originNode.path === node.path) {
+			if (originNode && targetNode && node.has(originNode.path)) {
 				this.addArrow(targetNode, originNode, true)
-			} else if (originNode && targetNode && targetNode.path === node.path) {
+			} else if (originNode && targetNode && node.has(targetNode.path)) {
 				this.addArrow(targetNode, originNode, false)
 			}
 		}
