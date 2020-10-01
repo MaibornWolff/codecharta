@@ -1103,7 +1103,8 @@ export const FILE_STATES: FileState[] = [
 
 export const METRIC_DATA: NodeMetricData[] = [
 	{ name: "mcc", maxValue: 1 },
-	{ name: "rloc", maxValue: 2 }
+	{ name: "rloc", maxValue: 2 },
+	{ name: NodeMetricDataService.UNARY_METRIC, maxValue: 1 }
 ]
 
 export const EDGE_METRIC_DATA: EdgeMetricData[] = [
