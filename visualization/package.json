@@ -103,7 +103,7 @@
 		"redux": "^4.0.4",
 		"rfdc": "^1.1.4",
 		"shelljs": "^0.8.1",
-		"three": "^0.120.1",
+		"three": "^0.121.1",
 		"three-orbit-controls": "^82.1.0",
 		"typescript-json-schema": "^0.43.0"
 	},
