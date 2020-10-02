@@ -106,7 +106,7 @@ describe("CodeMapArrowService", () => {
 				CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node,
 				DIFFERENT_NODE
 			]
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
+			const edges = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
 			threeSceneService["mapMesh"] = new CodeMapMesh(nodes, storeService.getState(), false)
 			codeMapArrowService.addEdgePreview(nodes, edges)
 			storeService.dispatch(setHeightMetric("mcc"))
