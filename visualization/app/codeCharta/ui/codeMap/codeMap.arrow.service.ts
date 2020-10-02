@@ -22,7 +22,7 @@ export class CodeMapArrowService
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		if (this.isEdgeAppliableForBuilding(selectedBuilding)) {
+		if (this.isEdgeApplicableForBuilding(selectedBuilding)) {
 			this.clearArrows()
 			this.showEdgesOfBuildings(this.storeService.getState().fileSettings.edges)
 		}
@@ -38,7 +38,7 @@ export class CodeMapArrowService
 	}
 
 	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		if (this.isEdgeAppliableForBuilding(hoveredBuilding)) {
+		if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
 			this.clearArrows()
 			this.showEdgesOfBuildings(this.storeService.getState().fileSettings.edges, hoveredBuilding)
 		}
@@ -108,7 +108,7 @@ export class CodeMapArrowService
 		}
 	}
 
-	private isEdgeAppliableForBuilding(codeMapBuilding: CodeMapBuilding) {
+	private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
 		return this.storeService.getState().dynamicSettings.edgeMetric !== "None" && !codeMapBuilding.node.flat
 	}
 
