@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Showing wrong edges when hovering a building after selecting one #1137
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.58.0] - 2020-10-02
@@ -29,8 +31,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Removed 🗑
 
 ### Fixed 🐞
-
--   Showing wrong edges when hovering a building after selecting one #1137
 
 ### Chore 👨‍💻 👩‍💻
 
