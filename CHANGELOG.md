@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Showing different Edges when hovering a building after selecting one #1137
+-   Showing wrong edges when hovering a building after selecting one #1137
 
 ### Chore 👨‍💻 👩‍💻
 
