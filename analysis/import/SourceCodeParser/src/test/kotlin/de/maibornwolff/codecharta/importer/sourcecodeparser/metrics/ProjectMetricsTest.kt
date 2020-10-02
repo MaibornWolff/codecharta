@@ -1,13 +1,13 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.metrics
 
 import org.assertj.core.api.Assertions
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class ProjectMetricsTest {
     lateinit var projectMetrics: ProjectMetrics
 
-    @Before
+    @BeforeEach
     fun initProjectMetrics() {
         projectMetrics = ProjectMetrics()
     }

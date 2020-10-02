@@ -503,6 +503,16 @@ export const VALID_EDGES_DECORATED: Edge[] = [
 		visible: EdgeVisibility.from
 	},
 	{
+		fromNodeName: "/root/Parent Leaf/small leaf",
+		toNodeName: "/root/different leaf",
+		attributes: {
+			pairingRate: 89,
+			avgCommits: 34
+		},
+		visible: EdgeVisibility.from
+	},
+
+	{
 		fromNodeName: "/root/Parent Leaf/other small leaf",
 		toNodeName: "/root/Parent Leaf/small leaf",
 		attributes: {
@@ -1021,6 +1031,14 @@ export const TEST_FILE_DATA_DOWNLOADED = {
 		},
 		{
 			attributes: {
+				avgCommits: 34,
+				pairingRate: 89
+			},
+			fromNodeName: "/root/Parent Leaf/small leaf",
+			toNodeName: "/root/different leaf"
+		},
+		{
+			attributes: {
 				otherMetric: 34,
 				pairingRate: 89
 			},
@@ -1471,7 +1489,7 @@ export const INCOMING_NODE: Node = {
 	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
 	heightDelta: 20,
 	visible: true,
-	path: "/root/big leaf",
+	path: "/root/Parent Leaf/small leaf",
 	link: "NO_LINK",
 	markingColor: "0xFFFFFF",
 	flat: false,
@@ -1505,6 +1523,31 @@ export const OUTGOING_NODE: Node = {
 	outgoingEdgePoint: new Vector3(1, 2, 3)
 }
 
+export const DIFFERENT_NODE: Node = {
+	name: "root/different leaf",
+	id: 3,
+	width: 1,
+	height: 2,
+	length: 3,
+	depth: 4,
+	x0: 5,
+	z0: 6,
+	y0: 7,
+	isLeaf: true,
+	deltas: { a: 1, b: 2 },
+	attributes: { a: 20, b: 15, mcc: 14 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	heightDelta: 20,
+	visible: true,
+	path: "/root/different leaf",
+	link: "NO_LINK",
+	markingColor: "0xFFFFFF",
+	flat: false,
+	color: "#AABBCC",
+	incomingEdgePoint: new Vector3(1, 2, 3),
+	outgoingEdgePoint: new Vector3(1, 2, 3)
+}
+
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
 	1,
 	new Box3(),
@@ -1516,6 +1559,20 @@ export const CODE_MAP_BUILDING_TS_NODE: CodeMapBuilding = new CodeMapBuilding(
 	1,
 	new Box3(),
 	TEST_NODE_LEAF,
+	DEFAULT_STATE.appSettings.mapColors.neutral
+)
+
+export const CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE: CodeMapBuilding = new CodeMapBuilding(
+	1,
+	new Box3(),
+	OUTGOING_NODE,
+	DEFAULT_STATE.appSettings.mapColors.neutral
+)
+
+export const CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE: CodeMapBuilding = new CodeMapBuilding(
+	2,
+	new Box3(),
+	INCOMING_NODE,
 	DEFAULT_STATE.appSettings.mapColors.neutral
 )
 

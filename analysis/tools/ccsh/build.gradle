@@ -53,7 +53,7 @@ dependencies {
     compile structureModifier; testCompile structureModifier.sourceSets.test.output
     compile rawTextParser; testCompile rawTextParser.sourceSets.test.output
 
-    compile group: 'info.picocli', name: 'picocli', version: picocli_version
+    implementation group: 'info.picocli', name: 'picocli', version: picocli_version
 
     testImplementation group: 'junit', name: 'junit', version: junit4_version
     testImplementation group: 'org.assertj', name: 'assertj-core', version: assertj_version
@@ -69,7 +69,7 @@ jar {
                 'Implementation-Version': version
     }
     zip64 true
-
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 

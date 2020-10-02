@@ -16,7 +16,7 @@ buildscript {
         kotlinx_coroutines_version = '1.3.9'
         picocli_version = '4.5.1'
         slf4j_version = '1.7.30'
-        sonar_java_version = '5.14.0.18788'
+        sonar_java_version = '6.8.0.23379'
         sonarqube_version = '3.0'
         univocity_parsers_version = '2.9.0'
 
@@ -79,12 +79,18 @@ subprojects {
         implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-core', version: kotlinx_coroutines_version
 
         testImplementation group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8', version: kotlin_version
-        testCompile("org.junit.jupiter:junit-jupiter-api:$junit5_version")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:$junit5_version")
         testRuntime("org.junit.jupiter:junit-jupiter-engine:$junit5_version")
-        testCompile("org.junit.jupiter:junit-jupiter-params:$junit5_version")
+        testImplementation("org.junit.jupiter:junit-jupiter-params:$junit5_version")
         testImplementation "com.natpryce:hamkrest:$hamkrest_version"
 
         kapt group: 'info.picocli', name: 'picocli-codegen', version: picocli_version
+    }
+
+    test{
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
     }
 
     compileJava {
