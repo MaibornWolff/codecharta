@@ -24,7 +24,7 @@ export class CodeMapArrowService
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
 		if (this.isEdgeApplicableForBuilding(selectedBuilding)) {
 			this.clearArrows()
-			this.showEdgesOfBuildings(this.storeService.getState().fileSettings.edges)
+			this.showEdgesOfBuildings()
 		}
 		this.scale()
 	}
@@ -40,7 +40,7 @@ export class CodeMapArrowService
 	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
 		if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
 			this.clearArrows()
-			this.showEdgesOfBuildings(this.storeService.getState().fileSettings.edges, hoveredBuilding)
+			this.showEdgesOfBuildings(hoveredBuilding)
 		}
 		this.scale()
 	}
@@ -49,7 +49,7 @@ export class CodeMapArrowService
 		const state = this.storeService.getState()
 		if (state.dynamicSettings.edgeMetric !== "None") {
 			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
+			this.showEdgesOfBuildings()
 		}
 		this.scale()
 	}
@@ -112,20 +112,22 @@ export class CodeMapArrowService
 		return this.storeService.getState().dynamicSettings.edgeMetric !== "None" && !codeMapBuilding.node.flat
 	}
 
-	private showEdgesOfBuildings(edges: Edge[], hoveredbuilding?: CodeMapBuilding) {
+	private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {
+		const edges = this.storeService.getState().fileSettings.edges
 		const buildings: Map<string, Node> = new Map()
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
 
 		if (selectedBuilding) {
-			buildings.set(selectedBuilding.node.path, this.threeSceneService.getSelectedBuilding().node)
+			const { node } = selectedBuilding
+			buildings.set(node.path, node)
 		}
 		if (hoveredbuilding) {
-			buildings.set(hoveredbuilding.node.path, hoveredbuilding.node)
+			const { node } = hoveredbuilding
+			buildings.set(node.path, node)
 		}
 		if (buildings.size > 0) {
 			this.buildPairingEdges(buildings, edges)
-		}
-		if (!selectedBuilding && !hoveredbuilding) {
+		} else {
 			this.addEdgePreview(
 				null,
 				edges.filter(x => x.visible !== EdgeVisibility.none)
