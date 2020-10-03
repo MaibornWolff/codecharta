@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   First start without an internet connection of standalone not working #1266
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.58.1] - 2020-10-02
