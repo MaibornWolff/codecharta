@@ -10,7 +10,6 @@ import { SortingOptionService, SortingOptionSubscriber } from "../../state/store
 import { clone } from "../../util/clone"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
-// Constants
 const REVERSE_ORDER = true
 const KEEP_ORDER = false
 

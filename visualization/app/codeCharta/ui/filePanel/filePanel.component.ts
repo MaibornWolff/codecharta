@@ -84,9 +84,9 @@ export class FilePanelController implements FilesSelectionSubscriber {
 			let reference = visibleFileStates[0].file.fileMeta.fileName
 			let comparison = visibleFileStates[visibleFileStates.length - 1].file.fileMeta.fileName
 			if (visibleFileStates[0].selectedAs === FileSelectionState.Comparison) {
-				const temp = comparison
+				const temporary = comparison
 				comparison = reference
-				reference = temp
+				reference = temporary
 			}
 			this._viewModel.selectedFileNames.delta.reference = reference
 			this._viewModel.selectedFileNames.delta.comparison = comparison
@@ -143,7 +143,11 @@ export class FilePanelController implements FilesSelectionSubscriber {
 		const invertedFileNames: string[] = []
 		const partialFileNames = new Set(this._viewModel.selectedFileNames.partial)
 
-		for (const { file: { fileMeta: { fileName } } } of this._viewModel.files) {
+		for (const {
+			file: {
+				fileMeta: { fileName }
+			}
+		} of this._viewModel.files) {
 			if (!partialFileNames.has(fileName)) {
 				invertedFileNames.push(fileName)
 			}

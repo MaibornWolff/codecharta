@@ -12,7 +12,7 @@ import { CodeMapHelper } from "../../util/codeMapHelper"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { StoreService } from "../../state/store.service"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 
 interface Coordinates {
@@ -75,9 +75,9 @@ export class CodeMapMouseEventService
 
 	start() {
 		// TODO: Check if these event listeners should ever be removed again.
-		this.threeRendererService.renderer.domElement.addEventListener("mousemove", (event) => this.onDocumentMouseMove(event))
-		this.threeRendererService.renderer.domElement.addEventListener("mouseup", (event) => this.onDocumentMouseUp(event))
-		this.threeRendererService.renderer.domElement.addEventListener("mousedown", (event) => this.onDocumentMouseDown(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mousemove", event => this.onDocumentMouseMove(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mouseup", event => this.onDocumentMouseUp(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mousedown", event => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
@@ -225,7 +225,7 @@ export class CodeMapMouseEventService
 	}
 
 	private transformHTMLToSceneCoordinates(): Coordinates {
-		const rect = this.threeRendererService.renderer.domElement.getBoundingClientRect();
+		const rect = this.threeRendererService.renderer.domElement.getBoundingClientRect()
 		const x = (this.mouse.x / this.threeRendererService.renderer.domElement.width) * 2 - 1
 		const y = -((this.mouse.y - rect.top) / this.threeRendererService.renderer.domElement.height) * 2 + 1
 		return { x, y }
@@ -234,12 +234,12 @@ export class CodeMapMouseEventService
 	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
 		const { lookUp } = this.storeService.getState()
 		const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
-		hierarchy(codeMapNode).each(({ data }) => {
+		for (const { data } of hierarchy(codeMapNode)) {
 			const building = lookUp.idToBuilding.get(data.id)
 			if (building) {
 				this.threeSceneService.addBuildingToHighlightingList(building)
 			}
-		})
+		}
 		this.threeSceneService.highlightBuildings()
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding })
 	}

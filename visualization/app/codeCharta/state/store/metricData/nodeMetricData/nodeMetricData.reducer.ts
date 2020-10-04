@@ -22,10 +22,9 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	const hashMap: Map<string, number> = new Map()
 
 	for (const { file } of getVisibleFileStates(fileStates)) {
-		const attributeKeys = Object.keys(file.map.children[0].attributes)
 		for (const node of hierarchy(file.map)) {
 			if (!node.children && node.data.path && !CodeMapHelper.isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)) {
-				for (const metric of attributeKeys) {
+				for (const metric of Object.keys(node.data.attributes)) {
 					const maxValue = hashMap.get(metric)
 
 					if (maxValue === undefined || maxValue <= node.data.attributes[metric]) {

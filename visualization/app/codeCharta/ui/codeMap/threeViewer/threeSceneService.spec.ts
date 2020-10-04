@@ -7,7 +7,7 @@ import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
-import _ from "lodash"
+import { klona } from 'klona';
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -27,7 +27,7 @@ describe("ThreeSceneService", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 
-		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+		codeMapBuilding = klona(CODE_MAP_BUILDING)
 	}
 
 	function rebuildService() {

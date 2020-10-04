@@ -15,8 +15,7 @@ import { StoreService } from "../../state/store.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
-import { clone } from "../../util/clone"
-import _ from "lodash"
+import { klona } from 'klona';
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController
@@ -39,7 +38,7 @@ describe("FileExtensionBarController", () => {
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
 
-		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING_TS_NODE)
+		codeMapBuilding = klona(CODE_MAP_BUILDING_TS_NODE)
 	}
 
 	function rebuildController() {
@@ -145,7 +144,7 @@ describe("FileExtensionBarController", () => {
 
 	describe("highlightBarHoveredBuildings", () => {
 		beforeEach(() => {
-			const map = clone(VALID_NODE_WITH_PATH_AND_EXTENSION)
+			const map = klona(VALID_NODE_WITH_PATH_AND_EXTENSION)
 			map.children.push({
 				name: "README.md",
 				type: NodeType.FILE,

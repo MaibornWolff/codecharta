@@ -72,7 +72,8 @@ export class FileExtensionBarController implements CodeMapPreRenderServiceSubscr
 
 	private setColorForEachExtension() {
 		for (const metric of this._viewModel.distribution) {
-			metric.color = metric.color ?? FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(metric.fileExtension)).toString()
+			metric.color =
+				metric.color ?? FileExtensionCalculator.numberToHsl(FileExtensionCalculator.hashCode(metric.fileExtension)).toString()
 		}
 	}
 

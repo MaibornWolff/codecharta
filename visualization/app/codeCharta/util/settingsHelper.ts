@@ -8,11 +8,7 @@ export function convertToVectors(settings: RecursivePartial<Settings>) {
 		if (typeof settings[key] === "object" && settings[key] !== null) {
 			const { x, y, z } = settings[key]
 			if (x !== undefined || y !== undefined || z !== undefined) {
-				settings[key] = new Vector3(
-					x ?? DEFAULT_VALUE,
-					y ?? DEFAULT_VALUE,
-					z ?? DEFAULT_VALUE
-				)
+				settings[key] = new Vector3(x ?? DEFAULT_VALUE, y ?? DEFAULT_VALUE, z ?? DEFAULT_VALUE)
 			} else {
 				convertToVectors(settings[key])
 			}

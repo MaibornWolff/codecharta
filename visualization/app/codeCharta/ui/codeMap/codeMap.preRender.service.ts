@@ -107,11 +107,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		if (this.unifiedMap && this.unifiedFileMeta && fileStatesAvailable(files) && metricData.nodeMetricData) {
 			NodeDecorator.decorateMap(this.unifiedMap, metricData, fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
-				this.unifiedMap,
-				isDeltaState(files),
-				fileSettings.attributeTypes
-			)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(this.unifiedMap, isDeltaState(files), fileSettings.attributeTypes)
 		}
 	}
 
@@ -178,7 +174,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			fileStatesAvailable(this.storeService.getState().files) &&
 			this.areChosenMetricsInMetricData() &&
 			Object.values(this.storeService.getState().dynamicSettings).every(x => {
-				return x !== null && Object.values(x).every(x => x)
+				return x !== null && Object.values(x).every(x => x !== null)
 			})
 		)
 	}

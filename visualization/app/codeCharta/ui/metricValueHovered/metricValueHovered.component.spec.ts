@@ -8,7 +8,7 @@ import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import _ from "lodash"
+import { klona } from 'klona';
 
 describe("MetricValueHoveredController", () => {
 	let metricValueHoveredController: MetricValueHoveredController
@@ -34,11 +34,11 @@ describe("MetricValueHoveredController", () => {
 	}
 
 	function withMockedBuildingTransitions() {
-		deltaBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+		deltaBuilding = klona(CODE_MAP_BUILDING)
 		deltaBuilding.node.attributes = { area: 10, height: 20, color: 30 }
 		deltaBuilding.node.deltas = { area: 40, height: 50, color: 60 }
 
-		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+		codeMapBuilding = klona(CODE_MAP_BUILDING)
 		codeMapBuilding.node.attributes = { area: 10, height: 20, color: 30 }
 		codeMapBuilding.node.deltas = undefined
 	}

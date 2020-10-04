@@ -10,8 +10,8 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 		flatten: Array<BlacklistItem>
 		exclude: Array<BlacklistItem>
 	} = {
-		flatten: null,
-		exclude: null
+		flatten: [],
+		exclude: []
 	}
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -19,20 +19,19 @@ export class BlacklistPanelController implements BlacklistSubscriber {
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
-		// Use a set to uniquify the entries
-		const flattened: Set<BlacklistItem> = new Set()
-		const excluded: Set<BlacklistItem> = new Set()
+		const flattened: BlacklistItem[] = []
+		const excluded: BlacklistItem[] = []
 
 		for (const item of blacklist) {
 			if (item.type === BlacklistType.flatten) {
-				flattened.add(item)
+				flattened.push(item)
 			} else {
-				excluded.add(item)
+				excluded.push(item)
 			}
 		}
 
-		this._viewModel.flatten = [...flattened]
-		this._viewModel.exclude = [...excluded]
+		this._viewModel.flatten = flattened
+		this._viewModel.exclude = excluded
 	}
 
 	removeBlacklistEntry(entry: BlacklistItem) {

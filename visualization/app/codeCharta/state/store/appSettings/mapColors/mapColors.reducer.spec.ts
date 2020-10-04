@@ -1,6 +1,5 @@
 import { mapColors } from "./mapColors.reducer"
 import { defaultMapColors, MapColorsAction, setMapColors } from "./mapColors.actions"
-import _ from "lodash"
 import { MapColors } from "../../../../codeCharta.model"
 
 describe("mapColors", () => {
@@ -34,7 +33,7 @@ describe("mapColors", () => {
 
 			const result = mapColors(oldMapColors, setMapColors({ positive: "ABCDEF" } as MapColors))
 
-			expect(_.values(result)).toHaveLength(14)
+			expect(Object.values(result)).toHaveLength(14)
 			expect(result.positive).toEqual("ABCDEF")
 		})
 	})

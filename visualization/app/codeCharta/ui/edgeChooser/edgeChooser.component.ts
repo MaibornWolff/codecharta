@@ -70,9 +70,7 @@ export class EdgeChooserController
 
 	filterMetricData() {
 		const searchTerm = this._viewModel.searchTerm.toLowerCase()
-		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(({ name }) =>
-			name.toLowerCase().includes(searchTerm)
-		)
+		this._viewModel.edgeMetricData = this.originalEdgeMetricData.filter(({ name }) => name.toLowerCase().includes(searchTerm))
 	}
 
 	focusInputField() {

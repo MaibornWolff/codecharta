@@ -2,13 +2,13 @@ import { CodeMapHelper } from "./codeMapHelper"
 import { Node, CodeMapNode, State } from "../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import { HierarchyRectangularNode } from "d3"
+import { HierarchyRectangularNode } from "d3-hierarchy"
 
 const FOLDER_HEIGHT = 2
 const MIN_BUILDING_HEIGHT = 2
 const HEIGHT_VALUE_WHEN_METRIC_NOT_FOUND = 0
 
-function countNodes(node: { children?: unknown[] }) {
+function countNodes(node: { children?: CodeMapNode[] }) {
 	let count = 1
 	if (node.children) {
 		for (const child of node.children) {
@@ -182,7 +182,9 @@ function getBuildingColor(node: CodeMapNode, state: State, isDeltaState: boolean
 	if (flattened) {
 		return state.appSettings.mapColors.flat
 	}
-	const mapColorPositive = state.appSettings.whiteColorBuildings ? state.appSettings.mapColors.lightGrey : state.appSettings.mapColors.positive
+	const mapColorPositive = state.appSettings.whiteColorBuildings
+		? state.appSettings.mapColors.lightGrey
+		: state.appSettings.mapColors.positive
 	if (metricValue < state.dynamicSettings.colorRange.from) {
 		return state.appSettings.invertColorRange ? state.appSettings.mapColors.negative : mapColorPositive
 	}
