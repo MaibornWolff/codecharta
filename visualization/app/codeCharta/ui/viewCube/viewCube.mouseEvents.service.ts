@@ -1,5 +1,5 @@
 import { IRootScopeService } from "angular"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
 
@@ -50,8 +50,13 @@ export class ViewCubeMouseEventsService {
 		const vector = this.transformIntoCanvasVector(event)
 		const ray = new Raycaster()
 		ray.setFromCamera(vector, this.camera)
-		const h = hierarchy(this.cubeGroup)
-		const [intersection] = ray.intersectObjects(h.leaves().map(x => x.data))
+		const nodes: Group[] = []
+		for (const node of hierarchy(this.cubeGroup)) {
+			if (!node.children) {
+				nodes.push(node.data)
+			}
+		}
+		const [intersection] = ray.intersectObjects(nodes)
 		return intersection ? (intersection.object as Mesh) : null
 	}
 

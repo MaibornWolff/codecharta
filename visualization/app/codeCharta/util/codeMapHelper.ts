@@ -13,9 +13,11 @@ function getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNod
 }
 
 function getAllPaths(node: CodeMapNode) {
-	return hierarchy(node)
-		.descendants()
-		.map(({ data }) => data.path)
+	const paths: string[] = []
+	for (const { data } of hierarchy(node)) {
+		paths.push(data.path)
+	}
+	return paths
 }
 
 function transformPath(toTransform: string) {

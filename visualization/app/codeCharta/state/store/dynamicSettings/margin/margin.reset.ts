@@ -13,14 +13,15 @@ export function getResetMargin(dynamicMargin: boolean, areaMetric: string, map?:
 }
 
 function calculateMargin(map: CodeMapNode, areaMetric: string) {
-	const leaves = hierarchy(map).leaves()
 	let numberOfBuildings = 0
 	let totalArea = 0
 
-	for (const { data } of leaves) {
-		numberOfBuildings++
-		if (data.attributes?.[areaMetric]) {
-			totalArea += data.attributes[areaMetric]
+	for (const node of hierarchy(map)) {
+		if (!node.children) {
+			numberOfBuildings++
+			if (node.data.attributes?.[areaMetric]) {
+				totalArea += node.data.attributes[areaMetric]
+			}
 		}
 	}
 
