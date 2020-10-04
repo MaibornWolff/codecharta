@@ -1,4 +1,4 @@
-import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3"
+import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapNode, Node, NodeMetricData, State } from "../codeCharta.model"
 
@@ -104,13 +104,14 @@ export class TreeMapGenerator {
 				blacklistedNodes++
 			}
 			totalNodes++
+
 		})
 
 		return 2 * Math.sqrt(totalNodes - blacklistedNodes)
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State) {
-		return node.deltas[s.dynamicSettings.heightMetric] < 0 && node.attributes[s.dynamicSettings.areaMetric] === 0
+		return node.attributes[s.dynamicSettings.areaMetric] === 0 && node.deltas[s.dynamicSettings.heightMetric] < 0
 	}
 
 	private static calculateAreaValue(node: CodeMapNode, s: State) {
@@ -122,7 +123,7 @@ export class TreeMapGenerator {
 			return Math.abs(node.deltas[s.dynamicSettings.areaMetric])
 		}
 
-		if (this.isNodeLeaf(node) && node.attributes && node.attributes[s.dynamicSettings.areaMetric]) {
+		if (this.isNodeLeaf(node) && node.attributes?.[s.dynamicSettings.areaMetric]) {
 			return node.attributes[s.dynamicSettings.areaMetric]
 		}
 		return 0

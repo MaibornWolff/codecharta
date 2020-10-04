@@ -26,7 +26,8 @@ export class CodeMapRenderService {
 	}
 
 	private setNewMapMesh(sortedNodes) {
-		const mapMesh = new CodeMapMesh(sortedNodes, this.storeService.getState(), isDeltaState(this.storeService.getState().files))
+		const state = this.storeService.getState()
+		const mapMesh = new CodeMapMesh(sortedNodes, state, isDeltaState(state.files))
 		this.threeSceneService.setMapMesh(mapMesh)
 	}
 
@@ -37,11 +38,12 @@ export class CodeMapRenderService {
 	}
 
 	private getSortedNodes(map: CodeMapNode) {
+		const state = this.storeService.getState()
 		const nodes = TreeMapGenerator.createTreemapNodes(
 			map,
-			this.storeService.getState(),
-			this.storeService.getState().metricData.nodeMetricData,
-			isDeltaState(this.storeService.getState().files)
+			state,
+			state.metricData.nodeMetricData,
+			isDeltaState(state.files)
 		)
 		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)

@@ -68,9 +68,7 @@ export class MetricChooserController
 
 	filterMetricData() {
 		const searchTerm = this._viewModel.searchTerm.toLowerCase()
-		this._viewModel.metricData = this.originalMetricData.filter(({ name }) =>
-			name.toLowerCase().includes(searchTerm)
-		)
+		this._viewModel.metricData = this.originalMetricData.filter(({ name }) => name.toLowerCase().includes(searchTerm))
 	}
 
 	clearSearchTerm() {

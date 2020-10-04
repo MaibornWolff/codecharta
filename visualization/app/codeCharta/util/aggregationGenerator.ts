@@ -57,7 +57,7 @@ export class AggregationGenerator {
 	private static aggregateRootAttributes(outputFile: CCFile) {
 		for (const { attributes } of outputFile.map.children) {
 			for (const key of Object.keys(attributes)) {
-				if (!Object.prototype.hasOwnProperty.call(outputFile.map.attributes, key)) {
+				if (outputFile.map.attributes[key] === undefined) {
 					outputFile.map.attributes[key] = 0
 				}
 				outputFile.map.attributes[key] += attributes[key]

@@ -6,7 +6,7 @@ import { calculateNewEdgeMetricData, EdgeMetricDataAction, EdgeMetricDataActions
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { EDGE_METRIC_DATA, FILE_STATES, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../../../util/dataMocks"
 import { CodeMapNode } from "../../../../codeCharta.model"
-import { HierarchyNode } from "d3"
+import { HierarchyNode } from "d3-hierarchy"
 import { FilesService } from "../../files/files.service"
 import { BlacklistService } from "../../fileSettings/blacklist/blacklist.service"
 import { AttributeTypesService } from "../../fileSettings/attributeTypes/attributeTypes.service"

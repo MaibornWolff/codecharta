@@ -38,7 +38,7 @@ export class FileExtensionCalculator {
 		const metrics = []
 		for (const distribution of distributions.values()) {
 			if (distribution.absoluteMetricValue !== 0) {
-				distribution.relativeMetricValue = distribution.absoluteMetricValue * 100 / sumOfAllMetricValues
+				distribution.relativeMetricValue = (distribution.absoluteMetricValue * 100) / sumOfAllMetricValues
 				metrics.push(distribution)
 			}
 		}
@@ -86,12 +86,9 @@ export class FileExtensionCalculator {
 
 	static estimateFileExtension(fileName: string) {
 		const lastDotPosition = fileName.lastIndexOf(".")
-		if (lastDotPosition > 0) {
+		if (lastDotPosition > 0 && lastDotPosition !== fileName.length) {
 			const extension = fileName.slice(lastDotPosition + 1)
-			// TODO: Check Windows path as well?
-			if (!extension.includes("/")) {
-				return extension.toLowerCase()
-			}
+			return extension.toLowerCase()
 		}
 		return FileExtensionCalculator.NO_EXTENSION
 	}

@@ -18,8 +18,7 @@ import { StoreService } from "../../state/store.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
-import { clone } from "../../util/clone"
-import _ from "lodash"
+import { klona } from 'klona';
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService
@@ -59,8 +58,8 @@ describe("codeMapMouseEventService", () => {
 		threeUpdateCycleService = getService<ThreeUpdateCycleService>("threeUpdateCycleService")
 		storeService = getService<StoreService>("storeService")
 
-		codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
-		file = clone(TEST_FILE_WITH_PATHS)
+		codeMapBuilding = klona(CODE_MAP_BUILDING)
+		file = klona(TEST_FILE_WITH_PATHS)
 		document.body.style.cursor = CursorType.Default
 	}
 

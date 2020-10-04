@@ -7,7 +7,6 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FILE_STATES, STATE, TEST_DELTA_MAP_B, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
@@ -56,7 +55,7 @@ describe("codeMapPreRenderService", () => {
 
 		fileMeta = clone(FILE_STATES[0].file.fileMeta)
 		map = clone(TEST_FILE_WITH_PATHS.map)
-		map.children[1].children = _.slice(map.children[1].children, 0, 2)
+		map.children[1].children = map.children[1].children.slice(0, 2)
 
 		const ccFile: CCFile = clone(TEST_DELTA_MAP_B)
 

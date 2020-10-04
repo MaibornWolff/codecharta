@@ -33,7 +33,7 @@ function transformPath(toTransform: string) {
 }
 
 function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
-	gitignorePath = gitignorePath.trim()
+	gitignorePath = gitignorePath.trimStart()
 	if (gitignorePath.length === 0) {
 		return []
 	}
@@ -79,7 +79,10 @@ function getMarkingColor(node: CodeMapNode, markedPackages: MarkedPackage[]) {
 	if (markedPackages) {
 		let longestPathParentPackage: MarkedPackage
 		for (const markedPackage of markedPackages) {
-			if ((!longestPathParentPackage || longestPathParentPackage.path.length < markedPackage.path.length) && node.path.startsWith(markedPackage.path)) {
+			if (
+				(!longestPathParentPackage || longestPathParentPackage.path.length < markedPackage.path.length) &&
+				node.path.startsWith(markedPackage.path)
+			) {
 				longestPathParentPackage = markedPackage
 			}
 		}

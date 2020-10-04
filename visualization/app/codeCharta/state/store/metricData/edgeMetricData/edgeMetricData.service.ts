@@ -4,7 +4,7 @@ import { calculateNewEdgeMetricData, EdgeMetricDataActions } from "./edgeMetricD
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { BlacklistItem, CodeMapNode, EdgeMetricData } from "../../../../codeCharta.model"
 import { FileState } from "../../../../model/files/files"
-import { HierarchyNode } from "d3"
+import { HierarchyNode } from "d3-hierarchy"
 import { BlacklistService, BlacklistSubscriber } from "../../fileSettings/blacklist/blacklist.service"
 import { FilesSelectionSubscriber, FilesService } from "../../files/files.service"
 import { EdgeMetricCountMap, nodeEdgeMetricsMap } from "./edgeMetricData.reducer"

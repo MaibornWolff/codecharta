@@ -308,7 +308,7 @@ function getMedian(numbers: number[]) {
 }
 
 function pushSorted(numbers, number) {
-  let min = 0
+	let min = 0
 	let max = numbers.length - 1
 	let guess = 0
 
@@ -322,19 +322,19 @@ function pushSorted(numbers, number) {
 	}
 
 	// Use a binary search to find the correct entry.
-  while (min <= max) {
-    guess = Math.floor((min + max) / 2)
+	while (min <= max) {
+		guess = Math.floor((min + max) / 2)
 
-    if (numbers[guess] < number) {
-      min = guess + 1
-    } else {
-      max = guess - 1
+		if (numbers[guess] < number) {
+			min = guess + 1
+		} else {
+			max = guess - 1
 			if (numbers[max] <= number) {
-  			numbers.splice(guess, 0, number)
+				numbers.splice(guess, 0, number)
 				return
 			}
-    }
-  }
+		}
+	}
 }
 
 function pushSortedArray(numbers: number[], toPush: number[]) {

@@ -160,7 +160,7 @@ export class LegendPanelController
 	}
 
 	private isColorPixelInPackageLists(colorPixel: string) {
-		return !!this._viewModel.packageLists.find(mpList => mpList.colorPixel === colorPixel)
+		return this._viewModel.packageLists.some(mpList => mpList.colorPixel === colorPixel)
 	}
 }
 

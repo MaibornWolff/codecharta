@@ -87,7 +87,7 @@ describe("codeMapHelper", () => {
 		})
 
 		it("should return all children if root is ignored", () => {
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, testRoot.path).map((entry) => entry.path)
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, testRoot.path).map(entry => entry.path)
 			const set = new Set(result)
 			expect(result.length).toEqual(set.size)
 			for (const { data } of hierarchy(testRoot)) {
@@ -97,7 +97,7 @@ describe("codeMapHelper", () => {
 
 		it("should return all children of subfolder if root/subfolder is ignored", () => {
 			const node = testRoot.children[1]
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, node.path).map((entry) => entry.path)
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, node.path).map(entry => entry.path)
 			const set = new Set(result)
 			expect(result.length).toEqual(set.size)
 			for (const { data } of hierarchy(node)) {
@@ -155,7 +155,7 @@ describe("codeMapHelper", () => {
 			const markedPackages = [
 				{ path: testRoot.path, color: "0x000000" },
 				{ path: testRoot.children[0].path, color: "0x000002" },
-				{ path: testRoot.children[1].path, color: "0x000001" },
+				{ path: testRoot.children[1].path, color: "0x000001" }
 			]
 
 			const result = CodeMapHelper.getMarkingColor(testRoot.children[0], markedPackages)

@@ -51,7 +51,7 @@ export class CodeMapActionsService {
 		const edgePreviewNodes = new Set(this.edgeMetricDataService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay))
 
 		for (const edge of edges) {
-			if (Object.prototype.hasOwnProperty.call(edge.attributes, edgeMetric)) {
+			if (edge.attributes[edgeMetric] !== undefined) {
 				const hasFromNodeEdgePreview = edgePreviewNodes.has(edge.fromNodeName)
 				const hasToNodeEdgePreview = edgePreviewNodes.has(edge.toNodeName)
 				if (hasFromNodeEdgePreview !== hasToNodeEdgePreview) {
@@ -74,9 +74,7 @@ export class CodeMapActionsService {
 	}
 
 	getParentMP(path: string) {
-		const parentMP = this.storeService
-			.getState()
-			.fileSettings.markedPackages.filter(p => p.path !== path && path.startsWith(p.path))
+		const parentMP = this.storeService.getState().fileSettings.markedPackages.filter(p => p.path !== path && path.startsWith(p.path))
 
 		if (parentMP.length === 0) {
 			return null

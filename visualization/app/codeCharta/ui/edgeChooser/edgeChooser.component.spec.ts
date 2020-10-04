@@ -8,7 +8,7 @@ import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import _ from "lodash"
+import { klona } from 'klona';
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
@@ -94,7 +94,7 @@ describe("EdgeChooserController", () => {
 		})
 
 		it("should set hovered value to null if no node is hovered", () => {
-			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			const codeMapBuilding = klona(CODE_MAP_BUILDING)
 			codeMapBuilding.setNode(null)
 			edgeChooserController["_viewModel"].hoveredEdgeValue = { incoming: 22, outgoing: 42 }
 
@@ -105,7 +105,7 @@ describe("EdgeChooserController", () => {
 
 		it("should update hoveredEdgeValue according to hovered building", () => {
 			const hoveredEdgeValue = { incoming: 22, outgoing: 23 }
-			const codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			const codeMapBuilding = klona(CODE_MAP_BUILDING)
 			codeMapBuilding.node.edgeAttributes = { metric2: hoveredEdgeValue }
 
 			edgeChooserController.onBuildingHovered(codeMapBuilding)

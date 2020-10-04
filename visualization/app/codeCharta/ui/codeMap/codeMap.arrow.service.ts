@@ -89,7 +89,7 @@ export class CodeMapArrowService
 		}
 
 		for (const edge of edges) {
-			if (edge.visible !== EdgeVisibility.none) {
+			if (edge.visible && edge.visible !== EdgeVisibility.none) {
 				const originNode = this.map.get(edge.fromNodeName)
 				const targetNode = this.map.get(edge.toNodeName)
 				const curveScale = 100 * this.storeService.getState().appSettings.edgeHeight
@@ -150,9 +150,9 @@ export class CodeMapArrowService
 			}
 			if (node.has(originNode.path)) {
 				this.addArrow(targetNode, originNode, true)
-			// TODO: Check if the second if case is actually necessary. Edges should
-			// always have valid origin and target paths. The test data is likely
-			// faulty and should be improved.
+				// TODO: Check if the second if case is actually necessary. Edges should
+				// always have valid origin and target paths. The test data is likely
+				// faulty and should be improved.
 			} else if (node.has(targetNode.path)) {
 				this.addArrow(targetNode, originNode, false)
 			}

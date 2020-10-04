@@ -13,8 +13,7 @@ import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetri
 import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { StoreService } from "../../state/store.service"
 import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import { clone } from "../../util/clone"
-import _ from "lodash"
+import { klona } from 'klona';
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController
@@ -100,7 +99,7 @@ describe("AttributeSideBarController", () => {
 		beforeEach(() => {
 			withMockedCodeMapPreRenderService()
 			attributeSideBarController["updateSortedMetricKeysWithoutPrimaryMetrics"] = jest.fn()
-			codeMapBuilding = _.cloneDeep(CODE_MAP_BUILDING)
+			codeMapBuilding = klona(CODE_MAP_BUILDING)
 		})
 
 		it("should set new viewModel node", () => {
@@ -218,7 +217,7 @@ describe("AttributeSideBarController", () => {
 
 	describe("updateSortedMetricKeysWithoutPrimaryMetrics", () => {
 		beforeEach(() => {
-			attributeSideBarController["_viewModel"].node = clone(TEST_NODE_LEAF)
+			attributeSideBarController["_viewModel"].node = klona(TEST_NODE_LEAF)
 			attributeSideBarController["_viewModel"].node.attributes = {
 				a: 1,
 				b: 2,
