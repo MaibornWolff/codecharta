@@ -160,7 +160,7 @@ export interface Edge {
 	fromNodeName: string
 	toNodeName: string
 	attributes: KeyValuePair
-	visible?: EdgeVisibility
+	visible: EdgeVisibility
 }
 
 export enum EdgeVisibility {
