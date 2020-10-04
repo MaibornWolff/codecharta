@@ -1,5 +1,5 @@
 import { CodeMapNode } from "../codeCharta.model"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { HSL } from "./color/hsl"
 
 export interface MetricDistribution {
@@ -18,10 +18,10 @@ export class FileExtensionCalculator {
 		const distributions: Map<string, MetricDistribution> = new Map()
 		let sumOfAllMetricValues = 0
 
-		for (const { data } of hierarchy(map).leaves()) {
-			if (!data.isExcluded) {
-				const metricValue = data.attributes[metric]
-				const fileExtension = this.estimateFileExtension(data.name)
+		for (const node of hierarchy(map)) {
+			if (!node.children && !node.data.isExcluded) {
+				const metricValue = node.data.attributes[metric]
+				const fileExtension = this.estimateFileExtension(node.data.name)
 				const matchingFileExtensionObject = distributions.get(fileExtension)
 				sumOfAllMetricValues += metricValue
 

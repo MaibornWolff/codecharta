@@ -3,7 +3,7 @@ import { BlacklistItem, BlacklistType, NodeMetricData } from "../../../../codeCh
 import { getVisibleFileStates } from "../../../../model/files/files.helper"
 import { FileState } from "../../../../model/files/files"
 import { CodeMapHelper } from "../../../../util/codeMapHelper"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { NodeMetricDataService } from "./nodeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
 
@@ -23,14 +23,13 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 
 	for (const { file } of getVisibleFileStates(fileStates)) {
 		const attributeKeys = Object.keys(file.map.children[0].attributes)
-		for (const { data } of hierarchy(file.map).leaves()) {
-			if (data.path && !CodeMapHelper.isPathBlacklisted(data.path, blacklist, BlacklistType.exclude)) {
-				// TODO: The attributes should be identical on each node
+		for (const node of hierarchy(file.map)) {
+			if (!node.children && node.data.path && !CodeMapHelper.isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)) {
 				for (const metric of attributeKeys) {
 					const maxValue = hashMap.get(metric)
 
-					if (maxValue === undefined || maxValue <= data.attributes[metric]) {
-						hashMap.set(metric, data.attributes[metric])
+					if (maxValue === undefined || maxValue <= node.data.attributes[metric]) {
+						hashMap.set(metric, node.data.attributes[metric])
 					}
 				}
 			}
