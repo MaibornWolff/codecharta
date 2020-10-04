@@ -89,7 +89,7 @@ export class CodeMapArrowService
 		}
 
 		for (const edge of edges) {
-			if (edge.visible && edge.visible !== EdgeVisibility.none) {
+			if (edge.visible !== EdgeVisibility.none) {
 				const originNode = this.map.get(edge.fromNodeName)
 				const targetNode = this.map.get(edge.toNodeName)
 				const curveScale = 100 * this.storeService.getState().appSettings.edgeHeight
@@ -138,11 +138,21 @@ export class CodeMapArrowService
 	private buildPairingEdges(node: Map<string, Node>, edges: Edge[]) {
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
+			// TODO: Maps should only have valid edges. If that's not the case, the
+			// internal decoration is likely faulty. Check if only test data is not
+			// correct or what the root cause of these checks actually is.
+			if (originNode === undefined) {
+				continue
+			}
 			const targetNode = this.map.get(edge.toNodeName)
+			if (targetNode === undefined) {
+				continue
+			}
 			if (node.has(originNode.path)) {
 				this.addArrow(targetNode, originNode, true)
 			// TODO: Check if the second if case is actually necessary. Edges should
-			// always have valid recipients.
+			// always have valid origin and target paths. The test data is likely
+			// faulty and should be improved.
 			} else if (node.has(targetNode.path)) {
 				this.addArrow(targetNode, originNode, false)
 			}
