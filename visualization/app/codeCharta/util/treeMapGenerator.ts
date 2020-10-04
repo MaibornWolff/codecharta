@@ -97,14 +97,16 @@ export class TreeMapGenerator {
 	}
 
 	private static getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {
-		const nodes = hierarchyNode.descendants()
-		let blacklistedCount = 0
-		for (const { data } of nodes) {
+		let totalNodes = 0
+		let blacklistedNodes = 0
+		hierarchyNode.each(({ data }) => {
 			if (data.isExcluded || data.isFlattened) {
-				blacklistedCount++
+				blacklistedNodes++
 			}
-		}
-		return 2 * Math.sqrt(nodes.length - blacklistedCount)
+			totalNodes++
+		})
+
+		return 2 * Math.sqrt(totalNodes - blacklistedNodes)
 	}
 
 	private static isOnlyVisibleInComparisonMap(node: CodeMapNode, s: State) {

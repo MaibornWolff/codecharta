@@ -74,9 +74,10 @@ export class CodeMapMouseEventService
 	}
 
 	start() {
-		this.threeRendererService.renderer.domElement.addEventListener("mousemove", () => this.onDocumentMouseMove(event))
-		this.threeRendererService.renderer.domElement.addEventListener("mouseup", () => this.onDocumentMouseUp(event))
-		this.threeRendererService.renderer.domElement.addEventListener("mousedown", () => this.onDocumentMouseDown(event))
+		// TODO: Check if these event listeners should ever be removed again.
+		this.threeRendererService.renderer.domElement.addEventListener("mousemove", (event) => this.onDocumentMouseMove(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mouseup", (event) => this.onDocumentMouseUp(event))
+		this.threeRendererService.renderer.domElement.addEventListener("mousedown", (event) => this.onDocumentMouseDown(event))
 		this.threeRendererService.renderer.domElement.addEventListener("dblclick", () => this.onDocumentDoubleClick())
 		ViewCubeMouseEventsService.subscribeToEventPropagation(this.$rootScope, this)
 	}
@@ -157,7 +158,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	onDocumentMouseMove(event) {
+	onDocumentMouseMove(event: MouseEvent) {
 		this.mouse.x = event.clientX
 		this.mouse.y = event.clientY
 	}
@@ -173,7 +174,7 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	onDocumentMouseDown(event) {
+	onDocumentMouseDown(event: MouseEvent) {
 		if (event.button === ClickType.RightClick) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
 			NodeContextMenuController.broadcastHideEvent(this.$rootScope)
@@ -185,7 +186,7 @@ export class CodeMapMouseEventService
 		$(document.activeElement).blur()
 	}
 
-	onDocumentMouseUp(event) {
+	onDocumentMouseUp(event: MouseEvent) {
 		if (event.button === ClickType.LeftClick) {
 			this.onLeftClick()
 		} else {
@@ -213,8 +214,8 @@ export class CodeMapMouseEventService
 		}
 	}
 
-	private hasMouseMoved(mouse: Coordinates) {
-		return this.mouse.x !== mouse.x || this.mouse.y !== mouse.y
+	private hasMouseMoved({ x, y }: Coordinates) {
+		return this.mouse.x !== x || this.mouse.y !== y
 	}
 
 	private hoverBuilding(hoveredBuilding: CodeMapBuilding) {

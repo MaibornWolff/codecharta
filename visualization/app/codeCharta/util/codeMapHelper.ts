@@ -3,16 +3,12 @@ import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../cod
 import ignore from "ignore"
 
 function getAnyCodeMapNodeFromPath(path: string, root: CodeMapNode) {
-	const matchingNode = hierarchy(root)
-		.descendants()
-		.find(({ data }) => data.path === path)
+	const matchingNode = hierarchy(root).find(({ data }) => data.path === path)
 	return matchingNode?.data
 }
 
 function getCodeMapNodeFromPath(path: string, nodeType: string, root: CodeMapNode) {
-	const matchingNode = hierarchy(root)
-		.descendants()
-		.find(({ data }) => data.path === path && data.type === nodeType)
+	const matchingNode = hierarchy(root).find(({ data }) => data.path === path && data.type === nodeType)
 	return matchingNode?.data
 }
 
@@ -39,10 +35,10 @@ function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string) {
 	if (gitignorePath.length === 0) {
 		return []
 	}
-	const nodes = hierarchy(root).descendants()
+
 	const ignoredNodePaths = ignore().add(transformPath(gitignorePath))
 	const filtered = []
-	for (const { data } of nodes) {
+	for (const { data } of hierarchy(root)) {
 		if (ignoredNodePaths.ignores(transformPath(data.path))) {
 			filtered.push(data)
 		}

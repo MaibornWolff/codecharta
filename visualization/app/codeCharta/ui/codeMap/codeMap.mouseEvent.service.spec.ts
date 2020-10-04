@@ -405,7 +405,7 @@ describe("codeMapMouseEventService", () => {
 			it("should not $broadcast a building-right-clicked event when the mouse has moved since last click", () => {
 				codeMapMouseEventService.onDocumentMouseMove(event)
 				codeMapMouseEventService.onDocumentMouseDown(event)
-				codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 20 })
+				codeMapMouseEventService.onDocumentMouseMove({ clientX: 10, clientY: 20 } as MouseEvent)
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
@@ -416,7 +416,7 @@ describe("codeMapMouseEventService", () => {
 
 	describe("onDocumentMouseDown", () => {
 		it("should the cursor to moving when pressing the right button", () => {
-			const event = { button: ClickType.RightClick }
+			const event = { button: ClickType.RightClick } as MouseEvent
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
 
@@ -424,7 +424,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should change the cursor to grabbing when pressing the left button just once", () => {
-			const event = { button: ClickType.LeftClick }
+			const event = { button: ClickType.LeftClick } as MouseEvent
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
 
@@ -432,7 +432,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should save the mouse position", () => {
-			const event = { clientX: 10, clientY: 20 }
+			const event = { clientX: 10, clientY: 20 } as MouseEvent
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
 
@@ -440,7 +440,7 @@ describe("codeMapMouseEventService", () => {
 		})
 
 		it("should $broadcast hide-node-context-menu event on-right-mouse-button-down", () => {
-			const event = { button: ClickType.RightClick, clientX: 1, clientY: 2 }
+			const event = { button: ClickType.RightClick, clientX: 1, clientY: 2 } as MouseEvent
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
 

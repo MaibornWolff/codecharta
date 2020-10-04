@@ -47,7 +47,7 @@ describe("nodeDecorator", () => {
 	function allUniqueIds(map: HierarchyNode<CodeMapNode>) {
 		const ids = new Set()
 		let count = 0
-		map.eachAfter(({ data }) => {
+		map.each(({ data }) => {
 			count++
 			ids.add(data.id)
 		})

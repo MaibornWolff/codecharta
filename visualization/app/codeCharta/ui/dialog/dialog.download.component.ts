@@ -95,7 +95,9 @@ export class DialogDownloadController {
 
 	private setAmountOfNodes() {
 		const map = this.codeMapPreRenderService.getRenderMap()
-		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
+		let amountOfNodes = 0
+		hierarchy(map).each(() => amountOfNodes++)
+		this._viewModel.amountOfNodes = amountOfNodes
 	}
 
 	private setAmountOfAttributeTypes() {

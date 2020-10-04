@@ -1,8 +1,9 @@
 import { CodeMapHelper } from "./codeMapHelper"
-import { CodeMapNode, MarkedPackage, NodeType } from "../codeCharta.model"
+import { CodeMapNode, NodeType } from "../codeCharta.model"
 import { instantiateModule } from "../../../mocks/ng.mockhelper"
 import { TEST_FILE_WITH_PATHS } from "./dataMocks"
 import { clone } from "./clone"
+import { hierarchy } from "d3-hierarchy"
 
 describe("codeMapHelper", () => {
 	let testRoot: CodeMapNode
@@ -17,7 +18,7 @@ describe("codeMapHelper", () => {
 		it("should return the root if path matches path of root", () => {
 			const expected = testRoot
 
-			const result = CodeMapHelper.getCodeMapNodeFromPath("/root", NodeType.FOLDER, testRoot)
+			const result = CodeMapHelper.getCodeMapNodeFromPath(expected.path, NodeType.FOLDER, testRoot)
 
 			expect(result).toEqual(expected)
 		})
@@ -25,19 +26,23 @@ describe("codeMapHelper", () => {
 		it("should return the node that matches path and type", () => {
 			const [, expected] = testRoot.children
 
-			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FOLDER, testRoot)
+			const result = CodeMapHelper.getCodeMapNodeFromPath(expected.path, NodeType.FOLDER, testRoot)
 
 			expect(result).toEqual(expected)
 		})
 
 		it("should return undefined if no node matches path and type", () => {
-			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Uncle Leaf", NodeType.FOLDER, testRoot)
+			const result = CodeMapHelper.getCodeMapNodeFromPath(`${testRoot.path}/UNKNOWN_NODE`, NodeType.FOLDER, testRoot)
 
 			expect(result).toBeUndefined()
 		})
 
 		it("should return undefined if a node only matches path", () => {
-			const result = CodeMapHelper.getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FILE, testRoot)
+			const [, expected] = testRoot.children
+
+			expect(expected.type).toEqual(NodeType.FOLDER)
+
+			const result = CodeMapHelper.getCodeMapNodeFromPath(expected.path, NodeType.FILE, testRoot)
 
 			expect(result).toBeUndefined()
 		})
@@ -45,9 +50,10 @@ describe("codeMapHelper", () => {
 
 	describe("getAnyCodeMapNodeFromPath", () => {
 		it("should return the node that matches the path exactly", () => {
-			const result = CodeMapHelper.getAnyCodeMapNodeFromPath("/root/big leaf", testRoot)
+			const [expected] = testRoot.children
+			const result = CodeMapHelper.getAnyCodeMapNodeFromPath(expected.path, testRoot)
 
-			expect(result).toEqual(testRoot.children[0])
+			expect(result).toEqual(expected)
 		})
 	})
 
@@ -66,34 +72,37 @@ describe("codeMapHelper", () => {
 	})
 
 	describe("getNodesByGitignorePath", () => {
-		it("should return the ignored leaf if parent folder is provided", () => {
-			const expected = [testRoot.children[1].children[1]]
+		it("should return the ignored leaf if any parent folder is provided", () => {
+			const expected = testRoot.children[1].children[1]
 
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot.children[1], "/root/Parent Leaf/other small leaf")
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, expected.path)
 
-			expect(result).toEqual(expected)
+			expect(result).toEqual([expected])
 		})
 
 		it("should return an empty array if no direct children are found with path", () => {
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, "/root/Parent Leaf/other small leaf")
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, `${testRoot.children[1].path}_UNKNOWN_`)
 
 			expect(result).toEqual([])
 		})
 
 		it("should return all children if root is ignored", () => {
-			const expected = testRoot.children
-
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, "/root")
-
-			expect(result).toEqual(expected)
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, testRoot.path).map((entry) => entry.path)
+			const set = new Set(result)
+			expect(result.length).toEqual(set.size)
+			for (const { data } of hierarchy(testRoot)) {
+				expect(set.has(data.path)).toBeTruthy()
+			}
 		})
 
 		it("should return all children of subfolder if root/subfolder is ignored", () => {
-			const expected = [testRoot.children[1]]
-
-			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, "/root/Parent Leaf")
-
-			expect(result).toEqual(expected)
+			const node = testRoot.children[1]
+			const result = CodeMapHelper.getNodesByGitignorePath(testRoot, node.path).map((entry) => entry.path)
+			const set = new Set(result)
+			expect(result.length).toEqual(set.size)
+			for (const { data } of hierarchy(node)) {
+				expect(set.has(data.path)).toBeTruthy()
+			}
 		})
 	})
 
@@ -122,21 +131,6 @@ describe("codeMapHelper", () => {
 	})
 
 	describe("getMarkingColor", () => {
-		let markedPackages: MarkedPackage[]
-
-		beforeEach(() => {
-			markedPackages = []
-		})
-
-		function addRootToMarkedPackages() {
-			markedPackages.push({ path: "/root", color: "0x000000" })
-		}
-
-		function addSubNodesToMarkedPackages() {
-			markedPackages.push({ path: "/root/Parent Leaf", color: "0x000001" })
-			markedPackages.push({ path: "/root/big leaf", color: "0x000002" })
-		}
-
 		it("should return undefined if no markedPackages are provided", () => {
 			const result = CodeMapHelper.getMarkingColor(testRoot, null)
 
@@ -144,29 +138,29 @@ describe("codeMapHelper", () => {
 		})
 
 		it("should return undefined if no node does not exist in markedPackages", () => {
-			const result = CodeMapHelper.getMarkingColor(testRoot, markedPackages)
+			const result = CodeMapHelper.getMarkingColor(testRoot, [])
 
 			expect(result).toBeUndefined()
 		})
 
 		it("should return node color if node exists in markedPackages", () => {
-			addRootToMarkedPackages()
-			const expected = "0x000000"
+			const markedPackages = [{ path: testRoot.path, color: "0x000000" }]
 
 			const result = CodeMapHelper.getMarkingColor(testRoot, markedPackages)
 
-			expect(result).toBe(expected)
+			expect(result).toBe(markedPackages[0].color)
 		})
 
 		it("should return sorted sub-node color if sub-nodes exist in markedPackages", () => {
-			addRootToMarkedPackages()
-			addSubNodesToMarkedPackages()
-
-			const expected = "0x000002"
+			const markedPackages = [
+				{ path: testRoot.path, color: "0x000000" },
+				{ path: testRoot.children[0].path, color: "0x000002" },
+				{ path: testRoot.children[1].path, color: "0x000001" },
+			]
 
 			const result = CodeMapHelper.getMarkingColor(testRoot.children[0], markedPackages)
 
-			expect(result).toBe(expected)
+			expect(result).toBe(markedPackages[1].color)
 		})
 	})
 })
