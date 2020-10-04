@@ -20,7 +20,7 @@ export class DeltaGenerator {
 	private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode) {
 		const hashMap: Map<string, CodeMapNode> = new Map()
 
-		for (const { data } of hierarchy(rootNode).descendants()) {
+		for (const { data } of hierarchy(rootNode)) {
 			data.children = []
 			hashMap.set(data.path, data)
 		}

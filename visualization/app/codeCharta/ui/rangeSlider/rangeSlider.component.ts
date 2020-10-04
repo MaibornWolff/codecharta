@@ -156,8 +156,8 @@ export class RangeSliderController
 	}
 
 	private updateInputFieldWidth() {
-		const fromLength = this._viewModel.colorRangeFrom.toFixed().toString().length + 1
-		const toLength = this._viewModel.colorRangeTo.toFixed().toString().length + 1
+		const fromLength = this._viewModel.colorRangeFrom.toFixed().length + 1
+		const toLength = this._viewModel.colorRangeTo.toFixed().length + 1
 		const fromWidth = Math.min(Math.max(this.MIN_DIGITS, fromLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 		const toWidth = Math.min(Math.max(this.MIN_DIGITS, toLength), this.MAX_DIGITS) * this.DIGIT_WIDTH
 

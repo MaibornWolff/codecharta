@@ -4,7 +4,6 @@ import { instantiateModule, getService } from "../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 import { TEST_FILE_WITH_PATHS } from "../util/dataMocks"
-import { CodeMapHelper } from "../util/codeMapHelper"
 import { StoreService } from "./store.service"
 import { SearchPatternService } from "./store/dynamicSettings/searchPattern/searchPattern.service"
 
@@ -45,11 +44,6 @@ describe("NodeSearchService", () => {
 		beforeEach(() => {
 			nodeSearchService["codeMapPreRenderService"].getRenderMap = jest.fn(() => {
 				return JSON.parse(JSON.stringify(TEST_FILE_WITH_PATHS.map))
-			})
-
-			// Workaround for Windows paths, since "ignore" does not work for unit tests
-			CodeMapHelper.getNodesByGitignorePath = jest.fn((nodes, pattern) => {
-				return nodes.filter(it => it.name === pattern)
 			})
 		})
 

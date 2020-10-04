@@ -15,7 +15,7 @@ import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.ac
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, resetFiles, setMultiple, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
@@ -109,7 +109,7 @@ describe("codeMapPreRenderService", () => {
 	function isIdUnique() {
 		const idBuildingSet: Map<number, string> = new Map()
 
-		for (const node of hierarchy(codeMapPreRenderService.getRenderMap()).descendants()) {
+		for (const node of hierarchy(codeMapPreRenderService.getRenderMap())) {
 			if (idBuildingSet.has(node.data.id)) {
 				return false
 			}

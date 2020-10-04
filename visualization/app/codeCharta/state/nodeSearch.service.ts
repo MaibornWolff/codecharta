@@ -27,15 +27,9 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	onSearchPatternChanged(searchPattern: string) {
 		this.searchedNodes = CodeMapHelper.getNodesByGitignorePath(this.codeMapPreRenderService.getRenderMap(), searchPattern)
 		this.notifyNodeSearchComplete()
-		this.applySettingsSearchedNodePaths()
+		this.storeService.dispatch(setSearchedNodePaths(new Set(this.searchedNodes.map(x => x.path))))
 	}
 
-	private applySettingsSearchedNodePaths() {
-		const newSearchedNodePaths = this.searchedNodes.map(x => x.path)
-		this.storeService.dispatch(setSearchedNodePaths(new Set(newSearchedNodePaths)))
-	}
-
-	// TODO: These events are never listened upon. There are likely a lot of events fired like that.
 	private notifyNodeSearchComplete() {
 		this.$rootScope.$broadcast(NodeSearchService.NODE_SEARCH_COMPLETE_EVENT, this.searchedNodes)
 	}

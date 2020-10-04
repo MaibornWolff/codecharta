@@ -1,5 +1,5 @@
 "use strict"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
 import { CodeMapHelper } from "./codeMapHelper"
 import ignore from "ignore"
@@ -39,7 +39,7 @@ export class NodeDecorator {
 
 		const { nodeMetricData, edgeMetricData } = metricData
 		let id = 0
-		for (const { data } of hierarchy(map).descendants()) {
+		for (const { data } of hierarchy(map)) {
 			data.id = id
 			id++
 
@@ -94,13 +94,13 @@ export class NodeDecorator {
 	}
 
 	static decorateMapWithPathAttribute(file: CCFile) {
-		hierarchy(file.map).each(node => {
+		for (const node of hierarchy(file.map)) {
 			if (node.parent) {
 				node.data.path = `${node.parent.data.path}/${node.data.name}`
 			} else {
 				node.data.path = `/${node.data.name}`
 			}
-		})
+		}
 		return file
 	}
 
@@ -295,8 +295,9 @@ function isLeaf(node: CodeMapNode) {
 	return !node.children || node.children.length === 0
 }
 
-// TODO: Evaluate if sorting in `getMedian` is not better. It's a lot less code
-// and should roughly have the same performance.
+// TODO: Evaluate if sorting in `getMedian` is not better than using a
+// pre-sorted array. It's a lot less code and should roughly have the same
+// performance.
 function getMedian(numbers: number[]) {
 	if (numbers === undefined || numbers.length === 0) {
 		return 0
