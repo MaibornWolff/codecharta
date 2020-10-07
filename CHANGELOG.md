@@ -15,19 +15,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+- Comparing a map in delta mode with itself does not show differences anymore
+
 ### Chore 👨‍💻 👩‍💻
+
+- Improved performance of multiple operations (e.g., delta mode).
 
 ## [1.59.0] - 2020-10-09
 
 ### Added 🚀
- - new EXPERIMENTAL SCMLogParser version
-    - improved performance around 300% when parsing CodeCharta
-    - improved memory usage
-    - fixed issue with old parser creating incorrect nodes in CodeCharta #871
-    
-    - ATTENTION: the parser is experimental, therefore some potetial issues might remain, e.g. potentially an unhandled edge case when parsing node
-    - to use the new parser a reversed git log is needed, as well as a git file list, refer to ccsh scmlogparserv2 -h for additional information
-    
+
+- New EXPERIMENTAL SCMLogParser version
+  - Improved performance around 300% when parsing CodeCharta
+  - Improved memory usage
+  - Fixed issue with old parser creating incorrect nodes in CodeCharta #871
+  - ATTENTION: the parser is experimental, therefore some potential issues might remain, e.g. potentially an unhandled edge case when parsing node
+  - To use the new parser a reversed git log is needed, as well as a git file list, refer to `ccsh scmlogparserv2 -h` for additional information
+
 ### Changed
 
 ### Removed 🗑

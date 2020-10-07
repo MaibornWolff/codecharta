@@ -77,20 +77,7 @@ describe("deltaGenerator", () => {
 
 		const result = DeltaGenerator.getDeltaFile(fileA, fileB)
 
-		expect(result.map.children[3].children[0].children[0].attributes.monster).toBe(666)
-		expect(result.map.children[3].children[0].children[0].deltas.monster).toBe(666)
-		expect(result.map.children[3].children[0].children[1].attributes.special).toBe(undefined)
-		expect(result.map.children[3].children[0].children[1].deltas.special).toBe(-42)
-	})
-
-	it("additionalLeaf from fileB should exist in a after calling getDeltaFile, metrics should be 0", () => {
-		NodeDecorator.decorateMapWithPathAttribute(fileA)
-		NodeDecorator.decorateMapWithPathAttribute(fileB)
-
-		const result = DeltaGenerator.getDeltaFile(fileA, fileB)
-
-		expect(result.map.children[1].name).toBe("additional leaf")
-		expect(result.map.children[1].attributes.rloc).toBe(10)
+		expect(result.map).toMatchSnapshot()
 	})
 
 	it("getDeltaFile should result in expected deltaFiles", () => {
@@ -99,10 +86,7 @@ describe("deltaGenerator", () => {
 
 		const result = DeltaGenerator.getDeltaFile(fileA, fileB)
 
-		expect(result.map.children[0].deltas.rloc).toBe(-80)
-		expect(result.map.children[1].deltas.rloc).toBe(10)
-		expect(result.map.children[2].children[0].deltas.more).toBe(20)
-		expect(result.map.children[2].children[1].deltas.mcc).toBe(-10)
+		expect(result.map).toMatchSnapshot()
 	})
 
 	it("checking delta calculation between two attribute lists", () => {
