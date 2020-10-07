@@ -11,6 +11,7 @@ import {FileSelectionState} from "../../model/files/files";
 
 export interface CustomViewItem {
     name: string
+    mapName: string
     isApplicable: boolean
 }
 

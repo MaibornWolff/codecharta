@@ -29,6 +29,10 @@
       }
     }
 
+    i.fa {
+      margin-left: 0.8rem
+    }
+
     .action-button {
       margin-right: 1px;
       min-width: 13%;
@@ -36,6 +40,7 @@
 
       i.fa {
         font-size: x-small;
+        margin-left: 0;
       }
 
       &.add {

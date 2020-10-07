@@ -3,9 +3,9 @@
         <i class="fa fa-eye"></i>
     </md-button>
 
-    <md-menu-content class="custom-views-drop-down" width="2">
+    <md-menu-content class="custom-views-drop-down" width="7">
         <md-menu-item class="custom-views-item">
-            <md-button class="custom-views-name" ng-disabled="true">Your Custom Views</md-button>
+            <md-button class="custom-views-name" ng-disabled="true">Custom Views applicable to current map</md-button>
             <md-button ng-click="$ctrl.showAddCustomViewSettings()" class="action-button add" title="Create new custom view">
                 <i class="fa fa-plus" aria-hidden="true"></i>
             </md-button>
@@ -21,6 +21,7 @@
                     title="Apply custom view"
             >
                 {{ customView.name }}
+                <i ng-show="!customView.isApplicable" class="fa fa-info-circle left" title="This CustomView is applicable for map {{ customView.mapName }} only."></i>
             </md-button>
 
             <md-button

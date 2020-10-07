@@ -20,6 +20,7 @@ export class CustomViewHelper {
 		this.customViews.forEach(customView => {
 			customViewItems.push({
 				name: customView.name,
+				mapName: customView.mapName,
                 isApplicable: this.isCustomViewApplicable(currentMapName, customView.mapName)
 			})
 		})
