@@ -5,11 +5,10 @@ export class MapBuilder {
 	static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {
 		let rootNode: CodeMapNode
 		for (const [path, node] of hashMapWithAllNodes) {
-			node.children = []
-			const parentNode = this.getParentNode(hashMapWithAllNodes, path)
-			if (node.path === CodeChartaService.ROOT_PATH) {
+			if (path === CodeChartaService.ROOT_PATH) {
 				rootNode = node
 			} else {
+				const parentNode = this.getParentNode(hashMapWithAllNodes, path)
 				parentNode.children.push(node)
 			}
 		}
@@ -17,18 +16,14 @@ export class MapBuilder {
 	}
 
 	private static getParentNode(hashMap: Map<string, CodeMapNode>, path: string): CodeMapNode {
-		if (path === CodeChartaService.ROOT_PATH) {
-			return
-		}
+		do {
+			// TODO: Check what happens with Windows paths.
+			path = path.slice(0, path.lastIndexOf("/"))
 
-		// TODO: Check what happens with Windows paths.
-		const parentPath = path.slice(0, path.lastIndexOf("/"))
-
-		const node = hashMap.get(parentPath)
-		if (node) {
-			return node
-		}
-
-		return this.getParentNode(hashMap, parentPath)
+			const node = hashMap.get(path)
+			if (node) {
+				return node
+			}
+		} while (path !== CodeChartaService.ROOT_PATH)
 	}
 }
