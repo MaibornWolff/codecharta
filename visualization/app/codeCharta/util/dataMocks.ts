@@ -31,6 +31,7 @@ import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
+import {CustomViewItem} from "../ui/customViews/customViews.component";
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -1409,6 +1410,24 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 		scenarioName: "Scenario2",
 		isScenarioApplicable: false,
 		icons: [{ faIconClass: "fa fa-some", isSaved: true, tooltip: "some" }]
+	}
+]
+
+export const CUSTOM_VIEW_ITEMS: CustomViewItem[] = [
+	{
+		name: "SampleMap View #1",
+		mapName: "fileA",
+		isApplicable: true
+	},
+	{
+		name: "AnotherMap View #1",
+		mapName: "fileB",
+		isApplicable: false
+	},
+	{
+		name: "SampleMap View #2",
+		mapName: "fileA",
+		isApplicable: true
 	}
 ]
 

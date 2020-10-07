@@ -7,7 +7,9 @@ import {setColorRange} from "../../state/store/dynamicSettings/colorRange/colorR
 import {ColorRange} from "../../codeCharta.model";
 import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
 import {setMargin} from "../../state/store/dynamicSettings/margin/margin.actions";
-import {FileSelectionState} from "../../model/files/files";
+import {FileSelectionState, FileState} from "../../model/files/files";
+import {FilesSelectionSubscriber, FilesService} from "../../state/store/files/files.service";
+import {IRootScopeService} from "angular";
 
 export interface CustomViewItem {
     name: string
@@ -15,26 +17,33 @@ export interface CustomViewItem {
     isApplicable: boolean
 }
 
-export class CustomViewsController {
+export class CustomViewsController implements FilesSelectionSubscriber {
     private _viewModel: {
         dropDownCustomViewItems: CustomViewItem[]
     } = {
         dropDownCustomViewItems: []
     }
 
+    private selectedFileName: string
+
     constructor(
+        private $rootScope: IRootScopeService,
         private storeService: StoreService,
         private dialogService: DialogService,
         private threeOrbitControlsService: ThreeOrbitControlsService
     ) {
+        FilesService.subscribe(this.$rootScope, this)
+    }
+
+
+    onFilesSelectionChanged(files: FileState[]) {
+        this.selectedFileName = files.find(
+            fileItem => fileItem.selectedAs === FileSelectionState.Single
+        ).file.fileMeta.fileName
     }
 
     loadCustomViews() {
-        const currentMapName = this.storeService.getState().files.find(
-            fileItem => fileItem.selectedAs === FileSelectionState.Single
-        ).file.fileMeta.fileName
-
-        this._viewModel.dropDownCustomViewItems = CustomViewHelper.getCustomViewItems(currentMapName)
+        this._viewModel.dropDownCustomViewItems = CustomViewHelper.getCustomViewItems(this.selectedFileName)
         this._viewModel.dropDownCustomViewItems.sort(CustomViewHelper.sortCustomViewDropDownList())
     }
 
