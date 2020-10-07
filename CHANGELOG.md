@@ -11,6 +11,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+- Improved search
+  1. Not providing any star in the search bar from now on expects the input to
+     be a wildcard search. Thus, files are going to match paths that have
+     leading or following characters. E.g., `oo` is going to match
+     `/root/foobar`.
+  1. To use the explicit former search mode, wrap the search entry in quotes as
+      in: `"oo"`. This would only match filenames that are exactly `oo`.
+  1. The search field accepts multiple search entries at once, separated by
+      commata. `foo,bar` is going to search for both `*foo*` and `*bar*` and
+      marks all matched files accordingly.
+  1. It is possible to invert the search with a leading exclamation mark as in
+      `!foobar`. That will match any file that does not match `*foobar*`. It is
+      only possible to invert the complete input, not individual search entries.
+  1. Whitespace handling changed to ignore leading whitespace.
+
 ### Removed 🗑
 
 ### Fixed 🐞

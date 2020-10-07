@@ -50,8 +50,9 @@ describe("NodeSearchService", () => {
 		it("node should be retrieved based on query", () => {
 			nodeSearchService.onSearchPatternChanged("small leaf")
 
-			expect(nodeSearchService["searchedNodes"].length).toEqual(1)
+			expect(nodeSearchService["searchedNodes"].length).toEqual(2)
 			expect(nodeSearchService["searchedNodes"][0].name).toEqual("small leaf")
+			expect(nodeSearchService["searchedNodes"][1].name).toEqual("other small leaf")
 		})
 
 		it("no node should be found for empty query", () => {
@@ -63,7 +64,10 @@ describe("NodeSearchService", () => {
 		it("should update searched paths", () => {
 			nodeSearchService.onSearchPatternChanged("small leaf")
 
-			expect([...storeService.getState().dynamicSettings.searchedNodePaths]).toEqual(["/root/Parent Leaf/small leaf"])
+			expect([...storeService.getState().dynamicSettings.searchedNodePaths]).toEqual([
+				"/root/Parent Leaf/small leaf",
+				"/root/Parent Leaf/other small leaf"
+			])
 		})
 	})
 })
