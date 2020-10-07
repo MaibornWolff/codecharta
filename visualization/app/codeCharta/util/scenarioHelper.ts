@@ -128,7 +128,8 @@ export class ScenarioHelper {
 	private static setScenariosToLocalStorage(scenarios: Map<string, RecursivePartial<Scenario>>) {
 		const newLocalStorageElement: CCLocalStorage = {
 			version: this.CC_LOCAL_STORAGE_VERSION,
-			scenarios: [...scenarios]
+			scenarios: [...scenarios],
+			customViews: []
 		}
 		localStorage.setItem("scenarios", JSON.stringify(newLocalStorageElement))
 	}

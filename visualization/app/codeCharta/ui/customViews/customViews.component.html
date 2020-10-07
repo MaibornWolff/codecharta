@@ -1,0 +1,42 @@
+<md-menu class="custom-views-component">
+    <md-button class="custom-views-button" ng-click="$ctrl.loadCustomViews(); $mdMenu.open($event); " title="Open your saved custom views">
+        <i class="fa fa-eye"></i>
+    </md-button>
+
+    <md-menu-content class="custom-views-drop-down" width="2">
+        <md-menu-item class="custom-views-item">
+            <md-button class="custom-views-name" ng-disabled="true">Your Custom Views</md-button>
+            <md-button ng-click="$ctrl.showAddCustomViewSettings()" class="action-button add" title="Create new custom view">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </md-button>
+        </md-menu-item>
+
+        <md-divider></md-divider>
+
+        <md-menu-item class="custom-views-item" ng-repeat="customView in $ctrl._viewModel.dropDownCustomViewItems track by $index">
+            <md-button
+                    class="button-hovering"
+                    ng-click="$ctrl.applyCustomView(customView.name)"
+                    ng-disabled="!customView.isApplicable"
+                    title="Apply custom view"
+            >
+                {{ customView.name }}
+            </md-button>
+
+            <md-button
+                    ng-click="$ctrl.removeCustomView(customView.name)"
+                    class="action-button remove button-hovering"
+                    title="Remove custom view"
+            >
+                <i class="fa fa-minus-square"></i>
+            </md-button>
+        </md-menu-item>
+    </md-menu-content>
+</md-menu>
+
+<md-menu class="custom-views-component">
+    <md-button class="custom-views-button plus" ng-click="$ctrl.showAddCustomViewSettings();" title="Fast save current view">
+        <i class="fa fa-plus"></i>
+    </md-button>
+    <md-menu-content></md-menu-content>
+</md-menu>

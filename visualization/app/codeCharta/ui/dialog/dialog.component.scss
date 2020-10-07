@@ -8,7 +8,8 @@
 }
 
 .download-dialog,
-.global-settings {
+.global-settings,
+.custom-view-dialog {
 	min-width: 50%;
 }
 
@@ -71,5 +72,11 @@
 	}
 	.scenario-input {
 		width: 80%;
+	}
+}
+
+.custom-view-dialog {
+	.warning {
+		color: darkorange
 	}
 }

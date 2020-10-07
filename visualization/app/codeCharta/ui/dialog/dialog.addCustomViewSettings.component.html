@@ -1,0 +1,23 @@
+<md-dialog class="custom-view-dialog">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<h2>Add Custom View</h2>
+		</div>
+	</md-toolbar>
+
+	<md-dialog-content>
+		<div class="md-dialog-content">
+			<md-input-container class="md-block">
+				<label>View Name</label>
+				<input class="custom-view-input" type="text" ng-model="$ctrl._viewModel.customViewName" ng-on-show="$ctrl.validateCustomViewName()" ng-on-keyup="$ctrl.validateCustomViewName()" />
+			</md-input-container>
+			<div class="md-block">
+				<div class="warning" ng-bind-html="$ctrl._viewModel.addInfoMessage"></div>
+			</div>
+		</div>
+	</md-dialog-content>
+
+	<md-dialog-actions>
+		<md-button ng-click="$ctrl.addCustomView()" ng-disabled="!$ctrl.isNewCustomViewValid()" class="md-primary">Add</md-button>
+	</md-dialog-actions>
+</md-dialog>

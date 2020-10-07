@@ -32,7 +32,7 @@ ribbon-bar-component {
 			width: 380px;
 		}
 
-		&:not(#scenario-card) {
+		&:not(#scenario-card):not(#custom-views-card) {
 			min-width: 240px;
 		}
 

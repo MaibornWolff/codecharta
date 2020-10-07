@@ -3,6 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
+import "./customViews/customViews.module";
 import "./attributeTypeSelector/attributeTypeSelector.module"
 import "./sortingOption/sortingOption.module"
 import "./sortingButton/sortingButton.module"
@@ -45,6 +46,7 @@ import "./viewCube/viewCube.module"
 
 angular.module("app.codeCharta.ui", [
 	// Plop: Append component name here
+	"app.codeCharta.ui.customViews",
 	"app.codeCharta.ui.sortingOptionDialog",
 	"app.codeCharta.ui.sortingButton",
 	"app.codeCharta.ui.attributeTypeSelector",
