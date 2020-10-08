@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Deselcting a building will instantly dehighlight the buildings which were connected through edges #890
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.57.4] - 2020-09-25
