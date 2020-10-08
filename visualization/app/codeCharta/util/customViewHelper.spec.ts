@@ -45,13 +45,10 @@ describe("CustomViewHelper", () => {
             const customViewStub1 = {name: "stubbedView1", mapName: "testy.cc.json", stateSettings: {}} as CustomView
 
             // Reset customViews in CustomViewHelper
-            Object.defineProperty(CustomViewHelper, 'customViews', { get: () => new Map()})
+            CustomViewHelper['customViews'].clear()
             expect(CustomViewHelper.getViewNameSuggestionByMapName(customViewStub1.mapName)).toBe('testy #1')
 
-            const myMap = new Map()
-            myMap.set(customViewStub1.name, customViewStub1)
-
-            Object.defineProperty(CustomViewHelper, 'customViews', { get: () => myMap})
+            CustomViewHelper['customViews'].set(customViewStub1.name, customViewStub1)
             expect(CustomViewHelper.getViewNameSuggestionByMapName(customViewStub1.mapName)).toBe('testy #2')
         })
 
