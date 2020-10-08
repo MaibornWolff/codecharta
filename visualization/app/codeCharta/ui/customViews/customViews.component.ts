@@ -24,7 +24,7 @@ export class CustomViewsController implements FilesSelectionSubscriber {
         dropDownCustomViewItems: []
     }
 
-    private selectedFileName: string
+    private nameOfSelectedMapFile: string
 
     constructor(
         private $rootScope: IRootScopeService,
@@ -35,15 +35,14 @@ export class CustomViewsController implements FilesSelectionSubscriber {
         FilesService.subscribe(this.$rootScope, this)
     }
 
-
     onFilesSelectionChanged(files: FileState[]) {
-        this.selectedFileName = files.find(
+        this.nameOfSelectedMapFile = files.find(
             fileItem => fileItem.selectedAs === FileSelectionState.Single
         ).file.fileMeta.fileName
     }
 
     loadCustomViews() {
-        this._viewModel.dropDownCustomViewItems = CustomViewHelper.getCustomViewItems(this.selectedFileName)
+        this._viewModel.dropDownCustomViewItems = CustomViewHelper.getCustomViewItems(this.nameOfSelectedMapFile)
         this._viewModel.dropDownCustomViewItems.sort(CustomViewHelper.sortCustomViewDropDownList())
     }
 

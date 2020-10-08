@@ -72,7 +72,7 @@ describe("CustomViewsController", () => {
         })
     })
 
-    describe("apllyCustomView", () => {
+    describe("applyCustomView", () => {
         it("should call store.dispatch", () => {
             const customViewStub = {stateSettings: {dynamicSettings: {margin: 1, colorRange: {from:1, to:2}}}} as CustomView
             CustomViewHelper.getCustomViewSettings = jest.fn().mockReturnValue(customViewStub)

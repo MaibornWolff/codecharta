@@ -2,8 +2,10 @@ import "./dialog.component.scss"
 import {CustomViewHelper} from "../../util/customViewHelper";
 import {StoreService} from "../../state/store.service";
 import {DialogService} from "./dialog.service";
+import {FilesSelectionSubscriber, FilesService} from "../../state/store/files/files.service";
+import {FileSelectionState, FileState} from "../../model/files/files";
 
-export class DialogAddCustomViewSettingsComponent {
+export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubscriber{
 	private _viewModel: {
 		customViewName: string
 		addInfoMessage: string
@@ -12,13 +14,24 @@ export class DialogAddCustomViewSettingsComponent {
 		addInfoMessage: ""
 	}
 
+	private nameOfSelectedMapFile: string
+
 	constructor(
+		private $rootScope,
 		private $mdDialog,
 		private storeService: StoreService,
 		private dialogService: DialogService
 	) {
-		this._viewModel.customViewName = CustomViewHelper.getViewNameSuggestion(this.storeService.getState())
+		FilesService.subscribe(this.$rootScope, this)
+
+		this._viewModel.customViewName = CustomViewHelper.getViewNameSuggestionByMapName(this.nameOfSelectedMapFile)
 		this.validateCustomViewName()
+	}
+
+	onFilesSelectionChanged(files: FileState[]) {
+		this.nameOfSelectedMapFile = files.find(
+			fileItem => fileItem.selectedAs === FileSelectionState.Single
+		).file.fileMeta.fileName
 	}
 
 	hide() {

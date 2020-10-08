@@ -6,7 +6,6 @@ import {
 import { CustomViewItem } from "../ui/customViews/customViews.component";
 import {CustomViewBuilder} from "./customViewBuilder";
 import {CustomView} from "../model/customView/customView.api.model";
-import {FileSelectionState} from "../model/files/files";
 
 export class CustomViewHelper {
 	private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -14,7 +13,7 @@ export class CustomViewHelper {
 
 	private static customViews: Map<string, RecursivePartial<CustomView>> = CustomViewHelper.loadCustomViews()
 
-	static getCustomViewItems(currentMapName = "") {
+	static getCustomViewItems(currentMapName = ""): CustomViewItem[] {
 		const customViewItems: CustomViewItem[] = []
 
 		this.customViews.forEach(customView => {
@@ -81,35 +80,21 @@ export class CustomViewHelper {
 		return CustomViewBuilder.buildFromState(viewName, state)
 	}
 
-	static getViewNameSuggestion(state: State): string {
+	static getViewNameSuggestionByMapName(nameOfSelectedMap: string): string {
 		let suggestedViewName = ""
 
-		if (!state.files) {
+		if (!nameOfSelectedMap) {
 			return suggestedViewName
 		}
 
-		const selectedFile = state.files.find(
-			fileItem => fileItem.selectedAs === FileSelectionState.Single
-		)
-		if (!selectedFile) {
-			return suggestedViewName
-		}
-
-		const selectedMapFile = selectedFile.file
-
-		if (!selectedMapFile || !selectedMapFile.fileMeta.fileName) {
-			return suggestedViewName
-		}
-
-		const mapName = selectedMapFile.fileMeta.fileName
-		suggestedViewName = mapName
+		suggestedViewName = nameOfSelectedMap
 
 		const ccJsonExtensionIndex = suggestedViewName.indexOf(".cc.json")
 		if (ccJsonExtensionIndex >= 0) {
 			suggestedViewName = suggestedViewName.slice(0, ccJsonExtensionIndex)
 		}
 
-		return `${suggestedViewName} #${CustomViewHelper.getCustomViewsAmountByMap(mapName) + 1}`
+		return `${suggestedViewName} #${CustomViewHelper.getCustomViewsAmountByMap(nameOfSelectedMap) + 1}`
 	}
 
 	static deleteCustomView(viewName: string) {
@@ -122,7 +107,8 @@ export class CustomViewHelper {
 			if (a.isApplicable && b.isApplicable) {
 				if (a.name > b.name) {
 					return 1
-				} else if (a.name < b.name) {
+				}
+				if (a.name < b.name) {
 					return -1
 				}
 				return 0
