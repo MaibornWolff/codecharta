@@ -7,13 +7,12 @@ import {State} from "../codeCharta.model";
 describe("CustomViewHelper", () => {
     describe("addCustomView", () => {
         it("should add custom view and store them to localStorage", () => {
-            localStorage.setItem = jest.fn()
-
             const customViewStub = {name: "stubbedView1", stateSettings: {}} as CustomView
 
+            CustomViewHelper["setCustomViewsToLocalStorage"] = jest.fn()
             CustomViewHelper.addCustomView(customViewStub)
 
-            expect(localStorage.setItem).toHaveBeenCalledWith("customViews", expect.stringContaining("customViews"))
+            expect(CustomViewHelper["setCustomViewsToLocalStorage"]).toHaveBeenCalled()
 
             expect(CustomViewHelper.hasCustomView(customViewStub.name)).toBeTruthy()
             const receivedCustomView = CustomViewHelper.getCustomViewSettings(customViewStub.name)
@@ -23,8 +22,6 @@ describe("CustomViewHelper", () => {
 
     describe("getCustomViewsAmountByMap", () => {
         it("should count CustomViews for a specific map name", () => {
-            localStorage.setItem = jest.fn()
-
             const customViewStub1 = {name: "stubbedView1", mapName: "testy.cc.json", stateSettings: {}} as CustomView
             const customViewStub2 = {name: "stubbedView2", mapName: "testy.cc.json", stateSettings: {}} as CustomView
             const customViewStub3 = {name: "stubbedView3", mapName: "another.cc.json", stateSettings: {}} as CustomView
@@ -40,8 +37,6 @@ describe("CustomViewHelper", () => {
 
     describe("getViewNameSuggestion", () => {
         it("should return the right CustomView name suggestion based on already stored CustomViews", () => {
-            localStorage.setItem = jest.fn()
-
             const customViewStub1 = {name: "stubbedView1", mapName: "testy.cc.json", stateSettings: {}} as CustomView
 
             // Reset customViews in CustomViewHelper
@@ -59,7 +54,7 @@ describe("CustomViewHelper", () => {
 
     describe("deleteCustomView", () => {
         it("should delete CustomView from Local Storage", () => {
-            localStorage.setItem = jest.fn()
+            CustomViewHelper["setCustomViewsToLocalStorage"] = jest.fn()
 
             const customViewStub1 = {name: "stubbedView1", mapName: "testy.cc.json", stateSettings: {}} as CustomView
 
@@ -70,7 +65,7 @@ describe("CustomViewHelper", () => {
             expect(CustomViewHelper.hasCustomView(customViewStub1.name)).toBeFalsy()
 
             // One call for the add and another one for the delete
-            expect(localStorage.setItem).toHaveBeenCalledTimes(2)
+            expect(CustomViewHelper["setCustomViewsToLocalStorage"]).toHaveBeenCalledTimes(2)
         })
     })
 
