@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Color-Metric slider is set and activated in the map accordingly to the released sliderbutton #1319
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.58.1] - 2020-10-02
