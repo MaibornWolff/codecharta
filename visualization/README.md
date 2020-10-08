@@ -46,8 +46,9 @@ Once you have installed the project, you can use all grunt tasks described in th
 
 #### Test
 
-`npm run test` runs all unit tests on the source files in app/ and generates a coverage report in dist/coverage/.
-`npm run e2e` runs all e2e tests on the built app in headless mode.
+- `npm run test` runs all unit tests on the source files in app/ and generates a coverage report in dist/coverage/.
+- `npm run e2e` runs all e2e tests on the built app in headless mode. You have to stop your running dev-webserver.
+To follow/watch the steps the e2e test is performing, deactivate headless mode in jest-puppeteer.config.js (and maybe set the slowMo parameter).
 
 adding ":auto" to run target will run the tests in watch mode
 
