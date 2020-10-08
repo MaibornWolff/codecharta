@@ -16,7 +16,7 @@ buildscript {
         kotlinx_coroutines_version = '1.3.9'
         picocli_version = '4.5.1'
         slf4j_version = '1.7.30'
-        sonar_java_version = '5.14.0.18788'
+        sonar_java_version = '6.8.0.23379'
         sonarqube_version = '3.0'
         univocity_parsers_version = '2.9.0'
 
@@ -27,7 +27,7 @@ buildscript {
         junit4_version = '4.12'
         junit5_version = '5.7.0'
         junit_platform_version = '1.7.0'
-        ktlint_version = '9.4.0'
+        ktlint_version = '9.4.1'
         mockito_core_version = '3.5.7'
         mockito_kotlin_version = '2.2.0'
         mokk_version = '1.10.0'

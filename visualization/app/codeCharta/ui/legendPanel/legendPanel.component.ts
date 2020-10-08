@@ -22,10 +22,7 @@ import {
 	IsAttributeSideBarVisibleSubscriber
 } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { isDeltaState } from "../../model/files/files.helper"
-import {
-	ColorMetricService,
-	ColorMetricSubscriber
-} from "../../state/store/dynamicSettings/colorMetric/colorMetric.service";
+import { ColorMetricService, ColorMetricSubscriber } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
 
 export interface PackageList {
 	colorPixel: string

@@ -22,10 +22,9 @@ export class CodeMapArrowService
 	}
 
 	onBuildingSelected(selectedBuilding: CodeMapBuilding) {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None" && !selectedBuilding.node.flat) {
+		if (this.isEdgeApplicableForBuilding(selectedBuilding)) {
 			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
+			this.showEdgesOfBuildings()
 		}
 		this.scale()
 	}
@@ -40,10 +39,9 @@ export class CodeMapArrowService
 	}
 
 	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
-		const state = this.storeService.getState()
-		if (state.dynamicSettings.edgeMetric !== "None" && !hoveredBuilding.node.flat) {
+		if (this.isEdgeApplicableForBuilding(hoveredBuilding)) {
 			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
+			this.showEdgesOfBuildings(hoveredBuilding)
 		}
 		this.scale()
 	}
@@ -52,7 +50,7 @@ export class CodeMapArrowService
 		const state = this.storeService.getState()
 		if (state.dynamicSettings.edgeMetric !== "None") {
 			this.clearArrows()
-			this.showEdgesOfBuildings(state.fileSettings.edges)
+			this.showEdgesOfBuildings()
 		}
 		this.scale()
 	}
@@ -111,15 +109,25 @@ export class CodeMapArrowService
 		}
 	}
 
-	private showEdgesOfBuildings(edges: Edge[]) {
-		const node = this.threeSceneService.getHighlightedNode()
-		if (this.threeSceneService.getSelectedBuilding() && node) {
-			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
-			this.buildPairingEdges(node, edges)
-		} else if (node) {
-			this.buildPairingEdges(node, edges)
-		} else if (this.threeSceneService.getSelectedBuilding()) {
-			this.buildPairingEdges(this.threeSceneService.getSelectedBuilding().node, edges)
+	private isEdgeApplicableForBuilding(codeMapBuilding: CodeMapBuilding) {
+		return this.storeService.getState().dynamicSettings.edgeMetric !== "None" && !codeMapBuilding.node.flat
+	}
+
+	private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {
+		const edges = this.storeService.getState().fileSettings.edges
+		const buildings: Map<string, Node> = new Map()
+		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
+
+		if (selectedBuilding) {
+			const { node } = selectedBuilding
+			buildings.set(node.path, node)
+		}
+		if (hoveredbuilding) {
+			const { node } = hoveredbuilding
+			buildings.set(node.path, node)
+		}
+		if (buildings.size > 0) {
+			this.buildPairingEdges(buildings, edges)
 		} else {
 			this.addEdgePreview(
 				null,
@@ -128,13 +136,13 @@ export class CodeMapArrowService
 		}
 	}
 
-	private buildPairingEdges(node: Node, edges: Edge[]) {
+	private buildPairingEdges(node: Map<string, Node>, edges: Edge[]) {
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
 			const targetNode = this.map.get(edge.toNodeName)
-			if (originNode && targetNode && originNode.path === node.path) {
+			if (originNode && targetNode && node.has(originNode.path)) {
 				this.addArrow(targetNode, originNode, true)
-			} else if (originNode && targetNode && targetNode.path === node.path) {
+			} else if (originNode && targetNode && node.has(targetNode.path)) {
 				this.addArrow(targetNode, originNode, false)
 			}
 		}

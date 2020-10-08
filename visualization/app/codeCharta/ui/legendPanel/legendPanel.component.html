@@ -3,9 +3,7 @@
 	ng-class="{ visible: $ctrl._viewModel.isLegendVisible, sideBarVisible: $ctrl._viewModel.isSideBarVisible }"
 >
 	<div ng-if="!$ctrl._viewModel.isDeltaState">
-		<div class="legend-block bold">
-			{{ $ctrl._viewModel.colorMetric }}:
-		</div>
+		<div class="legend-block bold">{{ $ctrl._viewModel.colorMetric }}:</div>
 		<div class="legend-block">
 			<img ng-src="{{ $ctrl._viewModel.colorIcons.positive }}" alt="" />
 			<span ng-if="!$ctrl._viewModel.invertColorRange">0 to &lt; {{ $ctrl._viewModel.colorRange.from | number: 0 }}</span>
