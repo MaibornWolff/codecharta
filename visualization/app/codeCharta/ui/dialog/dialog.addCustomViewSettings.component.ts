@@ -4,6 +4,7 @@ import {StoreService} from "../../state/store.service";
 import {DialogService} from "./dialog.service";
 import {FilesSelectionSubscriber, FilesService} from "../../state/store/files/files.service";
 import {FileSelectionState, FileState} from "../../model/files/files";
+import {IRootScopeService} from "angular";
 
 export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubscriber{
 	private _viewModel: {
@@ -17,21 +18,22 @@ export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubsc
 	private nameOfSelectedMapFile: string
 
 	constructor(
-		private $rootScope,
+		private $rootScope: IRootScopeService,
 		private $mdDialog,
 		private storeService: StoreService,
 		private dialogService: DialogService
 	) {
 		FilesService.subscribe(this.$rootScope, this)
-
-		this._viewModel.customViewName = CustomViewHelper.getViewNameSuggestionByMapName(this.nameOfSelectedMapFile)
-		this.validateCustomViewName()
+		this.onFilesSelectionChanged(this.storeService.getState().files)
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
 		this.nameOfSelectedMapFile = files.find(
 			fileItem => fileItem.selectedAs === FileSelectionState.Single
 		).file.fileMeta.fileName
+
+		this._viewModel.customViewName = CustomViewHelper.getViewNameSuggestionByMapName(this.nameOfSelectedMapFile)
+		this.validateCustomViewName()
 	}
 
 	hide() {
