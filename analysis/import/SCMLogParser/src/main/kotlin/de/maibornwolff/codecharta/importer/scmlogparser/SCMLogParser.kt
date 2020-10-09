@@ -102,7 +102,10 @@ class SCMLogParser(
             project = MergeFilter.mergePipedWithCurrentProject(pipedProject, project)
         }
         if (outputFile.isNotEmpty()) {
-            if (compress) ProjectSerializer.serializeAsCompressedFile(project, outputFile) else ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
+            if (compress) ProjectSerializer.serializeAsCompressedFile(
+                project,
+                outputFile
+            ) else ProjectSerializer.serializeProjectAndWriteToFile(project, outputFile)
         } else {
             ProjectSerializer.serializeProject(project, OutputStreamWriter(output))
         }

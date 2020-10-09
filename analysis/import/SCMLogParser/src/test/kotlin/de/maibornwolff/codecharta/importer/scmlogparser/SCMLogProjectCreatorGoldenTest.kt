@@ -38,7 +38,13 @@ class SCMLogProjectCreatorGoldenTest(
         fun data(): Collection<Array<Any>> {
             return Arrays.asList(
                 arrayOf("svn", SVNLogParserStrategy(), true, "example_svn.log", "expected_svn.json"),
-                arrayOf("git_numstat", GitLogNumstatRawParserStrategy(), true, "example_git_numstat.log", "expected_git_numstat.json"),
+                arrayOf(
+                    "git_numstat",
+                    GitLogNumstatRawParserStrategy(),
+                    true,
+                    "example_git_numstat.log",
+                    "expected_git_numstat.json"
+                ),
                 arrayOf("git", GitLogParserStrategy(), false, "example_git.log", "expected_git.json")
             )
         }
