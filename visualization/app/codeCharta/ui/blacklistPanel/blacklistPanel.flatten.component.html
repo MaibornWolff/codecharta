@@ -1,9 +1,9 @@
 <md-list>
 	<span class="header">
 		<h3 class="header-text">Flattened</h3>
-		<i class="fa fa-question-circle-o">
+		<em class="fa fa-question-circle-o">
 			<md-tooltip>Flattened nodes are shown as flat/short buildings and are included in folder metrics</md-tooltip>
-		</i>
+		</em>
 	</span>
 
 	<div class="sub-list">
@@ -15,9 +15,9 @@
 			</div>
 		</md-list-item>
 
-		<md-list-item ng-repeat="item in $ctrl._viewModel.flatten | orderBy: ['path'] track by $index" title="{{::item}}">
-			<md-button class="round-button" ng-click="$ctrl.removeBlacklistEntry(item, 'flatten')">
-				<i class="fa fa-minus-square" title="Remove list item"></i>
+		<md-list-item ng-repeat="item in $ctrl._viewModel.flatten | orderBy: ['path'] track by $index" title="{{::item.path}}">
+			<md-button class="round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
+				<em class="fa fa-minus-square" title="Remove list item"></em>
 			</md-button>
 			<div class="pattern-text" layout="column">
 				<p>

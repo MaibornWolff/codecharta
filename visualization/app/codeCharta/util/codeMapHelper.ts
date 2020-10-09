@@ -1,4 +1,4 @@
-import { hierarchy } from "d3-hierarchy"
+import { hierarchy, HierarchyNode } from "d3-hierarchy"
 import { BlacklistItem, BlacklistType, CodeMapNode, MarkedPackage } from "../codeCharta.model"
 import ignore from "ignore"
 
@@ -97,6 +97,6 @@ export function isBlacklisted(node: CodeMapNode) {
 	return node.isExcluded || node.isFlattened
 }
 
-export function isLeaf(node) {
+export function isLeaf(node: CodeMapNode | HierarchyNode<unknown>) {
 	return node.children === undefined || node.children.length === 0
 }
