@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.59.0] - 2020-10-09
+
+### Added 🚀
  - new EXPERIMENTAL SCMLogParser version
     - improved performance around 300% when parsing CodeCharta
     - improved memory usage
