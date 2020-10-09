@@ -8,7 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ## [unreleased]
 
 ### Added 🚀
-
+ - new EXPERIMENTAL SCMLogParser version
+    - improved performance around 300% when parsing CodeCharta
+    - improved memory usage
+    - fixed issue with old parser creating incorrect nodes in CodeCharta #871
+    
+    - ATTENTION: the parser is experimental, therefore some potetial issues might remain, e.g. potentially an unhandled edge case when parsing node
+    - to use the new parser a reversed git log is needed, as well as a git file list, refer to ccsh scmlogparserv2 -h for additional information
+    
 ### Changed
 
 ### Removed 🗑
