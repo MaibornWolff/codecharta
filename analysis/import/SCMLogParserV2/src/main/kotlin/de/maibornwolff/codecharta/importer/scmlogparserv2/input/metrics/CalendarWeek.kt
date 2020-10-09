@@ -5,39 +5,41 @@ import java.time.temporal.WeekFields
 
 internal data class CalendarWeek(private val week: Int, private val year: Int) : Comparable<CalendarWeek> {
 
-    override fun compareTo(o: CalendarWeek): Int {
-        return numberOfWeeksBetween(this, o)
+    override fun compareTo(week: CalendarWeek): Int {
+        return numberOfWeeksBetween(this, week)
     }
 
     companion object {
 
         fun forDateTime(dateTime: OffsetDateTime): CalendarWeek {
-            val cwWeek = dateTime.get(WeekFields.ISO.weekOfWeekBasedYear())
-            var cwYear = dateTime.year
-            cwYear = modifyYear(dateTime, cwWeek, cwYear)
-            return CalendarWeek(cwWeek, cwYear)
+            val week = dateTime.get(WeekFields.ISO.weekOfWeekBasedYear())
+            var year = dateTime.year
+            year = modifyYear(dateTime, week, year)
+            return CalendarWeek(week, year)
         }
 
         fun numberOfWeeksBetween(a: CalendarWeek, b: CalendarWeek): Int {
             return b.week + 52 * b.year - (a.week + 52 * a.year)
         }
 
-        private fun modifyYear(dateTime: OffsetDateTime, cwWeek: Int, cwYear: Int): Int {
-            return if (dayIsOneOfTheLastSevenDaysInYear(dateTime) && isFirstOrSecondWeek(cwWeek)) {
-                cwYear + 1
-            } else if (dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime) && !isFirstOrSecondWeek(cwWeek)) {
-                cwYear - 1
-            } else {
-                cwYear
+        private fun modifyYear(dateTime: OffsetDateTime, week: Int, initialYear: Int): Int {
+            var year = initialYear
+            if (isFirstOrSecondWeek(week)) {
+                if (dayIsOneOfTheLastSevenDaysInYear(dateTime)) {
+                    year += 1
+                }
+            } else if (dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime)) {
+                year -= 1
             }
-        }
 
+            return year
+        }
         private fun dayIsOneOfTheFirstSevenDaysOfTheYear(dateTime: OffsetDateTime): Boolean {
             return dateTime.dayOfYear < 7
         }
 
-        private fun isFirstOrSecondWeek(kalenderWeeknWeek: Int): Boolean {
-            return kalenderWeeknWeek <= 2
+        private fun isFirstOrSecondWeek(weekNumber: Int): Boolean {
+            return weekNumber <= 2
         }
 
         private fun dayIsOneOfTheLastSevenDaysInYear(dateTime: OffsetDateTime): Boolean {

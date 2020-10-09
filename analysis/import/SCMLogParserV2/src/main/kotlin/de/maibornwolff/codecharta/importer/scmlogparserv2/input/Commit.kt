@@ -11,7 +11,7 @@ class Commit(
 
     val modifications: List<Modification>
 
-    val filenames: List<String>
+    val fileNameList: List<String>
         get() = modifications.map { it.currentFilename }
 
     val isEmpty = modifications.isEmpty()

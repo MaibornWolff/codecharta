@@ -57,10 +57,6 @@ class IntegrationTest {
             !namesInVCF.contains(element)
         }
 
-        for (item in newList) {
-            println("Mssing: $item")
-        }
-
         Assert.assertEquals(project_name_list.size, namesInVCF.size)
 
         for (item in namesInVCF) {

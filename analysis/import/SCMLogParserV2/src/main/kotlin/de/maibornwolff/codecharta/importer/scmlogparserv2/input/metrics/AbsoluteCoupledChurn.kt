@@ -24,9 +24,7 @@ class AbsoluteCoupledChurn : Metric {
             .map { it.additions + it.deletions }
             .sum()
 
-        if (commitsTotalChurn > 0) {
-            totalChurn += commitsTotalChurn
-        }
+        totalChurn += commitsTotalChurn
     }
 
     override fun registerModification(modification: Modification) {

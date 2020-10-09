@@ -65,7 +65,7 @@ class VersionControlledFilesInGitProjectTest {
     }
 
     @Test
-    fun test_given_vcf_with_duplicates_with_second_deleted_then_deleted_file() {
+    fun test_given_vcf_with_duplicates_with_second_file_added_deleted_then_delete__second_file() {
 
         vcfList.addFileBy("src/Main.kt")
 

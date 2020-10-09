@@ -35,15 +35,14 @@ class VersionControlledFile internal constructor(
      * registers commits in chronological order
      */
     fun registerCommit(commit: Commit, mod: Modification) {
-        when (true) {
-            this.isDeleted() && (mod.isTypeModify() || mod.isTypeRename()) -> this.mutate()
-            !commit.isMergeCommit() && !this.isDeleted() && mod.isTypeAdd() && !mod.isInitialAdd() -> this.mutate()
-        }
 
-        // TODO improve performance - do not iterate metrics collection twice
-        metrics.forEach { it.registerCommit(commit) }
+        flagCommitAsMutatedIfNeeded(commit, mod)
+
+        metrics.forEach {
+            it.registerCommit(commit)
+            it.registerModification(mod)
+        }
         authors.add(commit.author)
-        metrics.forEach { it.registerModification(mod) }
     }
 
     fun containsRename(rename: String): Boolean {
@@ -59,26 +58,29 @@ class VersionControlledFile internal constructor(
     }
 
     fun getEdgeList(): List<Edge> {
-        val edgeList = mutableListOf<Edge>()
+        val edgeMap = mutableMapOf<String, Edge>()
         metrics.flatMap { it.getEdges() }
             .forEach { edge ->
-                addEdgeToEdgeList(edge, edgeList)
+                val resolvedEdge = edgeMap[edge.toNodeName]
+                if (resolvedEdge != null) {
+                    edge.attributes.toMutableMap().putAll(edge.attributes)
+                } else {
+                    edgeMap[edge.toNodeName] = edge
+                }
             }
-        return edgeList
+        return edgeMap.values.toList()
     }
 
-    private fun addEdgeToEdgeList(edge: Edge, edgeList: MutableList<Edge>) {
-        edgeList.forEach {
-            if (it.toNodeName == edge.toNodeName) {
-                it.attributes.toMutableMap().putAll(edge.attributes)
-                return
-            }
+    private fun flagCommitAsMutatedIfNeeded(commit: Commit, mod: Modification) {
+        if (this.isDeleted() && (mod.isTypeModify() || mod.isTypeRename())) {
+            this.mutate()
+        } else if (!commit.isMergeCommit() && !this.isDeleted() && mod.isTypeAdd() && !mod.isInitialAdd()) {
+            this.mutate()
         }
-        edgeList.add(edge)
     }
 
     fun getMetricValue(metricName: String): Number {
-        return metrics.first { it.metricName() == metricName }.value()
+        return metricsMap[metricName] ?: error("No element found")
     }
 
     fun removeMetricsToFreeMemory() {

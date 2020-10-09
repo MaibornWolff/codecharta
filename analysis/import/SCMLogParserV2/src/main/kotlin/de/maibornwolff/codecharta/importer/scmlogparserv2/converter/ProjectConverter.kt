@@ -29,15 +29,17 @@ class ProjectConverter(private val containsAuthors: Boolean) {
 
         projectBuilder.insertByPath(path, newNode)
         edges.forEach { projectBuilder.insertEdge(addRootToEdgePaths(it)) }
+        // TODO improve memory utilization -> inject metrics for calculations instead of creating a hard reference in VersionControlledFile
         versionControlledFile.removeMetricsToFreeMemory()
     }
 
     private fun extractAttributes(versionControlledFile: VersionControlledFile): Map<String, Any> {
-        return when {
-            containsAuthors ->
-                versionControlledFile.metricsMap
-                    .plus(Pair("authors", versionControlledFile.authors))
-            else -> versionControlledFile.metricsMap
+        return if (containsAuthors) {
+            versionControlledFile.metricsMap.plus(
+                Pair("authors", versionControlledFile.authors)
+            )
+        } else {
+            versionControlledFile.metricsMap
         }
     }
 

@@ -28,8 +28,7 @@ class HighlyCoupledFiles : Metric {
         evaluateIfNecessary()
 
         return simultaneouslyCommittedFiles.values
-            .filter { isHighlyCoupled(it) }
-            .count()
+            .count { isHighlyCoupled(it) }
             .toLong()
     }
 
@@ -37,9 +36,15 @@ class HighlyCoupledFiles : Metric {
         evaluateIfNecessary()
 
         return simultaneouslyCommittedFiles
-            .filter { isHighlyCoupled(it.value) }
-            .map { (coupledFile, value) ->
-                Edge(fileName, coupledFile, mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble()))
+            .mapNotNull { (coupledFile, value) ->
+                if (isHighlyCoupled(value)) {
+                    Edge(
+                        fileName,
+                        coupledFile,
+                        mapOf(edgeMetricName() to value.toDouble() / numberOfCommits.toDouble())
+                    )
+                } else
+                    null
             }
     }
 
@@ -48,8 +53,11 @@ class HighlyCoupledFiles : Metric {
 
         commits.forEach { commit ->
             commit.modifications
-                .filter { it.currentFilename != fileName }
-                .forEach { simultaneouslyCommittedFiles.merge(it.currentFilename, 1) { x, y -> x + y } }
+                .forEach {
+                    if (it.currentFilename != fileName) {
+                        simultaneouslyCommittedFiles.merge(it.currentFilename, 1) { x, y -> x + y }
+                    }
+                }
         }
     }
 
