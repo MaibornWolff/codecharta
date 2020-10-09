@@ -1,6 +1,6 @@
 import { IRootScopeService } from "angular"
 import { HideNodeContextMenuSubscriber, NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
-import { getMarkingColor } from "../../util/codeMapHelper"
+import { getMarkingColor, isLeaf } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -73,6 +73,10 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 
 	onClickNode() {
 		this._viewModel.isFolderOpened = !this._viewModel.isFolderOpened
+	}
+
+	isLeaf(node: CodeMapNode = this.node) {
+	  return isLeaf(node)
 	}
 
 	getMarkingColor() {
