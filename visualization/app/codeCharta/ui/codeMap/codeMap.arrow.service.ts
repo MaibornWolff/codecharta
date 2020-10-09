@@ -59,24 +59,14 @@ export class CodeMapArrowService
 	}
 
 	addArrow(arrowTargetNode: Node, arrowOriginNode: Node, buildingIsOriginNode: boolean) {
-		const state = this.storeService.getState()
-		const curveScale = 100 * state.appSettings.edgeHeight
+		const { appSettings, dynamicSettings } = this.storeService.getState()
+		const curveScale = 100 * appSettings.edgeHeight
 
-		if (
-			arrowTargetNode.attributes?.[state.dynamicSettings.heightMetric] &&
-			arrowOriginNode.attributes?.[state.dynamicSettings.heightMetric]
-		) {
+		if (arrowTargetNode.attributes?.[dynamicSettings.heightMetric] && arrowOriginNode.attributes?.[dynamicSettings.heightMetric]) {
 			const curve = this.createCurve(arrowOriginNode, arrowTargetNode, curveScale)
-
-			if (buildingIsOriginNode) {
-				this.highlightBuilding(arrowTargetNode)
-				const color = ColorConverter.getNumber(state.appSettings.mapColors.outgoingEdge)
-				this.setCurveColor(curve, color)
-			} else {
-				this.highlightBuilding(arrowOriginNode)
-				const color = ColorConverter.getNumber(state.appSettings.mapColors.incomingEdge)
-				this.setCurveColor(curve, color)
-			}
+			const color = ColorConverter.getNumber(appSettings.mapColors[buildingIsOriginNode ? "outgoingEdge" : "incomingEdge"])
+			this.highlightBuilding(buildingIsOriginNode ? arrowTargetNode : arrowOriginNode)
+			this.setCurveColor(curve, color)
 		}
 	}
 
@@ -201,16 +191,11 @@ export class CodeMapArrowService
 
 	private makeArrowFromBezier(bezier: CubicBezierCurve3, incoming: boolean, bezierPoints = 50) {
 		const points = bezier.getPoints(bezierPoints)
-		let pointsPreviews: Vector3[]
-		let arrowColor: string
-
-		if (incoming) {
-			pointsPreviews = points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
-			arrowColor = this.storeService.getState().appSettings.mapColors.incomingEdge
-		} else {
-			pointsPreviews = points.slice(0, points.length - (bezierPoints + 1 - this.VERTICES_PER_LINE))
-			arrowColor = this.storeService.getState().appSettings.mapColors.outgoingEdge
-		}
+		const { incomingEdge, outgoingEdge } = this.storeService.getState().appSettings.mapColors
+		const arrowColor = incoming ? incomingEdge : outgoingEdge
+		const pointsPreviews = incoming
+			? points.slice(bezierPoints + 1 - this.VERTICES_PER_LINE)
+			: points.slice(0, points.length - (bezierPoints + 1 - this.VERTICES_PER_LINE))
 
 		return this.buildEdge(pointsPreviews, ColorConverter.getNumber(arrowColor))
 	}
