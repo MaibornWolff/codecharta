@@ -81,7 +81,7 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         notYetRenamedFile.filename = newFileName
     }
 
-    //File A is called B then A again, this will mess up the currentFilename and oldFilename structure, therefore a special handling is needed
+    // File A is called B then A again, this will mess up the currentFilename and oldFilename structure, therefore a special handling is needed
     private fun isCyclicRename(oldFileName: String, newFileName: String): Boolean {
         return get(oldFileName)!!.containsRename(newFileName)
     }

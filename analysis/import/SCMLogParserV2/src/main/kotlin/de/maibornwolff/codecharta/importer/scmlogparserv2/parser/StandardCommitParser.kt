@@ -18,7 +18,7 @@ class StandardCommitParser : CommitParser {
 
             // The parser works with different filenames
             // currentFilename : the current filename of the file in modification, might differ from the original in case of a rename, this will set oldFilename as well
-            //file.filename: the filename of a given file at this instance, will later be displayed in the visualization
+            // file.filename: the filename of a given file at this instance, will later be displayed in the visualization
             // trackName: the key used to find files, corresponds to the files name at its first occurrence, might be salted using _//0_number in case of the spot being already taken
 
             when (it.type) {

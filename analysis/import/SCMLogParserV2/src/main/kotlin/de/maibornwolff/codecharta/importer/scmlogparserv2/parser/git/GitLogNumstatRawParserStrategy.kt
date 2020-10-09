@@ -32,8 +32,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
             .mapNotNull {
                 if (isFileLine(it)) {
                     parseModification(it)
-                }
-                else null
+                } else null
             }
             .groupingBy { it.currentFilename }
             .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
@@ -73,10 +72,10 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
             val additions = a.map { it.additions }.sum()
             val deletions = a.map { it.deletions }.sum()
 
-            val tmpModification = a.firstOrNull {  modification -> modification.type != Modification.Type.UNKNOWN }
+            val tmpModification = a.firstOrNull { modification -> modification.type != Modification.Type.UNKNOWN }
             var type = Modification.Type.UNKNOWN
 
-            if(tmpModification != null){
+            if (tmpModification != null) {
                 type = tmpModification.type
             }
 
@@ -85,7 +84,7 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
                 val temporaryModification = a.firstOrNull { modification -> modification.oldFilename.isNotEmpty() }
                 var oldFilename = ""
 
-                if(temporaryModification != null){
+                if (temporaryModification != null) {
                     oldFilename = temporaryModification.oldFilename
                 }
 

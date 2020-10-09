@@ -4,7 +4,7 @@ import de.maibornwolff.codecharta.importer.scmlogparserv2.input.VersionControlle
 
 class VersionControlledFilesInGitProject(private val vcFList: MutableMap<String, VersionControlledFile>, private val filesInGitLog: List<String>) {
 
-    //TODO salts should not be part of filenames, change logic error
+    // TODO salts should not be part of filenames, change logic error
     private fun removeSaltFromFilenames() {
         vcFList.values
             .forEach {
@@ -26,9 +26,9 @@ class VersionControlledFilesInGitProject(private val vcFList: MutableMap<String,
         return trackingNamesPerFilename
     }
 
-    //We always keep deleted files until the end, because they might be re-added in a merge commit
-    //This might result in multiple files with the same filename being stored in VCF
-    //the following function tries to find the correct version to keep for later visualization, by accounting for flags and time of addition
+    // We always keep deleted files until the end, because they might be re-added in a merge commit
+    // This might result in multiple files with the same filename being stored in VCF
+    // the following function tries to find the correct version to keep for later visualization, by accounting for flags and time of addition
     private fun removeDuplicates(trackingNamesPerFilename: MutableMap<String, Set<String>>) {
         trackingNamesPerFilename.keys.forEach { elem ->
             var chooseElement = ""
