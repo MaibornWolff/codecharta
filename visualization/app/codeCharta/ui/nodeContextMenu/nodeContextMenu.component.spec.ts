@@ -71,8 +71,6 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedCodeMapActionService() {
-		codeMapActionsService.getParentMP = jest.fn()
-		codeMapActionsService["anyEdgeIsVisible"] = jest.fn()
 		codeMapActionsService.markFolder = jest.fn()
 		codeMapActionsService.unmarkFolder = jest.fn()
 	}
@@ -319,19 +317,6 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.isNodeOrParentMarked("another color")
 
 			expect(result).toBeFalsy()
-		})
-
-		it("should return true, if package is marked and matches the color", () => {
-			const markedPackages: MarkedPackage[] = [{ path: "/another root", color: "color" }]
-			storeService.dispatch(setMarkedPackages(markedPackages))
-			codeMapActionsService.getParentMP = jest.fn().mockReturnValue({ path: "/another root", color: "color" })
-
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
-
-			const result = nodeContextMenuController.isNodeOrParentMarked("color")
-
-			expect(result).toBeTruthy()
-			expect(codeMapActionsService.getParentMP).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode.path)
 		})
 	})
 

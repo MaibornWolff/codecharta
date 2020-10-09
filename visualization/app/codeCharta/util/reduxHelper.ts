@@ -5,9 +5,12 @@ export function removeItemFromArray<T>(array: T[], searchItem: T) {
 	return array.filter(entry => !isEqual(entry, searchItem))
 }
 
+export function removeEntryAtIndexFromArray<T>(array: T[], index: number) {
+	return [...array.slice(0, index), ...array.slice(index + 1)]
+}
+
 export function addItemToArray<T>(array: T[], item: T) {
 	if (!arrayContainsItem(array, item)) {
-		// TODO: Check if the clone is actually necessary here. It is probably not necessary.
 		return [...array, clone(item)]
 	}
 	return array

@@ -13,7 +13,7 @@ import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetri
 import { IsAttributeSideBarVisibleService } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.service"
 import { StoreService } from "../../state/store.service"
 import { openAttributeSideBar } from "../../state/store/appSettings/isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("AttributeSideBarController", () => {
 	let attributeSideBarController: AttributeSideBarController

@@ -31,6 +31,7 @@ import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
+import { isLeaf } from "./codeMapHelper"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -1619,9 +1620,9 @@ export function withMockedEventMethods($rootScope: IRootScopeService) {
 
 export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
 	const pathsSet = new Set(paths)
-	for (const { data } of hierarchy(map).leaves()) {
-		if (pathsSet.has(data.path)) {
-			setBlacklistFlagByType(data, type, true)
+	for (const node of hierarchy(map)) {
+		if (isLeaf(node) && pathsSet.has(node.data.path)) {
+			setBlacklistFlagByType(node.data, type, true)
 		}
 	}
 }

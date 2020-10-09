@@ -8,7 +8,7 @@ import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { StoreService } from "../../state/store.service"
 import { EdgeMetricService } from "../../state/store/dynamicSettings/edgeMetric/edgeMetric.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("EdgeChooserController", () => {
 	let edgeChooserController: EdgeChooserController
