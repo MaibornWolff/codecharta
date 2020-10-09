@@ -8,7 +8,7 @@ import { CODE_MAP_BUILDING } from "../../util/dataMocks"
 import { AreaMetricService } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
 import { HeightMetricService } from "../../state/store/dynamicSettings/heightMetric/heightMetric.service"
 import { ColorMetricService } from "../../state/store/dynamicSettings/colorMetric/colorMetric.service"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("MetricValueHoveredController", () => {
 	let metricValueHoveredController: MetricValueHoveredController

@@ -1,7 +1,7 @@
 import { NodeMetricData, State, CodeMapNode, Node } from "../codeCharta.model"
 import { TreeMapGenerator } from "./treeMapGenerator"
 import { METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES, STATE } from "./dataMocks"
-import { klona } from 'klona';
+import { klona } from "klona"
 import { NodeDecorator } from "./nodeDecorator"
 import { fileWithFixedFolders } from "../ressources/fixed-folders/fixed-folders-example"
 import { getCCFile } from "./fileHelper"

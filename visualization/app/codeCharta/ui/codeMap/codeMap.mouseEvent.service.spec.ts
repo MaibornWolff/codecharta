@@ -18,7 +18,7 @@ import { StoreService } from "../../state/store.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { setIdToBuilding } from "../../state/store/lookUp/idToBuilding/idToBuilding.actions"
 import { setIdToNode } from "../../state/store/lookUp/idToNode/idToNode.actions"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("codeMapMouseEventService", () => {
 	let codeMapMouseEventService: CodeMapMouseEventService

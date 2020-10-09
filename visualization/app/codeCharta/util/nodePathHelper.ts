@@ -16,3 +16,15 @@ export function getUpdatedPath(fileName: string, path: string) {
 function isAbsoluteRootPath(path: string) {
 	return path.startsWith(`${CodeChartaService.ROOT_PATH}/`)
 }
+
+export function getParent<T>(hashMap: Map<string, T>, path: string): T {
+	do {
+		// TODO: Check what happens with Windows paths.
+		path = path.slice(0, path.lastIndexOf("/"))
+
+		const node = hashMap.get(path)
+		if (node) {
+			return node
+		}
+	} while (path !== CodeChartaService.ROOT_PATH && path.length)
+}

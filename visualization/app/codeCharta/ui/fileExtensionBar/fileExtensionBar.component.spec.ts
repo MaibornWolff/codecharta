@@ -15,7 +15,7 @@ import { StoreService } from "../../state/store.service"
 import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { setDistributionMetric } from "../../state/store/dynamicSettings/distributionMetric/distributionMetric.actions"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("FileExtensionBarController", () => {
 	let fileExtensionBarController: FileExtensionBarController

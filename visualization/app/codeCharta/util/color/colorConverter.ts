@@ -95,6 +95,8 @@ export class ColorConverter {
 		// Cut off the hash sign.
 		let hex = string.slice(1)
 		if (hex.length === 3) {
+			// Always use the six character hex color encoding instead of the shorter
+			// three character one.
 			hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`
 		}
 		return [

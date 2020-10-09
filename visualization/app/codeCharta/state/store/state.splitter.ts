@@ -77,5 +77,6 @@ export function splitStateActions(action: CCAction) {
 		}
 		return actions
 	}
+
 	return [action]
 }

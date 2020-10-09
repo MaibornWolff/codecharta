@@ -18,7 +18,7 @@ import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { setSearchedNodePaths } from "../../state/store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("MapTreeViewLevelController", () => {
 	let mapTreeViewLevelController: MapTreeViewLevelController

@@ -8,7 +8,7 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { StoreService } from "../../state/store.service"
 import { InvertDeltaColorsService } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.service"
 import { setInvertDeltaColors } from "../../state/store/appSettings/invertDeltaColors/invertDeltaColors.actions"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("MetricDeltaSelectedController", () => {
 	let metricDeltaSelectedController: MetricDeltaSelectedController

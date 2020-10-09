@@ -15,7 +15,7 @@ import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService

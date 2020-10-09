@@ -1,15 +1,12 @@
 import { MarkedPackagesAction, MarkedPackagesActions, setMarkedPackages } from "./markedPackages.actions"
-import { addItemToArray, removeItemFromArray } from "../../../../util/reduxHelper"
-import { clone } from "../../../../util/clone"
+import { removeEntryAtIndexFromArray } from "../../../../util/reduxHelper"
 
 export function markedPackages(state = setMarkedPackages().payload, action: MarkedPackagesAction) {
 	switch (action.type) {
 		case MarkedPackagesActions.SET_MARKED_PACKAGES:
-			return clone(action.payload)
-		case MarkedPackagesActions.MARK_PACKAGE:
-			return addItemToArray(state, action.payload)
+			return action.payload
 		case MarkedPackagesActions.UNMARK_PACKAGE:
-			return removeItemFromArray(state, action.payload)
+			return removeEntryAtIndexFromArray(state, action.payload)
 		default:
 			return state
 	}

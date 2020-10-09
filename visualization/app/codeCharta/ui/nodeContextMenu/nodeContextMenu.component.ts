@@ -178,10 +178,11 @@ export class NodeContextMenuController
 	}
 
 	private packageMatchesColorOfParentMP(color: string) {
-		const parentMP = this.codeMapActionsService.getParentMP(this._viewModel.codeMapNode.path)
-		return Boolean(
-			this.storeService.getState().fileSettings.markedPackages.find(mp => parentMP && mp.path === parentMP.path && mp.color === color)
-		)
+		const index = this.codeMapActionsService.getParentMarkedPackageIndex(this._viewModel.codeMapNode.path)
+		if (index === -1) {
+			return false
+		}
+		return this.storeService.getState().fileSettings.markedPackages[index].color === color
 	}
 
 	markFolder(color: string) {

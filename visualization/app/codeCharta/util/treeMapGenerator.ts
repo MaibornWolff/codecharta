@@ -104,7 +104,6 @@ export class TreeMapGenerator {
 				blacklistedNodes++
 			}
 			totalNodes++
-
 		})
 
 		return 2 * Math.sqrt(totalNodes - blacklistedNodes)

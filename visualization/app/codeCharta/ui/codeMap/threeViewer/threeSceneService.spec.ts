@@ -7,7 +7,7 @@ import { ThreeSceneService } from "./threeSceneService"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
-import { klona } from 'klona';
+import { klona } from "klona"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
