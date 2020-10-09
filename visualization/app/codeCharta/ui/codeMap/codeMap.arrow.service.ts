@@ -31,6 +31,7 @@ export class CodeMapArrowService
 
 	onBuildingDeselected() {
 		this.clearArrows()
+		this.threeSceneService.clearHighlight()
 		this.addEdgePreview(
 			null,
 			this.storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
