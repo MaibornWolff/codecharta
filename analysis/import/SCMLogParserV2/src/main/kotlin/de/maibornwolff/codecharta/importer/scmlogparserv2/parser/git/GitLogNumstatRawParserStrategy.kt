@@ -72,11 +72,23 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
             val filename = a[0].currentFilename
             val additions = a.map { it.additions }.sum()
             val deletions = a.map { it.deletions }.sum()
-            val type =
-                a.map { it.type }.firstOrNull { t -> t != Modification.Type.UNKNOWN } ?: Modification.Type.UNKNOWN
+
+            val tmpModification = a.firstOrNull {  modification -> modification.type != Modification.Type.UNKNOWN }
+            var type = Modification.Type.UNKNOWN
+
+            if(tmpModification != null){
+                type = tmpModification.type
+            }
 
             if (type == Modification.Type.RENAME) {
-                val oldFilename = a.map { it.oldFilename }.firstOrNull { s -> s.isNotEmpty() } ?: ""
+
+                val temporaryModification = a.firstOrNull { modification -> modification.oldFilename.isNotEmpty() }
+                var oldFilename = ""
+
+                if(temporaryModification != null){
+                    oldFilename = temporaryModification.oldFilename
+                }
+
                 return Modification(filename, oldFilename, additions, deletions, type)
             }
 
