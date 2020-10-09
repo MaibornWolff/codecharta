@@ -11,7 +11,7 @@ import java.io.File
 import java.io.InputStream
 import java.util.Arrays
 
-class IntegrationTest {
+class ParsingIntegrationTest {
 
     private val metricsFactory = MetricsFactory(
         Arrays.asList(

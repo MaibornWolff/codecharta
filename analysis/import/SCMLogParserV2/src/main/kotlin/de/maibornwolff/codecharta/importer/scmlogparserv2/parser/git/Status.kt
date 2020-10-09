@@ -37,8 +37,8 @@ internal enum class Status(private val letter: Char) {
 
         val ALL_STATUS_LETTERS: List<Char> = Status.values().map { it.statusLetter() } // sanity check
 
-        fun byCharacter(c: Char): Status {
-            return Status.values().firstOrNull { status -> status.letter == c } ?: UNKNOWN
+        fun byCharacter(character: Char): Status {
+            return Status.values().firstOrNull { status -> status.letter == character } ?: UNKNOWN
         }
     }
 }

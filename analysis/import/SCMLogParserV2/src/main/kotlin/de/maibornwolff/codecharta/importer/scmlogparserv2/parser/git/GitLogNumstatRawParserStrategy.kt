@@ -12,7 +12,6 @@ import java.time.OffsetDateTime
 import java.util.function.Predicate
 import java.util.stream.Collector
 import java.util.stream.Stream
-import kotlin.streams.toList
 
 class GitLogNumstatRawParserStrategy : LogParserStrategy {
     override fun creationCommand(): String {
@@ -24,18 +23,18 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     }
 
     override fun parseAuthor(commitLines: List<String>): String {
-        return commitLines
-            .parallelStream() // take a look here
-            .filter { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
-            .map { AuthorParser.parseAuthor(it) }
-            .toList()
-            .first()
+        val authorLine = commitLines.first { commitLine -> commitLine.startsWith(AUTHOR_ROW_INDICATOR) }
+        return AuthorParser.parseAuthor(authorLine)
     }
 
     override fun parseModifications(commitLines: List<String>): List<Modification> {
         return commitLines
-            .filter { isFileLine(it) }
-            .map { parseModification(it) }
+            .mapNotNull {
+                if (isFileLine(it)) {
+                    parseModification(it)
+                }
+                else null
+            }
             .groupingBy { it.currentFilename }
             .aggregate { _, aggregatedModification: Modification?, currentModification, _ ->
                 when (aggregatedModification) {
@@ -48,10 +47,8 @@ class GitLogNumstatRawParserStrategy : LogParserStrategy {
     }
 
     override fun parseDate(commitLines: List<String>): OffsetDateTime {
-        return commitLines
-            .filter { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
-            .map { CommitDateParser.parseCommitDate(it) }
-            .first()
+        val dateLine = commitLines.first { commitLine -> commitLine.startsWith(DATE_ROW_INDICATOR) }
+        return CommitDateParser.parseCommitDate(dateLine)
     }
 
     override fun parseIsMergeCommit(commitLines: List<String>): Boolean {

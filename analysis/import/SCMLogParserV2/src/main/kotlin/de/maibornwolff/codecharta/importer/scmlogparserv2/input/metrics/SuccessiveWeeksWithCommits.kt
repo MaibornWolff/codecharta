@@ -24,14 +24,14 @@ class SuccessiveWeeksWithCommits : Metric {
         var numberOfSuccessiveWeeks = 0
 
         var temp = 0
-        var lastKwWithCommit: CalendarWeek? = null
-        for (kw in weeksWithCommits) {
-            if (lastKwWithCommit == null || CalendarWeek.numberOfWeeksBetween(kw, lastKwWithCommit) == 1) {
-                temp++
+        var lastWeekWithCommit: CalendarWeek? = null
+        for (week in weeksWithCommits) {
+            if (lastWeekWithCommit == null || CalendarWeek.numberOfWeeksBetween(week, lastWeekWithCommit) == 1) {
+                temp += 1
             } else {
                 temp = 1
             }
-            lastKwWithCommit = kw
+            lastWeekWithCommit = week
             numberOfSuccessiveWeeks = if (temp > numberOfSuccessiveWeeks) temp else numberOfSuccessiveWeeks
         }
 

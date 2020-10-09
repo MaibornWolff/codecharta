@@ -16,6 +16,11 @@ class StandardCommitParser : CommitParser {
 
             val trackName = it.getTrackName()
 
+            // The parser works with different filenames
+            // currentFilename : the current filename of the file in modification, might differ from the original in case of a rename, this will set oldFilename as well
+            //file.filename: the filename of a given file at this instance, will later be displayed in the visualization
+            // trackName: the key used to find files, corresponds to the files name at its first occurrence, might be salted using _//0_number in case of the spot being already taken
+
             when (it.type) {
 
                 Modification.Type.ADD -> {
@@ -45,7 +50,7 @@ class StandardCommitParser : CommitParser {
     ) {
         val file = versionControlledFilesList.get(trackName)
         if (file != null && !file.isDeleted() && mod.currentFilename == file.filename) {
-            versionControlledFilesList.get(trackName)!!.registerCommit(commit, mod)
+            file.registerCommit(commit, mod)
         } else {
             val vcfToBeAddedOrReplaced = versionControlledFilesList.addFileBy(trackName)
             mod.markInitialAdd()
@@ -68,8 +73,7 @@ class StandardCommitParser : CommitParser {
             versionControlledFilesList.get(trackName)
 
         if (fileToBeRenamed != null) {
-
-            fileToBeRenamed!!.registerCommit(commit, mod)
+            fileToBeRenamed.registerCommit(commit, mod)
             versionControlledFilesList.rename(mod.oldFilename, mod.currentFilename)
         }
     }

@@ -37,7 +37,11 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
     }
 
     private fun hasNameConflict(key: String): Boolean {
-        return versionControlledFiles.containsKey(key) && !versionControlledFiles[key]!!.isDeleted()
+        val vcf = versionControlledFiles[key]
+        if (vcf != null) {
+            return !vcf.isDeleted()
+        }
+        return false
     }
 
     private fun handleNameConflict(key: String): String {
@@ -77,12 +81,17 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         notYetRenamedFile.filename = newFileName
     }
 
+    //File A is called B then A again, this will mess up the currentFilename and oldFilename structure, therefore a special handling is needed
     private fun isCyclicRename(oldFileName: String, newFileName: String): Boolean {
         return get(oldFileName)!!.containsRename(newFileName)
     }
 
     private fun fileExistsAsDeleted(key: String): Boolean {
-        return versionControlledFiles.containsKey(key) && versionControlledFiles[key]!!.isDeleted()
+        val vcf = versionControlledFiles[key]
+        if (vcf != null) {
+            return vcf.isDeleted()
+        }
+        return false
     }
 
     private fun handleDeletedFileReplacedByRenamedFile(newFileName: String) {
