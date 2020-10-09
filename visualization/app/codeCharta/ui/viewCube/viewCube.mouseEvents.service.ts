@@ -2,6 +2,7 @@ import { IRootScopeService } from "angular"
 import { hierarchy } from "d3-hierarchy"
 import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
+import { isLeaf } from "../../util/codeMapHelper"
 
 export interface ViewCubeEventPropagationSubscriber {
 	onViewCubeEventPropagation(eventType: string, event: MouseEvent)
@@ -52,7 +53,7 @@ export class ViewCubeMouseEventsService {
 		ray.setFromCamera(vector, this.camera)
 		const nodes: Group[] = []
 		for (const node of hierarchy(this.cubeGroup)) {
-			if (!node.children) {
+			if (isLeaf(node)) {
 				nodes.push(node.data)
 			}
 		}

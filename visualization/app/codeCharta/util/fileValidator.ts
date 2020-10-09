@@ -3,6 +3,7 @@ import Ajv from "ajv"
 import packageJson from "../../../package.json"
 import { ExportCCFile } from "../codeCharta.api.model"
 import jsonSchema from "./generatedSchema.json"
+import { isLeaf } from "./codeMapHelper"
 
 const latestApiVersion = packageJson.codecharta.apiVersion
 
@@ -104,7 +105,7 @@ function validateAllNodesAreUnique(node: CodeMapNode, result: CCValidationResult
 }
 
 function validateChildrenAreUniqueRecursive(node: CodeMapNode, result: CCValidationResult, names: Set<string>, subPath: string) {
-	if (!node.children || node.children.length === 0) {
+	if (isLeaf(node)) {
 		return
 	}
 

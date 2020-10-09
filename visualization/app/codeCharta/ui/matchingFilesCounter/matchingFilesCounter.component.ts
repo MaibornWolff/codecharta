@@ -1,6 +1,6 @@
 import "./matchingFilesCounter.component.scss"
 import { BlacklistType, CodeMapNode } from "../../codeCharta.model"
-import { CodeMapHelper } from "../../util/codeMapHelper"
+import { isLeaf, isPathBlacklisted } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { NodeSearchService, NodeSearchSubscriber } from "../../state/nodeSearch.service"
 import { BlacklistService, BlacklistSubscriber } from "../../state/store/fileSettings/blacklist/blacklist.service"
@@ -27,7 +27,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 	}
 
 	onNodeSearchComplete(searchedNodes: CodeMapNode[]) {
-		this.searchedNodeLeaves = searchedNodes.filter(node => !(node.children && node.children.length > 0))
+		this.searchedNodeLeaves = searchedNodes.filter(node => isLeaf(node))
 		this.updateViewModel()
 	}
 
@@ -44,7 +44,7 @@ export class MatchingFilesCounterController implements NodeSearchSubscriber, Bla
 	private getBlacklistedFileCount(blacklistType: BlacklistType) {
 		const blacklist = this.storeService.getState().fileSettings.blacklist
 		return this.searchedNodeLeaves.reduce((count, { path }) => {
-			if (CodeMapHelper.isPathBlacklisted(path, blacklist, blacklistType)) {
+			if (isPathBlacklisted(path, blacklist, blacklistType)) {
 				count++
 			}
 			return count

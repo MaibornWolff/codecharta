@@ -26,6 +26,7 @@ import { MetricDataService, MetricDataSubscriber } from "../../state/store/metri
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
+import { isLeaf } from "../../util/codeMapHelper"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -117,7 +118,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			return
 		}
 		for (const node of hierarchy(map)) {
-			if (!node.children) {
+			if (isLeaf(node)) {
 				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node, names)
 				for (const [key, value] of edgeMetrics) {
 					node.data.edgeAttributes[key] = value

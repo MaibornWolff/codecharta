@@ -1,7 +1,7 @@
 import { EdgeMetricDataAction, EdgeMetricDataActions, setEdgeMetricData } from "./edgeMetricData.actions"
 import { BlacklistItem, BlacklistType, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
 import { getVisibleFileStates } from "../../../../model/files/files.helper"
-import { CodeMapHelper } from "../../../../util/codeMapHelper"
+import { getAllPaths, isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { FileState } from "../../../../model/files/files"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
@@ -25,7 +25,7 @@ export function edgeMetricData(state = setEdgeMetricData().payload, action: Edge
 function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
 	const allVisibleFileStates = getVisibleFileStates(fileStates)
-	const allFilePaths = new Set(allVisibleFileStates.flatMap(fileState => CodeMapHelper.getAllPaths(fileState.file.map)))
+	const allFilePaths = new Set(allVisibleFileStates.flatMap(fileState => getAllPaths(fileState.file.map)))
 	for (const fileState of allVisibleFileStates) {
 		for (const edge of fileState.file.settings.fileSettings.edges) {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {
@@ -45,8 +45,8 @@ function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 function bothNodesAssociatedAreVisible(edge: Edge, filePaths: Set<string>, blacklist: BlacklistItem[]) {
 	if (filePaths.has(edge.fromNodeName) && filePaths.has(edge.toNodeName)) {
 		return (
-			!CodeMapHelper.isPathBlacklisted(edge.fromNodeName, blacklist, BlacklistType.exclude) &&
-			!CodeMapHelper.isPathBlacklisted(edge.toNodeName, blacklist, BlacklistType.exclude)
+			!isPathBlacklisted(edge.fromNodeName, blacklist, BlacklistType.exclude) &&
+			!isPathBlacklisted(edge.toNodeName, blacklist, BlacklistType.exclude)
 		)
 	}
 	return false

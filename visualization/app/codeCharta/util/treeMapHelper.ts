@@ -1,4 +1,4 @@
-import { CodeMapHelper } from "./codeMapHelper"
+import { getMarkingColor, isLeaf } from "./codeMapHelper"
 import { Node, CodeMapNode, State } from "../codeCharta.model"
 import { Vector3 } from "three"
 import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
@@ -52,7 +52,7 @@ function buildRootFolderForFixedFolders(map: CodeMapNode, heightScale: number, s
 		visible: isVisible(map, false, state, flattened),
 		path: map.path,
 		link: map.link,
-		markingColor: CodeMapHelper.getMarkingColor(map, state.fileSettings.markedPackages),
+		markingColor: getMarkingColor(map, state.fileSettings.markedPackages),
 		flat: false,
 		color: getBuildingColor(map, state, isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(0, 0, 0), state.treeMap.mapSize),
@@ -67,7 +67,7 @@ function buildNodeFrom(
 	s: State,
 	isDeltaState: boolean
 ): Node {
-	const isNodeLeaf = !(squaredNode.children && squaredNode.children.length > 0)
+	const isNodeLeaf = !isLeaf(squaredNode)
 	const flattened = isNodeFlat(squaredNode.data, s)
 	const heightValue = getHeightValue(s, squaredNode, maxHeight, flattened)
 	const depth = squaredNode.data.path.split("/").length - 2
@@ -96,7 +96,7 @@ function buildNodeFrom(
 		visible: isVisible(squaredNode.data, isNodeLeaf, s, flattened),
 		path: squaredNode.data.path,
 		link: squaredNode.data.link,
-		markingColor: CodeMapHelper.getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
+		markingColor: getMarkingColor(squaredNode.data, s.fileSettings.markedPackages),
 		flat: flattened,
 		color: getBuildingColor(squaredNode.data, s, isDeltaState, flattened),
 		incomingEdgePoint: getIncomingEdgePoint(width, height, length, new Vector3(x0, z0, y0), s.treeMap.mapSize),

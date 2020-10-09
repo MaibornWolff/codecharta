@@ -1,3 +1,4 @@
+import { isLeaf } from './../../../../util/codeMapHelper';
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 
@@ -17,7 +18,7 @@ function calculateMargin(map: CodeMapNode, areaMetric: string) {
 	let totalArea = 0
 
 	for (const node of hierarchy(map)) {
-		if (!node.children) {
+		if (isLeaf(node)) {
 			numberOfBuildings++
 			if (node.data.attributes?.[areaMetric]) {
 				totalArea += node.data.attributes[areaMetric]
