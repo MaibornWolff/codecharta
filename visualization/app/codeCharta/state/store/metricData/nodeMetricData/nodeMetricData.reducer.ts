@@ -2,7 +2,7 @@ import { NodeMetricDataAction, NodeMetricDataActions, setNodeMetricData } from "
 import { BlacklistItem, BlacklistType, NodeMetricData } from "../../../../codeCharta.model"
 import { getVisibleFileStates } from "../../../../model/files/files.helper"
 import { FileState } from "../../../../model/files/files"
-import { CodeMapHelper } from "../../../../util/codeMapHelper"
+import { isLeaf, isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { hierarchy } from "d3-hierarchy"
 import { NodeMetricDataService } from "./nodeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
@@ -23,7 +23,7 @@ function setNewMetricData(fileStates: FileState[], blacklist: BlacklistItem[]) {
 
 	for (const { file } of getVisibleFileStates(fileStates)) {
 		for (const node of hierarchy(file.map)) {
-			if (!node.children && node.data.path && !CodeMapHelper.isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)) {
+			if (isLeaf(node) && node.data.path && !isPathBlacklisted(node.data.path, blacklist, BlacklistType.exclude)) {
 				for (const metric of Object.keys(node.data.attributes)) {
 					const maxValue = hashMap.get(metric)
 

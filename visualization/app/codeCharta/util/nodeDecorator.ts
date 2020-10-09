@@ -1,7 +1,7 @@
 "use strict"
 import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
-import { CodeMapHelper } from "./codeMapHelper"
+import { isLeaf, transformPath } from "./codeMapHelper"
 import ignore from "ignore"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
@@ -26,7 +26,7 @@ export class NodeDecorator {
 		let hasExcludedPaths = false
 
 		for (const item of blacklist) {
-			const path = CodeMapHelper.transformPath(item.path)
+			const path = transformPath(item.path)
 
 			if (item.type === BlacklistType.flatten) {
 				hasFlattenedPaths = true
@@ -74,7 +74,7 @@ export class NodeDecorator {
 			}
 
 			if (blacklist.length !== 0) {
-				const path = CodeMapHelper.transformPath(data.path)
+				const path = transformPath(data.path)
 				data.isFlattened = hasFlattenedPaths && flattened.ignores(path)
 				data.isExcluded = hasExcludedPaths && excluded.ignores(path)
 			}
@@ -289,10 +289,6 @@ function collectMedians(medians: Map<string, number[]>, selector: string, child:
 	} else if (isLeaf(child)) {
 		pushSorted(median, value)
 	}
-}
-
-function isLeaf(node: CodeMapNode) {
-	return !node.children || node.children.length === 0
 }
 
 // TODO: Evaluate if sorting in `getMedian` is not better than using a

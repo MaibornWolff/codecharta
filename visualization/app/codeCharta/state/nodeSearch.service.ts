@@ -1,6 +1,6 @@
 import { CodeMapNode } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { CodeMapHelper } from "../util/codeMapHelper"
+import { getNodesByGitignorePath } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 import { StoreService } from "./store.service"
 import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
@@ -25,7 +25,7 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	}
 
 	onSearchPatternChanged(searchPattern: string) {
-		this.searchedNodes = CodeMapHelper.getNodesByGitignorePath(this.codeMapPreRenderService.getRenderMap(), searchPattern)
+		this.searchedNodes = getNodesByGitignorePath(this.codeMapPreRenderService.getRenderMap(), searchPattern)
 		this.notifyNodeSearchComplete()
 		this.storeService.dispatch(setSearchedNodePaths(new Set(this.searchedNodes.map(x => x.path))))
 	}

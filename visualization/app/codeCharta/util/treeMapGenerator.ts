@@ -1,6 +1,7 @@
 import { hierarchy, HierarchyNode, HierarchyRectangularNode, treemap } from "d3-hierarchy"
 import { TreeMapHelper } from "./treeMapHelper"
 import { CodeMapNode, Node, NodeMetricData, State } from "../codeCharta.model"
+import { isLeaf } from "./codeMapHelper"
 
 export type SquarifiedTreeMap = { treeMap: HierarchyRectangularNode<CodeMapNode>; height: number; width: number }
 
@@ -122,13 +123,9 @@ export class TreeMapGenerator {
 			return Math.abs(node.deltas[s.dynamicSettings.areaMetric])
 		}
 
-		if (this.isNodeLeaf(node) && node.attributes?.[s.dynamicSettings.areaMetric]) {
+		if (isLeaf(node) && node.attributes?.[s.dynamicSettings.areaMetric]) {
 			return node.attributes[s.dynamicSettings.areaMetric]
 		}
 		return 0
-	}
-
-	private static isNodeLeaf(node: CodeMapNode) {
-		return !node.children || node.children.length === 0
 	}
 }

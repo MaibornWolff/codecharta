@@ -1,7 +1,7 @@
 import "./mapTreeView.module"
 
 import { MapTreeViewLevelController } from "./mapTreeView.level.component"
-import { CodeMapHelper } from "../../util/codeMapHelper"
+import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { IRootScopeService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -145,7 +145,7 @@ describe("MapTreeViewLevelController", () => {
 	describe("openNodeContextMenu", () => {
 		it("should open NodeContextMenu and mark the folder", () => {
 			document.getElementById = jest.fn().mockReturnValue({ addEventListener: jest.fn() })
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath(
 				"/root/Parent Leaf",
 				NodeType.FOLDER,
 				VALID_NODE_WITH_PATH
@@ -164,33 +164,9 @@ describe("MapTreeViewLevelController", () => {
 		})
 	})
 
-	describe("isLeaf", () => {
-		it("should be a leaf", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf/small leaf",
-				NodeType.FILE,
-				VALID_NODE_WITH_PATH
-			)
-
-			expect(mapTreeViewLevelController.isLeaf()).toBeTruthy()
-		})
-
-		it("should not be a leaf", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				NodeType.FOLDER,
-				VALID_NODE_WITH_PATH
-			)
-
-			const result = mapTreeViewLevelController.isLeaf(mapTreeViewLevelController["node"])
-
-			expect(result).toBeFalsy()
-		})
-	})
-
 	describe("isSearched", () => {
 		it("should be searched", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath(
 				"/root/Parent Leaf/empty folder",
 				NodeType.FOLDER,
 				VALID_NODE_WITH_PATH
@@ -203,7 +179,7 @@ describe("MapTreeViewLevelController", () => {
 		})
 
 		it("should not be searched", () => {
-			mapTreeViewLevelController["node"] = CodeMapHelper.getCodeMapNodeFromPath(
+			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath(
 				"/root/Parent Leaf/empty folder",
 				NodeType.FOLDER,
 				VALID_NODE_WITH_PATH
