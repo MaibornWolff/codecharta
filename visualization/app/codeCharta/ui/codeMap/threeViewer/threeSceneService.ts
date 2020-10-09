@@ -111,9 +111,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		const { mapSize } = this.storeService.getState().treeMap
 		this.mapMesh = mesh
 
-		while (this.mapGeometry.children.length > 0) {
-			this.mapGeometry.remove(this.mapGeometry.children[0])
-		}
+		// Reset children
+		this.mapGeometry.children.length = 0
 
 		this.mapGeometry.position.x = -mapSize
 		this.mapGeometry.position.y = 0
