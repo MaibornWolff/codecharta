@@ -76,9 +76,11 @@ class VersionControlledFilesList(private val metricsFactory: MetricsFactory) {
         val updatedOldestName = if (oldestName != null) oldestName else oldFileName
         renamesMap[newVCFFileName] = updatedOldestName
 
-        val notYetRenamedFile = versionControlledFiles[updatedOldestName]!!
-        notYetRenamedFile.addRename(newVCFFileName)
-        notYetRenamedFile.filename = newFileName
+        // When parsing node.js repository, NullPointerExceptions occurs.
+        // To not crash the Parser, do a safe call for now.
+        val notYetRenamedFile = versionControlledFiles[updatedOldestName]
+        notYetRenamedFile?.addRename(newVCFFileName)
+        notYetRenamedFile?.filename = newFileName
     }
 
     // File A is called B then A again, this will mess up the currentFilename and oldFilename structure, therefore a special handling is needed

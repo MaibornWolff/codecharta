@@ -60,7 +60,11 @@ class StandardCommitParser : CommitParser {
 
     private fun handleDeleteModification(versionControlledFilesList: VersionControlledFilesList, trackName: String) {
         // TODO registerCommit() needed? @Ruben do we want to track deleted and then reverted files as author and commit amount
-        versionControlledFilesList.get(trackName)!!.markDeleted()
+        // In some cases a file which is deleted by a modification is not present
+        // This would cause a NullPointerException
+        // We do a safe call to prevent the Parser from crashing (for now).
+        // This case occurs when node.js repository is parsed.
+        versionControlledFilesList.get(trackName)?.markDeleted()
     }
 
     private fun handleRenameModification(

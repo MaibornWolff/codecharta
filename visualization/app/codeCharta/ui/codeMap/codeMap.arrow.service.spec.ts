@@ -124,6 +124,7 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService.clearArrows = jest.fn()
 			codeMapArrowService["showEdgesOfBuildings"] = jest.fn()
 			codeMapArrowService.addEdgePreview = jest.fn()
+			threeSceneService.clearHighlight = jest.fn()
 			codeMapArrowService["buildPairingEdges"] = jest.fn()
 		})
 		it("should call clearArrows and showEdgesOfBuildings through BuildingSelected", () => {
@@ -154,6 +155,7 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService.onBuildingDeselected()
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
 			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalled()
 		})
