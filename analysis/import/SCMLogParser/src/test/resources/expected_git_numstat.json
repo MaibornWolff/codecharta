@@ -140,7 +140,10 @@
                                     "range_of_weeks_with_commits": 76,
                                     "successive_weeks_with_commits": 1,
                                     "weeks_with_commits": 2,
-                                    "authors": ["Alex Hunziker", "anonymous"]
+                                    "authors": [
+                                      "Alex Hunziker",
+                                      "anonymous"
+                                    ]
                                   },
                                   "link": "",
                                   "children": []
@@ -154,7 +157,9 @@
                                     "range_of_weeks_with_commits": 1,
                                     "successive_weeks_with_commits": 1,
                                     "weeks_with_commits": 1,
-                                    "authors": ["Alex Hunziker"]
+                                    "authors": [
+                                      "Alex Hunziker"
+                                    ]
                                   },
                                   "link": "",
                                   "children": []
