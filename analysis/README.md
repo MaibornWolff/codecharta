@@ -12,20 +12,20 @@ CodeCharta analysis tools generally follow the pipes and filters architecture pr
 
 Components that import data from an external source, e.g. SonarQube, and generate visualisation data.
 
-| Source                   | Project                                                   |
-| ------------------------ | --------------------------------------------------------- |
-| CodeMaat CSV             | [CodeMaatImporter](import/CodeMaatImporter/README.md)     |
-| Crococosmo               | [CrococosmoImporter](import/CrococosmoImporter/README.md) |
-| generic CSV              | [CSVImporter](import/CSVImporter/README.md)               |
-| Jasome                   | [JasomeImporter](import/JasomeImporter/README.md)         |
-| SCITools' Understand CSV | [UnderstandImporter](import/UnderstandImporter/README.md) |
-| SCM log                  | [SCMLogParser](import/SCMLogParser/README.md)             |
-| SCM log v2 (experimental)| [SCMLogParserV2](import/SCMLogParserV2/README.md)           |
-| SonarQube                | [SonarImporter](import/SonarImporter/README.md)           |
-| Source Code              | [SourceCodeParser](import/SourceCodeParser/README.md)     |
-| SourceMonitor CSV        | [SourceMonitorImporter](import/CSVImporter/README.md)     |
-| Source Code / Text       | [RawTextParser](parser/RawTextParser/README.md)           |
-| Tokei                    | [TokeiImporter](import/TokeiImporter/README.md)           |
+| Source                    | Project                                                   |
+| ------------------------- | --------------------------------------------------------- |
+| CodeMaat CSV              | [CodeMaatImporter](import/CodeMaatImporter/README.md)     |
+| Crococosmo                | [CrococosmoImporter](import/CrococosmoImporter/README.md) |
+| generic CSV               | [CSVImporter](import/CSVImporter/README.md)               |
+| Jasome                    | [JasomeImporter](import/JasomeImporter/README.md)         |
+| SCITools' Understand CSV  | [UnderstandImporter](import/UnderstandImporter/README.md) |
+| SCM log                   | [SCMLogParser](import/SCMLogParser/README.md)             |
+| SCM log v2 (experimental) | [SCMLogParserV2](import/SCMLogParserV2/README.md)         |
+| SonarQube                 | [SonarImporter](import/SonarImporter/README.md)           |
+| Source Code               | [SourceCodeParser](import/SourceCodeParser/README.md)     |
+| SourceMonitor CSV         | [SourceMonitorImporter](import/CSVImporter/README.md)     |
+| Source Code / Text        | [RawTextParser](parser/RawTextParser/README.md)           |
+| Tokei                     | [TokeiImporter](import/TokeiImporter/README.md)           |
 
 ### Filter
 
