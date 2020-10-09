@@ -1,5 +1,5 @@
 import { BuildingDeselectedEventSubscriber, BuildingSelectedEventSubscriber, ThreeSceneService } from "./threeViewer/threeSceneService"
-import { Node, EdgeVisibility, Edge } from "../../codeCharta.model"
+import { Node, EdgeVisibility } from "../../codeCharta.model"
 import { ArrowHelper, BufferGeometry, CubicBezierCurve3, Line, LineBasicMaterial, Object3D, Vector3 } from "three"
 import { BuildingHoveredSubscriber, CodeMapMouseEventService, BuildingUnhoveredSubscriber } from "./codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
@@ -32,10 +32,7 @@ export class CodeMapArrowService
 	onBuildingDeselected() {
 		this.clearArrows()
 		this.threeSceneService.clearHighlight()
-		this.addEdgePreview(
-			null,
-			this.storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
-		)
+		this.addEdgePreview()
 	}
 
 	onBuildingHovered(hoveredBuilding: CodeMapBuilding) {
@@ -83,10 +80,12 @@ export class CodeMapArrowService
 		}
 	}
 
-	addEdgePreview(nodes: Node[], edges: Edge[]) {
+	addEdgePreview(nodes?: Node[]) {
 		if (nodes) {
 			this.map = this.getNodesAsMap(nodes)
 		}
+
+		const { edges } = this.storeService.getState().fileSettings
 
 		for (const edge of edges) {
 			if (edge.visible && edge.visible !== EdgeVisibility.none) {
@@ -113,7 +112,6 @@ export class CodeMapArrowService
 	}
 
 	private showEdgesOfBuildings(hoveredbuilding?: CodeMapBuilding) {
-		const edges = this.storeService.getState().fileSettings.edges
 		const buildings: Map<string, Node> = new Map()
 		const selectedBuilding = this.threeSceneService.getSelectedBuilding()
 
@@ -126,16 +124,15 @@ export class CodeMapArrowService
 			buildings.set(node.path, node)
 		}
 		if (buildings.size > 0) {
-			this.buildPairingEdges(buildings, edges)
+			this.buildPairingEdges(buildings)
 		} else {
-			this.addEdgePreview(
-				null,
-				edges.filter(x => x.visible !== EdgeVisibility.none)
-			)
+			this.addEdgePreview()
 		}
 	}
 
-	private buildPairingEdges(node: Map<string, Node>, edges: Edge[]) {
+	private buildPairingEdges(node: Map<string, Node>) {
+		const { edges } = this.storeService.getState().fileSettings
+
 		for (const edge of edges) {
 			const originNode = this.map.get(edge.fromNodeName)
 			// TODO: Maps should only have valid edges. If that's not the case, the
