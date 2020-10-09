@@ -57,9 +57,6 @@ export class CodeMapRenderService {
 
 	private setArrows(sortedNodes: Node[]) {
 		this.codeMapArrowService.clearArrows()
-		const { edges } = this.storeService.getState().fileSettings
-		if (edges.length > 0) {
-			this.codeMapArrowService.addEdgePreview(sortedNodes, edges)
-		}
+		this.codeMapArrowService.addEdgePreview(sortedNodes)
 	}
 }
