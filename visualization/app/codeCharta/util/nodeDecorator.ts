@@ -111,7 +111,7 @@ export class NodeDecorator {
 		// `nodeMetricData` and `edgeMetricData` names.
 		const attributeKeys = Object.keys(map.attributes)
 		const edgeKeys = Object.keys(map.edgeAttributes)
-		hierarchy(map).eachAfter(({ data, parent }) => {
+		hierarchy(map).eachAfter(function decorateNode({ data, parent }) {
 			// skip root
 			if (data.isExcluded || !parent) {
 				return

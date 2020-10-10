@@ -1,7 +1,7 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { TreeMapGenerator } from "../../util/treeMapGenerator"
+import { createTreemapNodes } from "../../util/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
@@ -39,7 +39,9 @@ export class CodeMapRenderService {
 
 	private getSortedNodes(map: CodeMapNode) {
 		const state = this.storeService.getState()
-		const nodes = TreeMapGenerator.createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+		const nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
+		// prevent multiple steps if the visibility is checked first.
 		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)
 	}

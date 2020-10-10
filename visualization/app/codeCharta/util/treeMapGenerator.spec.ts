@@ -1,5 +1,5 @@
 import { NodeMetricData, State, CodeMapNode, Node } from "../codeCharta.model"
-import { TreeMapGenerator } from "./treeMapGenerator"
+import { createTreemapNodes, calculateAreaValue } from "./treeMapGenerator"
 import { METRIC_DATA, TEST_FILE_WITH_PATHS, VALID_NODE_WITH_PATH, VALID_EDGES, STATE } from "./dataMocks"
 import { klona } from "klona"
 import { NodeDecorator } from "./nodeDecorator"
@@ -31,7 +31,7 @@ describe("treeMapGenerator", () => {
 		it("only root node", () => {
 			map.children = []
 
-			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -39,19 +39,19 @@ describe("treeMapGenerator", () => {
 		it("root node with two direct children", () => {
 			map.children[1].children = []
 
-			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
 
 		it("root node with two direct children and some grand children", () => {
-			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
 
 		it("should build the tree map with valid coordinates using the fixed folder structure", () => {
-			const nodes = TreeMapGenerator.createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
+			const nodes = createTreemapNodes(fileWithFixedFolders.nodes[0], state, metricData, isDeltaState)
 
 			expect(nodes).toMatchSnapshot()
 		})
@@ -75,7 +75,7 @@ describe("treeMapGenerator", () => {
 				{ name: "myHeight", maxValue: 99 }
 			]
 
-			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[2].name).toBe("Parent Leaf")
 			expect(nodes[2].width).toBeGreaterThan(0)
@@ -86,7 +86,7 @@ describe("treeMapGenerator", () => {
 			map.children = []
 			map.attributes = { a: 100 }
 
-			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["a"]).toBe(100)
 		})
@@ -94,7 +94,7 @@ describe("treeMapGenerator", () => {
 		it("attribute do not exists, no children", () => {
 			map.children = []
 
-			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
@@ -107,7 +107,7 @@ describe("treeMapGenerator", () => {
 				{ name: "b", maxValue: 99 }
 			]
 
-			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[0].attributes["b"]).toBe(undefined)
 		})
@@ -118,7 +118,7 @@ describe("treeMapGenerator", () => {
 			state.fileSettings.edges = VALID_EDGES
 			metricData = [{ name: "unknown", maxValue: 100 }]
 
-			const nodes: Node[] = TreeMapGenerator.createTreemapNodes(map, state, metricData, isDeltaState)
+			const nodes: Node[] = createTreemapNodes(map, state, metricData, isDeltaState)
 
 			expect(nodes[2].width * nodes[2].length).toEqual(0)
 		})
@@ -126,7 +126,7 @@ describe("treeMapGenerator", () => {
 
 	describe("calculateAreaValue", () => {
 		it("should return 0 if node has children, not blacklisted and not only visible in comparison map", () => {
-			const actual = TreeMapGenerator["calculateAreaValue"](codeMapNode, state)
+			const actual = calculateAreaValue(codeMapNode, state)
 
 			expect(actual).toBe(0)
 		})
