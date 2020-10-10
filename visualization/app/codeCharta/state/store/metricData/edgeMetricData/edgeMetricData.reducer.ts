@@ -1,10 +1,11 @@
 import { EdgeMetricDataAction, EdgeMetricDataActions, setEdgeMetricData } from "./edgeMetricData.actions"
 import { BlacklistItem, BlacklistType, Edge, EdgeMetricCount, EdgeMetricData } from "../../../../codeCharta.model"
 import { getVisibleFileStates } from "../../../../model/files/files.helper"
-import { getAllPaths, isPathBlacklisted } from "../../../../util/codeMapHelper"
+import { isPathBlacklisted } from "../../../../util/codeMapHelper"
 import { FileState } from "../../../../model/files/files"
 import { EdgeMetricDataService } from "./edgeMetricData.service"
 import { sortByMetricName } from "../metricData.reducer"
+import { hierarchy } from "d3-hierarchy"
 
 export type EdgeMetricCountMap = Map<string, EdgeMetricCount>
 export type NodeEdgeMetricsMap = Map<string, EdgeMetricCountMap>
@@ -25,7 +26,14 @@ export function edgeMetricData(state = setEdgeMetricData().payload, action: Edge
 function calculateMetrics(fileStates: FileState[], blacklist: BlacklistItem[]) {
 	nodeEdgeMetricsMap = new Map()
 	const allVisibleFileStates = getVisibleFileStates(fileStates)
-	const allFilePaths = new Set(allVisibleFileStates.flatMap(fileState => getAllPaths(fileState.file.map)))
+	const allFilePaths: Set<string> = new Set()
+
+	for (const { file } of allVisibleFileStates) {
+		for (const { data } of hierarchy(file.map)) {
+			allFilePaths.add(data.path)
+		}
+	}
+
 	for (const fileState of allVisibleFileStates) {
 		for (const edge of fileState.file.settings.fileSettings.edges) {
 			if (bothNodesAssociatedAreVisible(edge, allFilePaths, blacklist)) {

@@ -12,14 +12,6 @@ export function getCodeMapNodeFromPath(path: string, nodeType: string, root: Cod
 	return matchingNode?.data
 }
 
-export function getAllPaths(node: CodeMapNode) {
-	const paths: string[] = []
-	for (const { data } of hierarchy(node)) {
-		paths.push(data.path)
-	}
-	return paths
-}
-
 export function transformPath(toTransform: string) {
 	let removeNumberOfCharactersFromStart = 2
 
