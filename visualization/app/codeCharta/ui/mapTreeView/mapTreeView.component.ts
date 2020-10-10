@@ -7,7 +7,6 @@ import {
 	SortingOrderAscendingSubscriber
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
-import { clone } from "../../util/clone"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
 const REVERSE_ORDER = true
@@ -44,12 +43,13 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 	}
 
 	onRenderMapChanged(map: CodeMapNode) {
+		// TODO: Events should only be triggered if actually necessary.
 		if (map === this._viewModel.rootNode) {
 			// needed to prevent flashing since event is triggered 4 times
 			return
 		}
 
-		this._viewModel.rootNode = clone(map)
+		this._viewModel.rootNode = map
 		this.synchronizeAngularTwoWayBinding()
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
