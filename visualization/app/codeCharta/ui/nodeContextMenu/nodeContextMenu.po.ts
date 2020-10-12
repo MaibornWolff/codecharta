@@ -15,10 +15,4 @@ export class NodeContextMenuPageObject {
 			return document.getElementById("codemap-context-menu").offsetParent === null
 		})
 	}
-
-	async toBeOpened() {
-		return page.evaluate(() => {
-			return document.getElementById("codemap-context-menu").offsetParent !== null
-		})
-	}
 }

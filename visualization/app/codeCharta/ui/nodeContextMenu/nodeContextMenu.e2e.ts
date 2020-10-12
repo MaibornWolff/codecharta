@@ -29,6 +29,9 @@ describe("NodeContextMenu", () => {
 	it("right clicking the map should close open node options menu", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
+
+		expect(await contextMenu.toBeClosed()).toBe(false)
+
 		await codeMap.rightClickMap()
 
 		expect(await contextMenu.toBeClosed()).toBe(true)
@@ -42,7 +45,7 @@ describe("NodeContextMenu", () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.toBeOpened()).toBe(true)
+		expect(await contextMenu.toBeClosed()).toBe(false)
 
 		await codeMap.mouseWheelWithinMap()
 		//expect(await contextMenu.toBeClosed()).toBe(true)
