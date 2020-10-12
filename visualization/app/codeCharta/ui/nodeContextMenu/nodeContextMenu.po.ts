@@ -11,8 +11,9 @@ export class NodeContextMenuPageObject {
 	}
 
 	async toBeClosed() {
-		return page.evaluate(() => {
-			return document.getElementById("codemap-context-menu").offsetParent === null
-		})
+		const menu = await page.waitForSelector("#codemap-context-menu")
+		const isHidden = await menu.evaluate(element => { return element.getAttribute("aria-hidden") })
+
+		return isHidden === 'true'
 	}
 }

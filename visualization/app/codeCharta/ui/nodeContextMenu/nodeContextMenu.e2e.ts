@@ -33,7 +33,6 @@ describe("NodeContextMenu", () => {
 		expect(await contextMenu.toBeClosed()).toBe(false)
 
 		await codeMap.rightClickMap()
-
 		expect(await contextMenu.toBeClosed()).toBe(true)
 	})
 
