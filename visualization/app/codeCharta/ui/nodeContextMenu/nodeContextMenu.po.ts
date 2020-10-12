@@ -10,7 +10,15 @@ export class NodeContextMenuPageObject {
 		await page.waitForSelector("#loading-gif-map", { visible: false })
 	}
 
-	async isClosed() {
-		return page.waitForSelector("node-context-menu-component", { visible: false })
+	async toBeClosed() {
+		return page.evaluate(() => {
+			return document.getElementById("codemap-context-menu").offsetParent === null
+		})
+	}
+
+	async toBeOpened() {
+		return page.evaluate(() => {
+			return document.getElementById("codemap-context-menu").offsetParent !== null
+		})
 	}
 }

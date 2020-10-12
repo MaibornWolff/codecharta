@@ -122,7 +122,7 @@
 		"@types/jest-environment-puppeteer": "^4.3.2",
 		"@types/lodash": "^4.14.123",
 		"@types/node": "^14.0.14",
-		"@types/puppeteer": "^3.0.1",
+		"@types/puppeteer": "^3.0.2",
 		"@typescript-eslint/eslint-plugin": "^4.0.1",
 		"@typescript-eslint/parser": "^4.0.1",
 		"babel-loader": "^8.1.0",
