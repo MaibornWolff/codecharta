@@ -45,7 +45,7 @@ export class HeightSettingsPanelController
 		invertHeight: null,
 		isDeltaState: null,
 		showMetricValue: true,
-		showNodeName: true
+		showNodeName: true,
 	}
 
 	/* @ngInject */

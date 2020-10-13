@@ -48,15 +48,21 @@ export class CodeMapRenderService {
 	}
 
 	private setLabels(sortedNodes: Node[]) {
+
+		const showMetriLabelNodeName = this.storeService.getState().appSettings.showMetricLabelNodeName
+		const showMetricLabelNameValue = this.storeService.getState().appSettings.showMetricLabelNameValue
+
 		this.codeMapLabelService.clearLabels()
-		for (
-			let i = 0, numberAdded = 0;
-			i < sortedNodes.length && numberAdded < this.storeService.getState().appSettings.amountOfTopLabels;
-			++i
-		) {
-			if (sortedNodes[i].isLeaf) {
-					this.codeMapLabelService.addLabel(sortedNodes[i], this.storeService.getState().appSettings.showMetricLabelNodeName, this.storeService.getState().appSettings.showMetricLabelNameValue)
-				++numberAdded
+		if (showMetriLabelNodeName || showMetricLabelNameValue) {
+			for (
+				let i = 0, numberAdded = 0;
+				i < sortedNodes.length && numberAdded < this.storeService.getState().appSettings.amountOfTopLabels;
+				++i
+			) {
+				if (sortedNodes[i].isLeaf) {
+					this.codeMapLabelService.addLabel(sortedNodes[i], showMetriLabelNodeName, showMetricLabelNameValue)
+					++numberAdded
+				}
 			}
 		}
 	}
