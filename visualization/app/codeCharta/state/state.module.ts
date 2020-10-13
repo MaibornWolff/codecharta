@@ -1,5 +1,6 @@
 import angular from "angular"
 // Plop: Append module import here
+import { ShowMetricLabelNameValueService } from "./store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.service"
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
@@ -54,6 +55,7 @@ import { MetricDataService } from "./store/metricData/metricData.service"
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
+	.service(_.camelCase(ShowMetricLabelNameValueService.name), ShowMetricLabelNameValueService)
 	.service(_.camelCase(MetricDataService.name), MetricDataService)
 	.service(_.camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(_.camelCase(NodeMetricDataService.name), NodeMetricDataService)

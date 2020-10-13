@@ -1,6 +1,7 @@
 //@ts-nocheck
 
 // Plop: Append service import here
+import { ShowMetricLabelNameValueService } from "./store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.service"
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
@@ -53,6 +54,7 @@ export class InjectorService {
 	constructor(
 		// We have to inject the services somewhere
 		// Plop: Append service injection here
+		private showMetricLabelNameValueService: ShowMetricLabelNameValueService,
 		private panelSelectionService: PanelSelectionService,
 		private metricDataService: MetricDataService,
 		private edgeMetricDataService: EdgeMetricDataService,

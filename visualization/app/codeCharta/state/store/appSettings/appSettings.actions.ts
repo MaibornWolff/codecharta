@@ -1,6 +1,7 @@
 import { AppSettings, CCAction, RecursivePartial } from "../../../codeCharta.model"
 
 // Plop: Append default property import here
+import { defaultShowMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.actions"
 import { defaultPanelSelection } from "./panelSelection/panelSelection.actions"
 import { defaultIsAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.actions"
 import { defaultAmountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreviews.actions"
@@ -45,6 +46,7 @@ export function setAppSettings(appSettings: RecursivePartial<AppSettings> = defa
 
 export const defaultAppSettings: AppSettings = {
 	// Plop: Append default property here
+	showMetricLabelNameValue: defaultShowMetricLabelNameValue,
 	panelSelection: defaultPanelSelection,
 	isAttributeSideBarVisible: defaultIsAttributeSideBarVisible,
 	amountOfTopLabels: defaultAmountOfTopLabels,

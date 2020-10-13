@@ -118,6 +118,7 @@ export interface AppSettings {
 	searchPanelMode: SearchPanelMode
 	isAttributeSideBarVisible: boolean
 	panelSelection: PanelSelection
+	showMetricLabelNameValue: boolean
 }
 
 export interface TreeMapSettings {
