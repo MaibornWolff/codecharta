@@ -15,7 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Comparing a map in delta mode with itself does not show differences anymore
+-   Comparing a map in delta mode shows the correct differences
+    -   This mainly applies to maps compared with itself while it also fixes some other minor miscalculations
+-   File extensions detection is improved
 
 ### Chore 👨‍💻 👩‍💻
 
