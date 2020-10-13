@@ -37,10 +37,6 @@ describe("NodeContextMenu", () => {
 		expect(await contextMenu.toBeClosed()).toBe(true)
 	})
 
-	// TODO: activate assertions of this test,
-	//  if the new puppeteer mouse wheel API is supported by it's type definition:
-	// https://github.com/DefinitelyTyped/DefinitelyTyped/issues/48710
-	// Have a look here: codeMap.mouseWheelWithinMap()
 	it("zoom in and out or using mouse wheel on the map should close open node options menu", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
@@ -48,6 +44,6 @@ describe("NodeContextMenu", () => {
 		expect(await contextMenu.toBeClosed()).toBe(false)
 
 		await codeMap.mouseWheelWithinMap()
-		//expect(await contextMenu.toBeClosed()).toBe(true)
+		expect(await contextMenu.toBeClosed()).toBe(true)
 	})
 })

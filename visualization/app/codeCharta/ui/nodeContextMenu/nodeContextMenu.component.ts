@@ -72,6 +72,11 @@ export class NodeContextMenuController
 			event => NodeContextMenuController.broadcastHideEvent(this.$rootScope, new Vector2(event.x, event.y)),
 			true
 		)
+		document.body.addEventListener(
+			"wheel",
+			event => NodeContextMenuController.broadcastHideEvent(this.$rootScope, new Vector2(event.x, event.y)),
+			true
+		)
 	}
 
 	onMapColorsChanged(mapColors: MapColors) {
