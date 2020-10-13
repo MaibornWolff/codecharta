@@ -119,6 +119,7 @@ export interface AppSettings {
 	isAttributeSideBarVisible: boolean
 	panelSelection: PanelSelection
 	showMetricLabelNameValue: boolean
+	showMetricLabelNodeName: boolean
 }
 
 export interface TreeMapSettings {

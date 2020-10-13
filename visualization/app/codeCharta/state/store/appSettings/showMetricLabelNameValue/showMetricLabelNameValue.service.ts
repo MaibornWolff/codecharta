@@ -29,7 +29,7 @@ export class ShowMetricLabelNameValueService implements StoreSubscriber {
 	}
 
 	public static subscribe($rootScope: IRootScopeService, subscriber: ShowMetricLabelNameValueSubscriber) {
-		$rootScope.$on(ShowMetricLabelNameValueService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, (event, data) => {
+		$rootScope.$on(ShowMetricLabelNameValueService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onShowMetricLabelNameValueChanged(data.showMetricLabelNameValue)
 		})
 	}

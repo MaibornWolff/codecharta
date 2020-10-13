@@ -1,5 +1,4 @@
 import { ShowMetricLabelNameValueAction, ShowMetricLabelNameValueActions, setShowMetricLabelNameValue } from "./showMetricLabelNameValue.actions"
-import { clone } from "../../../util/clone"
 
 export function showMetricLabelNameValue(state = setShowMetricLabelNameValue().payload, action: ShowMetricLabelNameValueAction) {
 	switch (action.type) {

@@ -34,7 +34,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	addLabel(node: Node, highest: boolean) {
+	addLabel(node: Node, showNodeName: boolean, showMetricNameValue :boolean) {
 		const state = this.storeService.getState()
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
 
@@ -46,15 +46,21 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const labelY = y + node.height
 			const labelZ = z + node.length / 2
 
+			let labelText = ""
 
-			let label: InternalLabel
+			if(showNodeName){
+				labelText = `${node.name}`
+			}
+			if(showMetricNameValue){
+				if(labelText === ""){
+					labelText = `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+				}
+				else{
+					labelText += `\n${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+				}
+			}
 
-			if(highest){
-				label = this.makeText(`${node.name}\n${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`, 30)
-			}
-			else{
-				label = this.makeText(`${node.name}: ${node.attributes[state.dynamicSettings.heightMetric]}`,30)
-			}
+			let label = this.makeText(labelText, 30)
 
 			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelZ)
@@ -160,11 +166,9 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			this.lineCount = label.lineCount
 		}
 			if(this.lineCount > 1){
-				console.log("Bigger 1")
 				sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance/ 25, 1)
 			}
 			else {
-				console.log("Smaller 1")
 				sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance/ this.LABEL_HEIGHT_DIVISOR, 1)
 			}
 	}

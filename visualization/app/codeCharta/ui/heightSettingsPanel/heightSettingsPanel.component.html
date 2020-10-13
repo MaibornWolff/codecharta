@@ -26,8 +26,12 @@
 </md-slider-container>
 
 <md-input-container class="md-block">
-	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.invertHeight" ng-change="$ctrl.applySettingsInvertHeight()">
-		Invert Height
+	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.showNodeName" ng-change="$ctrl.applySettingsMetricLabelNodeNameChanged()">
+		Label show node name
+	</md-checkbox>
+	</br>
+	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.showMetricValue" ng-change="$ctrl.applySettingsMetricLabelValueChanged()">
+		Label show metrics name: value
 	</md-checkbox>
 </md-input-container>
 

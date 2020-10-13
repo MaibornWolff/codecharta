@@ -55,12 +55,7 @@ export class CodeMapRenderService {
 			++i
 		) {
 			if (sortedNodes[i].isLeaf) {
-				if(numberAdded === 0){
-					this.codeMapLabelService.addLabel(sortedNodes[i], true)
-				}
-				else{
-					this.codeMapLabelService.addLabel(sortedNodes[i], false)
-				}
+					this.codeMapLabelService.addLabel(sortedNodes[i], this.storeService.getState().appSettings.showMetricLabelNodeName, this.storeService.getState().appSettings.showMetricLabelNameValue)
 				++numberAdded
 			}
 		}

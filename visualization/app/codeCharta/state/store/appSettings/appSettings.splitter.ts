@@ -2,6 +2,7 @@ import { AppSettings, CCAction, MapColors, RecursivePartial } from "../../../cod
 import { Vector3 } from "three"
 
 // Plop: Append action splitter import here
+import { splitShowMetricLabelNodeNameAction } from "./showMetricLabelNodeName/showMetricLabelNodeName.splitter"
 import { splitShowMetricLabelNameValueAction } from "./showMetricLabelNameValue/showMetricLabelNameValue.splitter"
 import { splitPanelSelectionAction } from "./panelSelection/panelSelection.splitter"
 import { splitCameraTargetAction } from "./cameraTarget/cameraTarget.splitter"
@@ -31,6 +32,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 	const actions: CCAction[] = []
 
 	// Plop: Append action split here
+	if (payload.showMetricLabelNodeName !== undefined) {
+		actions.push(splitShowMetricLabelNodeNameAction(payload.showMetricLabelNodeName))
+	}
+
 	if (payload.showMetricLabelNameValue !== undefined) {
 		actions.push(splitShowMetricLabelNameValueAction(payload.showMetricLabelNameValue))
 	}
