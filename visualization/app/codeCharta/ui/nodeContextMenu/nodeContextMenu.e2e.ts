@@ -23,7 +23,8 @@ describe("NodeContextMenu", () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.hasColorButtons()).toBeTruthy()
+		const result = await contextMenu.hasColorButtons()
+		expect(await result.isIntersectingViewport()).toBe(true)
 	})
 
 	it("right clicking the map should close open node options menu", async () => {
