@@ -4,7 +4,6 @@ import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
-import { ColorConverter } from "../../util/color/colorConverter"
 import { StoreService } from "../../state/store.service"
 
 interface InternalLabel {
@@ -125,13 +124,29 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		// bg
 		context.font = `${fontsize}px Helvetica Neue`
-		context.fillStyle = "rgba(255,255,255,1)"
-		context.strokeStyle = ColorConverter.convertHexToRgba(this.storeService.getState().appSettings.mapColors.angularGreen)
+		context.fillStyle = "rgba(224,224,224,0.85)"
 		context.lineJoin = "round"
 		context.lineCap = "round"
 		context.lineWidth = 5
+
+		CanvasRenderingContext2D.prototype.fillRect = function (x, y, width, height) {
+			let RADIUS = 15 //empirically gathered
+
+			if (width < 2 * RADIUS) RADIUS = width / 2;
+			if (height < 2 * RADIUS) RADIUS = height / 2;
+			this.beginPath();
+
+			this.moveTo(x+RADIUS, y);
+			this.arcTo(x+width, y,   x+width, y+height, RADIUS);
+			this.arcTo(x+width, y+height, x,   y+height, RADIUS);
+			this.arcTo(x,   y+height, x,   y,   RADIUS);
+			this.arcTo(x,   y,   x+width, y,   RADIUS);
+
+			this.closePath();
+			this.fill()
+		}
+
 		context.fillRect(0, 0, canvas.width, canvas.height)
-		context.strokeRect(0, 0, canvas.width, canvas.height)
 
 		// after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
 		context.fillStyle = "rgba(0,0,0,1)"
@@ -184,4 +199,5 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		return new Line(geometry, material)
 	}
+
 }
