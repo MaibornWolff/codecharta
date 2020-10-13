@@ -108,7 +108,7 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should add label if node has a height attribute mentioned in renderSettings", () => {
-			codeMapLabelService.addLabel(sampleLeaf)
+			codeMapLabelService.addLabel(sampleLeaf, false)
 
 			expect(codeMapLabelService["labels"].length).toBe(1)
 		})
@@ -116,13 +116,13 @@ describe("CodeMapLabelService", () => {
 		it("should not add label if node has not a height attribute mentioned in renderSettings", () => {
 			sampleLeaf.attributes = { notsome: 0 }
 
-			codeMapLabelService.addLabel(sampleLeaf)
+			codeMapLabelService.addLabel(sampleLeaf, false)
 
 			expect(codeMapLabelService["labels"].length).toBe(0)
 		})
 
 		it("should calculate correct height without delta", () => {
-			codeMapLabelService.addLabel(sampleLeaf)
+			codeMapLabelService.addLabel(sampleLeaf, false)
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(93)
@@ -133,8 +133,8 @@ describe("CodeMapLabelService", () => {
 			const SY = 2
 			const SZ = 3
 
-			codeMapLabelService.addLabel(sampleLeaf)
-			codeMapLabelService.addLabel(sampleLeaf)
+			codeMapLabelService.addLabel(sampleLeaf, false)
+			codeMapLabelService.addLabel(sampleLeaf, false)
 
 			const scaleBeforeA: Vector3 = new Vector3(
 				codeMapLabelService["labels"][0].sprite.position.x,

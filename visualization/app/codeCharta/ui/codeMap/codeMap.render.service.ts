@@ -55,7 +55,12 @@ export class CodeMapRenderService {
 			++i
 		) {
 			if (sortedNodes[i].isLeaf) {
-				this.codeMapLabelService.addLabel(sortedNodes[i])
+				if(numberAdded === 0){
+					this.codeMapLabelService.addLabel(sortedNodes[i], true)
+				}
+				else{
+					this.codeMapLabelService.addLabel(sortedNodes[i], false)
+				}
 				++numberAdded
 			}
 		}

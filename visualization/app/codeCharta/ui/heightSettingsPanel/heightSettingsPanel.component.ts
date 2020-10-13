@@ -27,11 +27,15 @@ export class HeightSettingsPanelController
 		scalingY: number
 		invertHeight: boolean
 		isDeltaState: boolean
+		showMetricValue: boolean
+		showNodeName: boolean
 	} = {
 		amountOfTopLabels: null,
 		scalingY: null,
 		invertHeight: null,
-		isDeltaState: null
+		isDeltaState: null,
+		showMetricValue: true,
+		showNodeName: true
 	}
 
 	/* @ngInject */

@@ -11,15 +11,18 @@ interface InternalLabel {
 	sprite: Sprite
 	line: Line | null
 	heightValue: number
+	lineCount: number
 }
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
-	private LABEL_HEIGHT_DIVISOR = 40 // empirically gathered
+	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
 
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
+	private lineCount = 1
+
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -31,9 +34,10 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	addLabel(node: Node) {
+	addLabel(node: Node, highest: boolean) {
 		const state = this.storeService.getState()
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
+
 			const x = node.x0 - state.treeMap.mapSize
 			const y = node.z0
 			const z = node.y0 - state.treeMap.mapSize
@@ -42,7 +46,16 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const labelY = y + node.height
 			const labelZ = z + node.length / 2
 
-			const label = this.makeText(`${node.name}: ${node.attributes[state.dynamicSettings.heightMetric]}`, 30)
+
+			let label: InternalLabel
+
+			if(highest){
+				label = this.makeText(`${node.name}\n${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`, 30)
+			}
+			else{
+				label = this.makeText(`${node.name}: ${node.attributes[state.dynamicSettings.heightMetric]}`,30)
+			}
+
 			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelZ)
 
@@ -86,7 +99,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	onCameraChanged() {
 		for (const label of this.labels) {
-			this.setLabelSize(label.sprite)
+			this.setLabelSize(label.sprite, label.sprite.material.map.image.width, label)
 		}
 	}
 
@@ -97,12 +110,15 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.font = `${fontsize}px Helvetica Neue`
 
 		const margin = 20
+		const multiLineContext = message.split("\n")
+
 
 		// setting canvas width/height before ctx draw, else canvas is empty
 		canvas.width = context.measureText(message).width + margin
-		canvas.height = fontsize + margin
+		canvas.height = margin + fontsize*multiLineContext.length
 
 		// bg
+		context.font = `${fontsize}px Helvetica Neue`
 		context.fillStyle = "rgba(255,255,255,1)"
 		context.strokeStyle = ColorConverter.convertHexToRgba(this.storeService.getState().appSettings.mapColors.angularGreen)
 		context.lineJoin = "round"
@@ -112,11 +128,13 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.strokeRect(0, 0, canvas.width, canvas.height)
 
 		// after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
-		context.font = `${fontsize}px Helvetica Neue`
 		context.fillStyle = "rgba(0,0,0,1)"
 		context.textAlign = "center"
 		context.textBaseline = "middle"
-		context.fillText(message, canvas.width / 2, canvas.height / 2)
+
+		for (const [i, element] of multiLineContext.entries()) {
+			context.fillText(element, canvas.width / 2, canvas.height* (i+1)/(multiLineContext.length+1))
+		}
 
 		const texture = new Texture(canvas)
 		texture.minFilter = LinearFilter // NearestFilter;
@@ -124,19 +142,31 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		const spriteMaterial = new SpriteMaterial({ map: texture })
 		const sprite = new Sprite(spriteMaterial)
-		this.setLabelSize(sprite, canvas.width)
+		this.lineCount = multiLineContext.length
+		this.setLabelSize(sprite, canvas.width, null)
 
 		return {
 			sprite,
 			heightValue: canvas.height,
-			line: null
+			line: null,
+			lineCount: multiLineContext.length
 		}
 	}
 
-	private setLabelSize(sprite: Sprite, labelWidth: number = sprite.material.map.image.width) {
+	private setLabelSize(sprite: Sprite, labelWidth: number = sprite.material.map.image.width, label : InternalLabel) {
 		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
 		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
-		sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
+		if(label !== null){
+			this.lineCount = label.lineCount
+		}
+			if(this.lineCount > 1){
+				console.log("Bigger 1")
+				sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance/ 25, 1)
+			}
+			else {
+				console.log("Smaller 1")
+				sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance/ this.LABEL_HEIGHT_DIVISOR, 1)
+			}
 	}
 
 	private makeLine(x: number, y: number, z: number) {
