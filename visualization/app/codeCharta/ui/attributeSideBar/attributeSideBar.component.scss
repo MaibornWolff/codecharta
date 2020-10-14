@@ -38,12 +38,17 @@ attribute-side-bar-component {
 				right: 5px;
 			}
 
-			.node-name {
+			node-name {
 				width: 90%;
 
 				.node-link {
 					font-size: 11pt;
 				}
+			}
+
+			.node-name-h2 {
+				color: black;
+				display: inline;
 			}
 
 			.node-origin,

@@ -1,14 +1,18 @@
 <div class="side-bar-container cc-shadow" ng-class="{ expanded: $ctrl._viewModel.isSideBarVisible }">
 	<div class="side-bar-header">
 		<i class="close-icon fa fa-times" ng-click="$ctrl.onClickCloseSideBar()"></i>
-
-		<h2 class="node-name">
+		<h2 ng-if="!$ctrl._viewModel.node.link" class="node-name">
 			{{ $ctrl._viewModel.node.name }}
-			<a ng-show="$ctrl._viewModel.node.link" class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank">
+		</h2>
+		<div class="node-name" ng-if="$ctrl._viewModel.node.link">
+			<a class="node-link" href="{{ $ctrl._viewModel.node.link }}" target="_blank">
+				<h2 class="node-name-h2">
+					{{ $ctrl._viewModel.node.name }}
+				</h2>
 				<i class="fa fa-external-link"></i>
 				<md-tooltip md-delay="200">{{ $ctrl._viewModel.node.link }}</md-tooltip>
 			</a>
-		</h2>
+		</div>
 
 		<p class="node-origin">{{ $ctrl._viewModel.fileName }}</p>
 
