@@ -31,7 +31,7 @@ describe("NodeContextMenu", () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.isClosed()).toBe(false)
+		expect(await contextMenu.isOpened()).toBe(true)
 
 		await codeMap.clickMap()
 		expect(await contextMenu.isClosed()).toBe(true)
@@ -41,7 +41,7 @@ describe("NodeContextMenu", () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.isClosed()).toBe(false)
+		expect(await contextMenu.isOpened()).toBe(true)
 
 		await codeMap.rightClickMouseDownOnMap()
 		expect(await contextMenu.isClosed()).toBe(true)
@@ -51,7 +51,7 @@ describe("NodeContextMenu", () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.isClosed()).toBe(false)
+		expect(await contextMenu.isOpened()).toBe(true)
 
 		await codeMap.mouseWheelWithinMap()
 		expect(await contextMenu.isClosed()).toBe(true)

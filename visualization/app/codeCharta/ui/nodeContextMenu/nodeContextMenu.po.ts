@@ -10,8 +10,15 @@ export class NodeContextMenuPageObject {
 		await page.waitForSelector("#loading-gif-map", { visible: false })
 	}
 
+	async isOpened() {
+		const menu = await page.waitForSelector("#codemap-context-menu", { hidden: false, timeout: 60000 })
+		const isHidden = await menu.evaluate(element => { return element.getAttribute("aria-hidden") })
+
+		return isHidden !== 'true'
+	}
+
 	async isClosed() {
-		const menu = await page.waitForSelector("#codemap-context-menu")
+		const menu = await page.waitForSelector("#codemap-context-menu", { hidden: true, timeout: 60000 })
 		const isHidden = await menu.evaluate(element => { return element.getAttribute("aria-hidden") })
 
 		return isHidden === 'true'
