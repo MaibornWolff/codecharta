@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Mark node names and make the names clickable for nodes that have a link to them #1313
+
 ### Changed
 
 ### Removed 🗑
