@@ -1,11 +1,10 @@
 import { CodeMapNode } from "../codeCharta.model"
 import { IRootScopeService } from "angular"
-import { CodeMapHelper } from "../util/codeMapHelper"
+import { getNodesByGitignorePath } from "../util/codeMapHelper"
 import { CodeMapPreRenderService } from "../ui/codeMap/codeMap.preRender.service"
 import { StoreService } from "./store.service"
 import { setSearchedNodePaths } from "./store/dynamicSettings/searchedNodePaths/searchedNodePaths.actions"
 import { SearchPatternService, SearchPatternSubscriber } from "./store/dynamicSettings/searchPattern/searchPattern.service"
-import { hierarchy } from "d3-hierarchy"
 
 export interface NodeSearchSubscriber {
 	onNodeSearchComplete(searchedNodes: CodeMapNode[])
@@ -26,24 +25,9 @@ export class NodeSearchService implements SearchPatternSubscriber {
 	}
 
 	onSearchPatternChanged(searchPattern: string) {
-		this.searchedNodes = this.findSearchedNodes(searchPattern)
+		this.searchedNodes = getNodesByGitignorePath(this.codeMapPreRenderService.getRenderMap(), searchPattern)
 		this.notifyNodeSearchComplete()
-		this.applySettingsSearchedNodePaths()
-	}
-
-	private findSearchedNodes(searchPattern: string) {
-		if (searchPattern.length === 0) {
-			return []
-		}
-		const nodes = hierarchy(this.codeMapPreRenderService.getRenderMap())
-			.descendants()
-			.map(d => d.data)
-		return CodeMapHelper.getNodesByGitignorePath(nodes, searchPattern)
-	}
-
-	private applySettingsSearchedNodePaths() {
-		const newSearchedNodePaths = this.searchedNodes.map(x => x.path)
-		this.storeService.dispatch(setSearchedNodePaths(new Set(newSearchedNodePaths)))
+		this.storeService.dispatch(setSearchedNodePaths(new Set(this.searchedNodes.map(x => x.path))))
 	}
 
 	private notifyNodeSearchComplete() {

@@ -1,6 +1,6 @@
 import { IRootScopeService } from "angular"
 import { HideNodeContextMenuSubscriber, NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
-import { CodeMapHelper } from "../../util/codeMapHelper"
+import { getMarkingColor, isLeaf } from "../../util/codeMapHelper"
 import { BuildingHoveredSubscriber, BuildingUnhoveredSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapNode } from "../../codeCharta.model"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
@@ -76,12 +76,12 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	isLeaf(node: CodeMapNode = this.node) {
-		return !(node?.children?.length > 0)
+	  return isLeaf(node)
 	}
 
 	getMarkingColor() {
 		const defaultColor = "#000000"
-		const markingColor = CodeMapHelper.getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
+		const markingColor = getMarkingColor(this.node, this.storeService.getState().fileSettings.markedPackages)
 		return markingColor ? markingColor : defaultColor
 	}
 
@@ -105,10 +105,6 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	getUnaryPercentage() {
 		const rootUnary = this.codeMapPreRenderService.getRenderMap().attributes[NodeMetricDataService.UNARY_METRIC]
 		return ((100 * this.getNodeUnaryValue()) / rootUnary).toFixed(0)
-	}
-
-	isRoot() {
-		return this.node.path.split("/").length === 2
 	}
 
 	static subscribeToHoverEvents($rootScope: IRootScopeService, subscriber: MapTreeViewHoverEventSubscriber) {

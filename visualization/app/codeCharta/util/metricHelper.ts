@@ -9,6 +9,14 @@ export function isMetricUnavailable(metricData: NodeMetricData[], metricName: st
 }
 
 export function getMetricNameFromIndexOrLast(metricData: NodeMetricData[], index: number) {
-	const availableMetrics = metricData.filter(x => x.maxValue > 0)
-	return availableMetrics[Math.min(index, availableMetrics.length - 1)].name
+	let lastMetric: NodeMetricData
+	for (const metric of metricData) {
+		if (metric.maxValue > 0) {
+			if (index-- === 0) {
+				return metric.name
+			}
+			lastMetric = metric
+		}
+	}
+	return lastMetric.name
 }

@@ -1,8 +1,8 @@
 import { IRootScopeService } from "angular"
-import $ from "jquery"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { CodeMapMouseEventService, CursorType } from "../codeMap/codeMap.mouseEvent.service"
 import { Group, Mesh, PerspectiveCamera, Raycaster, Vector2, WebGLRenderer } from "three"
+import { isLeaf } from "../../util/codeMapHelper"
 
 export interface ViewCubeEventPropagationSubscriber {
 	onViewCubeEventPropagation(eventType: string, event: MouseEvent)
@@ -51,19 +51,21 @@ export class ViewCubeMouseEventsService {
 		const vector = this.transformIntoCanvasVector(event)
 		const ray = new Raycaster()
 		ray.setFromCamera(vector, this.camera)
-		const h = hierarchy<Group>(this.cubeGroup)
-		const [intersection] = ray.intersectObjects(h.leaves().map(x => x.data))
+		const nodes: Group[] = []
+		for (const node of hierarchy(this.cubeGroup)) {
+			if (isLeaf(node)) {
+				nodes.push(node.data)
+			}
+		}
+		const [intersection] = ray.intersectObjects(nodes)
 		return intersection ? (intersection.object as Mesh) : null
 	}
 
 	private transformIntoCanvasVector(event: MouseEvent) {
-		const topOffset = $(this.renderer.domElement).offset().top - $(window).scrollTop()
-		const leftOffset = $(this.renderer.domElement).offset().left - $(window).scrollLeft()
-		const mouse = {
-			x: ((event.clientX - leftOffset) / this.renderer.domElement.width) * 2 - 1,
-			y: -((event.clientY - topOffset) / this.renderer.domElement.height) * 2 + 1
-		}
-		return new Vector2(mouse.x, mouse.y)
+		const rect = this.renderer.domElement.getBoundingClientRect()
+		const x = ((event.clientX - rect.left) / this.renderer.domElement.width) * 2 - 1
+		const y = -((event.clientY - rect.top) / this.renderer.domElement.height) * 2 + 1
+		return new Vector2(x, y)
 	}
 
 	private onDocumentMouseMove(event: MouseEvent) {

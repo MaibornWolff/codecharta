@@ -2,7 +2,6 @@ import "./attributeSideBar.component.scss"
 import { IRootScopeService } from "angular"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { Node } from "../../codeCharta.model"
-import _ from "lodash"
 import { BuildingSelectedEventSubscriber, ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { AreaMetricService, AreaMetricSubscriber } from "../../state/store/dynamicSettings/areaMetric/areaMetric.service"
@@ -99,8 +98,9 @@ export class AttributeSideBarController
 
 	private updateSortedMetricKeysWithoutPrimaryMetrics() {
 		if (this._viewModel.node) {
-			this._viewModel.secondaryMetricKeys = _.keys(this._viewModel.node.attributes)
-				.filter(x => !_.values(this._viewModel.primaryMetricKeys.node).includes(x))
+			const metricValues = new Set(Object.values(this._viewModel.primaryMetricKeys.node))
+			this._viewModel.secondaryMetricKeys = Object.keys(this._viewModel.node.attributes)
+				.filter(key => !metricValues.has(key))
 				.sort()
 		}
 	}

@@ -1,6 +1,5 @@
 import { validate } from "./util/fileValidator"
 import { NameDataPair } from "./codeCharta.model"
-import _ from "lodash"
 import { NodeDecorator } from "./util/nodeDecorator"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { StoreService } from "./state/store.service"
@@ -27,14 +26,14 @@ export class CodeChartaService {
 				validate(nameDataPair.content)
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
 			} catch (error) {
-				if (!_.isEmpty(error.error)) {
+				if (error.error.length !== 0) {
 					this.fileStates = []
 					this.storeService.dispatch(setIsLoadingFile(false))
 					this.dialogService.showValidationErrorDialog(error)
 					break
 				}
 
-				if (!_.isEmpty(error.warning)) {
+				if (error.warning.length !== 0) {
 					this.addFile(nameDataPair.fileName, nameDataPair.content)
 					this.dialogService.showValidationWarningDialog(error)
 				}

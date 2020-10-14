@@ -1,7 +1,7 @@
 import "./nodeContextMenu.component.scss"
 import angular, { IRootScopeService } from "angular"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
-import { CodeMapHelper } from "../../util/codeMapHelper"
+import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
 import { BlacklistItem, BlacklistType, CodeMapNode, MapColors, NodeType } from "../../codeCharta.model"
 import { CodeMapPreRenderService } from "../codeMap/codeMap.preRender.service"
 import { StoreService } from "../../state/store.service"
@@ -106,7 +106,7 @@ export class NodeContextMenuController
 
 	onShowNodeContextMenu(path: string, nodeType: string, mouseX: number, mouseY: number) {
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
-		this._viewModel.codeMapNode = CodeMapHelper.getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
+		this._viewModel.codeMapNode = getCodeMapNodeFromPath(path, nodeType, this.codeMapPreRenderService.getRenderMap())
 		const { x, y } = this.calculatePosition(mouseX, mouseY)
 		this.setPosition(x, y)
 		this.synchronizeAngularTwoWayBinding()
@@ -183,10 +183,11 @@ export class NodeContextMenuController
 	}
 
 	private packageMatchesColorOfParentMP(color: string) {
-		const parentMP = this.codeMapActionsService.getParentMP(this._viewModel.codeMapNode.path)
-		return Boolean(
-			this.storeService.getState().fileSettings.markedPackages.find(mp => parentMP && mp.path === parentMP.path && mp.color === color)
-		)
+		const index = this.codeMapActionsService.getParentMarkedPackageIndex(this._viewModel.codeMapNode.path)
+		if (index === -1) {
+			return false
+		}
+		return this.storeService.getState().fileSettings.markedPackages[index].color === color
 	}
 
 	markFolder(color: string) {
@@ -203,7 +204,7 @@ export class NodeContextMenuController
 
 	isNodeOrParentFocused() {
 		const { focusedNodePath } = this.storeService.getState().dynamicSettings
-		return Boolean(focusedNodePath && this._viewModel.codeMapNode?.path.includes(focusedNodePath))
+		return Boolean(focusedNodePath && this._viewModel.codeMapNode?.path.startsWith(focusedNodePath))
 	}
 
 	isNodeFocused() {

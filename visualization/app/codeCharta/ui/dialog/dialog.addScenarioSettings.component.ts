@@ -89,7 +89,7 @@ export class DialogAddScenarioSettingsComponent {
 			metricName,
 			savedValues,
 			isSelected: true,
-			isDisabled: name === "Edge" && this.storeService.getState().fileSettings.edges.length === 0
+			isDisabled: metricName === "Edge" && this.storeService.getState().fileSettings.edges.length === 0
 		})
 	}
 }
