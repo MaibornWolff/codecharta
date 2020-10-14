@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Indicate metric name next to shown value in a new line #1035
+-   Change label design #1035
+-   Add checkboxes to display metric names and values and to display node names on labels #1035
+
 ### Changed
 
 ### Removed 🗑
