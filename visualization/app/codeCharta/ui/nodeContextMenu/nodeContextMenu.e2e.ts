@@ -45,7 +45,7 @@ describe("NodeContextMenu", () => {
 
 		await codeMap.rightClickMouseDownOnMap()
 		expect(await contextMenu.isClosed()).toBe(true)
-	}, 60000)
+	})
 
 	it("zoom in and out or using mouse wheel on the map should close open node context menu", async () => {
 		await searchPanelModeSelector.toggleTreeView()
