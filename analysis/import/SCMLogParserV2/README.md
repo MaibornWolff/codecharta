@@ -25,13 +25,14 @@ The names of authors are saved when the --add-author flag is set.
 
 ### Creating the repository log for metric generation
 
-| SCM | Log format                    | Command for log creation                              | tracks renames | ignores deleted files | supports code churn |
-| --- | ----------------------------- | ----------------------------------------------------- | -------------- | --------------------- | ------------------- |
-| git | GIT_LOG_NUMSTAT_RAW_REVERSED  | `git log --numstat --raw --topo-order --reverse -m`   | yes            | yes                   | yes                 |
+| SCM | Log format                   | Command for log creation                            | tracks renames | ignores deleted files | supports code churn |
+| --- | ---------------------------- | --------------------------------------------------- | -------------- | --------------------- | ------------------- |
+| git | GIT_LOG_NUMSTAT_RAW_REVERSED | `git log --numstat --raw --topo-order --reverse -m` | yes            | yes                   | yes                 |
 
 You can also use the bash script anongit which generates an anonymous git log with log format GIT_LOG for usage with CodeCharta.
 
 ### Creating the git files list of the repository for metric generation
+
 > `git ls-files > file-name-list.txt`
 
 ### Executing the SCMLogParser

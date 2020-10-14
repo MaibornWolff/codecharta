@@ -68,7 +68,7 @@
 		"test:auto": "npm test -- --watch",
 		"test:autoNoCoverage": "npm run test:auto -- --coverage false",
 		"test:updateSnaps": "npm test -- --updateSnapshot",
-		"e2e": "jest --config ./jest.config.json .*\\.e2e\\.ts --coverage false",
+		"e2e": "jest --config ./jest.config.json .*\\.e2e\\.ts --coverage true",
 		"e2e:auto": "npm run e2e -- --watch",
 		"e2e:ci": "npm run e2e -- --runInBand",
 		"package": "rimraf dist/packages && build --concurrent --tasks win-x86,win-x64,linux-x86,linux-x64,mac-x64 --mirror https://dl.nwjs.io/ . && bestzip ./dist/packages/codecharta-visualization-$npm_package_version-web.zip ./dist/webpack",
