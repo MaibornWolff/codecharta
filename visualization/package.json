@@ -130,7 +130,7 @@
 		"babel-loader": "^8.1.0",
 		"bestzip": "^2.1.5",
 		"clean-webpack-plugin": "^3.0.0",
-		"css-loader": "^4.2.0",
+		"css-loader": "^5.0.0",
 		"es6-shim": "^0.35.3",
 		"eslint": "^7.8.1",
 		"eslint-config-prettier": "^6.11.0",
