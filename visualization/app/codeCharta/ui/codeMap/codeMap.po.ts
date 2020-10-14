@@ -1,6 +1,10 @@
 export class CodeMapPageObject {
-	async rightClickMap() {
-		await expect(page).toClick("#codeMap", { button: "right", timeout: 3000 })
+	async clickMap() {
+		await expect(page).toClick("#codeMap", { button: "left", timeout: 3000 })
+	}
+
+	async rightClickMouseDownOnMap() {
+		await page.mouse.down({ button: "right" })
 	}
 
 	async mouseWheelWithinMap() {

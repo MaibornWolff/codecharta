@@ -10,7 +10,7 @@ export class NodeContextMenuPageObject {
 		await page.waitForSelector("#loading-gif-map", { visible: false })
 	}
 
-	async toBeClosed() {
+	async isClosed() {
 		const menu = await page.waitForSelector("#codemap-context-menu")
 		const isHidden = await menu.evaluate(element => { return element.getAttribute("aria-hidden") })
 

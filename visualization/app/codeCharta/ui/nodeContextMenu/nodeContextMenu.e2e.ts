@@ -27,23 +27,33 @@ describe("NodeContextMenu", () => {
 		expect(await result.isIntersectingViewport()).toBe(true)
 	})
 
-	it("right clicking the map should close open node options menu", async () => {
+	it("clicking the map should close open node context menu", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.toBeClosed()).toBe(false)
+		expect(await contextMenu.isClosed()).toBe(false)
 
-		await codeMap.rightClickMap()
-		expect(await contextMenu.toBeClosed()).toBe(true)
+		await codeMap.clickMap()
+		expect(await contextMenu.isClosed()).toBe(true)
 	})
 
-	it("zoom in and out or using mouse wheel on the map should close open node options menu", async () => {
+	it("right clicking the map should close open node context menu already on mousedown", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.toBeClosed()).toBe(false)
+		expect(await contextMenu.isClosed()).toBe(false)
+
+		await codeMap.rightClickMouseDownOnMap()
+		expect(await contextMenu.isClosed()).toBe(true)
+	})
+
+	it("zoom in and out or using mouse wheel on the map should close open node context menu", async () => {
+		await searchPanelModeSelector.toggleTreeView()
+		await mapTreeViewLevel.openContextMenu("/root")
+
+		expect(await contextMenu.isClosed()).toBe(false)
 
 		await codeMap.mouseWheelWithinMap()
-		expect(await contextMenu.toBeClosed()).toBe(true)
+		expect(await contextMenu.isClosed()).toBe(true)
 	})
 })

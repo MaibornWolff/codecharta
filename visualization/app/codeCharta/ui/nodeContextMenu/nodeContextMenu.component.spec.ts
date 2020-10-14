@@ -10,11 +10,9 @@ import { StoreService } from "../../state/store.service"
 import { setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { BlacklistType, MarkedPackage, NodeType } from "../../codeCharta.model"
 import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { FocusedNodePathService } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.service"
-import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
-import { MarkedPackagesService } from "../../state/store/fileSettings/markedPackages/markedPackages.service"
 import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
+import {CodeMapMouseEventService} from "../codeMap/codeMap.mouseEvent.service";
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -91,42 +89,6 @@ describe("nodeContextMenuController", () => {
 			expect(NodeContextMenuController.subscribeToShowNodeContextMenu).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 
-		it("should subscribe focus-node-events", () => {
-			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-			FocusedNodePathService.subscribeToFocusNode = jest.fn()
-
-			rebuildController()
-
-			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
-		})
-
-		it("should subscribe unfocus-node-events", () => {
-			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-			FocusedNodePathService.subscribeToFocusNode = jest.fn()
-
-			rebuildController()
-
-			expect(FocusedNodePathService.subscribeToFocusNode).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
-		})
-
-		it("should subscribe blacklist events", () => {
-			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-			BlacklistService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(BlacklistService.subscribe).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
-		})
-
-		it("should subscribe marked packages events", () => {
-			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
-			MarkedPackagesService.subscribe = jest.fn()
-
-			rebuildController()
-
-			expect(MarkedPackagesService.subscribe).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
-		})
-
 		it("should broadcast 'show-node-context-menu' when 'show' method is called", () => {
 			withMockedEventMethods($rootScope)
 			NodeContextMenuController.broadcastShowEvent($rootScope, "somepath", "sometype", 42, 24)
@@ -138,37 +100,14 @@ describe("nodeContextMenuController", () => {
 				y: 24
 			})
 		})
-	})
 
-	describe("onFocusNode", () => {
-		it("should hide the node context menu", () => {
-			nodeContextMenuController.onFocusNode()
+		it("should subscribe to 'on-building-right-clicked' events", () => {
+			NodeContextMenuController.subscribeToShowNodeContextMenu = jest.fn()
+			CodeMapMouseEventService.subscribeToBuildingRightClickedEvents = jest.fn()
 
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
-		})
-	})
+			rebuildController()
 
-	describe("onUnfocusNode", () => {
-		it("should hide the node context menu", () => {
-			nodeContextMenuController.onUnfocusNode()
-
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
-		})
-	})
-
-	describe("onBlacklistChanged", () => {
-		it("should hide the node context menu", () => {
-			nodeContextMenuController.onBlacklistChanged()
-
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
-		})
-	})
-
-	describe("onMarkedPackagesChanged", () => {
-		it("should hide the node context menu", () => {
-			nodeContextMenuController.onMarkedPackagesChanged()
-
-			expect(nodeContextMenuController.onHideNodeContextMenu).toHaveBeenCalled()
+			expect(CodeMapMouseEventService.subscribeToBuildingRightClickedEvents).toHaveBeenCalledWith($rootScope, nodeContextMenuController)
 		})
 	})
 
@@ -234,7 +173,7 @@ describe("nodeContextMenuController", () => {
 			}
 			storeService.dispatch(addBlacklistItem(expected))
 
-			nodeContextMenuController.showNode()
+			nodeContextMenuController.showFlattenedNode()
 
 			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(expected)
 		})
