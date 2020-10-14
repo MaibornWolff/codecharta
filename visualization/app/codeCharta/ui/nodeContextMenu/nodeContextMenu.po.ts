@@ -11,14 +11,14 @@ export class NodeContextMenuPageObject {
 	}
 
 	async isOpened() {
-		const menu = await page.waitForSelector("#codemap-context-menu", { hidden: false, timeout: 60000 })
+		const menu = await page.waitForSelector("#codemap-context-menu", { hidden: false })
 		const isHidden = await menu.evaluate(element => { return element.getAttribute("aria-hidden") })
 
 		return isHidden !== 'true'
 	}
 
 	async isClosed() {
-		const menu = await page.waitForSelector("#codemap-context-menu", { hidden: true, timeout: 60000 })
+		const menu = await page.waitForSelector("#codemap-context-menu", { hidden: true })
 		const isHidden = await menu.evaluate(element => { return element.getAttribute("aria-hidden") })
 
 		return isHidden === 'true'
