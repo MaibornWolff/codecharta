@@ -5,7 +5,7 @@ import { StoreService } from "../../state/store.service"
 import { setAmountOfTopLabels } from "../../state/store/appSettings/amountOfTopLabels/amountOfTopLabels.actions"
 import { setInvertHeight } from "../../state/store/appSettings/invertHeight/invertHeight.actions"
 import { setScaling } from "../../state/store/appSettings/scaling/scaling.actions"
-import _ from "lodash"
+import debounce from "lodash.debounce"
 import {
 	AmountOfTopLabelsService,
 	AmountOfTopLabelsSubscriber
@@ -57,11 +57,11 @@ export class HeightSettingsPanelController
 		ShowMetricLabelNameValueService.subscribe(this.$rootScope, this)
 		ShowMetricLabelNodeNameService.subscribe(this.$rootScope, this)
 
-		this.applyDebouncedTopLabels = _.debounce(() => {
+		this.applyDebouncedTopLabels = debounce(() => {
 			this.storeService.dispatch(setAmountOfTopLabels(this._viewModel.amountOfTopLabels))
 		}, HeightSettingsPanelController.DEBOUNCE_TIME)
 
-		this.applyDebouncedScaling = _.debounce(newScaling => {
+		this.applyDebouncedScaling = debounce(newScaling => {
 			this.storeService.dispatch(setScaling(newScaling))
 		}, HeightSettingsPanelController.DEBOUNCE_TIME)
 	}

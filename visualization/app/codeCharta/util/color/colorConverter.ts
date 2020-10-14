@@ -27,7 +27,7 @@ export class ColorConverter {
 	}
 
 	static convertHexToNumber(hex: string) {
-		return Number(hex.replace("#", "0x"))
+		return Number(`0x${hex.slice(1)}`)
 	}
 
 	static convertNumberToHex(colorNumber: number) {
@@ -91,12 +91,19 @@ export class ColorConverter {
 		return this.generatePixel(encodedRGBColor)
 	}
 
-	private static encodeHex(s: string) {
-		let copy = s.slice(1, 7)
-		if (copy.length < 6) {
-			copy = copy[0] + copy[0] + copy[1] + copy[1] + copy[2] + copy[2]
+	private static encodeHex(string: string) {
+		// Cut off the hash sign.
+		let hex = string.slice(1)
+		if (hex.length === 3) {
+			// Always use the six character hex color encoding instead of the shorter
+			// three character one.
+			hex = `${hex[0]}${hex[0]}${hex[1]}${hex[1]}${hex[2]}${hex[2]}`
 		}
-		return [Number.parseInt(copy[0] + copy[1], 16), Number.parseInt(copy[2] + copy[3], 16), Number.parseInt(copy[4] + copy[5], 16)]
+		return [
+			Number.parseInt(`${hex[0]}${hex[1]}`, 16),
+			Number.parseInt(`${hex[2]}${hex[3]}`, 16),
+			Number.parseInt(`${hex[4]}${hex[5]}`, 16)
+		]
 	}
 
 	private static encodeRGB(r: number, g: number, b: number) {

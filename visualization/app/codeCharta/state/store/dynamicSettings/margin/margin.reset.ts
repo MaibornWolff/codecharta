@@ -1,3 +1,4 @@
+import { isLeaf } from './../../../../util/codeMapHelper';
 import { CodeMapNode } from "../../../../codeCharta.model"
 import { hierarchy } from "d3-hierarchy"
 
@@ -13,16 +14,17 @@ export function getResetMargin(dynamicMargin: boolean, areaMetric: string, map?:
 }
 
 function calculateMargin(map: CodeMapNode, areaMetric: string) {
-	const leaves = hierarchy(map).leaves()
 	let numberOfBuildings = 0
 	let totalArea = 0
 
-	leaves.forEach(node => {
-		numberOfBuildings++
-		if (node.data.attributes?.[areaMetric]) {
-			totalArea += node.data.attributes[areaMetric]
+	for (const node of hierarchy(map)) {
+		if (isLeaf(node)) {
+			numberOfBuildings++
+			if (node.data.attributes?.[areaMetric]) {
+				totalArea += node.data.attributes[areaMetric]
+			}
 		}
-	})
+	}
 
 	const margin = MARGIN_FACTOR * Math.round(Math.sqrt(totalArea / numberOfBuildings))
 	return Math.min(MAX_MARGIN, Math.max(MIN_MARGIN, margin))

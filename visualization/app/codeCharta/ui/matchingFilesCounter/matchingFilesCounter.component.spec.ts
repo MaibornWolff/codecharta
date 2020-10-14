@@ -81,9 +81,9 @@ describe("MatchingFilesCounterController", () => {
 				rootNode.children[1].children[1],
 				rootNode.children[1].children[2]
 			]
-			const result = matchingFilesCounterController["getSearchedNodeLeaves"](searchNodes)
+			matchingFilesCounterController.onNodeSearchComplete(searchNodes)
 
-			expect(result).toEqual(nodeLeaves)
+			expect(matchingFilesCounterController["searchedNodeLeaves"]).toEqual(nodeLeaves)
 		})
 	})
 })

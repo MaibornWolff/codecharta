@@ -53,8 +53,9 @@ describe("blacklistController", () => {
 
 	describe("removeBlacklistEntry", () => {
 		it("should remove blacklist entry", () => {
-			storeService.dispatch(addBlacklistItem({ path: "/some/leaf", type: BlacklistType.exclude }))
 			const entry = { path: "/some/leaf", type: BlacklistType.exclude }
+
+			storeService.dispatch(addBlacklistItem({ ...entry }))
 
 			blacklistPanelController.removeBlacklistEntry(entry)
 

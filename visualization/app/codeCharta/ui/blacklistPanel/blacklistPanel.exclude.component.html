@@ -1,9 +1,9 @@
 <md-list>
 	<span class="header">
 		<h3 class="header-text">Excluded</h3>
-		<i class="fa fa-question-circle-o">
+		<em class="fa fa-question-circle-o">
 			<md-tooltip>Excluded buildings are not shown in the map and are not included in folder metrics</md-tooltip>
-		</i>
+		</em>
 	</span>
 
 	<div class="sub-list">
@@ -17,7 +17,7 @@
 
 		<md-list-item ng-repeat="item in $ctrl._viewModel.exclude | orderBy: ['path'] track by $index" title="{{::item.path}}">
 			<md-button class="round-button" ng-click="$ctrl.removeBlacklistEntry(item)">
-				<i class="fa fa-minus-square" title="Remove list item"></i>
+				<em class="fa fa-minus-square" title="Remove list item"></em>
 			</md-button>
 			<div class="pattern-text" layout="column">
 				<p>

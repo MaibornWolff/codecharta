@@ -24,6 +24,7 @@ dependencies {
     def jasomeImporter = project(':import:JasomeImporter')
     def structureModifier = project(':filter:StructureModifier')
     def scmlogParser = project(':import:SCMLogParser')
+    def scmlogParserV2 = project(':import:SCMLogParserV2')
     def sonarImporter = project(':import:SonarImporter')
     def sourceCodeParser = project(':import:SourceCodeParser')
     def tokeiImporter = project(':import:TokeiImporter')
@@ -40,6 +41,7 @@ dependencies {
     compile csvImporter; testCompile csvImporter.sourceSets.test.output
     compile jasomeImporter; testCompile jasomeImporter.sourceSets.test.output
     compile scmlogParser; testCompile scmlogParser.sourceSets.test.output
+    compile scmlogParserV2; testCompile scmlogParserV2.sourceSets.test.output
     compile sonarImporter; testCompile sonarImporter.sourceSets.test.output
     compile sourceCodeParser; testCompile sourceCodeParser.sourceSets.test.output
     compile tokeiImporter; testCompile tokeiImporter.sourceSets.test.output

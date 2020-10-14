@@ -13,7 +13,11 @@ import java.util.stream.Stream
 /**
  * Parses log lines and generates VersionControlledFiles from them using specific parserStrategy and metricsFactory
  */
-class LogLineParser(private val parserStrategy: LogParserStrategy, private val metricsFactory: MetricsFactory, private val silent: Boolean = false) {
+class LogLineParser(
+    private val parserStrategy: LogParserStrategy,
+    private val metricsFactory: MetricsFactory,
+    private val silent: Boolean = false
+) {
 
     private var numberOfCommitsParsed = 0
 

@@ -8,7 +8,7 @@ import { DeltaGenerator } from "../../util/deltaGenerator"
 import { CodeMapRenderService } from "./codeMap.render.service"
 import { StoreService, StoreSubscriber } from "../../state/store.service"
 import { ScalingService, ScalingSubscriber } from "../../state/store/appSettings/scaling/scaling.service"
-import _ from "lodash"
+import debounce from "lodash.debounce"
 import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.actions"
 import { IsLoadingMapActions, setIsLoadingMap } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { IsLoadingFileActions, setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
@@ -26,6 +26,7 @@ import { MetricDataService, MetricDataSubscriber } from "../../state/store/metri
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
+import { isLeaf } from "../../util/codeMapHelper"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -50,7 +51,7 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 		MetricDataService.subscribe(this.$rootScope, this)
 		StoreService.subscribe(this.$rootScope, this)
 		ScalingService.subscribe(this.$rootScope, this)
-		this.debounceRendering = _.debounce(() => {
+		this.debounceRendering = debounce(() => {
 			this.renderAndNotify()
 		}, this.DEBOUNCE_TIME)
 	}
@@ -103,28 +104,26 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 	}
 
 	private decorateIfPossible() {
-		const state = this.storeService.getState()
-		const { metricData } = state
-		if (this.unifiedMap && fileStatesAvailable(state.files) && this.unifiedFileMeta && metricData.nodeMetricData) {
-			NodeDecorator.decorateMap(this.unifiedMap, metricData, state.fileSettings.blacklist)
+		const { metricData, files, fileSettings } = this.storeService.getState()
+		if (this.unifiedMap && this.unifiedFileMeta && fileStatesAvailable(files) && metricData.nodeMetricData) {
+			NodeDecorator.decorateMap(this.unifiedMap, metricData, fileSettings.blacklist)
 			this.getEdgeMetricsForLeaves(this.unifiedMap)
-			NodeDecorator.decorateParentNodesWithAggregatedAttributes(
-				this.unifiedMap,
-				isDeltaState(state.files),
-				state.fileSettings.attributeTypes
-			)
+			NodeDecorator.decorateParentNodesWithAggregatedAttributes(this.unifiedMap, isDeltaState(files), fileSettings.attributeTypes)
 		}
 	}
 
 	private getEdgeMetricsForLeaves(map: CodeMapNode) {
-		if (this.edgeMetricDataService.getMetricNames()) {
-			const root = hierarchy<CodeMapNode>(map)
-			root.leaves().forEach(node => {
-				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node)
-				for (const edgeMetric of edgeMetrics.keys()) {
-					Object.assign(node.data.edgeAttributes, { [edgeMetric]: edgeMetrics.get(edgeMetric) })
+		const names = this.edgeMetricDataService.getMetricNames()
+		if (names.length === 0) {
+			return
+		}
+		for (const node of hierarchy(map)) {
+			if (isLeaf(node)) {
+				const edgeMetrics = this.edgeMetricDataService.getMetricValuesForNode(node, names)
+				for (const [key, value] of edgeMetrics) {
+					node.data.edgeAttributes[key] = value
 				}
-			})
+			}
 		}
 	}
 
@@ -172,11 +171,11 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 
 	private allNecessaryRenderDataAvailable() {
 		return (
-			fileStatesAvailable(this.storeService.getState().files) &&
 			this.storeService.getState().metricData.nodeMetricData !== null &&
+			fileStatesAvailable(this.storeService.getState().files) &&
 			this.areChosenMetricsInMetricData() &&
-			_.values(this.storeService.getState().dynamicSettings).every(x => {
-				return x !== null && _.values(x).every(x => x !== null)
+			Object.values(this.storeService.getState().dynamicSettings).every(x => {
+				return x !== null && Object.values(x).every(x => x !== null)
 			})
 		)
 	}

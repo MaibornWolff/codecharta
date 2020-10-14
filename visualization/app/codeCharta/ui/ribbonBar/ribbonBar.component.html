@@ -1,6 +1,6 @@
 <search-panel-component></search-panel-component>
 
-<md-card ng-attr-id="scenario-card">
+<md-card ng-attr-id="scenario-card" ng-mouseup="$ctrl.onClick()">
 	<div class="section">
 		<div class="section-header">
 			<scenario-drop-down-component></scenario-drop-down-component>
@@ -12,7 +12,6 @@
 <md-card
 	ng-attr-id="area-metric-card"
 	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.AREA_PANEL_OPEN }"
-	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
@@ -33,7 +32,6 @@
 <md-card
 	ng-attr-id="height-metric-card"
 	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.HEIGHT_PANEL_OPEN }"
-	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
@@ -54,7 +52,6 @@
 <md-card
 	ng-attr-id="color-metric-card"
 	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.COLOR_PANEL_OPEN }"
-	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
@@ -75,7 +72,6 @@
 <md-card
 	ng-attr-id="edge-metric-card"
 	ng-class="{ expanded: $ctrl._viewModel.panelSelection === $ctrl._viewModel.panelSelectionValues.EDGE_PANEL_OPEN }"
-	ng-mouseup="$event.stopPropagation()"
 >
 	<div class="section">
 		<div class="section-header">
@@ -94,7 +90,7 @@
 	</div>
 </md-card>
 
-<md-card>
+<md-card ng-mouseup="$ctrl.onClick()">
 	<div class="section">
 		<div class="section-header space"></div>
 	</div>

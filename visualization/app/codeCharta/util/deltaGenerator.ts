@@ -1,74 +1,94 @@
 import { CodeMapNode, CCFile, KeyValuePair, FileMeta } from "../codeCharta.model"
-import { MapBuilder } from "./mapBuilder"
 import { FileNameHelper } from "./fileNameHelper"
 import { hierarchy } from "d3-hierarchy"
 import packageJson from "../../../package.json"
+import { CodeChartaService } from "../codeCharta.service"
+import { getParent } from "./nodePathHelper"
 
 export class DeltaGenerator {
-	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
-		const referenceHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(referenceFile.map)
-		const comparisonHashMap: Map<string, CodeMapNode> = this.getCodeMapNodesAsHashMap(comparisonFile.map)
-		const hashMapWithAllNodes: Map<string, CodeMapNode> = this.getHashMapWithAllNodes(referenceHashMap, comparisonHashMap)
+	static createCodeMapFromHashMap(hashMapWithAllNodes: Map<string, CodeMapNode>) {
+		let rootNode: CodeMapNode
+		for (const [path, node] of hashMapWithAllNodes) {
+			if (path === CodeChartaService.ROOT_PATH) {
+				rootNode = node
+			} else {
+				const parentNode = getParent(hashMapWithAllNodes, path)
+				parentNode.children.push(node)
+			}
+		}
+		return rootNode
+	}
 
+	static getDeltaFile(referenceFile: CCFile, comparisonFile: CCFile) {
+		const hashMapWithAllNodes = this.getHashMapWithAllNodes(referenceFile.map, comparisonFile.map)
+		const map = this.createCodeMapFromHashMap(hashMapWithAllNodes)
 		const fileMeta = this.getFileMetaData(referenceFile, comparisonFile)
-		const map = MapBuilder.createCodeMapFromHashMap(hashMapWithAllNodes)
 		return this.getNewCCFileWithDeltas(map, fileMeta)
 	}
 
-	private static getCodeMapNodesAsHashMap(rootNode: CodeMapNode) {
-		const hashMap = new Map<string, CodeMapNode>()
+	private static getHashMapWithAllNodes(referenceMap: CodeMapNode, comparisonMap: CodeMapNode) {
+		const hashMapWithAllNodes: Map<string, CodeMapNode> = new Map()
+		const referenceHashMap: Map<string, CodeMapNode> = new Map()
 
-		hierarchy(rootNode)
-			.descendants()
-			.forEach(({ data }) => {
-				data.children = []
-				hashMap.set(data.path, data)
-			})
-		return hashMap
-	}
+		// Get one side of the nodes
+		for (const { data } of hierarchy(referenceMap)) {
+			referenceHashMap.set(data.path, data)
+		}
 
-	private static getHashMapWithAllNodes(referenceHashMap: Map<string, CodeMapNode>, comparisonHashMap: Map<string, CodeMapNode>) {
-		const hashMapWithAllNodes: Map<string, CodeMapNode> = new Map<string, CodeMapNode>()
-
-		comparisonHashMap.forEach((comparisonNode: CodeMapNode, path: string) => {
-			const referenceNode = referenceHashMap.get(path)
+		// Combine both sides of the nodes
+		for (const { data: comparisonNode } of hierarchy(comparisonMap)) {
+			const referenceNode = referenceHashMap.get(comparisonNode.path)
 			if (referenceNode) {
-				const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, comparisonNode.attributes)
-				hashMapWithAllNodes.set(path, newNode)
+				if (referenceNode.children || comparisonNode.children) {
+					referenceNode.children = []
+				}
+				referenceNode.deltas = this.getDeltaAttributeList(referenceNode.attributes, comparisonNode.attributes)
+				// TODO: The attributes have to be consolidated to have a single set of
+				// attributes instead of conflicting attributes. This applies to all
+				// attributes and is not specific about the attributes from the
+				// reference node.
+				referenceNode.attributes = comparisonNode.attributes
 			} else {
-				const newNode = this.getNewDeltaNode(comparisonNode, {}, comparisonNode.attributes)
-				hashMapWithAllNodes.set(path, newNode)
+				if (comparisonNode.children) {
+					comparisonNode.children = []
+				}
+				comparisonNode.deltas = { ...comparisonNode.attributes }
 			}
-		})
+			const node = referenceNode ?? comparisonNode
+			hashMapWithAllNodes.set(node.path, node)
+			referenceHashMap.delete(node.path)
+		}
 
-		referenceHashMap.forEach((referenceNode: CodeMapNode, path: string) => {
-			if (!comparisonHashMap.get(path)) {
-				const newNode = this.getNewDeltaNode(referenceNode, referenceNode.attributes, {})
-				hashMapWithAllNodes.set(newNode.path, newNode)
+		// Add missing nodes
+		for (const node of referenceHashMap.values()) {
+			if (node.children) {
+				node.children = []
 			}
-		})
+			node.deltas = {}
+			for (const [key, value] of Object.entries(node.attributes)) {
+				node.deltas[key] = -value
+			}
+			hashMapWithAllNodes.set(node.path, node)
+		}
+
 		return hashMapWithAllNodes
-	}
-
-	private static getNewDeltaNode(node: CodeMapNode, referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
-		node.children = []
-		node.deltas = this.getDeltaAttributeList(referenceAttribute, comparisonAttribute)
-		node.attributes = comparisonAttribute
-		return node
 	}
 
 	private static getDeltaAttributeList(referenceAttribute: KeyValuePair, comparisonAttribute: KeyValuePair) {
 		const deltaAttribute: KeyValuePair = {}
 
-		Object.keys(comparisonAttribute).forEach((key: string) => {
+		// TODO: All entries should have the combined attributes and deltas set,
+		// even if they do not exist on one side. Calculate these attributes up
+		// front. This operation is otherwise costly.
+		for (const key of Object.keys(comparisonAttribute)) {
 			deltaAttribute[key] = referenceAttribute[key] ? comparisonAttribute[key] - referenceAttribute[key] : comparisonAttribute[key]
-		})
+		}
 
-		Object.keys(referenceAttribute).forEach((key: string) => {
+		for (const key of Object.keys(referenceAttribute)) {
 			if (!comparisonAttribute[key]) {
 				deltaAttribute[key] = -referenceAttribute[key]
 			}
-		})
+		}
 		return deltaAttribute
 	}
 

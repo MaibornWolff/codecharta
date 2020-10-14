@@ -1,45 +1,52 @@
 import { CodeMapNode, EdgeVisibility, MarkedPackage } from "../../codeCharta.model"
 import { StoreService } from "../../state/store.service"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
-import { markPackage, unmarkPackage } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
+import { unmarkPackage, setMarkedPackages } from "../../state/store/fileSettings/markedPackages/markedPackages.actions"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
+import { getParent } from "../../util/nodePathHelper"
 
 export class CodeMapActionsService {
 	constructor(private edgeMetricDataService: EdgeMetricDataService, private storeService: StoreService) {}
 
-	markFolder(node: CodeMapNode, color: string) {
-		const newMP = this.getNewMarkedPackage(node.path, color)
-		const clickedMP = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === newMP.path)
-		const parentMP = this.getParentMP(newMP.path)
+	markFolder({ path }: CodeMapNode, color: string) {
+		const { markedPackages } = this.storeService.getState().fileSettings
+		const markedPackagesMap = new Map(markedPackages.map(entry => [entry.path, entry]))
 
-		this.handleUpdatingMarkedPackages(newMP, clickedMP, parentMP)
-	}
+		const markedPackage = getParent(markedPackagesMap, path)
 
-	private handleUpdatingMarkedPackages(newMP: MarkedPackage, clickedMP: MarkedPackage, parentMP: MarkedPackage) {
-		if (!clickedMP && this.packagesHaveDifferentColor(parentMP, newMP)) {
-			this.addMarkedPackage(newMP)
-		} else if (this.packagesHaveDifferentColor(clickedMP, newMP)) {
-			this.removeMarkedPackage(clickedMP)
+		if (!markedPackage || markedPackage.color !== color) {
+			markedPackagesMap.set(path, {
+				path,
+				color
+			})
+		}
 
-			if (this.packagesHaveDifferentColor(parentMP, newMP)) {
-				this.addMarkedPackage(newMP)
+		for (const [key, markedPackage] of markedPackagesMap) {
+			if (markedPackage.path === path) {
+				if (markedPackage.color !== color) {
+					markedPackagesMap.delete(key)
+				}
+			} else if (markedPackage.path.startsWith(path)) {
+				// Remove marked packages with color identical to their parent marked package
+				const markedPackageParent = getParent(markedPackagesMap, markedPackage.path)
+				if (markedPackageParent && markedPackageParent.color === markedPackage.color) {
+					markedPackagesMap.delete(key)
+				}
 			}
 		}
-		this.removeChildrenMPWithSameColor(newMP)
-	}
 
-	private packagesHaveDifferentColor(mp1: MarkedPackage, mp2: MarkedPackage) {
-		return !(mp1 && mp2 && mp1.color === mp2.color)
+		this.storeService.dispatch(setMarkedPackages([...markedPackagesMap.values()]))
 	}
 
 	unmarkFolder(node: CodeMapNode) {
-		const clickedMP = this.storeService.getState().fileSettings.markedPackages.find(p => p.path === node.path)
+		let index = this.storeService.getState().fileSettings.markedPackages.findIndex(mp => mp.path === node.path)
 
-		if (clickedMP) {
-			this.removeMarkedPackage(clickedMP)
-		} else {
-			const parentMP = this.getParentMP(node.path)
-			this.removeMarkedPackage(parentMP)
+		if (index === -1) {
+			index = this.getParentMarkedPackageIndex(node.path)
+		}
+
+		if (index !== -1) {
+			this.storeService.dispatch(unmarkPackage(index))
 		}
 	}
 
@@ -48,68 +55,44 @@ export class CodeMapActionsService {
 		const { edges } = state.fileSettings
 		const { edgeMetric } = state.dynamicSettings
 		const numberOfEdgesToDisplay = state.appSettings.amountOfEdgePreviews
-		const edgePreviewNodes = this.edgeMetricDataService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay)
+		const edgePreviewNodes = new Set(this.edgeMetricDataService.getNodesWithHighestValue(edgeMetric, numberOfEdgesToDisplay))
 
-		edges.forEach(edge => {
-			if (
-				(edgePreviewNodes.includes(edge.fromNodeName) || edgePreviewNodes.includes(edge.toNodeName)) &&
-				Object.keys(edge.attributes).includes(edgeMetric)
-			) {
-				edge.visible = EdgeVisibility.both
-				if (!edgePreviewNodes.includes(edge.fromNodeName)) {
-					edge.visible = EdgeVisibility.to
-				} else if (!edgePreviewNodes.includes(edge.toNodeName)) {
+		for (const edge of edges) {
+			edge.visible = EdgeVisibility.none
+
+			if (edge.attributes[edgeMetric] !== undefined) {
+				const hasFromNodeEdgePreview = edgePreviewNodes.has(edge.fromNodeName)
+				const hasToNodeEdgePreview = edgePreviewNodes.has(edge.toNodeName)
+
+				if (hasFromNodeEdgePreview === hasToNodeEdgePreview) {
+					if (hasFromNodeEdgePreview) {
+						edge.visible = EdgeVisibility.both
+					}
+				} else if (hasFromNodeEdgePreview) {
 					edge.visible = EdgeVisibility.from
+				} else {
+					edge.visible = EdgeVisibility.to
 				}
-			} else {
-				edge.visible = EdgeVisibility.none
 			}
-		})
+		}
 
 		this.storeService.dispatch(setEdges(edges))
 	}
 
-	getParentMP(path: string) {
-		const sortedParentMP = this.storeService
-			.getState()
-			.fileSettings.markedPackages.filter(p => path.includes(p.path) && p.path !== path)
-			.sort((a, b) => b.path.length - a.path.length)
-
-		return sortedParentMP.length > 0 ? sortedParentMP[0] : null
-	}
-
-	private getNewMarkedPackage(path: string, color: string): MarkedPackage {
-		return {
-			path,
-			color
-		}
-	}
-
-	private removeChildrenMPWithSameColor(newMP: MarkedPackage) {
-		const allChildrenMP = this.getAllChildrenMP(newMP.path)
-		allChildrenMP.forEach(childPackage => {
-			const parentMP = this.getParentMP(childPackage.path)
-			if (parentMP && parentMP.color === childPackage.color) {
-				this.removeMarkedPackage(childPackage)
+	getParentMarkedPackageIndex(path: string) {
+		const markedPackages: MarkedPackage[] = this.storeService.getState().fileSettings.markedPackages
+		let index = -1
+		for (let i = 0; i < markedPackages.length; i++) {
+			const markedPackage = markedPackages[i]
+			if (
+				path.startsWith(markedPackage.path) &&
+				path !== markedPackage.path &&
+				(index === -1 || markedPackages[index].path.length < markedPackage.path.length)
+			) {
+				index = i
 			}
-		})
-	}
-
-	private getAllChildrenMP(path: string) {
-		return this.storeService.getState().fileSettings.markedPackages.filter(p => p.path !== path && p.path.includes(path))
-	}
-
-	private addMarkedPackage(markedPackage: MarkedPackage) {
-		this.storeService.getState().fileSettings.markedPackages.push(markedPackage)
-		this.storeService.dispatch(markPackage(markedPackage))
-	}
-
-	private removeMarkedPackage(markedPackage: MarkedPackage) {
-		const indexToRemove = this.storeService.getState().fileSettings.markedPackages.indexOf(markedPackage)
-		if (indexToRemove > -1) {
-			// TODO: Stop mutating the store entries.
-			this.storeService.getState().fileSettings.markedPackages.splice(indexToRemove, 1)
 		}
-		this.storeService.dispatch(unmarkPackage(markedPackage))
+
+		return index
 	}
 }

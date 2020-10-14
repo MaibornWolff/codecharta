@@ -1,4 +1,3 @@
-import _ from "lodash"
 import { CCAction } from "../../codeCharta.model"
 import { StateActions } from "./state.actions"
 
@@ -21,31 +20,31 @@ import { splitFilesAction } from "./files/files.splitter"
 
 export function splitStateActions(action: CCAction) {
 	// Plop: Propagate sub-reducer here
-	if (Object.values(MetricDataActions).includes(action.type)) {
+	if (MetricDataActions[action.type] !== undefined) {
 		return splitMetricDataActions(action.payload)
 	}
 
-	if (Object.values(LookUpActions).includes(action.type)) {
+	if (LookUpActions[action.type] !== undefined) {
 		return splitLookUpActions(action.payload)
 	}
 
-	if (_.values(DynamicSettingsActions).includes(action.type)) {
+	if (DynamicSettingsActions[action.type] !== undefined) {
 		return splitDynamicSettingsActions(action.payload)
 	}
 
-	if (_.values(FileSettingsActions).includes(action.type)) {
+	if (FileSettingsActions[action.type] !== undefined) {
 		return splitFileSettingsActions(action.payload)
 	}
 
-	if (_.values(AppSettingsActions).includes(action.type)) {
+	if (AppSettingsActions[action.type] !== undefined) {
 		return splitAppSettingsActions(action.payload)
 	}
 
-	if (_.values(TreeMapSettingsActions).includes(action.type)) {
+	if (TreeMapSettingsActions[action.type] !== undefined) {
 		return splitTreeMapSettingsActions(action.payload)
 	}
 
-	if (Object.values(StateActions).includes(action.type)) {
+	if (StateActions[action.type] !== undefined) {
 		const actions: CCAction[] = []
 
 		// Plop: Split into sub-reducer here
@@ -78,5 +77,6 @@ export function splitStateActions(action: CCAction) {
 		}
 		return actions
 	}
+
 	return [action]
 }

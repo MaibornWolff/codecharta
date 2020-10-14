@@ -1,7 +1,7 @@
 "use strict"
 
 import { CodeMapMesh } from "./rendering/codeMapMesh"
-import { TreeMapGenerator } from "../../util/treeMapGenerator"
+import { createTreemapNodes } from "../../util/treeMapGenerator"
 import { CodeMapLabelService } from "./codeMap.label.service"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { CodeMapArrowService } from "./codeMap.arrow.service"
@@ -26,7 +26,8 @@ export class CodeMapRenderService {
 	}
 
 	private setNewMapMesh(sortedNodes) {
-		const mapMesh = new CodeMapMesh(sortedNodes, this.storeService.getState(), isDeltaState(this.storeService.getState().files))
+		const state = this.storeService.getState()
+		const mapMesh = new CodeMapMesh(sortedNodes, state, isDeltaState(state.files))
 		this.threeSceneService.setMapMesh(mapMesh)
 	}
 
@@ -37,31 +38,27 @@ export class CodeMapRenderService {
 	}
 
 	private getSortedNodes(map: CodeMapNode) {
-		const nodes = TreeMapGenerator.createTreemapNodes(
-			map,
-			this.storeService.getState(),
-			this.storeService.getState().metricData.nodeMetricData,
-			isDeltaState(this.storeService.getState().files)
-		)
+		const state = this.storeService.getState()
+		const nodes = createTreemapNodes(map, state, state.metricData.nodeMetricData, isDeltaState(state.files))
+		// TODO: Move the filtering step into `createTreemapNodes`. It's possible to
+		// prevent multiple steps if the visibility is checked first.
 		const filteredNodes = nodes.filter(node => node.visible && node.length > 0 && node.width > 0)
 		return filteredNodes.sort((a, b) => b.height - a.height)
 	}
 
 	private setLabels(sortedNodes: Node[]) {
 
-		const showMetriLabelNodeName = this.storeService.getState().appSettings.showMetricLabelNodeName
+		const showMetricLabelNodeName = this.storeService.getState().appSettings.showMetricLabelNodeName
 		const showMetricLabelNameValue = this.storeService.getState().appSettings.showMetricLabelNameValue
 
 		this.codeMapLabelService.clearLabels()
-		if (showMetriLabelNodeName || showMetricLabelNameValue) {
-			for (
-				let i = 0, numberAdded = 0;
-				i < sortedNodes.length && numberAdded < this.storeService.getState().appSettings.amountOfTopLabels;
-				++i
-			) {
+		if (showMetricLabelNodeName || showMetricLabelNameValue) {
+
+			let {amountOfTopLabels} = this.storeService.getState().appSettings
+			for (let i = 0; i < sortedNodes.length && amountOfTopLabels !== 0; i++) {
 				if (sortedNodes[i].isLeaf) {
-					this.codeMapLabelService.addLabel(sortedNodes[i], showMetriLabelNodeName, showMetricLabelNameValue)
-					++numberAdded
+					this.codeMapLabelService.addLabel(sortedNodes[i], showMetricLabelNodeName, showMetricLabelNameValue)
+					amountOfTopLabels -= 1
 				}
 			}
 		}
@@ -69,9 +66,6 @@ export class CodeMapRenderService {
 
 	private setArrows(sortedNodes: Node[]) {
 		this.codeMapArrowService.clearArrows()
-		const { edges } = this.storeService.getState().fileSettings
-		if (edges.length > 0) {
-			this.codeMapArrowService.addEdgePreview(sortedNodes, edges)
-		}
+		this.codeMapArrowService.addEdgePreview(sortedNodes)
 	}
 }
