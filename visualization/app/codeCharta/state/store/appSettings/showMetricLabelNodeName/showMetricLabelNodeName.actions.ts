@@ -11,11 +11,13 @@ export interface SetShowMetricLabelNodeNameAction extends Action {
 
 export type ShowMetricLabelNodeNameAction = SetShowMetricLabelNodeNameAction
 
-export function setShowMetricLabelNodeName(showMetricLabelNodeName: boolean = defaultShowMetricLabelNodeName): SetShowMetricLabelNodeNameAction {
+export function setShowMetricLabelNodeName(
+	showMetricLabelNodeName: boolean = defaultShowMetricLabelNodeName
+): SetShowMetricLabelNodeNameAction {
 	return {
 		type: ShowMetricLabelNodeNameActions.SET_SHOW_METRIC_LABEL_NODE_NAME,
 		payload: showMetricLabelNodeName
 	}
 }
 
-export const defaultShowMetricLabelNodeName : boolean = true
+export const defaultShowMetricLabelNodeName = true

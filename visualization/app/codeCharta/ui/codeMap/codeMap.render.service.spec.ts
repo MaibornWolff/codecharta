@@ -17,6 +17,8 @@ import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/f
 import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
 import { clone } from "../../util/clone"
 import _ from "lodash"
+import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
@@ -150,6 +152,15 @@ describe("codeMapRenderService", () => {
 			codeMapRenderService["setLabels"](sortedNodes)
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(2)
+		})
+
+		it("should not generate labels when showMetricLabelNodeName and showMetricLabelNameValue are both false", () => {
+			storeService.dispatch(setShowMetricLabelNodeName(false))
+			storeService.dispatch(setShowMetricLabelNameValue(false))
+
+			codeMapRenderService["setLabels"](sortedNodes)
+
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(0)
 		})
 	})
 

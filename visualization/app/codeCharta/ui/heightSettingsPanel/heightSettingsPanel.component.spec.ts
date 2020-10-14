@@ -11,6 +11,8 @@ import { InvertHeightService } from "../../state/store/appSettings/invertHeight/
 import { FilesService } from "../../state/store/files/files.service"
 import { TEST_DELTA_MAP_A } from "../../util/dataMocks"
 import { addFile, setDelta } from "../../state/store/files/files.actions"
+import { ShowMetricLabelNameValueService } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.service"
+import { ShowMetricLabelNodeNameService } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.service"
 
 describe("HeightSettingsPanelController", () => {
 	let heightSettingsPanelController: HeightSettingsPanelController
@@ -67,6 +69,22 @@ describe("HeightSettingsPanelController", () => {
 
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
+
+		it("should subscribe to ShowMetricLabelNameValueService", () => {
+			ShowMetricLabelNameValueService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ShowMetricLabelNameValueService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+		})
+
+		it("should subscribe to ShowMetricLabelNodeNameService", () => {
+			ShowMetricLabelNodeNameService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ShowMetricLabelNodeNameService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+		})
 	})
 
 	describe("onAmountOfTopLabelsChanged", () => {
@@ -104,6 +122,22 @@ describe("HeightSettingsPanelController", () => {
 		})
 	})
 
+	describe("onShowMetricLabelNameValueChanged", () => {
+		it("should set showMetricValue in viewModel", () => {
+			heightSettingsPanelController.onShowMetricLabelNameValueChanged(false)
+
+			expect(heightSettingsPanelController["_viewModel"].showMetricValue).toBeFalsy()
+		})
+	})
+
+	describe("onShowMetricLabelNodeNameChanged", () => {
+		it("should set showNodeName in viewModel", () => {
+			heightSettingsPanelController.onShowMetricLabelNodeNameChanged(false)
+
+			expect(heightSettingsPanelController["_viewModel"].showNodeName).toBeFalsy()
+		})
+	})
+
 	describe("applySettingsAmountOfTopLabels", () => {
 		it("should update amountOfTopLabels in store", done => {
 			heightSettingsPanelController["_viewModel"].amountOfTopLabels = 12
@@ -137,6 +171,26 @@ describe("HeightSettingsPanelController", () => {
 				expect(storeService.getState().appSettings.scaling).toEqual(new Vector3(1, 1.8, 1))
 				done()
 			}, HeightSettingsPanelController["DEBOUNCE_TIME"] + SOME_EXTRA_TIME)
+		})
+	})
+
+	describe("applySettingsMetricLabelValueChanged", () => {
+		it("should update showMetricLabelNameValue in store", () => {
+			heightSettingsPanelController["_viewModel"].showMetricValue = false
+
+			heightSettingsPanelController.applySettingsMetricLabelValueChanged()
+
+			expect(storeService.getState().appSettings.showMetricLabelNameValue).toBeFalsy()
+		})
+	})
+
+	describe("applySettingsMetricLabelNodeNameChanged", () => {
+		it("should update showMetricLabelNodeName in store", () => {
+			heightSettingsPanelController["_viewModel"].showNodeName = false
+
+			heightSettingsPanelController.applySettingsMetricLabelNodeNameChanged()
+
+			expect(storeService.getState().appSettings.showMetricLabelNodeName).toBeFalsy()
 		})
 	})
 })

@@ -14,7 +14,7 @@ export class ShowMetricLabelNameValueService implements StoreSubscriber {
 		StoreService.subscribe(this.$rootScope, this)
 	}
 
-	public onStoreChanged(actionType: string) {
+	onStoreChanged(actionType: string) {
 		if (isActionOfType(actionType, ShowMetricLabelNameValueActions)) {
 			this.notify(this.select())
 		}
@@ -25,10 +25,12 @@ export class ShowMetricLabelNameValueService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(ShowMetricLabelNameValueService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, { showMetricLabelNameValue: newState })
+		this.$rootScope.$broadcast(ShowMetricLabelNameValueService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, {
+			showMetricLabelNameValue: newState
+		})
 	}
 
-	public static subscribe($rootScope: IRootScopeService, subscriber: ShowMetricLabelNameValueSubscriber) {
+	static subscribe($rootScope: IRootScopeService, subscriber: ShowMetricLabelNameValueSubscriber) {
 		$rootScope.$on(ShowMetricLabelNameValueService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onShowMetricLabelNameValueChanged(data.showMetricLabelNameValue)
 		})
