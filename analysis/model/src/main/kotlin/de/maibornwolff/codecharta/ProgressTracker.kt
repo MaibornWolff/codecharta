@@ -12,7 +12,8 @@ class ProgressTracker() {
     fun updateProgress(total: Long, parsed: Long, unit: String, filename: String = "") {
         val eta = if (parsed == 0L) 0 else (total - parsed) * (System.currentTimeMillis() - startTime) / parsed
         val etaHms = if (parsed == 0L) "N/A" else String.format(
-            "%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(eta),
+            "%02d:%02d:%02d",
+            TimeUnit.MILLISECONDS.toHours(eta),
             TimeUnit.MILLISECONDS.toMinutes(eta) % TimeUnit.HOURS.toMinutes(1),
             TimeUnit.MILLISECONDS.toSeconds(eta) % TimeUnit.MINUTES.toSeconds(1)
         )
