@@ -28,7 +28,7 @@ import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
-showMetricLabelNodeName,
+    showMetricLabelNodeName,
 	showMetricLabelNameValue,
 	panelSelection,
 	cameraTarget,

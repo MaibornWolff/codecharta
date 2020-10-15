@@ -48,13 +48,14 @@ export class CodeMapRenderService {
 
 	private setLabels(sortedNodes: Node[]) {
 
-		const showMetricLabelNodeName = this.storeService.getState().appSettings.showMetricLabelNodeName
-		const showMetricLabelNameValue = this.storeService.getState().appSettings.showMetricLabelNameValue
+		const appSettings = this.storeService.getState().appSettings
+		const showMetricLabelNodeName = appSettings.showMetricLabelNodeName
+		const showMetricLabelNameValue = appSettings.showMetricLabelNameValue
 
 		this.codeMapLabelService.clearLabels()
 		if (showMetricLabelNodeName || showMetricLabelNameValue) {
 
-			let {amountOfTopLabels} = this.storeService.getState().appSettings
+			let {amountOfTopLabels} = appSettings
 			for (let i = 0; i < sortedNodes.length && amountOfTopLabels !== 0; i++) {
 				if (sortedNodes[i].isLeaf) {
 					this.codeMapLabelService.addLabel(sortedNodes[i], showMetricLabelNodeName, showMetricLabelNameValue)

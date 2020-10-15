@@ -50,11 +50,10 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 				labelText = `${node.name}`
 			}
 			if (showMetricNameValue) {
-				if (labelText === "") {
-					labelText = `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
-				} else {
-					labelText += `\n${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+				if (labelText !== "") {
+					labelText += "\n"
 				}
+				labelText += `\n${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
 			}
 
 			const label = this.makeText(labelText, 30)
