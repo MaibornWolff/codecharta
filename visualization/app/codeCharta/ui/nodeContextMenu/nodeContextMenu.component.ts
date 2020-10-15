@@ -83,7 +83,7 @@ export class NodeContextMenuController
         // or using the mouse wheel on the body element.
         document.body.addEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
         document.body.addEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
-        document.body.addEventListener("wheel", this.onBodyWheelHideNodeContextMenu, true)
+        document.getElementById("codeMap").addEventListener("wheel", this.onBodyWheelHideNodeContextMenu, true)
     }
 
     onBodyLeftClickHideNodeContextMenu = () => {
@@ -117,7 +117,7 @@ export class NodeContextMenuController
         // The listener is added when showing the node context menu.
         // Thus, remove the listener when using the mouse wheel on the body element
         // to fire hide events only (once) when it is really necessary.
-        document.body.removeEventListener("wheel", this.onBodyWheelHideNodeContextMenu, true)
+        document.getElementById("codeMap").removeEventListener("wheel", this.onBodyWheelHideNodeContextMenu, true)
     }
 
     onHideNodeContextMenu() {
@@ -224,7 +224,8 @@ export class NodeContextMenuController
     }
 
     private synchronizeAngularTwoWayBinding() {
-        this.$timeout(() => {})
+        this.$timeout(() => {
+        })
     }
 
     static broadcastShowEvent($rootScope, path: string, type: string, x, y) {
