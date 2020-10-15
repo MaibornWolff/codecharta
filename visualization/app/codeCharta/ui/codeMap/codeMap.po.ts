@@ -4,6 +4,9 @@ export class CodeMapPageObject {
 	}
 
 	async rightClickMouseDownOnMap() {
+		const codeMapElement = await page.waitForSelector("#codeMap")
+		await codeMapElement.hover()
+
 		await page.mouse.down({ button: "right" })
 	}
 
