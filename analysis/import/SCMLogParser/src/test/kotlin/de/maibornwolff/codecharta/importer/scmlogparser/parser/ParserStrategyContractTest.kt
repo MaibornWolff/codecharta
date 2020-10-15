@@ -23,7 +23,7 @@ abstract class ParserStrategyContractTest {
      * whereby one filename is duplicated; "src/Main.java","src/Main.java","src/Util.java"
      *
      * @return the test data as a List<String>
-     </String> */
+     * </String> */
     protected abstract val fullCommit: List<String>
 
     protected abstract val logParserStrategy: LogParserStrategy
@@ -81,9 +81,7 @@ abstract class ParserStrategyContractTest {
         assertThat(files)
             .extracting(
                 java.util.function.Function<VersionControlledFile, Any> { it.filename },
-                java.util.function.Function<VersionControlledFile, Any> { f ->
-                    f.getMetricValue("number_of_commits")
-                },
+                java.util.function.Function<VersionControlledFile, Any> { f -> f.getMetricValue("number_of_commits") },
                 java.util.function.Function<VersionControlledFile, Any> { it.authors }
             )
             .containsExactlyInAnyOrder(

@@ -24,13 +24,14 @@ import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
 import { MetricDistribution } from "./fileExtensionCalculator"
 import { Box3, Vector3 } from "three"
 import { IRootScopeService } from "angular"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
 import { FileSelectionState, FileState } from "../model/files/files"
 import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
+import { isLeaf } from "./codeMapHelper"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -1618,13 +1619,12 @@ export function withMockedEventMethods($rootScope: IRootScopeService) {
 }
 
 export function setIsBlacklisted(paths: string[], map: CodeMapNode, type: BlacklistType) {
-	hierarchy(map)
-		.leaves()
-		.forEach(node => {
-			if (paths.includes(node.data.path)) {
-				setBlacklistFlagByType(node.data, type, true)
-			}
-		})
+	const pathsSet = new Set(paths)
+	for (const node of hierarchy(map)) {
+		if (isLeaf(node) && pathsSet.has(node.data.path)) {
+			setBlacklistFlagByType(node.data, type, true)
+		}
+	}
 }
 
 function setBlacklistFlagByType(node: CodeMapNode, type: BlacklistType, flag: boolean) {

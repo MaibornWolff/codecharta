@@ -1,6 +1,7 @@
 import "./toolBar.component.scss"
 import { CodeMapMouseEventService, BuildingUnhoveredSubscriber, BuildingHoveredSubscriber } from "../codeMap/codeMap.mouseEvent.service"
 import { IRootScopeService } from "angular"
+import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
 
 export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnhoveredSubscriber {
 	private _viewModel: {
@@ -10,7 +11,7 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 	}
 
 	/* @ngInject */
-	constructor(private $rootScope: IRootScopeService) {
+	constructor(private $rootScope: IRootScopeService, private codeChartaMouseEventService: CodeChartaMouseEventService) {
 		CodeMapMouseEventService.subscribeToBuildingHovered(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingUnhovered(this.$rootScope, this)
 	}
@@ -21,6 +22,10 @@ export class ToolBarController implements BuildingHoveredSubscriber, BuildingUnh
 
 	onBuildingUnhovered() {
 		this._viewModel.isNodeHovered = false
+	}
+
+	onClick() {
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
 	}
 }
 

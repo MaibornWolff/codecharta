@@ -14,13 +14,13 @@ describe("FileExtensionCalculator", () => {
 	describe("getFileExtensionDistribution", () => {
 		it("should get correct absolute distribution of file-extensions for given metric", () => {
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: null, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.97082228116711, color: null },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.48275862068966, color: null },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.56763925729443, color: null },
+				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 3.9787798408488064, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc")
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
@@ -29,13 +29,13 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted([map.children[0].path], map, BlacklistType.flatten)
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: null, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 42.97082228116711, color: null },
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 34.48275862068966, color: null },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 18.56763925729443, color: null },
+				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 3.9787798408488064, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc")
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
@@ -44,13 +44,13 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted([map.children[0].path], map, BlacklistType.exclude)
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: null, color: null },
-				{ fileExtension: "jpg", absoluteMetricValue: 30, relativeMetricValue: null, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: null, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
+				{ fileExtension: "java", absoluteMetricValue: 162, relativeMetricValue: 58.48375451263538, color: null },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 25.270758122743683, color: null },
+				{ fileExtension: "jpg", absoluteMetricValue: 30, relativeMetricValue: 10.830324909747292, color: null },
+				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 5.415162454873646, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc")
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
@@ -59,12 +59,12 @@ describe("FileExtensionCalculator", () => {
 			setIsBlacklisted(["/root/another big leaf.java", "/root/Parent Leaf/another leaf.java"], map, BlacklistType.exclude)
 
 			const expected: MetricDistribution[] = [
-				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: null, color: null },
-				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: null, color: null },
-				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: null, color: null }
+				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 60.46511627906977, color: null },
+				{ fileExtension: "json", absoluteMetricValue: 70, relativeMetricValue: 32.55813953488372, color: null },
+				{ fileExtension: "None", absoluteMetricValue: 15, relativeMetricValue: 6.976744186046512, color: null }
 			]
 
-			const result: MetricDistribution[] = FileExtensionCalculator["getAbsoluteDistribution"](map, "rloc")
+			const result: MetricDistribution[] = FileExtensionCalculator.getMetricDistribution(map, "rloc")
 
 			expect(result).toEqual(expected)
 		})
@@ -82,7 +82,7 @@ describe("FileExtensionCalculator", () => {
 				{
 					fileExtension: "None",
 					absoluteMetricValue: 15,
-					relativeMetricValue: 3.978779840848806,
+					relativeMetricValue: 3.9787798408488064,
 					color: null
 				}
 			]
@@ -143,7 +143,7 @@ describe("FileExtensionCalculator", () => {
 				{
 					fileExtension: "java",
 					absoluteMetricValue: 162,
-					relativeMetricValue: 40.80604534005038,
+					relativeMetricValue: 40.806045340050375,
 					color: null
 				},
 				{ fileExtension: "jpg", absoluteMetricValue: 130, relativeMetricValue: 32.7455919395466, color: null },

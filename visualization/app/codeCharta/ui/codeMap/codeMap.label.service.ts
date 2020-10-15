@@ -56,9 +56,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	clearLabels() {
 		this.labels = []
-		while (this.threeSceneService.labels.children.length > 0) {
-			this.threeSceneService.labels.children.pop()
-		}
+		// Reset the children
+		this.threeSceneService.labels.children.length = 0
 	}
 
 	scale() {

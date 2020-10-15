@@ -2,7 +2,6 @@ import "./nodeContextMenu.module"
 
 import { IRootScopeService, IWindowService, ITimeoutService } from "angular"
 import { instantiateModule, getService } from "../../../../mocks/ng.mockhelper"
-import { CodeMapHelper } from "../../util/codeMapHelper"
 import { CodeMapActionsService } from "../codeMap/codeMap.actions.service"
 import { NodeContextMenuController } from "./nodeContextMenu.component"
 import { TEST_DELTA_MAP_A, VALID_NODE_WITH_PATH, withMockedEventMethods } from "../../util/dataMocks"
@@ -71,8 +70,6 @@ describe("nodeContextMenuController", () => {
 	}
 
 	function withMockedCodeMapActionService() {
-		codeMapActionsService.getParentMP = jest.fn()
-		codeMapActionsService["anyEdgeIsVisible"] = jest.fn()
 		codeMapActionsService.markFolder = jest.fn()
 		codeMapActionsService.unmarkFolder = jest.fn()
 	}
@@ -179,17 +176,12 @@ describe("nodeContextMenuController", () => {
 		beforeEach(() => {
 			nodeContextMenuController.setPosition = jest.fn()
 			nodeContextMenuController.calculatePosition = jest.fn().mockReturnValue({ x: 1, y: 2 })
-			CodeMapHelper.getCodeMapNodeFromPath = jest.fn().mockReturnValue(TEST_DELTA_MAP_A.map)
 		})
 
 		it("should set the correct building after some timeout", () => {
-			const path = "/root"
-			const nodeType = NodeType.FOLDER
-
 			nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 
 			expect(nodeContextMenuController["_viewModel"].codeMapNode).toEqual(TEST_DELTA_MAP_A.map)
-			expect(CodeMapHelper.getCodeMapNodeFromPath).toHaveBeenCalledWith(path, nodeType, TEST_DELTA_MAP_A.map)
 			expect(nodeContextMenuController.calculatePosition).toHaveBeenCalledWith(42, 24)
 			expect(nodeContextMenuController.setPosition).toHaveBeenCalledTimes(1)
 			expect(nodeContextMenuController.setPosition).toBeCalledWith(1, 2)
@@ -319,19 +311,6 @@ describe("nodeContextMenuController", () => {
 			const result = nodeContextMenuController.isNodeOrParentMarked("another color")
 
 			expect(result).toBeFalsy()
-		})
-
-		it("should return true, if package is marked and matches the color", () => {
-			const markedPackages: MarkedPackage[] = [{ path: "/another root", color: "color" }]
-			storeService.dispatch(setMarkedPackages(markedPackages))
-			codeMapActionsService.getParentMP = jest.fn().mockReturnValue({ path: "/another root", color: "color" })
-
-			nodeContextMenuController["_viewModel"].codeMapNode = VALID_NODE_WITH_PATH
-
-			const result = nodeContextMenuController.isNodeOrParentMarked("color")
-
-			expect(result).toBeTruthy()
-			expect(codeMapActionsService.getParentMP).toHaveBeenCalledWith(nodeContextMenuController["_viewModel"].codeMapNode.path)
 		})
 	})
 

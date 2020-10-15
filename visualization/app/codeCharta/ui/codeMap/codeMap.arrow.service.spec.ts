@@ -13,7 +13,7 @@ import {
 	CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE,
 	CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE
 } from "../../util/dataMocks"
-import { Edge, EdgeVisibility, Node } from "../../codeCharta.model"
+import { Node } from "../../codeCharta.model"
 import { IRootScopeService } from "angular"
 import { CodeMapMouseEventService } from "./codeMap.mouseEvent.service"
 import { ColorConverter } from "../../util/color/colorConverter"
@@ -106,9 +106,8 @@ describe("CodeMapArrowService", () => {
 				CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node,
 				DIFFERENT_NODE
 			]
-			const edges = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
 			threeSceneService["mapMesh"] = new CodeMapMesh(nodes, storeService.getState(), false)
-			codeMapArrowService.addEdgePreview(nodes, edges)
+			codeMapArrowService.addEdgePreview(nodes)
 			storeService.dispatch(setHeightMetric("mcc"))
 
 			threeSceneService.selectBuilding(CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE)
@@ -124,6 +123,7 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService.clearArrows = jest.fn()
 			codeMapArrowService["showEdgesOfBuildings"] = jest.fn()
 			codeMapArrowService.addEdgePreview = jest.fn()
+			threeSceneService.clearHighlight = jest.fn()
 			codeMapArrowService["buildPairingEdges"] = jest.fn()
 		})
 		it("should call clearArrows and showEdgesOfBuildings through BuildingSelected", () => {
@@ -154,6 +154,7 @@ describe("CodeMapArrowService", () => {
 			codeMapArrowService.onBuildingDeselected()
 
 			expect(codeMapArrowService.clearArrows).toHaveBeenCalled()
+			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 			expect(codeMapArrowService["showEdgesOfBuildings"]).toHaveBeenCalledTimes(0)
 			expect(codeMapArrowService.addEdgePreview).toHaveBeenCalled()
 		})
@@ -191,16 +192,13 @@ describe("CodeMapArrowService", () => {
 		})
 		it("should create and edge Preview of one", () => {
 			const nodes: Node[] = [OUTGOING_NODE]
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
 
-			codeMapArrowService.addEdgePreview(nodes, edges)
+			codeMapArrowService.addEdgePreview(nodes)
 
 			expect(codeMapArrowService["map"].size).toEqual(1)
 		})
 		it("should create and no edge Preview at all", () => {
-			const edges: Edge[] = storeService.getState().fileSettings.edges.filter(x => x.visible !== EdgeVisibility.none)
-
-			codeMapArrowService.addEdgePreview(null, edges)
+			codeMapArrowService.addEdgePreview()
 
 			expect(codeMapArrowService["map"].size).toEqual(0)
 		})

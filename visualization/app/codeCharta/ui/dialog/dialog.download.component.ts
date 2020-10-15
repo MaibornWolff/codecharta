@@ -70,7 +70,13 @@ export class DialogDownloadController {
 	}
 
 	private getFilteredBlacklistLength(blacklistType: BlacklistType) {
-		return this.storeService.getState().fileSettings.blacklist.filter(x => x.type === blacklistType).length
+		let count = 0
+		for (const entry of this.storeService.getState().fileSettings.blacklist) {
+			if (entry.type === blacklistType) {
+				count++
+			}
+		}
+		return count
 	}
 
 	private pushFileContent(name: string, numberOfListItems: number) {
@@ -89,7 +95,9 @@ export class DialogDownloadController {
 
 	private setAmountOfNodes() {
 		const map = this.codeMapPreRenderService.getRenderMap()
-		this._viewModel.amountOfNodes = hierarchy(map).descendants().length
+		let amountOfNodes = 0
+		hierarchy(map).each(() => amountOfNodes++)
+		this._viewModel.amountOfNodes = amountOfNodes
 	}
 
 	private setAmountOfAttributeTypes() {

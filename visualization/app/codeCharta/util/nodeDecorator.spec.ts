@@ -10,7 +10,7 @@ import {
 	MetricData
 } from "../codeCharta.model"
 import { NodeDecorator } from "./nodeDecorator"
-import { HierarchyNode, hierarchy } from "d3"
+import { HierarchyNode, hierarchy } from "d3-hierarchy"
 import { clone } from "./clone"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
@@ -47,7 +47,7 @@ describe("nodeDecorator", () => {
 	function allUniqueIds(map: HierarchyNode<CodeMapNode>) {
 		const ids = new Set()
 		let count = 0
-		map.eachAfter(({ data }) => {
+		map.each(({ data }) => {
 			count++
 			ids.add(data.id)
 		})

@@ -10,7 +10,7 @@
 		"url": "https://github.com/MaibornWolff/codecharta.git"
 	},
 	"name": "codecharta-visualization",
-	"version": "1.58.1",
+	"version": "1.59.0",
 	"description": "MaibornWolff CodeCharta",
 	"files": [
 		"dist/webpack",
@@ -93,15 +93,18 @@
 		"angularjs-slider": "^7.0.0",
 		"color-convert": "^2.0.0",
 		"core-js": "^3.6.5",
-		"d3": "^6.0.0",
+		"d3-hierarchy": "^2.0.0",
 		"font-awesome": "^4.7.0",
 		"ignore": "^5.0.2",
 		"jquery": "^3.3.1",
-		"lodash": "^4.17.19",
+		"klona": "^2.0.4",
+		"lodash.camelcase": "^4.3.0",
+		"lodash.debounce": "^4.0.8",
+		"lodash.isequal": "^4.5.0",
+		"lodash.throttle": "^4.1.1",
 		"nouislider": "^14.6.0",
 		"nw": "0.48.1",
 		"redux": "^4.0.4",
-		"rfdc": "^1.1.4",
 		"shelljs": "^0.8.1",
 		"three": "^0.121.1",
 		"three-orbit-controls": "^82.1.0",
@@ -115,7 +118,6 @@
 		"@types/angular": "^1.7.2",
 		"@types/angular-mocks": "^1.5.11",
 		"@types/color-convert": "^1.9.0",
-		"@types/d3": "^5.7.1",
 		"@types/d3-hierarchy": "^2.0.0",
 		"@types/expect-puppeteer": "^4.4.3",
 		"@types/jest": "^26.0.4",
@@ -128,7 +130,7 @@
 		"babel-loader": "^8.1.0",
 		"bestzip": "^2.1.5",
 		"clean-webpack-plugin": "^3.0.0",
-		"css-loader": "^4.2.0",
+		"css-loader": "^5.0.0",
 		"es6-shim": "^0.35.3",
 		"eslint": "^7.8.1",
 		"eslint-config-prettier": "^6.11.0",
@@ -145,7 +147,7 @@
 		"puppeteer": "^5.1.0",
 		"rimraf": "^3.0.2",
 		"sass-loader": "^10.0.1",
-		"style-loader": "^1.2.1",
+		"style-loader": "^2.0.0",
 		"ts-jest": "^26.1.1",
 		"ts-loader": "^8.0.3",
 		"typescript": "^4.0.2",
@@ -155,8 +157,8 @@
 		"webpack-glsl-loader": "^1.0.1"
 	},
 	"optionalDependencies": {
+		"7zip-bin-linux": "^1.2.0",
 		"7zip-bin-mac": "^1.0.1",
-		"7zip-bin-win": "^2.1.1",
-		"7zip-bin-linux": "^1.2.0"
+		"7zip-bin-win": "^2.1.1"
 	}
 }
