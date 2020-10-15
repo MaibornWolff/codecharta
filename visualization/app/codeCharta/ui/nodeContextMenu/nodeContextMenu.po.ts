@@ -18,7 +18,7 @@ export class NodeContextMenuPageObject {
 	}
 
 	async isClosed() {
-		const menu = await page.waitForSelector("#codemap-context-menu", { hidden: true })
+		const menu = await page.waitForSelector("#codemap-context-menu")
 		const isHidden = await menu.evaluate(element => { return element.getAttribute("aria-hidden") })
 
 		return isHidden === 'true'
