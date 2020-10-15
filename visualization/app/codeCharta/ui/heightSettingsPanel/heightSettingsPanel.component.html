@@ -27,11 +27,11 @@
 
 <md-input-container class="md-block">
 	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.showNodeName" ng-change="$ctrl.applySettingsMetricLabelNodeNameChanged()">
-		Label show node name
+		Show label node names
 	</md-checkbox>
-	</br>
+	<br />
 	<md-checkbox class="md-primary" ng-model="$ctrl._viewModel.showMetricValue" ng-change="$ctrl.applySettingsMetricLabelValueChanged()">
-		Label show metrics name: value
+		Show label node metrics
 	</md-checkbox>
 </md-input-container>
 
@@ -44,6 +44,7 @@
 		max="5"
 		ng-model="$ctrl._viewModel.scalingY"
 		id="y-scale-slider"
+		hirg
 		ng-change="$ctrl.applySettingsScaling()"
 		class="md-primary"
 	>

@@ -111,7 +111,7 @@ describe("CodeMapLabelService", () => {
 		})
 
 		it("should add label if node has a height attribute mentioned in renderSettings", () => {
-			codeMapLabelService.addLabel(sampleLeaf, true, true)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			expect(codeMapLabelService["labels"].length).toBe(1)
 		})
@@ -119,41 +119,41 @@ describe("CodeMapLabelService", () => {
 		it("should not add label if node has not a height attribute mentioned in renderSettings", () => {
 			sampleLeaf.attributes = { notsome: 0 }
 
-			codeMapLabelService.addLabel(sampleLeaf, true, true)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			expect(codeMapLabelService["labels"].length).toBe(0)
 		})
 
 		it("should calculate correct height without delta with node name only", () => {
-			codeMapLabelService.addLabel(sampleLeaf, true, false)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(93)
 		})
 
 		it("should calculate correct height without delta with metric values only", () => {
-			codeMapLabelService.addLabel(sampleLeaf, false, true)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(93)
 		})
 
 		it("should calculate correct height without delta for two line label: node name and metric value", () => {
-			codeMapLabelService.addLabel(sampleLeaf, true, true)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			const positionWithoutDelta: Vector3 = codeMapLabelService["labels"][0].sprite.position
 			expect(positionWithoutDelta.y).toBe(108)
 		})
 
 		it("should set the text correctly, creating a two line label", () => {
-			codeMapLabelService.addLabel(sampleLeaf, true, true)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			const lineCount = codeMapLabelService["labels"][0].lineCount
 			expect(lineCount).toBe(2)
 		})
 
 		it("should set the text correctly, creating a one line label", () => {
-			codeMapLabelService.addLabel(sampleLeaf, true, false)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: false })
 
 			const lineCount = codeMapLabelService["labels"][0].lineCount
 			expect(lineCount).toBe(1)
@@ -164,8 +164,8 @@ describe("CodeMapLabelService", () => {
 			const SY = 2
 			const SZ = 3
 
-			codeMapLabelService.addLabel(sampleLeaf, true, true)
-			codeMapLabelService.addLabel(sampleLeaf, true, true)
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
+			codeMapLabelService.addLabel(sampleLeaf, { showNodeName: true, showNodeMetric: true })
 
 			const scaleBeforeA: Vector3 = new Vector3(
 				codeMapLabelService["labels"][0].sprite.position.x,

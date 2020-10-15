@@ -141,6 +141,7 @@ export interface MapColors {
 	markingColors: string[]
 	outgoingEdge: string
 	incomingEdge: string
+	labelColorAndAlpha: { rgb: string; alpha: number }
 }
 
 export interface ColorRange {

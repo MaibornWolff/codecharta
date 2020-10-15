@@ -5,6 +5,7 @@ import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../state/store.service"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 interface InternalLabel {
 	sprite: Sprite
@@ -15,6 +16,9 @@ interface InternalLabel {
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
+	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
+	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
+	private LABEL_COLOR_RGBA = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb, this.mapLabelColors.alpha)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
 	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
 	private LABEL_CORNER_RADIUS = 35 //empirically gathered
@@ -33,7 +37,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	addLabel(node: Node, showNodeName: boolean, showMetricNameValue: boolean) {
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
 		const state = this.storeService.getState()
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
 			const x = node.x0 - state.treeMap.mapSize
@@ -46,14 +50,14 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 			let labelText = ""
 
-			if (showNodeName) {
+			if (options.showNodeName) {
 				labelText = `${node.name}`
 			}
-			if (showMetricNameValue) {
+			if (options.showNodeMetric) {
 				if (labelText !== "") {
 					labelText += "\n"
 				}
-				labelText += `\n${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+				labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
 			}
 
 			const label = this.makeText(labelText, 30)
@@ -119,7 +123,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		// bg
 		context.font = `${fontsize}px Helvetica Neue`
-		context.fillStyle = "rgba(224,224,224,0.85)"
+		context.fillStyle = this.LABEL_COLOR_RGBA
 		context.lineJoin = "round"
 		context.lineCap = "round"
 		context.lineWidth = 5
@@ -131,6 +135,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.textAlign = "center"
 		context.textBaseline = "middle"
 
+		//fillText() cannot create multi-line texts, we call it multiple times with different offsets to create a multi-line label
 		for (const [i, element] of multiLineContext.entries()) {
 			context.fillText(element, canvas.width / 2, (canvas.height * (i + 1)) / (multiLineContext.length + 1))
 		}
@@ -182,7 +187,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	private makeLine(x: number, y: number, z: number) {
 		const material = new LineBasicMaterial({
-			color: "rgba(224,224,224,0.85)",
+			color: this.LABEL_COLOR_RGB,
 			linewidth: 2
 		})
 
