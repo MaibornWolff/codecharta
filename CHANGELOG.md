@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- parsing feedback with progressbar and propable ETA for parsers and SonarImporter
+- Parsing feedback with progressbar and propable ETA for parsers and SonarImporter #847
 
 ### Changed
 
