@@ -8,7 +8,10 @@ export class CodeMapPageObject {
 	}
 
 	async mouseWheelWithinMap() {
-		// The type definition is not already provided
+		const codeMapElement = await page.waitForSelector("#codeMap")
+		await codeMapElement.hover()
+
+		// The wheel() type definition is not already provided
 		// Use the wheel() function anyway
 		// @ts-ignore
 		await page.mouse.wheel({ deltaX: 100 })

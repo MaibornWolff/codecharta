@@ -118,12 +118,26 @@ describe("nodeContextMenuController", () => {
         })
 
         it("should set the correct building after some timeout", () => {
+
+            document.body.addEventListener = jest.fn()
+
+            const elementMock = {addEventListener: jest.fn()};
+            // @ts-ignore
+            jest.spyOn(document, 'getElementById').mockImplementation(() => elementMock)
+
             nodeContextMenuController.onShowNodeContextMenu("/root", NodeType.FOLDER, 42, 24)
 
             expect(nodeContextMenuController["_viewModel"].codeMapNode).toEqual(TEST_DELTA_MAP_A.map)
+            expect(nodeContextMenuController["_viewModel"].showNodeContextMenu).toBe(true)
             expect(nodeContextMenuController.calculatePosition).toHaveBeenCalledWith(42, 24)
             expect(nodeContextMenuController.setPosition).toHaveBeenCalledTimes(1)
             expect(nodeContextMenuController.setPosition).toBeCalledWith(1, 2)
+
+            expect(document.body.addEventListener).toHaveBeenNthCalledWith(1, "click", expect.anything(), expect.anything())
+            expect(document.body.addEventListener).toHaveBeenNthCalledWith(2, "mousedown", expect.anything(), expect.anything())
+
+            expect(document.getElementById).toHaveBeenCalledWith("codeMap")
+            expect(elementMock.addEventListener).toHaveBeenCalledWith("wheel", expect.anything(), expect.anything())
         })
     })
 
