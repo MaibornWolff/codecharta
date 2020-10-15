@@ -11,8 +11,8 @@ import { InvertHeightService } from "../../state/store/appSettings/invertHeight/
 import { FilesService } from "../../state/store/files/files.service"
 import { TEST_DELTA_MAP_A } from "../../util/dataMocks"
 import { addFile, setDelta } from "../../state/store/files/files.actions"
-import { ShowMetricLabelNameValueService } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.service"
-import { ShowMetricLabelNodeNameService } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.service"
+import { LabelShowNodeNameService } from "../../state/store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
+import { LabelShowMetricValueService } from "../../state/store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
 
 describe("HeightSettingsPanelController", () => {
 	let heightSettingsPanelController: HeightSettingsPanelController
@@ -70,20 +70,20 @@ describe("HeightSettingsPanelController", () => {
 			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribe to ShowMetricLabelNameValueService", () => {
-			ShowMetricLabelNameValueService.subscribe = jest.fn()
+		it("should subscribe to LabelShowNodeNameService", () => {
+			LabelShowNodeNameService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(ShowMetricLabelNameValueService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+			expect(LabelShowNodeNameService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 
-		it("should subscribe to ShowMetricLabelNodeNameService", () => {
-			ShowMetricLabelNodeNameService.subscribe = jest.fn()
+		it("should subscribe to LabelShowMetricValueService", () => {
+			LabelShowMetricValueService.subscribe = jest.fn()
 
 			rebuildController()
 
-			expect(ShowMetricLabelNodeNameService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
+			expect(LabelShowMetricValueService.subscribe).toHaveBeenCalledWith($rootScope, heightSettingsPanelController)
 		})
 	})
 

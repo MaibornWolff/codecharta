@@ -7,7 +7,7 @@ export interface ShowMetricLabelNameValueSubscriber {
 	onShowMetricLabelNameValueChanged(showMetricLabelNameValue: boolean)
 }
 
-export class ShowMetricLabelNameValueService implements StoreSubscriber {
+export class LabelShowNodeNameService implements StoreSubscriber {
 	private static SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT = "show-metric-label-name-value-changed"
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
@@ -25,13 +25,13 @@ export class ShowMetricLabelNameValueService implements StoreSubscriber {
 	}
 
 	private notify(newState: boolean) {
-		this.$rootScope.$broadcast(ShowMetricLabelNameValueService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, {
+		this.$rootScope.$broadcast(LabelShowNodeNameService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, {
 			showMetricLabelNameValue: newState
 		})
 	}
 
 	static subscribe($rootScope: IRootScopeService, subscriber: ShowMetricLabelNameValueSubscriber) {
-		$rootScope.$on(ShowMetricLabelNameValueService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, (_event_, data) => {
+		$rootScope.$on(LabelShowNodeNameService.SHOW_METRIC_LABEL_NAME_VALUE_CHANGED_EVENT, (_event_, data) => {
 			subscriber.onShowMetricLabelNameValueChanged(data.showMetricLabelNameValue)
 		})
 	}

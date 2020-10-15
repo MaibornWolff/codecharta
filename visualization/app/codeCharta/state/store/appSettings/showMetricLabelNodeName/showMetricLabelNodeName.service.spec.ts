@@ -3,11 +3,11 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../store.service"
 import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
 import { ShowMetricLabelNodeNameAction, ShowMetricLabelNodeNameActions } from "./showMetricLabelNodeName.actions"
-import { ShowMetricLabelNodeNameService } from "./showMetricLabelNodeName.service"
+import { LabelShowMetricValueService } from "./labelShowMetricValueService"
 import { withMockedEventMethods } from "../../../../util/dataMocks"
 
-describe("ShowMetricLabelNodeNameService", () => {
-	let showMetricLabelNodeNameService: ShowMetricLabelNodeNameService
+describe("LabelShowMetricValueService", () => {
+	let labelShowMetricValueService: LabelShowMetricValueService
 	let storeService: StoreService
 	let $rootScope: IRootScopeService
 
@@ -25,7 +25,7 @@ describe("ShowMetricLabelNodeNameService", () => {
 	}
 
 	function rebuildService() {
-		showMetricLabelNodeNameService = new ShowMetricLabelNodeNameService($rootScope, storeService)
+		labelShowMetricValueService = new LabelShowMetricValueService($rootScope, storeService)
 	}
 
 	describe("constructor", () => {
@@ -34,7 +34,7 @@ describe("ShowMetricLabelNodeNameService", () => {
 
 			rebuildService()
 
-			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, showMetricLabelNodeNameService)
+			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, labelShowMetricValueService)
 		})
 	})
 
@@ -46,13 +46,13 @@ describe("ShowMetricLabelNodeNameService", () => {
 			}
 			storeService["store"].dispatch(action)
 
-			showMetricLabelNodeNameService.onStoreChanged(ShowMetricLabelNodeNameActions.SET_SHOW_METRIC_LABEL_NODE_NAME)
+			labelShowMetricValueService.onStoreChanged(ShowMetricLabelNodeNameActions.SET_SHOW_METRIC_LABEL_NODE_NAME)
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("show-metric-label-node-name-changed", { showMetricLabelNodeName: false })
 		})
 
 		it("should not notify anything on non-show-metric-label-node-name-events", () => {
-			showMetricLabelNodeNameService.onStoreChanged("ANOTHER_ACTION")
+			labelShowMetricValueService.onStoreChanged("ANOTHER_ACTION")
 
 			expect($rootScope.$broadcast).not.toHaveBeenCalled()
 		})

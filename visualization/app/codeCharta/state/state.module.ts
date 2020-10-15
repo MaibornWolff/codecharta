@@ -1,7 +1,7 @@
 import angular from "angular"
 // Plop: Append module import here
-import { ShowMetricLabelNodeNameService } from "./store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.service"
-import { ShowMetricLabelNameValueService } from "./store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.service"
+import { LabelShowMetricValueService } from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
+import { LabelShowNodeNameService } from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
 import { PanelSelectionService } from "./store/appSettings/panelSelection/panelSelection.service"
 import { NodeMetricDataService } from "./store/metricData/nodeMetricData/nodeMetricData.service"
 import { CameraTargetService } from "./store/appSettings/cameraTarget/cameraTarget.service"
@@ -56,8 +56,8 @@ import { MetricDataService } from "./store/metricData/metricData.service"
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
 	// Plop: Append service name here
-	.service(camelCase(ShowMetricLabelNodeNameService.name), ShowMetricLabelNodeNameService)
-	.service(camelCase(ShowMetricLabelNameValueService.name), ShowMetricLabelNameValueService)
+	.service(camelCase(LabelShowMetricValueService.name), LabelShowMetricValueService)
+	.service(camelCase(LabelShowNodeNameService.name), LabelShowNodeNameService)
 	.service(camelCase(MetricDataService.name), MetricDataService)
 	.service(camelCase(EdgeMetricDataService.name), EdgeMetricDataService)
 	.service(camelCase(NodeMetricDataService.name), NodeMetricDataService)
