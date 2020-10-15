@@ -149,7 +149,7 @@ class SCMLogParserV2(
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
         val logSizeInByte = file!!.length()
-        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte,silent).parse(
+        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte, silent).parse(
             lines,
             namesInProject
         )

@@ -14,7 +14,7 @@ class SCMLogProjectCreator(
     parserStrategy: LogParserStrategy,
     private val metricsFactory: MetricsFactory,
     private val projectConverter: ProjectConverter,
-    logSizeInByte : Long = 0,
+    logSizeInByte: Long = 0,
     silent: Boolean = false
 ) {
 

@@ -23,33 +23,34 @@ class MetricCollector(
     val MAX_FILE_NAME_PRINT_LENGTH = 30
     private var filesParsed = 0L
     private var totalFiles = 0L
-    private val progressTracker : ProgressTracker = ProgressTracker()
+    private val progressTracker: ProgressTracker = ProgressTracker()
+    private val parsingUnit = "Files"
 
     fun parse(): Map<String, FileMetrics> {
         val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
         var lastFileName = ""
 
         runBlocking(Dispatchers.Default) {
-           val files= root.walk().asSequence()
+            val files = root.walk().asSequence()
                 .filter { it.isFile }
 
-               totalFiles = files.count().toLong()
+            totalFiles = files.count().toLong()
 
-                files.forEach {
-                    launch {
-                        val standardizedPath = "/" + getRelativeFileName(it.toString())
+            files.forEach {
+                launch {
+                    val standardizedPath = "/" + getRelativeFileName(it.toString())
 
-                        if (
-                            !isPathExcluded(standardizedPath) &&
-                            isParsableFileExtension(standardizedPath)
-                        ) {
-                            filesParsed++
-                            logProgress(it.name, filesParsed)
-                            projectMetrics[standardizedPath] = parseFile(it)
-                            lastFileName = it.name
-                        }
+                    if (
+                        !isPathExcluded(standardizedPath) &&
+                        isParsableFileExtension(standardizedPath)
+                    ) {
+                        filesParsed++
+                        logProgress(it.name, filesParsed)
+                        projectMetrics[standardizedPath] = parseFile(it)
+                        lastFileName = it.name
                     }
                 }
+            }
         }
         logProgress(lastFileName, totalFiles)
 
@@ -92,6 +93,6 @@ class MetricCollector(
         } else {
             fileName.padEnd(MAX_FILE_NAME_PRINT_LENGTH + 2)
         }
-        progressTracker.updateProgress(totalFiles, parsedFiles, fileName)
+        progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit, fileName)
     }
 }

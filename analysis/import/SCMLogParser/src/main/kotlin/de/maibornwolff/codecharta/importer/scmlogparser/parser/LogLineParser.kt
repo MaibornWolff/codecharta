@@ -22,14 +22,15 @@ class LogLineParser(
 ) {
 
     private var currentBytesParsed = 0L
-    private val progressTracker : ProgressTracker = ProgressTracker()
+    private val progressTracker: ProgressTracker = ProgressTracker()
+    private val parsingUnit = "Byte"
 
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
         val parsedCommit = logLines.collect(parserStrategy.createLogLineCollector())
             .map { this.parseCommit(it) }.filter { !it.isEmpty }
             .collect(CommitCollector.create(metricsFactory))
 
-        progressTracker.updateProgress(logSizeInByte,logSizeInByte)
+        progressTracker.updateProgress(logSizeInByte, logSizeInByte, parsingUnit)
 
         return parsedCommit
     }
@@ -48,11 +49,11 @@ class LogLineParser(
                 }
             }
 
-            commitLines.forEach{
+            commitLines.forEach {
                 currentBytesParsed += it.length
             }
 
-            if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed)
+            if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit)
             Commit(author, modifications, commitDate)
         } catch (e: NoSuchElementException) {
             System.err.println("Skipped commit with invalid syntax ($commitLines)")

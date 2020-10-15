@@ -62,9 +62,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private var totalFiles = 0
     private var analyzedFiles = 0
     private val originalOut = System.out
-
-    private val progressTracker : ProgressTracker = ProgressTracker()
-
+    private val parsingUnit = "Files"
+    private val progressTracker: ProgressTracker = ProgressTracker()
 
     init {
         if (searchIssues) {
@@ -247,7 +246,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun printProgressBar(fileName: String) {
         analyzedFiles += 1
         val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH) else fileName
-        progressTracker.updateProgress(totalFiles.toLong(), analyzedFiles.toLong(), currentFile)
+        progressTracker.updateProgress(totalFiles.toLong(), analyzedFiles.toLong(), parsingUnit, currentFile)
 
         if (!verbose) System.setOut(PrintStream(ByteArrayOutputStream()))
     }

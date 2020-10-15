@@ -26,9 +26,8 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     private var measureBatches = 0
     private var processedPages = 0
     private var currentBytesParsed = 0L
-    private val progressTracker : ProgressTracker = ProgressTracker()
-
-
+    private val progressTracker: ProgressTracker = ProgressTracker()
+    private val parsingUnit = "Files"
 
     init {
         client.register(ErrorResponseFilter::class.java)
@@ -110,7 +109,7 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     private fun updateProgress(componentCount: Int) {
         processedPages++
         val pagesPerRun = (componentCount + PAGE_SIZE - 1) / PAGE_SIZE
-        progressTracker.updateProgress((pagesPerRun * measureBatches).toLong(),processedPages.toLong())
+        progressTracker.updateProgress((pagesPerRun * measureBatches).toLong(), processedPages.toLong(), parsingUnit)
     }
 
     companion object {
