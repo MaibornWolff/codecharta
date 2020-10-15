@@ -43,7 +43,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   Color-Metric slider is set and activated in the map accordingly to the released sliderbutton #1319
 -   Deselcting a building will instantly dehighlight the buildings which were connected through edges #890
-    > > > > > > > main
 
 ### Chore 👨‍💻 👩‍💻
 
