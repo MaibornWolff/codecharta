@@ -148,7 +148,8 @@ class SCMLogParserV2(
         if (!silent) error.println("Assumed encoding $encoding")
         val lines: Stream<String> = Files.lines(pathToLog.toPath(), Charset.forName(encoding))
         val projectConverter = ProjectConverter(containsAuthors)
-        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, silent).parse(
+        val logSizeInByte = file!!.length()
+        return SCMLogProjectCreator(parserStrategy, metricsFactory, projectConverter, logSizeInByte,silent).parse(
             lines,
             namesInProject
         )

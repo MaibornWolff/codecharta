@@ -15,10 +15,11 @@ class SCMLogProjectCreator(
     parserStrategy: LogParserStrategy,
     private val metricsFactory: MetricsFactory,
     private val projectConverter: ProjectConverter,
+    logSizeInByte : Long = 0,
     silent: Boolean = false
 ) {
 
-    private val logLineParser: LogLineParser = LogLineParser(parserStrategy, metricsFactory, silent)
+    private val logLineParser: LogLineParser = LogLineParser(parserStrategy, metricsFactory, silent, logSizeInByte)
 
     fun parse(lines: Stream<String>, filesInLog: List<String>): Project {
         val versionControlledFilesList: VersionControlledFilesList = logLineParser.parse(lines)

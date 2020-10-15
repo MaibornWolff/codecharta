@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
+import de.maibornwolff.codecharta.ProgressTracker
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.importer.sonar.model.Component
@@ -24,6 +25,10 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
     private var measureBatches = 0
     private var processedPages = 0
+    private var currentBytesParsed = 0L
+    private val progressTracker : ProgressTracker = ProgressTracker()
+
+
 
     init {
         client.register(ErrorResponseFilter::class.java)
@@ -105,8 +110,7 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     private fun updateProgress(componentCount: Int) {
         processedPages++
         val pagesPerRun = (componentCount + PAGE_SIZE - 1) / PAGE_SIZE
-        val currentProgress = 100 * processedPages / (pagesPerRun * measureBatches)
-        System.err.print("\r$currentProgress% of data retrieved...")
+        progressTracker.updateProgress((pagesPerRun * measureBatches).toLong(),processedPages.toLong())
     }
 
     companion object {

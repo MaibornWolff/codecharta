@@ -1,5 +1,6 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
+import de.maibornwolff.codecharta.ProgressTracker
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
@@ -16,15 +17,21 @@ import java.util.stream.Stream
 class LogLineParser(
     private val parserStrategy: LogParserStrategy,
     private val metricsFactory: MetricsFactory,
-    private val silent: Boolean = false
+    private val silent: Boolean = false,
+    private val logSizeInByte: Long = 0
 ) {
 
-    private var numberOfCommitsParsed = 0
+    private var currentBytesParsed = 0L
+    private val progressTracker : ProgressTracker = ProgressTracker()
 
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
-        return logLines.collect(parserStrategy.createLogLineCollector())
+        val parsedCommit = logLines.collect(parserStrategy.createLogLineCollector())
             .map { this.parseCommit(it) }.filter { !it.isEmpty }
             .collect(CommitCollector.create(metricsFactory))
+
+        progressTracker.updateProgress(logSizeInByte,logSizeInByte)
+
+        return parsedCommit
     }
 
     internal fun parseCommit(commitLines: List<String>): Commit {
@@ -41,16 +48,15 @@ class LogLineParser(
                 }
             }
 
-            if (!silent) showProgress(commitDate)
+            commitLines.forEach{
+                currentBytesParsed += it.length
+            }
+
+            if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed)
             Commit(author, modifications, commitDate)
         } catch (e: NoSuchElementException) {
             System.err.println("Skipped commit with invalid syntax ($commitLines)")
             Commit("", listOf(), OffsetDateTime.now())
         }
-    }
-
-    private fun showProgress(date: OffsetDateTime) {
-        System.err.print("\r$numberOfCommitsParsed commits parsed. (Earliest commit from $date)       ")
-        numberOfCommitsParsed++
     }
 }
