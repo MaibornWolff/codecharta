@@ -1,8 +1,9 @@
 package de.maibornwolff.codecharta.parser.rawtextparser
 
-import de.maibornwolff.codecharta.ProgressTracker
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.MetricsFactory
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -24,7 +25,7 @@ class MetricCollector(
     private var filesParsed = 0L
     private var totalFiles = 0L
     private val progressTracker: ProgressTracker = ProgressTracker()
-    private val parsingUnit = "Files"
+    private val parsingUnit = ParsingUnit.Files
 
     fun parse(): Map<String, FileMetrics> {
         val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
@@ -93,6 +94,6 @@ class MetricCollector(
         } else {
             fileName.padEnd(MAX_FILE_NAME_PRINT_LENGTH + 2)
         }
-        progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit, fileName)
+        progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
     }
 }

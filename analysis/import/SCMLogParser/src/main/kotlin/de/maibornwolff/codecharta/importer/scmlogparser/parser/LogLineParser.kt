@@ -1,10 +1,11 @@
 package de.maibornwolff.codecharta.importer.scmlogparser.parser
 
-import de.maibornwolff.codecharta.ProgressTracker
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -23,16 +24,16 @@ class LogLineParser(
 
     private var currentBytesParsed = 0L
     private val progressTracker: ProgressTracker = ProgressTracker()
-    private val parsingUnit = "Byte"
+    private val parsingUnit = ParsingUnit.Byte
 
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
-        val parsedCommit = logLines.collect(parserStrategy.createLogLineCollector())
+        val parsedFilesOfCommit = logLines.collect(parserStrategy.createLogLineCollector())
             .map { this.parseCommit(it) }.filter { !it.isEmpty }
             .collect(CommitCollector.create(metricsFactory))
 
-        progressTracker.updateProgress(logSizeInByte, logSizeInByte, parsingUnit)
+        progressTracker.updateProgress(logSizeInByte, logSizeInByte, parsingUnit.name)
 
-        return parsedCommit
+        return parsedFilesOfCommit
     }
 
     internal fun parseCommit(commitLines: List<String>): Commit {
@@ -53,7 +54,7 @@ class LogLineParser(
                 currentBytesParsed += it.length
             }
 
-            if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit)
+            if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit.name)
             Commit(author, modifications, commitDate)
         } catch (e: NoSuchElementException) {
             System.err.println("Skipped commit with invalid syntax ($commitLines)")

@@ -1,10 +1,11 @@
 package de.maibornwolff.codecharta.importer.sourcecodeparser.sonaranalyzers
 
 import com.sonar.sslr.api.RecognitionException
-import de.maibornwolff.codecharta.ProgressTracker
 import de.maibornwolff.codecharta.importer.sourcecodeparser.NullFileLinesContextFactory
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.visitors.MaxNestingLevelVisitor
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -62,7 +63,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private var totalFiles = 0
     private var analyzedFiles = 0
     private val originalOut = System.out
-    private val parsingUnit = "Files"
+    private val parsingUnit = ParsingUnit.Files
     private val progressTracker: ProgressTracker = ProgressTracker()
 
     init {
@@ -246,7 +247,7 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private fun printProgressBar(fileName: String) {
         analyzedFiles += 1
         val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH) else fileName
-        progressTracker.updateProgress(totalFiles.toLong(), analyzedFiles.toLong(), parsingUnit, currentFile)
+        progressTracker.updateProgress(totalFiles.toLong(), analyzedFiles.toLong(), parsingUnit.name, currentFile)
 
         if (!verbose) System.setOut(PrintStream(ByteArrayOutputStream()))
     }

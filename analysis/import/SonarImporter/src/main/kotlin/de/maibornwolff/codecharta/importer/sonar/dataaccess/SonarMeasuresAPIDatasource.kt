@@ -1,12 +1,13 @@
 package de.maibornwolff.codecharta.importer.sonar.dataaccess
 
-import de.maibornwolff.codecharta.ProgressTracker
 import de.maibornwolff.codecharta.importer.sonar.SonarImporterException
 import de.maibornwolff.codecharta.importer.sonar.filter.ErrorResponseFilter
 import de.maibornwolff.codecharta.importer.sonar.model.Component
 import de.maibornwolff.codecharta.importer.sonar.model.ComponentMap
 import de.maibornwolff.codecharta.importer.sonar.model.Measures
 import de.maibornwolff.codecharta.importer.sonar.model.Qualifier
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
@@ -25,9 +26,8 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
 
     private var measureBatches = 0
     private var processedPages = 0
-    private var currentBytesParsed = 0L
     private val progressTracker: ProgressTracker = ProgressTracker()
-    private val parsingUnit = "Files"
+    private val parsingUnit = ParsingUnit.Files
 
     init {
         client.register(ErrorResponseFilter::class.java)
@@ -109,7 +109,7 @@ class SonarMeasuresAPIDatasource(private val user: String, private val baseUrl: 
     private fun updateProgress(componentCount: Int) {
         processedPages++
         val pagesPerRun = (componentCount + PAGE_SIZE - 1) / PAGE_SIZE
-        progressTracker.updateProgress((pagesPerRun * measureBatches).toLong(), processedPages.toLong(), parsingUnit)
+        progressTracker.updateProgress((pagesPerRun * measureBatches).toLong(), processedPages.toLong(), parsingUnit.name)
     }
 
     companion object {
