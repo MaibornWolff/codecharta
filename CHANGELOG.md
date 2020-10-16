@@ -9,10 +9,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
-- Parsing feedback with progressbar and probable ETA for parsers and SonarImporter #847
-- Mark node names and make the names clickable for nodes that have a link to them #1313
+-   Parsing feedback with progressbar and probable ETA for parsers and SonarImporter #847
+-   Mark node names and make the names clickable for nodes that have a link to them #1313
+-   Indicate the metric name next to a shown value in a new line on labels #1035
+-   Checkboxes to display metric names and values and to display node names on labels #1035
+-   Mark node names and make the names clickable for nodes that have a link to them #1313
 
 ### Changed
+
+-   Label design #1035
 
 ### Removed 🗑
 
@@ -21,6 +26,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 -   Comparing a map in delta mode shows the correct differences
     -   This mainly applies to maps compared with itself while it also fixes some other minor miscalculations
 -   File extensions detection is improved
+-   Zooming in and out the map will now close the node context menu #1324
+    -   Improved and simplified event handling in NodeContextMenu component
 
 ### Chore 👨‍💻 👩‍💻
 

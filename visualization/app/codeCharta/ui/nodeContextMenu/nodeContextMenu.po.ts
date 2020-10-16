@@ -10,7 +10,11 @@ export class NodeContextMenuPageObject {
 		await page.waitForSelector("#loading-gif-map", { visible: false })
 	}
 
+	async isOpened() {
+		await page.waitForSelector("#codemap-context-menu", { visible: true })
+	}
+
 	async isClosed() {
-		return page.waitForSelector("node-context-menu-component", { visible: false })
+		await page.waitForSelector("#codemap-context-menu", { hidden: true })
 	}
 }
