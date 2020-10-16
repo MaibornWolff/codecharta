@@ -2,6 +2,8 @@ package de.maibornwolff.codecharta.parser.rawtextparser
 
 import de.maibornwolff.codecharta.parser.rawtextparser.metrics.MetricsFactory
 import de.maibornwolff.codecharta.parser.rawtextparser.model.FileMetrics
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -20,27 +22,38 @@ class MetricCollector(
     private var excludePatterns: Regex = exclude.joinToString(separator = "|", prefix = "(", postfix = ")").toRegex()
 
     val MAX_FILE_NAME_PRINT_LENGTH = 30
+    private var filesParsed = 0L
+    private var totalFiles = 0L
+    private val progressTracker: ProgressTracker = ProgressTracker()
+    private val parsingUnit = ParsingUnit.Files
 
     fun parse(): Map<String, FileMetrics> {
         val projectMetrics = ConcurrentHashMap<String, FileMetrics>()
+        var lastFileName = ""
 
         runBlocking(Dispatchers.Default) {
-            root.walk().asSequence()
+            val files = root.walk().asSequence()
                 .filter { it.isFile }
-                .forEach {
-                    launch {
-                        val standardizedPath = "/" + getRelativeFileName(it.toString())
 
-                        if (
-                            !isPathExcluded(standardizedPath) &&
-                            isParsableFileExtension(standardizedPath)
-                        ) {
-                            logProgress(it.name)
-                            projectMetrics[standardizedPath] = parseFile(it)
-                        }
+            totalFiles = files.count().toLong()
+
+            files.forEach {
+                launch {
+                    val standardizedPath = "/" + getRelativeFileName(it.toString())
+
+                    if (
+                        !isPathExcluded(standardizedPath) &&
+                        isParsableFileExtension(standardizedPath)
+                    ) {
+                        filesParsed++
+                        logProgress(it.name, filesParsed)
+                        projectMetrics[standardizedPath] = parseFile(it)
+                        lastFileName = it.name
                     }
                 }
+            }
         }
+        logProgress(lastFileName, totalFiles)
 
         return projectMetrics
     }
@@ -75,12 +88,12 @@ class MetricCollector(
             .replace('\\', '/')
     }
 
-    private fun logProgress(fileName: String) {
+    private fun logProgress(fileName: String, parsedFiles: Long) {
         val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) {
             ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH)
         } else {
             fileName.padEnd(MAX_FILE_NAME_PRINT_LENGTH + 2)
         }
-        System.err.print("\rParsing file: $currentFile")
+        progressTracker.updateProgress(totalFiles, parsedFiles, parsingUnit.name, fileName)
     }
 }
