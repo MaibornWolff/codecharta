@@ -1,5 +1,5 @@
 package de.maibornwolff.codecharta.progresstracker
 
-enum class ParsingUnit{
+enum class ParsingUnit {
     Byte, Files
 }
