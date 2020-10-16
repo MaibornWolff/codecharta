@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   Parsing feedback with progressbar and probable ETA for parsers and SonarImporter #847
+-   Mark node names and make the names clickable for nodes that have a link to them #1313
 -   Indicate the metric name next to a shown value in a new line on labels #1035
 -   Checkboxes to display metric names and values and to display node names on labels #1035
 -   Mark node names and make the names clickable for nodes that have a link to them #1313
