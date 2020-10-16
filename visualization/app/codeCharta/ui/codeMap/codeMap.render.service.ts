@@ -47,12 +47,21 @@ export class CodeMapRenderService {
 	}
 
 	private setLabels(sortedNodes: Node[]) {
+		const appSettings = this.storeService.getState().appSettings
+		const showLabelNodeName = appSettings.showMetricLabelNodeName
+		const showLabelNodeMetric = appSettings.showMetricLabelNameValue
+
 		this.codeMapLabelService.clearLabels()
-		let { amountOfTopLabels } = this.storeService.getState().appSettings
-		for (let i = 0; i < sortedNodes.length && amountOfTopLabels !== 0; i++) {
-			if (sortedNodes[i].isLeaf) {
-				this.codeMapLabelService.addLabel(sortedNodes[i])
-				amountOfTopLabels -= 1
+		if (showLabelNodeName || showLabelNodeMetric) {
+			let { amountOfTopLabels } = appSettings
+			for (let i = 0; i < sortedNodes.length && amountOfTopLabels !== 0; i++) {
+				if (sortedNodes[i].isLeaf) {
+					this.codeMapLabelService.addLabel(sortedNodes[i], {
+						showNodeName: showLabelNodeName,
+						showNodeMetric: showLabelNodeMetric
+					})
+					amountOfTopLabels -= 1
+				}
 			}
 		}
 	}

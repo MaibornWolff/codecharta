@@ -1172,7 +1172,8 @@ export const STATE: State = {
 			angularGreen: "#00BFA5",
 			markingColors: ["#FF1D8E", "#1d8eff", "#1DFFFF", "#8eff1d", "#8e1dff", "#FFFF1D"],
 			incomingEdge: "#00ffff",
-			outgoingEdge: "#ff00ff"
+			outgoingEdge: "#ff00ff",
+			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
 		},
 		isPresentationMode: false,
 		showOnlyBuildingsWithEdges: false,
@@ -1182,7 +1183,9 @@ export const STATE: State = {
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.treeView,
 		isAttributeSideBarVisible: true,
-		panelSelection: PanelSelection.AREA_PANEL_OPEN
+		panelSelection: PanelSelection.AREA_PANEL_OPEN,
+		showMetricLabelNameValue: true,
+		showMetricLabelNodeName: true
 	},
 	treeMap: {
 		mapSize: 250
@@ -1225,7 +1228,8 @@ export const DEFAULT_STATE: State = {
 			positiveDelta: "#69FF40",
 			selected: "#EB8319",
 			incomingEdge: "#00ffff",
-			outgoingEdge: "#ff00ff"
+			outgoingEdge: "#ff00ff",
+			labelColorAndAlpha: { rgb: "#e0e0e0", alpha: 0.85 }
 		},
 		scaling: new Vector3(1, 1, 1),
 		whiteColorBuildings: false,
@@ -1237,7 +1241,9 @@ export const DEFAULT_STATE: State = {
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.minimized,
 		isAttributeSideBarVisible: false,
-		panelSelection: PanelSelection.NONE
+		panelSelection: PanelSelection.NONE,
+		showMetricLabelNameValue: true,
+		showMetricLabelNodeName: true
 	},
 	dynamicSettings: {
 		areaMetric: null,

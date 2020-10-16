@@ -1,4 +1,6 @@
 // Plop: Append reducer import here
+import { showMetricLabelNodeName } from "./showMetricLabelNodeName/showMetricLabelNodeName.reducer"
+import { showMetricLabelNameValue } from "./showMetricLabelNameValue/showMetricLabelNameValue.reducer"
 import { panelSelection } from "./panelSelection/panelSelection.reducer"
 import { cameraTarget } from "./cameraTarget/cameraTarget.reducer"
 import { isAttributeSideBarVisible } from "./isAttributeSideBarVisible/isAttributeSideBarVisible.reducer"
@@ -26,6 +28,8 @@ import { combineReducers } from "redux"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
+    showMetricLabelNodeName,
+	showMetricLabelNameValue,
 	panelSelection,
 	cameraTarget,
 	isAttributeSideBarVisible,
