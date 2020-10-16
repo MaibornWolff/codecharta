@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.60.0] - 2020-10-16
+
+### Added 🚀
+
 -   Parsing feedback with progressbar and probable ETA for parsers and SonarImporter #847
 -   Mark node names and make the names clickable for nodes that have a link to them #1313
 -   Indicate the metric name next to a shown value in a new line on labels #1035
