@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 -   First start without an internet connection of standalone not working #1266
 -   Comparing a map in delta mode shows the correct differences
-    -   This mainly applies to maps compared with itself while it also fixes some other minor miscalculations
+-   This mainly applies to maps compared with itself while it also fixes some other minor miscalculations
 -   File extensions detection is improved
 
 ### Chore 👨‍💻 👩‍💻
@@ -29,11 +29,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 -   New EXPERIMENTAL SCMLogParser version
-    -   Improved performance around 300% when parsing CodeCharta
-    -   Improved memory usage
-    -   Fixed issue with old parser creating incorrect nodes in CodeCharta #871
-    -   ATTENTION: the parser is experimental, therefore some potential issues might remain, e.g. potentially an unhandled edge case when parsing node
-    -   To use the new parser a reversed git log is needed, as well as a git file list, refer to `ccsh scmlogparserv2 -h` for additional information
+-   Improved performance around 300% when parsing CodeCharta
+-   Improved memory usage
+-   Fixed issue with old parser creating incorrect nodes in CodeCharta #871
+-   ATTENTION: the parser is experimental, therefore some potential issues might remain, e.g. potentially an unhandled edge case when parsing node
+-   To use the new parser a reversed git log is needed, as well as a git file list, refer to `ccsh scmlogparserv2 -h` for additional information
 
 ### Changed
 
