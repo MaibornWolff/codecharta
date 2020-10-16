@@ -145,11 +145,7 @@ describe("MapTreeViewLevelController", () => {
 	describe("openNodeContextMenu", () => {
 		it("should open NodeContextMenu and mark the folder", () => {
 			document.getElementById = jest.fn().mockReturnValue({ addEventListener: jest.fn() })
-			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				NodeType.FOLDER,
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FOLDER, VALID_NODE_WITH_PATH)
 			const context = {
 				path: mapTreeViewLevelController["node"].path,
 				type: mapTreeViewLevelController["node"].type,
@@ -166,21 +162,13 @@ describe("MapTreeViewLevelController", () => {
 
 	describe("isLeaf", () => {
 		it("should be a leaf", () => {
-			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath(
-				"/root/Parent Leaf/small leaf",
-				NodeType.FILE,
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath("/root/Parent Leaf/small leaf", NodeType.FILE, VALID_NODE_WITH_PATH)
 
 			expect(mapTreeViewLevelController.isLeaf()).toBeTruthy()
 		})
 
 		it("should not be a leaf", () => {
-			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath(
-				"/root/Parent Leaf",
-				NodeType.FOLDER,
-				VALID_NODE_WITH_PATH
-			)
+			mapTreeViewLevelController["node"] = getCodeMapNodeFromPath("/root/Parent Leaf", NodeType.FOLDER, VALID_NODE_WITH_PATH)
 
 			const result = mapTreeViewLevelController.isLeaf(mapTreeViewLevelController["node"])
 

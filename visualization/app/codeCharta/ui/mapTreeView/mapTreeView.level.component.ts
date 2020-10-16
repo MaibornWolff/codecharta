@@ -76,7 +76,7 @@ export class MapTreeViewLevelController implements BuildingHoveredSubscriber, Bu
 	}
 
 	isLeaf(node: CodeMapNode = this.node) {
-	  return isLeaf(node)
+		return isLeaf(node)
 	}
 
 	getMarkingColor() {

@@ -34,8 +34,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 	const hierarchyNode = hierarchy(map)
 
 	const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(map, heightScale, state, isDeltaState)]
-	const scale =
-		(state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / nodes[0].length
+	const scale = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / nodes[0].length
 
 	scaleRoot(nodes[0], scale)
 
@@ -98,7 +97,7 @@ function getSquarifiedTreeMap(map: CodeMapNode, state: State): SquarifiedTreeMap
 
 	const treeMap = treemap<CodeMapNode>().size([width, height]).paddingOuter(padding).paddingInner(padding)
 
-	return { treeMap: treeMap(hierarchyNode.sum((node) => calculateAreaValue(node, state))), height, width }
+	return { treeMap: treeMap(hierarchyNode.sum(node => calculateAreaValue(node, state))), height, width }
 }
 
 function getEstimatedNodesPerSide(hierarchyNode: HierarchyNode<CodeMapNode>) {

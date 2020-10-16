@@ -60,7 +60,7 @@
 		"not IE 11"
 	],
 	"scripts": {
-		"start": "run --mirror https://dl.nwjs.io/ .",
+		"start": "nw .",
 		"build": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='true' --env.STANDALONE=true",
 		"build:web": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='false' --env.STANDALONE=false",
 		"dev": "webpack-dev-server --config ./conf/webpack.config.js --open --define process.env.STANDALONE='false' --env.STANDALONE=false",
@@ -103,7 +103,7 @@
 		"lodash.isequal": "^4.5.0",
 		"lodash.throttle": "^4.1.1",
 		"nouislider": "^14.6.0",
-		"nwjs-builder-phoenix": "^1.14.6",
+		"nw": "0.48.1",
 		"redux": "^4.0.4",
 		"shelljs": "^0.8.1",
 		"three": "^0.121.1",
