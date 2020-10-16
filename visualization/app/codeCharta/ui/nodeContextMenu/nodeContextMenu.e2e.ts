@@ -31,29 +31,29 @@ describe("NodeContextMenu", () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.isOpened()).toBe(true)
+		await contextMenu.isOpened()
 
 		await codeMap.clickMap()
-		expect(await contextMenu.isClosed()).toBe(true)
+		await contextMenu.isClosed()
 	})
 
 	it("right clicking the map should close open node context menu already on mousedown", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.isOpened()).toBe(true)
+		await contextMenu.isOpened()
 
 		await codeMap.rightClickMouseDownOnMap()
-		expect(await contextMenu.isClosed()).toBe(true)
+		await contextMenu.isClosed()
 	}, 60000)
 
 	it("zoom in and out or using mouse wheel on the map should close open node context menu", async () => {
 		await searchPanelModeSelector.toggleTreeView()
 		await mapTreeViewLevel.openContextMenu("/root")
 
-		expect(await contextMenu.isOpened()).toBe(true)
+		await contextMenu.isOpened()
 
 		await codeMap.mouseWheelWithinMap()
-		expect(await contextMenu.isClosed()).toBe(true)
+		await contextMenu.isClosed()
 	})
 })
