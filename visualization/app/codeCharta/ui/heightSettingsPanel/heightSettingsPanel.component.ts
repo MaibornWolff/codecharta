@@ -15,9 +15,25 @@ import { InvertHeightService, InvertHeightSubscriber } from "../../state/store/a
 import { FilesService, FilesSelectionSubscriber } from "../../state/store/files/files.service"
 import { isDeltaState } from "../../model/files/files.helper"
 import { FileState } from "../../model/files/files"
+import {
+	LabelShowNodeNameService,
+	ShowMetricLabelNameValueSubscriber
+} from "../../state/store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
+import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+import {
+	LabelShowMetricValueService,
+	ShowMetricLabelNodeNameSubscriber
+} from "../../state/store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
+import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
 
 export class HeightSettingsPanelController
-	implements FilesSelectionSubscriber, AmountOfTopLabelsSubscriber, ScalingSubscriber, InvertHeightSubscriber {
+	implements
+		FilesSelectionSubscriber,
+		AmountOfTopLabelsSubscriber,
+		ScalingSubscriber,
+		InvertHeightSubscriber,
+		ShowMetricLabelNameValueSubscriber,
+		ShowMetricLabelNodeNameSubscriber {
 	private static DEBOUNCE_TIME = 400
 	private readonly applyDebouncedTopLabels: () => void
 	private readonly applyDebouncedScaling: (newScaling: Vector3) => void
@@ -27,11 +43,15 @@ export class HeightSettingsPanelController
 		scalingY: number
 		invertHeight: boolean
 		isDeltaState: boolean
+		showMetricValue: boolean
+		showNodeName: boolean
 	} = {
 		amountOfTopLabels: null,
 		scalingY: null,
 		invertHeight: null,
-		isDeltaState: null
+		isDeltaState: null,
+		showMetricValue: true,
+		showNodeName: true
 	}
 
 	/* @ngInject */
@@ -40,6 +60,8 @@ export class HeightSettingsPanelController
 		ScalingService.subscribe(this.$rootScope, this)
 		InvertHeightService.subscribe(this.$rootScope, this)
 		FilesService.subscribe(this.$rootScope, this)
+		LabelShowNodeNameService.subscribe(this.$rootScope, this)
+		LabelShowMetricValueService.subscribe(this.$rootScope, this)
 
 		this.applyDebouncedTopLabels = debounce(() => {
 			this.storeService.dispatch(setAmountOfTopLabels(this._viewModel.amountOfTopLabels))
@@ -58,6 +80,14 @@ export class HeightSettingsPanelController
 		this._viewModel.invertHeight = invertHeight
 	}
 
+	onShowMetricLabelNameValueChanged(showMetricValue: boolean) {
+		this._viewModel.showMetricValue = showMetricValue
+	}
+
+	onShowMetricLabelNodeNameChanged(showMetricLabelNodeName: boolean) {
+		this._viewModel.showNodeName = showMetricLabelNodeName
+	}
+
 	onScalingChanged(scaling) {
 		this._viewModel.scalingY = scaling.y
 	}
@@ -68,6 +98,14 @@ export class HeightSettingsPanelController
 
 	applySettingsAmountOfTopLabels() {
 		this.applyDebouncedTopLabels()
+	}
+
+	applySettingsMetricLabelValueChanged() {
+		this.storeService.dispatch(setShowMetricLabelNameValue(this._viewModel.showMetricValue))
+	}
+
+	applySettingsMetricLabelNodeNameChanged() {
+		this.storeService.dispatch(setShowMetricLabelNodeName(this._viewModel.showNodeName))
 	}
 
 	applySettingsInvertHeight() {
