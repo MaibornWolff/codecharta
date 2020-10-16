@@ -437,14 +437,6 @@ describe("codeMapMouseEventService", () => {
 
 			expect(codeMapMouseEventService["mouseOnLastClick"]).toEqual({ x: event.clientX, y: event.clientY })
 		})
-
-		it("should $broadcast hide-node-context-menu event on-right-mouse-button-down", () => {
-			const event = { button: ClickType.RightClick, clientX: 1, clientY: 2 } as MouseEvent
-
-			codeMapMouseEventService.onDocumentMouseDown(event)
-
-			expect($rootScope.$broadcast).toHaveBeenCalledWith("hide-node-context-menu", expect.any(Object))
-		})
 	})
 
 	describe("onDocumentDoubleClick", () => {
