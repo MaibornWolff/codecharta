@@ -83,7 +83,7 @@ export class NodeContextMenuController
         // or using the mouse wheel on the body element.
         document.body.addEventListener("click", this.onBodyLeftClickHideNodeContextMenu, true)
         document.body.addEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
-        document.getElementById("codeMap").addEventListener("wheel", this.onBodyWheelHideNodeContextMenu, true)
+        document.getElementById("codeMap").addEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
     }
 
     onBodyLeftClickHideNodeContextMenu = () => {
@@ -110,14 +110,14 @@ export class NodeContextMenuController
         document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
     }
 
-    onBodyWheelHideNodeContextMenu = () => {
+    onMapWheelHideNodeContextMenu = () => {
         // If you zoom in and out the map, the node context menu should be closed.
         NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 
         // The listener is added when showing the node context menu.
         // Thus, remove the listener when using the mouse wheel on the body element
         // to fire hide events only (once) when it is really necessary.
-        document.getElementById("codeMap").removeEventListener("wheel", this.onBodyWheelHideNodeContextMenu, true)
+        document.getElementById("codeMap").removeEventListener("wheel", this.onMapWheelHideNodeContextMenu, true)
     }
 
     onHideNodeContextMenu() {
