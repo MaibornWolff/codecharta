@@ -4,6 +4,7 @@ import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/f
 import { StoreService } from "../../state/store.service"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
+import { NodeContextMenuController } from "../nodeContextMenu/nodeContextMenu.component"
 
 export class UnfocusButtonController implements BuildingRightClickedEventSubscriber {
 	private _viewModel: {
@@ -28,6 +29,7 @@ export class UnfocusButtonController implements BuildingRightClickedEventSubscri
 
 	removeFocusedNode() {
 		this.storeService.dispatch(unfocusNode())
+		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
 	}
 }
 

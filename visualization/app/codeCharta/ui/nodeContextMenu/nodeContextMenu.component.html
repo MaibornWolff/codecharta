@@ -1,4 +1,4 @@
-<md-card id="codemap-context-menu" ng-show="$ctrl._viewModel.codeMapNode">
+<md-card id="codemap-context-menu" ng-show="$ctrl._viewModel.showNodeContextMenu">
 	<div ng-if="$ctrl.nodeIsFolder()">
 		<div layout="row" layout-align="center center">
 			<md-button
@@ -32,7 +32,10 @@
 			title="Flatten node and children-nodes, but keep an empty space"
 			><i class="fa fa-eye-slash"></i> Flatten</md-button
 		>
-		<md-button ng-if="$ctrl._viewModel.codeMapNode.isFlattened" ng-click="$ctrl.showNode()" title="Show node and children-nodes"
+		<md-button
+			ng-if="$ctrl._viewModel.codeMapNode.isFlattened"
+			ng-click="$ctrl.showFlattenedNode()"
+			title="Show node and children-nodes"
 			><i class="fa fa-eye"></i> Show</md-button
 		>
 
