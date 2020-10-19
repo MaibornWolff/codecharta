@@ -143,6 +143,7 @@
 		"jest-serializer-html": "^7.0.0",
 		"makeshift": "^1.1.0",
 		"node-sass": "^4.13.1",
+		"nwjs-builder-phoenix": "^1.15.0",
 		"plop": "^2.7.3",
 		"puppeteer": "^5.1.0",
 		"rimraf": "^3.0.2",
