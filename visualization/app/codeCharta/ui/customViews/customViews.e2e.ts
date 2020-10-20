@@ -11,7 +11,14 @@ describe("CustomViews", () => {
     	await goto()
     })
 
+    it("CustomView Feature will not be shown by default due to it's experimental status", async () => {
+        await customViews.isCustomViewFeatureDisabled()
+    })
+
     it("FastAdding CustomView with already existing name will show a warning message", async () => {
+        // Enable experimental CustomViews Feature first
+        await customViews.enableExperimentalFeatures()
+
         // Open
         await customViews.openCustomViewAddDialog()
         await customViews.isCustomViewAddDialogOpen()
@@ -28,6 +35,6 @@ describe("CustomViews", () => {
         // Enter existing name
         await customViews.fillInCustomViewName()
         await customViews.isOverrideWarningVisible()
-    })
+    }, 60000)
 
 });

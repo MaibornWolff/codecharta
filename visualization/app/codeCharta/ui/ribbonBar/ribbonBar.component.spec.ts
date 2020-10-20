@@ -8,6 +8,7 @@ import { setSearchPanelMode } from "../../state/store/appSettings/searchPanelMod
 import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 import { RibbonBarController } from "./ribbonBar.component"
 import { PanelSelectionService } from "../../state/store/appSettings/panelSelection/panelSelection.service"
+import {ExperimentalFeaturesEnabledService} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service";
 
 describe("RibbonBarController", () => {
 	let ribbonBarController: RibbonBarController
@@ -39,6 +40,14 @@ describe("RibbonBarController", () => {
 
 			expect(PanelSelectionService.subscribe).toHaveBeenCalledWith($rootScope, ribbonBarController)
 		})
+
+		it("should subscripe to ExperimentalFeaturesEnabledService", () => {
+			ExperimentalFeaturesEnabledService.subscribe = jest.fn()
+
+			rebuildController()
+
+			expect(ExperimentalFeaturesEnabledService.subscribe).toHaveBeenCalledWith($rootScope, ribbonBarController)
+		})
 	})
 
 	describe("onPanelSelectionChanged", () => {
@@ -46,6 +55,14 @@ describe("RibbonBarController", () => {
 			ribbonBarController.onPanelSelectionChanged(PanelSelection.HEIGHT_PANEL_OPEN)
 
 			expect(ribbonBarController["_viewModel"].panelSelection).toEqual(PanelSelection.HEIGHT_PANEL_OPEN)
+		})
+	})
+
+	describe("onExperimentalFeaturesEnabledChanged", () => {
+		it("should update the viewModel with the new state", () => {
+			ribbonBarController.onExperimentalFeaturesEnabledChanged(true)
+
+			expect(ribbonBarController["_viewModel"].experimentalFeaturesEnabled).toBe(true)
 		})
 	})
 

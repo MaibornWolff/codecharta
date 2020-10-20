@@ -35,6 +35,16 @@
 				</md-checkbox>
 			</md-input-container>
 
+			<md-input-container class="input-container md-block">
+				<md-checkbox
+						class="md-primary"
+						ng-model="$ctrl._viewModel.experimentalFeaturesEnabled"
+						ng-change="$ctrl.applySettingsEnableExperimentalFeatures()"
+				>
+					Enable Experimental Features
+				</md-checkbox>
+			</md-input-container>
+
 			<a
 				class="weblink"
 				href="https://github.com/MaibornWolff/codecharta/blob/main/README.md"

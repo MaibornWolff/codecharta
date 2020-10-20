@@ -9,7 +9,7 @@
 	</div>
 </md-card>
 
-<md-card ng-attr-id="custom-views-card">
+<md-card ng-show="$ctrl._viewModel.experimentalFeaturesEnabled" ng-attr-id="custom-views-card">
 	<div class="section">
 		<div class="section-header">
 			<custom-views-component></custom-views-component>

@@ -119,6 +119,7 @@ export interface AppSettings {
 	searchPanelMode: SearchPanelMode
 	isAttributeSideBarVisible: boolean
 	panelSelection: PanelSelection
+	experimentalFeaturesEnabled: boolean
 }
 
 export interface TreeMapSettings {

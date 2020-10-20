@@ -58,7 +58,8 @@ export class CustomViewBuilder {
 			searchPanelMode: undefined,
 			showOnlyBuildingsWithEdges: false,
 			sortingOrderAscending: false,
-			whiteColorBuildings: false
+			whiteColorBuildings: false,
+			experimentalFeaturesEnabled: false
 		}
 		target.stateSettings.appSettings.mapColors = {
 			angularGreen: "",

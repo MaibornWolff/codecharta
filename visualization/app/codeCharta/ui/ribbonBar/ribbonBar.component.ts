@@ -6,26 +6,37 @@ import { PanelSelection } from "../../codeCharta.model"
 import { setPanelSelection } from "../../state/store/appSettings/panelSelection/panelSelection.actions"
 import { PanelSelectionService, PanelSelectionSubscriber } from "../../state/store/appSettings/panelSelection/panelSelection.service"
 import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service"
+import {
+	ExperimentalFeaturesEnabledService,
+	ExperimentalFeaturesEnabledSubscriber
+} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service";
 
-export class RibbonBarController implements PanelSelectionSubscriber {
+export class RibbonBarController implements PanelSelectionSubscriber, ExperimentalFeaturesEnabledSubscriber {
 	constructor(
 		private storeService: StoreService,
 		private $rootScope: IRootScopeService,
 		private codeChartaMouseEventService: CodeChartaMouseEventService
 	) {
 		PanelSelectionService.subscribe(this.$rootScope, this)
+		ExperimentalFeaturesEnabledService.subscribe(this.$rootScope, this)
 	}
 
 	private _viewModel: {
 		panelSelection: PanelSelection
 		panelSelectionValues: typeof PanelSelection
+		experimentalFeaturesEnabled: boolean
 	} = {
 		panelSelection: PanelSelection.NONE,
-		panelSelectionValues: PanelSelection
+		panelSelectionValues: PanelSelection,
+		experimentalFeaturesEnabled: false
 	}
 
 	onPanelSelectionChanged(panelSelection: PanelSelection) {
 		this._viewModel.panelSelection = panelSelection
+	}
+
+	onExperimentalFeaturesEnabledChanged(experimentalFeaturesEnabled: boolean) {
+		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
 	}
 
 	toggle(panelSelection: PanelSelection) {

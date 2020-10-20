@@ -1183,7 +1183,8 @@ export const STATE: State = {
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.treeView,
 		isAttributeSideBarVisible: true,
-		panelSelection: PanelSelection.AREA_PANEL_OPEN
+		panelSelection: PanelSelection.AREA_PANEL_OPEN,
+		experimentalFeaturesEnabled: false
 	},
 	treeMap: {
 		mapSize: 250
@@ -1238,7 +1239,8 @@ export const DEFAULT_STATE: State = {
 		sortingOrderAscending: false,
 		searchPanelMode: SearchPanelMode.minimized,
 		isAttributeSideBarVisible: false,
-		panelSelection: PanelSelection.NONE
+		panelSelection: PanelSelection.NONE,
+		experimentalFeaturesEnabled: false
 	},
 	dynamicSettings: {
 		areaMetric: null,
