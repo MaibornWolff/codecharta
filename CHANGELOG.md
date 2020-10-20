@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Issue with first start without an internet connection not working#1266
+-   Issue with ribbon bar sizes for opened cards #1035
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.60.0] - 2020-10-16
