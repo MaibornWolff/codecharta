@@ -12,6 +12,7 @@ import {setFiles} from "../../state/store/files/files.actions";
 import {CustomViewHelper} from "../../util/customViewHelper";
 import {setState} from "../../state/store/state.actions";
 import {CustomView} from "../../model/customView/customView.api.model";
+import {ThreeCameraService} from "../codeMap/threeViewer/threeCameraService";
 
 describe("CustomViewsController", () => {
     let customViewsController: CustomViewsController
@@ -19,13 +20,15 @@ describe("CustomViewsController", () => {
     let storeService: StoreService
     let dialogService: DialogService
     let threeOrbitControlsService: ThreeOrbitControlsService
+    let threeCameraService: ThreeCameraService
 
     function rebuildController() {
         customViewsController = new CustomViewsController(
             $rootScope,
             storeService,
             dialogService,
-            threeOrbitControlsService
+            threeOrbitControlsService,
+            threeCameraService
         )
     }
 
@@ -36,6 +39,7 @@ describe("CustomViewsController", () => {
         storeService = getService<StoreService>("storeService")
         dialogService = getService<DialogService>("dialogService")
         threeOrbitControlsService = getService<ThreeOrbitControlsService>("threeOrbitControlsService")
+        threeCameraService = getService<ThreeCameraService>("threeCameraService")
 
         storeService.dispatch(setFiles(FILE_STATES))
     }
