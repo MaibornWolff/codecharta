@@ -119,6 +119,8 @@ export interface AppSettings {
 	searchPanelMode: SearchPanelMode
 	isAttributeSideBarVisible: boolean
 	panelSelection: PanelSelection
+	showMetricLabelNameValue: boolean
+	showMetricLabelNodeName: boolean
 	experimentalFeaturesEnabled: boolean
 }
 
@@ -141,6 +143,7 @@ export interface MapColors {
 	markingColors: string[]
 	outgoingEdge: string
 	incomingEdge: string
+	labelColorAndAlpha: { rgb: string; alpha: number }
 }
 
 export interface ColorRange {

@@ -36,6 +36,8 @@ export class CustomViewBuilder {
 
 	private static initializeAppSettings(target: CustomView) {
 		target.stateSettings.appSettings = {
+			showMetricLabelNameValue: false,
+			showMetricLabelNodeName: false,
 			amountOfEdgePreviews: 0,
 			amountOfTopLabels: 0,
 			camera: undefined,
@@ -62,6 +64,7 @@ export class CustomViewBuilder {
 			experimentalFeaturesEnabled: false
 		}
 		target.stateSettings.appSettings.mapColors = {
+			labelColorAndAlpha: {alpha: 0, rgb: ""},
 			angularGreen: "",
 			base: "",
 			defaultC: "",

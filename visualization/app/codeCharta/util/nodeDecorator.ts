@@ -1,7 +1,7 @@
 "use strict"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { AttributeTypes, AttributeTypeValue, BlacklistItem, BlacklistType, CCFile, CodeMapNode, MetricData } from "../codeCharta.model"
-import { CodeMapHelper } from "./codeMapHelper"
+import { isLeaf, transformPath } from "./codeMapHelper"
 import ignore from "ignore"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 
@@ -17,11 +17,6 @@ const enum EdgeAttributeType {
 	OUTGOING = "outgoing"
 }
 
-const enum NodeAttributeType {
-	ATTRIBUTES = "attributes",
-	DELTAS = "deltas"
-}
-
 export class NodeDecorator {
 	static decorateMap(map: CodeMapNode, metricData: MetricData, blacklist: BlacklistItem[]) {
 		const flattened = ignore()
@@ -31,7 +26,7 @@ export class NodeDecorator {
 		let hasExcludedPaths = false
 
 		for (const item of blacklist) {
-			const path = CodeMapHelper.transformPath(item.path)
+			const path = transformPath(item.path)
 
 			if (item.type === BlacklistType.flatten) {
 				hasFlattenedPaths = true
@@ -44,7 +39,7 @@ export class NodeDecorator {
 
 		const { nodeMetricData, edgeMetricData } = metricData
 		let id = 0
-		for (const { data } of hierarchy(map).descendants()) {
+		for (const { data } of hierarchy(map)) {
 			data.id = id
 			id++
 
@@ -79,7 +74,7 @@ export class NodeDecorator {
 			}
 
 			if (blacklist.length !== 0) {
-				const path = CodeMapHelper.transformPath(data.path)
+				const path = transformPath(data.path)
 				data.isFlattened = hasFlattenedPaths && flattened.ignores(path)
 				data.isExcluded = hasExcludedPaths && excluded.ignores(path)
 			}
@@ -99,13 +94,13 @@ export class NodeDecorator {
 	}
 
 	static decorateMapWithPathAttribute(file: CCFile) {
-		hierarchy(file.map).each(node => {
+		for (const node of hierarchy(file.map)) {
 			if (node.parent) {
 				node.data.path = `${node.parent.data.path}/${node.data.name}`
 			} else {
 				node.data.path = `/${node.data.name}`
 			}
-		})
+		}
 		return file
 	}
 
@@ -116,7 +111,7 @@ export class NodeDecorator {
 		// `nodeMetricData` and `edgeMetricData` names.
 		const attributeKeys = Object.keys(map.attributes)
 		const edgeKeys = Object.keys(map.edgeAttributes)
-		hierarchy(map).eachAfter(({ data, parent }) => {
+		hierarchy(map).eachAfter(function decorateNode({ data, parent }) {
 			// skip root
 			if (data.isExcluded || !parent) {
 				return
@@ -223,11 +218,11 @@ function collectNodeMediansOnParent(
 	isDeltaState: boolean
 ) {
 	if (child.attributes[metricName] !== 0) {
-		collectMedians(medians, `${MedianSelectors.MEDIAN}${parentSelector}`, child, child[NodeAttributeType.ATTRIBUTES][metricName])
+		collectMedians(medians, `${MedianSelectors.MEDIAN}${parentSelector}`, child, child.attributes[metricName])
 	}
 
 	if (isDeltaState && child.deltas[metricName] !== 0) {
-		collectMedians(medians, `${MedianSelectors.DELTA}${parentSelector}`, child, child[NodeAttributeType.DELTAS][metricName])
+		collectMedians(medians, `${MedianSelectors.DELTA}${parentSelector}`, child, child.deltas[metricName])
 	}
 }
 
@@ -287,6 +282,7 @@ function setMediansToParents(medians: Map<string, number[]>, parentSelector: str
 }
 
 function collectMedians(medians: Map<string, number[]>, selector: string, child: CodeMapNode, value: number) {
+	// TODO: Check if this should be set if it's not a leaf.
 	const median = medians.get(selector)
 	if (median === undefined) {
 		medians.set(selector, [value])
@@ -295,10 +291,9 @@ function collectMedians(medians: Map<string, number[]>, selector: string, child:
 	}
 }
 
-function isLeaf(node: CodeMapNode) {
-	return !node.children || node.children.length === 0
-}
-
+// TODO: Evaluate if sorting in `getMedian` is not better than using a
+// pre-sorted array. It's a lot less code and should roughly have the same
+// performance.
 function getMedian(numbers: number[]) {
 	if (numbers === undefined || numbers.length === 0) {
 		return 0
@@ -308,14 +303,34 @@ function getMedian(numbers: number[]) {
 	return (numbers[Math.floor(middle)] + numbers[Math.ceil(middle)]) / 2
 }
 
-function pushSorted(numbers: number[], number: number) {
-	for (let i = 0; i < numbers.length; i++) {
-		if (numbers[i] > number) {
-			numbers.splice(i, 0, number)
-			return
+function pushSorted(numbers, number) {
+	let min = 0
+	let max = numbers.length - 1
+	let guess = 0
+
+	if (numbers[max] <= number) {
+		numbers.push(number)
+		return
+	}
+	if (numbers[0] >= number) {
+		numbers.unshift(number)
+		return
+	}
+
+	// Use a binary search to find the correct entry.
+	while (min <= max) {
+		guess = Math.floor((min + max) / 2)
+
+		if (numbers[guess] < number) {
+			min = guess + 1
+		} else {
+			max = guess - 1
+			if (numbers[max] <= number) {
+				numbers.splice(guess, 0, number)
+				return
+			}
 		}
 	}
-	numbers.push(number)
 }
 
 function pushSortedArray(numbers: number[], toPush: number[]) {

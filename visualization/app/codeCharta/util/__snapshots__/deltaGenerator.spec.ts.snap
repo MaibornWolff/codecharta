@@ -1,0 +1,277 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`deltaGenerator getDeltaFile should result in expected deltaFiles 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [
+    Object {
+      "attributes": Object {
+        "functions": 10,
+        "mcc": 1,
+        "rloc": 20,
+      },
+      "deltas": Object {
+        "functions": 0,
+        "mcc": 0,
+        "rloc": -80,
+      },
+      "isExcluded": false,
+      "isFlattened": false,
+      "link": "http://www.google.de",
+      "name": "big leaf",
+      "path": "/root/big leaf",
+      "type": "File",
+    },
+    Object {
+      "attributes": Object {
+        "functions": 11,
+        "mcc": 5,
+        "rloc": 10,
+      },
+      "deltas": Object {
+        "functions": 11,
+        "mcc": 5,
+        "rloc": 10,
+      },
+      "isExcluded": false,
+      "isFlattened": false,
+      "link": "http://www.google.de",
+      "name": "additional leaf",
+      "path": "/root/additional leaf",
+      "type": "File",
+    },
+    Object {
+      "attributes": Object {},
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "functions": 100,
+            "mcc": 100,
+            "more": 20,
+            "rloc": 30,
+          },
+          "deltas": Object {
+            "functions": 0,
+            "mcc": 0,
+            "more": 20,
+            "rloc": 0,
+          },
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "small leaf",
+          "path": "/root/Parent Leaf/small leaf",
+          "type": "File",
+        },
+        Object {
+          "attributes": Object {
+            "functions": 1000,
+            "rloc": 70,
+          },
+          "deltas": Object {
+            "functions": 0,
+            "mcc": -10,
+            "rloc": 0,
+          },
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "other small leaf",
+          "path": "/root/Parent Leaf/other small leaf",
+          "type": "File",
+        },
+        Object {
+          "attributes": Object {
+            "functions": 10,
+            "mcc": 1,
+            "rloc": 20,
+          },
+          "deltas": Object {
+            "functions": 10,
+            "mcc": 1,
+            "rloc": 20,
+          },
+          "isExcluded": false,
+          "isFlattened": false,
+          "link": "http://www.google.de",
+          "name": "big leaf",
+          "path": "/root/Parent Leaf/big leaf",
+          "type": "File",
+        },
+      ],
+      "deltas": Object {},
+      "isExcluded": false,
+      "isFlattened": false,
+      "name": "Parent Leaf",
+      "path": "/root/Parent Leaf",
+      "type": "Folder",
+    },
+  ],
+  "deltas": Object {},
+  "isExcluded": false,
+  "isFlattened": false,
+  "name": "root",
+  "path": "/root",
+  "type": "Folder",
+}
+`;
+
+exports[`deltaGenerator golden test 1`] = `
+Object {
+  "attributes": Object {},
+  "children": Array [
+    Object {
+      "attributes": Object {
+        "functions": 10,
+        "mcc": 1,
+        "rloc": 20,
+      },
+      "deltas": Object {
+        "functions": 0,
+        "mcc": 0,
+        "rloc": -80,
+      },
+      "isExcluded": false,
+      "isFlattened": false,
+      "link": "http://www.google.de",
+      "name": "big leaf",
+      "path": "/root/big leaf",
+      "type": "File",
+    },
+    Object {
+      "attributes": Object {
+        "functions": 11,
+        "mcc": 5,
+        "rloc": 10,
+      },
+      "deltas": Object {
+        "functions": 11,
+        "mcc": 5,
+        "rloc": 10,
+      },
+      "isExcluded": false,
+      "isFlattened": false,
+      "link": "http://www.google.de",
+      "name": "additional leaf",
+      "path": "/root/additional leaf",
+      "type": "File",
+    },
+    Object {
+      "attributes": Object {},
+      "children": Array [
+        Object {
+          "attributes": Object {
+            "functions": 100,
+            "mcc": 100,
+            "more": 20,
+            "rloc": 30,
+          },
+          "deltas": Object {
+            "functions": 0,
+            "mcc": 0,
+            "more": 20,
+            "rloc": 0,
+          },
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "small leaf",
+          "path": "/root/Parent Leaf/small leaf",
+          "type": "File",
+        },
+        Object {
+          "attributes": Object {
+            "functions": 1000,
+            "rloc": 70,
+          },
+          "deltas": Object {
+            "functions": 0,
+            "mcc": -10,
+            "rloc": 0,
+          },
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "other small leaf",
+          "path": "/root/Parent Leaf/other small leaf",
+          "type": "File",
+        },
+        Object {
+          "attributes": Object {
+            "functions": 10,
+            "mcc": 1,
+            "rloc": 20,
+          },
+          "deltas": Object {
+            "functions": 10,
+            "mcc": 1,
+            "rloc": 20,
+          },
+          "isExcluded": false,
+          "isFlattened": false,
+          "link": "http://www.google.de",
+          "name": "big leaf",
+          "path": "/root/Parent Leaf/big leaf",
+          "type": "File",
+        },
+      ],
+      "deltas": Object {},
+      "isExcluded": false,
+      "isFlattened": false,
+      "name": "Parent Leaf",
+      "path": "/root/Parent Leaf",
+      "type": "Folder",
+    },
+    Object {
+      "attributes": Object {},
+      "children": Array [
+        Object {
+          "attributes": Object {},
+          "children": Array [
+            Object {
+              "attributes": Object {
+                "monster": 666,
+              },
+              "deltas": Object {
+                "monster": 666,
+              },
+              "isExcluded": false,
+              "isFlattened": false,
+              "name": "Narwal",
+              "path": "/root/onlyA/special/Narwal",
+              "type": "File",
+            },
+            Object {
+              "attributes": Object {
+                "special": 42,
+              },
+              "deltas": Object {
+                "special": -42,
+              },
+              "isExcluded": false,
+              "isFlattened": false,
+              "name": "unicorn",
+              "path": "/root/onlyA/special/unicorn",
+              "type": "File",
+            },
+          ],
+          "deltas": Object {},
+          "isExcluded": false,
+          "isFlattened": false,
+          "name": "special",
+          "path": "/root/onlyA/special",
+          "type": "Folder",
+        },
+      ],
+      "deltas": Object {},
+      "isExcluded": false,
+      "isFlattened": false,
+      "name": "onlyA",
+      "path": "/root/onlyA",
+      "type": "Folder",
+    },
+  ],
+  "deltas": Object {},
+  "isExcluded": false,
+  "isFlattened": false,
+  "name": "root",
+  "path": "/root",
+  "type": "Folder",
+}
+`;

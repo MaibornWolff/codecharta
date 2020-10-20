@@ -55,15 +55,14 @@ export class AggregationGenerator {
 	}
 
 	private static aggregateRootAttributes(outputFile: CCFile) {
-		outputFile.map.children.forEach(child => {
-			const { attributes } = child
-			for (const key in attributes) {
-				if (!(key in outputFile.map.attributes)) {
+		for (const { attributes } of outputFile.map.children) {
+			for (const key of Object.keys(attributes)) {
+				if (outputFile.map.attributes[key] === undefined) {
 					outputFile.map.attributes[key] = 0
 				}
 				outputFile.map.attributes[key] += attributes[key]
 			}
-		})
+		}
 	}
 
 	private static extractNodeFromMap(inputMap: CCFile) {
@@ -77,8 +76,8 @@ export class AggregationGenerator {
 			outputNode.path = getUpdatedPath(inputMap.fileMeta.fileName, inputMap.map.path)
 		}
 
-		for (const key in inputMap.map) {
-			if (!["name", "path", "children"].includes(key)) {
+		for (const key of Object.keys(inputMap.map)) {
+			if (key !== "name" && key !== "path" && key !== "children") {
 				outputNode[key] = inputMap.map[key]
 			}
 		}

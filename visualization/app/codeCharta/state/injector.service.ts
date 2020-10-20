@@ -1,6 +1,8 @@
 //@ts-nocheck
 
 // Plop: Append service import here
+import {LabelShowMetricValueService} from "./store/appSettings/showMetricLabelNodeName/labelShowMetricValueService"
+import {LabelShowNodeNameService} from "./store/appSettings/showMetricLabelNameValue/labelShowNodeNameService"
 import {PanelSelectionService} from "./store/appSettings/panelSelection/panelSelection.service"
 import {EdgeMetricDataService} from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import {NodeMetricDataService} from "./store/metricData/nodeMetricData/nodeMetricData.service"
@@ -47,13 +49,15 @@ import {BlacklistService} from "./store/fileSettings/blacklist/blacklist.service
 import {NodeSearchService} from "./nodeSearch.service"
 import {IsPresentationModeService} from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import {MetricDataService} from "./store/metricData/metricData.service"
-import {ExperimentalFeaturesEnabledService} from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service";
+import {ExperimentalFeaturesEnabledService} from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 
 export class InjectorService {
     /* @ngInject */
     constructor(
         // We have to inject the services somewhere
         // Plop: Append service injection here
+        private labelShowMetricValueService: LabelShowMetricValueService,
+        private labelShowNodeNameService: LabelShowNodeNameService,
         private panelSelectionService: PanelSelectionService,
         private metricDataService: MetricDataService,
         private edgeMetricDataService: EdgeMetricDataService,

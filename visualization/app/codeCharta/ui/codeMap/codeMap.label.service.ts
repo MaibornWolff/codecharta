@@ -4,22 +4,28 @@ import { CameraChangeSubscriber, ThreeOrbitControlsService } from "./threeViewer
 import { ThreeCameraService } from "./threeViewer/threeCameraService"
 import { ThreeSceneService } from "./threeViewer/threeSceneService"
 import { IRootScopeService } from "angular"
-import { ColorConverter } from "../../util/color/colorConverter"
 import { StoreService } from "../../state/store.service"
+import { ColorConverter } from "../../util/color/colorConverter"
 
 interface InternalLabel {
 	sprite: Sprite
 	line: Line | null
 	heightValue: number
+	lineCount: number
 }
 
 export class CodeMapLabelService implements CameraChangeSubscriber {
 	private labels: InternalLabel[]
+	private mapLabelColors = this.storeService.getState().appSettings.mapColors.labelColorAndAlpha
+	private LABEL_COLOR_RGB = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb)
+	private LABEL_COLOR_RGBA = ColorConverter.convertHexToRgba(this.mapLabelColors.rgb, this.mapLabelColors.alpha)
 	private LABEL_WIDTH_DIVISOR = 2100 // empirically gathered
-	private LABEL_HEIGHT_DIVISOR = 40 // empirically gathered
+	private LABEL_HEIGHT_DIVISOR = 35 // empirically gathered
+	private LABEL_CORNER_RADIUS = 35 //empirically gathered
 
 	private currentScale: Vector3 = new Vector3(1, 1, 1)
 	private resetScale = false
+	private lineCount = 1
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -31,7 +37,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		ThreeOrbitControlsService.subscribe(this.$rootScope, this)
 	}
 
-	addLabel(node: Node) {
+	addLabel(node: Node, options: { showNodeName: boolean; showNodeMetric: boolean }) {
 		const state = this.storeService.getState()
 		if (node.attributes?.[state.dynamicSettings.heightMetric]) {
 			const x = node.x0 - state.treeMap.mapSize
@@ -42,7 +48,20 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 			const labelY = y + node.height
 			const labelZ = z + node.length / 2
 
-			const label = this.makeText(`${node.name}: ${node.attributes[state.dynamicSettings.heightMetric]}`, 30)
+			let labelText = ""
+
+			if (options.showNodeName) {
+				labelText = `${node.name}`
+			}
+			if (options.showNodeMetric) {
+				if (labelText !== "") {
+					labelText += "\n"
+				}
+				labelText += `${node.attributes[state.dynamicSettings.heightMetric]} ${state.dynamicSettings.heightMetric}`
+			}
+
+			const label = this.makeText(labelText, 30)
+
 			label.sprite.position.set(labelX, labelY + 60 + label.heightValue / 2, labelZ)
 			label.line = this.makeLine(labelX, labelY, labelZ)
 
@@ -56,9 +75,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	clearLabels() {
 		this.labels = []
-		while (this.threeSceneService.labels.children.length > 0) {
-			this.threeSceneService.labels.children.pop()
-		}
+		// Reset the children
+		this.threeSceneService.labels.children.length = 0
 	}
 
 	scale() {
@@ -86,7 +104,7 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 	onCameraChanged() {
 		for (const label of this.labels) {
-			this.setLabelSize(label.sprite)
+			this.setLabelSize(label.sprite, label.sprite.material.map.image.width, label)
 		}
 	}
 
@@ -97,26 +115,30 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.font = `${fontsize}px Helvetica Neue`
 
 		const margin = 20
+		const multiLineContext = message.split("\n")
 
 		// setting canvas width/height before ctx draw, else canvas is empty
 		canvas.width = context.measureText(message).width + margin
-		canvas.height = fontsize + margin
+		canvas.height = margin + fontsize * multiLineContext.length
 
 		// bg
-		context.fillStyle = "rgba(255,255,255,1)"
-		context.strokeStyle = ColorConverter.convertHexToRgba(this.storeService.getState().appSettings.mapColors.angularGreen)
+		context.font = `${fontsize}px Helvetica Neue`
+		context.fillStyle = this.LABEL_COLOR_RGBA
 		context.lineJoin = "round"
 		context.lineCap = "round"
 		context.lineWidth = 5
-		context.fillRect(0, 0, canvas.width, canvas.height)
-		context.strokeRect(0, 0, canvas.width, canvas.height)
+
+		this.drawRectangleWithRoundedCorners(context, 0, 0, canvas.width, canvas.height, this.LABEL_CORNER_RADIUS)
 
 		// after setting the canvas width/height we have to re-set font to apply!?! looks like ctx reset
-		context.font = `${fontsize}px Helvetica Neue`
 		context.fillStyle = "rgba(0,0,0,1)"
 		context.textAlign = "center"
 		context.textBaseline = "middle"
-		context.fillText(message, canvas.width / 2, canvas.height / 2)
+
+		//fillText() cannot create multi-line texts, we call it multiple times with different offsets to create a multi-line label
+		for (const [i, element] of multiLineContext.entries()) {
+			context.fillText(element, canvas.width / 2, (canvas.height * (i + 1)) / (multiLineContext.length + 1))
+		}
 
 		const texture = new Texture(canvas)
 		texture.minFilter = LinearFilter // NearestFilter;
@@ -124,24 +146,48 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 
 		const spriteMaterial = new SpriteMaterial({ map: texture })
 		const sprite = new Sprite(spriteMaterial)
-		this.setLabelSize(sprite, canvas.width)
+		this.lineCount = multiLineContext.length
+		this.setLabelSize(sprite, canvas.width, null)
 
 		return {
 			sprite,
 			heightValue: canvas.height,
-			line: null
+			line: null,
+			lineCount: multiLineContext.length
 		}
 	}
 
-	private setLabelSize(sprite: Sprite, labelWidth: number = sprite.material.map.image.width) {
+	private drawRectangleWithRoundedCorners(context, x, y, width, height, radius) {
+		if (width < 2 * radius) radius = width / 2
+		if (height < 2 * radius) radius = height / 2
+		context.beginPath()
+
+		context.moveTo(x + radius, y)
+		context.arcTo(x + width, y, x + width, y + height, radius)
+		context.arcTo(x + width, y + height, x, y + height, radius)
+		context.arcTo(x, y + height, x, y, radius)
+		context.arcTo(x, y, x + width, y, radius)
+
+		context.closePath()
+		context.fill()
+	}
+
+	private setLabelSize(sprite: Sprite, labelWidth: number = sprite.material.map.image.width, label: InternalLabel) {
 		const mapCenter = new Box3().setFromObject(this.threeSceneService.mapGeometry).getBoundingSphere(new Sphere()).center
 		const distance = this.threeCameraService.camera.position.distanceTo(mapCenter)
-		sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
+		if (label !== null) {
+			this.lineCount = label.lineCount
+		}
+		if (this.lineCount > 1) {
+			sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / 25, 1)
+		} else {
+			sprite.scale.set((distance / this.LABEL_WIDTH_DIVISOR) * labelWidth, distance / this.LABEL_HEIGHT_DIVISOR, 1)
+		}
 	}
 
 	private makeLine(x: number, y: number, z: number) {
 		const material = new LineBasicMaterial({
-			color: this.storeService.getState().appSettings.mapColors.angularGreen,
+			color: this.LABEL_COLOR_RGB,
 			linewidth: 2
 		})
 

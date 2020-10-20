@@ -39,6 +39,10 @@ export class RibbonBarController implements PanelSelectionSubscriber, Experiment
 		this._viewModel.experimentalFeaturesEnabled = experimentalFeaturesEnabled
 	}
 
+	onClick() {
+		this.codeChartaMouseEventService.closeComponentsExceptCurrent()
+	}
+
 	toggle(panelSelection: PanelSelection) {
 		$(document.activeElement).blur()
 

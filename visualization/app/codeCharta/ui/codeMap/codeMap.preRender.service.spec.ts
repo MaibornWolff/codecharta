@@ -7,7 +7,6 @@ import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { FILE_STATES, STATE, TEST_DELTA_MAP_B, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { CodeMapPreRenderService } from "./codeMap.preRender.service"
 import { NodeDecorator } from "../../util/nodeDecorator"
-import _ from "lodash"
 import { StoreService } from "../../state/store.service"
 import { ScalingService } from "../../state/store/appSettings/scaling/scaling.service"
 import { setDynamicSettings } from "../../state/store/dynamicSettings/dynamicSettings.actions"
@@ -15,7 +14,7 @@ import { ScalingActions } from "../../state/store/appSettings/scaling/scaling.ac
 import { IsLoadingMapActions } from "../../state/store/appSettings/isLoadingMap/isLoadingMap.actions"
 import { addFile, resetFiles, setMultiple, setSingleByName } from "../../state/store/files/files.actions"
 import { addBlacklistItem, BlacklistActions, setBlacklist } from "../../state/store/fileSettings/blacklist/blacklist.actions"
-import { hierarchy } from "d3"
+import { hierarchy } from "d3-hierarchy"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { MetricDataService } from "../../state/store/metricData/metricData.service"
@@ -56,7 +55,7 @@ describe("codeMapPreRenderService", () => {
 
 		fileMeta = clone(FILE_STATES[0].file.fileMeta)
 		map = clone(TEST_FILE_WITH_PATHS.map)
-		map.children[1].children = _.slice(map.children[1].children, 0, 2)
+		map.children[1].children = map.children[1].children.slice(0, 2)
 
 		const ccFile: CCFile = clone(TEST_DELTA_MAP_B)
 
@@ -107,19 +106,15 @@ describe("codeMapPreRenderService", () => {
 	}
 
 	function isIdUnique() {
-		let isIdUnique = true
 		const idBuildingSet: Map<number, string> = new Map()
 
-		hierarchy(codeMapPreRenderService.getRenderMap())
-			.descendants()
-			.forEach(node => {
-				if (idBuildingSet.has(node.data.id)) {
-					isIdUnique = false
-				} else {
-					idBuildingSet.set(node.data.id, node.data.path)
-				}
-			})
-		return isIdUnique
+		for (const node of hierarchy(codeMapPreRenderService.getRenderMap())) {
+			if (idBuildingSet.has(node.data.id)) {
+				return false
+			}
+			idBuildingSet.set(node.data.id, node.data.path)
+		}
+		return true
 	}
 
 	describe("constructor", () => {

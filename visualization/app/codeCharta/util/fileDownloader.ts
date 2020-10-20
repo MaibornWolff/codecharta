@@ -67,17 +67,17 @@ export class FileDownloader {
 
 	private static undecorateMap(map: CodeMapNode) {
 		const copy = clone(map)
-		hierarchy(copy).each(node => {
-			delete node.data.isExcluded
-			delete node.data.isFlattened
-			delete node.data.edgeAttributes
-			delete node.data.path
-			if (node.data.type === NodeType.FOLDER) {
-				node.data.attributes = {}
+		for (const { data } of hierarchy(copy)) {
+			delete data.isExcluded
+			delete data.isFlattened
+			delete data.edgeAttributes
+			delete data.path
+			if (data.type === NodeType.FOLDER) {
+				data.attributes = {}
 			} else {
-				delete node.data.attributes[NodeMetricDataService.UNARY_METRIC]
+				delete data.attributes[NodeMetricDataService.UNARY_METRIC]
 			}
-		})
+		}
 		return copy
 	}
 

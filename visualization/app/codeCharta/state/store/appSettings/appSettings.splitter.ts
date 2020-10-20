@@ -2,6 +2,8 @@ import {AppSettings, CCAction, MapColors, RecursivePartial} from "../../../codeC
 import {Vector3} from "three"
 
 // Plop: Append action splitter import here
+import {splitShowMetricLabelNodeNameAction} from "./showMetricLabelNodeName/showMetricLabelNodeName.splitter"
+import {splitShowMetricLabelNameValueAction} from "./showMetricLabelNameValue/showMetricLabelNameValue.splitter"
 import {splitPanelSelectionAction} from "./panelSelection/panelSelection.splitter"
 import {splitCameraTargetAction} from "./cameraTarget/cameraTarget.splitter"
 import {splitIsAttributeSideBarVisibleAction} from "./isAttributeSideBarVisible/isAttributeSideBarVisible.splitter"
@@ -25,12 +27,20 @@ import {splitEdgeHeightAction} from "./edgeHeight/edgeHeight.splitter"
 import {splitAmountOfEdgePreviewsAction} from "./amountOfEdgePreviews/amountOfEdgePreviews.splitter"
 import {splitAmountOfTopLabelsAction} from "./amountOfTopLabels/amountOfTopLabels.splitter"
 import {splitIsPresentationModeAction} from "./isPresentationMode/isPresentationMode.splitter"
-import {splitExperimentalFeaturesEnabledAction} from "./enableExperimentalFeatures/experimentalFeaturesEnabled.splitter";
+import {splitExperimentalFeaturesEnabledAction} from "./enableExperimentalFeatures/experimentalFeaturesEnabled.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
     const actions: CCAction[] = []
 
     // Plop: Append action split here
+    if (payload.showMetricLabelNodeName !== undefined) {
+        actions.push(splitShowMetricLabelNodeNameAction(payload.showMetricLabelNodeName))
+    }
+
+    if (payload.showMetricLabelNameValue !== undefined) {
+        actions.push(splitShowMetricLabelNameValueAction(payload.showMetricLabelNameValue))
+    }
+
     if (payload.panelSelection !== undefined) {
         actions.push(splitPanelSelectionAction(payload.panelSelection))
     }

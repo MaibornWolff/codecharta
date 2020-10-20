@@ -15,8 +15,9 @@ import { setState } from "../../state/store/state.actions"
 import { setEdges } from "../../state/store/fileSettings/edges/edges.actions"
 import { unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { setNodeMetricData } from "../../state/store/metricData/nodeMetricData/nodeMetricData.actions"
-import { clone } from "../../util/clone"
-import _ from "lodash"
+import { setShowMetricLabelNodeName } from "../../state/store/appSettings/showMetricLabelNodeName/showMetricLabelNodeName.actions"
+import { setShowMetricLabelNameValue } from "../../state/store/appSettings/showMetricLabelNameValue/showMetricLabelNameValue.actions"
+import { klona } from "klona"
 
 describe("codeMapRenderService", () => {
 	let storeService: StoreService
@@ -44,8 +45,8 @@ describe("codeMapRenderService", () => {
 		codeMapLabelService = getService<CodeMapLabelService>("codeMapLabelService")
 		codeMapArrowService = getService<CodeMapArrowService>("codeMapArrowService")
 
-		state = _.cloneDeep(STATE)
-		map = clone(TEST_FILE_WITH_PATHS.map)
+		state = klona(STATE)
+		map = klona(TEST_FILE_WITH_PATHS.map)
 		NodeDecorator.decorateMap(map, { nodeMetricData: METRIC_DATA, edgeMetricData: [] }, [])
 		NodeDecorator.decorateParentNodesWithAggregatedAttributes(map, false, DEFAULT_STATE.fileSettings.attributeTypes)
 		storeService.dispatch(setState(state))
@@ -151,6 +152,15 @@ describe("codeMapRenderService", () => {
 
 			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(2)
 		})
+
+		it("should not generate labels when showMetricLabelNodeName and showMetricLabelNameValue are both false", () => {
+			storeService.dispatch(setShowMetricLabelNodeName(false))
+			storeService.dispatch(setShowMetricLabelNameValue(false))
+
+			codeMapRenderService["setLabels"](sortedNodes)
+
+			expect(codeMapLabelService.addLabel).toHaveBeenCalledTimes(0)
+		})
 	})
 
 	describe("setArrows", () => {
@@ -173,7 +183,7 @@ describe("codeMapRenderService", () => {
 
 			codeMapRenderService["setArrows"](sortedNodes)
 
-			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalledWith(sortedNodes, storeService.getState().fileSettings.edges)
+			expect(codeMapArrowService["addEdgePreview"]).toHaveBeenCalledWith(sortedNodes)
 		})
 	})
 })
