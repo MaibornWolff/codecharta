@@ -1,5 +1,5 @@
 ribbon-bar-component {
-	$heightExpanded: 280;
+	$heightExpanded: 195;
 	$heightCollapsed: 38;
 	$border: 1px solid #cdcdcd;
 
@@ -154,5 +154,13 @@ ribbon-bar-component {
 	md-input-container {
 		padding: 0;
 		margin: 0;
+	}
+
+	#height-metric-card.expanded {
+		height: 295px;
+	}
+
+	#area-metric-card.expanded {
+		height: 155px;
 	}
 }
