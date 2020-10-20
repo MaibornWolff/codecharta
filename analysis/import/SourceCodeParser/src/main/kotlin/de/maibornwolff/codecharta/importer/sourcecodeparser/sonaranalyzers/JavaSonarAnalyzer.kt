@@ -4,6 +4,8 @@ import com.sonar.sslr.api.RecognitionException
 import de.maibornwolff.codecharta.importer.sourcecodeparser.NullFileLinesContextFactory
 import de.maibornwolff.codecharta.importer.sourcecodeparser.metrics.ProjectMetrics
 import de.maibornwolff.codecharta.importer.sourcecodeparser.visitors.MaxNestingLevelVisitor
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -61,6 +63,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
     private var totalFiles = 0
     private var analyzedFiles = 0
     private val originalOut = System.out
+    private val parsingUnit = ParsingUnit.Files
+    private val progressTracker: ProgressTracker = ProgressTracker()
 
     init {
         if (searchIssues) {
@@ -242,13 +246,8 @@ class JavaSonarAnalyzer(verbose: Boolean = false, searchIssues: Boolean = true) 
 
     private fun printProgressBar(fileName: String) {
         analyzedFiles += 1
-        val percentage = analyzedFiles.toFloat() / totalFiles * 100
-        val roundedPercentage = String.format("%.1f", percentage)
         val currentFile = if (fileName.length > MAX_FILE_NAME_PRINT_LENGTH) ".." + fileName.takeLast(MAX_FILE_NAME_PRINT_LENGTH) else fileName
-        val message = "\r Analyzing .java files... $roundedPercentage% ($currentFile)"
-
-        System.setOut(originalOut)
-        System.err.print(message)
+        progressTracker.updateProgress(totalFiles.toLong(), analyzedFiles.toLong(), parsingUnit.name, currentFile)
 
         if (!verbose) System.setOut(PrintStream(ByteArrayOutputStream()))
     }

@@ -17,6 +17,72 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.60.1] - 2020-10-20
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Issue with first start without an internet connection not working#1266
+-   Issue with ribbon bar sizes for opened cards #1035
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.60.0] - 2020-10-16
+
+### Added 🚀
+
+-   Parsing feedback with progressbar and probable ETA for parsers and SonarImporter #847
+-   Mark node names and make the names clickable for nodes that have a link to them #1313
+-   Indicate the metric name next to a shown value in a new line on labels #1035
+-   Checkboxes to display metric names and values and to display node names on labels #1035
+-   Mark node names and make the names clickable for nodes that have a link to them #1313
+
+### Changed
+
+-   Label design #1035
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   First start without an internet connection of standalone not working #1266
+-   Comparing a map in delta mode shows the correct differences
+-   This mainly applies to maps compared with itself while it also fixes some other minor miscalculations
+-   File extensions detection is improved
+-   Zooming in and out the map will now close the node context menu #1324
+    -   Improved and simplified event handling in NodeContextMenu component
+
+### Chore 👨‍💻 👩‍💻
+
+-   Improved performance of multiple operations (e.g., delta mode).
+
+## [1.59.0] - 2020-10-09
+
+### Added 🚀
+
+-   New EXPERIMENTAL SCMLogParser version
+-   Improved performance around 300% when parsing CodeCharta
+-   Improved memory usage
+-   Fixed issue with old parser creating incorrect nodes in CodeCharta #871
+-   ATTENTION: the parser is experimental, therefore some potential issues might remain, e.g. potentially an unhandled edge case when parsing node
+-   To use the new parser a reversed git log is needed, as well as a git file list, refer to `ccsh scmlogparserv2 -h` for additional information
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Color-Metric slider is set and activated in the map accordingly to the released sliderbutton #1319
+-   Deselcting a building will instantly dehighlight the buildings which were connected through edges #890
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.58.1] - 2020-10-02
 
 ### Added 🚀

@@ -4,6 +4,8 @@ import de.maibornwolff.codecharta.importer.scmlogparser.input.Commit
 import de.maibornwolff.codecharta.importer.scmlogparser.input.Modification
 import de.maibornwolff.codecharta.importer.scmlogparser.input.VersionControlledFile
 import de.maibornwolff.codecharta.importer.scmlogparser.input.metrics.MetricsFactory
+import de.maibornwolff.codecharta.progresstracker.ParsingUnit
+import de.maibornwolff.codecharta.progresstracker.ProgressTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -13,14 +15,25 @@ import java.util.stream.Stream
 /**
  * Parses log lines and generates VersionControlledFiles from them using specific parserStrategy and metricsFactory
  */
-class LogLineParser(private val parserStrategy: LogParserStrategy, private val metricsFactory: MetricsFactory, private val silent: Boolean = false) {
+class LogLineParser(
+    private val parserStrategy: LogParserStrategy,
+    private val metricsFactory: MetricsFactory,
+    private val silent: Boolean = false,
+    private val logSizeInByte: Long = 0
+) {
 
-    private var numberOfCommitsParsed = 0
+    private var currentBytesParsed = 0L
+    private val progressTracker: ProgressTracker = ProgressTracker()
+    private val parsingUnit = ParsingUnit.Byte
 
     fun parse(logLines: Stream<String>): List<VersionControlledFile> {
-        return logLines.collect(parserStrategy.createLogLineCollector())
+        val parsedFilesOfCommit = logLines.collect(parserStrategy.createLogLineCollector())
             .map { this.parseCommit(it) }.filter { !it.isEmpty }
             .collect(CommitCollector.create(metricsFactory))
+
+        progressTracker.updateProgress(logSizeInByte, logSizeInByte, parsingUnit.name)
+
+        return parsedFilesOfCommit
     }
 
     internal fun parseCommit(commitLines: List<String>): Commit {
@@ -37,16 +50,15 @@ class LogLineParser(private val parserStrategy: LogParserStrategy, private val m
                 }
             }
 
-            if (!silent) showProgress(commitDate)
+            commitLines.forEach {
+                currentBytesParsed += it.length
+            }
+
+            if (!silent) progressTracker.updateProgress(logSizeInByte, currentBytesParsed, parsingUnit.name)
             Commit(author, modifications, commitDate)
         } catch (e: NoSuchElementException) {
             System.err.println("Skipped commit with invalid syntax ($commitLines)")
             Commit("", listOf(), OffsetDateTime.now())
         }
-    }
-
-    private fun showProgress(date: OffsetDateTime) {
-        System.err.print("\r$numberOfCommitsParsed commits parsed. (Earliest commit from $date)       ")
-        numberOfCommitsParsed++
     }
 }
