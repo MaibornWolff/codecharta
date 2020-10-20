@@ -1,8 +1,9 @@
 import {CustomViewHelper} from "./customViewHelper";
-import {CustomView} from "../model/customView/customView.api.model";
+import {CustomView, CustomViewMapSelectionMode} from "../model/customView/customView.api.model";
 import {CustomViewItem} from "../ui/customViews/customViews.component";
 import {CustomViewBuilder} from "./customViewBuilder";
 import {State} from "../codeCharta.model";
+import {CustomViewFileStateConnector} from "../ui/customViews/customViewFileStateConnector";
 
 describe("CustomViewHelper", () => {
     describe("addCustomView", () => {
@@ -20,35 +21,113 @@ describe("CustomViewHelper", () => {
         })
     })
 
-    describe("getCustomViewsAmountByMap", () => {
+    describe("getCustomViewsAmountByMapAndMode", () => {
         it("should count CustomViews for a specific map name", () => {
-            const customViewStub1 = {name: "stubbedView1", mapName: "testy.cc.json", stateSettings: {}} as CustomView
-            const customViewStub2 = {name: "stubbedView2", mapName: "testy.cc.json", stateSettings: {}} as CustomView
-            const customViewStub3 = {name: "stubbedView3", mapName: "another.cc.json", stateSettings: {}} as CustomView
+            const customViewStub1 = {name: "stubbedView1", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMap: "testy.cc.json", mapChecksum: "123", customViewVersion: "1", stateSettings: {}} as CustomView
+            const customViewStub2 = {name: "stubbedView2", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMap: "testy.cc.json", mapChecksum: "123", customViewVersion: "1", stateSettings: {}} as CustomView
+            const customViewStub3 = {name: "stubbedView3", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMap: "another.cc.json", mapChecksum: "123", customViewVersion: "1", stateSettings: {}} as CustomView
+            const customViewStub4 = {name: "stubbedView4", mapSelectionMode: CustomViewMapSelectionMode.DELTA, assignedMap: "another.cc.json", mapChecksum: "123", customViewVersion: "1", stateSettings: {}} as CustomView
 
             CustomViewHelper.addCustomView(customViewStub1)
             CustomViewHelper.addCustomView(customViewStub2)
             CustomViewHelper.addCustomView(customViewStub3)
+            CustomViewHelper.addCustomView(customViewStub4)
 
-            expect(CustomViewHelper.getCustomViewsAmountByMap(customViewStub1.mapName)).toEqual(2)
-            expect(CustomViewHelper.getCustomViewsAmountByMap(customViewStub3.mapName)).toEqual(1)
+            expect(CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub1.assignedMap, CustomViewMapSelectionMode.SINGLE)).toBe(2)
+            expect(CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub3.assignedMap, CustomViewMapSelectionMode.SINGLE)).toBe(1)
+            expect(CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub4.assignedMap, CustomViewMapSelectionMode.SINGLE)).toBe(1)
+            expect(CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub4.assignedMap, CustomViewMapSelectionMode.DELTA)).toBe(1)
         })
     })
 
     describe("getViewNameSuggestion", () => {
-        it("should return the right CustomView name suggestion based on already stored CustomViews", () => {
-            const customViewStub1 = {name: "stubbedView1", mapName: "testy.cc.json", stateSettings: {}} as CustomView
+        it("should return the right CustomView name suggestion for SINGLE mode", () => {
+            const customViewStub1 = {name: "stubbedView1", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMap: "testy", mapChecksum: "123", customViewVersion: "1", stateSettings: {}} as CustomView
+
+            jest.mock('../ui/customViews/customViewFileStateConnector')
+
+            const getJointMapNameMock = jest.fn()
+            getJointMapNameMock
+                .mockReturnValue(customViewStub1.assignedMap)
+
+            const getChecksumOfAssignedMapsMock = jest.fn()
+            getChecksumOfAssignedMapsMock
+                .mockReturnValue(customViewStub1.mapChecksum)
+
+            CustomViewFileStateConnector.prototype.getJointMapName = getJointMapNameMock
+            CustomViewFileStateConnector.prototype.getChecksumOfAssignedMaps = getChecksumOfAssignedMapsMock
+            CustomViewFileStateConnector.prototype.getMapSelectionMode = jest.fn().mockReturnValue(CustomViewMapSelectionMode.SINGLE)
+            CustomViewFileStateConnector.prototype.isMapSelectionModeSingle = jest.fn().mockReturnValue(true)
 
             // Reset customViews in CustomViewHelper
             CustomViewHelper['customViews'].clear()
-            expect(CustomViewHelper.getViewNameSuggestionByMapName(customViewStub1.mapName)).toBe('testy #1')
+            expect(CustomViewHelper.getViewNameSuggestionByFileState(CustomViewFileStateConnector.prototype)).toBe('testy #1')
 
             CustomViewHelper['customViews'].set(customViewStub1.name, customViewStub1)
-            expect(CustomViewHelper.getViewNameSuggestionByMapName(customViewStub1.mapName)).toBe('testy #2')
+            expect(CustomViewHelper.getViewNameSuggestionByFileState(CustomViewFileStateConnector.prototype)).toBe('testy #2')
+        })
+
+        it("should return the right CustomView name suggestion for MULTIPLE mode", () => {
+            const customViewStub1 = {name: "stubbedView1", mapSelectionMode: CustomViewMapSelectionMode.MULTIPLE, assignedMap: "testy1 testy2", mapChecksum: "123;1234", customViewVersion: "1", stateSettings: {}} as CustomView
+
+            jest.mock('../ui/customViews/customViewFileStateConnector')
+
+            const getJointMapNameMock = jest.fn()
+            getJointMapNameMock
+                .mockReturnValue(customViewStub1.assignedMap)
+
+            const getChecksumOfAssignedMapsMock = jest.fn()
+            getChecksumOfAssignedMapsMock
+                .mockReturnValue(customViewStub1.mapChecksum)
+
+            CustomViewFileStateConnector.prototype.getJointMapName = getJointMapNameMock
+            CustomViewFileStateConnector.prototype.getChecksumOfAssignedMaps = getChecksumOfAssignedMapsMock
+            CustomViewFileStateConnector.prototype.getMapSelectionMode = jest.fn().mockReturnValue(CustomViewMapSelectionMode.MULTIPLE)
+            CustomViewFileStateConnector.prototype.isMapSelectionModeSingle = jest.fn().mockReturnValue(false)
+            CustomViewFileStateConnector.prototype.isMapSelectionModeDelta = jest.fn().mockReturnValue(false)
+
+            // Reset customViews in CustomViewHelper
+            CustomViewHelper['customViews'].clear()
+            expect(CustomViewHelper.getViewNameSuggestionByFileState(CustomViewFileStateConnector.prototype)).toBe('testy1 testy2 (multiple) #1')
+
+            CustomViewHelper['customViews'].set(customViewStub1.name, customViewStub1)
+            expect(CustomViewHelper.getViewNameSuggestionByFileState(CustomViewFileStateConnector.prototype)).toBe('testy1 testy2 (multiple) #2')
+        })
+
+        it("should return the right CustomView name suggestion for DELTA mode", () => {
+            const customViewStub1 = {name: "stubbedView1", mapSelectionMode: CustomViewMapSelectionMode.DELTA, assignedMap: "testy1 testy2", mapChecksum: "123;1234", customViewVersion: "1", stateSettings: {}} as CustomView
+
+            jest.mock('../ui/customViews/customViewFileStateConnector')
+
+            const getJointMapNameMock = jest.fn()
+            getJointMapNameMock
+                .mockReturnValue(customViewStub1.assignedMap)
+
+            const getChecksumOfAssignedMapsMock = jest.fn()
+            getChecksumOfAssignedMapsMock
+                .mockReturnValue(customViewStub1.mapChecksum)
+
+            CustomViewFileStateConnector.prototype.getJointMapName = getJointMapNameMock
+            CustomViewFileStateConnector.prototype.getChecksumOfAssignedMaps = getChecksumOfAssignedMapsMock
+            CustomViewFileStateConnector.prototype.getMapSelectionMode = jest.fn().mockReturnValue(CustomViewMapSelectionMode.DELTA)
+            CustomViewFileStateConnector.prototype.isMapSelectionModeDelta = jest.fn().mockReturnValue(true)
+
+            // Reset customViews in CustomViewHelper
+            CustomViewHelper['customViews'].clear()
+            expect(CustomViewHelper.getViewNameSuggestionByFileState(CustomViewFileStateConnector.prototype)).toBe('testy1 testy2 (delta) #1')
+
+            CustomViewHelper['customViews'].set(customViewStub1.name, customViewStub1)
+            expect(CustomViewHelper.getViewNameSuggestionByFileState(CustomViewFileStateConnector.prototype)).toBe('testy1 testy2 (delta) #2')
         })
 
         it("should return empty name suggestion for empty mapName", () => {
-            expect(CustomViewHelper.getViewNameSuggestionByMapName("")).toBe('')
+            jest.mock('../ui/customViews/customViewFileStateConnector')
+
+            const getJointMapNameMock = jest.fn()
+            getJointMapNameMock.mockReturnValueOnce("")
+            CustomViewFileStateConnector.prototype.getJointMapName = getJointMapNameMock
+
+            expect(CustomViewHelper.getViewNameSuggestionByFileState(CustomViewFileStateConnector.prototype)).toBe('')
         })
     })
 
@@ -56,7 +135,7 @@ describe("CustomViewHelper", () => {
         it("should delete CustomView from Local Storage", () => {
             CustomViewHelper["setCustomViewsToLocalStorage"] = jest.fn()
 
-            const customViewStub1 = {name: "stubbedView1", mapName: "testy.cc.json", stateSettings: {}} as CustomView
+            const customViewStub1 = {name: "stubbedView1", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMap: "testy.cc.json", mapChecksum: "123", customViewVersion: "1", stateSettings: {}} as CustomView
 
             CustomViewHelper.addCustomView(customViewStub1)
             expect(CustomViewHelper.hasCustomView(customViewStub1.name)).toBeTruthy()
@@ -73,10 +152,10 @@ describe("CustomViewHelper", () => {
         it("should put applicable CustomViews at the beginning of the list (sorted by name)", () => {
             const customViewItemsDropDown: CustomViewItem[] = []
 
-            customViewItemsDropDown.push({name: "customViewName1",mapName: "customViewMap.cc.json",isApplicable: false})
-            customViewItemsDropDown.push({name: "customViewName2",mapName: "customViewMap.cc.json",isApplicable: true})
-            customViewItemsDropDown.push({name: "customViewName3",mapName: "customViewMap.cc.json",isApplicable: true})
-            customViewItemsDropDown.push({name: "customViewName4",mapName: "customViewMap.cc.json",isApplicable: false})
+            customViewItemsDropDown.push({name: "customViewName1",mapName: "customViewMap.cc.json", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, isApplicable: false})
+            customViewItemsDropDown.push({name: "customViewName2",mapName: "customViewMap.cc.json", mapSelectionMode: CustomViewMapSelectionMode.SINGLE,isApplicable: true})
+            customViewItemsDropDown.push({name: "customViewName3",mapName: "customViewMap.cc.json", mapSelectionMode: CustomViewMapSelectionMode.SINGLE,isApplicable: true})
+            customViewItemsDropDown.push({name: "customViewName4",mapName: "customViewMap.cc.json", mapSelectionMode: CustomViewMapSelectionMode.SINGLE,isApplicable: false})
 
             customViewItemsDropDown.sort(CustomViewHelper.sortCustomViewDropDownList())
 
@@ -88,36 +167,88 @@ describe("CustomViewHelper", () => {
     })
 
     describe("getCustomViewItems", () => {
-        it("should set applicable-flags properly", () => {
-            const customViewStub1 = {name: "view1", mapName: "mocky.cc.json", stateSettings: {}} as CustomView
-            const customViewStub2 = {name: "view2", mapName: "another.mocky.cc.json", stateSettings: {}} as CustomView
+        it("should set applicable-flags to true, if assignedMap name and checksums are matching", () => {
+            const customViewStub1 = {name: "view1", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMap: "mocky.cc.json", mapChecksum: "123", customViewVersion: "1", stateSettings: {}} as CustomView
+            const customViewStub2 = {name: "view2", mapSelectionMode: CustomViewMapSelectionMode.DELTA, assignedMap: "another.cc.json delta.cc.json", mapChecksum: "1234", customViewVersion: "1", stateSettings: {}} as CustomView
 
+            CustomViewHelper["customViews"].clear()
             CustomViewHelper.addCustomView(customViewStub1)
             CustomViewHelper.addCustomView(customViewStub2)
 
-            const customViewItems = CustomViewHelper.getCustomViewItems("mocky.cc.json")
+            jest.mock('../ui/customViews/customViewFileStateConnector')
+
+            const getJointMapNameMock = jest.fn()
+            getJointMapNameMock
+                .mockReturnValueOnce(customViewStub1.assignedMap)
+                .mockReturnValueOnce(customViewStub2.assignedMap)
+
+            const getChecksumOfAssignedMapsMock = jest.fn()
+            getChecksumOfAssignedMapsMock
+                .mockReturnValueOnce(customViewStub1.mapChecksum)
+                .mockReturnValueOnce(customViewStub2.mapChecksum)
+
+            const getMapSelectionModeMock = jest.fn()
+            getMapSelectionModeMock
+                .mockReturnValueOnce(CustomViewMapSelectionMode.SINGLE)
+                .mockReturnValueOnce(CustomViewMapSelectionMode.DELTA)
+
+            CustomViewFileStateConnector.prototype.getJointMapName = getJointMapNameMock
+            CustomViewFileStateConnector.prototype.getChecksumOfAssignedMaps = getChecksumOfAssignedMapsMock
+            CustomViewFileStateConnector.prototype.getMapSelectionMode = getMapSelectionModeMock
+
+            const customViewItems = CustomViewHelper.getCustomViewItems(CustomViewFileStateConnector.prototype)
 
             expect(customViewItems[0].name).toBe("view1")
-            expect(customViewItems[0].isApplicable).toBeTruthy()
+            expect(customViewItems[0].isApplicable).toBe(true)
 
             expect(customViewItems[1].name).toBe("view2")
-            expect(customViewItems[1].isApplicable).toBeFalsy()
+            expect(customViewItems[1].isApplicable).toBe(true)
         })
 
-        it("should set all applicable-flags to true, if mapName is empty/missing", () => {
-            const customViewStub1 = {name: "view1", mapName: "mocky.cc.json", stateSettings: {}} as CustomView
-            const customViewStub2 = {name: "view2", mapName: "another.mocky.cc.json", stateSettings: {}} as CustomView
+        it("should set applicable-flags to false, if assignedMap name or checksums are not matching", () => {
+            const customViewStub1 = {name: "view1", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMap: "mocky.cc.json", mapChecksum: "123", customViewVersion: "1", stateSettings: {}} as CustomView
+            const customViewStub2 = {name: "view2", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMap: "another.mocky.cc.json", mapChecksum: "1234", customViewVersion: "1", stateSettings: {}} as CustomView
+            const customViewStub3 = {name: "view3", mapSelectionMode: CustomViewMapSelectionMode.DELTA, assignedMap: "another.cc.json delta.cc.json", mapChecksum: "1234;5678", customViewVersion: "1", stateSettings: {}} as CustomView
 
+            CustomViewHelper["customViews"].clear()
             CustomViewHelper.addCustomView(customViewStub1)
             CustomViewHelper.addCustomView(customViewStub2)
+            CustomViewHelper.addCustomView(customViewStub3)
 
-            const customViewItems = CustomViewHelper.getCustomViewItems("")
+            jest.mock('../ui/customViews/customViewFileStateConnector')
+
+            const getJointMapNameMock = jest.fn()
+            getJointMapNameMock
+                .mockReturnValueOnce(customViewStub1.assignedMap)
+                .mockReturnValueOnce("notMatchingAssignedMapName2")
+                .mockReturnValueOnce(customViewStub3.assignedMap)
+
+            const getChecksumOfAssignedMapsMock = jest.fn()
+            getChecksumOfAssignedMapsMock
+                .mockReturnValueOnce("notMatchingChecksum1")
+                .mockReturnValueOnce(customViewStub2.mapChecksum)
+                .mockReturnValueOnce(customViewStub3.mapChecksum)
+
+            const getMapSelectionModeMock = jest.fn()
+            getMapSelectionModeMock
+                .mockReturnValueOnce(CustomViewMapSelectionMode.SINGLE)
+                .mockReturnValueOnce(CustomViewMapSelectionMode.SINGLE)
+                .mockReturnValueOnce(CustomViewMapSelectionMode.SINGLE)
+
+            CustomViewFileStateConnector.prototype.getJointMapName = getJointMapNameMock
+            CustomViewFileStateConnector.prototype.getChecksumOfAssignedMaps = getChecksumOfAssignedMapsMock
+            CustomViewFileStateConnector.prototype.getMapSelectionMode = getMapSelectionModeMock
+
+            const customViewItems = CustomViewHelper.getCustomViewItems(CustomViewFileStateConnector.prototype)
 
             expect(customViewItems[0].name).toBe("view1")
-            expect(customViewItems[0].isApplicable).toBeTruthy()
+            expect(customViewItems[0].isApplicable).toBe(false)
 
             expect(customViewItems[1].name).toBe("view2")
-            expect(customViewItems[1].isApplicable).toBeTruthy()
+            expect(customViewItems[1].isApplicable).toBe(false)
+
+            expect(customViewItems[2].name).toBe("view3")
+            expect(customViewItems[2].isApplicable).toBe(false)
         })
     })
 

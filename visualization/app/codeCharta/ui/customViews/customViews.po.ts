@@ -8,11 +8,11 @@ export class CustomViewsPageObject {
     }
 
     async isCustomViewAddDialogOpen() {
-        return page.waitForSelector(".custom-view-dialog", { visible: true })
+        await page.waitForSelector(".custom-view-dialog", { visible: true })
     }
 
     async isCustomViewAddDialogClosed() {
-        return page.waitForSelector(".custom-view-dialog", { visible: false })
+        await page.waitForSelector(".custom-view-dialog", { visible: false })
     }
 
     async fillInCustomViewName() {

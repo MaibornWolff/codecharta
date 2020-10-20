@@ -49,7 +49,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
     describe("onFilesSelectionChanged", () => {
         it("event handler should register new name of selected map file", () => {
             dialogAddCustomViewSettings.onFilesSelectionChanged(FILE_STATES)
-            expect(dialogAddCustomViewSettings["nameOfSelectedMapFile"]).toBe('fileA')
+            expect(dialogAddCustomViewSettings["_viewModel"].customViewName).toBe('fileA #1')
         })
     })
 

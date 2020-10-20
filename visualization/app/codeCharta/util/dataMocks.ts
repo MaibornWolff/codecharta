@@ -20,18 +20,19 @@ import {
 	SortingOption,
 	State
 } from "../codeCharta.model"
-import { CodeMapBuilding } from "../ui/codeMap/rendering/codeMapBuilding"
-import { MetricDistribution } from "./fileExtensionCalculator"
-import { Box3, Vector3 } from "three"
-import { IRootScopeService } from "angular"
-import { hierarchy } from "d3"
-import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
-import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
-import { FileSelectionState, FileState } from "../model/files/files"
-import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
-import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import {CodeMapBuilding} from "../ui/codeMap/rendering/codeMapBuilding"
+import {MetricDistribution} from "./fileExtensionCalculator"
+import {Box3, Vector3} from "three"
+import {IRootScopeService} from "angular"
+import {hierarchy} from "d3"
+import {AddScenarioContent, ScenarioMetricType} from "../ui/dialog/dialog.addScenarioSettings.component"
+import {ScenarioItem} from "../ui/scenarioDropDown/scenarioDropDown.component"
+import {FileSelectionState, FileState} from "../model/files/files"
+import {APIVersions, ExportCCFile} from "../codeCharta.api.model"
+import {NodeMetricDataService} from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
 import {CustomViewItem} from "../ui/customViews/customViews.component";
+import {CustomViewMapSelectionMode} from "../model/customView/customView.api.model";
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -1417,16 +1418,19 @@ export const CUSTOM_VIEW_ITEMS: CustomViewItem[] = [
 	{
 		name: "SampleMap View #1",
 		mapName: "fileA",
+		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 		isApplicable: true
 	},
 	{
 		name: "AnotherMap View #1",
 		mapName: "fileB",
+		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 		isApplicable: false
 	},
 	{
 		name: "SampleMap View #2",
 		mapName: "fileA",
+		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 		isApplicable: true
 	}
 ]

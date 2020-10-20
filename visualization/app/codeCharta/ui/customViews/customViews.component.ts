@@ -7,13 +7,16 @@ import {setColorRange} from "../../state/store/dynamicSettings/colorRange/colorR
 import {ColorRange} from "../../codeCharta.model";
 import {ThreeOrbitControlsService} from "../codeMap/threeViewer/threeOrbitControlsService";
 import {setMargin} from "../../state/store/dynamicSettings/margin/margin.actions";
-import {FileSelectionState, FileState} from "../../model/files/files";
+import {FileState} from "../../model/files/files";
 import {FilesSelectionSubscriber, FilesService} from "../../state/store/files/files.service";
 import {IRootScopeService} from "angular";
+import {CustomViewFileStateConnector} from "./customViewFileStateConnector";
+import {CustomViewMapSelectionMode} from "../../model/customView/customView.api.model";
 
 export interface CustomViewItem {
     name: string
     mapName: string
+    mapSelectionMode: CustomViewMapSelectionMode
     isApplicable: boolean
 }
 
@@ -24,7 +27,7 @@ export class CustomViewsController implements FilesSelectionSubscriber {
         dropDownCustomViewItems: []
     }
 
-    private nameOfSelectedMapFile: string
+    private customViewFileStateConnector: CustomViewFileStateConnector
 
     constructor(
         private $rootScope: IRootScopeService,
@@ -36,13 +39,11 @@ export class CustomViewsController implements FilesSelectionSubscriber {
     }
 
     onFilesSelectionChanged(files: FileState[]) {
-        this.nameOfSelectedMapFile = files.find(
-            fileItem => fileItem.selectedAs === FileSelectionState.Single
-        ).file.fileMeta.fileName
+        this.customViewFileStateConnector = new CustomViewFileStateConnector(files)
     }
 
     loadCustomViews() {
-        this._viewModel.dropDownCustomViewItems = CustomViewHelper.getCustomViewItems(this.nameOfSelectedMapFile)
+        this._viewModel.dropDownCustomViewItems = CustomViewHelper.getCustomViewItems(this.customViewFileStateConnector)
         this._viewModel.dropDownCustomViewItems.sort(CustomViewHelper.sortCustomViewDropDownList())
     }
 
@@ -51,12 +52,25 @@ export class CustomViewsController implements FilesSelectionSubscriber {
     }
 
     applyCustomView(viewName: string) {
-       const customView = CustomViewHelper.getCustomViewSettings(viewName)
+        const customView = CustomViewHelper.getCustomViewSettings(viewName)
 
+        // TODO: Setting state from loaded CustomView not working at the moment
+        //  due to issues of the event architecture.
+
+        // Check if state properties differ
+        // Create new partial State (updates) for changed values
         this.storeService.dispatch(setState(customView.stateSettings))
+
+        // Should we fire another event "ResettingStateFinishedEvent"
+        // We could add a listener then to reset the camera
+
         this.storeService.dispatch(setColorRange(customView.stateSettings.dynamicSettings.colorRange as ColorRange))
         this.storeService.dispatch(setMargin(customView.stateSettings.dynamicSettings.margin))
+
+        // this can only be done, if all other state change events are finished
+        // this.threeCameraService.setPosition()
         this.threeOrbitControlsService.setControlTarget()
+
         //this.storeService.dispatch(setSearchedNodePaths(customView.stateSettings.dynamicSettings.searchedNodePaths as Set<string>))
     }
 

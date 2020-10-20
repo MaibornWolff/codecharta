@@ -21,7 +21,12 @@ describe("CustomViewsController", () => {
     let threeOrbitControlsService: ThreeOrbitControlsService
 
     function rebuildController() {
-        customViewsController = new CustomViewsController($rootScope, storeService, dialogService, threeOrbitControlsService)
+        customViewsController = new CustomViewsController(
+            $rootScope,
+            storeService,
+            dialogService,
+            threeOrbitControlsService
+        )
     }
 
     function restartSystem() {
@@ -74,7 +79,14 @@ describe("CustomViewsController", () => {
 
     describe("applyCustomView", () => {
         it("should call store.dispatch", () => {
-            const customViewStub = {stateSettings: {dynamicSettings: {margin: 1, colorRange: {from:1, to:2}}}} as CustomView
+            const customViewStub = {
+                stateSettings: {
+                    dynamicSettings: {
+                        margin: 1,
+                        colorRange: {from: 1, to: 2}
+                    }
+                }
+            } as CustomView
             CustomViewHelper.getCustomViewSettings = jest.fn().mockReturnValue(customViewStub)
             storeService.dispatch = jest.fn()
             threeOrbitControlsService.setControlTarget = jest.fn()

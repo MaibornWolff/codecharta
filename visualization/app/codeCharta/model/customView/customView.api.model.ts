@@ -1,9 +1,15 @@
 import {AppSettings, DynamicSettings, FileSettings, TreeMapSettings} from "../../codeCharta.model";
 
+export enum CustomViewMapSelectionMode {
+    SINGLE = "SINGLE",
+    MULTIPLE = "MULTIPLE",
+    DELTA = "DELTA"
+}
 export interface CustomView {
     name: string
-    mapName: string
-    mapHash: string
+    mapSelectionMode: CustomViewMapSelectionMode,
+    assignedMap: string
+    mapChecksum: string
     customViewVersion: string
 
     stateSettings: {

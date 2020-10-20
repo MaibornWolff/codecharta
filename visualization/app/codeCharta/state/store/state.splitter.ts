@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { CCAction } from "../../codeCharta.model"
-import { StateActions } from "./state.actions"
+import {StateActions} from "./state.actions"
 
 // Plop: Import sub-reducer action here
 import { MetricDataActions } from "./metricData/metricData.actions"

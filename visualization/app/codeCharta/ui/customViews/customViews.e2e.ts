@@ -14,20 +14,20 @@ describe("CustomViews", () => {
     it("FastAdding CustomView with already existing name will show a warning message", async () => {
         // Open
         await customViews.openCustomViewAddDialog()
-        expect(await customViews.isCustomViewAddDialogOpen()).toBeTruthy()
+        await customViews.isCustomViewAddDialogOpen()
 
         // Add
         await customViews.fillInCustomViewName()
         await customViews.submitAddDialog()
-        expect(await customViews.isCustomViewAddDialogClosed()).toBeTruthy()
+        await customViews.isCustomViewAddDialogClosed()
 
         // Open Again
         await customViews.openCustomViewAddDialog()
-        expect(await customViews.isCustomViewAddDialogOpen()).toBeTruthy()
+        await customViews.isCustomViewAddDialogOpen()
 
         // Enter existing name
         await customViews.fillInCustomViewName()
-        expect(await customViews.isOverrideWarningVisible()).toBeTruthy()
+        await customViews.isOverrideWarningVisible()
     })
 
 });
