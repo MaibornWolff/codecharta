@@ -12,6 +12,10 @@ import {FilesSelectionSubscriber, FilesService} from "../../state/store/files/fi
 import {IRootScopeService} from "angular";
 import {CustomViewFileStateConnector} from "./customViewFileStateConnector";
 import {CustomViewMapSelectionMode} from "../../model/customView/customView.api.model";
+import {ThreeCameraService} from "../codeMap/threeViewer/threeCameraService";
+import {setCamera} from "../../state/store/appSettings/camera/camera.actions";
+import {setCameraTarget} from "../../state/store/appSettings/cameraTarget/cameraTarget.actions";
+import {Vector3} from "three";
 
 export interface CustomViewItem {
     name: string
@@ -33,7 +37,8 @@ export class CustomViewsController implements FilesSelectionSubscriber {
         private $rootScope: IRootScopeService,
         private storeService: StoreService,
         private dialogService: DialogService,
-        private threeOrbitControlsService: ThreeOrbitControlsService
+        private threeOrbitControlsService: ThreeOrbitControlsService,
+        private threeCameraService: ThreeCameraService,
     ) {
         FilesService.subscribe(this.$rootScope, this)
     }
@@ -67,9 +72,15 @@ export class CustomViewsController implements FilesSelectionSubscriber {
         this.storeService.dispatch(setColorRange(customView.stateSettings.dynamicSettings.colorRange as ColorRange))
         this.storeService.dispatch(setMargin(customView.stateSettings.dynamicSettings.margin))
 
-        // this can only be done, if all other state change events are finished
-        // this.threeCameraService.setPosition()
-        this.threeOrbitControlsService.setControlTarget()
+        // TODO: remove this dirty timeout and set camera settings properly
+        // This timeout is a chance that CustomViews for a small map can be restored and applied completely (even the camera positions)
+        setTimeout( () => {
+            this.threeCameraService.setPosition()
+            this.threeOrbitControlsService.setControlTarget()
+
+            this.storeService.dispatch(setCamera(customView.stateSettings.appSettings.camera as Vector3))
+            this.storeService.dispatch(setCameraTarget(customView.stateSettings.appSettings.cameraTarget as Vector3))
+        }, 100 );
 
         //this.storeService.dispatch(setSearchedNodePaths(customView.stateSettings.dynamicSettings.searchedNodePaths as Set<string>))
     }
