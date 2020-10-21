@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Mouse cursor flickering #1170
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.60.1] - 2020-10-20
