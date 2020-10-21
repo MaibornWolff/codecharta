@@ -29,12 +29,10 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 	}
 
 	onSortingOptionChanged(sortingOption: SortingOption) {
-		let compareFunction: CompareFunction
-		if (sortingOption === SortingOption.NUMBER_OF_FILES) {
-			compareFunction = (a, b) => b.attributes[NodeMetricDataService.UNARY_METRIC] - a.attributes[NodeMetricDataService.UNARY_METRIC]
-		} else {
-			compareFunction = (a, b) => (b.name > a.name ? -1 : 1)
-		}
+		const compareFunction: CompareFunction =
+			sortingOption === SortingOption.NUMBER_OF_FILES ?
+				(a, b) => b.attributes[NodeMetricDataService.UNARY_METRIC] - a.attributes[NodeMetricDataService.UNARY_METRIC] :
+				(a, b) => (b.name > a.name ? -1 : 1);
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, KEEP_ORDER, compareFunction)
 	}
 
@@ -54,24 +52,24 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
 
-	private applySortOrderChange(node: CodeMapNode, reverse: boolean, compareFn?: CompareFunction) {
+	private applySortOrderChange(node: CodeMapNode, reverse: boolean, compareFunction?: CompareFunction) {
 		if (!node) {
 			return
 		}
-		for (let i = 0; i < node.children.length; i++) {
-			if (node.children[i].type === NodeType.FOLDER) {
-				node.children[i] = this.applySortOrderChange(node.children[i], reverse, compareFn)
+		for (let index = 0; index < node.children.length; index++) {
+			if (node.children[index].type === NodeType.FOLDER) {
+				node.children[index] = this.applySortOrderChange(node.children[index], reverse, compareFunction)
 			}
 		}
 		if (reverse) {
 			node.children.reverse()
 		} else {
-			node.children = this.groupFilesAndFolders(node, compareFn)
+			node.children = this.groupFilesAndFolders(node, compareFunction)
 		}
 		return node
 	}
 
-	private groupFilesAndFolders(node: CodeMapNode, compareFn: CompareFunction) {
+	private groupFilesAndFolders(node: CodeMapNode, compareFunction: CompareFunction) {
 		const folders: CodeMapNode[] = []
 		const files: CodeMapNode[] = []
 
@@ -85,12 +83,12 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 
 		// Reverse the sort order if required.
 		if (this.storeService.getState().appSettings.sortingOrderAscending) {
-			const actualComparator = compareFn
-			compareFn = (a, b) => -1 * actualComparator(a, b)
+			const actualComparator = compareFunction
+			compareFunction = (a, b) => -1 * actualComparator(a, b)
 		}
 
-		folders.sort(compareFn)
-		files.sort(compareFn)
+		folders.sort(compareFunction)
+		files.sort(compareFunction)
 
 		folders.push(...files)
 

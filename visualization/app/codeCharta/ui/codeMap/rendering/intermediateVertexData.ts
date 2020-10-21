@@ -21,18 +21,18 @@ export class IntermediateVertexData {
 		this.indices = new Array<number>()
 	}
 
-	addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIdx: number, delta: number) {
+	addVertex(pos: Vector3, normal: Vector3, uv: Vector2, color: string, subGeomIndex: number, delta: number) {
 		this.positions.push(pos)
 		this.normals.push(normal)
 		this.uvs.push(uv)
 		this.colors.push(color)
-		this.subGeometryIdx.push(subGeomIdx)
+		this.subGeometryIdx.push(subGeomIndex)
 		this.deltas.push(delta)
 
 		return this.positions.length - 1
 	}
 
-	addFace(i0: number, i1: number, i2: number) {
-		this.indices.push(i0, i1, i2)
+	addFace(index0: number, index1: number, index2: number) {
+		this.indices.push(index0, index1, index2)
 	}
 }

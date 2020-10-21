@@ -96,8 +96,8 @@ export class FileExtensionCalculator {
 
 	static hashCode(fileExtension: string) {
 		let hash = 0
-		for (let i = 0; i < fileExtension.length; i++) {
-			hash = fileExtension.charCodeAt(i) + ((hash << 5) - hash)
+		for (let index = 0; index < fileExtension.length; index++) {
+			hash = fileExtension.charCodeAt(index) + ((hash << 5) - hash)
 		}
 		return hash
 	}

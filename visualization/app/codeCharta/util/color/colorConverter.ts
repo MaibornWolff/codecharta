@@ -77,10 +77,10 @@ export class ColorConverter {
 		const diff = end.sub(start)
 		const stepsArray: string[] = []
 
-		for (let i = 0; i <= steps; i++) {
-			const stepDiff = diff.clone().multiplyScalar((1 / steps) * i)
+		for (let index = 0; index <= steps; index++) {
+			const stepDiff = diff.clone().multiplyScalar((1 / steps) * index)
 			const step = start.clone().add(stepDiff)
-			stepsArray[i] = this.convertColorToHex(step)
+			stepsArray[index] = this.convertColorToHex(step)
 		}
 		return stepsArray
 	}
