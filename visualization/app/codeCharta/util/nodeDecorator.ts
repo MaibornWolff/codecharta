@@ -73,7 +73,7 @@ export class NodeDecorator {
 				}
 			}
 
-			if (blacklist.length !== 0) {
+			if (blacklist.length > 0) {
 				const path = transformPath(data.path)
 				data.isFlattened = hasFlattenedPaths && flattened.ignores(path)
 				data.isExcluded = hasExcludedPaths && excluded.ignores(path)
@@ -334,24 +334,24 @@ function pushSorted(numbers, number) {
 }
 
 function pushSortedArray(numbers: number[], toPush: number[]) {
-	let j = 0
-	for (let i = 0; i < numbers.length; i++) {
+	let totalPushes = 0
+	for (let index = 0; index < numbers.length; index++) {
 		let pushCount = 0
 
-		while (numbers[i] > toPush[j]) {
+		while (numbers[index] > toPush[totalPushes]) {
 			pushCount++
-			j++
-			if (j === toPush.length) {
+			totalPushes++
+			if (totalPushes === toPush.length) {
 				break
 			}
 		}
 
 		if (pushCount > 0) {
-			numbers.splice(i, 0, ...toPush.slice(j - pushCount, j))
-			if (j === toPush.length) {
+			numbers.splice(index, 0, ...toPush.slice(totalPushes - pushCount, totalPushes))
+			if (totalPushes === toPush.length) {
 				return
 			}
 		}
 	}
-	numbers.push(...toPush.slice(j))
+	numbers.push(...toPush.slice(totalPushes))
 }

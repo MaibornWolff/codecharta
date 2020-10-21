@@ -95,6 +95,7 @@ export class CodeMapMesh {
 	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
 		const { mapSize } = state.treeMap
 		if (state.appSettings.isPresentationMode) {
+			console.log(highlighted)
 			const distance = highlighted[0].getCenterPoint(mapSize).distanceTo(building.getCenterPoint(mapSize))
 			this.decreaseLightnessByDistance(building, distance)
 		} else {
@@ -151,17 +152,17 @@ export class CodeMapMesh {
 		const numberOfColorFieldsPerBuilding = CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS * CodeMapMesh.NUM_OF_VERTICES
 		const positionOfFirstColorEntry = id * numberOfColorFieldsPerBuilding
 		for (
-			let j = positionOfFirstColorEntry;
-			j < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding;
-			j += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
+			let index = positionOfFirstColorEntry;
+			index < positionOfFirstColorEntry + numberOfColorFieldsPerBuilding;
+			index += CodeMapMesh.NUM_OF_COLOR_VECTOR_FIELDS
 		) {
-			this.threeMesh.geometry["attributes"].color.array[j] = newColorVector.x
-			this.threeMesh.geometry["attributes"].color.array[j + 1] = newColorVector.y
-			this.threeMesh.geometry["attributes"].color.array[j + 2] = newColorVector.z
+			this.threeMesh.geometry["attributes"].color.array[index] = newColorVector.x
+			this.threeMesh.geometry["attributes"].color.array[index + 1] = newColorVector.y
+			this.threeMesh.geometry["attributes"].color.array[index + 2] = newColorVector.z
 
-			this.threeMesh.geometry["attributes"].deltaColor.array[j] = newDeltaColorVector.x
-			this.threeMesh.geometry["attributes"].deltaColor.array[j + 1] = newDeltaColorVector.y
-			this.threeMesh.geometry["attributes"].deltaColor.array[j + 2] = newDeltaColorVector.z
+			this.threeMesh.geometry["attributes"].deltaColor.array[index] = newDeltaColorVector.x
+			this.threeMesh.geometry["attributes"].deltaColor.array[index + 1] = newDeltaColorVector.y
+			this.threeMesh.geometry["attributes"].deltaColor.array[index + 2] = newDeltaColorVector.z
 		}
 	}
 

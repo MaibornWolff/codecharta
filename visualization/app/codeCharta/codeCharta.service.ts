@@ -26,21 +26,21 @@ export class CodeChartaService {
 				validate(nameDataPair.content)
 				this.addFile(nameDataPair.fileName, nameDataPair.content)
 			} catch (error) {
-				if (error.error.length !== 0) {
+				if (error.error.length > 0) {
 					this.fileStates = []
 					this.storeService.dispatch(setIsLoadingFile(false))
 					this.dialogService.showValidationErrorDialog(error)
 					break
 				}
 
-				if (error.warning.length !== 0) {
+				if (error.warning.length > 0) {
 					this.addFile(nameDataPair.fileName, nameDataPair.content)
 					this.dialogService.showValidationWarningDialog(error)
 				}
 			}
 		}
 
-		if (this.fileStates.length !== 0) {
+		if (this.fileStates.length > 0) {
 			this.storeService.dispatch(resetFiles())
 			this.storeService.dispatch(setFiles(this.fileStates))
 			this.fileStates = []
