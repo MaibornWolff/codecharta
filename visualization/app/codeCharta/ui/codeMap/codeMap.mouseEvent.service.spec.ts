@@ -308,7 +308,7 @@ describe("codeMapMouseEventService", () => {
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING)
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
-			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
+			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
 		})
 
 		it("should hover a node when no node is hovered, and an intersection was found but not change cursor in moving mode", () => {
@@ -316,7 +316,7 @@ describe("codeMapMouseEventService", () => {
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
 			codeMapMouseEventService["isMoving"] = true
-			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
 			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
