@@ -8,6 +8,7 @@ import {
 } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService, SortingOptionSubscriber } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricData/nodeMetricData.service"
+import {klona} from "klona";
 
 const REVERSE_ORDER = true
 const KEEP_ORDER = false
@@ -47,7 +48,9 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 			return
 		}
 
-		this._viewModel.rootNode = map
+		// Clone the map to prevent changing the order of the original map.
+		this._viewModel.rootNode = klona(map)
+
 		this.synchronizeAngularTwoWayBinding()
 		this.onSortingOptionChanged(this.storeService.getState().dynamicSettings.sortingOption)
 	}
