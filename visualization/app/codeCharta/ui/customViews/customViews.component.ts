@@ -62,8 +62,8 @@ export class CustomViewsController implements FilesSelectionSubscriber {
         // TODO: Setting state from loaded CustomView not working at the moment
         //  due to issues of the event architecture.
 
-        // Check if state properties differ
-        // Create new partial State (updates) for changed values
+        // TODO: Check if state properties differ
+        // Create new partial State (updates) for changed values only
         this.storeService.dispatch(setState(customView.stateSettings))
 
         // Should we fire another event "ResettingStateFinishedEvent"
@@ -81,8 +81,6 @@ export class CustomViewsController implements FilesSelectionSubscriber {
             this.storeService.dispatch(setCamera(customView.stateSettings.appSettings.camera as Vector3))
             this.storeService.dispatch(setCameraTarget(customView.stateSettings.appSettings.cameraTarget as Vector3))
         }, 100 );
-
-        //this.storeService.dispatch(setSearchedNodePaths(customView.stateSettings.dynamicSettings.searchedNodePaths as Set<string>))
     }
 
     removeCustomView(viewName) {
