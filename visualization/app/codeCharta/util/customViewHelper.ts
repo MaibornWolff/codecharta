@@ -109,6 +109,7 @@ export class CustomViewHelper {
             customViewFileStateConnector.getMapSelectionMode()
         ) + 1
 
+        // Example suggestion: yourMapName (delta) #3
         return `${suggestedViewName} #${customViewNumberSuffix}`
     }
 
