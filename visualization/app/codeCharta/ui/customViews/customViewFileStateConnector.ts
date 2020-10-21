@@ -5,7 +5,7 @@ import md5 from "md5";
 
 export class CustomViewFileStateConnector {
 
-    private files: FileState[] = []
+    private readonly files: FileState[] = []
     private fileNameParts: string[] = []
     private mapChecksums: string[] = []
     private mapSelectionMode: CustomViewMapSelectionMode = CustomViewMapSelectionMode.SINGLE
@@ -13,11 +13,13 @@ export class CustomViewFileStateConnector {
     constructor(files: FileState[]) {
         this.files = files
 
-        this.processFiles()
+        if (typeof this.files !== 'undefined') {
+            this.processFiles()
+        }
     }
 
     private processFiles() {
-        this.files.forEach(file => {
+        for (const file of this.files) {
             if (file.selectedAs !== FileSelectionState.None) {
                 this.setMapSelectionMode(file.selectedAs)
                 this.mapChecksums.push(md5(JSON.stringify(file.file.map)))
@@ -31,7 +33,7 @@ export class CustomViewFileStateConnector {
 
                 this.fileNameParts.push(fileNamePart)
             }
-        })
+        }
     }
 
     getJointMapName(): string {
