@@ -95,7 +95,6 @@ export class CodeMapMesh {
 	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
 		const { mapSize } = state.treeMap
 		if (state.appSettings.isPresentationMode) {
-			console.log(highlighted)
 			const distance = highlighted[0].getCenterPoint(mapSize).distanceTo(building.getCenterPoint(mapSize))
 			this.decreaseLightnessByDistance(building, distance)
 		} else {
