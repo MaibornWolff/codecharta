@@ -282,16 +282,48 @@ describe("codeMapMouseEventService", () => {
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
 
-		it("should hover a node when no node is hovered and an intersection was found", () => {
+		it("should hover a node when no node is hovered, and an intersection was found and change the cursor to pointing", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
+
 			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
 			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING)
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
+		})
+
+		it("should hover a node when no node is hovered, and an intersection was found but not change cursor in grabbing mode", () => {
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			})
+			codeMapMouseEventService["isGrabbing"] = true
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+			threeSceneService.getHighlightedBuilding = jest.fn()
+
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING)
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
+		})
+
+		it("should hover a node when no node is hovered, and an intersection was found but not change cursor in moving mode", () => {
+			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
+				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
+			})
+			codeMapMouseEventService["isMoving"] = true
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
+			threeSceneService.getHighlightedBuilding = jest.fn()
+
+			codeMapMouseEventService.updateHovering()
+
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING)
+			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+			expect(document.body.style.cursor).toEqual(CursorType.Moving)
 		})
 
 		it("should not hover a node again when the intersection building is the same as the hovered building", () => {
