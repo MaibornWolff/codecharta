@@ -42,7 +42,7 @@ describe("CustomViewFileStateConnector", () => {
     })
 
     describe("set/is/getMapSelectionMode", () => {
-        it("should set SINGLE mode ad default", () => {
+        it("should set SINGLE mode as default", () => {
             const file1 = {fileMeta: {fileName: "none.cc.json"}} as CCFile
             const fileState1 = {file: file1, selectedAs: FileSelectionState.None} as FileState
 
