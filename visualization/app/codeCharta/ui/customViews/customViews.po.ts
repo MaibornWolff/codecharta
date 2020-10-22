@@ -4,7 +4,10 @@ export class CustomViewsPageObject {
         await expect(page).toClick("global-settings-button-component .toolbar-button",  {timeout: 3000})
         await page.waitForSelector("md-dialog.global-settings", {visible: true})
         await expect(page).toClick("md-dialog.global-settings div.md-dialog-content md-input-container:nth-child(4) md-checkbox", {timeout: 3000})
+
+        // Close Global Settings dialog
         await expect(page).toClick("code-charta-component", {timeout: 3000})
+        await page.waitForSelector("md-dialog.global-settings", {hidden: true})
     }
 
     async openCustomViewAddDialog() {

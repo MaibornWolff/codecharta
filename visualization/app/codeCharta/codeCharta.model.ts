@@ -210,10 +210,14 @@ export interface MetricData {
 	edgeMetricData: EdgeMetricData[]
 }
 
-export interface CCLocalStorage {
+export interface LocalStorageCustomViews {
+	version: string
+	customViews: [string, RecursivePartial<CustomView>][]
+}
+
+export interface LocalStorageScenarios {
 	version: string
 	scenarios: [string, RecursivePartial<Scenario>][]
-	customViews: [string, RecursivePartial<CustomView>][]
 }
 
 export interface Scenario {

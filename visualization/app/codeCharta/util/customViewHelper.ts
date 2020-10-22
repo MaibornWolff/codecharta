@@ -1,6 +1,6 @@
 "use strict"
 import {
-    CCLocalStorage,
+    LocalStorageCustomViews,
     RecursivePartial, State
 } from "../codeCharta.model"
 import {CustomViewItem} from "../ui/customViews/customViews.component";
@@ -9,8 +9,8 @@ import {CustomView, CustomViewMapSelectionMode} from "../model/customView/custom
 import {CustomViewFileStateConnector} from "../ui/customViews/customViewFileStateConnector";
 
 export class CustomViewHelper {
-    private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"
-    private static readonly CC_LOCAL_STORAGE_ELEMENT_CUSTOM_VIEWS = 'customViews'
+    private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_VERSION = "1.0.0"
+    private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT = 'customViews'
 
     private static customViews: Map<string, RecursivePartial<CustomView>> = CustomViewHelper.loadCustomViews()
 
@@ -45,16 +45,15 @@ export class CustomViewHelper {
     }
 
     private static setCustomViewsToLocalStorage(customViews: Map<string, RecursivePartial<CustomView>>) {
-        const newLocalStorageElement: CCLocalStorage = {
-            version: this.CC_LOCAL_STORAGE_VERSION,
-            scenarios: [],
+        const newLocalStorageElement: LocalStorageCustomViews = {
+            version: this.CUSTOM_VIEWS_LOCAL_STORAGE_VERSION,
             customViews: [...customViews]
         }
-        localStorage.setItem(this.CC_LOCAL_STORAGE_ELEMENT_CUSTOM_VIEWS, JSON.stringify(newLocalStorageElement))
+        localStorage.setItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement))
     }
 
     private static loadCustomViews() {
-        const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem(this.CC_LOCAL_STORAGE_ELEMENT_CUSTOM_VIEWS))
+        const ccLocalStorage: LocalStorageCustomViews = JSON.parse(localStorage.getItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT))
         if (ccLocalStorage?.customViews) {
             return new Map(ccLocalStorage.customViews)
         }

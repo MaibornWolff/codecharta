@@ -1,5 +1,5 @@
 "use strict"
-import { AppSettings, CCLocalStorage, DynamicSettings, RecursivePartial, Scenario, Settings, MetricData } from "../codeCharta.model"
+import { AppSettings, LocalStorageScenarios, DynamicSettings, RecursivePartial, Scenario, Settings, MetricData } from "../codeCharta.model"
 import { convertToVectors } from "./settingsHelper"
 import { AddScenarioContent, ScenarioMetricType } from "../ui/dialog/dialog.addScenarioSettings.component"
 import { ScenarioItem } from "../ui/scenarioDropDown/scenarioDropDown.component"
@@ -7,7 +7,8 @@ import scenarios from "../assets/scenarios.json"
 import { ExportScenario } from "../codeCharta.api.model"
 
 export class ScenarioHelper {
-	private static readonly CC_LOCAL_STORAGE_VERSION = "1.0.0"
+	private static readonly SCENARIOS_LOCAL_STORAGE_VERSION = "1.0.0"
+	private static readonly SCENARIOS_LOCAL_STORAGE_ELEMENT = 'customViews'
 	//TODO: Move Scenarios to Redux Store
 	private static scenarios: Map<string, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
@@ -118,16 +119,15 @@ export class ScenarioHelper {
 	}
 
 	private static setScenariosToLocalStorage(scenarios: Map<string, RecursivePartial<Scenario>>) {
-		const newLocalStorageElement: CCLocalStorage = {
-			version: this.CC_LOCAL_STORAGE_VERSION,
-			scenarios: [...scenarios],
-			customViews: []
+		const newLocalStorageElement: LocalStorageScenarios = {
+			version: this.SCENARIOS_LOCAL_STORAGE_VERSION,
+			scenarios: [...scenarios]
 		}
-		localStorage.setItem("scenarios", JSON.stringify(newLocalStorageElement))
+		localStorage.setItem(this.SCENARIOS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement))
 	}
 
 	private static loadScenarios() {
-		const ccLocalStorage: CCLocalStorage = JSON.parse(localStorage.getItem("scenarios"))
+		const ccLocalStorage: LocalStorageScenarios = JSON.parse(localStorage.getItem(this.SCENARIOS_LOCAL_STORAGE_ELEMENT))
 		if (ccLocalStorage) {
 			return new Map(ccLocalStorage.scenarios)
 		}
