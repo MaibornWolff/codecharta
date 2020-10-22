@@ -15,7 +15,7 @@ describe("CustomViews", () => {
         await customViews.isCustomViewFeatureDisabled()
     })
 
-    it("FastAdding CustomView with already existing name will show a warning message", async () => {
+    it("QuickAdding CustomView with already existing name will show a warning message", async () => {
         // Enable experimental CustomViews Feature first
         await customViews.enableExperimentalFeatures()
 
