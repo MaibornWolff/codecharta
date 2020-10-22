@@ -89,6 +89,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Schedules of dependabot dependency updates changed
+
 ### Removed 🗑
 
 ### Fixed 🐞
