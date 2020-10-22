@@ -54,9 +54,9 @@ export class CodeMapRenderService {
 		this.codeMapLabelService.clearLabels()
 		if (showLabelNodeName || showLabelNodeMetric) {
 			let { amountOfTopLabels } = appSettings
-			for (let i = 0; i < sortedNodes.length && amountOfTopLabels !== 0; i++) {
-				if (sortedNodes[i].isLeaf) {
-					this.codeMapLabelService.addLabel(sortedNodes[i], {
+			for (let index = 0; index < sortedNodes.length && amountOfTopLabels !== 0; index++) {
+				if (sortedNodes[index].isLeaf) {
+					this.codeMapLabelService.addLabel(sortedNodes[index], {
 						showNodeName: showLabelNodeName,
 						showNodeMetric: showLabelNodeMetric
 					})

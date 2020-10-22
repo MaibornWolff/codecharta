@@ -1,24 +1,25 @@
 export class SearchPanelModeSelectorPageObject {
-	async toggleTreeView() {
-		const wasOpen = await this.isTreeViewOpen()
+    async toggleTreeView() {
+        const wasOpen = await this.isTreeViewOpen()
 
-		await expect(page).toClick("#tree-view", { timeout: 3000 })
+        await expect(page).toClick("#tree-view", {timeout: 3000})
 
-		if (wasOpen) {
-			await page.waitForSelector("#search-panel-card", { visible: false })
-		} else {
-			await page.waitForSelector("#search-panel-card.expanded")
-		}
-		return !wasOpen
-	}
+        await (
+            wasOpen ?
+                page.waitForSelector("#search-panel-card", {visible: false}) :
+                page.waitForSelector("#search-panel-card.expanded")
+        )
 
-	async isTreeViewOpen() {
-		await page.waitForSelector("#tree-view")
-		const treeViewClassNames = await page.$eval("#tree-view", element => element.className)
+        return !wasOpen
+    }
 
-		await page.waitForSelector("#search-panel-card")
-		const searchPanelClassNames = await page.$eval("#search-panel-card", element => element.className)
+    async isTreeViewOpen() {
+        await page.waitForSelector("#tree-view")
+        const treeViewClassNames = await page.$eval("#tree-view", element => element.className)
 
-		return treeViewClassNames.includes("current") && searchPanelClassNames.includes("expanded")
-	}
+        await page.waitForSelector("#search-panel-card")
+        const searchPanelClassNames = await page.$eval("#search-panel-card", element => element.className)
+
+        return treeViewClassNames.includes("current") && searchPanelClassNames.includes("expanded")
+    }
 }
