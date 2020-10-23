@@ -20,7 +20,7 @@ describe("showMetricLabelNodeName", () => {
 		it("should set default showMetricLabelNodeName", () => {
 			const result = showMetricLabelNodeName(false, setShowMetricLabelNodeName())
 
-        		expect(result).toEqual(true)
+			expect(result).toEqual(true)
 		})
 	})
 })

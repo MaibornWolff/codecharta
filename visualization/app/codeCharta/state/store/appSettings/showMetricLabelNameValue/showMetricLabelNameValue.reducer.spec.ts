@@ -18,9 +18,9 @@ describe("showMetricLabelNameValue", () => {
 		})
 
 		it("should set default showMetricLabelNameValue", () => {
-        	const result = showMetricLabelNameValue(false, setShowMetricLabelNameValue())
+			const result = showMetricLabelNameValue(false, setShowMetricLabelNameValue())
 
-        	expect(result).toEqual(true)
-        })
+			expect(result).toEqual(true)
+		})
 	})
 })
