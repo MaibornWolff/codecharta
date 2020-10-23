@@ -190,17 +190,37 @@ describe("CodeMapArrowService", () => {
 			})
 			codeMapArrowService["previewMode"] = jest.fn()
 		})
-		it("should create and edge Preview of one", () => {
+		it("should create an edge Preview of one", () => {
 			const nodes: Node[] = [OUTGOING_NODE]
 
 			codeMapArrowService.addEdgePreview(nodes)
 
 			expect(codeMapArrowService["map"].size).toEqual(1)
 		})
-		it("should create and no edge Preview at all", () => {
+		it("should create no edge Preview at all", () => {
 			codeMapArrowService.addEdgePreview()
 
 			expect(codeMapArrowService["map"].size).toEqual(0)
+		})
+		it("when targetNode is invalid then it should not call preview mode", () => {
+			const invalidEdge = VALID_EDGES_DECORATED
+			invalidEdge[0].toNodeName = "invalid"
+			storeService.dispatch(setEdges(invalidEdge))
+			const nodes: Node[] = [CODE_MAP_BUILDING_WITH_OUTGOING_EDGE_NODE.node]
+
+			codeMapArrowService.addEdgePreview(nodes)
+
+			expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
+		})
+		it("when originNodeName is invalid then it should not call preview mode", () => {
+			const invalidEdge = VALID_EDGES_DECORATED
+			invalidEdge[0].fromNodeName = "invalid"
+			storeService.dispatch(setEdges(invalidEdge))
+			const nodes: Node[] = [CODE_MAP_BUILDING_WITH_INCOMING_EDGE_NODE.node]
+
+			codeMapArrowService.addEdgePreview(nodes)
+
+			expect(codeMapArrowService["previewMode"]).not.toHaveBeenCalled()
 		})
 	})
 
