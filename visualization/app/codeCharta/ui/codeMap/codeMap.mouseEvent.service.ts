@@ -55,6 +55,8 @@ export class CodeMapMouseEventService
 	private mouse: Coordinates = { x: 0, y: 0 }
 	private oldMouse: Coordinates = { x: 0, y: 0 }
 	private mouseOnLastClick: Coordinates = { x: 0, y: 0 }
+	private isGrabbing = false
+	private isMoving = false
 
 	/* @ngInject */
 	constructor(
@@ -143,10 +145,6 @@ export class CodeMapMouseEventService
 				const from = this.threeSceneService.getHighlightedBuilding()
 				const to = this.intersectedBuilding ? this.intersectedBuilding : this.highlightedInTreeView
 
-				if (this.intersectedBuilding !== undefined) {
-					CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
-				}
-
 				if (from !== to) {
 					this.unhoverBuilding()
 					if (to) {
@@ -175,9 +173,11 @@ export class CodeMapMouseEventService
 
 	onDocumentMouseDown(event: MouseEvent) {
 		if (event.button === ClickType.RightClick) {
+			this.isMoving = true
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Moving)
 		}
 		if (event.button === ClickType.LeftClick) {
+			this.isGrabbing = true
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
 		}
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
@@ -190,10 +190,15 @@ export class CodeMapMouseEventService
 		} else {
 			this.onRightClick()
 		}
-		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+		if (this.intersectedBuilding !== undefined) {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+		} else {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+		}
 	}
 
 	private onRightClick() {
+		this.isMoving = false
 		const building = this.threeSceneService.getHighlightedBuilding()
 		// check if mouse moved to prevent the node context menu to show up after moving the map, when the cursor ends on a building
 		if (building && !this.hasMouseMoved(this.mouseOnLastClick)) {
@@ -207,6 +212,7 @@ export class CodeMapMouseEventService
 
 	private onLeftClick() {
 		this.threeSceneService.clearSelection()
+		this.isGrabbing = false
 		if (this.intersectedBuilding && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.threeSceneService.selectBuilding(this.intersectedBuilding)
 		}
@@ -230,6 +236,10 @@ export class CodeMapMouseEventService
 	}
 
 	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
+		if (!this.isGrabbing && !this.isMoving) {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
+		}
+
 		const { lookUp } = this.storeService.getState()
 		const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
 		for (const { data } of hierarchy(codeMapNode)) {
@@ -243,7 +253,9 @@ export class CodeMapMouseEventService
 	}
 
 	private unhoverBuilding() {
-		CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+		if (!this.isMoving && !this.isGrabbing) {
+			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
+		}
 		this.threeSceneService.clearHighlight()
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}
