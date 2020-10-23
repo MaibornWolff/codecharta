@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Fixed 🐞
 
 -   Mouse cursor flickering #1170
+-   Fix flipping map when clicking any option in the toolbar #1410
 
 ### Chore 👨‍💻 👩‍💻
 
