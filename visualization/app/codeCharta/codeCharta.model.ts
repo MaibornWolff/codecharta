@@ -3,7 +3,7 @@ import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
-import {CustomView} from "./model/customView/customView.api.model";
+import { CustomView } from "./model/customView/customView.api.model"
 
 export interface NameDataPair {
 	fileName: string

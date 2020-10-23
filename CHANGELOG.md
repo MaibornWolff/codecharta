@@ -14,10 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
     -   Activate/Deactivate the new option "Enable Experimental Features"
     -   The features will be shown/hidden accordingly
 -   "CustomViews", the first experimental feature has been added #1318
-    - It must be enabled by activating the new option in the Global Settings dialog as mentioned before.
-    - You can save your current map configurations to replay/restore them later.
-    - A saved CustomView can only be applied for it's original map.
-    - This will enable you to be more efficient in analizing projects by switching between different CustomViews.
+    -   It must be enabled by activating the new option in the Global Settings dialog as mentioned before.
+    -   You can save your current map configurations to replay/restore them later.
+    -   A saved CustomView can only be applied for it's original map.
+    -   This will enable you to be more efficient in analizing projects by switching between different CustomViews.
 
 ### Changed
 

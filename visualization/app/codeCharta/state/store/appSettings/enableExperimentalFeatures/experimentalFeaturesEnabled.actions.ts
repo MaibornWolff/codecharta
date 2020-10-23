@@ -11,7 +11,9 @@ export interface SetExperimentalFeaturesEnabledAction extends CCAction {
 
 export type ExperimentalFeaturesEnabledAction = SetExperimentalFeaturesEnabledAction
 
-export function setExperimentalFeaturesEnabled(experimentalFeaturesEnabled: boolean = defaultExperimentalFeaturesEnabled): SetExperimentalFeaturesEnabledAction {
+export function setExperimentalFeaturesEnabled(
+	experimentalFeaturesEnabled: boolean = defaultExperimentalFeaturesEnabled
+): SetExperimentalFeaturesEnabledAction {
 	return {
 		type: ExperimentalFeaturesEnabledActions.SET_EXPERIMENTAL_FEATURES_ENABLED,
 		payload: experimentalFeaturesEnabled

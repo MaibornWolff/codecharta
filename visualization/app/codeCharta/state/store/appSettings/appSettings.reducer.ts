@@ -29,7 +29,7 @@ import { experimentalFeaturesEnabled } from "./enableExperimentalFeatures/experi
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
-    showMetricLabelNodeName,
+	showMetricLabelNodeName,
 	showMetricLabelNameValue,
 	panelSelection,
 	cameraTarget,

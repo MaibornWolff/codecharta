@@ -1,47 +1,51 @@
 <md-menu class="custom-views-component">
-    <md-button class="custom-views-button" ng-click="$ctrl.loadCustomViews(); $mdMenu.open($event); " title="Open your saved custom views">
-        <i class="fa fa-eye"></i>
-    </md-button>
+	<md-button class="custom-views-button" ng-click="$ctrl.loadCustomViews(); $mdMenu.open($event); " title="Open your saved custom views">
+		<i class="fa fa-eye"></i>
+	</md-button>
 
-    <md-menu-content class="custom-views-drop-down" width="7">
-        <md-menu-item class="custom-views-item">
-            <md-button class="custom-views-name" ng-disabled="true">Custom Views applicable to current map and mode</md-button>
-            <md-button ng-click="$ctrl.showAddCustomViewSettings()" class="action-button add" title="Create new custom view">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-            </md-button>
-        </md-menu-item>
+	<md-menu-content class="custom-views-drop-down" width="7">
+		<md-menu-item class="custom-views-item">
+			<md-button class="custom-views-name" ng-disabled="true">Custom Views applicable to current map and mode</md-button>
+			<md-button ng-click="$ctrl.showAddCustomViewSettings()" class="action-button add" title="Create new custom view">
+				<i class="fa fa-plus" aria-hidden="true"></i>
+			</md-button>
+		</md-menu-item>
 
-        <md-divider></md-divider>
+		<md-divider></md-divider>
 
-        <md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomViewItems.length" class="custom-views-item">
-            <md-button disabled>It is time to add your first CustomView.</md-button>
-        </md-menu-item>
+		<md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomViewItems.length" class="custom-views-item">
+			<md-button disabled>It is time to add your first CustomView.</md-button>
+		</md-menu-item>
 
-        <md-menu-item class="custom-views-item" ng-repeat="customView in $ctrl._viewModel.dropDownCustomViewItems">
-            <md-button
-                    class="button-hovering"
-                    ng-click="$ctrl.applyCustomView(customView.name)"
-                    ng-disabled="!customView.isApplicable"
-                    title="Apply custom view"
-            >
-                {{ customView.name }}
-                <i ng-show="!customView.isApplicable" class="fa fa-info-circle left" title="This one is applicable for map(s) {{ customView.mapName }} in {{ customView.mapSelectionMode }} mode only."></i>
-            </md-button>
+		<md-menu-item class="custom-views-item" ng-repeat="customView in $ctrl._viewModel.dropDownCustomViewItems">
+			<md-button
+				class="button-hovering"
+				ng-click="$ctrl.applyCustomView(customView.name)"
+				ng-disabled="!customView.isApplicable"
+				title="Apply custom view"
+			>
+				{{ customView.name }}
+				<i
+					ng-show="!customView.isApplicable"
+					class="fa fa-info-circle left"
+					title="This one is applicable for map(s) {{ customView.mapName }} in {{ customView.mapSelectionMode }} mode only."
+				></i>
+			</md-button>
 
-            <md-button
-                    ng-click="$ctrl.removeCustomView(customView.name)"
-                    class="action-button remove button-hovering"
-                    title="Remove custom view"
-            >
-                <i class="fa fa-minus-square"></i>
-            </md-button>
-        </md-menu-item>
-    </md-menu-content>
+			<md-button
+				ng-click="$ctrl.removeCustomView(customView.name)"
+				class="action-button remove button-hovering"
+				title="Remove custom view"
+			>
+				<i class="fa fa-minus-square"></i>
+			</md-button>
+		</md-menu-item>
+	</md-menu-content>
 </md-menu>
 
 <md-menu class="custom-views-component">
-    <md-button class="custom-views-button plus" ng-click="$ctrl.showAddCustomViewSettings();" title="Quick save current view">
-        <i class="fa fa-plus"></i>
-    </md-button>
-    <md-menu-content></md-menu-content>
+	<md-button class="custom-views-button plus" ng-click="$ctrl.showAddCustomViewSettings();" title="Quick save current view">
+		<i class="fa fa-plus"></i>
+	</md-button>
+	<md-menu-content></md-menu-content>
 </md-menu>

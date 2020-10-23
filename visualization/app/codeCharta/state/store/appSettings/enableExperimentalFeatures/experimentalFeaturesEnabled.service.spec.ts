@@ -1,66 +1,62 @@
 import "../../../state.module"
-import {IRootScopeService} from "angular"
-import {StoreService} from "../../../store.service"
-import {getService, instantiateModule} from "../../../../../../mocks/ng.mockhelper"
-import {
-    ExperimentalFeaturesEnabledAction,
-    ExperimentalFeaturesEnabledActions
-} from "./experimentalFeaturesEnabled.actions"
-import {ExperimentalFeaturesEnabledService} from "./experimentalFeaturesEnabled.service"
-import {withMockedEventMethods} from "../../../../util/dataMocks"
+import { IRootScopeService } from "angular"
+import { StoreService } from "../../../store.service"
+import { getService, instantiateModule } from "../../../../../../mocks/ng.mockhelper"
+import { ExperimentalFeaturesEnabledAction, ExperimentalFeaturesEnabledActions } from "./experimentalFeaturesEnabled.actions"
+import { ExperimentalFeaturesEnabledService } from "./experimentalFeaturesEnabled.service"
+import { withMockedEventMethods } from "../../../../util/dataMocks"
 
 describe("ExperimentalFeaturesEnabledService", () => {
-    let experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService
-    let storeService: StoreService
-    let $rootScope: IRootScopeService
+	let experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService
+	let storeService: StoreService
+	let $rootScope: IRootScopeService
 
-    beforeEach(() => {
-        restartSystem()
-        rebuildService()
-        withMockedEventMethods($rootScope)
-    })
+	beforeEach(() => {
+		restartSystem()
+		rebuildService()
+		withMockedEventMethods($rootScope)
+	})
 
-    function restartSystem() {
-        instantiateModule("app.codeCharta.state")
+	function restartSystem() {
+		instantiateModule("app.codeCharta.state")
 
-        $rootScope = getService<IRootScopeService>("$rootScope")
-        storeService = getService<StoreService>("storeService")
-    }
+		$rootScope = getService<IRootScopeService>("$rootScope")
+		storeService = getService<StoreService>("storeService")
+	}
 
-    function rebuildService() {
-        experimentalFeaturesEnabledService = new ExperimentalFeaturesEnabledService($rootScope, storeService)
-    }
+	function rebuildService() {
+		experimentalFeaturesEnabledService = new ExperimentalFeaturesEnabledService($rootScope, storeService)
+	}
 
-    describe("constructor", () => {
-        it("should subscribe to store", () => {
-            StoreService.subscribe = jest.fn()
+	describe("constructor", () => {
+		it("should subscribe to store", () => {
+			StoreService.subscribe = jest.fn()
 
-            rebuildService()
+			rebuildService()
 
-            expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, experimentalFeaturesEnabledService)
-        })
-    })
+			expect(StoreService.subscribe).toHaveBeenCalledWith($rootScope, experimentalFeaturesEnabledService)
+		})
+	})
 
-    describe("onStoreChanged", () => {
-        it("should notify all subscribers with the new experimentalFeaturesEnabled value", () => {
-            const action: ExperimentalFeaturesEnabledAction = {
-                type: ExperimentalFeaturesEnabledActions.SET_EXPERIMENTAL_FEATURES_ENABLED,
-                payload: true
-            }
-            storeService["store"].dispatch(action)
+	describe("onStoreChanged", () => {
+		it("should notify all subscribers with the new experimentalFeaturesEnabled value", () => {
+			const action: ExperimentalFeaturesEnabledAction = {
+				type: ExperimentalFeaturesEnabledActions.SET_EXPERIMENTAL_FEATURES_ENABLED,
+				payload: true
+			}
+			storeService["store"].dispatch(action)
 
-            experimentalFeaturesEnabledService.onStoreChanged(ExperimentalFeaturesEnabledActions.SET_EXPERIMENTAL_FEATURES_ENABLED)
+			experimentalFeaturesEnabledService.onStoreChanged(ExperimentalFeaturesEnabledActions.SET_EXPERIMENTAL_FEATURES_ENABLED)
 
-            expect($rootScope.$broadcast).toHaveBeenCalledWith(
-                "experimental-features-enabled-changed",
-                {experimentalFeaturesEnabled: true}
-            )
-        })
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("experimental-features-enabled-changed", {
+				experimentalFeaturesEnabled: true
+			})
+		})
 
-        it("should not notify anything on non-experimental-features-enabled-events", () => {
-            experimentalFeaturesEnabledService.onStoreChanged("ANOTHER_ACTION")
+		it("should not notify anything on non-experimental-features-enabled-events", () => {
+			experimentalFeaturesEnabledService.onStoreChanged("ANOTHER_ACTION")
 
-            expect($rootScope.$broadcast).not.toHaveBeenCalled()
-        })
-    })
+			expect($rootScope.$broadcast).not.toHaveBeenCalled()
+		})
+	})
 })

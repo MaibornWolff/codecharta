@@ -3,7 +3,7 @@
 import angular from "angular"
 
 // Plop: Append module import here
-import "./customViews/customViews.module";
+import "./customViews/customViews.module"
 import "./attributeTypeSelector/attributeTypeSelector.module"
 import "./sortingOption/sortingOption.module"
 import "./sortingButton/sortingButton.module"

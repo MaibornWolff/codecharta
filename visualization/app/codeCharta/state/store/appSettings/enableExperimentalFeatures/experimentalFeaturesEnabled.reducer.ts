@@ -1,4 +1,8 @@
-import { ExperimentalFeaturesEnabledAction, ExperimentalFeaturesEnabledActions, setExperimentalFeaturesEnabled } from "./experimentalFeaturesEnabled.actions"
+import {
+	ExperimentalFeaturesEnabledAction,
+	ExperimentalFeaturesEnabledActions,
+	setExperimentalFeaturesEnabled
+} from "./experimentalFeaturesEnabled.actions"
 
 export function experimentalFeaturesEnabled(state = setExperimentalFeaturesEnabled().payload, action: ExperimentalFeaturesEnabledAction) {
 	switch (action.type) {

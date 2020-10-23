@@ -9,7 +9,7 @@ import { CodeChartaMouseEventService } from "../../codeCharta.mouseEvent.service
 import {
 	ExperimentalFeaturesEnabledService,
 	ExperimentalFeaturesEnabledSubscriber
-} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service";
+} from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 
 export class RibbonBarController implements PanelSelectionSubscriber, ExperimentalFeaturesEnabledSubscriber {
 	constructor(
