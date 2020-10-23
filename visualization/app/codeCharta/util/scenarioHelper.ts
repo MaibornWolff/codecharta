@@ -8,7 +8,7 @@ import { ExportScenario } from "../codeCharta.api.model"
 
 export class ScenarioHelper {
 	private static readonly SCENARIOS_LOCAL_STORAGE_VERSION = "1.0.0"
-	private static readonly SCENARIOS_LOCAL_STORAGE_ELEMENT = "customViews"
+	private static readonly SCENARIOS_LOCAL_STORAGE_ELEMENT = "scenarios"
 	//TODO: Move Scenarios to Redux Store
 	private static scenarios: Map<string, RecursivePartial<Scenario>> = ScenarioHelper.loadScenarios()
 
