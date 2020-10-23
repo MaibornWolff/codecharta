@@ -1,4 +1,8 @@
-import { ShowMetricLabelNodeNameAction, ShowMetricLabelNodeNameActions, setShowMetricLabelNodeName } from "./showMetricLabelNodeName.actions"
+import {
+	ShowMetricLabelNodeNameAction,
+	ShowMetricLabelNodeNameActions,
+	setShowMetricLabelNodeName
+} from "./showMetricLabelNodeName.actions"
 
 export function showMetricLabelNodeName(state = setShowMetricLabelNodeName().payload, action: ShowMetricLabelNodeNameAction) {
 	switch (action.type) {

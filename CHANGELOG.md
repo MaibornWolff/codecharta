@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Fix flipping map when clicking any option in the toolbar #1410
+
 ### Chore 👨‍💻 👩‍💻
 
 ## [1.60.1] - 2020-10-20
