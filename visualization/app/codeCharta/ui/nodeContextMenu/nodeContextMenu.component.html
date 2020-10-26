@@ -38,6 +38,11 @@
 			title="Show node and children-nodes"
 			><i class="fa fa-eye"></i> Show</md-button
 		>
+		<md-button
+		id="marking-node"
+			title="Highlights multiple nodes"
+			ng-click="$ctrl.addNodeToConstantHighlight()"
+			> <i class="fa fa-cubes" aria-hidden="true"></i> Keep Highlight</md-button>
 
 		<md-button ng-click="$ctrl.excludeNode()" id="exclude-button" title="Exclude node and children-nodes and reorder the CodeMap"
 			><i class="fa fa-ban"></i> Exclude</md-button

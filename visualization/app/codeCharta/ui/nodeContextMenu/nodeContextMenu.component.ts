@@ -10,10 +10,12 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
+import {ThreeSceneService} from "../codeMap/threeViewer/threeSceneService";
 
 export enum ClickType {
 	RightClick = 2
 }
+
 
 export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
@@ -46,7 +48,8 @@ export class NodeContextMenuController
 		private $rootScope: IRootScopeService,
 		private storeService: StoreService,
 		private codeMapActionsService: CodeMapActionsService,
-		private codeMapPreRenderService: CodeMapPreRenderService
+		private codeMapPreRenderService: CodeMapPreRenderService,
+		private threeSceneService: ThreeSceneService
 	) {
 		MapColorsService.subscribe(this.$rootScope, this)
 		CodeMapMouseEventService.subscribeToBuildingRightClickedEvents(this.$rootScope, this)
@@ -102,6 +105,14 @@ export class NodeContextMenuController
 		// Thus, remove the listener when clicking the body element with the left or right button
 		// to fire hide events only (once) when it is really necessary.
 		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
+	}
+
+	addNodeToConstantHighlight(){
+		const {lookUp} = this.storeService.getState()
+		const codeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
+		this.threeSceneService.addBuildingToConstantHighlight(codeMapBuilding)
+		this.onHideNodeContextMenu()
+
 	}
 
 	onMapWheelHideNodeContextMenu = () => {
