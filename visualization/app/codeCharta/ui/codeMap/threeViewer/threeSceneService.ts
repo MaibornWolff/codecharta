@@ -31,6 +31,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding[] = []
+	private constantHighlight: CodeMapBuilding[] = []
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
@@ -55,7 +56,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	highlightBuildings() {
 		const state = this.storeService.getState()
-		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state)
+		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 	}
 
 	highlightSingleBuilding(building: CodeMapBuilding) {
@@ -70,7 +71,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	clearHighlight() {
 		if (this.getMapMesh()) {
-			this.getMapMesh().clearHighlight(this.selected)
+			this.getMapMesh().clearHighlight(this.selected, this.constantHighlight)
 			this.highlighted = []
 		}
 	}
@@ -79,8 +80,21 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		const color = this.storeService.getState().appSettings.mapColors.selected
 		this.getMapMesh().selectBuilding(building, color)
 		this.selected = building
+		this.clearConstantHighlight()
 		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
+	}
+
+	addBuildingToConstantHighlight(building: CodeMapBuilding){
+		this.constantHighlight.push(building)
+		this.highlightBuildings
+	}
+
+	clearConstantHighlight(){
+		if(this.constantHighlight.length >0){
+			this.getMapMesh().clearConstantHighlight(this.constantHighlight)
+			this.constantHighlight = []
+		}
 	}
 
 	clearSelection() {

@@ -60,6 +60,15 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
+	clearConstantHighlight(constantHighlight: CodeMapBuilding[]){
+		constantHighlight.forEach(x => {
+			x.resetColor()
+			this.setVertexColor(x.id,x.getDefaultColorVector(),x.getDefaultDeltaColorVector())
+		})
+		this.updateVertices()
+
+	}
+
 	getMeshDescription() {
 		return this.mapGeomDesc
 	}
@@ -77,11 +86,12 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State) {
+	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State, constantHighlight:CodeMapBuilding[]) {
 		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
+		const constantHighlightMap= TreeMapHelper.buildingArrayToMap(constantHighlight)
 		for (const building of this.mapGeomDesc.buildings) {
 			if (!this.isBuildingSelected(selected, building)) {
-				if (highlightBuildingMap.get(building.id)) {
+				if (highlightBuildingMap.get(building.id) || constantHighlightMap.get(building.id)) {
 					building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
 				} else {
 					this.adjustSurroundingBuildingColors(highlightedBuildings, building, state)
@@ -90,6 +100,10 @@ export class CodeMapMesh {
 			}
 		}
 		this.updateVertices()
+	}
+
+	isBuildingConstantlyHighlighted(constantHighlight: CodeMapBuilding[], building: CodeMapBuilding){
+		return constantHighlight.includes(building)
 	}
 
 	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
@@ -102,9 +116,9 @@ export class CodeMapMesh {
 		}
 	}
 
-	clearHighlight(selected: CodeMapBuilding) {
+	clearHighlight(selected: CodeMapBuilding, constantHighlight: CodeMapBuilding[]) {
 		for (const currentBuilding of this.mapGeomDesc.buildings) {
-			if (!this.isBuildingSelected(selected, currentBuilding)) {
+			if (!this.isBuildingSelected(selected, currentBuilding)&& !this.isBuildingConstantlyHighlighted(constantHighlight, currentBuilding)){
 				this.setVertexColor(
 					currentBuilding.id,
 					currentBuilding.getDefaultColorVector(),
