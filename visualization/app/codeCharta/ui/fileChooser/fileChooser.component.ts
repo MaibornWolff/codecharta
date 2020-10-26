@@ -57,12 +57,12 @@ export class FileChooserController {
 
 		try {
 			content = JSON.parse(jsonString)
+
+			if (content.fileChecksum === undefined) {
+				content.fileChecksum = md5(jsonString)
+			}
 		} catch {
 			// Explicitly ignored
-		}
-
-		if (content && typeof content.fileChecksum === "undefined") {
-			content.fileChecksum = md5(jsonString)
 		}
 
 		this.files.push({
