@@ -4,6 +4,8 @@ import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { hierarchy } from "d3-hierarchy"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -85,10 +87,18 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
 	}
 
-	addBuildingToConstantHighlight(building: CodeMapBuilding){
-		this.constantHighlight.push(building)
-		this.highlightBuildings
+	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode){
+		const {lookUp} = this.storeService.getState()
+		const codeMapBuilding = lookUp.idToNode.get(codeMapNode.id)
+		for (const { data } of hierarchy(codeMapBuilding)) {
+			const building = lookUp.idToBuilding.get(data.id)
+			if (building) {
+				this.constantHighlight.push(building)
+			}
+		}
+		this.highlightBuildings()
 	}
+
 
 	clearConstantHighlight(){
 		if(this.constantHighlight.length >0){

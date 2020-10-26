@@ -108,9 +108,7 @@ export class NodeContextMenuController
 	}
 
 	addNodeToConstantHighlight(){
-		const {lookUp} = this.storeService.getState()
-		const codeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
-		this.threeSceneService.addBuildingToConstantHighlight(codeMapBuilding)
+		this.threeSceneService.addNodeAndChildrenToConstantHighlight(this._viewModel.codeMapNode)
 		this.onHideNodeContextMenu()
 
 	}
