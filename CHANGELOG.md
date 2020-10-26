@@ -25,7 +25,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+### Chore 👨‍💻 👩‍💻
+
+## [1.60.2] - 2020-10-24
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Mouse cursor flickering #1170
 -   Fix flipping map when clicking any option in the toolbar #1410
+-   Fix edge metric not working correctly
 
 ### Chore 👨‍💻 👩‍💻
 
