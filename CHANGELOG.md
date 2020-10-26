@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+-   Schedules and merge retries of dependabot dependency updates changed
+
 ## [1.60.2] - 2020-10-24
 
 ### Added 🚀
@@ -104,8 +106,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 ### Added 🚀
 
 ### Changed
-
--   Schedules of dependabot dependency updates changed
 
 ### Removed 🗑
 
