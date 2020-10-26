@@ -1,5 +1,6 @@
 {
 	"projectName": "Sample Project",
+	"fileChecksum": "md5-sample",
 	"apiVersion": "1.2",
 	"nodes": [
 		{

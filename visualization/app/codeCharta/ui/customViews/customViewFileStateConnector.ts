@@ -1,7 +1,6 @@
 "use strict"
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { CustomViewMapSelectionMode } from "../../model/customView/customView.api.model"
-import md5 from "md5"
 
 export class CustomViewFileStateConnector {
 	private readonly files: FileState[] = []
@@ -21,7 +20,7 @@ export class CustomViewFileStateConnector {
 		for (const file of this.files) {
 			if (file.selectedAs !== FileSelectionState.None) {
 				this.setMapSelectionMode(file.selectedAs)
-				this.mapChecksums.push(md5(JSON.stringify(file.file.map)))
+				this.mapChecksums.push(file.file.fileMeta.fileChecksum)
 
 				let fileNamePart = file.file.fileMeta.fileName
 

@@ -5,6 +5,7 @@ export function getCCFile(fileName: string, fileContent: ExportCCFile): CCFile {
 	return {
 		fileMeta: {
 			fileName,
+			fileChecksum: fileContent.fileChecksum,
 			projectName: fileContent.projectName,
 			apiVersion: fileContent.apiVersion
 		},

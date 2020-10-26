@@ -29,6 +29,7 @@ export class FileDownloader {
 		return {
 			projectName: fileMeta.projectName,
 			apiVersion: fileMeta.apiVersion,
+			fileChecksum: undefined,
 			nodes: [this.undecorateMap(map)],
 			attributeTypes: this.getAttributeTypesForJSON(fileSettings.attributeTypes),
 			edges: downloadSettingsNames.includes(DownloadCheckboxNames.edges) ? this.undecorateEdges(fileSettings.edges) : [],

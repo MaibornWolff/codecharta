@@ -63,6 +63,7 @@ export enum SortingOption {
 
 export interface FileMeta {
 	fileName: string
+	fileChecksum: string
 	apiVersion: string
 	projectName: string
 }

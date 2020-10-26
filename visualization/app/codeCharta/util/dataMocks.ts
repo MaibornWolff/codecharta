@@ -537,6 +537,7 @@ export const VALID_EDGE: Edge = {
 
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
+	fileChecksum: "md5-sample",
 	apiVersion: APIVersions.ONE_POINT_TWO,
 	nodes: [VALID_NODE]
 }
@@ -550,6 +551,7 @@ export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
 
 export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
 	fileName: "noFileName",
+	fileChecksum: "md5-sample",
 	projectName: "Valid Sample Map Minor API High",
 	apiVersion: "1.3",
 	nodes: [VALID_NODE]
@@ -570,6 +572,7 @@ export const TEST_FILE_CONTENT_NO_API = {
 
 export const FILE_META: FileMeta = {
 	fileName: "fileA",
+	fileChecksum: "md5-fileA",
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion
 }
@@ -891,6 +894,7 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
+		fileChecksum: "md5-delta-fileA",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion
 	},
@@ -947,6 +951,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 export const TEST_DELTA_MAP_B: CCFile = {
 	fileMeta: {
 		fileName: "fileB",
+		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion
 	},

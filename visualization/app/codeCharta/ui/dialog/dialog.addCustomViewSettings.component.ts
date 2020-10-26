@@ -53,7 +53,7 @@ export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubsc
 	validateCustomViewName() {
 		if (CustomViewHelper.hasCustomView(this._viewModel.customViewName)) {
 			this._viewModel.addInfoMessage =
-				'<i class="fa fa-warning"></i> A Custom View with this name already exists. Are you sure to override?'
+				'<i class="fa fa-warning"></i> Are you sure to override? A Custom View with this name already exists.'
 		} else {
 			this._viewModel.addInfoMessage = ""
 		}

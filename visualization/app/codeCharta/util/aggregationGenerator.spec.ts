@@ -6,6 +6,7 @@ describe("AggregationGenerator", () => {
 	const file1: CCFile = {
 		fileMeta: {
 			fileName: "file1",
+			fileChecksum: "md5-file1",
 			projectName: "Sample Project",
 			apiVersion: packageJson.codecharta.apiVersion
 		},
@@ -44,6 +45,7 @@ describe("AggregationGenerator", () => {
 	const file2: CCFile = {
 		fileMeta: {
 			fileName: "file2",
+			fileChecksum: "md5-file2",
 			projectName: "Sample Project",
 			apiVersion: packageJson.codecharta.apiVersion
 		},

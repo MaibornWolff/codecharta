@@ -4,6 +4,7 @@ exports[`FileHelper getCCFile should build a CCFile 1`] = `
 Object {
   "fileMeta": Object {
     "apiVersion": "1.2",
+    "fileChecksum": "md5-sample",
     "fileName": "fileName",
     "projectName": "Sample Map",
   },

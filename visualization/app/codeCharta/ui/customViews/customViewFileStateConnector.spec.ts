@@ -92,14 +92,14 @@ describe("CustomViewFileStateConnector", () => {
 	})
 
 	describe("getChecksumOfAssignedMaps", () => {
-		it("should set SINGLE mode ad default", () => {
-			const file1 = { fileMeta: { fileName: "file1.cc.json" }, map: { name: "test1" } } as CCFile
-			const fileState1 = { file: file1, selectedAs: FileSelectionState.Single } as FileState
+		it("should set SINGLE mode as default", () => {
 			const expectedMap1Md5 = "07cdac95b6bceaf7857a377fc7695ffb"
+			const file1 = { fileMeta: { fileName: "file1.cc.json", fileChecksum: expectedMap1Md5 }, map: { name: "test1" } } as CCFile
+			const fileState1 = { file: file1, selectedAs: FileSelectionState.Single } as FileState
 
-			const file2 = { fileMeta: { fileName: "file2.cc.json" }, map: { name: "test2" } } as CCFile
-			const fileState2 = { file: file2, selectedAs: FileSelectionState.Single } as FileState
 			const expectedMap2Md5 = "1846794e811d79ad212ff6eec9f8c9d1"
+			const file2 = { fileMeta: { fileName: "file2.cc.json", fileChecksum: expectedMap2Md5 }, map: { name: "test2" } } as CCFile
+			const fileState2 = { file: file2, selectedAs: FileSelectionState.Single } as FileState
 
 			const fileState: FileState[] = []
 			fileState.push(fileState1)

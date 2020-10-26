@@ -35,7 +35,7 @@ export class CustomViewsPageObject {
 	}
 
 	async submitAddDialog() {
-		return expect(page).toClick("md-dialog-actions .md-primary")
+		return expect(page).toClick("md-dialog-actions .md-primary", { timeout: 3000 })
 	}
 
 	async isOverrideWarningVisible() {

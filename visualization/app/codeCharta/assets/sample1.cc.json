@@ -1,6 +1,7 @@
 {
 	"projectName": "Sample Project with Edges",
 	"apiVersion": "1.2",
+	"fileChecksum": "md5-sample",
 	"nodes": [
 		{
 			"name": "root",

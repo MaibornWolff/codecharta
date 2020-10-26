@@ -4,6 +4,7 @@ import { ExportCCFile } from "../../codeCharta.api.model"
 export const fileWithFixedFolders: ExportCCFile = {
 	projectName: "example-project",
 	apiVersion: "1.2",
+	fileChecksum: "",
 	nodes: [
 		{
 			name: "root",
