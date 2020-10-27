@@ -61,9 +61,9 @@
 	],
 	"scripts": {
 		"start": "nw .",
-		"build": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='true' --env.STANDALONE=true",
-		"build:web": "webpack --config ./conf/webpack.config.js --define process.env.STANDALONE='false' --env.STANDALONE=false",
-		"dev": "webpack-dev-server --config ./conf/webpack.config.js --open --define process.env.STANDALONE='false' --env.STANDALONE=false",
+		"build": "webpack --config ./conf/webpack.config.js --env STANDALONE=true",
+		"build:web": "webpack --config ./conf/webpack.config.js --env STANDALONE=false",
+		"dev": "webpack serve --config ./conf/webpack.config.js --env STANDALONE=false",
 		"test": "jest --config ./jest.config.json .*\\.spec\\.ts --env=jsdom",
 		"test:auto": "npm test -- --watch",
 		"test:autoNoCoverage": "npm run test:auto -- --coverage false",
