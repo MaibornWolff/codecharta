@@ -49,6 +49,19 @@ describe("blacklistController", () => {
 
 			expect(blacklistPanelController["_viewModel"].flatten).toEqual([blacklist[1]])
 		})
+
+		it("should set new flattened node with a shortened path", () => {
+			const blacklist: BlacklistItem[] = [
+				{ path: "/root", type: BlacklistType.exclude },
+				{ path: "/this_is_a_very_long_file_path_that_would_not_fit/root/file", type: BlacklistType.flatten }
+			]
+			const SHORTENED_PATH = "../root/file"
+
+			blacklistPanelController.onBlacklistChanged(blacklist)
+
+			expect(blacklistPanelController["_viewModel"].flatten).toEqual([blacklist[1]])
+			expect(SHORTENED_PATH).toEqual(blacklist[1].display_path)
+		})
 	})
 
 	describe("removeBlacklistEntry", () => {
