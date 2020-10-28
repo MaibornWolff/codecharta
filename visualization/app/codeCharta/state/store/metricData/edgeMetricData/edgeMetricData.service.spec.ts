@@ -131,6 +131,12 @@ describe("EdgeMetricDataService", () => {
 
 			expect(nodePaths).toEqual(["/root/big leaf", "/root/Parent Leaf/small leaf"])
 		})
+
+		it("should return null if amount of edges is 0", () => {
+			const nodePaths = edgeMetricDataService.getNodesWithHighestValue("pairingRate", 0)
+
+			expect(nodePaths).toEqual(null)
+		})
 	})
 
 	describe("getMetricValuesForNode", () => {
