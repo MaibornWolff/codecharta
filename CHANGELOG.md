@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   File tree/flattened/excluded overlay visualization is buggy #1269
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Schedules and merge retries of dependabot dependency updates changed
