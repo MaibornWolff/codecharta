@@ -274,7 +274,7 @@ describe("codeMapMouseEventService", () => {
 			expect(threeCameraService.camera.updateMatrixWorld).toHaveBeenCalledWith(false)
 		})
 
-		it("should unhover the building, when no intersection was found, a building is hovered and nothing is hovered in the treeView", () => {
+		it("should un-highlight the building, when no intersection was found and a  building is hovered", () => {
 			codeMapMouseEventService["highlightedInTreeView"] = null
 
 			codeMapMouseEventService.updateHovering()
@@ -295,7 +295,7 @@ describe("codeMapMouseEventService", () => {
 			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
 		})
 
-		it("should not hover node when an intersection was found and the cursor is set to grabbing", () => {
+		it("should not highlight node when an intersection was found and the cursor is set to grabbing", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
@@ -310,7 +310,7 @@ describe("codeMapMouseEventService", () => {
 			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
 		})
 
-		it("should not hover a node when an intersection was found and the cursor is set to moving", () => {
+		it("should not highlight a node when an intersection was found and the cursor is set to moving", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
@@ -325,7 +325,7 @@ describe("codeMapMouseEventService", () => {
 			expect(document.body.style.cursor).toEqual(CursorType.Moving)
 		})
 
-		it("should not hover a node again when the intersection building is the same as the hovered building", () => {
+		it("should not highlight a node again when the intersection building is the same", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
@@ -367,7 +367,7 @@ describe("codeMapMouseEventService", () => {
 				expect(document.body.style.cursor).toEqual(CursorType.Default)
 			})
 
-			it("should not do anything when no building is hovered and nothing is selected", () => {
+			it("should not do anything when no building is highlight and nothing is selected", () => {
 				threeSceneService.getHighlightedBuilding = jest.fn()
 				threeSceneService.getSelectedBuilding = jest.fn()
 
@@ -445,7 +445,7 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onDocumentMouseDown", () => {
-		it("should the cursor to moving when pressing the right button", () => {
+		it("should change the cursor to moving when pressing the right button", () => {
 			const event = { button: ClickType.RightClick } as MouseEvent
 
 			codeMapMouseEventService.onDocumentMouseDown(event)
@@ -471,7 +471,7 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("onDocumentDoubleClick", () => {
-		it("should return if hovered is null", () => {
+		it("should return if highlighted is null", () => {
 			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.onDocumentDoubleClick()
