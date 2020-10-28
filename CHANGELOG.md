@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   Disable building's highlight effect on moving the map #1432
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Schedules and merge retries of dependabot dependency updates changed
