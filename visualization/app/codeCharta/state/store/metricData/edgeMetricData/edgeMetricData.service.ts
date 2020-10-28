@@ -62,6 +62,10 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 			return keys
 		}
 
+		if (amountOfEdgePreviews === 0) {
+			return null
+		}
+
 		for (const key of nodeEdgeMetrics.keys()) {
 			keys.push(key)
 			if (keys.length === amountOfEdgePreviews) {
