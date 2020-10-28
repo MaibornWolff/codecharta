@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   EdgePreview on Map broken when selecting zero #1276
+
 ### Chore 👨‍💻 👩‍💻
 
 -   Schedules and merge retries of dependabot dependency updates changed
