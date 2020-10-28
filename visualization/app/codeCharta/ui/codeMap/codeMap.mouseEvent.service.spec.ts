@@ -282,21 +282,20 @@ describe("codeMapMouseEventService", () => {
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
 		})
 
-		it("should hover a node when no node is hovered, and an intersection was found and change the cursor to pointing", () => {
+		it("should hover a node when an intersection was found and the cursor is set to pointing", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
-
 			threeSceneService.getHighlightedBuilding = jest.fn()
 
 			codeMapMouseEventService.updateHovering()
 
-			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING)
+			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalled()
 			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
 			expect(document.body.style.cursor).toEqual(CursorType.Pointer)
 		})
 
-		it("should hover a node when no node is hovered, and an intersection was found but not change cursor in grabbing mode", () => {
+		it("should not hover node when an intersection was found and the cursor is set to grabbing", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
@@ -306,12 +305,12 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.updateHovering()
 
-			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING)
-			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+			expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
+			expect(threeSceneService.highlightBuildings).not.toHaveBeenCalled()
 			expect(document.body.style.cursor).toEqual(CursorType.Grabbing)
 		})
 
-		it("should hover a node when no node is hovered, and an intersection was found but not change cursor in moving mode", () => {
+		it("should not hover a node when an intersection was found and the cursor is set to moving", () => {
 			threeSceneService.getMapMesh = jest.fn().mockReturnValue({
 				checkMouseRayMeshIntersection: jest.fn().mockReturnValue(CODE_MAP_BUILDING)
 			})
@@ -321,8 +320,8 @@ describe("codeMapMouseEventService", () => {
 
 			codeMapMouseEventService.updateHovering()
 
-			expect(threeSceneService.addBuildingToHighlightingList).toHaveBeenCalledWith(CODE_MAP_BUILDING)
-			expect(threeSceneService.highlightBuildings).toHaveBeenCalled()
+			expect(threeSceneService.addBuildingToHighlightingList).not.toHaveBeenCalled()
+			expect(threeSceneService.highlightBuildings).not.toHaveBeenCalled()
 			expect(document.body.style.cursor).toEqual(CursorType.Moving)
 		})
 
