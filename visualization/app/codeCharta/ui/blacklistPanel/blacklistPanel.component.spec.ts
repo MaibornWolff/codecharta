@@ -62,17 +62,30 @@ describe("blacklistController", () => {
 			expect(blacklistPanelController["_viewModel"].flatten).toEqual([blacklist[1]])
 			expect(SHORTENED_PATH).toEqual(blacklist[1].display_path)
 		})
-	})
 
-	describe("removeBlacklistEntry", () => {
-		it("should remove blacklist entry", () => {
-			const entry = { path: "/some/leaf", type: BlacklistType.exclude }
+		it("should correctly set multiple filenames", () => {
+			const blackList: BlacklistItem[] = [
+				{ path: "/root", type: BlacklistType.exclude },
+				{ path: "/root/someLeaf", type: BlacklistType.exclude },
+				{ path: "/root/otherLeaf", type: BlacklistType.exclude },
+				{ path: "/root/leaf/someOtherLeaf", type: BlacklistType.exclude }
+			]
 
-			storeService.dispatch(addBlacklistItem({ ...entry }))
+			blacklistPanelController.onBlacklistChanged(blackList)
 
-			blacklistPanelController.removeBlacklistEntry(entry)
+			expect(blacklistPanelController["_viewModel"].exclude).toEqual(blackList)
+		})
 
-			expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(entry)
+		describe("removeBlacklistEntry", () => {
+			it("should remove blacklist entry", () => {
+				const entry = { path: "/some/leaf", type: BlacklistType.exclude }
+
+				storeService.dispatch(addBlacklistItem({ ...entry }))
+
+				blacklistPanelController.removeBlacklistEntry(entry)
+
+				expect(storeService.getState().fileSettings.blacklist).not.toContainEqual(entry)
+			})
 		})
 	})
 })
