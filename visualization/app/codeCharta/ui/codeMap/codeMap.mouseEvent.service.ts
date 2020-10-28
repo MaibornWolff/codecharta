@@ -181,6 +181,7 @@ export class CodeMapMouseEventService
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Grabbing)
 		}
 		this.mouseOnLastClick = { x: event.clientX, y: event.clientY }
+		this.unhoverBuilding()
 		$(document.activeElement).blur()
 	}
 
@@ -238,18 +239,18 @@ export class CodeMapMouseEventService
 	private hoverBuildingAndChildren(hoveredBuilding: CodeMapBuilding) {
 		if (!this.isGrabbing && !this.isMoving) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Pointer)
-		}
 
-		const { lookUp } = this.storeService.getState()
-		const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
-		for (const { data } of hierarchy(codeMapNode)) {
-			const building = lookUp.idToBuilding.get(data.id)
-			if (building) {
-				this.threeSceneService.addBuildingToHighlightingList(building)
+			const { lookUp } = this.storeService.getState()
+			const codeMapNode = lookUp.idToNode.get(hoveredBuilding.node.id)
+			for (const { data } of hierarchy(codeMapNode)) {
+				const building = lookUp.idToBuilding.get(data.id)
+				if (building) {
+					this.threeSceneService.addBuildingToHighlightingList(building)
+				}
 			}
+			this.threeSceneService.highlightBuildings()
+			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding })
 		}
-		this.threeSceneService.highlightBuildings()
-		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_HOVERED_EVENT, { hoveredBuilding })
 	}
 
 	private unhoverBuilding() {
