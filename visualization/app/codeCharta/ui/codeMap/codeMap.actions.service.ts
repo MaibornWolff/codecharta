@@ -60,7 +60,7 @@ export class CodeMapActionsService {
 		for (const edge of edges) {
 			edge.visible = EdgeVisibility.none
 
-			if (edge.attributes[edgeMetric] !== undefined && edgePreviewNodes !== null) {
+			if (edge.attributes[edgeMetric] !== undefined) {
 				const hasFromNodeEdgePreview = edgePreviewNodes.has(edge.fromNodeName)
 				const hasToNodeEdgePreview = edgePreviewNodes.has(edge.toNodeName)
 
