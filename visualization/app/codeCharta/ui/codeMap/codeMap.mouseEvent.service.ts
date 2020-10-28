@@ -200,7 +200,7 @@ export class CodeMapMouseEventService
 
 	private onRightClick() {
 		this.isMoving = false
-		const building = this.threeSceneService.getHighlightedBuilding()
+		const building = this.intersectedBuilding
 		// check if mouse moved to prevent the node context menu to show up after moving the map, when the cursor ends on a building
 		if (building && !this.hasMouseMoved(this.mouseOnLastClick)) {
 			this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_RIGHT_CLICKED_EVENT, {
@@ -208,6 +208,7 @@ export class CodeMapMouseEventService
 				x: this.mouse.x,
 				y: this.mouse.y
 			})
+			this.hoverBuilding(building)
 		}
 	}
 
