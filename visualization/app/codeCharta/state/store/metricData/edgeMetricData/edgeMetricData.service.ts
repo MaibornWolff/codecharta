@@ -55,12 +55,13 @@ export class EdgeMetricDataService implements StoreSubscriber, BlacklistSubscrib
 	}
 
 	getNodesWithHighestValue(metricName: string, amountOfEdgePreviews: number) {
+		const keys: string[] = []
+
 		if (amountOfEdgePreviews === 0) {
-			return []
+			return keys
 		}
 
 		const nodeEdgeMetrics = nodeEdgeMetricsMap.get(metricName)
-		const keys: string[] = []
 
 		if (nodeEdgeMetrics === undefined) {
 			return keys
