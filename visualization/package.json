@@ -106,7 +106,7 @@
 		"nw": "^0.49.0",
 		"redux": "^4.0.4",
 		"shelljs": "^0.8.1",
-		"three": "^0.121.1",
+		"three": "^0.122.0",
 		"three-orbit-controls": "^82.1.0",
 		"typescript-json-schema": "^0.43.0"
 	},
