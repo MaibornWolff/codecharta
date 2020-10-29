@@ -60,10 +60,10 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	clearConstantHighlight(constantHighlight: CodeMapBuilding[]){
-		constantHighlight.forEach(x => {
-			x.resetColor()
-			this.setVertexColor(x.id,x.getDefaultColorVector(),x.getDefaultDeltaColorVector())
+	clearConstantHighlight(constantHighlight: Map<number, CodeMapBuilding>){
+		constantHighlight.forEach(codeMapBuilding =>{
+			codeMapBuilding.resetColor()
+			this.setVertexColor(codeMapBuilding.id,codeMapBuilding.getDefaultColorVector(),codeMapBuilding.getDefaultDeltaColorVector())
 		})
 		this.updateVertices()
 
@@ -86,12 +86,11 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State, constantHighlight:CodeMapBuilding[]) {
+	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State, constantHighlight: Map<number, CodeMapBuilding>) {
 		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
-		const constantHighlightMap= TreeMapHelper.buildingArrayToMap(constantHighlight)
 		for (const building of this.mapGeomDesc.buildings) {
 			if (!this.isBuildingSelected(selected, building)) {
-				if (highlightBuildingMap.get(building.id) || constantHighlightMap.get(building.id)) {
+				if (highlightBuildingMap.get(building.id) || constantHighlight.get(building.id)) {
 					building.decreaseLightness(CodeMapMesh.LIGHTNESS_INCREASE)
 				} else {
 					this.adjustSurroundingBuildingColors(highlightedBuildings, building, state)
@@ -102,8 +101,8 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	isBuildingConstantlyHighlighted(constantHighlight: CodeMapBuilding[], building: CodeMapBuilding){
-		return constantHighlight.includes(building)
+	isBuildingConstantlyHighlighted(constantHighlight: Map<number,CodeMapBuilding>, building: CodeMapBuilding){
+		return constantHighlight.has(building.id)
 	}
 
 	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
@@ -116,7 +115,7 @@ export class CodeMapMesh {
 		}
 	}
 
-	clearHighlight(selected: CodeMapBuilding, constantHighlight: CodeMapBuilding[]) {
+	clearHighlight(selected: CodeMapBuilding, constantHighlight: Map<number, CodeMapBuilding>) {
 		for (const currentBuilding of this.mapGeomDesc.buildings) {
 			if (!this.isBuildingSelected(selected, currentBuilding)&& !this.isBuildingConstantlyHighlighted(constantHighlight, currentBuilding)){
 				this.setVertexColor(

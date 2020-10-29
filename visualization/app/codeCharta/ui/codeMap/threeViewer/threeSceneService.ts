@@ -33,7 +33,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding[] = []
-	private constantHighlight: CodeMapBuilding[] = []
+	private constantHighlight: Map<number, CodeMapBuilding> = new Map()
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
@@ -97,7 +97,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		for (const { data } of hierarchy(codeMapBuilding)) {
 			const building = lookUp.idToBuilding.get(data.id)
 			if (building) {
-				this.constantHighlight.push(building)
+				this.constantHighlight.set(building.id, building)
 			}
 		}
 		this.highlightBuildings()
@@ -109,16 +109,16 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		for (const { data } of hierarchy(codeMapBuilding)) {
 			const building = lookUp.idToBuilding.get(data.id)
 			if (building) {
-				this.constantHighlight = this.constantHighlight.filter(x => !x.equals(building))
+				this.constantHighlight.delete(building.id)
 			}
 		}
 		this.highlightBuildings()
 	}
 
 	clearConstantHighlight(){
-		if(this.constantHighlight.length >0){
+		if(this.constantHighlight.size >0){
 			this.getMapMesh().clearConstantHighlight(this.constantHighlight)
-			this.constantHighlight = []
+			this.constantHighlight.clear()
 		}
 	}
 
