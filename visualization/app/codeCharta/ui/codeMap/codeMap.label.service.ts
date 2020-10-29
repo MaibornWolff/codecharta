@@ -136,8 +136,8 @@ export class CodeMapLabelService implements CameraChangeSubscriber {
 		context.textBaseline = "middle"
 
 		//fillText() cannot create multi-line texts, we call it multiple times with different offsets to create a multi-line label
-		for (const [i, element] of multiLineContext.entries()) {
-			context.fillText(element, canvas.width / 2, (canvas.height * (i + 1)) / (multiLineContext.length + 1))
+		for (const [index, element] of multiLineContext.entries()) {
+			context.fillText(element, canvas.width / 2, (canvas.height * (index + 1)) / (multiLineContext.length + 1))
 		}
 
 		const texture = new Texture(canvas)

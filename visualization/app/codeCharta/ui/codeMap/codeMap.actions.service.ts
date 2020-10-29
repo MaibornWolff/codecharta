@@ -82,14 +82,14 @@ export class CodeMapActionsService {
 	getParentMarkedPackageIndex(path: string) {
 		const markedPackages: MarkedPackage[] = this.storeService.getState().fileSettings.markedPackages
 		let index = -1
-		for (let i = 0; i < markedPackages.length; i++) {
-			const markedPackage = markedPackages[i]
+		for (let loopIndex = 0; loopIndex < markedPackages.length; loopIndex++) {
+			const markedPackage = markedPackages[loopIndex]
 			if (
 				path.startsWith(markedPackage.path) &&
 				path !== markedPackage.path &&
 				(index === -1 || markedPackages[index].path.length < markedPackage.path.length)
 			) {
-				index = i
+				index = loopIndex
 			}
 		}
 

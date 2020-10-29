@@ -12,11 +12,10 @@ export class RibbonBarPageObject {
 
 		await expect(page).toClick(`#${selector}-card .section .section-title`, { timeout: 3000 })
 
-		if (wasOpen) {
-			await page.waitForSelector(`#${selector}-card`, { visible: false })
-		} else {
-			await page.waitForSelector(`#${selector}-card.${this.EXPANDED}`)
-		}
+		await (wasOpen
+			? page.waitForSelector(`#${selector}-card`, { visible: false })
+			: page.waitForSelector(`#${selector}-card.${this.EXPANDED}`))
+
 		return !wasOpen
 	}
 

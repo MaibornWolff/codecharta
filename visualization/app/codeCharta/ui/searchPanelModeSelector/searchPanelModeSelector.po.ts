@@ -4,11 +4,10 @@ export class SearchPanelModeSelectorPageObject {
 
 		await expect(page).toClick("#tree-view", { timeout: 3000 })
 
-		if (wasOpen) {
-			await page.waitForSelector("#search-panel-card", { visible: false })
-		} else {
-			await page.waitForSelector("#search-panel-card.expanded")
-		}
+		await (wasOpen
+			? page.waitForSelector("#search-panel-card", { visible: false })
+			: page.waitForSelector("#search-panel-card.expanded"))
+
 		return !wasOpen
 	}
 

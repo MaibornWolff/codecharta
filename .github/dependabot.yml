@@ -7,16 +7,22 @@ updates:
   open-pull-requests-limit: 10
 - package-ecosystem: npm
   directory: "/analysis/node-wrapper"
+  # Check the npm registry for updates at 22pm UTC (midnight in central european time)
   schedule:
     interval: daily
+    time: "22:00"
   open-pull-requests-limit: 10
 - package-ecosystem: gradle
   directory: "/analysis"
+  # Check gradle dependencies for updates at 22pm UTC (midnight in central european time)
   schedule:
     interval: daily
+    time: "22:00"
   open-pull-requests-limit: 10
 - package-ecosystem: npm
   directory: "/visualization"
+  # Check the npm registry for updates at 22pm UTC (midnight in central european time)
   schedule:
     interval: daily
+    time: "22:00"
   open-pull-requests-limit: 10

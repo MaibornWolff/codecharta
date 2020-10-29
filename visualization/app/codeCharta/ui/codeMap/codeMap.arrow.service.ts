@@ -78,9 +78,12 @@ export class CodeMapArrowService
 		const { edges } = this.storeService.getState().fileSettings
 
 		for (const edge of edges) {
-			if (edge.visible && edge.visible !== EdgeVisibility.none) {
-				const originNode = this.map.get(edge.fromNodeName)
-				const targetNode = this.map.get(edge.toNodeName)
+			const originNode = this.map.get(edge.fromNodeName)
+			const targetNode = this.map.get(edge.toNodeName)
+			if (originNode && targetNode && edge.visible !== EdgeVisibility.none && edge.visible) {
+				//TODO It seems originNode or targetNode might be undefined here,
+				// I think it results from the method being called multiple times when it might not be available yet
+				// I changed that back to avoid console errors and re-enable the edge-metric, however we should investigate why this is happening
 				const curveScale = 100 * this.storeService.getState().appSettings.edgeHeight
 				const curve = this.createCurve(originNode, targetNode, curveScale)
 				this.previewMode(curve, edge.visible)

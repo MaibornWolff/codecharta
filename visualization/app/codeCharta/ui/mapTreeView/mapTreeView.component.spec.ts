@@ -14,6 +14,7 @@ import { StoreService } from "../../state/store.service"
 import { SortingOrderAscendingService } from "../../state/store/appSettings/sortingOrderAscending/sortingOrderAscending.service"
 import { SortingOptionService } from "../../state/store/dynamicSettings/sortingOption/sortingOption.service"
 import { clone } from "../../util/clone"
+import { klona } from "klona"
 
 describe("MapTreeViewController", () => {
 	let mapTreeViewController: MapTreeViewController
@@ -106,6 +107,27 @@ describe("MapTreeViewController", () => {
 			$timeout.flush(100)
 
 			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME)
+		})
+
+		it("should clone new map before updating viewModel.rootNode to prevent unwanted changes in original map", () => {
+			const testNode = VALID_NODE_WITH_MULTIPLE_FOLDERS
+			const untouchedOriginalTestNode = klona(testNode)
+
+			mapTreeViewController["_viewModel"].rootNode = null
+
+			mapTreeViewController.onRenderMapChanged(testNode)
+			$timeout.flush(100)
+
+			// Be sure, sorting will be applied and the viewModel.rootNode will be modified.
+			mapTreeViewController.onSortingOptionChanged(SortingOption.NUMBER_OF_FILES)
+
+			// The sort function will change the original (referenced) map object, if it is not cloned before.
+			// Check that this is not the case to prevent future side effects.
+			expect(testNode).toEqual(untouchedOriginalTestNode)
+
+			// And now check that the sort function has changed the local map copy
+			// and the new order has been applied correctly.
+			expect(mapTreeViewController["_viewModel"].rootNode).toEqual(VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_UNARY)
 		})
 	})
 })

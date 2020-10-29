@@ -17,6 +17,39 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+-   Schedules and merge retries of dependabot dependency updates changed
+
+## [1.60.2] - 2020-10-24
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Mouse cursor flickering #1170
+-   Fix flipping map when clicking any option in the toolbar #1410
+-   Fix edge metric not working correctly
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.60.1] - 2020-10-20
+
+### Added 🚀
+
+### Changed
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   Issue with first start without an internet connection not working#1266
+-   Issue with ribbon bar sizes for opened cards #1035
+
+### Chore 👨‍💻 👩‍💻
+
 ## [1.60.0] - 2020-10-16
 
 ### Added 🚀
