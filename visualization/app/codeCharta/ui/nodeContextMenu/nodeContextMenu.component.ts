@@ -113,6 +113,11 @@ export class NodeContextMenuController
 
 	}
 
+	removeNodeFromConstantHighlight(){
+		this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(this._viewModel.codeMapNode)
+		this.onHideNodeContextMenu()
+	}
+
 	onMapWheelHideNodeContextMenu = () => {
 		// If you zoom in and out the map, the node context menu should be closed.
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
@@ -208,6 +213,14 @@ export class NodeContextMenuController
 			return false
 		}
 		return this.storeService.getState().fileSettings.markedPackages[index].color === color
+	}
+
+	isNodeConstantlyHighlighted(){
+		if(this._viewModel.codeMapNode){
+			const {lookUp} = this.storeService.getState()
+			const codeMapBuilding: CodeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
+			return this.threeSceneService.getConstantHighligh().includes(codeMapBuilding)
+		}
 	}
 
 	isNodeOrParentFocused() {

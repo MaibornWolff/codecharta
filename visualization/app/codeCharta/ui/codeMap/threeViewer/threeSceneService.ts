@@ -67,6 +67,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.highlightBuildings()
 	}
 
+	getConstantHighligh(){
+		return this.constantHighlight
+	}
+
 	addBuildingToHighlightingList(building: CodeMapBuilding) {
 		this.highlighted.push(building)
 	}
@@ -99,6 +103,17 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.highlightBuildings()
 	}
 
+	removeNodeAndChildrenFromConstantHighlight(codeMapNode: CodeMapNode){
+		const {lookUp} = this.storeService.getState()
+		const codeMapBuilding = lookUp.idToNode.get(codeMapNode.id)
+		for (const { data } of hierarchy(codeMapBuilding)) {
+			const building = lookUp.idToBuilding.get(data.id)
+			if (building) {
+				this.constantHighlight = this.constantHighlight.filter(x => !x.equals(building))
+			}
+		}
+		this.highlightBuildings()
+	}
 
 	clearConstantHighlight(){
 		if(this.constantHighlight.length >0){
