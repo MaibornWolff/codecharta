@@ -13,6 +13,7 @@ import { addBlacklistItem } from "../../state/store/fileSettings/blacklist/black
 import { focusNode, unfocusNode } from "../../state/store/dynamicSettings/focusedNodePath/focusedNodePath.actions"
 import { NodeDecorator } from "../../util/nodeDecorator"
 import { CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 describe("nodeContextMenuController", () => {
 	let element: Element
@@ -23,6 +24,7 @@ describe("nodeContextMenuController", () => {
 	let storeService: StoreService
 	let codeMapActionsService: CodeMapActionsService
 	let codeMapPreRenderService: CodeMapPreRenderService
+	let threeSceneService: ThreeSceneService
 
 	beforeEach(() => {
 		restartSystem()
@@ -45,6 +47,7 @@ describe("nodeContextMenuController", () => {
 		storeService = getService<StoreService>("storeService")
 		codeMapActionsService = getService<CodeMapActionsService>("codeMapActionsService")
 		codeMapPreRenderService = getService<CodeMapPreRenderService>("codeMapPreRenderService")
+		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 	}
 
 	function mockElement() {
@@ -63,7 +66,8 @@ describe("nodeContextMenuController", () => {
 			$rootScope,
 			storeService,
 			codeMapActionsService,
-			codeMapPreRenderService
+			codeMapPreRenderService,
+			threeSceneService
 		)
 	}
 

@@ -69,7 +69,8 @@ describe("ThreeSceneService", () => {
 			expect(threeSceneService["mapMesh"].highlightBuilding).toHaveBeenCalledWith(
 				threeSceneService["highlighted"],
 				null,
-				storeService.getState()
+				storeService.getState(),
+				threeSceneService["constantHighlight"]
 			)
 		})
 	})
