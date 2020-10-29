@@ -17,7 +17,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
--   Disable building's highlight effect on moving the map #1432
 -   EdgePreview on Map broken when selecting zero #1276
 
 ### Chore 👨‍💻 👩‍💻
