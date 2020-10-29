@@ -408,7 +408,7 @@ describe("codeMapMouseEventService", () => {
 				event = { button: ClickType.RightClick, clientX: 0, clientY: 1 }
 			})
 
-			it("should $broadcast a building-right-clicked event ", () => {
+			it("should $broadcast a building-right-clicked event", () => {
 				codeMapMouseEventService.onDocumentMouseMove(event)
 				codeMapMouseEventService.onDocumentMouseDown(event)
 
