@@ -408,17 +408,13 @@ describe("codeMapMouseEventService", () => {
 				event = { button: ClickType.RightClick, clientX: 0, clientY: 1 }
 			})
 
-			it("should $broadcast a building-right-clicked event with data", () => {
+			it("should $broadcast a building-right-clicked event", () => {
 				codeMapMouseEventService.onDocumentMouseMove(event)
 				codeMapMouseEventService.onDocumentMouseDown(event)
 
 				codeMapMouseEventService.onDocumentMouseUp(event)
 
-				expect($rootScope.$broadcast).toHaveBeenCalledWith("building-right-clicked", {
-					building: codeMapBuilding,
-					x: event.clientX,
-					y: event.clientY
-				})
+				expect($rootScope.$broadcast).toHaveBeenCalled()
 			})
 
 			it("should not $broadcast a building-right-clicked event when no intersection was found", () => {
