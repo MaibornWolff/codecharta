@@ -11,9 +11,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Disable highlighting buildings during map movement #1432
+
 ### Removed 🗑
 
 ### Fixed 🐞
+
+-   EdgePreview on Map broken when selecting zero #1276
 
 ### Chore 👨‍💻 👩‍💻
 
