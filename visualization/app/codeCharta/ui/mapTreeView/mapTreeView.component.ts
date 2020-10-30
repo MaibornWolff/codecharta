@@ -33,7 +33,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		const compareFunction: CompareFunction =
 			sortingOption === SortingOption.NUMBER_OF_FILES
 				? (a, b) => b.attributes[NodeMetricDataService.UNARY_METRIC] - a.attributes[NodeMetricDataService.UNARY_METRIC]
-				: (a, b) => (b.name > a.name ? -1 : 1)
+				: (a, b) => a.name.localeCompare(b.name)
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, KEEP_ORDER, compareFunction)
 	}
 
