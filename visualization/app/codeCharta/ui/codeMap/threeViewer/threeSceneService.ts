@@ -84,7 +84,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	selectBuilding(building: CodeMapBuilding) {
 		const color = this.storeService.getState().appSettings.mapColors.selected
-		this.clearConstantHighlight()
 		this.getMapMesh().selectBuilding(building, color)
 		this.selected = building
 		this.highlightBuildings()
