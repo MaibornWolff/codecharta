@@ -180,7 +180,6 @@ export interface EdgeMetricCount {
 
 export interface BlacklistItem {
 	path: string
-	display_path?: string
 	type: BlacklistType
 }
 
