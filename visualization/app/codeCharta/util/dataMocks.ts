@@ -1430,20 +1430,23 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 
 export const CUSTOM_VIEW_ITEMS: CustomViewItem[] = [
 	{
+		id: "SINGLEfileASampleMap View #1",
 		name: "SampleMap View #1",
-		mapName: "fileA",
+		mapNames: "fileA",
 		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 		isApplicable: true
 	},
 	{
+		id: "SINGLEfileAAnotherMap View #1",
 		name: "AnotherMap View #1",
-		mapName: "fileB",
+		mapNames: "fileB",
 		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 		isApplicable: false
 	},
 	{
+		id: "SINGLEfileASampleMap View #2",
 		name: "SampleMap View #2",
-		mapName: "fileA",
+		mapNames: "fileA",
 		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 		isApplicable: true
 	}

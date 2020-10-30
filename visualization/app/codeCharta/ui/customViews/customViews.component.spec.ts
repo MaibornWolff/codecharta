@@ -61,7 +61,7 @@ describe("CustomViewsController", () => {
 
 	describe("loadCustomViews", () => {
 		it("should load CustomViews, sort them accordingly and set the dropDownCustomViewItems ", () => {
-			CustomViewHelper.getCustomViewItems = jest.fn().mockReturnValue([...CUSTOM_VIEW_ITEMS])
+			CustomViewHelper.getCustomViewItemGroups = jest.fn().mockReturnValue([...CUSTOM_VIEW_ITEMS])
 
 			customViewsController.loadCustomViews()
 

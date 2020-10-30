@@ -1,6 +1,6 @@
 "use strict"
 import { State } from "../codeCharta.model"
-import { CustomView } from "../model/customView/customView.api.model"
+import {CustomView, CustomViewMapSelectionMode} from "../model/customView/customView.api.model"
 import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
 
 export class CustomViewBuilder {
@@ -9,10 +9,17 @@ export class CustomViewBuilder {
 	static buildFromState(viewName: string, state: State): CustomView {
 		const customViewFileStateConnector = new CustomViewFileStateConnector(state.files)
 
+		const uniqueIdentifier = this.createCustomViewIdentifier(
+			customViewFileStateConnector.getMapSelectionMode(),
+			customViewFileStateConnector.getSelectedMaps(),
+			viewName
+		)
+
 		const customView = {
+			id: uniqueIdentifier,
 			name: viewName,
 			mapSelectionMode: customViewFileStateConnector.getMapSelectionMode(),
-			assignedMap: customViewFileStateConnector.getJointMapName(),
+			assignedMaps: customViewFileStateConnector.getSelectedMaps(),
 			mapChecksum: customViewFileStateConnector.getChecksumOfAssignedMaps(),
 			customViewVersion: this.CC_CUSTOM_VIEW_API_VERSION
 		} as CustomView
@@ -24,14 +31,26 @@ export class CustomViewBuilder {
 			treeMap: undefined
 		}
 
+		// Initialize all necessary state settings with default values right here
+		// Any changes to the state properties must also be adapted here
+		// You must handle breaking changes of the CustomView API
 		this.initializeAppSettings(customView)
 		this.initializeDynamicSettings(customView)
 		this.initializeFileSettings(customView)
 		this.initializeTreeMapSettings(customView)
 
+		// Override the default state settings with the stored CustomView values
 		this.deepMapOneToOther(state, customView.stateSettings)
 
 		return customView
+	}
+
+	static createCustomViewIdentifier(
+		mapSelectionMode: CustomViewMapSelectionMode,
+		selectedMaps: string[],
+		viewName: string
+	) {
+		return mapSelectionMode + selectedMaps.join("") + viewName
 	}
 
 	private static initializeAppSettings(target: CustomView) {

@@ -18,17 +18,25 @@ import { setCameraTarget } from "../../state/store/appSettings/cameraTarget/came
 import { Vector3 } from "three"
 
 export interface CustomViewItem {
+	id: string
 	name: string
-	mapName: string
+	mapNames: string
 	mapSelectionMode: CustomViewMapSelectionMode
 	isApplicable: boolean
 }
 
+export interface CustomViewItemGroup {
+	mapNames: string
+	mapSelectionMode: CustomViewMapSelectionMode
+	hasApplicableItems: boolean
+	customViewItems: CustomViewItem[]
+}
+
 export class CustomViewsController implements FilesSelectionSubscriber {
 	private _viewModel: {
-		dropDownCustomViewItems: CustomViewItem[]
+		dropDownCustomViewItemGroups: CustomViewItemGroup[]
 	} = {
-		dropDownCustomViewItems: []
+		dropDownCustomViewItemGroups: []
 	}
 
 	private customViewFileStateConnector: CustomViewFileStateConnector
@@ -48,16 +56,18 @@ export class CustomViewsController implements FilesSelectionSubscriber {
 	}
 
 	loadCustomViews() {
-		this._viewModel.dropDownCustomViewItems = CustomViewHelper.getCustomViewItems(this.customViewFileStateConnector)
-		this._viewModel.dropDownCustomViewItems.sort(CustomViewHelper.sortCustomViewDropDownList())
+		const customViewItemGroups = CustomViewHelper.getCustomViewItemGroups(this.customViewFileStateConnector)
+		// TODO: check if it is an improvement to just sort by hasApplicableCustomViews and by map key afterwards
+		this._viewModel.dropDownCustomViewItemGroups = [...customViewItemGroups.values()]
+		this._viewModel.dropDownCustomViewItemGroups.sort(CustomViewHelper.sortCustomViewDropDownGroupList())
 	}
 
 	showAddCustomViewSettings() {
 		this.dialogService.showAddCustomViewSettings()
 	}
 
-	applyCustomView(viewName: string) {
-		const customView = CustomViewHelper.getCustomViewSettings(viewName)
+	applyCustomView(viewId: string) {
+		const customView = CustomViewHelper.getCustomViewSettings(viewId)
 
 		// TODO: Setting state from loaded CustomView not working at the moment
 		//  due to issues of the event architecture.
@@ -83,8 +93,8 @@ export class CustomViewsController implements FilesSelectionSubscriber {
 		}, 100)
 	}
 
-	removeCustomView(viewName) {
-		CustomViewHelper.deleteCustomView(viewName)
+	removeCustomView(viewId, viewName) {
+		CustomViewHelper.deleteCustomView(viewId)
 		this.dialogService.showErrorDialog(`${viewName} deleted.`, "Info")
 	}
 }

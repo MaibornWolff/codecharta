@@ -5,7 +5,7 @@
 
 	<md-menu-content class="custom-views-drop-down" width="7">
 		<md-menu-item class="custom-views-item">
-			<md-button class="custom-views-name" ng-disabled="true">Custom Views applicable to current map and mode</md-button>
+			<md-button class="custom-views-dialog-name" ng-disabled="true">Custom Views applicable to current map and mode</md-button>
 			<md-button ng-click="$ctrl.showAddCustomViewSettings()" class="action-button add" title="Create new custom view">
 				<i class="fa fa-plus" aria-hidden="true"></i>
 			</md-button>
@@ -13,33 +13,45 @@
 
 		<md-divider></md-divider>
 
-		<md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomViewItems.length" class="custom-views-item">
+		<md-menu-item ng-if="!$ctrl._viewModel.dropDownCustomViewItemGroups.length" class="custom-views-item">
 			<md-button disabled>It is time to add your first CustomView.</md-button>
 		</md-menu-item>
 
-		<md-menu-item class="custom-views-item" ng-repeat="customView in $ctrl._viewModel.dropDownCustomViewItems">
+		<md-menu-item class="custom-views-item" ng-repeat="customViewItemGroup in $ctrl._viewModel.dropDownCustomViewItemGroups">
 			<md-button
-				class="button-hovering"
-				ng-click="$ctrl.applyCustomView(customView.name)"
-				ng-disabled="!customView.isApplicable"
-				title="Apply custom view"
+					class="button-hovering"
+					ng-click="collapsed=!collapsed"
+					md-prevent-menu-close="md-prevent-menu-close"
 			>
-				{{ customView.name }}
-				<i
-					ng-show="!customView.isApplicable"
-					class="fa fa-info-circle left"
-					title="This one is applicable for map(s) {{ customView.mapName }} in {{ customView.mapSelectionMode }} mode only."
-				></i>
+				<span class="collapse-trigger">
+					Custom configs in <strong>{{ customViewItemGroup.mapSelectionMode|lowercase }}</strong> mode for <strong>{{ customViewItemGroup.mapNames }}</strong>
+				</span>
+				<i ng-show="!collapsed" class="collapse-icon fa fa-arrow-down"></i>
+				<i ng-show="collapsed" class="collapse-icon fa fa-arrow-up"></i>
 			</md-button>
 
-			<md-button
-				ng-click="$ctrl.removeCustomView(customView.name)"
-				class="action-button remove button-hovering"
-				title="Remove custom view"
-			>
-				<i class="fa fa-minus-square"></i>
-			</md-button>
+			<div class="collapsable" ng-show="collapsed">
+				<div class="custom-views-item" ng-repeat="customView in customViewItemGroup.customViewItems">
+					<md-button
+							class="button-hovering"
+							ng-click="$ctrl.applyCustomView(customView.id)"
+							ng-disabled="!customView.isApplicable"
+							title="{{ customView.isApplicable ? 'Apply custom view' : 'This one is applicable for map(s) ' + customView.mapNames + ' in ' + customView.mapSelectionMode + ' mode only.'}}"
+					>
+						{{ customView.name }}
+					</md-button>
+
+					<md-button
+							ng-click="$ctrl.removeCustomView(customView.id, customView.name)"
+							class="action-button remove button-hovering"
+							title="Remove custom view"
+					>
+						<i class="fa fa-minus-square"></i>
+					</md-button>
+				</div>
+			</div>
 		</md-menu-item>
+
 	</md-menu-content>
 </md-menu>
 

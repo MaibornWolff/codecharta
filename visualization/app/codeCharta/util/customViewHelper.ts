@@ -1,6 +1,6 @@
 "use strict"
 import { LocalStorageCustomViews, RecursivePartial, State } from "../codeCharta.model"
-import { CustomViewItem } from "../ui/customViews/customViews.component"
+import { CustomViewItemGroup } from "../ui/customViews/customViews.component"
 import { CustomViewBuilder } from "./customViewBuilder"
 import { CustomView, CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
 import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
@@ -11,27 +11,48 @@ export class CustomViewHelper {
 
 	private static customViews: Map<string, RecursivePartial<CustomView>> = CustomViewHelper.loadCustomViews()
 
-	static getCustomViewItems(customViewFileStateConnector: CustomViewFileStateConnector): CustomViewItem[] {
-		const customViewItems: CustomViewItem[] = []
+	static getCustomViewItemGroups(customViewFileStateConnector: CustomViewFileStateConnector): Map<string, CustomViewItemGroup> {
+		const customViewItemGroups: Map<string, CustomViewItemGroup> = new Map()
 
 		this.customViews.forEach(customView => {
-			customViewItems.push({
+			const groupKey = customView.assignedMaps.join("") + customView.mapSelectionMode
+
+			if (!customViewItemGroups.has(groupKey)) {
+				customViewItemGroups.set(
+					groupKey,
+					{
+						mapNames: customView.assignedMaps.join(" "),
+						mapSelectionMode: customView.mapSelectionMode,
+						hasApplicableItems: false,
+						customViewItems: []
+					} as CustomViewItemGroup
+				)
+			}
+
+			const customViewItemApplicable = this.isCustomViewApplicable(customViewFileStateConnector, customView)
+			customViewItemGroups.get(groupKey).customViewItems.push({
+				id: customView.id,
 				name: customView.name,
-				mapName: customView.assignedMap,
+				mapNames: customView.assignedMaps.join(" "),
 				mapSelectionMode: customView.mapSelectionMode,
-				isApplicable: this.isCustomViewApplicable(customViewFileStateConnector, customView)
+				isApplicable: customViewItemApplicable
 			})
+
+			if (customViewItemApplicable) {
+				customViewItemGroups.get(groupKey).hasApplicableItems = true
+			}
 		})
 
-		return customViewItems
+		return customViewItemGroups
 	}
 
 	private static isCustomViewApplicable(
 		customViewFileStateConnector: CustomViewFileStateConnector,
 		customView: RecursivePartial<CustomView>
 	) {
+		// TODO: Configs are applicable if their checksums are matching, map names should not be checked.
 		if (
-			customViewFileStateConnector.getJointMapName() === customView.assignedMap &&
+			customViewFileStateConnector.getJointMapName() === customView.assignedMaps.join(" ") &&
 			customViewFileStateConnector.getChecksumOfAssignedMaps() === customView.mapChecksum &&
 			customViewFileStateConnector.getMapSelectionMode() === customView.mapSelectionMode
 		) {
@@ -57,24 +78,36 @@ export class CustomViewHelper {
 		return new Map()
 	}
 
-	static addCustomView(newCustomView: RecursivePartial<CustomView>) {
-		this.customViews.set(newCustomView.name, newCustomView)
+	static addCustomView(
+		newCustomView: RecursivePartial<CustomView>,
+	) {
+		this.customViews.set(newCustomView.id, newCustomView)
 		this.setCustomViewsToLocalStorage(this.customViews)
 	}
 
-	static getCustomViewSettings(viewName: string): RecursivePartial<CustomView> | undefined {
-		return this.customViews.get(viewName)
+	static getCustomViewSettings(viewId: string): RecursivePartial<CustomView> | undefined {
+		return this.customViews.get(viewId)
 	}
 
-	static hasCustomView(viewName: string): boolean {
-		return this.customViews.has(viewName)
+	static hasCustomView(
+		mapSelectionMode: CustomViewMapSelectionMode,
+		selectedMaps: string[],
+		viewName: string
+	): boolean {
+		const customViewIdentifier = CustomViewBuilder.createCustomViewIdentifier(
+			mapSelectionMode,
+			selectedMaps,
+			viewName
+		)
+
+		return this.customViews.has(customViewIdentifier)
 	}
 
-	static getCustomViewsAmountByMapAndMode(mapName: string, mapSelectionMode: CustomViewMapSelectionMode): number {
+	static getCustomViewsAmountByMapAndMode(mapNames: string, mapSelectionMode: CustomViewMapSelectionMode): number {
 		let count = 0
 
 		this.customViews.forEach(view => {
-			if (view.assignedMap === mapName && view.mapSelectionMode === mapSelectionMode) {
+			if (view.assignedMaps.join(" ") === mapNames && view.mapSelectionMode === mapSelectionMode) {
 				count++
 			}
 		})
@@ -95,40 +128,36 @@ export class CustomViewHelper {
 
 		suggestedViewName = customViewFileStateConnector.getJointMapName()
 
-		if (!customViewFileStateConnector.isMapSelectionModeSingle()) {
-			const mapSelectionMode = customViewFileStateConnector.isMapSelectionModeDelta() ? "delta" : "multiple"
-			suggestedViewName += ` (${mapSelectionMode})`
-		}
-
 		const customViewNumberSuffix =
 			CustomViewHelper.getCustomViewsAmountByMapAndMode(
 				customViewFileStateConnector.getJointMapName(),
 				customViewFileStateConnector.getMapSelectionMode()
 			) + 1
 
-		// Example suggestion: yourMapName (delta) #3
 		return `${suggestedViewName} #${customViewNumberSuffix}`
 	}
 
-	static deleteCustomView(viewName: string) {
-		this.customViews.delete(viewName)
+	static deleteCustomView(viewId: string) {
+		this.customViews.delete(viewId)
 		this.setCustomViewsToLocalStorage(this.customViews)
 	}
 
-	static sortCustomViewDropDownList() {
-		return function (a: CustomViewItem, b: CustomViewItem) {
-			if (a.isApplicable && b.isApplicable) {
-				if (a.name > b.name) {
+	static sortCustomViewDropDownGroupList() {
+		return function (a: CustomViewItemGroup, b: CustomViewItemGroup) {
+			if (a.hasApplicableItems && !b.hasApplicableItems) {
+				return -1
+			}
+
+			if (!a.hasApplicableItems && !b.hasApplicableItems) {
+				if (a.mapSelectionMode > b.mapSelectionMode) {
 					return 1
 				}
-				if (a.name < b.name) {
+				if (a.mapSelectionMode < b.mapSelectionMode) {
 					return -1
 				}
 				return 0
 			}
-			if (a.isApplicable && !b.isApplicable) {
-				return -1
-			}
+
 			return 1
 		}
 	}

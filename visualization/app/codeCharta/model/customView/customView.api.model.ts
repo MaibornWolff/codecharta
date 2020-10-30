@@ -6,9 +6,10 @@ export enum CustomViewMapSelectionMode {
 	DELTA = "DELTA"
 }
 export interface CustomView {
+	id: string
 	name: string
 	mapSelectionMode: CustomViewMapSelectionMode
-	assignedMap: string
+	assignedMaps: string[]
 	mapChecksum: string
 	customViewVersion: string
 

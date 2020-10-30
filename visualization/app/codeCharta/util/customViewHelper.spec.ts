@@ -218,25 +218,25 @@ describe("CustomViewHelper", () => {
 
 			customViewItemsDropDown.push({
 				name: "customViewName1",
-				mapName: "customViewMap.cc.json",
+				mapNames: "customViewMap.cc.json",
 				mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 				isApplicable: false
 			})
 			customViewItemsDropDown.push({
 				name: "customViewName2",
-				mapName: "customViewMap.cc.json",
+				mapNames: "customViewMap.cc.json",
 				mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 				isApplicable: true
 			})
 			customViewItemsDropDown.push({
 				name: "customViewName3",
-				mapName: "customViewMap.cc.json",
+				mapNames: "customViewMap.cc.json",
 				mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 				isApplicable: true
 			})
 			customViewItemsDropDown.push({
 				name: "customViewName4",
-				mapName: "customViewMap.cc.json",
+				mapNames: "customViewMap.cc.json",
 				mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
 				isApplicable: false
 			})
@@ -290,7 +290,7 @@ describe("CustomViewHelper", () => {
 			CustomViewFileStateConnector.prototype.getChecksumOfAssignedMaps = getChecksumOfAssignedMapsMock
 			CustomViewFileStateConnector.prototype.getMapSelectionMode = getMapSelectionModeMock
 
-			const customViewItems = CustomViewHelper.getCustomViewItems(CustomViewFileStateConnector.prototype)
+			const customViewItems = CustomViewHelper.getCustomViewItemGroups(CustomViewFileStateConnector.prototype)
 
 			expect(customViewItems[0].name).toBe("view1")
 			expect(customViewItems[0].isApplicable).toBe(true)
@@ -354,7 +354,7 @@ describe("CustomViewHelper", () => {
 			CustomViewFileStateConnector.prototype.getChecksumOfAssignedMaps = getChecksumOfAssignedMapsMock
 			CustomViewFileStateConnector.prototype.getMapSelectionMode = getMapSelectionModeMock
 
-			const customViewItems = CustomViewHelper.getCustomViewItems(CustomViewFileStateConnector.prototype)
+			const customViewItems = CustomViewHelper.getCustomViewItemGroups(CustomViewFileStateConnector.prototype)
 
 			expect(customViewItems[0].name).toBe("view1")
 			expect(customViewItems[0].isApplicable).toBe(false)

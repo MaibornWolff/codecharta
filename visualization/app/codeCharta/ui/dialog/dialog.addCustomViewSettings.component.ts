@@ -8,6 +8,8 @@ import { IRootScopeService } from "angular"
 import { CustomViewFileStateConnector } from "../customViews/customViewFileStateConnector"
 
 export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubscriber {
+	private customViewFileStateConnector: CustomViewFileStateConnector
+
 	private _viewModel: {
 		customViewName: string
 		addInfoMessage: string
@@ -27,11 +29,11 @@ export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubsc
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
-		const customViewFileStateConnector = new CustomViewFileStateConnector(files)
+		this.customViewFileStateConnector = new CustomViewFileStateConnector(files)
 
 		// Provide a new suggestion for the CustomView name, if the selected map (name) has changed
 		// And validate it, in case the name is already given to an existing CustomView.
-		this._viewModel.customViewName = CustomViewHelper.getViewNameSuggestionByFileState(customViewFileStateConnector)
+		this._viewModel.customViewName = CustomViewHelper.getViewNameSuggestionByFileState(this.customViewFileStateConnector)
 		this.validateCustomViewName()
 	}
 
@@ -41,7 +43,11 @@ export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubsc
 
 	addCustomView() {
 		try {
-			const newCustomView = CustomViewHelper.createNewCustomView(this._viewModel.customViewName, this.storeService.getState())
+			const newCustomView = CustomViewHelper.createNewCustomView(
+				this._viewModel.customViewName,
+				this.storeService.getState()
+			)
+
 			CustomViewHelper.addCustomView(newCustomView)
 		} catch (error) {
 			this.dialogService.showErrorDialog(`Could not save your Custom View: ${error}`)
@@ -51,7 +57,11 @@ export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubsc
 	}
 
 	validateCustomViewName() {
-		if (CustomViewHelper.hasCustomView(this._viewModel.customViewName)) {
+		if (CustomViewHelper.hasCustomView(
+			this.customViewFileStateConnector.getMapSelectionMode(),
+			this.customViewFileStateConnector.getSelectedMaps(),
+			this._viewModel.customViewName)
+		) {
 			this._viewModel.addInfoMessage =
 				'<i class="fa fa-warning"></i> Are you sure to override? A Custom View with this name already exists.'
 		} else {

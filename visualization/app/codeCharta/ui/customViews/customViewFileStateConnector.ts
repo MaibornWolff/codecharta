@@ -21,17 +21,13 @@ export class CustomViewFileStateConnector {
 			if (file.selectedAs !== FileSelectionState.None) {
 				this.setMapSelectionMode(file.selectedAs)
 				this.mapChecksums.push(file.file.fileMeta.fileChecksum)
-
-				let fileNamePart = file.file.fileMeta.fileName
-
-				const ccJsonExtensionIndex = fileNamePart.indexOf(".cc.json")
-				if (ccJsonExtensionIndex >= 0) {
-					fileNamePart = fileNamePart.slice(0, ccJsonExtensionIndex)
-				}
-
-				this.fileNameParts.push(fileNamePart)
+				this.fileNameParts.push(file.file.fileMeta.fileName)
 			}
 		}
+	}
+
+	getSelectedMaps(): string[] {
+		return this.fileNameParts
 	}
 
 	getJointMapName(): string {
