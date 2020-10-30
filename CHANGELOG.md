@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Changed
 
+-   Disable highlighting buildings during map movement #1432
+
 ### Removed 🗑
 
 ### Fixed 🐞
