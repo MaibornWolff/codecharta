@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   File tree/flattened/excluded overlay visualization is buggy #1269
 -   EdgePreview on Map broken when selecting zero #1276
 
 ### Chore 👨‍💻 👩‍💻
