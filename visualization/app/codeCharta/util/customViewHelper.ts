@@ -50,7 +50,7 @@ export class CustomViewHelper {
 		customViewFileStateConnector: CustomViewFileStateConnector,
 		customView: RecursivePartial<CustomView>
 	) {
-		// TODO: Configs are applicable if their checksums are matching, map names should not be checked.
+		// TODO: Configs are applicable if their checksums are matching, but map names should not be checked.
 		if (
 			customViewFileStateConnector.getJointMapName() === customView.assignedMaps.join(" ") &&
 			customViewFileStateConnector.getChecksumOfAssignedMaps() === customView.mapChecksum &&

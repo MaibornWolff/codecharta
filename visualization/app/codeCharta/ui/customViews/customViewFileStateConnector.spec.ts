@@ -37,7 +37,8 @@ describe("CustomViewFileStateConnector", () => {
 
 			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.getJointMapName()).toBe("SINGLE MULTIPLE DELTA")
+			expect(customViewFileStateConnector.getSelectedMaps().length).toBe(3)
+			expect(customViewFileStateConnector.getJointMapName()).toBe("SINGLE.cc.json MULTIPLE.cc.json DELTA")
 		})
 	})
 
