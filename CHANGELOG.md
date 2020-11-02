@@ -27,6 +27,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Chore 👨‍💻 👩‍💻
 
+## [1.61.0] - 2020-10-30
+
+### Added 🚀
+
+### Changed
+
+-   Disable highlighting buildings during map movement #1432
+
+### Removed 🗑
+
+### Fixed 🐞
+
+-   File tree/flattened/excluded overlay visualization is buggy #1269
+-   EdgePreview on Map broken when selecting zero #1276
+
+### Chore 👨‍💻 👩‍💻
+
+-   Schedules and merge retries of dependabot dependency updates changed
+
 ## [1.60.2] - 2020-10-24
 
 ### Added 🚀
