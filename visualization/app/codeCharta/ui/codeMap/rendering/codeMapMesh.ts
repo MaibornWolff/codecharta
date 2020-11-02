@@ -34,16 +34,6 @@ export class CodeMapMesh {
 		this.initDeltaColorsOnMesh(state)
 	}
 
-	private initDeltaColorsOnMesh(state: State) {
-		if (this.mapGeomDesc.buildings[0].node.deltas) {
-			for (const building of this.mapGeomDesc.buildings) {
-				this.setNewDeltaColor(building, state)
-				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
-			}
-			this.updateVertices()
-		}
-	}
-
 	getThreeMesh() {
 		return this.threeMesh
 	}
@@ -101,8 +91,17 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	isBuildingConstantlyHighlighted(constantHighlight: Map<number,CodeMapBuilding>, building: CodeMapBuilding){
-		return constantHighlight.has(building.id)
+	clearHighlight(selected: CodeMapBuilding, constantHighlight: Map<number, CodeMapBuilding>) {
+		for (const currentBuilding of this.mapGeomDesc.buildings) {
+			if (!this.isBuildingSelected(selected, currentBuilding)&& !constantHighlight.has(currentBuilding.id)){
+				this.setVertexColor(
+					currentBuilding.id,
+					currentBuilding.getDefaultColorVector(),
+					currentBuilding.getDefaultDeltaColorVector()
+				)
+			}
+		}
+		this.updateVertices()
 	}
 
 	private adjustSurroundingBuildingColors(highlighted: CodeMapBuilding[], building: CodeMapBuilding, state: State) {
@@ -115,17 +114,14 @@ export class CodeMapMesh {
 		}
 	}
 
-	clearHighlight(selected: CodeMapBuilding, constantHighlight: Map<number, CodeMapBuilding>) {
-		for (const currentBuilding of this.mapGeomDesc.buildings) {
-			if (!this.isBuildingSelected(selected, currentBuilding)&& !this.isBuildingConstantlyHighlighted(constantHighlight, currentBuilding)){
-				this.setVertexColor(
-					currentBuilding.id,
-					currentBuilding.getDefaultColorVector(),
-					currentBuilding.getDefaultDeltaColorVector()
-				)
+	private initDeltaColorsOnMesh(state: State) {
+		if (this.mapGeomDesc.buildings[0].node.deltas) {
+			for (const building of this.mapGeomDesc.buildings) {
+				this.setNewDeltaColor(building, state)
+				this.setVertexColor(building.id, building.getColorVector(), building.getDeltaColorVector())
 			}
+			this.updateVertices()
 		}
-		this.updateVertices()
 	}
 
 	private setNewDeltaColor(building: CodeMapBuilding, state: State) {

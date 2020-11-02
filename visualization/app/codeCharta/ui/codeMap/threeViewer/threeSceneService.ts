@@ -56,6 +56,10 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.reselectBuilding()
 	}
 
+	getConstantHighligh(){
+		return this.constantHighlight
+	}
+
 	highlightBuildings() {
 		const state = this.storeService.getState()
 		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
@@ -65,10 +69,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.highlighted = []
 		this.addBuildingToHighlightingList(building)
 		this.highlightBuildings()
-	}
-
-	getConstantHighligh(){
-		return this.constantHighlight
 	}
 
 	addBuildingToHighlightingList(building: CodeMapBuilding) {
