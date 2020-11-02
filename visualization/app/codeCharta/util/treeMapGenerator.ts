@@ -12,7 +12,12 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 	const heightScale = (state.treeMap.mapSize * 2) / maxHeight
 
 	if (hasFixedFolders(map)) {
-		return buildSquarifiedTreeMapsForFixedFolders(map, state, heightScale, maxHeight, isDeltaState)
+		const hierarchyNode = hierarchy(map)
+		const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(map, heightScale, state, isDeltaState)]
+		const scale = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) 
+						/ nodes[0].length
+		scaleRoot(nodes[0], scale)
+		return nodes.concat(buildSquarifiedTreeMapsForFixedFolders(map, state, scale, heightScale, maxHeight, isDeltaState))
 	}
 
 	const squarifiedTreeMap = getSquarifiedTreeMap(map, state)
@@ -27,23 +32,30 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 function buildSquarifiedTreeMapsForFixedFolders(
 	map: CodeMapNode,
 	state: State,
+	scale: number,
 	heightScale: number,
 	maxHeight: number,
 	isDeltaState: boolean
 ) {
-	const hierarchyNode = hierarchy(map)
-
-	const nodes: Node[] = [TreeMapHelper.buildRootFolderForFixedFolders(map, heightScale, state, isDeltaState)]
-	const scale = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) / nodes[0].length
-
-	scaleRoot(nodes[0], scale)
-
+	
+	const nodes = []
 	for (const fixedFolder of map.children) {
 		const squarified = getSquarifiedTreeMap(fixedFolder, state)
 		for (const squarifiedNode of squarified.treeMap.descendants()) {
 			scaleAndTranslateSquarifiedNode(squarifiedNode, fixedFolder, squarified, scale)
 			const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState)
 			nodes.push(node)
+			if (hasFixedFolders(fixedFolder)){
+				scale = (
+						state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchy(fixedFolder)) * state.dynamicSettings.margin
+						) 
+						/ node.length
+				Array.prototype.push.apply(
+					nodes, 
+					buildSquarifiedTreeMapsForFixedFolders(fixedFolder, state, scale, heightScale, maxHeight, isDeltaState)
+				)
+				break
+			}
 		}
 	}
 	return nodes
