@@ -146,7 +146,7 @@
 		"node-sass": "^4.13.1",
 		"nwjs-builder-phoenix": "^1.15.0",
 		"plop": "^2.7.3",
-		"puppeteer": "^5.1.0",
+		"puppeteer": "^5.4.1",
 		"rimraf": "^3.0.2",
 		"sass-loader": "^10.0.1",
 		"style-loader": "^2.0.0",
