@@ -1,6 +1,6 @@
 import "./threeViewer.module"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { CODE_MAP_BUILDING, TEST_NODES } from "../../../util/dataMocks"
+import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, TEST_NODES, VALID_FILE_NODE_WITH_ID, VALID_NODES_WITH_ID } from "../../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
@@ -8,6 +8,9 @@ import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
 import { CodeMapMesh } from "../rendering/codeMapMesh"
 import { klona } from "klona"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { setIdToBuilding } from "../../../state/store/lookUp/idToBuilding/idToBuilding.actions"
+import { setIdToNode } from "../../../state/store/lookUp/idToNode/idToNode.actions"
 
 describe("ThreeSceneService", () => {
 	let threeSceneService: ThreeSceneService
@@ -26,6 +29,7 @@ describe("ThreeSceneService", () => {
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
+		threeSceneService = getService<ThreeSceneService>("threeSceneService")
 
 		codeMapBuilding = klona(CODE_MAP_BUILDING)
 	}
@@ -37,6 +41,7 @@ describe("ThreeSceneService", () => {
 	beforeEach(() => {
 		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 		threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
+		threeSceneService["constantHighlight"] = new Map()
 	})
 
 	describe("constructor", () => {
@@ -82,6 +87,87 @@ describe("ThreeSceneService", () => {
 			threeSceneService.addBuildingToHighlightingList(CODE_MAP_BUILDING)
 
 			expect(threeSceneService["highlighted"]).toEqual([CODE_MAP_BUILDING])
+		})
+	})
+
+	describe("addNodeAndChildrenToConstantHighlight", () => {
+		beforeEach(()=>{
+			const idToBuilding = new Map<number, CodeMapBuilding>()
+			idToBuilding.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+			idToBuilding.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+			storeService.dispatch(setIdToBuilding(idToBuilding))
+			const idToNode = new Map<number, CodeMapNode>()
+			idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
+			idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
+			storeService.dispatch(setIdToNode(idToNode))
+
+		})
+		
+		it("should add a node into constant highlight ", ()=> {
+			const result = new Map<number, CodeMapBuilding>()
+			result.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+
+			threeSceneService.addNodeAndChildrenToConstantHighlight(VALID_FILE_NODE_WITH_ID)
+
+			expect(threeSceneService["constantHighlight"]).toEqual(result)
+		})
+
+		it("should add the folder and its children into constant highlight", ()=>{
+			const result = new Map<number, CodeMapBuilding>()
+			result.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+			result.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+
+			threeSceneService.addNodeAndChildrenToConstantHighlight(VALID_NODES_WITH_ID)
+
+			expect(threeSceneService["constantHighlight"]).toEqual(result)
+
+		})
+
+	})
+
+	describe("removeNodeAndChildrenFromConstantHighlight", ()=>{
+		beforeEach(()=>{
+			const idToBuilding = new Map<number, CodeMapBuilding>()
+			idToBuilding.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+			idToBuilding.set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+			storeService.dispatch(setIdToBuilding(idToBuilding))
+			const idToNode = new Map<number, CodeMapNode>()
+			idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
+			idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
+			storeService.dispatch(setIdToNode(idToNode))
+			threeSceneService["constantHighlight"].set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+			threeSceneService["constantHighlight"].set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+
+		})
+		it("should remove the building from constant Highlight ", ()=>{
+			const result = new Map<number, CodeMapBuilding>()
+			result.set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+
+			threeSceneService.removeNodeAndChildrenFromConstantHighlight(VALID_FILE_NODE_WITH_ID)
+
+			expect(threeSceneService["constantHighlight"]).toEqual(result)
+		})
+
+		it("should remove the folder and its children from constant Highlight ", ()=>{
+			const result = new Map()
+
+			threeSceneService.removeNodeAndChildrenFromConstantHighlight(VALID_NODES_WITH_ID)
+
+			expect(threeSceneService["constantHighlight"]).toEqual(result)
+		})
+
+	})
+
+	describe("clearConstantHighlight", ()=>{
+		it("should clear all the constant highlighted buildings ", ()=>{
+			threeSceneService["mapMesh"].clearConstantHighlight = jest.fn()
+			threeSceneService["constantHighlight"].set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
+
+			threeSceneService.clearConstantHighlight()
+
+			expect(threeSceneService["mapMesh"].clearConstantHighlight).toHaveBeenCalledWith(threeSceneService["constantHighlight"])
+			expect(threeSceneService["constantHighlight"].size).toEqual(0)
+
 		})
 	})
 
