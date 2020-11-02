@@ -45,7 +45,7 @@ export class CustomViewsPageObject {
 	}
 
 	async isCustomViewAddDialogClosed() {
-		await page.waitForSelector(".custom-view-dialog", { visible: false })
+		await page.waitForSelector(".custom-view-dialog", { hidden: true })
 	}
 
 	async fillInCustomViewName(name = "TestViewName") {
@@ -89,7 +89,6 @@ export class CustomViewsPageObject {
 	async collapseCustomViewItemGroup(groupIndex: number) {
 		// +2 to skip two disabled/invisible menu-items
 		await expect(page).toClick(`.custom-views-drop-down .custom-views-item:nth-child(${groupIndex + 2}) .button-hovering`, { timeout: 3000 })
-		await page.waitForSelector(`.custom-views-drop-down .custom-views-item:nth-child(${groupIndex + 2}) .collapsable`, { visible: true, timeout: 3000 })
+		await page.waitForSelector(`.custom-views-drop-down .custom-views-item:nth-child(${groupIndex + 2}) .collapsable`, { visible: true })
 	}
-
 }
