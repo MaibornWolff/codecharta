@@ -219,7 +219,10 @@ export class NodeContextMenuController
 		if(this._viewModel.codeMapNode){			
 			const {lookUp} = this.storeService.getState()
 			const codeMapBuilding: CodeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
-			return this.threeSceneService.getConstantHighligh().has(codeMapBuilding.id)
+			if(codeMapBuilding){
+				return this.threeSceneService.getConstantHighligh().has(codeMapBuilding.id)
+			}
+			else{return false}
 		}
 	}
 
