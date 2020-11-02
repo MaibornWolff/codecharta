@@ -14,7 +14,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 	if (hasFixedFolders(map)) {
 		return buildSquarifiedTreeMapsForFixedFolders(map, state, heightScale, maxHeight, isDeltaState)
 	}
-	
+
 	const squarifiedTreeMap = getSquarifiedTreeMap(map, state)
 
 	const nodes = []
@@ -50,17 +50,7 @@ function buildSquarifiedTreeMapsForFixedFolders(
 }
 
 function hasFixedFolders(map: CodeMapNode) {
-	if (!Boolean(map.children)){
-		return false
-	}
-	let b:boolean = false
-	for (var child of map.children) {
-		if (Boolean(child.fixedPosition)){
-			return true
-		}
-		b = b || hasFixedFolders(child)
-	}
-	return b
+	return Boolean(map.children[0]?.fixedPosition)
 }
 
 function scaleAndTranslateSquarifiedNode(
