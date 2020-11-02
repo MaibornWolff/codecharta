@@ -18,14 +18,7 @@ describe("CustomViews", () => {
 		// Enable experimental CustomViews Feature first
 		await customViews.enableExperimentalFeatures()
 
-		// Open
-		await customViews.openCustomViewAddDialog()
-		await customViews.isCustomViewAddDialogOpen()
-
-		// Add
-		await customViews.fillInCustomViewName()
-		await customViews.submitAddDialog()
-		await customViews.isCustomViewAddDialogClosed()
+		await customViews.addCustomView("TestViewName")
 
 		// Open Again
 		await customViews.openCustomViewAddDialog()
@@ -34,5 +27,31 @@ describe("CustomViews", () => {
 		// Enter existing name
 		await customViews.fillInCustomViewName()
 		await customViews.isOverrideWarningVisible()
-	}, 60000)
+	}, 90000)
+
+	it("Custom Configs for SINGLE, MULTIPLE, DELTA mode will be shown in separate groups (grouped by selection mode) and can be collapsed properly", async () => {
+		// Enable experimental CustomViews Feature first
+		await customViews.enableExperimentalFeatures()
+		await customViews.addCustomView("TestSingleView")
+
+		await customViews.switchToMultipleMode()
+		await customViews.addCustomView("TestMultipleView")
+
+		await customViews.switchToDeltaMode()
+		await customViews.addCustomView("TestDeltaView")
+
+		// Open
+		await customViews.openCustomViewPanel()
+		await customViews.hasCustomViewItemGroups()
+
+		// We are in delta mode, so delta mode is shown as the first group.
+		await customViews.hasCustomViewItemGroup("delta", 0)
+		await customViews.hasCustomViewItemGroup("multiple", 1)
+		await customViews.hasCustomViewItemGroup("single", 2)
+
+		await customViews.collapseCustomViewItemGroup(1)
+		await customViews.collapseCustomViewItemGroup(2)
+		await customViews.collapseCustomViewItemGroup(3)
+
+	}, 90000)
 })

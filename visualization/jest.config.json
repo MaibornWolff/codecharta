@@ -19,7 +19,7 @@
 	"moduleDirectories": ["node_modules", "<rootDir>/app"],
 	"globals": {
 		"ts-jest": {
-			"tsConfig": "tsconfig.json",
+			"tsconfig": "tsconfig.json",
 			"babelConfig": true
 		}
 	},
