@@ -32,6 +32,7 @@ describe("nodeContextMenuController", () => {
 		mockWindow()
 		withMockedCodeMapActionService()
 		withMockedCodeMapPreRenderService()
+		withMockedThreeSceneService()
 		rebuildController()
 		withMockedHideNodeContextMenuMethod()
 
@@ -82,6 +83,13 @@ describe("nodeContextMenuController", () => {
 
 	function withMockedHideNodeContextMenuMethod() {
 		nodeContextMenuController.onHideNodeContextMenu = jest.fn()
+	}
+
+	function withMockedThreeSceneService() {
+		threeSceneService = jest.fn().mockReturnValue({
+			addNodeAndChildrenToConstantHighlight : jest.fn(), 
+			removeNodeAndChildrenFromConstantHighlight: jest.fn()
+		})()
 	}
 
 	describe("constructor", () => {
@@ -168,6 +176,22 @@ describe("nodeContextMenuController", () => {
 
 		it("should calculate the position for the menu correctly, when it doesn't fit in the window.innerHeight and window.innerWidth", () => {
 			testPositionCalculation(750, 500, 799, 599)
+		})
+	})
+
+	describe("removeNodeFromConstantHighlight", ()=>{
+		it("should call addNodeandChildrenToConstantHighlight", ()=>{
+			nodeContextMenuController.addNodeToConstantHighlight()
+
+			expect(threeSceneService.addNodeAndChildrenToConstantHighlight).toHaveBeenCalled()
+		})
+	})
+
+	describe("addNodeToConstantHighlight", ()=>{
+		it("should call addNodeandChildrenToConstantHighlight", ()=>{
+			nodeContextMenuController.removeNodeFromConstantHighlight()
+
+			expect(threeSceneService.removeNodeAndChildrenFromConstantHighlight).toHaveBeenCalled()
 		})
 	})
 
