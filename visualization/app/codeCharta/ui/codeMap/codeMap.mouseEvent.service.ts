@@ -117,6 +117,7 @@ export class CodeMapMouseEventService
 
 	onFilesSelectionChanged() {
 		this.threeSceneService.clearSelection()
+		this.threeSceneService.clearConstantHighlight()
 	}
 
 	onBlacklistChanged(blacklist: BlacklistItem[]) {
