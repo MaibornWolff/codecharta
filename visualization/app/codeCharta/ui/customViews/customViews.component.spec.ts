@@ -4,7 +4,7 @@ import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { StoreService } from "../../state/store.service"
 import { DialogService } from "../dialog/dialog.service"
-import { CUSTOM_VIEW_ITEMS, FILE_STATES } from "../../util/dataMocks"
+import {CUSTOM_VIEW_ITEM_GROUPS, FILE_STATES} from "../../util/dataMocks"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
 import { CustomViewsController } from "./customViews.component"
 import { FilesService } from "../../state/store/files/files.service"
@@ -59,15 +59,30 @@ describe("CustomViewsController", () => {
 		})
 	})
 
+	describe("onFileSelectionChanged", () => {
+		it("should reset CustomViewFileStateConnector", () => {
+			rebuildController()
+
+			customViewsController.onFilesSelectionChanged(FILE_STATES)
+
+			expect(customViewsController["customViewFileStateConnector"].getSelectedMaps()[0]).toBe("fileA")
+		})
+	})
+
 	describe("loadCustomViews", () => {
-		it("should load CustomViews, sort them accordingly and set the dropDownCustomViewItems ", () => {
-			CustomViewHelper.getCustomViewItemGroups = jest.fn().mockReturnValue([...CUSTOM_VIEW_ITEMS])
+		it("should load CustomViews, sort them by applicable-state and mode name ASC and set the dropDownCustomViewItemGroups ", () => {
+			CustomViewHelper.getCustomViewItemGroups = jest.fn().mockReturnValue(CUSTOM_VIEW_ITEM_GROUPS)
 
 			customViewsController.loadCustomViews()
 
-			expect(customViewsController["_viewModel"].dropDownCustomViewItems[0]).toEqual(CUSTOM_VIEW_ITEMS[0])
-			expect(customViewsController["_viewModel"].dropDownCustomViewItems[1]).toEqual(CUSTOM_VIEW_ITEMS[2])
-			expect(customViewsController["_viewModel"].dropDownCustomViewItems[2]).toEqual(CUSTOM_VIEW_ITEMS[1])
+			const customViewItemGroups = customViewsController["_viewModel"].dropDownCustomViewItemGroups.values()
+			const customViewItemGroup1 = customViewItemGroups.next().value
+			const customViewItemGroup2 = customViewItemGroups.next().value
+			const customViewItemGroup3 = customViewItemGroups.next().value
+
+			expect(customViewItemGroup1).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBMultiple"))
+			expect(customViewItemGroup2).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBDELTA"))
+			expect(customViewItemGroup3).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBSINGLE"))
 		})
 	})
 
@@ -106,11 +121,12 @@ describe("CustomViewsController", () => {
 			CustomViewHelper.deleteCustomView = jest.fn()
 			dialogService.showErrorDialog = jest.fn()
 
-			const viewToRemove = "CustomViewName1"
-			customViewsController.removeCustomView(viewToRemove)
+			const viewNameToRemove = "CustomViewName1"
+			const viewIdToRemove = 1
+			customViewsController.removeCustomView(viewIdToRemove, viewNameToRemove)
 
-			expect(CustomViewHelper.deleteCustomView).toHaveBeenCalledWith(viewToRemove)
-			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expect.stringContaining(`${viewToRemove} deleted`), "Info")
+			expect(CustomViewHelper.deleteCustomView).toHaveBeenCalledWith(viewIdToRemove)
+			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expect.stringContaining(`${viewNameToRemove} deleted`), "Info")
 		})
 	})
 })

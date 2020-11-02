@@ -32,7 +32,7 @@ import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
-import { CustomViewItem } from "../ui/customViews/customViews.component"
+import {CustomViewItem, CustomViewItemGroup} from "../ui/customViews/customViews.component"
 import { CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
 
 export const VALID_NODE: CodeMapNode = {
@@ -1451,6 +1451,74 @@ export const CUSTOM_VIEW_ITEMS: CustomViewItem[] = [
 		isApplicable: true
 	}
 ]
+
+export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomViewItemGroup> = new Map([
+	[
+		"fileAfileBSINGLE",
+		{
+			mapNames: "fileA fileB",
+			mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+			hasApplicableItems: false,
+			customViewItems: [
+				{
+					id: "SINGLEfileASampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileA",
+					mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+					isApplicable: false
+				},
+				{
+					id: "SINGLEfileBSampleMap View #2",
+					name: "SampleMap View #2",
+					mapNames: "fileB",
+					mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+					isApplicable: false
+				}
+			]
+		}
+	],
+	[
+		"fileAfileBMultiple",
+		{
+			mapNames: "fileC fileD",
+			mapSelectionMode: CustomViewMapSelectionMode.MULTIPLE,
+			hasApplicableItems: true,
+			customViewItems: [
+				{
+					id: "MULTIPLEfileCSampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileB",
+					mapSelectionMode: CustomViewMapSelectionMode.MULTIPLE,
+					isApplicable: true
+				},
+				{
+					id: "MULTIPLEfileDSampleMap View #2",
+					name: "SampleMap View #2",
+					mapNames: "fileD",
+					mapSelectionMode: CustomViewMapSelectionMode.MULTIPLE,
+					isApplicable: true
+				}
+			]
+		}
+	],
+	[
+		"fileAfileBDELTA",
+		{
+			mapNames: "fileE",
+			mapSelectionMode: CustomViewMapSelectionMode.DELTA,
+			hasApplicableItems: false,
+			customViewItems: [
+				{
+					id: "MULTIPLEfileESampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileD",
+					mapSelectionMode: CustomViewMapSelectionMode.DELTA,
+					isApplicable: false
+				}
+			]
+		}
+	]
+])
 
 export const SCENARIO_ITEM_WITH_EVERYTHING_SAVED: ScenarioItem[] = [
 	{
