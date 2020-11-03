@@ -15,7 +15,7 @@ export class CustomViewHelper {
 		const customViewItemGroups: Map<string, CustomViewItemGroup> = new Map()
 
 		this.customViews.forEach(customView => {
-			const groupKey = customView.assignedMaps.join("") + customView.mapSelectionMode
+			const groupKey = `${customView.assignedMaps.join("_")  }_${  customView.mapSelectionMode}`
 
 			if (!customViewItemGroups.has(groupKey)) {
 				customViewItemGroups.set(
@@ -50,7 +50,7 @@ export class CustomViewHelper {
 		customViewFileStateConnector: CustomViewFileStateConnector,
 		customView: RecursivePartial<CustomView>
 	) {
-		// TODO: Configs are applicable if their checksums are matching, but map names should not be checked.
+		// TODO: Follow Up: Configs are applicable if their checksums are matching, but map names should not be checked.
 		if (
 			customViewFileStateConnector.getJointMapName() === customView.assignedMaps.join(" ") &&
 			customViewFileStateConnector.getChecksumOfAssignedMaps() === customView.mapChecksum &&

@@ -327,12 +327,12 @@ describe("CustomViewHelper", () => {
 
 			const customViewItemGroups = CustomViewHelper.getCustomViewItemGroups(CustomViewFileStateConnector.prototype)
 
-			const singleGroup = customViewItemGroups.get("mocky.cc.jsonSINGLE")
+			const singleGroup = customViewItemGroups.get("mocky.cc.json_SINGLE")
 			expect(singleGroup.hasApplicableItems).toBe(true)
 			expect(singleGroup.customViewItems[0].name).toBe("view1")
 			expect(singleGroup.customViewItems[0].isApplicable).toBe(true)
 
-			const deltaGroup = customViewItemGroups.get("another.cc.jsondelta.cc.jsonDELTA")
+			const deltaGroup = customViewItemGroups.get("another.cc.json_delta.cc.json_DELTA")
 			expect(deltaGroup.customViewItems[0].name).toBe("view2")
 			expect(deltaGroup.customViewItems[0].isApplicable).toBe(true)
 		})
@@ -397,15 +397,15 @@ describe("CustomViewHelper", () => {
 
 			const customViewItemGroups = CustomViewHelper.getCustomViewItemGroups(CustomViewFileStateConnector.prototype)
 
-			const singleGroup = customViewItemGroups.get("mocky.cc.jsonSINGLE")
+			const singleGroup = customViewItemGroups.get("mocky.cc.json_SINGLE")
 			expect(singleGroup.customViewItems[0].name).toBe("view1")
 			expect(singleGroup.customViewItems[0].isApplicable).toBe(false)
 
-			const anotherSingleGroup = customViewItemGroups.get("another.mocky.cc.jsonSINGLE")
+			const anotherSingleGroup = customViewItemGroups.get("another.mocky.cc.json_SINGLE")
 			expect(anotherSingleGroup.customViewItems[0].name).toBe("view2")
 			expect(anotherSingleGroup.customViewItems[0].isApplicable).toBe(false)
 
-			const deltaGroup = customViewItemGroups.get("another.cc.jsondelta.cc.jsonDELTA")
+			const deltaGroup = customViewItemGroups.get("another.cc.json_delta.cc.json_DELTA")
 			expect(deltaGroup.customViewItems[0].name).toBe("view3")
 			expect(deltaGroup.customViewItems[0].isApplicable).toBe(false)
 		})
