@@ -47,8 +47,83 @@ describe("NodeSearchService", () => {
 			})
 		})
 
-		it("node should be retrieved based on query", () => {
-			nodeSearchService.onSearchPatternChanged("small leaf")
+		it("nodes should be retrieved based on a wildcard search by specifying wildcard star", () => {
+			nodeSearchService.onSearchPatternChanged("*small*")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(2)
+			expect(nodeSearchService["searchedNodes"][0].name).toEqual("small leaf")
+			expect(nodeSearchService["searchedNodes"][1].name).toEqual("other small leaf")
+		})
+
+		it("nodes should be retrieved based on a wildcard search without specifying any wildcard star", () => {
+			nodeSearchService.onSearchPatternChanged("small")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(2)
+			expect(nodeSearchService["searchedNodes"][0].name).toEqual("small leaf")
+			expect(nodeSearchService["searchedNodes"][1].name).toEqual("other small leaf")
+		})
+
+		it("nodes should be retrieved based on a prefixed wildcard search by ignoring the leading root-folder-slash", () => {
+			nodeSearchService.onSearchPatternChanged("root*")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(6)
+		})
+
+		it("no nodes should be found based on a prefixed wildcard search", () => {
+			nodeSearchService.onSearchPatternChanged("oot/*")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(0)
+		})
+
+		it("one node should be retrieved using the explicit search mode", () => {
+			nodeSearchService.onSearchPatternChanged("\"/root/big leaf\"")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(1)
+			expect(nodeSearchService["searchedNodes"][0].name).toEqual("big leaf")
+		})
+
+		it("multiple nodes should be retrieved using the explicit search mode", () => {
+			nodeSearchService.onSearchPatternChanged("\"/root/Parent Leaf\"")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(4)
+			expect(nodeSearchService["searchedNodes"][0].name).toEqual("Parent Leaf")
+			expect(nodeSearchService["searchedNodes"][1].name).toEqual("small leaf")
+			expect(nodeSearchService["searchedNodes"][2].name).toEqual("other small leaf")
+			expect(nodeSearchService["searchedNodes"][3].name).toEqual("empty folder")
+		})
+
+		it("nodes should be retrieved searching by multiple search entries", () => {
+			nodeSearchService.onSearchPatternChanged("big, empty")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(2)
+			expect(nodeSearchService["searchedNodes"][0].name).toEqual("big leaf")
+			expect(nodeSearchService["searchedNodes"][1].name).toEqual("empty folder")
+		})
+
+		it("nodes should be retrieved by inverted search", () => {
+			nodeSearchService.onSearchPatternChanged("!leaf")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(1)
+			expect(nodeSearchService["searchedNodes"][0].name).toEqual("root")
+		})
+
+		it("no nodes should be found by inverted 'search all'", () => {
+			nodeSearchService.onSearchPatternChanged("!*")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(0)
+		})
+
+		it("nodes should not be retrieved by multiple inverted search entries", () => {
+			nodeSearchService.onSearchPatternChanged("!small,big")
+
+			expect(nodeSearchService["searchedNodes"].length).toEqual(3)
+			expect(nodeSearchService["searchedNodes"][0].name).toEqual("root")
+			expect(nodeSearchService["searchedNodes"][1].name).toEqual("Parent Leaf")
+			expect(nodeSearchService["searchedNodes"][2].name).toEqual("empty folder")
+		})
+
+		it("nodes should be retrieved by ignoring leading whitespace", () => {
+			nodeSearchService.onSearchPatternChanged(" small")
 
 			expect(nodeSearchService["searchedNodes"].length).toEqual(2)
 			expect(nodeSearchService["searchedNodes"][0].name).toEqual("small leaf")

@@ -39,13 +39,9 @@ export function getNodesByGitignorePath(root: CodeMapNode, gitignorePath: string
 	const ignoredNodePaths = ignore()
 
 	for (let path of gitignorePath.split(",")) {
-		path = path.trimLeft()
+		path = path.trimStart()
 		if (!path.startsWith("*") && !path.endsWith("*")) {
-			if (path.startsWith('"') && path.endsWith('"')) {
-				path = path.slice(1, -1)
-			} else {
-				path = `*${path}*`
-			}
+			path = path.startsWith('"') && path.endsWith('"') ? path.slice(1, -1) : `*${path}*`;
 		}
 		if (path.length === 0) {
 			continue
