@@ -52,7 +52,7 @@ describe("CustomViewFileStateConnector", () => {
 
 			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.isMapSelectionModeSingle()).toBe(true)
+			expect(customViewFileStateConnector.getMapSelectionMode()).toBe(CustomViewMapSelectionMode.SINGLE)
 		})
 
 		it("should set map selection mode MULTIPLE on first partial file", () => {
@@ -76,7 +76,7 @@ describe("CustomViewFileStateConnector", () => {
 
 			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.isMapSelectionModeDelta()).toBe(true)
+			expect(customViewFileStateConnector.getMapSelectionMode()).toBe(CustomViewMapSelectionMode.DELTA)
 		})
 
 		it("should set map selection mode DELTA, if comparison file is present", () => {
@@ -88,7 +88,7 @@ describe("CustomViewFileStateConnector", () => {
 
 			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.isMapSelectionModeDelta()).toBe(true)
+			expect(customViewFileStateConnector.getMapSelectionMode()).toBe(CustomViewMapSelectionMode.DELTA)
 		})
 	})
 

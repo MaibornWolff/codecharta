@@ -42,14 +42,6 @@ export class CustomViewFileStateConnector {
 		}
 	}
 
-	isMapSelectionModeSingle(): boolean {
-		return this.mapSelectionMode === CustomViewMapSelectionMode.SINGLE
-	}
-
-	isMapSelectionModeDelta(): boolean {
-		return this.mapSelectionMode === CustomViewMapSelectionMode.DELTA
-	}
-
 	getMapSelectionMode(): CustomViewMapSelectionMode {
 		return this.mapSelectionMode
 	}
