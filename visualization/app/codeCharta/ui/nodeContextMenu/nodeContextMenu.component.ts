@@ -220,10 +220,10 @@ export class NodeContextMenuController
 			const {lookUp} = this.storeService.getState()
 			const codeMapBuilding: CodeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
 			if(codeMapBuilding){
-				return this.threeSceneService.getConstantHighligh().has(codeMapBuilding.id)
+				return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
 			}
-			else{return false}
 		}
+		return false
 	}
 
 	isNodeOrParentFocused() {

@@ -1646,6 +1646,12 @@ export const MARKED_PACKAGES: MarkedPackage[] = [
 	}
 ]
 
+export const CONSTANT_HIGHLIGHT: Map<number,CodeMapBuilding> =new Map([
+		[CODE_MAP_BUILDING.id,  CODE_MAP_BUILDING],
+		[CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
+	])
+
+
 export function withMockedEventMethods($rootScope: IRootScopeService) {
 	$rootScope.$broadcast = jest.fn()
 	$rootScope.$on = jest.fn()

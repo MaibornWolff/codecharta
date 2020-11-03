@@ -56,7 +56,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.reselectBuilding()
 	}
 
-	getConstantHighligh(){
+	getConstantHighlight(){
 		return this.constantHighlight
 	}
 

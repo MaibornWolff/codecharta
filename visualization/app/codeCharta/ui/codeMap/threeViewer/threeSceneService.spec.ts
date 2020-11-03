@@ -1,6 +1,6 @@
 import "./threeViewer.module"
 import { getService, instantiateModule } from "../../../../../mocks/ng.mockhelper"
-import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, TEST_NODES, VALID_FILE_NODE_WITH_ID, VALID_NODES_WITH_ID } from "../../../util/dataMocks"
+import { CODE_MAP_BUILDING, CODE_MAP_BUILDING_TS_NODE, CONSTANT_HIGHLIGHT, TEST_NODES, VALID_FILE_NODE_WITH_ID, VALID_NODES_WITH_ID } from "../../../util/dataMocks"
 import { CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { ThreeSceneService } from "./threeSceneService"
@@ -41,7 +41,7 @@ describe("ThreeSceneService", () => {
 	beforeEach(() => {
 		threeSceneService["mapMesh"] = new CodeMapMesh(TEST_NODES, storeService.getState(), false)
 		threeSceneService["highlighted"] = [CODE_MAP_BUILDING]
-		threeSceneService["constantHighlight"] = new Map()
+		threeSceneService["constantHighlight"] = CONSTANT_HIGHLIGHT
 	})
 
 	describe("constructor", () => {
@@ -100,6 +100,7 @@ describe("ThreeSceneService", () => {
 			idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
 			idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
 			storeService.dispatch(setIdToNode(idToNode))
+			threeSceneService["constantHighlight"] = new Map()
 
 		})
 		
@@ -135,8 +136,7 @@ describe("ThreeSceneService", () => {
 			idToNode.set(VALID_NODES_WITH_ID.id, VALID_NODES_WITH_ID)
 			idToNode.set(VALID_FILE_NODE_WITH_ID.id, VALID_FILE_NODE_WITH_ID)
 			storeService.dispatch(setIdToNode(idToNode))
-			threeSceneService["constantHighlight"].set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
-			threeSceneService["constantHighlight"].set(CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE)
+
 
 		})
 		it("should remove the building from constant Highlight ", ()=>{
