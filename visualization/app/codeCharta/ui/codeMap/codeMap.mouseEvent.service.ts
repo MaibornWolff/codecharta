@@ -262,7 +262,13 @@ export class CodeMapMouseEventService
 		if (!this.isMoving && !this.isGrabbing) {
 			CodeMapMouseEventService.changeCursorIndicator(CursorType.Default)
 		}
-		this.threeSceneService.clearHighlight()
+
+		if(this.threeSceneService.getConstantHighlight().size > 0){
+			this.threeSceneService.clearHoverHighlight()
+		}else{
+			this.threeSceneService.clearHighlight()
+		}
+
 		this.$rootScope.$broadcast(CodeMapMouseEventService.BUILDING_UNHOVERED_EVENT)
 	}
 

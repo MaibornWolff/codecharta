@@ -75,10 +75,17 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.highlighted.push(building)
 	}
 
+	clearHoverHighlight(){
+		this.highlighted = []
+		this.highlightBuildings()
+	}
+
 	clearHighlight() {
 		if (this.getMapMesh()) {
-			this.getMapMesh().clearHighlight(this.selected, this.constantHighlight)
-			this.highlighted = []
+				this.getMapMesh().clearHighlight(this.selected)
+				this.highlighted = []
+				this.constantHighlight.clear()
+			
 		}
 	}
 
@@ -99,7 +106,6 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 				this.constantHighlight.set(building.id, building)
 			}
 		}
-		this.highlightBuildings()
 	}
 
 	removeNodeAndChildrenFromConstantHighlight(codeMapNode: CodeMapNode){
@@ -111,13 +117,11 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 				this.constantHighlight.delete(building.id)
 			}
 		}
-		this.highlightBuildings()
 	}
 
 	clearConstantHighlight(){
 		if(this.constantHighlight.size >0){
-			this.getMapMesh().clearConstantHighlight(this.constantHighlight)
-			this.constantHighlight.clear()
+			this.clearHighlight()
 		}
 	}
 

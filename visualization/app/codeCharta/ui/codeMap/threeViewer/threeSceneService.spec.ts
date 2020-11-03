@@ -160,12 +160,10 @@ describe("ThreeSceneService", () => {
 
 	describe("clearConstantHighlight", ()=>{
 		it("should clear all the constant highlighted buildings ", ()=>{
-			threeSceneService["mapMesh"].clearConstantHighlight = jest.fn()
 			threeSceneService["constantHighlight"].set(CODE_MAP_BUILDING.id, CODE_MAP_BUILDING)
 
 			threeSceneService.clearConstantHighlight()
 
-			expect(threeSceneService["mapMesh"].clearConstantHighlight).toHaveBeenCalledWith(threeSceneService["constantHighlight"])
 			expect(threeSceneService["constantHighlight"].size).toEqual(0)
 
 		})

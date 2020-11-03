@@ -50,15 +50,6 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	clearConstantHighlight(constantHighlight: Map<number, CodeMapBuilding>){
-		constantHighlight.forEach(codeMapBuilding =>{
-			codeMapBuilding.resetColor()
-			this.setVertexColor(codeMapBuilding.id,codeMapBuilding.getDefaultColorVector(),codeMapBuilding.getDefaultDeltaColorVector())
-		})
-		this.updateVertices()
-
-	}
-
 	getMeshDescription() {
 		return this.mapGeomDesc
 	}
@@ -91,9 +82,9 @@ export class CodeMapMesh {
 		this.updateVertices()
 	}
 
-	clearHighlight(selected: CodeMapBuilding, constantHighlight: Map<number, CodeMapBuilding>) {
+	clearHighlight(selected: CodeMapBuilding) {
 		for (const currentBuilding of this.mapGeomDesc.buildings) {
-			if (!this.isBuildingSelected(selected, currentBuilding)&& !constantHighlight.has(currentBuilding.id)){
+			if (!this.isBuildingSelected(selected, currentBuilding)){
 				this.setVertexColor(
 					currentBuilding.id,
 					currentBuilding.getDefaultColorVector(),

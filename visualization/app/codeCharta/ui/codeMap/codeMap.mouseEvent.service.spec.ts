@@ -10,7 +10,7 @@ import { ThreeRendererService } from "./threeViewer/threeRendererService"
 import { MapTreeViewLevelController } from "../mapTreeView/mapTreeView.level.component"
 import { ViewCubeMouseEventsService } from "../viewCube/viewCube.mouseEvents.service"
 import { CodeMapBuilding } from "./rendering/codeMapBuilding"
-import { CODE_MAP_BUILDING, DEFAULT_STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
+import { CODE_MAP_BUILDING, CONSTANT_HIGHLIGHT, DEFAULT_STATE, TEST_FILE_WITH_PATHS, withMockedEventMethods } from "../../util/dataMocks"
 import { BlacklistType, CCFile, CodeMapNode, Node } from "../../codeCharta.model"
 import { BlacklistService } from "../../state/store/fileSettings/blacklist/blacklist.service"
 import { FilesService } from "../../state/store/files/files.service"
@@ -124,9 +124,11 @@ describe("codeMapMouseEventService", () => {
 			highlightSingleBuilding: jest.fn(),
 			clearSelection: jest.fn(),
 			clearConstantHighlight: jest.fn(),
+			clearHoverHighlight:jest.fn(),
 			selectBuilding: jest.fn(),
 			getSelectedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
 			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
+			getConstantHighlight: jest.fn().mockReturnValue(new Map()),
 			addBuildingToHighlightingList: jest.fn(),
 			highlightBuildings: jest.fn()
 		})()
@@ -498,11 +500,20 @@ describe("codeMapMouseEventService", () => {
 	})
 
 	describe("unhoverBuilding", () => {
-		it("should clear the highlight when to is null", () => {
+		it("should clear the highlight when to is null and constantHighlight is empty", () => {
+
 			codeMapMouseEventService["unhoverBuilding"]()
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-unhovered")
 			expect(threeSceneService.clearHighlight).toHaveBeenCalled()
+		})
+
+		it("should only clear the hovered highlight when to is null but constantHighlight is not empty", () => {
+			threeSceneService.getConstantHighlight = jest.fn().mockReturnValue(CONSTANT_HIGHLIGHT)
+			codeMapMouseEventService["unhoverBuilding"]()
+
+			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-unhovered")
+			expect(threeSceneService.clearHoverHighlight).toHaveBeenCalled()
 		})
 	})
 
