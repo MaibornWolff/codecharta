@@ -76,15 +76,14 @@ describe("NodeSearchService", () => {
 		})
 
 		it("node(s) should be retrieved using the explicit search mode", () => {
-			const expectedBigLeafNode = "/root/big leaf"
 			// exactly matching node path
-			nodeSearchService.onSearchPatternChanged(`"${expectedBigLeafNode}"`)
+			nodeSearchService.onSearchPatternChanged("\"/root/big leaf\"")
 
 			expect(nodeSearchService["searchedNodes"].length).toBe(1)
-			expect(nodeSearchService["searchedNodes"][0].path).toBe(expectedBigLeafNode)
+			expect(nodeSearchService["searchedNodes"][0].path).toBe("/root/big leaf")
 
 			// exactly matching node path with whitespace at the beginning will find nothing
-			nodeSearchService.onSearchPatternChanged(`" ${expectedBigLeafNode}"`)
+			nodeSearchService.onSearchPatternChanged("\" /root/big leaf\"")
 			expect(nodeSearchService["searchedNodes"].length).toBe(0)
 
 			/// partially matching node path
