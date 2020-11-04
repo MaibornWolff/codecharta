@@ -1,13 +1,13 @@
 "use strict"
-import { LocalStorageCustomViews, RecursivePartial, State } from "../codeCharta.model"
+import { LocalStorageCustomViews, RecursivePartial } from "../codeCharta.model"
 import { CustomViewItemGroup } from "../ui/customViews/customViews.component"
-import { CustomViewBuilder } from "./customViewBuilder"
 import { CustomView, CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
 import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
+import {createCustomViewIdentifier} from "./customViewBuilder";
 
 export class CustomViewHelper {
 	private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_VERSION = "1.0.0"
-	private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT = "customViews"
+	private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customViews"
 
 	private static customViews: Map<string, RecursivePartial<CustomView>> = CustomViewHelper.loadCustomViews()
 
@@ -25,7 +25,7 @@ export class CustomViewHelper {
 						mapSelectionMode: customView.mapSelectionMode,
 						hasApplicableItems: false,
 						customViewItems: []
-					} as CustomViewItemGroup
+					}
 				)
 			}
 
@@ -51,38 +51,29 @@ export class CustomViewHelper {
 		customView: RecursivePartial<CustomView>
 	) {
 		// TODO: Follow Up: Configs are applicable if their checksums are matching, but map names should not be checked.
-		if (
-			customViewFileStateConnector.getJointMapName() === customView.assignedMaps.join(" ") &&
+		return customViewFileStateConnector.getJointMapName() === customView.assignedMaps.join(" ") &&
 			customViewFileStateConnector.getChecksumOfAssignedMaps() === customView.mapChecksum &&
-			customViewFileStateConnector.getMapSelectionMode() === customView.mapSelectionMode
-		) {
-			return true
-		}
-
-		return false
+			customViewFileStateConnector.getMapSelectionMode() === customView.mapSelectionMode;
 	}
 
-	private static setCustomViewsToLocalStorage(customViews: Map<string, RecursivePartial<CustomView>>) {
+	private static setCustomViewsToLocalStorage() {
 		const newLocalStorageElement: LocalStorageCustomViews = {
 			version: this.CUSTOM_VIEWS_LOCAL_STORAGE_VERSION,
-			customViews: [...customViews]
+			customViews: [...this.customViews]
 		}
 		localStorage.setItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement))
 	}
 
 	private static loadCustomViews() {
 		const ccLocalStorage: LocalStorageCustomViews = JSON.parse(localStorage.getItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT))
-		if (ccLocalStorage?.customViews) {
-			return new Map(ccLocalStorage.customViews)
-		}
-		return new Map()
+		return new Map(ccLocalStorage?.customViews)
 	}
 
 	static addCustomView(
 		newCustomView: RecursivePartial<CustomView>,
 	) {
 		this.customViews.set(newCustomView.id, newCustomView)
-		this.setCustomViewsToLocalStorage(this.customViews)
+		this.setCustomViewsToLocalStorage()
 	}
 
 	static getCustomViewSettings(viewId: string): RecursivePartial<CustomView> | undefined {
@@ -94,7 +85,7 @@ export class CustomViewHelper {
 		selectedMaps: string[],
 		viewName: string
 	): boolean {
-		const customViewIdentifier = CustomViewBuilder.createCustomViewIdentifier(
+		const customViewIdentifier = createCustomViewIdentifier(
 			mapSelectionMode,
 			selectedMaps,
 			viewName
@@ -115,18 +106,12 @@ export class CustomViewHelper {
 		return count
 	}
 
-	static createNewCustomView(viewName: string, state: State): CustomView {
-		return CustomViewBuilder.buildFromState(viewName, state)
-	}
-
 	static getViewNameSuggestionByFileState(customViewFileStateConnector: CustomViewFileStateConnector): string {
-		let suggestedViewName = ""
-
-		if (!customViewFileStateConnector.getJointMapName()) {
-			return suggestedViewName
+		const suggestedViewName = customViewFileStateConnector.getJointMapName()
+		
+		if (!suggestedViewName) {
+			return ""
 		}
-
-		suggestedViewName = customViewFileStateConnector.getJointMapName()
 
 		const customViewNumberSuffix =
 			CustomViewHelper.getCustomViewsAmountByMapAndMode(
@@ -139,26 +124,19 @@ export class CustomViewHelper {
 
 	static deleteCustomView(viewId: string) {
 		this.customViews.delete(viewId)
-		this.setCustomViewsToLocalStorage(this.customViews)
+		this.setCustomViewsToLocalStorage()
 	}
 
-	static sortCustomViewDropDownGroupList() {
-		return function (a: CustomViewItemGroup, b: CustomViewItemGroup) {
-			if (a.hasApplicableItems && !b.hasApplicableItems) {
+	static sortCustomViewDropDownGroupList(a: CustomViewItemGroup, b: CustomViewItemGroup) {
+		if (!b.hasApplicableItems) {
+			if (a.hasApplicableItems || a.mapSelectionMode < b.mapSelectionMode) {
 				return -1
 			}
-
-			if (!a.hasApplicableItems && !b.hasApplicableItems) {
-				if (a.mapSelectionMode > b.mapSelectionMode) {
-					return 1
-				}
-				if (a.mapSelectionMode < b.mapSelectionMode) {
-					return -1
-				}
+			if (a.mapSelectionMode === b.mapSelectionMode) {
 				return 0
 			}
-
-			return 1
 		}
+
+		return 1
 	}
 }

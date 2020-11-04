@@ -117,16 +117,16 @@ describe("CustomViewsController", () => {
 	})
 
 	describe("removeCustomView", () => {
-		it("should call deleteCustomView and show ErrorDialog afterwards", () => {
+		it("should call deleteCustomView and show InfoDialog afterwards", () => {
 			CustomViewHelper.deleteCustomView = jest.fn()
-			dialogService.showErrorDialog = jest.fn()
+			dialogService.showInfoDialog = jest.fn()
 
 			const viewNameToRemove = "CustomViewName1"
 			const viewIdToRemove = 1
 			customViewsController.removeCustomView(viewIdToRemove, viewNameToRemove)
 
 			expect(CustomViewHelper.deleteCustomView).toHaveBeenCalledWith(viewIdToRemove)
-			expect(dialogService.showErrorDialog).toHaveBeenCalledWith(expect.stringContaining(`${viewNameToRemove} deleted`), "Info")
+			expect(dialogService.showInfoDialog).toHaveBeenCalledWith(expect.stringContaining(`${viewNameToRemove} deleted`))
 		})
 	})
 })

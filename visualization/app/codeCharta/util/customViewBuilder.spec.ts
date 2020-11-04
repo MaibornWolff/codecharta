@@ -1,8 +1,8 @@
-import { CustomViewBuilder } from "./customViewBuilder"
 import { State } from "../codeCharta.model"
+import {buildCustomViewFromState} from "./customViewBuilder";
 
 describe("CustomViewBuilder", () => {
-	describe("buildFromState", () => {
+	describe("buildCustomViewFromState", () => {
 		it("should return a new CustomView instance", () => {
 			// provide some default state properties
 			const fromState = {
@@ -16,7 +16,7 @@ describe("CustomViewBuilder", () => {
 				fileSettings: {}
 			} as State
 
-			const customView = CustomViewBuilder.buildFromState("test", fromState)
+			const customView = buildCustomViewFromState("test", fromState)
 
 			expect(customView.name).toBe("test")
 			expect(typeof customView.stateSettings !== "undefined").toBe(true)

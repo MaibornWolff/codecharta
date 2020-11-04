@@ -28,6 +28,10 @@ export class DialogService {
 		this.$mdDialog.show(dialog)
 	}
 
+	showInfoDialog(message, title = "Info", button = "Ok") {
+		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
+	}
+
 	showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
 		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}

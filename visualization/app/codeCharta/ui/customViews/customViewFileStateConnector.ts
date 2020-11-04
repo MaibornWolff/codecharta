@@ -11,7 +11,7 @@ export class CustomViewFileStateConnector {
 	constructor(files: FileState[]) {
 		this.files = files
 
-		if (typeof this.files !== "undefined") {
+		if (this.files !== undefined) {
 			this.processFiles()
 		}
 	}

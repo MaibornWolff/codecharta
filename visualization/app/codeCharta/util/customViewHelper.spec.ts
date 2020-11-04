@@ -1,9 +1,8 @@
 import {CustomViewHelper} from "./customViewHelper"
 import {CustomView, CustomViewMapSelectionMode} from "../model/customView/customView.api.model"
 import {CustomViewItemGroup} from "../ui/customViews/customViews.component"
-import {CustomViewBuilder} from "./customViewBuilder"
-import {State} from "../codeCharta.model"
 import {CustomViewFileStateConnector} from "../ui/customViews/customViewFileStateConnector"
+import * as CustomViewBuilder from "./customViewBuilder";
 
 describe("CustomViewHelper", () => {
 	describe("addCustomView", () => {
@@ -269,7 +268,7 @@ describe("CustomViewHelper", () => {
 			])
 
 			const customViewItemGroupsDropDown = [...customViewItemGroups.values()]
-			customViewItemGroupsDropDown.sort(CustomViewHelper.sortCustomViewDropDownGroupList())
+			customViewItemGroupsDropDown.sort(CustomViewHelper.sortCustomViewDropDownGroupList)
 
 			expect(customViewItemGroupsDropDown[0].mapNames).toBe("applicableMultiple1.cc.json applicableMultiple2.cc.json")
 			expect(customViewItemGroupsDropDown[1].mapNames).toBe("notApplicableDelta.cc.json")
@@ -408,16 +407,6 @@ describe("CustomViewHelper", () => {
 			const deltaGroup = customViewItemGroups.get("another.cc.json_delta.cc.json_DELTA")
 			expect(deltaGroup.customViewItems[0].name).toBe("view3")
 			expect(deltaGroup.customViewItems[0].isApplicable).toBe(false)
-		})
-	})
-
-	describe("createCustomView", () => {
-		it("should call CustomViewBuilder to build new CustomView from State", () => {
-			CustomViewBuilder.buildFromState = jest.fn()
-
-			CustomViewHelper.createNewCustomView("newViewName", {} as State)
-
-			expect(CustomViewBuilder.buildFromState).toHaveBeenCalledWith("newViewName", {} as State)
 		})
 	})
 })

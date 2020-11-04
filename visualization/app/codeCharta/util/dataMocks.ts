@@ -537,7 +537,7 @@ export const VALID_EDGE: Edge = {
 
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
-	fileChecksum: "md5-sample",
+	fileChecksum: "invalid-md5-sample",
 	apiVersion: APIVersions.ONE_POINT_TWO,
 	nodes: [VALID_NODE]
 }
@@ -551,7 +551,7 @@ export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
 
 export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
 	fileName: "noFileName",
-	fileChecksum: "md5-sample",
+	fileChecksum: "invalid-md5-sample",
 	projectName: "Valid Sample Map Minor API High",
 	apiVersion: "1.3",
 	nodes: [VALID_NODE]

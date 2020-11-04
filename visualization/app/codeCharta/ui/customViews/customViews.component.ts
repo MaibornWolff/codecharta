@@ -59,7 +59,7 @@ export class CustomViewsController implements FilesSelectionSubscriber {
 		const customViewItemGroups = CustomViewHelper.getCustomViewItemGroups(this.customViewFileStateConnector)
 		// TODO: check if it is an improvement to just sort by hasApplicableCustomViews and by map key afterwards
 		this._viewModel.dropDownCustomViewItemGroups = [...customViewItemGroups.values()]
-		this._viewModel.dropDownCustomViewItemGroups.sort(CustomViewHelper.sortCustomViewDropDownGroupList())
+		this._viewModel.dropDownCustomViewItemGroups.sort(CustomViewHelper.sortCustomViewDropDownGroupList)
 	}
 
 	showAddCustomViewSettings() {
@@ -95,7 +95,7 @@ export class CustomViewsController implements FilesSelectionSubscriber {
 
 	removeCustomView(viewId, viewName) {
 		CustomViewHelper.deleteCustomView(viewId)
-		this.dialogService.showErrorDialog(`${viewName} deleted.`, "Info")
+		this.dialogService.showInfoDialog(`${viewName} deleted.`)
 	}
 }
 

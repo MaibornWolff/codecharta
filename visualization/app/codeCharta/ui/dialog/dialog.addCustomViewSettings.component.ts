@@ -1,28 +1,27 @@
 import "./dialog.component.scss"
 import { CustomViewHelper } from "../../util/customViewHelper"
 import { StoreService } from "../../state/store.service"
-import { DialogService } from "./dialog.service"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { FileState } from "../../model/files/files"
 import { IRootScopeService } from "angular"
 import { CustomViewFileStateConnector } from "../customViews/customViewFileStateConnector"
+import { buildCustomViewFromState } from "../../util/customViewBuilder";
 
 export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubscriber {
 	private customViewFileStateConnector: CustomViewFileStateConnector
 
 	private _viewModel: {
 		customViewName: string
-		addInfoMessage: string
+		addWarningMessage: string
 	} = {
 		customViewName: "",
-		addInfoMessage: ""
+		addWarningMessage: ""
 	}
 
 	constructor(
 		private $rootScope: IRootScopeService,
 		private $mdDialog,
-		private storeService: StoreService,
-		private dialogService: DialogService
+		private storeService: StoreService
 	) {
 		FilesService.subscribe(this.$rootScope, this)
 		this.onFilesSelectionChanged(this.storeService.getState().files)
@@ -42,16 +41,12 @@ export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubsc
 	}
 
 	addCustomView() {
-		try {
-			const newCustomView = CustomViewHelper.createNewCustomView(
-				this._viewModel.customViewName,
-				this.storeService.getState()
-			)
+		const newCustomView = buildCustomViewFromState(
+			this._viewModel.customViewName,
+			this.storeService.getState()
+		)
 
-			CustomViewHelper.addCustomView(newCustomView)
-		} catch (error) {
-			this.dialogService.showErrorDialog(`Could not save your Custom View: ${error}`)
-		}
+		CustomViewHelper.addCustomView(newCustomView)
 
 		this.hide()
 	}
@@ -62,15 +57,15 @@ export class DialogAddCustomViewSettingsComponent implements FilesSelectionSubsc
 			this.customViewFileStateConnector.getSelectedMaps(),
 			this._viewModel.customViewName)
 		) {
-			this._viewModel.addInfoMessage =
-				'<i class="fa fa-warning"></i> Are you sure to override? A Custom View with this name already exists.'
+			this._viewModel.addWarningMessage =
+				'<i class="fa fa-warning"></i> A Custom View with this name already exists.'
 		} else {
-			this._viewModel.addInfoMessage = ""
+			this._viewModel.addWarningMessage = ""
 		}
 	}
 
 	isNewCustomViewValid() {
-		return !(this._viewModel.customViewName === "")
+		return this._viewModel.customViewName !== "" && !this._viewModel.addWarningMessage
 	}
 }
 

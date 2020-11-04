@@ -58,7 +58,7 @@ export class FileChooserController {
 		try {
 			content = JSON.parse(jsonString)
 
-			if (content.fileChecksum === undefined) {
+			if (!content.fileChecksum) {
 				content.fileChecksum = md5(jsonString)
 			}
 		} catch {
