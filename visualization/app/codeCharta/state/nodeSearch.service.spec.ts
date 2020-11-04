@@ -97,14 +97,6 @@ describe("NodeSearchService", () => {
 			expect(nodeSearchService["searchedNodes"][3].path).toBe("/root/Parent Leaf/empty folder")
 		})
 
-		it("nodes should be retrieved searching by multiple search entries", () => {
-			nodeSearchService.onSearchPatternChanged(" \tbig, \tempty")
-
-			expect(nodeSearchService["searchedNodes"].length).toBe(2)
-			expect(nodeSearchService["searchedNodes"][0].path).toBe("/root/big leaf")
-			expect(nodeSearchService["searchedNodes"][1].path).toBe("/root/Parent Leaf/empty folder")
-		})
-
 		it("nodes should be retrieved by inverted search", () => {
 			nodeSearchService.onSearchPatternChanged(" \tleaf")
 
@@ -125,7 +117,7 @@ describe("NodeSearchService", () => {
 			expect(nodeSearchService["searchedNodes"].length).toBe(0)
 		})
 
-		it("nodes should not be retrieved by multiple inverted search entries", () => {
+		it("nodes should not be retrieved by multiple (inverted) search entries", () => {
 			nodeSearchService.onSearchPatternChanged(" \tsmall, \tbig")
 
 			expect(nodeSearchService["searchedNodes"].length).toBe(3)
