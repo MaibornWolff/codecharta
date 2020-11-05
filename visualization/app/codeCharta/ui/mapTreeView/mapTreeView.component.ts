@@ -12,6 +12,7 @@ import { klona } from "klona"
 
 const REVERSE_ORDER = true
 const KEEP_ORDER = false
+const nameCollator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" })
 
 type CompareFunction = (a: CodeMapNode, b: CodeMapNode) => number
 
@@ -33,7 +34,7 @@ export class MapTreeViewController implements CodeMapPreRenderServiceSubscriber,
 		const compareFunction: CompareFunction =
 			sortingOption === SortingOption.NUMBER_OF_FILES
 				? (a, b) => b.attributes[NodeMetricDataService.UNARY_METRIC] - a.attributes[NodeMetricDataService.UNARY_METRIC]
-				: (a, b) => a.name.localeCompare(b.name)
+				: (a, b) => nameCollator.compare(a.name, b.name)
 		this._viewModel.rootNode = this.applySortOrderChange(this._viewModel.rootNode, KEEP_ORDER, compareFunction)
 	}
 
