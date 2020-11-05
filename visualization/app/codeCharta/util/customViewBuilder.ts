@@ -135,16 +135,19 @@ function initializeTreeMapSettings(target: CustomView) {
 function deepMapOneToOther<T>(source: any, target: T) {
 	for (const [key, value] of Object.entries(source)) {
 
-		if (Object.prototype.hasOwnProperty.call(target, key)) {
-			if (typeof value !== "object" || Array.isArray(value) || value === null || target[key] === undefined) {
-				// Assign primitive values to target
-				target[key] = value
-			} else {
-				// We have to map an object with nested properties here.
-				// source and target have the same properties specified for the nested object.
-				// Thus, map properties of the next deeper level.
-				deepMapOneToOther(value, target[key])
-			}
+		// if a property of source is missing, we don't want to copy it into target.
+		if (!Object.prototype.hasOwnProperty.call(target, key)) {
+			continue
+		}
+
+		if (typeof value !== "object" || Array.isArray(value) || value === null || target[key] === undefined) {
+			// Assign primitive values to target
+			target[key] = value
+		} else {
+			// We have to map an object with nested properties here.
+			// source and target have the same properties specified for the nested object.
+			// Thus, map properties of the next deeper level.
+			deepMapOneToOther(value, target[key])
 		}
 	}
 }
