@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   NodeContextMenu now contains option to keep buildings highlighted #1323
+
 ### Changed
 
 -   Improved search
