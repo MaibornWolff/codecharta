@@ -3,6 +3,7 @@ import {CustomView, CustomViewMapSelectionMode} from "../model/customView/custom
 import {CustomViewItemGroup} from "../ui/customViews/customViews.component"
 import {CustomViewFileStateConnector} from "../ui/customViews/customViewFileStateConnector"
 import * as CustomViewBuilder from "./customViewBuilder";
+import {LocalStorageCustomViews, RecursivePartial, stateObjectReplacer, stateObjectReviver} from "../codeCharta.model";
 
 describe("CustomViewHelper", () => {
 	describe("addCustomView", () => {
@@ -11,15 +12,51 @@ describe("CustomViewHelper", () => {
 			const customViewId = CustomViewBuilder.createCustomViewIdentifier(customViewStub.mapSelectionMode, customViewStub.assignedMaps, customViewStub.name)
 			customViewStub.id = customViewId
 
+			spyOn(JSON, 'stringify')
+			JSON["stringify"] = jest.fn(() => { return "customViewStub_asJson" })
+
 			spyOn(Storage.prototype, 'setItem')
 
 			CustomViewHelper.addCustomView(customViewStub)
 
-			expect(localStorage.setItem).toHaveBeenCalledWith(CustomViewHelper["CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT"], expect.anything())
+			expect(JSON.stringify).toHaveBeenCalledWith(expect.anything(), stateObjectReplacer)
+
+			expect(localStorage.setItem).toHaveBeenCalledWith(CustomViewHelper["CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT"], "customViewStub_asJson")
 			expect(CustomViewHelper.hasCustomView(customViewStub.mapSelectionMode, customViewStub.assignedMaps, customViewStub.name)).toBe(true)
 
 			const receivedCustomView = CustomViewHelper.getCustomViewSettings(customViewStub.id)
 			expect(receivedCustomView).toStrictEqual(customViewStub)
+		})
+	})
+
+	describe("loadCustomViews", () => {
+		it("should load CustomViews from localStorage", () => {
+			const customViewStub: RecursivePartial<CustomView> = {
+				id: "",
+				name: "stubbedView1",
+				mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+				assignedMaps: ["test.cc.json"],
+				stateSettings: {}
+			}
+
+			const customViewId = CustomViewBuilder.createCustomViewIdentifier(customViewStub.mapSelectionMode, customViewStub.assignedMaps, customViewStub.name)
+			customViewStub.id = customViewId
+
+			const localStorageCustomViews: LocalStorageCustomViews = {
+				version: "42",
+				customViews: [[customViewStub.id, customViewStub]]
+			}
+
+			spyOn(JSON, 'parse')
+			JSON["parse"] = jest.fn().mockImplementation(() => { return localStorageCustomViews })
+
+			spyOn(Storage.prototype, 'getItem')
+
+			const loadedCustomViews = CustomViewHelper["loadCustomViews"]()
+			expect(loadedCustomViews.size).toBe(1)
+
+			expect(localStorage.getItem).toHaveBeenCalledWith(CustomViewHelper["CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT"])
+			expect(JSON.parse).toHaveBeenCalledWith(undefined, stateObjectReviver)
 		})
 	})
 
