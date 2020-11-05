@@ -67,7 +67,12 @@ export class CodeMapMesh {
 		this.mapGeomDesc.setScales(scale)
 	}
 
-	highlightBuilding(highlightedBuildings: CodeMapBuilding[], selected: CodeMapBuilding, state: State, constantHighlight: Map<number, CodeMapBuilding>) {
+	highlightBuilding(
+		highlightedBuildings: CodeMapBuilding[],
+		selected: CodeMapBuilding,
+		state: State,
+		constantHighlight: Map<number, CodeMapBuilding>
+	) {
 		const highlightBuildingMap = TreeMapHelper.buildingArrayToMap(highlightedBuildings)
 		for (const building of this.mapGeomDesc.buildings) {
 			if (!this.isBuildingSelected(selected, building)) {
@@ -84,7 +89,7 @@ export class CodeMapMesh {
 
 	clearHighlight(selected: CodeMapBuilding) {
 		for (const currentBuilding of this.mapGeomDesc.buildings) {
-			if (!this.isBuildingSelected(selected, currentBuilding)){
+			if (!this.isBuildingSelected(selected, currentBuilding)) {
 				this.setVertexColor(
 					currentBuilding.id,
 					currentBuilding.getDefaultColorVector(),

@@ -56,7 +56,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.reselectBuilding()
 	}
 
-	getConstantHighlight(){
+	getConstantHighlight() {
 		return this.constantHighlight
 	}
 
@@ -75,17 +75,16 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.highlighted.push(building)
 	}
 
-	clearHoverHighlight(){
+	clearHoverHighlight() {
 		this.highlighted = []
 		this.highlightBuildings()
 	}
 
 	clearHighlight() {
 		if (this.getMapMesh()) {
-				this.getMapMesh().clearHighlight(this.selected)
-				this.highlighted = []
-				this.constantHighlight.clear()
-			
+			this.getMapMesh().clearHighlight(this.selected)
+			this.highlighted = []
+			this.constantHighlight.clear()
 		}
 	}
 
@@ -97,8 +96,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
 	}
 
-	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode){
-		const {lookUp} = this.storeService.getState()
+	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode) {
+		const { lookUp } = this.storeService.getState()
 		const codeMapBuilding = lookUp.idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
 			const building = lookUp.idToBuilding.get(data.id)
@@ -108,8 +107,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		}
 	}
 
-	removeNodeAndChildrenFromConstantHighlight(codeMapNode: CodeMapNode){
-		const {lookUp} = this.storeService.getState()
+	removeNodeAndChildrenFromConstantHighlight(codeMapNode: CodeMapNode) {
+		const { lookUp } = this.storeService.getState()
 		const codeMapBuilding = lookUp.idToNode.get(codeMapNode.id)
 		for (const { data } of hierarchy(codeMapBuilding)) {
 			const building = lookUp.idToBuilding.get(data.id)
@@ -119,8 +118,8 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		}
 	}
 
-	clearConstantHighlight(){
-		if(this.constantHighlight.size >0){
+	clearConstantHighlight() {
+		if (this.constantHighlight.size > 0) {
 			this.clearHighlight()
 		}
 	}

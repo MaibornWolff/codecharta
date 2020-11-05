@@ -124,7 +124,7 @@ describe("codeMapMouseEventService", () => {
 			highlightSingleBuilding: jest.fn(),
 			clearSelection: jest.fn(),
 			clearConstantHighlight: jest.fn(),
-			clearHoverHighlight:jest.fn(),
+			clearHoverHighlight: jest.fn(),
 			selectBuilding: jest.fn(),
 			getSelectedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
 			getHighlightedBuilding: jest.fn().mockReturnValue(CODE_MAP_BUILDING),
@@ -501,7 +501,6 @@ describe("codeMapMouseEventService", () => {
 
 	describe("unhoverBuilding", () => {
 		it("should clear the highlight when to is null and constantHighlight is empty", () => {
-
 			codeMapMouseEventService["unhoverBuilding"]()
 
 			expect($rootScope.$broadcast).toHaveBeenCalledWith("building-unhovered")

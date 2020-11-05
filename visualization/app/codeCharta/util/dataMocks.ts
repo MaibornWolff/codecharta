@@ -384,7 +384,7 @@ export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
 	]
 }
 
-export const VALID_FILE_NODE_WITH_ID: CodeMapNode= {
+export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
 	name: "big leaf",
 	id: 1,
 	type: NodeType.FILE,
@@ -393,7 +393,6 @@ export const VALID_FILE_NODE_WITH_ID: CodeMapNode= {
 	link: "http://www.google.de",
 	isExcluded: false,
 	isFlattened: false
-
 }
 
 export const VALID_NODES_WITH_ID: CodeMapNode = {
@@ -406,12 +405,8 @@ export const VALID_NODES_WITH_ID: CodeMapNode = {
 	link: "NO_LINK",
 	isExcluded: false,
 	isFlattened: false,
-	children:[
-		VALID_FILE_NODE_WITH_ID
-	]
+	children: [VALID_FILE_NODE_WITH_ID]
 }
-
-
 
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
 	name: "root",
@@ -1646,11 +1641,10 @@ export const MARKED_PACKAGES: MarkedPackage[] = [
 	}
 ]
 
-export const CONSTANT_HIGHLIGHT: Map<number,CodeMapBuilding> =new Map([
-		[CODE_MAP_BUILDING.id,  CODE_MAP_BUILDING],
-		[CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
-	])
-
+export const CONSTANT_HIGHLIGHT: Map<number, CodeMapBuilding> = new Map([
+	[CODE_MAP_BUILDING.id, CODE_MAP_BUILDING],
+	[CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
+])
 
 export function withMockedEventMethods($rootScope: IRootScopeService) {
 	$rootScope.$broadcast = jest.fn()

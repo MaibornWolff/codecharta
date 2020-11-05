@@ -10,12 +10,11 @@ import { CodeMapBuilding } from "../codeMap/rendering/codeMapBuilding"
 import { BuildingRightClickedEventSubscriber, CodeMapMouseEventService } from "../codeMap/codeMap.mouseEvent.service"
 import { MapColorsService, MapColorsSubscriber } from "../../state/store/appSettings/mapColors/mapColors.service"
 import { getCodeMapNodeFromPath } from "../../util/codeMapHelper"
-import {ThreeSceneService} from "../codeMap/threeViewer/threeSceneService";
+import { ThreeSceneService } from "../codeMap/threeViewer/threeSceneService"
 
 export enum ClickType {
 	RightClick = 2
 }
-
 
 export interface ShowNodeContextMenuSubscriber {
 	onShowNodeContextMenu(path: string, type: string, x: number, y: number)
@@ -107,17 +106,6 @@ export class NodeContextMenuController
 		document.body.removeEventListener("mousedown", this.onBodyRightClickHideNodeContextMenu, true)
 	}
 
-	addNodeToConstantHighlight(){
-		this.threeSceneService.addNodeAndChildrenToConstantHighlight(this._viewModel.codeMapNode)
-		this.onHideNodeContextMenu()
-
-	}
-
-	removeNodeFromConstantHighlight(){
-		this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(this._viewModel.codeMapNode)
-		this.onHideNodeContextMenu()
-	}
-
 	onMapWheelHideNodeContextMenu = () => {
 		// If you zoom in and out the map, the node context menu should be closed.
 		NodeContextMenuController.broadcastHideEvent(this.$rootScope)
@@ -154,6 +142,16 @@ export class NodeContextMenuController
 				type: BlacklistType.exclude
 			})
 		)
+	}
+
+	addNodeToConstantHighlight() {
+		this.threeSceneService.addNodeAndChildrenToConstantHighlight(this._viewModel.codeMapNode)
+		this.onHideNodeContextMenu()
+	}
+
+	removeNodeFromConstantHighlight() {
+		this.threeSceneService.removeNodeAndChildrenFromConstantHighlight(this._viewModel.codeMapNode)
+		this.onHideNodeContextMenu()
 	}
 
 	clickColor(color: string) {
@@ -215,11 +213,11 @@ export class NodeContextMenuController
 		return this.storeService.getState().fileSettings.markedPackages[index].color === color
 	}
 
-	isNodeConstantlyHighlighted(){
-		if(this._viewModel.codeMapNode){			
-			const {lookUp} = this.storeService.getState()
+	isNodeConstantlyHighlighted() {
+		if (this._viewModel.codeMapNode) {
+			const { lookUp } = this.storeService.getState()
 			const codeMapBuilding: CodeMapBuilding = lookUp.idToBuilding.get(this._viewModel.codeMapNode.id)
-			if(codeMapBuilding){
+			if (codeMapBuilding) {
 				return this.threeSceneService.getConstantHighlight().has(codeMapBuilding.id)
 			}
 		}
