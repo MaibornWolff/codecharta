@@ -2,7 +2,12 @@ import { StoreService, StoreSubscriber } from "../../../store.service"
 import { IRootScopeService } from "angular"
 import { DistributionMetricActions, setDistributionMetric } from "./distributionMetric.actions"
 import { NodeMetricData } from "../../../../codeCharta.model"
-import { getMetricNameFromIndexOrLast, isAnyMetricAvailable, isMetricUnavailable } from "../../../../util/metricHelper"
+import {
+	getMetricNameFromIndexOrLast,
+	isAnyMetricAvailable,
+	isMetricUnavailable,
+	resetToDefaultDistribution
+} from "../../../../util/metricHelper"
 import { isActionOfType } from "../../../../util/reduxHelper"
 import { NodeMetricDataService, NodeMetricDataSubscriber } from "../../metricData/nodeMetricData/nodeMetricData.service"
 
@@ -31,12 +36,11 @@ export class DistributionMetricService implements StoreSubscriber, NodeMetricDat
 	}
 
 	reset(metricData: NodeMetricData[]) {
-		const { distributionMetric } = this.storeService.getState().dynamicSettings
-
-		if (isMetricUnavailable(metricData, distributionMetric)) {
-			const newDistributionMetric = getMetricNameFromIndexOrLast(metricData, 0)
-			this.storeService.dispatch(setDistributionMetric(newDistributionMetric))
-		}
+		const newDistributionMetric = resetToDefaultDistribution(metricData)
+		const resetDistributionMetric = isMetricUnavailable(metricData, newDistributionMetric)
+			? getMetricNameFromIndexOrLast(metricData, 0)
+			: newDistributionMetric
+		this.storeService.dispatch(setDistributionMetric(resetDistributionMetric))
 	}
 
 	private select() {

@@ -62,8 +62,9 @@ export class MetricChooserController
 	}
 
 	onNodeMetricDataChanged(nodeMetricData: NodeMetricData[]) {
-		this._viewModel.metricData = nodeMetricData
-		this.originalMetricData = nodeMetricData
+		const filteredNodeMetricData = nodeMetricData.filter(name => name.name.length > 0)
+		this._viewModel.metricData = filteredNodeMetricData
+		this.originalMetricData = filteredNodeMetricData
 	}
 
 	filterMetricData() {
