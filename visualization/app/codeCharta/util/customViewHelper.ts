@@ -1,5 +1,5 @@
 "use strict"
-import { LocalStorageCustomViews, RecursivePartial } from "../codeCharta.model"
+import {LocalStorageCustomViews, RecursivePartial, stateObjectReplacer, stateObjectReviver} from "../codeCharta.model"
 import { CustomViewItemGroup } from "../ui/customViews/customViews.component"
 import { CustomView, CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
 import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
@@ -61,11 +61,11 @@ export class CustomViewHelper {
 			version: this.CUSTOM_VIEWS_LOCAL_STORAGE_VERSION,
 			customViews: [...this.customViews]
 		}
-		localStorage.setItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement))
+		localStorage.setItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement, stateObjectReplacer))
 	}
 
 	private static loadCustomViews() {
-		const ccLocalStorage: LocalStorageCustomViews = JSON.parse(localStorage.getItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT))
+		const ccLocalStorage: LocalStorageCustomViews = JSON.parse(localStorage.getItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT), stateObjectReviver)
 		return new Map(ccLocalStorage?.customViews)
 	}
 
