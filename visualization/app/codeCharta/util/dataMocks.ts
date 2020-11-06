@@ -276,6 +276,134 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 	]
 }
 
+export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
+	name: "root",
+	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "File2a",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2á",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2b",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		},
+		{
+			name: "Folder10",
+			type: NodeType.FOLDER,
+			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		}
+	]
+}
+
+export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
+	name: "root",
+	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
+	type: NodeType.FOLDER,
+	isExcluded: false,
+	isFlattened: false,
+	children: [
+		{
+			name: "big leaf",
+			type: NodeType.FILE,
+			attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+			link: "http://www.google.de",
+			isExcluded: false,
+			isFlattened: false
+		},
+		{
+			name: "Folder1",
+			type: NodeType.FOLDER,
+			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder10",
+			type: NodeType.FOLDER,
+			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
+			isExcluded: false,
+			isFlattened: false,
+			children: []
+		},
+		{
+			name: "Folder2",
+			type: NodeType.FOLDER,
+			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
+			isExcluded: false,
+			isFlattened: false,
+			children: [
+				{
+					name: "File2a",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2b",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2á",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				}
+			]
+		}
+	]
+}
+
 export const VALID_NODE_WITH_PATH: CodeMapNode = {
 	name: "root",
 	attributes: {},
@@ -384,6 +512,30 @@ export const VALID_NODE_WITH_MERGED_FOLDERS_AND_PATH: CodeMapNode = {
 			]
 		}
 	]
+}
+
+export const VALID_FILE_NODE_WITH_ID: CodeMapNode = {
+	name: "big leaf",
+	id: 1,
+	type: NodeType.FILE,
+	path: "/root/big leaf",
+	attributes: { rloc: 100, functions: 10, mcc: 1, [NodeMetricDataService.UNARY_METRIC]: 1 },
+	link: "http://www.google.de",
+	isExcluded: false,
+	isFlattened: false
+}
+
+export const VALID_NODES_WITH_ID: CodeMapNode = {
+	name: "root",
+	type: NodeType.FOLDER,
+	id: 0,
+	attributes: { a: 20, b: 15 },
+	edgeAttributes: { a: { incoming: 2, outgoing: 666 } },
+	path: "/root",
+	link: "NO_LINK",
+	isExcluded: false,
+	isFlattened: false,
+	children: [VALID_FILE_NODE_WITH_ID]
 }
 
 export const VALID_NODE_WITH_ROOT_UNARY: CodeMapNode = {
@@ -1657,7 +1809,7 @@ export const DIFFERENT_NODE: Node = {
 }
 
 export const CODE_MAP_BUILDING: CodeMapBuilding = new CodeMapBuilding(
-	1,
+	0,
 	new Box3(),
 	TEST_NODE_ROOT,
 	DEFAULT_STATE.appSettings.mapColors.neutral
@@ -1717,6 +1869,11 @@ export const MARKED_PACKAGES: MarkedPackage[] = [
 		color: "#345678"
 	}
 ]
+
+export const CONSTANT_HIGHLIGHT: Map<number, CodeMapBuilding> = new Map([
+	[CODE_MAP_BUILDING.id, CODE_MAP_BUILDING],
+	[CODE_MAP_BUILDING_TS_NODE.id, CODE_MAP_BUILDING_TS_NODE]
+])
 
 export function withMockedEventMethods($rootScope: IRootScopeService) {
 	$rootScope.$broadcast = jest.fn()
