@@ -32,6 +32,8 @@ import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
+import { CustomConfigItem, CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
+import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -663,6 +665,7 @@ export const VALID_EDGE: Edge = {
 
 export const TEST_FILE_CONTENT: ExportCCFile = {
 	projectName: "Sample Map",
+	fileChecksum: "invalid-md5-sample",
 	apiVersion: APIVersions.ONE_POINT_TWO,
 	nodes: [VALID_NODE]
 }
@@ -676,6 +679,7 @@ export const TEST_FILE_CONTENT_INVALID_MAJOR_API = {
 
 export const TEST_FILE_CONTENT_INVALID_MINOR_API = {
 	fileName: "noFileName",
+	fileChecksum: "invalid-md5-sample",
 	projectName: "Valid Sample Map Minor API High",
 	apiVersion: "1.3",
 	nodes: [VALID_NODE]
@@ -696,6 +700,7 @@ export const TEST_FILE_CONTENT_NO_API = {
 
 export const FILE_META: FileMeta = {
 	fileName: "fileA",
+	fileChecksum: "md5-fileA",
 	projectName: "Sample Project",
 	apiVersion: packageJson.codecharta.apiVersion
 }
@@ -1017,6 +1022,7 @@ export const VALID_NODE_WITHOUT_RLOC_METRIC: CodeMapNode = {
 export const TEST_DELTA_MAP_A: CCFile = {
 	fileMeta: {
 		fileName: "fileA",
+		fileChecksum: "md5-delta-fileA",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion
 	},
@@ -1073,6 +1079,7 @@ export const TEST_DELTA_MAP_A: CCFile = {
 export const TEST_DELTA_MAP_B: CCFile = {
 	fileMeta: {
 		fileName: "fileB",
+		fileChecksum: "md5-delta-fileB",
 		projectName: "Sample Project",
 		apiVersion: packageJson.codecharta.apiVersion
 	},
@@ -1313,7 +1320,8 @@ export const STATE: State = {
 		isAttributeSideBarVisible: true,
 		panelSelection: PanelSelection.AREA_PANEL_OPEN,
 		showMetricLabelNameValue: true,
-		showMetricLabelNodeName: true
+		showMetricLabelNodeName: true,
+		experimentalFeaturesEnabled: false
 	},
 	treeMap: {
 		mapSize: 250
@@ -1371,7 +1379,8 @@ export const DEFAULT_STATE: State = {
 		isAttributeSideBarVisible: false,
 		panelSelection: PanelSelection.NONE,
 		showMetricLabelNameValue: true,
-		showMetricLabelNodeName: true
+		showMetricLabelNodeName: true,
+		experimentalFeaturesEnabled: false
 	},
 	dynamicSettings: {
 		areaMetric: null,
@@ -1546,6 +1555,98 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 		icons: [{ faIconClass: "fa fa-some", isSaved: true, tooltip: "some" }]
 	}
 ]
+
+export const CUSTOM_VIEW_ITEMS: CustomConfigItem[] = [
+	{
+		id: "SINGLEfileASampleMap View #1",
+		name: "SampleMap View #1",
+		mapNames: "fileA",
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+		isApplicable: true
+	},
+	{
+		id: "SINGLEfileAAnotherMap View #1",
+		name: "AnotherMap View #1",
+		mapNames: "fileB",
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+		isApplicable: false
+	},
+	{
+		id: "SINGLEfileASampleMap View #2",
+		name: "SampleMap View #2",
+		mapNames: "fileA",
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+		isApplicable: true
+	}
+]
+
+export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
+	[
+		"fileAfileBSINGLE",
+		{
+			mapNames: "fileA fileB",
+			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+			hasApplicableItems: false,
+			customConfigItems: [
+				{
+					id: "SINGLEfileASampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileA",
+					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					isApplicable: false
+				},
+				{
+					id: "SINGLEfileBSampleMap View #2",
+					name: "SampleMap View #2",
+					mapNames: "fileB",
+					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
+					isApplicable: false
+				}
+			]
+		}
+	],
+	[
+		"fileAfileBMultiple",
+		{
+			mapNames: "fileC fileD",
+			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+			hasApplicableItems: true,
+			customConfigItems: [
+				{
+					id: "MULTIPLEfileCSampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileB",
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					isApplicable: true
+				},
+				{
+					id: "MULTIPLEfileDSampleMap View #2",
+					name: "SampleMap View #2",
+					mapNames: "fileD",
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
+					isApplicable: true
+				}
+			]
+		}
+	],
+	[
+		"fileAfileBDELTA",
+		{
+			mapNames: "fileE",
+			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+			hasApplicableItems: false,
+			customConfigItems: [
+				{
+					id: "MULTIPLEfileESampleMap View #1",
+					name: "SampleMap View #1",
+					mapNames: "fileD",
+					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
+					isApplicable: false
+				}
+			]
+		}
+	]
+])
 
 export const SCENARIO_ITEM_WITH_EVERYTHING_SAVED: ScenarioItem[] = [
 	{
