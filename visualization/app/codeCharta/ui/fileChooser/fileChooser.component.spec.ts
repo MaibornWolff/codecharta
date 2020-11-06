@@ -63,11 +63,10 @@ describe("fileChooserController", () => {
 
 	describe("addNameDataPair", () => {
 		it("should generate and append md5-file-checksum if it is missing or empty", () => {
-
 			fileChooserController["files"] = []
 			fileChooserController["addNameDataPair"](
 				"invalid.with.md5.checksum.cc.json",
-				"{\"fileChecksum\":\"invalid-but-present-md5-checksum\"}"
+				'{"fileChecksum":"invalid-but-present-md5-checksum"}'
 			)
 
 			expect(fileChooserController["files"].length).toBe(1)
@@ -80,19 +79,13 @@ describe("fileChooserController", () => {
 			expect(fileChooserController["files"][1].fileName).toBe("invalid.and.missing.md5.checksum.cc.json")
 			expect(fileChooserController["files"][1].content.fileChecksum).toBe("99914b932bd37a50b983c5e7c90ae93b")
 
-			fileChooserController["addNameDataPair"](
-				"invalid.and.empty.md5.checksum.cc.json",
-				"{\"fileChecksum\":\"\"}"
-			)
+			fileChooserController["addNameDataPair"]("invalid.and.empty.md5.checksum.cc.json", '{"fileChecksum":""}')
 
 			expect(fileChooserController["files"].length).toBe(3)
 			expect(fileChooserController["files"][2].fileName).toBe("invalid.and.empty.md5.checksum.cc.json")
 			expect(fileChooserController["files"][2].content.fileChecksum).toBe("21a6f66227ae28300d656b8107765e7f")
 
-			fileChooserController["addNameDataPair"](
-				"invalid.and.nulled.md5.checksum.cc.json",
-				"{\"fileChecksum\":null}"
-			)
+			fileChooserController["addNameDataPair"]("invalid.and.nulled.md5.checksum.cc.json", '{"fileChecksum":null}')
 
 			expect(fileChooserController["files"].length).toBe(4)
 			expect(fileChooserController["files"][3].fileName).toBe("invalid.and.nulled.md5.checksum.cc.json")

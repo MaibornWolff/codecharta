@@ -7,7 +7,7 @@ import { FilesService } from "../../state/store/files/files.service"
 import { setFiles } from "../../state/store/files/files.actions"
 import { FILE_STATES } from "../../util/dataMocks"
 import { CustomViewHelper } from "../../util/customViewHelper"
-import * as CustomViewBuilder from "../../util/customViewBuilder";
+import * as CustomViewBuilder from "../../util/customViewBuilder"
 
 describe("DialogAddScenarioSettingsComponent", () => {
 	let dialogAddCustomViewSettings: DialogAddCustomViewSettingsComponent
@@ -74,7 +74,6 @@ describe("DialogAddScenarioSettingsComponent", () => {
 			expect(CustomViewBuilder.buildCustomViewFromState).toHaveBeenCalledWith("mockedViewName", storeService.getState())
 			expect($mdDialog.hide).toHaveBeenCalled()
 		})
-
 	})
 
 	describe("validateCustomViewName", () => {

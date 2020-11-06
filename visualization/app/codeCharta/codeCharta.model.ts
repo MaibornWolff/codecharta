@@ -291,38 +291,38 @@ export interface State {
 }
 
 export function stateObjectReplacer(this, key) {
-	const originalObject = this[key];
+	const originalObject = this[key]
 	if (originalObject instanceof Map) {
 		return {
-			dataType: 'Map',
-			value: [...originalObject.entries()],
-		};
+			dataType: "Map",
+			value: [...originalObject.entries()]
+		}
 	}
 	if (originalObject instanceof Set) {
 		return {
-			dataType: 'Set',
-			value: [...originalObject],
-		};
+			dataType: "Set",
+			value: [...originalObject]
+		}
 	}
-	return originalObject;
+	return originalObject
 }
 
 export function stateObjectReviver(this, key) {
 	const valueToRevive = this[key]
-	if (typeof valueToRevive !== 'object' || valueToRevive === null) {
+	if (typeof valueToRevive !== "object" || valueToRevive === null) {
 		return valueToRevive
 	}
 
 	// our state has not got a Map so far
 	// Nevertheless, we keep this logic
-	if (valueToRevive.dataType === 'Map') {
-		return new Map(valueToRevive.value);
+	if (valueToRevive.dataType === "Map") {
+		return new Map(valueToRevive.value)
 	}
-	if (valueToRevive.dataType === 'Set') {
-		return new Set(valueToRevive.value);
+	if (valueToRevive.dataType === "Set") {
+		return new Set(valueToRevive.value)
 	}
 
-	return valueToRevive;
+	return valueToRevive
 }
 
 export interface CCAction extends Action {

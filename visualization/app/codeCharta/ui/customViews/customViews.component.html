@@ -18,13 +18,10 @@
 		</md-menu-item>
 
 		<md-menu-item class="custom-views-item" ng-repeat="customViewItemGroup in $ctrl._viewModel.dropDownCustomViewItemGroups">
-			<md-button
-					class="button-hovering"
-					ng-click="collapsed=!collapsed"
-					md-prevent-menu-close="md-prevent-menu-close"
-			>
+			<md-button class="button-hovering" ng-click="collapsed=!collapsed" md-prevent-menu-close="md-prevent-menu-close">
 				<span class="collapse-trigger">
-					Custom configs in <strong>{{ customViewItemGroup.mapSelectionMode|lowercase }}</strong> mode for <strong>{{ customViewItemGroup.mapNames }}</strong>
+					Custom configs in <strong>{{ customViewItemGroup.mapSelectionMode | lowercase }}</strong> mode for
+					<strong>{{ customViewItemGroup.mapNames }}</strong>
 				</span>
 				<i ng-show="!collapsed" class="collapse-icon fa fa-arrow-down"></i>
 				<i ng-show="collapsed" class="collapse-icon fa fa-arrow-up"></i>
@@ -33,25 +30,32 @@
 			<div class="collapsable" ng-show="collapsed">
 				<div class="custom-views-item" ng-repeat="customView in customViewItemGroup.customViewItems">
 					<md-button
-							class="button-hovering"
-							ng-click="$ctrl.applyCustomView(customView.id)"
-							ng-disabled="!customView.isApplicable"
-							title="{{ customView.isApplicable ? 'Apply custom view' : 'This one is applicable for map(s) ' + customView.mapNames + ' in ' + customView.mapSelectionMode + ' mode only.'}}"
+						class="button-hovering"
+						ng-click="$ctrl.applyCustomView(customView.id)"
+						ng-disabled="!customView.isApplicable"
+						title="{{
+							customView.isApplicable
+								? 'Apply custom view'
+								: 'This one is applicable for map(s) ' +
+								  customView.mapNames +
+								  ' in ' +
+								  customView.mapSelectionMode +
+								  ' mode only.'
+						}}"
 					>
 						{{ customView.name }}
 					</md-button>
 
 					<md-button
-							ng-click="$ctrl.removeCustomView(customView.id, customView.name)"
-							class="action-button remove button-hovering"
-							title="Remove custom view"
+						ng-click="$ctrl.removeCustomView(customView.id, customView.name)"
+						class="action-button remove button-hovering"
+						title="Remove custom view"
 					>
 						<i class="fa fa-minus-square"></i>
 					</md-button>
 				</div>
 			</div>
 		</md-menu-item>
-
 	</md-menu-content>
 </md-menu>
 

@@ -52,6 +52,5 @@ describe("CustomViews", () => {
 		await customViews.collapseCustomViewItemGroup(1)
 		await customViews.collapseCustomViewItemGroup(2)
 		await customViews.collapseCustomViewItemGroup(3)
-
 	}, 90000)
 })

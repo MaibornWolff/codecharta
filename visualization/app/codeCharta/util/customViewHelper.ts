@@ -1,9 +1,9 @@
 "use strict"
-import {LocalStorageCustomViews, RecursivePartial, stateObjectReplacer, stateObjectReviver} from "../codeCharta.model"
+import { LocalStorageCustomViews, RecursivePartial, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 import { CustomViewItemGroup } from "../ui/customViews/customViews.component"
 import { CustomView, CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
 import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
-import {createCustomViewIdentifier} from "./customViewBuilder";
+import { createCustomViewIdentifier } from "./customViewBuilder"
 
 export class CustomViewHelper {
 	private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_VERSION = "1.0.0"
@@ -15,18 +15,15 @@ export class CustomViewHelper {
 		const customViewItemGroups: Map<string, CustomViewItemGroup> = new Map()
 
 		this.customViews.forEach(customView => {
-			const groupKey = `${customView.assignedMaps.join("_")  }_${  customView.mapSelectionMode}`
+			const groupKey = `${customView.assignedMaps.join("_")}_${customView.mapSelectionMode}`
 
 			if (!customViewItemGroups.has(groupKey)) {
-				customViewItemGroups.set(
-					groupKey,
-					{
-						mapNames: customView.assignedMaps.join(" "),
-						mapSelectionMode: customView.mapSelectionMode,
-						hasApplicableItems: false,
-						customViewItems: []
-					}
-				)
+				customViewItemGroups.set(groupKey, {
+					mapNames: customView.assignedMaps.join(" "),
+					mapSelectionMode: customView.mapSelectionMode,
+					hasApplicableItems: false,
+					customViewItems: []
+				})
 			}
 
 			const customViewItemApplicable = this.isCustomViewApplicable(customViewFileStateConnector, customView)
@@ -51,9 +48,11 @@ export class CustomViewHelper {
 		customView: RecursivePartial<CustomView>
 	) {
 		// TODO: Follow Up: Configs are applicable if their checksums are matching, but map names should not be checked.
-		return customViewFileStateConnector.getJointMapName() === customView.assignedMaps.join(" ") &&
+		return (
+			customViewFileStateConnector.getJointMapName() === customView.assignedMaps.join(" ") &&
 			customViewFileStateConnector.getChecksumOfAssignedMaps() === customView.mapChecksum &&
-			customViewFileStateConnector.getMapSelectionMode() === customView.mapSelectionMode;
+			customViewFileStateConnector.getMapSelectionMode() === customView.mapSelectionMode
+		)
 	}
 
 	private static setCustomViewsToLocalStorage() {
@@ -65,13 +64,14 @@ export class CustomViewHelper {
 	}
 
 	private static loadCustomViews() {
-		const ccLocalStorage: LocalStorageCustomViews = JSON.parse(localStorage.getItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT), stateObjectReviver)
+		const ccLocalStorage: LocalStorageCustomViews = JSON.parse(
+			localStorage.getItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT),
+			stateObjectReviver
+		)
 		return new Map(ccLocalStorage?.customViews)
 	}
 
-	static addCustomView(
-		newCustomView: RecursivePartial<CustomView>,
-	) {
+	static addCustomView(newCustomView: RecursivePartial<CustomView>) {
 		this.customViews.set(newCustomView.id, newCustomView)
 		this.setCustomViewsToLocalStorage()
 	}
@@ -80,16 +80,8 @@ export class CustomViewHelper {
 		return this.customViews.get(viewId)
 	}
 
-	static hasCustomView(
-		mapSelectionMode: CustomViewMapSelectionMode,
-		selectedMaps: string[],
-		viewName: string
-	): boolean {
-		const customViewIdentifier = createCustomViewIdentifier(
-			mapSelectionMode,
-			selectedMaps,
-			viewName
-		)
+	static hasCustomView(mapSelectionMode: CustomViewMapSelectionMode, selectedMaps: string[], viewName: string): boolean {
+		const customViewIdentifier = createCustomViewIdentifier(mapSelectionMode, selectedMaps, viewName)
 
 		return this.customViews.has(customViewIdentifier)
 	}
@@ -108,7 +100,7 @@ export class CustomViewHelper {
 
 	static getViewNameSuggestionByFileState(customViewFileStateConnector: CustomViewFileStateConnector): string {
 		const suggestedViewName = customViewFileStateConnector.getJointMapName()
-		
+
 		if (!suggestedViewName) {
 			return ""
 		}

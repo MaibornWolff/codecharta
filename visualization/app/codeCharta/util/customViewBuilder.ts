@@ -1,6 +1,6 @@
 "use strict"
 import { State } from "../codeCharta.model"
-import {CustomView, CustomViewMapSelectionMode} from "../model/customView/customView.api.model"
+import { CustomView, CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
 import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
 
 const CC_CUSTOM_VIEW_API_VERSION = "1.0.0"
@@ -43,11 +43,7 @@ export function buildCustomViewFromState(viewName: string, state: State): Custom
 	return customView
 }
 
-export function createCustomViewIdentifier(
-	mapSelectionMode: CustomViewMapSelectionMode,
-	selectedMaps: string[],
-	viewName: string
-) {
+export function createCustomViewIdentifier(mapSelectionMode: CustomViewMapSelectionMode, selectedMaps: string[], viewName: string) {
 	return mapSelectionMode + selectedMaps.join("") + viewName
 }
 
@@ -79,7 +75,7 @@ function initializeAppSettings(target: CustomView) {
 		whiteColorBuildings: false,
 		experimentalFeaturesEnabled: false,
 		mapColors: {
-			labelColorAndAlpha: {alpha: 0, rgb: ""},
+			labelColorAndAlpha: { alpha: 0, rgb: "" },
 			angularGreen: "",
 			base: "",
 			defaultC: "",
@@ -134,7 +130,6 @@ function initializeTreeMapSettings(target: CustomView) {
 
 function deepMapOneToOther<T>(source: any, target: T) {
 	for (const [key, value] of Object.entries(source)) {
-
 		// if a property of source is missing, we don't want to copy it into target.
 		if (!Object.prototype.hasOwnProperty.call(target, key)) {
 			continue

@@ -1,28 +1,45 @@
-import {CustomViewHelper} from "./customViewHelper"
-import {CustomView, CustomViewMapSelectionMode} from "../model/customView/customView.api.model"
-import {CustomViewItemGroup} from "../ui/customViews/customViews.component"
-import {CustomViewFileStateConnector} from "../ui/customViews/customViewFileStateConnector"
-import * as CustomViewBuilder from "./customViewBuilder";
-import {LocalStorageCustomViews, RecursivePartial, stateObjectReplacer, stateObjectReviver} from "../codeCharta.model";
+import { CustomViewHelper } from "./customViewHelper"
+import { CustomView, CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
+import { CustomViewItemGroup } from "../ui/customViews/customViews.component"
+import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
+import * as CustomViewBuilder from "./customViewBuilder"
+import { LocalStorageCustomViews, RecursivePartial, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
 
 describe("CustomViewHelper", () => {
 	describe("addCustomView", () => {
 		it("should add custom view and store them to localStorage", () => {
-			const customViewStub = { id: "", name: "stubbedView1", mapSelectionMode: CustomViewMapSelectionMode.SINGLE, assignedMaps: ["test.cc.json"], stateSettings: {} } as CustomView
-			const customViewId = CustomViewBuilder.createCustomViewIdentifier(customViewStub.mapSelectionMode, customViewStub.assignedMaps, customViewStub.name)
+			const customViewStub = {
+				id: "",
+				name: "stubbedView1",
+				mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+				assignedMaps: ["test.cc.json"],
+				stateSettings: {}
+			} as CustomView
+			const customViewId = CustomViewBuilder.createCustomViewIdentifier(
+				customViewStub.mapSelectionMode,
+				customViewStub.assignedMaps,
+				customViewStub.name
+			)
 			customViewStub.id = customViewId
 
-			spyOn(JSON, 'stringify')
-			JSON["stringify"] = jest.fn(() => { return "customViewStub_asJson" })
+			spyOn(JSON, "stringify")
+			JSON["stringify"] = jest.fn(() => {
+				return "customViewStub_asJson"
+			})
 
-			spyOn(Storage.prototype, 'setItem')
+			spyOn(Storage.prototype, "setItem")
 
 			CustomViewHelper.addCustomView(customViewStub)
 
 			expect(JSON.stringify).toHaveBeenCalledWith(expect.anything(), stateObjectReplacer)
 
-			expect(localStorage.setItem).toHaveBeenCalledWith(CustomViewHelper["CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT"], "customViewStub_asJson")
-			expect(CustomViewHelper.hasCustomView(customViewStub.mapSelectionMode, customViewStub.assignedMaps, customViewStub.name)).toBe(true)
+			expect(localStorage.setItem).toHaveBeenCalledWith(
+				CustomViewHelper["CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT"],
+				"customViewStub_asJson"
+			)
+			expect(CustomViewHelper.hasCustomView(customViewStub.mapSelectionMode, customViewStub.assignedMaps, customViewStub.name)).toBe(
+				true
+			)
 
 			const receivedCustomView = CustomViewHelper.getCustomViewSettings(customViewStub.id)
 			expect(receivedCustomView).toStrictEqual(customViewStub)
@@ -39,7 +56,11 @@ describe("CustomViewHelper", () => {
 				stateSettings: {}
 			}
 
-			const customViewId = CustomViewBuilder.createCustomViewIdentifier(customViewStub.mapSelectionMode, customViewStub.assignedMaps, customViewStub.name)
+			const customViewId = CustomViewBuilder.createCustomViewIdentifier(
+				customViewStub.mapSelectionMode,
+				customViewStub.assignedMaps,
+				customViewStub.name
+			)
 			customViewStub.id = customViewId
 
 			const localStorageCustomViews: LocalStorageCustomViews = {
@@ -47,10 +68,12 @@ describe("CustomViewHelper", () => {
 				customViews: [[customViewStub.id, customViewStub]]
 			}
 
-			spyOn(JSON, 'parse')
-			JSON["parse"] = jest.fn().mockImplementation(() => { return localStorageCustomViews })
+			spyOn(JSON, "parse")
+			JSON["parse"] = jest.fn().mockImplementation(() => {
+				return localStorageCustomViews
+			})
 
-			spyOn(Storage.prototype, 'getItem')
+			spyOn(Storage.prototype, "getItem")
 
 			const loadedCustomViews = CustomViewHelper["loadCustomViews"]()
 			expect(loadedCustomViews.size).toBe(1)
@@ -105,21 +128,17 @@ describe("CustomViewHelper", () => {
 			CustomViewHelper.addCustomView(customViewStub4)
 
 			expect(
-				CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub1.assignedMaps.join(" "),
-					CustomViewMapSelectionMode.SINGLE)
+				CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub1.assignedMaps.join(" "), CustomViewMapSelectionMode.SINGLE)
 			).toBe(2)
 			expect(
-				CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub3.assignedMaps.join(" "),
-					CustomViewMapSelectionMode.SINGLE)
+				CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub3.assignedMaps.join(" "), CustomViewMapSelectionMode.SINGLE)
 			).toBe(1)
 			expect(
-				CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub4.assignedMaps.join(" "),
-				CustomViewMapSelectionMode.SINGLE))
-			.toBe(1)
+				CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub4.assignedMaps.join(" "), CustomViewMapSelectionMode.SINGLE)
+			).toBe(1)
 			expect(
-				CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub4.assignedMaps.join(" "),
-				CustomViewMapSelectionMode.DELTA))
-			.toBe(1)
+				CustomViewHelper.getCustomViewsAmountByMapAndMode(customViewStub4.assignedMaps.join(" "), CustomViewMapSelectionMode.DELTA)
+			).toBe(1)
 		})
 	})
 
@@ -198,7 +217,6 @@ describe("CustomViewHelper", () => {
 			const getJointMapNameMock = jest.fn()
 			getJointMapNameMock.mockReturnValue(customViewStub1.assignedMaps.join(" "))
 
-
 			CustomViewFileStateConnector.prototype.getJointMapName = getJointMapNameMock
 			CustomViewFileStateConnector.prototype.getMapSelectionMode = jest.fn().mockReturnValue(CustomViewMapSelectionMode.DELTA)
 
@@ -239,14 +257,22 @@ describe("CustomViewHelper", () => {
 				stateSettings: {}
 			} as CustomView
 
-			const customViewId = CustomViewBuilder.createCustomViewIdentifier(customViewStub1.mapSelectionMode, customViewStub1.assignedMaps, customViewStub1.name)
+			const customViewId = CustomViewBuilder.createCustomViewIdentifier(
+				customViewStub1.mapSelectionMode,
+				customViewStub1.assignedMaps,
+				customViewStub1.name
+			)
 			customViewStub1.id = customViewId
 
 			CustomViewHelper.addCustomView(customViewStub1)
-			expect(CustomViewHelper.hasCustomView(customViewStub1.mapSelectionMode, customViewStub1.assignedMaps, customViewStub1.name)).toBe(true)
+			expect(
+				CustomViewHelper.hasCustomView(customViewStub1.mapSelectionMode, customViewStub1.assignedMaps, customViewStub1.name)
+			).toBe(true)
 
 			CustomViewHelper.deleteCustomView(customViewStub1.id)
-			expect(CustomViewHelper.hasCustomView(customViewStub1.mapSelectionMode, customViewStub1.assignedMaps, customViewStub1.name)).toBe(false)
+			expect(
+				CustomViewHelper.hasCustomView(customViewStub1.mapSelectionMode, customViewStub1.assignedMaps, customViewStub1.name)
+			).toBe(false)
 
 			// One call for the add and another one for the delete
 			expect(CustomViewHelper["setCustomViewsToLocalStorage"]).toHaveBeenCalledTimes(2)
@@ -255,7 +281,6 @@ describe("CustomViewHelper", () => {
 
 	describe("sortCustomViewDropDownList", () => {
 		it("should put applicable CustomViews Group at the beginning of the list and sort by mode afterwards", () => {
-
 			const customViewItemGroups = new Map<string, CustomViewItemGroup>([
 				[
 					"notApplicableSingle",
@@ -348,9 +373,7 @@ describe("CustomViewHelper", () => {
 				.mockReturnValueOnce(customViewStub2.assignedMaps.join(" "))
 
 			const getChecksumOfAssignedMapsMock = jest.fn()
-			getChecksumOfAssignedMapsMock
-				.mockReturnValueOnce(customViewStub1.mapChecksum)
-				.mockReturnValueOnce(customViewStub2.mapChecksum)
+			getChecksumOfAssignedMapsMock.mockReturnValueOnce(customViewStub1.mapChecksum).mockReturnValueOnce(customViewStub2.mapChecksum)
 
 			const getMapSelectionModeMock = jest.fn()
 			getMapSelectionModeMock

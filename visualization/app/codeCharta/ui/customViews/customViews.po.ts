@@ -80,15 +80,21 @@ export class CustomViewsPageObject {
 
 	async hasCustomViewItemGroup(groupName: string, groupIndex: number) {
 		await page.waitForFunction(
-			(groupIndex, groupName) => document.querySelectorAll(".custom-views-drop-down span.collapse-trigger")[groupIndex].innerHTML.includes(groupName),
+			(groupIndex, groupName) =>
+				document.querySelectorAll(".custom-views-drop-down span.collapse-trigger")[groupIndex].innerHTML.includes(groupName),
 			{},
-			groupIndex, groupName
+			groupIndex,
+			groupName
 		)
 	}
 
 	async collapseCustomViewItemGroup(groupIndex: number) {
 		// +2 to skip two disabled/invisible menu-items
-		await expect(page).toClick(`.custom-views-drop-down .custom-views-item:nth-child(${groupIndex + 2}) .button-hovering`, { timeout: 3000 })
-		await page.waitForSelector(`.custom-views-drop-down .custom-views-item:nth-child(${groupIndex + 2}) .collapsable`, { visible: true })
+		await expect(page).toClick(`.custom-views-drop-down .custom-views-item:nth-child(${groupIndex + 2}) .button-hovering`, {
+			timeout: 3000
+		})
+		await page.waitForSelector(`.custom-views-drop-down .custom-views-item:nth-child(${groupIndex + 2}) .collapsable`, {
+			visible: true
+		})
 	}
 }

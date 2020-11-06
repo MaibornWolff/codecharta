@@ -1,5 +1,5 @@
-import {AttributeTypeValue, State} from "../codeCharta.model"
-import {buildCustomViewFromState} from "./customViewBuilder";
+import { AttributeTypeValue, State } from "../codeCharta.model"
+import { buildCustomViewFromState } from "./customViewBuilder"
 
 describe("CustomViewBuilder", () => {
 	describe("buildCustomViewFromState", () => {

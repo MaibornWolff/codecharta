@@ -32,7 +32,7 @@ import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
-import {CustomViewItem, CustomViewItemGroup} from "../ui/customViews/customViews.component"
+import { CustomViewItem, CustomViewItemGroup } from "../ui/customViews/customViews.component"
 import { CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
 
 export const VALID_NODE: CodeMapNode = {

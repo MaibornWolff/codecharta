@@ -53,7 +53,12 @@ describe("codeChartaService", () => {
 
 	describe("loadFiles", () => {
 		const expected: CCFile = {
-			fileMeta: { apiVersion: packageJson.codecharta.apiVersion, fileName, projectName: "Sample Map", fileChecksum: "invalid-md5-sample" },
+			fileMeta: {
+				apiVersion: packageJson.codecharta.apiVersion,
+				fileName,
+				projectName: "Sample Map",
+				fileChecksum: "invalid-md5-sample"
+			},
 			map: {
 				attributes: {},
 				isExcluded: false,

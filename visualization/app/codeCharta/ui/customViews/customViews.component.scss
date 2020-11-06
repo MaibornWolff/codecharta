@@ -1,5 +1,4 @@
 .custom-views-component {
-
 	.custom-views-button {
 		height: 22px;
 		min-height: 0;
@@ -36,7 +35,6 @@
 	}
 
 	.custom-views-item {
-
 		.button-hovering {
 			height: 48px;
 			text-align: left;
@@ -54,7 +52,6 @@
 			&:hover:not([disabled]) {
 				background-color: rgba(158, 158, 158, 0.2);
 			}
-
 		}
 
 		i.fa {
