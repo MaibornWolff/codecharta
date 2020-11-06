@@ -4,6 +4,8 @@ import { CodeMapBuilding } from "../rendering/codeMapBuilding"
 import { CodeMapPreRenderServiceSubscriber, CodeMapPreRenderService } from "../codeMap.preRender.service"
 import { IRootScopeService } from "angular"
 import { StoreService } from "../../../state/store.service"
+import { CodeMapNode } from "../../../codeCharta.model"
+import { hierarchy } from "d3-hierarchy"
 
 export interface BuildingSelectedEventSubscriber {
 	onBuildingSelected(selectedBuilding?: CodeMapBuilding)
@@ -31,6 +33,7 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 
 	private selected: CodeMapBuilding = null
 	private highlighted: CodeMapBuilding[] = []
+	private constantHighlight: Map<number, CodeMapBuilding> = new Map()
 
 	constructor(private $rootScope: IRootScopeService, private storeService: StoreService) {
 		CodeMapPreRenderService.subscribe(this.$rootScope, this)
@@ -53,9 +56,13 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.reselectBuilding()
 	}
 
+	getConstantHighlight() {
+		return this.constantHighlight
+	}
+
 	highlightBuildings() {
 		const state = this.storeService.getState()
-		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state)
+		this.getMapMesh().highlightBuilding(this.highlighted, this.selected, state, this.constantHighlight)
 	}
 
 	highlightSingleBuilding(building: CodeMapBuilding) {
@@ -68,10 +75,16 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.highlighted.push(building)
 	}
 
+	clearHoverHighlight() {
+		this.highlighted = []
+		this.highlightBuildings()
+	}
+
 	clearHighlight() {
 		if (this.getMapMesh()) {
 			this.getMapMesh().clearHighlight(this.selected)
 			this.highlighted = []
+			this.constantHighlight.clear()
 		}
 	}
 
@@ -81,6 +94,34 @@ export class ThreeSceneService implements CodeMapPreRenderServiceSubscriber {
 		this.selected = building
 		this.highlightBuildings()
 		this.$rootScope.$broadcast(ThreeSceneService.BUILDING_SELECTED_EVENT, this.selected)
+	}
+
+	addNodeAndChildrenToConstantHighlight(codeMapNode: CodeMapNode) {
+		const { lookUp } = this.storeService.getState()
+		const codeMapBuilding = lookUp.idToNode.get(codeMapNode.id)
+		for (const { data } of hierarchy(codeMapBuilding)) {
+			const building = lookUp.idToBuilding.get(data.id)
+			if (building) {
+				this.constantHighlight.set(building.id, building)
+			}
+		}
+	}
+
+	removeNodeAndChildrenFromConstantHighlight(codeMapNode: CodeMapNode) {
+		const { lookUp } = this.storeService.getState()
+		const codeMapBuilding = lookUp.idToNode.get(codeMapNode.id)
+		for (const { data } of hierarchy(codeMapBuilding)) {
+			const building = lookUp.idToBuilding.get(data.id)
+			if (building) {
+				this.constantHighlight.delete(building.id)
+			}
+		}
+	}
+
+	clearConstantHighlight() {
+		if (this.constantHighlight.size > 0) {
+			this.clearHighlight()
+		}
 	}
 
 	clearSelection() {
