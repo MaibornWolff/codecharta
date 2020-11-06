@@ -1,6 +1,7 @@
 import { dialogDownloadComponent } from "./dialog.download.component"
 import { dialogGlobalSettingsComponent } from "./dialog.globalSettings.component"
 import { addScenarioSettingsComponent } from "./dialog.addScenarioSettings.component"
+import { addCustomConfigSettingsComponent } from "./dialog.addCustomConfigSettings.component"
 import { CCValidationResult } from "../../util/fileValidator"
 
 export class DialogService {
@@ -19,8 +20,16 @@ export class DialogService {
 		this.showCustomDialog(addScenarioSettingsComponent)
 	}
 
+	showAddCustomConfigSettings() {
+		this.showCustomDialog(addCustomConfigSettingsComponent)
+	}
+
 	showCustomDialog(dialog) {
 		this.$mdDialog.show(dialog)
+	}
+
+	showInfoDialog(message, title = "Info", button = "Ok") {
+		this.$mdDialog.show(this.$mdDialog.alert().clickOutsideToClose(true).title(title).htmlContent(message).ok(button))
 	}
 
 	showErrorDialog(message = "An error occurred.", title = "Error", button = "Ok") {
