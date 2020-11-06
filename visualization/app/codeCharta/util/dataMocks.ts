@@ -282,7 +282,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME_SORTED:
 	isFlattened: false,
 	children: [
 		{
-			name: "Földer",
+			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
 			isExcluded: false,
@@ -290,7 +290,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME_SORTED:
 			children: []
 		},
 		{
-			name: "Folder",
+			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
 			isExcluded: false,
@@ -306,7 +306,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME_SORTED:
 			]
 		},
 		{
-			name: "Folder2",
+			name: "Folder10",
 			type: NodeType.FOLDER,
 			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
 			isExcluded: false,
@@ -340,7 +340,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME: CodeMa
 			isFlattened: false
 		},
 		{
-			name: "Földer",
+			name: "Folder1",
 			type: NodeType.FOLDER,
 			attributes: { [NodeMetricDataService.UNARY_METRIC]: 60 },
 			isExcluded: false,
@@ -348,7 +348,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME: CodeMa
 			children: []
 		},
 		{
-			name: "Folder2",
+			name: "Folder10",
 			type: NodeType.FOLDER,
 			attributes: { [NodeMetricDataService.UNARY_METRIC]: 40 },
 			isExcluded: false,
@@ -356,7 +356,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME: CodeMa
 			children: []
 		},
 		{
-			name: "Folder",
+			name: "Folder2",
 			type: NodeType.FOLDER,
 			attributes: { [NodeMetricDataService.UNARY_METRIC]: 160 },
 			isExcluded: false,
