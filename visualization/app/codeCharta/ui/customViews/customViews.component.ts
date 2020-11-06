@@ -1,6 +1,6 @@
-import "./customViews.component.scss"
+import "./customConfigs.component.scss"
 import { DialogService } from "../dialog/dialog.service"
-import { CustomViewHelper } from "../../util/customViewHelper"
+import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { StoreService } from "../../state/store.service"
 import { setState } from "../../state/store/state.actions"
 import { setColorRange } from "../../state/store/dynamicSettings/colorRange/colorRange.actions"
@@ -10,36 +10,36 @@ import { setMargin } from "../../state/store/dynamicSettings/margin/margin.actio
 import { FileState } from "../../model/files/files"
 import { FilesSelectionSubscriber, FilesService } from "../../state/store/files/files.service"
 import { IRootScopeService } from "angular"
-import { CustomViewFileStateConnector } from "./customViewFileStateConnector"
-import { CustomViewMapSelectionMode } from "../../model/customView/customView.api.model"
+import { CustomConfigFileStateConnector } from "./customConfigFileStateConnector"
+import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 import { setCamera } from "../../state/store/appSettings/camera/camera.actions"
 import { setCameraTarget } from "../../state/store/appSettings/cameraTarget/cameraTarget.actions"
 import { Vector3 } from "three"
 
-export interface CustomViewItem {
+export interface CustomConfigItem {
 	id: string
 	name: string
 	mapNames: string
-	mapSelectionMode: CustomViewMapSelectionMode
+	mapSelectionMode: CustomConfigMapSelectionMode
 	isApplicable: boolean
 }
 
-export interface CustomViewItemGroup {
+export interface CustomConfigItemGroup {
 	mapNames: string
-	mapSelectionMode: CustomViewMapSelectionMode
+	mapSelectionMode: CustomConfigMapSelectionMode
 	hasApplicableItems: boolean
-	customViewItems: CustomViewItem[]
+	customConfigItems: CustomConfigItem[]
 }
 
-export class CustomViewsController implements FilesSelectionSubscriber {
+export class CustomConfigsController implements FilesSelectionSubscriber {
 	private _viewModel: {
-		dropDownCustomViewItemGroups: CustomViewItemGroup[]
+		dropDownCustomConfigItemGroups: CustomConfigItemGroup[]
 	} = {
-		dropDownCustomViewItemGroups: []
+		dropDownCustomConfigItemGroups: []
 	}
 
-	private customViewFileStateConnector: CustomViewFileStateConnector
+	private customConfigFileStateConnector: CustomConfigFileStateConnector
 
 	constructor(
 		private $rootScope: IRootScopeService,
@@ -52,55 +52,55 @@ export class CustomViewsController implements FilesSelectionSubscriber {
 	}
 
 	onFilesSelectionChanged(files: FileState[]) {
-		this.customViewFileStateConnector = new CustomViewFileStateConnector(files)
+		this.customConfigFileStateConnector = new CustomConfigFileStateConnector(files)
 	}
 
-	loadCustomViews() {
-		const customViewItemGroups = CustomViewHelper.getCustomViewItemGroups(this.customViewFileStateConnector)
-		// TODO: check if it is an improvement to just sort by hasApplicableCustomViews and by map key afterwards
-		this._viewModel.dropDownCustomViewItemGroups = [...customViewItemGroups.values()]
-		this._viewModel.dropDownCustomViewItemGroups.sort(CustomViewHelper.sortCustomViewDropDownGroupList)
+	loadCustomConfigs() {
+		const customConfigItemGroups = CustomConfigHelper.getCustomConfigItemGroups(this.customConfigFileStateConnector)
+		// TODO: check if it is an improvement to just sort by hasApplicableCustomConfigs and by map key afterwards
+		this._viewModel.dropDownCustomConfigItemGroups = [...customConfigItemGroups.values()]
+		this._viewModel.dropDownCustomConfigItemGroups.sort(CustomConfigHelper.sortCustomConfigDropDownGroupList)
 	}
 
-	showAddCustomViewSettings() {
-		this.dialogService.showAddCustomViewSettings()
+	showAddCustomConfigSettings() {
+		this.dialogService.showAddCustomConfigSettings()
 	}
 
-	applyCustomView(viewId: string) {
-		const customView = CustomViewHelper.getCustomViewSettings(viewId)
+	applyCustomConfig(viewId: string) {
+		const customConfig = CustomConfigHelper.getCustomConfigSettings(viewId)
 
-		// TODO: Setting state from loaded CustomView not working at the moment
+		// TODO: Setting state from loaded CustomConfig not working at the moment
 		//  due to issues of the event architecture.
 
 		// TODO: Check if state properties differ
 		// Create new partial State (updates) for changed values only
-		this.storeService.dispatch(setState(customView.stateSettings))
+		this.storeService.dispatch(setState(customConfig.stateSettings))
 
 		// Should we fire another event "ResettingStateFinishedEvent"
 		// We could add a listener then to reset the camera
 
-		this.storeService.dispatch(setColorRange(customView.stateSettings.dynamicSettings.colorRange as ColorRange))
-		this.storeService.dispatch(setMargin(customView.stateSettings.dynamicSettings.margin))
+		this.storeService.dispatch(setColorRange(customConfig.stateSettings.dynamicSettings.colorRange as ColorRange))
+		this.storeService.dispatch(setMargin(customConfig.stateSettings.dynamicSettings.margin))
 
 		// TODO: remove this dirty timeout and set camera settings properly
-		// This timeout is a chance that CustomViews for a small map can be restored and applied completely (even the camera positions)
+		// This timeout is a chance that CustomConfigs for a small map can be restored and applied completely (even the camera positions)
 		setTimeout(() => {
 			this.threeCameraService.setPosition()
 			this.threeOrbitControlsService.setControlTarget()
 
-			this.storeService.dispatch(setCamera(customView.stateSettings.appSettings.camera as Vector3))
-			this.storeService.dispatch(setCameraTarget(customView.stateSettings.appSettings.cameraTarget as Vector3))
+			this.storeService.dispatch(setCamera(customConfig.stateSettings.appSettings.camera as Vector3))
+			this.storeService.dispatch(setCameraTarget(customConfig.stateSettings.appSettings.cameraTarget as Vector3))
 		}, 100)
 	}
 
-	removeCustomView(viewId, viewName) {
-		CustomViewHelper.deleteCustomView(viewId)
+	removeCustomConfig(viewId, viewName) {
+		CustomConfigHelper.deleteCustomConfig(viewId)
 		this.dialogService.showInfoDialog(`${viewName} deleted.`)
 	}
 }
 
-export const customViewsComponent = {
-	selector: "customViewsComponent",
-	template: require("./customViews.component.html"),
-	controller: CustomViewsController
+export const customConfigsComponent = {
+	selector: "customConfigsComponent",
+	template: require("./customConfigs.component.html"),
+	controller: CustomConfigsController
 }

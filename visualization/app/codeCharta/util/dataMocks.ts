@@ -32,8 +32,8 @@ import { APIVersions, ExportCCFile } from "../codeCharta.api.model"
 import { NodeMetricDataService } from "../state/store/metricData/nodeMetricData/nodeMetricData.service"
 import packageJson from "../../../package.json"
 import { isLeaf } from "./codeMapHelper"
-import { CustomViewItem, CustomViewItemGroup } from "../ui/customViews/customViews.component"
-import { CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
+import { CustomConfigItem, CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
+import { CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
 
 export const VALID_NODE: CodeMapNode = {
 	name: "root",
@@ -1428,50 +1428,50 @@ export const SCENARIO_ITEMS: ScenarioItem[] = [
 	}
 ]
 
-export const CUSTOM_VIEW_ITEMS: CustomViewItem[] = [
+export const CUSTOM_VIEW_ITEMS: CustomConfigItem[] = [
 	{
 		id: "SINGLEfileASampleMap View #1",
 		name: "SampleMap View #1",
 		mapNames: "fileA",
-		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 		isApplicable: true
 	},
 	{
 		id: "SINGLEfileAAnotherMap View #1",
 		name: "AnotherMap View #1",
 		mapNames: "fileB",
-		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 		isApplicable: false
 	},
 	{
 		id: "SINGLEfileASampleMap View #2",
 		name: "SampleMap View #2",
 		mapNames: "fileA",
-		mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+		mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 		isApplicable: true
 	}
 ]
 
-export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomViewItemGroup> = new Map([
+export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomConfigItemGroup> = new Map([
 	[
 		"fileAfileBSINGLE",
 		{
 			mapNames: "fileA fileB",
-			mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+			mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 			hasApplicableItems: false,
-			customViewItems: [
+			customConfigItems: [
 				{
 					id: "SINGLEfileASampleMap View #1",
 					name: "SampleMap View #1",
 					mapNames: "fileA",
-					mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 					isApplicable: false
 				},
 				{
 					id: "SINGLEfileBSampleMap View #2",
 					name: "SampleMap View #2",
 					mapNames: "fileB",
-					mapSelectionMode: CustomViewMapSelectionMode.SINGLE,
+					mapSelectionMode: CustomConfigMapSelectionMode.SINGLE,
 					isApplicable: false
 				}
 			]
@@ -1481,21 +1481,21 @@ export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomViewItemGroup> = new Map
 		"fileAfileBMultiple",
 		{
 			mapNames: "fileC fileD",
-			mapSelectionMode: CustomViewMapSelectionMode.MULTIPLE,
+			mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 			hasApplicableItems: true,
-			customViewItems: [
+			customConfigItems: [
 				{
 					id: "MULTIPLEfileCSampleMap View #1",
 					name: "SampleMap View #1",
 					mapNames: "fileB",
-					mapSelectionMode: CustomViewMapSelectionMode.MULTIPLE,
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 					isApplicable: true
 				},
 				{
 					id: "MULTIPLEfileDSampleMap View #2",
 					name: "SampleMap View #2",
 					mapNames: "fileD",
-					mapSelectionMode: CustomViewMapSelectionMode.MULTIPLE,
+					mapSelectionMode: CustomConfigMapSelectionMode.MULTIPLE,
 					isApplicable: true
 				}
 			]
@@ -1505,14 +1505,14 @@ export const CUSTOM_VIEW_ITEM_GROUPS: Map<string, CustomViewItemGroup> = new Map
 		"fileAfileBDELTA",
 		{
 			mapNames: "fileE",
-			mapSelectionMode: CustomViewMapSelectionMode.DELTA,
+			mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 			hasApplicableItems: false,
-			customViewItems: [
+			customConfigItems: [
 				{
 					id: "MULTIPLEfileESampleMap View #1",
 					name: "SampleMap View #1",
 					mapNames: "fileD",
-					mapSelectionMode: CustomViewMapSelectionMode.DELTA,
+					mapSelectionMode: CustomConfigMapSelectionMode.DELTA,
 					isApplicable: false
 				}
 			]

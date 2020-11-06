@@ -1,4 +1,4 @@
-export class CustomViewsPageObject {
+export class CustomConfigsPageObject {
 	async enableExperimentalFeatures() {
 		await expect(page).toClick("global-settings-button-component .toolbar-button", { timeout: 3000 })
 		await page.waitForSelector("md-dialog.global-settings", { visible: true })
@@ -11,44 +11,44 @@ export class CustomViewsPageObject {
 		await page.waitForSelector("md-dialog.global-settings", { hidden: true })
 	}
 
-	async openCustomViewPanel() {
+	async openCustomConfigPanel() {
 		await page.waitForSelector(".custom-views-button", { hidden: false })
 		await expect(page).toClick("custom-views-component md-menu:nth-child(1) .custom-views-button", { timeout: 3000 })
 
 		await page.waitForSelector(".custom-views-drop-down", { visible: true })
 	}
 
-	async addCustomView(name: string) {
+	async addCustomConfig(name: string) {
 		// Open add dialog
-		await this.openCustomViewAddDialog()
-		await this.isCustomViewAddDialogOpen()
+		await this.openCustomConfigAddDialog()
+		await this.isCustomConfigAddDialogOpen()
 
-		// Fill in CustomView name and add it
-		await this.fillInCustomViewName(name)
+		// Fill in CustomConfig name and add it
+		await this.fillInCustomConfigName(name)
 		await this.submitAddDialog()
-		await this.isCustomViewAddDialogClosed()
+		await this.isCustomConfigAddDialogClosed()
 	}
 
-	async openCustomViewAddDialog() {
+	async openCustomConfigAddDialog() {
 		await page.waitForSelector(".custom-views-button.plus", { visible: true })
 		await expect(page).toClick(".custom-views-button.plus", { timeout: 3000 })
 
 		await page.waitForSelector(".custom-view-dialog")
 	}
 
-	async isCustomViewFeatureDisabled() {
+	async isCustomConfigFeatureDisabled() {
 		await page.waitForSelector(".custom-views-button", { hidden: true })
 	}
 
-	async isCustomViewAddDialogOpen() {
+	async isCustomConfigAddDialogOpen() {
 		await page.waitForSelector(".custom-view-dialog", { visible: true })
 	}
 
-	async isCustomViewAddDialogClosed() {
+	async isCustomConfigAddDialogClosed() {
 		await page.waitForSelector(".custom-view-dialog", { hidden: true })
 	}
 
-	async fillInCustomViewName(name = "TestViewName") {
+	async fillInCustomConfigName(name = "TestViewName") {
 		return expect(page).toFill(".custom-view-input", name, { timeout: 3000 })
 	}
 
@@ -74,11 +74,11 @@ export class CustomViewsPageObject {
 		await page.waitForSelector("file-panel-component button.right.current", { visible: true })
 	}
 
-	async hasCustomViewItemGroups() {
+	async hasCustomConfigItemGroups() {
 		await page.waitForSelector(".custom-views-drop-down span.collapse-trigger:nth-child(1)")
 	}
 
-	async hasCustomViewItemGroup(groupName: string, groupIndex: number) {
+	async hasCustomConfigItemGroup(groupName: string, groupIndex: number) {
 		await page.waitForFunction(
 			(groupIndex, groupName) =>
 				document.querySelectorAll(".custom-views-drop-down span.collapse-trigger")[groupIndex].innerHTML.includes(groupName),
@@ -88,7 +88,7 @@ export class CustomViewsPageObject {
 		)
 	}
 
-	async collapseCustomViewItemGroup(groupIndex: number) {
+	async collapseCustomConfigItemGroup(groupIndex: number) {
 		// +2 to skip two disabled/invisible menu-items
 		await expect(page).toClick(`.custom-views-drop-down .custom-views-item:nth-child(${groupIndex + 2}) .button-hovering`, {
 			timeout: 3000

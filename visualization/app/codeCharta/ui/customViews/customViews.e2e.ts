@@ -1,56 +1,56 @@
 import { goto } from "../../../puppeteer.helper"
-import { CustomViewsPageObject } from "./customViews.po"
+import { CustomConfigsPageObject } from "./customConfigs.po"
 
-describe("CustomViews", () => {
-	let customViews: CustomViewsPageObject
+describe("CustomConfigs", () => {
+	let customConfigs: CustomConfigsPageObject
 
 	beforeEach(async () => {
-		customViews = new CustomViewsPageObject()
+		customConfigs = new CustomConfigsPageObject()
 
 		await goto()
 	})
 
-	it("CustomView Feature will not be shown by default due to it's experimental status", async () => {
-		await customViews.isCustomViewFeatureDisabled()
+	it("CustomConfig Feature will not be shown by default due to it's experimental status", async () => {
+		await customConfigs.isCustomConfigFeatureDisabled()
 	})
 
-	it("QuickAdding CustomView with already existing name will show a warning message", async () => {
-		// Enable experimental CustomViews Feature first
-		await customViews.enableExperimentalFeatures()
+	it("QuickAdding CustomConfig with already existing name will show a warning message", async () => {
+		// Enable experimental CustomConfigs Feature first
+		await customConfigs.enableExperimentalFeatures()
 
-		await customViews.addCustomView("TestViewName")
+		await customConfigs.addCustomConfig("TestViewName")
 
 		// Open Again
-		await customViews.openCustomViewAddDialog()
-		await customViews.isCustomViewAddDialogOpen()
+		await customConfigs.openCustomConfigAddDialog()
+		await customConfigs.isCustomConfigAddDialogOpen()
 
 		// Enter existing name
-		await customViews.fillInCustomViewName()
-		await customViews.isOverrideWarningVisible()
+		await customConfigs.fillInCustomConfigName()
+		await customConfigs.isOverrideWarningVisible()
 	}, 90000)
 
 	it("Custom Configs for SINGLE, MULTIPLE, DELTA mode will be shown in separate groups (grouped by selection mode) and can be collapsed properly", async () => {
-		// Enable experimental CustomViews Feature first
-		await customViews.enableExperimentalFeatures()
-		await customViews.addCustomView("TestSingleView")
+		// Enable experimental CustomConfigs Feature first
+		await customConfigs.enableExperimentalFeatures()
+		await customConfigs.addCustomConfig("TestSingleView")
 
-		await customViews.switchToMultipleMode()
-		await customViews.addCustomView("TestMultipleView")
+		await customConfigs.switchToMultipleMode()
+		await customConfigs.addCustomConfig("TestMultipleView")
 
-		await customViews.switchToDeltaMode()
-		await customViews.addCustomView("TestDeltaView")
+		await customConfigs.switchToDeltaMode()
+		await customConfigs.addCustomConfig("TestDeltaView")
 
 		// Open
-		await customViews.openCustomViewPanel()
-		await customViews.hasCustomViewItemGroups()
+		await customConfigs.openCustomConfigPanel()
+		await customConfigs.hasCustomConfigItemGroups()
 
 		// We are in delta mode, so delta mode is shown as the first group.
-		await customViews.hasCustomViewItemGroup("delta", 0)
-		await customViews.hasCustomViewItemGroup("multiple", 1)
-		await customViews.hasCustomViewItemGroup("single", 2)
+		await customConfigs.hasCustomConfigItemGroup("delta", 0)
+		await customConfigs.hasCustomConfigItemGroup("multiple", 1)
+		await customConfigs.hasCustomConfigItemGroup("single", 2)
 
-		await customViews.collapseCustomViewItemGroup(1)
-		await customViews.collapseCustomViewItemGroup(2)
-		await customViews.collapseCustomViewItemGroup(3)
+		await customConfigs.collapseCustomConfigItemGroup(1)
+		await customConfigs.collapseCustomConfigItemGroup(2)
+		await customConfigs.collapseCustomConfigItemGroup(3)
 	}, 90000)
 })

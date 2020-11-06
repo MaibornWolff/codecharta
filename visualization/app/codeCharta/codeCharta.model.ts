@@ -3,7 +3,7 @@ import { Action } from "redux"
 import { ExportCCFile } from "./codeCharta.api.model"
 import { CodeMapBuilding } from "./ui/codeMap/rendering/codeMapBuilding"
 import { FileState } from "./model/files/files"
-import { CustomView } from "./model/customView/customView.api.model"
+import { CustomConfig } from "./model/customConfig/customConfig.api.model"
 
 export interface NameDataPair {
 	fileName: string
@@ -211,9 +211,9 @@ export interface MetricData {
 	edgeMetricData: EdgeMetricData[]
 }
 
-export interface LocalStorageCustomViews {
+export interface LocalStorageCustomConfigs {
 	version: string
-	customViews: [string, RecursivePartial<CustomView>][]
+	customConfigs: [string, RecursivePartial<CustomConfig>][]
 }
 
 export interface LocalStorageScenarios {

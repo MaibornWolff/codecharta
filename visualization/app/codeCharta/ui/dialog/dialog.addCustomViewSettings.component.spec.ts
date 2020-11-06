@@ -1,16 +1,16 @@
 import "./dialog.module.ts"
 import { StoreService } from "../../state/store.service"
-import { DialogAddCustomViewSettingsComponent } from "./dialog.addCustomViewSettings.component"
+import { DialogAddCustomConfigSettingsComponent } from "./dialog.addCustomConfigSettings.component"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
 import { IRootScopeService } from "angular"
 import { FilesService } from "../../state/store/files/files.service"
 import { setFiles } from "../../state/store/files/files.actions"
 import { FILE_STATES } from "../../util/dataMocks"
-import { CustomViewHelper } from "../../util/customViewHelper"
-import * as CustomViewBuilder from "../../util/customViewBuilder"
+import { CustomConfigHelper } from "../../util/customConfigHelper"
+import * as CustomConfigBuilder from "../../util/customConfigBuilder"
 
 describe("DialogAddScenarioSettingsComponent", () => {
-	let dialogAddCustomViewSettings: DialogAddCustomViewSettingsComponent
+	let dialogAddCustomConfigSettings: DialogAddCustomConfigSettingsComponent
 	let $mdDialog
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
@@ -21,7 +21,7 @@ describe("DialogAddScenarioSettingsComponent", () => {
 	})
 
 	function rebuildController() {
-		dialogAddCustomViewSettings = new DialogAddCustomViewSettingsComponent($rootScope, $mdDialog, storeService)
+		dialogAddCustomConfigSettings = new DialogAddCustomConfigSettingsComponent($rootScope, $mdDialog, storeService)
 	}
 
 	function restartSystem() {
@@ -40,14 +40,14 @@ describe("DialogAddScenarioSettingsComponent", () => {
 
 			rebuildController()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, dialogAddCustomViewSettings)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, dialogAddCustomConfigSettings)
 		})
 	})
 
 	describe("onFilesSelectionChanged", () => {
 		it("event handler should register new name of selected map file", () => {
-			dialogAddCustomViewSettings.onFilesSelectionChanged(FILE_STATES)
-			expect(dialogAddCustomViewSettings["_viewModel"].customViewName).toBe("fileA #1")
+			dialogAddCustomConfigSettings.onFilesSelectionChanged(FILE_STATES)
+			expect(dialogAddCustomConfigSettings["_viewModel"].customConfigName).toBe("fileA #1")
 		})
 	})
 
@@ -55,61 +55,61 @@ describe("DialogAddScenarioSettingsComponent", () => {
 		it("should hide dialog properly", () => {
 			$mdDialog.hide = jest.fn()
 
-			dialogAddCustomViewSettings.hide()
+			dialogAddCustomConfigSettings.hide()
 
 			expect($mdDialog.hide).toHaveBeenCalled()
 		})
 	})
 
-	describe("addCustomView", () => {
-		it("should create CustomView object and add it", () => {
+	describe("addCustomConfig", () => {
+		it("should create CustomConfig object and add it", () => {
 			// @ts-ignore
-			CustomViewBuilder.buildCustomViewFromState = jest.fn()
-			CustomViewHelper.addCustomView = jest.fn()
+			CustomConfigBuilder.buildCustomConfigFromState = jest.fn()
+			CustomConfigHelper.addCustomConfig = jest.fn()
 			$mdDialog.hide = jest.fn()
 
-			dialogAddCustomViewSettings["_viewModel"].customViewName = "mockedViewName"
-			dialogAddCustomViewSettings.addCustomView()
+			dialogAddCustomConfigSettings["_viewModel"].customConfigName = "mockedViewName"
+			dialogAddCustomConfigSettings.addCustomConfig()
 
-			expect(CustomViewBuilder.buildCustomViewFromState).toHaveBeenCalledWith("mockedViewName", storeService.getState())
+			expect(CustomConfigBuilder.buildCustomConfigFromState).toHaveBeenCalledWith("mockedViewName", storeService.getState())
 			expect($mdDialog.hide).toHaveBeenCalled()
 		})
 	})
 
-	describe("validateCustomViewName", () => {
+	describe("validateCustomConfigName", () => {
 		it("should clear info message, if view is valid to be added", () => {
-			CustomViewHelper.hasCustomView = jest.fn().mockReturnValue(false)
+			CustomConfigHelper.hasCustomConfig = jest.fn().mockReturnValue(false)
 
-			dialogAddCustomViewSettings["_viewModel"].addWarningMessage = "to_be_cleared"
-			dialogAddCustomViewSettings.validateCustomViewName()
+			dialogAddCustomConfigSettings["_viewModel"].addWarningMessage = "to_be_cleared"
+			dialogAddCustomConfigSettings.validateCustomConfigName()
 
-			expect(dialogAddCustomViewSettings["_viewModel"].addWarningMessage).toBe("")
+			expect(dialogAddCustomConfigSettings["_viewModel"].addWarningMessage).toBe("")
 		})
 
 		it("should set warning message, if a view with the same name already exists", () => {
-			CustomViewHelper.hasCustomView = jest.fn().mockReturnValue(true)
+			CustomConfigHelper.hasCustomConfig = jest.fn().mockReturnValue(true)
 
-			dialogAddCustomViewSettings.validateCustomViewName()
+			dialogAddCustomConfigSettings.validateCustomConfigName()
 
-			expect(dialogAddCustomViewSettings["_viewModel"].addWarningMessage).toContain("warning")
+			expect(dialogAddCustomConfigSettings["_viewModel"].addWarningMessage).toContain("warning")
 		})
 	})
 
-	describe("isNewCustomViewValid", () => {
+	describe("isNewCustomConfigValid", () => {
 		it("should return true for not empty view names and empty warning message", () => {
-			dialogAddCustomViewSettings["_viewModel"].addWarningMessage = ""
-			dialogAddCustomViewSettings["_viewModel"].customViewName = "some valid name here"
+			dialogAddCustomConfigSettings["_viewModel"].addWarningMessage = ""
+			dialogAddCustomConfigSettings["_viewModel"].customConfigName = "some valid name here"
 
-			expect(dialogAddCustomViewSettings.isNewCustomViewValid()).toBe(true)
+			expect(dialogAddCustomConfigSettings.isNewCustomConfigValid()).toBe(true)
 		})
 
 		it("should return false for empty view names or given warning message", () => {
-			dialogAddCustomViewSettings["_viewModel"].customViewName = ""
-			expect(dialogAddCustomViewSettings.isNewCustomViewValid()).toBe(false)
+			dialogAddCustomConfigSettings["_viewModel"].customConfigName = ""
+			expect(dialogAddCustomConfigSettings.isNewCustomConfigValid()).toBe(false)
 
-			dialogAddCustomViewSettings["_viewModel"].customViewName = "Valid custom view name."
-			dialogAddCustomViewSettings["_viewModel"].addWarningMessage = "warning message is set"
-			expect(dialogAddCustomViewSettings.isNewCustomViewValid()).toBe(false)
+			dialogAddCustomConfigSettings["_viewModel"].customConfigName = "Valid custom config name."
+			dialogAddCustomConfigSettings["_viewModel"].addWarningMessage = "warning message is set"
+			expect(dialogAddCustomConfigSettings.isNewCustomConfigValid()).toBe(false)
 		})
 	})
 })

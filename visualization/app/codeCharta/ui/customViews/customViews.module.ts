@@ -1,5 +1,5 @@
 import "../../state/state.module"
 import angular from "angular"
-import { customViewsComponent } from "./customViews.component"
+import { customConfigsComponent } from "./customConfigs.component"
 
-angular.module("app.codeCharta.ui.customViews", ["app.codeCharta.state"]).component(customViewsComponent.selector, customViewsComponent)
+angular.module("app.codeCharta.ui.customConfigs", ["app.codeCharta.state"]).component(customConfigsComponent.selector, customConfigsComponent)

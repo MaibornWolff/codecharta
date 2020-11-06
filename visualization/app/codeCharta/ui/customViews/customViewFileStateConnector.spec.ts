@@ -1,9 +1,9 @@
 import { FileSelectionState, FileState } from "../../model/files/files"
 import { CCFile } from "../../codeCharta.model"
-import { CustomViewFileStateConnector } from "./customViewFileStateConnector"
-import { CustomViewMapSelectionMode } from "../../model/customView/customView.api.model"
+import { CustomConfigFileStateConnector } from "./customConfigFileStateConnector"
+import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 
-describe("CustomViewFileStateConnector", () => {
+describe("CustomConfigFileStateConnector", () => {
 	describe("getJointMapName", () => {
 		it("should filter .cc.json with selection mode NONE", () => {
 			const file1 = { fileMeta: { fileName: "none.cc.json" } } as CCFile
@@ -12,9 +12,9 @@ describe("CustomViewFileStateConnector", () => {
 			const fileState: FileState[] = []
 			fileState.push(fileState1)
 
-			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
+			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.getJointMapName()).toBe("")
+			expect(customConfigFileStateConnector.getJointMapName()).toBe("")
 		})
 
 		it("should join .cc.json file names properly", () => {
@@ -35,10 +35,10 @@ describe("CustomViewFileStateConnector", () => {
 			fileState.push(fileStateMultiple)
 			fileState.push(fileStateDelta)
 
-			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
+			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.getSelectedMaps().length).toBe(3)
-			expect(customViewFileStateConnector.getJointMapName()).toBe("SINGLE.cc.json MULTIPLE.cc.json DELTA")
+			expect(customConfigFileStateConnector.getSelectedMaps().length).toBe(3)
+			expect(customConfigFileStateConnector.getJointMapName()).toBe("SINGLE.cc.json MULTIPLE.cc.json DELTA")
 		})
 	})
 
@@ -50,9 +50,9 @@ describe("CustomViewFileStateConnector", () => {
 			const fileState: FileState[] = []
 			fileState.push(fileState1)
 
-			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
+			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.getMapSelectionMode()).toBe(CustomViewMapSelectionMode.SINGLE)
+			expect(customConfigFileStateConnector.getMapSelectionMode()).toBe(CustomConfigMapSelectionMode.SINGLE)
 		})
 
 		it("should set map selection mode MULTIPLE on first partial file", () => {
@@ -62,9 +62,9 @@ describe("CustomViewFileStateConnector", () => {
 			const fileState: FileState[] = []
 			fileState.push(fileStateSingle)
 
-			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
+			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.getMapSelectionMode()).toBe(CustomViewMapSelectionMode.MULTIPLE)
+			expect(customConfigFileStateConnector.getMapSelectionMode()).toBe(CustomConfigMapSelectionMode.MULTIPLE)
 		})
 
 		it("should set map selection mode DELTA, if reference file is present", () => {
@@ -74,9 +74,9 @@ describe("CustomViewFileStateConnector", () => {
 			const fileState: FileState[] = []
 			fileState.push(fileStateSingle)
 
-			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
+			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.getMapSelectionMode()).toBe(CustomViewMapSelectionMode.DELTA)
+			expect(customConfigFileStateConnector.getMapSelectionMode()).toBe(CustomConfigMapSelectionMode.DELTA)
 		})
 
 		it("should set map selection mode DELTA, if comparison file is present", () => {
@@ -86,9 +86,9 @@ describe("CustomViewFileStateConnector", () => {
 			const fileState: FileState[] = []
 			fileState.push(fileStateSingle)
 
-			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
+			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.getMapSelectionMode()).toBe(CustomViewMapSelectionMode.DELTA)
+			expect(customConfigFileStateConnector.getMapSelectionMode()).toBe(CustomConfigMapSelectionMode.DELTA)
 		})
 	})
 
@@ -106,9 +106,9 @@ describe("CustomViewFileStateConnector", () => {
 			fileState.push(fileState1)
 			fileState.push(fileState2)
 
-			const customViewFileStateConnector = new CustomViewFileStateConnector(fileState)
+			const customConfigFileStateConnector = new CustomConfigFileStateConnector(fileState)
 
-			expect(customViewFileStateConnector.getChecksumOfAssignedMaps()).toBe(`${expectedMap1Md5};${expectedMap2Md5}`)
+			expect(customConfigFileStateConnector.getChecksumOfAssignedMaps()).toBe(`${expectedMap1Md5};${expectedMap2Md5}`)
 		})
 	})
 })

@@ -1,95 +1,95 @@
 "use strict"
-import { LocalStorageCustomViews, RecursivePartial, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
-import { CustomViewItemGroup } from "../ui/customViews/customViews.component"
-import { CustomView, CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
-import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
-import { createCustomViewIdentifier } from "./customViewBuilder"
+import { LocalStorageCustomConfigs, RecursivePartial, stateObjectReplacer, stateObjectReviver } from "../codeCharta.model"
+import { CustomConfigItemGroup } from "../ui/customConfigs/customConfigs.component"
+import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
+import { createCustomConfigIdentifier } from "./customConfigBuilder"
 
-export class CustomViewHelper {
+export class CustomConfigHelper {
 	private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_VERSION = "1.0.0"
-	private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customViews"
+	private static readonly CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT = "CodeCharta::customConfigs"
 
-	private static customViews: Map<string, RecursivePartial<CustomView>> = CustomViewHelper.loadCustomViews()
+	private static customConfigs: Map<string, RecursivePartial<CustomConfig>> = CustomConfigHelper.loadCustomConfigs()
 
-	static getCustomViewItemGroups(customViewFileStateConnector: CustomViewFileStateConnector): Map<string, CustomViewItemGroup> {
-		const customViewItemGroups: Map<string, CustomViewItemGroup> = new Map()
+	static getCustomConfigItemGroups(customConfigFileStateConnector: CustomConfigFileStateConnector): Map<string, CustomConfigItemGroup> {
+		const customConfigItemGroups: Map<string, CustomConfigItemGroup> = new Map()
 
-		this.customViews.forEach(customView => {
-			const groupKey = `${customView.assignedMaps.join("_")}_${customView.mapSelectionMode}`
+		this.customConfigs.forEach(customConfig => {
+			const groupKey = `${customConfig.assignedMaps.join("_")}_${customConfig.mapSelectionMode}`
 
-			if (!customViewItemGroups.has(groupKey)) {
-				customViewItemGroups.set(groupKey, {
-					mapNames: customView.assignedMaps.join(" "),
-					mapSelectionMode: customView.mapSelectionMode,
+			if (!customConfigItemGroups.has(groupKey)) {
+				customConfigItemGroups.set(groupKey, {
+					mapNames: customConfig.assignedMaps.join(" "),
+					mapSelectionMode: customConfig.mapSelectionMode,
 					hasApplicableItems: false,
-					customViewItems: []
+					customConfigItems: []
 				})
 			}
 
-			const customViewItemApplicable = this.isCustomViewApplicable(customViewFileStateConnector, customView)
-			customViewItemGroups.get(groupKey).customViewItems.push({
-				id: customView.id,
-				name: customView.name,
-				mapNames: customView.assignedMaps.join(" "),
-				mapSelectionMode: customView.mapSelectionMode,
-				isApplicable: customViewItemApplicable
+			const customConfigItemApplicable = this.isCustomConfigApplicable(customConfigFileStateConnector, customConfig)
+			customConfigItemGroups.get(groupKey).customConfigItems.push({
+				id: customConfig.id,
+				name: customConfig.name,
+				mapNames: customConfig.assignedMaps.join(" "),
+				mapSelectionMode: customConfig.mapSelectionMode,
+				isApplicable: customConfigItemApplicable
 			})
 
-			if (customViewItemApplicable) {
-				customViewItemGroups.get(groupKey).hasApplicableItems = true
+			if (customConfigItemApplicable) {
+				customConfigItemGroups.get(groupKey).hasApplicableItems = true
 			}
 		})
 
-		return customViewItemGroups
+		return customConfigItemGroups
 	}
 
-	private static isCustomViewApplicable(
-		customViewFileStateConnector: CustomViewFileStateConnector,
-		customView: RecursivePartial<CustomView>
+	private static isCustomConfigApplicable(
+		customConfigFileStateConnector: CustomConfigFileStateConnector,
+		customConfig: RecursivePartial<CustomConfig>
 	) {
 		// TODO: Follow Up: Configs are applicable if their checksums are matching, but map names should not be checked.
 		return (
-			customViewFileStateConnector.getJointMapName() === customView.assignedMaps.join(" ") &&
-			customViewFileStateConnector.getChecksumOfAssignedMaps() === customView.mapChecksum &&
-			customViewFileStateConnector.getMapSelectionMode() === customView.mapSelectionMode
+			customConfigFileStateConnector.getJointMapName() === customConfig.assignedMaps.join(" ") &&
+			customConfigFileStateConnector.getChecksumOfAssignedMaps() === customConfig.mapChecksum &&
+			customConfigFileStateConnector.getMapSelectionMode() === customConfig.mapSelectionMode
 		)
 	}
 
-	private static setCustomViewsToLocalStorage() {
-		const newLocalStorageElement: LocalStorageCustomViews = {
+	private static setCustomConfigsToLocalStorage() {
+		const newLocalStorageElement: LocalStorageCustomConfigs = {
 			version: this.CUSTOM_VIEWS_LOCAL_STORAGE_VERSION,
-			customViews: [...this.customViews]
+			customConfigs: [...this.customConfigs]
 		}
 		localStorage.setItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT, JSON.stringify(newLocalStorageElement, stateObjectReplacer))
 	}
 
-	private static loadCustomViews() {
-		const ccLocalStorage: LocalStorageCustomViews = JSON.parse(
+	private static loadCustomConfigs() {
+		const ccLocalStorage: LocalStorageCustomConfigs = JSON.parse(
 			localStorage.getItem(this.CUSTOM_VIEWS_LOCAL_STORAGE_ELEMENT),
 			stateObjectReviver
 		)
-		return new Map(ccLocalStorage?.customViews)
+		return new Map(ccLocalStorage?.customConfigs)
 	}
 
-	static addCustomView(newCustomView: RecursivePartial<CustomView>) {
-		this.customViews.set(newCustomView.id, newCustomView)
-		this.setCustomViewsToLocalStorage()
+	static addCustomConfig(newCustomConfig: RecursivePartial<CustomConfig>) {
+		this.customConfigs.set(newCustomConfig.id, newCustomConfig)
+		this.setCustomConfigsToLocalStorage()
 	}
 
-	static getCustomViewSettings(viewId: string): RecursivePartial<CustomView> | undefined {
-		return this.customViews.get(viewId)
+	static getCustomConfigSettings(viewId: string): RecursivePartial<CustomConfig> | undefined {
+		return this.customConfigs.get(viewId)
 	}
 
-	static hasCustomView(mapSelectionMode: CustomViewMapSelectionMode, selectedMaps: string[], viewName: string): boolean {
-		const customViewIdentifier = createCustomViewIdentifier(mapSelectionMode, selectedMaps, viewName)
+	static hasCustomConfig(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], viewName: string): boolean {
+		const customConfigIdentifier = createCustomConfigIdentifier(mapSelectionMode, selectedMaps, viewName)
 
-		return this.customViews.has(customViewIdentifier)
+		return this.customConfigs.has(customConfigIdentifier)
 	}
 
-	static getCustomViewsAmountByMapAndMode(mapNames: string, mapSelectionMode: CustomViewMapSelectionMode): number {
+	static getCustomConfigsAmountByMapAndMode(mapNames: string, mapSelectionMode: CustomConfigMapSelectionMode): number {
 		let count = 0
 
-		this.customViews.forEach(view => {
+		this.customConfigs.forEach(view => {
 			if (view.assignedMaps.join(" ") === mapNames && view.mapSelectionMode === mapSelectionMode) {
 				count++
 			}
@@ -98,28 +98,28 @@ export class CustomViewHelper {
 		return count
 	}
 
-	static getViewNameSuggestionByFileState(customViewFileStateConnector: CustomViewFileStateConnector): string {
-		const suggestedViewName = customViewFileStateConnector.getJointMapName()
+	static getViewNameSuggestionByFileState(customConfigFileStateConnector: CustomConfigFileStateConnector): string {
+		const suggestedViewName = customConfigFileStateConnector.getJointMapName()
 
 		if (!suggestedViewName) {
 			return ""
 		}
 
-		const customViewNumberSuffix =
-			CustomViewHelper.getCustomViewsAmountByMapAndMode(
-				customViewFileStateConnector.getJointMapName(),
-				customViewFileStateConnector.getMapSelectionMode()
+		const customConfigNumberSuffix =
+			CustomConfigHelper.getCustomConfigsAmountByMapAndMode(
+				customConfigFileStateConnector.getJointMapName(),
+				customConfigFileStateConnector.getMapSelectionMode()
 			) + 1
 
-		return `${suggestedViewName} #${customViewNumberSuffix}`
+		return `${suggestedViewName} #${customConfigNumberSuffix}`
 	}
 
-	static deleteCustomView(viewId: string) {
-		this.customViews.delete(viewId)
-		this.setCustomViewsToLocalStorage()
+	static deleteCustomConfig(viewId: string) {
+		this.customConfigs.delete(viewId)
+		this.setCustomConfigsToLocalStorage()
 	}
 
-	static sortCustomViewDropDownGroupList(a: CustomViewItemGroup, b: CustomViewItemGroup) {
+	static sortCustomConfigDropDownGroupList(a: CustomConfigItemGroup, b: CustomConfigItemGroup) {
 		if (!b.hasApplicableItems) {
 			if (a.hasApplicableItems || a.mapSelectionMode < b.mapSelectionMode) {
 				return -1

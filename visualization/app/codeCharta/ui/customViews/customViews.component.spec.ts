@@ -1,4 +1,4 @@
-import "./customViews.module"
+import "./customConfigs.module"
 import "../codeMap/threeViewer/threeViewer.module"
 import { IRootScopeService } from "angular"
 import { getService, instantiateModule } from "../../../../mocks/ng.mockhelper"
@@ -6,16 +6,16 @@ import { StoreService } from "../../state/store.service"
 import { DialogService } from "../dialog/dialog.service"
 import { CUSTOM_VIEW_ITEM_GROUPS, FILE_STATES } from "../../util/dataMocks"
 import { ThreeOrbitControlsService } from "../codeMap/threeViewer/threeOrbitControlsService"
-import { CustomViewsController } from "./customViews.component"
+import { CustomConfigsController } from "./customConfigs.component"
 import { FilesService } from "../../state/store/files/files.service"
 import { setFiles } from "../../state/store/files/files.actions"
-import { CustomViewHelper } from "../../util/customViewHelper"
+import { CustomConfigHelper } from "../../util/customConfigHelper"
 import { setState } from "../../state/store/state.actions"
-import { CustomView } from "../../model/customView/customView.api.model"
+import { CustomConfig } from "../../model/customConfig/customConfig.api.model"
 import { ThreeCameraService } from "../codeMap/threeViewer/threeCameraService"
 
-describe("CustomViewsController", () => {
-	let customViewsController: CustomViewsController
+describe("CustomConfigsController", () => {
+	let customConfigsController: CustomConfigsController
 	let $rootScope: IRootScopeService
 	let storeService: StoreService
 	let dialogService: DialogService
@@ -23,7 +23,7 @@ describe("CustomViewsController", () => {
 	let threeCameraService: ThreeCameraService
 
 	function rebuildController() {
-		customViewsController = new CustomViewsController(
+		customConfigsController = new CustomConfigsController(
 			$rootScope,
 			storeService,
 			dialogService,
@@ -33,7 +33,7 @@ describe("CustomViewsController", () => {
 	}
 
 	function restartSystem() {
-		instantiateModule("app.codeCharta.ui.customViews")
+		instantiateModule("app.codeCharta.ui.customConfigs")
 
 		$rootScope = getService<IRootScopeService>("$rootScope")
 		storeService = getService<StoreService>("storeService")
@@ -55,77 +55,77 @@ describe("CustomViewsController", () => {
 
 			rebuildController()
 
-			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, customViewsController)
+			expect(FilesService.subscribe).toHaveBeenCalledWith($rootScope, customConfigsController)
 		})
 	})
 
 	describe("onFileSelectionChanged", () => {
-		it("should reset CustomViewFileStateConnector", () => {
+		it("should reset CustomConfigFileStateConnector", () => {
 			rebuildController()
 
-			customViewsController.onFilesSelectionChanged(FILE_STATES)
+			customConfigsController.onFilesSelectionChanged(FILE_STATES)
 
-			expect(customViewsController["customViewFileStateConnector"].getSelectedMaps()[0]).toBe("fileA")
+			expect(customConfigsController["customConfigFileStateConnector"].getSelectedMaps()[0]).toBe("fileA")
 		})
 	})
 
-	describe("loadCustomViews", () => {
-		it("should load CustomViews, sort them by applicable-state and mode name ASC and set the dropDownCustomViewItemGroups ", () => {
-			CustomViewHelper.getCustomViewItemGroups = jest.fn().mockReturnValue(CUSTOM_VIEW_ITEM_GROUPS)
+	describe("loadCustomConfigs", () => {
+		it("should load CustomConfigs, sort them by applicable-state and mode name ASC and set the dropDownCustomConfigItemGroups ", () => {
+			CustomConfigHelper.getCustomConfigItemGroups = jest.fn().mockReturnValue(CUSTOM_VIEW_ITEM_GROUPS)
 
-			customViewsController.loadCustomViews()
+			customConfigsController.loadCustomConfigs()
 
-			const customViewItemGroups = customViewsController["_viewModel"].dropDownCustomViewItemGroups.values()
-			const customViewItemGroup1 = customViewItemGroups.next().value
-			const customViewItemGroup2 = customViewItemGroups.next().value
-			const customViewItemGroup3 = customViewItemGroups.next().value
+			const customConfigItemGroups = customConfigsController["_viewModel"].dropDownCustomConfigItemGroups.values()
+			const customConfigItemGroup1 = customConfigItemGroups.next().value
+			const customConfigItemGroup2 = customConfigItemGroups.next().value
+			const customConfigItemGroup3 = customConfigItemGroups.next().value
 
-			expect(customViewItemGroup1).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBMultiple"))
-			expect(customViewItemGroup2).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBDELTA"))
-			expect(customViewItemGroup3).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBSINGLE"))
+			expect(customConfigItemGroup1).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBMultiple"))
+			expect(customConfigItemGroup2).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBDELTA"))
+			expect(customConfigItemGroup3).toEqual(CUSTOM_VIEW_ITEM_GROUPS.get("fileAfileBSINGLE"))
 		})
 	})
 
-	describe("showAddCustomViewSettings", () => {
-		it("should call showAddCustomViewSettings", () => {
-			dialogService.showAddCustomViewSettings = jest.fn()
+	describe("showAddCustomConfigSettings", () => {
+		it("should call showAddCustomConfigSettings", () => {
+			dialogService.showAddCustomConfigSettings = jest.fn()
 
-			customViewsController.showAddCustomViewSettings()
+			customConfigsController.showAddCustomConfigSettings()
 
-			expect(dialogService.showAddCustomViewSettings).toHaveBeenCalled()
+			expect(dialogService.showAddCustomConfigSettings).toHaveBeenCalled()
 		})
 	})
 
-	describe("applyCustomView", () => {
+	describe("applyCustomConfig", () => {
 		it("should call store.dispatch", () => {
-			const customViewStub = {
+			const customConfigStub = {
 				stateSettings: {
 					dynamicSettings: {
 						margin: 1,
 						colorRange: { from: 1, to: 2 }
 					}
 				}
-			} as CustomView
-			CustomViewHelper.getCustomViewSettings = jest.fn().mockReturnValue(customViewStub)
+			} as CustomConfig
+			CustomConfigHelper.getCustomConfigSettings = jest.fn().mockReturnValue(customConfigStub)
 			storeService.dispatch = jest.fn()
 			threeOrbitControlsService.setControlTarget = jest.fn()
 
-			customViewsController.applyCustomView("CustomView1")
+			customConfigsController.applyCustomConfig("CustomConfig1")
 
-			expect(storeService.dispatch).toHaveBeenCalledWith(setState(customViewStub.stateSettings))
+			expect(storeService.dispatch).toHaveBeenCalledWith(setState(customConfigStub.stateSettings))
 		})
 	})
 
-	describe("removeCustomView", () => {
-		it("should call deleteCustomView and show InfoDialog afterwards", () => {
-			CustomViewHelper.deleteCustomView = jest.fn()
+	describe("removeCustomConfig", () => {
+		it("should call deleteCustomConfig and show InfoDialog afterwards", () => {
+			CustomConfigHelper.deleteCustomConfig = jest.fn()
 			dialogService.showInfoDialog = jest.fn()
 
-			const viewNameToRemove = "CustomViewName1"
+			const viewNameToRemove = "CustomConfigName1"
 			const viewIdToRemove = 1
-			customViewsController.removeCustomView(viewIdToRemove, viewNameToRemove)
+			customConfigsController.removeCustomConfig(viewIdToRemove, viewNameToRemove)
 
-			expect(CustomViewHelper.deleteCustomView).toHaveBeenCalledWith(viewIdToRemove)
+			expect(CustomConfigHelper.deleteCustomConfig).toHaveBeenCalledWith(viewIdToRemove)
 			expect(dialogService.showInfoDialog).toHaveBeenCalledWith(expect.stringContaining(`${viewNameToRemove} deleted`))
 		})
 	})

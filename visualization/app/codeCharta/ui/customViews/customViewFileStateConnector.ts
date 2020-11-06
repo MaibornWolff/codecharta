@@ -1,12 +1,12 @@
 "use strict"
 import { FileSelectionState, FileState } from "../../model/files/files"
-import { CustomViewMapSelectionMode } from "../../model/customView/customView.api.model"
+import { CustomConfigMapSelectionMode } from "../../model/customConfig/customConfig.api.model"
 
-export class CustomViewFileStateConnector {
+export class CustomConfigFileStateConnector {
 	private readonly files: FileState[] = []
 	private fileNameParts: string[] = []
 	private mapChecksums: string[] = []
-	private mapSelectionMode: CustomViewMapSelectionMode = CustomViewMapSelectionMode.SINGLE
+	private mapSelectionMode: CustomConfigMapSelectionMode = CustomConfigMapSelectionMode.SINGLE
 
 	constructor(files: FileState[]) {
 		this.files = files
@@ -36,13 +36,13 @@ export class CustomViewFileStateConnector {
 
 	private setMapSelectionMode(fileSelectionState: string) {
 		if (fileSelectionState === FileSelectionState.Partial) {
-			this.mapSelectionMode = CustomViewMapSelectionMode.MULTIPLE
+			this.mapSelectionMode = CustomConfigMapSelectionMode.MULTIPLE
 		} else if (fileSelectionState === FileSelectionState.Comparison || fileSelectionState === FileSelectionState.Reference) {
-			this.mapSelectionMode = CustomViewMapSelectionMode.DELTA
+			this.mapSelectionMode = CustomConfigMapSelectionMode.DELTA
 		}
 	}
 
-	getMapSelectionMode(): CustomViewMapSelectionMode {
+	getMapSelectionMode(): CustomConfigMapSelectionMode {
 		return this.mapSelectionMode
 	}
 

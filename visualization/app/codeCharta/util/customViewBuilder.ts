@@ -1,26 +1,26 @@
 "use strict"
 import { State } from "../codeCharta.model"
-import { CustomView, CustomViewMapSelectionMode } from "../model/customView/customView.api.model"
-import { CustomViewFileStateConnector } from "../ui/customViews/customViewFileStateConnector"
+import { CustomConfig, CustomConfigMapSelectionMode } from "../model/customConfig/customConfig.api.model"
+import { CustomConfigFileStateConnector } from "../ui/customConfigs/customConfigFileStateConnector"
 
 const CC_CUSTOM_VIEW_API_VERSION = "1.0.0"
 
-export function buildCustomViewFromState(viewName: string, state: State): CustomView {
-	const customViewFileStateConnector = new CustomViewFileStateConnector(state.files)
+export function buildCustomConfigFromState(viewName: string, state: State): CustomConfig {
+	const customConfigFileStateConnector = new CustomConfigFileStateConnector(state.files)
 
-	const uniqueIdentifier = createCustomViewIdentifier(
-		customViewFileStateConnector.getMapSelectionMode(),
-		customViewFileStateConnector.getSelectedMaps(),
+	const uniqueIdentifier = createCustomConfigIdentifier(
+		customConfigFileStateConnector.getMapSelectionMode(),
+		customConfigFileStateConnector.getSelectedMaps(),
 		viewName
 	)
 
-	const customView: CustomView = {
+	const customConfig: CustomConfig = {
 		id: uniqueIdentifier,
 		name: viewName,
-		mapSelectionMode: customViewFileStateConnector.getMapSelectionMode(),
-		assignedMaps: customViewFileStateConnector.getSelectedMaps(),
-		mapChecksum: customViewFileStateConnector.getChecksumOfAssignedMaps(),
-		customViewVersion: CC_CUSTOM_VIEW_API_VERSION,
+		mapSelectionMode: customConfigFileStateConnector.getMapSelectionMode(),
+		assignedMaps: customConfigFileStateConnector.getSelectedMaps(),
+		mapChecksum: customConfigFileStateConnector.getChecksumOfAssignedMaps(),
+		customConfigVersion: CC_CUSTOM_VIEW_API_VERSION,
 		stateSettings: {
 			appSettings: undefined,
 			dynamicSettings: undefined,
@@ -31,23 +31,23 @@ export function buildCustomViewFromState(viewName: string, state: State): Custom
 
 	// Initialize all necessary state settings with default values right here
 	// Any changes to the state properties must also be adapted here
-	// You must handle breaking changes of the CustomView API
-	initializeAppSettings(customView)
-	initializeDynamicSettings(customView)
-	initializeFileSettings(customView)
-	initializeTreeMapSettings(customView)
+	// You must handle breaking changes of the CustomConfig API
+	initializeAppSettings(customConfig)
+	initializeDynamicSettings(customConfig)
+	initializeFileSettings(customConfig)
+	initializeTreeMapSettings(customConfig)
 
-	// Override the default state settings with the stored CustomView values
-	deepMapOneToOther(state, customView.stateSettings)
+	// Override the default state settings with the stored CustomConfig values
+	deepMapOneToOther(state, customConfig.stateSettings)
 
-	return customView
+	return customConfig
 }
 
-export function createCustomViewIdentifier(mapSelectionMode: CustomViewMapSelectionMode, selectedMaps: string[], viewName: string) {
+export function createCustomConfigIdentifier(mapSelectionMode: CustomConfigMapSelectionMode, selectedMaps: string[], viewName: string) {
 	return mapSelectionMode + selectedMaps.join("") + viewName
 }
 
-function initializeAppSettings(target: CustomView) {
+function initializeAppSettings(target: CustomConfig) {
 	target.stateSettings.appSettings = {
 		showMetricLabelNameValue: false,
 		showMetricLabelNodeName: false,
@@ -94,7 +94,7 @@ function initializeAppSettings(target: CustomView) {
 	}
 }
 
-function initializeDynamicSettings(target: CustomView) {
+function initializeDynamicSettings(target: CustomConfig) {
 	target.stateSettings.dynamicSettings = {
 		areaMetric: "",
 		colorMetric: "",
@@ -113,7 +113,7 @@ function initializeDynamicSettings(target: CustomView) {
 	}
 }
 
-function initializeFileSettings(target: CustomView) {
+function initializeFileSettings(target: CustomConfig) {
 	target.stateSettings.fileSettings = {
 		attributeTypes: undefined,
 		blacklist: undefined,
@@ -122,7 +122,7 @@ function initializeFileSettings(target: CustomView) {
 	}
 }
 
-function initializeTreeMapSettings(target: CustomView) {
+function initializeTreeMapSettings(target: CustomConfig) {
 	target.stateSettings.treeMap = {
 		mapSize: 0
 	}
