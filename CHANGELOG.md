@@ -26,7 +26,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
       only possible to invert the complete input, not individual search entries.
   1. Whitespace handling changed to ignore leading whitespace.
 
-- Changed sorting to account for numbers/ diacritics and special characters in names
+- Improved file sorting in the file overview of the search bar
+  - Numbers are sorted naturally
+  - Characters are compared with their base character (e.g., `a` is now next to `á`).
 
 ### Removed 🗑
 
