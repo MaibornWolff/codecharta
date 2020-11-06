@@ -25,6 +25,7 @@ import { amountOfEdgePreviews } from "./amountOfEdgePreviews/amountOfEdgePreview
 import { amountOfTopLabels } from "./amountOfTopLabels/amountOfTopLabels.reducer"
 import { isPresentationMode } from "./isPresentationMode/isPresentationMode.reducer"
 import { combineReducers } from "redux"
+import { experimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.reducer"
 
 const appSettings = combineReducers({
 	// Plop: Append sub-reducer here
@@ -52,7 +53,8 @@ const appSettings = combineReducers({
 	edgeHeight,
 	amountOfEdgePreviews,
 	amountOfTopLabels,
-	isPresentationMode
+	isPresentationMode,
+	experimentalFeaturesEnabled
 })
 
 export default appSettings

@@ -52,6 +52,7 @@ import camelCase from "lodash.camelcase"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import { EdgeMetricDataService } from "./store/metricData/edgeMetricData/edgeMetricData.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
+import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 
 angular
 	.module("app.codeCharta.state", ["app.codeCharta"])
@@ -106,3 +107,4 @@ angular
 	.service(camelCase(InjectorService.name), InjectorService)
 	.service(camelCase(StoreService.name), StoreService)
 	.service(camelCase(NodeSearchService.name), NodeSearchService)
+	.service(camelCase(ExperimentalFeaturesEnabledService.name), ExperimentalFeaturesEnabledService)

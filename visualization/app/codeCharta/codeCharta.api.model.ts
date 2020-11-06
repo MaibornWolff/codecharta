@@ -3,6 +3,7 @@ import { AttributeTypes, AttributeTypeValue, CodeMapNode, Edge, MarkedPackage, R
 export interface ExportCCFile {
 	projectName: string
 	apiVersion: string
+	fileChecksum: string
 	nodes: CodeMapNode[]
 	attributeTypes?: AttributeTypes | OldAttributeTypes
 	edges?: Edge[]

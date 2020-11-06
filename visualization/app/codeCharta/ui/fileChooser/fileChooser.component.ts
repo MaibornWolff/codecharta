@@ -6,6 +6,7 @@ import { StoreService } from "../../state/store.service"
 import { setIsLoadingFile } from "../../state/store/appSettings/isLoadingFile/isLoadingFile.actions"
 import { ExportCCFile } from "./../../codeCharta.api.model"
 import zlib from "zlib"
+import md5 from "md5"
 
 export class FileChooserController {
 	private files: NameDataPair[] = []
@@ -53,11 +54,17 @@ export class FileChooserController {
 
 	private addNameDataPair(fileName: string, jsonString: string) {
 		let content: ExportCCFile
+
 		try {
 			content = JSON.parse(jsonString)
+
+			if (!content.fileChecksum) {
+				content.fileChecksum = md5(jsonString)
+			}
 		} catch {
 			// Explicitly ignored
 		}
+
 		this.files.push({
 			fileName,
 			content

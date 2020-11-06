@@ -13,6 +13,7 @@ ribbon-bar-component {
 			.section-body {
 				min-height: ($heightExpanded - $heightCollapsed) + 5 + px;
 				max-height: 500px;
+				overflow-y: auto;
 			}
 		}
 	}
@@ -32,7 +33,7 @@ ribbon-bar-component {
 			width: 380px;
 		}
 
-		&:not(#scenario-card) {
+		&:not(#scenario-card):not(#custom-configs-card) {
 			min-width: 240px;
 		}
 

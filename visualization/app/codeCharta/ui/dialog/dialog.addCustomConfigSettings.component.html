@@ -1,0 +1,29 @@
+<md-dialog class="custom-config-dialog">
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<h2>Add Custom Config</h2>
+		</div>
+	</md-toolbar>
+
+	<md-dialog-content>
+		<div class="md-dialog-content">
+			<md-input-container class="md-block">
+				<label>View Name</label>
+				<input
+					class="custom-config-input"
+					type="text"
+					ng-model="$ctrl._viewModel.customConfigName"
+					ng-on-show="$ctrl.validateCustomConfigName()"
+					ng-on-keyup="$ctrl.validateCustomConfigName()"
+				/>
+			</md-input-container>
+			<div class="md-block">
+				<div class="warning" ng-bind-html="$ctrl._viewModel.addWarningMessage"></div>
+			</div>
+		</div>
+	</md-dialog-content>
+
+	<md-dialog-actions>
+		<md-button ng-click="$ctrl.addCustomConfig()" ng-disabled="!$ctrl.isNewCustomConfigValid()" class="md-primary">Add</md-button>
+	</md-dialog-actions>
+</md-dialog>

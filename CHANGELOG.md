@@ -9,6 +9,43 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Added 🚀
 
+-   A new option in the Global Settings allows to enable/disable experimental features #1318
+    -   Click on the settings button in the upper right corner to open the Global Settings dialog.
+    -   Activate/Deactivate the new option "Enable Experimental Features"
+    -   The features will be shown/hidden accordingly
+-   "CustomViews", the first experimental feature has been added #1318
+    -   It must be enabled by activating the new option in the Global Settings dialog as mentioned before.
+    -   You can save your current map configurations to replay/restore them later.
+    -   A saved CustomView can only be applied for it's original map.
+    -   This will enable you to be more efficient in analizing projects by switching between different CustomViews.
+
+### Changed
+
+-   Improved search
+    1. Not providing any star in the search bar from now on expects the input to
+       be a wildcard search. Thus, files are going to match paths that have
+       leading or following characters. E.g., `oo` is going to match
+       `/root/foobar`.
+    1. To use the explicit former search mode, wrap the search entry in quotes as
+       in: `"oo"`. This would only match filenames that are exactly `oo`.
+    1. The search field accepts multiple search entries at once, separated by
+       commata. `foo,bar` is going to search for both `*foo*` and `*bar*` and
+       marks all matched files accordingly.
+    1. It is possible to invert the search with a leading exclamation mark as in
+       `!foobar`. That will match any file that does not match `*foobar*`. It is
+       only possible to invert the complete input, not individual search entries.
+    1. Whitespace handling changed to ignore leading whitespace.
+
+### Removed 🗑
+
+### Fixed 🐞
+
+### Chore 👨‍💻 👩‍💻
+
+## [1.61.0] - 2020-10-30
+
+### Added 🚀
+
 ### Changed
 
 -   Disable highlighting buildings during map movement #1432
@@ -17,6 +54,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ### Fixed 🐞
 
+-   File tree/flattened/excluded overlay visualization is buggy #1269
 -   EdgePreview on Map broken when selecting zero #1276
 
 ### Chore 👨‍💻 👩‍💻

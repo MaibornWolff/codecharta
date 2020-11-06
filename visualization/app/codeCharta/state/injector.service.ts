@@ -49,6 +49,7 @@ import { BlacklistService } from "./store/fileSettings/blacklist/blacklist.servi
 import { NodeSearchService } from "./nodeSearch.service"
 import { IsPresentationModeService } from "./store/appSettings/isPresentationMode/isPresentationMode.service"
 import { MetricDataService } from "./store/metricData/metricData.service"
+import { ExperimentalFeaturesEnabledService } from "./store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.service"
 
 export class InjectorService {
 	/* @ngInject */
@@ -102,6 +103,7 @@ export class InjectorService {
 		private areaMetricService: AreaMetricService,
 		private blacklistService: BlacklistService,
 		private nodeSearchService: NodeSearchService,
-		private isPresentationModeService: IsPresentationModeService
+		private isPresentationModeService: IsPresentationModeService,
+		private experimentalFeaturesEnabledService: ExperimentalFeaturesEnabledService
 	) {}
 }
