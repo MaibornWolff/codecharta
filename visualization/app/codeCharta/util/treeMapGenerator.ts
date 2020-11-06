@@ -17,7 +17,7 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 		const scale = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode) * state.dynamicSettings.margin) 
 						/ nodes[0].length
 		scaleRoot(nodes[0], scale)
-		return nodes.concat(buildSquarifiedTreeMapsForFixedFolders(map, state, scale, heightScale, maxHeight, isDeltaState))
+		return nodes.concat(buildSquarifiedTreeMapsForFixedFolders(map, state, scale, scale, 0, 0, heightScale, maxHeight, isDeltaState))
 	}
 
 	const squarifiedTreeMap = getSquarifiedTreeMap(map, state)
@@ -32,7 +32,10 @@ export function createTreemapNodes(map: CodeMapNode, state: State, metricData: N
 function buildSquarifiedTreeMapsForFixedFolders(
 	map: CodeMapNode,
 	state: State,
-	scale: number,
+	scaleX: number,
+	scaleY: number,
+	squarifiedX0: number,
+	squarifiedY0: number,
 	heightScale: number,
 	maxHeight: number,
 	isDeltaState: boolean
@@ -42,17 +45,23 @@ function buildSquarifiedTreeMapsForFixedFolders(
 	for (const fixedFolder of map.children) {
 		const squarified = getSquarifiedTreeMap(fixedFolder, state)
 		for (const squarifiedNode of squarified.treeMap.descendants()) {
-			scaleAndTranslateSquarifiedNode(squarifiedNode, fixedFolder, squarified, scale)
+			scaleAndTranslateSquarifiedNode(squarifiedNode, squarifiedX0, squarifiedY0, fixedFolder, squarified, scaleX, scaleY)
 			const node = TreeMapHelper.buildNodeFrom(squarifiedNode, heightScale, maxHeight, state, isDeltaState)
 			nodes.push(node)
 			if (hasFixedFolders(fixedFolder)){
-				scale = (
-						state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchy(fixedFolder)) * state.dynamicSettings.margin
-						) 
+				// here fixedFolder represents nodes[0] since it always comes first in squarified.treeMap.descendants()
+				// change scale to match a current fixed folder
+				const hierarchyNode = hierarchy(fixedFolder)
+				scaleX = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode)) 
 						/ node.length
+				scaleY = (state.treeMap.mapSize * 2 + getEstimatedNodesPerSide(hierarchyNode)) 
+						/ node.width
+				// save fixed folder's (squarified) x0 and y0 to use while translating child nodes
+				let x0 = squarifiedNode.x0
+				let y0 = squarifiedNode.y0
 				Array.prototype.push.apply(
 					nodes, 
-					buildSquarifiedTreeMapsForFixedFolders(fixedFolder, state, scale, heightScale, maxHeight, isDeltaState)
+					buildSquarifiedTreeMapsForFixedFolders(fixedFolder, state, scaleX, scaleY, x0, y0, heightScale, maxHeight, isDeltaState)
 				)
 				break
 			}
@@ -67,19 +76,27 @@ function hasFixedFolders(map: CodeMapNode) {
 
 function scaleAndTranslateSquarifiedNode(
 	squarifiedNode: HierarchyRectangularNode<CodeMapNode>,
+	squarifiedX0: number,
+	squarifiedY0: number,
 	fixedFolder: CodeMapNode,
 	squarified: SquarifiedTreeMap,
-	scale: number
+	scaleX: number,
+	scaleY: number
 ) {
 	// Transform coordinates from local folder space to world space (between 0 and 100).
-	const scaleX = fixedFolder.fixedPosition.width / squarified.width
-	const scaleY = fixedFolder.fixedPosition.height / squarified.height
+	const scale_x = fixedFolder.fixedPosition.width / squarified.width
+	const scale_y = fixedFolder.fixedPosition.height / squarified.height
 
 	// Scales to usual map-size of 500 matching the three-scene-size
-	squarifiedNode.x0 = (squarifiedNode.x0 * scaleX + fixedFolder.fixedPosition.left) * scale
-	squarifiedNode.x1 = (squarifiedNode.x1 * scaleX + fixedFolder.fixedPosition.left) * scale
-	squarifiedNode.y0 = (squarifiedNode.y0 * scaleY + fixedFolder.fixedPosition.top) * scale
-	squarifiedNode.y1 = (squarifiedNode.y1 * scaleY + fixedFolder.fixedPosition.top) * scale
+	squarifiedNode.x0 = (squarifiedNode.x0 * scale_x + fixedFolder.fixedPosition.left) * scaleX
+	squarifiedNode.x1 = (squarifiedNode.x1 * scale_x + fixedFolder.fixedPosition.left) * scaleX
+	squarifiedNode.y0 = (squarifiedNode.y0 * scale_y + fixedFolder.fixedPosition.top) * scaleY
+	squarifiedNode.y1 = (squarifiedNode.y1 * scale_y + fixedFolder.fixedPosition.top) * scaleY
+
+	squarifiedNode.x0 += squarifiedX0
+	squarifiedNode.x1 += squarifiedX0
+	squarifiedNode.y0 += squarifiedY0
+	squarifiedNode.y1 += squarifiedY0
 }
 
 function scaleRoot(root: Node, scale: number) {
