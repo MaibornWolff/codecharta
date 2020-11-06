@@ -27,6 +27,7 @@ import { NodeMetricDataService } from "../../state/store/metricData/nodeMetricDa
 import { EdgeMetricDataService } from "../../state/store/metricData/edgeMetricData/edgeMetricData.service"
 import { hierarchy } from "d3-hierarchy"
 import { isLeaf } from "../../util/codeMapHelper"
+import { ExperimentalFeaturesEnabledActions } from "../../state/store/appSettings/enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 
 export interface CodeMapPreRenderServiceSubscriber {
 	onRenderMapChanged(map: CodeMapNode)
@@ -75,7 +76,8 @@ export class CodeMapPreRenderService implements StoreSubscriber, MetricDataSubsc
 			!isActionOfType(actionType, SortingOptionActions) &&
 			!isActionOfType(actionType, IsAttributeSideBarVisibleActions) &&
 			!isActionOfType(actionType, PanelSelectionActions) &&
-			!isActionOfType(actionType, PresentationModeActions)
+			!isActionOfType(actionType, PresentationModeActions) &&
+			!isActionOfType(actionType, ExperimentalFeaturesEnabledActions)
 		) {
 			this.debounceRendering()
 		}

@@ -7,6 +7,7 @@ import packageJson from "../../../package.json"
 export class AggregationGenerator {
 	private static projectNameArray: string[] = []
 	private static fileNameArray: string[] = []
+	private static fileChecksumArray: string[] = []
 
 	static getAggregationFile(inputFiles: CCFile[]) {
 		if (inputFiles.length === 1) {
@@ -18,6 +19,7 @@ export class AggregationGenerator {
 		for (const inputFile of inputFiles) {
 			this.projectNameArray.push(inputFile.fileMeta.projectName.replace(" ", "_"))
 			this.fileNameArray.push(FileNameHelper.withoutCCJsonExtension(inputFile.fileMeta.fileName).replace(" ", "_"))
+			this.fileChecksumArray.push(inputFile.fileMeta.fileChecksum)
 		}
 		return this.getNewAggregatedMap(inputFiles)
 	}
@@ -27,6 +29,7 @@ export class AggregationGenerator {
 			fileMeta: {
 				projectName: `project_aggregation_of_${this.projectNameArray.join("_and_")}`,
 				fileName: `file_aggregation_of_${this.fileNameArray.join("_and_")}`,
+				fileChecksum: this.fileChecksumArray.join(";"),
 				apiVersion: packageJson.codecharta.apiVersion
 			},
 			map: {

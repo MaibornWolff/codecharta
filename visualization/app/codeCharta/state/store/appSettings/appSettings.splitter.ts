@@ -27,6 +27,7 @@ import { splitEdgeHeightAction } from "./edgeHeight/edgeHeight.splitter"
 import { splitAmountOfEdgePreviewsAction } from "./amountOfEdgePreviews/amountOfEdgePreviews.splitter"
 import { splitAmountOfTopLabelsAction } from "./amountOfTopLabels/amountOfTopLabels.splitter"
 import { splitIsPresentationModeAction } from "./isPresentationMode/isPresentationMode.splitter"
+import { splitExperimentalFeaturesEnabledAction } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.splitter"
 
 export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) {
 	const actions: CCAction[] = []
@@ -130,6 +131,10 @@ export function splitAppSettingsActions(payload: RecursivePartial<AppSettings>) 
 
 	if (payload.isPresentationMode !== undefined) {
 		actions.push(splitIsPresentationModeAction(payload.isPresentationMode))
+	}
+
+	if (payload.experimentalFeaturesEnabled !== undefined) {
+		actions.push(splitExperimentalFeaturesEnabledAction(payload.experimentalFeaturesEnabled))
 	}
 
 	return actions

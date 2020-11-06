@@ -26,6 +26,7 @@ import { defaultIsLoadingFile } from "./isLoadingFile/isLoadingFile.actions"
 import { defaultSortingOrderAscending } from "./sortingOrderAscending/sortingOrderAscending.actions"
 import { defaultSearchPanelMode } from "./searchPanelMode/searchPanelMode.actions"
 import { defaultCameraTarget } from "./cameraTarget/cameraTarget.actions"
+import { defaultExperimentalFeaturesEnabled } from "./enableExperimentalFeatures/experimentalFeaturesEnabled.actions"
 
 export enum AppSettingsActions {
 	SET_APP_SETTINGS = "SET_APP_SETTINGS"
@@ -71,5 +72,6 @@ export const defaultAppSettings: AppSettings = {
 	isLoadingMap: defaultIsLoadingMap,
 	isLoadingFile: defaultIsLoadingFile,
 	searchPanelMode: defaultSearchPanelMode,
-	sortingOrderAscending: defaultSortingOrderAscending
+	sortingOrderAscending: defaultSortingOrderAscending,
+	experimentalFeaturesEnabled: defaultExperimentalFeaturesEnabled
 }
