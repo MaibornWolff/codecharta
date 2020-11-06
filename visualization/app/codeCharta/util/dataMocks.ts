@@ -274,7 +274,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SORTED_BY_NAME: CodeMapNode = {
 	]
 }
 
-export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME_SORTED: CodeMapNode = {
+export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS_SORTED: CodeMapNode = {
 	name: "root",
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
@@ -297,7 +297,21 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME_SORTED:
 			isFlattened: false,
 			children: [
 				{
-					name: "small leaf",
+					name: "File2a",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2á",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2b",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
 					isExcluded: false,
@@ -324,7 +338,7 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME_SORTED:
 	]
 }
 
-export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME: CodeMapNode = {
+export const VALID_NODE_NUMBERS_AND_DIACTRIC_CHARACHTERS: CodeMapNode = {
 	name: "root",
 	attributes: { [NodeMetricDataService.UNARY_METRIC]: 200 },
 	type: NodeType.FOLDER,
@@ -363,7 +377,21 @@ export const VALID_NODE_WITH_MULTIPLE_FOLDERS_SPECIAL_CHARACTERS_IN_NAME: CodeMa
 			isFlattened: false,
 			children: [
 				{
-					name: "small leaf",
+					name: "File2a",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2b",
+					type: NodeType.FILE,
+					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
+					isExcluded: false,
+					isFlattened: false
+				},
+				{
+					name: "File2á",
 					type: NodeType.FILE,
 					attributes: { rloc: 30, functions: 100, mcc: 100, [NodeMetricDataService.UNARY_METRIC]: 1 },
 					isExcluded: false,
